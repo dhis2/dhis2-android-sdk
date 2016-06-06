@@ -17,6 +17,8 @@ public interface AppModule {
 
     ApiExceptionHandler providesApiExceptionHandler();
 
+    AppAccountManager providesAppAccountManager();
+
     AppPreferences providesApplicationPreferences();
 
     SyncDateWrapper providesSyncDateWrapper();

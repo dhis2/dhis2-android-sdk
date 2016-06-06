@@ -1,6 +1,7 @@
 package org.hisp.dhis.client.sdk.ui.bindings.views;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 
 import org.hisp.dhis.client.sdk.ui.bindings.R;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.Inject;
+import org.hisp.dhis.client.sdk.ui.bindings.commons.NavigationHandler;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.ProfilePresenter;
 import org.hisp.dhis.client.sdk.ui.fragments.BaseFragment;
 import org.hisp.dhis.client.sdk.ui.models.FormEntity;
@@ -43,9 +45,7 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
         super.onCreate(savedInstanceState);
 
         // injection of profile presenter and logger
-        if (Inject.getUserComponent() != null) {
-            Inject.getUserComponent().inject(this);
-        }
+        Inject.getUserComponent().inject(this);
 
         alertDialog = createAlertDialog();
     }
@@ -229,9 +229,10 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
                     public void onClick(DialogInterface dialog, int which) {
                         profilePresenter.logout();
 
-                        // Intent logoutIntent = new Intent(getContext(), LoginActivity.class);
-                        // startActivity(logoutIntent);
-                        // getActivity().finish();
+                        Intent logoutIntent = new Intent(getContext(),
+                                NavigationHandler.loginActivity());
+                        startActivity(logoutIntent);
+                        getActivity().finish();
                     }
                 }
         );

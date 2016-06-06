@@ -13,6 +13,7 @@ import org.hisp.dhis.client.sdk.ui.bindings.presenters.LauncherPresenterImpl;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.LoginPresenter;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.LoginPresenterImpl;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.ProfilePresenter;
+import org.hisp.dhis.client.sdk.ui.bindings.presenters.ProfilePresenterImpl;
 
 import static org.hisp.dhis.client.sdk.utils.StringUtils.isEmpty;
 
@@ -32,6 +33,9 @@ final class UserModuleImpl implements UserModule {
 
     @Nullable
     private HomePresenter homePresenter;
+
+    @Nullable
+    private ProfilePresenter profilePresenter;
 
     public UserModuleImpl(@NonNull AppModule appModule) {
         this(appModule, null);
@@ -89,7 +93,15 @@ final class UserModuleImpl implements UserModule {
 
     @Override
     public ProfilePresenter providesProfilePresenter() {
-        return null;
+        if (profilePresenter == null) {
+            profilePresenter = new ProfilePresenterImpl(
+                    providesCurrentUserInteractor(),
+                    appModule.providesAppAccountManager(),
+                    appModule.providesSyncDateWrapper(),
+                    appModule.providesLogger());
+        }
+
+        return profilePresenter;
     }
 
 }

@@ -22,6 +22,9 @@ final class AppModuleImpl implements AppModule {
     private AppPreferences appPreferences;
 
     @Nullable
+    private AppAccountManager appAccountManager;
+
+    @Nullable
     private SyncDateWrapper syncDateWrapper;
 
     @Nullable
@@ -49,6 +52,16 @@ final class AppModuleImpl implements AppModule {
         }
 
         return apiExceptionHandler;
+    }
+
+    @Override
+    public AppAccountManager providesAppAccountManager() {
+        if (appAccountManager == null) {
+            appAccountManager = new AppAccountManager(providesContext(),
+                    providesApplicationPreferences());
+        }
+
+        return appAccountManager;
     }
 
     @Override

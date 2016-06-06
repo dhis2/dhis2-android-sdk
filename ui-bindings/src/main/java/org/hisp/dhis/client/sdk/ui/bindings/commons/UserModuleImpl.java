@@ -96,7 +96,7 @@ final class UserModuleImpl implements UserModule {
         if (profilePresenter == null) {
             profilePresenter = new ProfilePresenterImpl(
                     providesCurrentUserInteractor(),
-                    appModule.providesAppAccountManager(),
+                    // appModule.providesAppAccountManager(),
                     appModule.providesSyncDateWrapper(),
                     appModule.providesLogger());
         }

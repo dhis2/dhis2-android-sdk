@@ -40,7 +40,7 @@ public class ProfilePresenterImpl implements ProfilePresenter {
     private final CurrentUserInteractor currentUserAccountInteractor;
     private final Logger logger;
 
-    private AppAccountManager appAccountManager;
+    // private AppAccountManager appAccountManager;
     private SyncDateWrapper syncDateWrapper;
 
     private ProfileView profileView;
@@ -48,12 +48,12 @@ public class ProfilePresenterImpl implements ProfilePresenter {
     private UserAccount userAccount;
 
     public ProfilePresenterImpl(CurrentUserInteractor currentUserAccountInteractor,
-                                AppAccountManager appAccountManager,
+                                //AppAccountManager appAccountManager,
                                 SyncDateWrapper syncDateWrapper,
                                 Logger logger) {
         this.onFormEntityChangeListener = new RxOnValueChangedListener();
         this.currentUserAccountInteractor = currentUserAccountInteractor;
-        this.appAccountManager = appAccountManager;
+        // this.appAccountManager = appAccountManager;
         this.syncDateWrapper = syncDateWrapper;
         this.logger = logger;
     }
@@ -174,8 +174,8 @@ public class ProfilePresenterImpl implements ProfilePresenter {
     @Override
     public void logout() {
         // remove the android account: (no syncMetaData)
-        appAccountManager.removePeriodicSync();
-        appAccountManager.removeAccount();
+        // appAccountManager.removePeriodicSync();
+        // appAccountManager.removeAccount();
 
         // remove last synced (assume next user will be different)
         syncDateWrapper.clearLastSynced();

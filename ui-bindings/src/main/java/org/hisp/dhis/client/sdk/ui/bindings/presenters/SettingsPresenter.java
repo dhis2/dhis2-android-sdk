@@ -26,32 +26,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.bindings.modules;
+package org.hisp.dhis.client.sdk.ui.bindings.presenters;
 
-import org.hisp.dhis.client.sdk.ui.bindings.App;
+import org.hisp.dhis.client.sdk.ui.bindings.views.SettingsView;
 
-import javax.inject.Singleton;
+/**
+ * Created by Vladislav Georgiev Alfredov on 1/18/16.
+ */
+public interface SettingsPresenter {
 
-import dagger.Component;
+    void synchronize();
 
-@Singleton
-@Component(
-        modules = {
-                AppModule.class
-        }
-)
-public interface AppComponent {
+    void setUpdateFrequency(int frequency);
 
-    //------------------------------------------------------------------------
-    // Sub-modules
-    //------------------------------------------------------------------------
+    int getUpdateFrequency();
 
-    // UserComponent plus(UserModule userModule);
+    void setBackgroundSynchronisation(Boolean enabled, String warning);
 
+    Boolean getBackgroundSynchronisation();
 
-    //------------------------------------------------------------------------
-    // Injection targets
-    //------------------------------------------------------------------------
+    Boolean getCrashReports();
 
-    void inject(App app);
+    void setCrashReports(Boolean enabled);
+
+    public void setSettingsView(SettingsView settingsView);
 }

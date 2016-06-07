@@ -76,7 +76,7 @@ public abstract class DefaultHomeActivity extends AbsHomeActivity implements Hom
     @NonNull
     @Override
     protected Fragment getProfileFragment() {
-        return WrapperFragment.newInstance(ProfileFragment.class,
+        return WrapperFragment.newInstance(DefaultProfileFragment.class,
                 getString(R.string.drawer_item_profile));
     }
 

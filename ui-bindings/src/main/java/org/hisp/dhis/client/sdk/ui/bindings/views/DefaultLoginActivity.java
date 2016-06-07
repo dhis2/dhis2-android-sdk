@@ -40,7 +40,7 @@ import org.hisp.dhis.client.sdk.ui.bindings.commons.Inject;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.NavigationHandler;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.LoginPresenter;
 
-public class LoginActivity extends AbsLoginActivity implements LoginView {
+public class DefaultLoginActivity extends AbsLoginActivity implements LoginView {
     private LoginPresenter loginPresenter;
     private AlertDialog alertDialog;
 

@@ -28,9 +28,9 @@ import org.hisp.dhis.client.sdk.utils.Logger;
 
 import java.util.List;
 
-public class ProfileFragment extends BaseFragment implements ProfileView {
+public class DefaultProfileFragment extends BaseFragment implements ProfileView {
     private static final String STATE_IS_REFRESHING = "state:isRefreshing";
-    private static final String TAG = ProfileFragment.class.getSimpleName();
+    private static final String TAG = DefaultProfileFragment.class.getSimpleName();
 
     private ProfilePresenter profilePresenter;
     private Logger logger;
@@ -152,7 +152,7 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
             getParentToolbar().setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    return ProfileFragment.this.onMenuItemClick(item);
+                    return DefaultProfileFragment.this.onMenuItemClick(item);
                 }
             });
         }

@@ -38,7 +38,7 @@ import org.hisp.dhis.client.sdk.ui.bindings.commons.Inject;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.NavigationHandler;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.LauncherPresenter;
 
-public class LauncherActivity extends AppCompatActivity implements LauncherView {
+public class DefaultLauncherActivity extends AppCompatActivity implements LauncherView {
     private LauncherPresenter launcherPresenter;
 
     @Override

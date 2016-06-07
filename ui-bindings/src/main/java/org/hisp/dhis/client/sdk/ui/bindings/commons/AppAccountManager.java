@@ -11,7 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
-import org.hisp.dhis.client.sdk.android.api.D2;
 import org.hisp.dhis.client.sdk.ui.AppPreferences;
 
 /**
@@ -37,10 +36,9 @@ public class AppAccountManager {
         this.authority = authority;
         this.accountType = accountType;
 
-        accountName = D2.me().userCredentials().toBlocking().first().getUsername();
-
-        account = createAccount();
-        initSyncAccount();
+        // accountName = D2.me().userCredentials().toBlocking().first().getUsername();
+        // account = createAccount();
+        // initSyncAccount();
     }
 
     public void removeAccount() {

@@ -48,7 +48,6 @@ public class ProfilePresenterImpl implements ProfilePresenter {
     private UserAccount userAccount;
 
     public ProfilePresenterImpl(CurrentUserInteractor currentUserAccountInteractor,
-                                //AppAccountManager appAccountManager,
                                 SyncDateWrapper syncDateWrapper,
                                 Logger logger) {
         this.onFormEntityChangeListener = new RxOnValueChangedListener();

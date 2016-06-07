@@ -29,80 +29,66 @@
 package org.hisp.dhis.client.sdk.ui.bindings.views;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.view.View;
+import android.support.design.widget.Snackbar;
 
-import org.hisp.dhis.client.sdk.ui.activities.AbsHomeActivity;
 import org.hisp.dhis.client.sdk.ui.bindings.R;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.Inject;
-import org.hisp.dhis.client.sdk.ui.bindings.presenters.HomePresenter;
-import org.hisp.dhis.client.sdk.ui.fragments.WrapperFragment;
+import org.hisp.dhis.client.sdk.ui.bindings.presenters.SettingsPresenter;
+import org.hisp.dhis.client.sdk.ui.fragments.AbsSettingsFragment;
 
-public abstract class DefaultHomeActivity extends AbsHomeActivity implements HomeView {
-    private HomePresenter homePresenter;
+
+public class DefaultSettingsFragment extends AbsSettingsFragment implements SettingsView {
+    private String androidSyncWarning;
+    private SettingsPresenter settingsPresenter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        androidSyncWarning = getResources().getString(R.string.sys_sync_disabled_warning);
 
-        // injecting dependencies
         Inject.getUserComponent().inject(this);
+        settingsPresenter.setSettingsView(this);
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        homePresenter.attachView(this);
+    public boolean onBackgroundSynchronizationClick() {
+        return false;
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        homePresenter.detachView();
+    public boolean onBackgroundSynchronizationChanged(boolean isEnabled) {
+        settingsPresenter.setBackgroundSynchronisation(isEnabled, androidSyncWarning);
+        return true;
     }
 
     @Override
-    public void onDrawerOpened(View drawerView) {
-        super.onDrawerOpened(drawerView);
-        homePresenter.calculateLastSyncedPeriod();
+    public boolean onSynchronizationPeriodClick() {
+        return false;
     }
 
     @Override
-    public void showLastSyncedMessage(String message) {
-        setSynchronizedMessage(message);
-    }
-
-    @NonNull
-    @Override
-    protected Fragment getProfileFragment() {
-        return WrapperFragment.newInstance(DefaultProfileFragment.class,
-                getString(R.string.drawer_item_profile));
-    }
-
-    @NonNull
-    @Override
-    protected Fragment getSettingsFragment() {
-        return WrapperFragment.newInstance(DefaultSettingsFragment.class,
-                getString(R.string.drawer_item_settings));
+    public boolean onSynchronizationPeriodChanged(String newPeriodMinutes) {
+        settingsPresenter.setUpdateFrequency(Integer.parseInt(newPeriodMinutes));
+        return true;
     }
 
     @Override
-    public void setUsername(CharSequence username) {
-        getUsernameTextView().setText(username);
+    public boolean onCrashReportsClick() {
+        return false;
     }
 
     @Override
-    public void setUserInfo(CharSequence userInfo) {
-        getUserInfoTextView().setText(userInfo);
+    public boolean onCrashReportsChanged(boolean isEnabled) {
+        settingsPresenter.setCrashReports(isEnabled);
+        return true;
     }
 
     @Override
-    public void setUserLetter(CharSequence userLetters) {
-        getUsernameLetterTextView().setText(userLetters);
+    public void showMessage(CharSequence msg) {
+        Snackbar.make(getView(), msg, Snackbar.LENGTH_LONG).show();
     }
 
-    public void setHomePresenter(HomePresenter homePresenter) {
-        this.homePresenter = homePresenter;
+    public void setSettingsPresenter(SettingsPresenter settingsPresenter) {
+        this.settingsPresenter = settingsPresenter;
     }
 }

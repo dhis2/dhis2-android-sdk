@@ -10,16 +10,18 @@ import org.hisp.dhis.client.sdk.ui.bindings.presenters.LoginPresenter;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.ProfilePresenter;
 import org.hisp.dhis.client.sdk.utils.Logger;
 
-public interface AppModule {
+public interface DefaultAppModule {
     Context providesContext();
 
     Logger providesLogger();
 
-    ApiExceptionHandler providesApiExceptionHandler();
+    ApiExceptionHandler providesApiExceptionHandler(Context context, Logger logger);
 
-    AppAccountManager providesAppAccountManager();
+    AppAccountManager providesAppAccountManager(Context context, AppPreferences appPreferences);
 
-    AppPreferences providesApplicationPreferences();
+    AppPreferences providesApplicationPreferences(Context context);
 
-    SyncDateWrapper providesSyncDateWrapper();
+    SessionPreferences providesSessionPreferences(Context context);
+
+    SyncDateWrapper providesSyncDateWrapper(Context context, AppPreferences preferences);
 }

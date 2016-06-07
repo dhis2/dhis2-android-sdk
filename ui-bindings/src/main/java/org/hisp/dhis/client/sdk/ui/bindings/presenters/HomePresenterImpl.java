@@ -54,8 +54,9 @@ public class HomePresenterImpl implements HomePresenter {
     public HomePresenterImpl(CurrentUserInteractor userAccountInteractor,
                              SyncDateWrapper syncDateWrapper,
                              Logger logger) {
-        this.userAccountInteractor = isNull(userAccountInteractor,
-                "UserAccountInteractor must not be null");
+//        this.userAccountInteractor = isNull(userAccountInteractor,
+//                "UserAccountInteractor must not be null");
+        this.userAccountInteractor = userAccountInteractor;
         this.syncDateWrapper = syncDateWrapper;
         this.logger = isNull(logger, "Logger must not be null");
     }

@@ -32,7 +32,10 @@ import org.hisp.dhis.client.sdk.models.dataelement.ValueType;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
+import org.joda.time.DateTime;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,23 +46,24 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /* Part of RuleEngine implementation detail. Hence, class visibility defined as package private */
 class RuleEngineVariableValueMap {
-    private final Map<String, ProgramRuleVariableValue> programRuleVariableValueMap;
+    private Map<String, ProgramRuleVariableValue> programRuleVariableValueMap;
 
     public RuleEngineVariableValueMap(List<ProgramRuleVariable> variables,
                                       Event currentEvent, List<Event> allEvents) {
         programRuleVariableValueMap = new HashMap<>();
 
         // if we don't have list of variables, we can't do anything
-        if (variables == null) {
-            return;
+        if (variables != null) {
+            Map<String, TrackedEntityDataValue> currentEventToValuesMap =
+                    initEventToValuesMap(currentEvent);
+            Map<String, List<TrackedEntityDataValue>> allEventsToValuesMap =
+                    initEventsToValuesMap(allEvents);
+            initProgramRuleVariableMap(currentEvent, currentEventToValuesMap,
+                    allEventsToValuesMap, variables);
         }
 
-        Map<String, TrackedEntityDataValue> currentEventToValuesMap =
-                initEventToValuesMap(currentEvent);
-        Map<String, List<TrackedEntityDataValue>> allEventsToValuesMap =
-                initEventsToValuesMap(allEvents);
-        initProgramRuleVariableMap(currentEvent, currentEventToValuesMap,
-                allEventsToValuesMap, variables);
+        //Regardless of variables defined, we might need environment variables:
+        addEnvironmentVariables(currentEvent);
     }
 
     private Map<String, TrackedEntityDataValue> initEventToValuesMap(Event currentEvent) {
@@ -221,6 +225,9 @@ class RuleEngineVariableValueMap {
                             || variable.getDataElement().getValueType() == ValueType.NUMBER
                             || variable.getDataElement().getValueType() == ValueType.PERCENTAGE) {
                         defaultValue.setValue("0");
+                    } else if (variable.getDataElement().getValueType() == ValueType.DATE
+                            || variable.getDataElement().getValueType() == ValueType.DATETIME) {
+                        defaultValue.setValue("'" + DateTime.now().toString() + "'");
                     } else if (variable.getDataElement().getValueType() == ValueType.BOOLEAN
                             || variable.getDataElement().getValueType() == ValueType.TRUE_ONLY) {
                         defaultValue.setValue("false");
@@ -232,6 +239,23 @@ class RuleEngineVariableValueMap {
                 addProgramRuleVariableValueToMap(variable, defaultValue, null, valueFound);
             }
         }
+    }
+
+    private void addEnvironmentVariables(Event currentEvent)
+    {
+        DateFormat df = new SimpleDateFormat("YYYY-MM-dd");
+
+        if(currentEvent != null) {
+            DateTime eventDate = currentEvent.getEventDate() != null ? currentEvent.getEventDate() : DateTime.now();
+            addEnviromentVariableValueToMap("event_date", df.format(eventDate.toDate()), ValueType.DATE, currentEvent.getEventDate() != null);
+        }
+        else
+        {
+            addEnviromentVariableValueToMap("event_date", df.format(DateTime.now().toDate()), ValueType.DATE, false);
+        }
+
+        addEnviromentVariableValueToMap("current_date", df.format(DateTime.now().toDate()), ValueType.DATE, true);
+
     }
 
     public ProgramRuleVariableValue getProgramRuleVariableValue(String variableName) {
@@ -246,8 +270,21 @@ class RuleEngineVariableValueMap {
                                                   TrackedEntityDataValue value,
                                                   List<TrackedEntityDataValue> allValues,
                                                   boolean hasValue) {
-        ProgramRuleVariableValue variableValue = new ProgramRuleVariableValue(value, allValues, hasValue);
+        ValueType valueType = programRuleVariable.getDataElement() != null ? programRuleVariable.getDataElement().getValueType() :
+                programRuleVariable.getTrackedEntityAttribute() != null ? programRuleVariable.getTrackedEntityAttribute().getValueType() : determineValueType(value.toString());
+        ProgramRuleVariableValue variableValue = new ProgramRuleVariableValue(value, allValues, valueType, hasValue);
         programRuleVariableValueMap.put(programRuleVariable.getDisplayName(), variableValue);
+    }
+
+    private void addEnviromentVariableValueToMap( String name, String value,
+                                                  ValueType valueType, boolean hasValue) {
+        ProgramRuleVariableValue variableValue = new ProgramRuleVariableValue(value, valueType, hasValue);
+        programRuleVariableValueMap.put(name, variableValue);
+    }
+
+    private ValueType determineValueType(String value) {
+        //TODO: Implement richer detection
+        return ValueType.TEXT;
     }
 
     @Override

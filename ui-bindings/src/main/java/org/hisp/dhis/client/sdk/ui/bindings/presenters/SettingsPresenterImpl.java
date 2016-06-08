@@ -33,6 +33,7 @@ import android.content.ContentResolver;
 import org.hisp.dhis.client.sdk.ui.AppPreferences;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.AppAccountManager;
 import org.hisp.dhis.client.sdk.ui.bindings.views.SettingsView;
+import org.hisp.dhis.client.sdk.ui.bindings.views.View;
 
 /**
  * This is the presenter, using MVP.
@@ -51,6 +52,16 @@ public class SettingsPresenterImpl implements SettingsPresenter {
     public SettingsPresenterImpl(AppPreferences appPreferences, AppAccountManager appAccountManager) {
         this.appPreferences = appPreferences;
         this.appAccountManager = appAccountManager;
+    }
+
+    @Override
+    public void attachView(View view) {
+        settingsView = (SettingsView) view;
+    }
+
+    @Override
+    public void detachView() {
+        settingsView = null;
     }
 
     @Override
@@ -98,9 +109,5 @@ public class SettingsPresenterImpl implements SettingsPresenter {
     @Override
     public void setCrashReports(Boolean enabled) {
         appPreferences.setCrashReportsState(enabled);
-    }
-
-    public void setSettingsView(SettingsView settingsView) {
-        this.settingsView = settingsView;
     }
 }

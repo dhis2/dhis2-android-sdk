@@ -28,12 +28,10 @@
 
 package org.hisp.dhis.client.sdk.ui.bindings.presenters;
 
-import org.hisp.dhis.client.sdk.ui.bindings.views.SettingsView;
-
 /**
  * Created by Vladislav Georgiev Alfredov on 1/18/16.
  */
-public interface SettingsPresenter {
+public interface SettingsPresenter extends Presenter{
 
     void synchronize();
 
@@ -48,6 +46,4 @@ public interface SettingsPresenter {
     Boolean getCrashReports();
 
     void setCrashReports(Boolean enabled);
-
-    public void setSettingsView(SettingsView settingsView);
 }

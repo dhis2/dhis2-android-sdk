@@ -289,4 +289,42 @@ public class RulesEngineFunctionTests {
 
         assertErrorRuleInEffect(effects, errorMessage, null, null);
     }
+
+    @Test
+    public void ruleEngineExecuteDaysBetweenNegative() {
+        //Metadata
+        String errorMessage = "this error will occur if the event happened two days ago";
+        ArrayList<ProgramRule> rules = new ArrayList<>();
+        rules.add(createSimpleProgramRuleShowError("r1",
+                "a1",
+                "d2:daysBetween(V{current_date}, V{event_date}) == -2",
+                errorMessage));
+
+
+        RuleEngine ruleEngine = new RuleEngine.Builder()
+                .programRules(rules)
+                .build();
+
+        //Payload
+        Event simpleEvent = new Event();
+        List<Event> allEvents = new ArrayList<>();
+
+        Event e2 = new Event();
+        e2.setEventDate(DateTime.now().minusDays(3));
+        allEvents.add(e2);
+
+        Event e1 = new Event();
+        e1.setEventDate(DateTime.now().minusDays(2));
+        allEvents.add(e1);
+
+        //No effect is exptected as e2 will happen 3 days from now, according to the dates
+        List<RuleEffect> effects = ruleEngine.execute(e2, allEvents);
+
+        assertErrorRuleNotInEffect(effects, errorMessage, null, null);
+
+        //The effect is expected as e1 will happen 2 days from now according to the dates
+        effects = ruleEngine.execute(e1, allEvents);
+
+        assertErrorRuleInEffect(effects, errorMessage, null, null);
+    }
 }

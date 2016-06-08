@@ -243,7 +243,7 @@ class RuleEngineVariableValueMap {
 
     private void addEnvironmentVariables(Event currentEvent)
     {
-        DateFormat df = new SimpleDateFormat("YYYY-MM-dd");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
         if(currentEvent != null) {
             DateTime eventDate = currentEvent.getEventDate() != null ? currentEvent.getEventDate() : DateTime.now();

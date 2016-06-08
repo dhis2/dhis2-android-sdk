@@ -29,5 +29,6 @@
 package org.hisp.dhis.client.sdk.ui.bindings.views;
 
 public interface SettingsView extends View {
+
     void showMessage(CharSequence message);
 }

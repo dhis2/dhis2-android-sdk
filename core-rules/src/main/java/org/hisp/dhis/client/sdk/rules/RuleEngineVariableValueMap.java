@@ -47,6 +47,8 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /* Part of RuleEngine implementation detail. Hence, class visibility defined as package private */
 class RuleEngineVariableValueMap {
+    public static final String DATE_PATTERN = "yyyy-MM-dd";
+
     private Map<String, ProgramRuleVariableValue> programRuleVariableValueMap;
 
     public RuleEngineVariableValueMap(List<ProgramRuleVariable> variables,
@@ -244,7 +246,7 @@ class RuleEngineVariableValueMap {
 
     private void addEnvironmentVariables(Event currentEvent)
     {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        DateFormat df = new SimpleDateFormat(DATE_PATTERN, Locale.ENGLISH);
 
         if(currentEvent != null) {
             DateTime eventDate = currentEvent.getEventDate() != null ? currentEvent.getEventDate() : DateTime.now();

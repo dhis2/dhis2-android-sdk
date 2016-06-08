@@ -84,7 +84,7 @@ abstract class DhisFunction {
     //TODO: Implement the rest of the functions
 
     private static Period findPeriod(List<String> parameters, String expression) {
-        DateTimeFormatter f = DateTimeFormat.forPattern("YYYY-MM-dd");
+        DateTimeFormatter f = DateTimeFormat.forPattern(RuleEngineVariableValueMap.DATE_PATTERN);
         LocalDate d1;
         LocalDate d2;
         try {
@@ -93,6 +93,7 @@ abstract class DhisFunction {
             return Period.fieldDifference(d1, d2);
         }
         catch (Exception e) {
+            //TODO: Log the error and the expression
             return new Period();
         }
     }

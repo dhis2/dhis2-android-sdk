@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -243,7 +244,7 @@ class RuleEngineVariableValueMap {
 
     private void addEnvironmentVariables(Event currentEvent)
     {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
         if(currentEvent != null) {
             DateTime eventDate = currentEvent.getEventDate() != null ? currentEvent.getEventDate() : DateTime.now();

@@ -37,6 +37,7 @@ import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 public final class SettingPreferences {
     public static final String BACKGROUND_SYNCHRONIZATION = "backgroundSynchronization";
     public static final String SYNCHRONIZATION_PERIOD = "synchronizationPeriod";
+    public static final String SYNC_NOTIFICATIONS = "syncNotifications";
     public static final String CRASH_REPORTS = "crashReports";
     public static final boolean DEFAULT_BACKGROUND_SYNC = false;
     public static final boolean DEFAULT_CRASH_REPORTS = false;

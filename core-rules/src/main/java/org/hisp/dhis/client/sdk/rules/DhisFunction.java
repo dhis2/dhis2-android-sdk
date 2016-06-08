@@ -1,11 +1,10 @@
 package org.hisp.dhis.client.sdk.rules;
 
 import org.apache.commons.lang3.math.NumberUtils;
-import org.joda.time.LocalDate;
-import org.joda.time.Period;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatter;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,29 +16,25 @@ abstract class DhisFunction {
         new DhisFunction("d2:daysBetween", 2) {
             @Override
             public String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression) {
-                Period p = findPeriod(parameters, expression);
-                return String.valueOf(p.getDays());
+                return String.valueOf(getUnitsBetween(ChronoUnit.DAYS, parameters, expression));
             }
         },
         new DhisFunction("d2:weeksBetween", 2) {
             @Override
             public String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression) {
-                Period p = findPeriod(parameters, expression);
-                return String.valueOf(p.getWeeks());
+                return String.valueOf(getUnitsBetween(ChronoUnit.WEEKS, parameters, expression));
             }
         },
         new DhisFunction("d2:monthsBetween", 2) {
             @Override
             public String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression) {
-                Period p = findPeriod(parameters, expression);
-                return String.valueOf(p.getMonths());
+                return String.valueOf(getUnitsBetween(ChronoUnit.MONTHS, parameters, expression));
             }
         },
         new DhisFunction("d2:yearsBetween", 2) {
             @Override
             public String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression) {
-                Period p = findPeriod(parameters, expression);
-                return String.valueOf(p.getYears());
+                return String.valueOf(getUnitsBetween(ChronoUnit.YEARS, parameters, expression));
             }
         },
         new DhisFunction("d2:floor", 1) {
@@ -83,18 +78,20 @@ abstract class DhisFunction {
         new DhisFunction("d2:length", 1)*/);
     //TODO: Implement the rest of the functions
 
-    private static Period findPeriod(List<String> parameters, String expression) {
-        DateTimeFormatter f = DateTimeFormat.forPattern(RuleEngineVariableValueMap.DATE_PATTERN);
+    private static long getUnitsBetween(ChronoUnit unit, List<String> parameters, String expression) {
+        DateTimeFormatter f =  DateTimeFormatter.ofPattern(RuleEngineVariableValueMap.DATE_PATTERN);
+
         LocalDate d1;
         LocalDate d2;
         try {
             d1 = LocalDate.parse(parameters.get(0), f);
             d2 = LocalDate.parse(parameters.get(1), f);
-            return Period.fieldDifference(d1, d2);
+            return unit.between(d1, d2);
+
         }
         catch (Exception e) {
             //TODO: Log the error and the expression
-            return new Period();
+            return 0;
         }
     }
 

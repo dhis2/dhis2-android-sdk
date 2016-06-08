@@ -255,11 +255,11 @@ public class RulesEngineFunctionTests {
     @Test
     public void ruleEngineExecuteDaysBetween() {
         //Metadata
-        String errorMessage = "this error will occur if the event happened two days ago";
+        String errorMessage = "this error will occur if the event happened 60 days ago";
         ArrayList<ProgramRule> rules = new ArrayList<>();
         rules.add(createSimpleProgramRuleShowError("r1",
                 "a1",
-                "d2:daysBetween(V{event_date},V{current_date}) == 2",
+                "d2:daysBetween(V{event_date},V{current_date}) == 60",
                 errorMessage));
 
 
@@ -276,7 +276,7 @@ public class RulesEngineFunctionTests {
         allEvents.add(e2);
 
         Event e1 = new Event();
-        e1.setEventDate(DateTime.now().minusDays(2));
+        e1.setEventDate(DateTime.now().minusDays(60));
         allEvents.add(e1);
 
         //No effect is exptected as e2 happened 3 days ago
@@ -284,7 +284,7 @@ public class RulesEngineFunctionTests {
 
         assertErrorRuleNotInEffect(effects, errorMessage, null, null);
 
-        //The effect is expected as e1 happened 2 days ago
+        //The effect is expected as e1 happened 60 days ago
         effects = ruleEngine.execute(e1, allEvents);
 
         assertErrorRuleInEffect(effects, errorMessage, null, null);

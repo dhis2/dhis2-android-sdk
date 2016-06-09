@@ -139,7 +139,9 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
         if(hiddenDataElementRows == null) {
             hiddenDataElementRows = new HashMap<>();
         }
-        hiddenDataElementRows.put(dataElement, true);
+        if(dataElement != null) {
+            hiddenDataElementRows.put(dataElement, true);
+        }
     }
 
     public void resetHiding() {

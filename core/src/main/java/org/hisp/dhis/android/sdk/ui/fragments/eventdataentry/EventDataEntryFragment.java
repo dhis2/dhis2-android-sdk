@@ -75,11 +75,13 @@ import org.hisp.dhis.android.sdk.ui.fragments.dataentry.HideLoadingDialogEvent;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RefreshListViewEvent;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
+import org.hisp.dhis.android.sdk.utils.comparators.EventDateComparator;
 import org.hisp.dhis.android.sdk.utils.services.ProgramIndicatorService;
 import org.hisp.dhis.android.sdk.utils.services.VariableService;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -816,12 +818,13 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
         if(programStage.getPeriodType() == null ||
                 programStage.getPeriodType().equals("")) {
-            for (Event event : enrollment.getEvents()) {
-                if (event.getProgramStageId().equals(programStage.getUid())) {
-                    return new DateTime(event.getEventDate());
-                }
+            List<Event> eventsForEnrollment = new ArrayList<>();
+            eventsForEnrollment.addAll(enrollment.getEvents());
+            Collections.sort(eventsForEnrollment, new EventDateComparator());
+            Event lastKnownEvent = eventsForEnrollment.get(eventsForEnrollment.size() - 1);
+            if(lastKnownEvent != null) {
+                return new DateTime(lastKnownEvent.getEventDate());
             }
-
 
             if (programStage.getProgram().getDisplayIncidentDate()) {
                 return new DateTime(enrollment.getIncidentDate());

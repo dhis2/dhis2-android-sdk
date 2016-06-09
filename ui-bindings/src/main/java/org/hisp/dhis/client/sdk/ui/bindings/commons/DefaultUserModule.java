@@ -1,5 +1,7 @@
 package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
+import android.content.Context;
+
 import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractor;
 import org.hisp.dhis.client.sdk.ui.AppPreferences;
 import org.hisp.dhis.client.sdk.ui.SyncDateWrapper;
@@ -26,4 +28,9 @@ public interface DefaultUserModule {
 
     SettingsPresenter providesSettingsPresenter(AppPreferences appPreferences,
                                                 AppAccountManager appAccountManager);
+
+    AppAccountManager providesAppAccountManager(Context context,
+                                                AppPreferences appPreferences,
+                                                CurrentUserInteractor currentUserInteractor,
+                                                Logger logger);
 }

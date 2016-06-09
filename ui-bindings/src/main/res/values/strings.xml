@@ -14,4 +14,6 @@
     <string name="warning_logout_header">Are you sure?</string>
     <string name="warning_logout_confirm">Log out</string>
     <string name="warning_logout_dismiss">close</string>
+    <string name="authority">DEFAULT_AUTHORITY</string>
+    <string name="account_type">DEFAULT_ACCOUNT_TYPE</string>
 </resources>

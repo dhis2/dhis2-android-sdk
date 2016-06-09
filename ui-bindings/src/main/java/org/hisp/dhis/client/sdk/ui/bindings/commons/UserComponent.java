@@ -49,7 +49,7 @@ public final class UserComponent {
         profilePresenter = defaultUserModule
                 .providesProfilePresenter(currentUserInteractor, syncDateWrapper, logger);
 
-        AppAccountManager accountManager = defaultAppModule
+        AppAccountManager accountManager = defaultUserModule
                 .providesAppAccountManager(context, appPreferences, currentUserInteractor, logger);
         settingsPresenter = defaultUserModule
                 .providesSettingsPresenter(appPreferences, accountManager);

@@ -1,5 +1,7 @@
 package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.client.sdk.android.api.D2;
@@ -23,17 +25,23 @@ import static org.hisp.dhis.client.sdk.utils.StringUtils.isEmpty;
 
 final class DefaultUserModuleImpl implements DefaultUserModule {
 
-    public DefaultUserModuleImpl() {
-        this(null);
-    }
+    private final String authority;
 
-    public DefaultUserModuleImpl(@Nullable String serverUrl) {
+    private final String accountType;
+
+    public DefaultUserModuleImpl(@NonNull String authority, @NonNull String accountType, @Nullable String serverUrl) {
+        this.authority = authority;
+        this.accountType = accountType;
         if (!isEmpty(serverUrl)) {
 
             // configure D2
             Configuration configuration = new Configuration(serverUrl);
             D2.configure(configuration).toBlocking().first();
         }
+    }
+
+    public DefaultUserModuleImpl(@NonNull String authority, @NonNull String accountType) {
+        this(authority, accountType, null);
     }
 
     @Override
@@ -69,6 +77,14 @@ final class DefaultUserModuleImpl implements DefaultUserModule {
     public SettingsPresenter providesSettingsPresenter(AppPreferences appPreferences,
                                                        AppAccountManager appAccountManager) {
         return new SettingsPresenterImpl(appPreferences, appAccountManager);
+    }
+
+    @Override
+    public AppAccountManager providesAppAccountManager(Context context,
+                                                       AppPreferences appPreferences,
+                                                       CurrentUserInteractor currentUserInteractor,
+                                                       Logger logger) {
+        return new DefaultAppAccountManagerImpl(context, appPreferences, currentUserInteractor, authority, accountType, logger);
     }
 
 }

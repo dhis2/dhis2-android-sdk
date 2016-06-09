@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.client.sdk.android.api.D2;
 import org.hisp.dhis.client.sdk.android.api.utils.LoggerImpl;
+import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractor;
 import org.hisp.dhis.client.sdk.ui.AppPreferences;
 import org.hisp.dhis.client.sdk.ui.AppPreferencesImpl;
 import org.hisp.dhis.client.sdk.ui.SyncDateWrapper;
@@ -42,11 +43,6 @@ final class DefaultAppModuleImpl implements DefaultAppModule {
     }
 
     @Override
-    public AppAccountManager providesAppAccountManager(Context context, AppPreferences preferences) {
-        return new AppAccountManager(context, preferences, authority, accountType);
-    }
-
-    @Override
     public AppPreferences providesApplicationPreferences(Context context) {
         return new AppPreferencesImpl(context);
     }
@@ -57,12 +53,20 @@ final class DefaultAppModuleImpl implements DefaultAppModule {
     }
 
     @Override
-    public SyncDateWrapper providesSyncDateWrapper(Context context, AppPreferences appPreferences) {
-        return new SyncDateWrapper(context, appPreferences);
+    public SyncDateWrapper providesSyncDateWrapper(Context context, AppPreferences preferences, Logger logger) {
+        return new SyncDateWrapper(context, preferences);
     }
 
     @Override
     public Logger providesLogger() {
         return new LoggerImpl();
+    }
+
+    @Override
+    public AppAccountManager providesAppAccountManager(Context context,
+                                                       AppPreferences appPreferences,
+                                                       CurrentUserInteractor currentUserInteractor,
+                                                       Logger logger) {
+        return new DefaultAppAccountManagerImpl(context, appPreferences, currentUserInteractor, authority, accountType, logger);
     }
 }

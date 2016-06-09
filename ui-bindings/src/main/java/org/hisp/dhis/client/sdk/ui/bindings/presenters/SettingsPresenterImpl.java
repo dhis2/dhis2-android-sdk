@@ -38,7 +38,7 @@ import org.hisp.dhis.client.sdk.ui.bindings.views.View;
 /**
  * This is the presenter, using MVP.
  * This class controls what is shown in the view.
- * <p>
+ * <p/>
  * Created by Vladislav Georgiev Alfredov on 1/15/16.
  */
 public class SettingsPresenterImpl implements SettingsPresenter {
@@ -109,5 +109,10 @@ public class SettingsPresenterImpl implements SettingsPresenter {
     @Override
     public void setCrashReports(Boolean enabled) {
         appPreferences.setCrashReportsState(enabled);
+    }
+
+    @Override
+    public void setSyncNotifications(boolean isEnabled) {
+        appPreferences.setSyncNotifications(isEnabled);
     }
 }

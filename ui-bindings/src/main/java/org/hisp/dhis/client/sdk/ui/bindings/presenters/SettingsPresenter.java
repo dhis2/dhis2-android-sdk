@@ -31,7 +31,7 @@ package org.hisp.dhis.client.sdk.ui.bindings.presenters;
 /**
  * Created by Vladislav Georgiev Alfredov on 1/18/16.
  */
-public interface SettingsPresenter extends Presenter{
+public interface SettingsPresenter extends Presenter {
 
     void synchronize();
 
@@ -46,4 +46,6 @@ public interface SettingsPresenter extends Presenter{
     Boolean getCrashReports();
 
     void setCrashReports(Boolean enabled);
+
+    void setSyncNotifications(boolean isEnabled);
 }

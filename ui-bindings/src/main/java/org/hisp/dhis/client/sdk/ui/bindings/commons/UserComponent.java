@@ -38,10 +38,8 @@ public final class UserComponent {
 
         AppPreferences appPreferences = defaultAppModule
                 .providesApplicationPreferences(context);
-        AppAccountManager accountManager = defaultAppModule
-                .providesAppAccountManager(context, appPreferences);
         SyncDateWrapper syncDateWrapper = defaultAppModule
-                .providesSyncDateWrapper(context, appPreferences);
+                .providesSyncDateWrapper(context, appPreferences, logger);
         ApiExceptionHandler apiExceptionHandler = defaultAppModule
                 .providesApiExceptionHandler(context, logger);
 
@@ -50,6 +48,9 @@ public final class UserComponent {
                 .providesCurrentUserInteractor();
         profilePresenter = defaultUserModule
                 .providesProfilePresenter(currentUserInteractor, syncDateWrapper, logger);
+
+        AppAccountManager accountManager = defaultAppModule
+                .providesAppAccountManager(context, appPreferences, currentUserInteractor, logger);
         settingsPresenter = defaultUserModule
                 .providesSettingsPresenter(appPreferences, accountManager);
         launcherPresenter = defaultUserModule

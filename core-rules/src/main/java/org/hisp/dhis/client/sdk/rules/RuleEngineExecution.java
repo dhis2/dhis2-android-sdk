@@ -49,6 +49,9 @@ public class RuleEngineExecution {
         Collections.sort(rules, ProgramRule.PRIORITY_COMPARATOR);
 
         ArrayList<RuleEffect> effects = new ArrayList<>();
+
+        // trying to read same rules list causes
+        // java.util.ConcurrentModificationException exception?
         for (ProgramRule rule : rules) {
             if (conditionIsTrue(rule.getCondition(), variableValueMap)) {
                 for (ProgramRuleAction action : rule.getProgramRuleActions()) {

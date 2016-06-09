@@ -33,8 +33,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -76,7 +79,7 @@ public class SettingsFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // we need to disable options menu in this fragment
-        setHasOptionsMenu(false);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -87,6 +90,13 @@ public class SettingsFragment extends Fragment
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+
+        if(getActionBar() != null) {
+            getActionBar().setTitle(getString(R.string.settings));
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().setHomeButtonEnabled(true);
+        }
+
         updateFrequencySpinner = (Spinner) view.findViewById(R.id.settings_update_frequency_spinner);
         updateFrequencySpinner.setSelection(PeriodicSynchronizerController.getUpdateFrequency(getActivity()));
         updateFrequencySpinner.setOnItemSelectedListener(this);
@@ -109,6 +119,14 @@ public class SettingsFragment extends Fragment
             //setSummaryFromLastSync in syncTextView
             //syncTextView.setText(DhisController.getLastSynchronizationSummary());
         }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        if (menuItem.getItemId() == android.R.id.home) {
+            getActivity().finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(menuItem);
     }
 
     @Override
@@ -239,5 +257,9 @@ public class SettingsFragment extends Fragment
         }
         //else
         //    enableUi(false);
+    }
+
+    public ActionBar getActionBar() {
+        return ((AppCompatActivity)getActivity()).getSupportActionBar();
     }
 }

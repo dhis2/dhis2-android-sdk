@@ -56,12 +56,22 @@ public class RuleEngine {
 
         // we need to make defensive copies in order to
         // avoid concurrent list modification exceptions
-        this.programRuleVariables = new ArrayList<>(programRuleVariables);
-        this.programRules = new ArrayList<>(programRules);
-        this.dataElements = new ArrayList<>(dataElements);
-        this.trackedEntityAttributes = new ArrayList<>(trackedEntityAttributes);
-        this.optionSets = new ArrayList<>(optionSets);
-        this.constants = new ArrayList<>(constants);
+        this.programRuleVariables = safeList(programRuleVariables);
+        this.programRules = safeList(programRules);
+        this.dataElements = safeList(dataElements);
+        this.trackedEntityAttributes = safeList(trackedEntityAttributes);
+        this.optionSets = safeList(optionSets);
+        this.constants = safeList(constants);
+    }
+
+    private static <T> List<T> safeList(List<T> values) {
+        List<T> defensiveCopy = null;
+
+        if (values != null) {
+            defensiveCopy = new ArrayList<>(values);
+        }
+
+        return defensiveCopy;
     }
 
     private List<RuleEffect> execute(

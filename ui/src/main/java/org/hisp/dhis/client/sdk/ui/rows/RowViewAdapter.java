@@ -225,12 +225,11 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
 
         // go through all existing form entities
         for (FormEntity formEntity : originalDataEntities) {
-            FormEntityAction entityAction = actionMap.get(formEntity.getId());
-
             if (!(formEntity instanceof FormEntityEditText)) {
                 continue;
             }
 
+            FormEntityAction entityAction = actionMap.get(formEntity.getId());
             FormEntityEditText formEntityEditText = (FormEntityEditText) formEntity;
 
             if (entityAction == null ||
@@ -252,11 +251,11 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
                 // conditionally updating ui
                 if (!formEntityEditText.isLocked()) {
                     formEntityEditText.setLocked(true);
+                }
 
-                    int indexOfVisibleEntity = modifiedDataEntities.indexOf(formEntity);
-                    if (granularUiUpdatesEnabled && !(indexOfVisibleEntity < 0)) {
-                        notifyItemChanged(indexOfVisibleEntity);
-                    }
+                int indexOfVisibleEntity = modifiedDataEntities.indexOf(formEntity);
+                if (granularUiUpdatesEnabled && !(indexOfVisibleEntity < 0)) {
+                    notifyItemChanged(indexOfVisibleEntity);
                 }
             }
         }

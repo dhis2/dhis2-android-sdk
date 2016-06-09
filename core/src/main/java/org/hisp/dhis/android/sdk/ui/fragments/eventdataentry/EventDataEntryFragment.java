@@ -35,7 +35,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -154,8 +153,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         args.putString(ORG_UNIT_ID, unitId);
         args.putString(PROGRAM_ID, programId);
         args.putString(PROGRAM_STAGE_ID, programStageId);
-        args.putLong(EVENT_ID, eventId);
         args.putLong(ENROLLMENT_ID, enrollmentId);
+        args.putLong(EVENT_ID, eventId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -641,9 +640,9 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
                                     eventClick.getComplete().setText(labelForCompleteButton);
                                     eventClick.getEvent().setStatus(Event.STATUS_COMPLETED);
-                                    eventClick.getEvent().setFromServer(false);
+                                    form.getEvent().setFromServer(false);
                                     ProgramStage currentProgramStage = MetaDataController
-                                            .getProgramStage(eventClick.getEvent().getProgramStageId());
+                                            .getProgramStage(form.getEvent().getProgramStageId());
 
                                     // checking if should schedule new event
 
@@ -691,12 +690,12 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                 });
             } else {
                 eventClick.getComplete().setText(R.string.complete);
-                eventClick.getEvent().setStatus(Event.STATUS_ACTIVE);
-                eventClick.getEvent().setFromServer(false);
+                form.getEvent().setStatus(Event.STATUS_ACTIVE);
+                form.getEvent().setFromServer(false);
 
 
                 // Checking if dataEntryForm should be enabled after un-completed
-                ProgramStage currentProgramStage = MetaDataController.getProgramStage(eventClick.getEvent().getProgramStageId());
+                ProgramStage currentProgramStage = MetaDataController.getProgramStage(form.getEvent().getProgramStageId());
                 if(currentProgramStage.isBlockEntryForm()) {
                     setEditableDataEntryRows(form, true, true);
                 }
@@ -719,6 +718,16 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                 || DataEntryRowTypes.EVENT_DATE.toString().equals(event.getRowType())) {
             //save event
             saveThread.scheduleSaveEvent();
+            List<Event> eventsForEnrollment = new ArrayList<>();
+            for(Event eventd : form.getEnrollment().getEvents()) {
+                if(eventd.getUid().equals(form.getEvent().getUid())) {
+                    eventsForEnrollment.add(form.getEvent());
+                }
+                else {
+                    eventsForEnrollment.add(eventd);
+                }
+            }
+            form.getEnrollment().setEvents(eventsForEnrollment);
         } else {// save data element
             saveThread.scheduleSaveDataValue(event.getId());
         }

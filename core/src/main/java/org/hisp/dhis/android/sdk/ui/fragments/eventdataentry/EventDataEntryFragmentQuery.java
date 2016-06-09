@@ -114,6 +114,21 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
         if(enrollmentId > 0) {
             Enrollment enrollment = TrackerController.getEnrollment(enrollmentId);
             enrollment.getEvents(true);
+
+            List<Event> newEventsForEnrollment = new ArrayList<>();
+            List<Event> currentEventsForEnrollment = new ArrayList<>();
+            currentEventsForEnrollment.addAll(enrollment.getEvents());
+            newEventsForEnrollment.addAll(enrollment.getEvents());
+
+            for(Event eventForEnrollment : currentEventsForEnrollment) {
+
+                if(eventForEnrollment.getLocalId() == event.getLocalId()) {
+                    int index = newEventsForEnrollment.indexOf(eventForEnrollment);
+                    newEventsForEnrollment.remove(eventForEnrollment);
+                    newEventsForEnrollment.add(index, eventForEnrollment);
+                }
+            }
+            enrollment.setEvents(newEventsForEnrollment);
             form.setEnrollment(enrollment);
         }
         form.setStage(stage);

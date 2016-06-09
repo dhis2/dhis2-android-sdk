@@ -237,7 +237,7 @@ public abstract class AbsHomeActivity extends BaseActivity
         }
     }
 
-    private boolean openApp(String packageName) {
+    protected boolean openApp(String packageName) {
         Intent intent = getBaseContext().getPackageManager()
                 .getLaunchIntentForPackage(packageName);
         if (intent != null) {

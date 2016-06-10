@@ -46,11 +46,11 @@ public final class UserComponent {
         // user module related dependencies
         CurrentUserInteractor currentUserInteractor = defaultUserModule
                 .providesCurrentUserInteractor();
-        profilePresenter = defaultUserModule
-                .providesProfilePresenter(currentUserInteractor, syncDateWrapper, logger);
 
-        AppAccountManager accountManager = defaultUserModule
+        DefaultAppAccountManager accountManager = defaultUserModule
                 .providesAppAccountManager(context, appPreferences, currentUserInteractor, logger);
+        profilePresenter = defaultUserModule
+                .providesProfilePresenter(currentUserInteractor, syncDateWrapper, accountManager, logger);
         settingsPresenter = defaultUserModule
                 .providesSettingsPresenter(appPreferences, accountManager);
         launcherPresenter = defaultUserModule

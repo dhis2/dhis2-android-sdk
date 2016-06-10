@@ -18,7 +18,7 @@ import org.hisp.dhis.client.sdk.utils.Logger;
  * A singleton class to abstract/wrap and simplify interactions with Account in relation to synchronizing.
  */
 
-public class DefaultAppAccountManagerImpl implements AppAccountManager {
+public class DefaultAppAccountManagerImpl implements DefaultAppAccountManager {
 
     private final String TAG = DefaultAppAccountManagerImpl.class.getSimpleName();
 
@@ -218,6 +218,12 @@ public class DefaultAppAccountManagerImpl implements AppAccountManager {
     }
 
     public void removePeriodicSync() {
+
+        if (errorWithAccount()) {
+            Log.i(TAG, "Unable to remove periodic sync. No Account exists in the AccountManager.");
+            return;
+        }
+
         ContentResolver.removePeriodicSync(account, authority, Bundle.EMPTY);
     }
 

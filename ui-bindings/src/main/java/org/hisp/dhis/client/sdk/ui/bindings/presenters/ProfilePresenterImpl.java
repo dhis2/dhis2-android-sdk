@@ -3,7 +3,7 @@ package org.hisp.dhis.client.sdk.ui.bindings.presenters;
 import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractor;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 import org.hisp.dhis.client.sdk.ui.SyncDateWrapper;
-import org.hisp.dhis.client.sdk.ui.bindings.commons.AppAccountManager;
+import org.hisp.dhis.client.sdk.ui.bindings.commons.DefaultAppAccountManager;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.RxOnValueChangedListener;
 import org.hisp.dhis.client.sdk.ui.bindings.views.ProfileView;
 import org.hisp.dhis.client.sdk.ui.bindings.views.View;
@@ -40,7 +40,7 @@ public class ProfilePresenterImpl implements ProfilePresenter {
     private final CurrentUserInteractor currentUserAccountInteractor;
     private final Logger logger;
 
-    // private AppAccountManager appAccountManager;
+    private DefaultAppAccountManager appAccountManager;
     private SyncDateWrapper syncDateWrapper;
 
     private ProfileView profileView;
@@ -49,10 +49,11 @@ public class ProfilePresenterImpl implements ProfilePresenter {
 
     public ProfilePresenterImpl(CurrentUserInteractor currentUserAccountInteractor,
                                 SyncDateWrapper syncDateWrapper,
+                                DefaultAppAccountManager appAccountManager,
                                 Logger logger) {
         this.onFormEntityChangeListener = new RxOnValueChangedListener();
         this.currentUserAccountInteractor = currentUserAccountInteractor;
-        // this.appAccountManager = appAccountManager;
+        this.appAccountManager = appAccountManager;
         this.syncDateWrapper = syncDateWrapper;
         this.logger = logger;
     }
@@ -172,9 +173,9 @@ public class ProfilePresenterImpl implements ProfilePresenter {
 
     @Override
     public void logout() {
-        // remove the android account: (no syncMetaData)
-        // appAccountManager.removePeriodicSync();
-        // appAccountManager.removeAccount();
+
+        appAccountManager.removePeriodicSync();
+        appAccountManager.removeAccount();
 
         // remove last synced (assume next user will be different)
         syncDateWrapper.clearLastSynced();

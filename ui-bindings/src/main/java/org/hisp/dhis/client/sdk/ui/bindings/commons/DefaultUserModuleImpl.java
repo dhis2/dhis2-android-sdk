@@ -69,21 +69,21 @@ final class DefaultUserModuleImpl implements DefaultUserModule {
 
     @Override
     public ProfilePresenter providesProfilePresenter(CurrentUserInteractor currentUserInteractor,
-                                                     SyncDateWrapper syncDateWrapper, Logger logger) {
-        return new ProfilePresenterImpl(currentUserInteractor, syncDateWrapper, logger);
+                                                     SyncDateWrapper syncDateWrapper, DefaultAppAccountManager appAccountManager, Logger logger) {
+        return new ProfilePresenterImpl(currentUserInteractor, syncDateWrapper, appAccountManager, logger);
     }
 
     @Override
     public SettingsPresenter providesSettingsPresenter(AppPreferences appPreferences,
-                                                       AppAccountManager appAccountManager) {
+                                                       DefaultAppAccountManager appAccountManager) {
         return new SettingsPresenterImpl(appPreferences, appAccountManager);
     }
 
     @Override
-    public AppAccountManager providesAppAccountManager(Context context,
-                                                       AppPreferences appPreferences,
-                                                       CurrentUserInteractor currentUserInteractor,
-                                                       Logger logger) {
+    public DefaultAppAccountManager providesAppAccountManager(Context context,
+                                                              AppPreferences appPreferences,
+                                                              CurrentUserInteractor currentUserInteractor,
+                                                              Logger logger) {
         return new DefaultAppAccountManagerImpl(context, appPreferences, currentUserInteractor, authority, accountType, logger);
     }
 

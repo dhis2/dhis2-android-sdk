@@ -24,13 +24,15 @@ public interface DefaultUserModule {
                                         SyncDateWrapper syncDateWrapper, Logger logger);
 
     ProfilePresenter providesProfilePresenter(CurrentUserInteractor currentUserInteractor,
-                                              SyncDateWrapper syncDateWrapper, Logger logger);
+                                              SyncDateWrapper syncDateWrapper,
+                                              DefaultAppAccountManager appAccountManager,
+                                              Logger logger);
 
     SettingsPresenter providesSettingsPresenter(AppPreferences appPreferences,
-                                                AppAccountManager appAccountManager);
+                                                DefaultAppAccountManager appAccountManager);
 
-    AppAccountManager providesAppAccountManager(Context context,
-                                                AppPreferences appPreferences,
-                                                CurrentUserInteractor currentUserInteractor,
-                                                Logger logger);
+    DefaultAppAccountManager providesAppAccountManager(Context context,
+                                                       AppPreferences appPreferences,
+                                                       CurrentUserInteractor currentUserInteractor,
+                                                       Logger logger);
 }

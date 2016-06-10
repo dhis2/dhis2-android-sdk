@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
-public interface AppAccountManager {
+public interface DefaultAppAccountManager {
 
     void removeAccount();
 

@@ -46,7 +46,6 @@ public final class UserComponent {
         // user module related dependencies
         CurrentUserInteractor currentUserInteractor = defaultUserModule
                 .providesCurrentUserInteractor();
-
         DefaultAppAccountManager accountManager = defaultUserModule
                 .providesAppAccountManager(context, appPreferences, currentUserInteractor, logger);
         profilePresenter = defaultUserModule
@@ -59,6 +58,7 @@ public final class UserComponent {
                 .providesLoginPresenter(currentUserInteractor, apiExceptionHandler, logger);
         homePresenter = defaultUserModule
                 .providesHomePresenter(currentUserInteractor, syncDateWrapper, logger);
+
     }
 
     public void inject(DefaultProfileFragment defaultProfileFragment) {

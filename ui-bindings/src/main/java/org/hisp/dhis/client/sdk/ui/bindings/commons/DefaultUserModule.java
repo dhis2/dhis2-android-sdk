@@ -35,4 +35,6 @@ public interface DefaultUserModule {
                                                        AppPreferences appPreferences,
                                                        CurrentUserInteractor currentUserInteractor,
                                                        Logger logger);
+
+    DefaultNotificationHandler providesNotificationHandler(Context context);
 }

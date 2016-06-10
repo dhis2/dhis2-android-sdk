@@ -87,4 +87,9 @@ final class DefaultUserModuleImpl implements DefaultUserModule {
         return new DefaultAppAccountManagerImpl(context, appPreferences, currentUserInteractor, authority, accountType, logger);
     }
 
+    @Override
+    public DefaultNotificationHandler providesNotificationHandler(Context context) {
+        return new DefaultNotificationHandlerImpl(context);
+    }
+
 }

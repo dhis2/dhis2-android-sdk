@@ -27,6 +27,7 @@ public final class Inject {
     private Inject(DefaultAppModule appModule, DefaultUserModule userModule) {
         this.defaultAppModule = isNull(appModule, "DefaultAppModule must not be null");
         this.defaultUserModule = isNull(userModule, "DefaultUserModule must not be null");
+        this.userComponent = new UserComponent(defaultAppModule, defaultUserModule);
     }
 
     public static void init(Context context, String authority, String accountType) {

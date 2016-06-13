@@ -11,12 +11,12 @@ public class ReportEntity implements Parcelable {
     private final String id;
     private final Status status;
 
-    private final ArrayList<String> displayInReports;
+    private final ArrayList<String> dataElementLabels;
 
-    public ReportEntity(String id, Status status, ArrayList<String> displayInReports) {
+    public ReportEntity(String id, Status status, ArrayList<String> dataElementLabels) {
         this.id = isNull(id, "id must not be null");
         this.status = isNull(status, "status must not be null");
-        this.displayInReports = displayInReports;
+        this.dataElementLabels = dataElementLabels;
     }
 
     public String getId() {
@@ -36,7 +36,7 @@ public class ReportEntity implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(status.toString());
-        dest.writeList(displayInReports);
+        dest.writeList(dataElementLabels);
     }
 
     public static final Parcelable.Creator<ReportEntity> CREATOR
@@ -53,8 +53,8 @@ public class ReportEntity implements Parcelable {
     private ReportEntity(Parcel in) {
         id = in.readString();
         status = Status.fromString(in.readString());
-        displayInReports = new ArrayList<String>();
-        in.readList(displayInReports, null);
+        dataElementLabels = new ArrayList<>();
+        in.readList(dataElementLabels, null);
     }
 
     public enum Status {
@@ -88,7 +88,7 @@ public class ReportEntity implements Parcelable {
         }
     }
 
-    public ArrayList<String> getDisplayInReports() {
-        return displayInReports;
+    public ArrayList<String> getDataElementLabels() {
+        return dataElementLabels;
     }
 }

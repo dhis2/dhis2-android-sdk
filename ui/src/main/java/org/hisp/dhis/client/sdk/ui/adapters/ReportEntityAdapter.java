@@ -171,12 +171,12 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
             dataElementLabelContainer.removeAllViews();
 
-            ArrayList<String> dataElementLabels = reportEntity.getDisplayInReports();
+            ArrayList<String> dataElementLabels = reportEntity.getDataElementLabels();
 
             if (dataElementLabels == null || dataElementLabels.isEmpty()) {
                 showEmptyPlaceholder();
             } else
-                for (String dataElementLabel : reportEntity.getDisplayInReports()) {
+                for (String dataElementLabel : reportEntity.getDataElementLabels()) {
                     // TODO: re-use views
                     FontTextView dataElementLabelView = (FontTextView) layoutInflater.inflate(R.layout.data_element_label, dataElementLabelContainer, false);
                     dataElementLabelView.setText(dataElementLabel);

@@ -13,6 +13,7 @@ import android.util.Log;
 import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractor;
 import org.hisp.dhis.client.sdk.ui.AppPreferences;
 import org.hisp.dhis.client.sdk.utils.Logger;
+import org.hisp.dhis.client.sdk.utils.StringUtils;
 
 /**
  * A singleton class to abstract/wrap and simplify interactions with Account in relation to synchronizing.
@@ -91,6 +92,12 @@ public class DefaultAppAccountManagerImpl implements DefaultAppAccountManager {
     }
 
     private Account createAccount(String accountName) {
+
+        if (StringUtils.isEmpty(accountName) || StringUtils.isEmpty(accountType)) {
+            Log.i(TAG, "Unable to create account. Account name or account type is invalid");
+            return null;
+        }
+
         Account account = new Account(accountName, accountType);
         AccountManager accountManager =
                 (AccountManager) appContext.getSystemService(Context.ACCOUNT_SERVICE);
@@ -104,6 +111,11 @@ public class DefaultAppAccountManagerImpl implements DefaultAppAccountManager {
     }
 
     private void initPeriodicSync() {
+
+        if (errorWithAccount()) {
+            Log.i(TAG, "Unable to init periodic sync. Account, Authority or Account Type is invalid");
+            return;
+        }
 
         if (appPreferences.getBackgroundSyncState()) {
             Account account = fetchOrCreateAccount();
@@ -120,7 +132,8 @@ public class DefaultAppAccountManagerImpl implements DefaultAppAccountManager {
     }
 
     private boolean errorWithAccount() {
-        return !accountExists() && createAccount(getUsername()) == null;
+        return StringUtils.isEmpty(authority) || StringUtils.isEmpty(accountType) ||
+                (!accountExists() && createAccount(getUsername()) == null);
     }
 
     private boolean accountExists() {
@@ -130,7 +143,7 @@ public class DefaultAppAccountManagerImpl implements DefaultAppAccountManager {
     public void setPeriodicSync(int minutes) {
 
         if (errorWithAccount()) {
-            Log.i(TAG, "Unable to set periodic sync. No Account exists in the AccountManager.");
+            Log.i(TAG, "Unable to set periodic sync.  Account, Authority or Account Type is invalid");
             return;
         }
 
@@ -150,7 +163,7 @@ public class DefaultAppAccountManagerImpl implements DefaultAppAccountManager {
     public void syncNow() {
 
         if (errorWithAccount()) {
-            Log.i(TAG, "Unable to set periodic sync. No Account exists in the AccountManager.");
+            Log.i(TAG, "Unable to set periodic sync.  Account, Authority or Account Type is invalid");
             return;
         }
 
@@ -197,7 +210,7 @@ public class DefaultAppAccountManagerImpl implements DefaultAppAccountManager {
     public void removePeriodicSync() {
 
         if (errorWithAccount()) {
-            Log.i(TAG, "Unable to remove periodic sync. No Account exists in the AccountManager.");
+            Log.i(TAG, "Unable to remove periodic sync.  Account, Authority or Account Type is invalid");
             return;
         }
 

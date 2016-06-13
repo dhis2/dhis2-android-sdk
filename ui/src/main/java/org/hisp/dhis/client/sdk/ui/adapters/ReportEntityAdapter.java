@@ -14,12 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.models.ReportEntity;
 import org.hisp.dhis.client.sdk.ui.views.CircleView;
+import org.hisp.dhis.client.sdk.ui.views.FontTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,13 +87,11 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
     private final class ReportEntityViewHolder extends RecyclerView.ViewHolder {
 
+        private final ViewGroup dataElementLabelContainer;
         ReportEntity reportEntity;
         final View statusIconContainer;
         final CircleView statusBackground;
         final ImageView statusIcon;
-        final TextView lineOne;
-        final TextView lineTwo;
-        final TextView lineThree;
         final OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
         final View deleteButton;
 
@@ -113,12 +111,8 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                     .findViewById(R.id.circleview_status_background);
             statusIcon = (ImageView) itemView
                     .findViewById(R.id.imageview_status_icon);
-            lineOne = (TextView) itemView
-                    .findViewById(R.id.textview_line_one);
-            lineTwo = (TextView) itemView
-                    .findViewById(R.id.textview_line_two);
-            lineThree = (TextView) itemView
-                    .findViewById(R.id.textview_line_three);
+            dataElementLabelContainer = (ViewGroup) itemView
+                    .findViewById(R.id.data_element_label_container);
             deleteButton = itemView.findViewById(R.id.delete_button);
 
             onRecyclerViewItemClickListener = new OnRecyclerViewItemClickListener();
@@ -175,9 +169,25 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                 }
             }
 
-            lineOne.setText(reportEntity.getLineOne());
-            lineTwo.setText(reportEntity.getLineTwo());
-            lineThree.setText(reportEntity.getLineThree());
+            dataElementLabelContainer.removeAllViews();
+
+            ArrayList<String> dataElementLabels = reportEntity.getDisplayInReports();
+
+            if (dataElementLabels == null || dataElementLabels.isEmpty()) {
+                showEmptyPlaceholder();
+            } else
+                for (String dataElementLabel : reportEntity.getDisplayInReports()) {
+                    // TODO: re-use views
+                    FontTextView dataElementLabelView = (FontTextView) layoutInflater.inflate(R.layout.data_element_label, dataElementLabelContainer, false);
+                    dataElementLabelView.setText(dataElementLabel);
+                    dataElementLabelContainer.addView(dataElementLabelView);
+                }
+        }
+
+        private void showEmptyPlaceholder() {
+            FontTextView dataElementLabelView = (FontTextView) layoutInflater.inflate(R.layout.data_element_label, dataElementLabelContainer, false);
+            dataElementLabelView.setText(dataElementLabelContainer.getContext().getString(R.string.report_entity));
+            dataElementLabelContainer.addView(dataElementLabelView);
         }
 
         private void showStatusDialog(Context context) {

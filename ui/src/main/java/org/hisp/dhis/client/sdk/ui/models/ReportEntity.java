@@ -3,23 +3,20 @@ package org.hisp.dhis.client.sdk.ui.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class ReportEntity implements Parcelable {
     private final String id;
     private final Status status;
 
-    private final String lineOne;
-    private final String lineTwo;
-    private final String lineThree;
+    private final ArrayList<String> displayInReports;
 
-    public ReportEntity(String id, Status status, String lineOne,
-                        String lineTwo, String lineThree) {
+    public ReportEntity(String id, Status status, ArrayList<String> displayInReports) {
         this.id = isNull(id, "id must not be null");
         this.status = isNull(status, "status must not be null");
-        this.lineOne = lineOne;
-        this.lineTwo = lineTwo;
-        this.lineThree = lineThree;
+        this.displayInReports = displayInReports;
     }
 
     public String getId() {
@@ -28,18 +25,6 @@ public class ReportEntity implements Parcelable {
 
     public Status getStatus() {
         return status;
-    }
-
-    public String getLineOne() {
-        return lineOne;
-    }
-
-    public String getLineTwo() {
-        return lineTwo;
-    }
-
-    public String getLineThree() {
-        return lineThree;
     }
 
     @Override
@@ -51,9 +36,7 @@ public class ReportEntity implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(status.toString());
-        dest.writeString(lineOne);
-        dest.writeString(lineTwo);
-        dest.writeString(lineThree);
+        dest.writeList(displayInReports);
     }
 
     public static final Parcelable.Creator<ReportEntity> CREATOR
@@ -70,9 +53,8 @@ public class ReportEntity implements Parcelable {
     private ReportEntity(Parcel in) {
         id = in.readString();
         status = Status.fromString(in.readString());
-        lineOne = in.readString();
-        lineTwo = in.readString();
-        lineThree = in.readString();
+        displayInReports = new ArrayList<String>();
+        in.readList(displayInReports, null);
     }
 
     public enum Status {
@@ -104,5 +86,9 @@ public class ReportEntity implements Parcelable {
                     return "ERROR";
             }
         }
+    }
+
+    public ArrayList<String> getDisplayInReports() {
+        return displayInReports;
     }
 }

@@ -17,15 +17,7 @@ final class DefaultAppModuleImpl implements DefaultAppModule {
     @NonNull
     private final Context context;
 
-    @NonNull
-    private final String authority;
-
-    @NonNull
-    private final String accountType;
-
-    public DefaultAppModuleImpl(Context context, @NonNull String authority, @NonNull String accountType) {
-        this.authority = authority;
-        this.accountType = accountType;
+    public DefaultAppModuleImpl(Context context) {
         this.context = isNull(context, "Context must not be null");
 
         D2.init(context);
@@ -42,11 +34,6 @@ final class DefaultAppModuleImpl implements DefaultAppModule {
     }
 
     @Override
-    public AppAccountManager providesAppAccountManager(Context context, AppPreferences preferences) {
-        return new AppAccountManager(context, preferences, authority, accountType);
-    }
-
-    @Override
     public AppPreferences providesApplicationPreferences(Context context) {
         return new AppPreferencesImpl(context);
     }
@@ -57,12 +44,13 @@ final class DefaultAppModuleImpl implements DefaultAppModule {
     }
 
     @Override
-    public SyncDateWrapper providesSyncDateWrapper(Context context, AppPreferences appPreferences) {
-        return new SyncDateWrapper(context, appPreferences);
+    public SyncDateWrapper providesSyncDateWrapper(Context context, AppPreferences preferences, Logger logger) {
+        return new SyncDateWrapper(context, preferences);
     }
 
     @Override
     public Logger providesLogger() {
         return new LoggerImpl();
     }
+
 }

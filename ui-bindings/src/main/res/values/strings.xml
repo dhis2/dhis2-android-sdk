@@ -14,4 +14,17 @@
     <string name="warning_logout_header">Are you sure?</string>
     <string name="warning_logout_confirm">Log out</string>
     <string name="warning_logout_dismiss">close</string>
+
+    <!-- Background syncing -->
+    <string name="authority">DEFAULT_AUTHORITY</string>
+    <string name="account_type">DEFAULT_ACCOUNT_TYPE</string>
+
+
+    <!-- Sync notifications -->
+    <string name="sync_complete_notification_title">Sync complete</string>
+    <string name="sync_complete_notification_content">Your DHIS2 data has been synchronized</string>
+    <string name="sync_failed_notification_title">Sync failed</string>
+    <string name="sync_failed_notification_content">Your DHIS2 data has not been synchronized</string>
+    <string name="sync_in_progress_notification_title">Syncing</string>
+    <string name="sync_in_progress_notification_content">Your DHIS2 data is synchronizing</string>
 </resources>

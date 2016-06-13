@@ -77,7 +77,9 @@ public class DefaultLoginActivity extends AbsLoginActivity implements LoginView 
     @Override
     protected void onLoginButtonClicked(Editable server, Editable username, Editable password) {
         try {
-            Inject.createUserComponent(server.toString()).inject(this);
+            String authority = getString(R.string.authority);
+            String accountType = getString(R.string.account_type);
+            Inject.createUserComponent(server.toString(), authority, accountType).inject(this);
         } catch (ApiException e) {
             loginPresenter.handleError(e);
             return;

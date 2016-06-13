@@ -29,7 +29,17 @@
 package org.hisp.dhis.client.sdk.core.program;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.IdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
+import java.util.Set;
+
 public interface ProgramController extends IdentifiableController<Program> {
+
+    enum ProgramFields {
+        BASIC, DESCENDANTS
+    }
+
+    void pull(SyncStrategy strategy, ProgramFields fields, Set<String> uids) throws ApiException;
 }

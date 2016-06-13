@@ -31,6 +31,7 @@ package org.hisp.dhis.client.sdk.core.program;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
@@ -47,8 +48,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ProgramStageControllerImpl extends AbsSyncStrategyController<ProgramStage>
-        implements ProgramStageController {
+public class ProgramStageControllerImpl extends
+        AbsSyncStrategyController<ProgramStage> implements ProgramStageController {
 
     /* Controllers */
     private final ProgramController programController;
@@ -127,5 +128,15 @@ public class ProgramStageControllerImpl extends AbsSyncStrategyController<Progra
         transactionManager.transact(dbOperations);
 
         lastUpdatedPreferences.save(ResourceType.PROGRAM_STAGES, DateType.SERVER, serverTime);
+    }
+
+    @Override
+    public List<DbOperation> merge(List<ProgramStage> updatedProgramStages) throws ApiException {
+        List<ProgramStage> allExistingProgramStages = programStageApiClient
+                .getProgramStages(Fields.BASIC, null, null);
+        List<ProgramStage> persistedProgramStages = identifiableObjectStore.queryAll();
+
+        return DbUtils.createOperations(allExistingProgramStages,
+                updatedProgramStages, persistedProgramStages, identifiableObjectStore);
     }
 }

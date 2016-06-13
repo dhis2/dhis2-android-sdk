@@ -62,12 +62,12 @@ public class ProgramApiClientImpl implements ProgramApiClient {
 
             @Override
             public String getBasicProperties() {
-                return "id,displayName";
+                return "id,version";
             }
 
             @Override
             public String getAllProperties() {
-                return "id,name,displayName,created,lastUpdated,access," +
+                return "id,name,displayName,created,lastUpdated,access,version," +
                         "programType,organisationUnits[id],programStages[id]";
             }
 

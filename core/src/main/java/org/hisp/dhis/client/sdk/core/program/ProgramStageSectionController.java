@@ -29,8 +29,12 @@
 package org.hisp.dhis.client.sdk.core.program;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.IdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
-public interface ProgramStageSectionController extends
-        IdentifiableController<ProgramStageSection> {
+import java.util.List;
+
+public interface ProgramStageSectionController extends IdentifiableController<ProgramStageSection> {
+    List<DbOperation> merge(List<ProgramStageSection> programStageSections) throws ApiException;
 }

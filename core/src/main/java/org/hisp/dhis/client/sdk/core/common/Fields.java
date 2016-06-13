@@ -29,5 +29,5 @@
 package org.hisp.dhis.client.sdk.core.common;
 
 public enum Fields {
-    BASIC, ALL
+    BASIC, ALL, DESCENDANTS
 }

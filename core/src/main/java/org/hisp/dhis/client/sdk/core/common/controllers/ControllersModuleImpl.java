@@ -103,9 +103,8 @@ public class ControllersModuleImpl implements ControllersModule {
 
         programController = new ProgramControllerImpl(systemInfoController,
                 networkModule.getProgramApiClient(),
-                networkModule.getUserApiClient(), persistenceModule.getProgramStore(),
-                persistenceModule.getTransactionManager(),
-                preferencesModule.getLastUpdatedPreferences());
+                programStageSectionController, persistenceModule.getProgramStore(), persistenceModule.getTransactionManager(), preferencesModule.getLastUpdatedPreferences(), programStageController, networkModule.getUserApiClient(),
+                logger);
 
         programStageController = new ProgramStageControllerImpl(
                 programController, systemInfoController,

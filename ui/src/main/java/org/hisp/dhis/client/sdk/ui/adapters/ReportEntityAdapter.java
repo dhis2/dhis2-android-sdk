@@ -169,25 +169,30 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                 }
             }
 
-            dataElementLabelContainer.removeAllViews();
-
             ArrayList<String> dataElementLabels = reportEntity.getDataElementLabels();
 
             if (dataElementLabels == null || dataElementLabels.isEmpty()) {
                 showEmptyPlaceholder();
             } else
-                for (String dataElementLabel : reportEntity.getDataElementLabels()) {
-                    // TODO: re-use views
-                    FontTextView dataElementLabelView = (FontTextView) layoutInflater.inflate(R.layout.data_element_label, dataElementLabelContainer, false);
-                    dataElementLabelView.setText(dataElementLabel);
-                    dataElementLabelContainer.addView(dataElementLabelView);
+                for (String dataElementLabel : dataElementLabels) {
+
+                    View dataElementLabelView = dataElementLabelContainer.getChildAt(dataElementLabels.indexOf(dataElementLabel));
+                    if (dataElementLabelView == null) {
+                        dataElementLabelView = layoutInflater.inflate(R.layout.data_element_label, dataElementLabelContainer, false);
+                        dataElementLabelContainer.addView(dataElementLabelView);
+                    }
+                    ((FontTextView) dataElementLabelView).setText(dataElementLabel);
+
                 }
         }
 
         private void showEmptyPlaceholder() {
-            FontTextView dataElementLabelView = (FontTextView) layoutInflater.inflate(R.layout.data_element_label, dataElementLabelContainer, false);
-            dataElementLabelView.setText(dataElementLabelContainer.getContext().getString(R.string.report_entity));
-            dataElementLabelContainer.addView(dataElementLabelView);
+            View dataElementLabelView = dataElementLabelContainer.getChildAt(0);
+            if (dataElementLabelView == null) {
+                dataElementLabelView = layoutInflater.inflate(R.layout.data_element_label, dataElementLabelContainer, false);
+                dataElementLabelContainer.addView(dataElementLabelView);
+            }
+            ((FontTextView) dataElementLabelView).setText(dataElementLabelContainer.getContext().getString(R.string.report_entity));
         }
 
         private void showStatusDialog(Context context) {

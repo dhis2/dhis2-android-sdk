@@ -37,6 +37,7 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.SettingPreferences;
+import org.hisp.dhis.client.sdk.ui.activities.BaseActivity;
 import org.hisp.dhis.client.sdk.ui.activities.OnBackPressedCallback;
 import org.hisp.dhis.client.sdk.ui.activities.OnBackPressedFromFragmentCallback;
 
@@ -78,6 +79,11 @@ public abstract class AbsSettingsFragment extends PreferenceFragmentCompat
 
     @Override
     public void onAttach(Context context) {
+
+        if (context instanceof BaseActivity) {
+            ((BaseActivity) context).setOnBackPressedCallback(this);
+        }
+
         if (context instanceof OnBackPressedFromFragmentCallback) {
             onBackPressedFromFragmentCallback = (OnBackPressedFromFragmentCallback) context;
         }
@@ -86,7 +92,13 @@ public abstract class AbsSettingsFragment extends PreferenceFragmentCompat
 
     @Override
     public void onDetach() {
+        // nullifying callback references
+        if (getActivity() != null && getActivity() instanceof BaseActivity) {
+            ((BaseActivity) getActivity()).setOnBackPressedCallback(null);
+        }
+
         onBackPressedFromFragmentCallback = null;
+
         super.onDetach();
     }
 

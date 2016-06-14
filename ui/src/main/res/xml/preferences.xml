@@ -29,7 +29,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/application_settings">
         <SwitchPreferenceCompat
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="@string/background_synchronization_key"
             android:summaryOff="@string/background_synchronization_description_off"
             android:summaryOn="@string/background_synchronization_description_on"
@@ -44,7 +44,7 @@
             android:summary="@string/synchronization_period_description"
             android:title="@string/synchronization_period_name" />
         <SwitchPreferenceCompat
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:dependency="@string/background_synchronization_key"
             android:key="@string/sync_notification_key"
             android:summaryOff="@string/sync_notification_description_off"

@@ -75,6 +75,14 @@ public class DefaultNotificationHandlerImpl implements DefaultNotificationHandle
         showSyncNotification(builder);
     }
 
+    @Override
+    public void removeAllNotifications() {
+
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
+    }
+
     private void showSyncNotification(NotificationCompat.Builder builder) {
 
         if (NavigationHandler.homeActivity() != null) {

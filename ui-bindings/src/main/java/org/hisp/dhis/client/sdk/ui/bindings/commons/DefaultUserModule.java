@@ -26,6 +26,7 @@ public interface DefaultUserModule {
     ProfilePresenter providesProfilePresenter(CurrentUserInteractor currentUserInteractor,
                                               SyncDateWrapper syncDateWrapper,
                                               DefaultAppAccountManager appAccountManager,
+                                              DefaultNotificationHandler defaultNotificationHandler,
                                               Logger logger);
 
     SettingsPresenter providesSettingsPresenter(AppPreferences appPreferences,

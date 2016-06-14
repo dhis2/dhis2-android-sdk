@@ -33,4 +33,6 @@ public interface DefaultNotificationHandler {
     void showIsSyncingNotification();
 
     void showSyncCompletedNotification(boolean completedSuccessfully);
+
+    void removeAllNotifications();
 }

@@ -48,8 +48,9 @@ public final class UserComponent {
                 .providesCurrentUserInteractor();
         DefaultAppAccountManager accountManager = defaultUserModule
                 .providesAppAccountManager(context, appPreferences, currentUserInteractor, logger);
+        DefaultNotificationHandler defaultNotificationHandler = defaultUserModule.providesNotificationHandler(context);
         profilePresenter = defaultUserModule
-                .providesProfilePresenter(currentUserInteractor, syncDateWrapper, accountManager, logger);
+                .providesProfilePresenter(currentUserInteractor, syncDateWrapper, accountManager, defaultNotificationHandler, logger);
         settingsPresenter = defaultUserModule
                 .providesSettingsPresenter(appPreferences, accountManager);
         launcherPresenter = defaultUserModule

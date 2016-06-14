@@ -1,37 +1,42 @@
 package org.hisp.dhis.client.sdk.rules;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import java.time.format.DateTimeFormatter;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by markusbekken on 20.05.2016.
  */
 abstract class DhisFunction {
+
     private static List<DhisFunction> dhisFunctions = Arrays.asList(
         new DhisFunction("d2:daysBetween", 2) {
             @Override
             public String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression) {
-                return "-1";
+                return String.valueOf(getIntervalsBetween(1, parameters, expression));
             }
         },
         new DhisFunction("d2:weeksBetween", 2) {
             @Override
             public String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression) {
-                return null;
+                return String.valueOf(getIntervalsBetween(7, parameters, expression));
             }
         },
         new DhisFunction("d2:monthsBetween", 2) {
             @Override
             public String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression) {
-                return null;
+                throw new NotImplementedException();
             }
         },
         new DhisFunction("d2:yearsBetween", 2) {
             @Override
             public String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression) {
-                return null;
+                throw new NotImplementedException();
             }
         },
         new DhisFunction("d2:floor", 1) {
@@ -74,6 +79,23 @@ abstract class DhisFunction {
         new DhisFunction("d2:split", 3),
         new DhisFunction("d2:length", 1)*/);
     //TODO: Implement the rest of the functions
+
+    private static int getIntervalsBetween(int daysInInterval, List<String> parameters, String expression) {
+        DateTimeFormatter f =  DateTimeFormatter.ofPattern(RuleEngineVariableValueMap.DATE_PATTERN);
+
+        LocalDate d1;
+        LocalDate d2;
+        try {
+            d1 = LocalDate.parse(parameters.get(0), f);
+            d2 = LocalDate.parse(parameters.get(1), f);
+            return new Long((d2.toEpochDay() - d1.toEpochDay()) / daysInInterval).intValue();
+
+        }
+        catch (Exception e) {
+            //TODO: Log the error and the expression
+            return 0;
+        }
+    }
 
     public static List<DhisFunction> getDhisFunctions() {
         return dhisFunctions;

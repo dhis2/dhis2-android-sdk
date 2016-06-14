@@ -36,9 +36,11 @@ import android.support.v7.widget.Toolbar;
 import org.hisp.dhis.client.sdk.ui.activities.BaseActivity;
 import org.hisp.dhis.client.sdk.ui.activities.NavigationCallback;
 import org.hisp.dhis.client.sdk.ui.activities.OnBackPressedCallback;
+import org.hisp.dhis.client.sdk.ui.activities.OnBackPressedFromFragmentCallback;
 
 public class BaseFragment extends Fragment implements OnBackPressedCallback {
     private NavigationCallback navigationCallback;
+    private OnBackPressedFromFragmentCallback onBackPressedFromFragmentCallback;
 
     @Override
     public void onAttach(Context context) {
@@ -51,11 +53,16 @@ public class BaseFragment extends Fragment implements OnBackPressedCallback {
         if (context instanceof BaseActivity) {
             ((BaseActivity) context).setOnBackPressedCallback(this);
         }
+
+        if (context instanceof OnBackPressedFromFragmentCallback) {
+            onBackPressedFromFragmentCallback = (OnBackPressedFromFragmentCallback) context;
+        }
     }
 
     @Override
     public void onDetach() {
         navigationCallback = null;
+        onBackPressedFromFragmentCallback = null;
 
         // nullifying callback references
         if (getActivity() != null && getActivity() instanceof BaseActivity) {
@@ -85,7 +92,12 @@ public class BaseFragment extends Fragment implements OnBackPressedCallback {
 
     @Override
     public boolean onBackPressed() {
-        // default implementation
+        if (onBackPressedFromFragmentCallback != null) {
+            onBackPressedFromFragmentCallback.onBackPressedFromFragment();
+            return false;
+        }
         return true;
     }
+
+
 }

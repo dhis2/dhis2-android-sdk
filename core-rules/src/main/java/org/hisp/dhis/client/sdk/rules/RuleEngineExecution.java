@@ -32,11 +32,9 @@ import org.apache.commons.jexl2.JexlException;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleActionType;
-import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.commons.util.ExpressionUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -51,6 +49,9 @@ public class RuleEngineExecution {
         Collections.sort(rules, ProgramRule.PRIORITY_COMPARATOR);
 
         ArrayList<RuleEffect> effects = new ArrayList<>();
+
+        // trying to read same rules list causes
+        // java.util.ConcurrentModificationException exception?
         for (ProgramRule rule : rules) {
             if (conditionIsTrue(rule.getCondition(), variableValueMap)) {
                 for (ProgramRuleAction action : rule.getProgramRuleActions()) {
@@ -75,7 +76,7 @@ public class RuleEngineExecution {
             }
 
             for (String variable : variablesFound) {
-                String variableName = variable.replace("#{", "").replace("}", "");
+                String variableName = variable.replace("#{", "").replace("V{", "").replace("A{", "").replace("}", "");
                 ProgramRuleVariableValue variableValue = variableValueMap.getProgramRuleVariableValue(
                         variableName);
                 if (variableValue != null) {
@@ -94,7 +95,7 @@ public class RuleEngineExecution {
     private static String runDhisFunctions(String expression,
                                     final RuleEngineVariableValueMap variableValueMap) {
         //Called from "runExpression". Only proceed with this logic in case there seems to be dhis function calls: "d2:" is present.
-        if(expression != null && expression.indexOf("d2:") != -1){
+        if(expression != null && expression.contains("d2:")){
             boolean continueLooping = true;
             //Safety harness on 10 loops, in case of unanticipated syntax causing unintencontinued looping
             for(int i = 0; i < 10 && continueLooping; i++ ) {
@@ -160,7 +161,7 @@ public class RuleEngineExecution {
                     //the expected d2: function calls, one unneccesary iteration will be done and the
                     //successfulExecution will be false coming back here, ending the loop. The last iteration
                     //should be zero to marginal performancewise.
-                    if(expressionUpdated && expression.indexOf("d2:") != -1) {
+                    if(expressionUpdated && expression.contains("d2:")) {
                         continueLooping = true;
                     } else {
                         continueLooping = false;

@@ -58,7 +58,8 @@ import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 // TODO add support for custom applications in navigation drawer
 public abstract class AbsHomeActivity extends BaseActivity
-        implements OnNavigationItemSelectedListener, DrawerListener, NavigationCallback {
+        implements OnNavigationItemSelectedListener, DrawerListener, NavigationCallback,
+        OnBackPressedFromFragmentCallback {
 
     private static final String APPS_DASHBOARD_PACKAGE =
             "org.hisp.dhis.android.dashboard";
@@ -203,6 +204,14 @@ public abstract class AbsHomeActivity extends BaseActivity
         super.onBackPressed();
     }
 
+    @Override
+    public boolean onBackPressedFromFragment() {
+        // When back button is pressed from a fragment, show the first menu item
+        MenuItem firstMenuItem = navigationView.getMenu().getItem(0);
+        onNavigationItemSelected(firstMenuItem);
+        return true;
+    }
+
     protected void attachFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -237,7 +246,7 @@ public abstract class AbsHomeActivity extends BaseActivity
         }
     }
 
-    private boolean openApp(String packageName) {
+    protected boolean openApp(String packageName) {
         Intent intent = getBaseContext().getPackageManager()
                 .getLaunchIntentForPackage(packageName);
         if (intent != null) {
@@ -263,7 +272,7 @@ public abstract class AbsHomeActivity extends BaseActivity
 
     protected boolean removeMenuItem(int menuItemId) {
         MenuItem menuItem = getNavigationView().getMenu().findItem(menuItemId);
-        if(menuItem != null) {
+        if (menuItem != null) {
             getNavigationView().getMenu().removeItem(menuItem.getItemId());
             return true;
         }

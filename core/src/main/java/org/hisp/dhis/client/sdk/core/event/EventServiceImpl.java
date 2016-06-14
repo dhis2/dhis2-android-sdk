@@ -62,7 +62,7 @@ public class EventServiceImpl implements EventService {
         isNull(programStage, "programStage argument must not be null");
         isNull(status, "status argument must not be null");
 
-        if(!Event.EventStatus.ACTIVE.equals(status) &&
+        if (!Event.EventStatus.ACTIVE.equals(status) &&
                 !Event.EventStatus.COMPLETED.equals(status)) {
             throw new IllegalArgumentException("Event status must be either ACTIVE or COMPLETED");
         }
@@ -166,6 +166,15 @@ public class EventServiceImpl implements EventService {
         }
 
         return filteredEvents;
+    }
+
+    @Override
+    public List<Event> listByActions(Set<Action> actionSet) {
+        isNull(actionSet, "actionSet must not be null");
+        if (actionSet.isEmpty()) {
+            throw new IllegalArgumentException("You must provide atleast one action to list by.");
+        }
+        return stateStore.queryModelsWithActions(Event.class, actionSet.toArray(new Action[actionSet.size()]));
     }
 
     @Override

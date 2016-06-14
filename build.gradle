@@ -41,7 +41,7 @@ ext {
             dhisCommonsVersion : "1.1",
 
             // android libs
-            supportVersion     : "23.2.1",
+            supportVersion     : "23.4.0",
             rxAndroidVersion   : "1.1.0",
             dbFlowVersion      : "3.0.0-beta5",
             progressBarVersion : "1.2.0",
@@ -54,6 +54,7 @@ ext {
             jexlVersion        : "2.1.1",
             commonsLang3Version: "3.3.2",
             commonsMath3Version: "3.6",
+            dagger             : "2.2",
 
             // testing libs
             jUnitVersion       : "4.12",
@@ -68,7 +69,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'com.android.tools.build:gradle:2.1.2'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }

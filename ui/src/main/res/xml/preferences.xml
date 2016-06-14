@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2016, University of Oslo
   ~
   ~ All rights reserved.
@@ -30,10 +29,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/application_settings">
         <SwitchPreferenceCompat
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="@string/background_synchronization_key"
-            android:summary="@string/background_synchronization_description"
-            android:title="@string/background_synchronization_name"/>
+            android:summaryOff="@string/background_synchronization_description_off"
+            android:summaryOn="@string/background_synchronization_description_on"
+            android:title="@string/background_synchronization_name" />
         <ListPreference
             android:defaultValue="@string/synchronization_period_option_value_default"
             android:dependency="@string/background_synchronization_key"
@@ -42,11 +42,19 @@
             android:entryValues="@array/synchronization_period_option_values"
             android:key="@string/synchronization_period_key"
             android:summary="@string/synchronization_period_description"
-            android:title="@string/synchronization_period_name"/>
+            android:title="@string/synchronization_period_name" />
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:dependency="@string/background_synchronization_key"
+            android:key="@string/sync_notification_key"
+            android:summaryOff="@string/sync_notification_description_off"
+            android:summaryOn="@string/sync_notification_description_on"
+            android:title="@string/sync_notification_name" />
         <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/crash_reports_key"
-            android:summary="@string/crash_reports_description"
-            android:title="@string/crash_reports_name"/>
+            android:summaryOff="@string/crash_reports_description_off"
+            android:summaryOn="@string/crash_reports_description_on"
+            android:title="@string/crash_reports_name" />
     </PreferenceCategory>
 </PreferenceScreen>

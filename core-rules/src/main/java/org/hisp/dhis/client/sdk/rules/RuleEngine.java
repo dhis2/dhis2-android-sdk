@@ -38,6 +38,7 @@ import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RuleEngine {
@@ -52,12 +53,25 @@ public class RuleEngine {
                        List<ProgramRuleVariable> programRuleVariables,
                        List<ProgramRule> programRules, List<DataElement> dataElements,
                        List<OptionSet> optionSets, List<Constant> constants) {
-        this.programRuleVariables = programRuleVariables;
-        this.programRules = programRules;
-        this.dataElements = dataElements;
-        this.trackedEntityAttributes = trackedEntityAttributes;
-        this.optionSets = optionSets;
-        this.constants = constants;
+
+        // we need to make defensive copies in order to
+        // avoid concurrent list modification exceptions
+        this.programRuleVariables = safeList(programRuleVariables);
+        this.programRules = safeList(programRules);
+        this.dataElements = safeList(dataElements);
+        this.trackedEntityAttributes = safeList(trackedEntityAttributes);
+        this.optionSets = safeList(optionSets);
+        this.constants = safeList(constants);
+    }
+
+    private static <T> List<T> safeList(List<T> values) {
+        List<T> defensiveCopy = null;
+
+        if (values != null) {
+            defensiveCopy = new ArrayList<>(values);
+        }
+
+        return defensiveCopy;
     }
 
     private List<RuleEffect> execute(

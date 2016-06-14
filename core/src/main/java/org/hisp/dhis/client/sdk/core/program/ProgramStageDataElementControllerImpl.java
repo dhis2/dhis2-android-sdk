@@ -31,6 +31,7 @@ package org.hisp.dhis.client.sdk.core.program;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
@@ -51,8 +52,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class ProgramStageDataElementControllerImpl
-        extends AbsSyncStrategyController<ProgramStageDataElement>
-        implements ProgramStageDataElementController {
+        extends AbsSyncStrategyController<ProgramStageDataElement> implements ProgramStageDataElementController {
 
     /* Controllers */
     private final SystemInfoController systemInfoController;
@@ -186,5 +186,17 @@ public class ProgramStageDataElementControllerImpl
         }
 
         return updatedElements;
+    }
+
+    @Override
+    public List<DbOperation> merge(
+            List<ProgramStageDataElement> updatedStageDataElements) throws ApiException {
+
+        List<ProgramStageDataElement> allExistingStageDataElements =
+                stageDataElementApiClient.getProgramStageDataElements(Fields.BASIC, null, null);
+        List<ProgramStageDataElement> programStageDataElements = identifiableObjectStore.queryAll();
+
+        return DbUtils.createOperations(allExistingStageDataElements,
+                updatedStageDataElements, programStageDataElements, identifiableObjectStore);
     }
 }

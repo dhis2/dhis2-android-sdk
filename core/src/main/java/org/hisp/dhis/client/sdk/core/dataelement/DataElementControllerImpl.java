@@ -48,8 +48,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public final class DataElementControllerImpl extends AbsSyncStrategyController<DataElement>
-        implements DataElementController {
+public final class DataElementControllerImpl extends
+        AbsSyncStrategyController<DataElement> implements DataElementController {
 
     /* Controllers */
     private final SystemInfoController systemInfoController;
@@ -131,5 +131,15 @@ public final class DataElementControllerImpl extends AbsSyncStrategyController<D
 
         transactionManager.transact(dbOperations);
         lastUpdatedPreferences.save(ResourceType.DATA_ELEMENTS, DateType.SERVER, serverTime);
+    }
+
+    @Override
+    public List<DbOperation> merge(List<DataElement> updatedDataElements) {
+        List<DataElement> allExistingDataElements = dataElementApiClient
+                .getDataElements(Fields.BASIC, null, null);
+        List<DataElement> persistedDataElements = identifiableObjectStore.queryAll();
+
+        return DbUtils.createOperations(allExistingDataElements,
+                updatedDataElements, persistedDataElements, identifiableObjectStore);
     }
 }

@@ -40,8 +40,10 @@ import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.common.utils.ModelUtils;
+import org.hisp.dhis.client.sdk.core.dataelement.DataElementController;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.core.user.UserApiClient;
+import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
@@ -50,6 +52,7 @@ import org.hisp.dhis.client.sdk.utils.Logger;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -67,6 +70,8 @@ public class ProgramControllerImpl extends
     private final SystemInfoController systemInfoController;
     private final ProgramStageController programStageController;
     private final ProgramStageSectionController programStageSectionController;
+    private final ProgramStageDataElementController programStageDataElementController;
+    private final DataElementController dataElementController;
 
     /* Api clients */
     private final ProgramApiClient programApiClient;
@@ -79,9 +84,11 @@ public class ProgramControllerImpl extends
     public ProgramControllerImpl(SystemInfoController systemInfoController,
                                  ProgramStageController programStageController,
                                  ProgramStageSectionController programStageSectionController,
-                                 UserApiClient userApiClient, ProgramStore programStore,
+                                 ProgramStageDataElementController programStageDataElementController,
+                                 ProgramStore programStore, DataElementController dataElementController,
                                  TransactionManager transactionManager,
                                  LastUpdatedPreferences lastUpdatedPreferences,
+                                 UserApiClient userApiClient,
                                  ProgramApiClient programApiClient,
                                  Logger logger) {
         super(ResourceType.PROGRAMS, programStore, lastUpdatedPreferences);
@@ -89,6 +96,8 @@ public class ProgramControllerImpl extends
         this.systemInfoController = systemInfoController;
         this.programStageController = programStageController;
         this.programStageSectionController = programStageSectionController;
+        this.programStageDataElementController = programStageDataElementController;
+        this.dataElementController = dataElementController;
 
         this.programApiClient = programApiClient;
         this.userApiClient = userApiClient;
@@ -185,8 +194,10 @@ public class ProgramControllerImpl extends
                 updateProgramStages(updatedPrograms.getKey());
         KeyValue<List<ProgramStageSection>, List<DbOperation>> updatedSections =
                 updateProgramStageSections(updatedStages.getKey());
-        KeyValue<List<ProgramStageDataElement>, List<DbOperation>> updatedDataElements =
+        KeyValue<List<ProgramStageDataElement>, List<DbOperation>> updatedStageDataElements =
                 updateProgramStageDataElements(updatedStages.getKey(), updatedSections.getKey());
+        KeyValue<List<DataElement>, List<DbOperation>> updatedDataElements =
+                updateDataElements(updatedStageDataElements.getKey());
 
         List<DbOperation> allOperations = new ArrayList<>();
         allOperations.addAll(updatedPrograms.getValue());
@@ -256,33 +267,92 @@ public class ProgramControllerImpl extends
 
     private KeyValue<List<ProgramStage>, List<DbOperation>> updateProgramStages(
             List<Program> programs) {
-        List<ProgramStage> programStages = new ArrayList<>();
+        Map<String, ProgramStage> programStageMap = new HashMap<>();
 
+        // List<ProgramStage> programStages = new ArrayList<>();
         if (programs != null && !programs.isEmpty()) {
             for (Program program : programs) {
-                programStages.addAll(program.getProgramStages());
+                if (program.getProgramStages() == null || program.getProgramStages().isEmpty()) {
+                    continue;
+                }
+
+                for (ProgramStage programStage : program.getProgramStages()) {
+                    programStageMap.put(programStage.getUId(), programStage);
+                }
             }
         }
 
-        return new KeyValue<>(programStages, programStageController.merge(programStages));
+        List<ProgramStage> programStageList = new ArrayList<>(programStageMap.values());
+        return new KeyValue<>(programStageList, programStageController.merge(programStageList));
     }
 
     private KeyValue<List<ProgramStageSection>, List<DbOperation>> updateProgramStageSections(
             List<ProgramStage> programStages) {
-        List<ProgramStageSection> programStageSections = new ArrayList<>();
+        Map<String, ProgramStageSection> programStageSectionsMap = new HashMap<>();
 
         if (programStages != null && !programStages.isEmpty()) {
             for (ProgramStage programStage : programStages) {
-                programStageSections.addAll(programStage.getProgramStageSections());
+                if (programStage.getProgramStageSections() == null ||
+                        programStage.getProgramStageSections().isEmpty()) {
+                    continue;
+                }
+
+                for (ProgramStageSection stageSection : programStage.getProgramStageSections()) {
+                    programStageSectionsMap.put(stageSection.getUId(), stageSection);
+                }
             }
         }
 
-        return new KeyValue<>(programStageSections,
-                programStageSectionController.merge(programStageSections));
+        List<ProgramStageSection> programStageSectionsList =
+                new ArrayList<>(programStageSectionsMap.values());
+        return new KeyValue<>(programStageSectionsList,
+                programStageSectionController.merge(programStageSectionsList));
     }
 
     private KeyValue<List<ProgramStageDataElement>, List<DbOperation>> updateProgramStageDataElements(
             List<ProgramStage> programStages, List<ProgramStageSection> programStageSections) {
-        return null;
+        Map<String, ProgramStageDataElement> stageDataElementMap = new HashMap<>();
+
+        if (programStages != null && !programStages.isEmpty()) {
+            for (ProgramStage stage : programStages) {
+                if (stage.getProgramStageDataElements() == null ||
+                        stage.getProgramStageDataElements().isEmpty()) {
+                    continue;
+                }
+
+                for (ProgramStageDataElement stageDataElement : stage.getProgramStageDataElements()) {
+                    stageDataElementMap.put(stageDataElement.getUId(), stageDataElement);
+                }
+            }
+        }
+
+        if (programStageSections != null && !programStageSections.isEmpty()) {
+            for (ProgramStageSection section : programStageSections) {
+                if (section.getProgramStageDataElements() == null ||
+                        section.getProgramStageDataElements().isEmpty()) {
+                    for (ProgramStageDataElement element : section.getProgramStageDataElements()) {
+                        stageDataElementMap.put(element.getUId(), element);
+                    }
+                }
+            }
+        }
+
+        List<ProgramStageDataElement> stageDataElements = new ArrayList<>(stageDataElementMap.values());
+        return new KeyValue<>(stageDataElements, programStageDataElementController.merge(stageDataElements));
+    }
+
+    private KeyValue<List<DataElement>, List<DbOperation>> updateDataElements(
+            List<ProgramStageDataElement> updatedStageDataElements) {
+        Map<String, DataElement> dataElementMap = new HashMap<>();
+
+        if (updatedStageDataElements != null && !updatedStageDataElements.isEmpty()) {
+            for (ProgramStageDataElement stageDataElement : updatedStageDataElements) {
+                dataElementMap.put(stageDataElement.getDataElement().getUId(),
+                        stageDataElement.getDataElement());
+            }
+        }
+
+        List<DataElement> dataElements = new ArrayList<>(dataElementMap.values());
+        return new KeyValue<>(dataElements, dataElementController.merge(dataElements));
     }
 }

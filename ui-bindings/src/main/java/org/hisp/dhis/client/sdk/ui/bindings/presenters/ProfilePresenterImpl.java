@@ -4,6 +4,7 @@ import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractor;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 import org.hisp.dhis.client.sdk.ui.SyncDateWrapper;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.DefaultAppAccountManager;
+import org.hisp.dhis.client.sdk.ui.bindings.commons.DefaultNotificationHandler;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.RxOnValueChangedListener;
 import org.hisp.dhis.client.sdk.ui.bindings.views.ProfileView;
 import org.hisp.dhis.client.sdk.ui.bindings.views.View;
@@ -39,6 +40,7 @@ public class ProfilePresenterImpl implements ProfilePresenter {
     private final RxOnValueChangedListener onFormEntityChangeListener;
     private final CurrentUserInteractor currentUserAccountInteractor;
     private final Logger logger;
+    private final DefaultNotificationHandler defaultNotificationHandler;
 
     private DefaultAppAccountManager appAccountManager;
     private SyncDateWrapper syncDateWrapper;
@@ -50,11 +52,13 @@ public class ProfilePresenterImpl implements ProfilePresenter {
     public ProfilePresenterImpl(CurrentUserInteractor currentUserAccountInteractor,
                                 SyncDateWrapper syncDateWrapper,
                                 DefaultAppAccountManager appAccountManager,
+                                DefaultNotificationHandler defaultNotificationHandler,
                                 Logger logger) {
         this.onFormEntityChangeListener = new RxOnValueChangedListener();
         this.currentUserAccountInteractor = currentUserAccountInteractor;
         this.appAccountManager = appAccountManager;
         this.syncDateWrapper = syncDateWrapper;
+        this.defaultNotificationHandler = defaultNotificationHandler;
         this.logger = logger;
     }
 
@@ -173,6 +177,8 @@ public class ProfilePresenterImpl implements ProfilePresenter {
 
     @Override
     public void logout() {
+
+        defaultNotificationHandler.removeAllNotifications();
 
         appAccountManager.removePeriodicSync();
         appAccountManager.removeAccount();

@@ -37,13 +37,18 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.SettingPreferences;
+import org.hisp.dhis.client.sdk.ui.activities.BaseActivity;
+import org.hisp.dhis.client.sdk.ui.activities.OnBackPressedCallback;
+import org.hisp.dhis.client.sdk.ui.activities.OnBackPressedFromFragmentCallback;
 
 public abstract class AbsSettingsFragment extends PreferenceFragmentCompat
-        implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener {
+        implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener,
+        OnBackPressedCallback {
     private Preference backgroundSynchronization;
     private ListPreference synchronizationPeriod;
     private Preference syncNotifications;
     private Preference crashReports;
+    private OnBackPressedFromFragmentCallback onBackPressedFromFragmentCallback;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String string) {
@@ -70,6 +75,31 @@ public abstract class AbsSettingsFragment extends PreferenceFragmentCompat
         crashReports = findPreference(SettingPreferences.CRASH_REPORTS);
         crashReports.setOnPreferenceChangeListener(this);
         crashReports.setOnPreferenceClickListener(this);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+
+        if (context instanceof BaseActivity) {
+            ((BaseActivity) context).setOnBackPressedCallback(this);
+        }
+
+        if (context instanceof OnBackPressedFromFragmentCallback) {
+            onBackPressedFromFragmentCallback = (OnBackPressedFromFragmentCallback) context;
+        }
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onDetach() {
+        // nullifying callback references
+        if (getActivity() != null && getActivity() instanceof BaseActivity) {
+            ((BaseActivity) getActivity()).setOnBackPressedCallback(null);
+        }
+
+        onBackPressedFromFragmentCallback = null;
+
+        super.onDetach();
     }
 
     @Override
@@ -141,4 +171,13 @@ public abstract class AbsSettingsFragment extends PreferenceFragmentCompat
     public abstract boolean onCrashReportsClick();
 
     public abstract boolean onCrashReportsChanged(boolean isEnabled);
+
+    @Override
+    public boolean onBackPressed() {
+        if (onBackPressedFromFragmentCallback != null) {
+            onBackPressedFromFragmentCallback.onBackPressedFromFragment();
+            return false;
+        }
+        return true;
+    }
 }

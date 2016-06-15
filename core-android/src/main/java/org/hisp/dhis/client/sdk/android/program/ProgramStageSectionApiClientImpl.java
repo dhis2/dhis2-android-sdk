@@ -81,6 +81,11 @@ public class ProgramStageSectionApiClientImpl implements ProgramStageSectionApiC
                     "sortOrder,programStage[id],programStageDataElements[id]";
         }
 
+        @Override
+        public String getDescendantProperties() {
+            throw new UnsupportedOperationException();
+        }
+
         public Call<Map<String, List<ProgramStageSection>>> getEntities(
                 Map<String, String> queryMap, List<String> filters) throws ApiException {
             return programStageSectionApiClientRetrofit

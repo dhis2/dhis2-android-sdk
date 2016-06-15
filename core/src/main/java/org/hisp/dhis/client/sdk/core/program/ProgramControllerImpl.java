@@ -41,9 +41,11 @@ import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.common.utils.ModelUtils;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementController;
+import org.hisp.dhis.client.sdk.core.optionset.OptionSetController;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.core.user.UserApiClient;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
+import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
@@ -67,11 +69,12 @@ public class ProgramControllerImpl extends
     private static final String TAG = ProgramController.class.getSimpleName();
 
     /* Controllers */
-    private final SystemInfoController systemInfoController;
-    private final ProgramStageController programStageController;
-    private final ProgramStageSectionController programStageSectionController;
-    private final ProgramStageDataElementController programStageDataElementController;
-    private final DataElementController dataElementController;
+    private SystemInfoController systemInfoController;
+    private ProgramStageController programStageController;
+    private ProgramStageSectionController programStageSectionController;
+    private ProgramStageDataElementController programStageDataElementController;
+    private DataElementController dataElementController;
+    private OptionSetController optionSetController;
 
     /* Api clients */
     private final ProgramApiClient programApiClient;
@@ -82,22 +85,14 @@ public class ProgramControllerImpl extends
     private final Logger logger;
 
     public ProgramControllerImpl(SystemInfoController systemInfoController,
-                                 ProgramStageController programStageController,
-                                 ProgramStageSectionController programStageSectionController,
-                                 ProgramStageDataElementController programStageDataElementController,
-                                 ProgramStore programStore, DataElementController dataElementController,
-                                 TransactionManager transactionManager,
+                                 ProgramStore programStore,
+                                 UserApiClient userApiClient, ProgramApiClient programApiClient,
                                  LastUpdatedPreferences lastUpdatedPreferences,
-                                 UserApiClient userApiClient,
-                                 ProgramApiClient programApiClient,
+                                 TransactionManager transactionManager,
                                  Logger logger) {
         super(ResourceType.PROGRAMS, programStore, lastUpdatedPreferences);
 
         this.systemInfoController = systemInfoController;
-        this.programStageController = programStageController;
-        this.programStageSectionController = programStageSectionController;
-        this.programStageDataElementController = programStageDataElementController;
-        this.dataElementController = dataElementController;
 
         this.programApiClient = programApiClient;
         this.userApiClient = userApiClient;
@@ -121,11 +116,34 @@ public class ProgramControllerImpl extends
             return;
         }
 
-
         // we need to sync all models related to program in one query
         if (ProgramFields.DESCENDANTS.equals(fields)) {
             synchronizeProgramsByVersions(uids);
         }
+    }
+
+    public void setSystemInfoController(SystemInfoController InfoController) {
+        this.systemInfoController = InfoController;
+    }
+
+    public void setProgramStageController(ProgramStageController programStageController) {
+        this.programStageController = programStageController;
+    }
+
+    public void setProgramStageSectionController(ProgramStageSectionController sectionController) {
+        this.programStageSectionController = sectionController;
+    }
+
+    public void setProgramStageDataElementController(ProgramStageDataElementController elementController) {
+        this.programStageDataElementController = elementController;
+    }
+
+    public void setDataElementController(DataElementController dataElementController) {
+        this.dataElementController = dataElementController;
+    }
+
+    public void setOptionSetController(OptionSetController optionSetController) {
+        this.optionSetController = optionSetController;
     }
 
     private void synchronizeByLastUpdated(Set<String> uids) {
@@ -198,12 +216,16 @@ public class ProgramControllerImpl extends
                 updateProgramStageDataElements(updatedStages.getKey(), updatedSections.getKey());
         KeyValue<List<DataElement>, List<DbOperation>> updatedDataElements =
                 updateDataElements(updatedStageDataElements.getKey());
+        KeyValue<List<OptionSet>, List<DbOperation>> updatedOptionSets =
+                updateOptionSets(updatedDataElements.getKey());
 
         List<DbOperation> allOperations = new ArrayList<>();
         allOperations.addAll(updatedPrograms.getValue());
         allOperations.addAll(updatedStages.getValue());
         allOperations.addAll(updatedSections.getValue());
+        allOperations.addAll(updatedStageDataElements.getValue());
         allOperations.addAll(updatedDataElements.getValue());
+        allOperations.addAll(updatedOptionSets.getValue());
 
         // transacting all changes in one batch
         transactionManager.transact(allOperations);
@@ -326,19 +348,9 @@ public class ProgramControllerImpl extends
             }
         }
 
-        if (programStageSections != null && !programStageSections.isEmpty()) {
-            for (ProgramStageSection section : programStageSections) {
-                if (section.getProgramStageDataElements() == null ||
-                        section.getProgramStageDataElements().isEmpty()) {
-                    for (ProgramStageDataElement element : section.getProgramStageDataElements()) {
-                        stageDataElementMap.put(element.getUId(), element);
-                    }
-                }
-            }
-        }
-
         List<ProgramStageDataElement> stageDataElements = new ArrayList<>(stageDataElementMap.values());
-        return new KeyValue<>(stageDataElements, programStageDataElementController.merge(stageDataElements));
+        return new KeyValue<>(stageDataElements,
+                programStageDataElementController.merge(programStageSections, stageDataElements));
     }
 
     private KeyValue<List<DataElement>, List<DbOperation>> updateDataElements(
@@ -354,5 +366,21 @@ public class ProgramControllerImpl extends
 
         List<DataElement> dataElements = new ArrayList<>(dataElementMap.values());
         return new KeyValue<>(dataElements, dataElementController.merge(dataElements));
+    }
+
+    private KeyValue<List<OptionSet>, List<DbOperation>> updateOptionSets(
+            List<DataElement> dataElements) {
+        Map<String, OptionSet> optionSetMap = new HashMap<>();
+
+        if (dataElements != null && !dataElements.isEmpty()) {
+            for (DataElement dataElement : dataElements) {
+                if (dataElement.getOptionSet() != null) {
+                    optionSetMap.put(dataElement.getOptionSet().getUId(), dataElement.getOptionSet());
+                }
+            }
+        }
+
+        List<OptionSet> optionSets = new ArrayList<>(optionSetMap.values());
+        return new KeyValue<>(optionSets, optionSetController.merge(optionSets));
     }
 }

@@ -30,9 +30,12 @@ package org.hisp.dhis.client.sdk.core.user;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.models.program.ProgramType;
+
+import java.util.Set;
 
 public interface AssignedProgramsController {
-    void sync() throws ApiException;
+    void sync(Set<ProgramType> programTypes) throws ApiException;
 
-    void sync(SyncStrategy strategy) throws ApiException;
+    void sync(SyncStrategy strategy, Set<ProgramType> programTypes) throws ApiException;
 }

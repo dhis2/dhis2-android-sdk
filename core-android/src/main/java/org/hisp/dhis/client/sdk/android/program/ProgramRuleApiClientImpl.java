@@ -70,6 +70,11 @@ public class ProgramRuleApiClientImpl implements ProgramRuleApiClient {
                     "programRuleActions,programStage";
         }
 
+        @Override
+        public String getDescendantProperties() {
+            throw new UnsupportedOperationException();
+        }
+
         public Call<Map<String, List<ProgramRule>>> getEntities(
                 Map<String, String> queryMap, List<String> filters) throws ApiException {
             return programRuleApiClientRetrofit.getProgramRules(queryMap, filters);

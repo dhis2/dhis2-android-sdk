@@ -62,15 +62,15 @@ public final class ProgramRuleVariableControllerImpl
     private final DataElementController dataElementController;
     private final TrackedEntityAttributeController trackedEntityAttributeController;
 
-    public ProgramRuleVariableControllerImpl(ProgramRuleVariableApiClient variableApiClient,
-                                             TransactionManager transactionManager,
-                                             LastUpdatedPreferences lastUpdatedPreferences,
-                                             SystemInfoController systemInfoController,
-                                             ProgramRuleVariableStore programRuleVariableStore,
+    public ProgramRuleVariableControllerImpl(SystemInfoController systemInfoController,
                                              ProgramController programController,
                                              ProgramStageController programStageController,
+                                             TrackedEntityAttributeController attributeController,
                                              DataElementController dataElementController,
-                                             TrackedEntityAttributeController attributeController) {
+                                             ProgramRuleVariableApiClient variableApiClient,
+                                             LastUpdatedPreferences lastUpdatedPreferences,
+                                             TransactionManager transactionManager,
+                                             ProgramRuleVariableStore programRuleVariableStore) {
         super(ResourceType.PROGRAM_RULE_VARIABLES, programRuleVariableStore, lastUpdatedPreferences);
 
         this.programRuleVariableApiClient = variableApiClient;

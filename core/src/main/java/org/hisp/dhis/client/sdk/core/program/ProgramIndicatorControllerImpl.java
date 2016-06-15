@@ -29,14 +29,14 @@ public class ProgramIndicatorControllerImpl
     private final ProgramStageController programStageController;
     private final ProgramStageSectionController programStageSectionController;
 
-    public ProgramIndicatorControllerImpl(ProgramIndicatorStore programIndicatorStore,
-                                          LastUpdatedPreferences lastUpdatedPreferences,
-                                          SystemInfoController systemInfoController,
-                                          ProgramIndicatorApiClient programIndicatorApiClient,
-                                          TransactionManager transactionManager,
+    public ProgramIndicatorControllerImpl(SystemInfoController systemInfoController,
                                           ProgramController programController,
                                           ProgramStageController programStageController,
-                                          ProgramStageSectionController programStageSectionController) {
+                                          ProgramStageSectionController programStageSectionController,
+                                          ProgramIndicatorApiClient programIndicatorApiClient,
+                                          LastUpdatedPreferences lastUpdatedPreferences,
+                                          TransactionManager transactionManager,
+                                          ProgramIndicatorStore programIndicatorStore) {
         super(ResourceType.PROGRAM_INDICATORS, programIndicatorStore, lastUpdatedPreferences);
         this.systemInfoController = systemInfoController;
         this.programindicatorApiClient = programIndicatorApiClient;

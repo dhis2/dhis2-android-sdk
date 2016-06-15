@@ -189,14 +189,18 @@ public class ProgramStageDataElementControllerImpl
     }
 
     @Override
-    public List<DbOperation> merge(
-            List<ProgramStageDataElement> updatedStageDataElements) throws ApiException {
+    public List<DbOperation> merge(List<ProgramStageSection> sections,
+                                   List<ProgramStageDataElement> elements) throws ApiException {
+
+        // inverse program stage section relationship
+        elements = inverseSectionToElementRelationships(sections, elements);
 
         List<ProgramStageDataElement> allExistingStageDataElements =
                 stageDataElementApiClient.getProgramStageDataElements(Fields.BASIC, null, null);
         List<ProgramStageDataElement> programStageDataElements = identifiableObjectStore.queryAll();
 
+
         return DbUtils.createOperations(allExistingStageDataElements,
-                updatedStageDataElements, programStageDataElements, identifiableObjectStore);
+                elements, programStageDataElements, identifiableObjectStore);
     }
 }

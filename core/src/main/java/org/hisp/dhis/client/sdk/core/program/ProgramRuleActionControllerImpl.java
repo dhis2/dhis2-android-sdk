@@ -61,17 +61,17 @@ public final class ProgramRuleActionControllerImpl
     private final ProgramRuleController programRuleController;
     private final ProgramIndicatorController programIndicatorController;
 
-    public ProgramRuleActionControllerImpl(ProgramRuleActionApiClient programRuleActionApiClient,
-                                           TransactionManager transactionManager,
-                                           SystemInfoController systemInfoController,
-                                           LastUpdatedPreferences lastUpdatedPreferences,
-                                           ProgramRuleActionStore programRuleActionStore,
+    public ProgramRuleActionControllerImpl(SystemInfoController systemInfoController,
                                            ProgramStageController programStageController,
                                            ProgramStageSectionController programStageSectionController,
-                                           DataElementController dataElementController,
                                            TrackedEntityAttributeController trackedEntityAttributeController,
                                            ProgramRuleController programRuleController,
-                                           ProgramIndicatorController programIndicatorController) {
+                                           ProgramIndicatorController programIndicatorController,
+                                           DataElementController dataElementController,
+                                           ProgramRuleActionApiClient programRuleActionApiClient,
+                                           LastUpdatedPreferences lastUpdatedPreferences,
+                                           ProgramRuleActionStore programRuleActionStore,
+                                           TransactionManager transactionManager) {
         super(ResourceType.PROGRAM_RULE_ACTIONS, programRuleActionStore, lastUpdatedPreferences);
         this.programRuleActionApiClient = programRuleActionApiClient;
         this.transactionManager = transactionManager;

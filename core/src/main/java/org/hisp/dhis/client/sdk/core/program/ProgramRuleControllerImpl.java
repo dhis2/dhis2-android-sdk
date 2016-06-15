@@ -56,13 +56,13 @@ public final class ProgramRuleControllerImpl
     private final ProgramController programController;
     private final ProgramStageController programStageController;
 
-    public ProgramRuleControllerImpl(TransactionManager transactionManager,
-                                     LastUpdatedPreferences lastUpdatedPreferences,
-                                     ProgramRuleStore programRuleStore,
-                                     SystemInfoController systemInfoController,
-                                     ProgramRuleApiClient programRuleApiClient,
+    public ProgramRuleControllerImpl(SystemInfoController systemInfoController,
                                      ProgramController programController,
-                                     ProgramStageController programStageController) {
+                                     ProgramStageController programStageController,
+                                     TransactionManager transactionManager,
+                                     ProgramRuleApiClient programRuleApiClient,
+                                     LastUpdatedPreferences lastUpdatedPreferences,
+                                     ProgramRuleStore programRuleStore) {
         super(ResourceType.PROGRAM_RULES, programRuleStore, lastUpdatedPreferences);
         this.transactionManager = transactionManager;
         this.systemInfoController = systemInfoController;

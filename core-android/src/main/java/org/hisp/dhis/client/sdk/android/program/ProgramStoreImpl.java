@@ -40,13 +40,17 @@ import org.hisp.dhis.client.sdk.core.program.ProgramStore;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.models.program.ProgramType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-public class ProgramStoreImpl extends AbsIdentifiableObjectStore<Program, ProgramFlow>
-        implements ProgramStore {
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
+
+public class ProgramStoreImpl extends
+        AbsIdentifiableObjectStore<Program, ProgramFlow> implements ProgramStore {
 
     /* Relationship type between programs and organisation units */
     private static final String PROGRAM_TO_ORGANISATION_UNITS = "programToOrganisationUnits";
@@ -77,13 +81,26 @@ public class ProgramStoreImpl extends AbsIdentifiableObjectStore<Program, Progra
     }
 
     @Override
+    public List<Program> query(boolean assignedToCurrentUser, Set<ProgramType> programType) {
+        isNull(programType, "Set of ProgramType must not be null");
+
+        List<ProgramFlow> programFlows = new Select()
+                .from(ProgramFlow.class)
+                .where(ProgramFlow_Table
+                        .isAssignedToUser.is(assignedToCurrentUser))
+                .and(ProgramFlow_Table.programType.in(programType))
+                .queryList();
+
+        List<Program> programs = getMapper().mapToModels(programFlows);
+        return queryProgramRelationships(programs);
+    }
+
+    @Override
     public List<Program> query(List<OrganisationUnit> organisationUnits) {
         List<ProgramFlow> programFlows = ModelLinkFlow.queryRelatedModels(ProgramFlow.class,
                 PROGRAM_TO_ORGANISATION_UNITS, organisationUnits);
 
-        System.out.println("*** PROGRAM_FLOWS *** " + programFlows);
         List<Program> programs = getMapper().mapToModels(programFlows);
-        System.out.println("*** PROGRAMS *** " + programs);
         return queryProgramRelationships(programs);
     }
 

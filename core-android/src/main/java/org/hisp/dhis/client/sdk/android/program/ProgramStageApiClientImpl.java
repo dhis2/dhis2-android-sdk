@@ -77,6 +77,11 @@ public class ProgramStageApiClientImpl implements ProgramStageApiClient {
             }
 
             @Override
+            public String getDescendantProperties() {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
             public Call<Map<String, List<ProgramStage>>> getEntities(
                     Map<String, String> queryMap, List<String> filters) throws ApiException {
                 return programStageApiClientRetrofit.getProgramStages(queryMap, filters);

@@ -33,10 +33,14 @@ import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.utils.ModelUtils;
 import org.hisp.dhis.client.sdk.core.program.ProgramController;
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramType;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 /**
  * This class is intended to build relationships between organisation units and programs.
@@ -56,21 +60,37 @@ public class AssignedProgramsControllerImpl implements AssignedProgramsControlle
     }
 
     @Override
-    public void sync() throws ApiException {
-        sync(SyncStrategy.DEFAULT);
+    public void sync(Set<ProgramType> programTypes) throws ApiException {
+        sync(SyncStrategy.DEFAULT, programTypes);
     }
 
     @Override
-    public void sync(SyncStrategy strategy) throws ApiException {
+    public void sync(SyncStrategy strategy, Set<ProgramType> programTypes) throws ApiException {
+        isNull(programTypes, "Set of ProgramType must not be null");
+
+        if (programTypes.isEmpty()) {
+            throw new IllegalArgumentException("Specify at least one ProgramType");
+        }
+
         UserAccount userAccount = userApiClient.getUserAccount();
 
         /* get list of assigned programs */
         List<Program> assignedPrograms = userAccount.getPrograms();
+        List<Program> programsToSync = new ArrayList<>();
+
+        if (assignedPrograms != null && !assignedPrograms.isEmpty()) {
+            for (Program assignedProgram : assignedPrograms) {
+                if (programTypes.contains(assignedProgram.getProgramType())) {
+                    programsToSync.add(assignedProgram);
+                }
+            }
+        }
 
         /* convert them to set of ids */
-        Set<String> ids = ModelUtils.toUidSet(assignedPrograms);
+        Set<String> ids = ModelUtils.toUidSet(programsToSync);
 
         /* get them through program controller */
-        programController.pull(strategy, ids);
+        // programController.pull(strategy, ids);
+        programController.pull(strategy, ProgramController.ProgramFields.DESCENDANTS, ids);
     }
 }

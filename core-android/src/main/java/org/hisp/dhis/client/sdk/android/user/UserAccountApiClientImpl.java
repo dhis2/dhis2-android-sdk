@@ -49,7 +49,7 @@ public class UserAccountApiClientImpl implements UserApiClient {
         QUERY_PARAMS.put("fields", "id,created,lastUpdated,name,displayName," +
                 "firstName,surname,gender,birthday,introduction," +
                 "education,employer,interests,jobTitle,languages,email,phoneNumber," +
-                "organisationUnits[id],userCredentials[userRoles[dataSets[id],programs[id]]]");
+                "organisationUnits[id],userCredentials[userRoles[dataSets[id],programs[id,programType]]]");
 
         return call(apiClient.getCurrentUserAccount(QUERY_PARAMS));
     }

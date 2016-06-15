@@ -341,6 +341,12 @@ final class TrackerDataSender {
 
     static void sendEnrollmentChanges(DhisApi dhisApi, boolean sendEvents) throws APIException {
         List<Enrollment> enrollments = new Select().from(Enrollment.class).where(Condition.column(Enrollment$Table.FROMSERVER).is(false)).queryList();
+        if(dhisApi == null) {
+            dhisApi = DhisController.getInstance().getDhisApi();
+            if(dhisApi == null) {
+                return;
+            }
+        }
         if(enrollments.size() <= 1) {
             sendEnrollmentChanges(dhisApi, enrollments, sendEvents);
         }

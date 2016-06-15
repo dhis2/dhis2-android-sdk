@@ -38,6 +38,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.ApiEndpointContainer;
+import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.LoadingController;
 import org.hisp.dhis.android.sdk.controllers.ResourceController;
 import org.hisp.dhis.android.sdk.controllers.wrappers.AssignedProgramsWrapper;
@@ -587,6 +588,13 @@ public final class MetaDataController extends ResourceController {
      * Loads a metadata item that is scheduled to be loaded but has not yet been.
      */
     private static void updateMetaDataItems(Context context, DhisApi dhisApi) throws APIException {
+        if(dhisApi == null) {
+            dhisApi = DhisController.getInstance().getDhisApi();
+            if(dhisApi == null) {
+                return;
+            }
+
+        }
         SystemInfo serverSystemInfo = dhisApi.getSystemInfo();
         DateTime serverDateTime = serverSystemInfo.getServerDate();
         //some items depend on each other. Programs depend on AssignedPrograms because we need

@@ -100,6 +100,10 @@ public class AssignedProgramsWrapper extends JsonDeserializer<List<OrganisationU
 
     public static List<DbOperation> getOperations(List<OrganisationUnit> organisationUnits) {
         List<DbOperation> operations = new ArrayList<>();
+
+        if(organisationUnits == null) { // if new organisationUnits is null, return before deleting old relationships
+            return operations;
+        }
         //delete all old relationships
         for(OrganisationUnitProgramRelationship oldOrganisationUnitProgramRelationship: MetaDataController.getOrganisationUnitProgramRelationships()) {
             operations.add(DbOperation.delete(oldOrganisationUnitProgramRelationship));

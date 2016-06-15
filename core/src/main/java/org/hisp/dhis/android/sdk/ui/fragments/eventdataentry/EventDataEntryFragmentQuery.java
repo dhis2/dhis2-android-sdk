@@ -275,6 +275,9 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
             event.setDataValues(dataValues);
         } else {
             event = TrackerController.getEvent(eventId);
+            if(event == null) {
+                getEvent(orgUnitId, programId, -1, enrollmentId, programStage, username); // if event is null, create a new one
+            }
         }
 
         return event;

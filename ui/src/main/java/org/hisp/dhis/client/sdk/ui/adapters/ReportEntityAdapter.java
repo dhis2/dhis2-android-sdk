@@ -35,6 +35,8 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
     // click listener
     private OnReportEntityInteractionListener onReportEntityInteractionListener;
+    private ArrayList<String> dataElementLabelsToFilter;
+    private ArrayList<String> dataElementLabelsToShow = dataElementLabelsToFilter;
 
     public ReportEntityAdapter(Context context) {
         isNull(context, "context must not be null");
@@ -78,6 +80,21 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
         reportEntities = bundle.getParcelableArrayList(REPORT_ENTITY_LIST_KEY);
         notifyDataSetChanged();
     }
+
+
+    public void setDataElementLabelsToFilter(ArrayList<String> dataElementLabelsToFilter) {
+        this.dataElementLabelsToFilter = dataElementLabelsToFilter;
+    }
+
+    public ArrayList<String> getDataElementLabelsToFilter() {
+        return dataElementLabelsToFilter;
+    }
+
+    public void setDataElementLabelsToShow(ArrayList<String> dataElementLabelsToShow) {
+        this.dataElementLabelsToShow = dataElementLabelsToShow;
+        notifyDataSetChanged();
+    }
+
 
     public interface OnReportEntityInteractionListener {
         void onReportEntityClicked(ReportEntity reportEntity);
@@ -169,21 +186,32 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                 }
             }
 
-            ArrayList<String> dataElementLabels = reportEntity.getDataElementLabels();
+            updateDataElements(reportEntity);
+        }
 
-            if (dataElementLabels == null || dataElementLabels.isEmpty()) {
+        private void updateDataElements(ReportEntity reportEntity) {
+
+            if (dataElementLabelsToShow == null || dataElementLabelsToShow.isEmpty()) {
                 showEmptyPlaceholder();
-            } else
-                for (String dataElementLabel : dataElementLabels) {
+            } else {
+                for (String dataElementLabel : dataElementLabelsToShow) {
 
-                    View dataElementLabelView = dataElementLabelContainer.getChildAt(dataElementLabels.indexOf(dataElementLabel));
+                    View dataElementLabelView = dataElementLabelContainer.getChildAt(dataElementLabelsToShow.indexOf(dataElementLabel));
                     if (dataElementLabelView == null) {
                         dataElementLabelView = layoutInflater.inflate(R.layout.data_element_label, dataElementLabelContainer, false);
                         dataElementLabelContainer.addView(dataElementLabelView);
                     }
-                    ((FontTextView) dataElementLabelView).setText(dataElementLabel);
+                    ((FontTextView) dataElementLabelView).setText(reportEntity.getDisplayTextFromLabel(dataElementLabel));
 
                 }
+
+                if (dataElementLabelContainer.getChildCount() > dataElementLabelsToShow.size()) {
+                    int i = dataElementLabelContainer.getChildCount() - 1;
+                    while (i >= dataElementLabelsToShow.size()) {
+                        dataElementLabelContainer.removeViewAt(i--);
+                    }
+                }
+            }
         }
 
         private void showEmptyPlaceholder() {

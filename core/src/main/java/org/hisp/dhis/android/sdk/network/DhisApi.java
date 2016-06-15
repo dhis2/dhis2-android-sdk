@@ -307,7 +307,7 @@ public interface DhisApi {
     ApiResponse2 postTrackedEntityInstances(@Body Map<String, List<TrackedEntityInstance>> trackedEntityInstances);
 
 //    @GET("/" + ApiEndpointContainer.TRACKED_ENTITY_ATTRIBUTES + "/{trackedEntityAttribute}" + "/generate")
-    @GET("/"+ApiEndpointContainer.TRACKED_ENTITY_ATTRIBUTES+"/{trackedEntityAttribute}/generate")
-    List<TrackedEntityAttributeGeneratedValue> getTrackedEntityAttributeGeneratedValues(@Path("trackedEntityAttribute") String trackedEntityAttribute, @Query("numberOfIdsToGenerate") long numberOfIdsToGenerate);
+    @GET("/"+ApiEndpointContainer.TRACKED_ENTITY_ATTRIBUTES+"/{trackedEntityAttribute}/generateAndReserve")
+    List<TrackedEntityAttributeGeneratedValue> getTrackedEntityAttributeGeneratedValues(@Path("trackedEntityAttribute") String trackedEntityAttribute, @Query("numberToReserve") long numberOfIdsToGenerate);
 
 }

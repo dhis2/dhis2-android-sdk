@@ -100,6 +100,9 @@ public class ProgramRuleService {
      * @return
      */
     public static String getReplacedCondition(String condition) {
+        if(condition == null) {
+            return "";
+        }
         StringBuffer buffer = new StringBuffer();
 
         Matcher matcher = CONDITION_PATTERN.matcher(condition);

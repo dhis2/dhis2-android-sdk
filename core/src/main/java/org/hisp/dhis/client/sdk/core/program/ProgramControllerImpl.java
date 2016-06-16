@@ -244,9 +244,14 @@ public class ProgramControllerImpl extends
             }
         }
 
-        // most up to date programs with all fields in place
-        List<Program> updatedPrograms = programApiClient.getPrograms(
-                Fields.DESCENDANTS, null, modelsToFetch);
+        List<Program> updatedPrograms;
+        if (modelsToFetch.isEmpty()) {
+            // most up to date programs with all fields in place
+            updatedPrograms = new ArrayList<>();
+        } else {
+            updatedPrograms = programApiClient.getPrograms(
+                    Fields.DESCENDANTS, null, modelsToFetch);
+        }
 
         // we need to mark assigned programs as "assigned" before storing them
         Map<String, Program> assignedPrograms = toMap(userApiClient
@@ -282,7 +287,16 @@ public class ProgramControllerImpl extends
         }
 
         List<ProgramStage> programStageList = new ArrayList<>(programStageMap.values());
-        return new KeyValue<>(programStageList, programStageController.merge(programStageList));
+
+        // if there is nothing to be updated, we don't want to call controller
+        List<DbOperation> dbOperations;
+        if (programStageList.isEmpty()) {
+            dbOperations = new ArrayList<>();
+        } else {
+            dbOperations = programStageController.merge(programStageList);
+        }
+
+        return new KeyValue<>(programStageList, dbOperations);
     }
 
     private KeyValue<List<ProgramStageSection>, List<DbOperation>> updateProgramStageSections(
@@ -304,8 +318,16 @@ public class ProgramControllerImpl extends
 
         List<ProgramStageSection> programStageSectionsList =
                 new ArrayList<>(programStageSectionsMap.values());
-        return new KeyValue<>(programStageSectionsList,
-                programStageSectionController.merge(programStageSectionsList));
+
+        // if there is nothing to be updated, we don't want to call controller
+        List<DbOperation> dbOperations;
+        if (programStageSectionsList.isEmpty()) {
+            dbOperations = new ArrayList<>();
+        } else {
+            dbOperations = programStageSectionController.merge(programStageSectionsList);
+        }
+
+        return new KeyValue<>(programStageSectionsList, dbOperations);
     }
 
     private KeyValue<List<ProgramStageDataElement>, List<DbOperation>> updateProgramStageDataElements(
@@ -325,9 +347,19 @@ public class ProgramControllerImpl extends
             }
         }
 
-        List<ProgramStageDataElement> stageDataElements = new ArrayList<>(stageDataElementMap.values());
-        return new KeyValue<>(stageDataElements,
-                programStageDataElementController.merge(programStageSections, stageDataElements));
+        List<ProgramStageDataElement> stageDataElements =
+                new ArrayList<>(stageDataElementMap.values());
+
+        // if there is nothing to be updated, we don't want to call controller
+        List<DbOperation> dbOperations;
+        if (stageDataElements.isEmpty()) {
+            dbOperations = new ArrayList<>();
+        } else {
+            dbOperations = programStageDataElementController
+                    .merge(programStageSections, stageDataElements);
+        }
+
+        return new KeyValue<>(stageDataElements, dbOperations);
     }
 
     private KeyValue<List<DataElement>, List<DbOperation>> updateDataElements(
@@ -342,7 +374,16 @@ public class ProgramControllerImpl extends
         }
 
         List<DataElement> dataElements = new ArrayList<>(dataElementMap.values());
-        return new KeyValue<>(dataElements, dataElementController.merge(dataElements));
+
+        // if there is nothing to be updated, we don't want to call controller
+        List<DbOperation> dbOperations;
+        if (dataElements.isEmpty()) {
+            dbOperations = new ArrayList<>();
+        } else {
+            dbOperations = dataElementController.merge(dataElements);
+        }
+
+        return new KeyValue<>(dataElements, dbOperations);
     }
 
     private KeyValue<List<OptionSet>, List<DbOperation>> updateOptionSets(
@@ -368,7 +409,16 @@ public class ProgramControllerImpl extends
         }
 
         List<OptionSet> optionSets = new ArrayList<>(optionSetMap.values());
-        return new KeyValue<>(optionSets, optionSetController.merge(optionSets));
+
+        // if there is nothing to be updated, we don't want to call controller
+        List<DbOperation> dbOperations;
+        if (optionSets.isEmpty()) {
+            dbOperations = new ArrayList<>();
+        } else {
+            dbOperations = optionSetController.merge(optionSets);
+        }
+
+        return new KeyValue<>(optionSets, dbOperations);
     }
 
     public void setSystemInfoController(SystemInfoController InfoController) {

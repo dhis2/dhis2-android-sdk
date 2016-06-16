@@ -101,6 +101,10 @@ public final class ProgramRuleControllerImpl
 
     @Override
     public List<DbOperation> pull(List<Program> programs) throws ApiException {
+        if (programs == null || programs.isEmpty()) {
+            return new ArrayList<>();
+        }
+
         KeyValue<List<ProgramRule>, List<DbOperation>> updatedRules =
                 updateProgramRules(programs);
         KeyValue<List<ProgramRuleAction>, List<DbOperation>> updatedRuleActions =

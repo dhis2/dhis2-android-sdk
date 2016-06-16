@@ -31,14 +31,14 @@ package org.hisp.dhis.client.sdk.ui.bindings.presenters;
 import android.content.ContentResolver;
 
 import org.hisp.dhis.client.sdk.ui.AppPreferences;
-import org.hisp.dhis.client.sdk.ui.bindings.commons.AppAccountManager;
+import org.hisp.dhis.client.sdk.ui.bindings.commons.DefaultAppAccountManager;
 import org.hisp.dhis.client.sdk.ui.bindings.views.SettingsView;
 import org.hisp.dhis.client.sdk.ui.bindings.views.View;
 
 /**
  * This is the presenter, using MVP.
  * This class controls what is shown in the view.
- * <p>
+ * <p/>
  * Created by Vladislav Georgiev Alfredov on 1/15/16.
  */
 public class SettingsPresenterImpl implements SettingsPresenter {
@@ -47,9 +47,9 @@ public class SettingsPresenterImpl implements SettingsPresenter {
     private SettingsView settingsView;
 
     private final AppPreferences appPreferences;
-    private final AppAccountManager appAccountManager;
+    private final DefaultAppAccountManager appAccountManager;
 
-    public SettingsPresenterImpl(AppPreferences appPreferences, AppAccountManager appAccountManager) {
+    public SettingsPresenterImpl(AppPreferences appPreferences, DefaultAppAccountManager appAccountManager) {
         this.appPreferences = appPreferences;
         this.appAccountManager = appAccountManager;
     }
@@ -109,5 +109,10 @@ public class SettingsPresenterImpl implements SettingsPresenter {
     @Override
     public void setCrashReports(Boolean enabled) {
         appPreferences.setCrashReportsState(enabled);
+    }
+
+    @Override
+    public void setSyncNotifications(boolean isEnabled) {
+        appPreferences.setSyncNotifications(isEnabled);
     }
 }

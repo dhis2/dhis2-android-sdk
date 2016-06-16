@@ -38,18 +38,19 @@ public final class UserComponent {
 
         AppPreferences appPreferences = defaultAppModule
                 .providesApplicationPreferences(context);
-        AppAccountManager accountManager = defaultAppModule
-                .providesAppAccountManager(context, appPreferences);
         SyncDateWrapper syncDateWrapper = defaultAppModule
-                .providesSyncDateWrapper(context, appPreferences);
+                .providesSyncDateWrapper(context, appPreferences, logger);
         ApiExceptionHandler apiExceptionHandler = defaultAppModule
                 .providesApiExceptionHandler(context, logger);
 
         // user module related dependencies
         CurrentUserInteractor currentUserInteractor = defaultUserModule
                 .providesCurrentUserInteractor();
+        DefaultAppAccountManager accountManager = defaultUserModule
+                .providesAppAccountManager(context, appPreferences, currentUserInteractor, logger);
+        DefaultNotificationHandler defaultNotificationHandler = defaultUserModule.providesNotificationHandler(context);
         profilePresenter = defaultUserModule
-                .providesProfilePresenter(currentUserInteractor, syncDateWrapper, logger);
+                .providesProfilePresenter(currentUserInteractor, syncDateWrapper, accountManager, defaultNotificationHandler, logger);
         settingsPresenter = defaultUserModule
                 .providesSettingsPresenter(appPreferences, accountManager);
         launcherPresenter = defaultUserModule
@@ -58,6 +59,7 @@ public final class UserComponent {
                 .providesLoginPresenter(currentUserInteractor, apiExceptionHandler, logger);
         homePresenter = defaultUserModule
                 .providesHomePresenter(currentUserInteractor, syncDateWrapper, logger);
+
     }
 
     public void inject(DefaultProfileFragment defaultProfileFragment) {

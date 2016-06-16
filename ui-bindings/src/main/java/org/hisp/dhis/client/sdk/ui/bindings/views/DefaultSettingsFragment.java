@@ -31,7 +31,6 @@ package org.hisp.dhis.client.sdk.ui.bindings.views;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.view.*;
 import android.view.View;
 
 import org.hisp.dhis.client.sdk.ui.bindings.R;
@@ -88,6 +87,12 @@ public class DefaultSettingsFragment extends AbsSettingsFragment implements Sett
     }
 
     @Override
+    public boolean onSyncNotificationsChanged(boolean isEnabled) {
+        settingsPresenter.setSyncNotifications(isEnabled);
+        return true;
+    }
+
+    @Override
     public boolean onSynchronizationPeriodChanged(String newPeriodMinutes) {
         settingsPresenter.setUpdateFrequency(Integer.parseInt(newPeriodMinutes));
         return true;
@@ -106,7 +111,7 @@ public class DefaultSettingsFragment extends AbsSettingsFragment implements Sett
 
     @Override
     public void showMessage(CharSequence msg) {
-        if(getView() != null) {
+        if (getView() != null) {
             Snackbar.make(getView(), msg, Snackbar.LENGTH_LONG).show();
         }
     }

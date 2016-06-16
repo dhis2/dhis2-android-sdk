@@ -28,18 +28,27 @@
 
 package org.hisp.dhis.client.sdk.ui.fragments;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.SettingPreferences;
+import org.hisp.dhis.client.sdk.ui.activities.BaseActivity;
+import org.hisp.dhis.client.sdk.ui.activities.OnBackPressedCallback;
+import org.hisp.dhis.client.sdk.ui.activities.OnBackPressedFromFragmentCallback;
 
 public abstract class AbsSettingsFragment extends PreferenceFragmentCompat
-        implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener {
+        implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener,
+        OnBackPressedCallback {
     private Preference backgroundSynchronization;
-    private Preference synchronizationPeriod;
+    private ListPreference synchronizationPeriod;
+    private Preference syncNotifications;
     private Preference crashReports;
+    private OnBackPressedFromFragmentCallback onBackPressedFromFragmentCallback;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String string) {
@@ -54,13 +63,43 @@ public abstract class AbsSettingsFragment extends PreferenceFragmentCompat
         backgroundSynchronization.setOnPreferenceChangeListener(this);
         backgroundSynchronization.setOnPreferenceClickListener(this);
 
-        synchronizationPeriod = findPreference(SettingPreferences.SYNCHRONIZATION_PERIOD);
+        synchronizationPeriod = (ListPreference) findPreference(SettingPreferences.SYNCHRONIZATION_PERIOD);
+        synchronizationPeriod.setSummary(getString(R.string.synchronization_period_description) + " " + synchronizationPeriod.getEntry());
         synchronizationPeriod.setOnPreferenceChangeListener(this);
         synchronizationPeriod.setOnPreferenceClickListener(this);
+
+        syncNotifications = findPreference(SettingPreferences.SYNC_NOTIFICATIONS);
+        syncNotifications.setOnPreferenceChangeListener(this);
+        syncNotifications.setOnPreferenceClickListener(this);
 
         crashReports = findPreference(SettingPreferences.CRASH_REPORTS);
         crashReports.setOnPreferenceChangeListener(this);
         crashReports.setOnPreferenceClickListener(this);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+
+        if (context instanceof BaseActivity) {
+            ((BaseActivity) context).setOnBackPressedCallback(this);
+        }
+
+        if (context instanceof OnBackPressedFromFragmentCallback) {
+            onBackPressedFromFragmentCallback = (OnBackPressedFromFragmentCallback) context;
+        }
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onDetach() {
+        // nullifying callback references
+        if (getActivity() != null && getActivity() instanceof BaseActivity) {
+            ((BaseActivity) getActivity()).setOnBackPressedCallback(null);
+        }
+
+        onBackPressedFromFragmentCallback = null;
+
+        super.onDetach();
     }
 
     @Override
@@ -86,7 +125,19 @@ public abstract class AbsSettingsFragment extends PreferenceFragmentCompat
                 return onBackgroundSynchronizationChanged((boolean) object);
             }
             case SettingPreferences.SYNCHRONIZATION_PERIOD: {
-                return onSynchronizationPeriodChanged((String) object);
+                if (object instanceof String) {
+                    CharSequence newValue = synchronizationPeriod.getEntries()[synchronizationPeriod.findIndexOfValue((String) object)];
+                    synchronizationPeriod.setSummary(getString(R.string.synchronization_period_description) + " " + newValue);
+                    return onSynchronizationPeriodChanged((String) object);
+                }
+            }
+            case SettingPreferences.SYNC_NOTIFICATIONS: {
+                if (!(boolean) (object)) {
+                    NotificationManager notificationManager =
+                            (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                    notificationManager.cancelAll();
+                }
+                return onSyncNotificationsChanged((boolean) object);
             }
             case SettingPreferences.CRASH_REPORTS: {
                 return onCrashReportsChanged((boolean) object);
@@ -113,9 +164,20 @@ public abstract class AbsSettingsFragment extends PreferenceFragmentCompat
 
     public abstract boolean onSynchronizationPeriodClick();
 
+    public abstract boolean onSyncNotificationsChanged(boolean isEnabled);
+
     public abstract boolean onSynchronizationPeriodChanged(String newPeriod);
 
     public abstract boolean onCrashReportsClick();
 
     public abstract boolean onCrashReportsChanged(boolean isEnabled);
+
+    @Override
+    public boolean onBackPressed() {
+        if (onBackPressedFromFragmentCallback != null) {
+            onBackPressedFromFragmentCallback.onBackPressedFromFragment();
+            return false;
+        }
+        return true;
+    }
 }

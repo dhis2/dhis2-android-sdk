@@ -41,7 +41,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.hisp.dhis.client.sdk.ui.R;
@@ -147,9 +146,6 @@ public abstract class EndlessReportEntityAdapter extends RecyclerView.Adapter {
         final View statusIconContainer;
         final CircleView statusBackground;
         final ImageView statusIcon;
-        final TextView lineOne;
-        final TextView lineTwo;
-        final TextView lineThree;
         final OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
         final View deleteButton;
 
@@ -169,12 +165,7 @@ public abstract class EndlessReportEntityAdapter extends RecyclerView.Adapter {
                     .findViewById(R.id.circleview_status_background);
             statusIcon = (ImageView) itemView
                     .findViewById(R.id.imageview_status_icon);
-            lineOne = (TextView) itemView
-                    .findViewById(R.id.textview_line_one);
-            lineTwo = (TextView) itemView
-                    .findViewById(R.id.textview_line_two);
-            lineThree = (TextView) itemView
-                    .findViewById(R.id.textview_line_three);
+
             deleteButton = itemView.findViewById(R.id.delete_button);
 
             onRecyclerViewItemClickListener = new OnRecyclerViewItemClickListener();
@@ -249,9 +240,9 @@ public abstract class EndlessReportEntityAdapter extends RecyclerView.Adapter {
                 }
             }
 
-            lineOne.setText(reportEntity.getLineOne());
+            /*lineOne.setText(reportEntity.getLineOne());
             lineTwo.setText(reportEntity.getLineTwo());
-            lineThree.setText(reportEntity.getLineThree());
+            lineThree.setText(reportEntity.getLineThree());*/
         }
 
         private void showStatusDialog(Context context) {

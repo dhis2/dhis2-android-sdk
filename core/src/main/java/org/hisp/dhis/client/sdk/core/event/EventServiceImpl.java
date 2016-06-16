@@ -171,10 +171,10 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<Event> listByActions(Set<Action> actionSet) {
         isNull(actionSet, "actionSet must not be null");
-        if(actionSet.isEmpty()) {
+        if (actionSet.isEmpty()) {
             throw new IllegalArgumentException("You must provide atleast one action to list by.");
         }
-        return stateStore.queryModelsWithActions(Event.class, (Action[]) actionSet.toArray());
+        return stateStore.queryModelsWithActions(Event.class, actionSet.toArray(new Action[actionSet.size()]));
     }
 
     @Override

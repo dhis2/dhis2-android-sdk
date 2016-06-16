@@ -8,4 +8,27 @@
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+
+    <application>
+        <!-- stub Authenticator service -->
+        <service android:name="org.hisp.dhis.client.sdk.ui.bindings.commons.AuthenticatorService">
+
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+
+        <!-- stub provider: -->
+        <provider
+            android:name="org.hisp.dhis.client.sdk.ui.bindings.commons.DefaultStubProviderImpl"
+            android:authorities="@string/authority"
+            android:exported="false"
+            android:label="provider"
+            android:syncable="true" />
+
+    </application>
 </manifest>

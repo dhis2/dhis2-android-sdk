@@ -26,26 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.bindings.presenters;
+package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
-/**
- * Created by Vladislav Georgiev Alfredov on 1/18/16.
- */
-public interface SettingsPresenter extends Presenter {
+public interface DefaultNotificationHandler {
 
-    void synchronize();
+    void showIsSyncingNotification();
 
-    void setUpdateFrequency(int frequency);
+    void showSyncCompletedNotification(boolean completedSuccessfully);
 
-    int getUpdateFrequency();
-
-    void setBackgroundSynchronisation(Boolean enabled, String warning);
-
-    Boolean getBackgroundSynchronisation();
-
-    Boolean getCrashReports();
-
-    void setCrashReports(Boolean enabled);
-
-    void setSyncNotifications(boolean isEnabled);
+    void removeAllNotifications();
 }

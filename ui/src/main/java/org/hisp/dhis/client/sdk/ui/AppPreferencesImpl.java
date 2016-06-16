@@ -40,11 +40,13 @@ public class AppPreferencesImpl implements AppPreferences {
     public static final String SYNC_DATE = "syncDate";
     public static final String UPDATE_FREQUENCY = "update_frequency";
     public static final String BACKGROUND_SYNC = "background_sync";
+    public static final String SYNC_NOTIFICATIONS = "sync_notifications";
 
     //Default values:
     public static final int DEFAULT_UPDATE_FREQUENCY = 1440; // (1 day in minutes)
     public static final Boolean DEFAULT_BACKGROUND_SYNC = true;
     public static final Boolean DEFAULT_CRASH_REPORTS = true;
+    public static final Boolean DEFAULT_SYNC_NOTIFICATIONS = true;
 
     private final SharedPreferences sharedPreferences;
 
@@ -81,6 +83,18 @@ public class AppPreferencesImpl implements AppPreferences {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(BACKGROUND_SYNC, enabled);
         editor.apply();
+    }
+
+    @Override
+    public void setSyncNotifications(Boolean enabled) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(SYNC_NOTIFICATIONS, enabled);
+        editor.apply();
+    }
+
+    @Override
+    public boolean getSyncNotifications() {
+        return sharedPreferences.getBoolean(SYNC_NOTIFICATIONS, DEFAULT_SYNC_NOTIFICATIONS);
     }
 
     @Override

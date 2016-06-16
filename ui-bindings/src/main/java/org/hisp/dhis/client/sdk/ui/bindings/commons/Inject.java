@@ -27,11 +27,12 @@ public final class Inject {
     private Inject(DefaultAppModule appModule, DefaultUserModule userModule) {
         this.defaultAppModule = isNull(appModule, "DefaultAppModule must not be null");
         this.defaultUserModule = isNull(userModule, "DefaultUserModule must not be null");
+        this.userComponent = new UserComponent(defaultAppModule, defaultUserModule);
     }
 
     public static void init(Context context, String authority, String accountType) {
-        DefaultAppModule defaultAppModule = new DefaultAppModuleImpl(context, authority, accountType);
-        DefaultUserModule defaultUserModule = new DefaultUserModuleImpl();
+        DefaultAppModule defaultAppModule = new DefaultAppModuleImpl(context);
+        DefaultUserModule defaultUserModule = new DefaultUserModuleImpl(authority, accountType);
 
         inject = new Inject(defaultAppModule, defaultUserModule);
     }
@@ -40,13 +41,13 @@ public final class Inject {
         inject = new Inject(provider);
     }
 
-    public static UserComponent createUserComponent(String serverUrl) {
+    public static UserComponent createUserComponent(String serverUrl, String authority, String accountType) {
         isNull(inject, "you must call init first");
 
         if (inject.moduleProvider != null) {
             inject.defaultUserModule = inject.moduleProvider.provideUserModule(serverUrl);
         } else {
-            inject.defaultUserModule = new DefaultUserModuleImpl(serverUrl);
+            inject.defaultUserModule = new DefaultUserModuleImpl(serverUrl, authority, accountType);
         }
 
         inject.userComponent = new UserComponent(

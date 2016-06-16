@@ -16,10 +16,9 @@
     <string name="warning_logout_dismiss">close</string>
 
     <!-- Background syncing -->
-    <string name="authority">DEFAULT_AUTHORITY</string>
-    <string name="account_type">DEFAULT_ACCOUNT_TYPE</string>
-
-
+    <string name="authority">DHIS2_DEFAULT_AUTHORITY</string>
+    <string name="account_type">DHIS2_DEFAULT_ACCOUNT_TYPE</string>
+    
     <!-- Sync notifications -->
     <string name="sync_complete_notification_title">Sync complete</string>
     <string name="sync_complete_notification_content">Your DHIS2 data has been synchronized</string>

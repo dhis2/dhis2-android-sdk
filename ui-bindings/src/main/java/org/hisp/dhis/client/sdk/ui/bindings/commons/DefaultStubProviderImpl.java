@@ -8,7 +8,7 @@ import android.net.Uri;
 /**
  * A stub ContentProvider required by the syncMetaData adapter framework.
  */
-public class StubProvider extends ContentProvider {
+public class DefaultStubProviderImpl extends ContentProvider implements DefaultStubProvider {
 
     /* Always return true, indicating that the
       * provider loaded correctly.*/

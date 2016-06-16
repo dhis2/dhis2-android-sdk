@@ -45,6 +45,7 @@ import org.hisp.dhis.client.sdk.core.optionset.OptionSetController;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.core.user.UserApiClient;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
+import org.hisp.dhis.client.sdk.models.optionset.Option;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
@@ -73,6 +74,7 @@ public class ProgramControllerImpl extends
     private ProgramStageController programStageController;
     private ProgramStageSectionController programStageSectionController;
     private ProgramStageDataElementController programStageDataElementController;
+    private ProgramRuleController programRuleController;
     private DataElementController dataElementController;
     private OptionSetController optionSetController;
 
@@ -111,7 +113,7 @@ public class ProgramControllerImpl extends
         isNull(fields, "ProgramFields must not be null");
 
         // delegate call to existing implementation
-        if (ProgramFields.BASIC.equals(fields)) {
+        if (ProgramFields.ALL.equals(fields)) {
             pull(syncStrategy, uids);
             return;
         }
@@ -120,30 +122,6 @@ public class ProgramControllerImpl extends
         if (ProgramFields.DESCENDANTS.equals(fields)) {
             synchronizeProgramsByVersions(uids);
         }
-    }
-
-    public void setSystemInfoController(SystemInfoController InfoController) {
-        this.systemInfoController = InfoController;
-    }
-
-    public void setProgramStageController(ProgramStageController programStageController) {
-        this.programStageController = programStageController;
-    }
-
-    public void setProgramStageSectionController(ProgramStageSectionController sectionController) {
-        this.programStageSectionController = sectionController;
-    }
-
-    public void setProgramStageDataElementController(ProgramStageDataElementController elementController) {
-        this.programStageDataElementController = elementController;
-    }
-
-    public void setDataElementController(DataElementController dataElementController) {
-        this.dataElementController = dataElementController;
-    }
-
-    public void setOptionSetController(OptionSetController optionSetController) {
-        this.optionSetController = optionSetController;
     }
 
     private void synchronizeByLastUpdated(Set<String> uids) {
@@ -203,8 +181,6 @@ public class ProgramControllerImpl extends
             throw new IllegalArgumentException("Specify at least one uid of program to sync");
         }
 
-        DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
-
         // updating stuff
         KeyValue<List<Program>, List<DbOperation>> updatedPrograms =
                 updatePrograms(uids);
@@ -219,6 +195,10 @@ public class ProgramControllerImpl extends
         KeyValue<List<OptionSet>, List<DbOperation>> updatedOptionSets =
                 updateOptionSets(updatedDataElements.getKey());
 
+        // batching program rule updates
+        List<DbOperation> updatedProgramRules = programRuleController.pull(
+                updatedPrograms.getKey());
+
         List<DbOperation> allOperations = new ArrayList<>();
         allOperations.addAll(updatedPrograms.getValue());
         allOperations.addAll(updatedStages.getValue());
@@ -226,10 +206,10 @@ public class ProgramControllerImpl extends
         allOperations.addAll(updatedStageDataElements.getValue());
         allOperations.addAll(updatedDataElements.getValue());
         allOperations.addAll(updatedOptionSets.getValue());
+        allOperations.addAll(updatedProgramRules);
 
         // transacting all changes in one batch
         transactionManager.transact(allOperations);
-        lastUpdatedPreferences.save(ResourceType.PROGRAMS, DateType.SERVER, serverTime);
     }
 
     private KeyValue<List<Program>, List<DbOperation>> updatePrograms(Set<String> uids) {
@@ -269,7 +249,6 @@ public class ProgramControllerImpl extends
                 Fields.DESCENDANTS, null, modelsToFetch);
 
         // we need to mark assigned programs as "assigned" before storing them
-        // TODO remove this call (additional request which performs check if user is assigned)
         Map<String, Program> assignedPrograms = toMap(userApiClient
                 .getUserAccount().getPrograms());
 
@@ -278,8 +257,6 @@ public class ProgramControllerImpl extends
             updatedProgram.setIsAssignedToUser(assignedProgram != null);
         }
 
-//        List<Program> mergedPrograms = ModelUtils.merge(
-//                allExistingPrograms, updatedPrograms, persistedPrograms);
         List<DbOperation> dbOperations = DbUtils.createOperations(allExistingPrograms,
                 updatedPrograms, persistedPrograms, identifiableObjectStore);
 
@@ -374,13 +351,51 @@ public class ProgramControllerImpl extends
 
         if (dataElements != null && !dataElements.isEmpty()) {
             for (DataElement dataElement : dataElements) {
-                if (dataElement.getOptionSet() != null) {
-                    optionSetMap.put(dataElement.getOptionSet().getUId(), dataElement.getOptionSet());
+                OptionSet optionSet = dataElement.getOptionSet();
+
+                if (optionSet != null) {
+                    // we need to inverse relationship here
+                    List<Option> options = optionSet.getOptions();
+                    if (options != null && !options.isEmpty()) {
+                        for (Option option : options) {
+                            option.setOptionSet(optionSet);
+                        }
+                    }
+
+                    optionSetMap.put(optionSet.getUId(), optionSet);
                 }
             }
         }
 
         List<OptionSet> optionSets = new ArrayList<>(optionSetMap.values());
         return new KeyValue<>(optionSets, optionSetController.merge(optionSets));
+    }
+
+    public void setSystemInfoController(SystemInfoController InfoController) {
+        this.systemInfoController = InfoController;
+    }
+
+    public void setProgramStageController(ProgramStageController programStageController) {
+        this.programStageController = programStageController;
+    }
+
+    public void setProgramStageSectionController(ProgramStageSectionController sectionController) {
+        this.programStageSectionController = sectionController;
+    }
+
+    public void setProgramStageDataElementController(ProgramStageDataElementController elementController) {
+        this.programStageDataElementController = elementController;
+    }
+
+    public void setDataElementController(DataElementController dataElementController) {
+        this.dataElementController = dataElementController;
+    }
+
+    public void setOptionSetController(OptionSetController optionSetController) {
+        this.optionSetController = optionSetController;
+    }
+
+    public void setProgramRuleController(ProgramRuleController programRuleController) {
+        this.programRuleController = programRuleController;
     }
 }

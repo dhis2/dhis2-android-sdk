@@ -69,8 +69,8 @@ public class ProgramApiClientImpl implements ProgramApiClient {
 
             @Override
             public String getAllProperties() {
-                return IDENTIFIABLE_PROPERTIES + ",version,programType,organisationUnits[id]," +
-                        "programStages[id]";
+                return IDENTIFIABLE_PROPERTIES + ",version,programType," +
+                        "organisationUnits[id],programStages[id]";
             }
 
             @Override

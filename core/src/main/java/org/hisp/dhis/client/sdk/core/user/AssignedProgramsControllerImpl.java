@@ -32,6 +32,7 @@ import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.utils.ModelUtils;
 import org.hisp.dhis.client.sdk.core.program.ProgramController;
+import org.hisp.dhis.client.sdk.core.program.ProgramFields;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramType;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
@@ -91,6 +92,6 @@ public class AssignedProgramsControllerImpl implements AssignedProgramsControlle
 
         /* get them through program controller */
         // programController.pull(strategy, ids);
-        programController.pull(strategy, ProgramController.ProgramFields.DESCENDANTS, ids);
+        programController.pull(strategy, ProgramFields.DESCENDANTS, ids);
     }
 }

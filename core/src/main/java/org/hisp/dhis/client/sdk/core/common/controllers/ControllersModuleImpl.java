@@ -144,24 +144,15 @@ public class ControllersModuleImpl implements ControllersModule {
                 persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
 
-        // because of circular dependency problem, we need to inject
-        // rest of dependencies of program controller through setters
-        programControllerImpl.setProgramStageController(programStageController);
-        programControllerImpl.setProgramStageSectionController(programStageSectionController);
-        programControllerImpl.setProgramStageDataElementController(programStageDataElementController);
-        programControllerImpl.setDataElementController(dataElementController);
-        programControllerImpl.setOptionSetController(optionSetController);
-        programController = programControllerImpl;
-
-        programRuleController = new ProgramRuleControllerImpl(
-                systemInfoController, programController, programStageController,
-                persistenceModule.getTransactionManager(),
+        ProgramRuleControllerImpl programRuleControllerImpl = new ProgramRuleControllerImpl(
+                systemInfoController, programControllerImpl, programStageController,
                 networkModule.getProgramRuleApiClient(),
+                persistenceModule.getProgramRuleStore(),
                 preferencesModule.getLastUpdatedPreferences(),
-                persistenceModule.getProgramRuleStore());
+                persistenceModule.getTransactionManager());
 
         assignedProgramsController = new AssignedProgramsControllerImpl(
-                programController, networkModule.getUserApiClient());
+                programControllerImpl, networkModule.getUserApiClient());
 
         organisationUnitController = new OrganisationUnitControllerImpl(
                 systemInfoController, networkModule.getOrganisationUnitApiClient(),
@@ -186,14 +177,14 @@ public class ControllersModuleImpl implements ControllersModule {
                 persistenceModule.getTransactionManager());
 
         programIndicatorController = new ProgramIndicatorControllerImpl(
-                systemInfoController, programController, programStageController,
+                systemInfoController, programControllerImpl, programStageController,
                 programStageSectionController, networkModule.getProgramIndicatorApiClient(),
                 preferencesModule.getLastUpdatedPreferences(),
                 persistenceModule.getTransactionManager(),
                 persistenceModule.getProgramIndicatorStore());
 
         programRuleVariableController = new ProgramRuleVariableControllerImpl(
-                systemInfoController, programController, programStageController,
+                systemInfoController, programControllerImpl, programStageController,
                 trackedEntityAttributeController, dataElementController,
                 networkModule.getProgramRuleVariableApiClient(),
                 preferencesModule.getLastUpdatedPreferences(),
@@ -202,11 +193,26 @@ public class ControllersModuleImpl implements ControllersModule {
 
         programRuleActionController = new ProgramRuleActionControllerImpl(
                 systemInfoController, programStageController, programStageSectionController,
-                trackedEntityAttributeController, programRuleController, programIndicatorController,
-                dataElementController, networkModule.getProgramRuleActionApiClient(),
+                trackedEntityAttributeController, programRuleControllerImpl,
+                programIndicatorController, dataElementController,
+                networkModule.getProgramRuleActionApiClient(),
                 preferencesModule.getLastUpdatedPreferences(),
                 persistenceModule.getProgramRuleActionStore(),
                 persistenceModule.getTransactionManager());
+
+        programRuleControllerImpl.setProgramRuleActionController(programRuleActionController);
+        programRuleControllerImpl.setProgramRuleVariableController(programRuleVariableController);
+        programRuleController = programRuleControllerImpl;
+
+        // because of circular dependency problem, we need to inject
+        // rest of dependencies of program controller through setters
+        programControllerImpl.setProgramStageController(programStageController);
+        programControllerImpl.setProgramStageSectionController(programStageSectionController);
+        programControllerImpl.setProgramStageDataElementController(programStageDataElementController);
+        programControllerImpl.setDataElementController(dataElementController);
+        programControllerImpl.setOptionSetController(optionSetController);
+        programControllerImpl.setProgramRuleController(programRuleController);
+        programController = programControllerImpl;
 
         eventController = new EventControllerImpl(systemInfoController,
                 networkModule.getEventApiClient(),

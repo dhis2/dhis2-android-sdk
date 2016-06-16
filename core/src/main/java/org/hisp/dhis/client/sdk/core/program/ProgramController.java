@@ -36,10 +36,5 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 import java.util.Set;
 
 public interface ProgramController extends IdentifiableController<Program> {
-
-    enum ProgramFields {
-        BASIC, DESCENDANTS
-    }
-
     void pull(SyncStrategy strategy, ProgramFields fields, Set<String> uids) throws ApiException;
 }

@@ -2,6 +2,7 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.program.ProgramFields;
 import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableController;
 import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableService;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -73,23 +74,25 @@ public class ProgramRuleVariableInteractorImpl implements ProgramRuleVariableInt
     }
 
     @Override
-    public Observable<List<ProgramRuleVariable>> pull(final List<Program> programs) {
+    public Observable<List<ProgramRuleVariable>> pull(final ProgramFields programFields,
+                                                      final List<Program> programs) {
         return Observable.create(new DefaultOnSubscribe<List<ProgramRuleVariable>>() {
             @Override
             public List<ProgramRuleVariable> call() {
-                programRuleVariableController.pull(SyncStrategy.DEFAULT, programs);
+                programRuleVariableController.pull(SyncStrategy.DEFAULT, programFields, programs);
                 return programRuleVariableService.list(programs);
             }
         });
     }
 
     @Override
-    public Observable<List<ProgramRuleVariable>> pull(
-            final SyncStrategy strategy, final List<Program> programs) {
+    public Observable<List<ProgramRuleVariable>> pull(final SyncStrategy strategy,
+                                                      final ProgramFields programFields,
+                                                      final List<Program> programs) {
         return Observable.create(new DefaultOnSubscribe<List<ProgramRuleVariable>>() {
             @Override
             public List<ProgramRuleVariable> call() {
-                programRuleVariableController.pull(SyncStrategy.DEFAULT, programs);
+                programRuleVariableController.pull(strategy, programFields, programs);
                 return programRuleVariableService.list(programs);
             }
         });

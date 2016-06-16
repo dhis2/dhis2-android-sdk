@@ -31,6 +31,7 @@ package org.hisp.dhis.client.sdk.core.program;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
@@ -51,8 +52,7 @@ import java.util.List;
 import java.util.Set;
 
 public final class ProgramRuleVariableControllerImpl
-        extends AbsSyncStrategyController<ProgramRuleVariable>
-        implements ProgramRuleVariableController {
+        extends AbsSyncStrategyController<ProgramRuleVariable> implements ProgramRuleVariableController {
 
     private final ProgramRuleVariableApiClient programRuleVariableApiClient;
     private final TransactionManager transactionManager;
@@ -180,12 +180,31 @@ public final class ProgramRuleVariableControllerImpl
     }
 
     @Override
-    public void pull(SyncStrategy strategy, List<Program> programList) {
-        List<ProgramRuleVariable> variablesAssignedToPrograms = programRuleVariableApiClient
-                .getProgramRuleVariablesByPrograms(Fields.BASIC, null, programList);
-        Set<String> variableUids = ModelUtils.toUidSet(variablesAssignedToPrograms);
+    public void pull(SyncStrategy strategy, ProgramFields fields,
+                     List<Program> programList) throws ApiException {
+        if (ProgramFields.ALL.equals(fields)) {
+            List<ProgramRuleVariable> variablesAssignedToPrograms = programRuleVariableApiClient
+                    .getProgramRuleVariablesByPrograms(Fields.BASIC, null, programList);
+            Set<String> variableUids = ModelUtils.toUidSet(variablesAssignedToPrograms);
 
-        // delegate syncing to another pull method
-        pull(strategy, variableUids);
+            // delegate syncing to another pull method
+            pull(strategy, variableUids);
+        } else if (ProgramFields.DESCENDANTS.equals(fields)) {
+            List<DbOperation> dbOperations = pull(programList);
+            transactionManager.transact(dbOperations);
+        }
+    }
+
+    @Override
+    public List<DbOperation> pull(List<Program> programs) throws ApiException {
+        List<ProgramRuleVariable> persistedProgramRuleVariables =
+                identifiableObjectStore.queryAll();
+        List<ProgramRuleVariable> allExistingProgramRuleVariables =
+                programRuleVariableApiClient.getProgramRuleVariables(Fields.BASIC, null);
+        List<ProgramRuleVariable> updatedProgramRuleVariables = programRuleVariableApiClient
+                .getProgramRuleVariablesByPrograms(Fields.ALL, null, programs);
+
+        return DbUtils.createOperations(allExistingProgramRuleVariables,
+                updatedProgramRuleVariables, persistedProgramRuleVariables, identifiableObjectStore);
     }
 }

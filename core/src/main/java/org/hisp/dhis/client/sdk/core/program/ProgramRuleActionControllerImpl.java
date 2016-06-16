@@ -31,6 +31,7 @@ package org.hisp.dhis.client.sdk.core.program;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
@@ -202,5 +203,17 @@ public final class ProgramRuleActionControllerImpl
 
         lastUpdatedPreferences.save(ResourceType.PROGRAM_RULE_ACTIONS,
                 DateType.SERVER, serverTime);
+    }
+
+    @Override
+    public List<DbOperation> merge(
+            List<ProgramRuleAction> updatedProgramRuleActions) throws ApiException {
+        List<ProgramRuleAction> allExistingProgramRuleActions = programRuleActionApiClient
+                .getProgramRuleActions(Fields.BASIC, null);
+        List<ProgramRuleAction> persistedProgramRuleActions =
+                identifiableObjectStore.queryAll();
+
+        return DbUtils.createOperations(allExistingProgramRuleActions,
+                updatedProgramRuleActions, persistedProgramRuleActions, identifiableObjectStore);
     }
 }

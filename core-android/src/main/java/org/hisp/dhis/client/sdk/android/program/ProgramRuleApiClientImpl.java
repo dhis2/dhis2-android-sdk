@@ -52,6 +52,8 @@ public class ProgramRuleApiClientImpl implements ProgramRuleApiClient {
     }
 
     private final ApiResource<ProgramRule> apiResource = new ApiResource<ProgramRule>() {
+        static final String IDENTIFIABLE_PROPERTIES =
+                "id,name,displayName,created,lastUpdated,access";
 
         @Override
         public String getResourceName() {
@@ -65,14 +67,18 @@ public class ProgramRuleApiClientImpl implements ProgramRuleApiClient {
 
         @Override
         public String getAllProperties() {
-            return "id,name,displayName,created,lastUpdated,access," +
-                    "condition,externalAccess,description,program,priority," +
-                    "programRuleActions,programStage";
+            return IDENTIFIABLE_PROPERTIES + ",condition,externalAccess,description,priority," +
+                    "program[id],programStage[id],programRuleActions[id]";
         }
 
         @Override
         public String getDescendantProperties() {
-            throw new UnsupportedOperationException();
+            return IDENTIFIABLE_PROPERTIES + ",condition,externalAccess,description," +
+                    "program[id],programStage[id],priority," +
+                    "programRuleActions[" + IDENTIFIABLE_PROPERTIES + ",programRuleActionType," +
+                    "programRule[id],programStage[id],programStageSection[id]," +
+                    "programIndicator[id],trackedEntityAttribute[id]," +
+                    "dataElement[id],content,location,data]";
         }
 
         public Call<Map<String, List<ProgramRule>>> getEntities(

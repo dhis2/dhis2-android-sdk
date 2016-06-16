@@ -29,7 +29,11 @@
 package org.hisp.dhis.client.sdk.core.dataelement;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.IdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
+import java.util.List;
+
 public interface DataElementController extends IdentifiableController<DataElement> {
+    List<DbOperation> merge(List<DataElement> updatedDataElements);
 }

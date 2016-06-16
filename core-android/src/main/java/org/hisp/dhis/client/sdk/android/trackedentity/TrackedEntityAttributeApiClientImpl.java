@@ -18,34 +18,38 @@ import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.getColle
 public class TrackedEntityAttributeApiClientImpl implements TrackedEntityAttributeApiClient {
     private final TrackedEntityAttributeApiClientRetrofit trackedEntityAttributeApiClientRetrofit;
 
-    private final ApiResource<TrackedEntityAttribute> apiResource =
-            new ApiResource<TrackedEntityAttribute>() {
+    private final ApiResource<TrackedEntityAttribute> apiResource = new ApiResource<TrackedEntityAttribute>() {
 
-                @Override
-                public String getResourceName() {
-                    return "trackedEntityAttributes";
-                }
+        @Override
+        public String getResourceName() {
+            return "trackedEntityAttributes";
+        }
 
-                @Override
-                public String getBasicProperties() {
-                    return "id,displayName";
-                }
+        @Override
+        public String getBasicProperties() {
+            return "id,displayName";
+        }
 
-                @Override
-                public String getAllProperties() {
-                    return "id,name,displayName,created,lastUpdated,access," +
-                            "unique,programScope,orgunitScope," +
-                            "displayInListNoProgram,displayOnVisitSchedule,externalAccess," +
-                            "valueType,confidential,inherit,sortOrderVisitSchedule,dimension," +
-                            "sortOrderInListNoProgram";
-                }
+        @Override
+        public String getAllProperties() {
+            return "id,name,displayName,created,lastUpdated,access," +
+                    "unique,programScope,orgunitScope," +
+                    "displayInListNoProgram,displayOnVisitSchedule,externalAccess," +
+                    "valueType,confidential,inherit,sortOrderVisitSchedule,dimension," +
+                    "sortOrderInListNoProgram";
+        }
 
-                public Call<Map<String, List<TrackedEntityAttribute>>> getEntities(
-                        Map<String, String> queryMap, List<String> filters) throws ApiException {
-                    return trackedEntityAttributeApiClientRetrofit
-                            .getTrackedEntityAttributes(queryMap, filters);
-                }
-            };
+        @Override
+        public String getDescendantProperties() {
+            throw new UnsupportedOperationException();
+        }
+
+        public Call<Map<String, List<TrackedEntityAttribute>>> getEntities(
+                Map<String, String> queryMap, List<String> filters) throws ApiException {
+            return trackedEntityAttributeApiClientRetrofit
+                    .getTrackedEntityAttributes(queryMap, filters);
+        }
+    };
 
     public TrackedEntityAttributeApiClientImpl(
             TrackedEntityAttributeApiClientRetrofit apiClientRetrofit) {

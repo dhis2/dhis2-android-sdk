@@ -35,8 +35,10 @@ import org.hisp.dhis.client.sdk.core.program.ProgramService;
 import org.hisp.dhis.client.sdk.core.user.AssignedProgramsController;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramType;
 
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 
@@ -51,25 +53,19 @@ public class UserProgramInteractorImpl implements UserProgramInteractor {
     }
 
     @Override
-    public Observable<List<Program>> pull() {
-        return Observable.create(new DefaultOnSubscribe<List<Program>>() {
-
-            @Override
-            public List<Program> call() {
-                assignedProgramsController.sync();
-                return programService.list(true);
-            }
-        });
+    public Observable<List<Program>> pull(final Set<ProgramType> programType) throws ApiException {
+        return pull(SyncStrategy.DEFAULT, programType);
     }
 
     @Override
-    public Observable<List<Program>> pull(final SyncStrategy strategy) throws ApiException {
+    public Observable<List<Program>> pull(
+            final SyncStrategy strategy, final Set<ProgramType> programTypes) throws ApiException {
         return Observable.create(new DefaultOnSubscribe<List<Program>>() {
 
             @Override
             public List<Program> call() {
-                assignedProgramsController.sync(strategy);
-                return programService.list(true);
+                assignedProgramsController.sync(strategy, programTypes);
+                return programService.list(true, programTypes);
             }
         });
     }
@@ -81,6 +77,17 @@ public class UserProgramInteractorImpl implements UserProgramInteractor {
             @Override
             public List<Program> call() {
                 return programService.list(true);
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<Program>> list(final Set<ProgramType> programTypes) {
+        return Observable.create(new DefaultOnSubscribe<List<Program>>() {
+
+            @Override
+            public List<Program> call() {
+                return programService.list(true, programTypes);
             }
         });
     }

@@ -32,6 +32,7 @@ package org.hisp.dhis.client.sdk.core.optionset;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
@@ -49,8 +50,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public final class OptionSetControllerImpl extends AbsSyncStrategyController<OptionSet>
-        implements OptionSetController {
+public final class OptionSetControllerImpl extends
+        AbsSyncStrategyController<OptionSet> implements OptionSetController {
     private final OptionSetApiClient optionSetApiClient;
     private final SystemInfoController systemInfoController;
     private final TransactionManager transactionManager;
@@ -106,39 +107,45 @@ public final class OptionSetControllerImpl extends AbsSyncStrategyController<Opt
             }
         }
 
-        List<OptionSet> mergedOptionSets = ModelUtils.merge(
-                allExistingOptionSets, updatedOptionSets, persistedOptionSets);
+        List<Option> updatedOptions = new ArrayList<>();
+        for (OptionSet updatedOptionSet : updatedOptionSets) {
+            updatedOptions.addAll(updatedOptionSet.getOptions());
+        }
 
         List<DbOperation> dbOperations = new ArrayList<>();
+        dbOperations.addAll(DbUtils.createOperations(optionStore,
+                optionStore.queryAll(), updatedOptions));
 
-        if (mergedOptionSets != null && !mergedOptionSets.isEmpty()) {
-            for (OptionSet optionSet : mergedOptionSets) {
-                if (optionSet == null || optionSet.getOptions() == null) {
-                    continue;
-                }
+        // we will have to perform something similar to what happens in AbsController
+        dbOperations.addAll(DbUtils.createOperations(allExistingOptionSets,
+                updatedOptionSets, persistedOptionSets, identifiableObjectStore));
 
-                OptionSet persistedOptionSet = optionSetStore.queryByUid(optionSet.getUId());
+        transactionManager.transact(dbOperations);
+        lastUpdatedPreferences.save(ResourceType.OPTION_SETS,
+                DateType.SERVER, serverTime);
+    }
 
-                List<Option> persistedOptions;
-                if (persistedOptionSet != null) {
-                    persistedOptions = persistedOptionSet.getOptions();
-                } else {
-                    persistedOptions = new ArrayList<>();
-                }
 
-                dbOperations.addAll(DbUtils.createOperations(optionStore,
-                        persistedOptions, optionSet.getOptions()));
+    @Override
+    public List<DbOperation> merge(List<OptionSet> updatedOptionSets) throws ApiException {
+        List<OptionSet> allExistingOptionSets = optionSetApiClient
+                .getOptionSets(Fields.BASIC, null, null);
+        List<OptionSet> persistedOptionSets = identifiableObjectStore
+                .queryAll();
+        List<Option> updatedOptions = new ArrayList<>();
+
+        for (OptionSet optionSet : updatedOptionSets) {
+            if (optionSet.getOptions() != null) {
+                updatedOptions.addAll(optionSet.getOptions());
             }
         }
 
-        // we will have to perform something similar to what happens in AbsController
-        dbOperations.addAll(DbUtils.createOperations(
-                allExistingOptionSets, updatedOptionSets,
-                persistedOptionSets, identifiableObjectStore));
+        List<DbOperation> dbOperations = new ArrayList<>();
+        dbOperations.addAll(DbUtils.createOperations(optionStore,
+                optionStore.queryAll(), updatedOptions));
+        dbOperations.addAll(DbUtils.createOperations(allExistingOptionSets,
+                updatedOptionSets, persistedOptionSets, identifiableObjectStore));
 
-        transactionManager.transact(dbOperations);
-
-        lastUpdatedPreferences.save(ResourceType.OPTION_SETS,
-                DateType.SERVER, serverTime);
+        return dbOperations;
     }
 }

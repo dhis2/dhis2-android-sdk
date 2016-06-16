@@ -54,6 +54,11 @@ public class ProgramIndicatorApiClientImpl implements ProgramIndicatorApiClient 
                     "rootDate,externalAccess,valueType,displayShortName,program[id]";
         }
 
+        @Override
+        public String getDescendantProperties() {
+            throw new UnsupportedOperationException();
+        }
+
         public Call<Map<String, List<ProgramIndicator>>> getEntities(
                 Map<String, String> queryMap, List<String> filters) throws ApiException {
             return programIndicatorApiClientRetrofit

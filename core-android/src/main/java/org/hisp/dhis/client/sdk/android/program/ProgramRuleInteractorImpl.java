@@ -30,6 +30,7 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.program.ProgramFields;
 import org.hisp.dhis.client.sdk.core.program.ProgramRuleController;
 import org.hisp.dhis.client.sdk.core.program.ProgramRuleService;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -112,8 +113,8 @@ public class ProgramRuleInteractorImpl implements ProgramRuleInteractor {
     }
 
     @Override
-    public Observable<List<ProgramRule>> pull(List<Program> programs) {
-        return pull(SyncStrategy.DEFAULT, programs);
+    public Observable<List<ProgramRule>> pull(List<Program> programs, ProgramFields programFields) {
+        return pull(SyncStrategy.DEFAULT, programFields, programs);
     }
 
     @Override
@@ -141,11 +142,12 @@ public class ProgramRuleInteractorImpl implements ProgramRuleInteractor {
 
     @Override
     public Observable<List<ProgramRule>> pull(final SyncStrategy syncStrategy,
+                                              final ProgramFields programFields,
                                               final List<Program> programs) {
         return Observable.create(new DefaultOnSubscribe<List<ProgramRule>>() {
             @Override
             public List<ProgramRule> call() {
-                programRuleController.pull(syncStrategy, programs);
+                programRuleController.pull(syncStrategy, programFields, programs);
                 return programRuleService.list(programs);
             }
         });

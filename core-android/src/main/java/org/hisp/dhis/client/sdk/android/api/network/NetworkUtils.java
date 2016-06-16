@@ -84,6 +84,10 @@ public class NetworkUtils {
                 queryMap.put("fields", apiResource.getAllProperties());
                 break;
             }
+            case DESCENDANTS: {
+                queryMap.put("fields", apiResource.getDescendantProperties());
+                break;
+            }
         }
 
         List<T> models = new ArrayList<>();

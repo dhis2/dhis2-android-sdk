@@ -74,6 +74,11 @@ public class OrganisationUnitApiClientImpl implements OrganisationUnitApiClient 
             }
 
             @Override
+            public String getDescendantProperties() {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
             public Call<Map<String, List<OrganisationUnit>>> getEntities(
                     Map<String, String> queryMap, List<String> filters) throws ApiException {
                 return unitApiClientRetrofit.getOrganisationUnits(queryMap, filters);

@@ -55,6 +55,11 @@ public class ProgramRuleActionApiClientImpl implements ProgramRuleActionApiClien
                     "content,location,data";
         }
 
+        @Override
+        public String getDescendantProperties() {
+            throw new UnsupportedOperationException();
+        }
+
         public Call<Map<String, List<ProgramRuleAction>>> getEntities(
                 Map<String, String> queryMap, List<String> filters) throws ApiException {
             return programRuleActionApiClientRetrofit.getProgramRuleActions(queryMap, filters);

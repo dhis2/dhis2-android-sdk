@@ -75,6 +75,11 @@ public class ProgramStageDataElementApiClientImpl implements ProgramStageDataEle
             }
 
             @Override
+            public String getDescendantProperties() {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
             public Call<Map<String, List<ProgramStageDataElement>>> getEntities(
                     Map<String, String> queryMap, List<String> filters) throws
                     ApiException {

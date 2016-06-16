@@ -30,6 +30,7 @@ package org.hisp.dhis.client.sdk.core.program;
 
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramType;
 
 import java.util.List;
 import java.util.Set;
@@ -59,6 +60,11 @@ public final class ProgramServiceImpl implements ProgramService {
     @Override
     public List<Program> list(boolean assignedToCurrentUser) {
         return programStore.query(assignedToCurrentUser);
+    }
+
+    @Override
+    public List<Program> list(boolean assignedToCurrentUser, Set<ProgramType> programTypes) {
+        return programStore.query(assignedToCurrentUser, programTypes);
     }
 
     @Override

@@ -56,12 +56,12 @@ public final class TrackedEntityAttributeControllerImpl
     private final SystemInfoController systemInfoController;
     private final OptionSetController optionSetController;
 
-    public TrackedEntityAttributeControllerImpl(TrackedEntityAttributeApiClient attributeApiClient,
-                                                TransactionManager transactionManager,
+    public TrackedEntityAttributeControllerImpl(SystemInfoController systemInfoController,
+                                                OptionSetController optionSetController,
                                                 LastUpdatedPreferences lastUpdatedPreferences,
                                                 TrackedEntityAttributeStore attributeStore,
-                                                SystemInfoController systemInfoController,
-                                                OptionSetController optionSetController) {
+                                                TrackedEntityAttributeApiClient attributeApiClient,
+                                                TransactionManager transactionManager) {
         super(ResourceType.TRACKED_ENTITY_ATTRIBUTES, attributeStore, lastUpdatedPreferences);
         this.trackedEntityAttributeApiClient = attributeApiClient;
         this.transactionManager = transactionManager;

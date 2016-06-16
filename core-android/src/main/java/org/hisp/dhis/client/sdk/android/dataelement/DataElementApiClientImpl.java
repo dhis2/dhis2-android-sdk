@@ -75,6 +75,11 @@ public class DataElementApiClientImpl implements DataElementApiClient {
             }
 
             @Override
+            public String getDescendantProperties() {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
             public Call<Map<String, List<DataElement>>> getEntities(
                     Map<String, String> queryMap, List<String> filters) throws ApiException {
                 return dataElementApiClientRetrofit.getDataElements(queryMap, filters);

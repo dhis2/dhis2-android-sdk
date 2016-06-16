@@ -42,6 +42,8 @@ public interface ApiResource<Type> {
 
     String getAllProperties();
 
+    String getDescendantProperties();
+
     Call<Map<String, List<Type>>> getEntities(
             Map<String, String> queryMap, List<String> filters) throws ApiException;
 }

@@ -29,8 +29,10 @@
 package org.hisp.dhis.client.sdk.core.program;
 
 import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.KeyValue;
 import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
@@ -38,22 +40,43 @@ import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.common.utils.ModelUtils;
+import org.hisp.dhis.client.sdk.core.dataelement.DataElementController;
+import org.hisp.dhis.client.sdk.core.optionset.OptionSetController;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.core.user.UserApiClient;
+import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
+import org.hisp.dhis.client.sdk.models.optionset.Option;
+import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
+import org.hisp.dhis.client.sdk.utils.Logger;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-public class ProgramControllerImpl extends AbsSyncStrategyController<Program>
-        implements ProgramController {
+import static org.hisp.dhis.client.sdk.core.common.utils.ModelUtils.toMap;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
+
+public class ProgramControllerImpl extends
+        AbsSyncStrategyController<Program> implements ProgramController {
+    private static final String TAG = ProgramController.class.getSimpleName();
 
     /* Controllers */
-    private final SystemInfoController systemInfoController;
+    private SystemInfoController systemInfoController;
+    private ProgramStageController programStageController;
+    private ProgramStageSectionController programStageSectionController;
+    private ProgramStageDataElementController programStageDataElementController;
+    private ProgramRuleController programRuleController;
+    private DataElementController dataElementController;
+    private OptionSetController optionSetController;
 
     /* Api clients */
     private final ProgramApiClient programApiClient;
@@ -61,21 +84,47 @@ public class ProgramControllerImpl extends AbsSyncStrategyController<Program>
 
     /* Utilities */
     private final TransactionManager transactionManager;
+    private final Logger logger;
 
     public ProgramControllerImpl(SystemInfoController systemInfoController,
-                                 ProgramApiClient programApiClient, UserApiClient userApiClient,
-                                 ProgramStore programStore, TransactionManager transactionManager,
-                                 LastUpdatedPreferences lastUpdatedPreferences) {
+                                 ProgramStore programStore,
+                                 UserApiClient userApiClient, ProgramApiClient programApiClient,
+                                 LastUpdatedPreferences lastUpdatedPreferences,
+                                 TransactionManager transactionManager,
+                                 Logger logger) {
         super(ResourceType.PROGRAMS, programStore, lastUpdatedPreferences);
 
         this.systemInfoController = systemInfoController;
+
         this.programApiClient = programApiClient;
         this.userApiClient = userApiClient;
+
         this.transactionManager = transactionManager;
+        this.logger = logger;
     }
 
     @Override
     protected void synchronize(SyncStrategy syncStrategy, Set<String> uids) {
+        synchronizeByLastUpdated(uids);
+    }
+
+    @Override
+    public void pull(SyncStrategy syncStrategy, ProgramFields fields, Set<String> uids) throws ApiException {
+        isNull(fields, "ProgramFields must not be null");
+
+        // delegate call to existing implementation
+        if (ProgramFields.ALL.equals(fields)) {
+            pull(syncStrategy, uids);
+            return;
+        }
+
+        // we need to sync all models related to program in one query
+        if (ProgramFields.DESCENDANTS.equals(fields)) {
+            synchronizeProgramsByVersions(uids);
+        }
+    }
+
+    private void synchronizeByLastUpdated(Set<String> uids) {
         DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
         DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAMS, DateType.SERVER);
 
@@ -84,7 +133,6 @@ public class ProgramControllerImpl extends AbsSyncStrategyController<Program>
         // we have to download all ids from server in order to
         // find out what was removed on the server side
         List<Program> allExistingPrograms = programApiClient.getPrograms(Fields.BASIC, null, null);
-
 
         List<Program> updatedPrograms = new ArrayList<>();
         if (uids == null) {
@@ -109,7 +157,8 @@ public class ProgramControllerImpl extends AbsSyncStrategyController<Program>
         }
 
         // we need to mark assigned programs as "assigned" before storing them
-        Map<String, Program> assignedPrograms = ModelUtils.toMap(userApiClient
+        // TODO remove this call (additional request which performs check if user is assigned)
+        Map<String, Program> assignedPrograms = toMap(userApiClient
                 .getUserAccount().getPrograms());
 
         for (Program updatedProgram : updatedPrograms) {
@@ -123,5 +172,230 @@ public class ProgramControllerImpl extends AbsSyncStrategyController<Program>
         transactionManager.transact(dbOperations);
 
         lastUpdatedPreferences.save(ResourceType.PROGRAMS, DateType.SERVER, serverTime);
+    }
+
+    private void synchronizeProgramsByVersions(Set<String> uids) throws ApiException {
+        isNull(uids, "Set of uids must not be null");
+
+        if (uids.isEmpty()) {
+            throw new IllegalArgumentException("Specify at least one uid of program to sync");
+        }
+
+        // updating stuff
+        KeyValue<List<Program>, List<DbOperation>> updatedPrograms =
+                updatePrograms(uids);
+        KeyValue<List<ProgramStage>, List<DbOperation>> updatedStages =
+                updateProgramStages(updatedPrograms.getKey());
+        KeyValue<List<ProgramStageSection>, List<DbOperation>> updatedSections =
+                updateProgramStageSections(updatedStages.getKey());
+        KeyValue<List<ProgramStageDataElement>, List<DbOperation>> updatedStageDataElements =
+                updateProgramStageDataElements(updatedStages.getKey(), updatedSections.getKey());
+        KeyValue<List<DataElement>, List<DbOperation>> updatedDataElements =
+                updateDataElements(updatedStageDataElements.getKey());
+        KeyValue<List<OptionSet>, List<DbOperation>> updatedOptionSets =
+                updateOptionSets(updatedDataElements.getKey());
+
+        // batching program rule updates
+        List<DbOperation> updatedProgramRules = programRuleController.pull(
+                updatedPrograms.getKey());
+
+        List<DbOperation> allOperations = new ArrayList<>();
+        allOperations.addAll(updatedPrograms.getValue());
+        allOperations.addAll(updatedStages.getValue());
+        allOperations.addAll(updatedSections.getValue());
+        allOperations.addAll(updatedStageDataElements.getValue());
+        allOperations.addAll(updatedDataElements.getValue());
+        allOperations.addAll(updatedOptionSets.getValue());
+        allOperations.addAll(updatedProgramRules);
+
+        // transacting all changes in one batch
+        transactionManager.transact(allOperations);
+    }
+
+    private KeyValue<List<Program>, List<DbOperation>> updatePrograms(Set<String> uids) {
+        List<Program> persistedPrograms = identifiableObjectStore.queryAll();
+        List<Program> allExistingPrograms = programApiClient.getPrograms(Fields.BASIC, null, null);
+
+        Map<String, Program> persistedProgramsMap = toMap(persistedPrograms);
+        Map<String, Program> allExistingProgramsMap = toMap(allExistingPrograms);
+
+        // defensive copy
+        Set<String> modelsToFetch = new HashSet<>(uids);
+        Set<String> persistedModels = ModelUtils.toUidSet(persistedPrograms);
+
+        // distinguish persisted models from new
+        modelsToFetch.removeAll(persistedModels);
+
+        // iterating over defensive copy
+        for (String persistedProgramUid : persistedModels) {
+            Program persistedProgram = persistedProgramsMap.get(persistedProgramUid);
+            Program recentProgram = allExistingProgramsMap.get(persistedProgramUid);
+
+            // we need to filter out those program uids which are up to date
+            if (recentProgram.getVersion() > persistedProgram.getVersion()) {
+                modelsToFetch.add(persistedProgramUid);
+                logger.d(TAG, String.format(
+                        Locale.getDefault(), "Program %s will be updated from version %d to %d",
+                        persistedProgramUid, persistedProgram.getVersion(), recentProgram.getVersion()));
+            } else {
+                logger.d(TAG, String.format(
+                        Locale.getDefault(), "Program %s with version %d will be ignored",
+                        persistedProgramUid, persistedProgram.getVersion()));
+            }
+        }
+
+        // most up to date programs with all fields in place
+        List<Program> updatedPrograms = programApiClient.getPrograms(
+                Fields.DESCENDANTS, null, modelsToFetch);
+
+        // we need to mark assigned programs as "assigned" before storing them
+        Map<String, Program> assignedPrograms = toMap(userApiClient
+                .getUserAccount().getPrograms());
+
+        for (Program updatedProgram : updatedPrograms) {
+            Program assignedProgram = assignedPrograms.get(updatedProgram.getUId());
+            updatedProgram.setIsAssignedToUser(assignedProgram != null);
+        }
+
+        List<DbOperation> dbOperations = DbUtils.createOperations(allExistingPrograms,
+                updatedPrograms, persistedPrograms, identifiableObjectStore);
+
+        // since we care only about updated programs, we don't need to merge persisted programs
+        return new KeyValue<>(updatedPrograms, dbOperations);
+    }
+
+    private KeyValue<List<ProgramStage>, List<DbOperation>> updateProgramStages(
+            List<Program> programs) {
+        Map<String, ProgramStage> programStageMap = new HashMap<>();
+
+        // List<ProgramStage> programStages = new ArrayList<>();
+        if (programs != null && !programs.isEmpty()) {
+            for (Program program : programs) {
+                if (program.getProgramStages() == null || program.getProgramStages().isEmpty()) {
+                    continue;
+                }
+
+                for (ProgramStage programStage : program.getProgramStages()) {
+                    programStageMap.put(programStage.getUId(), programStage);
+                }
+            }
+        }
+
+        List<ProgramStage> programStageList = new ArrayList<>(programStageMap.values());
+        return new KeyValue<>(programStageList, programStageController.merge(programStageList));
+    }
+
+    private KeyValue<List<ProgramStageSection>, List<DbOperation>> updateProgramStageSections(
+            List<ProgramStage> programStages) {
+        Map<String, ProgramStageSection> programStageSectionsMap = new HashMap<>();
+
+        if (programStages != null && !programStages.isEmpty()) {
+            for (ProgramStage programStage : programStages) {
+                if (programStage.getProgramStageSections() == null ||
+                        programStage.getProgramStageSections().isEmpty()) {
+                    continue;
+                }
+
+                for (ProgramStageSection stageSection : programStage.getProgramStageSections()) {
+                    programStageSectionsMap.put(stageSection.getUId(), stageSection);
+                }
+            }
+        }
+
+        List<ProgramStageSection> programStageSectionsList =
+                new ArrayList<>(programStageSectionsMap.values());
+        return new KeyValue<>(programStageSectionsList,
+                programStageSectionController.merge(programStageSectionsList));
+    }
+
+    private KeyValue<List<ProgramStageDataElement>, List<DbOperation>> updateProgramStageDataElements(
+            List<ProgramStage> programStages, List<ProgramStageSection> programStageSections) {
+        Map<String, ProgramStageDataElement> stageDataElementMap = new HashMap<>();
+
+        if (programStages != null && !programStages.isEmpty()) {
+            for (ProgramStage stage : programStages) {
+                if (stage.getProgramStageDataElements() == null ||
+                        stage.getProgramStageDataElements().isEmpty()) {
+                    continue;
+                }
+
+                for (ProgramStageDataElement stageDataElement : stage.getProgramStageDataElements()) {
+                    stageDataElementMap.put(stageDataElement.getUId(), stageDataElement);
+                }
+            }
+        }
+
+        List<ProgramStageDataElement> stageDataElements = new ArrayList<>(stageDataElementMap.values());
+        return new KeyValue<>(stageDataElements,
+                programStageDataElementController.merge(programStageSections, stageDataElements));
+    }
+
+    private KeyValue<List<DataElement>, List<DbOperation>> updateDataElements(
+            List<ProgramStageDataElement> updatedStageDataElements) {
+        Map<String, DataElement> dataElementMap = new HashMap<>();
+
+        if (updatedStageDataElements != null && !updatedStageDataElements.isEmpty()) {
+            for (ProgramStageDataElement stageDataElement : updatedStageDataElements) {
+                dataElementMap.put(stageDataElement.getDataElement().getUId(),
+                        stageDataElement.getDataElement());
+            }
+        }
+
+        List<DataElement> dataElements = new ArrayList<>(dataElementMap.values());
+        return new KeyValue<>(dataElements, dataElementController.merge(dataElements));
+    }
+
+    private KeyValue<List<OptionSet>, List<DbOperation>> updateOptionSets(
+            List<DataElement> dataElements) {
+        Map<String, OptionSet> optionSetMap = new HashMap<>();
+
+        if (dataElements != null && !dataElements.isEmpty()) {
+            for (DataElement dataElement : dataElements) {
+                OptionSet optionSet = dataElement.getOptionSet();
+
+                if (optionSet != null) {
+                    // we need to inverse relationship here
+                    List<Option> options = optionSet.getOptions();
+                    if (options != null && !options.isEmpty()) {
+                        for (Option option : options) {
+                            option.setOptionSet(optionSet);
+                        }
+                    }
+
+                    optionSetMap.put(optionSet.getUId(), optionSet);
+                }
+            }
+        }
+
+        List<OptionSet> optionSets = new ArrayList<>(optionSetMap.values());
+        return new KeyValue<>(optionSets, optionSetController.merge(optionSets));
+    }
+
+    public void setSystemInfoController(SystemInfoController InfoController) {
+        this.systemInfoController = InfoController;
+    }
+
+    public void setProgramStageController(ProgramStageController programStageController) {
+        this.programStageController = programStageController;
+    }
+
+    public void setProgramStageSectionController(ProgramStageSectionController sectionController) {
+        this.programStageSectionController = sectionController;
+    }
+
+    public void setProgramStageDataElementController(ProgramStageDataElementController elementController) {
+        this.programStageDataElementController = elementController;
+    }
+
+    public void setDataElementController(DataElementController dataElementController) {
+        this.dataElementController = dataElementController;
+    }
+
+    public void setOptionSetController(OptionSetController optionSetController) {
+        this.optionSetController = optionSetController;
+    }
+
+    public void setProgramRuleController(ProgramRuleController programRuleController) {
+        this.programRuleController = programRuleController;
     }
 }

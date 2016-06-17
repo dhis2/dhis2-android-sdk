@@ -44,6 +44,7 @@ import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow_Table;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.StateFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.StateFlow_Table;
 import org.hisp.dhis.client.sdk.core.common.StateStore;
+import org.hisp.dhis.client.sdk.core.common.utils.ModelUtils;
 import org.hisp.dhis.client.sdk.models.common.base.Model;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.common.state.State;
@@ -135,6 +136,51 @@ public class StateStoreImpl extends AbsStore<State, StateFlow> implements StateS
                 .querySingle();
 
         return getMapper().mapToModel(stateFlow);
+    }
+
+    @Override
+    public <T extends Model> Map<Long, State> queryStatesForModels(List<T> list) {
+        isNull(list, "List of objects must not be null");
+
+        if (list.isEmpty()) {
+            throw new IllegalArgumentException("Provide at least one item in the list");
+        }
+
+        // List<Long> modelIds = ModelUtils
+        Set<Long> modelIds = ModelUtils.toIdSet(list);
+
+        // building query
+        Class<? extends Model> listItemClass =
+                list.get(0).getClass();
+        Where<StateFlow> stateFlowWhere = new Select()
+                .from(StateFlow.class)
+                .where(StateFlow_Table.itemType
+                        .is(getStateMapper().getRelatedModelClass(listItemClass)));
+
+        Where<StateFlow> whereIn = null;
+        for (Long modelId : modelIds) {
+            if (whereIn == null) {
+                whereIn = stateFlowWhere.and(StateFlow_Table.itemId.in(modelId));
+            } else {
+                whereIn = whereIn.or(StateFlow_Table.itemId.in(modelId));
+            }
+        }
+
+        if (whereIn != null) {
+            stateFlowWhere = whereIn;
+        }
+
+        List<StateFlow> stateFlows = stateFlowWhere.queryList();
+        List<State> states = getStateMapper().mapToModels(stateFlows);
+
+        Map<Long, State> stateMap = new HashMap<>();
+        if (states != null && !states.isEmpty()) {
+            for (State state : states) {
+                stateMap.put(state.getItemId(), state);
+            }
+        }
+
+        return stateMap;
     }
 
     @Override
@@ -241,11 +287,7 @@ public class StateStoreImpl extends AbsStore<State, StateFlow> implements StateS
             }
         }
 
-        System.out.println("QUERY STRING: " + where.toString());
-        List<? extends com.raizlabs.android.dbflow.structure.Model> list = where.queryList();
-        System.out.println("LIST: " + list.size());
-
-        return list;
+        return where.queryList();
     }
 
     private StateMapper getStateMapper() {

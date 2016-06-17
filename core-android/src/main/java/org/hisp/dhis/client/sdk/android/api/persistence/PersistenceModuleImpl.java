@@ -30,6 +30,7 @@ package org.hisp.dhis.client.sdk.android.api.persistence;
 
 import android.content.Context;
 
+import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow;
@@ -91,7 +92,10 @@ public class PersistenceModuleImpl implements PersistenceModule {
     private final OptionSetStore optionSetStore;
 
     public PersistenceModuleImpl(Context context) {
-        FlowManager.init(context);
+        FlowConfig flowConfig = new FlowConfig
+                .Builder(context)
+                .build();
+        FlowManager.init(flowConfig);
 
         transactionManager = new TransactionManagerImpl();
         stateStore = new StateStoreImpl(EventFlow.MAPPER);

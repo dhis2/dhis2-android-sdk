@@ -43,6 +43,7 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface EventService extends Service, Save<Event>, Remove<Event>, Get<Event>,
@@ -54,6 +55,8 @@ public interface EventService extends Service, Save<Event>, Remove<Event>, Get<E
     List<Event> list(OrganisationUnit organisationUnit, Program program);
 
     List<Event> listByActions(Set<Action> actionSet);
+
+    Map<Long, State> map(List<Event> events);
 
     State get(Event event);
 }

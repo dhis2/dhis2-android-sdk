@@ -54,10 +54,11 @@ public abstract class AbsIdentifiableObjectStore<ModelType extends IdentifiableO
     public ModelType queryById(long id) {
         List<DatabaseEntityType> databaseEntities = new Select()
                 .from(getMapper().getDatabaseEntityTypeClass())
-                .where(Condition.column(new NameAlias(BaseModelFlow
-                        .COLUMN_ID)).is(id))
+                .where(Condition.column(NameAlias.builder(BaseModelFlow
+                        .COLUMN_ID).build()).is(id))
                 .queryList();
-        if(databaseEntities != null && !databaseEntities.isEmpty()) {
+
+        if (databaseEntities != null && !databaseEntities.isEmpty()) {
             return getMapper().mapToModel(databaseEntities.get(0));
         }
         return null;
@@ -68,8 +69,8 @@ public abstract class AbsIdentifiableObjectStore<ModelType extends IdentifiableO
     public ModelType queryByUid(String uid) {
         List<DatabaseEntityType> databaseEntities = new Select()
                 .from(getMapper().getDatabaseEntityTypeClass())
-                .where(Condition.column(new NameAlias(BaseIdentifiableObjectFlow
-                        .COLUMN_UID)).is(uid))
+                .where(Condition.column(NameAlias.builder(BaseIdentifiableObjectFlow
+                        .COLUMN_UID).build()).is(uid))
                 .queryList();
 
         if (databaseEntities != null && !databaseEntities.isEmpty()) {
@@ -102,8 +103,8 @@ public abstract class AbsIdentifiableObjectStore<ModelType extends IdentifiableO
         if (uids != null && !uids.isEmpty()) {
             return new Select()
                     .from(getMapper().getDatabaseEntityTypeClass())
-                    .where(Condition.column(new NameAlias(BaseIdentifiableObjectFlow
-                            .COLUMN_UID)).in(uids))
+                    .where(Condition.column(NameAlias.builder(BaseIdentifiableObjectFlow
+                            .COLUMN_UID).build()).in(uids))
                     .queryList();
         }
 

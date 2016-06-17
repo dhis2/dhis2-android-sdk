@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.core.common.utils;
 
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -92,6 +93,17 @@ public class ModelUtils {
         }
 
         return uIds;
+    }
+
+    public static <T extends Model> Set<Long> toIdSet(Collection<T> items) {
+        Set<Long> ids = new HashSet<>();
+        if (items != null && !items.isEmpty()) {
+            for (T item : items) {
+                ids.add(item.getId());
+            }
+        }
+
+        return ids;
     }
 
     public interface ModelAction<T extends IdentifiableObject> {

@@ -43,7 +43,7 @@ ext {
             // android libs
             supportVersion     : "23.4.0",
             rxAndroidVersion   : "1.1.0",
-            dbFlowVersion      : "3.0.0-beta5",
+            dbFlowVersion      : "3.0.1",
             progressBarVersion : "1.2.0",
 
             // java libs

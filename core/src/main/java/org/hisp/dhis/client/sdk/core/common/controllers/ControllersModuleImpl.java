@@ -31,6 +31,8 @@ package org.hisp.dhis.client.sdk.core.common.controllers;
 import org.hisp.dhis.client.sdk.core.common.network.NetworkModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.PersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.PreferencesModule;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardController;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardControllerImpl;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementController;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementControllerImpl;
 import org.hisp.dhis.client.sdk.core.event.EventController;
@@ -87,6 +89,7 @@ public class ControllersModuleImpl implements ControllersModule {
     private final OptionSetController optionSetController;
     private final TrackedEntityAttributeController trackedEntityAttributeController;
     private final EventController eventController;
+    private final DashboardController dashboardController;
 
     public ControllersModuleImpl(NetworkModule networkModule,
                                  PersistenceModule persistenceModule,
@@ -222,6 +225,17 @@ public class ControllersModuleImpl implements ControllersModule {
                 persistenceModule.getEventStore(),
                 persistenceModule.getStateStore(),
                 persistenceModule.getTransactionManager(), logger);
+
+        dashboardController = new DashboardControllerImpl(persistenceModule.getDashboardStore(),
+                persistenceModule.getDashboardItemStore(),
+                persistenceModule.getDashboardElementStore(),
+                persistenceModule.getDashboardContentStore(),
+                persistenceModule.getStateStore(),
+                networkModule.getDashboardApiClient(),
+                networkModule.getSystemInfoApiClient(),
+                preferencesModule.getLastUpdatedPreferences(),
+                persistenceModule.getTransactionManager(), logger);
+
     }
 
     @Override
@@ -267,6 +281,11 @@ public class ControllersModuleImpl implements ControllersModule {
     @Override
     public EventController getEventController() {
         return eventController;
+    }
+
+    @Override
+    public DashboardController getDashboardController() {
+        return dashboardController;
     }
 
     @Override

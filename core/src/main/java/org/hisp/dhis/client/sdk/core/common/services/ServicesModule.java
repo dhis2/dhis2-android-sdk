@@ -28,6 +28,10 @@
 
 package org.hisp.dhis.client.sdk.core.common.services;
 
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardContentService;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardElementService;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardItemService;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardService;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementService;
 import org.hisp.dhis.client.sdk.core.event.EventService;
 import org.hisp.dhis.client.sdk.core.optionset.OptionSetService;
@@ -58,6 +62,14 @@ public interface ServicesModule {
     OrganisationUnitService getOrganisationUnitService();
 
     EventService getEventService();
+
+    DashboardService getDashboardService();
+
+    DashboardElementService getDashboardElementService();
+
+    DashboardItemService getDashboardItemService();
+
+    DashboardContentService getDashboardContentService();
 
     DataElementService getDataElementService();
 

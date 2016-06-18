@@ -28,7 +28,19 @@
 
 package org.hisp.dhis.client.sdk.core.common.services;
 
+import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.PersistenceModule;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardContentService;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardContentServiceImpl;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardElementService;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardElementServiceImpl;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardElementStore;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardItemService;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardItemServiceImpl;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardItemStore;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardService;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardServiceImpl;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardStore;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementService;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementServiceImpl;
 import org.hisp.dhis.client.sdk.core.event.EventService;
@@ -69,6 +81,10 @@ public final class ServicesModuleImpl implements ServicesModule {
     private final ProgramStageSectionService programStageSectionService;
     private final OrganisationUnitService organisationUnitService;
     private final EventService eventService;
+    private final DashboardService dashboardService;
+    private final DashboardElementService dashboardElementService;
+    private final DashboardItemService dashboardItemService;
+    private final DashboardContentService dashboardContentService;
     private final ProgramStageDataElementService programStageDataElementService;
     private final DataElementService dataElementService;
     private final TrackedEntityAttributeService trackedEntityAttributeService;
@@ -114,6 +130,28 @@ public final class ServicesModuleImpl implements ServicesModule {
         eventService = new EventServiceImpl(
                 persistenceModule.getEventStore(),
                 persistenceModule.getStateStore());
+
+        dashboardService = new DashboardServiceImpl(
+                persistenceModule.getDashboardStore(),
+                persistenceModule.getDashboardItemStore(),
+                persistenceModule.getDashboardElementStore(),
+                persistenceModule.getStateStore(),
+                getDashboardItemService(),
+                getDashboardElementService());
+
+        dashboardElementService = new DashboardElementServiceImpl(
+                persistenceModule.getStateStore(),
+                persistenceModule.getDashboardElementStore(),
+                getDashboardItemService());
+
+        dashboardItemService = new DashboardItemServiceImpl(
+                persistenceModule.getDashboardItemStore(),
+                persistenceModule.getStateStore(),
+                getDashboardElementService());
+
+        dashboardContentService = new DashboardContentServiceImpl(
+                persistenceModule.getDashboardContentStore());
+
         dataElementService = new DataElementServiceImpl(
                 persistenceModule.getDataElementStore());
 
@@ -161,6 +199,26 @@ public final class ServicesModuleImpl implements ServicesModule {
     @Override
     public EventService getEventService() {
         return eventService;
+    }
+
+    @Override
+    public DashboardService getDashboardService() {
+        return dashboardService;
+    }
+
+    @Override
+    public DashboardElementService getDashboardElementService() {
+        return dashboardElementService;
+    }
+
+    @Override
+    public DashboardItemService getDashboardItemService() {
+        return dashboardItemService;
+    }
+
+    @Override
+    public DashboardContentService getDashboardContentService() {
+        return dashboardContentService;
     }
 
     @Override

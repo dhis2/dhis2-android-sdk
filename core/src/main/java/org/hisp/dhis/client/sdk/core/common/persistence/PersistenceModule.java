@@ -29,6 +29,10 @@
 package org.hisp.dhis.client.sdk.core.common.persistence;
 
 import org.hisp.dhis.client.sdk.core.common.StateStore;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardElementStore;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardContentStore;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardItemStore;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardStore;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementStore;
 import org.hisp.dhis.client.sdk.core.event.EventStore;
 import org.hisp.dhis.client.sdk.core.optionset.OptionSetStore;
@@ -75,6 +79,14 @@ public interface PersistenceModule {
     OrganisationUnitStore getOrganisationUnitStore();
 
     EventStore getEventStore();
+
+    DashboardStore getDashboardStore();
+
+    DashboardElementStore getDashboardElementStore();
+
+    DashboardContentStore getDashboardContentStore();
+
+    DashboardItemStore getDashboardItemStore();
 
     TrackedEntityDataValueStore getTrackedEntityDataValueStore();
 

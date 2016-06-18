@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.core.dashboard;
 
 import org.hisp.dhis.client.sdk.core.common.StateStore;
+import org.hisp.dhis.client.sdk.core.common.controllers.AbsDataController;
 import org.hisp.dhis.client.sdk.core.common.controllers.IdentifiableController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
@@ -47,6 +48,7 @@ import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
+import org.hisp.dhis.client.sdk.utils.Logger;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -58,11 +60,11 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-public final class DashboardControllerImpl implements IdentifiableController<Dashboard> {
+public final class DashboardControllerImpl extends AbsDataController<Dashboard> implements DashboardController {
     private final DashboardStore dashboardStore;
     private final DashboardItemStore dashboardItemStore;
     private final DashboardElementStore dashboardElementStore;
-    private final DashboardItemContentStore dashboardItemContentStore;
+    private final DashboardContentStore dashboardItemContentStore;
     private final StateStore stateStore;
 
     /* dashboard client */
@@ -78,12 +80,14 @@ public final class DashboardControllerImpl implements IdentifiableController<Das
     public DashboardControllerImpl(DashboardStore dashboardStore,
                                    DashboardItemStore dashboardItemStore,
                                    DashboardElementStore dashboardElementStore,
-                                   DashboardItemContentStore dashboardItemContentStore,
+                                   DashboardContentStore dashboardItemContentStore,
                                    StateStore stateStore,
                                    DashboardApiClient dashboardApiClient,
                                    SystemInfoApiClient systemInfoApiClient,
                                    LastUpdatedPreferences lastUpdatedPreferences,
-                                   TransactionManager transactionManager) {
+                                   TransactionManager transactionManager, Logger logger) {
+        super(logger, dashboardStore);
+
         this.dashboardStore = dashboardStore;
         this.dashboardItemStore = dashboardItemStore;
         this.dashboardElementStore = dashboardElementStore;
@@ -153,6 +157,7 @@ public final class DashboardControllerImpl implements IdentifiableController<Das
         List<Dashboard> actualDashboards = dashboardApiClient.getDashboardUids(null);
 
         // List of updated dashboards with content.
+        // TODO
         List<Dashboard> updatedDashboards = dashboardApiClient.getDashboards(lastUpdated);
 
         // List of persisted dashboards.

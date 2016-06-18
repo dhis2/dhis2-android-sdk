@@ -32,8 +32,16 @@ import android.content.Context;
 
 import com.raizlabs.android.dbflow.config.FlowManager;
 
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardContentFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardElementFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardItemFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow;
 import org.hisp.dhis.client.sdk.android.common.StateStoreImpl;
+import org.hisp.dhis.client.sdk.android.dashboard.DashboardContentStoreImpl;
+import org.hisp.dhis.client.sdk.android.dashboard.DashboardElementStoreImpl;
+import org.hisp.dhis.client.sdk.android.dashboard.DashboardItemStoreImpl;
+import org.hisp.dhis.client.sdk.android.dashboard.DashboardStoreImpl;
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementStoreImpl;
 import org.hisp.dhis.client.sdk.android.event.EventStoreImpl;
 import org.hisp.dhis.client.sdk.android.optionset.OptionSetStoreImpl;
@@ -53,6 +61,10 @@ import org.hisp.dhis.client.sdk.android.user.UserAccountStoreImpl;
 import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.PersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardElementStore;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardContentStore;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardItemStore;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardStore;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementStore;
 import org.hisp.dhis.client.sdk.core.event.EventStore;
 import org.hisp.dhis.client.sdk.core.optionset.OptionSetStore;
@@ -85,6 +97,11 @@ public class PersistenceModuleImpl implements PersistenceModule {
     private final ProgramStageDataElementStore programStageDataElementStore;
     private final OrganisationUnitStore organisationUnitStore;
     private final EventStore eventStore;
+    private final DashboardStore dashboardStore;
+    private final DashboardElementStore dashboardElementStore;
+    private final DashboardItemStore dashboardItemStore;
+    // TODO
+    private final DashboardContentStore dashboardContentStore;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final DataElementStore dataElementStore;
     private final OptionStore optionStore;
@@ -111,6 +128,12 @@ public class PersistenceModuleImpl implements PersistenceModule {
 
         trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl();
         eventStore = new EventStoreImpl(stateStore, trackedEntityDataValueStore, transactionManager);
+
+        // TODO Maybe Change Constructor according to Event
+        dashboardStore = new DashboardStoreImpl(DashboardFlow.MAPPER);
+        dashboardElementStore = new DashboardElementStoreImpl(DashboardElementFlow.MAPPER);
+        dashboardItemStore = new DashboardItemStoreImpl(DashboardItemFlow.MAPPER);
+        dashboardContentStore = new DashboardContentStoreImpl(DashboardContentFlow.MAPPER);
 
         optionStore = new OptionStoreImpl();
         optionSetStore = new OptionSetStoreImpl();
@@ -187,6 +210,26 @@ public class PersistenceModuleImpl implements PersistenceModule {
     }
 
     @Override
+    public DashboardStore getDashboardStore() {
+        return dashboardStore;
+    }
+
+    @Override
+    public DashboardElementStore getDashboardElementStore() {
+        return dashboardElementStore;
+    }
+
+    @Override
+    public DashboardItemStore getDashboardItemStore() {
+        return dashboardItemStore;
+    }
+
+    @Override
+    public DashboardContentStore getDashboardContentStore() {
+        return dashboardContentStore;
+    }
+
+    @Override
     public TrackedEntityDataValueStore getTrackedEntityDataValueStore() {
         return trackedEntityDataValueStore;
     }
@@ -221,6 +264,10 @@ public class PersistenceModuleImpl implements PersistenceModule {
                 programStageDataElementStore.deleteAll() &&
                 organisationUnitStore.deleteAll() &&
                 eventStore.deleteAll() &&
+                dashboardStore.deleteAll() &&
+                dashboardElementStore.deleteAll() &&
+                dashboardItemStore.deleteAll() &&
+                dashboardContentStore.deleteAll() &&
                 trackedEntityDataValueStore.deleteAll() &&
                 dataElementStore.deleteAll() &&
                 optionStore.deleteAll() &&

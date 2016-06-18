@@ -34,29 +34,29 @@ import java.util.List;
 import java.util.Set;
 
 public class DashboardContentServiceImpl implements DashboardContentService {
-    private final DashboardItemContentStore mDashboardItemContentStore;
+    private final DashboardContentStore mDashboardContentStore;
 
-    public DashboardContentServiceImpl(DashboardItemContentStore mDashboardItemContentStore) {
-        this.mDashboardItemContentStore = mDashboardItemContentStore;
+    public DashboardContentServiceImpl(DashboardContentStore mDashboardItemContentStore) {
+        this.mDashboardContentStore = mDashboardItemContentStore;
     }
 
     @Override
     public DashboardContent get(long id) {
-        return mDashboardItemContentStore.queryById(id);
+        return mDashboardContentStore.queryById(id);
     }
 
     @Override
     public DashboardContent get(String uid) {
-        return mDashboardItemContentStore.queryByUid(uid);
+        return mDashboardContentStore.queryByUid(uid);
     }
 
     @Override
     public List<DashboardContent> list() {
-        return mDashboardItemContentStore.queryAll();
+        return mDashboardContentStore.queryAll();
     }
 
     @Override
     public List<DashboardContent> list(Set<String> types) {
-        return mDashboardItemContentStore.queryByTypes(types);
+        return mDashboardContentStore.queryByTypes(types);
     }
 }

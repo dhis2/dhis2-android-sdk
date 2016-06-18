@@ -31,14 +31,14 @@ package org.hisp.dhis.client.sdk.android.dashboard;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardContentFlow;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.Mapper;
-import org.hisp.dhis.client.sdk.core.dashboard.DashboardItemContentStore;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardContentStore;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 
 import java.util.List;
 import java.util.Set;
 
 public final class DashboardContentStoreImpl extends AbsIdentifiableObjectStore<DashboardContent,
-        DashboardContentFlow> implements DashboardItemContentStore {
+        DashboardContentFlow> implements DashboardContentStore {
 
     public DashboardContentStoreImpl(Mapper<DashboardContent, DashboardContentFlow> contentMapper) {
         super(contentMapper);

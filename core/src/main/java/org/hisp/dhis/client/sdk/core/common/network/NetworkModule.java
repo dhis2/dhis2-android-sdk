@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.common.network;
 
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardApiClient;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementApiClient;
 import org.hisp.dhis.client.sdk.core.event.EventApiClient;
 import org.hisp.dhis.client.sdk.core.optionset.OptionSetApiClient;
@@ -58,6 +59,8 @@ public interface NetworkModule {
     ProgramStageSectionApiClient getProgramStageSectionApiClient();
 
     EventApiClient getEventApiClient();
+
+    DashboardApiClient getDashboardApiClient();
 
     DataElementApiClient getDataElementApiClient();
 

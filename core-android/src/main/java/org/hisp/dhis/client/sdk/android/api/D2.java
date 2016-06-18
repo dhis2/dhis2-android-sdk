@@ -36,6 +36,8 @@ import org.hisp.dhis.client.sdk.android.api.persistence.PersistenceModuleImpl;
 import org.hisp.dhis.client.sdk.android.api.preferences.PreferencesModuleImpl;
 import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.android.api.utils.LoggerImpl;
+import org.hisp.dhis.client.sdk.android.dashboard.DashboardInteractor;
+import org.hisp.dhis.client.sdk.android.dashboard.DashboardInteractorImpl;
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementInteractor;
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementInteractorImpl;
 import org.hisp.dhis.client.sdk.android.event.EventInteractor;
@@ -80,6 +82,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.PersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.PreferencesModule;
 import org.hisp.dhis.client.sdk.core.common.services.ServicesModule;
 import org.hisp.dhis.client.sdk.core.common.services.ServicesModuleImpl;
+import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.utils.Logger;
 
 import okhttp3.OkHttpClient;
@@ -120,6 +123,7 @@ public class D2 {
     private final TrackedEntityAttributeInteractor trackedEntityAttributeInteractor;
     private final TrackedEntityDataValueInteractor trackedEntityDataValueInteractor;
     private final EventInteractor eventInteractor;
+    private final DashboardInteractor dashboardInteractor;
     private final ProgramStageDataElementInteractor programStageDataElementInteractor;
     private final DataElementInteractor dataElementInteractor;
     private final OptionSetInteractor optionSetInteractor;
@@ -148,6 +152,7 @@ public class D2 {
             programStageInteractor = null;
             programStageSectionInteractor = null;
             eventInteractor = null;
+            dashboardInteractor = null;
             programStageDataElementInteractor = null;
             dataElementInteractor = null;
             programRuleInteractor = null;
@@ -219,6 +224,10 @@ public class D2 {
         eventInteractor = new EventInteractorImpl(
                 servicesModule.getEventService(),
                 controllersModule.getEventController());
+
+        dashboardInteractor = new DashboardInteractorImpl(
+                servicesModule.getDashboardService(),
+                controllersModule.getDashboardController());
 
         dataElementInteractor = new DataElementInteractorImpl(
                 servicesModule.getDataElementService(),
@@ -392,6 +401,10 @@ public class D2 {
 
     public static EventInteractor events() {
         return configuredInstance().eventInteractor;
+    }
+
+    public static DashboardInteractor dashboards() {
+        return configuredInstance().dashboardInteractor;
     }
 
     public static TrackedEntityDataValueInteractor trackedEntityDataValues() {

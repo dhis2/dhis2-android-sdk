@@ -34,6 +34,6 @@ import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 import java.util.List;
 import java.util.Set;
 
-public interface DashboardItemContentStore extends IdentifiableObjectStore<DashboardContent> {
+public interface DashboardContentStore extends IdentifiableObjectStore<DashboardContent> {
     List<DashboardContent> queryByTypes(Set<String> type);
 }

@@ -73,7 +73,7 @@
     <string name="synchronization_period_key">synchronizationPeriod</string>
     <string name="synchronization_period_name">Synchronization period</string>
     <string name="synchronization_period_description">Syncing every </string>
-    <string name="synchronization_period_option_value_default">1440</string>
+    <string name="synchronization_period_option_value_default">240</string> <!-- Default sync every 4 hours -->
     <string-array name="synchronization_period_option_keys">
         <item>15 minutes</item>
         <item>1 hour</item>
@@ -83,8 +83,8 @@
     <string-array name="synchronization_period_option_values">
         <item>15</item>
         <item>60</item>
-        <item>240</item>
         <item>@string/synchronization_period_option_value_default</item>
+        <item>1440</item>
     </string-array>
 
     <string name="sync_notification_key">syncNotifications</string>

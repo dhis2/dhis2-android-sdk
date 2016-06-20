@@ -28,12 +28,19 @@
 
 package org.hisp.dhis.client.sdk.models.dashboard;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.hisp.dhis.client.sdk.models.common.Access;
 import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
+import org.hisp.dhis.client.sdk.models.common.state.State;
+import org.joda.time.DateTime;
 
 import java.util.List;
+
+//TODO add more methods (if need be), handle state
+// Temporary hack for creating Fake data to be removed later
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class Dashboard extends BaseIdentifiableObject {
@@ -42,11 +49,66 @@ public final class Dashboard extends BaseIdentifiableObject {
      */
     public static int MAX_ITEMS = 40;
 
+    /**
+    @JsonIgnore
+    @Column(name = "state")
+    @NotNull
+    State state;
+     **/
+
     @JsonProperty("dashboardItems")
     private List<DashboardItem> dashboardItems;
 
     public Dashboard() {
     }
+
+    /////////////////////////////////////////////////////////////////////////
+    // Dashboard logic
+    /////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Creates and returns new Dashboard with given name.
+     *
+     * @param name Name of new dashboard.
+     * @return a dashboard.
+     */
+
+    /**TODO How to get lastUpdatedDateTime
+     * Pass State in Constructor ?
+     * Set Date time as lastUpdatedDateTime
+     */
+
+     @JsonIgnore
+    public static Dashboard createDashboard(String name) {
+
+        /**TODO How to get lastUpdatedDateTime
+        DateTime lastUpdatedDateTime = DateTimeManager.getInstance()
+                .getLastUpdated(ResourceType.DASHBOARDS);
+         **/
+
+        Dashboard dashboard = new Dashboard();
+        //dashboard.setState(State.TO_POST);
+        dashboard.setName(name);
+        dashboard.setDisplayName(name);
+         // Temp Date Time for testing
+        dashboard.setCreated(new DateTime("2013-09-08T21:47:17.960Z"));
+        dashboard.setLastUpdated(new DateTime("2013-09-08T21:47:17.960Z"));
+        dashboard.setAccess(Access.createDefaultAccess());
+
+        return dashboard;
+    }
+
+    /**
+    @JsonIgnore
+    public State getState() {
+        return state;
+    }
+
+    @JsonIgnore
+    public void setState(State state) {
+        this.state = state;
+    }
+    **/
 
     public List<DashboardItem> getDashboardItems() {
         return dashboardItems;

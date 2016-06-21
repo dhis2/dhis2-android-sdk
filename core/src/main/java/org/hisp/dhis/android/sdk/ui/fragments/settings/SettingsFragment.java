@@ -31,6 +31,7 @@ package org.hisp.dhis.android.sdk.ui.fragments.settings;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -150,7 +151,16 @@ public class SettingsFragment extends Fragment
                                         });
                             } else {
                                 DhisService.logOutUser(getActivity());
-                                getActivity().finish();
+
+                                int apiVersion = Build.VERSION.SDK_INT;
+                                if(apiVersion >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                                    getActivity().finishAffinity();
+                                }
+                                else {
+                                    getActivity().finish();
+                                    System.exit(0);
+                                }
+
                             }
                         }
                     });

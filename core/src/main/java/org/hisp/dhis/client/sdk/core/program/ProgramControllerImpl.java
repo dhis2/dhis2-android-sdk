@@ -123,7 +123,7 @@ public class ProgramControllerImpl extends
             synchronizeProgramsByVersions(uids);
         }
     }
-
+    
     private void synchronizeByLastUpdated(Set<String> uids) {
         DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
         DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAMS, DateType.SERVER);

@@ -61,12 +61,13 @@ public class AssignedProgramsControllerImpl implements AssignedProgramsControlle
     }
 
     @Override
-    public void sync(Set<ProgramType> programTypes) throws ApiException {
-        sync(SyncStrategy.DEFAULT, programTypes);
+    public void sync(ProgramFields programFields, Set<ProgramType> programTypes) throws ApiException {
+        sync(SyncStrategy.DEFAULT, programFields, programTypes);
     }
 
     @Override
-    public void sync(SyncStrategy strategy, Set<ProgramType> programTypes) throws ApiException {
+    public void sync(SyncStrategy strategy, ProgramFields programFields,
+                     Set<ProgramType> programTypes) throws ApiException {
         isNull(programTypes, "Set of ProgramType must not be null");
 
         if (programTypes.isEmpty()) {
@@ -92,6 +93,6 @@ public class AssignedProgramsControllerImpl implements AssignedProgramsControlle
 
         /* get them through program controller */
         // programController.pull(strategy, ids);
-        programController.pull(strategy, ProgramFields.DESCENDANTS, ids);
+        programController.pull(strategy, programFields, ids);
     }
 }

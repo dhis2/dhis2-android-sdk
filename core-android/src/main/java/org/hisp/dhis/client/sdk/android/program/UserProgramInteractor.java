@@ -30,6 +30,7 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.program.ProgramFields;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramType;
@@ -40,9 +41,11 @@ import java.util.Set;
 import rx.Observable;
 
 public interface UserProgramInteractor {
-    Observable<List<Program>> pull(Set<ProgramType> programType) throws ApiException;
+    Observable<List<Program>> pull(ProgramFields programFields,
+                                   Set<ProgramType> programType) throws ApiException;
 
-    Observable<List<Program>> pull(SyncStrategy strategy, Set<ProgramType> programTypes) throws ApiException;
+    Observable<List<Program>> pull(SyncStrategy strategy, ProgramFields programFields,
+                                   Set<ProgramType> programTypes) throws ApiException;
 
     Observable<List<Program>> list();
 

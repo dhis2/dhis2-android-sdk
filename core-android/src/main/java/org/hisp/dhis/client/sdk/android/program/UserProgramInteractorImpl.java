@@ -31,6 +31,7 @@ package org.hisp.dhis.client.sdk.android.program;
 import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.program.ProgramFields;
 import org.hisp.dhis.client.sdk.core.program.ProgramService;
 import org.hisp.dhis.client.sdk.core.user.AssignedProgramsController;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
@@ -53,19 +54,20 @@ public class UserProgramInteractorImpl implements UserProgramInteractor {
     }
 
     @Override
-    public Observable<List<Program>> pull(final Set<ProgramType> programType) throws ApiException {
-        return pull(SyncStrategy.DEFAULT, programType);
+    public Observable<List<Program>> pull(
+            ProgramFields programFields, Set<ProgramType> programType) throws ApiException {
+        return pull(SyncStrategy.DEFAULT, programFields, programType);
     }
 
     @Override
-    public Observable<List<Program>> pull(
-            final SyncStrategy strategy, final Set<ProgramType> programTypes) throws ApiException {
+    public Observable<List<Program>> pull(final SyncStrategy strategy,
+                  final ProgramFields programFields, final Set<ProgramType> types) throws ApiException {
         return Observable.create(new DefaultOnSubscribe<List<Program>>() {
 
             @Override
             public List<Program> call() {
-                assignedProgramsController.sync(strategy, programTypes);
-                return programService.list(true, programTypes);
+                assignedProgramsController.sync(strategy, programFields, types);
+                return programService.list(true, types);
             }
         });
     }

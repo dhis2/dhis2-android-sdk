@@ -496,6 +496,12 @@ final class TrackerDataSender {
 
     static void sendTrackedEntityInstanceChanges(DhisApi dhisApi, boolean sendEnrollments) throws APIException {
         List<TrackedEntityInstance> trackedEntityInstances = new Select().from(TrackedEntityInstance.class).where(Condition.column(TrackedEntityInstance$Table.FROMSERVER).is(false)).queryList();
+        if(dhisApi == null) {
+            dhisApi = DhisController.getInstance().getDhisApi();
+            if(dhisApi == null) {
+                return;
+            }
+        }
         if(trackedEntityInstances.size() <= 1) {
             sendTrackedEntityInstanceChanges(dhisApi,trackedEntityInstances,sendEnrollments);
         }

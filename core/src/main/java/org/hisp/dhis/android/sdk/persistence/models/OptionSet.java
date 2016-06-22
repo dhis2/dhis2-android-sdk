@@ -29,6 +29,7 @@
 
 package org.hisp.dhis.android.sdk.persistence.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
@@ -56,6 +57,7 @@ public class OptionSet extends BaseMetaDataObject {
     @JsonProperty("options")
     List<Option> options;
 
+    @JsonIgnore
     public List<Option> getOptions() {
         if (options == null) {
             options = MetaDataController.getOptions(id);

@@ -31,6 +31,8 @@ package org.hisp.dhis.client.sdk.ui.bindings.commons;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.HashMap;
+
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class SessionPreferencesImpl implements SessionPreferences {
@@ -47,7 +49,10 @@ public class SessionPreferencesImpl implements SessionPreferences {
 
     @Override
     public boolean clearSelectedPickers() {
-        return sharedPreferences.edit().clear().commit();
+
+        //TODO: fix this
+        //return sharedPreferences.edit().clear().commit();
+        return true;
     }
 
     @Override
@@ -59,4 +64,38 @@ public class SessionPreferencesImpl implements SessionPreferences {
     public boolean setSelectedPickerUid(int index, String pickerUid) {
         return sharedPreferences.edit().putString(SELECTED_PICKER_UID + index, pickerUid).commit();
     }
+
+
+    @Override
+    public void setReportEntityDataModelFilters(String programUid, HashMap<String, Boolean> filters) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        for (String dataElementName : filters.keySet()) {
+            String filterKey = String.format("%s:%s", programUid, dataElementName);
+            editor.putBoolean(filterKey, filters.get(dataElementName));
+        }
+        editor.apply();
+    }
+
+    @Override
+    public HashMap<String, Boolean> getReportEntityDataModelFilters(String programUid, HashMap<String, Boolean> defaultFilters) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        for (String dataElementName : defaultFilters.keySet()) {
+            String filterKey = String.format("%s:%s", programUid, dataElementName);
+
+            boolean defaultValue = defaultFilters.get(dataElementName);
+
+            if (!sharedPreferences.contains(filterKey)) {
+                editor.putBoolean(filterKey, defaultValue).apply();
+            } else {
+                boolean storedValue = sharedPreferences.getBoolean(filterKey, defaultValue);
+                if (storedValue != defaultValue) {
+                    defaultFilters.put(dataElementName, storedValue);
+                }
+            }
+        }
+        editor.apply();
+        return defaultFilters;
+    }
+
 }

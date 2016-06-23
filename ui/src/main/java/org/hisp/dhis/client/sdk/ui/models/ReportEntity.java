@@ -3,7 +3,8 @@ package org.hisp.dhis.client.sdk.ui.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
@@ -11,15 +12,12 @@ public class ReportEntity implements Parcelable {
     private final String id;
     private final Status status;
 
-    private final ArrayList<String> dataElementLabels;
-    private final ArrayList<String> dataElementValues;
+    private final Map<String, String> dataElementMap;
 
-    public ReportEntity(String id, Status status, ArrayList<String> dataElementLabels,
-                        ArrayList<String> dataElementValues) {
+    public ReportEntity(String id, Status status, Map<String, String> dataElementMap) {
         this.id = isNull(id, "id must not be null");
         this.status = isNull(status, "status must not be null");
-        this.dataElementLabels = dataElementLabels;
-        this.dataElementValues = dataElementValues;
+        this.dataElementMap = dataElementMap;
     }
 
     public String getId() {
@@ -39,8 +37,7 @@ public class ReportEntity implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(status.name());
-        dest.writeList(dataElementLabels);
-        dest.writeList(dataElementValues);
+        dest.writeMap(dataElementMap);
     }
 
     public static final Parcelable.Creator<ReportEntity> CREATOR
@@ -57,33 +54,24 @@ public class ReportEntity implements Parcelable {
     private ReportEntity(Parcel in) {
         id = in.readString();
         status = Status.valueOf(in.readString());
-        dataElementLabels = new ArrayList<>();
-        in.readList(dataElementLabels, null);
-        dataElementValues = new ArrayList<>();
-        in.readList(dataElementValues, null);
+        dataElementMap = new HashMap<>();
+        in.readMap(dataElementMap, null);
     }
 
-    public String getDisplayTextFromLabel(String label) {
-        String value;
-        if (dataElementLabels.contains(label)) {
-            value = dataElementValues.get(dataElementLabels.indexOf(label));
-        } else {
-            value = "none";
+    public String getValueFromDataElementName(String name) {
+
+        if (!dataElementMap.containsKey(name)) {
+            return "none";
         }
 
-        return String.format("%s: %s", label, value);
+        return dataElementMap.get(name);
+    }
+
+    public Map<String, String> getDataElementMap() {
+        return dataElementMap;
     }
 
     public enum Status {
         SENT, TO_UPDATE, TO_POST, ERROR
     }
-
-    public ArrayList<String> getDataElementLabels() {
-        return dataElementLabels;
-    }
-
-    public ArrayList<String> getDataElementValues() {
-        return dataElementValues;
-    }
-
 }

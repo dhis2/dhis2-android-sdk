@@ -10,10 +10,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.hisp.dhis.client.sdk.ui.R;
@@ -22,7 +26,9 @@ import org.hisp.dhis.client.sdk.ui.views.CircleView;
 import org.hisp.dhis.client.sdk.ui.views.FontTextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
@@ -32,11 +38,10 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
     private ArrayList<ReportEntity> reportEntities;
     private final LayoutInflater layoutInflater;
+    private HashMap<String, Boolean> reportEntityDataElementFilters;
 
     // click listener
     private OnReportEntityInteractionListener onReportEntityInteractionListener;
-    private ArrayList<String> dataElementLabelsToFilter;
-    private ArrayList<String> dataElementLabelsToShow = dataElementLabelsToFilter;
 
     public ReportEntityAdapter(Context context) {
         isNull(context, "context must not be null");
@@ -81,20 +86,10 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-
-    public void setDataElementLabelsToFilter(ArrayList<String> dataElementLabelsToFilter) {
-        this.dataElementLabelsToFilter = dataElementLabelsToFilter;
-    }
-
-    public ArrayList<String> getDataElementLabelsToFilter() {
-        return dataElementLabelsToFilter;
-    }
-
-    public void setDataElementLabelsToShow(ArrayList<String> dataElementLabelsToShow) {
-        this.dataElementLabelsToShow = dataElementLabelsToShow;
+    public void notifyFiltersChanged(HashMap<String, Boolean> labelFilters) {
+        this.reportEntityDataElementFilters = labelFilters;
         notifyDataSetChanged();
     }
-
 
     public interface OnReportEntityInteractionListener {
         void onReportEntityClicked(ReportEntity reportEntity);
@@ -161,7 +156,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
             switch (reportEntity.getStatus()) {
                 // TODO: show deleteButton for all statuses when deletion is supported in SDK
                 case SENT: {
-                    deleteButton.setVisibility(View.GONE);
+                    deleteButton.setVisibility(View.INVISIBLE);
                     statusBackground.setFillColor(colorSent);
                     statusIcon.setImageDrawable(drawableSent);
                     break;
@@ -173,13 +168,13 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                     break;
                 }
                 case TO_UPDATE: {
-                    deleteButton.setVisibility(View.GONE);
+                    deleteButton.setVisibility(View.INVISIBLE);
                     statusBackground.setFillColor(colorOffline);
                     statusIcon.setImageDrawable(drawableOffline);
                     break;
                 }
                 case ERROR: {
-                    deleteButton.setVisibility(View.GONE);
+                    deleteButton.setVisibility(View.INVISIBLE);
                     statusBackground.setFillColor(colorError);
                     statusIcon.setImageDrawable(drawableError);
                     break;
@@ -191,27 +186,35 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
         private void updateDataElements(ReportEntity reportEntity) {
 
-            if (dataElementLabelsToShow == null || dataElementLabelsToShow.isEmpty()) {
+            if (reportEntityDataElementFilters == null || noDataElementsToShow(reportEntityDataElementFilters)) {
                 showEmptyPlaceholder();
             } else {
-                for (String dataElementLabel : dataElementLabelsToShow) {
+                int viewIndex = 0;
+                for (String key : reportEntityDataElementFilters.keySet()) {
+                    if (reportEntityDataElementFilters.get(key)) {
+                        View dataElementLabelView = dataElementLabelContainer.getChildAt(viewIndex++);
+                        if (dataElementLabelView == null) {
+                            dataElementLabelView = layoutInflater.inflate(R.layout.data_element_label, dataElementLabelContainer, false);
+                            dataElementLabelContainer.addView(dataElementLabelView);
+                        }
 
-                    View dataElementLabelView = dataElementLabelContainer.getChildAt(dataElementLabelsToShow.indexOf(dataElementLabel));
-                    if (dataElementLabelView == null) {
-                        dataElementLabelView = layoutInflater.inflate(R.layout.data_element_label, dataElementLabelContainer, false);
-                        dataElementLabelContainer.addView(dataElementLabelView);
+                        String value = reportEntity.getValueFromDataElementName(key);
+
+                        String dataElementString = String.format("%s: %s", key, value);
+
+                        SpannableString text = new SpannableString(dataElementString);
+
+                        text.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), dataElementString.length() - value.length(), dataElementString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                        ((FontTextView) dataElementLabelView).setText(text, TextView.BufferType.SPANNABLE);
                     }
-                    ((FontTextView) dataElementLabelView).setText(reportEntity.getDisplayTextFromLabel(dataElementLabel));
-
                 }
-
-                if (dataElementLabelContainer.getChildCount() > dataElementLabelsToShow.size()) {
-                    int i = dataElementLabelContainer.getChildCount() - 1;
-                    while (i >= dataElementLabelsToShow.size()) {
-                        dataElementLabelContainer.removeViewAt(i--);
-                    }
+                while (dataElementLabelContainer.getChildCount() > viewIndex) {
+                    // remove old views if they exist
+                    dataElementLabelContainer.removeViewAt(dataElementLabelContainer.getChildCount() - 1);
                 }
             }
+
         }
 
         private void showEmptyPlaceholder() {
@@ -221,6 +224,11 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                 dataElementLabelContainer.addView(dataElementLabelView);
             }
             ((FontTextView) dataElementLabelView).setText(dataElementLabelContainer.getContext().getString(R.string.report_entity));
+
+            while (dataElementLabelContainer.getChildCount() > 1) {
+                // remove old views if they exist
+                dataElementLabelContainer.removeViewAt(dataElementLabelContainer.getChildCount() - 1);
+            }
         }
 
         private void showStatusDialog(Context context) {
@@ -317,6 +325,15 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
     }
 
+    private boolean noDataElementsToShow(Map<String, Boolean> reportEntitDataElementFilters) {
+        for (String s : reportEntitDataElementFilters.keySet()) {
+            if (reportEntitDataElementFilters.get(s)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void addItem(ReportEntity reportEntity) {
         reportEntities.add(reportEntity);
         notifyItemInserted(reportEntities.size() - 1);
@@ -341,5 +358,9 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                 onReportEntityInteractionListener.onReportEntityClicked(reportEntity);
             }
         }
+    }
+
+    public HashMap<String, Boolean> getReportEntityDataElementFilters() {
+        return reportEntityDataElementFilters;
     }
 }

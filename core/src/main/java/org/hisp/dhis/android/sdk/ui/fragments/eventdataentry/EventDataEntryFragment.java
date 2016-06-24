@@ -297,7 +297,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             if(!OrganisationUnit.TYPE.ASSIGNED.equals(eventOrganisationUnit.getType())) { // if user is not assigned to the event's OrgUnit. Disable data entry screen
                 setEditableDataEntryRows(form,false, false);
             }
-            if(Event.STATUS_COMPLETED.equals(form.getEvent().getStatus())) { // if event is completed. Disable data entry screen
+            if(Event.STATUS_COMPLETED.equals(form.getEvent().getStatus()) && form.getStage().isBlockEntryForm()) { // if event is completed and should be blocked. Disable data entry screen
                 setEditableDataEntryRows(form,false, true);
 
             }

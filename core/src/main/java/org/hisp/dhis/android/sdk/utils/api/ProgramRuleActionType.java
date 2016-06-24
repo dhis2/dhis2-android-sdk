@@ -37,7 +37,8 @@ public enum ProgramRuleActionType {
     ASSIGN( "assign" ),
     SHOWWARNING( "showwarning" ),
     SHOWERROR( "showerror" ),
-    CREATEEVENT("createevent");
+    CREATEEVENT("createevent"),
+    ERRORONCOMPLETE("erroroncomplete");
 
     final String value;
 

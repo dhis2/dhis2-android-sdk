@@ -187,8 +187,10 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
         private void updateDataElements(ReportEntity reportEntity) {
 
-            if (reportEntityDataElementFilters == null || noDataElementsToShow(reportEntityDataElementFilters)) {
-                showEmptyPlaceholder();
+            if (reportEntityDataElementFilters == null) {
+                showPlaceholder();
+            } else if (noDataElementsToShow(reportEntityDataElementFilters)) {
+                showThreeFirstDataElements(reportEntity);
             } else {
                 int viewIndex = 0;
                 for (String key : reportEntityDataElementFilters.keySet()) {
@@ -224,17 +226,59 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
         }
 
-        private void showEmptyPlaceholder() {
+        private void showThreeFirstDataElements(ReportEntity reportEntity) {
+            final int PLACEHOLDER_ITEMS = 3;
+            int viewIndex = 0;
+
+            String[] keySet = reportEntityDataElementFilters.keySet().toArray(new String[0]);
+
+            for (int i = 0; i < reportEntityDataElementFilters.keySet().size(); i++) {
+
+                if (i >= PLACEHOLDER_ITEMS) {
+                    // only show PLACEHOLDER_ITEMS
+                    break;
+                }
+
+                View dataElementLabelView = dataElementLabelContainer.getChildAt(viewIndex++);
+                if (dataElementLabelView == null) {
+                    dataElementLabelView = layoutInflater.inflate(
+                            R.layout.data_element_label, dataElementLabelContainer, false);
+                    dataElementLabelContainer.addView(dataElementLabelView);
+                }
+
+                String name = reportEntityDataElementFilters.get(keySet[i]).first;
+                String value = reportEntity.getValueForDataElement(keySet[i]);
+
+                String dataElementString = String.format("%s: %s", name, value);
+
+                SpannableString text = new SpannableString(dataElementString);
+
+                text.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
+                        dataElementString.length() - value.length(),
+                        dataElementString.length(),
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                ((FontTextView) dataElementLabelView).setText(text, TextView.BufferType.SPANNABLE);
+
+            }
+
+            while (dataElementLabelContainer.getChildCount() > viewIndex) {
+                // remove old views if they exist
+                dataElementLabelContainer.removeViewAt(dataElementLabelContainer.getChildCount() - 1);
+            }
+        }
+
+        private void showPlaceholder() {
             View dataElementLabelView = dataElementLabelContainer.getChildAt(0);
             if (dataElementLabelView == null) {
                 dataElementLabelView = layoutInflater.inflate(R.layout.data_element_label, dataElementLabelContainer, false);
                 dataElementLabelContainer.addView(dataElementLabelView);
-            }
-            ((FontTextView) dataElementLabelView).setText(dataElementLabelContainer.getContext().getString(R.string.report_entity));
+                ((FontTextView) dataElementLabelView).setText(dataElementLabelContainer.getContext().getString(R.string.report_entity));
 
-            while (dataElementLabelContainer.getChildCount() > 1) {
-                // remove old views if they exist
-                dataElementLabelContainer.removeViewAt(dataElementLabelContainer.getChildCount() - 1);
+                while (dataElementLabelContainer.getChildCount() > 1) {
+                    // remove old views if they exist
+                    dataElementLabelContainer.removeViewAt(dataElementLabelContainer.getChildCount() - 1);
+                }
             }
         }
 

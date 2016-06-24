@@ -58,17 +58,13 @@ public class ReportEntity implements Parcelable {
         in.readMap(dataElementMap, null);
     }
 
-    public String getValueFromDataElementName(String name) {
+    public String getValueForDataElement(String uid) {
 
-        if (!dataElementMap.containsKey(name)) {
+        if (!dataElementMap.containsKey(uid)) {
             return "none";
         }
 
-        return dataElementMap.get(name);
-    }
-
-    public Map<String, String> getDataElementMap() {
-        return dataElementMap;
+        return dataElementMap.get(uid);
     }
 
     public enum Status {

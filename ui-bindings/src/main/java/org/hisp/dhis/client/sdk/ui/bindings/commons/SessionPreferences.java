@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
+import android.support.v4.util.Pair;
+
 import java.util.HashMap;
 
 public interface SessionPreferences {
@@ -38,8 +40,9 @@ public interface SessionPreferences {
 
     boolean setSelectedPickerUid(int index, String pickerUid);
 
-    HashMap<String, Boolean> getReportEntityDataModelFilters(String programUid,
-                                                             HashMap<String, Boolean> defaultFilters);
+    HashMap<String, Pair<String, Boolean>> getReportEntityDataModelFilters(
+            String programUid, HashMap<String, Pair<String, Boolean>> defaultFilters);
 
-    void setReportEntityDataModelFilters(String programUid, HashMap<String, Boolean> filters);
+    void setReportEntityDataModelFilters(
+            String programUid, HashMap<String, Pair<String, Boolean>> filters);
 }

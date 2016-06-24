@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -38,7 +39,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
     private ArrayList<ReportEntity> reportEntities;
     private final LayoutInflater layoutInflater;
-    private HashMap<String, Boolean> reportEntityDataElementFilters;
+    private HashMap<String, Pair<String, Boolean>> reportEntityDataElementFilters;
 
     // click listener
     private OnReportEntityInteractionListener onReportEntityInteractionListener;
@@ -86,7 +87,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    public void notifyFiltersChanged(HashMap<String, Boolean> labelFilters) {
+    public void notifyFiltersChanged(HashMap<String, Pair<String, Boolean>> labelFilters) {
         this.reportEntityDataElementFilters = labelFilters;
         notifyDataSetChanged();
     }
@@ -191,20 +192,26 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
             } else {
                 int viewIndex = 0;
                 for (String key : reportEntityDataElementFilters.keySet()) {
-                    if (reportEntityDataElementFilters.get(key)) {
+                    boolean displayInList = reportEntityDataElementFilters.get(key).second;
+                    if (displayInList) {
                         View dataElementLabelView = dataElementLabelContainer.getChildAt(viewIndex++);
                         if (dataElementLabelView == null) {
-                            dataElementLabelView = layoutInflater.inflate(R.layout.data_element_label, dataElementLabelContainer, false);
+                            dataElementLabelView = layoutInflater.inflate(
+                                    R.layout.data_element_label, dataElementLabelContainer, false);
                             dataElementLabelContainer.addView(dataElementLabelView);
                         }
 
-                        String value = reportEntity.getValueFromDataElementName(key);
+                        String name = reportEntityDataElementFilters.get(key).first;
+                        String value = reportEntity.getValueForDataElement(key);
 
-                        String dataElementString = String.format("%s: %s", key, value);
+                        String dataElementString = String.format("%s: %s", name, value);
 
                         SpannableString text = new SpannableString(dataElementString);
 
-                        text.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), dataElementString.length() - value.length(), dataElementString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        text.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
+                                dataElementString.length() - value.length(),
+                                dataElementString.length(),
+                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                         ((FontTextView) dataElementLabelView).setText(text, TextView.BufferType.SPANNABLE);
                     }
@@ -325,9 +332,9 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
     }
 
-    private boolean noDataElementsToShow(Map<String, Boolean> reportEntitDataElementFilters) {
+    private boolean noDataElementsToShow(Map<String, Pair<String, Boolean>> reportEntitDataElementFilters) {
         for (String s : reportEntitDataElementFilters.keySet()) {
-            if (reportEntitDataElementFilters.get(s)) {
+            if (reportEntitDataElementFilters.get(s).second) {
                 return false;
             }
         }
@@ -360,7 +367,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public HashMap<String, Boolean> getReportEntityDataElementFilters() {
+    public HashMap<String, Pair<String, Boolean>> getReportEntityDataElementFilters() {
         return reportEntityDataElementFilters;
     }
 }

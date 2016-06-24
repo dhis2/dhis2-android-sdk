@@ -332,11 +332,15 @@ public final class TrackerController extends ResourceController {
      * @return
      */
     public static TrackedEntityAttributeValue getTrackedEntityAttributeValue(String trackedEntityAttribute, long trackedEntityInstance) {
-        return new Select().from(TrackedEntityAttributeValue.class).where(
-                Condition.column(TrackedEntityAttributeValue$Table.
-                        TRACKEDENTITYATTRIBUTEID).is(trackedEntityAttribute),
-                Condition.column(TrackedEntityAttributeValue$Table.
-                        LOCALTRACKEDENTITYINSTANCEID).is(trackedEntityInstance)).querySingle();
+        List<TrackedEntityAttributeValue> trackedEntityAttributeValue = new Select().from(TrackedEntityAttributeValue.class)
+                .where(Condition.column(TrackedEntityAttributeValue$Table.TRACKEDENTITYATTRIBUTEID).eq(trackedEntityAttribute))
+                .and(Condition.column(TrackedEntityAttributeValue$Table.LOCALTRACKEDENTITYINSTANCEID).eq(trackedEntityInstance))
+                .queryList();
+        if(trackedEntityAttributeValue != null && trackedEntityAttributeValue.size() > 0) {
+            return trackedEntityAttributeValue.get(0);
+        }
+        else return null;
+
     }
 
     /**

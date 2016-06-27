@@ -114,6 +114,16 @@ public final class DashboardControllerImpl extends AbsDataController<Dashboard> 
     }
 
     @Override
+    public void syncDashboards(SyncStrategy syncStrategy) throws ApiException {
+        /* first we need to fetch all changes from server
+        and apply them to local database */
+        getDashboardDataFromServer();
+
+        /* now we can try to send changes made locally to server */
+        sendLocalChanges();
+    }
+
+    @Override
     public void pull(SyncStrategy syncStrategy) throws ApiException {
         /* first we need to fetch all changes from server and apply them to local database */
         getDashboardDataFromServer();
@@ -662,6 +672,7 @@ public final class DashboardControllerImpl extends AbsDataController<Dashboard> 
         }
     }
 
+    // TODO Move this method to DashboardContentControllerImpl
     public void syncDashboardContent() {
         /* DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.DASHBOARDS_CONTENT);
@@ -756,4 +767,5 @@ public final class DashboardControllerImpl extends AbsDataController<Dashboard> 
                 throw new IllegalArgumentException("Unsupported DashboardContent type");
         }
     }
+
 }

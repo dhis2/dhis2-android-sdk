@@ -29,7 +29,14 @@
 package org.hisp.dhis.client.sdk.core.dashboard;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.IdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 
+import java.util.Set;
+
 public interface DashboardController extends IdentifiableController<Dashboard> {
+
+    void syncDashboards(SyncStrategy syncStrategy) throws ApiException;
+
 }

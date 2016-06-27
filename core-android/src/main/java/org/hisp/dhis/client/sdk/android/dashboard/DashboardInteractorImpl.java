@@ -28,14 +28,15 @@
 
 package org.hisp.dhis.client.sdk.android.dashboard;
 
-
 import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.dashboard.DashboardController;
 import org.hisp.dhis.client.sdk.core.dashboard.DashboardService;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 
 import java.util.List;
+
 
 import rx.Observable;
 
@@ -47,6 +48,22 @@ public class DashboardInteractorImpl implements DashboardInteractor {
                                    DashboardController dashboardController) {
         this.dashboardService = dashboardService;
         this.dashboardController = dashboardController;
+    }
+
+    @Override
+    public Observable<List<Dashboard>> syncDashboards() {
+        return syncDashboards(SyncStrategy.DEFAULT);
+    }
+
+    @Override
+    public Observable<List<Dashboard>> syncDashboards(final SyncStrategy strategy) {
+        return Observable.create(new DefaultOnSubscribe<List<Dashboard>>() {
+            @Override
+            public List<Dashboard> call() {
+                dashboardController.syncDashboards(strategy);
+                return dashboardService.list();
+            }
+        });
     }
 
     @Override

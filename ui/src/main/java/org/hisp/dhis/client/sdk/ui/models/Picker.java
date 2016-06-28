@@ -39,7 +39,7 @@ import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
  * This class represents the node in tree data structure.
  */
 public class Picker implements Serializable {
-    // implements Parcelable {
+
     // hint which describes the content of picker
     private final String hint;
 
@@ -64,25 +64,60 @@ public class Picker implements Serializable {
         this.children = new ArrayList<>();
     }
 
-    public static Picker create(String label) {
-        return new Picker(null, null, label, null);
+    public static class Builder {
+        private String id;
+        private String name;
+        private String hint;
+        private Picker parent;
+
+        public Builder() {
+            // empty constructor
+        }
+
+        public Builder id(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder hint(String hint) {
+            this.hint = hint;
+            return this;
+        }
+
+        public Builder parent(Picker parent) {
+            this.parent = parent;
+            return this;
+        }
+
+        public Picker build() {
+            return new Picker(id, name, hint, parent);
+        }
     }
 
-    public static Picker create(String id, String label) {
-        return new Picker(id, null, label, null);
-    }
-
-    public static Picker create(String id, String name, Picker parent) {
-        return new Picker(id, name, null, parent);
-    }
-
-    public static Picker create(String label, Picker parent) {
-        return new Picker(null, null, label, parent);
-    }
-
-    public static Picker create(String id, String name, String label, Picker parent) {
-        return new Picker(id, name, label, parent);
-    }
+//    public static Picker create(String label) {
+//        return new Picker(null, null, label, null);
+//    }
+//
+//    public static Picker create(String id, String label) {
+//        return new Picker(id, null, label, null);
+//    }
+//
+//    public static Picker create(String id, String name, Picker parent) {
+//        return new Picker(id, name, null, parent);
+//    }
+//
+//    public static Picker create(String label, Picker parent) {
+//        return new Picker(null, null, label, parent);
+//    }
+//
+//    public static Picker create(String id, String name, String label, Picker parent) {
+//        return new Picker(id, name, label, parent);
+//    }
 
     public String getHint() {
         return hint;

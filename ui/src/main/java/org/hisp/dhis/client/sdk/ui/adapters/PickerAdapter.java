@@ -40,7 +40,6 @@ import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.fragments.FilterableDialogFragment;
-
 import org.hisp.dhis.client.sdk.ui.models.Picker;
 
 import java.util.ArrayList;
@@ -122,8 +121,14 @@ public class PickerAdapter extends RecyclerView.Adapter {
             Picker node = getRootNode(pickerTree);
             do {
                 // we don't want to add leaf nodes to list
-                if (!node.getChildren().isEmpty()) {
-                    pickers.add(node);
+                if (!node.isLeaf()) {
+                    if (node.areChildrenRoots()) {
+                        for (Picker childNode : node.getChildren()) {
+                            pickers.add(childNode);
+                        }
+                    } else {
+                        pickers.add(node);
+                    }
                 }
             } while ((node = node.getSelectedChild()) != null);
         }
@@ -138,7 +143,7 @@ public class PickerAdapter extends RecyclerView.Adapter {
 
     public List<Picker> getData() {
         // defensive copy: preventing clients from mutating
-        // list of pickers set to adapyer
+        // list of pickers set to adapter
         return new ArrayList<>(pickers);
     }
 

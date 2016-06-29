@@ -30,7 +30,6 @@ package org.hisp.dhis.client.sdk.ui.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
@@ -39,7 +38,6 @@ import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
  * This class represents the node in tree data structure.
  */
 public class Picker implements Serializable {
-
     // hint which describes the content of picker
     private final String hint;
 
@@ -49,6 +47,7 @@ public class Picker implements Serializable {
 
     // parent node
     private final Picker parent;
+    private final boolean isRoot;
 
     // available options (child nodes in tree)
     private final List<Picker> children;
@@ -56,11 +55,12 @@ public class Picker implements Serializable {
     // selected item (represents path to selected node)
     private Picker selectedChild;
 
-    private Picker(String id, String name, String hint, Picker parent) {
+    private Picker(String id, String name, String hint, Picker parent, boolean isRoot) {
         this.id = id;
         this.name = name;
         this.hint = hint;
         this.parent = parent;
+        this.isRoot = isRoot;
         this.children = new ArrayList<>();
     }
 
@@ -69,6 +69,7 @@ public class Picker implements Serializable {
         private String name;
         private String hint;
         private Picker parent;
+        private boolean isRoot;
 
         public Builder() {
             // empty constructor
@@ -94,30 +95,19 @@ public class Picker implements Serializable {
             return this;
         }
 
+        public Builder asRoot() {
+            this.isRoot = true;
+            return this;
+        }
+
         public Picker build() {
-            return new Picker(id, name, hint, parent);
+            if (parent == null) {
+                isRoot = true;
+            }
+
+            return new Picker(id, name, hint, parent, isRoot);
         }
     }
-
-//    public static Picker create(String label) {
-//        return new Picker(null, null, label, null);
-//    }
-//
-//    public static Picker create(String id, String label) {
-//        return new Picker(id, null, label, null);
-//    }
-//
-//    public static Picker create(String id, String name, Picker parent) {
-//        return new Picker(id, name, null, parent);
-//    }
-//
-//    public static Picker create(String label, Picker parent) {
-//        return new Picker(null, null, label, parent);
-//    }
-//
-//    public static Picker create(String id, String name, String label, Picker parent) {
-//        return new Picker(id, name, label, parent);
-//    }
 
     public String getHint() {
         return hint;
@@ -135,14 +125,31 @@ public class Picker implements Serializable {
         return parent;
     }
 
-    public boolean addChild(Picker picker) {
-        isNull(picker, "Picker must not be null");
-        return children.add(picker);
+    public boolean isLeaf() {
+        return children.isEmpty();
     }
 
-    public boolean addChildren(Collection<Picker> pickers) {
-        isNull(pickers, "Collection of pickers must not be null");
-        return children.addAll(pickers);
+    public boolean isRoot() {
+        return isRoot;
+    }
+
+    public boolean addChild(Picker picker) {
+        isNull(picker, "Picker must not be null");
+
+        if (children.isEmpty()) {
+            return children.add(picker);
+        }
+
+        if (picker.isRoot() && areChildrenRoots()) {
+            return children.add(picker);
+        }
+
+        if (!picker.isRoot() && !areChildrenRoots()) {
+            return children.add(picker);
+        }
+
+        throw new IllegalArgumentException("All child nodes should be of the same " +
+                "type (leaf or root)");
     }
 
     public List<Picker> getChildren() {
@@ -153,10 +160,32 @@ public class Picker implements Serializable {
         return selectedChild;
     }
 
+    public boolean areChildrenRoots() {
+        for (Picker child : children) {
+            if (!child.isRoot()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public void setSelectedChild(Picker selectedChild) {
+        if (selectedChild != null && selectedChild.isRoot()) {
+            throw new IllegalArgumentException("root picker cannot " +
+                    "be set as selected child of given picker");
+        }
+
         // if we set new selected child, we have to reset all descendants
         if (this.selectedChild != null) {
             this.selectedChild.setSelectedChild(null);
+        } else {
+            if (areChildrenRoots()) {
+                // reset selection for adjacent trees as well
+                for (Picker child : children) {
+                    child.setSelectedChild(null);
+                }
+            }
         }
 
         this.selectedChild = selectedChild;

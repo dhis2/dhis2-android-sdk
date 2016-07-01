@@ -68,10 +68,12 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import retrofit.mime.TypedString;
 
 import static org.hisp.dhis.android.sdk.utils.NetworkUtils.unwrapResponse;
+import static org.hisp.dhis.client.sdk.utils.StringUtils.isEmpty;
 
 /**
  * @author Simen Skogly Russnes on 24.08.15.
@@ -93,6 +95,11 @@ final class TrackerDataLoader extends ResourceController {
         DateTime serverDateTime = serverSystemInfo.getServerDate();
         List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
         Hashtable<String, List<Program>> programsForOrganisationUnits = new Hashtable<>();
+
+
+        //check if events is updated on server
+        List<Enrollment> activeEnrollments = TrackerController.getActiveEnrollments();
+//        updateEventsForEnrollments(context, dhisApi, activeEnrollments, serverDateTime);
 
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.EVENTS)) {
             for (OrganisationUnit organisationUnit : assignedOrganisationUnits) {
@@ -132,6 +139,87 @@ final class TrackerDataLoader extends ResourceController {
                     }
                 }
             }
+        }
+    }
+
+    static void updateEventsForEnrollments(Context context, DhisApi dhisApi, List<Enrollment> enrollments, DateTime serverDateTime) {
+        DateTime lastUpdated = DateTimeManager.getInstance().getLastUpdated(ResourceType.EVENTS);
+        String delimiter = ";";
+        boolean failed = false;
+        String trackedEntityInstanceQueryParams = "trackedEntityInstance";
+        Map<String, String> QUERY_MAP_FULL = new HashMap<>();
+        Map<String,List<Enrollment>> programToEnrollmentMap = mapActiveEnrollmentsByProgram(enrollments);
+        List<Event> eventsFromServer = new ArrayList<>();
+        if(lastUpdated != null) {
+            QUERY_MAP_FULL.put("lastUpdated", lastUpdated.toString());
+        }
+
+        if(programToEnrollmentMap.keySet().size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            Set<String> programUids = programToEnrollmentMap.keySet();
+
+            for(String programUid : programUids) {
+                List<Enrollment> enrollmentsForProgram = programToEnrollmentMap.get(programUid);
+                for(Enrollment enrollment : enrollmentsForProgram) {
+                    sb.append(enrollment.getTrackedEntityInstance() + delimiter);
+                }
+                QUERY_MAP_FULL.put(trackedEntityInstanceQueryParams, sb.toString());
+                try {
+                    List<Event> eventsForTrackedEntityInstance = dhisApi.getEventsForTrackedEntityInstance(programUid, QUERY_MAP_FULL);
+                    if(eventsForTrackedEntityInstance != null) {
+                        eventsFromServer.addAll(dhisApi.getEventsForTrackedEntityInstance(programUid, QUERY_MAP_FULL));
+                    }
+
+                }
+                catch (APIException apiException) {
+                    apiException.printStackTrace();
+                    failed = true;
+                }
+
+            }
+
+
+        }
+
+
+        if(!failed) {
+            saveResourceDataFromServer(ResourceType.EVENTS, dhisApi, eventsFromServer, null, serverDateTime);
+            DateTimeManager.getInstance().setLastUpdated(ResourceType.EVENTS, serverDateTime);
+        }
+
+    }
+
+    static Map<String, List<Enrollment>> mapActiveEnrollmentsByProgram(List<Enrollment> enrollments) {
+        Map<String,List<Enrollment>> programToEnrollmentMap = new HashMap<>();
+
+        for(Enrollment enrollment : enrollments) {
+            if(enrollment != null && enrollment.getProgram() != null // if enrollment exists, is active and have a trackedEntityInstance
+                    && Enrollment.ACTIVE.equals(enrollment.getStatus())
+                    && !isEmpty(enrollment.getTrackedEntityInstance())) {
+
+                if(!programToEnrollmentMap.containsKey(enrollment.getProgram().getUid())) {
+                    List<Enrollment> enrollmentForProgram = new ArrayList<>();
+                    enrollmentForProgram.add(enrollment);
+                    programToEnrollmentMap.put(enrollment.getProgram().getUid(), enrollmentForProgram);
+                }
+                else {
+                    programToEnrollmentMap.get(enrollment.getProgram().getUid()).add(enrollment); // adding enrollment to list
+                }
+            }
+        }
+        return programToEnrollmentMap;
+    }
+
+    static void updateEnrollments(Context context, DhisApi dhisApi, List<Enrollment> enrollments) {
+        DateTime lastUpdated = DateTimeManager.getInstance().getLastUpdated(ResourceType.ENROLLMENTS);
+    }
+
+    static void updateEvents(Context context, DhisApi dhisApi, List<Event> events) {
+        DateTime lastUpdated = DateTimeManager.getInstance().getLastUpdated(ResourceType.EVENTS);
+
+        final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
+        if(events != null && events.size() > 0) {
+            QUERY_MAP_FULL.put("program", "");
         }
     }
 

@@ -471,6 +471,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             return;
         }
         if(hasRules(dataElement)) {
+            getProgramRuleFragmentHelper().getProgramRuleValidationErrors().clear();
             initiateEvaluateProgramRules();
         }
         if(hasIndicators(dataElement)) {

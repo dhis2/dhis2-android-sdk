@@ -201,7 +201,7 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
         }
         eventDataEntryFragment.getListViewAdapter().showErrorOnIndex(uid, programRuleAction.getContent());
         if(!programRuleValidationErrors.contains(programRuleAction.getContent())) {
-            programRuleValidationErrors.add(programRuleAction.getContent());
+            programRuleValidationErrors.add(programRuleAction.getContent() + " " + programRuleAction.getData());
         }
     }
 

@@ -253,6 +253,10 @@ public interface DhisApi {
                                        @Query("pageSize") int eventLimit,
                                        @QueryMap Map<String, String> queryParams);
 
+    @GET("/" + ApiEndpointContainer.EVENTS + "skipPaging=true&ouMode=ACCESSIBLE")
+                List<Event> getEventsForTrackedEntityInstance(@Query("program") String programUid,
+                                                              @QueryMap Map<String, String> queryParams);
+
     @GET("/" + ApiEndpointContainer.EVENTS + "?skipPaging=true&ouMode=ACCESSIBLE")
     JsonNode getEventsForEnrollment(@Query("program") String programUid,
                                                     @Query("programStatus") String programStatus,

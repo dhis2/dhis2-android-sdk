@@ -120,7 +120,7 @@ import static org.hisp.dhis.android.sdk.utils.NetworkUtils.unwrapResponse;
  */
 public final class MetaDataController extends ResourceController {
     private final static String CLASS_TAG = "MetaDataController";
-    private final static long TRACKED_ENTITY_ATTRITBUTE_GENERATED_VALUE_THRESHOLD = 10;
+    private final static long TRACKED_ENTITY_ATTRITBUTE_GENERATED_VALUE_THRESHOLD = 200;
 
     private MetaDataController() {
     }
@@ -582,6 +582,18 @@ public final class MetaDataController extends ResourceController {
         Log.d(CLASS_TAG, "loadMetaData");
         UiUtils.postProgressMessage(context.getString(R.string.loading_metadata));
         updateMetaDataItems(context, dhisApi);
+    }
+
+    private static void updateTrackedDataItems(Context context, DhisApi dhisApi, DateTime serverDateTime) {
+        if(dhisApi == null) {
+            dhisApi = DhisController.getInstance().getDhisApi();
+            if(dhisApi == null) {
+                return;
+            }
+
+        }
+
+
     }
 
     /**

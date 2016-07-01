@@ -471,4 +471,14 @@ public final class TrackerController extends ResourceController {
     public static void sendTrackedEntityInstanceChanges(DhisApi dhisApi, TrackedEntityInstance trackedEntityInstance, boolean sendEnrollments) throws APIException {
         TrackerDataSender.sendTrackedEntityInstanceChanges(dhisApi, trackedEntityInstance, sendEnrollments);
     }
+
+    public static List<Enrollment> getActiveEnrollments() {
+        List<Enrollment> activeEnrollments = new Select().from(Enrollment.class)
+                .where(Condition.column(Enrollment$Table.STATUS).eq(Enrollment.ACTIVE))
+                .queryList();
+        if(activeEnrollments != null) {
+            return activeEnrollments;
+        }
+        else return new ArrayList<>();
+    }
 }

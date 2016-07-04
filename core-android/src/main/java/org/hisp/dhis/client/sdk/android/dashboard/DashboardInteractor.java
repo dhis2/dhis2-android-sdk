@@ -31,8 +31,10 @@ package org.hisp.dhis.client.sdk.android.dashboard;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 
@@ -51,6 +53,10 @@ public interface DashboardInteractor {
     Observable<Dashboard> get(String uid);
 
     Observable<List<Dashboard>> list();
+
+    Observable<List<Dashboard>> pull();
+
+    Observable<List<Dashboard>> pull(SyncStrategy syncStrategy);
 
     Observable<Integer> countItems(Dashboard dashboard);
 

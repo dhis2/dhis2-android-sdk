@@ -36,6 +36,7 @@ import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 
 import java.util.List;
+import java.util.Set;
 
 
 import rx.Observable;
@@ -111,6 +112,22 @@ public class DashboardInteractorImpl implements DashboardInteractor {
         return Observable.create(new DefaultOnSubscribe<List<Dashboard>>() {
             @Override
             public List<Dashboard> call() {
+                return dashboardService.list();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<Dashboard>> pull() {
+        return pull(SyncStrategy.DEFAULT);
+    }
+
+    @Override
+    public Observable<List<Dashboard>> pull(final SyncStrategy syncStrategy) {
+        return Observable.create(new DefaultOnSubscribe<List<Dashboard>>() {
+            @Override
+            public List<Dashboard> call() {
+                dashboardController.pull(syncStrategy);
                 return dashboardService.list();
             }
         });

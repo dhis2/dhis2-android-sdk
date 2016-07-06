@@ -53,40 +53,40 @@ public interface DashboardApiClientRetrofit {
     // Methods for getting Dashboard and DashboardItems
     /////////////////////////////////////////////////////////////////////////
 
-    @GET("/dashboards?paging=false")
+    @GET("dashboards?paging=false")
     Call<Map<String, List<Dashboard>>> getDashboards(@QueryMap Map<String, String> queryMap);
 
-    @GET("/dashboards/{uid}")
+    @GET("dashboards/{uid}")
     Call<Dashboard> getDashboard(@Path("uid") String uId, @QueryMap Map<String, String> queryMap);
 
-    @POST("/dashboards/")
+    @POST("dashboards/")
     Call<Response> postDashboard(@Body Dashboard dashboard);
 
-    @DELETE("/dashboards/{uid}")
+    @DELETE("dashboards/{uid}")
     Call<Response> deleteDashboard(@Path("uid") String dashboardUId);
 
-    @PUT("/dashboards/{uid}")
+    @PUT("dashboards/{uid}")
     Call<Response> putDashboard(@Path("uid") String uid, @Body Dashboard dashboard);
 
-    @GET("/dashboardItems?paging=false")
+    @GET("dashboardItems?paging=false")
     Call<Map<String, List<DashboardItem>>> getDashboardItems(@QueryMap Map<String, String>
                                                                      queryMap);
 
-    @GET("/dashboardItems/{uid}")
+    @GET("dashboardItems/{uid}")
     Call<DashboardItem> getDashboardItem(@Path("uid") String uId, @QueryMap Map<String, String>
             queryMap);
 
-    @POST("/dashboards/{dashboardUId}/items/content")
+    @POST("dashboards/{dashboardUId}/items/content")
     Call<Response> postDashboardItem(@Path("dashboardUId") String dashboardUId,
                                      @Query("type") String type,
                                      @Query("id") String uid,
                                      @Body String stubBody);
 
-    @DELETE("/dashboards/{dashboardUId}/items/{itemUId}")
+    @DELETE("dashboards/{dashboardUId}/items/{itemUId}")
     Call<Response> deleteDashboardItem(@Path("dashboardUId") String dashboardUId,
                                        @Path("itemUId") String itemUId);
 
-    @DELETE("/dashboards/{dashboardUid}/items/{itemUid}/content/{contentUid}")
+    @DELETE("dashboards/{dashboardUid}/items/{itemUid}/content/{contentUid}")
     Call<Response> deleteDashboardItemContent(@Path("dashboardUid") String dashboardUid,
                                               @Path("itemUid") String itemUid,
                                               @Path("contentUid") String contentUid);
@@ -96,17 +96,17 @@ public interface DashboardApiClientRetrofit {
     // Methods for getting DashboardContent
     /////////////////////////////////////////////////////////////////////////
 
-    @GET("/charts?paging=false")
+    @GET("charts?paging=false")
     Call<Map<String, List<DashboardContent>>> getCharts(@QueryMap Map<String, String> queryParams);
 
-    @GET("/eventCharts?paging=false")
+    @GET("eventCharts?paging=false")
     Call<Map<String, List<DashboardContent>>> getEventCharts(@QueryMap Map<String, String>
                                                                      queryParams);
 
-    @GET("/maps?paging=false")
+    @GET("maps?paging=false")
     Call<Map<String, List<DashboardContent>>> getMaps(@QueryMap Map<String, String> queryParams);
 
-    @GET("/reportTables?paging=false")
+    @GET("reportTables?paging=false")
     Call<Map<String, List<DashboardContent>>> getReportTables(@QueryMap Map<String, String>
                                                                       queryParams);
 
@@ -114,16 +114,16 @@ public interface DashboardApiClientRetrofit {
     @GET("/reportTables/{id}/data.html")
     Call<Response> getReportTableData(@Path("id") String id);
 
-    @GET("/eventReports?paging=false")
+    @GET("eventReports?paging=false")
     Call<Map<String, List<DashboardContent>>> getEventReports(@QueryMap Map<String, String>
                                                                       queryParams);
 
-    @GET("/users?paging=false")
+    @GET("users?paging=false")
     Call<Map<String, List<DashboardContent>>> getUsers(@QueryMap Map<String, String> queryParams);
 
-    @GET("/reports?paging=false")
+    @GET("reports?paging=false")
     Call<Map<String, List<DashboardContent>>> getReports(@QueryMap Map<String, String> queryMap);
 
-    @GET("/documents?paging=false")
+    @GET("documents?paging=false")
     Call<Map<String, List<DashboardContent>>> getResources(@QueryMap Map<String, String> queryMap);
 }

@@ -40,6 +40,7 @@ import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,10 +50,10 @@ import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.unwrap;
 
 
 public class DashboardApiClientImpl implements DashboardApiClient {
-    private final DashboardApiClientRetrofit dhisApi;
+    private final DashboardApiClientRetrofit dashboardApiClientRetrofit;
 
-    public DashboardApiClientImpl(@NonNull DashboardApiClientRetrofit dhisApi) {
-        this.dhisApi = dhisApi;
+    public DashboardApiClientImpl(@NonNull DashboardApiClientRetrofit dashboardApiClientRetrofit) {
+        this.dashboardApiClientRetrofit = dashboardApiClientRetrofit;
     }
 
     @Override
@@ -62,10 +63,10 @@ public class DashboardApiClientImpl implements DashboardApiClient {
         QUERY_MAP_BASIC.put("fields", "id");
 
         if (lastUpdated != null) {
-            QUERY_MAP_BASIC.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
+            QUERY_MAP_BASIC.put("lastUpdated:gt:" , lastUpdated.toString());
         }
 
-        return unwrap(call(dhisApi.getDashboards(QUERY_MAP_BASIC)), DhisApi.DASHBOARDS);
+        return unwrap(call(dashboardApiClientRetrofit.getDashboards(QUERY_MAP_BASIC)), DhisApi.DASHBOARDS);
     }
 
     @Override
@@ -90,7 +91,7 @@ public class DashboardApiClientImpl implements DashboardApiClient {
             QUERY_MAP_FULL.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
         }
 
-        List<Dashboard> dashboards = unwrap(call(dhisApi.getDashboards(QUERY_MAP_FULL)),
+        List<Dashboard> dashboards = unwrap(call(dashboardApiClientRetrofit.getDashboards(QUERY_MAP_FULL)),
                 DhisApi.DASHBOARDS);
 
         // Building dashboard item to dashboard relationship.
@@ -116,7 +117,7 @@ public class DashboardApiClientImpl implements DashboardApiClient {
             QUERY_MAP_BASIC.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
         }
 
-        return unwrap(call(dhisApi.getDashboardItems(QUERY_MAP_BASIC)), DhisApi.DASHBOARD_ITEMS);
+        return unwrap(call(dashboardApiClientRetrofit.getDashboardItems(QUERY_MAP_BASIC)), DhisApi.DASHBOARD_ITEMS);
     }
 
     @Override
@@ -130,7 +131,7 @@ public class DashboardApiClientImpl implements DashboardApiClient {
     public Dashboard getBaseDashboardByUid(String uid) {
         final Map<String, String> QUERY_PARAMS = new HashMap<>();
         QUERY_PARAMS.put("fields", "created,lastUpdated");
-        return call(dhisApi.getDashboard(uid, QUERY_PARAMS));
+        return call(dashboardApiClientRetrofit.getDashboard(uid, QUERY_PARAMS));
     }
 
     @Override

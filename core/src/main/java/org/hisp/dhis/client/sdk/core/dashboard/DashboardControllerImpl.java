@@ -185,16 +185,18 @@ public final class DashboardControllerImpl extends AbsDataController<Dashboard> 
         Map<Long, List<DashboardItem>> dashboardItemMap = getDashboardItemMap();
         Map<Long, List<DashboardElement>> dashboardElementMap = getDashboardElementMap(false);
 
-        for (Dashboard dashboard : persistedDashboards) {
-            List<DashboardItem> items = dashboardItemMap.get(dashboard.getId());
-            if (items == null || items.isEmpty()) {
-                continue;
-            }
+        if(persistedDashboards!=null && !persistedDashboards.isEmpty()) {
+            for (Dashboard dashboard : persistedDashboards) {
+                List<DashboardItem> items = dashboardItemMap.get(dashboard.getId());
+                if (items == null || items.isEmpty()) {
+                    continue;
+                }
 
-            for (DashboardItem item : items) {
-                item.setDashboardElements(dashboardElementMap.get(item.getId()));
+                for (DashboardItem item : items) {
+                    item.setDashboardElements(dashboardElementMap.get(item.getId()));
+                }
+                dashboard.setDashboardItems(items);
             }
-            dashboard.setDashboardItems(items);
         }
 
         return ModelUtils.merge(actualDashboards, updatedDashboards, persistedDashboards);
@@ -308,16 +310,18 @@ public final class DashboardControllerImpl extends AbsDataController<Dashboard> 
                         Action.TO_DELETE);
         Map<Long, List<DashboardItem>> dashboardItemMap = new HashMap<>();
 
-        for (DashboardItem dashboardItem : dashboardItemsList) {
-            Long dashboardId = dashboardItem.getDashboard().getId();
+        if(dashboardItemsList!=null && !dashboardItemsList.isEmpty()) {
+            for (DashboardItem dashboardItem : dashboardItemsList) {
+                Long dashboardId = dashboardItem.getDashboard().getId();
 
-            List<DashboardItem> bag = dashboardItemMap.get(dashboardId);
-            if (bag == null) {
-                bag = new ArrayList<>();
-                dashboardItemMap.put(dashboardId, bag);
+                List<DashboardItem> bag = dashboardItemMap.get(dashboardId);
+                if (bag == null) {
+                    bag = new ArrayList<>();
+                    dashboardItemMap.put(dashboardId, bag);
+                }
+
+                bag.add(dashboardItem);
             }
-
-            bag.add(dashboardItem);
         }
 
         return dashboardItemMap;
@@ -336,16 +340,18 @@ public final class DashboardControllerImpl extends AbsDataController<Dashboard> 
         }
         Map<Long, List<DashboardElement>> dashboardElementMap = new HashMap<>();
 
-        for (DashboardElement dashboardElement : dashboardElementsList) {
-            Long dashboardItemId = dashboardElement.getDashboardItem().getId();
+        if(dashboardElementsList!=null && !dashboardElementsList.isEmpty()) {
+            for (DashboardElement dashboardElement : dashboardElementsList) {
+                Long dashboardItemId = dashboardElement.getDashboardItem().getId();
 
-            List<DashboardElement> bag = dashboardElementMap.get(dashboardItemId);
-            if (bag == null) {
-                bag = new ArrayList<>();
-                dashboardElementMap.put(dashboardItemId, bag);
+                List<DashboardElement> bag = dashboardElementMap.get(dashboardItemId);
+                if (bag == null) {
+                    bag = new ArrayList<>();
+                    dashboardElementMap.put(dashboardItemId, bag);
+                }
+
+                bag.add(dashboardElement);
             }
-
-            bag.add(dashboardElement);
         }
 
         return dashboardElementMap;

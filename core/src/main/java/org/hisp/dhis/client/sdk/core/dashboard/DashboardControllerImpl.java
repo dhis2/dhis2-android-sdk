@@ -43,6 +43,7 @@ import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.common.utils.ModelUtils;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
@@ -61,6 +62,11 @@ import java.util.Queue;
 import java.util.Set;
 
 public final class DashboardControllerImpl extends AbsDataController<Dashboard> implements DashboardController {
+
+    /* Controllers */
+    private final SystemInfoController systemInfoController;
+
+    /* Persistence */
     private final DashboardStore dashboardStore;
     private final DashboardItemStore dashboardItemStore;
     private final DashboardElementStore dashboardElementStore;
@@ -77,7 +83,8 @@ public final class DashboardControllerImpl extends AbsDataController<Dashboard> 
     /* database transaction manager */
     private final TransactionManager transactionManager;
 
-    public DashboardControllerImpl(DashboardStore dashboardStore,
+    public DashboardControllerImpl(SystemInfoController systemInfoController,
+                                   DashboardStore dashboardStore,
                                    DashboardItemStore dashboardItemStore,
                                    DashboardElementStore dashboardElementStore,
                                    DashboardContentStore dashboardItemContentStore,
@@ -88,6 +95,7 @@ public final class DashboardControllerImpl extends AbsDataController<Dashboard> 
                                    TransactionManager transactionManager, Logger logger) {
         super(logger, dashboardStore);
 
+        this.systemInfoController = systemInfoController;
         this.dashboardStore = dashboardStore;
         this.dashboardItemStore = dashboardItemStore;
         this.dashboardElementStore = dashboardElementStore;
@@ -142,7 +150,7 @@ public final class DashboardControllerImpl extends AbsDataController<Dashboard> 
 
     private void getDashboardDataFromServer() {
         DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.DASHBOARDS, DateType.SERVER);
-        DateTime serverDateTime = systemInfoApiClient.getSystemInfo().getServerDate();
+        DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
 
         List<Dashboard> dashboards = updateDashboards(lastUpdated);
         List<DashboardItem> dashboardItems = updateDashboardItems(dashboards, lastUpdated);
@@ -158,7 +166,7 @@ public final class DashboardControllerImpl extends AbsDataController<Dashboard> 
         operations.addAll(createOperations(dashboardItems));
 
         transactionManager.transact(operations);
-        lastUpdatedPreferences.save(ResourceType.DASHBOARDS, DateType.SERVER, serverDateTime);
+        lastUpdatedPreferences.save(ResourceType.DASHBOARDS, DateType.SERVER, serverTime);
     }
 
     private List<Dashboard> updateDashboards(DateTime lastUpdated) {

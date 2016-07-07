@@ -91,20 +91,22 @@ public class DashboardApiClientImpl implements DashboardApiClient {
             QUERY_MAP_FULL.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
         }
 
-        List<Dashboard> dashboards = unwrap(call(dashboardApiClientRetrofit.getDashboards(QUERY_MAP_FULL)),
+        List<Dashboard> updatedDashboards = unwrap(call(dashboardApiClientRetrofit.getDashboards(QUERY_MAP_FULL)),
                 DhisApi.DASHBOARDS);
 
         // Building dashboard item to dashboard relationship.
-        for (Dashboard dashboard : dashboards) {
-            if (dashboard != null && dashboard.getDashboardItems() != null &&
-                    dashboard.getDashboardItems().isEmpty()) {
-                for (DashboardItem item : dashboard.getDashboardItems()) {
-                    item.setDashboard(dashboard);
+        if (!updatedDashboards.isEmpty()) {
+            for (Dashboard dashboard : updatedDashboards) {
+                if (dashboard != null && dashboard.getDashboardItems() != null &&
+                        dashboard.getDashboardItems().isEmpty()) {
+                    for (DashboardItem item : dashboard.getDashboardItems()) {
+                        item.setDashboard(dashboard);
+                    }
                 }
             }
         }
 
-        return dashboards;
+        return updatedDashboards;
     }
 
     @Override

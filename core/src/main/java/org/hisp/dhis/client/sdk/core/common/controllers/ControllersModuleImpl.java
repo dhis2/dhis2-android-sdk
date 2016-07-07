@@ -226,7 +226,8 @@ public class ControllersModuleImpl implements ControllersModule {
                 persistenceModule.getStateStore(),
                 persistenceModule.getTransactionManager(), logger);
 
-        dashboardController = new DashboardControllerImpl(persistenceModule.getDashboardStore(),
+        dashboardController = new DashboardControllerImpl(systemInfoController,
+                persistenceModule.getDashboardStore(),
                 persistenceModule.getDashboardItemStore(),
                 persistenceModule.getDashboardElementStore(),
                 persistenceModule.getDashboardContentStore(),

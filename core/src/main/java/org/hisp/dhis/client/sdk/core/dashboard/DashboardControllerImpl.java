@@ -70,12 +70,10 @@ public final class DashboardControllerImpl extends AbsDataController<Dashboard> 
     private final DashboardStore dashboardStore;
     private final DashboardItemStore dashboardItemStore;
     private final DashboardElementStore dashboardElementStore;
-    private final DashboardContentStore dashboardItemContentStore;
     private final StateStore stateStore;
 
     /* dashboard client */
     private final DashboardApiClient dashboardApiClient;
-    private final SystemInfoApiClient systemInfoApiClient;
 
     /* last updated preferences */
     private final LastUpdatedPreferences lastUpdatedPreferences;
@@ -90,7 +88,6 @@ public final class DashboardControllerImpl extends AbsDataController<Dashboard> 
                                    DashboardContentStore dashboardItemContentStore,
                                    StateStore stateStore,
                                    DashboardApiClient dashboardApiClient,
-                                   SystemInfoApiClient systemInfoApiClient,
                                    LastUpdatedPreferences lastUpdatedPreferences,
                                    TransactionManager transactionManager, Logger logger) {
         super(logger, dashboardStore);
@@ -99,10 +96,8 @@ public final class DashboardControllerImpl extends AbsDataController<Dashboard> 
         this.dashboardStore = dashboardStore;
         this.dashboardItemStore = dashboardItemStore;
         this.dashboardElementStore = dashboardElementStore;
-        this.dashboardItemContentStore = dashboardItemContentStore;
         this.stateStore = stateStore;
         this.dashboardApiClient = dashboardApiClient;
-        this.systemInfoApiClient = systemInfoApiClient;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
         this.transactionManager = transactionManager;
     }

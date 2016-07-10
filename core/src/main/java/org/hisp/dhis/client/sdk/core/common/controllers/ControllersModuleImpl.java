@@ -31,6 +31,8 @@ package org.hisp.dhis.client.sdk.core.common.controllers;
 import org.hisp.dhis.client.sdk.core.common.network.NetworkModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.PersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.PreferencesModule;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardContentController;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardContentControllerImpl;
 import org.hisp.dhis.client.sdk.core.dashboard.DashboardController;
 import org.hisp.dhis.client.sdk.core.dashboard.DashboardControllerImpl;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementController;
@@ -90,6 +92,7 @@ public class ControllersModuleImpl implements ControllersModule {
     private final TrackedEntityAttributeController trackedEntityAttributeController;
     private final EventController eventController;
     private final DashboardController dashboardController;
+    private final DashboardContentController dashboardContentController;
 
     public ControllersModuleImpl(NetworkModule networkModule,
                                  PersistenceModule persistenceModule,
@@ -237,6 +240,12 @@ public class ControllersModuleImpl implements ControllersModule {
                 preferencesModule.getLastUpdatedPreferences(),
                 persistenceModule.getTransactionManager(), logger);
 
+        dashboardContentController = new DashboardContentControllerImpl(systemInfoController,
+                persistenceModule.getDashboardContentStore(),
+                persistenceModule.getStateStore(),
+                networkModule.getDashboardApiClient(),
+                preferencesModule.getLastUpdatedPreferences(),
+                persistenceModule.getTransactionManager(), logger);
     }
 
     @Override
@@ -287,6 +296,11 @@ public class ControllersModuleImpl implements ControllersModule {
     @Override
     public DashboardController getDashboardController() {
         return dashboardController;
+    }
+
+    @Override
+    public DashboardContentController getDashboardContentController() {
+        return dashboardContentController;
     }
 
     @Override

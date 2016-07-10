@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.common.controllers;
 
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardContentController;
 import org.hisp.dhis.client.sdk.core.dashboard.DashboardController;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementController;
 import org.hisp.dhis.client.sdk.core.event.EventController;
@@ -67,6 +68,8 @@ public interface ControllersModule {
     EventController getEventController();
 
     DashboardController getDashboardController();
+
+    DashboardContentController getDashboardContentController();
 
     DataElementController getDataElementController();
 

@@ -236,7 +236,6 @@ public class ControllersModuleImpl implements ControllersModule {
                 persistenceModule.getDashboardContentStore(),
                 persistenceModule.getStateStore(),
                 networkModule.getDashboardApiClient(),
-                networkModule.getSystemInfoApiClient(),
                 preferencesModule.getLastUpdatedPreferences(),
                 persistenceModule.getTransactionManager(), logger);
 

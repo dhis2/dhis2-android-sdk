@@ -138,7 +138,7 @@ public class LoginPresenterImpl implements LoginPresenter, LoginPresenter.OnLogi
     public void handleError(final Throwable throwable) {
         AppError error = apiExceptionHandler.handleException(TAG, throwable);
 
-        if (throwable instanceof ApiException) {
+        if (throwable instanceof ApiException && loginView != null) {
             ApiException exception = (ApiException) throwable;
 
             if (exception.getResponse() != null) {

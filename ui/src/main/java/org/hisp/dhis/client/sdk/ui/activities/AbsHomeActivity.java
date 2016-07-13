@@ -143,15 +143,14 @@ public abstract class AbsHomeActivity extends BaseActivity
         } else if (menuItemId == R.id.drawer_item_settings) {
             attachFragmentDelayed(getSettingsFragment());
             isSelected = true;
+        } else if (menuItemId == R.id.drawer_item_about) {
+            attachFragment(getAboutFragment());
+            isSelected = true;
         }
         /*else if (menuItemId == R.id.drawer_item_help) {
             attachFragment(getHelpFragment());
             isSelected = true;
-        } else if (menuItemId == R.id.drawer_item_about) {
-            attachFragment(getAboutFragment());
-            isSelected = true;
-        }*/
-
+        } */
         isSelected = onItemSelected(menuItem) || isSelected;
         if (isSelected) {
             navigationView.setCheckedItem(menuItemId);

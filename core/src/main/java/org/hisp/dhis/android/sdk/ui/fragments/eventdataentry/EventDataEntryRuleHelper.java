@@ -174,7 +174,8 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
 
     @Override
     public void updateUi() {
-        if(eventDataEntryFragment.getForm().getEvent().getEventDate() == null) {
+        if(eventDataEntryFragment.getForm().getEvent() != null
+                && eventDataEntryFragment.getForm().getEvent().getEventDate() == null) {
             eventDataEntryFragment.getListViewAdapter().hideAll();
             if(eventDataEntryFragment.getSpinnerAdapter() != null) {
                 eventDataEntryFragment.getSpinnerAdapter().hideAll();

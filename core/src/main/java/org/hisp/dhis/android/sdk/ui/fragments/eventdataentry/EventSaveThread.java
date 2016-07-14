@@ -29,15 +29,11 @@
 
 package org.hisp.dhis.android.sdk.ui.fragments.eventdataentry;
 
-import android.util.Log;
-
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.AsyncHelperThread;
-import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragment;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -61,32 +57,34 @@ public class EventSaveThread extends AsyncHelperThread {
     }
 
     public void setEvent(Event event) {
-        this.event = event;
-        if(event.getDataValues() != null) {
-            for(DataValue dataValue : event.getDataValues()) {
-                dataValues.put(dataValue.getDataElement(), dataValue);
+        if (event != null) {
+            this.event = event;
+            if (event.getDataValues() != null) {
+                for (DataValue dataValue : event.getDataValues()) {
+                    dataValues.put(dataValue.getDataElement(), dataValue);
+                }
             }
         }
     }
 
     protected void work() {
-        if(this.dataEntryFragment!=null && this.event != null) {
-            if(event.getLocalId() < 0) {
+        if (this.dataEntryFragment != null && this.event != null) {
+            if (event.getLocalId() < 0) {
                 saveEvent = true;
             }
 
-            while(saveEvent) {
+            while (saveEvent) {
                 saveEvent();
             }
 
             boolean invalidateEvent = false;
-            while(!queuedDataValues.isEmpty()) {
+            while (!queuedDataValues.isEmpty()) {
                 saveDataValue();
 
                 //after saving data values have to schedule saving the event to flag it to "not from server"
                 invalidateEvent = true;
             }
-            if(invalidateEvent) {
+            if (invalidateEvent) {
                 saveEvent();
             }
 
@@ -95,6 +93,9 @@ public class EventSaveThread extends AsyncHelperThread {
     }
 
     private void saveEvent() {
+        if (event == null) {
+            return;
+        }
         saveEvent = false;
         event.setFromServer(false);
         Event tempEvent = new Event();
@@ -123,11 +124,13 @@ public class EventSaveThread extends AsyncHelperThread {
     }
 
     private void saveDataValue() {
-        String dataElementDataValue = queuedDataValues.poll();
-        DataValue dataValue = dataValues.get(dataElementDataValue);
-        dataValue.setLocalEventId(event.getLocalId());
-        if(dataValue != null) {
-            dataValue.save();
+        if (event != null) {
+            String dataElementDataValue = queuedDataValues.poll();
+            DataValue dataValue = dataValues.get(dataElementDataValue);
+            dataValue.setLocalEventId(event.getLocalId());
+            if (dataValue != null) {
+                dataValue.save();
+            }
         }
     }
 
@@ -137,7 +140,7 @@ public class EventSaveThread extends AsyncHelperThread {
     }
 
     public void scheduleSaveDataValue(String dataValueDataElement) {
-        if(!queuedDataValues.contains(dataValueDataElement)) {
+        if (!queuedDataValues.contains(dataValueDataElement)) {
             queuedDataValues.add(dataValueDataElement);
         }
         super.schedule();
@@ -148,7 +151,7 @@ public class EventSaveThread extends AsyncHelperThread {
         super.kill();
         dataEntryFragment = null;
         event = null;
-        if(dataValues != null) {
+        if (dataValues != null) {
             dataValues.clear();
             dataValues = null;
         }

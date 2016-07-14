@@ -191,4 +191,6 @@
     <string name="report_entity">Report Entity</string>
 
     <string name="app_version">App version</string>
+    <string name="app_name">App name</string>
+    <string name="server_version">Server version</string>
 </resources>

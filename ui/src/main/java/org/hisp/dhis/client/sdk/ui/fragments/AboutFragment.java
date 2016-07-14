@@ -36,9 +36,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.android.api.D2;
+import org.hisp.dhis.client.sdk.android.api.preferences.PreferencesModuleImpl;
 import org.hisp.dhis.client.sdk.ui.R;
 
 import java.util.Locale;
@@ -55,44 +57,55 @@ public class AboutFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        TextView aboutSessionText = (TextView) getActivity().findViewById(R.id.about_session);
-        TextView aboutAppText = (TextView) getActivity().findViewById(R.id.about_app);
 
-        // inside about_session:
-        aboutSessionText.setText(String.format(Locale.getDefault(), "%s: %s\n",
-                getString(R.string.username),
-                D2.me().userCredentials()
-                        .toBlocking().first()
-                        .getUsername()));
-        aboutSessionText.append(String.format(Locale.getDefault(), "%s: %s\n",
-                getString(R.string.server_url),
-                "<server-url>"
-        ));
-        aboutSessionText.append(String.format(Locale.getDefault(), "%s: %s\n",
-                "Server version",
-                "<server-version>"
-        ));
-        //TODO: fill in the text in <></>he textViews:
+        TextView sessionText = (TextView) getActivity().findViewById(R.id.about_session);
+        TextView appText = (TextView) getActivity().findViewById(R.id.about_app);
+        ImageView appIcon = (ImageView) getActivity().findViewById(R.id.app_icon);
 
-        // inside about_app:
+        PreferencesModuleImpl preferencesModule = new PreferencesModuleImpl(getContext());
         PackageManager packageManager = getContext().getPackageManager();
         ApplicationInfo applicationInfo = null;
         String appName = "";
+        String appVersion = "";
+
         try {
             applicationInfo = packageManager.getApplicationInfo(getContext().getApplicationInfo().packageName, 0);
         } catch (final PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
         }
 
+        // inside about_session:
+        sessionText.setText(String.format(Locale.getDefault(), "%s: %s\n",
+                getString(R.string.username),
+                D2.me().userCredentials().toBlocking().first().getUsername())
+        );
+        sessionText.append(String.format(Locale.getDefault(), "%s: %s\n",
+                getString(R.string.server_url),
+                preferencesModule.getConfigurationPreferences().get().getServerUrl()
+        ));
+        sessionText.append(String.format(Locale.getDefault(), "%s: %s\n",
+                getString(R.string.server_version),
+                "<server-version>"
+        ));
+
+        // inside about_app:
         if (applicationInfo != null) {
             appName = packageManager.getApplicationLabel(applicationInfo).toString();
+            appIcon.setImageDrawable(packageManager.getApplicationIcon(applicationInfo));
+            try {
+                appVersion = "" + packageManager.getPackageInfo(getContext().getPackageName(), 0).versionName;
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
         }
 
-        aboutAppText.setText(String.format(Locale.getDefault(), "%s: %s\n",
-                "App Name",
-                appName
-        ));
-        aboutAppText.append(String.format(Locale.getDefault(), "%s: %s\n",
+        appText.setText(String.format(Locale.getDefault(), "%s: %s\n",
+                getString(R.string.app_name),
+                appName)
+        );
+        appText.append(String.format(Locale.getDefault(), "%s: %s\n",
                 getString(R.string.app_version),
-                "<version>"));
+                appVersion)
+        );
     }
 }

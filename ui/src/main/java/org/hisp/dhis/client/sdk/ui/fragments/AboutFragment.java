@@ -36,6 +36,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.hisp.dhis.client.sdk.android.api.D2;
 import org.hisp.dhis.client.sdk.ui.R;
 
 public class AboutFragment extends Fragment {
@@ -50,12 +51,12 @@ public class AboutFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //TODO: fill in the text :
+        TextView aboutSessionText = (TextView) getActivity().findViewById(R.id.about_session);
+        TextView aboutAppText = (TextView) getActivity().findViewById(R.id.about_app);
+        //TODO: fill in the text in the textViews:
         // inside about_session:
         // Username: <username>
         // Server name: <servername>
-        TextView aboutSessionText = (TextView) getActivity().findViewById(R.id.about_session);
-        TextView aboutAppText = (TextView) getActivity().findViewById(R.id.about_app);
         //--------------------------
         // inside about_app:
         // App name: <app name>

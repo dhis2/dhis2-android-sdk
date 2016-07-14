@@ -34,18 +34,32 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import org.hisp.dhis.client.sdk.ui.R;
 
 public class AboutFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
-            savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
+        super.onCreateView(inflater, container, state);
+        return inflater.inflate(R.layout.fragment_about, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        //TODO: fill in the text :
+        // inside about_session:
+        // Username: <username>
+        // Server name: <servername>
+        TextView aboutSessionText = (TextView) getActivity().findViewById(R.id.about_session);
+        TextView aboutAppText = (TextView) getActivity().findViewById(R.id.about_app);
+        //--------------------------
+        // inside about_app:
+        // App name: <app name>
+        // App version: <app version>
+        // App build number: <buildnumber>
     }
 }

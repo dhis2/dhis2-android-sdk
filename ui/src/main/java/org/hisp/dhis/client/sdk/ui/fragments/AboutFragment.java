@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.client.sdk.ui.fragments;
 
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -38,6 +40,8 @@ import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.android.api.D2;
 import org.hisp.dhis.client.sdk.ui.R;
+
+import java.util.Locale;
 
 public class AboutFragment extends Fragment {
 
@@ -53,14 +57,42 @@ public class AboutFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         TextView aboutSessionText = (TextView) getActivity().findViewById(R.id.about_session);
         TextView aboutAppText = (TextView) getActivity().findViewById(R.id.about_app);
-        //TODO: fill in the text in the textViews:
+
         // inside about_session:
-        // Username: <username>
-        // Server name: <servername>
-        //--------------------------
+        aboutSessionText.setText(String.format(Locale.getDefault(), "%s: %s\n",
+                getString(R.string.username),
+                D2.me().userCredentials()
+                        .toBlocking().first()
+                        .getUsername()));
+        aboutSessionText.append(String.format(Locale.getDefault(), "%s: %s\n",
+                getString(R.string.server_url),
+                "<server-url>"
+        ));
+        aboutSessionText.append(String.format(Locale.getDefault(), "%s: %s\n",
+                "Server version",
+                "<server-version>"
+        ));
+        //TODO: fill in the text in <></>he textViews:
+
         // inside about_app:
-        // App name: <app name>
-        // App version: <app version>
-        // App build number: <buildnumber>
+        PackageManager packageManager = getContext().getPackageManager();
+        ApplicationInfo applicationInfo = null;
+        String appName = "";
+        try {
+            applicationInfo = packageManager.getApplicationInfo(getContext().getApplicationInfo().packageName, 0);
+        } catch (final PackageManager.NameNotFoundException e) {
+        }
+
+        if (applicationInfo != null) {
+            appName = packageManager.getApplicationLabel(applicationInfo).toString();
+        }
+
+        aboutAppText.setText(String.format(Locale.getDefault(), "%s: %s\n",
+                "App Name",
+                appName
+        ));
+        aboutAppText.append(String.format(Locale.getDefault(), "%s: %s\n",
+                getString(R.string.app_version),
+                "<version>"));
     }
 }

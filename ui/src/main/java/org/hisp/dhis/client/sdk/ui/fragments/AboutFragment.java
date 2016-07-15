@@ -79,13 +79,9 @@ public class AboutFragment extends Fragment {
                 getString(R.string.username),
                 D2.me().userCredentials().toBlocking().first().getUsername())
         );
-        sessionText.append(String.format(Locale.getDefault(), "%s: %s\n",
+        sessionText.append(String.format(Locale.getDefault(), "%s: %s",
                 getString(R.string.server_url),
                 preferencesModule.getConfigurationPreferences().get().getServerUrl()
-        ));
-        sessionText.append(String.format(Locale.getDefault(), "%s: %s\n",
-                getString(R.string.server_version),
-                "<server-version>"
         ));
 
         // inside about_app:
@@ -100,10 +96,10 @@ public class AboutFragment extends Fragment {
         }
 
         appText.setText(String.format(Locale.getDefault(), "%s: %s\n",
-                getString(R.string.app_name),
+                getString(R.string.app_name_label),
                 appName)
         );
-        appText.append(String.format(Locale.getDefault(), "%s: %s\n",
+        appText.append(String.format(Locale.getDefault(), "%s: %s",
                 getString(R.string.app_version),
                 appVersion)
         );

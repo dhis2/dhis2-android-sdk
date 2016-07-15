@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.models.common;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -114,5 +115,18 @@ public final class Access {
 
     public void setWrite(boolean write) {
         this.write = write;
+    }
+
+    @JsonIgnore
+    @Override
+    public String toString() {
+        return "Access {"+
+                "manage="+ manage+
+                ", externalize="+externalize+
+                ", write="+write+
+                ", read="+read+
+                ", update="+update+
+                ", delete="+delete+
+                "}";
     }
 }

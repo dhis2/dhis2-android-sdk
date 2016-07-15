@@ -38,6 +38,10 @@ import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.models.common.base.Model;
 import org.hisp.dhis.client.sdk.models.common.state.State;
+import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
+import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
+import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
+import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
@@ -162,7 +166,15 @@ public final class StateFlow extends BaseModelFlow {
                 return EventFlow.class;
             } else if (UserAccount.class.equals(objectClass)) {
                 return UserAccountFlow.class;
-            }
+            } else if (Dashboard.class.equals(objectClass)) {
+            return DashboardFlow.class;
+            } else if (DashboardItem.class.equals(objectClass)) {
+                return DashboardItemFlow.class;
+            } else if (DashboardElement.class.equals(objectClass)) {
+                return DashboardElementFlow.class;
+            } else if (DashboardContent.class.equals(objectClass)) {
+                return DashboardContentFlow.class;
+        }
 
             throw new IllegalArgumentException("Unsupported type: " + objectClass.getSimpleName());
         }

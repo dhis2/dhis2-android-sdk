@@ -73,6 +73,15 @@ public interface DhisApi {
     String DASHBOARDS = "dashboards";
     String DASHBOARD_ITEMS = "dashboardItems";
 
+    String DASHBOARD_CONTENT_CHARTS = "charts";
+    String DASHBOARD_CONTENT_EVENT_CHARTS = "eventCharts";
+    String DASHBOARD_CONTENT_MAPS = "maps";
+    String DASHBOARD_CONTENT_REPORT_TABLES = "reportTables";
+    String DASHBOARD_CONTENT_EVENT_REPORTS = "eventReports";
+    String DASHBOARD_CONTENT_USERS = "users";
+    String DASHBOARD_CONTENT_REPORTS = "reports";
+    String DASHBOARD_CONTENT_RESOURCES = "documents";
+
     String ORGANISATION_UNITS = "organisationUnits";
     String PROGRAMS = "programs";
     String OPTION_SETS = "optionSets";

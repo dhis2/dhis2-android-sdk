@@ -30,6 +30,7 @@ package org.hisp.dhis.client.sdk.android.dashboard;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import org.hisp.dhis.client.sdk.android.api.network.DhisApi;
 import org.hisp.dhis.client.sdk.core.common.network.Response;
@@ -40,7 +41,6 @@ import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +78,7 @@ public class DashboardApiClientImpl implements DashboardApiClient {
         QUERY_MAP_FULL.put("fields", BASE + ",dashboardItems" +
                 "[" + BASE + ",type,shape,messages," +
                 "chart" + "[" + BASE + "]," +
-                "eventChart" + "[" + BASE + "]" +
+                "eventChart" + "[" + BASE + "]," +
                 "map" + "[" + BASE + "]," +
                 "reportTable" + "[" + BASE + "]," +
                 "eventReport" + "[" + BASE + "]," +
@@ -93,6 +93,7 @@ public class DashboardApiClientImpl implements DashboardApiClient {
 
         List<Dashboard> updatedDashboards = unwrap(call(dashboardApiClientRetrofit.getDashboards(QUERY_MAP_FULL)),
                 DhisApi.DASHBOARDS);
+        Log.d("testUpdatedDashboards2", updatedDashboards.toString());
 
         // Building dashboard item to dashboard relationship.
         if (!updatedDashboards.isEmpty()) {
@@ -174,50 +175,50 @@ public class DashboardApiClientImpl implements DashboardApiClient {
 
     @Override
     @NonNull
-    public List<DashboardContent> getBaseCharts() {
-        return null;
+    public List<DashboardContent> getBaseCharts(Map<String, String> queryParams) {
+        return unwrap(call(dashboardApiClientRetrofit.getCharts(queryParams)), DhisApi.DASHBOARD_CONTENT_CHARTS);
     }
 
     @Override
     @NonNull
-    public List<DashboardContent> getBaseEventCharts() {
-        return null;
+    public List<DashboardContent> getBaseEventCharts(Map<String, String> queryParams) {
+        return unwrap(call(dashboardApiClientRetrofit.getEventCharts(queryParams)), DhisApi.DASHBOARD_CONTENT_EVENT_CHARTS);
     }
 
     @Override
     @NonNull
-    public List<DashboardContent> getBaseMaps() {
-        return null;
+    public List<DashboardContent> getBaseMaps(Map<String, String> queryParams) {
+        return unwrap(call(dashboardApiClientRetrofit.getMaps(queryParams)), DhisApi.DASHBOARD_CONTENT_MAPS);
     }
 
     @Override
     @NonNull
-    public List<DashboardContent> getBaseReportTables() {
-        return null;
+    public List<DashboardContent> getBaseReportTables(Map<String, String> queryParams) {
+        return unwrap(call(dashboardApiClientRetrofit.getReportTables(queryParams)), DhisApi.DASHBOARD_CONTENT_REPORT_TABLES);
     }
 
     @Override
     @NonNull
-    public List<DashboardContent> getBaseEventReports() {
-        return null;
+    public List<DashboardContent> getBaseEventReports(Map<String, String> queryParams) {
+        return unwrap(call(dashboardApiClientRetrofit.getEventReports(queryParams)), DhisApi.DASHBOARD_CONTENT_EVENT_REPORTS);
     }
 
     @Override
     @NonNull
-    public List<DashboardContent> getBaseUsers() {
-        return null;
+    public List<DashboardContent> getBaseUsers(Map<String, String> queryParams) {
+        return unwrap(call(dashboardApiClientRetrofit.getUsers(queryParams)), DhisApi.DASHBOARD_CONTENT_USERS);
     }
 
     @Override
     @NonNull
-    public List<DashboardContent> getBaseReports() {
-        return null;
+    public List<DashboardContent> getBaseReports(Map<String, String> queryParams) {
+        return unwrap(call(dashboardApiClientRetrofit.getReports(queryParams)), DhisApi.DASHBOARD_CONTENT_REPORTS);
     }
 
     @Override
     @NonNull
-    public List<DashboardContent> getBaseResources() {
-        return null;
+    public List<DashboardContent> getBaseResources(Map<String, String> queryParams) {
+        return unwrap(call(dashboardApiClientRetrofit.getResources(queryParams)), DhisApi.DASHBOARD_CONTENT_RESOURCES);
     }
 
     @Override

@@ -36,6 +36,7 @@ import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Map;
 
 // TODO build relationships between (dashbord and dashboard items for example) models.
 // TODO Handle field filtering and selection.
@@ -64,21 +65,21 @@ public interface DashboardApiClient {
 
     Response deleteDashboardItemContent(DashboardElement dashboardElement);
 
-    List<DashboardContent> getBaseCharts();
+    List<DashboardContent> getBaseCharts(Map<String, String> queryParams);
 
-    List<DashboardContent> getBaseEventCharts();
+    List<DashboardContent> getBaseEventCharts(Map<String, String> queryParams);
 
-    List<DashboardContent> getBaseMaps();
+    List<DashboardContent> getBaseMaps(Map<String, String> queryParams);
 
-    List<DashboardContent> getBaseReportTables();
+    List<DashboardContent> getBaseReportTables(Map<String, String> queryParams);
 
-    List<DashboardContent> getBaseEventReports();
+    List<DashboardContent> getBaseEventReports(Map<String, String> queryParams);
 
-    List<DashboardContent> getBaseUsers();
+    List<DashboardContent> getBaseUsers(Map<String, String> queryParams);
 
-    List<DashboardContent> getBaseReports();
+    List<DashboardContent> getBaseReports(Map<String, String> queryParams);
 
-    List<DashboardContent> getBaseResources();
+    List<DashboardContent> getBaseResources(Map<String, String> queryParams);
 
     Response getReportTableDataByUid(String uid);
 }

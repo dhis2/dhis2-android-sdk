@@ -190,7 +190,12 @@
     <string name="no_programs">You do not have any programs assigned to Organisation unit or you do not have the sufficient user roles. Please contact system administrator.</string>
     <string name="report_entity">Report Entity</string>
 
+    <!-- About fragment strings: -->
     <string name="app_version">App version</string>
     <string name="app_name_label">App name</string>
     <string name="server_version">Server version</string>
+    <string name="app_current_header">Current application:</string>
+    <string name="app_other_header">Other installed applications:</string>
+
+    
 </resources>

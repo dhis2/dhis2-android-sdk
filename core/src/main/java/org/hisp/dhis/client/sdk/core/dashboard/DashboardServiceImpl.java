@@ -39,6 +39,7 @@ import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
@@ -202,6 +203,15 @@ public class DashboardServiceImpl implements DashboardService {
     public List<Dashboard> list() {
         return stateStore.queryModelsWithActions(Dashboard.class,
                 Action.SYNCED, Action.TO_POST, Action.TO_UPDATE);
+    }
+
+    @Override
+    public List<Dashboard> listByActions(Set<Action> actionSet) {
+        isNull(actionSet, "actionSet must not be null");
+        if (actionSet.isEmpty()) {
+            throw new IllegalArgumentException("You must provide atleast one action to list by.");
+        }
+        return stateStore.queryModelsWithActions(Dashboard.class, actionSet.toArray(new Action[actionSet.size()]));
     }
 
     @Override

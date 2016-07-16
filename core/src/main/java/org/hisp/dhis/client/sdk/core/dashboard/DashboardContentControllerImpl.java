@@ -92,8 +92,7 @@ public final class DashboardContentControllerImpl extends AbsDataController<Dash
         DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
         /* first we need to update api resources, dashboards
         and dashboard items */
-        List<DashboardContent> dashboardContent =
-                updateApiResources(lastUpdated);
+        List<DashboardContent> dashboardContent = updateApiResources(lastUpdated);
 
         List<DbOperation> operations = new ArrayList<>();
 
@@ -151,7 +150,6 @@ public final class DashboardContentControllerImpl extends AbsDataController<Dash
         List<DashboardContent> actualItems
                 = getApiResourceByType(type, QUERY_MAP_BASIC);
 
-
         List<DashboardContent> updatedItems =
                 getApiResourceByType(type, QUERY_MAP_FULL);
 
@@ -161,11 +159,11 @@ public final class DashboardContentControllerImpl extends AbsDataController<Dash
             }
         }
 
-        Set<String> uids = new HashSet<>();
-        uids.add(type);
+        Set<String> types = new HashSet<>();
+        types.add(type);
 
         List<DashboardContent> persistedItems =
-                dashboardContentStore.queryByTypes(uids);
+                dashboardContentStore.queryByTypes(types);
 
         return ModelUtils.merge(actualItems, updatedItems, persistedItems);
     }

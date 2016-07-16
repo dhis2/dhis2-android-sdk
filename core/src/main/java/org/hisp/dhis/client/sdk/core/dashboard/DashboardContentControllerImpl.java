@@ -32,32 +32,24 @@ import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.common.controllers.AbsDataController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.common.network.Response;
+
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.DbOperationImpl;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.common.utils.ModelUtils;
-import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoApiClient;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
-import org.hisp.dhis.client.sdk.models.common.state.Action;
-import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
-import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
-import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.client.sdk.utils.Logger;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 
 public final class DashboardContentControllerImpl extends AbsDataController<DashboardContent> implements DashboardContentController {
@@ -159,8 +151,10 @@ public final class DashboardContentControllerImpl extends AbsDataController<Dash
         List<DashboardContent> actualItems
                 = getApiResourceByType(type, QUERY_MAP_BASIC);
 
+
         List<DashboardContent> updatedItems =
                 getApiResourceByType(type, QUERY_MAP_FULL);
+
         if (updatedItems != null && !updatedItems.isEmpty()) {
             for (DashboardContent element : updatedItems) {
                 element.setType(type);
@@ -181,21 +175,21 @@ public final class DashboardContentControllerImpl extends AbsDataController<Dash
 
         switch (type) {
             case DashboardContent.TYPE_CHART:
-                return dashboardApiClient.getBaseCharts();
+                return dashboardApiClient.getBaseCharts(queryParams);
             case DashboardContent.TYPE_EVENT_CHART:
-                return dashboardApiClient.getBaseEventCharts();
+                return dashboardApiClient.getBaseEventCharts(queryParams);
             case DashboardContent.TYPE_MAP:
-                return dashboardApiClient.getBaseMaps();
+                return dashboardApiClient.getBaseMaps(queryParams);
             case DashboardContent.TYPE_REPORT_TABLE:
-                return dashboardApiClient.getBaseReportTables();
+                return dashboardApiClient.getBaseReportTables(queryParams);
             case DashboardContent.TYPE_EVENT_REPORT:
-                return dashboardApiClient.getBaseEventReports();
+                return dashboardApiClient.getBaseEventReports(queryParams);
             case DashboardContent.TYPE_USERS:
-                return dashboardApiClient.getBaseUsers();
+                return dashboardApiClient.getBaseUsers(queryParams);
             case DashboardContent.TYPE_REPORTS:
-                return dashboardApiClient.getBaseReports();
+                return dashboardApiClient.getBaseReports(queryParams);
             case DashboardContent.TYPE_RESOURCES:
-                return dashboardApiClient.getBaseResources();
+                return dashboardApiClient.getBaseResources(queryParams);
             default:
                 throw new IllegalArgumentException("Unsupported DashboardContent type");
         }

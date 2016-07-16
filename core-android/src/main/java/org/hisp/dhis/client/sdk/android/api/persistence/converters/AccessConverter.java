@@ -28,10 +28,15 @@
 
 package org.hisp.dhis.client.sdk.android.api.persistence.converters;
 
-
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.raizlabs.android.dbflow.converter.TypeConverter;
 
+import org.hisp.dhis.client.sdk.android.api.utils.ObjectMapperProvider;
 import org.hisp.dhis.client.sdk.models.common.Access;
+
+import java.io.IOException;
 
 
 @SuppressWarnings("unused")
@@ -40,23 +45,21 @@ public final class AccessConverter extends TypeConverter<String, Access> {
 
     @Override
     public String getDBValue(Access model) {
-        /* String access = null;
+        String access = null;
         try {
-            access = ObjectMapperProvider
-                    .getInstance().writeValueAsString(model);
+            access = ObjectMapperProvider.getInstance()
+                    .writeValueAsString(model);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return access; */
-        return null;
+        return access;
     }
 
-    @Override
-    public Access getModelValue(String data) {
-        /* Access access = null;
+    @Override public Access getModelValue(String data) {
+        Access access = null;
         try {
-            access = ObjectMapperProvider
-                    .getInstance().readValue(data, Access.class);
+            access = ObjectMapperProvider.getInstance()
+                    .readValue(data, Access.class);
         } catch (JsonMappingException e) {
             e.printStackTrace();
         } catch (JsonParseException e) {
@@ -65,7 +68,6 @@ public final class AccessConverter extends TypeConverter<String, Access> {
             e.printStackTrace();
         }
 
-        return access; */
-        return null;
+        return access;
     }
 }

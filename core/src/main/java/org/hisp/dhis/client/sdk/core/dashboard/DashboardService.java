@@ -34,8 +34,12 @@ import org.hisp.dhis.client.sdk.core.common.services.ListAll;
 import org.hisp.dhis.client.sdk.core.common.services.Remove;
 import org.hisp.dhis.client.sdk.core.common.services.Save;
 import org.hisp.dhis.client.sdk.core.common.services.Service;
+import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
+
+import java.util.List;
+import java.util.Set;
 
 public interface DashboardService extends Service, Save<Dashboard>, Remove<Dashboard>,
         Get<Dashboard>, GetUid<Dashboard>, ListAll<Dashboard> {
@@ -63,6 +67,7 @@ public interface DashboardService extends Service, Save<Dashboard>, Remove<Dashb
      */
     boolean addContent(Dashboard dashboard, DashboardContent content);
 
+    List<Dashboard> listByActions(Set<Action> actionSet);
 
     int countItems(Dashboard dashboard);
 }

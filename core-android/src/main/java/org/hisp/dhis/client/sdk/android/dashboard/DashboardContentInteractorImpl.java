@@ -32,7 +32,6 @@ import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.dashboard.DashboardContentController;
 import org.hisp.dhis.client.sdk.core.dashboard.DashboardContentService;
-import org.hisp.dhis.client.sdk.core.dashboard.DashboardController;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 
 import java.util.List;

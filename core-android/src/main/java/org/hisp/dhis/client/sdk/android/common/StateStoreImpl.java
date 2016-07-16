@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.android.common;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.From;
@@ -39,16 +40,30 @@ import com.raizlabs.android.dbflow.sql.language.property.LongProperty;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.BaseIdentifiableObjectFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardContentFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardElementFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardFlow_Table;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardItemFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow_Table;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.StateFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.StateFlow_Table;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardItemFlow_Table;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardElementFlow_Table;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardContentFlow_Table;
+
 import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.models.common.base.Model;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.common.state.State;
+import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
+import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
+import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
+import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.client.sdk.models.event.Event;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,11 +73,24 @@ import static org.hisp.dhis.client.sdk.core.common.utils.CollectionUtils.isEmpty
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class StateStoreImpl extends AbsStore<State, StateFlow> implements StateStore {
-    private final Mapper<Event, EventFlow> eventMapper;
 
-    public StateStoreImpl(Mapper<Event, EventFlow> eventMapper) {
+    private  Mapper<Event, EventFlow> eventMapper;
+    Mapper<Dashboard, DashboardFlow> dashboardMapper;
+    Mapper<DashboardItem, DashboardItemFlow> dashboardItemMapper;
+    Mapper<DashboardElement, DashboardElementFlow> dashboardElementMapper;
+    Mapper<DashboardContent, DashboardContentFlow> dashboardContentMapper;
+
+    public StateStoreImpl(Mapper<Event, EventFlow> eventMapper,
+                          Mapper<Dashboard, DashboardFlow> dashboardMapper,
+                          Mapper<DashboardItem, DashboardItemFlow> dashboardItemMapper,
+                          Mapper<DashboardElement, DashboardElementFlow> dashboardElementMapper,
+                          Mapper<DashboardContent, DashboardContentFlow> dashboardContentMapper) {
         super(StateFlow.MAPPER);
         this.eventMapper = eventMapper;
+        this.dashboardMapper = dashboardMapper;
+        this.dashboardItemMapper = dashboardItemMapper;
+        this.dashboardElementMapper = dashboardElementMapper;
+        this.dashboardContentMapper = dashboardContentMapper;
     }
 
     @Override
@@ -203,6 +231,46 @@ public class StateStoreImpl extends AbsStore<State, StateFlow> implements StateS
             List<EventFlow> eventFlows = (List<EventFlow>) queryModels(clazz, uids,
                     EventFlow_Table.id.withTable(), withAction, actions);
             return (List<T>) eventMapper.mapToModels(eventFlows);
+        }
+
+        if (Dashboard.class.equals(clazz)) {
+            List<DashboardFlow> dashboardFlows = (List<DashboardFlow>) queryModels(clazz, uids,
+                    DashboardFlow_Table.id.withTable(), withAction, actions);
+            if(dashboardFlows!=null && !dashboardFlows.isEmpty()){
+                return (List<T>) dashboardMapper.mapToModels(dashboardFlows);
+            }else{
+                return new ArrayList<>();
+            }
+        }
+
+        if (DashboardItem.class.equals(clazz)) {
+            List<DashboardItemFlow> dashboardItemFlows = (List<DashboardItemFlow>) queryModels(clazz, null,
+                    DashboardItemFlow_Table.id.withTable(), withAction, actions);
+            if(dashboardItemFlows!=null && !dashboardItemFlows.isEmpty()){
+                return (List<T>) dashboardItemMapper.mapToModels(dashboardItemFlows);
+            }else{
+                return new ArrayList<>();
+            }
+        }
+
+        if (DashboardElement.class.equals(clazz)) {
+            List<DashboardElementFlow> dashboardElementFlows = (List<DashboardElementFlow>) queryModels(clazz, null,
+                    DashboardElementFlow_Table.id.withTable(), withAction, actions);
+            if(dashboardElementFlows!=null && !dashboardElementFlows.isEmpty()){
+                return (List<T>) dashboardElementMapper.mapToModels(dashboardElementFlows);
+            }else{
+                return new ArrayList<>();
+            }
+        }
+
+        if (DashboardContent.class.equals(clazz)) {
+            List<DashboardContentFlow> dashboardContentFlows = (List<DashboardContentFlow>) queryModels(clazz, null,
+                    DashboardContentFlow_Table.id.withTable(), withAction, actions);
+            if(dashboardContentFlows!=null && !dashboardContentFlows.isEmpty()){
+                return (List<T>) dashboardContentMapper.mapToModels(dashboardContentFlows);
+            }else{
+                return new ArrayList<>();
+            }
         }
 
         return null;

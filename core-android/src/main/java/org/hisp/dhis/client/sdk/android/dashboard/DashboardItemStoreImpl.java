@@ -29,8 +29,8 @@
 package org.hisp.dhis.client.sdk.android.dashboard;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardItemFlow;
-import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.Mapper;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectDataStore;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.dashboard.DashboardItemStore;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
@@ -39,12 +39,11 @@ import java.util.List;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-
-public class DashboardItemStoreImpl extends AbsIdentifiableObjectStore<DashboardItem,
+public class DashboardItemStoreImpl extends AbsIdentifiableObjectDataStore<DashboardItem,
         DashboardItemFlow> implements DashboardItemStore {
 
-    public DashboardItemStoreImpl(Mapper<DashboardItem, DashboardItemFlow> dashboardItemMapper) {
-        super(dashboardItemMapper);
+    public DashboardItemStoreImpl(StateStore stateStore) {
+        super(DashboardItemFlow.MAPPER, stateStore);
     }
 
     @Override

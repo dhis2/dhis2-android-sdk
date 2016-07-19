@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.client.sdk.android.dashboard;
 
+import com.raizlabs.android.dbflow.sql.language.Select;
+
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardFlow;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectDataStore;
 import org.hisp.dhis.client.sdk.core.common.StateStore;
@@ -36,6 +38,8 @@ import org.hisp.dhis.client.sdk.core.dashboard.DashboardItemStore;
 import org.hisp.dhis.client.sdk.core.dashboard.DashboardStore;
 
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
+import java.util.List;
+import java.util.Set;
 
 public class DashboardStoreImpl extends AbsIdentifiableObjectDataStore<Dashboard, DashboardFlow>
         implements DashboardStore {
@@ -49,6 +53,16 @@ public class DashboardStoreImpl extends AbsIdentifiableObjectDataStore<Dashboard
 
         this.dashboardItemStore = dashboardItemStore;
         this.transactionManager = transactionManager;
+    }
+
+    @Override
+    public List<Dashboard> query() {
+            List<DashboardFlow> dashboardFlows = new Select()
+                    .from(DashboardFlow.class)
+                    .queryList();
+        return getMapper().mapToModels(dashboardFlows);
+//        List<Dashboard> dashboards = getMapper().mapToModels(dashboardFlows);
+//        return mapDashboardToDashboardItems(dashboards, dashboardItemStore.query(dashboards));
     }
 
 }

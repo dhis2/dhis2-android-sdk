@@ -46,4 +46,6 @@ public interface DashboardItemService extends Service, Remove<DashboardItem>,
     int countElements(DashboardItem dashboardItem);
 
     List<DashboardItem> list(Dashboard dashboard);
+
+    List<DashboardItem> list(String uId);
 }

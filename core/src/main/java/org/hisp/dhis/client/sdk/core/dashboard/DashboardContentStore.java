@@ -35,5 +35,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface DashboardContentStore extends IdentifiableObjectStore<DashboardContent> {
-    List<DashboardContent> queryByTypes(Set<String> type);
+    List<DashboardContent> queryByTypes(Set<String> types);
+
+    List<DashboardContent> queryByType(String type);
 }

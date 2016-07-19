@@ -36,4 +36,6 @@ import java.util.List;
 
 public interface DashboardItemStore extends IdentifiableObjectStore<DashboardItem> {
     List<DashboardItem> query(Dashboard dashboard);
+
+    List<DashboardItem> query(String uId);
 }

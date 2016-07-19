@@ -29,15 +29,26 @@
 package org.hisp.dhis.client.sdk.android.dashboard;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardFlow;
-import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.Mapper;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectDataStore;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardItemStore;
 import org.hisp.dhis.client.sdk.core.dashboard.DashboardStore;
+
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 
-public class DashboardStoreImpl extends AbsIdentifiableObjectStore<Dashboard, DashboardFlow>
+public class DashboardStoreImpl extends AbsIdentifiableObjectDataStore<Dashboard, DashboardFlow>
         implements DashboardStore {
 
-    public DashboardStoreImpl(Mapper<Dashboard, DashboardFlow> mapper) {
-        super(mapper);
+    private final DashboardItemStore dashboardItemStore;
+    private final TransactionManager transactionManager;
+
+    public DashboardStoreImpl(StateStore stateStore, DashboardItemStore dashboardItemStore,
+                              TransactionManager transactionManager) {
+        super(DashboardFlow.MAPPER, stateStore);
+
+        this.dashboardItemStore = dashboardItemStore;
+        this.transactionManager = transactionManager;
     }
+
 }

@@ -35,25 +35,26 @@ import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class DashboardContent extends BaseIdentifiableObject {
-    public static final String TYPE_CHART = "chart";
-    public static final String TYPE_EVENT_CHART = "eventChart";
-    public static final String TYPE_MAP = "map";
-    public static final String TYPE_REPORT_TABLE = "reportTable";
+    public static final String TYPE_CHART = "CHART";
+    public static final String TYPE_EVENT_CHART = "EVENT_CHART";
+    public static final String TYPE_MAP = "MAP";
+    public static final String TYPE_REPORT_TABLE = "REPORT_TABLE";
 
     /* have to implement user fragment for this */
-    public static final String TYPE_USERS = "users";
+    public static final String TYPE_USERS = "USERS";
 
     /* we can use data entry fragment for this: have to implement read-only mode */
-    public static final String TYPE_REPORTS = "reports";
+    public static final String TYPE_REPORTS = "REPORTS";
 
     /* not supported on server side */
-    public static final String TYPE_EVENT_REPORT = "eventReport";
+    public static final String TYPE_EVENT_REPORT = "EVENT_REPORT";
 
     /* resource can be anything (like pdf or binary file. Will look into this later */
-    public static final String TYPE_RESOURCES = "resources";
+    public static final String TYPE_RESOURCES = "RESOURCES";
 
     /* won't be supported until implementation of messaging application */
-    public static final String TYPE_MESSAGES = "messages";
+    public static final String TYPE_MESSAGES = "MESSAGES";
+
 
     @JsonIgnore
     String type;

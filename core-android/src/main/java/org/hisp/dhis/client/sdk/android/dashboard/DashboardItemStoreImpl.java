@@ -28,11 +28,15 @@
 
 package org.hisp.dhis.client.sdk.android.dashboard;
 
+import com.raizlabs.android.dbflow.sql.language.Select;
+
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardItemFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardItemFlow_Table;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectDataStore;
 import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.dashboard.DashboardItemStore;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
+import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 
 import java.util.List;
@@ -57,5 +61,18 @@ public class DashboardItemStoreImpl extends AbsIdentifiableObjectDataStore<Dashb
 //
 //        return getMapper().mapToModels(dashboardItemFlows);
         return null;
+    }
+
+    @Override
+    public List<DashboardItem> query(String uId) {
+        isNull(uId, "uId must not be null");
+
+        List<DashboardItemFlow> dashboardItemFlows = new Select()
+                .from(DashboardItemFlow.class)
+                .where(DashboardItemFlow_Table.dashboard.is(uId))
+                .and(DashboardItemFlow_Table.type.isNot(DashboardContent.TYPE_MESSAGES))
+                .queryList();
+
+        return getMapper().mapToModels(dashboardItemFlows);
     }
 }

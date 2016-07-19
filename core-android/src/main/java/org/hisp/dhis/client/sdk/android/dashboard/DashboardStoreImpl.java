@@ -41,6 +41,7 @@ import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import java.util.List;
 import java.util.Set;
 
+
 public class DashboardStoreImpl extends AbsIdentifiableObjectDataStore<Dashboard, DashboardFlow>
         implements DashboardStore {
 
@@ -65,4 +66,75 @@ public class DashboardStoreImpl extends AbsIdentifiableObjectDataStore<Dashboard
 //        return mapDashboardToDashboardItems(dashboards, dashboardItemStore.query(dashboards));
     }
 
+    @Override
+    public boolean insert(Dashboard dashboard) {
+        boolean isSuccess = super.insert(dashboard);
+
+//        if (isSuccess) {
+//            saveDashboardItems(dashboard);
+//        }
+
+        return isSuccess;
+    }
+
+    @Override
+    public boolean update(Dashboard dashboard) {
+        boolean isSuccess = super.update(dashboard);
+
+//        if (isSuccess) {
+//            saveDashboardItems(dashboard);
+//        }
+
+        return isSuccess;
+    }
+
+    @Override
+    public boolean save(Dashboard dashboard) {
+        boolean isSuccess = super.save(dashboard);
+
+//        if (isSuccess) {
+//            saveDashboardItems(dashboard);
+//        }
+
+        return isSuccess;
+    }
+
+    @Override
+    public Dashboard queryById(long id) {
+        Dashboard dashboard = super.queryById(id);
+
+//        List<DashboardItem> dashboardItems = dashboardItemStore.query(dashboard);
+//        if (dashboard != null) {
+//            dashboard.setDashboardItems(dashboardItems);
+//        }
+
+        return dashboard;
+    }
+
+    @Override
+    public Dashboard queryByUid(String uid) {
+        Dashboard dashboard = super.queryByUid(uid);
+
+//        List<DashboardItem> dashboardItems = dashboardItemStore.query(dashboard);
+//        if (dashboard != null) {
+//            dashboard.setDashboardItems(dashboardItems);
+//        }
+
+        return dashboard;
+    }
+
+    @Override
+    public List<Dashboard> queryByUids(Set<String> uids) {
+        List<Dashboard> dashboards = super.queryByUids(uids);
+//        return mapDashboardToDashboardItems(dashboards, dashboardItemStore
+//                .query(dashboards));
+        return dashboards;
+    }
+
+    @Override
+    public List<Dashboard> queryAll() {
+//        return mapDashboardToDashboardItems(super.queryAll(),
+//                dashboardItemStore.queryAll());
+        return super.queryAll();
+    }
 }

@@ -103,6 +103,25 @@ public class DashboardItemServiceImpl implements DashboardItemService {
     }
 
     @Override
+    public List<DashboardItem> list(String uId) {
+        Preconditions.isNull(uId, "id must not be null");
+
+        List<DashboardItem> allDashboardItems = dashboardItemStore.query(uId);
+        Map<Long, Action> actionMap = stateStore.queryActionsForModel(DashboardItem.class);
+
+        List<DashboardItem> dashboardItems = new ArrayList<>();
+        for (DashboardItem dashboardItem : allDashboardItems) {
+            Action action = actionMap.get(dashboardItem.getId());
+
+            if (!Action.TO_DELETE.equals(action)) {
+                dashboardItems.add(dashboardItem);
+            }
+        }
+
+        return dashboardItems;
+    }
+
+    @Override
     public List<DashboardItem> list(Dashboard dashboard) {
         Preconditions.isNull(dashboard, "Dashboard object must not be null");
 

@@ -28,7 +28,10 @@
 
 package org.hisp.dhis.client.sdk.android.dashboard;
 
+import com.raizlabs.android.dbflow.sql.language.Select;
+
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardContentFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardContentFlow_Table;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectDataStore;
 import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.dashboard.DashboardContentStore;
@@ -42,6 +45,16 @@ public final class DashboardContentStoreImpl extends AbsIdentifiableObjectDataSt
 
     public DashboardContentStoreImpl(StateStore stateStore) {
         super(DashboardContentFlow.MAPPER, stateStore);
+    }
+
+    @Override
+    public List<DashboardContent> queryByType(String type) {
+        List<DashboardContentFlow> dashboardContentFlow = new Select()
+                .from(DashboardContentFlow.class)
+                .where(DashboardContentFlow_Table.type
+                        .is(type))
+                .queryList();
+        return getMapper().mapToModels(dashboardContentFlow);
     }
 
     @Override

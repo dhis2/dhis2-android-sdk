@@ -29,9 +29,9 @@
 package org.hisp.dhis.client.sdk.android.dashboard;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
-import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 import java.util.List;
 import java.util.Set;
@@ -53,6 +53,8 @@ public interface DashboardInteractor {
     Observable<Dashboard> get(String uid);
 
     Observable<List<Dashboard>> list();
+
+    Observable<List<Dashboard>> listByActions(Set<Action> actionSet);
 
     Observable<List<Dashboard>> pull();
 

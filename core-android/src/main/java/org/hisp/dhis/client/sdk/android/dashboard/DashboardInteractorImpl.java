@@ -32,12 +32,12 @@ import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.dashboard.DashboardController;
 import org.hisp.dhis.client.sdk.core.dashboard.DashboardService;
+import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 
 import java.util.List;
 import java.util.Set;
-
 
 import rx.Observable;
 
@@ -118,7 +118,17 @@ public class DashboardInteractorImpl implements DashboardInteractor {
     }
 
     @Override
-    public Observable<List<Dashboard>> pull() {
+    public Observable<List<Dashboard>> listByActions(final Set<Action> actionSet) {
+        return Observable.create(new DefaultOnSubscribe<List<Dashboard>>() {
+            @Override
+            public List<Dashboard> call() {
+                return dashboardService.listByActions(actionSet);
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<Dashboard>>pull() {
         return pull(SyncStrategy.DEFAULT);
     }
 

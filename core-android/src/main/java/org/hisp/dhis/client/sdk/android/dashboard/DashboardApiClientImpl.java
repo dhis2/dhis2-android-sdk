@@ -99,7 +99,7 @@ public class DashboardApiClientImpl implements DashboardApiClient {
         if (!updatedDashboards.isEmpty()) {
             for (Dashboard dashboard : updatedDashboards) {
                 if (dashboard != null && dashboard.getDashboardItems() != null &&
-                        dashboard.getDashboardItems().isEmpty()) {
+                        !dashboard.getDashboardItems().isEmpty()) {
                     for (DashboardItem item : dashboard.getDashboardItems()) {
                         item.setDashboard(dashboard);
                     }

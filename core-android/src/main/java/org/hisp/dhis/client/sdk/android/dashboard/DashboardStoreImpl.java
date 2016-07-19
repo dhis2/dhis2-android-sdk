@@ -33,14 +33,24 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardFlow;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectDataStore;
 import org.hisp.dhis.client.sdk.core.common.StateStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperationImpl;
 import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
+import org.hisp.dhis.client.sdk.core.common.utils.ModelUtils;
 import org.hisp.dhis.client.sdk.core.dashboard.DashboardItemStore;
 import org.hisp.dhis.client.sdk.core.dashboard.DashboardStore;
 
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
+import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class DashboardStoreImpl extends AbsIdentifiableObjectDataStore<Dashboard, DashboardFlow>
         implements DashboardStore {
@@ -137,4 +147,82 @@ public class DashboardStoreImpl extends AbsIdentifiableObjectDataStore<Dashboard
 //                dashboardItemStore.queryAll());
         return super.queryAll();
     }
+
+    /**
+    private void saveDashboardItems(Dashboard dashboard) {
+        List<DashboardItem> dashboardItems = dashboard.getDashboardItems();
+        List<DashboardItem> persistedDashboardItems= dashboardItemStore.query(dashboard);
+
+        Map<String, DashboardItem> updatedDashboardItemMap = toMap(dashboardItems);
+        Map<String, DashboardItem> persistedDashboardItemMap = toMap(persistedDashboardItems);
+
+        List<DbOperation> dbOperations = new ArrayList<>();
+        for (String dataElementUid : updatedDashboardItemMap.keySet()) {
+            DashboardItem updatedDashboardItem =
+                    updatedDashboardItemMap.get(dataElementUid);
+            DashboardItem persistedDashboardItem =
+                    persistedDashboardItemMap.get(dataElementUid);
+
+            if (persistedDashboardItem == null) {
+                dbOperations.add(DbOperationImpl.with(dashboardItemStore)
+                        .insert(updatedDashboardItem));
+                continue;
+            }
+
+            dbOperations.add(DbOperationImpl.with(dashboardItemStore)
+                    .update(updatedDashboardItem));
+            persistedDashboardItemMap.remove(dataElementUid);
+        }
+
+        for (String dataElementUid : persistedDashboardItemMap.keySet()) {
+            DashboardItem dashboardItem =
+                    persistedDashboardItemMap.get(dataElementUid);
+            dbOperations.add(DbOperationImpl.with(dashboardItemStore).delete(dashboardItem));
+        }
+
+        transactionManager.transact(dbOperations);
+    }
+
+    private static List<Dashboard> mapDashboardToDashboardItems(
+            List<Dashboard> dashboards, List<DashboardItem> dashboardItems) {
+        if (dashboards == null || dashboards.isEmpty() ||
+                dashboardItems == null || dashboardItems.isEmpty()) {
+            return dashboards;
+        }
+
+        Map<String, Dashboard> dashboardMap = ModelUtils.toMap(dashboards);
+        for (DashboardItem dashboardItem : dashboardItems) {
+            if (dashboardItem.getDashboard() == null ||
+                    dashboardMap.get(dashboardItem.getDashboard().getUId()) == null) {
+                continue;
+            }
+
+            Dashboard dashboard = dashboardMap.get(dashboardItem.getDashboard().getUId());
+            if (dashboard.getDashboardItems() == null) {
+                dashboard.setDashboardItems(new ArrayList<DashboardItem>());
+            }
+
+            dashboard.getDashboardItems().add(dashboardItem);
+        }
+
+        return dashboards;
+    }
+
+
+
+
+    private static Map<String, DashboardItem> toMap(
+            Collection<DashboardItem> dashboardItemCollection) {
+
+        Map<String, DashboardItem> dashboardItemMap = new HashMap<>();
+        if (dashboardItemCollection != null && !dashboardItemCollection.isEmpty()) {
+            for (DashboardItem dashboardItem : dashboardItemCollection) {
+                //TODO VERIFY
+                dashboardItemMap.put(dashboardItem.getUId(), dashboardItem);
+            }
+        }
+
+        return dashboardItemMap;
+    }
+     **/
 }

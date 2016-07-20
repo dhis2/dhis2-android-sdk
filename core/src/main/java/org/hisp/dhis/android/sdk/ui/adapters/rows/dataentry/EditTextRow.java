@@ -91,11 +91,11 @@ public class EditTextRow extends Row {
             detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
 
             if (DataEntryRowTypes.TEXT.equals(mRowType)) {
-                editText.setInputType(InputType.TYPE_CLASS_TEXT);
+                editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
                 editText.setHint(R.string.enter_text);
                 editText.setSingleLine(true);
             } else if (DataEntryRowTypes.LONG_TEXT.equals(mRowType)) {
-                editText.setInputType(InputType.TYPE_CLASS_TEXT);
+                editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
                 editText.setHint(R.string.enter_long_text);
                 editText.setLines(LONG_TEXT_LINE_COUNT);
             } else if (DataEntryRowTypes.NUMBER.equals(mRowType)) {

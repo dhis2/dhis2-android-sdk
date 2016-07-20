@@ -156,7 +156,10 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
 
     @Override
     public void saveDataElement(String id) {
-        eventDataEntryFragment.getSaveThread().scheduleSaveDataValue(id);
+        if (eventDataEntryFragment != null &&
+                eventDataEntryFragment.getSaveThread() != null) {
+            eventDataEntryFragment.getSaveThread().scheduleSaveDataValue(id);
+        }
     }
 
     @Override

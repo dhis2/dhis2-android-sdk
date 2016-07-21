@@ -125,19 +125,16 @@ public class EnrollmentDatePickerRow extends AbsEnrollmentDatePickerRow {
 
         }
 
-        public void updateViews(String label, Enrollment enrollment, String enrollmentDate ) {
+        public void updateViews(String label, Enrollment enrollment, String enrollmentDate) {
             dateSetListener.setEnrollment(enrollment);
             clearButtonListener.setEnrollment(enrollment);
 
             String eventDate = null;
-
-
-            if(enrollment != null && enrollmentDate != null && !isEmpty(enrollmentDate))
-            {
-
-                dateSetListener.setEnrollmentDate(enrollment.getEnrollmentDate());
-                clearButtonListener.setEnrollmentDate(enrollment.getEnrollmentDate());
-                DateTime incidentDateTime = DateTime.parse(enrollment.getEnrollmentDate());
+            
+            if (enrollment != null && enrollmentDate != null && !isEmpty(enrollmentDate)) {
+                dateSetListener.setEnrollmentDate(enrollmentDate);
+                clearButtonListener.setEnrollmentDate(enrollmentDate);
+                DateTime incidentDateTime = DateTime.parse(enrollmentDate);
                 eventDate = incidentDateTime.toString(DATE_FORMAT);
             }
 

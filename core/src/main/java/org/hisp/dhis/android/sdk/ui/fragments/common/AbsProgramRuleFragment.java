@@ -29,12 +29,10 @@
 
 package org.hisp.dhis.android.sdk.ui.fragments.common;
 
-import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.app.ProgressDialog;
 
+import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
-import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
-import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
@@ -50,12 +48,14 @@ import java.util.List;
 
 /**
  * Abstract Fragment that can be extended by Fragments that want to make use of Program Rules.
+ *
  * @param <D>
  */
 public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
 
     private static final String TAG = AbsProgramRuleFragment.class.getSimpleName();
     protected IProgramRuleFragmentHelper programRuleFragmentHelper;
+    private ProgressDialog progressDialog;
 
     public IProgramRuleFragmentHelper getProgramRuleFragmentHelper() {
         return programRuleFragmentHelper;
@@ -71,26 +71,31 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
      * If no rules exist for Enrollment, this won't be run
      */
     public void evaluateAndApplyProgramRules() {
-        if(programRuleFragmentHelper.getEnrollment().getProgram().getProgramRules() == null ||
+        if (programRuleFragmentHelper.getEnrollment().getProgram().getProgramRules() == null ||
                 programRuleFragmentHelper.getEnrollment().getProgram().getProgramRules().isEmpty()) {
             return;
         }
+        showBlockingProgressBar();
         VariableService.initialize(programRuleFragmentHelper.getEnrollment(), programRuleFragmentHelper.getEvent());
         programRuleFragmentHelper.mapFieldsToRulesAndIndicators();
         ArrayList<String> affectedFieldsWithValue = new ArrayList<>();
         List<ProgramRule> programRules = programRuleFragmentHelper.getProgramRules();
         Collections.sort(programRules, new ProgramRulePriorityComparator());
         for (ProgramRule programRule : programRules) {
+
             boolean evaluatedTrue = ProgramRuleService.evaluate(programRule.getCondition());
-            for(ProgramRuleAction action : programRule.getProgramRuleActions()) {
-                if(evaluatedTrue) {
+            for (ProgramRuleAction action : programRule.getProgramRuleActions()) {
+                if (evaluatedTrue) {
                     applyProgramRuleAction(action, affectedFieldsWithValue);
                 }
             }
+
         }
+
         if (!affectedFieldsWithValue.isEmpty()) {
             programRuleFragmentHelper.showWarningHiddenValuesDialog(programRuleFragmentHelper.getFragment(), affectedFieldsWithValue);
         }
+        hideBlockingProgressBar();
         programRuleFragmentHelper.updateUi();
     }
 
@@ -136,29 +141,57 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
         String stringResult = ProgramRuleService.getCalculatedConditionValue(programRuleAction.getData());
         String programRuleVariableName = programRuleAction.getContent();
         ProgramRuleVariable programRuleVariable;
-        if(programRuleVariableName != null) {
-            programRuleVariableName = programRuleVariableName.substring(2, programRuleVariableName.length()-1);
+        if (programRuleVariableName != null) {
+            programRuleVariableName = programRuleVariableName.substring(2, programRuleVariableName.length() - 1);
             programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(programRuleVariableName);
             programRuleVariable.setVariableValue(stringResult);
             programRuleVariable.setHasValue(true);
         }
         String dataElementId = programRuleAction.getDataElement();
-        if(dataElementId != null) {
+        if (dataElementId != null) {
             DataValue dataValue = programRuleFragmentHelper.getDataElementValue(dataElementId);
-            if(dataValue != null) {
+            if (dataValue != null) {
                 dataValue.setValue(stringResult);
                 programRuleFragmentHelper.flagDataChanged(true);
                 programRuleFragmentHelper.saveDataElement(dataElementId);
             }
         }
         String trackedEntityAttributeId = programRuleAction.getTrackedEntityAttribute();
-        if(trackedEntityAttributeId != null) {
+        if (trackedEntityAttributeId != null) {
             TrackedEntityAttributeValue trackedEntityAttributeValue = programRuleFragmentHelper.getTrackedEntityAttributeValue(trackedEntityAttributeId);
-            if(trackedEntityAttributeValue != null) {
+            if (trackedEntityAttributeValue != null) {
                 trackedEntityAttributeValue.setValue(stringResult);
                 programRuleFragmentHelper.flagDataChanged(true);
                 programRuleFragmentHelper.saveTrackedEntityAttribute(trackedEntityAttributeId);
             }
+        }
+    }
+
+    public void showBlockingProgressBar() {
+        if (isAdded() && getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (progressDialog != null && progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
+                    progressDialog = ProgressDialog.show(
+                            getActivity(), null, getString(R.string.please_wait), true, false);
+                }
+            });
+        }
+    }
+
+    public void hideBlockingProgressBar() {
+        if (progressDialog != null && isAdded() && getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (progressDialog != null) {
+                        progressDialog.dismiss();
+                    }
+                }
+            });
         }
     }
 }

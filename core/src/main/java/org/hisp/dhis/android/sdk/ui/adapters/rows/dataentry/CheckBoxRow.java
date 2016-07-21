@@ -81,9 +81,11 @@ public class CheckBoxRow extends Row {
             detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
 
             CheckBoxListener listener = new CheckBoxListener();
-            holder = new CheckBoxHolder(textLabel, mandatoryIndicator, warningLabel, errorLabel, checkBox, detailedInfoButton ,listener);
+            OnCheckBoxRowClickListener onCheckBoxRowClickListener = new OnCheckBoxRowClickListener();
+            holder = new CheckBoxHolder(root, textLabel, mandatoryIndicator, warningLabel, errorLabel, checkBox, detailedInfoButton ,listener, onCheckBoxRowClickListener);
 
             holder.checkBox.setOnCheckedChangeListener(holder.listener);
+            holder.rootView.setOnClickListener(holder.onCheckBoxRowClickListener);
             holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
 
 
@@ -100,6 +102,8 @@ public class CheckBoxRow extends Row {
         }
         holder.textLabel.setText(mLabel);
         holder.listener.setValue(mValue);
+
+        holder.onCheckBoxRowClickListener.setCheckBox(holder.checkBox);
 
         String stringValue = mValue.getValue();
         if (TRUE.equalsIgnoreCase(stringValue)) {
@@ -168,7 +172,21 @@ public class CheckBoxRow extends Row {
         }
     }
 
+    private static class OnCheckBoxRowClickListener implements View.OnClickListener {
+        CheckBox checkBox;
+
+        public void setCheckBox(CheckBox checkBox) {
+            this.checkBox = checkBox;
+        }
+
+        @Override
+        public void onClick(View view) {
+            checkBox.setChecked(!checkBox.isChecked());
+        }
+    }
+
     private static class CheckBoxHolder {
+        final View rootView;
         final TextView textLabel;
         final TextView mandatoryIndicator;
         final TextView warningLabel;
@@ -176,9 +194,12 @@ public class CheckBoxRow extends Row {
         final CheckBox checkBox;
         final View detailedInfoButton;
         final CheckBoxListener listener;
+        final OnCheckBoxRowClickListener onCheckBoxRowClickListener;
 
-        public CheckBoxHolder(TextView textLabel, TextView mandatoryIndicator, TextView warningLabel, TextView errorLabel, CheckBox checkBox, View detailedInfoButton,
-                              CheckBoxListener listener) {
+        public CheckBoxHolder(View rootView, TextView textLabel, TextView mandatoryIndicator, TextView warningLabel, TextView errorLabel, CheckBox checkBox, View detailedInfoButton,
+                              CheckBoxListener listener,
+                              OnCheckBoxRowClickListener onCheckBoxRowClickListener) {
+            this.rootView = rootView;
             this.textLabel = textLabel;
             this.mandatoryIndicator = mandatoryIndicator;
             this.warningLabel = warningLabel;
@@ -186,6 +207,7 @@ public class CheckBoxRow extends Row {
             this.checkBox = checkBox;
             this.detailedInfoButton = detailedInfoButton;
             this.listener = listener;
+            this.onCheckBoxRowClickListener = onCheckBoxRowClickListener;
         }
     }
 

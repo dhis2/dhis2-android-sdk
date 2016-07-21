@@ -163,10 +163,14 @@ public final class TrackerController extends ResourceController {
      */
     public static List<Event> getScheduledEvents(String programId, String orgUnitId,
                                                  String startDate, String endDate) {
-        return new Select().from(Event.class).where(Condition.column(Event$Table.PROGRAMID).is
-                (programId)).and(Condition.column(Event$Table.ORGANISATIONUNITID).is
-                (orgUnitId)).and(Condition.column(Event$Table.DUEDATE).between(startDate).and
-                (endDate)).orderBy(Event$Table.DUEDATE).queryList();
+        return new Select().from(Event.class).where(Condition.column(Event$Table.PROGRAMID)
+                .is(programId))
+                .and(Condition.column(Event$Table.ORGANISATIONUNITID)
+                .is(orgUnitId))
+                .and(Condition.column(Event$Table.STATUS).isNot(Event.STATUS_ACTIVE))
+                .and(Condition.column(Event$Table.STATUS).isNot(Event.STATUS_COMPLETED))
+                .and(Condition.column(Event$Table.DUEDATE).between(startDate)
+                .and(endDate)).orderBy(Event$Table.DUEDATE).queryList();
     }
 
     /**

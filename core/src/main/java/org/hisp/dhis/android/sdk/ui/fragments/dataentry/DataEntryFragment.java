@@ -29,9 +29,7 @@
 
 package org.hisp.dhis.android.sdk.ui.fragments.dataentry;
 
-import android.app.Activity;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
@@ -88,7 +86,7 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        if(rulesEvaluatorThread==null || rulesEvaluatorThread.isKilled()) {
+        if (rulesEvaluatorThread == null || rulesEvaluatorThread.isKilled()) {
             rulesEvaluatorThread = new RulesEvaluatorThread();
             rulesEvaluatorThread.start();
         }
@@ -126,7 +124,7 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     }
 
     public ActionBar getActionBar() {
-        return ((AppCompatActivity)getActivity()).getSupportActionBar();
+        return ((AppCompatActivity) getActivity()).getSupportActionBar();
     }
 
     @Override
@@ -144,7 +142,7 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         listView.setVisibility(View.VISIBLE);
         listView.setAdapter(listViewAdapter);
 
-        if(state != null) {
+        if (state != null) {
             listView.onRestoreInstanceState(state);
         }
 
@@ -181,10 +179,11 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent) {}
+    public void onNothingSelected(AdapterView<?> parent) {
+    }
 
     public static void resetHidingAndWarnings(DataValueAdapter dataValueAdapter, SectionAdapter sectionAdapter) {
-        if(dataValueAdapter!=null) {
+        if (dataValueAdapter != null) {
             dataValueAdapter.resetHiding();
             dataValueAdapter.resetWarnings();
             dataValueAdapter.resetErrors();
@@ -203,23 +202,8 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     }
 
     public void updateSections() {
-        UpdateSectionsAsyncTask task = new UpdateSectionsAsyncTask();
-        task.execute();
+        Dhis2Application.getEventBus().post(new UpdateSectionsEvent());
     }
-
-    protected static class UpdateSectionsAsyncTask extends AsyncTask {
-
-        @Override
-        protected Object doInBackground(Object... params) {
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Object result) {
-            Dhis2Application.getEventBus().post(new UpdateSectionsEvent());
-        }
-    }
-
 
     public DataValueAdapter getListViewAdapter() {
         return listViewAdapter;
@@ -234,14 +218,13 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     }
 
     public static void refreshListView() {
-        RefreshListViewAsyncTask task = new RefreshListViewAsyncTask();
-        task.execute();
+        Dhis2Application.getEventBus().post(new RefreshListViewEvent());
     }
 
     public void flagDataChanged(boolean changed) {
         if (hasDataChanged != changed) {
             hasDataChanged = changed;
-            if(isAdded()) {
+            if (isAdded()) {
                 getActivity().invalidateOptionsMenu();
             }
         }
@@ -249,17 +232,17 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
 
     protected void showValidationErrorDialog(ArrayList<String> mandatoryFieldsMissingErrors, ArrayList<String> programRulesErrors) {
         ArrayList<String> errors = new ArrayList<>();
-        if(mandatoryFieldsMissingErrors != null) {
-            for(String mandatoryFieldsError : mandatoryFieldsMissingErrors) {
+        if (mandatoryFieldsMissingErrors != null) {
+            for (String mandatoryFieldsError : mandatoryFieldsMissingErrors) {
                 errors.add(getActivity().getString(R.string.missing_mandatory_field) + ": " + mandatoryFieldsError);
             }
         }
-        if(programRulesErrors != null) {
-            for(String programRulesError : programRulesErrors) {
+        if (programRulesErrors != null) {
+            for (String programRulesError : programRulesErrors) {
                 errors.add(getActivity().getString(R.string.error_message) + ": " + programRulesError);
             }
         }
-        if(!errors.isEmpty()) {
+        if (!errors.isEmpty()) {
             validationErrorDialog = ValidationErrorDialog
                     .newInstance(getActivity().getString(R.string.unable_to_complete_registration) + " " + getActivity().getString(R.string.review_errors), errors);
             validationErrorDialog.show(getChildFragmentManager());
@@ -313,11 +296,11 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     {
         String message = "";
 
-        if(eventClick.getRow() instanceof CoordinatesRow)
+        if (eventClick.getRow() instanceof CoordinatesRow)
             message = getResources().getString(R.string.detailed_info_coordinate_row);
-        else if(eventClick.getRow() instanceof StatusRow)
+        else if (eventClick.getRow() instanceof StatusRow)
             message = getResources().getString(R.string.detailed_info_status_row);
-        else if(eventClick.getRow() instanceof IndicatorRow)
+        else if (eventClick.getRow() instanceof IndicatorRow)
             message = ""; // need to change ProgramIndicator to extend BaseValue for this to work
         else         // rest of the rows can either be of data element or tracked entity instance attribute
             message = eventClick.getRow().getDescription();
@@ -336,19 +319,6 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     @Subscribe
     public void onHideLoadingDialog(HideLoadingDialogEvent event) {
         hideLoadingDialog();
-    }
-
-    private static class RefreshListViewAsyncTask extends AsyncTask {
-
-        @Override
-        protected Object doInBackground(Object[] params) {
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Object result) {
-            Dhis2Application.getEventBus().post(new RefreshListViewEvent());
-        }
     }
 
     public abstract SectionAdapter getSpinnerAdapter();

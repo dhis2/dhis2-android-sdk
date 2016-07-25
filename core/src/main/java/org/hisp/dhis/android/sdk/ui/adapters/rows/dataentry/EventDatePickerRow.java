@@ -77,8 +77,8 @@ public class EventDatePickerRow extends Row {
         } else {
             View root = inflater.inflate(
                     R.layout.listview_row_event_datepicker, container, false);
-            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout); // need to keep reference
-            holder = new DatePickerRowHolder(root, inflater.getContext(), detailedInfoButton, mAllowDatesInFuture);
+//            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout); // need to keep reference
+            holder = new DatePickerRowHolder(root, inflater.getContext(), mAllowDatesInFuture);
 
             root.setTag(holder);
             view = root;
@@ -93,17 +93,17 @@ public class EventDatePickerRow extends Row {
             holder.textLabel.setEnabled(true);
             holder.pickerInvoker.setEnabled(true);
         }
-        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
+//        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
         holder.updateViews(mLabel, mEvent);
-
-        if(isDetailedInfoButtonHidden())
-        {
-
-            holder.detailedInfoButton.setVisibility(View.INVISIBLE);
-        }
-        else {
-            holder.detailedInfoButton.setVisibility(View.VISIBLE);
-        }
+//
+//        if(isDetailedInfoButtonHidden())
+//        {
+//
+//            holder.detailedInfoButton.setVisibility(View.INVISIBLE);
+//        }
+//        else {
+//            holder.detailedInfoButton.setVisibility(View.VISIBLE);
+//        }
 
 
         return view;
@@ -118,16 +118,16 @@ public class EventDatePickerRow extends Row {
         final TextView textLabel;
         final TextView pickerInvoker;
         final ImageButton clearButton;
-        final View detailedInfoButton;
+//        final View detailedInfoButton;
         final DateSetListener dateSetListener;
         final OnEditTextClickListener invokerListener;
         final ClearButtonListener clearButtonListener;
 
-        public DatePickerRowHolder(View root, Context context, View detailedInfoButton, boolean allowDatesInFuture) {
+        public DatePickerRowHolder(View root, Context context, boolean allowDatesInFuture) {
             textLabel = (TextView) root.findViewById(R.id.text_label);
             pickerInvoker = (TextView) root.findViewById(R.id.date_picker_text_view);
             clearButton = (ImageButton) root.findViewById(R.id.clear_text_view);
-            this.detailedInfoButton = detailedInfoButton;
+//            this.detailedInfoButton = detailedInfoButton;
 
             dateSetListener = new DateSetListener(pickerInvoker);
             invokerListener = new OnEditTextClickListener(context, dateSetListener, allowDatesInFuture);

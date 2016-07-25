@@ -29,6 +29,7 @@
 
 package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
+import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,25 +43,27 @@ import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 
+import java.io.Serializable;
+
 /**
  * Created by erling on 9/9/15.
  */
-public abstract class Row implements DataEntryRow {
+public abstract class Row implements DataEntryRow, Serializable {
     protected String mLabel;
     protected String mWarning;
     protected String mError;
     protected BaseValue mValue;
     protected String mDescription;
     protected DataEntryRowTypes mRowType;
-    protected View detailedInfoButton;
+//    protected View detailedInfoButton;
     private boolean hideDetailedInfoButton;
     private boolean editable = true;
     protected boolean mMandatory = false;
     private boolean shouldNeverBeEdited = false;
 
-    public View getDetailedInfoButton(){
-        return detailedInfoButton;
-    }
+//    public View getDetailedInfoButton(){
+//        return detailedInfoButton;
+//    }
 
     public BaseValue getValue(){
         return mValue;

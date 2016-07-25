@@ -75,8 +75,8 @@ public class IncidentDatePickerRow extends AbsEnrollmentDatePickerRow {
         } else {
             View root = inflater.inflate(
                     R.layout.listview_row_event_datepicker, container, false);
-            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout); // need to keep reference
-            holder = new DatePickerRowHolder(root, inflater.getContext(), detailedInfoButton);
+//            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout); // need to keep reference
+            holder = new DatePickerRowHolder(root, inflater.getContext());
 
             root.setTag(holder);
             view = root;
@@ -91,11 +91,11 @@ public class IncidentDatePickerRow extends AbsEnrollmentDatePickerRow {
             holder.textLabel.setEnabled(true);
             holder.pickerInvoker.setEnabled(true);
         }
-        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
+//        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
         holder.updateViews(mLabel, mEnrollment, mIncidentDate);
 
-        if (isDetailedInfoButtonHidden())
-            holder.detailedInfoButton.setVisibility(View.INVISIBLE);
+//        if (isDetailedInfoButtonHidden())
+//            holder.detailedInfoButton.setVisibility(View.INVISIBLE);
 
         return view;
     }
@@ -109,16 +109,16 @@ public class IncidentDatePickerRow extends AbsEnrollmentDatePickerRow {
         final TextView textLabel;
         final TextView pickerInvoker;
         final ImageButton clearButton;
-        final View detailedInfoButton;
+//        final View detailedInfoButton;
         final DateSetListener dateSetListener;
         final OnEditTextClickListener invokerListener;
         final ClearButtonListener clearButtonListener;
 
-        public DatePickerRowHolder(View root, Context context, View detailedInfoButton) {
+        public DatePickerRowHolder(View root, Context context) {
             textLabel = (TextView) root.findViewById(R.id.text_label);
             pickerInvoker = (TextView) root.findViewById(R.id.date_picker_text_view);
             clearButton = (ImageButton) root.findViewById(R.id.clear_text_view);
-            this.detailedInfoButton = detailedInfoButton;
+//            this.detailedInfoButton = detailedInfoButton;
 
             dateSetListener = new DateSetListener(pickerInvoker);
             invokerListener = new OnEditTextClickListener(context, dateSetListener);

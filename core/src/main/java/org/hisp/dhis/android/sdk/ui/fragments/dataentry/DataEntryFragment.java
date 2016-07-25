@@ -80,7 +80,8 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     protected ValidationErrorDialog validationErrorDialog;
     private boolean hasDataChanged = false;
     protected RulesEvaluatorThread rulesEvaluatorThread;
-    private Parcelable state;
+    private Parcelable listViewState;
+    private Parcelable listViewAdapterState;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,7 +109,7 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
 
     @Override
     public void onPause() {
-        state = listView.onSaveInstanceState();
+        listViewState = listView.onSaveInstanceState();
         super.onPause();
         Dhis2Application.getEventBus().unregister(this);
     }
@@ -142,8 +143,8 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         listView.setVisibility(View.VISIBLE);
         listView.setAdapter(listViewAdapter);
 
-        if (state != null) {
-            listView.onRestoreInstanceState(state);
+        if (listViewState != null) {
+            listView.onRestoreInstanceState(listViewState);
         }
 
         upButton.setOnClickListener(new View.OnClickListener() {

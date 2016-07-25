@@ -84,15 +84,15 @@ public final class StatusRow extends Row {
         } else {
             View root = inflater.inflate(
                     R.layout.listview_row_status, container, false);
-            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
-            holder = new StatusViewHolder(context, root, mEvent, programStage, detailedInfoButton);
+//            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
+            holder = new StatusViewHolder(context, root, mEvent, programStage);
 
             root.setTag(holder);
             view = root;
         }
         holder.onValidateButtonClickListener.setFragmentActivity(fragmentActivity);
         holder.onCompleteButtonClickListener.setActivity(fragmentActivity);
-        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
+//        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
 
         if(!isEditable())
         {
@@ -120,10 +120,10 @@ public final class StatusRow extends Row {
         private final OnCompleteClickListener onCompleteButtonClickListener;
         private final OnValidateClickListener onValidateButtonClickListener;
         private final Event event;
-        private final View detailedInfoButton;
+//        private final View detailedInfoButton;
         private final ProgramStage programStage;
 
-        public StatusViewHolder(Context context, View view, Event event, ProgramStage programStage, View detailedInfoButton) {
+        public StatusViewHolder(Context context, View view, Event event, ProgramStage programStage) {
 
             this.event = event;
             this.programStage = programStage;
@@ -131,7 +131,7 @@ public final class StatusRow extends Row {
             /* views */
             complete = (Button) view.findViewById(R.id.complete);
             validate = (Button) view.findViewById(R.id.validate);
-            this.detailedInfoButton = detailedInfoButton;
+//            this.detailedInfoButton = detailedInfoButton;
 
             /* text watchers and click listener */
             onCompleteButtonClickListener = new OnCompleteClickListener(context, complete, this.event, this.programStage);

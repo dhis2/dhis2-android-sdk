@@ -70,13 +70,13 @@ public final class CoordinatesRow extends Row {
         } else {
             View root = inflater.inflate(
                     R.layout.listview_row_coordinate_picker, container, false);
-            detailedInfoButton =  root.findViewById(R.id.detailed_info_button_layout);
-            holder = new CoordinateViewHolder(root, detailedInfoButton);
+//            detailedInfoButton =  root.findViewById(R.id.detailed_info_button_layout);
+            holder = new CoordinateViewHolder(root);
 
             root.setTag(holder);
             view = root;
         }
-        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
+//        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
 
         //input filters for coordinate row text fields
         InputFilter[] latitudeFilters = new InputFilter[2];
@@ -109,12 +109,12 @@ public final class CoordinatesRow extends Row {
         private final EditText latitude;
         private final EditText longitude;
         private final ImageButton captureCoords;
-        private final View detailedInfoButton;
+//        private final View detailedInfoButton;
         private final LatitudeWatcher latitudeWatcher;
         private final LongitudeWatcher longitudeWatcher;
         private final OnCaptureCoordsClickListener onButtonClickListener;
 
-        public CoordinateViewHolder(View view, View detailedInfoButton) {
+        public CoordinateViewHolder(View view) {
             final String latitudeMessage = view.getContext()
                     .getString(R.string.latitude_error_message);
             final String longitudeMessage = view.getContext()
@@ -124,7 +124,7 @@ public final class CoordinatesRow extends Row {
             latitude = (EditText) view.findViewById(R.id.latitude_edittext);
             longitude = (EditText) view.findViewById(R.id.longitude_edittext);
             captureCoords = (ImageButton) view.findViewById(R.id.capture_coordinates);
-            this.detailedInfoButton = detailedInfoButton;
+//            this.detailedInfoButton = detailedInfoButton;
 
             /* text watchers and click listener */
             latitudeWatcher = new LatitudeWatcher(latitude, latitudeMessage);

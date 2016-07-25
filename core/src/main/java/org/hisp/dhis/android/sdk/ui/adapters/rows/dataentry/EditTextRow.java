@@ -88,7 +88,7 @@ public class EditTextRow extends Row {
             TextView warningLabel = (TextView) root.findViewById(R.id.warning_label);
             TextView errorLabel = (TextView) root.findViewById(R.id.error_label);
             EditText editText = (EditText) root.findViewById(R.id.edit_text_row);
-            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
+//            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
 
             if (DataEntryRowTypes.TEXT.equals(mRowType)) {
                 editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
@@ -128,7 +128,7 @@ public class EditTextRow extends Row {
             }
 
             OnTextChangeListener listener = new OnTextChangeListener();
-            holder = new ValueEntryHolder(label, mandatoryIndicator, warningLabel, errorLabel, editText, detailedInfoButton, listener );
+            holder = new ValueEntryHolder(label, mandatoryIndicator, warningLabel, errorLabel, editText, listener );
             holder.editText.addTextChangedListener(listener);
 
             rowTypeTemp = mRowType.toString();
@@ -144,17 +144,17 @@ public class EditTextRow extends Row {
 
         holder.textLabel.setText(mLabel);
         holder.listener.setBaseValue(mValue);
-        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
+//        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
 
         holder.editText.setText(mValue.getValue());
         holder.editText.setSelection(holder.editText.getText().length());
 
-        if(isDetailedInfoButtonHidden()) {
-            holder.detailedInfoButton.setVisibility(View.INVISIBLE);
-        }
-        else {
-            holder.detailedInfoButton.setVisibility(View.VISIBLE);
-        }
+//        if(isDetailedInfoButtonHidden()) {
+//            holder.detailedInfoButton.setVisibility(View.INVISIBLE);
+//        }
+//        else {
+//            holder.detailedInfoButton.setVisibility(View.VISIBLE);
+//        }
 
         if(mWarning == null) {
             holder.warningLabel.setVisibility(View.GONE);
@@ -190,20 +190,19 @@ public class EditTextRow extends Row {
         final TextView warningLabel;
         final TextView errorLabel;
         final EditText editText;
-        final View detailedInfoButton;
+//        final View detailedInfoButton;
         final OnTextChangeListener listener;
 
         public ValueEntryHolder(TextView textLabel,
                                 TextView mandatoryIndicator, TextView warningLabel,
                                 TextView errorLabel, EditText editText,
-                                View detailedInfoButton,
                                 OnTextChangeListener listener) {
             this.textLabel = textLabel;
             this.mandatoryIndicator = mandatoryIndicator;
             this.warningLabel = warningLabel;
             this.errorLabel = errorLabel;
             this.editText = editText;
-            this.detailedInfoButton = detailedInfoButton;
+//            this.detailedInfoButton = detailedInfoButton;
             this.listener = listener;
         }
     }

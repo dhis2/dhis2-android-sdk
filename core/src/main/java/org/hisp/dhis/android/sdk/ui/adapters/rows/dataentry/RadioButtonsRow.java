@@ -91,8 +91,8 @@ public class RadioButtonsRow extends Row {
                     root.findViewById(R.id.second_radio_button);
             CompoundButton thirdButton = (CompoundButton)
                     root.findViewById(R.id.third_radio_button);
-            detailedInfoButton =
-                    root.findViewById(R.id.detailed_info_button_layout);
+//            detailedInfoButton =
+//                    root.findViewById(R.id.detailed_info_button_layout);
 
 
 
@@ -108,7 +108,7 @@ public class RadioButtonsRow extends Row {
 
             CheckedChangeListener listener = new CheckedChangeListener();
             holder = new BooleanRowHolder(mRowType, label, mandatoryIndicator, warningLabel, errorLabel, firstButton,
-                    secondButton, thirdButton, detailedInfoButton, listener);
+                    secondButton, thirdButton, listener);
 
             holder.firstButton.setOnCheckedChangeListener(listener);
             holder.secondButton.setOnCheckedChangeListener(listener);
@@ -128,15 +128,15 @@ public class RadioButtonsRow extends Row {
             holder.thirdButton.setEnabled(true);
         }
 
-        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
+//        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
         holder.updateViews(mLabel, mValue);
 
-        if(isDetailedInfoButtonHidden()) {
-            holder.detailedInfoButton.setVisibility(View.INVISIBLE);
-        }
-        else {
-            holder.detailedInfoButton.setVisibility(View.VISIBLE);
-        }
+//        if(isDetailedInfoButtonHidden()) {
+//            holder.detailedInfoButton.setVisibility(View.INVISIBLE);
+//        }
+//        else {
+//            holder.detailedInfoButton.setVisibility(View.VISIBLE);
+//        }
 
         if(mWarning == null) {
             holder.warningLabel.setVisibility(View.GONE);
@@ -175,13 +175,12 @@ public class RadioButtonsRow extends Row {
         final CompoundButton firstButton;
         final CompoundButton secondButton;
         final CompoundButton thirdButton;
-        final View detailedInfoButton;
+//        final View detailedInfoButton;
         final CheckedChangeListener listener;
         final DataEntryRowTypes type;
 
         public BooleanRowHolder(DataEntryRowTypes type, TextView textLabel, TextView mandatoryIndicator, TextView warningLabel, TextView errorLabel, CompoundButton firstButton,
-                                CompoundButton secondButton, CompoundButton thirdButton,
-                                View detailedInfoButton, CheckedChangeListener listener) {
+                                CompoundButton secondButton, CompoundButton thirdButton, CheckedChangeListener listener) {
             this.type = type;
             this.textLabel = textLabel;
             this.mandatoryIndicator = mandatoryIndicator;
@@ -190,7 +189,7 @@ public class RadioButtonsRow extends Row {
             this.firstButton = firstButton;
             this.secondButton = secondButton;
             this.thirdButton = thirdButton;
-            this.detailedInfoButton = detailedInfoButton;
+//            this.detailedInfoButton = detailedInfoButton;
             this.listener = listener;
         }
 

@@ -84,7 +84,7 @@ public final class AutoCompleteRow extends Row {
         }
 
         mOptions = new ArrayList<>(mNameToCodeMap.keySet());
-        checkNeedsForDescriptionButton();
+//        checkNeedsForDescriptionButton();
 
     }
 
@@ -93,19 +93,19 @@ public final class AutoCompleteRow extends Row {
                         View convertView, ViewGroup container) {
         View view;
         ViewHolder holder;
-        checkNeedsForDescriptionButton();
+//        checkNeedsForDescriptionButton();
         if (convertView != null && convertView.getTag() instanceof ViewHolder) {
             view = convertView;
             holder = (ViewHolder) view.getTag();
             holder.clearOnTextChangedListener();
         } else {
             view = inflater.inflate(R.layout.listview_row_autocomplete, container, false);
-            detailedInfoButton =  view.findViewById(R.id.detailed_info_button_layout);
-            holder = new ViewHolder(view, detailedInfoButton);
+//            detailedInfoButton =  view.findViewById(R.id.detailed_info_button_layout);
+            holder = new ViewHolder(view);
             view.setTag(holder);
         }
         holder.textView.setText(mLabel);
-        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
+//        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
         holder.onTextChangedListener.setBaseValue(mValue);
         holder.onTextChangedListener.setOptions(mNameToCodeMap);
 
@@ -133,10 +133,10 @@ public final class AutoCompleteRow extends Row {
             holder.clearButton.setEnabled(true);
         }
         if(isDetailedInfoButtonHidden()) {
-            holder.detailedInfoButton.setVisibility(View.INVISIBLE);
+//            holder.detailedInfoButton.setVisibility(View.INVISIBLE);
         }
         else {
-            holder.detailedInfoButton.setVisibility(View.VISIBLE);
+//            holder.detailedInfoButton.setVisibility(View.VISIBLE);
         }
 
         if(mWarning == null) {
@@ -175,19 +175,19 @@ public final class AutoCompleteRow extends Row {
         public final TextView errorLabel;
         public final TextView valueTextView;
         public final ImageButton clearButton;
-        public final View detailedInfoButton;
+//        public final View detailedInfoButton;
         public final OnClearButtonListener onClearButtonListener;
         public final OnTextChangedListener onTextChangedListener;
         public final DropDownButtonListener onDropDownButtonListener;
 
-        private ViewHolder(View view, View detailedInfoButton) {
+        private ViewHolder(View view) {
             mandatoryIndicator = (TextView) view.findViewById(R.id.mandatory_indicator);
             textView = (TextView) view.findViewById(R.id.text_label);
             warningLabel = (TextView) view.findViewById(R.id.warning_label);
             errorLabel = (TextView) view.findViewById(R.id.error_label);
             valueTextView = (TextView) view.findViewById(R.id.choose_option);
             clearButton = (ImageButton) view.findViewById(R.id.clear_option_value);
-            this.detailedInfoButton = detailedInfoButton;
+//            this.detailedInfoButton = detailedInfoButton;
 
             OnOptionSelectedListener onOptionListener
                     = new OnOptionItemSelectedListener(valueTextView);

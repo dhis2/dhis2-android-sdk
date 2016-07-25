@@ -30,6 +30,7 @@
 package org.hisp.dhis.android.sdk.ui.fragments.common;
 
 import android.app.ProgressDialog;
+import android.util.Log;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
@@ -82,14 +83,16 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
         List<ProgramRule> programRules = programRuleFragmentHelper.getProgramRules();
         Collections.sort(programRules, new ProgramRulePriorityComparator());
         for (ProgramRule programRule : programRules) {
-
-            boolean evaluatedTrue = ProgramRuleService.evaluate(programRule.getCondition());
-            for (ProgramRuleAction action : programRule.getProgramRuleActions()) {
-                if (evaluatedTrue) {
-                    applyProgramRuleAction(action, affectedFieldsWithValue);
+            try {
+                boolean evaluatedTrue = ProgramRuleService.evaluate(programRule.getCondition());
+                for (ProgramRuleAction action : programRule.getProgramRuleActions()) {
+                    if (evaluatedTrue) {
+                        applyProgramRuleAction(action, affectedFieldsWithValue);
+                    }
                 }
+            } catch (Exception e) {
+                Log.e("PROGRAM RULE", "Error evaluating program rule", e);
             }
-
         }
 
         if (!affectedFieldsWithValue.isEmpty()) {
@@ -168,27 +171,31 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
     }
 
     public void showBlockingProgressBar() {
-        if (isAdded() && getActivity() != null) {
+        if (getActivity() != null) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (progressDialog != null && progressDialog.isShowing()) {
+                    if (progressDialog != null) {
                         progressDialog.dismiss();
                     }
                     progressDialog = ProgressDialog.show(
-                            getActivity(), null, getString(R.string.please_wait), true, false);
+                            getContext(), "", getString(R.string.please_wait), true, false);
                 }
             });
         }
     }
 
     public void hideBlockingProgressBar() {
-        if (progressDialog != null && isAdded() && getActivity() != null) {
+        if (getActivity() != null) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     if (progressDialog != null) {
+                        progressDialog.cancel();
                         progressDialog.dismiss();
+                    } else {
+                        Log.w("HIDE PROGRESS",
+                                "Unable to hide progress dialog: AbsProgramRuleFragment.progressDialog is null");
                     }
                 }
             });

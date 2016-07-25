@@ -24,3 +24,5 @@ build
 
 #Windows
 *.db
+keystore-dhis2mobile
+keystore_dhis2

@@ -32,18 +32,18 @@ package org.hisp.dhis.android.sdk.controllers.tracker;
 import android.content.Context;
 import android.util.Log;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.ApiEndpointContainer;
-import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.LoadingController;
 import org.hisp.dhis.android.sdk.controllers.ResourceController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.controllers.wrappers.EventsWrapper;
+import org.hisp.dhis.android.sdk.events.OnTeiDownloadedEvent;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
+import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
@@ -61,7 +61,6 @@ import org.hisp.dhis.android.sdk.utils.Utils;
 import org.hisp.dhis.android.sdk.utils.api.ProgramType;
 import org.joda.time.DateTime;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -69,8 +68,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import retrofit.mime.TypedString;
 
 import static org.hisp.dhis.android.sdk.utils.NetworkUtils.unwrapResponse;
 import static org.hisp.dhis.client.sdk.utils.StringUtils.isEmpty;
@@ -82,13 +79,14 @@ final class TrackerDataLoader extends ResourceController {
 
     public static final String CLASS_TAG = TrackerDataLoader.class.getSimpleName();
 
-    private TrackerDataLoader() {}
+    private TrackerDataLoader() {
+    }
 
     /**
      * Loads datavalue items that is scheduled to be loaded but has not yet been.
      */
     static void updateDataValueDataItems(Context context, DhisApi dhisApi) throws APIException {
-        if(dhisApi == null) {
+        if (dhisApi == null) {
             return;
         }
         SystemInfo serverSystemInfo = dhisApi.getSystemInfo();
@@ -130,11 +128,11 @@ final class TrackerDataLoader extends ResourceController {
                         UiUtils.postProgressMessage(context.getString(R.string.loading_events) + ": "
                                 + organisationUnit.getLabel() + ": " + program.getName());
                         try {
-                        getEventsDataFromServer(dhisApi, organisationUnit.getId(), program.getUid(), serverDateTime);
+                            getEventsDataFromServer(dhisApi, organisationUnit.getId(), program.getUid(), serverDateTime);
                         } catch (APIException e) {
-                        e.printStackTrace();
-                        //todo: could probably do something prettier here. This catch is done to prevent
-                        // stopping loading of the following program/orgUnit as throwing and exception would exit the loop..
+                            e.printStackTrace();
+                            //todo: could probably do something prettier here. This catch is done to prevent
+                            // stopping loading of the following program/orgUnit as throwing and exception would exit the loop..
                         }
                     }
                 }
@@ -148,30 +146,29 @@ final class TrackerDataLoader extends ResourceController {
         boolean failed = false;
         String trackedEntityInstanceQueryParams = "trackedEntityInstance";
         Map<String, String> QUERY_MAP_FULL = new HashMap<>();
-        Map<String,List<Enrollment>> programToEnrollmentMap = mapActiveEnrollmentsByProgram(enrollments);
+        Map<String, List<Enrollment>> programToEnrollmentMap = mapActiveEnrollmentsByProgram(enrollments);
         List<Event> eventsFromServer = new ArrayList<>();
-        if(lastUpdated != null) {
+        if (lastUpdated != null) {
             QUERY_MAP_FULL.put("lastUpdated", lastUpdated.toString());
         }
 
-        if(programToEnrollmentMap.keySet().size() > 0) {
+        if (programToEnrollmentMap.keySet().size() > 0) {
             StringBuilder sb = new StringBuilder();
             Set<String> programUids = programToEnrollmentMap.keySet();
 
-            for(String programUid : programUids) {
+            for (String programUid : programUids) {
                 List<Enrollment> enrollmentsForProgram = programToEnrollmentMap.get(programUid);
-                for(Enrollment enrollment : enrollmentsForProgram) {
+                for (Enrollment enrollment : enrollmentsForProgram) {
                     sb.append(enrollment.getTrackedEntityInstance() + delimiter);
                 }
                 QUERY_MAP_FULL.put(trackedEntityInstanceQueryParams, sb.toString());
                 try {
                     List<Event> eventsForTrackedEntityInstance = dhisApi.getEventsForTrackedEntityInstance(programUid, QUERY_MAP_FULL);
-                    if(eventsForTrackedEntityInstance != null) {
+                    if (eventsForTrackedEntityInstance != null) {
                         eventsFromServer.addAll(dhisApi.getEventsForTrackedEntityInstance(programUid, QUERY_MAP_FULL));
                     }
 
-                }
-                catch (APIException apiException) {
+                } catch (APIException apiException) {
                     apiException.printStackTrace();
                     failed = true;
                 }
@@ -182,7 +179,7 @@ final class TrackerDataLoader extends ResourceController {
         }
 
 
-        if(!failed) {
+        if (!failed) {
             saveResourceDataFromServer(ResourceType.EVENTS, dhisApi, eventsFromServer, null, serverDateTime);
             DateTimeManager.getInstance().setLastUpdated(ResourceType.EVENTS, serverDateTime);
         }
@@ -190,19 +187,18 @@ final class TrackerDataLoader extends ResourceController {
     }
 
     static Map<String, List<Enrollment>> mapActiveEnrollmentsByProgram(List<Enrollment> enrollments) {
-        Map<String,List<Enrollment>> programToEnrollmentMap = new HashMap<>();
+        Map<String, List<Enrollment>> programToEnrollmentMap = new HashMap<>();
 
-        for(Enrollment enrollment : enrollments) {
-            if(enrollment != null && enrollment.getProgram() != null // if enrollment exists, is active and have a trackedEntityInstance
+        for (Enrollment enrollment : enrollments) {
+            if (enrollment != null && enrollment.getProgram() != null // if enrollment exists, is active and have a trackedEntityInstance
                     && Enrollment.ACTIVE.equals(enrollment.getStatus())
                     && !isEmpty(enrollment.getTrackedEntityInstance())) {
 
-                if(!programToEnrollmentMap.containsKey(enrollment.getProgram().getUid())) {
+                if (!programToEnrollmentMap.containsKey(enrollment.getProgram().getUid())) {
                     List<Enrollment> enrollmentForProgram = new ArrayList<>();
                     enrollmentForProgram.add(enrollment);
                     programToEnrollmentMap.put(enrollment.getProgram().getUid(), enrollmentForProgram);
-                }
-                else {
+                } else {
                     programToEnrollmentMap.get(enrollment.getProgram().getUid()).add(enrollment); // adding enrollment to list
                 }
             }
@@ -218,18 +214,18 @@ final class TrackerDataLoader extends ResourceController {
         DateTime lastUpdated = DateTimeManager.getInstance().getLastUpdated(ResourceType.EVENTS);
 
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
-        if(events != null && events.size() > 0) {
+        if (events != null && events.size() > 0) {
             QUERY_MAP_FULL.put("program", "");
         }
     }
 
     static void getEventsDataFromServer(DhisApi dhisApi, String organisationUnitUid, String programUid, DateTime serverDateTime) throws APIException {
-        if(dhisApi == null) {
+        if (dhisApi == null) {
             return;
         }
         Log.d(CLASS_TAG, "getEventsDataFromServer");
         DateTime lastUpdated = DateTimeManager.getInstance()
-                .getLastUpdated(ResourceType.EVENTS,organisationUnitUid+programUid);
+                .getLastUpdated(ResourceType.EVENTS, organisationUnitUid + programUid);
         final Map<String, String> map = new HashMap<>();
         map.put("fields", "[:all]");
         if (lastUpdated != null) {
@@ -238,7 +234,7 @@ final class TrackerDataLoader extends ResourceController {
         JsonNode response = dhisApi.getEvents(programUid, organisationUnitUid, 50,
                 map);
         List<Event> events = EventsWrapper.getEvents(response);
-        saveResourceDataFromServer(ResourceType.EVENTS,organisationUnitUid+programUid, dhisApi, events, null, serverDateTime);
+        saveResourceDataFromServer(ResourceType.EVENTS, organisationUnitUid + programUid, dhisApi, events, null, serverDateTime);
     }
 
     static List<TrackedEntityInstance> queryTrackedEntityInstancesDataFromServer(DhisApi dhisApi,
@@ -246,29 +242,28 @@ final class TrackerDataLoader extends ResourceController {
                                                                                  String programUid,
                                                                                  String queryString,
                                                                                  TrackedEntityAttributeValue... params) throws APIException {
-        if(dhisApi == null) {
+        if (dhisApi == null) {
             return null;
         }
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
-        if(programUid != null) {
+        if (programUid != null) {
             QUERY_MAP_FULL.put("program", programUid);
         }
         List<TrackedEntityAttributeValue> valueParams = new LinkedList<>();
-        if( params != null ) {
-            for(TrackedEntityAttributeValue teav: params ) {
-                if( teav != null && teav.getValue() != null ) {
-                    if( !teav.getValue().isEmpty() ) {
-                        valueParams.add( teav );
+        if (params != null) {
+            for (TrackedEntityAttributeValue teav : params) {
+                if (teav != null && teav.getValue() != null) {
+                    if (!teav.getValue().isEmpty()) {
+                        valueParams.add(teav);
 //                        QUERY_MAP_FULL.put("filter",teav.getTrackedEntityAttributeId()+":LIKE:"+teav.getValue());
                     }
                 }
             }
         }
-        for(TrackedEntityAttributeValue val : valueParams) {
-            if(!QUERY_MAP_FULL.containsKey("filter")) {
+        for (TrackedEntityAttributeValue val : valueParams) {
+            if (!QUERY_MAP_FULL.containsKey("filter")) {
                 QUERY_MAP_FULL.put("filter", val.getTrackedEntityAttributeId() + ":LIKE:" + val.getValue());
-            }
-            else {
+            } else {
                 String currentFilter = QUERY_MAP_FULL.get("filter");
                 QUERY_MAP_FULL.put("filter", currentFilter + "&" + val.getTrackedEntityAttributeId() + ":LIKE:" + val.getValue());
             }
@@ -276,8 +271,8 @@ final class TrackerDataLoader extends ResourceController {
 
 
         //doesnt work with both attribute filter and query
-        if(queryString!=null && !queryString.isEmpty() && valueParams.isEmpty() ) {
-            QUERY_MAP_FULL.put("query","LIKE:"+queryString);//todo: make a map where we can use more than one of each key
+        if (queryString != null && !queryString.isEmpty() && valueParams.isEmpty()) {
+            QUERY_MAP_FULL.put("query", "LIKE:" + queryString);//todo: make a map where we can use more than one of each key
         }
         List<TrackedEntityInstance> trackedEntityInstances = unwrapResponse(dhisApi
                 .getTrackedEntityInstances(organisationUnitUid,
@@ -286,34 +281,33 @@ final class TrackerDataLoader extends ResourceController {
     }
 
     static List<TrackedEntityInstance> queryTrackedEntityInstancesDataFromAllAccessibleOrgunits(DhisApi dhisApi,
-                                                                                        String organisationUnitUid,
-                                                                                        String programUid,
-                                                                                        String queryString,
-                                                                                        boolean detailedSearch,
-                                                                                        TrackedEntityAttributeValue... params) throws APIException {
-        if(dhisApi == null) {
+                                                                                                String organisationUnitUid,
+                                                                                                String programUid,
+                                                                                                String queryString,
+                                                                                                boolean detailedSearch,
+                                                                                                TrackedEntityAttributeValue... params) throws APIException {
+        if (dhisApi == null) {
             return null;
         }
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
-        if(programUid != null) {
+        if (programUid != null) {
             QUERY_MAP_FULL.put("program", programUid);
         }
         List<TrackedEntityAttributeValue> valueParams = new LinkedList<>();
-        if( params != null ) {
-            for(TrackedEntityAttributeValue teav: params ) {
-                if( teav != null && teav.getValue() != null ) {
-                    if( !teav.getValue().isEmpty() ) {
-                        valueParams.add( teav );
+        if (params != null) {
+            for (TrackedEntityAttributeValue teav : params) {
+                if (teav != null && teav.getValue() != null) {
+                    if (!teav.getValue().isEmpty()) {
+                        valueParams.add(teav);
 //                        QUERY_MAP_FULL.put("filter",teav.getTrackedEntityAttributeId()+":LIKE:"+teav.getValue());
                     }
                 }
             }
         }
-        for(TrackedEntityAttributeValue val : valueParams) {
-            if(!QUERY_MAP_FULL.containsKey("filter")) {
+        for (TrackedEntityAttributeValue val : valueParams) {
+            if (!QUERY_MAP_FULL.containsKey("filter")) {
                 QUERY_MAP_FULL.put("filter", val.getTrackedEntityAttributeId() + ":LIKE:" + val.getValue());
-            }
-            else {
+            } else {
                 String currentFilter = QUERY_MAP_FULL.get("filter");
                 QUERY_MAP_FULL.put("filter", currentFilter + "&" + val.getTrackedEntityAttributeId() + ":LIKE:" + val.getValue());
             }
@@ -321,37 +315,41 @@ final class TrackerDataLoader extends ResourceController {
 
 
         //doesnt work with both attribute filter and query
-        if(queryString!=null && !queryString.isEmpty() && valueParams.isEmpty() ) {
-            QUERY_MAP_FULL.put("query","LIKE:"+queryString);//todo: make a map where we can use more than one of each key
+        if (queryString != null && !queryString.isEmpty() && valueParams.isEmpty()) {
+            QUERY_MAP_FULL.put("query", "LIKE:" + queryString);//todo: make a map where we can use more than one of each key
         }
         List<TrackedEntityInstance> trackedEntityInstances = unwrapResponse(dhisApi
-                .getTrackedEntityInstancesFromAllAccessibleOrgUnits(organisationUnitUid, QUERY_MAP_FULL),
+                        .getTrackedEntityInstancesFromAllAccessibleOrgUnits(organisationUnitUid, QUERY_MAP_FULL),
                 ApiEndpointContainer.TRACKED_ENTITY_INSTANCES);
         return trackedEntityInstances;
     }
 
     static List<TrackedEntityInstance> getTrackedEntityInstancesDataFromServer(DhisApi dhisApi, List<TrackedEntityInstance> trackedEntityInstances, boolean getEnrollments) {
-        if(trackedEntityInstances == null) {
+        if (trackedEntityInstances == null) {
             return null;
         }
-        if(dhisApi == null) {
+        if (dhisApi == null) {
             return null;
         }
 
         List<TrackedEntityInstance> trackedEntityInstancesToReturn = new ArrayList<>();
-        for(TrackedEntityInstance trackedEntityInstance: trackedEntityInstances) {
+        for (int teiIndex = 0; teiIndex < trackedEntityInstances.size(); teiIndex++) {
             try {
-                trackedEntityInstancesToReturn.add(getTrackedEntityInstanceDataFromServer(dhisApi, trackedEntityInstance.getTrackedEntityInstance(), getEnrollments));
+                trackedEntityInstancesToReturn.add(getTrackedEntityInstanceDataFromServer(dhisApi, trackedEntityInstances.get(teiIndex).getTrackedEntityInstance(), getEnrollments));
             } catch (APIException e) { //can't throw this further up because we want to continue loading all the TEIs..
                 e.printStackTrace();
+                Dhis2Application.getEventBus().post(
+                        new OnTeiDownloadedEvent(OnTeiDownloadedEvent.EventType.ERROR));
                 return new ArrayList<>();
             }
+            Dhis2Application.getEventBus().post(
+                    new OnTeiDownloadedEvent(OnTeiDownloadedEvent.EventType.UPDATE, trackedEntityInstances.size(), teiIndex + 1));
         }
         return trackedEntityInstancesToReturn;
     }
 
     static TrackedEntityInstance getTrackedEntityInstanceDataFromServer(DhisApi dhisApi, String uid, boolean getEnrollments) throws APIException {
-        if(dhisApi == null) {
+        if (dhisApi == null) {
             return null;
         }
         DateTime lastUpdated = DateTimeManager.getInstance()
@@ -387,7 +385,7 @@ final class TrackerDataLoader extends ResourceController {
         DbUtils.applyBatch(operations);
         DateTimeManager.getInstance()
                 .setLastUpdated(ResourceType.TRACKEDENTITYINSTANCE, uid, serverDateTime);
-        if(getEnrollments) {
+        if (getEnrollments) {
             getEnrollmentsDataFromServer(dhisApi, trackedEntityInstance);
         }
 
@@ -401,10 +399,10 @@ final class TrackerDataLoader extends ResourceController {
     }
 
     static List<Enrollment> getEnrollmentsDataFromServer(DhisApi dhisApi, TrackedEntityInstance trackedEntityInstance) throws APIException {
-        if(trackedEntityInstance == null) {
+        if (trackedEntityInstance == null) {
             return null;
         }
-        if(dhisApi == null) {
+        if (dhisApi == null) {
             return null;
         }
         DateTime lastUpdated = DateTimeManager.getInstance()
@@ -414,7 +412,7 @@ final class TrackerDataLoader extends ResourceController {
         List<Enrollment> enrollments = unwrapResponse(dhisApi
                 .getEnrollments(trackedEntityInstance.getTrackedEntityInstance(),
                         getBasicQueryMap(lastUpdated)), ApiEndpointContainer.ENROLLMENTS);
-        for(Enrollment enrollment: enrollments) {
+        for (Enrollment enrollment : enrollments) {
             enrollment.setLocalTrackedEntityInstanceId(trackedEntityInstance.getLocalId());
         }
 
@@ -422,8 +420,8 @@ final class TrackerDataLoader extends ResourceController {
                 trackedEntityInstance.getTrackedEntityInstance(), dhisApi,
                 enrollments, TrackerController.getEnrollments(trackedEntityInstance), serverDateTime);
         enrollments = TrackerController.getEnrollments(trackedEntityInstance);
-        if(enrollments != null) {
-            for(Enrollment enrollment: enrollments) {
+        if (enrollments != null) {
+            for (Enrollment enrollment : enrollments) {
                 try {
                     getEventsDataFromServer(dhisApi, enrollment);
                 } catch (APIException e) {//can't throw this exception up because we want to continue loading enrollments.. todo: let the user know?
@@ -435,7 +433,7 @@ final class TrackerDataLoader extends ResourceController {
     }
 
     static void getEnrollmentDataFromServer(DhisApi dhisApi, String uid, boolean getEvents) throws APIException {
-        if(dhisApi == null) {
+        if (dhisApi == null) {
             return;
         }
         DateTime lastUpdated = DateTimeManager.getInstance()
@@ -448,13 +446,13 @@ final class TrackerDataLoader extends ResourceController {
         DbOperation.save(enrollment).getModel().save();
         DateTimeManager.getInstance()
                 .setLastUpdated(ResourceType.ENROLLMENT, uid, serverDateTime);
-        if(getEvents) {
+        if (getEvents) {
             getEventsDataFromServer(dhisApi, enrollment);
         }
     }
 
     private static Enrollment updateEnrollment(DhisApi dhisApi, String uid, DateTime lastUpdated) throws APIException {
-        if(dhisApi == null) {
+        if (dhisApi == null) {
             return null;
         }
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
@@ -463,14 +461,13 @@ final class TrackerDataLoader extends ResourceController {
     }
 
     static void getEventsDataFromServer(DhisApi dhisApi, Enrollment enrollment) {
-        if(enrollment == null) {
+        if (enrollment == null) {
             return;
-        }
-        else if (dhisApi == null) {
+        } else if (dhisApi == null) {
             return;
         }
 
-        if(enrollment.getProgram() == null) {
+        if (enrollment.getProgram() == null) {
             Log.d(CLASS_TAG, "Enrollment:" + enrollment.getUid());
             return;
         }
@@ -484,7 +481,7 @@ final class TrackerDataLoader extends ResourceController {
                         enrollment.getTrackedEntityInstance(),
                         getBasicQueryMap(lastUpdated));
         List<Event> events = EventsWrapper.getEvents(response);
-        for(Event event: events) {
+        for (Event event : events) {
             event.setLocalEnrollmentId(enrollment.getLocalId());
         }
 
@@ -505,7 +502,7 @@ final class TrackerDataLoader extends ResourceController {
     }
 
     private static Event updateEvent(DhisApi dhisApi, String uid, DateTime lastUpdated) throws APIException {
-        if(dhisApi == null) {
+        if (dhisApi == null) {
             return null;
         }
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();

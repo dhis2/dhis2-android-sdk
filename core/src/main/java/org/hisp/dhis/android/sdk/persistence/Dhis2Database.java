@@ -35,7 +35,7 @@ import com.raizlabs.android.dbflow.annotation.Database;
  * @author Simen Skogly Russnes
  * Database definition for DbFlow
  */
-@Database(name = Dhis2Database.NAME, version = Dhis2Database.VERSION, foreignKeysSupported = true)
+@Database(name = Dhis2Database.NAME, version = Dhis2Database.VERSION, foreignKeysSupported = true, consistencyCheckEnabled = true)
 public class Dhis2Database {
 
     public static final String NAME = "Dhis2";

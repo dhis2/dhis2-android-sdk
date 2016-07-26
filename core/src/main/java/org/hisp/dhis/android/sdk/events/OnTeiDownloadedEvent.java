@@ -10,6 +10,7 @@ public class OnTeiDownloadedEvent {
     private int eventNumber;
     private int totalNumberOfTeis;
     private EventType eventType;
+    private boolean errorHasOccured;
 
     public OnTeiDownloadedEvent(EventType eventType) {
         this(eventType, -1);
@@ -32,8 +33,11 @@ public class OnTeiDownloadedEvent {
             case UPDATE:
                 return String.format("Downloading %s/%s", eventNumber, totalNumberOfTeis);
             case ERROR:
-                return "Download error - please try again";
+                return String.format("Error downloading element %s", eventNumber);
             case END:
+                if (errorHasOccured) {
+                    return "Download completed with errors";
+                }
                 return "Download complete";
         }
         return "Download error - please try again";
@@ -48,8 +52,16 @@ public class OnTeiDownloadedEvent {
         }
     }
 
+    public void setErrorHasOccured(boolean errorHasOccured) {
+        this.errorHasOccured = errorHasOccured;
+    }
+
     public enum EventType {
         START, UPDATE, ERROR, END
+    }
+
+    public EventType getEventType() {
+        return eventType;
     }
 }
 

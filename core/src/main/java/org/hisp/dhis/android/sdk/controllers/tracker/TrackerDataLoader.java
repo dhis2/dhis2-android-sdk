@@ -334,16 +334,22 @@ final class TrackerDataLoader extends ResourceController {
 
         List<TrackedEntityInstance> trackedEntityInstancesToReturn = new ArrayList<>();
         for (int teiIndex = 0; teiIndex < trackedEntityInstances.size(); teiIndex++) {
+
+            int userFriendlyIndex = (int) (Math.ceil((teiIndex + 1) / 2.0));
+
             try {
                 trackedEntityInstancesToReturn.add(getTrackedEntityInstanceDataFromServer(dhisApi, trackedEntityInstances.get(teiIndex).getTrackedEntityInstance(), getEnrollments));
             } catch (APIException e) { //can't throw this further up because we want to continue loading all the TEIs..
                 e.printStackTrace();
                 Dhis2Application.getEventBus().post(
-                        new OnTeiDownloadedEvent(OnTeiDownloadedEvent.EventType.ERROR));
+                        new OnTeiDownloadedEvent(OnTeiDownloadedEvent.EventType.ERROR,
+                                trackedEntityInstances.size(), userFriendlyIndex));
                 return new ArrayList<>();
             }
+
             Dhis2Application.getEventBus().post(
-                    new OnTeiDownloadedEvent(OnTeiDownloadedEvent.EventType.UPDATE, trackedEntityInstances.size(), teiIndex + 1));
+                    new OnTeiDownloadedEvent(OnTeiDownloadedEvent.EventType.UPDATE,
+                            trackedEntityInstances.size(), userFriendlyIndex));
         }
         return trackedEntityInstancesToReturn;
     }

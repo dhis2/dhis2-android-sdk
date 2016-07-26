@@ -26,96 +26,100 @@
   ~  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   ~  */
   -->
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="org.hisp.dhis.android.sdk.ui.activities.AbsLoginActivity">
+    android:fillViewport="true"
+    android:gravity="center">
 
-    <include layout="@layout/progress_bar_light" />
-
-    <LinearLayout
-        android:id="@+id/login_views_container"
-        android:layout_width="390dp"
-        android:layout_height="340dp"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical">
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
 
-        <ImageView
-            android:id="@+id/dhis2_logo"
-            android:layout_width="170dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="10dp"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/description"
-            android:src="@drawable/dhis2_logo" />
+        <include layout="@layout/progress_bar_light" />
 
-        <org.hisp.dhis.android.sdk.ui.views.FontEditText
-            android:id="@+id/server_url"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:layout_marginBottom="1px"
-            android:background="@drawable/edittext_login_custom_shape"
-            android:drawableLeft="@drawable/ic_server"
-            android:drawablePadding="7dp"
-            android:gravity="center_vertical"
-            android:hint="@string/server_url"
-            android:inputType="textUri"
-            android:paddingLeft="7dp"
-            android:singleLine="true"
-            android:textSize="@dimen/medium_text_size"
-            app:font="@string/regular_font_name" />
+        <LinearLayout
+            android:id="@+id/login_views_container"
+            android:layout_width="390dp"
+            android:layout_height="340dp"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <org.hisp.dhis.android.sdk.ui.views.FontEditText
-            android:id="@+id/username"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:layout_marginBottom="1px"
-            android:background="@drawable/edittext_login_custom_shape"
-            android:drawableLeft="@drawable/ic_username"
-            android:drawablePadding="7dp"
-            android:gravity="center_vertical"
-            android:hint="@string/username"
-            android:paddingLeft="7dp"
-            android:singleLine="true"
-            android:textSize="@dimen/medium_text_size"
-            app:font="@string/regular_font_name" />
+            <ImageView
+                android:id="@+id/dhis2_logo"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/description"
+                android:src="@drawable/dhis2_logo" />
 
-        <org.hisp.dhis.android.sdk.ui.views.FontEditText
-            android:id="@+id/password"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/edittext_login_custom_shape"
-            android:drawableLeft="@drawable/ic_password"
-            android:drawablePadding="7dp"
-            android:gravity="center_vertical"
-            android:hint="@string/password"
-            android:inputType="textPassword"
-            android:paddingLeft="7dp"
-            android:singleLine="true"
-            android:textSize="@dimen/medium_text_size"
-            app:font="@string/regular_font_name" />
+            <org.hisp.dhis.android.sdk.ui.views.FontEditText
+                android:id="@+id/server_url"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginBottom="1px"
+                android:background="@drawable/edittext_login_custom_shape"
+                android:drawableLeft="@drawable/ic_server"
+                android:drawablePadding="7dp"
+                android:gravity="center_vertical"
+                android:hint="@string/server_url"
+                android:inputType="textUri"
+                android:paddingLeft="7dp"
+                android:singleLine="true"
+                android:textSize="@dimen/medium_text_size"
+                app:font="@string/regular_font_name" />
 
-        <org.hisp.dhis.android.sdk.ui.views.FontButton
-            android:id="@+id/login_button"
-            android:layout_width="180dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/button_blue_selector"
-            android:text="@string/login"
-            android:textColor="@color/white"
-            android:textSize="@dimen/medium_text_size"
-            app:font="@string/bold_font_name" />
+            <org.hisp.dhis.android.sdk.ui.views.FontEditText
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginBottom="1px"
+                android:background="@drawable/edittext_login_custom_shape"
+                android:drawableLeft="@drawable/ic_username"
+                android:drawablePadding="7dp"
+                android:gravity="center_vertical"
+                android:hint="@string/username"
+                android:paddingLeft="7dp"
+                android:singleLine="true"
+                android:textSize="@dimen/medium_text_size"
+                app:font="@string/regular_font_name" />
 
-    </LinearLayout>
+            <org.hisp.dhis.android.sdk.ui.views.FontEditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/edittext_login_custom_shape"
+                android:drawableLeft="@drawable/ic_password"
+                android:drawablePadding="7dp"
+                android:gravity="center_vertical"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:paddingLeft="7dp"
+                android:singleLine="true"
+                android:textSize="@dimen/medium_text_size"
+                app:font="@string/regular_font_name" />
 
-</RelativeLayout>
+            <org.hisp.dhis.android.sdk.ui.views.FontButton
+                android:id="@+id/login_button"
+                android:layout_width="180dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_blue_selector"
+                android:text="@string/login"
+                android:textColor="@color/white"
+                android:textSize="@dimen/medium_text_size"
+                app:font="@string/bold_font_name" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</ScrollView>

@@ -29,7 +29,6 @@
 
 package org.hisp.dhis.android.sdk.controllers.tracker;
 
-import android.net.Uri;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,7 +38,6 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
 
 import org.hisp.dhis.android.sdk.controllers.DhisController;
-import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.network.response.ApiResponse2;
@@ -57,14 +55,13 @@ import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship$Table;
 import org.hisp.dhis.android.sdk.persistence.models.SystemInfo;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntity;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance$Table;
+import org.hisp.dhis.android.sdk.utils.NetworkUtils;
 import org.hisp.dhis.android.sdk.utils.StringConverter;
 import org.hisp.dhis.android.sdk.utils.Utils;
-import org.hisp.dhis.android.sdk.utils.NetworkUtils;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
@@ -88,9 +85,9 @@ final class TrackerDataSender {
     }
 
     static void sendEventChanges(DhisApi dhisApi) throws APIException {
-        if(dhisApi == null) {
+        if (dhisApi == null) {
             dhisApi = DhisController.getInstance().getDhisApi();
-            if(dhisApi == null) {
+            if (dhisApi == null) {
                 return;
             }
         }
@@ -107,9 +104,9 @@ final class TrackerDataSender {
 
         List<Event> eventsToPost = new ArrayList<>();
         eventsToPost.addAll(events);
-        for(Event event : events) {
-            for(Event failedEvent : eventsWithFailedThreshold) {
-                if(event.getUid().equals(failedEvent.getUid())) {
+        for (Event event : events) {
+            for (Event failedEvent : eventsWithFailedThreshold) {
+                if (event.getUid().equals(failedEvent.getUid())) {
                     eventsToPost.remove(event);
                 }
             }
@@ -145,12 +142,12 @@ final class TrackerDataSender {
 
             importSummaries = apiResponse.getImportSummaries();
 
-            for(Event event : events) {
+            for (Event event : events) {
                 eventMap.put(event.getUid(), event);
             }
 
             // check if all items were synced successfully
-            if(importSummaries != null) {
+            if (importSummaries != null) {
                 SystemInfo systemInfo = dhisApi.getSystemInfo();
                 DateTime eventUploadTime = systemInfo.getServerDate();
                 for (ImportSummary importSummary : importSummaries) {
@@ -158,7 +155,7 @@ final class TrackerDataSender {
                     System.out.println("IMPORT SUMMARY: " + importSummary.getDescription());
                     if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
                             ImportSummary.OK.equals(importSummary.getStatus())) {
-                        if(event != null) {
+                        if (event != null) {
                             event.setFromServer(true);
                             event.setCreated(eventUploadTime.toString());
                             event.setLastUpdated(eventUploadTime.toString());
@@ -171,7 +168,7 @@ final class TrackerDataSender {
             }
 
         } catch (APIException apiException) {
-             //batch sending failed. Trying to re-send one by one
+            //batch sending failed. Trying to re-send one by one
             sendEventChanges(dhisApi, events);
 
         }
@@ -201,9 +198,9 @@ final class TrackerDataSender {
         if (event == null) {
             return;
         }
-        if(dhisApi == null) {
+        if (dhisApi == null) {
             dhisApi = DhisController.getInstance().getDhisApi();
-            if(dhisApi == null) {
+            if (dhisApi == null) {
                 return;
             }
         }
@@ -213,7 +210,7 @@ final class TrackerDataSender {
         }
 
         Enrollment enrollment = TrackerController.getEnrollment(event.getEnrollment());
-        if(enrollment != null && !enrollment.isFromServer()) { // if enrollment is unsent, send it before events
+        if (enrollment != null && !enrollment.isFromServer()) { // if enrollment is unsent, send it before events
             sendEnrollmentChanges(dhisApi, enrollment, false);
         }
 
@@ -309,12 +306,12 @@ final class TrackerDataSender {
 
             importSummaries = apiResponse.getImportSummaries();
 
-            for(Enrollment enrollment : enrollments) {
+            for (Enrollment enrollment : enrollments) {
                 enrollmentMap.put(enrollment.getUid(), enrollment);
             }
 
             // check if all items were synced successfully
-            if(importSummaries != null) {
+            if (importSummaries != null) {
                 SystemInfo systemInfo = dhisApi.getSystemInfo();
                 DateTime enrollmentUploadTime = systemInfo.getServerDate();
                 for (ImportSummary2 importSummary : importSummaries) {
@@ -341,16 +338,15 @@ final class TrackerDataSender {
 
     static void sendEnrollmentChanges(DhisApi dhisApi, boolean sendEvents) throws APIException {
         List<Enrollment> enrollments = new Select().from(Enrollment.class).where(Condition.column(Enrollment$Table.FROMSERVER).is(false)).queryList();
-        if(dhisApi == null) {
+        if (dhisApi == null) {
             dhisApi = DhisController.getInstance().getDhisApi();
-            if(dhisApi == null) {
+            if (dhisApi == null) {
                 return;
             }
         }
-        if(enrollments.size() <= 1) {
+        if (enrollments.size() <= 1) {
             sendEnrollmentChanges(dhisApi, enrollments, sendEvents);
-        }
-        else if (enrollments.size() > 1) {
+        } else if (enrollments.size() > 1) {
             postEnrollmentBatch(dhisApi, enrollments);
         }
     }
@@ -380,34 +376,33 @@ final class TrackerDataSender {
         if (Utils.isLocal(enrollment.getTrackedEntityInstance())) {//don't send enrollment with locally made uid
             return;
         }
-        if(dhisApi == null) {
+        if (dhisApi == null) {
             dhisApi = DhisController.getInstance().getDhisApi();
-            if(dhisApi == null) {
+            if (dhisApi == null) {
                 return;
             }
         }
         TrackedEntityInstance trackedEntityInstance = TrackerController.getTrackedEntityInstance(enrollment.getTrackedEntityInstance());
 
-        if(trackedEntityInstance == null) {
+        if (trackedEntityInstance == null) {
             return;
-        }
-        else {
-            if(!trackedEntityInstance.isFromServer()) { // if TEI is not sent to server and trying to send enrollment first. Send TEI before enrollment
+        } else {
+            if (!trackedEntityInstance.isFromServer()) { // if TEI is not sent to server and trying to send enrollment first. Send TEI before enrollment
                 sendTrackedEntityInstanceChanges(dhisApi, trackedEntityInstance, false);
             }
         }
 
         boolean success;
 
-        if(enrollment.getCreated() == null) {
+        if (enrollment.getCreated() == null) {
             success = postEnrollment(enrollment, dhisApi);
-            if( success && sendEvents ) {
+            if (success && sendEvents) {
                 List<Event> events = TrackerController.getEventsByEnrollment(enrollment.getLocalId());
                 sendEventChanges(dhisApi, events);
             }
         } else {
             success = putEnrollment(enrollment, dhisApi);
-            if( success && sendEvents ) {
+            if (success && sendEvents) {
                 List<Event> events = TrackerController.getEventsByEnrollment(enrollment.getLocalId());
                 sendEventChanges(dhisApi, events);
             }
@@ -496,17 +491,16 @@ final class TrackerDataSender {
 
     static void sendTrackedEntityInstanceChanges(DhisApi dhisApi, boolean sendEnrollments) throws APIException {
         List<TrackedEntityInstance> trackedEntityInstances = new Select().from(TrackedEntityInstance.class).where(Condition.column(TrackedEntityInstance$Table.FROMSERVER).is(false)).queryList();
-        if(dhisApi == null) {
+        if (dhisApi == null) {
             dhisApi = DhisController.getInstance().getDhisApi();
-            if(dhisApi == null) {
+            if (dhisApi == null) {
                 return;
             }
         }
-        if(trackedEntityInstances.size() <= 1) {
-            sendTrackedEntityInstanceChanges(dhisApi,trackedEntityInstances,sendEnrollments);
-        }
-        else {
-            postTrackedEntityInstanceBatch(dhisApi,trackedEntityInstances);
+        if (trackedEntityInstances.size() <= 1) {
+            sendTrackedEntityInstanceChanges(dhisApi, trackedEntityInstances, sendEnrollments);
+        } else {
+            postTrackedEntityInstanceBatch(dhisApi, trackedEntityInstances);
         }
         // sendTrackedEntityInstanceChanges(dhisApi, trackedEntityInstances, sendEnrollments);
     }
@@ -526,19 +520,19 @@ final class TrackerDataSender {
         if (trackedEntityInstance == null) {
             return;
         }
-        if(dhisApi == null) {
+        if (dhisApi == null) {
             dhisApi = DhisController.getInstance().getDhisApi();
-            if(dhisApi == null) {
+            if (dhisApi == null) {
                 return;
             }
         }
         boolean success;
-        if(trackedEntityInstance.getCreated() == null) {
+        if (trackedEntityInstance.getCreated() == null) {
             success = postTrackedEntityInstance(trackedEntityInstance, dhisApi);
         } else {
             success = putTrackedEntityInstance(trackedEntityInstance, dhisApi);
         }
-        if( success && sendEnrollments ) {
+        if (success && sendEnrollments) {
             List<Enrollment> enrollments = TrackerController.getEnrollments(trackedEntityInstance);
             sendEnrollmentChanges(dhisApi, enrollments, sendEnrollments);
         }
@@ -556,12 +550,12 @@ final class TrackerDataSender {
 
             importSummaries = apiResponse.getImportSummaries();
 
-            for(TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
+            for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
                 trackedEntityInstanceMap.put(trackedEntityInstance.getUid(), trackedEntityInstance);
             }
 
             // check if all items were synced successfully
-            if(importSummaries != null) {
+            if (importSummaries != null) {
                 SystemInfo systemInfo = dhisApi.getSystemInfo();
                 DateTime eventUploadTime = systemInfo.getServerDate();
                 for (ImportSummary2 importSummary : importSummaries) {
@@ -717,9 +711,13 @@ final class TrackerDataSender {
     }
 
     private static void handleImportSummary(ImportSummary importSummary, String type, long id) {
-        if (ImportSummary.ERROR.equals(importSummary.getStatus())) {
-            Log.d(CLASS_TAG, "failed.. ");
-            NetworkUtils.handleImportSummaryError(importSummary, type, 200, id);
+        try {
+            if (ImportSummary.ERROR.equals(importSummary.getStatus())) {
+                Log.d(CLASS_TAG, "failed.. ");
+                NetworkUtils.handleImportSummaryError(importSummary, type, 200, id);
+            }
+        } catch (Exception e) {
+            Log.e(CLASS_TAG, "Unable to process import summary", e);
         }
     }
 
@@ -730,7 +728,7 @@ final class TrackerDataSender {
             JsonNode node = DhisController.getInstance().getObjectMapper()
                     .readTree(new StringConverter()
                             .fromBody(response.getBody(), String.class));
-            if(node == null) {
+            if (node == null) {
                 return null;
             }
             ApiResponse apiResponse = null;
@@ -738,14 +736,13 @@ final class TrackerDataSender {
             Log.d(CLASS_TAG, body);
             apiResponse = DhisController.getInstance().getObjectMapper().
                     readValue(body, ApiResponse.class);
-            if(apiResponse !=null && apiResponse.getImportSummaries()!=null && !apiResponse.getImportSummaries().isEmpty()) {
-                return(apiResponse.getImportSummaries());
+            if (apiResponse != null && apiResponse.getImportSummaries() != null && !apiResponse.getImportSummaries().isEmpty()) {
+                return (apiResponse.getImportSummaries());
             }
 
-        }catch (ConversionException e) {
+        } catch (ConversionException e) {
             e.printStackTrace();
-        }
-        catch (IOException ioe) {
+        } catch (IOException ioe) {
             ioe.printStackTrace();
         }
 

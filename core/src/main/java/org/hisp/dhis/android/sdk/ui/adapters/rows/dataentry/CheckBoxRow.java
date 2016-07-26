@@ -104,6 +104,7 @@ public class CheckBoxRow extends Row {
         holder.listener.setValue(mValue);
 
         holder.onCheckBoxRowClickListener.setCheckBox(holder.checkBox);
+        holder.onCheckBoxRowClickListener.setEditable(holder.checkBox.isEnabled());
 
         String stringValue = mValue.getValue();
         if (TRUE.equalsIgnoreCase(stringValue)) {
@@ -174,6 +175,11 @@ public class CheckBoxRow extends Row {
 
     private static class OnCheckBoxRowClickListener implements View.OnClickListener {
         CheckBox checkBox;
+        boolean editable;
+
+        public void setEditable(boolean editable) {
+            this.editable = editable;
+        }
 
         public void setCheckBox(CheckBox checkBox) {
             this.checkBox = checkBox;
@@ -181,7 +187,9 @@ public class CheckBoxRow extends Row {
 
         @Override
         public void onClick(View view) {
-            checkBox.setChecked(!checkBox.isChecked());
+            if(editable) {
+                checkBox.setChecked(!checkBox.isChecked());
+            }
         }
     }
 

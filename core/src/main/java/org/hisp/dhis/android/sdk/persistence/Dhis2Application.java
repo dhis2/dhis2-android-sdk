@@ -47,7 +47,7 @@ import org.hisp.dhis.android.sdk.utils.MainThreadBus;
 import io.fabric.sdk.android.Fabric;
 
 /**
- *  Application for initiating the DbFlow Back end
+ * Application for initiating the DbFlow Back end
  */
 public abstract class Dhis2Application extends Application {
 
@@ -81,9 +81,9 @@ public abstract class Dhis2Application extends Application {
 
             @Override
             public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
-                if(newVersion > oldVersion) {
-                    if(DhisController.isUserLoggedIn()) {
-                        DhisService.synchronize(getApplicationContext());
+                if (newVersion > oldVersion) {
+                    if (DhisController.isUserLoggedIn()) {
+                        DhisService.forceSynchronize(getApplicationContext());
                     }
                 }
             }
@@ -95,6 +95,7 @@ public abstract class Dhis2Application extends Application {
         super.onTerminate();
         FlowManager.destroy();
     }
+
     public abstract Class<? extends Activity> getMainActivity();
 
     public static Bus getEventBus() {

@@ -37,6 +37,7 @@ import com.squareup.okhttp.HttpUrl;
 
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.network.RepoManager;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
@@ -109,13 +110,22 @@ public final class DhisController {
      */
     static void synchronize(final Context context)
             throws APIException, IllegalStateException {
+        Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_START));
         sendData();
         loadData(context);
         getInstance().getSyncDateWrapper().setLastSyncedNow();
     }
 
+    public static void forceSynchronize(Context context) throws APIException, IllegalStateException {
+        Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_START));
+        sendData();
+        LoadingController.loadMetaData(context, getInstance().getDhisApi(), true);
+        LoadingController.loadDataValues(context, getInstance().getDhisApi());
+        getInstance().getSyncDateWrapper().setLastSyncedNow();
+    }
+
     static void loadData(Context context) throws APIException, IllegalStateException {
-        LoadingController.loadMetaData(context, getInstance().getDhisApi());
+        LoadingController.loadMetaData(context, getInstance().getDhisApi(), false);
         LoadingController.loadDataValues(context, getInstance().getDhisApi());
     }
 

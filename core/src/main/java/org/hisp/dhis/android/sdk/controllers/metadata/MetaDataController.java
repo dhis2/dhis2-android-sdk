@@ -94,7 +94,6 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGeneratedValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGeneratedValue$Table;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.User;
 import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
@@ -133,42 +132,42 @@ public final class MetaDataController extends ResourceController {
      */
     public static boolean isDataLoaded(Context context) {
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.ASSIGNEDPROGRAMS)) {
-            if( DateTimeManager.getInstance().getLastUpdated(ResourceType.ASSIGNEDPROGRAMS) == null) {
+            if (DateTimeManager.getInstance().getLastUpdated(ResourceType.ASSIGNEDPROGRAMS) == null) {
                 return false;
             }
         }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.OPTIONSETS)) {
-            if( DateTimeManager.getInstance().getLastUpdated(ResourceType.OPTIONSETS) == null) {
+            if (DateTimeManager.getInstance().getLastUpdated(ResourceType.OPTIONSETS) == null) {
                 return false;
             }
         }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.TRACKEDENTITYATTRIBUTES)) {
-            if( DateTimeManager.getInstance().getLastUpdated(ResourceType.TRACKEDENTITYATTRIBUTES) == null) {
+            if (DateTimeManager.getInstance().getLastUpdated(ResourceType.TRACKEDENTITYATTRIBUTES) == null) {
                 return false;
             }
         }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.CONSTANTS)) {
-            if( DateTimeManager.getInstance().getLastUpdated(ResourceType.CONSTANTS) == null) {
+            if (DateTimeManager.getInstance().getLastUpdated(ResourceType.CONSTANTS) == null) {
                 return false;
             }
         }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.PROGRAMRULES)) {
-            if( DateTimeManager.getInstance().getLastUpdated(ResourceType.PROGRAMRULES) == null) {
+            if (DateTimeManager.getInstance().getLastUpdated(ResourceType.PROGRAMRULES) == null) {
                 return false;
             }
         }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.PROGRAMRULEVARIABLES)) {
-            if( DateTimeManager.getInstance().getLastUpdated(ResourceType.PROGRAMRULEVARIABLES) == null) {
+            if (DateTimeManager.getInstance().getLastUpdated(ResourceType.PROGRAMRULEVARIABLES) == null) {
                 return false;
             }
         }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.PROGRAMRULEACTIONS)) {
-            if( DateTimeManager.getInstance().getLastUpdated(ResourceType.PROGRAMRULEACTIONS) == null) {
+            if (DateTimeManager.getInstance().getLastUpdated(ResourceType.PROGRAMRULEACTIONS) == null) {
                 return false;
             }
         }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.RELATIONSHIPTYPES)) {
-            if( DateTimeManager.getInstance().getLastUpdated(ResourceType.RELATIONSHIPTYPES) == null) {
+            if (DateTimeManager.getInstance().getLastUpdated(ResourceType.RELATIONSHIPTYPES) == null) {
                 return false;
             }
         }
@@ -234,7 +233,7 @@ public final class MetaDataController extends ResourceController {
      * @param dataElement to get the Attributes from
      * @return List of AttributeValue objects that belongs to the given DataElement
      */
-    public static List<AttributeValue> getAttributeValues(DataElement dataElement){
+    public static List<AttributeValue> getAttributeValues(DataElement dataElement) {
         if (dataElement == null) return null;
         return new Select().from(AttributeValue.class)
                 .where(Condition.column(AttributeValue$Table.DATAELEMENT).is(dataElement.getUid()))
@@ -247,7 +246,7 @@ public final class MetaDataController extends ResourceController {
      * @param id PK of the AttributeValue table
      * @return The AttributeValue object or null if not found
      */
-    public static AttributeValue getAttributeValue(Long id){
+    public static AttributeValue getAttributeValue(Long id) {
         if (id == null) return null;
         return new Select().from(AttributeValue.class)
                 .where(Condition.column(AttributeValue$Table.ID).is(id)).querySingle();
@@ -259,7 +258,7 @@ public final class MetaDataController extends ResourceController {
      * @param attributeId The ID used in DHIS2 to identify the Attribute
      * @return The Attribute object or null if not found
      */
-    public static Attribute getAttribute(String attributeId){
+    public static Attribute getAttribute(String attributeId) {
         if (attributeId == null) return null;
         return new Select().from(Attribute.class)
                 .where(Condition.column(Attribute$Table.ID).is(attributeId)).querySingle();
@@ -518,8 +517,8 @@ public final class MetaDataController extends ResourceController {
     }
 
     /**
-      * Clears status and time of loaded meta data items
-      */
+     * Clears status and time of loaded meta data items
+     */
     public static void clearMetaDataLoadedFlags() {
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.ASSIGNEDPROGRAMS);
         List<String> assignedPrograms = MetaDataController.getAssignedPrograms();
@@ -578,16 +577,16 @@ public final class MetaDataController extends ResourceController {
     /**
      * Loads metaData from the server and stores it in local persistence.
      */
-    public static void loadMetaData(Context context, DhisApi dhisApi) throws APIException {
+    public static void loadMetaData(Context context, DhisApi dhisApi, boolean forceSync) throws APIException {
         Log.d(CLASS_TAG, "loadMetaData");
         UiUtils.postProgressMessage(context.getString(R.string.loading_metadata));
-        updateMetaDataItems(context, dhisApi);
+        updateMetaDataItems(context, dhisApi, forceSync);
     }
 
     private static void updateTrackedDataItems(Context context, DhisApi dhisApi, DateTime serverDateTime) {
-        if(dhisApi == null) {
+        if (dhisApi == null) {
             dhisApi = DhisController.getInstance().getDhisApi();
-            if(dhisApi == null) {
+            if (dhisApi == null) {
                 return;
             }
 
@@ -599,10 +598,10 @@ public final class MetaDataController extends ResourceController {
     /**
      * Loads a metadata item that is scheduled to be loaded but has not yet been.
      */
-    private static void updateMetaDataItems(Context context, DhisApi dhisApi) throws APIException {
-        if(dhisApi == null) {
+    private static void updateMetaDataItems(Context context, DhisApi dhisApi, boolean forceSync) throws APIException {
+        if (dhisApi == null) {
             dhisApi = DhisController.getInstance().getDhisApi();
-            if(dhisApi == null) {
+            if (dhisApi == null) {
                 return;
             }
 
@@ -612,7 +611,7 @@ public final class MetaDataController extends ResourceController {
         //some items depend on each other. Programs depend on AssignedPrograms because we need
         //the ids of programs to load.
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.ASSIGNEDPROGRAMS)) {
-            if ( shouldLoad(serverDateTime, ResourceType.ASSIGNEDPROGRAMS) ) {
+            if (shouldLoad(serverDateTime, ResourceType.ASSIGNEDPROGRAMS)) {
                 getAssignedProgramsDataFromServer(dhisApi, serverDateTime);
             }
         }
@@ -620,49 +619,49 @@ public final class MetaDataController extends ResourceController {
             List<String> assignedPrograms = MetaDataController.getAssignedPrograms();
             if (assignedPrograms != null) {
                 for (String program : assignedPrograms) {
-                    if ( shouldLoad(serverDateTime, ResourceType.PROGRAMS, program) ) {
-                        getProgramDataFromServer(dhisApi, program, serverDateTime);
+                    if (shouldLoad(serverDateTime, ResourceType.PROGRAMS, program)) {
+                        getProgramDataFromServer(dhisApi, program, serverDateTime, forceSync);
                     }
                 }
             }
         }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.OPTIONSETS)) {
-            if ( shouldLoad(serverDateTime, ResourceType.OPTIONSETS) ) {
+            if (shouldLoad(serverDateTime, ResourceType.OPTIONSETS)) {
                 getOptionSetDataFromServer(dhisApi, serverDateTime);
             }
         }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.TRACKEDENTITYATTRIBUTES)) {
-            if ( shouldLoad(serverDateTime, ResourceType.TRACKEDENTITYATTRIBUTES) ) {
+            if (shouldLoad(serverDateTime, ResourceType.TRACKEDENTITYATTRIBUTES)) {
                 getTrackedEntityAttributeDataFromServer(dhisApi, serverDateTime);
             }
         }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.CONSTANTS)) {
-            if ( shouldLoad(serverDateTime, ResourceType.CONSTANTS) ) {
+            if (shouldLoad(serverDateTime, ResourceType.CONSTANTS)) {
                 getConstantsDataFromServer(dhisApi, serverDateTime);
             }
         }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.PROGRAMRULES)) {
-            if ( shouldLoad(serverDateTime, ResourceType.PROGRAMRULES) ) {
+            if (shouldLoad(serverDateTime, ResourceType.PROGRAMRULES)) {
                 getProgramRulesDataFromServer(dhisApi, serverDateTime);
             }
         }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.PROGRAMRULEVARIABLES)) {
-            if ( shouldLoad(serverDateTime, ResourceType.PROGRAMRULEVARIABLES) ) {
+            if (shouldLoad(serverDateTime, ResourceType.PROGRAMRULEVARIABLES)) {
                 getProgramRuleVariablesDataFromServer(dhisApi, serverDateTime);
             }
         }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.PROGRAMRULEACTIONS)) {
-            if ( shouldLoad(serverDateTime, ResourceType.PROGRAMRULEACTIONS) ) {
+            if (shouldLoad(serverDateTime, ResourceType.PROGRAMRULEACTIONS)) {
                 getProgramRuleActionsDataFromServer(dhisApi, serverDateTime);
             }
         }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.RELATIONSHIPTYPES)) {
-            if ( shouldLoad(serverDateTime, ResourceType.RELATIONSHIPTYPES) ) {
+            if (shouldLoad(serverDateTime, ResourceType.RELATIONSHIPTYPES)) {
                 getRelationshipTypesDataFromServer(dhisApi, serverDateTime);
             }
         }
         List<TrackedEntityAttribute> trackedEntityAttributes = getTrackedEntityAttributes();
-        if(trackedEntityAttributes != null && !trackedEntityAttributes.isEmpty()) {
+        if (trackedEntityAttributes != null && !trackedEntityAttributes.isEmpty()) {
             getTrackedEntityAttributeGeneratedValuesFromServer(dhisApi, getTrackedEntityAttributes(), serverDateTime);
         }
     }
@@ -671,41 +670,40 @@ public final class MetaDataController extends ResourceController {
         Log.d(CLASS_TAG, "getAssignedProgramsDataFromServer");
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.ASSIGNEDPROGRAMS);
-        UserAccount userAccount= dhisApi.getUserAccount();
+        UserAccount userAccount = dhisApi.getUserAccount();
         Map<String, Program> programMap = new HashMap<>();
         List<Program> assignedProgramUids = userAccount.getPrograms();
 
-        for(Program program : assignedProgramUids) {
+        for (Program program : assignedProgramUids) {
             programMap.put(program.getUid(), program);
         }
 
         List<OrganisationUnit> organisationUnitList = userAccount.getOrganisationUnits();
-        for(OrganisationUnit organisationUnit : organisationUnitList) {
+        for (OrganisationUnit organisationUnit : organisationUnitList) {
             organisationUnit.setType(OrganisationUnit.TYPE.ASSIGNED);
         }
 
         Set<String> teiSearchOrganisationUnitUids = null;
-        if(userAccount.getTeiSearchOrganisationUnits() != null) {
-            if(!userAccount.getTeiSearchOrganisationUnits().isEmpty()) {
+        if (userAccount.getTeiSearchOrganisationUnits() != null) {
+            if (!userAccount.getTeiSearchOrganisationUnits().isEmpty()) {
                 teiSearchOrganisationUnitUids = new HashSet<>();
                 List<OrganisationUnit> teiSearchOrganisatonUnits = userAccount.getTeiSearchOrganisationUnits();
-                for(OrganisationUnit organisationUnit : teiSearchOrganisatonUnits) {
+                for (OrganisationUnit organisationUnit : teiSearchOrganisatonUnits) {
                     teiSearchOrganisationUnitUids.add(organisationUnit.getId());
                 }
             }
         }
         Map<String, List<OrganisationUnit>> teiSearchOrganisationUnitMap = null;
         List<OrganisationUnit> teiSearchOrganisationUnits = null;
-        if(teiSearchOrganisationUnitUids != null) {
-            Map<String,String> queryMap = new HashMap<>();
+        if (teiSearchOrganisationUnitUids != null) {
+            Map<String, String> queryMap = new HashMap<>();
             queryMap.put("fields", "[id,displayName,programs]");
             String filter = "id:in:[";
 
-            for(String orgUnitUid : teiSearchOrganisationUnitUids) {
-                if(!queryMap.containsKey("filter")) {
+            for (String orgUnitUid : teiSearchOrganisationUnitUids) {
+                if (!queryMap.containsKey("filter")) {
                     queryMap.put("filter", filter + orgUnitUid);
-                }
-                else {
+                } else {
                     String currentFilter = queryMap.get("filter");
                     queryMap.put("filter", currentFilter + "," + orgUnitUid);
                 }
@@ -715,16 +713,16 @@ public final class MetaDataController extends ResourceController {
             teiSearchOrganisationUnitMap = dhisApi.getOrganisationUnits(queryMap);
             teiSearchOrganisationUnits = teiSearchOrganisationUnitMap.get("organisationUnits");
         }
-        if(teiSearchOrganisationUnits != null) {
-            for(OrganisationUnit searchOrgUnit : teiSearchOrganisationUnits) {
+        if (teiSearchOrganisationUnits != null) {
+            for (OrganisationUnit searchOrgUnit : teiSearchOrganisationUnits) {
                 boolean isOrgUnitAssigned = false;
-                for(OrganisationUnit assignedOrganisationUnit : organisationUnitList) {
-                    if(searchOrgUnit.getId().equals(assignedOrganisationUnit)) {
+                for (OrganisationUnit assignedOrganisationUnit : organisationUnitList) {
+                    if (searchOrgUnit.getId().equals(assignedOrganisationUnit)) {
                         isOrgUnitAssigned = true;
                         break;
                     }
                 }
-                if(!isOrgUnitAssigned) {
+                if (!isOrgUnitAssigned) {
                     searchOrgUnit.setType(OrganisationUnit.TYPE.SEARCH);
                 }
 
@@ -732,19 +730,18 @@ public final class MetaDataController extends ResourceController {
             organisationUnitList.addAll(teiSearchOrganisationUnits);
         }
 
-        for(OrganisationUnit organisationUnit : organisationUnitList) {
+        for (OrganisationUnit organisationUnit : organisationUnitList) {
 
-            if(organisationUnit.getPrograms() != null && !organisationUnit.getPrograms().isEmpty()) {
+            if (organisationUnit.getPrograms() != null && !organisationUnit.getPrograms().isEmpty()) {
                 List<Program> assignedProgramToUnit = new ArrayList<>();
-                for(Program program : organisationUnit.getPrograms()) {
-                    if(programMap.containsKey(program.getUid())) {
-                       assignedProgramToUnit.add(programMap.get(program.getUid()));
+                for (Program program : organisationUnit.getPrograms()) {
+                    if (programMap.containsKey(program.getUid())) {
+                        assignedProgramToUnit.add(programMap.get(program.getUid()));
                     }
                 }
                 organisationUnit.setPrograms(assignedProgramToUnit);
             }
         }
-
 
 
         List<DbOperation> operations = AssignedProgramsWrapper.getOperations(organisationUnitList);
@@ -754,18 +751,18 @@ public final class MetaDataController extends ResourceController {
                 .setLastUpdated(ResourceType.ASSIGNEDPROGRAMS, serverDateTime);
     }
 
-    private static void getProgramDataFromServer(DhisApi dhisApi, String uid, DateTime serverDateTime) throws APIException {
+    private static void getProgramDataFromServer(DhisApi dhisApi, String uid, DateTime serverDateTime, boolean forceSync) throws APIException {
         Log.d(CLASS_TAG, "getProgramDataFromServer");
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.PROGRAM, uid);
 
-        Program program = updateProgram(dhisApi, uid, lastUpdated);
+        Program program = updateProgram(dhisApi, uid, lastUpdated, forceSync);
         DateTimeManager.getInstance()
                 .setLastUpdated(ResourceType.PROGRAM, uid, serverDateTime);
 
     }
 
-    private static Program updateProgram(DhisApi dhisApi, String uid, DateTime lastUpdated) throws APIException {
+    private static Program updateProgram(DhisApi dhisApi, String uid, DateTime lastUpdated, boolean forceSync) throws APIException {
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
 
         QUERY_MAP_FULL.put("fields",
@@ -775,7 +772,7 @@ public final class MetaDataController extends ResourceController {
                         "[*,programStage[id],dataElement[*,optionSet[id]]]],programTrackedEntityAttributes" +
                         "[*,trackedEntityAttribute[*]],!organisationUnits");
 
-        if (lastUpdated != null) {
+        if (!forceSync && lastUpdated != null) {
             QUERY_MAP_FULL.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
         }
 
@@ -821,18 +818,17 @@ public final class MetaDataController extends ResourceController {
     /**
      * @param dhisApi
      * @param trackedEntityAttributes
-     * @param serverDateTime
-     * This method tries to get trackedEntityAttributeGeneratedValues from server if we need it
+     * @param serverDateTime          This method tries to get trackedEntityAttributeGeneratedValues from server if we need it
      */
-    public static void getTrackedEntityAttributeGeneratedValuesFromServer(DhisApi dhisApi, List<TrackedEntityAttribute> trackedEntityAttributes,  DateTime serverDateTime) {
+    public static void getTrackedEntityAttributeGeneratedValuesFromServer(DhisApi dhisApi, List<TrackedEntityAttribute> trackedEntityAttributes, DateTime serverDateTime) {
         // After fetching trackedEntityAttributes from server, we want to go through all of them and fetch IDs for generation
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.TRACKEDENTITYATTRIBUTEGENERATEDVALUES);
 
-        for(TrackedEntityAttribute trackedEntityAttribute : trackedEntityAttributes) {
-            if(trackedEntityAttribute.isGenerated()) {
+        for (TrackedEntityAttribute trackedEntityAttribute : trackedEntityAttributes) {
+            if (trackedEntityAttribute.isGenerated()) {
                 long numberOfGeneratedTrackedEntityAttributesToFetch = shouldFetchGeneratedTrackedEntityAttributeValues(trackedEntityAttribute, serverDateTime);
-                if(numberOfGeneratedTrackedEntityAttributesToFetch > 0) {
+                if (numberOfGeneratedTrackedEntityAttributesToFetch > 0) {
                     List<TrackedEntityAttributeGeneratedValue> trackedEntityAttributeGeneratedValues =
                             dhisApi.getTrackedEntityAttributeGeneratedValues(trackedEntityAttribute.getUid(), numberOfGeneratedTrackedEntityAttributesToFetch); // Downloading x generated IDs per trackedEntityAttribute
 
@@ -852,11 +848,11 @@ public final class MetaDataController extends ResourceController {
 
         long numberOfTrackedEntityAttributeGeneratedValues = new Select().
                 from(TrackedEntityAttributeGeneratedValue.class)
-                        .where(Condition.column(TrackedEntityAttributeGeneratedValue$Table.TRACKEDENTITYATTRIBUTE_TRACKEDENTITYATTRIBUTE)
+                .where(Condition.column(TrackedEntityAttributeGeneratedValue$Table.TRACKEDENTITYATTRIBUTE_TRACKEDENTITYATTRIBUTE)
                         .eq(trackedEntityAttribute.getUid()))
-                        .queryList().size();
+                .queryList().size();
 
-        if(numberOfTrackedEntityAttributeGeneratedValues < TRACKED_ENTITY_ATTRITBUTE_GENERATED_VALUE_THRESHOLD) {
+        if (numberOfTrackedEntityAttributeGeneratedValues < TRACKED_ENTITY_ATTRITBUTE_GENERATED_VALUE_THRESHOLD) {
 
             return (TRACKED_ENTITY_ATTRITBUTE_GENERATED_VALUE_THRESHOLD - numberOfTrackedEntityAttributeGeneratedValues);
         }
@@ -870,7 +866,7 @@ public final class MetaDataController extends ResourceController {
                 .where(Condition.column(TrackedEntityAttributeGeneratedValue$Table.EXPIRYDATE)
                         .lessThan(serverDateTime)).queryList();
 
-        for(TrackedEntityAttributeGeneratedValue trackedEntityAttributeGeneratedValue : generatedValuesThatIsExpired) {
+        for (TrackedEntityAttributeGeneratedValue trackedEntityAttributeGeneratedValue : generatedValuesThatIsExpired) {
 
             trackedEntityAttributeGeneratedValue.delete();
         }
@@ -927,7 +923,7 @@ public final class MetaDataController extends ResourceController {
         List<TrackedEntityAttributeGeneratedValue> trackedEntityAttributeGeneratedValues = new Select().from(TrackedEntityAttributeGeneratedValue.class)
                 .where(Condition.column(TrackedEntityAttributeGeneratedValue$Table.TRACKEDENTITYATTRIBUTE_TRACKEDENTITYATTRIBUTE).eq(trackedEntityAttribute.getUid())).queryList();
 
-        if(trackedEntityAttributeGeneratedValues != null && !trackedEntityAttributeGeneratedValues.isEmpty()) {
+        if (trackedEntityAttributeGeneratedValues != null && !trackedEntityAttributeGeneratedValues.isEmpty()) {
             TrackedEntityAttributeGeneratedValue trackedEntityAttributeGeneratedValue = trackedEntityAttributeGeneratedValues.get(0);
 
             //trackedEntityAttributeGeneratedValue.delete(); // Deleting it so it cannot be re-used
@@ -942,7 +938,7 @@ public final class MetaDataController extends ResourceController {
         List<TrackedEntityAttributeGeneratedValue> trackedEntityAttributeGeneratedValues = new Select().from(TrackedEntityAttributeGeneratedValue.class)
                 .where(Condition.column(TrackedEntityAttributeGeneratedValue$Table.VALUE).eq(trackedEntityAttributeGeneratedValue)).queryList();
 
-        if(trackedEntityAttributeGeneratedValues != null && !trackedEntityAttributeGeneratedValues.isEmpty()) {
+        if (trackedEntityAttributeGeneratedValues != null && !trackedEntityAttributeGeneratedValues.isEmpty()) {
             TrackedEntityAttributeGeneratedValue generatedValue = trackedEntityAttributeGeneratedValues.get(0);
 
             return generatedValue;

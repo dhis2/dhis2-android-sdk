@@ -157,6 +157,17 @@ public final class DhisService extends Service {
         });
     }
 
+    public static void forceSynchronize(final Context context) {
+        JobExecutor.enqueueJob(new NetworkJob<Object>(0,
+                null) {
+            @Override
+            public Object execute() throws APIException {
+                DhisController.forceSynchronize(context);
+                return new Object();
+            }
+        });
+    }
+
     public static void synchronize(final Context context) {
         JobExecutor.enqueueJob(new NetworkJob<Object>(0,
                 null) {

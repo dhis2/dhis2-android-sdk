@@ -484,7 +484,10 @@ public class VariableService {
                     DataValue dataValue;
                     Comparator<Event> comparator = new EventDateComparator();
                     //select a value from an event that precedes 'currentEvent'
-                    for (Event event : getInstance().getEventsForEnrollment()) {
+                    List<Event> sortedEvents = getInstance().getEventsForEnrollment();
+                    Collections.sort(sortedEvents, comparator);
+                    Collections.reverse(sortedEvents);
+                    for (Event event : sortedEvents) {
                         if(event.getUid().equals(getInstance().getCurrentEvent().getUid())) {
                             continue;
                         }

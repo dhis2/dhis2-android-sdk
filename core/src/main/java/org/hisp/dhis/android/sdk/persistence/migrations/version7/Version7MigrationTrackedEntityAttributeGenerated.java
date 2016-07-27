@@ -21,5 +21,6 @@ public class Version7MigrationTrackedEntityAttributeGenerated  extends AlterTabl
     public void onPreMigrate() {
         super.onPreMigrate();
         addColumn(Boolean.class, "generated");
+        addColumn(String.class, "pattern");
     }
 }

@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.sdk.persistence.migrations.version7;
+package org.hisp.dhis.android.sdk.persistence.migrations.version8;
 
 import com.raizlabs.android.dbflow.annotation.Migration;
 import com.raizlabs.android.dbflow.sql.migration.AlterTableMigration;
@@ -6,14 +6,14 @@ import com.raizlabs.android.dbflow.sql.migration.AlterTableMigration;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
 
-@Migration(version = 7, databaseName = Dhis2Database.NAME)
-public class Version7MigrationProgramDisplayFrontPageList  extends AlterTableMigration<Program> {
+@Migration(version = 8, databaseName = Dhis2Database.NAME)
+public class Version8MigrationProgramDisplayFrontPageList extends AlterTableMigration<Program> {
 
-    public Version7MigrationProgramDisplayFrontPageList(Class<Program> table) {
+    public Version8MigrationProgramDisplayFrontPageList(Class<Program> table) {
         super(Program.class);
     }
 
-    public Version7MigrationProgramDisplayFrontPageList() {
+    public Version8MigrationProgramDisplayFrontPageList() {
         super(Program.class);
     }
 

@@ -209,6 +209,7 @@ public class EditTextRow extends Row {
 
     private static class OnTextChangeListener extends AbsTextWatcher {
         private BaseValue value;
+        EditTextRowChangeEventQueue editTextRowChangeEventQueue = new EditTextRowChangeEventQueue();
 
         public void setBaseValue(BaseValue value) {
             this.value = value;
@@ -220,8 +221,7 @@ public class EditTextRow extends Row {
             if (!newValue.equals(value.getValue())) {
                 newValue = removeInvalidDecimalSeparatorsFromNumberRows(newValue);
                 value.setValue(newValue);
-                Dhis2Application.getEventBus()
-                        .post(new RowValueChangedEvent(value, rowTypeTemp));
+                editTextRowChangeEventQueue.enque(new RowValueChangedEvent(value, rowTypeTemp));
             }
         }
     }

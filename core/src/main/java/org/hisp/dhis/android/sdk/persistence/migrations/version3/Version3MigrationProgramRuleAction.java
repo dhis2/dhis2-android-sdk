@@ -33,6 +33,7 @@ import com.raizlabs.android.dbflow.annotation.Migration;
 import com.raizlabs.android.dbflow.sql.migration.AlterTableMigration;
 
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
+import org.hisp.dhis.android.sdk.persistence.migrations.MigrationUtil;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction;
 
 /**
@@ -50,6 +51,9 @@ public class Version3MigrationProgramRuleAction extends AlterTableMigration<Prog
     public void onPreMigrate() {
         // Simple ALTER TABLE migration wraps the statements into a nice builder notation
         super.onPreMigrate();
-        addColumn(String.class, "programStageSection");
+
+        if (!MigrationUtil.columnExists(ProgramRuleAction.class, "sortOrder")) {
+            addColumn(String.class, "programStageSection");
+        }
     }
 }

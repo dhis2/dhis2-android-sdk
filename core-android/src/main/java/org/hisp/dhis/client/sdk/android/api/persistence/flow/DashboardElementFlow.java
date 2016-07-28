@@ -29,19 +29,23 @@
 package org.hisp.dhis.client.sdk.android.api.persistence.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.annotation.Unique;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.Mapper;
+import org.hisp.dhis.client.sdk.models.common.Access;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
+import org.joda.time.DateTime;
 
 @Table(database = DbDhis.class)
-public final class DashboardElementFlow extends BaseIdentifiableObjectFlow {
+public final class DashboardElementFlow extends BaseModelFlow {
     public static final Mapper<DashboardElement, DashboardElementFlow>
             MAPPER = new ElementMapper();
 
@@ -53,10 +57,31 @@ public final class DashboardElementFlow extends BaseIdentifiableObjectFlow {
             references = {
                     @ForeignKeyReference(
                             columnName = DASHBOARD_ITEM_KEY, columnType = String.class,
-                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID)
+                            foreignKeyColumnName = COLUMN_UID)
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     DashboardItemFlow dashboardItem;
+
+    public static final String COLUMN_UID = "uId";
+
+    @Column(name = COLUMN_UID)
+//    @Unique(unique = false)
+    String uId;
+
+    @Column(name = "name")
+    String name;
+
+    @Column(name = "displayName")
+    String displayName;
+
+    @Column(name = "created")
+    DateTime created;
+
+    @Column(name = "lastUpdated")
+    DateTime lastUpdated;
+
+    @Column(name = "access")
+    Access access;
 
     public DashboardElementFlow() {
     }
@@ -67,6 +92,54 @@ public final class DashboardElementFlow extends BaseIdentifiableObjectFlow {
 
     public void setDashboardItem(DashboardItemFlow dashboardItem) {
         this.dashboardItem = dashboardItem;
+    }
+
+    public final String getUId() {
+        return uId;
+    }
+
+    public final void setUId(String uId) {
+        this.uId = uId;
+    }
+
+    public final String getName() {
+        return name;
+    }
+
+    public final void setName(String name) {
+        this.name = name;
+    }
+
+    public final String getDisplayName() {
+        return displayName;
+    }
+
+    public final void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public final DateTime getCreated() {
+        return created;
+    }
+
+    public final void setCreated(DateTime created) {
+        this.created = created;
+    }
+
+    public final DateTime getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public final void setLastUpdated(DateTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public final Access getAccess() {
+        return access;
+    }
+
+    public final void setAccess(Access access) {
+        this.access = access;
     }
 
     private static class ElementMapper extends AbsMapper<DashboardElement, DashboardElementFlow> {

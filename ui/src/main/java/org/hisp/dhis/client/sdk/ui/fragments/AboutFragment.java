@@ -33,6 +33,8 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,25 +61,34 @@ public class AboutFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         TextView sessionText = (TextView) getActivity().findViewById(R.id.about_session);
-        TextView appText = (TextView) getActivity().findViewById(R.id.about_app);
-        //ImageView appIcon = (ImageView) getActivity().findViewById(R.id.app_icon);
+
         //TODO: refactor this, this is just for testing.
         TextView documentation = (TextView) getActivity().findViewById(R.id.textview_documentation);
 
         PreferencesModule preferencesModule = new PreferencesModuleImpl(getContext());
 
-
         // inside about_session:
-        sessionText.setText(String.format(Locale.getDefault(), "%s: %s\n",
-                getString(R.string.username),
+        sessionText.setText(String.format(Locale.getDefault(), "%s %s\n",
+                getString(R.string.logged_in_as),
                 D2.me().userCredentials().toBlocking().first().getUsername())
         );
-        sessionText.append(String.format(Locale.getDefault(), "%s: %s",
-                getString(R.string.server_url),
+        /*sessionText.append(String.format(Locale.getDefault(), "%s %s",
+                getString(R.string.logged_in_at),
                 preferencesModule.getConfigurationPreferences().get().getServerUrl()
-        ));
+        ));*/
+        sessionText.append(getString(R.string.logged_in_at) + " ");
+        addUrl(sessionText, preferencesModule.getConfigurationPreferences().get().getServerUrl());
+        sessionText.setMovementMethod(LinkMovementMethod.getInstance());
 
-        appText.setText(getAppNameAndVersion(getContext().getApplicationInfo().packageName));
+        setAppNameAndVersion(getContext().getApplicationInfo().packageName);
+
+        setDocumentationUrl("https://dhis2.github.io/#android");
+
+        setSdkLicence("https://dhis2.github.io/#license");
+
+        String testLibs[] = {"https://dhis2.github.io/#lib1","https://dhis2.github.io/#lib2","https://dhis2.github.io/#lib3"};
+
+        setAppLibraries(testLibs);
     }
 
     /**
@@ -87,13 +98,17 @@ public class AboutFragment extends Fragment {
      * App Version: app-version"
      *
      * @param packageName the name of the app package.
-     * @return The formatted string
      */
-    private String getAppNameAndVersion(String packageName) {
+    private void setAppNameAndVersion(String packageName) {
+        TextView appNameTextView = (TextView) getActivity().findViewById(R.id.app_name);
+        TextView appVersionTextView = (TextView) getActivity().findViewById(R.id.app_version);
+
         ApplicationInfo applicationInfo = null;
         PackageManager packageManager = getContext().getPackageManager();
+
         String appName = "";
         String appVersion = "";
+        String appBuild = "";
 
         try {
             applicationInfo = packageManager.getApplicationInfo(packageName, 0);
@@ -103,20 +118,56 @@ public class AboutFragment extends Fragment {
 
         if (applicationInfo != null) {
             appName = packageManager.getApplicationLabel(applicationInfo).toString();
-            //appIcon.setImageDrawable(packageManager.getApplicationIcon(applicationInfo));
             try {
-                appVersion = "" + packageManager.getPackageInfo(getContext().getPackageName(), 0).versionName;
+                appVersion = "" + packageManager.getPackageInfo(packageName, 0).versionName;
+                appBuild = "" + packageManager.getPackageInfo(packageName, 0).versionCode;
             } catch (PackageManager.NameNotFoundException e) {
                 //e.printStackTrace();
             }
         }
         if (appName.length() > 0 && appVersion.length() > 0) {
-            return String.format(Locale.getDefault(), "%s: %s\n",
-                    getString(R.string.app_name_label),
-                    appName) + String.format(Locale.getDefault(), "%s: %s\n",
-                    getString(R.string.app_version),
-                    appVersion);
+            appNameTextView.setText(appName);
+            if(!appBuild.isEmpty()) {
+                appVersionTextView.setText(appVersion + " (" + appBuild + ")");
+            } else {
+                appVersionTextView.setText(appVersion);
+            }
         }
-        return "";
+    }
+
+    public void setDocumentationUrl(String docUrl) {
+        TextView documentationTextView  = (TextView) getActivity().findViewById(R.id.textview_documentation);
+        documentationTextView.setText("");
+        documentationTextView.setText(getString(R.string.documentation_header) + "\n");
+        addUrl(documentationTextView, docUrl);
+        documentationTextView.setMovementMethod(LinkMovementMethod.getInstance());
+
+    }
+
+    public void setAppLibraries(String[] libraryUrls) {
+        TextView sdkLicenceTextView  = (TextView) getActivity().findViewById(R.id.textview_libraries);
+
+        for (String libraryUrl : libraryUrls) {
+            sdkLicenceTextView.append("\n");
+            addUrl(sdkLicenceTextView, libraryUrl);
+        }
+        sdkLicenceTextView.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    private void setSdkLicence(String url) {
+        TextView sdkLicenceTextView  = (TextView) getActivity().findViewById(R.id.textview_libraries);
+        sdkLicenceTextView.setText("");
+        sdkLicenceTextView.append(getString(R.string.libraries_header) + "\n");
+        addUrl(sdkLicenceTextView, url);
+        sdkLicenceTextView.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    private void addUrl(TextView textView, String url) {
+        textView.append(
+                Html.fromHtml(
+                        String.format(Locale.getDefault(), "<a href=\"%s\">%s</a>",
+                                url,
+                                url)));
+        //textView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 }

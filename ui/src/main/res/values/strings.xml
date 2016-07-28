@@ -191,9 +191,8 @@
     <string name="report_entity">Report Entity</string>
 
     <!-- About fragment strings: -->
-    <string name="app_version">App version</string>
-    <string name="app_name_label">App name</string>
-    <string name="server_version">Server version</string>
-    <string name="app_current_header">Current application:</string>
-    <string name="documentation_header">Documentation:</string>
+    <string name="documentation_header">Documentation</string>
+    <string name="libraries_header">Libraries used</string>
+    <string name="logged_in_as">Logged in as</string>
+    <string name="logged_in_at">At server</string>
 </resources>

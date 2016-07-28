@@ -213,7 +213,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if(getActionBar() != null) {
+        if (getActionBar() != null) {
             getActionBar().setDisplayShowTitleEnabled(false);
             getActionBar().setDisplayHomeAsUpEnabled(true);
             getActionBar().setHomeButtonEnabled(true);
@@ -283,7 +283,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                     data.getStage().getCaptureCoordinates()) {
                 GpsController.activateGps(getActivity().getBaseContext());
             }
-            if (!data.getSections().isEmpty()) {
+            if (data.getSections() != null && !data.getSections().isEmpty()) {
                 if (data.getSections().size() > 1) {
                     attachSpinner();
                     spinnerAdapter.swapData(data.getSections());
@@ -317,7 +317,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
     public void setEditableDataEntryRows(EventDataEntryFragmentForm form, boolean editableDataEntryRows, boolean editableStatusRow) {
         List<Row> rows = new ArrayList<>();
-        if (!form.getSections().isEmpty()) {
+        if (form.getSections() != null && !form.getSections().isEmpty()) {
             if (form.getSections().size() > 1) {
                 for (DataEntryFragmentSection section : form.getSections()) {
                     rows.addAll(section.getRows());
@@ -342,7 +342,11 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
         listView.setAdapter(null);
 //        listViewAdapter.swapData(rows);
-        listViewAdapter.swapData(form.getSections().get(0).getRows()); //TODO find a better solution for this hack
+        if (form.getSections() != null) {
+            listViewAdapter.swapData(form.getSections().get(0).getRows()); //TODO find a better solution for this hack
+        } else {
+            Toast.makeText(getContext(), "An error occurred", Toast.LENGTH_SHORT).show();
+        }
         listView.setAdapter(listViewAdapter);
     }
 

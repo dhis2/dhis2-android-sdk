@@ -34,7 +34,6 @@ import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -219,7 +218,7 @@ public class EditTextRow extends Row {
         public void afterTextChanged(Editable s) {
             String newValue = s != null ? s.toString() : EMPTY_FIELD;
             if (!newValue.equals(value.getValue())) {
-                newValue = removeTrailingPointFromNumberRows(newValue);
+                newValue = removeInvalidDecimalSeparatorsFromNumberRows(newValue);
                 value.setValue(newValue);
                 Dhis2Application.getEventBus()
                         .post(new RowValueChangedEvent(value, rowTypeTemp));
@@ -227,12 +226,23 @@ public class EditTextRow extends Row {
         }
     }
 
+    /**
+     * Number fields should never start or end with the decimal separator "."
+     * @param value The text that is currently in the edit text field
+     * @return Clean text with trailing dots removed or a zero added at the start of the string if
+     * it starts with a dot
+     */
     @NonNull
-    private static String removeTrailingPointFromNumberRows(String newValue) {
-        if (rowTypeTemp.equals(DataEntryRowTypes.NUMBER.name()) && newValue.endsWith(".")) {
-            newValue = newValue.substring(0, newValue.length() - 1);
+    private static String removeInvalidDecimalSeparatorsFromNumberRows(String value) {
+        if (rowTypeTemp.equals(DataEntryRowTypes.NUMBER.name())) {
+            if (value.endsWith(".")) {
+                value = value.substring(0, value.length() - 1);
+            }
+            if (value.startsWith(".")) {
+                value = String.format("0%s", value);
+            }
         }
-        return newValue;
+        return value;
     }
 
     private static class NegInpFilter implements InputFilter {

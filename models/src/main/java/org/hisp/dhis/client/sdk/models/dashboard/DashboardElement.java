@@ -30,11 +30,94 @@ package org.hisp.dhis.client.sdk.models.dashboard;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
+import org.hisp.dhis.client.sdk.models.common.Access;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
+import org.joda.time.DateTime;
+
+import java.util.Comparator;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class DashboardElement extends BaseIdentifiableObject {
+public final class DashboardElement implements Model {
+
+    @JsonIgnore
+    private long id;
+
+    @JsonProperty("id")
+    private String uId;
+
+    @JsonProperty("name")
+    private String name;
+
+    @JsonProperty("displayName")
+    private String displayName;
+
+    @JsonProperty("created")
+    private DateTime created;
+
+    @JsonProperty("lastUpdated")
+    private DateTime lastUpdated;
+
+    @JsonProperty("access")
+    private Access access;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+
+    public String getUId() {
+        return uId;
+    }
+
+    public void setUId(String uId) {
+        this.uId = uId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public DateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(DateTime created) {
+        this.created = created;
+    }
+
+    public DateTime getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(DateTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public Access getAccess() {
+        return access;
+    }
+
+    public void setAccess(Access access) {
+        this.access = access;
+    }
 
     @JsonIgnore
     DashboardItem dashboardItem;

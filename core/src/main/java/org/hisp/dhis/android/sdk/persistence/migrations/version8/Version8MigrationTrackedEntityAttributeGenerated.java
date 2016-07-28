@@ -4,6 +4,7 @@ import com.raizlabs.android.dbflow.annotation.Migration;
 import com.raizlabs.android.dbflow.sql.migration.AlterTableMigration;
 
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
+import org.hisp.dhis.android.sdk.persistence.migrations.MigrationUtil;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 
 @Migration(version = 8, databaseName = Dhis2Database.NAME)
@@ -17,10 +18,16 @@ public class Version8MigrationTrackedEntityAttributeGenerated extends AlterTable
         super(TrackedEntityAttribute.class);
     }
 
+
+
     @Override
     public void onPreMigrate() {
         super.onPreMigrate();
-        addColumn(Boolean.class, "generated");
-        addColumn(String.class, "pattern");
+        if (!MigrationUtil.columnExists(TrackedEntityAttribute.class, "generated")) {
+            addColumn(Boolean.class, "generated");
+        }
+        if (!MigrationUtil.columnExists(TrackedEntityAttribute.class, "pattern")) {
+            addColumn(String.class, "pattern");
+        }
     }
 }

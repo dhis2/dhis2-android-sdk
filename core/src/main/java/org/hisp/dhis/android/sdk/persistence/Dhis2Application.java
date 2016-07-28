@@ -42,6 +42,7 @@ import com.squareup.otto.ThreadEnforcer;
 
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.DhisService;
+import org.hisp.dhis.android.sdk.persistence.migrations.MigrationUtil;
 import org.hisp.dhis.android.sdk.utils.MainThreadBus;
 
 import io.fabric.sdk.android.Fabric;
@@ -71,16 +72,15 @@ public abstract class Dhis2Application extends Application {
         FlowManager.setDatabaseListener(Dhis2Database.NAME, new DatabaseHelperListener() {
             @Override
             public void onOpen(SQLiteDatabase database) {
-
             }
 
             @Override
             public void onCreate(SQLiteDatabase database) {
-
             }
 
             @Override
             public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
+                MigrationUtil.setDatabase(database);
                 if (newVersion > oldVersion) {
                     if (DhisController.isUserLoggedIn()) {
                         DhisService.forceSynchronize(getApplicationContext());

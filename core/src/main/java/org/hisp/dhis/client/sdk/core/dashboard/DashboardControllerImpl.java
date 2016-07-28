@@ -30,7 +30,6 @@ package org.hisp.dhis.client.sdk.core.dashboard;
 
 import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.common.controllers.AbsDataController;
-import org.hisp.dhis.client.sdk.core.common.controllers.IdentifiableController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.network.Response;
@@ -42,11 +41,9 @@ import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.common.utils.ModelUtils;
-import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoApiClient;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
-import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.client.sdk.utils.Logger;
@@ -54,7 +51,6 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +81,6 @@ public final class DashboardControllerImpl extends AbsDataController<Dashboard> 
                                    DashboardStore dashboardStore,
                                    DashboardItemStore dashboardItemStore,
                                    DashboardElementStore dashboardElementStore,
-                                   DashboardContentStore dashboardItemContentStore,
                                    StateStore stateStore,
                                    DashboardApiClient dashboardApiClient,
                                    LastUpdatedPreferences lastUpdatedPreferences,
@@ -147,38 +142,33 @@ public final class DashboardControllerImpl extends AbsDataController<Dashboard> 
         DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.DASHBOARDS, DateType.SERVER);
         DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
 
-        List<Dashboard> dashboards = updateDashboards(lastUpdated);
-        List<DashboardItem> dashboardItems = updateDashboardItems(dashboards, lastUpdated);
+        // Update Dashboards -------------------------------------------------------
 
-        Queue<DbOperation> operations = new LinkedList<>();
-
-        operations.addAll(DbUtils.createOperations(dashboardStore,
-                stateStore.queryModelsWithActions(Dashboard.class, Action.SYNCED, Action
-                        .TO_UPDATE, Action.TO_DELETE), dashboards));
-        operations.addAll(DbUtils.createOperations(dashboardItemStore,
-                stateStore.queryModelsWithActions(DashboardItem.class, Action.SYNCED, Action
-                        .TO_UPDATE, Action.TO_DELETE), dashboardItems));
-        operations.addAll(createOperations(dashboardItems));
-
-        transactionManager.transact(operations);
-        lastUpdatedPreferences.save(ResourceType.DASHBOARDS, DateType.SERVER, serverTime);
-    }
-
-    private List<Dashboard> updateDashboards(DateTime lastUpdated) {
         // List of dashboards with UUIDs (without content). This list is used
         // only to determine what was removed on server.
         List<Dashboard> actualDashboards = dashboardApiClient.getDashboardUids(null);
+        logger.d("testactualDashboards", actualDashboards.toString());
 
         // List of updated dashboards with content.
         // TODO
         List<Dashboard> updatedDashboards = dashboardApiClient.getDashboards(lastUpdated);
+        logger.d("testupdatedDashboards", updatedDashboards.toString());
 
         // List of persisted dashboards.
-        List<Dashboard> persistedDashboards = stateStore.queryModelsWithActions(Dashboard.class,
+        List<Dashboard> persistedDashboards = new ArrayList<>();
+        persistedDashboards= stateStore.queryModelsWithActions(Dashboard.class,
                 Action.SYNCED, Action.TO_UPDATE, Action.TO_DELETE);
+        if(persistedDashboards!=null) {
+            logger.d("testpersistedDashboards", persistedDashboards.toString());
+        }else{
+            logger.d("testpersistedDashboards", "null value persisted");
+        }
 
         Map<Long, List<DashboardItem>> dashboardItemMap = getDashboardItemMap();
+        logger.d("testdashboardItemMap", dashboardItemMap.toString());
+
         Map<Long, List<DashboardElement>> dashboardElementMap = getDashboardElementMap(false);
+        logger.d("testdashboardElementMap", dashboardElementMap.toString());
 
         if(persistedDashboards!=null && !persistedDashboards.isEmpty()) {
             for (Dashboard dashboard : persistedDashboards) {
@@ -194,34 +184,51 @@ public final class DashboardControllerImpl extends AbsDataController<Dashboard> 
             }
         }
 
-        return ModelUtils.merge(actualDashboards, updatedDashboards, persistedDashboards);
-    }
+        List<Dashboard> mergedDashboards = ModelUtils.merge(actualDashboards, updatedDashboards, persistedDashboards);
+        if(mergedDashboards!=null) {
+            logger.d("testmergedDashboards", mergedDashboards.toString());
+        }
 
-    private List<DashboardItem> updateDashboardItems(List<Dashboard> dashboards, DateTime
-            lastUpdated) {
+        List<Dashboard> dashboards = mergedDashboards;
+        logger.d("testupdatedDashboardsMain", dashboards.toString());
+
+        // Update Dashboarditems ---------------------------------------------------
+
         // List of actual dashboard items.
         List<DashboardItem> actualItems = new ArrayList<>();
         for (Dashboard dashboard : dashboards) {
             List<DashboardItem> items = dashboard.getDashboardItems();
             actualItems.addAll(items != null ? items : new ArrayList<DashboardItem>());
         }
+        logger.d("itemActual", actualItems.toString());
 
         // List of persisted dashboard items
-        Map<String, DashboardItem> persistedDashboardItems =
-                ModelUtils.toMap(stateStore.queryModelsWithActions(DashboardItem.class,
-                        Action.SYNCED, Action.TO_UPDATE, Action.TO_DELETE));
+        List<DashboardItem> persistedDashboardItems = new ArrayList<>();
+        persistedDashboardItems= stateStore.queryModelsWithActions(DashboardItem.class,
+                Action.SYNCED, Action.TO_UPDATE, Action.TO_DELETE);
+        if(persistedDashboardItems!=null) {
+            logger.d("persistedDashboardItems", persistedDashboardItems.toString());
+        }else{
+            logger.d("persistedDashboardItems", "null value persisted");
+        }
+
+        Map<String, DashboardItem> persistedDashboardItemsMap =
+                ModelUtils.toMap(persistedDashboardItems);
+        logger.d("itemPersistedMap", persistedDashboardItemsMap.toString());
 
         // List of updated dashboard items. We need this only to get
         // information about updates of item shape.
         List<DashboardItem> updatedItems = dashboardApiClient.getBaseDashboardItems(lastUpdated);
+        logger.d("itemUpdated", updatedItems.toString());
 
         // Map of items where keys are UUIDs.
         Map<String, DashboardItem> updatedItemsMap = ModelUtils.toMap(updatedItems);
+        logger.d("itemUpdatedMaps", updatedItemsMap.toString());
 
         // merging updated items with actual
         for (DashboardItem actualItem : actualItems) {
             DashboardItem updatedItem = updatedItemsMap.get(actualItem.getUId());
-            DashboardItem persistedItem = persistedDashboardItems.get(actualItem.getUId());
+            DashboardItem persistedItem = persistedDashboardItemsMap.get(actualItem.getUId());
 
             if (persistedItem != null) {
                 actualItem.setId(persistedItem.getId());
@@ -243,6 +250,168 @@ public final class DashboardControllerImpl extends AbsDataController<Dashboard> 
                 element.setDashboardItem(actualItem);
             }
         }
+
+        logger.d("itemActual after", actualItems.toString());
+
+        List<DashboardItem> dashboardItems = actualItems;
+        logger.d("testdashboardItemsMain", dashboardItems.toString());
+
+
+        List<DbOperation> dbOperations = new ArrayList<>();
+
+        dbOperations.addAll(DbUtils.createOperations(dashboardStore,
+                stateStore.queryModelsWithActions(Dashboard.class, Action.SYNCED, Action
+                        .TO_UPDATE, Action.TO_DELETE), dashboards));
+        dbOperations.addAll(DbUtils.createOperations(dashboardItemStore,
+                stateStore.queryModelsWithActions(DashboardItem.class, Action.SYNCED, Action
+                        .TO_UPDATE, Action.TO_DELETE), dashboardItems));
+        dbOperations.addAll(createOperations(dashboardItems));
+
+        transactionManager.transact(dbOperations);
+        lastUpdatedPreferences.save(ResourceType.DASHBOARDS, DateType.SERVER, serverTime);
+
+    }
+
+    // TODO Remove this if unused
+    private void getDashboardDataFromServerLegacy() {
+        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.DASHBOARDS, DateType.SERVER);
+        DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
+
+        List<Dashboard> dashboards = updateDashboards(lastUpdated);
+        logger.d("testupdatedDashboardsMain", dashboards.toString());
+        List<DashboardItem> dashboardItems = updateDashboardItems(dashboards, lastUpdated);
+        logger.d("testdashboardItemsMain", dashboardItems.toString());
+
+        Queue<DbOperation> operations = new LinkedList<>();
+
+        operations.addAll(DbUtils.createOperations(dashboardStore,
+                stateStore.queryModelsWithActions(Dashboard.class, Action.SYNCED, Action
+                        .TO_UPDATE, Action.TO_DELETE), dashboards));
+        operations.addAll(DbUtils.createOperations(dashboardItemStore,
+                stateStore.queryModelsWithActions(DashboardItem.class, Action.SYNCED, Action
+                        .TO_UPDATE, Action.TO_DELETE), dashboardItems));
+        operations.addAll(createOperations(dashboardItems));
+
+        transactionManager.transact(operations);
+        lastUpdatedPreferences.save(ResourceType.DASHBOARDS, DateType.SERVER, serverTime);
+    }
+
+    private List<Dashboard> updateDashboards(DateTime lastUpdated) {
+        // List of dashboards with UUIDs (without content). This list is used
+        // only to determine what was removed on server.
+        List<Dashboard> actualDashboards = dashboardApiClient.getDashboardUids(null);
+        logger.d("testactualDashboards", actualDashboards.toString());
+
+        // List of updated dashboards with content.
+        // TODO
+        List<Dashboard> updatedDashboards = dashboardApiClient.getDashboards(lastUpdated);
+        logger.d("testupdatedDashboards", updatedDashboards.toString());
+
+        // List of persisted dashboards.
+        List<Dashboard> persistedDashboards = new ArrayList<>();
+        persistedDashboards= stateStore.queryModelsWithActions(Dashboard.class,
+                Action.SYNCED, Action.TO_UPDATE, Action.TO_DELETE);
+        if(persistedDashboards!=null) {
+            logger.d("testpersistedDashboards", persistedDashboards.toString());
+        }else{
+            logger.d("testpersistedDashboards", "null value persisted");
+        }
+
+//        List<Dashboard> persistedDashboards = dashboardStore.queryAll();
+//        if(persistedDashboards!=null) {
+//            logger.d("testpersistedDashboards", persistedDashboards.toString());
+//        }else{
+//            logger.d("testpersistedDashboards", "null value persisted");
+//        }
+
+        Map<Long, List<DashboardItem>> dashboardItemMap = getDashboardItemMap();
+        logger.d("testdashboardItemMap", dashboardItemMap.toString());
+
+        Map<Long, List<DashboardElement>> dashboardElementMap = getDashboardElementMap(false);
+        logger.d("testdashboardElementMap", dashboardElementMap.toString());
+
+        if(persistedDashboards!=null && !persistedDashboards.isEmpty()) {
+            for (Dashboard dashboard : persistedDashboards) {
+                List<DashboardItem> items = dashboardItemMap.get(dashboard.getId());
+                if (items == null || items.isEmpty()) {
+                    continue;
+                }
+
+                for (DashboardItem item : items) {
+                    item.setDashboardElements(dashboardElementMap.get(item.getId()));
+                }
+                dashboard.setDashboardItems(items);
+            }
+        }
+
+        List<Dashboard> mergedDashboards = ModelUtils.merge(actualDashboards, updatedDashboards, persistedDashboards);
+        if(mergedDashboards!=null) {
+            logger.d("testmergedDashboards", mergedDashboards.toString());
+        }
+
+        return mergedDashboards;
+    }
+
+    private List<DashboardItem> updateDashboardItems(List<Dashboard> dashboards, DateTime
+            lastUpdated) {
+        // List of actual dashboard items.
+        List<DashboardItem> actualItems = new ArrayList<>();
+        for (Dashboard dashboard : dashboards) {
+            List<DashboardItem> items = dashboard.getDashboardItems();
+            actualItems.addAll(items != null ? items : new ArrayList<DashboardItem>());
+        }
+        logger.d("itemActual", actualItems.toString());
+
+        // List of persisted dashboard items
+        List<DashboardItem> persistedDashboardItems = new ArrayList<>();
+        persistedDashboardItems= stateStore.queryModelsWithActions(DashboardItem.class,
+                Action.SYNCED, Action.TO_UPDATE, Action.TO_DELETE);
+        if(persistedDashboardItems!=null) {
+            logger.d("persistedDashboardItems", persistedDashboardItems.toString());
+        }else{
+            logger.d("persistedDashboardItems", "null value persisted");
+        }
+
+        Map<String, DashboardItem> persistedDashboardItemsMap =
+                ModelUtils.toMap(persistedDashboardItems);
+        logger.d("itemPersistedMap", persistedDashboardItemsMap.toString());
+
+        // List of updated dashboard items. We need this only to get
+        // information about updates of item shape.
+        List<DashboardItem> updatedItems = dashboardApiClient.getBaseDashboardItems(lastUpdated);
+        logger.d("itemUpdated", updatedItems.toString());
+
+        // Map of items where keys are UUIDs.
+        Map<String, DashboardItem> updatedItemsMap = ModelUtils.toMap(updatedItems);
+        logger.d("itemUpdatedMaps", updatedItemsMap.toString());
+
+        // merging updated items with actual
+        for (DashboardItem actualItem : actualItems) {
+            DashboardItem updatedItem = updatedItemsMap.get(actualItem.getUId());
+            DashboardItem persistedItem = persistedDashboardItemsMap.get(actualItem.getUId());
+
+            if (persistedItem != null) {
+                actualItem.setId(persistedItem.getId());
+            }
+
+            if (updatedItem != null) {
+                actualItem.setCreated(updatedItem.getCreated());
+                actualItem.setLastUpdated(updatedItem.getLastUpdated());
+                actualItem.setShape(updatedItem.getShape());
+            }
+
+            if (actualItem.getDashboardElements() == null ||
+                    actualItem.getDashboardElements().isEmpty()) {
+                continue;
+            }
+
+            // building dashboard element to item relationship.
+            for (DashboardElement element : actualItem.getDashboardElements()) {
+                element.setDashboardItem(actualItem);
+            }
+        }
+
+        logger.d("itemActual after", actualItems.toString());
 
         return actualItems;
     }
@@ -303,6 +472,8 @@ public final class DashboardControllerImpl extends AbsDataController<Dashboard> 
         List<DashboardItem> dashboardItemsList = stateStore
                 .queryModelsWithActions(DashboardItem.class, Action.SYNCED, Action.TO_UPDATE,
                         Action.TO_DELETE);
+        logger.d("dashboardItemsList", dashboardItemsList.toString());
+
         Map<Long, List<DashboardItem>> dashboardItemMap = new HashMap<>();
 
         if(dashboardItemsList!=null && !dashboardItemsList.isEmpty()) {
@@ -336,6 +507,7 @@ public final class DashboardControllerImpl extends AbsDataController<Dashboard> 
         Map<Long, List<DashboardElement>> dashboardElementMap = new HashMap<>();
 
         if(dashboardElementsList!=null && !dashboardElementsList.isEmpty()) {
+            logger.d("dashboardElementsList", dashboardElementsList.toString());
             for (DashboardElement dashboardElement : dashboardElementsList) {
                 Long dashboardItemId = dashboardElement.getDashboardItem().getId();
 
@@ -349,6 +521,7 @@ public final class DashboardControllerImpl extends AbsDataController<Dashboard> 
             }
         }
 
+        logger.d("dashboardElementMap", dashboardElementMap.toString());
         return dashboardElementMap;
     }
 
@@ -680,4 +853,5 @@ public final class DashboardControllerImpl extends AbsDataController<Dashboard> 
             // handleApiException(apiException);
         }
     }
+
 }

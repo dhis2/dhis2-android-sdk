@@ -52,7 +52,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public final class DashboardContentControllerImpl extends AbsDataController<DashboardContent> implements DashboardContentController {
+public final class DashboardContentControllerImpl extends AbsDataController<DashboardContent>
+        implements DashboardContentController {
 
     /* Controllers */
     private final SystemInfoController systemInfoController;
@@ -93,6 +94,7 @@ public final class DashboardContentControllerImpl extends AbsDataController<Dash
         /* first we need to update api resources, dashboards
         and dashboard items */
         List<DashboardContent> dashboardContent = updateApiResources(lastUpdated);
+        logger.d("dashboardContent", dashboardContent.toString());
 
         List<DbOperation> operations = new ArrayList<>();
 
@@ -149,9 +151,12 @@ public final class DashboardContentControllerImpl extends AbsDataController<Dash
 
         List<DashboardContent> actualItems
                 = getApiResourceByType(type, QUERY_MAP_BASIC);
+        logger.d("dashboardContentActualItems", actualItems.toString());
+
 
         List<DashboardContent> updatedItems =
                 getApiResourceByType(type, QUERY_MAP_FULL);
+        logger.d("dashboardContentUpdatedItems", updatedItems.toString());
 
         if (updatedItems != null && !updatedItems.isEmpty()) {
             for (DashboardContent element : updatedItems) {
@@ -163,7 +168,12 @@ public final class DashboardContentControllerImpl extends AbsDataController<Dash
         types.add(type);
 
         List<DashboardContent> persistedItems =
-                dashboardContentStore.queryByTypes(types);
+                dashboardContentStore.queryByType(type);
+        if(persistedItems!=null){
+            logger.d("dashboardContentPersisted", persistedItems.toString());
+        }else{
+            logger.d("dashboardContentPersisted", "empty persisted");
+        }
 
         return ModelUtils.merge(actualItems, updatedItems, persistedItems);
     }

@@ -47,4 +47,6 @@ public interface DashboardElementService extends Service, Remove<DashboardElemen
      * {@inheritDoc}
      */
     List<DashboardElement> list(DashboardItem dashboardItem);
+
+    DashboardElement get(long dashboardElementId);
 }

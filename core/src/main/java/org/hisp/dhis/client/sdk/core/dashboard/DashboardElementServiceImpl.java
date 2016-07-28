@@ -130,4 +130,9 @@ public class DashboardElementServiceImpl implements DashboardElementService {
 
         return dashboardElements;
     }
+
+    @Override
+    public DashboardElement get(long dashboardElementId) {
+        return dashboardElementStore.getDashboardElement(dashboardElementId);
+    }
 }

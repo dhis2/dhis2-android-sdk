@@ -119,6 +119,18 @@ public final class DashboardElement implements Model {
         this.access = access;
     }
 
+    @Override
+    public String toString() {
+        return "BaseIdentifiableObject{" +
+                "id='" + getId() + '\'' +
+                ", name='" + name + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", created=" + created +
+                ", lastUpdated=" + lastUpdated +
+                ", access=" + (access != null ? access.toString() : null) +
+                '}';
+    }
+
     @JsonIgnore
     DashboardItem dashboardItem;
 

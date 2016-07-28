@@ -29,10 +29,12 @@
 
 package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,11 +43,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
-import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
+import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 
 public class EditTextRow extends Row {
     private static final String EMPTY_FIELD = "";
@@ -128,7 +129,7 @@ public class EditTextRow extends Row {
             }
 
             OnTextChangeListener listener = new OnTextChangeListener();
-            holder = new ValueEntryHolder(label, mandatoryIndicator, warningLabel, errorLabel, editText, listener );
+            holder = new ValueEntryHolder(label, mandatoryIndicator, warningLabel, errorLabel, editText, listener);
             holder.editText.addTextChangedListener(listener);
 
             rowTypeTemp = mRowType.toString();
@@ -136,7 +137,7 @@ public class EditTextRow extends Row {
             view = root;
         }
 
-        if(!isEditable()) {
+        if (!isEditable()) {
             holder.editText.setEnabled(false);
         } else {
             holder.editText.setEnabled(true);
@@ -156,21 +157,21 @@ public class EditTextRow extends Row {
 //            holder.detailedInfoButton.setVisibility(View.VISIBLE);
 //        }
 
-        if(mWarning == null) {
+        if (mWarning == null) {
             holder.warningLabel.setVisibility(View.GONE);
         } else {
             holder.warningLabel.setVisibility(View.VISIBLE);
             holder.warningLabel.setText(mWarning);
         }
 
-        if(mError == null) {
+        if (mError == null) {
             holder.errorLabel.setVisibility(View.GONE);
         } else {
             holder.errorLabel.setVisibility(View.VISIBLE);
             holder.errorLabel.setText(mWarning);
         }
 
-        if(!mMandatory) {
+        if (!mMandatory) {
             holder.mandatoryIndicator.setVisibility(View.GONE);
         } else {
             holder.mandatoryIndicator.setVisibility(View.VISIBLE);
@@ -190,7 +191,7 @@ public class EditTextRow extends Row {
         final TextView warningLabel;
         final TextView errorLabel;
         final EditText editText;
-//        final View detailedInfoButton;
+        //        final View detailedInfoButton;
         final OnTextChangeListener listener;
 
         public ValueEntryHolder(TextView textLabel,
@@ -218,11 +219,20 @@ public class EditTextRow extends Row {
         public void afterTextChanged(Editable s) {
             String newValue = s != null ? s.toString() : EMPTY_FIELD;
             if (!newValue.equals(value.getValue())) {
+                newValue = removeTrailingPointFromNumberRows(newValue);
                 value.setValue(newValue);
                 Dhis2Application.getEventBus()
                         .post(new RowValueChangedEvent(value, rowTypeTemp));
             }
         }
+    }
+
+    @NonNull
+    private static String removeTrailingPointFromNumberRows(String newValue) {
+        if (rowTypeTemp.equals(DataEntryRowTypes.NUMBER.name()) && newValue.endsWith(".")) {
+            newValue = newValue.substring(0, newValue.length() - 1);
+        }
+        return newValue;
     }
 
     private static class NegInpFilter implements InputFilter {

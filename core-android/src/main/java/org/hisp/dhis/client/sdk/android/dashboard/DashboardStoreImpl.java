@@ -30,17 +30,25 @@ package org.hisp.dhis.client.sdk.android.dashboard;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardElementFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardFlow_Table;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardItemFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardItemFlow_Table;
+import org.hisp.dhis.client.sdk.android.common.AbsDataStore;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectDataStore;
 import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperationImpl;
 import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.utils.ModelUtils;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardElementStore;
 import org.hisp.dhis.client.sdk.core.dashboard.DashboardItemStore;
 import org.hisp.dhis.client.sdk.core.dashboard.DashboardStore;
 
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
+import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
+import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 
 import java.util.ArrayList;
@@ -111,14 +119,23 @@ public class DashboardStoreImpl extends AbsIdentifiableObjectDataStore<Dashboard
 
     @Override
     public Dashboard queryById(long id) {
-        Dashboard dashboard = super.queryById(id);
+        isNull(id, "id must not be null");
 
+        DashboardFlow dashboardFlow = new Select()
+                .from(DashboardFlow.class)
+                .where(DashboardFlow_Table.id.is(id))
+                .querySingle();
+
+        return getMapper().mapToModel(dashboardFlow);
+
+//        Dashboard dashboard = super.queryById(id);
+//
 //        List<DashboardItem> dashboardItems = dashboardItemStore.query(dashboard);
 //        if (dashboard != null) {
 //            dashboard.setDashboardItems(dashboardItems);
 //        }
-
-        return dashboard;
+//
+//        return dashboard;
     }
 
     @Override

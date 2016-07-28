@@ -29,6 +29,8 @@
 package org.hisp.dhis.client.sdk.core.common.utils;
 
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
+import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,7 +70,17 @@ public class ModelUtils {
         return ids;
     }
 
-    public static <T extends IdentifiableObject> Set<String> toUidSet(Collection<T> items) {
+    public static <T extends DashboardElement> List<String> toUidListDashboardElement(List<T> objects) {
+        List<String> uIds = new ArrayList<>();
+        if (objects != null && objects.size() > 0) {
+            for (T object : objects) {
+                uIds.add(object.getUId());
+            }
+        }
+        return uIds;
+    }
+
+        public static <T extends IdentifiableObject> Set<String> toUidSet(Collection<T> items) {
         Set<String> uIds = new HashSet<>();
 
         if (items != null && !items.isEmpty()) {

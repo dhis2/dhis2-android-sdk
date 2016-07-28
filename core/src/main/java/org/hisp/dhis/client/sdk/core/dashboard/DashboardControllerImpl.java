@@ -435,8 +435,8 @@ public final class DashboardControllerImpl extends AbsDataController<Dashboard> 
                 refreshedElementList = new ArrayList<>();
             }
 
-            List<String> persistedElementIds = ModelUtils.toUidList(persistedElementList);
-            List<String> refreshedElementIds = ModelUtils.toUidList(refreshedElementList);
+            List<String> persistedElementIds = ModelUtils.toUidListDashboardElement(persistedElementList);
+            List<String> refreshedElementIds = ModelUtils.toUidListDashboardElement(refreshedElementList);
 
             List<String> itemIdsToInsert = subtract(refreshedElementIds, persistedElementIds);
             List<String> itemIdsToDelete = subtract(persistedElementIds, refreshedElementIds);

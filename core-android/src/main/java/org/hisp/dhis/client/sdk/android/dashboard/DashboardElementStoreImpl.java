@@ -28,10 +28,20 @@
 
 package org.hisp.dhis.client.sdk.android.dashboard;
 
+import android.util.Log;
+
+import com.raizlabs.android.dbflow.sql.language.Select;
+
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardElementFlow;
-import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.Mapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardElementFlow_Table;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardItemFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardItemFlow_Table;
+import org.hisp.dhis.client.sdk.android.common.AbsDataStore;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectDataStore;
+import org.hisp.dhis.client.sdk.android.common.AbsStore;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.dashboard.DashboardElementStore;
+import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 
@@ -39,25 +49,53 @@ import java.util.List;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-
-public class DashboardElementStoreImpl extends AbsIdentifiableObjectStore<DashboardElement,
+public class DashboardElementStoreImpl extends AbsDataStore<DashboardElement,
         DashboardElementFlow> implements DashboardElementStore {
 
-    public DashboardElementStoreImpl(Mapper<DashboardElement, DashboardElementFlow> mapper) {
-        super(mapper);
+    public DashboardElementStoreImpl(StateStore stateStore) {
+        super(DashboardElementFlow.MAPPER, stateStore);
     }
 
     @Override
     public List<DashboardElement> query(DashboardItem dashboardItem) {
         isNull(dashboardItem, "dashboard item must not be null");
-//
-//        List<DashboardElement_Flow> elementFlows = new Select()
-//                .from(DashboardElement_Flow.class)
-//                .where(DashboardElement_Flow_Table.dashboardItem.is(dashboardItem.getId()))
-//                .queryList();
-
-        // converting flow models to Dashboard
-//        return getMapper().mapToModels(elementFlows);
-        return null;
+        List<DashboardElementFlow> elementFlows = new Select()
+                .from(DashboardElementFlow.class)
+                .where(DashboardElementFlow_Table.dashboardItem.is(dashboardItem.getUId()))
+                .queryList();
+        return getMapper().mapToModels(elementFlows);
     }
+
+    @Override
+    public DashboardElement getDashboardElement(long dashboardElementId) {
+        DashboardElementFlow dashboardElementFlow = new Select()
+                .from(DashboardElementFlow.class)
+                .where(DashboardElementFlow_Table.id.is(dashboardElementId))
+                .querySingle();
+        return getMapper().mapToModel(dashboardElementFlow);
+    }
+
+    @Override
+    public boolean insert(DashboardElement dashboardElement) {
+        Log.d("UidofElement", dashboardElement.getUId());
+        Log.d("UidofElement'sItem", dashboardElement.getDashboardItem().getUId());
+        boolean isSuccess = super.insert(dashboardElement);
+
+        return isSuccess;
+    }
+
+    @Override
+    public boolean update(DashboardElement dashboardElement) {
+        boolean isSuccess = super.update(dashboardElement);
+
+        return isSuccess;
+    }
+
+    @Override
+    public boolean save(DashboardElement dashboardElement) {
+        boolean isSuccess = super.save(dashboardElement);
+
+        return isSuccess;
+    }
+
 }

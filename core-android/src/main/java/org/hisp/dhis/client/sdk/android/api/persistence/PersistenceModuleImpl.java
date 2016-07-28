@@ -81,6 +81,7 @@ import org.hisp.dhis.client.sdk.core.program.ProgramStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.client.sdk.core.user.UserAccountStore;
+import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 
 public class PersistenceModuleImpl implements PersistenceModule {
     private final TransactionManager transactionManager;
@@ -100,7 +101,7 @@ public class PersistenceModuleImpl implements PersistenceModule {
     private final DashboardStore dashboardStore;
     private final DashboardElementStore dashboardElementStore;
     private final DashboardItemStore dashboardItemStore;
-    // TODO
+
     private final DashboardContentStore dashboardContentStore;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final DataElementStore dataElementStore;
@@ -111,7 +112,8 @@ public class PersistenceModuleImpl implements PersistenceModule {
         FlowManager.init(context);
 
         transactionManager = new TransactionManagerImpl();
-        stateStore = new StateStoreImpl(EventFlow.MAPPER);
+        stateStore = new StateStoreImpl(EventFlow.MAPPER, DashboardFlow.MAPPER,
+                DashboardItemFlow.MAPPER, DashboardElementFlow.MAPPER, DashboardContentFlow.MAPPER);
         programStore = new ProgramStoreImpl(transactionManager);
         programStageStore = new ProgramStageStoreImpl(transactionManager);
         programStageSectionStore = new ProgramStageSectionStoreImpl(transactionManager);
@@ -129,11 +131,10 @@ public class PersistenceModuleImpl implements PersistenceModule {
         trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl();
         eventStore = new EventStoreImpl(stateStore, trackedEntityDataValueStore, transactionManager);
 
-        // TODO Maybe Change Constructor according to Event
-        dashboardStore = new DashboardStoreImpl(DashboardFlow.MAPPER);
-        dashboardElementStore = new DashboardElementStoreImpl(DashboardElementFlow.MAPPER);
-        dashboardItemStore = new DashboardItemStoreImpl(DashboardItemFlow.MAPPER);
-        dashboardContentStore = new DashboardContentStoreImpl(DashboardContentFlow.MAPPER);
+        dashboardItemStore = new DashboardItemStoreImpl(stateStore);
+        dashboardStore = new DashboardStoreImpl(stateStore,dashboardItemStore,transactionManager);
+        dashboardElementStore = new DashboardElementStoreImpl(stateStore);
+        dashboardContentStore = new DashboardContentStoreImpl(stateStore);
 
         optionStore = new OptionStoreImpl();
         optionSetStore = new OptionSetStoreImpl();

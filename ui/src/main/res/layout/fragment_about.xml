@@ -9,13 +9,12 @@
         android:id="@+id/current_app_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:padding="8dp"
         android:text="@string/app_current_header"
         android:textSize="17sp"
         app:font="@string/font_name_medium"/>
 
-    <LinearLayout
+   <!-- <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -26,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:contentDescription="App icon"/>
-
+-->
         <org.hisp.dhis.client.sdk.ui.views.FontTextView
             android:id="@+id/about_app"
             android:layout_width="wrap_content"
@@ -35,19 +34,18 @@
             android:text="about_app"
             android:textSize="17sp"
             app:font="@string/font_name_regular"/>
-    </LinearLayout>
-
+   <!-- </LinearLayout>
+-->
     <org.hisp.dhis.client.sdk.ui.views.FontTextView
         android:id="@+id/about_session"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="64dp"
-        android:layout_marginStart="64dp"
         android:padding="8dp"
         android:text="about_session"
         android:textSize="17sp"
         app:font="@string/font_name_regular"/>
-
+    <!--android:layout_marginLeft="64dp"
+            android:layout_marginStart="64dp"-->
 
     <View
         android:layout_width="match_parent"
@@ -55,13 +53,64 @@
         android:background="@color/color_divider"/>
 
     <org.hisp.dhis.client.sdk.ui.views.FontTextView
-        android:id="@+id/other_app_header"
+        android:id="@+id/textview_documentation_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:padding="8dp"
-        android:text="@string/app_other_header"
+        android:text="@string/documentation_header"
         android:textSize="17sp"
         app:font="@string/font_name_medium"/>
+
+    <org.hisp.dhis.client.sdk.ui.views.FontTextView
+        android:id="@+id/textview_documentation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:textSize="17sp"
+        app:font="@string/font_name_regular"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/color_divider"/>
+
+    <org.hisp.dhis.client.sdk.ui.views.FontTextView
+        android:id="@+id/textview_libraries_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="Libraries:"
+        android:textSize="17sp"
+        app:font="@string/font_name_medium"/>
+
+    <org.hisp.dhis.client.sdk.ui.views.FontTextView
+        android:id="@+id/textview_libraries"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:textSize="17sp"
+        app:font="@string/font_name_regular"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/color_divider"/>
+
+    <org.hisp.dhis.client.sdk.ui.views.FontTextView
+        android:id="@+id/textview_licences_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="Licences:"
+        android:textSize="17sp"
+        app:font="@string/font_name_medium"/>
+
+    <org.hisp.dhis.client.sdk.ui.views.FontTextView
+        android:id="@+id/textview_licences"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:textSize="17sp"
+        app:font="@string/font_name_regular"/>
 
 </LinearLayout>

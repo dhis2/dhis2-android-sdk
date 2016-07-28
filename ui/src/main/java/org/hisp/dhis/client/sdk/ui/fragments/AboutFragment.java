@@ -36,11 +36,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.android.api.D2;
 import org.hisp.dhis.client.sdk.android.api.preferences.PreferencesModuleImpl;
+import org.hisp.dhis.client.sdk.core.common.preferences.PreferencesModule;
 import org.hisp.dhis.client.sdk.ui.R;
 
 import java.util.Locale;
@@ -60,19 +60,12 @@ public class AboutFragment extends Fragment {
 
         TextView sessionText = (TextView) getActivity().findViewById(R.id.about_session);
         TextView appText = (TextView) getActivity().findViewById(R.id.about_app);
-        ImageView appIcon = (ImageView) getActivity().findViewById(R.id.app_icon);
+        //ImageView appIcon = (ImageView) getActivity().findViewById(R.id.app_icon);
+        //TODO: refactor this, this is just for testing.
+        TextView documentation = (TextView) getActivity().findViewById(R.id.textview_documentation);
 
-        PreferencesModuleImpl preferencesModule = new PreferencesModuleImpl(getContext());
-        PackageManager packageManager = getContext().getPackageManager();
-        ApplicationInfo applicationInfo = null;
-        String appName = "";
-        String appVersion = "";
+        PreferencesModule preferencesModule = new PreferencesModuleImpl(getContext());
 
-        try {
-            applicationInfo = packageManager.getApplicationInfo(getContext().getApplicationInfo().packageName, 0);
-        } catch (final PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
 
         // inside about_session:
         sessionText.setText(String.format(Locale.getDefault(), "%s: %s\n",
@@ -84,24 +77,46 @@ public class AboutFragment extends Fragment {
                 preferencesModule.getConfigurationPreferences().get().getServerUrl()
         ));
 
-        // inside about_app:
+        appText.setText(getAppNameAndVersion(getContext().getApplicationInfo().packageName));
+    }
+
+    /**
+     * Get App-info string from app package name.
+     * Returns a string of the format:
+     * "App Name: app-name\n
+     * App Version: app-version"
+     *
+     * @param packageName the name of the app package.
+     * @return The formatted string
+     */
+    private String getAppNameAndVersion(String packageName) {
+        ApplicationInfo applicationInfo = null;
+        PackageManager packageManager = getContext().getPackageManager();
+        String appName = "";
+        String appVersion = "";
+
+        try {
+            applicationInfo = packageManager.getApplicationInfo(packageName, 0);
+        } catch (final PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
         if (applicationInfo != null) {
             appName = packageManager.getApplicationLabel(applicationInfo).toString();
-            appIcon.setImageDrawable(packageManager.getApplicationIcon(applicationInfo));
+            //appIcon.setImageDrawable(packageManager.getApplicationIcon(applicationInfo));
             try {
                 appVersion = "" + packageManager.getPackageInfo(getContext().getPackageName(), 0).versionName;
             } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
-
-        appText.setText(String.format(Locale.getDefault(), "%s: %s\n",
-                getString(R.string.app_name_label),
-                appName)
-        );
-        appText.append(String.format(Locale.getDefault(), "%s: %s",
-                getString(R.string.app_version),
-                appVersion)
-        );
+        if (appName.length() > 0 && appVersion.length() > 0) {
+            return String.format(Locale.getDefault(), "%s: %s\n",
+                    getString(R.string.app_name_label),
+                    appName) + String.format(Locale.getDefault(), "%s: %s\n",
+                    getString(R.string.app_version),
+                    appVersion);
+        }
+        return "";
     }
 }

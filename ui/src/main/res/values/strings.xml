@@ -195,7 +195,5 @@
     <string name="app_name_label">App name</string>
     <string name="server_version">Server version</string>
     <string name="app_current_header">Current application:</string>
-    <string name="app_other_header">Other installed applications:</string>
-
-    
+    <string name="documentation_header">Documentation:</string>
 </resources>

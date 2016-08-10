@@ -5,11 +5,9 @@ import android.support.annotation.Nullable;
 
 import org.hisp.dhis.client.sdk.ui.AppPreferences;
 import org.hisp.dhis.client.sdk.ui.bindings.R;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 public class SyncDateWrapper {
     //Constants:
@@ -32,8 +30,7 @@ public class SyncDateWrapper {
     }
 
     public void setLastSyncedNow() {
-        long lastSynced = Calendar.getInstance().getTime().getTime();
-        appPreferences.setLastSynced(lastSynced);
+        appPreferences.setLastSynced(DateTime.now().getMillis());
     }
 
     public void clearLastSynced() {
@@ -41,13 +38,11 @@ public class SyncDateWrapper {
     }
 
     @Nullable
-    public Date getLastSyncedDate() {
+    public DateTime getLastSyncedDate() {
         long lastSynced = appPreferences.getLastSynced();
 
         if (lastSynced > NEVER) {
-            Date date = new Date();
-            date.setTime(lastSynced);
-            return date;
+            return new DateTime().withMillis(lastSynced);
         }
         return null;
     }
@@ -63,21 +58,22 @@ public class SyncDateWrapper {
             return NEVER_SYNCED;
         }
 
-        Long diff = Calendar.getInstance().getTimeInMillis() - lastSync;
-        if (diff >= TimeUnit.DAYS.toMillis(DAYS_OLD)) {
-            return new SimpleDateFormat(DATE_FORMAT)
-                    .format(getLastSyncedDate());
+        DateTime now = DateTime.now();
+        DateTime lastSynced = new DateTime().withMillis(lastSync);
+
+        //older than 24h
+        if (now.minusHours(24).compareTo(lastSynced) == 0) {
+            DateTimeFormatter format = DateTimeFormat.forPattern(DATE_FORMAT);
+            return format.print(lastSynced);
         }
 
-        Long hours = TimeUnit.MILLISECONDS.toHours(diff);
-        Long minutes = TimeUnit.MILLISECONDS.toMinutes(
-                diff - TimeUnit.HOURS.toMillis(hours));
-
         String result = "";
+        int hours = now.minus(lastSynced.getMillis()).getHourOfDay();
+
         if (hours > 0) {
             result += hours + HOURS;
         }
-        result += minutes + MIN_AGO;
+        result += now.minus(lastSynced.getMillis()).getMinuteOfHour() + MIN_AGO;
         return result;
     }
 }

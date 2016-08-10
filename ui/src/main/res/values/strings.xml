@@ -181,7 +181,7 @@
     <string name="report_entity_deletion_error">Unable to delete Report Entity</string>
 
     <!-- SyncDateWrapper strings: -->
-    <string name="date_format">dd/mm/yy hh:mm</string>
+    <string name="date_format">dd/MM/yy HH:mm</string>
     <string name="never">never</string>
     <string name="min_ago">m ago</string>
     <string name="hours">h</string>

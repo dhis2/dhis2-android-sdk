@@ -1,7 +1,10 @@
-package org.hisp.dhis.client.sdk.ui;
+package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+
+import org.hisp.dhis.client.sdk.ui.AppPreferences;
+import org.hisp.dhis.client.sdk.ui.bindings.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

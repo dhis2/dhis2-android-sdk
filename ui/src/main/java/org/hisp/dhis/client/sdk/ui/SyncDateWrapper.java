@@ -19,11 +19,9 @@ public class SyncDateWrapper {
     private final String HOURS;
 
     private final AppPreferences appPreferences;
-    private final Calendar calendar;
 
     public SyncDateWrapper(Context context, AppPreferences appPreferences) {
         this.appPreferences = appPreferences;
-        this.calendar = Calendar.getInstance();
         DATE_FORMAT = context.getString(R.string.date_format);
         NEVER_SYNCED = context.getString(R.string.never);
         MIN_AGO = context.getString(R.string.min_ago);
@@ -31,7 +29,7 @@ public class SyncDateWrapper {
     }
 
     public void setLastSyncedNow() {
-        long lastSynced = calendar.getTime().getTime();
+        long lastSynced = Calendar.getInstance().getTime().getTime();
         appPreferences.setLastSynced(lastSynced);
     }
 

@@ -72,10 +72,7 @@ public class AboutFragment extends Fragment {
                 getString(R.string.logged_in_as),
                 D2.me().userCredentials().toBlocking().first().getUsername())
         );
-        /*sessionText.append(String.format(Locale.getDefault(), "%s %s",
-                getString(R.string.logged_in_at),
-                preferencesModule.getConfigurationPreferences().get().getServerUrl()
-        ));*/
+
         sessionText.append(getString(R.string.logged_in_at) + " ");
         addUrl(sessionText, preferencesModule.getConfigurationPreferences().get().getServerUrl());
         sessionText.setMovementMethod(LinkMovementMethod.getInstance());
@@ -162,12 +159,16 @@ public class AboutFragment extends Fragment {
         sdkLicenceTextView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
+    /**
+     * A wrapper method to append url to a textView.
+     * @param textView
+     * @param url
+     */
     private void addUrl(TextView textView, String url) {
         textView.append(
                 Html.fromHtml(
                         String.format(Locale.getDefault(), "<a href=\"%s\">%s</a>",
                                 url,
                                 url)));
-        //textView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 }

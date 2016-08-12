@@ -42,7 +42,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
@@ -81,6 +80,7 @@ public class EditTextRow extends Row {
         if (convertView != null && convertView.getTag() instanceof ValueEntryHolder) {
             view = convertView;
             holder = (ValueEntryHolder) view.getTag();
+            holder.listener.onRowReused();
         } else {
             View root = inflater.inflate(R.layout.listview_row_edit_text, container, false);
             TextView label = (TextView) root.findViewById(R.id.text_label);
@@ -215,19 +215,26 @@ public class EditTextRow extends Row {
             this.value = value;
         }
 
+        public void onRowReused() {
+            if (editTextRowChangeEventQueue != null) {
+                editTextRowChangeEventQueue.runNow();
+            }
+        }
+
         @Override
         public void afterTextChanged(Editable s) {
             String newValue = s != null ? s.toString() : EMPTY_FIELD;
             if (!newValue.equals(value.getValue())) {
                 newValue = removeInvalidDecimalSeparatorsFromNumberRows(newValue);
                 value.setValue(newValue);
-                editTextRowChangeEventQueue.enque(new RowValueChangedEvent(value, rowTypeTemp));
+                editTextRowChangeEventQueue.enqueue(new RowValueChangedEvent(value, rowTypeTemp));
             }
         }
     }
 
     /**
      * Number fields should never start or end with the decimal separator "."
+     *
      * @param value The text that is currently in the edit text field
      * @return Clean text with trailing dots removed or a zero added at the start of the string if
      * it starts with a dot

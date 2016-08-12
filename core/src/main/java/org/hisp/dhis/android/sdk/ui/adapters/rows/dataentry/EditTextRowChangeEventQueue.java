@@ -11,7 +11,7 @@ import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
  */
 public class EditTextRowChangeEventQueue {
 
-    private final int delayMillis = 1000;
+    private final int DELAY_MILLIS = 1000; // program rules are ran after this many milliseconds
     private Handler handler;
     private Runnable runnable;
     private RowValueChangedEvent rowValueChangedEvent;
@@ -20,10 +20,19 @@ public class EditTextRowChangeEventQueue {
         init();
     }
 
-    public void enque(RowValueChangedEvent rowValueChangedEvent) {
+    public void enqueue(RowValueChangedEvent rowValueChangedEvent) {
         this.rowValueChangedEvent = rowValueChangedEvent;
-        handler.removeCallbacks(runnable);
-        handler.postDelayed(runnable, delayMillis);
+        if (handler != null && runnable != null) {
+            handler.removeCallbacks(runnable);
+            handler.postDelayed(runnable, DELAY_MILLIS);
+        }
+    }
+
+    public void runNow() {
+        if (handler != null && runnable != null) {
+            handler.removeCallbacks(runnable);
+            handler.post(runnable);
+        }
     }
 
     private void init() {

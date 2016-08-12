@@ -6,8 +6,11 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.client.sdk.ui.AppPreferences;
 import org.hisp.dhis.client.sdk.ui.bindings.R;
 import org.joda.time.DateTime;
+import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 
 public class SyncDateWrapper {
     //Constants:
@@ -18,6 +21,7 @@ public class SyncDateWrapper {
     private final String NEVER_SYNCED;
     private final String MIN_AGO;
     private final String HOURS;
+    private final String NOW;
 
     private final AppPreferences appPreferences;
 
@@ -27,6 +31,7 @@ public class SyncDateWrapper {
         NEVER_SYNCED = context.getString(R.string.never);
         MIN_AGO = context.getString(R.string.min_ago);
         HOURS = context.getString(R.string.hours);
+        NOW = context.getString(R.string.now);
     }
 
     public void setLastSyncedNow() {
@@ -67,13 +72,18 @@ public class SyncDateWrapper {
             return format.print(lastSynced);
         }
 
-        String result = "";
-        int hours = lastSynced.minus(now.getMillis()).getHourOfDay();
+        Period period = new Period(lastSynced, now);
 
-        if (hours > 0) {
-            result += hours + HOURS;
+        PeriodFormatter formatter = new PeriodFormatterBuilder()
+                .appendHours().appendSuffix(HOURS)
+                .appendSeparator(" ")
+                .appendMinutes().appendSuffix(MIN_AGO)
+                .toFormatter();
+
+        String result = formatter.print(period);
+        if (result.isEmpty()) {
+            result = NOW;
         }
-        result += now.minus(lastSynced.getMillis()).getMinuteOfHour() + MIN_AGO;
         return result;
     }
 }

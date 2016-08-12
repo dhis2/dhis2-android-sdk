@@ -68,7 +68,7 @@ public class SyncDateWrapper {
         }
 
         String result = "";
-        int hours = now.minus(lastSynced.getMillis()).getHourOfDay();
+        int hours = lastSynced.minus(now.getMillis()).getHourOfDay();
 
         if (hours > 0) {
             result += hours + HOURS;

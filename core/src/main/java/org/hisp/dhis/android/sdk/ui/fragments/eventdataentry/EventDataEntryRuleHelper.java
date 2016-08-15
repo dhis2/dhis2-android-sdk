@@ -33,6 +33,7 @@ import android.support.v4.app.Fragment;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
@@ -41,7 +42,9 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.fragments.common.IProgramRuleFragmentHelper;
+import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.ValidationErrorDialog;
 import org.hisp.dhis.android.sdk.utils.services.ProgramIndicatorService;
 import org.hisp.dhis.android.sdk.utils.services.ProgramRuleService;
@@ -216,6 +219,7 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
         if(dataValue != null && eventDataEntryFragment.containsValue(dataValue)) {// form.getDataValues().get(programRuleAction.getDataElement()))) {
             affectedFieldsWithValue.add(programRuleAction.getDataElement());
             dataValue.setValue(""); // After it is hidden, remove value
+            Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue, DataEntryRowTypes.TRUE_ONLY.toString()));
         }
     }
 

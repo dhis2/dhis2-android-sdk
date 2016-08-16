@@ -17,15 +17,19 @@ public class EditTextRowChangeEventQueue {
     private RowValueChangedEvent rowValueChangedEvent;
 
     public EditTextRowChangeEventQueue() {
-        init();
+        handler = new Handler();
     }
 
     public void enqueue(RowValueChangedEvent rowValueChangedEvent) {
         this.rowValueChangedEvent = rowValueChangedEvent;
-        if (handler != null && runnable != null) {
+
+        if (runnable == null) {
+            initRunnable();
+        } else {
             handler.removeCallbacks(runnable);
-            handler.postDelayed(runnable, DELAY_MILLIS);
         }
+        handler.postDelayed(runnable, DELAY_MILLIS);
+
     }
 
     public void runNow() {
@@ -35,8 +39,7 @@ public class EditTextRowChangeEventQueue {
         }
     }
 
-    private void init() {
-        handler = new Handler();
+    private void initRunnable() {
         runnable = new Runnable() {
             @Override
             public void run() {
@@ -46,6 +49,7 @@ public class EditTextRowChangeEventQueue {
                 } else {
                     Log.d("ChangeEventQueue", "rowValueChangedEvent is null");
                 }
+                EditTextRowChangeEventQueue.this.runnable = null;
             }
         };
 

@@ -129,6 +129,7 @@ public class EditTextRow extends Row {
 
             OnTextChangeListener listener = new OnTextChangeListener();
             holder = new ValueEntryHolder(label, mandatoryIndicator, warningLabel, errorLabel, editText, listener);
+            holder.listener.setBaseValue(mValue);
             holder.editText.addTextChangedListener(listener);
 
             rowTypeTemp = mRowType.toString();

@@ -90,9 +90,9 @@
                     android:title="@string/drawer_item_help" />
                     -->
                 <item
-                    android:id="@+id/drawer_item_about"
-                    android:icon="@drawable/ic_about"
-                    android:title="@string/drawer_item_about" />
+                    android:id="@+id/drawer_item_information"
+                    android:icon="@drawable/ic_help_round"
+                    android:title="@string/drawer_item_information" />
             </group>
         </menu>
     </item>

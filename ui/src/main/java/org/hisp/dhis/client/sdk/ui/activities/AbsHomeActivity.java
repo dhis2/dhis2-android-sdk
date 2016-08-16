@@ -50,7 +50,7 @@ import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.SettingPreferences;
-import org.hisp.dhis.client.sdk.ui.fragments.AboutFragment;
+import org.hisp.dhis.client.sdk.ui.fragments.InformationFragment;
 import org.hisp.dhis.client.sdk.ui.fragments.HelpFragment;
 import org.hisp.dhis.client.sdk.ui.fragments.WrapperFragment;
 
@@ -143,8 +143,8 @@ public abstract class AbsHomeActivity extends BaseActivity
         } else if (menuItemId == R.id.drawer_item_settings) {
             attachFragmentDelayed(getSettingsFragment());
             isSelected = true;
-        } else if (menuItemId == R.id.drawer_item_about) {
-            attachFragment(getAboutFragment());
+        } else if (menuItemId == R.id.drawer_item_information) {
+            attachFragment(getInformationFragment());
             isSelected = true;
         }
         /*else if (menuItemId == R.id.drawer_item_help) {
@@ -317,9 +317,9 @@ public abstract class AbsHomeActivity extends BaseActivity
     }
 
     @NonNull
-    protected Fragment getAboutFragment() {
-        return WrapperFragment.newInstance(AboutFragment.class,
-                getString(R.string.drawer_item_about));
+    protected Fragment getInformationFragment() {
+        return WrapperFragment.newInstance(InformationFragment.class,
+                getString(R.string.drawer_item_information));
     }
 
     @NonNull

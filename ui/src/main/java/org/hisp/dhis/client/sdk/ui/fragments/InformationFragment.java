@@ -48,27 +48,27 @@ import org.hisp.dhis.client.sdk.ui.R;
 
 import java.util.Locale;
 
-public class AboutFragment extends Fragment {
+public class InformationFragment extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
         super.onCreateView(inflater, container, state);
-        return inflater.inflate(R.layout.fragment_about, container, false);
+        return inflater.inflate(R.layout.fragment_information, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TextView sessionText = (TextView) getActivity().findViewById(R.id.about_session);
+        TextView sessionText = (TextView) getActivity().findViewById(R.id.app_session);
 
         //TODO: refactor this, this is just for testing.
         TextView documentation = (TextView) getActivity().findViewById(R.id.textview_documentation);
 
         PreferencesModule preferencesModule = new PreferencesModuleImpl(getContext());
 
-        // inside about_session:
+        // inside app_session:
         sessionText.setText(String.format(Locale.getDefault(), "%s %s\n",
                 getString(R.string.logged_in_as),
                 D2.me().userCredentials().toBlocking().first().getUsername())

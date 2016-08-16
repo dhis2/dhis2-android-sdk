@@ -35,20 +35,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.squareup.okhttp.HttpUrl;
 
-import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.events.UiEvent;
+import org.hisp.dhis.android.sdk.network.APIException;
+import org.hisp.dhis.android.sdk.network.Credentials;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.network.RepoManager;
+import org.hisp.dhis.android.sdk.network.Session;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
-import org.hisp.dhis.android.sdk.network.Credentials;
-import org.hisp.dhis.android.sdk.network.Session;
 import org.hisp.dhis.android.sdk.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.persistence.preferences.LastUpdatedManager;
-import org.hisp.dhis.android.sdk.network.APIException;
+import org.hisp.dhis.android.sdk.utils.SyncDateWrapper;
 import org.hisp.dhis.client.sdk.ui.AppPreferencesImpl;
-import org.hisp.dhis.client.sdk.ui.SyncDateWrapper;
 
 public final class DhisController {
     private static final String CLASS_TAG = "Dhis2";

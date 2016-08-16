@@ -219,7 +219,8 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
         if(dataValue != null && eventDataEntryFragment.containsValue(dataValue)) {// form.getDataValues().get(programRuleAction.getDataElement()))) {
             affectedFieldsWithValue.add(programRuleAction.getDataElement());
             dataValue.setValue(""); // After it is hidden, remove value
-            Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue, DataEntryRowTypes.TRUE_ONLY.toString()));
+            // Post changes. Using an empty string as rowtype ensures effective persistence
+            Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue, ""));
         }
     }
 

@@ -33,7 +33,7 @@
             android:layout_height="22dp"
             android:layout_gravity="center"
             android:contentDescription="@string/stub_description"
-            tools:src="@drawable/ic_about" />
+            />
 
     </FrameLayout>
 

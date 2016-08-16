@@ -91,7 +91,7 @@
                     -->
                 <item
                     android:id="@+id/drawer_item_information"
-                    android:icon="@drawable/ic_help_round"
+                    android:icon="@drawable/ic_info"
                     android:title="@string/drawer_item_information" />
             </group>
         </menu>

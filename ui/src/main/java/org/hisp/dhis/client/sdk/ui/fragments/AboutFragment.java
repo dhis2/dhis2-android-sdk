@@ -38,6 +38,7 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.android.api.D2;
@@ -99,6 +100,7 @@ public class AboutFragment extends Fragment {
     private void setAppNameAndVersion(String packageName) {
         TextView appNameTextView = (TextView) getActivity().findViewById(R.id.app_name);
         TextView appVersionTextView = (TextView) getActivity().findViewById(R.id.app_version);
+        ImageView appIconImageView = (ImageView) getActivity().findViewById(R.id.app_icon);
 
         ApplicationInfo applicationInfo = null;
         PackageManager packageManager = getContext().getPackageManager();
@@ -118,6 +120,7 @@ public class AboutFragment extends Fragment {
             try {
                 appVersion = "" + packageManager.getPackageInfo(packageName, 0).versionName;
                 appBuild = "" + packageManager.getPackageInfo(packageName, 0).versionCode;
+                appIconImageView.setImageDrawable(packageManager.getApplicationIcon(packageName));
             } catch (PackageManager.NameNotFoundException e) {
                 //e.printStackTrace();
             }

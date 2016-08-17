@@ -78,6 +78,7 @@ public class ProgramRuleService {
      * Evaluates a passed expression from a {@link ProgramRule} to true or false.
      * Please note that {@link VariableService#initialize(Enrollment, Event)} must be called prior
      * to calling this method.
+     *
      * @param condition
      * @return
      */
@@ -86,7 +87,7 @@ public class ProgramRuleService {
         boolean isTrue = false;
         try {
             isTrue = ExpressionUtils.isTrue(conditionReplaced, null);
-        } catch(JexlException jxlException) {
+        } catch (JexlException jxlException) {
             jxlException.printStackTrace();
         }
         return isTrue;
@@ -96,11 +97,12 @@ public class ProgramRuleService {
      * Returns a condition with replaced values for {@link ProgramRuleVariable}s.
      * Please note that {@link VariableService#initialize(Enrollment, Event)} must be called prior
      * to calling this method.
+     *
      * @param condition
      * @return
      */
     public static String getReplacedCondition(String condition) {
-        if(condition == null) {
+        if (condition == null) {
             return "";
         }
         StringBuffer buffer = new StringBuffer();
@@ -113,7 +115,13 @@ public class ProgramRuleService {
             String variableName = matcher.group(2);
             value = VariableService.getReplacementForProgramRuleVariable(variableName);
 
-            if(!isNumeric(value) && !isBoolean(value)) {
+            if (isNumericAndStartsWithDecimalSeparator(value)) {
+                value = String.format("0%s", value);
+            } else if (isNumericAndEndsWithDecimalSeparator(value)) {
+                value = String.format("%s0", value);
+            }
+
+            if (!isNumeric(value) && !isBoolean(value)) {
                 value = '\'' + value + '\'';
             }
             matcher.appendReplacement(buffer, value);
@@ -122,11 +130,20 @@ public class ProgramRuleService {
         return TextUtils.appendTail(matcher, buffer);
     }
 
+    private static boolean isNumericAndStartsWithDecimalSeparator(String value) {
+        return value.startsWith(".") && isNumeric(value.substring(1, value.length()));
+    }
+
+    private static boolean isNumericAndEndsWithDecimalSeparator(String value) {
+        return value.endsWith(".") && isNumeric(value.substring(0, value.length() - 1));
+    }
+
     /**
      * Calculates and returns the value of a passed condition from a {@link ProgramRuleAction} or
      * {@link ProgramRuleVariable}.
      * Please note that {@link VariableService#initialize(Enrollment, Event)} must be called prior
      * to calling this method.
+     *
      * @param condition
      * @return
      */
@@ -141,6 +158,7 @@ public class ProgramRuleService {
      * Returns a list of Uids of {@link DataElement}s contained in the given {@link ProgramRule}.
      * Please note that {@link VariableService#initialize(Enrollment, Event)} must be called prior
      * to calling this method.
+     *
      * @param programRule
      * @return
      */
@@ -157,15 +175,15 @@ public class ProgramRuleService {
             }
         }
 
-        for(ProgramRuleAction programRuleAction : programRule.getProgramRuleActions()) {
-            if(programRuleAction.getProgramRuleActionType().equals(ProgramRuleActionType.ASSIGN) && programRuleAction.getContent() != null) {
-                String programRuleVariableName = programRuleAction.getContent().substring(2, programRuleAction.getContent().length()-1);
+        for (ProgramRuleAction programRuleAction : programRule.getProgramRuleActions()) {
+            if (programRuleAction.getProgramRuleActionType().equals(ProgramRuleActionType.ASSIGN) && programRuleAction.getContent() != null) {
+                String programRuleVariableName = programRuleAction.getContent().substring(2, programRuleAction.getContent().length() - 1);
                 ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(programRuleVariableName);
-                if(programRuleVariable.getDataElement() != null) {
+                if (programRuleVariable.getDataElement() != null) {
                     dataElementsInRule.add(programRuleVariable.getDataElement());
                 }
             }
-            if(programRuleAction.getDataElement() != null) {
+            if (programRuleAction.getDataElement() != null) {
                 dataElementsInRule.add(programRuleAction.getDataElement());
             }
         }
@@ -177,6 +195,7 @@ public class ProgramRuleService {
      * Returns a list of Uids of {@link TrackedEntityAttribute}s contained in the given {@link ProgramRule}.
      * Please note that {@link VariableService#initialize(Enrollment, Event)} must be called prior
      * to calling this method.
+     *
      * @param programRule
      * @return
      */
@@ -193,11 +212,11 @@ public class ProgramRuleService {
             }
         }
 
-        for(ProgramRuleAction programRuleAction : programRule.getProgramRuleActions()) {
-            if(programRuleAction.getProgramRuleActionType().equals(ProgramRuleActionType.ASSIGN) && programRuleAction.getContent() != null) {
-                String programRuleVariableName = programRuleAction.getContent().substring(2, programRuleAction.getContent().length()-1);
+        for (ProgramRuleAction programRuleAction : programRule.getProgramRuleActions()) {
+            if (programRuleAction.getProgramRuleActionType().equals(ProgramRuleActionType.ASSIGN) && programRuleAction.getContent() != null) {
+                String programRuleVariableName = programRuleAction.getContent().substring(2, programRuleAction.getContent().length() - 1);
                 ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(programRuleVariableName);
-                if(programRuleVariable.getTrackedEntityAttribute() != null) {
+                if (programRuleVariable.getTrackedEntityAttribute() != null) {
                     trackedEntityAttributesInRule.add(programRuleVariable.getTrackedEntityAttribute());
                 }
             }

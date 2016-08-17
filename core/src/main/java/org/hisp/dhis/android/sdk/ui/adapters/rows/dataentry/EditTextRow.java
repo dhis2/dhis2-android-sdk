@@ -226,7 +226,7 @@ public class EditTextRow extends Row {
         public void afterTextChanged(Editable s) {
             String newValue = s != null ? s.toString() : EMPTY_FIELD;
             if (!newValue.equals(value.getValue())) {
-                newValue = removeInvalidDecimalSeparatorsFromNumberRows(newValue);
+                //newValue = removeInvalidDecimalSeparatorsFromNumberRows(newValue);
                 value.setValue(newValue);
                 editTextRowChangeEventQueue.enqueue(new RowValueChangedEvent(value, rowTypeTemp));
             }

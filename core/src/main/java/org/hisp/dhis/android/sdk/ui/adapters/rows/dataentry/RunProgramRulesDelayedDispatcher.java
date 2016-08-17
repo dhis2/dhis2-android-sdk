@@ -4,24 +4,23 @@ import android.os.Handler;
 import android.util.Log;
 
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 
 /**
  * Created by thomaslindsjorn on 28/07/16.
  */
-public class EditTextRowChangeEventQueue {
+public class RunProgramRulesDelayedDispatcher {
 
     private final int DELAY_MILLIS = 1000; // program rules are ran after this many milliseconds
     private Handler handler;
     private Runnable runnable;
-    private RowValueChangedEvent rowValueChangedEvent;
+    private RunProgramRulesEvent runProgramRulesEvent;
 
-    public EditTextRowChangeEventQueue() {
+    public RunProgramRulesDelayedDispatcher() {
         handler = new Handler();
     }
 
-    public void enqueue(RowValueChangedEvent rowValueChangedEvent) {
-        this.rowValueChangedEvent = rowValueChangedEvent;
+    public void dispatchDelayed(RunProgramRulesEvent runProgramRulesEvent) {
+        this.runProgramRulesEvent = runProgramRulesEvent;
 
         if (runnable == null) {
             initRunnable();
@@ -32,7 +31,7 @@ public class EditTextRowChangeEventQueue {
 
     }
 
-    public void runNow() {
+    public void dispatchNow() {
         if (handler != null && runnable != null) {
             handler.removeCallbacks(runnable);
             handler.post(runnable);
@@ -43,13 +42,13 @@ public class EditTextRowChangeEventQueue {
         runnable = new Runnable() {
             @Override
             public void run() {
-                if (rowValueChangedEvent != null) {
+                if (runProgramRulesEvent != null) {
                     Dhis2Application.getEventBus()
-                            .post(rowValueChangedEvent);
+                            .post(runProgramRulesEvent);
                 } else {
-                    Log.d("ChangeEventQueue", "rowValueChangedEvent is null");
+                    Log.d("ChangeEventQueue", "runProgramRulesEvent is null");
                 }
-                EditTextRowChangeEventQueue.this.runnable = null;
+                RunProgramRulesDelayedDispatcher.this.runnable = null;
             }
         };
 

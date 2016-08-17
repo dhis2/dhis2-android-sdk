@@ -44,7 +44,6 @@ import android.widget.TextView;
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
-import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 
 public class EditTextRow extends Row {
     private static final String EMPTY_FIELD = "";
@@ -210,15 +209,15 @@ public class EditTextRow extends Row {
 
     private static class OnTextChangeListener extends AbsTextWatcher {
         private BaseValue value;
-        EditTextRowChangeEventQueue editTextRowChangeEventQueue = new EditTextRowChangeEventQueue();
+        RunProgramRulesDelayedDispatcher runProgramRulesDelayedDispatcher = new RunProgramRulesDelayedDispatcher();
 
         public void setBaseValue(BaseValue value) {
             this.value = value;
         }
 
         public void onRowReused() {
-            if (editTextRowChangeEventQueue != null) {
-                editTextRowChangeEventQueue.runNow();
+            if (runProgramRulesDelayedDispatcher != null) {
+                runProgramRulesDelayedDispatcher.dispatchNow();
             }
         }
 
@@ -228,7 +227,7 @@ public class EditTextRow extends Row {
             if (!newValue.equals(value.getValue())) {
                 //newValue = removeInvalidDecimalSeparatorsFromNumberRows(newValue);
                 value.setValue(newValue);
-                editTextRowChangeEventQueue.enqueue(new RowValueChangedEvent(value, rowTypeTemp));
+                runProgramRulesDelayedDispatcher.dispatchDelayed(new RunProgramRulesEvent(value));
             }
         }
     }

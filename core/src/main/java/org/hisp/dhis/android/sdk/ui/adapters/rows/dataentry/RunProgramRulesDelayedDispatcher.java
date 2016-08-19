@@ -46,7 +46,7 @@ public class RunProgramRulesDelayedDispatcher {
                     Dhis2Application.getEventBus()
                             .post(runProgramRulesEvent);
                 } else {
-                    Log.d("ChangeEventQueue", "runProgramRulesEvent is null");
+                    Log.d("RunProgramRules", "runProgramRulesEvent is null");
                 }
                 RunProgramRulesDelayedDispatcher.this.runnable = null;
             }

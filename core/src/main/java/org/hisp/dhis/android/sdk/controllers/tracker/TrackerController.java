@@ -65,6 +65,7 @@ import org.hisp.dhis.android.sdk.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 import org.hisp.dhis.android.sdk.utils.api.ProgramType;
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -405,12 +406,15 @@ public final class TrackerController extends ResourceController {
     }
 
     /**
+     * DEPRECATED
      * Loads user generated data from the server. Which data is loaded is determined by enabling
      * or disabling flags in DHIS 2.
+     * Deprecated. Not supported anymore
      */
+    @Deprecated
     public static void synchronizeDataValues(Context context, DhisApi dhisApi) throws APIException {
-        sendLocalData(dhisApi);
-        loadDataValues(context, dhisApi);
+//        sendLocalData(dhisApi);
+//        loadDataValues(context, dhisApi);
     }
 
     /**
@@ -427,9 +431,9 @@ public final class TrackerController extends ResourceController {
     /**
      * Loads datavalues from the server and stores it in local persistence.
      */
-    public static void loadDataValues(Context context, DhisApi dhisApi) throws APIException {
+    public static void loadDataValues(Context context, DhisApi dhisApi, DateTime serverDateTime) throws APIException {
         UiUtils.postProgressMessage(context.getString(R.string.loading_metadata));
-        TrackerDataLoader.updateDataValueDataItems(context, dhisApi);
+        TrackerDataLoader.updateDataValueDataItems(context, dhisApi, serverDateTime);
     }
 
     public static List<TrackedEntityInstance> queryTrackedEntityInstancesDataFromServer(DhisApi dhisApi,

@@ -51,7 +51,7 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
     public static final int FREQUENCY_ONE_HOUR = 2;
     public static final int FREQUENCY_ONE_DAY = 3;
     public static final int FREQUENCY_DISABLED = 4;
-    public static final int DEFAULT_UPDATE_FREQUENCY = FREQUENCY_ONE_HOUR;
+    public static final int DEFAULT_UPDATE_FREQUENCY = FREQUENCY_ONE_DAY;
 
     public static final String CLASS_TAG = "PeriodicSynchronizer";
 
@@ -69,7 +69,7 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
             cancelPeriodicSynchronizer(context);
             return;
         }
-        DhisService.synchronize(context);
+        DhisService.synchronize(context, true);
 	}
 
 	/**

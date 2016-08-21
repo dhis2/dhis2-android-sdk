@@ -43,6 +43,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -57,6 +58,8 @@ import org.hisp.dhis.android.sdk.controllers.PeriodicSynchronizerController;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis.android.sdk.ui.views.FontCheckBox;
+import org.hisp.dhis.android.sdk.ui.views.FontTextView;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 
 /**
@@ -66,7 +69,7 @@ import org.hisp.dhis.android.sdk.utils.UiUtils;
  * @author Simen Skogly Russnes on 02.03.15.
  */
 public class SettingsFragment extends Fragment
-        implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+        implements View.OnClickListener, AdapterView.OnItemSelectedListener, CompoundButton.OnCheckedChangeListener {
     public static final String TAG = SettingsFragment.class.getSimpleName();
 
     private Spinner updateFrequencySpinner;
@@ -75,6 +78,8 @@ public class SettingsFragment extends Fragment
     private ProgressBar mProgessBar;
     private TextView syncTextView;
     private String progressMessage;
+    private FontTextView syncMetadataOnSyncLabel;
+    private FontCheckBox syncMetadataOnSyncCheckbox;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,20 +111,18 @@ public class SettingsFragment extends Fragment
         logoutButton = (Button) view.findViewById(R.id.settings_logout_button);
         mProgessBar = (ProgressBar) view.findViewById(R.id.settings_progessbar);
         syncTextView = (TextView) view.findViewById(R.id.settings_sync_textview);
+        syncMetadataOnSyncLabel = (FontTextView) view.findViewById(R.id.metadata_check_on_sync_label);
+        syncMetadataOnSyncCheckbox = (FontCheckBox) view.findViewById(R.id.metadata_check_on_sync_checkbox);
         mProgessBar.setVisibility(View.GONE);
         logoutButton.setOnClickListener(this);
         synchronizeButton.setOnClickListener(this);
 
-        //if(DhisController.isLoading() && getProgressMessage() != null)
-        {
-            //syncTextView.setText(getProgressMessage());
-            //Log.d(TAG, getProgressMessage());
+        syncMetadataOnSyncLabel.setText(getString(R.string.sync_metadata_on_sync));
+        syncMetadataOnSyncCheckbox.setOnCheckedChangeListener(this);
+        if(DhisController.getInstance() != null) {
+            syncMetadataOnSyncCheckbox.setChecked(DhisController.getInstance().isShouldForceSyncMetadataOnSwipe());
         }
-        //else if(!DhisController.isLoading())
-        {
-            //setSummaryFromLastSync in syncTextView
-            //syncTextView.setText(DhisController.getLastSynchronizationSummary());
-        }
+
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
@@ -271,5 +274,10 @@ public class SettingsFragment extends Fragment
 
     public ActionBar getActionBar() {
         return ((AppCompatActivity)getActivity()).getSupportActionBar();
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        DhisController.getInstance().setShouldForceSyncMetadataOnSwipe(b);
     }
 }

@@ -577,10 +577,10 @@ public final class MetaDataController extends ResourceController {
     /**
      * Loads metaData from the server and stores it in local persistence.
      */
-    public static void loadMetaData(Context context, DhisApi dhisApi, boolean forceSync) throws APIException {
+    public static void loadMetaData(Context context, DhisApi dhisApi, boolean forceSync, DateTime serverDateTime) throws APIException {
         Log.d(CLASS_TAG, "loadMetaData");
         UiUtils.postProgressMessage(context.getString(R.string.loading_metadata));
-        updateMetaDataItems(context, dhisApi, forceSync);
+        updateMetaDataItems(context, dhisApi, forceSync, serverDateTime);
     }
 
     private static void updateTrackedDataItems(Context context, DhisApi dhisApi, DateTime serverDateTime) {
@@ -598,7 +598,7 @@ public final class MetaDataController extends ResourceController {
     /**
      * Loads a metadata item that is scheduled to be loaded but has not yet been.
      */
-    private static void updateMetaDataItems(Context context, DhisApi dhisApi, boolean forceSync) throws APIException {
+    private static void updateMetaDataItems(Context context, DhisApi dhisApi, boolean forceSync, DateTime serverDateTime) throws APIException {
         if (dhisApi == null) {
             dhisApi = DhisController.getInstance().getDhisApi();
             if (dhisApi == null) {
@@ -606,8 +606,10 @@ public final class MetaDataController extends ResourceController {
             }
 
         }
-        SystemInfo serverSystemInfo = dhisApi.getSystemInfo();
-        DateTime serverDateTime = serverSystemInfo.getServerDate();
+        if(serverDateTime == null) {
+            SystemInfo serverSystemInfo = dhisApi.getSystemInfo();
+            serverDateTime = serverSystemInfo.getServerDate();
+        }
         //some items depend on each other. Programs depend on AssignedPrograms because we need
         //the ids of programs to load.
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.ASSIGNEDPROGRAMS)) {
@@ -619,6 +621,11 @@ public final class MetaDataController extends ResourceController {
             List<String> assignedPrograms = MetaDataController.getAssignedPrograms();
             if (assignedPrograms != null) {
                 for (String program : assignedPrograms) {
+                    if(program != null && !program.isEmpty()) {
+                        if(getProgram(program) != null && !ProgramType.WITH_REGISTRATION.equals(getProgram(program).getProgramType())) { // if program is NOT with registration - it is event capture program. Don't sync it.
+                            continue;
+                        }
+                    }
                     if (shouldLoad(serverDateTime, ResourceType.PROGRAMS, program)) {
                         getProgramDataFromServer(dhisApi, program, serverDateTime, forceSync);
                     }
@@ -834,6 +841,7 @@ public final class MetaDataController extends ResourceController {
 
                     saveResourceDataFromServer(ResourceType.TRACKEDENTITYATTRIBUTEGENERATEDVALUES, dhisApi, trackedEntityAttributeGeneratedValues, getTrackedEntityAttributeGeneratedValues(), serverDateTime);
                 }
+
             }
         }
     }

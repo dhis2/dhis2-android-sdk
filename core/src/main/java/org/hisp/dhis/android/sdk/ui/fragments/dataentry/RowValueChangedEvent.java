@@ -42,6 +42,7 @@ public final class RowValueChangedEvent {
     private String id;
     private BaseValue baseValue;
     private String rowType;
+    private Row row;
 
     public RowValueChangedEvent(BaseValue baseValue, String rowType ) {
         this.rowType = rowType;
@@ -73,5 +74,13 @@ public final class RowValueChangedEvent {
 
     public String getRowType() {
         return rowType;
+    }
+
+    public Row getRow() {
+        return row;
+    }
+
+    public void setRow(Row row) {
+        this.row = row;
     }
 }

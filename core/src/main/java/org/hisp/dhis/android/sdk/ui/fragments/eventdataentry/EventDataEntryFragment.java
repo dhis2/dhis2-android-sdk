@@ -66,8 +66,10 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.ui.adapters.SectionAdapter;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EditTextRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.IndicatorRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.RunProgramRulesEvent;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnCompleteEventClick;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragment;
@@ -726,7 +728,11 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     @Subscribe
     public void onRowValueChanged(final RowValueChangedEvent event) {
         super.onRowValueChanged(event);
-        evaluateRulesAndIndicators(event.getId());
+
+        // do not run program rules for EditTextRows - DelayedDispatcher takes care of this
+        if (event.getRow() == null || !(event.getRow() instanceof EditTextRow)) {
+            evaluateRulesAndIndicators(event.getId());
+        }
 
         //if rowType is coordinate or event date, save the event
         if (event.getRowType() == null
@@ -753,6 +759,11 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         if (DataEntryRowTypes.EVENT_DATE.toString().equals(event.getRowType())) {
             initiateEvaluateProgramRules();
         }
+    }
+
+    @Subscribe
+    public void onRunProgramRules(final RunProgramRulesEvent event) {
+        evaluateRulesAndIndicators(event.getId());
     }
 
     public EventSaveThread getSaveThread() {

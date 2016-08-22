@@ -300,21 +300,25 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
             if (form.getEvent() == null) {
                 // form is null - show error message and disable editing
-                Toast.makeText(getContext(), "Error with form. Please retry.", Toast.LENGTH_LONG).show();
-                setEditableDataEntryRows(form, false, false);
+                showErrorAndDisableEditing();
             } else {
-
                 OrganisationUnit eventOrganisationUnit = MetaDataController.getOrganisationUnit(form.getEvent().getOrganisationUnitId());
-                if (!OrganisationUnit.TYPE.ASSIGNED.equals(eventOrganisationUnit.getType())) { // if user is not assigned to the event's OrgUnit. Disable data entry screen
+                if (eventOrganisationUnit == null) {
+                    showErrorAndDisableEditing();
+                } else if (!OrganisationUnit.TYPE.ASSIGNED.equals(eventOrganisationUnit.getType())) { // if user is not assigned to the event's OrgUnit. Disable data entry screen
                     setEditableDataEntryRows(form, false, false);
                 }
                 if (Event.STATUS_COMPLETED.equals(form.getEvent().getStatus()) && form.getStage().isBlockEntryForm()) { // if event is completed and should be blocked. Disable data entry screen
                     setEditableDataEntryRows(form, false, true);
-
                 }
             }
             initiateEvaluateProgramRules();
         }
+    }
+
+    private void showErrorAndDisableEditing() {
+        Toast.makeText(getContext(), "Error with form. Please retry.", Toast.LENGTH_LONG).show();
+        setEditableDataEntryRows(form, false, false);
     }
 
     public void setEditableDataEntryRows(EventDataEntryFragmentForm form, boolean editableDataEntryRows, boolean editableStatusRow) {

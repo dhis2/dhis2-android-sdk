@@ -417,6 +417,9 @@ final class TrackerDataLoader extends ResourceController {
         }
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.ENROLLMENTS, trackedEntityInstance.getTrackedEntityInstance());
+        if(serverDateTime == null) {
+            serverDateTime = dhisApi.getSystemInfo().getServerDate();
+        }
 
         List<Enrollment> enrollments = unwrapResponse(dhisApi
                 .getEnrollments(trackedEntityInstance.getTrackedEntityInstance(),
@@ -441,14 +444,18 @@ final class TrackerDataLoader extends ResourceController {
         return enrollments;
     }
 
-    static void getEnrollmentDataFromServer(DhisApi dhisApi, String uid, boolean getEvents) throws APIException {
+    static void getEnrollmentDataFromServer(DhisApi dhisApi, String uid, boolean getEvents, DateTime serverDateTime) throws APIException {
         if (dhisApi == null) {
             return;
         }
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.ENROLLMENT, uid);
-        DateTime serverDateTime = dhisApi.getSystemInfo()
-                .getServerDate();
+//        DateTime serverDateTime = dhisApi.getSystemInfo()
+//                .getServerDate();
+
+        if(serverDateTime == null) {
+            serverDateTime = dhisApi.getSystemInfo().getServerDate();
+        }
 
         Enrollment enrollment = updateEnrollment(dhisApi, uid, lastUpdated);
 

@@ -20,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.hisp.dhis.client.sdk.android.dataelement.DataElementFilter;
+import org.hisp.dhis.client.sdk.ui.models.ReportEntityFilter;
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.models.ReportEntity;
 import org.hisp.dhis.client.sdk.ui.views.CircleView;
@@ -37,7 +37,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
     private ArrayList<ReportEntity> reportEntities;
     private final LayoutInflater layoutInflater;
-    private ArrayList<DataElementFilter> reportEntityDataElementFilters;
+    private ArrayList<ReportEntityFilter> reportEntityReportEntityFilters;
 
     // click listener
     private OnReportEntityInteractionListener onReportEntityInteractionListener;
@@ -85,8 +85,8 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    public void notifyFiltersChanged(ArrayList<DataElementFilter> filters) {
-        this.reportEntityDataElementFilters = filters;
+    public void notifyFiltersChanged(ArrayList<ReportEntityFilter> filters) {
+        this.reportEntityReportEntityFilters = filters;
         notifyDataSetChanged();
     }
 
@@ -185,14 +185,14 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
         private void updateDataElements(ReportEntity reportEntity) {
 
-            if (reportEntityDataElementFilters == null) {
+            if (reportEntityReportEntityFilters == null) {
                 showPlaceholder();
-            } else if (noDataElementsToShow(reportEntityDataElementFilters)) {
+            } else if (noDataElementsToShow(reportEntityReportEntityFilters)) {
                 showThreeFirstDataElements(reportEntity);
             } else {
                 int i = 0;
-                while (i < reportEntityDataElementFilters.size()) {
-                    DataElementFilter filter = reportEntityDataElementFilters.get(i);
+                while (i < reportEntityReportEntityFilters.size()) {
+                    ReportEntityFilter filter = reportEntityReportEntityFilters.get(i);
                     if (filter.show()) {
                         View dataElementLabelView = dataElementLabelContainer.getChildAt(i);
                         if (dataElementLabelView == null) {
@@ -228,7 +228,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
             final int PLACEHOLDER_AMOUNT = 3;
             int viewIndex = 0;
 
-            for (int i = 0; i < reportEntityDataElementFilters.size(); i++) {
+            for (int i = 0; i < reportEntityReportEntityFilters.size(); i++) {
 
                 if (i >= PLACEHOLDER_AMOUNT) {
                     // only show PLACEHOLDER_AMOUNT of items
@@ -242,7 +242,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                     dataElementLabelContainer.addView(dataElementLabelView);
                 }
 
-                final DataElementFilter filter = reportEntityDataElementFilters.get(i);
+                final ReportEntityFilter filter = reportEntityReportEntityFilters.get(i);
                 String value = reportEntity.getValueForDataElement(filter.getDataElementId());
 
                 String dataElementString = String.format("%s: %s", filter.getDataElementLabel(), value);
@@ -372,9 +372,9 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
     }
 
-    private boolean noDataElementsToShow(ArrayList<DataElementFilter> reportEntityDataElementFilters) {
-        for (DataElementFilter reportEntityDataElementFilter : reportEntityDataElementFilters) {
-            if (reportEntityDataElementFilter.show()) {
+    private boolean noDataElementsToShow(ArrayList<ReportEntityFilter> reportEntityReportEntityFilters) {
+        for (ReportEntityFilter reportEntityReportEntityFilter : reportEntityReportEntityFilters) {
+            if (reportEntityReportEntityFilter.show()) {
                 return false;
             }
         }
@@ -407,7 +407,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public ArrayList<DataElementFilter> getReportEntityDataElementFilters() {
-        return reportEntityDataElementFilters;
+    public ArrayList<ReportEntityFilter> getReportEntityReportEntityFilters() {
+        return reportEntityReportEntityFilters;
     }
 }

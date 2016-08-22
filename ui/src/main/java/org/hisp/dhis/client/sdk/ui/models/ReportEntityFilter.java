@@ -26,12 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.android.dataelement;
+package org.hisp.dhis.client.sdk.ui.models;
 
 /**
  * Created by thomaslindsjorn on 19/08/16.
  */
-public class DataElementFilter implements Comparable<DataElementFilter> {
+public class ReportEntityFilter implements Comparable<ReportEntityFilter> {
 
     public static final String EVENT_DATE_KEY = "eventDate";
     public static final String STATUS_KEY = "status";
@@ -42,7 +42,7 @@ public class DataElementFilter implements Comparable<DataElementFilter> {
     private String dataElementLabel;
     private boolean show;
 
-    public DataElementFilter(String dataElementId, String dataElementLabel, boolean show) {
+    public ReportEntityFilter(String dataElementId, String dataElementLabel, boolean show) {
         this.dataElementId = dataElementId;
         this.dataElementLabel = dataElementLabel;
         this.show = show;
@@ -76,7 +76,7 @@ public class DataElementFilter implements Comparable<DataElementFilter> {
      * Sort alphabetically by data element label, but show checked items (enabled filters) first
      */
     @Override
-    public int compareTo(DataElementFilter another) {
+    public int compareTo(ReportEntityFilter another) {
         if (this.show == another.show) {
             return this.dataElementLabel.compareTo(another.dataElementLabel);
         }

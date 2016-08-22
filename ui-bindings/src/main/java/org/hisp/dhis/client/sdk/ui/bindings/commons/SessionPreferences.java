@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
-import org.hisp.dhis.client.sdk.android.dataelement.DataElementFilter;
+import org.hisp.dhis.client.sdk.ui.models.ReportEntityFilter;
 
 import java.util.ArrayList;
 
@@ -40,10 +40,10 @@ public interface SessionPreferences {
 
     boolean setSelectedPickerUid(int index, String pickerUid);
 
-    ArrayList<DataElementFilter> getReportEntityDataModelFilters(
-            String programUid, ArrayList<DataElementFilter> filters);
+    ArrayList<ReportEntityFilter> getReportEntityDataModelFilters(
+            String programUid, ArrayList<ReportEntityFilter> filters);
 
     void setReportEntityDataModelFilters(
-            String programUid, ArrayList<DataElementFilter> filters);
+            String programUid, ArrayList<ReportEntityFilter> filters);
 
 }

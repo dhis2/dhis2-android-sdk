@@ -334,13 +334,16 @@ final class TrackerDataLoader extends ResourceController {
             return null;
         }
 
+        DateTime serverDateTime = dhisApi.getSystemInfo()
+                .getServerDate();
+
         List<TrackedEntityInstance> trackedEntityInstancesToReturn = new ArrayList<>();
         for (int teiIndex = 0; teiIndex < trackedEntityInstances.size(); teiIndex++) {
 
             int userFriendlyIndex = (int) (Math.ceil((teiIndex + 1) / 2.0));
 
             try {
-                trackedEntityInstancesToReturn.add(getTrackedEntityInstanceDataFromServer(dhisApi, trackedEntityInstances.get(teiIndex).getTrackedEntityInstance(), getEnrollments));
+                trackedEntityInstancesToReturn.add(getTrackedEntityInstanceDataFromServer(dhisApi, trackedEntityInstances.get(teiIndex).getTrackedEntityInstance(), getEnrollments, serverDateTime));
             } catch (APIException e) { //can't throw this further up because we want to continue loading all the TEIs..
                 e.printStackTrace();
                 Dhis2Application.getEventBus().post(
@@ -356,14 +359,13 @@ final class TrackerDataLoader extends ResourceController {
         return trackedEntityInstancesToReturn;
     }
 
-    static TrackedEntityInstance getTrackedEntityInstanceDataFromServer(DhisApi dhisApi, String uid, boolean getEnrollments) throws APIException {
+    static TrackedEntityInstance getTrackedEntityInstanceDataFromServer(DhisApi dhisApi, String uid, boolean getEnrollments, DateTime serverDateTime) throws APIException {
         if (dhisApi == null) {
             return null;
         }
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.TRACKEDENTITYINSTANCE, uid);
-        DateTime serverDateTime = dhisApi.getSystemInfo()
-                .getServerDate();
+
 
         Log.d(CLASS_TAG, "get tei " + uid);
         TrackedEntityInstance trackedEntityInstance = updateTrackedEntityInstance(dhisApi, uid, lastUpdated);
@@ -394,7 +396,7 @@ final class TrackerDataLoader extends ResourceController {
         DateTimeManager.getInstance()
                 .setLastUpdated(ResourceType.TRACKEDENTITYINSTANCE, uid, serverDateTime);
         if (getEnrollments) {
-            getEnrollmentsDataFromServer(dhisApi, trackedEntityInstance);
+            getEnrollmentsDataFromServer(dhisApi, trackedEntityInstance, serverDateTime);
         }
 
         return trackedEntityInstance;
@@ -406,7 +408,7 @@ final class TrackerDataLoader extends ResourceController {
         return updatedTrackedEntityInstance;
     }
 
-    static List<Enrollment> getEnrollmentsDataFromServer(DhisApi dhisApi, TrackedEntityInstance trackedEntityInstance) throws APIException {
+    static List<Enrollment> getEnrollmentsDataFromServer(DhisApi dhisApi, TrackedEntityInstance trackedEntityInstance, DateTime serverDateTime) throws APIException {
         if (trackedEntityInstance == null) {
             return null;
         }
@@ -415,8 +417,7 @@ final class TrackerDataLoader extends ResourceController {
         }
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.ENROLLMENTS, trackedEntityInstance.getTrackedEntityInstance());
-        DateTime serverDateTime = dhisApi.getSystemInfo()
-                .getServerDate();
+
         List<Enrollment> enrollments = unwrapResponse(dhisApi
                 .getEnrollments(trackedEntityInstance.getTrackedEntityInstance(),
                         getBasicQueryMap(lastUpdated)), ApiEndpointContainer.ENROLLMENTS);
@@ -431,7 +432,7 @@ final class TrackerDataLoader extends ResourceController {
         if (enrollments != null) {
             for (Enrollment enrollment : enrollments) {
                 try {
-                    getEventsDataFromServer(dhisApi, enrollment);
+                    getEventsDataFromServer(dhisApi, enrollment, serverDateTime);
                 } catch (APIException e) {//can't throw this exception up because we want to continue loading enrollments.. todo: let the user know?
                     e.printStackTrace();
                 }
@@ -455,7 +456,7 @@ final class TrackerDataLoader extends ResourceController {
         DateTimeManager.getInstance()
                 .setLastUpdated(ResourceType.ENROLLMENT, uid, serverDateTime);
         if (getEvents) {
-            getEventsDataFromServer(dhisApi, enrollment);
+            getEventsDataFromServer(dhisApi, enrollment, serverDateTime);
         }
     }
 
@@ -468,7 +469,7 @@ final class TrackerDataLoader extends ResourceController {
         return updatedEnrollment;
     }
 
-    static void getEventsDataFromServer(DhisApi dhisApi, Enrollment enrollment) {
+    static void getEventsDataFromServer(DhisApi dhisApi, Enrollment enrollment, DateTime serverDateTime) {
         if (enrollment == null) {
             return;
         } else if (dhisApi == null) {
@@ -482,8 +483,7 @@ final class TrackerDataLoader extends ResourceController {
 
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.EVENTS, enrollment.getEnrollment());
-        DateTime serverDateTime = dhisApi.getSystemInfo()
-                .getServerDate();
+
         JsonNode response = dhisApi
                 .getEventsForEnrollment(enrollment.getProgram().getUid(), enrollment.getStatus(),
                         enrollment.getTrackedEntityInstance(),

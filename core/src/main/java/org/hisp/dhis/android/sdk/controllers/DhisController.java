@@ -255,7 +255,8 @@ public final class DhisController {
     }
 
     public static void postMetadataSyncEventToFabricAnswers() {
-        if(getInstance().getSession() != null && getInstance().getSession().getServerUrl().url().toString().contains("ishp.dhis.dhmis.org")) {
+        if(getInstance().getSession() != null && getInstance().getSession().getServerUrl() != null &&
+                getInstance().getSession().getServerUrl().url().toString().contains("ishp.dhis.dhmis.org")) {
             CustomEvent customEvent = new CustomEvent("Metadata sync event");
             customEvent.putCustomAttribute("Metadata sync", 1);
             Answers.getInstance().logCustom(customEvent);

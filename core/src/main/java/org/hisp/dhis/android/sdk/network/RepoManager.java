@@ -150,14 +150,16 @@ public final class RepoManager {
             switch (apiException.getKind()) {
                 case CONVERSION:
                 case UNEXPECTED: {
+                    Crashlytics.log(cause.getResponse().getBody().toString());
                     Crashlytics.logException(cause.getCause());
                     break;
                 }
                 case HTTP:
-                    if(apiException.getResponse().getStatus() >= 500) {
+                    if (apiException.getResponse().getStatus() >= 500) {
+                        Crashlytics.log(cause.getResponse().getBody().toString());
                         Crashlytics.logException(cause.getCause());
-                    }
-                    else if(apiException.getResponse().getStatus() == 409) {
+                    } else if (apiException.getResponse().getStatus() == 409) {
+                        Crashlytics.log(cause.getResponse().getBody().toString());
                         Crashlytics.logException(cause.getCause());
                     }
             }

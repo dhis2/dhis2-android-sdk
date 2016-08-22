@@ -30,9 +30,11 @@ package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v4.util.Pair;
 
-import java.util.HashMap;
+import org.hisp.dhis.client.sdk.android.dataelement.DataElementFilter;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
@@ -69,42 +71,41 @@ public class SessionPreferencesImpl implements SessionPreferences {
 
     @Override
     public void setReportEntityDataModelFilters(String programUid,
-                                                HashMap<String, Pair<String, Boolean>> filters) {
+                                                ArrayList<DataElementFilter> filters) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        for (String dataElementId : filters.keySet()) {
-            String filterKey = String.format("%s:%s", programUid, dataElementId);
-            editor.putBoolean(filterKey, filters.get(dataElementId).second);
+        for (DataElementFilter filter : filters) {
+            String filterKey = String.format("%s:%s", programUid, filter.getDataElementId());
+            editor.putBoolean(filterKey, filter.show());
         }
         editor.apply();
     }
 
     @Override
-    public HashMap<String, Pair<String, Boolean>> getReportEntityDataModelFilters(
-            String programUid, HashMap<String, Pair<String, Boolean>> defaultFilters) {
+    public ArrayList<DataElementFilter> getReportEntityDataModelFilters(
+            String programUid, ArrayList<DataElementFilter> filters) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        for (String dataElementId : defaultFilters.keySet()) {
-            String filterKey = String.format("%s:%s", programUid, dataElementId);
+        for (DataElementFilter dataElementFilter : filters) {
+            String filterKey = String.format("%s:%s", programUid, dataElementFilter.getDataElementId());
 
-            String dataElementName =
-                    defaultFilters.get(dataElementId) != null ?
-                            defaultFilters.get(dataElementId).first : "";
+            String dataElementLabel = dataElementFilter.getDataElementLabel();
 
-            boolean defaultValue =
-                    defaultFilters.get(dataElementId) != null ?
-                            defaultFilters.get(dataElementId).second : false;
+            boolean defaultValue = dataElementFilter.show();
 
             if (!sharedPreferences.contains(filterKey)) {
                 editor.putBoolean(filterKey, defaultValue).apply();
             } else {
                 boolean storedValue = sharedPreferences.getBoolean(filterKey, defaultValue);
                 if (storedValue != defaultValue) {
-                    defaultFilters.put(dataElementId, new Pair(dataElementName, storedValue));
+                    dataElementFilter.setShow(storedValue);
                 }
             }
         }
         editor.apply();
-        return defaultFilters;
+
+        Collections.sort(filters);
+
+        return filters;
     }
 
 }

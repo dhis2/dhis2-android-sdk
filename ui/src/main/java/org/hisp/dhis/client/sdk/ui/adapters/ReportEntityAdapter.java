@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -21,15 +20,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.hisp.dhis.client.sdk.android.dataelement.DataElementFilter;
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.models.ReportEntity;
 import org.hisp.dhis.client.sdk.ui.views.CircleView;
 import org.hisp.dhis.client.sdk.ui.views.FontTextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
@@ -39,7 +37,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
     private ArrayList<ReportEntity> reportEntities;
     private final LayoutInflater layoutInflater;
-    private HashMap<String, Pair<String, Boolean>> reportEntityDataElementFilters;
+    private ArrayList<DataElementFilter> reportEntityDataElementFilters;
 
     // click listener
     private OnReportEntityInteractionListener onReportEntityInteractionListener;
@@ -87,8 +85,8 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    public void notifyFiltersChanged(HashMap<String, Pair<String, Boolean>> labelFilters) {
-        this.reportEntityDataElementFilters = labelFilters;
+    public void notifyFiltersChanged(ArrayList<DataElementFilter> filters) {
+        this.reportEntityDataElementFilters = filters;
         notifyDataSetChanged();
     }
 
@@ -192,21 +190,20 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
             } else if (noDataElementsToShow(reportEntityDataElementFilters)) {
                 showThreeFirstDataElements(reportEntity);
             } else {
-                int viewIndex = 0;
-                for (String key : reportEntityDataElementFilters.keySet()) {
-                    boolean displayInList = reportEntityDataElementFilters.get(key).second;
-                    if (displayInList) {
-                        View dataElementLabelView = dataElementLabelContainer.getChildAt(viewIndex++);
+                int i = 0;
+                while (i < reportEntityDataElementFilters.size()) {
+                    DataElementFilter filter = reportEntityDataElementFilters.get(i);
+                    if (filter.show()) {
+                        View dataElementLabelView = dataElementLabelContainer.getChildAt(i);
                         if (dataElementLabelView == null) {
                             dataElementLabelView = layoutInflater.inflate(
                                     R.layout.data_element_label, dataElementLabelContainer, false);
                             dataElementLabelContainer.addView(dataElementLabelView);
                         }
 
-                        String name = reportEntityDataElementFilters.get(key).first;
-                        String value = reportEntity.getValueForDataElement(key);
+                        String value = reportEntity.getValueForDataElement(filter.getDataElementId());
 
-                        String dataElementString = String.format("%s: %s", name, value);
+                        String dataElementString = String.format("%s: %s", filter.getDataElementLabel(), value);
 
                         SpannableString text = new SpannableString(dataElementString);
 
@@ -217,8 +214,9 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
                         ((FontTextView) dataElementLabelView).setText(text, TextView.BufferType.SPANNABLE);
                     }
+                    i++;
                 }
-                while (dataElementLabelContainer.getChildCount() > viewIndex) {
+                while (dataElementLabelContainer.getChildCount() > i) {
                     // remove old views if they exist
                     dataElementLabelContainer.removeViewAt(dataElementLabelContainer.getChildCount() - 1);
                 }
@@ -227,15 +225,13 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
         }
 
         private void showThreeFirstDataElements(ReportEntity reportEntity) {
-            final int PLACEHOLDER_ITEMS = 3;
+            final int PLACEHOLDER_AMOUNT = 3;
             int viewIndex = 0;
 
-            String[] keySet = reportEntityDataElementFilters.keySet().toArray(new String[0]);
+            for (int i = 0; i < reportEntityDataElementFilters.size(); i++) {
 
-            for (int i = 0; i < reportEntityDataElementFilters.keySet().size(); i++) {
-
-                if (i >= PLACEHOLDER_ITEMS) {
-                    // only show PLACEHOLDER_ITEMS
+                if (i >= PLACEHOLDER_AMOUNT) {
+                    // only show PLACEHOLDER_AMOUNT of items
                     break;
                 }
 
@@ -246,10 +242,10 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                     dataElementLabelContainer.addView(dataElementLabelView);
                 }
 
-                String name = reportEntityDataElementFilters.get(keySet[i]).first;
-                String value = reportEntity.getValueForDataElement(keySet[i]);
+                final DataElementFilter filter = reportEntityDataElementFilters.get(i);
+                String value = reportEntity.getValueForDataElement(filter.getDataElementId());
 
-                String dataElementString = String.format("%s: %s", name, value);
+                String dataElementString = String.format("%s: %s", filter.getDataElementLabel(), value);
 
                 SpannableString text = new SpannableString(dataElementString);
 
@@ -376,9 +372,9 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
     }
 
-    private boolean noDataElementsToShow(Map<String, Pair<String, Boolean>> reportEntitDataElementFilters) {
-        for (String s : reportEntitDataElementFilters.keySet()) {
-            if (reportEntitDataElementFilters.get(s).second) {
+    private boolean noDataElementsToShow(ArrayList<DataElementFilter> reportEntityDataElementFilters) {
+        for (DataElementFilter reportEntityDataElementFilter : reportEntityDataElementFilters) {
+            if (reportEntityDataElementFilter.show()) {
                 return false;
             }
         }
@@ -411,7 +407,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public HashMap<String, Pair<String, Boolean>> getReportEntityDataElementFilters() {
+    public ArrayList<DataElementFilter> getReportEntityDataElementFilters() {
         return reportEntityDataElementFilters;
     }
 }

@@ -209,11 +209,13 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (progressDialog != null) {
-                        progressDialog.dismiss();
+                    if (getActivity() != null && isAdded()) {
+                        if (progressDialog != null) {
+                            progressDialog.dismiss();
+                        }
+                        progressDialog = ProgressDialog.show(
+                                getContext(), "", getString(R.string.please_wait), true, false);
                     }
-                    progressDialog = ProgressDialog.show(
-                            getContext(), "", getString(R.string.please_wait), true, false);
                 }
             });
         }
@@ -224,12 +226,14 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (progressDialog != null) {
-                        progressDialog.cancel();
-                        progressDialog.dismiss();
-                    } else {
-                        Log.w("HIDE PROGRESS",
-                                "Unable to hide progress dialog: AbsProgramRuleFragment.progressDialog is null");
+                    if (getActivity() != null && isAdded()) {
+                        if (progressDialog != null) {
+                            progressDialog.cancel();
+                            progressDialog.dismiss();
+                        } else {
+                            Log.w("HIDE PROGRESS",
+                                    "Unable to hide progress dialog: AbsProgramRuleFragment.progressDialog is null");
+                        }
                     }
                 }
             });

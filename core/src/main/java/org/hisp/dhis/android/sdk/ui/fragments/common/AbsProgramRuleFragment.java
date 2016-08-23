@@ -87,18 +87,20 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
         ArrayList<String> affectedFieldsWithValue = new ArrayList<>();
         List<ProgramRule> programRules = programRuleFragmentHelper.getProgramRules();
         List<ProgramRule> programRulesToRun = new ArrayList<>();
-        for(ProgramRule programRule : programRules) {
-            if(this instanceof EventDataEntryFragment) {
-                if(programRule.getProgramStage() == null || programRule.getProgramStage().isEmpty()) {
+        for (ProgramRule programRule : programRules) {
+            if (this instanceof EventDataEntryFragment) {
+                if (programRule.getProgramStage() == null || programRule.getProgramStage().isEmpty()) {
                     programRulesToRun.add(programRule);
-                }
-                else if (programRuleFragmentHelper.getEvent() != null &&
+                } else if (programRuleFragmentHelper.getEvent() != null &&
                         programRule.getProgramStage().equals(programRuleFragmentHelper.getEvent().getProgramStageId())) {
                     programRulesToRun.add(programRule);
                 }
-
             }
         }
+        if (!(this instanceof EventDataEntryFragment)) {
+            programRulesToRun = programRules;
+        }
+
         Collections.sort(programRulesToRun, new ProgramRulePriorityComparator());
         for (ProgramRule programRule : programRulesToRun) {
             try {

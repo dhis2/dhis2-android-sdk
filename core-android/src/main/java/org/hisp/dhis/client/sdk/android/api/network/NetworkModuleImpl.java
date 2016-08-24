@@ -58,6 +58,8 @@ import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionApiClientImpl
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.systeminfo.SystemInfoApiClientImpl;
 import org.hisp.dhis.client.sdk.android.systeminfo.SystemInfoApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityApiClientImpl;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeApiClientImpl;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.user.UserAccountApiClientImpl;
@@ -81,8 +83,10 @@ import org.hisp.dhis.client.sdk.core.program.ProgramStageApiClient;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementApiClient;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionApiClient;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityApiClient;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeApiClient;
 import org.hisp.dhis.client.sdk.core.user.UserApiClient;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -127,6 +131,7 @@ public class NetworkModuleImpl implements NetworkModule {
     private final ProgramStageDataElementApiClient programStageDataElementApiClient;
     private final OptionSetApiClient optionSetApiClient;
     private final TrackedEntityAttributeApiClient trackedEntityAttributeApiClient;
+    private final TrackedEntityApiClient trackedEntityApiClient;
 
     public NetworkModuleImpl(PreferencesModule preferencesModule, OkHttpClient okClient) {
         AuthInterceptor authInterceptor = new AuthInterceptor(
@@ -200,6 +205,8 @@ public class NetworkModuleImpl implements NetworkModule {
                 retrofit.create(OptionSetApiClientRetrofit.class));
         trackedEntityAttributeApiClient = new TrackedEntityAttributeApiClientImpl(
                 retrofit.create(TrackedEntityAttributeApiClientRetrofit.class));
+        trackedEntityApiClient = new TrackedEntityApiClientImpl(
+                retrofit.create(TrackedEntityApiClientRetrofit.class));
     }
 
     @Override
@@ -275,6 +282,11 @@ public class NetworkModuleImpl implements NetworkModule {
     @Override
     public ProgramIndicatorApiClient getProgramIndicatorApiClient() {
         return programIndicatorApiClient;
+    }
+
+    @Override
+    public TrackedEntityApiClient getTrackedEntityApiClient() {
+        return trackedEntityApiClient;
     }
 
     private static class AuthInterceptor implements Interceptor {

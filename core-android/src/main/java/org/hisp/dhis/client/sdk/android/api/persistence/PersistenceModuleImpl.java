@@ -50,6 +50,7 @@ import org.hisp.dhis.client.sdk.android.program.ProgramStageStoreImpl;
 import org.hisp.dhis.client.sdk.android.program.ProgramStoreImpl;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityStoreImpl;
 import org.hisp.dhis.client.sdk.android.user.UserAccountStoreImpl;
 import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.PersistenceModule;
@@ -69,6 +70,7 @@ import org.hisp.dhis.client.sdk.core.program.ProgramStageStore;
 import org.hisp.dhis.client.sdk.core.program.ProgramStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityStore;
 import org.hisp.dhis.client.sdk.core.user.UserAccountStore;
 
 public class PersistenceModuleImpl implements PersistenceModule {
@@ -90,6 +92,7 @@ public class PersistenceModuleImpl implements PersistenceModule {
     private final DataElementStore dataElementStore;
     private final OptionStore optionStore;
     private final OptionSetStore optionSetStore;
+    private final TrackedEntityStore trackedEntityStore;
 
     public PersistenceModuleImpl(Context context) {
         FlowConfig flowConfig = new FlowConfig
@@ -115,6 +118,7 @@ public class PersistenceModuleImpl implements PersistenceModule {
 
         trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl();
         eventStore = new EventStoreImpl(stateStore, trackedEntityDataValueStore, transactionManager);
+        trackedEntityStore = new TrackedEntityStoreImpl();
 
         optionStore = new OptionStoreImpl();
         optionSetStore = new OptionSetStoreImpl();
@@ -191,6 +195,11 @@ public class PersistenceModuleImpl implements PersistenceModule {
     }
 
     @Override
+    public TrackedEntityStore getTrackedEntityStore() {
+        return trackedEntityStore;
+    }
+
+    @Override
     public TrackedEntityDataValueStore getTrackedEntityDataValueStore() {
         return trackedEntityDataValueStore;
     }
@@ -228,6 +237,7 @@ public class PersistenceModuleImpl implements PersistenceModule {
                 trackedEntityDataValueStore.deleteAll() &&
                 dataElementStore.deleteAll() &&
                 optionStore.deleteAll() &&
+                trackedEntityStore.deleteAll() &&
                 optionSetStore.deleteAll();
     }
 }

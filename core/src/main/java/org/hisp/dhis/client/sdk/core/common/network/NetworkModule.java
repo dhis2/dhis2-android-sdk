@@ -41,6 +41,7 @@ import org.hisp.dhis.client.sdk.core.program.ProgramStageApiClient;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementApiClient;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionApiClient;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityApiClient;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeApiClient;
 import org.hisp.dhis.client.sdk.core.user.UserApiClient;
 
@@ -74,4 +75,6 @@ public interface NetworkModule {
     ProgramRuleVariableApiClient getProgramRuleVariableApiClient();
 
     ProgramIndicatorApiClient getProgramIndicatorApiClient();
+
+    TrackedEntityApiClient getTrackedEntityApiClient();
 }

@@ -44,6 +44,7 @@ import org.hisp.dhis.client.sdk.core.program.ProgramStageStore;
 import org.hisp.dhis.client.sdk.core.program.ProgramStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityStore;
 import org.hisp.dhis.client.sdk.core.user.UserAccountStore;
 
 public interface PersistenceModule {
@@ -75,6 +76,8 @@ public interface PersistenceModule {
     OrganisationUnitStore getOrganisationUnitStore();
 
     EventStore getEventStore();
+
+    TrackedEntityStore getTrackedEntityStore();
 
     TrackedEntityDataValueStore getTrackedEntityDataValueStore();
 

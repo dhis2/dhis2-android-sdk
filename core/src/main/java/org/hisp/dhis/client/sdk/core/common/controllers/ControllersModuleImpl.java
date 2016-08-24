@@ -59,6 +59,7 @@ import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoControllerImpl;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeController;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeControllerImpl;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityControllerImpl;
 import org.hisp.dhis.client.sdk.core.user.AssignedOrganisationUnitControllerImpl;
 import org.hisp.dhis.client.sdk.core.user.AssignedOrganisationUnitsController;
 import org.hisp.dhis.client.sdk.core.user.AssignedProgramsController;
@@ -87,6 +88,7 @@ public class ControllersModuleImpl implements ControllersModule {
     private final OptionSetController optionSetController;
     private final TrackedEntityAttributeController trackedEntityAttributeController;
     private final EventController eventController;
+    private final TrackedEntityControllerImpl trackedEntityControllerImpl;
 
     public ControllersModuleImpl(NetworkModule networkModule,
                                  PersistenceModule persistenceModule,
@@ -200,6 +202,13 @@ public class ControllersModuleImpl implements ControllersModule {
                 persistenceModule.getProgramRuleActionStore(),
                 persistenceModule.getTransactionManager());
 
+        trackedEntityControllerImpl = new TrackedEntityControllerImpl(
+                networkModule.getTrackedEntityApiClient(),
+                persistenceModule.getTransactionManager(),
+                preferencesModule.getLastUpdatedPreferences(),
+                persistenceModule.getTrackedEntityStore(),
+                systemInfoController);
+
         programRuleControllerImpl.setProgramRuleActionController(programRuleActionController);
         programRuleControllerImpl.setProgramRuleVariableController(programRuleVariableController);
         programRuleController = programRuleControllerImpl;
@@ -212,6 +221,7 @@ public class ControllersModuleImpl implements ControllersModule {
         programControllerImpl.setDataElementController(dataElementController);
         programControllerImpl.setOptionSetController(optionSetController);
         programControllerImpl.setProgramRuleController(programRuleController);
+        programControllerImpl.setTrackedEntityControllerImpl(trackedEntityControllerImpl);
         programController = programControllerImpl;
 
         eventController = new EventControllerImpl(systemInfoController,

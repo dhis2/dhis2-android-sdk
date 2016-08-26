@@ -85,14 +85,12 @@ final class TrackerDataLoader extends ResourceController {
     /**
      * Loads datavalue items that is scheduled to be loaded but has not yet been.
      */
-    static void updateDataValueDataItems(Context context, DhisApi dhisApi, DateTime serverDateTime) throws APIException {
+    static void updateDataValueDataItems(Context context, DhisApi dhisApi) throws APIException {
         if (dhisApi == null) {
             return;
         }
-        if(serverDateTime == null) {
-            SystemInfo serverSystemInfo = dhisApi.getSystemInfo();
-            serverDateTime = serverSystemInfo.getServerDate();
-        }
+        SystemInfo serverSystemInfo = dhisApi.getSystemInfo();
+        DateTime serverDateTime = serverSystemInfo.getServerDate();
         List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
         Hashtable<String, List<Program>> programsForOrganisationUnits = new Hashtable<>();
 

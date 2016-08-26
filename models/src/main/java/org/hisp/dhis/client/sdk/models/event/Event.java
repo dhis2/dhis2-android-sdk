@@ -46,6 +46,11 @@ import java.util.List;
 public final class Event extends BaseModel implements IdentifiableObject {
     public static final Comparator<Event> DATE_COMPARATOR = new EventDateComparator();
 
+    public static final String EVENT_DATE_KEY = "eventDate";
+    public static final String STATUS_KEY = "status";
+    public static final String EVENT_DATE_LABEL = "Event date";
+    public static final String STATUS_LABEL = "Status";
+
     @JsonProperty("event")
     private String uId;
 

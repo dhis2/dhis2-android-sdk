@@ -33,11 +33,6 @@ package org.hisp.dhis.client.sdk.ui.models;
  */
 public class ReportEntityFilter implements Comparable<ReportEntityFilter> {
 
-    public static final String EVENT_DATE_KEY = "eventDate";
-    public static final String STATUS_KEY = "status";
-    public static final String EVENT_DATE_LABEL = "Event date";
-    public static final String STATUS_LABEL = "Status";
-
     private String dataElementId;
     private String dataElementLabel;
     private boolean show;

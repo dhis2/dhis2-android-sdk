@@ -29,6 +29,8 @@
 
 package org.hisp.dhis.android.sdk.utils.services;
 
+import android.util.Log;
+
 import org.apache.commons.jexl2.JexlException;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
@@ -55,6 +57,10 @@ public class ProgramRuleService {
     private static final String CLASS_TAG = ProgramRuleService.class.getSimpleName();
 
     private static final Pattern CONDITION_PATTERN = Pattern.compile("([#AV])\\{(.+?)\\}");
+
+    // Regex to match text within single quotes. Disallowed chars: space: ' ' and single quote: '
+    // do no match on quotes with empty content: ''
+    private static final Pattern CONDITION_PATTERN_SINGLE_QUOTES = Pattern.compile("'([^' ]+)'");
 
     private static ProgramRuleService programRuleService;
 
@@ -164,9 +170,9 @@ public class ProgramRuleService {
      */
     public static List<String> getDataElementsInRule(ProgramRule programRule) {
         String condition = programRule.getCondition();
-        Matcher matcher = CONDITION_PATTERN.matcher(condition);
-        List<String> dataElementsInRule = new ArrayList<>();
+        List<String> dataElementsInRule = getDataElementsInSingleQuotes(condition);
 
+        Matcher matcher = CONDITION_PATTERN.matcher(condition);
         while (matcher.find()) {
             String variableName = matcher.group(2);
             ProgramRuleVariable programRuleVariable = MetaDataController.getProgramRuleVariableByName(variableName);
@@ -191,6 +197,21 @@ public class ProgramRuleService {
         return dataElementsInRule;
     }
 
+    private static List<String> getDataElementsInSingleQuotes(String condition) {
+
+        List<String> dataElementsInRule = new ArrayList<>();
+
+        Matcher matcher = CONDITION_PATTERN_SINGLE_QUOTES.matcher(condition);
+        while (matcher.find()) {
+            String variableName = matcher.group(1);
+            ProgramRuleVariable programRuleVariable = MetaDataController.getProgramRuleVariableByName(variableName);
+            if (programRuleVariable != null && programRuleVariable.getDataElement() != null) {
+                dataElementsInRule.add(programRuleVariable.getDataElement());
+            }
+        }
+        return dataElementsInRule;
+    }
+
     /**
      * Returns a list of Uids of {@link TrackedEntityAttribute}s contained in the given {@link ProgramRule}.
      * Please note that {@link VariableService#initialize(Enrollment, Event)} must be called prior
@@ -201,9 +222,10 @@ public class ProgramRuleService {
      */
     public static List<String> getTrackedEntityAttributesInRule(ProgramRule programRule) {
         String condition = programRule.getCondition();
-        Matcher matcher = CONDITION_PATTERN.matcher(condition);
-        List<String> trackedEntityAttributesInRule = new ArrayList<>();
 
+        List<String> trackedEntityAttributesInRule = getTrackedEntityAttributesInSingleQuotes(condition);
+
+        Matcher matcher = CONDITION_PATTERN.matcher(condition);
         while (matcher.find()) {
             String variableName = matcher.group(2);
             ProgramRuleVariable programRuleVariable = MetaDataController.getProgramRuleVariableByName(variableName);
@@ -222,6 +244,21 @@ public class ProgramRuleService {
             }
         }
 
+        return trackedEntityAttributesInRule;
+    }
+
+    private static List<String> getTrackedEntityAttributesInSingleQuotes(String condition) {
+
+        List<String> trackedEntityAttributesInRule = new ArrayList<>();
+
+        Matcher matcher = CONDITION_PATTERN_SINGLE_QUOTES.matcher(condition);
+        while (matcher.find()) {
+            String variableName = matcher.group(1);
+            ProgramRuleVariable programRuleVariable = MetaDataController.getProgramRuleVariableByName(variableName);
+            if (programRuleVariable != null && programRuleVariable.getTrackedEntityAttribute() != null) {
+                trackedEntityAttributesInRule.add(programRuleVariable.getTrackedEntityAttribute());
+            }
+        }
         return trackedEntityAttributesInRule;
     }
 }

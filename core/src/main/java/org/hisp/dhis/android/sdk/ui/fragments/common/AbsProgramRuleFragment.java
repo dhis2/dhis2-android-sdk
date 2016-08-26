@@ -75,8 +75,8 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
     public void evaluateAndApplyProgramRules() {
 
         if (programRuleFragmentHelper == null ||
-                programRuleFragmentHelper.getEnrollment() == null &&
-                        programRuleFragmentHelper.getEnrollment().getProgram() == null ||
+                programRuleFragmentHelper.getEnrollment() == null ||
+                programRuleFragmentHelper.getEnrollment().getProgram() == null ||
                 programRuleFragmentHelper.getEnrollment().getProgram().getProgramRules() == null ||
                 programRuleFragmentHelper.getEnrollment().getProgram().getProgramRules().isEmpty()) {
             return;

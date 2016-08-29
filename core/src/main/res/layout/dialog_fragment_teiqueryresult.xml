@@ -26,95 +26,108 @@
   ~  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   ~  */
   -->
-
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:minHeight="520dp"
-    android:minWidth="720dp"
-    android:orientation="vertical">
+    android:animateLayoutChanges="true">
 
-    <!-- <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="@color/navy_blue"
-        android:orientation="horizontal"
-        android:weightSum="1">
-
-        <org.hisp.dhis.android.sdk.ui.views.FontTextView
-            android:id="@+id/dialog_label"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:padding="16dp"
-            android:singleLine="true"
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:textSize="19sp"
-            app:font="@string/condensed_font_name"/>
-
-        <ImageView
-            android:id="@+id/load_dialog_button"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:adjustViewBounds="true"
-            android:background="@drawable/transparent_selector"
-            android:clickable="true"
-            android:contentDescription="@string/description"
-            android:padding="8dp"
-            android:src="@drawable/ic_search_server"/>
-
-
-        <ImageView
-            android:id="@+id/close_dialog_button"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:adjustViewBounds="true"
-            android:background="@drawable/transparent_selector"
-            android:clickable="true"
-            android:contentDescription="@string/description"
-            android:padding="8dp"
-            android:src="@drawable/ic_close_dialog"/>
-
-    </LinearLayout> -->
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="@color/dark_navy_blue"/>
-
-
-    <org.hisp.dhis.android.sdk.ui.views.FontEditText
-        android:id="@+id/filter_options"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_margin="16dp"
-        android:drawableLeft="@drawable/ic_search"
-        android:imeOptions="actionSearch"
-        android:inputType="text"
-        android:drawablePadding="4dp"
-        android:hint="@string/search"
-        app:font="@string/light_font_name"/>
-
-    <Button
-        android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/select_all"
-        android:id="@+id/teiqueryresult_selectall"
-        android:layout_gravity="right"
-        android:layout_marginRight="20dp" />
-
-    <ListView
-        android:id="@+id/simple_listview"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:cacheColorHint="@color/transparent"
-        android:divider="@color/darker_grey"
-        android:dividerHeight="1px"/>
+        android:minHeight="520dp"
+        android:minWidth="720dp"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <!-- <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/navy_blue"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <org.hisp.dhis.android.sdk.ui.views.FontTextView
+                android:id="@+id/dialog_label"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:singleLine="true"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="19sp"
+                app:font="@string/condensed_font_name"/>
+
+            <ImageView
+                android:id="@+id/load_dialog_button"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:adjustViewBounds="true"
+                android:background="@drawable/transparent_selector"
+                android:clickable="true"
+                android:contentDescription="@string/description"
+                android:padding="8dp"
+                android:src="@drawable/ic_search_server"/>
+
+
+            <ImageView
+                android:id="@+id/close_dialog_button"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:adjustViewBounds="true"
+                android:background="@drawable/transparent_selector"
+                android:clickable="true"
+                android:contentDescription="@string/description"
+                android:padding="8dp"
+                android:src="@drawable/ic_close_dialog"/>
+
+        </LinearLayout> -->
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/dark_navy_blue" />
+
+
+        <org.hisp.dhis.android.sdk.ui.views.FontEditText
+            android:id="@+id/filter_options"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_margin="16dp"
+            android:drawableLeft="@drawable/ic_search"
+            android:drawablePadding="4dp"
+            android:hint="@string/search"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            app:font="@string/light_font_name" />
+
+        <Button
+            android:id="@+id/teiqueryresult_selectall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="20dp"
+            android:text="@string/select_all"
+            android:visibility="gone" />
+
+        <ListView
+            android:id="@+id/simple_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:cacheColorHint="@color/transparent"
+            android:divider="@color/darker_grey"
+            android:dividerHeight="1px" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:indeterminate="true"
+        android:padding="24dp"
+        android:visibility="invisible" />
+</FrameLayout>

@@ -81,7 +81,8 @@ public class ProgramApiClientImpl implements ProgramApiClient {
                         "displayShortName,externalAccess,valueType,allowFutureDate,displayInList,program[id]," +
                         "trackedEntityAttribute["+ IDENTIFIABLE_PROPERTIES + ",unique,programScope," + // start trackedEntityAttribute of parent programTrackedEntityAttributes
                         "orgunitScope,displayInListNoProgram,displayOnVisitSchedule,externalAccess," +
-                        "valueType,confidential,inherit,sortOrderVisitSchedule,dimension,sortOrderInListNoProgram]]" + //end programTrackedEntityAttributes
+                        "valueType,confidential,inherit,sortOrderVisitSchedule,dimension,sortOrderInListNoProgram," +
+                        "optionSet[" + IDENTIFIABLE_PROPERTIES + ",version,options[" + IDENTIFIABLE_PROPERTIES + ",code]]]]" + //end programTrackedEntityAttributes
                         ",displayFrontPageList,useFirstStageDuringRegistration," +
                         "selectEnrollmentDatesInFuture,incidentDateLabel,selectIncidentDatesInFuture," +
                         "onlyEnrollOnce,enrollmentDateLabel,ignoreOverdueEvents,displayIncidentDate," +

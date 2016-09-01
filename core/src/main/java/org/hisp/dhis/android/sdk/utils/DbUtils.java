@@ -33,6 +33,7 @@ import com.raizlabs.android.dbflow.runtime.TransactionManager;
 
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis.android.sdk.persistence.models.BaseIdentifiableObject;
+import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.meta.DbOperation;
 import org.joda.time.DateTime;
 
@@ -150,6 +151,66 @@ public final class DbUtils {
                 // note, we need to pass database primary id to updated model
                 // in order to avoid creation of new object.
                 newModel.setUid(oldModel.getUid());
+                ops.add(DbOperation.update(newModel));
+            }
+
+            // as we have processed given old (persisted) model,
+            // we can remove it from map of new models.
+            newModelsMap.remove(oldModelKey);
+        }
+
+        // Inserting new items.
+        for (String newModelKey : newModelsMap.keySet()) {
+            T item = newModelsMap.get(newModelKey);
+            ops.add(DbOperation.save(item));
+        }
+
+        return ops;
+    }
+
+    /**
+     * This utility method allows to determine which type of operation to apply to
+     * each BaseIdentifiableObject depending on TimeStamp.
+     *
+     * @param oldModels List of models from local storage.
+     * @param newModels List of models of distance instance of DHIS.
+     */
+    public static <T extends BaseValue> List<DbOperation> createBaseValueOperations(List<T> oldModels,
+                                                                           List<T> newModels,
+                                                                           boolean keepOldValues) {
+        List<DbOperation> ops = new ArrayList<>();
+
+        Map<String, T> newModelsMap = BaseValue.toMap(newModels);
+        Map<String, T> oldModelsMap = BaseValue.toMap(oldModels);
+
+        // As we will go through map of persisted items, we will try to update existing data.
+        // Also, during each iteration we will remove old model key from list of new models.
+        // As the result, the list of remaining items in newModelsMap,
+        // will contain only those items which were not inserted before.
+        for (String oldModelKey : oldModelsMap.keySet()) {
+            T newModel = newModelsMap.get(oldModelKey);
+            T oldModel = oldModelsMap.get(oldModelKey);
+
+            // if there is no particular model with given uid in list of
+            // actual (up to date) items, it means it was removed on the server side
+            if (newModel == null) {
+                if(!keepOldValues) {
+                    ops.add(DbOperation.delete(oldModel));
+                }
+
+                // in case if there is no new model object,
+                // we can jump to next iteration.
+                continue;
+            }
+
+            // if the last updated field in up to date model is after the same
+            // field in persisted model, it means we need to update it.
+
+            if (oldModel == null || newModel== null ||
+                    (oldModel.getValue().equals(newModel.getValue()))) {
+                // note, we need to pass database primary id to updated model
+                // in order to avoid creation of new object.
+                newModel.setValue(oldModel.getValue());
                 ops.add(DbOperation.update(newModel));
             }
 

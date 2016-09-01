@@ -36,6 +36,9 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Simen Skogly Russnes on 20.03.15.
@@ -61,5 +64,17 @@ public abstract class BaseValue extends BaseModel implements Serializable {
 
     public String getValue() {
         return value;
+    }
+
+    public static <T extends BaseValue> Map<String, T> toMap(Collection<T> objects) {
+        Map<String, T> map = new HashMap<>();
+        if (objects != null && objects.size() > 0) {
+            for (T object : objects) {
+                if (object.getValue() != null) {
+                    map.put(object.getValue(), object);
+                }
+            }
+        }
+        return map;
     }
 }

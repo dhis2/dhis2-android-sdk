@@ -13,16 +13,16 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import java.io.Serializable;
 
 @Table(databaseName = Dhis2Database.NAME)
-public class TrackedEntityAttributeGeneratedValue extends BaseIdentifiableObject {
+public class TrackedEntityAttributeGeneratedValue extends BaseValue {
 
-    @JsonProperty("id")
+    @JsonIgnore
+    @PrimaryKey(autoincrement = true)
     @Column(name = "id")
-    @PrimaryKey
     int id;
 
-    @JsonProperty("value")
-    @Column(name = "value")
-    String value;
+    @JsonProperty("created")
+    @Column(name = "created")
+    String created;
 
     @JsonProperty("expiryDate")
     @Column(name = "expiryDate")
@@ -44,16 +44,6 @@ public class TrackedEntityAttributeGeneratedValue extends BaseIdentifiableObject
         this.id = id;
     }
 
-    @Override
-    public String getUid() {
-        return Integer.toString(id);
-    }
-
-    @Override
-    public void setUid(String id) {
-        this.id = Integer.parseInt(id);
-    }
-
     public String getExpiryDate() {
         return expiryDate;
     }
@@ -68,13 +58,5 @@ public class TrackedEntityAttributeGeneratedValue extends BaseIdentifiableObject
 
     public void setTrackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute) {
         this.trackedEntityAttribute = trackedEntityAttribute;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 }

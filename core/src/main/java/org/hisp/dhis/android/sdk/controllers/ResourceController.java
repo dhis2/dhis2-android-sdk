@@ -31,6 +31,7 @@ package org.hisp.dhis.android.sdk.controllers;
 
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.models.BaseIdentifiableObject;
+import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.meta.DbOperation;
 import org.hisp.dhis.android.sdk.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
@@ -67,6 +68,24 @@ public abstract class ResourceController {
                                                                                      List<T> persistedItems,
                                                                                      DateTime serverDateTime) {
         saveResourceDataFromServer(resourceType, salt, dhisApi, updatedItems, persistedItems, serverDateTime, true);
+    }
+
+    public static <T extends BaseValue> void saveResourceDataFromServer(ResourceType resourceType, String salt,
+                                                                        List<T> updatedItems,
+                                                                        List<T> persistedItems,
+                                                                        DateTime serverDateTime) {
+        saveBaseValueDataFromServer(resourceType, salt, updatedItems, persistedItems, serverDateTime, true);
+    }
+
+    public static <T extends BaseValue> void saveBaseValueDataFromServer(ResourceType resourceType, String salt,
+                                                                                     List<T> updatedItems,
+                                                                                     List<T> persistedItems,
+                                                                                     DateTime serverDateTime, boolean keepOldValues) {
+        Queue<DbOperation> operations = new LinkedList<>();
+        operations.addAll(DbUtils.createBaseValueOperations(persistedItems, updatedItems, keepOldValues));
+        DbUtils.applyBatch(operations);
+        DateTimeManager.getInstance()
+                .setLastUpdated(resourceType, salt, serverDateTime);
     }
 
     public static <T extends BaseIdentifiableObject> void saveResourceDataFromServer(ResourceType resourceType, String salt, DhisApi dhisApi,

@@ -50,9 +50,11 @@ public class RuleEngineExecution {
 
         ArrayList<RuleEffect> effects = new ArrayList<>();
 
-        // trying to read same rules list causes
-        // java.util.ConcurrentModificationException exception?
-        for (ProgramRule rule : rules) {
+        // trying to read same rules list causes java.util.ConcurrentModificationException exception?
+
+        // defensive copy which should fix the problem with concurrency.
+        List<ProgramRule> programRules = new ArrayList<>(rules);
+        for (ProgramRule rule : programRules) {
             if (conditionIsTrue(rule.getCondition(), variableValueMap)) {
                 for (ProgramRuleAction action : rule.getProgramRuleActions()) {
                     effects.add(createEffect(action, variableValueMap));
@@ -63,10 +65,9 @@ public class RuleEngineExecution {
         return effects;
     }
 
-    private static String replaceVariables(String expression,
-                                           final RuleEngineVariableValueMap variableValueMap) {
-
-        if(expression != null && expression.length() > 0) {
+    private static String replaceVariables(
+            String expression, final RuleEngineVariableValueMap variableValueMap) {
+        if (expression != null && expression.length() > 0) {
             ArrayList<String> variablesFound = new ArrayList<>();
 
             Matcher m = VARIABLE_PATTERN.matcher(expression);
@@ -92,20 +93,20 @@ public class RuleEngineExecution {
         return expression;
     }
 
-    private static String runDhisFunctions(String expression,
-                                    final RuleEngineVariableValueMap variableValueMap) {
+    private static String runDhisFunctions(
+            String expression, final RuleEngineVariableValueMap variableValueMap) {
         //Called from "runExpression". Only proceed with this logic in case there seems to be dhis function calls: "d2:" is present.
-        if(expression != null && expression.contains("d2:")){
+        if (expression != null && expression.contains("d2:")) {
             boolean continueLooping = true;
             //Safety harness on 10 loops, in case of unanticipated syntax causing unintencontinued looping
-            for(int i = 0; i < 10 && continueLooping; i++ ) {
+            for (int i = 0; i < 10 && continueLooping; i++) {
                 boolean expressionUpdated = false;
                 boolean brokenExecution = false;
-                for (DhisFunction dhisFunction : DhisFunction.getDhisFunctions()){
+                for (DhisFunction dhisFunction : DhisFunction.getDhisFunctions()) {
                     //Select the function call, with any number of parameters inside single quotations, or number parameters witout quotations
                     Pattern regularExFunctionCall = Pattern.compile(dhisFunction.getName() + "\\( *(([\\d/\\*\\+\\-%\\. ]+)|( *'[^']*'))*( *, *(([\\d/\\*\\+\\-%\\. ]+)|'[^']*'))* *\\)");
                     Matcher callsToThisFunction = regularExFunctionCall.matcher(expression);
-                    while(callsToThisFunction.find()) {
+                    while (callsToThisFunction.find()) {
                         String callToThisFunction = callsToThisFunction.group();
 
                         //Separate out parameters - Remove the function name and paranthesis:
@@ -118,7 +119,7 @@ public class RuleEngineExecution {
                         Pattern splitParametersPattern = Pattern.compile("(('[^']+')|([^,]+))");
                         Matcher splitParametersMatcher = splitParametersPattern.matcher(justParameters);
 
-                        while(splitParametersMatcher.find()) {
+                        while (splitParametersMatcher.find()) {
                             parameters.add(splitParametersMatcher.group());
                         }
 
@@ -126,12 +127,12 @@ public class RuleEngineExecution {
                         //or if the number of parameters is wrong.
                         //But we are only checking parameters where the dhisFunction actually has a
                         //defined set of parameters(concatenate, for example, does not have a fixed number);
-                        if(dhisFunction.getParameters() != null
-                                && dhisFunction.getParameters() > 0){
+                        if (dhisFunction.getParameters() != null
+                                && dhisFunction.getParameters() > 0) {
 
 
-                            if(parameters.size() != dhisFunction.getParameters()){
-                                throw new IllegalArgumentException( "Wrong number of parameters for function "
+                            if (parameters.size() != dhisFunction.getParameters()) {
+                                throw new IllegalArgumentException("Wrong number of parameters for function "
                                         + dhisFunction.getName() + ". Expecting " + dhisFunction.getParameters()
                                         + ", found " + parameters.size());
                                 //Mark this function call as broken:
@@ -140,13 +141,13 @@ public class RuleEngineExecution {
                         }
 
                         //In case the function call is nested, the parameter itself contains an expression, run the expression.
-                        if(!brokenExecution && parameters.size() > 0) {
+                        if (!brokenExecution && parameters.size() > 0) {
                             for (int j = 0; j < parameters.size(); j++) {
                                 parameters.set(j, runExpression(parameters.get(j), variableValueMap));
                             }
                         }
 
-                        if(brokenExecution) {
+                        if (brokenExecution) {
                             //Function call is not possible to evaluate, remove the call:
                             expression = expression.replace(callToThisFunction, "false");
                             expressionUpdated = true;
@@ -161,7 +162,7 @@ public class RuleEngineExecution {
                     //the expected d2: function calls, one unneccesary iteration will be done and the
                     //successfulExecution will be false coming back here, ending the loop. The last iteration
                     //should be zero to marginal performancewise.
-                    if(expressionUpdated && expression.contains("d2:")) {
+                    if (expressionUpdated && expression.contains("d2:")) {
                         continueLooping = true;
                     } else {
                         continueLooping = false;
@@ -176,7 +177,7 @@ public class RuleEngineExecution {
     }
 
     private static String evaluateExpression(String expression) {
-        if(expression != null && expression.length() > 0) {
+        if (expression != null && expression.length() > 0) {
             try {
                 Object response = ExpressionUtils.evaluate(expression, null);
                 expression = response.toString();
@@ -187,8 +188,8 @@ public class RuleEngineExecution {
         return expression;
     }
 
-    private static String runExpression(String expression,
-                                        RuleEngineVariableValueMap variableValueMap) {
+    private static String runExpression(
+            String expression, RuleEngineVariableValueMap variableValueMap) {
         expression = replaceVariables(expression, variableValueMap);
         expression = runDhisFunctions(expression, variableValueMap);
         expression = evaluateExpression(expression);
@@ -201,8 +202,8 @@ public class RuleEngineExecution {
      * @param condition
      * @return
      */
-    private static boolean conditionIsTrue(String condition,
-                                            RuleEngineVariableValueMap variableValueMap) {
+    private static boolean conditionIsTrue(
+            String condition, RuleEngineVariableValueMap variableValueMap) {
         condition = runExpression(condition, variableValueMap);
         boolean isTrue = false;
         try {
@@ -219,8 +220,8 @@ public class RuleEngineExecution {
      * @param action
      * @return
      */
-    private static RuleEffect createEffect(ProgramRuleAction action,
-                                           RuleEngineVariableValueMap variableValueMap) {
+    private static RuleEffect createEffect(
+            ProgramRuleAction action, RuleEngineVariableValueMap variableValueMap) {
         RuleEffect effect = new RuleEffect();
         effect.setProgramRule(action.getProgramRule());
         effect.setProgramRuleActionType(action.getProgramRuleActionType());
@@ -234,12 +235,12 @@ public class RuleEngineExecution {
         effect.setProgramStageSection(action.getProgramStageSection());
         effect.setTrackedEntityAttribute(action.getTrackedEntityAttribute());
 
-        if(effect.getProgramRuleActionType() == ProgramRuleActionType.ASSIGN) {
+        if (effect.getProgramRuleActionType() == ProgramRuleActionType.ASSIGN) {
             //in case the action type is assign, it might be needed to update the variable value map:
-            if(effect.getContent() != null && effect.getContent().contains("#{")) {
-                String variableName = effect.getContent().replace("#{","").replace("}","");
+            if (effect.getContent() != null && effect.getContent().contains("#{")) {
+                String variableName = effect.getContent().replace("#{", "").replace("}", "");
                 ProgramRuleVariableValue valueObject = variableValueMap.getProgramRuleVariableValue(variableName);
-                if(valueObject != null) {
+                if (valueObject != null) {
                     valueObject.setValueString(effect.getData());
                 }
             }

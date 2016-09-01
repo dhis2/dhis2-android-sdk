@@ -36,7 +36,7 @@ public abstract class FormEntityCharSequence extends FormEntity {
         return value;
     }
 
-    public void setValue(@Nullable CharSequence value) {
+    public void setValue(@Nullable CharSequence value, boolean notifyListeners) {
         CharSequence newValue = value;
 
         // we need to make sure that we never nullify value
@@ -47,7 +47,7 @@ public abstract class FormEntityCharSequence extends FormEntity {
         if (!this.value.equals(newValue)) {
             this.value = newValue;
 
-            if (onFormEntityChangeListener != null) {
+            if (onFormEntityChangeListener != null && notifyListeners) {
                 this.onFormEntityChangeListener.onFormEntityChanged(this);
             }
         }

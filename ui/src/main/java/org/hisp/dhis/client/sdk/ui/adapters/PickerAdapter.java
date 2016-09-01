@@ -134,7 +134,6 @@ public class PickerAdapter extends RecyclerView.Adapter {
         }
 
         if (onPickerListChangeListener != null) {
-            // TODO potentially can be a problem (client apps can mutate pickers)
             onPickerListChangeListener.onPickerListChanged(new ArrayList<>(pickers));
         }
 

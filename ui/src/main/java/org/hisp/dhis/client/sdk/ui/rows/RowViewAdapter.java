@@ -195,7 +195,7 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
 
                     // nullifying value in entity
                     if (formEntity instanceof FormEntityCharSequence) {
-                        ((FormEntityCharSequence) formEntity).setValue("");
+                        ((FormEntityCharSequence) formEntity).setValue("", false);
                     } else if (formEntity instanceof FormEntityFilter) {
                         Picker picker = ((FormEntityFilter) formEntity).getPicker();
 
@@ -246,7 +246,7 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
                 }
             } else {
                 // assigning new value
-                formEntityEditText.setValue(entityAction.getValue());
+                formEntityEditText.setValue(entityAction.getValue(), false);
 
                 // conditionally updating ui
                 if (!formEntityEditText.isLocked()) {
@@ -289,17 +289,5 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
         }
 
         return formEntityActionMap;
-    }
-
-    private static Map<String, FormEntity> mapFormEntities(List<FormEntity> formEntities) {
-        Map<String, FormEntity> formEntityMap = new HashMap<>();
-
-        if (formEntities != null && !formEntities.isEmpty()) {
-            for (FormEntity formEntity : formEntities) {
-                formEntityMap.put(formEntity.getId(), formEntity);
-            }
-        }
-
-        return formEntityMap;
     }
 }

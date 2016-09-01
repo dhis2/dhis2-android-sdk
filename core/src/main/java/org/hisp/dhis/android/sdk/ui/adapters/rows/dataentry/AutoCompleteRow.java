@@ -40,8 +40,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
-import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.Option;
@@ -51,6 +49,7 @@ import org.hisp.dhis.android.sdk.ui.dialogs.AutoCompleteDialogAdapter;
 import org.hisp.dhis.android.sdk.ui.dialogs.AutoCompleteDialogAdapter.OptionAdapterValue;
 import org.hisp.dhis.android.sdk.ui.dialogs.AutoCompleteDialogFragment;
 import org.hisp.dhis.android.sdk.ui.dialogs.AutoCompleteDialogFragment.OnOptionSelectedListener;
+import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -101,7 +100,7 @@ public final class AutoCompleteRow extends Row {
         } else {
             view = inflater.inflate(R.layout.listview_row_autocomplete, container, false);
 //            detailedInfoButton =  view.findViewById(R.id.detailed_info_button_layout);
-            holder = new ViewHolder(view);
+            holder = new ViewHolder(view, this);
             view.setTag(holder);
         }
         holder.textView.setText(mLabel);
@@ -180,7 +179,7 @@ public final class AutoCompleteRow extends Row {
         public final OnTextChangedListener onTextChangedListener;
         public final DropDownButtonListener onDropDownButtonListener;
 
-        private ViewHolder(View view) {
+        private ViewHolder(View view, AutoCompleteRow autoCompleteRow) {
             mandatoryIndicator = (TextView) view.findViewById(R.id.mandatory_indicator);
             textView = (TextView) view.findViewById(R.id.text_label);
             warningLabel = (TextView) view.findViewById(R.id.warning_label);
@@ -190,8 +189,8 @@ public final class AutoCompleteRow extends Row {
 //            this.detailedInfoButton = detailedInfoButton;
 
             OnOptionSelectedListener onOptionListener
-                    = new OnOptionItemSelectedListener(valueTextView);
-            onClearButtonListener = new OnClearButtonListener(valueTextView);
+                    = new OnOptionItemSelectedListener(valueTextView, autoCompleteRow);
+            onClearButtonListener = new OnClearButtonListener(valueTextView, autoCompleteRow);
             onTextChangedListener = new OnTextChangedListener();
             onDropDownButtonListener = new DropDownButtonListener();
             onDropDownButtonListener.setListener(onOptionListener);
@@ -211,14 +210,19 @@ public final class AutoCompleteRow extends Row {
 
     private static class OnOptionItemSelectedListener implements OnOptionSelectedListener {
         private final TextView valueTextView;
+        private final AutoCompleteRow autoCompleteRow;
 
-        public OnOptionItemSelectedListener(TextView valueTextView) {
+        public OnOptionItemSelectedListener(TextView valueTextView, AutoCompleteRow autoCompleteRow) {
+            this.autoCompleteRow = autoCompleteRow;
             this.valueTextView = valueTextView;
         }
 
         @Override
         public void onOptionSelected(int dialogId, int position, String id, String name) {
             valueTextView.setText(name);
+            autoCompleteRow.mValue.setValue(name);
+            Dhis2Application.getEventBus()
+                    .post(new RowValueChangedEvent(autoCompleteRow.mValue, DataEntryRowTypes.AUTO_COMPLETE.toString()));
         }
     }
 
@@ -249,14 +253,19 @@ public final class AutoCompleteRow extends Row {
 
     private static class OnClearButtonListener implements View.OnClickListener {
         private final TextView textView;
+        private final AutoCompleteRow autoCompleteRow;
 
-        public OnClearButtonListener(TextView textView) {
+        public OnClearButtonListener(TextView textView, AutoCompleteRow autoCompleteRow) {
+            this.autoCompleteRow = autoCompleteRow;
             this.textView = textView;
         }
 
         @Override
         public void onClick(View v) {
             textView.setText(EMPTY_FIELD);
+            autoCompleteRow.mValue.setValue(EMPTY_FIELD);
+            Dhis2Application.getEventBus()
+                    .post(new RowValueChangedEvent(autoCompleteRow.mValue, DataEntryRowTypes.AUTO_COMPLETE.toString()));
         }
     }
 

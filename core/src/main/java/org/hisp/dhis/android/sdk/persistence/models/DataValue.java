@@ -38,6 +38,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Update;
 
+import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis.android.sdk.utils.Utils;
@@ -172,5 +173,27 @@ public class DataValue extends BaseValue {
                 Condition.column(DataValue$Table.VALUE).is(this.getValue()))
                 .where(Condition.column(DataValue$Table.LOCALEVENTID).is(localEventId),
                         Condition.column(DataValue$Table.DATAELEMENT).is(dataElement)).queryClose();
+    }
+
+    /**
+     * workaround for sending code if attribute is option set.
+     *
+     * @return String value.
+     */
+    @Override
+    public String getValue() {
+
+        DataElement storedDataElement = MetaDataController.getDataElement(dataElement);
+
+        if (storedDataElement != null && storedDataElement.isOptionSetValue()) {
+            OptionSet optionSet = MetaDataController.getOptionSet(storedDataElement.getOptionSet());
+            if (optionSet == null) return "";
+            for (Option o : optionSet.getOptions()) {
+                if (o.name.equals(value)) {
+                    return o.getCode();
+                }
+            }
+        } else return value;
+        return null;
     }
 }

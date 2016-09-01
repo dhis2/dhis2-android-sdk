@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.core.common.network;
 
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementApiClient;
+import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentApiClient;
 import org.hisp.dhis.client.sdk.core.event.EventApiClient;
 import org.hisp.dhis.client.sdk.core.optionset.OptionSetApiClient;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitApiClient;
@@ -40,6 +41,7 @@ import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableApiClient;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageApiClient;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementApiClient;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionApiClient;
+import org.hisp.dhis.client.sdk.core.program.ProgramTrackedEntityAttributeApiClient;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoApiClient;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityApiClient;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeApiClient;
@@ -77,4 +79,8 @@ public interface NetworkModule {
     ProgramIndicatorApiClient getProgramIndicatorApiClient();
 
     TrackedEntityApiClient getTrackedEntityApiClient();
+
+    ProgramTrackedEntityAttributeApiClient getProgramTrackedEntityAttributeApiClient();
+
+    EnrollmentApiClient getEnrollmentApiClient();
 }

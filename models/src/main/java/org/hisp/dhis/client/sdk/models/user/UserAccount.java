@@ -113,6 +113,9 @@ public class UserAccount implements IdentifiableObject {
     @JsonProperty("phoneNumber")
     String phoneNumber;
 
+    @JsonIgnore
+    int sortOrder;
+
 
     /* This properties should not be directly
     accessible through model accessors */
@@ -194,6 +197,16 @@ public class UserAccount implements IdentifiableObject {
     @Override
     public void setAccess(Access access) {
         this.access = access;
+    }
+
+    @Override
+    public void setApiSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+
+    @Override
+    public int getApiSortOrder() {
+        return sortOrder;
     }
 
     /* Exposing getPrograms() instead of making UserCredentials model public */

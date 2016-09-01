@@ -54,8 +54,13 @@ public class DbUtils {
             }
         }
 
+
         List<DbOperation> operations = new ArrayList<>();
         for (T updatedItem : updatedItems) {
+            if(existingItemsMap.containsKey(updatedItem.getUId())) {
+                T existingItem = existingItemsMap.get(updatedItem.getUId());
+                updatedItem.setApiSortOrder(existingItem.getApiSortOrder());
+            }
             if (persistedItemsMap.containsKey(updatedItem.getUId())) {
                 operations.add(DbOperationImpl.with(store).update(updatedItem));
             } else {

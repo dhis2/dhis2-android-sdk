@@ -33,6 +33,7 @@ import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
 import org.hisp.dhis.client.sdk.core.relationship.RelationshipStore;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
@@ -68,8 +69,7 @@ public final class TrackedEntityInstanceServiceImpl implements TrackedEntityInst
     }
 
     @Override
-    public TrackedEntityInstance create(TrackedEntity trackedEntity, OrganisationUnit
-            organisationUnit) {
+    public TrackedEntityInstance create(OrganisationUnit organisationUnit, TrackedEntity trackedEntity) {
         Preconditions.isNull(trackedEntity, "Tracked entity must not be null");
         Preconditions.isNull(organisationUnit, "Organisation unit must not be null");
 
@@ -81,6 +81,7 @@ public final class TrackedEntityInstanceServiceImpl implements TrackedEntityInst
 
         return trackedEntityInstance;
     }
+
 
     @Override
     public boolean addRelationship(TrackedEntityInstance trackedEntityInstanceA,

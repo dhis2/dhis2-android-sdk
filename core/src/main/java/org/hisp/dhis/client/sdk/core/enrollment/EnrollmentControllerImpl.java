@@ -36,7 +36,7 @@ import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.event.EventStore;
 import org.hisp.dhis.client.sdk.core.event.EventController;
-import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 import org.joda.time.DateTime;
@@ -45,7 +45,7 @@ import java.util.List;
 
 public final class EnrollmentControllerImpl implements EnrollmentController {
     private final EnrollmentApiClient enrollmentApiClient;
-    private final SystemInfoApiClient systemInfoApiClient;
+    private final SystemInfoController systemInfoController;
 
     private final LastUpdatedPreferences lastUpdatedPreferences;
     private final TransactionManager transactionManager;
@@ -56,13 +56,13 @@ public final class EnrollmentControllerImpl implements EnrollmentController {
     private final StateStore stateStore;
 
     public EnrollmentControllerImpl(EnrollmentApiClient apiClient,
-                                    SystemInfoApiClient systemInfoApiClient,
+                                    SystemInfoController systemInfoController,
                                     LastUpdatedPreferences preferences,
                                     TransactionManager transactionManager,
                                     EventController eventController, EnrollmentStore enrollmentStore,
                                     EventStore eventStore, StateStore stateStore) {
         this.enrollmentApiClient = apiClient;
-        this.systemInfoApiClient = systemInfoApiClient;
+        this.systemInfoController = systemInfoController;
         this.lastUpdatedPreferences = preferences;
         this.transactionManager = transactionManager;
         this.eventController = eventController;
@@ -81,7 +81,7 @@ public final class EnrollmentControllerImpl implements EnrollmentController {
 //        DateTime lastUpdated = lastUpdatedPreferences
 //                .get(ResourceType.ENROLLMENTS, trackedEntityInstance
 // .getTrackedEntityInstanceUid());
-//        DateTime serverDateTime = systemInfoApiClient.getSystemInfo().getServerDate();
+//        DateTime serverDateTime = systemInfoController.getSystemInfo().getServerDate();
 //
 //        List<Enrollment> existingUpdatedAndPersistedEnrollments = updateEnrollments
 //                (trackedEntityInstance, lastUpdated);
@@ -113,7 +113,7 @@ public final class EnrollmentControllerImpl implements EnrollmentController {
     private Enrollment getEnrollmentDataFromServer(String uid, boolean getEvents) throws
             ApiException {
 //        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.ENROLLMENT, uid);
-//        DateTime serverDateTime = systemInfoApiClient.getSystemInfo().getServerDate();
+//        DateTime serverDateTime = systemInfoController.getSystemInfo().getServerDate();
 //
 //        Enrollment updatedEnrollment = enrollmentApiClient.getFullEnrollment(uid, lastUpdated);
 //        //todo: if the updatedEnrollment is deleted on the server, delete it also locally

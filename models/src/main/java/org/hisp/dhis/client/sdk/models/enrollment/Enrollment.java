@@ -30,9 +30,11 @@ package org.hisp.dhis.client.sdk.models.enrollment;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.client.sdk.models.common.Access;
+import org.hisp.dhis.client.sdk.models.common.base.BaseModel;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttributeValue;
@@ -43,17 +45,10 @@ import java.io.Serializable;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class Enrollment implements Serializable, IdentifiableObject {
-
-    public static final String ACTIVE = "ACTIVE";
-    public static final String COMPLETED = "COMPLETED";
-    public static final String CANCELLED = "CANCELLED"; //aka TERMINATED
-
-    @JsonIgnore
-    private long id;
+public final class Enrollment extends BaseModel implements IdentifiableObject {
 
     @JsonProperty("enrollment")
-    private String enrollmentUid;
+    private String uId;
 
     @JsonProperty("orgUnit")
     private String orgUnit;
@@ -71,12 +66,14 @@ public final class Enrollment implements Serializable, IdentifiableObject {
     private boolean followup;
 
     @JsonProperty("status")
-    private String status;
+    private EnrollmentStatus status;
 
     @JsonProperty("name")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String name;
 
     @JsonProperty("displayName")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String displayName;
 
     @JsonProperty("created")
@@ -86,7 +83,11 @@ public final class Enrollment implements Serializable, IdentifiableObject {
     private DateTime lastUpdated;
 
     @JsonProperty("access")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Access access;
+
+    @JsonIgnore
+    int sortOrder;
 
     @JsonIgnore
     private TrackedEntityInstance trackedEntityInstance;
@@ -99,16 +100,6 @@ public final class Enrollment implements Serializable, IdentifiableObject {
 
     public Enrollment() {
         // explicit empty constructor
-    }
-
-    @Override
-    public long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getOrgUnit() {
@@ -169,22 +160,22 @@ public final class Enrollment implements Serializable, IdentifiableObject {
         this.followup = followup;
     }
 
-    public String getStatus() {
+    public EnrollmentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(EnrollmentStatus status) {
         this.status = status;
     }
 
     @Override
     public String getUId() {
-        return enrollmentUid;
+        return uId;
     }
 
     @Override
     public void setUId(String uId) {
-        this.enrollmentUid = uId;
+        this.uId = uId;
     }
 
     @Override
@@ -237,6 +228,16 @@ public final class Enrollment implements Serializable, IdentifiableObject {
         this.access = access;
     }
 
+    @Override
+    public void setApiSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+
+    @Override
+    public int getApiSortOrder() {
+        return sortOrder;
+    }
+
     public List<TrackedEntityAttributeValue> getTrackedEntityAttributeValues() {
         return trackedEntityAttributeValues;
     }
@@ -252,5 +253,11 @@ public final class Enrollment implements Serializable, IdentifiableObject {
 
     public void setEvents(List<Event> events) {
         this.events = events;
+    }
+
+    public enum EnrollmentStatus {
+        ACTIVE,
+        COMPLETED,
+        CANCELLED //aka TERMINATED
     }
 }

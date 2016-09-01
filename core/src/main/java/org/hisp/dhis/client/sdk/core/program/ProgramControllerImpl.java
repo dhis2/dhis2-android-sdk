@@ -43,7 +43,7 @@ import org.hisp.dhis.client.sdk.core.common.utils.ModelUtils;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementController;
 import org.hisp.dhis.client.sdk.core.optionset.OptionSetController;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
-import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityControllerImpl;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityController;
 import org.hisp.dhis.client.sdk.core.user.UserApiClient;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
@@ -80,8 +80,8 @@ public class ProgramControllerImpl extends
     private ProgramRuleController programRuleController;
     private DataElementController dataElementController;
     private OptionSetController optionSetController;
-    private TrackedEntityControllerImpl trackedEntityControllerImpl;
-    private ProgramTrackedEntityAttributeControllerImpl programTrackedEntityAttributeController;
+    private TrackedEntityController trackedEntityController;
+    private ProgramTrackedEntityAttributeController programTrackedEntityAttributeController;
 
     /* Api clients */
     private final ProgramApiClient programApiClient;
@@ -216,6 +216,7 @@ public class ProgramControllerImpl extends
         allOperations.addAll(updatedDataElements.getValue());
         allOperations.addAll(updatedOptionSets.getValue());
         allOperations.addAll(updatedTrackedEntites.getValue());
+        allOperations.addAll(updatedProgramTrackedEntityAttributes.getValue());
         allOperations.addAll(updatedProgramRules);
 
         // transacting all changes in one batch
@@ -416,7 +417,7 @@ public class ProgramControllerImpl extends
         if (trackedEntities.isEmpty()) {
             dbOperations = new ArrayList<>();
         } else {
-            dbOperations = trackedEntityControllerImpl.merge(trackedEntities);
+            dbOperations = trackedEntityController.merge(trackedEntities);
         }
 
         return new KeyValue<>(trackedEntities, dbOperations);
@@ -482,7 +483,7 @@ public class ProgramControllerImpl extends
         if (programTrackedEntityAttributes.isEmpty()) {
             dbOperations = new ArrayList<>();
         } else {
-            dbOperations = trackedEntityAttributeController.merge(programTrackedEntityAttributes);
+            dbOperations = programTrackedEntityAttributeController.merge(programTrackedEntityAttributes);
         }
 
         return new KeyValue<>(programTrackedEntityAttributes, dbOperations);
@@ -518,8 +519,11 @@ public class ProgramControllerImpl extends
         this.programRuleController = programRuleController;
     }
 
-    public void setTrackedEntityControllerImpl(TrackedEntityControllerImpl trackedEntityControllerImpl) {
-        this.trackedEntityControllerImpl = trackedEntityControllerImpl;
+    public void setTrackedEntityController(TrackedEntityController trackedEntityController) {
+        this.trackedEntityController = trackedEntityController;
     }
 
+    public void setProgramTrackedEntityAttributeController(ProgramTrackedEntityAttributeController programTrackedEntityAttributeController) {
+        this.programTrackedEntityAttributeController = programTrackedEntityAttributeController;
+    }
 }

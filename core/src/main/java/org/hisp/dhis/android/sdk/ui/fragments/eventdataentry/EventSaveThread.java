@@ -127,8 +127,8 @@ public class EventSaveThread extends AsyncHelperThread {
         if (event != null) {
             String dataElementDataValue = queuedDataValues.poll();
             DataValue dataValue = dataValues.get(dataElementDataValue);
-            dataValue.setLocalEventId(event.getLocalId());
             if (dataValue != null) {
+                dataValue.setLocalEventId(event.getLocalId());
                 dataValue.save();
             }
         }

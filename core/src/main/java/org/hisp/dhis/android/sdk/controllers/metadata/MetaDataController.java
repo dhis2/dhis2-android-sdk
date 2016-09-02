@@ -832,7 +832,7 @@ public final class MetaDataController extends ResourceController {
                     List<TrackedEntityAttributeGeneratedValue> trackedEntityAttributeGeneratedValues =
                             dhisApi.getTrackedEntityAttributeGeneratedValues(trackedEntityAttribute.getUid(), numberOfGeneratedTrackedEntityAttributesToFetch); // Downloading x generated IDs per trackedEntityAttribute
 
-                    saveResourceDataFromServer(ResourceType.TRACKEDENTITYATTRIBUTEGENERATEDVALUES, dhisApi, trackedEntityAttributeGeneratedValues, getTrackedEntityAttributeGeneratedValues(), serverDateTime);
+                    saveBaseValueDataFromServer(ResourceType.TRACKEDENTITYATTRIBUTEGENERATEDVALUES, "", trackedEntityAttributeGeneratedValues, getTrackedEntityAttributeGeneratedValues(), serverDateTime, false);
                 }
             }
         }

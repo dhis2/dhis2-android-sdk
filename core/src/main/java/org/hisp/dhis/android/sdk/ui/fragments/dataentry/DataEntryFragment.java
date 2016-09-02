@@ -46,6 +46,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.squareup.otto.Subscribe;
 
@@ -249,6 +250,8 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
             validationErrorDialog = ValidationErrorDialog
                     .newInstance(getActivity().getString(R.string.unable_to_complete_registration) + " " + getActivity().getString(R.string.review_errors), errors);
             validationErrorDialog.show(getChildFragmentManager());
+        } else {
+            Toast.makeText(getContext(), R.string.unable_to_complete_registration, Toast.LENGTH_LONG).show();
         }
     }
 

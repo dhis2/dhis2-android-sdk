@@ -41,6 +41,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.86"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:gravity="center_vertical"
         android:orientation="vertical">
 
@@ -56,8 +58,6 @@
             android:layout_marginTop="6dp"
             android:background="@drawable/textfield_background_selector"
             android:clickable="true"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
             android:hint="@string/find_option"
             android:paddingBottom="11dp"
             android:paddingTop="11dp"

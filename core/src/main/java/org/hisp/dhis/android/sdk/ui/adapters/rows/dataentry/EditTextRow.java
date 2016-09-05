@@ -65,6 +65,7 @@ public class EditTextRow extends Row {
                 !DataEntryRowTypes.INTEGER.equals(rowType) &&
                 !DataEntryRowTypes.INTEGER_NEGATIVE.equals(rowType) &&
                 !DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE.equals(rowType) &&
+                !DataEntryRowTypes.PHONE_NUMBER.equals(rowType) &&
                 !DataEntryRowTypes.INTEGER_POSITIVE.equals(rowType)) {
             throw new IllegalArgumentException("Unsupported row type");
         }
@@ -125,6 +126,11 @@ public class EditTextRow extends Row {
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER);
                 editText.setHint(R.string.enter_positive_integer);
                 editText.setFilters(new InputFilter[]{new PosFilter()});
+                editText.setSingleLine(true);
+            }
+            else if(DataEntryRowTypes.PHONE_NUMBER.equals(mRowType)) {
+                editText.setInputType(InputType.TYPE_CLASS_PHONE);
+                editText.setHint(R.string.enter_phone_number);
                 editText.setSingleLine(true);
             }
 

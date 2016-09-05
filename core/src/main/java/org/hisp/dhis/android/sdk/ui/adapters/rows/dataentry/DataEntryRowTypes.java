@@ -46,4 +46,5 @@ public enum DataEntryRowTypes {
     EVENT_DATE,
     ENROLLMENT_DATE,
     COORDINATES,
+    PHONE_NUMBER
 }

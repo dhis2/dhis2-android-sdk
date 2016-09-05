@@ -50,6 +50,7 @@ import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship;
 import org.hisp.dhis.android.sdk.persistence.models.SystemInfo;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.meta.DbOperation;
@@ -305,6 +306,18 @@ final class TrackerDataLoader extends ResourceController {
             }
         }
         for (TrackedEntityAttributeValue val : valueParams) {
+            TrackedEntityAttribute trackedEntityAttribute = MetaDataController.getTrackedEntityAttribute(val.getTrackedEntityAttributeId());
+            if(trackedEntityAttribute.getOptionSet() != null) {
+                // has option sets. Want to search on exact matching
+                if (!QUERY_MAP_FULL.containsKey("filter")) {
+                    QUERY_MAP_FULL.put("filter", val.getTrackedEntityAttributeId() + ":EQ:" + val.getValue());
+                } else {
+                    String currentFilter = QUERY_MAP_FULL.get("filter");
+                    QUERY_MAP_FULL.put("filter", currentFilter + "&" + val.getTrackedEntityAttributeId() + ":EQ:" + val.getValue());
+                }
+                continue;
+            }
+
             if (!QUERY_MAP_FULL.containsKey("filter")) {
                 QUERY_MAP_FULL.put("filter", val.getTrackedEntityAttributeId() + ":LIKE:" + val.getValue());
             } else {

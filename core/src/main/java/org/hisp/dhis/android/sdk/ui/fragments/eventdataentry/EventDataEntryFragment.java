@@ -818,7 +818,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                 new DatePickerDialog(getActivity(),
                         null, scheduledDueDate.getYear(),
                         scheduledDueDate.getMonthOfYear() - 1, scheduledDueDate.getDayOfMonth() + standardInterval);
-        enrollmentDatePickerDialog.setTitle(getActivity().getString(R.string.please_enter) + " scheduled date for " + programStage.getDisplayName());
+        enrollmentDatePickerDialog.setTitle(getActivity().getString(R.string.please_enter) + " Due date for " + programStage.getDisplayName());
         enrollmentDatePickerDialog.setCanceledOnTouchOutside(true);
 
         enrollmentDatePickerDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
@@ -838,6 +838,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                         goBackToPreviousActivity();
                     }
                 });
+
+
         enrollmentDatePickerDialog.show();
 
 

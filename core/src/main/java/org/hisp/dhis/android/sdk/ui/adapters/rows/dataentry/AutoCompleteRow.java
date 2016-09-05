@@ -220,7 +220,6 @@ public final class AutoCompleteRow extends Row {
         @Override
         public void onOptionSelected(int dialogId, int position, String id, String name) {
             valueTextView.setText(name);
-            autoCompleteRow.mValue.setValue(name);
             Dhis2Application.getEventBus()
                     .post(new RowValueChangedEvent(autoCompleteRow.mValue, DataEntryRowTypes.AUTO_COMPLETE.toString()));
         }

@@ -52,7 +52,7 @@ public class Version3MigrationProgramRuleAction extends AlterTableMigration<Prog
         // Simple ALTER TABLE migration wraps the statements into a nice builder notation
         super.onPreMigrate();
 
-        if (!MigrationUtil.columnExists(ProgramRuleAction.class, "sortOrder")) {
+        if (!MigrationUtil.columnExists(ProgramRuleAction.class, "programStageSection")) {
             addColumn(String.class, "programStageSection");
         }
     }

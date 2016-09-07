@@ -60,10 +60,13 @@ import org.hisp.dhis.android.sdk.ui.adapters.AbsAdapter;
 import org.hisp.dhis.android.sdk.ui.dialogs.AutoCompleteDialogFragment;
 import org.hisp.dhis.android.sdk.ui.dialogs.OrgUnitDialogFragment;
 import org.hisp.dhis.android.sdk.ui.dialogs.ProgramDialogFragment;
+import org.hisp.dhis.android.sdk.ui.dialogs.UpcomingEventsDialogFilter;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RefreshListViewEvent;
 import org.hisp.dhis.android.sdk.ui.views.CardTextViewButton;
 import org.hisp.dhis.android.sdk.utils.api.ProgramType;
 import org.hisp.dhis.client.sdk.ui.fragments.BaseFragment;
+
+import java.util.Arrays;
 
 public abstract class SelectProgramFragment extends BaseFragment
         implements View.OnClickListener, AutoCompleteDialogFragment.OnOptionSelectedListener,
@@ -135,12 +138,21 @@ public abstract class SelectProgramFragment extends BaseFragment
             // restoring last selection of program
             Pair<String, String> orgUnit = mPrefs.getOrgUnit();
             Pair<String, String> program = mPrefs.getProgram();
+            Pair<String, String> filter = mPrefs.getFilter();
             mState = new SelectProgramFragmentState();
             if (orgUnit != null) {
                 mState.setOrgUnit(orgUnit.first, orgUnit.second);
                 if (program != null) {
                     mState.setProgram(program.first, program.second);
                 }
+                if(filter != null) {
+                    mState.setFilter(filter.first, filter.second);
+                }
+                else {
+                    mState.setFilter("0", Arrays.asList(UpcomingEventsDialogFilter.Type.values()).get(0).toString());
+                }
+
+
             }
         }
 

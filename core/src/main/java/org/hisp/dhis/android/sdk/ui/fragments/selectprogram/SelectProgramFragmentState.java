@@ -53,6 +53,9 @@ public class SelectProgramFragmentState implements Parcelable {
     private String programName;
     private String programId;
 
+    private String filterId;
+    private String filterLabel;
+
     public SelectProgramFragmentState() {
     }
 
@@ -61,6 +64,7 @@ public class SelectProgramFragmentState implements Parcelable {
             setSyncInProcess(state.isSyncInProcess());
             setOrgUnit(state.getOrgUnitId(), state.getOrgUnitLabel());
             setProgram(state.getProgramId(), state.getProgramName());
+            setFilter(state.getFilterId(), state.getFilterLabel());
         }
     }
 
@@ -72,6 +76,9 @@ public class SelectProgramFragmentState implements Parcelable {
 
         programName = in.readString();
         programId = in.readString();
+
+        filterId = in.readString();
+        filterLabel = in.readString();
     }
 
     @Override
@@ -88,6 +95,9 @@ public class SelectProgramFragmentState implements Parcelable {
 
         parcel.writeString(programName);
         parcel.writeString(programId);
+
+        parcel.writeString(filterId);
+        parcel.writeString(filterLabel);
     }
 
     public boolean isSyncInProcess() {
@@ -125,9 +135,19 @@ public class SelectProgramFragmentState implements Parcelable {
         this.programName = programLabel;
     }
 
+    public void setFilter(String filterId, String filterLabel) {
+        this.filterId = filterId;
+        this.filterLabel = filterLabel;
+    }
+
     public void resetProgram() {
         programId = null;
         programName = null;
+    }
+
+    public void resetFilter() {
+        this.filterId = null;
+        this.filterLabel = null;
     }
 
     public boolean isProgramEmpty() {
@@ -140,5 +160,21 @@ public class SelectProgramFragmentState implements Parcelable {
 
     public String getProgramId() {
         return programId;
+    }
+
+    public String getFilterId() {
+        return filterId;
+    }
+
+    public void setFilterId(String filterId) {
+        this.filterId = filterId;
+    }
+
+    public String getFilterLabel() {
+        return filterLabel;
+    }
+
+    public void setFilterLabel(String filterLabel) {
+        this.filterLabel = filterLabel;
     }
 }

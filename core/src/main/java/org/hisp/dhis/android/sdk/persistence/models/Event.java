@@ -68,6 +68,7 @@ public class Event extends BaseSerializableModel {
     public static final String STATUS_COMPLETED = "COMPLETED";
     public static final String STATUS_FUTURE_VISIT = "SCHEDULE";
     public static final String STATUS_SKIPPED = "SKIPPED";
+    public static final String STATUS_OVERDUE = "OVERDUE";
 
     @JsonIgnore
     @Column(name = "event")

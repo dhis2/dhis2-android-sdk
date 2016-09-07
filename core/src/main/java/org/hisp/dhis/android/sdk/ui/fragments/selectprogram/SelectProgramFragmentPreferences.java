@@ -55,6 +55,9 @@ public final class SelectProgramFragmentPreferences {
     private static final String PROGRAM_ID = "key:programId";
     private static final String PROGRAM_LABEL = "key:programLabel";
 
+    private static final String FILTER_ID = "key:FilterId";
+    private static final String FILTER_LABEL = "key:FilterLabel";
+
     private final SharedPreferences mPrefs;
 
     public SelectProgramFragmentPreferences(Context context) {
@@ -89,6 +92,14 @@ public final class SelectProgramFragmentPreferences {
         }
     }
 
+    public Pair<String, String> getFilter() {
+        String filterId = get(FILTER_ID);
+        String filterLabel = get(FILTER_LABEL);
+
+
+        return new Pair<>(filterId, filterLabel);
+    }
+
     public void putProgram(Pair<String, String> program) {
         if (program != null) {
             put(PROGRAM_ID, program.first);
@@ -96,6 +107,16 @@ public final class SelectProgramFragmentPreferences {
         } else {
             remove(PROGRAM_ID);
             remove(PROGRAM_LABEL);
+        }
+    }
+
+    public void putFilter(Pair<String, String> filter) {
+        if (filter != null) {
+            put(FILTER_ID, filter.first);
+            put(FILTER_LABEL, filter.second);
+        } else {
+            remove(FILTER_ID);
+            remove(FILTER_LABEL);
         }
     }
 

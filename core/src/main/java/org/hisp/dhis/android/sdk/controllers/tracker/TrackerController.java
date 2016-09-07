@@ -36,7 +36,6 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.LoadingController;
 import org.hisp.dhis.android.sdk.controllers.ResourceController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
@@ -55,17 +54,19 @@ import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship$Table;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance$Table;
+import org.hisp.dhis.android.sdk.persistence.models.meta.DbOperation;
 import org.hisp.dhis.android.sdk.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
+import org.hisp.dhis.android.sdk.utils.DbUtils;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 import org.hisp.dhis.android.sdk.utils.api.ProgramType;
+import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -168,8 +169,10 @@ public final class TrackerController extends ResourceController {
                 .is(programId))
                 .and(Condition.column(Event$Table.ORGANISATIONUNITID)
                 .is(orgUnitId))
-                .and(Condition.column(Event$Table.STATUS).isNot(Event.STATUS_ACTIVE))
+                .and(Condition.column(Event$Table.STATUS).isNot(Event.STATUS_OVERDUE))
                 .and(Condition.column(Event$Table.STATUS).isNot(Event.STATUS_COMPLETED))
+                .and(Condition.column(Event$Table.EVENTDATE).isNull())
+                .and(Condition.column(Event$Table.DUEDATE).isNotNull())
                 .and(Condition.column(Event$Table.DUEDATE).between(startDate)
                 .and(endDate)).orderBy(Event$Table.DUEDATE).queryList();
     }
@@ -457,8 +460,18 @@ public final class TrackerController extends ResourceController {
         TrackerDataLoader.getEnrollmentDataFromServer(dhisApi, uid, getEvents, serverDateTime);
     }
 
+    /**
+     * Refreshes event statuses after downloading
+     * @param dhisApi
+     * @param trackedEntityInstance
+     * @param serverDateTime
+     * @return
+     * @throws APIException
+     */
     public static List<Enrollment> getEnrollmentDataFromServer(DhisApi dhisApi, TrackedEntityInstance trackedEntityInstance, DateTime serverDateTime) throws APIException {
-        return TrackerDataLoader.getEnrollmentsDataFromServer(dhisApi, trackedEntityInstance, serverDateTime);
+        List<Enrollment> enrollments = TrackerDataLoader.getEnrollmentsDataFromServer(dhisApi, trackedEntityInstance, serverDateTime);
+        refreshEventStatuses();
+        return  enrollments;
     }
 
     public static void getEventDataFromServer(DhisApi dhisApi, String uid) throws APIException {
@@ -485,5 +498,53 @@ public final class TrackerController extends ResourceController {
             return activeEnrollments;
         }
         else return new ArrayList<>();
+    }
+
+    public static List<Event> getOverdueEvents(String mProgramId, String mOrgUnitId) {
+        List<Event> overdueEvents = new Select().from(Event.class)
+                .where(Condition.column(Event$Table.PROGRAMID).eq(mProgramId))
+                .and(Condition.column(Event$Table.ORGANISATIONUNITID).eq(mOrgUnitId))
+                .and(Condition.column(Event$Table.STATUS).eq(Event.STATUS_OVERDUE))
+                .queryList();
+        return overdueEvents;
+    }
+
+    public static void refreshEventStatuses() {
+        List<Event> events = new Select().from(Event.class)
+                .where(Condition.column(Event$Table.STATUS).isNot(Event.STATUS_COMPLETED))
+                .and(Condition.column(Event$Table.STATUS).isNot(Event.STATUS_SKIPPED))
+                .orderBy(Event$Table.DUEDATE)
+                .queryList();
+        List<DbOperation> dbOperations = new ArrayList<>();
+        for(Event event : events) {
+            if(event.getDueDate() != null) {
+                LocalDate dueDate = new LocalDate(DateUtils.parseDate(event.getDueDate()));
+                LocalDate now = new LocalDate(DateUtils.parseDate(DateUtils.getMediumDateString()));
+
+                if(dueDate.isBefore(now)) {
+                    event.setStatus(Event.STATUS_OVERDUE);
+                    dbOperations.add(DbOperation.update(event));
+                }
+                else {
+                    break;
+                }
+
+            }
+        }
+
+        DbUtils.applyBatch(dbOperations);
+    }
+
+    public static List<Event> getActiveEvents(String mProgramId, String mOrgUnitId, String mStartDate, String mEndDate) {
+
+        return new Select().from(Event.class).where(Condition.column(Event$Table.PROGRAMID)
+                .is(mProgramId))
+                .and(Condition.column(Event$Table.ORGANISATIONUNITID)
+                        .is(mOrgUnitId))
+                .and(Condition.column(Event$Table.STATUS).isNot(Event.STATUS_OVERDUE))
+                .and(Condition.column(Event$Table.STATUS).isNot(Event.STATUS_SKIPPED))
+                .and(Condition.column(Event$Table.EVENTDATE).isNotNull())
+                .and(Condition.column(Event$Table.EVENTDATE).between(mStartDate)
+                        .and(mEndDate)).orderBy(Event$Table.EVENTDATE).queryList();
     }
 }

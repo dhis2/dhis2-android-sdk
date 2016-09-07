@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ * Copyright (c) 2016, University of Oslo
   ~  * All rights reserved.
   ~  *
@@ -68,8 +67,6 @@
     <string name="review_errors">Please review the errors below and try again.</string>
 
 
-
-
     <!-- Login Activity -->
     <string name="server_url">Server URL</string>
     <string name="username">Username</string>
@@ -101,7 +98,6 @@
     <string name="search">Search</string>
 
 
-
     <!-- Data Entry -->
     <string name="submit">Submit</string>
     <string name="cancel">Cancel</string>
@@ -112,13 +108,12 @@
 
 
     <!-- GPS -->
-    
+
 
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
 
 
-    
     <!-- Data fetching -->
     <string name="loading_metadata">Loading meta data</string>
     <string name="saving_data_locally">Saving data locally</string>
@@ -127,7 +122,6 @@
     <string name="retry">Retry</string>
 
 
-    
     <!-- Data uploading -->
     <string name="loading_failed">Loading Failed</string>
     <string name="retrying">Retrying</string>
@@ -163,7 +157,7 @@
         <item>1 Day</item>
         <item>Disabled</item>
     </string-array>
-    
+
     <string-array name="copy_store_error_message">
         <item>Copy</item>
         <item>Write to SD card</item>
@@ -241,6 +235,11 @@
 
     <string name="go_to_programoverview_fragment">Go to overview</string>
     <string name="go_to_dataentry_fragment">Go to data entry</string>
+
+    <!-- Remove Report Entity confirmation dialog -->
+    <string name="remove">Remove from device</string>
+    <string name="remove_report_entity_dialog_title">Remove item?</string>
+    <string name="remove_report_entity_dialog_message">This item will be removed from your device. You can re-download this item from the server at a later time.</string>
 
     <string name="warning_delete_unsent_tei">Warning! This item has not been synchronized with the server. If you delete this item, you will not be able to recover this data</string>
     <string name="detailed_info_dataelement">Detailed information</string>

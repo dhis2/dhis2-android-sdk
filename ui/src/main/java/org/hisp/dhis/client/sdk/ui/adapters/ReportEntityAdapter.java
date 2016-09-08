@@ -264,26 +264,6 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                 // remove old views if they exist
                 dataElementLabelContainer.removeViewAt(dataElementLabelContainer.getChildCount() - 1);
             }
-
-//======= Leftovers from update() in develop
-            /*if (dataElementLabels == null || dataElementLabels.isEmpty()) {
-                showEmptyPlaceholder();
-            } else {
-                for (String dataElementLabel : dataElementLabels) {
-                    View dataElementLabelView = dataElementLabelContainer.getChildAt(dataElementLabels.indexOf(dataElementLabel));
-                    if (dataElementLabelView == null) {
-                        dataElementLabelView = layoutInflater.inflate(R.layout.data_element_label, dataElementLabelContainer, false);
-                        dataElementLabelContainer.addView(dataElementLabelView);
-                    }
-                    ((FontTextView) dataElementLabelView).setText(dataElementLabel);
-                }
-                while (dataElementLabelContainer.getChildCount() > dataElementLabels.size()) {
-                    // remove old views if they exist
-                    dataElementLabelContainer.removeViewAt(dataElementLabelContainer.getChildCount() - 1);
-                }
-            }*/
-
-//>>>>>>> develop
         }
 
         private void showPlaceholder() {

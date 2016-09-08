@@ -39,7 +39,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
     private ArrayList<ReportEntity> reportEntities;
     private final LayoutInflater layoutInflater;
-    private ArrayList<ReportEntityFilter> reportEntityReportEntityFilters;
+    private ArrayList<ReportEntityFilter> ReportEntityFilters;
 
     // click listener
     private OnReportEntityInteractionListener onReportEntityInteractionListener;
@@ -88,7 +88,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
     }
 
     public void notifyFiltersChanged(ArrayList<ReportEntityFilter> filters) {
-        this.reportEntityReportEntityFilters = filters;
+        this.ReportEntityFilters = filters;
         notifyDataSetChanged();
     }
 
@@ -187,14 +187,14 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
         private void updateDataElements(ReportEntity reportEntity) {
 
-            if (reportEntityReportEntityFilters == null) {
+            if (ReportEntityFilters == null) {
                 showPlaceholder();
-            } else if (noDataElementsToShow(reportEntityReportEntityFilters)) {
+            } else if (noDataElementsToShow(ReportEntityFilters)) {
                 showThreeFirstDataElements(reportEntity);
             } else {
                 int i = 0;
-                while (i < reportEntityReportEntityFilters.size()) {
-                    ReportEntityFilter filter = reportEntityReportEntityFilters.get(i);
+                while (i < ReportEntityFilters.size()) {
+                    ReportEntityFilter filter = ReportEntityFilters.get(i);
                     if (filter.show()) {
                         View dataElementLabelView = dataElementLabelContainer.getChildAt(i);
                         if (dataElementLabelView == null) {
@@ -230,7 +230,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
             final int PLACEHOLDER_AMOUNT = 3;
             int viewIndex = 0;
 
-            for (int i = 0; i < reportEntityReportEntityFilters.size(); i++) {
+            for (int i = 0; i < ReportEntityFilters.size(); i++) {
 
                 if (i >= PLACEHOLDER_AMOUNT) {
                     // only show PLACEHOLDER_AMOUNT of items
@@ -244,7 +244,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                     dataElementLabelContainer.addView(dataElementLabelView);
                 }
 
-                final ReportEntityFilter filter = reportEntityReportEntityFilters.get(i);
+                final ReportEntityFilter filter = ReportEntityFilters.get(i);
                 String value = reportEntity.getValueForDataElement(filter.getDataElementId());
 
                 String dataElementString = String.format("%s: %s", filter.getDataElementLabel(), value);
@@ -380,9 +380,9 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
     }
 
-    private boolean noDataElementsToShow(ArrayList<ReportEntityFilter> reportEntityReportEntityFilters) {
-        for (ReportEntityFilter reportEntityReportEntityFilter : reportEntityReportEntityFilters) {
-            if (reportEntityReportEntityFilter.show()) {
+    private boolean noDataElementsToShow(ArrayList<ReportEntityFilter> ReportEntityFilters) {
+        for (ReportEntityFilter ReportEntityFilter : ReportEntityFilters) {
+            if (ReportEntityFilter.show()) {
                 return false;
             }
         }
@@ -415,7 +415,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public ArrayList<ReportEntityFilter> getReportEntityReportEntityFilters() {
-        return reportEntityReportEntityFilters;
+    public ArrayList<ReportEntityFilter> getReportEntityFilters() {
+        return ReportEntityFilters;
     }
 }

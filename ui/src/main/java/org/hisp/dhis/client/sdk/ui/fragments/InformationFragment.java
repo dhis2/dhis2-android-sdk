@@ -36,7 +36,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +49,6 @@ import org.hisp.dhis.client.sdk.core.common.preferences.PreferencesModule;
 import org.hisp.dhis.client.sdk.ui.R;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -72,7 +70,7 @@ public class InformationFragment extends Fragment {
         TextView sessionText = (TextView) getActivity().findViewById(R.id.app_session);
 
         //TODO: refactor this, this is just for testing.
-        TextView documentation = (TextView) getActivity().findViewById(R.id.textview_documentation);
+        //TextView documentation = (TextView) getActivity().findViewById(R.id.textview_documentation);
 
         PreferencesModule preferencesModule = new PreferencesModuleImpl(getContext());
 
@@ -89,12 +87,12 @@ public class InformationFragment extends Fragment {
         // setup fields :
         setAppNameAndVersion(getContext().getApplicationInfo().packageName);
 
-        setDocumentationUrl("https://dhis2.github.io/#android");
+        //setDocumentationUrl("https://dhis2.github.io/#android");
 
-        setSdkLicence("Dhis2-android-sdk", "https://dhis2.github.io/#license");
+        //setSdkLicence("Dhis2-android-sdk", "https://dhis2.github.io/#license");
 
         //setup libraries list:
-        Bundle args = this.getArguments();
+        /*Bundle args = this.getArguments();
 
         if (args != null) {
             ArrayList<LibInfo> libs = args.getParcelableArrayList(LIBS_LIST);
@@ -102,7 +100,7 @@ public class InformationFragment extends Fragment {
                 Log.d("ParcelableLibs", "onViewCreated: " + lib.getName() + " - " + lib.getLicence());
             }
             setAppLibraries(libs);
-        }
+        }*/
     }
 
     /**
@@ -170,11 +168,12 @@ public class InformationFragment extends Fragment {
     public static Bundle newBundle(List<LibInfo> libraries) {
         Bundle libs = new Bundle();
 
-        ArrayList<LibInfo> libsList = new ArrayList<>(Arrays.asList(
+        // This is where we would put the sdk libraries
+        ArrayList<LibInfo> libsList = new ArrayList<>();/*Arrays.asList(
                 new LibInfo("name1", "licence1"),
                 new LibInfo("name2", "licence1"),
                 new LibInfo("name3", "licence1")
-        ));
+        ));*/
 
         if (libraries != null) {
             for (LibInfo library : libraries) {

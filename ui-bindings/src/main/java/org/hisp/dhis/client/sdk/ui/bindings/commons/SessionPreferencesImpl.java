@@ -75,7 +75,7 @@ public class SessionPreferencesImpl implements SessionPreferences {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         for (ReportEntityFilter filter : filters) {
             String filterKey = String.format("%s:%s", programUid, filter.getDataElementId());
-            editor.putBoolean(filterKey, filter.show());
+                editor.putBoolean(filterKey, filter.show());
         }
         editor.apply();
     }

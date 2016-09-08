@@ -20,16 +20,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.hisp.dhis.client.sdk.ui.models.ReportEntityFilter;
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.models.ReportEntity;
+import org.hisp.dhis.client.sdk.ui.models.ReportEntityFilter;
 import org.hisp.dhis.client.sdk.ui.views.CircleView;
 import org.hisp.dhis.client.sdk.ui.views.FontTextView;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.http.HEAD;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
@@ -195,14 +193,14 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                 int i = 0;
                 while (i < ReportEntityFilters.size()) {
                     ReportEntityFilter filter = ReportEntityFilters.get(i);
-                    if (filter.show()) {
-                        View dataElementLabelView = dataElementLabelContainer.getChildAt(i);
-                        if (dataElementLabelView == null) {
-                            dataElementLabelView = layoutInflater.inflate(
-                                    R.layout.data_element_label, dataElementLabelContainer, false);
-                            dataElementLabelContainer.addView(dataElementLabelView);
-                        }
+                    View dataElementLabelView = dataElementLabelContainer.getChildAt(i);
+                    if (dataElementLabelView == null) {
+                        dataElementLabelView = layoutInflater.inflate(
+                                R.layout.data_element_label, dataElementLabelContainer, false);
+                        dataElementLabelContainer.addView(dataElementLabelView);
+                    }
 
+                    if (filter.show()) {
                         String value = reportEntity.getValueForDataElement(filter.getDataElementId());
 
                         String dataElementString = String.format("%s: %s", filter.getDataElementLabel(), value);
@@ -213,9 +211,13 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                                 dataElementString.length() - value.length(),
                                 dataElementString.length(),
                                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
                         ((FontTextView) dataElementLabelView).setText(text, TextView.BufferType.SPANNABLE);
+                        dataElementLabelView.setVisibility(View.VISIBLE);
+                    } else {
+                        //hide it:
+                        dataElementLabelView.setVisibility(View.GONE);
                     }
+
                     i++;
                 }
                 while (dataElementLabelContainer.getChildCount() > i) {
@@ -223,9 +225,9 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                     dataElementLabelContainer.removeViewAt(dataElementLabelContainer.getChildCount() - 1);
                 }
             }
-
         }
 
+        //TODO: Consider showing a default selection of filters. It seems like it would be more useful  to show event date for example.
         private void showThreeFirstDataElements(ReportEntity reportEntity) {
             final int PLACEHOLDER_AMOUNT = 3;
             int viewIndex = 0;
@@ -257,7 +259,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                 ((FontTextView) dataElementLabelView).setText(text, TextView.BufferType.SPANNABLE);
-
+                dataElementLabelView.setVisibility(View.VISIBLE);
             }
 
             while (dataElementLabelContainer.getChildCount() > viewIndex) {
@@ -377,7 +379,6 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                 }
             }
         }
-
     }
 
     private boolean noDataElementsToShow(ArrayList<ReportEntityFilter> ReportEntityFilters) {

@@ -64,13 +64,18 @@ public class OptionSetApiClientImpl implements OptionSetApiClient {
 
             @Override
             public String getBasicProperties() {
-                return "id,displayName";
+                return "id";
             }
 
             @Override
             public String getAllProperties() {
                 return "id,name,displayName,created,lastUpdated,access," +
                         "version,options[id,name,displayName,created,lastUpdated,access,code]";
+            }
+
+            @Override
+            public String getDescendantProperties() {
+                throw new UnsupportedOperationException();
             }
 
             @Override

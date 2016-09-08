@@ -29,6 +29,8 @@ import org.hisp.dhis.client.sdk.ui.views.FontTextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.http.HEAD;
+
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class ReportEntityAdapter extends RecyclerView.Adapter {
@@ -262,6 +264,26 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                 // remove old views if they exist
                 dataElementLabelContainer.removeViewAt(dataElementLabelContainer.getChildCount() - 1);
             }
+
+//======= Leftovers from update() in develop
+            /*if (dataElementLabels == null || dataElementLabels.isEmpty()) {
+                showEmptyPlaceholder();
+            } else {
+                for (String dataElementLabel : dataElementLabels) {
+                    View dataElementLabelView = dataElementLabelContainer.getChildAt(dataElementLabels.indexOf(dataElementLabel));
+                    if (dataElementLabelView == null) {
+                        dataElementLabelView = layoutInflater.inflate(R.layout.data_element_label, dataElementLabelContainer, false);
+                        dataElementLabelContainer.addView(dataElementLabelView);
+                    }
+                    ((FontTextView) dataElementLabelView).setText(dataElementLabel);
+                }
+                while (dataElementLabelContainer.getChildCount() > dataElementLabels.size()) {
+                    // remove old views if they exist
+                    dataElementLabelContainer.removeViewAt(dataElementLabelContainer.getChildCount() - 1);
+                }
+            }*/
+
+//>>>>>>> develop
         }
 
         private void showPlaceholder() {
@@ -275,6 +297,12 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                     // remove old views if they exist
                     dataElementLabelContainer.removeViewAt(dataElementLabelContainer.getChildCount() - 1);
                 }
+            }
+            ((FontTextView) dataElementLabelView).setText(dataElementLabelContainer.getContext().getString(R.string.report_entity));
+
+            while (dataElementLabelContainer.getChildCount() > 1) {
+                // remove old views if they exist
+                dataElementLabelContainer.removeViewAt(dataElementLabelContainer.getChildCount() - 1);
             }
         }
 

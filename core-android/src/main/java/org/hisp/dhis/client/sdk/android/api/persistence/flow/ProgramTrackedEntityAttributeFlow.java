@@ -75,9 +75,6 @@ public final class ProgramTrackedEntityAttributeFlow extends BaseIdentifiableObj
     ProgramFlow program;
 
     @Column
-    int sortOrder;
-
-    @Column
     boolean allowFutureDate;
 
     @Column
@@ -85,6 +82,8 @@ public final class ProgramTrackedEntityAttributeFlow extends BaseIdentifiableObj
 
     @Column
     boolean mandatory;
+
+
 
     public ProgramTrackedEntityAttributeFlow() {
         // empty constructor
@@ -107,11 +106,11 @@ public final class ProgramTrackedEntityAttributeFlow extends BaseIdentifiableObj
     }
 
     public int getSortOrder() {
-        return sortOrder;
+        return apiSortOrder;
     }
 
     public void setSortOrder(int sortOrder) {
-        this.sortOrder = sortOrder;
+        this.apiSortOrder = sortOrder;
     }
 
     public boolean isAllowFutureDate() {
@@ -161,7 +160,7 @@ public final class ProgramTrackedEntityAttributeFlow extends BaseIdentifiableObj
                     .mapToDatabaseEntity(attribute.getTrackedEntityAttribute()));
             attributeFlow.setProgram(ProgramFlow.MAPPER
                     .mapToDatabaseEntity(attribute.getProgram()));
-            attributeFlow.setSortOrder(attribute.getSortOrder());
+            attributeFlow.setSortOrder(attribute.getApiSortOrder());
             attributeFlow.setAllowFutureDate(attribute.isAllowFutureDate());
             attributeFlow.setDisplayInList(attribute.isDisplayInList());
             attributeFlow.setMandatory(attribute.isMandatory());
@@ -188,7 +187,7 @@ public final class ProgramTrackedEntityAttributeFlow extends BaseIdentifiableObj
                     .mapToModel(attributeFlow.getTrackedEntityAttribute()));
             attribute.setProgram(ProgramFlow.MAPPER
                     .mapToModel(attributeFlow.getProgram()));
-            attribute.setSortOrder(attributeFlow.getSortOrder());
+            attribute.setApiSortOrder(attributeFlow.getSortOrder());
             attribute.setAllowFutureDate(attributeFlow.isAllowFutureDate());
             attribute.setDisplayInList(attributeFlow.isDisplayInList());
             attribute.setMandatory(attributeFlow.isMandatory());

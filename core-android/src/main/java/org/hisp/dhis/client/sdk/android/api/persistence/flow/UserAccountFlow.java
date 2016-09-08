@@ -107,6 +107,9 @@ public final class UserAccountFlow extends BaseModel implements IdentifiableObje
     @Column(name = "phoneNumber")
     String phoneNumber;
 
+    @Column(name = "apiSortOrder")
+    int apiSortOrder;
+
     public UserAccountFlow() {
         action = org.hisp.dhis.client.sdk.models.common.state.Action.SYNCED;
     }
@@ -179,6 +182,16 @@ public final class UserAccountFlow extends BaseModel implements IdentifiableObje
     @Override
     public void setAccess(Access access) {
         this.access = access;
+    }
+
+    @Override
+    public void setApiSortOrder(int apiSortOrder) {
+        this.apiSortOrder = apiSortOrder;
+    }
+
+    @Override
+    public int getApiSortOrder() {
+        return apiSortOrder;
     }
 
     public org.hisp.dhis.client.sdk.models.common.state.Action getAction() {

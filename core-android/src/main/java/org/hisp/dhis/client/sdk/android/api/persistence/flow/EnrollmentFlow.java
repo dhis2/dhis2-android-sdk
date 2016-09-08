@@ -45,14 +45,10 @@ import org.joda.time.DateTime;
 import java.util.List;
 
 @Table(database = DbDhis.class)
-public final class EnrollmentFlow extends BaseModelFlow {
+public final class EnrollmentFlow extends BaseIdentifiableObjectFlow {
     public static final Mapper<Enrollment, EnrollmentFlow> MAPPER = new EnrollmentMapper();
 
     private final static String TRACKED_ENTITY_INSTANCE_KEY = "tei";
-
-    @Column
-    @Unique
-    String enrollmentUid;
 
     @Column
     String orgUnit;
@@ -80,22 +76,7 @@ public final class EnrollmentFlow extends BaseModelFlow {
     boolean followup;
 
     @Column
-    String status;
-
-    @Column
-    String name;
-
-    @Column
-    String displayName;
-
-    @Column
-    DateTime created;
-
-    @Column
-    DateTime lastUpdated;
-
-    @Column
-    Access access;
+    Enrollment.EnrollmentStatus status;
 
     List<EventFlow> events;
 
@@ -105,13 +86,6 @@ public final class EnrollmentFlow extends BaseModelFlow {
         // empty constructor
     }
 
-    public String getEnrollmentUid() {
-        return enrollmentUid;
-    }
-
-    public void setEnrollmentUid(String enrollmentUid) {
-        this.enrollmentUid = enrollmentUid;
-    }
 
     public String getOrgUnit() {
         return orgUnit;
@@ -161,52 +135,12 @@ public final class EnrollmentFlow extends BaseModelFlow {
         this.followup = followup;
     }
 
-    public String getStatus() {
+    public Enrollment.EnrollmentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Enrollment.EnrollmentStatus status) {
         this.status = status;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public DateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(DateTime created) {
-        this.created = created;
-    }
-
-    public DateTime getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(DateTime lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
-
-    public Access getAccess() {
-        return access;
-    }
-
-    public void setAccess(Access access) {
-        this.access = access;
     }
 
     public List<EventFlow> getEvents() {
@@ -236,7 +170,7 @@ public final class EnrollmentFlow extends BaseModelFlow {
 
             EnrollmentFlow enrollmentFlow = new EnrollmentFlow();
             enrollmentFlow.setId(enrollment.getId());
-            enrollmentFlow.setEnrollmentUid(enrollment.getUId());
+            enrollmentFlow.setUId(enrollment.getUId());
             enrollmentFlow.setOrgUnit(enrollment.getOrgUnit());
             enrollmentFlow.setTrackedEntityInstance(TrackedEntityInstanceFlow.MAPPER
                     .mapToDatabaseEntity(enrollment.getTrackedEntityInstance()));
@@ -261,7 +195,7 @@ public final class EnrollmentFlow extends BaseModelFlow {
 
             Enrollment enrollment = new Enrollment();
             enrollment.setId(enrollmentFlow.getId());
-            enrollment.setUId(enrollmentFlow.getEnrollmentUid());
+            enrollment.setUId(enrollmentFlow.getUId());
             enrollment.setOrgUnit(enrollmentFlow.getOrgUnit());
             enrollment.setTrackedEntityInstance(TrackedEntityInstanceFlow.MAPPER
                     .mapToModel(enrollmentFlow.getTrackedEntityInstance()));

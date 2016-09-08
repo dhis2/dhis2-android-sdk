@@ -35,13 +35,17 @@ import org.hisp.dhis.client.sdk.core.common.services.ListUids;
 import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramType;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ProgramService extends Service, Get<Program>, GetUid<Program>,
         ListAll<Program>, ListUids<Program> {
 
     List<Program> list(boolean assignedToCurrentUser);
+
+    List<Program> list(boolean assignedToCurrentUser, Set<ProgramType> programTypes);
 
     List<Program> list(List<OrganisationUnit> organisationUnits);
 }

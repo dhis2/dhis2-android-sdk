@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.core.common.controllers;
 
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementController;
+import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentController;
 import org.hisp.dhis.client.sdk.core.event.EventController;
 import org.hisp.dhis.client.sdk.core.optionset.OptionSetController;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitController;
@@ -42,6 +43,7 @@ import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementController;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionController;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeController;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInstanceController;
 import org.hisp.dhis.client.sdk.core.user.AssignedOrganisationUnitsController;
 import org.hisp.dhis.client.sdk.core.user.AssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.user.UserAccountController;
@@ -80,4 +82,8 @@ public interface ControllersModule {
     TrackedEntityAttributeController getTrackedEntityAttributeController();
 
     OptionSetController getOptionSetController();
+
+    TrackedEntityInstanceController getTrackedEntityInstanceController();
+
+    EnrollmentController getEnrollmentController();
 }

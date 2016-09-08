@@ -37,6 +37,7 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import rx.Observable;
@@ -55,6 +56,8 @@ public interface EventInteractor {
     Observable<Event> get(String uid);
 
     Observable<State> get(Event event);
+
+    Observable<Map<Long, State>> map(List<Event> events);
 
     Observable<List<Event>> list();
 

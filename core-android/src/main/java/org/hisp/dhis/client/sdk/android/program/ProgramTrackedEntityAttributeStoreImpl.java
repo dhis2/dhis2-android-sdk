@@ -33,6 +33,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramTrackedEntityAttributeFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow
         .ProgramTrackedEntityAttributeFlow_Table;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.AbsStore;
 import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.core.program.ProgramTrackedEntityAttributeStore;
@@ -43,12 +44,11 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 import java.util.List;
 
 public final class ProgramTrackedEntityAttributeStoreImpl extends
-        AbsStore<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeFlow> implements
+        AbsIdentifiableObjectStore<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeFlow> implements
         ProgramTrackedEntityAttributeStore {
 
-    public ProgramTrackedEntityAttributeStoreImpl(Mapper<ProgramTrackedEntityAttribute,
-                ProgramTrackedEntityAttributeFlow> mapper) {
-        super(mapper);
+    public ProgramTrackedEntityAttributeStoreImpl() {
+        super(ProgramTrackedEntityAttributeFlow.MAPPER);
     }
 
     @Override

@@ -112,7 +112,8 @@ public abstract class AbsStore<ModelType extends Model,
     public ModelType queryById(long id) {
         DatabaseEntityType databaseEntity = new Select()
                 .from(mapper.getDatabaseEntityTypeClass())
-                .where(Condition.column(new NameAlias(BaseModelFlow.COLUMN_ID)).is(id))
+                .where(Condition.column(NameAlias
+                        .builder(BaseModelFlow.COLUMN_ID).build()).is(id))
                 .querySingle();
         return mapper.mapToModel(databaseEntity);
     }

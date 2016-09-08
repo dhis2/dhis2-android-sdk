@@ -101,6 +101,7 @@ public class DefaultNotificationHandlerImpl implements DefaultNotificationHandle
         }
 
         builder.setSmallIcon(R.drawable.ic_notification);
+        builder.setAutoCancel(true);
 
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

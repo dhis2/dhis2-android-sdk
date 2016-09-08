@@ -54,6 +54,8 @@ public class ProgramApiClientImpl implements ProgramApiClient {
     public List<Program> getPrograms(
             Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException {
         ApiResource<Program> apiResource = new ApiResource<Program>() {
+            static final String IDENTIFIABLE_PROPERTIES =
+                    "id,name,displayName,created,lastUpdated,access";
 
             @Override
             public String getResourceName() {
@@ -62,13 +64,42 @@ public class ProgramApiClientImpl implements ProgramApiClient {
 
             @Override
             public String getBasicProperties() {
-                return "id,displayName";
+                return "id,version";
             }
 
             @Override
             public String getAllProperties() {
-                return "id,name,displayName,created,lastUpdated,access," +
-                        "programType,organisationUnits[id],programStages[id]";
+                return IDENTIFIABLE_PROPERTIES + ",version,programType," +
+                        "organisationUnits[id],programStages[id],trackedEntity[id]," +
+                        "programTrackedEntityAttributes[id]";
+            }
+
+            @Override
+            public String getDescendantProperties() {
+                return IDENTIFIABLE_PROPERTIES + ",version,programType,organisationUnits[id],trackedEntity[" + IDENTIFIABLE_PROPERTIES + "]," +
+                        "programTrackedEntityAttributes[" + IDENTIFIABLE_PROPERTIES + ",mandatory," + // start programTrackedEntityAttributes
+                        "displayShortName,externalAccess,valueType,allowFutureDate,displayInList,program[id]," +
+                        "trackedEntityAttribute["+ IDENTIFIABLE_PROPERTIES + ",unique,programScope," + // start trackedEntityAttribute of parent programTrackedEntityAttributes
+                        "orgunitScope,displayInListNoProgram,displayOnVisitSchedule,externalAccess," +
+                        "valueType,confidential,inherit,sortOrderVisitSchedule,dimension,sortOrderInListNoProgram]]" + //end programTrackedEntityAttributes
+                        ",displayFrontPageList,useFirstStageDuringRegistration," +
+                        "selectEnrollmentDatesInFuture,incidentDateLabel,selectIncidentDatesInFuture," +
+                        "onlyEnrollOnce,enrollmentDateLabel,ignoreOverdueEvents,displayIncidentDate," +
+                        "withoutRegistration,registration,relationshipFromA," +
+                        "programStages[" + IDENTIFIABLE_PROPERTIES + ",dataEntryType," + // start programStages
+                        "blockEntryForm,reportDateDescription,executionDateLabel," +
+                        "displayGenerateEventBox,description,externalAccess,openAfterEnrollment," +
+                        "captureCoordinates,defaultTemplateMessage,remindCompleted," +
+                        "validCompleteOnly,sortOrder,generatedByEnrollmentDate,preGenerateUID," +
+                        "autoGenerateEvent,allowGenerateNextVisit,repeatable,minDaysFromStart," +
+                        "program[id],programStageSections[" + IDENTIFIABLE_PROPERTIES + ",sortOrder," + // start programStageSections of parent programStages
+                        "programStage[id],programStageDataElements[id]" + "]," +
+                        "programStageDataElements[" + IDENTIFIABLE_PROPERTIES + ",programStage[id]," + // start programStageDataElements of parent programStageSections
+                        "allowFutureDate,sortOrder,displayInReports,allowProvidedElsewhere," +
+                        "compulsory,dataElement[" + IDENTIFIABLE_PROPERTIES + "shortName,valueType," + // start dataElement of parent programStageDataElements
+                        "zeroIsSignificant,aggregationOperator,formName,numberType,domainType," +
+                        "dimension,displayFormName,optionSet[" + IDENTIFIABLE_PROPERTIES + // start optionSet of parent dataElement
+                        ",version,options[" + IDENTIFIABLE_PROPERTIES + ",code]]]]]"; // end
             }
 
             @Override

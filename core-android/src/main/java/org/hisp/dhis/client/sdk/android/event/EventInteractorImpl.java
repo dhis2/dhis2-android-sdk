@@ -40,6 +40,7 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import rx.Observable;
@@ -148,6 +149,16 @@ public class EventInteractorImpl implements EventInteractor {
             @Override
             public State call() {
                 return eventService.get(event);
+            }
+        });
+    }
+
+    @Override
+    public Observable<Map<Long, State>> map(final List<Event> events) {
+        return Observable.create(new DefaultOnSubscribe<Map<Long, State>>() {
+            @Override
+            public Map<Long, State> call() {
+                return eventService.map(events);
             }
         });
     }

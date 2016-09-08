@@ -79,6 +79,9 @@ public interface StateStore extends Store<State> {
      */
     <T extends Model> State queryStateForModel(T object);
 
+
+    <T extends Model> Map<Long, State> queryStatesForModels(List<T> list);
+
     /**
      * @param object Model which action should be returned.
      * @return State of given object.

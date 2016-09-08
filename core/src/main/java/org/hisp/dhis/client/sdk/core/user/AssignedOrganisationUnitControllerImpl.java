@@ -47,8 +47,7 @@ public class AssignedOrganisationUnitControllerImpl implements AssignedOrganisat
     private final OrganisationUnitController organisationUnitController;
 
     public AssignedOrganisationUnitControllerImpl(
-            UserApiClient userApiClient, OrganisationUnitController
-            organisationUnitController) {
+            OrganisationUnitController organisationUnitController, UserApiClient userApiClient) {
         this.userApiClient = userApiClient;
         this.organisationUnitController = organisationUnitController;
     }

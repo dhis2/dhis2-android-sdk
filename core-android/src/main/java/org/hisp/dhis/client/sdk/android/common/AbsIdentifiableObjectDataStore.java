@@ -45,7 +45,7 @@ import java.util.Set;
 
 public class AbsIdentifiableObjectDataStore<ModelType extends IdentifiableObject,
         DatabaseEntityType extends Model & IdentifiableObject> extends AbsDataStore<ModelType,
-                DatabaseEntityType> implements IdentifiableObjectStore<ModelType> {
+        DatabaseEntityType> implements IdentifiableObjectStore<ModelType> {
 
     public AbsIdentifiableObjectDataStore(
             Mapper<ModelType, DatabaseEntityType> mapper, StateStore stateStore) {
@@ -56,8 +56,8 @@ public class AbsIdentifiableObjectDataStore<ModelType extends IdentifiableObject
     public ModelType queryById(long id) {
         DatabaseEntityType databaseEntity = new Select()
                 .from(getMapper().getDatabaseEntityTypeClass())
-                .where(Condition.column(new NameAlias(BaseModelFlow
-                        .COLUMN_ID)).is(id))
+                .where(Condition.column(NameAlias.builder(BaseModelFlow
+                        .COLUMN_ID).build()).is(id))
                 .querySingle();
         return getMapper().mapToModel(databaseEntity);
     }
@@ -66,8 +66,8 @@ public class AbsIdentifiableObjectDataStore<ModelType extends IdentifiableObject
     public ModelType queryByUid(String uid) {
         List<DatabaseEntityType> databaseEntities = new Select()
                 .from(getMapper().getDatabaseEntityTypeClass())
-                .where(Condition.column(new NameAlias(BaseIdentifiableObjectFlow
-                        .COLUMN_UID)).is(uid))
+                .where(Condition.column(NameAlias.builder(BaseIdentifiableObjectFlow
+                        .COLUMN_UID).build()).is(uid))
                 .queryList();
 
         if (databaseEntities != null && !databaseEntities.isEmpty()) {
@@ -100,8 +100,8 @@ public class AbsIdentifiableObjectDataStore<ModelType extends IdentifiableObject
         if (uids != null && !uids.isEmpty()) {
             return new Select()
                     .from(getMapper().getDatabaseEntityTypeClass())
-                    .where(Condition.column(new NameAlias(BaseIdentifiableObjectFlow
-                            .COLUMN_UID)).in(uids))
+                    .where(Condition.column(NameAlias.builder(BaseIdentifiableObjectFlow
+                            .COLUMN_UID).build()).in(uids))
                     .queryList();
         }
 

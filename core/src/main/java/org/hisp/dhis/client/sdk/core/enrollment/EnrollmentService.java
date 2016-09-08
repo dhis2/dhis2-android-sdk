@@ -59,8 +59,7 @@ public interface EnrollmentService extends Service, Save<Enrollment>,
      * @param program
      * @return
      */
-    Enrollment getActiveEnrollment(TrackedEntityInstance trackedEntityInstance,
-                                   OrganisationUnit organisationUnit, Program program);
+    Enrollment getActiveEnrollment(OrganisationUnit organisationUnit, Program program, TrackedEntityInstance trackedEntityInstance);
 
     /**
      * Returns a list of all Enrollments for a given Tracked Entity Instance
@@ -77,7 +76,7 @@ public interface EnrollmentService extends Service, Save<Enrollment>,
      * @param organisationUnit
      * @return
      */
-    List<Enrollment> list(Program program, OrganisationUnit organisationUnit);
+    List<Enrollment> list(OrganisationUnit organisationUnit, Program program);
 
     List<Enrollment> list(Program program, TrackedEntityInstance trackedEntityInstance);
 

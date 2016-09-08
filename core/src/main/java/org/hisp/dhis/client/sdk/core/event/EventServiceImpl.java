@@ -178,6 +178,17 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public Map<Long, State> map(List<Event> events) {
+        isNull(events, "Event list must not be null");
+
+        if (events.isEmpty()) {
+            throw new IllegalArgumentException("Provide at least one event");
+        }
+
+        return stateStore.queryStatesForModels(events);
+    }
+
+    @Override
     public State get(Event event) {
         return stateStore.queryStateForModel(event);
     }

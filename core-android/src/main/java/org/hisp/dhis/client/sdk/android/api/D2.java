@@ -38,6 +38,8 @@ import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.android.api.utils.LoggerImpl;
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementInteractor;
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementInteractorImpl;
+import org.hisp.dhis.client.sdk.android.enrollment.EnrollmentInteractor;
+import org.hisp.dhis.client.sdk.android.enrollment.EnrollmentInteractorImpl;
 import org.hisp.dhis.client.sdk.android.event.EventInteractor;
 import org.hisp.dhis.client.sdk.android.event.EventInteractorImpl;
 import org.hisp.dhis.client.sdk.android.optionset.OptionSetInteractor;
@@ -62,12 +64,18 @@ import org.hisp.dhis.client.sdk.android.program.ProgramStageInteractor;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageInteractorImpl;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionInteractor;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionInteractorImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramTrackedEntityAttributeInteractor;
+import org.hisp.dhis.client.sdk.android.program.ProgramTrackedEntityAttributeInteractorImpl;
 import org.hisp.dhis.client.sdk.android.program.UserProgramInteractor;
 import org.hisp.dhis.client.sdk.android.program.UserProgramInteractorImpl;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeInteractor;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeInteractorImpl;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeValueInteractor;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeValueInteractorImpl;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueInteractor;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueInteractorImpl;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityInstanceInteractor;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityInstanceInteractorImpl;
 import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractor;
 import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractorImpl;
 import org.hisp.dhis.client.sdk.android.user.UserAccountInteractor;
@@ -123,7 +131,10 @@ public class D2 {
     private final ProgramStageDataElementInteractor programStageDataElementInteractor;
     private final DataElementInteractor dataElementInteractor;
     private final OptionSetInteractor optionSetInteractor;
-
+    private final EnrollmentInteractor enrollmentInteractor;
+    private final TrackedEntityInstanceInteractor trackedEntityInstanceInteractor;
+    private final TrackedEntityAttributeValueInteractor trackedEntityAttributeValueInteractor;
+    private final ProgramTrackedEntityAttributeInteractor programTrackedEntityAttributeInteractor;
     //-----------------------------------------------------------------------------------------
     // Utilities
     //-----------------------------------------------------------------------------------------
@@ -157,6 +168,10 @@ public class D2 {
             trackedEntityAttributeInteractor = null;
             trackedEntityDataValueInteractor = null;
             optionSetInteractor = null;
+            enrollmentInteractor = null;
+            trackedEntityInstanceInteractor = null;
+            trackedEntityAttributeValueInteractor = null;
+            programTrackedEntityAttributeInteractor = null;
             logger = null;
             return;
         }
@@ -230,6 +245,19 @@ public class D2 {
 
         trackedEntityDataValueInteractor = new TrackedEntityDataValueInteractorImpl(
                 servicesModule.getTrackedEntityDataValueService());
+
+        enrollmentInteractor = new EnrollmentInteractorImpl(servicesModule.getEnrollmentService(),
+                controllersModule.getEnrollmentController());
+
+        trackedEntityInstanceInteractor = new TrackedEntityInstanceInteractorImpl(
+                servicesModule.getTrackedEntityInstanceService(),
+                controllersModule.getTrackedEntityInstanceController());
+
+        trackedEntityAttributeValueInteractor = new TrackedEntityAttributeValueInteractorImpl(
+                servicesModule.getTrackedEntityAttributeValueService());
+
+        programTrackedEntityAttributeInteractor = new ProgramTrackedEntityAttributeInteractorImpl(
+                servicesModule.getProgramTrackedEntityAttributeService());
 
         currentUserInteractor = new CurrentUserInteractorImpl(
                 preferencesModule.getUserPreferences(),
@@ -400,6 +428,22 @@ public class D2 {
 
     public static OptionSetInteractor optionSets() {
         return configuredInstance().optionSetInteractor;
+    }
+
+    public static EnrollmentInteractor enrollments() {
+        return configuredInstance().enrollmentInteractor;
+    }
+
+    public static TrackedEntityInstanceInteractor trackedEntityInstances() {
+        return configuredInstance().trackedEntityInstanceInteractor;
+    }
+
+    public static TrackedEntityAttributeValueInteractor trackedEntityAttributeValues() {
+        return configuredInstance().trackedEntityAttributeValueInteractor;
+    }
+
+    public static ProgramTrackedEntityAttributeInteractor programTrackedEntityAttributes() {
+        return configuredInstance().programTrackedEntityAttributeInteractor;
     }
 
     public static Logger logger() {

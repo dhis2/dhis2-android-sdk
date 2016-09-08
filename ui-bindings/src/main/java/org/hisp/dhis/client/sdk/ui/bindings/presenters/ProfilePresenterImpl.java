@@ -2,7 +2,7 @@ package org.hisp.dhis.client.sdk.ui.bindings.presenters;
 
 import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractor;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
-import org.hisp.dhis.client.sdk.ui.SyncDateWrapper;
+import org.hisp.dhis.client.sdk.ui.bindings.commons.SyncDateWrapper;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.DefaultAppAccountManager;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.DefaultNotificationHandler;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.RxOnValueChangedListener;
@@ -215,14 +215,24 @@ public class ProfilePresenterImpl implements ProfilePresenter {
         ///////////////////////////////////////////////////////////////////////////////
         // Building gender picker
         ///////////////////////////////////////////////////////////////////////////////
-        Picker genderPicker = Picker.create(profileView
-                .getUserAccountFieldLabel(ProfileView.ID_GENDER));
-        Picker pickerItemMale = Picker.create(UserAccount.GENDER_MALE,
-                profileView.getUserAccountFieldLabel(ProfileView.ID_GENDER_MALE), genderPicker);
-        Picker pickerItemFemale = Picker.create(UserAccount.GENDER_FEMALE,
-                profileView.getUserAccountFieldLabel(ProfileView.ID_GENDER_FEMALE), genderPicker);
-        Picker pickerItemOther = Picker.create(UserAccount.GENDER_OTHER,
-                profileView.getUserAccountFieldLabel(ProfileView.ID_GENDER_OTHER), genderPicker);
+        Picker genderPicker = new Picker.Builder()
+                .hint(profileView.getUserAccountFieldLabel(ProfileView.ID_GENDER))
+                .build();
+        Picker pickerItemMale = new Picker.Builder()
+                .id(UserAccount.GENDER_MALE)
+                .name(profileView.getUserAccountFieldLabel(ProfileView.ID_GENDER_MALE))
+                .parent(genderPicker)
+                .build();
+        Picker pickerItemFemale = new Picker.Builder()
+                .id(UserAccount.GENDER_FEMALE)
+                .name(profileView.getUserAccountFieldLabel(ProfileView.ID_GENDER_FEMALE))
+                .parent(genderPicker)
+                .build();
+        Picker pickerItemOther = new Picker.Builder()
+                .id(UserAccount.GENDER_OTHER)
+                .name(profileView.getUserAccountFieldLabel(ProfileView.ID_GENDER_OTHER))
+                .parent(genderPicker)
+                .build();
 
         genderPicker.addChild(pickerItemMale);
         genderPicker.addChild(pickerItemFemale);

@@ -1,9 +1,11 @@
 package org.hisp.dhis.client.sdk.rules;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.hisp.dhis.commons.util.ExpressionFunctions;
+
+import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -83,15 +85,10 @@ abstract class DhisFunction {
     private static int getIntervalsBetween(int daysInInterval, List<String> parameters, String expression) {
         DateTimeFormatter f =  DateTimeFormatter.ofPattern(RuleEngineVariableValueMap.DATE_PATTERN);
 
-        LocalDate d1;
-        LocalDate d2;
         try {
-            d1 = LocalDate.parse(parameters.get(0), f);
-            d2 = LocalDate.parse(parameters.get(1), f);
-            return new Long((d2.toEpochDay() - d1.toEpochDay()) / daysInInterval).intValue();
-
+            return (ExpressionFunctions.daysBetween(parameters.get(0),parameters.get(1)) / daysInInterval);
         }
-        catch (Exception e) {
+        catch (ParseException e) {
             //TODO: Log the error and the expression
             return 0;
         }

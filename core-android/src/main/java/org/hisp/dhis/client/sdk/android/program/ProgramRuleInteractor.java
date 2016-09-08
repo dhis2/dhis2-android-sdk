@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.program.ProgramFields;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
@@ -53,11 +54,12 @@ public interface ProgramRuleInteractor {
 
     Observable<List<ProgramRule>> pull(Set<String> uids);
 
-    Observable<List<ProgramRule>> pull(List<Program> programs);
+    Observable<List<ProgramRule>> pull(List<Program> programs, ProgramFields fields);
 
     Observable<List<ProgramRule>> pull(SyncStrategy syncStrategy);
 
     Observable<List<ProgramRule>> pull(SyncStrategy syncStrategy, Set<String> uids);
 
-    Observable<List<ProgramRule>> pull(SyncStrategy syncStrategy, List<Program> programs);
+    Observable<List<ProgramRule>> pull(
+            SyncStrategy syncStrategy, ProgramFields programFields, List<Program> programs);
 }

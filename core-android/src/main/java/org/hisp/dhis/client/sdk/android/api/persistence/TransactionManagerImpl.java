@@ -28,13 +28,17 @@
 
 package org.hisp.dhis.client.sdk.android.api.persistence;
 
+import com.raizlabs.android.dbflow.config.DatabaseDefinition;
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
+import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
+
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 
 import java.util.Collection;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
-
 
 public class TransactionManagerImpl implements TransactionManager {
 
@@ -50,14 +54,15 @@ public class TransactionManagerImpl implements TransactionManager {
             return;
         }
 
-        com.raizlabs.android.dbflow.runtime.TransactionManager
-                .transact(DbDhis.NAME, new Runnable() {
-                    @Override
-                    public void run() {
-                        for (DbOperation operation : operations) {
-                            operation.execute();
-                        }
-                    }
-                });
+        DatabaseDefinition databaseDefinition =
+                FlowManager.getDatabase(DbDhis.class);
+        databaseDefinition.executeTransaction(new ITransaction() {
+            @Override
+            public void execute(DatabaseWrapper databaseWrapper) {
+                for (DbOperation operation : operations) {
+                    operation.execute();
+                }
+            }
+        });
     }
 }

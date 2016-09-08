@@ -29,8 +29,10 @@
 package org.hisp.dhis.client.sdk.core.program;
 
 import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.KeyValue;
 import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
@@ -41,11 +43,14 @@ import org.hisp.dhis.client.sdk.core.common.utils.ModelUtils;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
+import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public final class ProgramRuleControllerImpl
@@ -55,14 +60,16 @@ public final class ProgramRuleControllerImpl
     private final ProgramRuleApiClient programRuleApiClient;
     private final ProgramController programController;
     private final ProgramStageController programStageController;
+    private ProgramRuleActionController programRuleActionController;
+    private ProgramRuleVariableController programRuleVariableController;
 
-    public ProgramRuleControllerImpl(TransactionManager transactionManager,
-                                     LastUpdatedPreferences lastUpdatedPreferences,
-                                     ProgramRuleStore programRuleStore,
-                                     SystemInfoController systemInfoController,
-                                     ProgramRuleApiClient programRuleApiClient,
+    public ProgramRuleControllerImpl(SystemInfoController systemInfoController,
                                      ProgramController programController,
-                                     ProgramStageController programStageController) {
+                                     ProgramStageController programStageController,
+                                     ProgramRuleApiClient programRuleApiClient,
+                                     ProgramRuleStore programRuleStore,
+                                     LastUpdatedPreferences lastUpdatedPreferences,
+                                     TransactionManager transactionManager) {
         super(ResourceType.PROGRAM_RULES, programRuleStore, lastUpdatedPreferences);
         this.transactionManager = transactionManager;
         this.systemInfoController = systemInfoController;
@@ -73,6 +80,86 @@ public final class ProgramRuleControllerImpl
 
     @Override
     protected void synchronize(SyncStrategy strategy, Set<String> uids) {
+        synchronizeByLastUpdated(strategy, uids);
+    }
+
+    @Override
+    public void pull(SyncStrategy strategy, ProgramFields fields,
+                     List<Program> programList) throws ApiException {
+        if (ProgramFields.ALL.equals(fields)) {
+            List<ProgramRule> programRulesAssignedToPrograms = programRuleApiClient
+                    .getProgramRulesByPrograms(Fields.BASIC, null, programList);
+            Set<String> programRuleUids = ModelUtils.toUidSet(programRulesAssignedToPrograms);
+
+            // delegate syncing to another pull method
+            pull(strategy, programRuleUids);
+        } else if (ProgramFields.DESCENDANTS.equals(fields)) {
+            List<DbOperation> dbOperations = pull(programList);
+            transactionManager.transact(dbOperations);
+        }
+    }
+
+    @Override
+    public List<DbOperation> pull(List<Program> programs) throws ApiException {
+        if (programs == null || programs.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        KeyValue<List<ProgramRule>, List<DbOperation>> updatedRules =
+                updateProgramRules(programs);
+        KeyValue<List<ProgramRuleAction>, List<DbOperation>> updatedRuleActions =
+                updateRuleActions(updatedRules.getKey());
+        List<DbOperation> updatedRuleVariables =
+                programRuleVariableController.pull(programs);
+
+        List<DbOperation> dbOperations = new ArrayList<>();
+        dbOperations.addAll(updatedRules.getValue());
+        dbOperations.addAll(updatedRuleActions.getValue());
+        dbOperations.addAll(updatedRuleVariables);
+
+        return dbOperations;
+    }
+
+    private KeyValue<List<ProgramRule>, List<DbOperation>> updateProgramRules(
+            List<Program> programs) {
+        List<ProgramRule> persistedProgramRules = identifiableObjectStore.queryAll();
+        List<ProgramRule> allExistingProgramRules = programRuleApiClient
+                .getProgramRules(Fields.BASIC, null);
+
+        List<ProgramRule> updatedProgramRules = programRuleApiClient
+                .getProgramRulesByPrograms(Fields.DESCENDANTS, null, programs);
+
+        List<DbOperation> dbOperations = DbUtils.createOperations(
+                allExistingProgramRules, updatedProgramRules,
+                persistedProgramRules, identifiableObjectStore);
+
+        return new KeyValue<>(updatedProgramRules, dbOperations);
+    }
+
+    private KeyValue<List<ProgramRuleAction>, List<DbOperation>> updateRuleActions(
+            List<ProgramRule> programRules) {
+        Map<String, ProgramRuleAction> actionMap = new HashMap<>();
+
+        if (programRules != null && !programRules.isEmpty()) {
+            for (ProgramRule programRule : programRules) {
+                if (programRule.getProgramRuleActions() == null ||
+                        programRule.getProgramRuleActions().isEmpty()) {
+                    continue;
+                }
+
+                for (ProgramRuleAction programRuleAction : programRule.getProgramRuleActions()) {
+                    actionMap.put(programRuleAction.getUId(), programRuleAction);
+                }
+            }
+        }
+
+        List<ProgramRuleAction> programRuleActions = new ArrayList<>(actionMap.values());
+        return new KeyValue<>(programRuleActions,
+                programRuleActionController.merge(programRuleActions));
+    }
+
+    private void synchronizeByLastUpdated(
+            SyncStrategy strategy, Set<String> uids) throws ApiException {
         DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
         DateTime lastUpdated = lastUpdatedPreferences.get(
                 ResourceType.PROGRAM_RULES, DateType.SERVER);
@@ -140,13 +227,11 @@ public final class ProgramRuleControllerImpl
                 DateType.SERVER, serverTime);
     }
 
-    @Override
-    public void pull(SyncStrategy strategy, List<Program> programList) {
-        List<ProgramRule> programRulesAssignedToPrograms = programRuleApiClient
-                .getProgramRulesByPrograms(Fields.BASIC, null, programList);
-        Set<String> programRuleUids = ModelUtils.toUidSet(programRulesAssignedToPrograms);
+    public void setProgramRuleActionController(ProgramRuleActionController programRuleActionController) {
+        this.programRuleActionController = programRuleActionController;
+    }
 
-        // delegate syncing to another pull method
-        pull(strategy, programRuleUids);
+    public void setProgramRuleVariableController(ProgramRuleVariableController programRuleVariableController) {
+        this.programRuleVariableController = programRuleVariableController;
     }
 }

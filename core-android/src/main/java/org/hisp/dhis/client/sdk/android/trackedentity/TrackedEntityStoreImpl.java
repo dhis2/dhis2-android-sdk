@@ -32,12 +32,13 @@ import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityFlow;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityStore;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 
 public final class TrackedEntityStoreImpl extends AbsIdentifiableObjectStore<TrackedEntity,
-        TrackedEntityFlow> implements IdentifiableObjectStore<TrackedEntity> {
+        TrackedEntityFlow> implements TrackedEntityStore {
 
-    public TrackedEntityStoreImpl(Mapper<TrackedEntity, TrackedEntityFlow> mapper) {
-        super(mapper);
+    public TrackedEntityStoreImpl() {
+        super(TrackedEntityFlow.MAPPER);
     }
 }

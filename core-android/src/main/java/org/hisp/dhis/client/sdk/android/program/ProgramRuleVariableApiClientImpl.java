@@ -70,6 +70,11 @@ public class ProgramRuleVariableApiClientImpl implements ProgramRuleVariableApiC
                     "dataElement[id],trackedEntityAttribute[id]";
         }
 
+        @Override
+        public String getDescendantProperties() {
+            throw new UnsupportedOperationException();
+        }
+
         public Call<Map<String, List<ProgramRuleVariable>>> getEntities(
                 Map<String, String> queryMap, List<String> filters) throws ApiException {
             return programRuleVariableApiClientRetrofit.getProgramRuleVariables(queryMap, filters);

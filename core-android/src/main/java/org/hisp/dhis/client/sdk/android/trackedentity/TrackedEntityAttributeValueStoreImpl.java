@@ -53,10 +53,9 @@ public final class TrackedEntityAttributeValueStoreImpl extends
 
     private final IdentifiableObjectStore<Program> programStore;
 
-    public TrackedEntityAttributeValueStoreImpl(Mapper<TrackedEntityAttributeValue,
-                TrackedEntityAttributeValueFlow> mapper, StateStore stateStore,
+    public TrackedEntityAttributeValueStoreImpl(StateStore stateStore,
                                                 IdentifiableObjectStore<Program> programStore) {
-        super(mapper, stateStore);
+        super(TrackedEntityAttributeValueFlow.MAPPER, stateStore);
         this.programStore = programStore;
     }
 

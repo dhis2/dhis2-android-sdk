@@ -181,10 +181,11 @@
     <string name="report_entity_deletion_error">Unable to delete Report Entity</string>
 
     <!-- SyncDateWrapper strings: -->
-    <string name="date_format">dd/mm/yy hh:mm</string>
+    <string name="date_format">dd/MM/yy HH:mm</string>
     <string name="never">never</string>
     <string name="min_ago">m ago</string>
     <string name="hours">h</string>
+    <string name="now">now</string>
 
     <string name="no_organisation_units">You are not assigned to any Organisation Units. Please contact system administrator.</string>
     <string name="no_programs">You do not have any programs assigned to Organisation unit or you do not have the sufficient user roles. Please contact system administrator.</string>

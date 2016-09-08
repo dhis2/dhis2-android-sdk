@@ -33,6 +33,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.hisp.dhis.client.sdk.models.common.Access;
+import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.base.Model;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;
 import org.joda.time.DateTime;
@@ -42,7 +44,7 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TrackedEntityInstance implements Serializable, Model {
+public class TrackedEntityInstance implements Serializable, IdentifiableObject {
 
     @JsonIgnore
     private long id;
@@ -67,6 +69,9 @@ public class TrackedEntityInstance implements Serializable, Model {
 
     @JsonProperty("relationships")
     private List<Relationship> relationships;
+
+    @JsonIgnore
+    int sortOrder;
 
     public TrackedEntityInstance() {
         // explicit empty constructor
@@ -120,20 +125,75 @@ public class TrackedEntityInstance implements Serializable, Model {
         this.relationships = relationships;
     }
 
+    @Override
+    public String getUId() {
+        return trackedEntityInstanceUid;
+    }
+
+    @Override
+    public void setUId(String uId) {
+        this.trackedEntityInstanceUid = uId;
+    }
+
+    @Override
+    public String getName() {
+        return "";
+    }
+
+    @Override
+    public void setName(String name) {
+
+    }
+
+    @Override
+    public String getDisplayName() {
+        return "";
+    }
+
+    @Override
+    public void setDisplayName(String displayName) {
+
+    }
+
+    @Override
     public DateTime getCreated() {
         return created;
     }
 
+    @Override
     public void setCreated(DateTime created) {
         this.created = created;
     }
 
+    @Override
     public DateTime getLastUpdated() {
         return lastUpdated;
     }
 
+    @Override
     public void setLastUpdated(DateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
+    }
+
+
+    @Override
+    public Access getAccess() {
+        throw new UnsupportedOperationException("Tracked entity instance isn't really a identifiable object. We don't have the access object");
+    }
+
+    @Override
+    public void setAccess(Access access) {
+
+    }
+
+    @Override
+    public void setApiSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+
+    @Override
+    public int getApiSortOrder() {
+        return sortOrder;
     }
 
 }

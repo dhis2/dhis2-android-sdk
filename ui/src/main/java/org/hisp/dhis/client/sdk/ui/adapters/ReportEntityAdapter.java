@@ -173,17 +173,21 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
             if (dataElementLabels == null || dataElementLabels.isEmpty()) {
                 showEmptyPlaceholder();
-            } else
+            } else {
                 for (String dataElementLabel : dataElementLabels) {
-
                     View dataElementLabelView = dataElementLabelContainer.getChildAt(dataElementLabels.indexOf(dataElementLabel));
                     if (dataElementLabelView == null) {
                         dataElementLabelView = layoutInflater.inflate(R.layout.data_element_label, dataElementLabelContainer, false);
                         dataElementLabelContainer.addView(dataElementLabelView);
                     }
                     ((FontTextView) dataElementLabelView).setText(dataElementLabel);
-
                 }
+                while (dataElementLabelContainer.getChildCount() > dataElementLabels.size()) {
+                    // remove old views if they exist
+                    dataElementLabelContainer.removeViewAt(dataElementLabelContainer.getChildCount() - 1);
+                }
+            }
+
         }
 
         private void showEmptyPlaceholder() {
@@ -193,6 +197,11 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                 dataElementLabelContainer.addView(dataElementLabelView);
             }
             ((FontTextView) dataElementLabelView).setText(dataElementLabelContainer.getContext().getString(R.string.report_entity));
+
+            while (dataElementLabelContainer.getChildCount() > 1) {
+                // remove old views if they exist
+                dataElementLabelContainer.removeViewAt(dataElementLabelContainer.getChildCount() - 1);
+            }
         }
 
         private void showStatusDialog(Context context) {

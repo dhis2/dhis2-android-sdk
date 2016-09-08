@@ -40,7 +40,7 @@ import org.joda.time.DateTime;
 import java.util.List;
 
 @Table(database = DbDhis.class)
-public final class TrackedEntityInstanceFlow extends BaseModelFlow {
+public final class TrackedEntityInstanceFlow extends BaseIdentifiableObjectFlow {
     public static final Mapper<TrackedEntityInstance, TrackedEntityInstanceFlow>
             MAPPER = new InstanceMapper();
 
@@ -52,12 +52,6 @@ public final class TrackedEntityInstanceFlow extends BaseModelFlow {
 
     @Column
     String orgUnit;
-
-    @Column
-    DateTime created;
-
-    @Column
-    DateTime lastUpdated;
 
     List<TrackedEntityAttributeValueFlow> attributes;
 
@@ -105,22 +99,6 @@ public final class TrackedEntityInstanceFlow extends BaseModelFlow {
 
     public void setRelationships(List<RelationshipFlow> relationships) {
         this.relationships = relationships;
-    }
-
-    public DateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(DateTime created) {
-        this.created = created;
-    }
-
-    public DateTime getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(DateTime lastUpdated) {
-        this.lastUpdated = lastUpdated;
     }
 
     private static class InstanceMapper

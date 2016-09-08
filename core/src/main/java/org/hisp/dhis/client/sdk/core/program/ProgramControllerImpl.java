@@ -43,6 +43,7 @@ import org.hisp.dhis.client.sdk.core.common.utils.ModelUtils;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementController;
 import org.hisp.dhis.client.sdk.core.optionset.OptionSetController;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityController;
 import org.hisp.dhis.client.sdk.core.user.UserApiClient;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
@@ -51,6 +52,8 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
+import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.client.sdk.utils.Logger;
 import org.joda.time.DateTime;
 
@@ -77,6 +80,8 @@ public class ProgramControllerImpl extends
     private ProgramRuleController programRuleController;
     private DataElementController dataElementController;
     private OptionSetController optionSetController;
+    private TrackedEntityController trackedEntityController;
+    private ProgramTrackedEntityAttributeController programTrackedEntityAttributeController;
 
     /* Api clients */
     private final ProgramApiClient programApiClient;
@@ -194,6 +199,10 @@ public class ProgramControllerImpl extends
                 updateDataElements(updatedStageDataElements.getKey());
         KeyValue<List<OptionSet>, List<DbOperation>> updatedOptionSets =
                 updateOptionSets(updatedDataElements.getKey());
+        KeyValue<List<TrackedEntity>, List<DbOperation>> updatedTrackedEntites =
+                updateTrackedEntities(updatedPrograms.getKey());
+        KeyValue<List<ProgramTrackedEntityAttribute>, List<DbOperation>> updatedProgramTrackedEntityAttributes =
+                updateProgramTrackedEntityAttributes(updatedPrograms.getKey());
 
         // batching program rule updates
         List<DbOperation> updatedProgramRules = programRuleController.pull(
@@ -206,6 +215,8 @@ public class ProgramControllerImpl extends
         allOperations.addAll(updatedStageDataElements.getValue());
         allOperations.addAll(updatedDataElements.getValue());
         allOperations.addAll(updatedOptionSets.getValue());
+        allOperations.addAll(updatedTrackedEntites.getValue());
+        allOperations.addAll(updatedProgramTrackedEntityAttributes.getValue());
         allOperations.addAll(updatedProgramRules);
 
         // transacting all changes in one batch
@@ -386,6 +397,32 @@ public class ProgramControllerImpl extends
         return new KeyValue<>(dataElements, dbOperations);
     }
 
+    private KeyValue<List<TrackedEntity>, List<DbOperation>> updateTrackedEntities(
+            List<Program> updatedProgram) {
+        Map<String, TrackedEntity> trackedEntityMap = new HashMap<>();
+
+        if (updatedProgram != null && !updatedProgram.isEmpty()) {
+            for(Program program : updatedProgram) {
+                if(program.getTrackedEntity() != null) {
+                    trackedEntityMap.put(program.getTrackedEntity().getUId(),
+                            program.getTrackedEntity());
+                }
+            }
+        }
+
+        List<TrackedEntity> trackedEntities = new ArrayList<>(trackedEntityMap.values());
+
+        // if there is nothing to be updated, we don't want to call controller
+        List<DbOperation> dbOperations;
+        if (trackedEntities.isEmpty()) {
+            dbOperations = new ArrayList<>();
+        } else {
+            dbOperations = trackedEntityController.merge(trackedEntities);
+        }
+
+        return new KeyValue<>(trackedEntities, dbOperations);
+    }
+
     private KeyValue<List<OptionSet>, List<DbOperation>> updateOptionSets(
             List<DataElement> dataElements) {
         Map<String, OptionSet> optionSetMap = new HashMap<>();
@@ -421,6 +458,39 @@ public class ProgramControllerImpl extends
         return new KeyValue<>(optionSets, dbOperations);
     }
 
+    private KeyValue<List<ProgramTrackedEntityAttribute>, List<DbOperation>> updateProgramTrackedEntityAttributes(
+            List<Program> updatedProgram) {
+        Map<String, ProgramTrackedEntityAttribute> programTrackedEntityAttributeMap = new HashMap<>();
+
+        if (updatedProgram != null && !updatedProgram.isEmpty()) {
+            for(Program program : updatedProgram) {
+                if(program.getProgramTrackedEntityAttributes() != null && !program.getProgramTrackedEntityAttributes().isEmpty()) {
+                    for (ProgramTrackedEntityAttribute programTrackedEntityAttribute : program.getProgramTrackedEntityAttributes()) {
+                        if(programTrackedEntityAttribute != null) {
+                            programTrackedEntityAttributeMap.put(programTrackedEntityAttribute.getUId(),
+                                    programTrackedEntityAttribute);
+                        }
+                    }
+
+                }
+            }
+        }
+
+        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes = new ArrayList<>(programTrackedEntityAttributeMap.values());
+
+        // if there is nothing to be updated, we don't want to call controller
+        List<DbOperation> dbOperations;
+        if (programTrackedEntityAttributes.isEmpty()) {
+            dbOperations = new ArrayList<>();
+        } else {
+            dbOperations = programTrackedEntityAttributeController.merge(programTrackedEntityAttributes);
+        }
+
+        return new KeyValue<>(programTrackedEntityAttributes, dbOperations);
+    }
+
+
+
     public void setSystemInfoController(SystemInfoController InfoController) {
         this.systemInfoController = InfoController;
     }
@@ -447,5 +517,13 @@ public class ProgramControllerImpl extends
 
     public void setProgramRuleController(ProgramRuleController programRuleController) {
         this.programRuleController = programRuleController;
+    }
+
+    public void setTrackedEntityController(TrackedEntityController trackedEntityController) {
+        this.trackedEntityController = trackedEntityController;
+    }
+
+    public void setProgramTrackedEntityAttributeController(ProgramTrackedEntityAttributeController programTrackedEntityAttributeController) {
+        this.programTrackedEntityAttributeController = programTrackedEntityAttributeController;
     }
 }

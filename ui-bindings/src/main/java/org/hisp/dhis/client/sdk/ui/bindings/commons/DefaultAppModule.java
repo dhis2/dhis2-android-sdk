@@ -3,7 +3,6 @@ package org.hisp.dhis.client.sdk.ui.bindings.commons;
 import android.content.Context;
 
 import org.hisp.dhis.client.sdk.ui.AppPreferences;
-import org.hisp.dhis.client.sdk.ui.SyncDateWrapper;
 import org.hisp.dhis.client.sdk.utils.Logger;
 
 public interface DefaultAppModule {

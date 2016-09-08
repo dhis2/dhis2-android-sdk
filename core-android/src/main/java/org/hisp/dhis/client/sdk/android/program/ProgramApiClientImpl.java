@@ -70,26 +70,36 @@ public class ProgramApiClientImpl implements ProgramApiClient {
             @Override
             public String getAllProperties() {
                 return IDENTIFIABLE_PROPERTIES + ",version,programType," +
-                        "organisationUnits[id],programStages[id]";
+                        "organisationUnits[id],programStages[id],trackedEntity[id]," +
+                        "programTrackedEntityAttributes[id]";
             }
 
             @Override
             public String getDescendantProperties() {
-                return IDENTIFIABLE_PROPERTIES + ",version,programType,organisationUnits[id]," +
-                        "programStages[" + IDENTIFIABLE_PROPERTIES + ",dataEntryType," +
-                        "blockEntryForm,reportDateDescription,excecutionDateLabel," +
+                return IDENTIFIABLE_PROPERTIES + ",version,programType,organisationUnits[id],trackedEntity[" + IDENTIFIABLE_PROPERTIES + "]," +
+                        "programTrackedEntityAttributes[" + IDENTIFIABLE_PROPERTIES + ",mandatory," + // start programTrackedEntityAttributes
+                        "displayShortName,externalAccess,valueType,allowFutureDate,displayInList,program[id]," +
+                        "trackedEntityAttribute["+ IDENTIFIABLE_PROPERTIES + ",unique,programScope," + // start trackedEntityAttribute of parent programTrackedEntityAttributes
+                        "orgunitScope,displayInListNoProgram,displayOnVisitSchedule,externalAccess," +
+                        "valueType,confidential,inherit,sortOrderVisitSchedule,dimension,sortOrderInListNoProgram]]" + //end programTrackedEntityAttributes
+                        ",displayFrontPageList,useFirstStageDuringRegistration," +
+                        "selectEnrollmentDatesInFuture,incidentDateLabel,selectIncidentDatesInFuture," +
+                        "onlyEnrollOnce,enrollmentDateLabel,ignoreOverdueEvents,displayIncidentDate," +
+                        "withoutRegistration,registration,relationshipFromA," +
+                        "programStages[" + IDENTIFIABLE_PROPERTIES + ",dataEntryType," + // start programStages
+                        "blockEntryForm,reportDateDescription,executionDateLabel," +
                         "displayGenerateEventBox,description,externalAccess,openAfterEnrollment," +
                         "captureCoordinates,defaultTemplateMessage,remindCompleted," +
                         "validCompleteOnly,sortOrder,generatedByEnrollmentDate,preGenerateUID," +
                         "autoGenerateEvent,allowGenerateNextVisit,repeatable,minDaysFromStart," +
-                        "program[id],programStageSections[" + IDENTIFIABLE_PROPERTIES + ",sortOrder," +
+                        "program[id],programStageSections[" + IDENTIFIABLE_PROPERTIES + ",sortOrder," + // start programStageSections of parent programStages
                         "programStage[id],programStageDataElements[id]" + "]," +
-                        "programStageDataElements[" + IDENTIFIABLE_PROPERTIES + ",programStage[id]," +
+                        "programStageDataElements[" + IDENTIFIABLE_PROPERTIES + ",programStage[id]," + // start programStageDataElements of parent programStageSections
                         "allowFutureDate,sortOrder,displayInReports,allowProvidedElsewhere," +
-                        "compulsory,dataElement[" + IDENTIFIABLE_PROPERTIES + "shortName,valueType," +
+                        "compulsory,dataElement[" + IDENTIFIABLE_PROPERTIES + "shortName,valueType," + // start dataElement of parent programStageDataElements
                         "zeroIsSignificant,aggregationOperator,formName,numberType,domainType," +
-                        "dimension,displayFormName,optionSet[" + IDENTIFIABLE_PROPERTIES +
-                        ",version,options[" + IDENTIFIABLE_PROPERTIES + ",code]]]]]";
+                        "dimension,displayFormName,optionSet[" + IDENTIFIABLE_PROPERTIES + // start optionSet of parent dataElement
+                        ",version,options[" + IDENTIFIABLE_PROPERTIES + ",code]]]]]"; // end
             }
 
             @Override

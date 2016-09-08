@@ -91,7 +91,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             }
         }
         if (!program.isSelectIncidentDatesInFuture()) {
-            if (dateOfIncident.isAfterNow()) {
+            if (dateOfIncident != null && dateOfIncident.isAfterNow()) {
                 throw new IllegalArgumentException("Program doesn't allow to set future incident " +
                         "dates");
             }
@@ -110,18 +110,20 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         enrollment.setTrackedEntityInstance(trackedEntityInstance);
         enrollment.setOrgUnit(organisationUnit.getUId());
         enrollment.setProgram(program.getUId());
-        enrollment.setStatus(Enrollment.ACTIVE);
+        enrollment.setStatus(Enrollment.EnrollmentStatus.ACTIVE);
         enrollment.setFollowup(followUp);
         enrollment.setDateOfEnrollment(dateOfEnrollment);
         enrollment.setDateOfIncident(dateOfIncident);
         save(enrollment);
 
         List<Event> events = new ArrayList<>();
-        for (ProgramStage programStage : program.getProgramStages()) {
-            if (programStage.isAutoGenerateEvent()) {
-//                Event event = eventService.create(trackedEntityInstance, enrollment,
-//                        organisationUnit, program, programStage, Event.EventStatus.SCHEDULE); //.STATUS_FUTURE_VISIT
-                // events.add(event);
+        if(program.getProgramStages() != null && !program.getProgramStages().isEmpty()) {
+            for (ProgramStage programStage : program.getProgramStages()) {
+                if (programStage.isAutoGenerateEvent()) {
+                Event event = eventService.create(organisationUnit, program,
+                        programStage, Event.EventStatus.SCHEDULE); //.STATUS_FUTURE_VISIT
+                     events.add(event);
+                }
             }
         }
         enrollment.setEvents(events);
@@ -129,10 +131,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
-    public Enrollment getActiveEnrollment(TrackedEntityInstance trackedEntityInstance,
-                                          OrganisationUnit organisationUnit, Program program) {
-        return enrollmentStore.queryActiveEnrollment(trackedEntityInstance, organisationUnit,
-                program);
+    public Enrollment getActiveEnrollment(OrganisationUnit organisationUnit,
+                                          Program program,
+                                          TrackedEntityInstance trackedEntityInstance) {
+        return enrollmentStore.queryActiveEnrollment(organisationUnit,
+                program, trackedEntityInstance);
     }
 
     @Override
@@ -141,8 +144,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
-    public List<Enrollment> list(Program program, OrganisationUnit organisationUnit) {
-        return enrollmentStore.query(program, organisationUnit);
+    public List<Enrollment> list(OrganisationUnit organisationUnit,Program program) {
+        return enrollmentStore.query(organisationUnit, program);
     }
 
     @Override

@@ -69,7 +69,6 @@ public class SystemInfoPreferencesImpl implements SystemInfoPreferences {
         boolean isServerDateSaved = putString(KEY_SERVER_DATE, serverDate);
         boolean isCalendarSaved = putString(KEY_CALENDAR, systemInfo.getCalendar());
         boolean isDateFormatSaved = putString(KEY_DATE_FORMAT, systemInfo.getDateFormat());
-        boolean isKeyRevisionSaved = putInt(KEY_REVISION, systemInfo.getRevision());
         boolean isKeyVersionSaved = putString(KEY_VERSION, systemInfo.getVersion());
         boolean isAnalyticsSyncSaved = putString(KEY_ANALYTICS_SYNC,
                 systemInfo.getIntervalSinceLastAnalyticsTableSuccess());
@@ -78,8 +77,8 @@ public class SystemInfoPreferencesImpl implements SystemInfoPreferences {
 
         return isBuildTimeSaved && isServerDateSaved &&
                 isCalendarSaved && isDateFormatSaved &&
-                isKeyRevisionSaved && isKeyVersionSaved &&
-                isAnalyticsSyncSaved && isLastTableSuccessSaved;
+                isKeyVersionSaved && isAnalyticsSyncSaved &&
+                isLastTableSuccessSaved;
     }
 
     @Override
@@ -93,7 +92,6 @@ public class SystemInfoPreferencesImpl implements SystemInfoPreferences {
             systemInfo.setServerDate(serverDate);
             systemInfo.setCalendar(getString(KEY_CALENDAR));
             systemInfo.setDateFormat(getString(KEY_DATE_FORMAT));
-            systemInfo.setRevision(getInt(KEY_REVISION));
             systemInfo.setVersion(getString(KEY_VERSION));
             systemInfo.setIntervalSinceLastAnalyticsTableSuccess(getString(KEY_ANALYTICS_SYNC));
             systemInfo.setLastAnalyticsTableSuccess(getString(KEY_LAST_TABLE_SUCCESS));

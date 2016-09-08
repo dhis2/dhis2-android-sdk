@@ -50,7 +50,7 @@ public final class ProgramStage extends BaseIdentifiableObject {
     @JsonProperty("reportDateDescription")
     private String reportDateDescription;
 
-    @JsonProperty("excecutionDateLabel")
+    @JsonProperty("executionDateLabel")
     private String executionDateLabel;
 
     @JsonProperty("displayGenerateEventBox")

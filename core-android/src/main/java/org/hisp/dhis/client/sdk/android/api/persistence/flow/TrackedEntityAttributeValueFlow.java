@@ -50,7 +50,7 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttributeValue
 })
 public final class TrackedEntityAttributeValueFlow extends BaseModelFlow {
     public static final Mapper<TrackedEntityAttributeValue, TrackedEntityAttributeValueFlow>
-            MAPPER = new AttributeValueMapper();
+            MAPPER = new TrackedEntityAttributeValueMapper();
 
     static final int UNIQUE_TRACKEDENTITYINSTANCE_ATTRIBUTEVALUE = 1;
     static final String TRACKED_ENTITY_INSTANCE_KEY = "trackedEntityInstance";
@@ -100,8 +100,7 @@ public final class TrackedEntityAttributeValueFlow extends BaseModelFlow {
         this.value = value;
     }
 
-    private static class AttributeValueMapper
-            extends AbsMapper<TrackedEntityAttributeValue, TrackedEntityAttributeValueFlow> {
+    public static class TrackedEntityAttributeValueMapper extends AbsMapper<TrackedEntityAttributeValue, TrackedEntityAttributeValueFlow> {
 
         @Override
         public TrackedEntityAttributeValueFlow mapToDatabaseEntity(

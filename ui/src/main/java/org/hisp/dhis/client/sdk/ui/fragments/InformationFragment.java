@@ -33,8 +33,10 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,12 +45,18 @@ import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.android.api.D2;
 import org.hisp.dhis.client.sdk.android.api.preferences.PreferencesModuleImpl;
+import org.hisp.dhis.client.sdk.android.common.LibInfo;
 import org.hisp.dhis.client.sdk.core.common.preferences.PreferencesModule;
 import org.hisp.dhis.client.sdk.ui.R;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 public class InformationFragment extends Fragment {
+
+    public static final String LIBS_LIST = "libraires_list";
 
     @Nullable
     @Override
@@ -78,22 +86,28 @@ public class InformationFragment extends Fragment {
         addUrl(sessionText, preferencesModule.getConfigurationPreferences().get().getServerUrl());
         sessionText.setMovementMethod(LinkMovementMethod.getInstance());
 
+        // setup fields :
         setAppNameAndVersion(getContext().getApplicationInfo().packageName);
 
         setDocumentationUrl("https://dhis2.github.io/#android");
 
-        setSdkLicence("https://dhis2.github.io/#license");
+        setSdkLicence("Dhis2-android-sdk", "https://dhis2.github.io/#license");
 
-        String testLibs[] = {"https://dhis2.github.io/#lib1","https://dhis2.github.io/#lib2","https://dhis2.github.io/#lib3"};
+        //setup libraries list:
+        Bundle args = this.getArguments();
 
-        setAppLibraries(testLibs);
+        if (args != null) {
+            ArrayList<LibInfo> libs = args.getParcelableArrayList(LIBS_LIST);
+            for (LibInfo lib : libs) {
+                Log.d("ParcelableLibs", "onViewCreated: " + lib.getName() + " - " + lib.getLicence());
+            }
+            setAppLibraries(libs);
+        }
     }
 
     /**
-     * Get App-info string from app package name.
-     * Returns a string of the format:
-     * "App Name: app-name\n
-     * App Version: app-version"
+     * App-info from app package name.
+     * Fills in the App name, version, build and adds the app icon.
      *
      * @param packageName the name of the app package.
      */
@@ -127,7 +141,7 @@ public class InformationFragment extends Fragment {
         }
         if (appName.length() > 0 && appVersion.length() > 0) {
             appNameTextView.setText(appName);
-            if(!appBuild.isEmpty()) {
+            if (!appBuild.isEmpty()) {
                 appVersionTextView.setText(appVersion + " (" + appBuild + ")");
             } else {
                 appVersionTextView.setText(appVersion);
@@ -136,34 +150,63 @@ public class InformationFragment extends Fragment {
     }
 
     public void setDocumentationUrl(String docUrl) {
-        TextView documentationTextView  = (TextView) getActivity().findViewById(R.id.textview_documentation);
+        TextView documentationTextView = (TextView) getActivity().findViewById(R.id.textview_documentation);
         documentationTextView.setText("");
         documentationTextView.setText(getString(R.string.documentation_header) + "\n");
         addUrl(documentationTextView, docUrl);
         documentationTextView.setMovementMethod(LinkMovementMethod.getInstance());
-
     }
 
-    public void setAppLibraries(String[] libraryUrls) {
-        TextView sdkLicenceTextView  = (TextView) getActivity().findViewById(R.id.textview_libraries);
+    public void setAppLibraries(ArrayList<LibInfo> libs) {
+        TextView sdkLicenceTextView = (TextView) getActivity().findViewById(R.id.textview_libraries);
 
-        for (String libraryUrl : libraryUrls) {
+        for (LibInfo library : libs) {
             sdkLicenceTextView.append("\n");
-            addUrl(sdkLicenceTextView, libraryUrl);
+            sdkLicenceTextView.append(library.getName() + " (" + library.getLicence() + ")");
         }
         sdkLicenceTextView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
-    private void setSdkLicence(String url) {
-        TextView sdkLicenceTextView  = (TextView) getActivity().findViewById(R.id.textview_libraries);
+    public static Bundle newBundle(List<LibInfo> libraries) {
+        Bundle libs = new Bundle();
+
+        ArrayList<LibInfo> libsList = new ArrayList<>(Arrays.asList(
+                new LibInfo("name1", "licence1"),
+                new LibInfo("name2", "licence1"),
+                new LibInfo("name3", "licence1")
+        ));
+
+        if (libraries != null) {
+            for (LibInfo library : libraries) {
+                libsList.add(library);
+            }
+        }
+
+        libs.putParcelableArrayList(LIBS_LIST, libsList);
+        return libs;
+    }
+
+    private void setSdkLicence(String name, String url) {
+        TextView sdkLicenceTextView = (TextView) getActivity().findViewById(R.id.textview_libraries);
+
+        if (name.isEmpty()) {
+            name = url;
+        }
+
         sdkLicenceTextView.setText("");
         sdkLicenceTextView.append(getString(R.string.libraries_header) + "\n");
-        addUrl(sdkLicenceTextView, url);
+        sdkLicenceTextView.append(
+                Html.fromHtml(
+                        String.format(Locale.getDefault(), "<a href=\"%s\">%s</a>",
+                                url,
+                                name)));
+        //addUrl(sdkLicenceTextView, url);
         sdkLicenceTextView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     /**
      * A wrapper method to append url to a textView.
+     *
      * @param textView
      * @param url
      */
@@ -173,5 +216,31 @@ public class InformationFragment extends Fragment {
                         String.format(Locale.getDefault(), "<a href=\"%s\">%s</a>",
                                 url,
                                 url)));
+    }
+
+    public class LibsAdapter extends RecyclerView.Adapter<LibsAdapter.ViewHolder> {
+        private ArrayList<LibInfo> libs;
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+
+            public ViewHolder(View itemView) {
+                super(itemView);
+            }
+        }
+
+        @Override
+        public LibsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return null;
+        }
+
+        @Override
+        public void onBindViewHolder(LibsAdapter.ViewHolder holder, int position) {
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return 0;
+        }
     }
 }

@@ -50,8 +50,8 @@ import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.SettingPreferences;
-import org.hisp.dhis.client.sdk.ui.fragments.InformationFragment;
 import org.hisp.dhis.client.sdk.ui.fragments.HelpFragment;
+import org.hisp.dhis.client.sdk.ui.fragments.InformationFragment;
 import org.hisp.dhis.client.sdk.ui.fragments.WrapperFragment;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
@@ -119,7 +119,6 @@ public abstract class AbsHomeActivity extends BaseActivity
                 isAppInstalled(APPS_TRACKER_CAPTURE_PACKAGE));
         navigationView.getMenu().findItem(R.id.drawer_item_tracker_capture_reports).setVisible(
                 isAppInstalled(APPS_TRACKER_CAPTURE_REPORTS_PACKAGE));
-
     }
 
     @Override
@@ -319,7 +318,8 @@ public abstract class AbsHomeActivity extends BaseActivity
     @NonNull
     protected Fragment getInformationFragment() {
         return WrapperFragment.newInstance(InformationFragment.class,
-                getString(R.string.drawer_item_information));
+                getString(R.string.drawer_item_information),
+                InformationFragment.newBundle(null));
     }
 
     @NonNull

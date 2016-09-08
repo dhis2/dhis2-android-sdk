@@ -47,10 +47,10 @@ import java.io.Serializable;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-
 public class WrapperFragment extends BaseFragment implements View.OnClickListener {
     private static final String ARG_TITLE = "arg:title";
     private static final String ARG_NESTED_FRAGMENT = "arg:nestedFragment";
+    public static final String ARG_NESTED_BUNDLE = "arg:nestedBundle";
 
     private Toolbar toolbar;
 
@@ -63,6 +63,23 @@ public class WrapperFragment extends BaseFragment implements View.OnClickListene
         Bundle arguments = new Bundle();
         arguments.putString(ARG_TITLE, title);
         arguments.putSerializable(ARG_NESTED_FRAGMENT, fragmentClass);
+
+        WrapperFragment wrapperFragment = new WrapperFragment();
+        wrapperFragment.setArguments(arguments);
+
+        return wrapperFragment;
+    }
+
+    @NonNull
+    public static WrapperFragment newInstance(@NonNull Class<? extends Fragment> fragmentClass,
+                                              String title, Bundle bundle) {
+        isNull(fragmentClass, "Fragment class must bot be null");
+        isNull(title, "title must bot be null");
+
+        Bundle arguments = new Bundle();
+        arguments.putString(ARG_TITLE, title);
+        arguments.putSerializable(ARG_NESTED_FRAGMENT, fragmentClass);
+        arguments.putBundle(ARG_NESTED_BUNDLE, bundle);
 
         WrapperFragment wrapperFragment = new WrapperFragment();
         wrapperFragment.setArguments(arguments);
@@ -91,7 +108,10 @@ public class WrapperFragment extends BaseFragment implements View.OnClickListene
 
         // don't force fragment attachment if it is already in fragment manager
         if (getFragmentClass() != null) {
-            attachFragment(getFragment(), getFragmentClass().getSimpleName());
+            Fragment fragment = getFragment();
+            // TODO: Vlad :check for null etc..
+            fragment.setArguments(getArguments().getBundle(ARG_NESTED_BUNDLE));
+            attachFragment(fragment, getFragmentClass().getSimpleName());
         }
     }
 

@@ -179,34 +179,24 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                     break;
                 }
             }
-
             updateDataElements(reportEntity);
         }
 
         private void updateDataElements(ReportEntity reportEntity) {
-
             if (ReportEntityFilters == null) {
                 showPlaceholder();
             } else if (noDataElementsToShow(ReportEntityFilters)) {
-                showThreeFirstDataElements(reportEntity);
+                showDataElementsByDisplayInReports(reportEntity);
             } else {
                 int i = 0;
                 while (i < ReportEntityFilters.size()) {
                     ReportEntityFilter filter = ReportEntityFilters.get(i);
-                    View dataElementLabelView = dataElementLabelContainer.getChildAt(i);
-                    if (dataElementLabelView == null) {
-                        dataElementLabelView = layoutInflater.inflate(
-                                R.layout.data_element_label, dataElementLabelContainer, false);
-                        dataElementLabelContainer.addView(dataElementLabelView);
-                    }
+                    View dataElementLabelView = getDataElementLabelContainerChild(i);
 
                     if (filter.show()) {
                         String value = reportEntity.getValueForDataElement(filter.getDataElementId());
-
                         String dataElementString = String.format("%s: %s", filter.getDataElementLabel(), value);
-
                         SpannableString text = new SpannableString(dataElementString);
-
                         text.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
                                 dataElementString.length() - value.length(),
                                 dataElementString.length(),
@@ -214,45 +204,54 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                         ((FontTextView) dataElementLabelView).setText(text, TextView.BufferType.SPANNABLE);
                         dataElementLabelView.setVisibility(View.VISIBLE);
                     } else {
-                        //hide it:
-                        dataElementLabelView.setVisibility(View.GONE);
+                        dataElementLabelView.setVisibility(View.GONE);//hide it:
                     }
-
                     i++;
                 }
-                while (dataElementLabelContainer.getChildCount() > i) {
-                    // remove old views if they exist
-                    dataElementLabelContainer.removeViewAt(dataElementLabelContainer.getChildCount() - 1);
-                }
+                trimElementLabelViews(i);
             }
         }
 
-        //TODO: Consider showing a default selection of filters. It seems like it would be more useful  to show event date for example.
+        private void showDataElementsByDisplayInReports(ReportEntity reportEntity) {
+            View dataElementLabelView = getDataElementLabelContainerChild(0);
+            ReportEntityFilter filter;
+            int filterShowCount = 0;
+            for (int i = 0; i < ReportEntityFilters.size(); i++) {
+                filter = ReportEntityFilters.get(i);
+                if (filter.show()) {
+                    filterShowCount++;
+                    //filter.getDataElementLabel().equals(Event.EVENT_DATE_LABEL)) {
+                    String value = reportEntity.getValueForDataElement(filter.getDataElementId());
+                    String dataElementString = String.format("%s: %s", filter.getDataElementLabel(), value);
+                    SpannableString text = new SpannableString(dataElementString);
+                    text.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
+                            dataElementString.length() - value.length(),
+                            dataElementString.length(),
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    ((FontTextView) dataElementLabelView).setText(text, TextView.BufferType.SPANNABLE);
+                    dataElementLabelView.setVisibility(View.VISIBLE);
+                }
+            }
+            if (filterShowCount > 0) {
+                trimElementLabelViews(filterShowCount);
+            } else {
+                showThreeFirstDataElements(reportEntity);
+            }
+        }
+
         private void showThreeFirstDataElements(ReportEntity reportEntity) {
             final int PLACEHOLDER_AMOUNT = 3;
             int viewIndex = 0;
-
             for (int i = 0; i < ReportEntityFilters.size(); i++) {
-
                 if (i >= PLACEHOLDER_AMOUNT) {
                     // only show PLACEHOLDER_AMOUNT of items
                     break;
                 }
-
-                View dataElementLabelView = dataElementLabelContainer.getChildAt(viewIndex++);
-                if (dataElementLabelView == null) {
-                    dataElementLabelView = layoutInflater.inflate(
-                            R.layout.data_element_label, dataElementLabelContainer, false);
-                    dataElementLabelContainer.addView(dataElementLabelView);
-                }
-
+                View dataElementLabelView = getDataElementLabelContainerChild(viewIndex++);
                 final ReportEntityFilter filter = ReportEntityFilters.get(i);
                 String value = reportEntity.getValueForDataElement(filter.getDataElementId());
-
                 String dataElementString = String.format("%s: %s", filter.getDataElementLabel(), value);
-
                 SpannableString text = new SpannableString(dataElementString);
-
                 text.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
                         dataElementString.length() - value.length(),
                         dataElementString.length(),
@@ -261,28 +260,27 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                 ((FontTextView) dataElementLabelView).setText(text, TextView.BufferType.SPANNABLE);
                 dataElementLabelView.setVisibility(View.VISIBLE);
             }
-
-            while (dataElementLabelContainer.getChildCount() > viewIndex) {
-                // remove old views if they exist
-                dataElementLabelContainer.removeViewAt(dataElementLabelContainer.getChildCount() - 1);
-            }
+            trimElementLabelViews(viewIndex);
         }
 
         private void showPlaceholder() {
-            View dataElementLabelView = dataElementLabelContainer.getChildAt(0);
+            View dataElementLabelView = getDataElementLabelContainerChild(0);
+            trimElementLabelViews(1);
+            ((FontTextView) dataElementLabelView).setText(dataElementLabelContainer.getContext().getString(R.string.report_entity));
+            trimElementLabelViews(1);
+        }
+
+        private View getDataElementLabelContainerChild(int childIndex) {
+            View dataElementLabelView = dataElementLabelContainer.getChildAt(childIndex);
             if (dataElementLabelView == null) {
                 dataElementLabelView = layoutInflater.inflate(R.layout.data_element_label, dataElementLabelContainer, false);
                 dataElementLabelContainer.addView(dataElementLabelView);
-                ((FontTextView) dataElementLabelView).setText(dataElementLabelContainer.getContext().getString(R.string.report_entity));
-
-                while (dataElementLabelContainer.getChildCount() > 1) {
-                    // remove old views if they exist
-                    dataElementLabelContainer.removeViewAt(dataElementLabelContainer.getChildCount() - 1);
-                }
             }
-            ((FontTextView) dataElementLabelView).setText(dataElementLabelContainer.getContext().getString(R.string.report_entity));
+            return dataElementLabelView;
+        }
 
-            while (dataElementLabelContainer.getChildCount() > 1) {
+        private void trimElementLabelViews(int trimSize) {
+            while (dataElementLabelContainer.getChildCount() > trimSize) {
                 // remove old views if they exist
                 dataElementLabelContainer.removeViewAt(dataElementLabelContainer.getChildCount() - 1);
             }

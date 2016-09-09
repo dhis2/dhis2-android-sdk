@@ -33,7 +33,7 @@
             android:layout_height="22dp"
             android:layout_gravity="center"
             android:contentDescription="@string/stub_description"
-            tools:src="@drawable/ic_about" />
+            />
 
     </FrameLayout>
 
@@ -43,16 +43,19 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginStart="20dp"
+        android:layout_toEndOf="@+id/status_icon_container"
         android:layout_toLeftOf="@+id/delete_button"
         android:layout_toRightOf="@+id/status_icon_container"
-        android:orientation="vertical"/>
+        android:layout_toStartOf="@+id/delete_button"
+        android:orientation="vertical" />
 
     <ImageButton
         android:id="@+id/delete_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:background="?attr/selectableItemBackground"
         android:src="@drawable/ic_delete"
-        android:visibility="gone" />
+        android:visibility="invisible" />
 </RelativeLayout>

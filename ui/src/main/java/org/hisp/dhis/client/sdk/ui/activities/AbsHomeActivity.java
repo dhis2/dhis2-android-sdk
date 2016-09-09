@@ -50,8 +50,8 @@ import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.SettingPreferences;
-import org.hisp.dhis.client.sdk.ui.fragments.AboutFragment;
 import org.hisp.dhis.client.sdk.ui.fragments.HelpFragment;
+import org.hisp.dhis.client.sdk.ui.fragments.InformationFragment;
 import org.hisp.dhis.client.sdk.ui.fragments.WrapperFragment;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
@@ -119,7 +119,6 @@ public abstract class AbsHomeActivity extends BaseActivity
                 isAppInstalled(APPS_TRACKER_CAPTURE_PACKAGE));
         navigationView.getMenu().findItem(R.id.drawer_item_tracker_capture_reports).setVisible(
                 isAppInstalled(APPS_TRACKER_CAPTURE_REPORTS_PACKAGE));
-
     }
 
     @Override
@@ -143,15 +142,14 @@ public abstract class AbsHomeActivity extends BaseActivity
         } else if (menuItemId == R.id.drawer_item_settings) {
             attachFragmentDelayed(getSettingsFragment());
             isSelected = true;
+        } else if (menuItemId == R.id.drawer_item_information) {
+            attachFragment(getInformationFragment());
+            isSelected = true;
         }
         /*else if (menuItemId == R.id.drawer_item_help) {
             attachFragment(getHelpFragment());
             isSelected = true;
-        } else if (menuItemId == R.id.drawer_item_about) {
-            attachFragment(getAboutFragment());
-            isSelected = true;
-        }*/
-
+        } */
         isSelected = onItemSelected(menuItem) || isSelected;
         if (isSelected) {
             navigationView.setCheckedItem(menuItemId);
@@ -318,9 +316,10 @@ public abstract class AbsHomeActivity extends BaseActivity
     }
 
     @NonNull
-    protected Fragment getAboutFragment() {
-        return WrapperFragment.newInstance(AboutFragment.class,
-                getString(R.string.drawer_item_about));
+    protected Fragment getInformationFragment() {
+        return WrapperFragment.newInstance(InformationFragment.class,
+                getString(R.string.drawer_item_information),
+                InformationFragment.newBundle(null));
     }
 
     @NonNull

@@ -34,10 +34,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
+import java.util.Comparator;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class ProgramTrackedEntityAttribute extends BaseIdentifiableObject {
-
-    private int sortOrder;
+    public static final Comparator<ProgramTrackedEntityAttribute>
+            SORT_ORDER_COMPARATOR = new SortOrderComparator();
 
     @JsonProperty("allowFutureDate")
     private boolean allowFutureDate;
@@ -60,14 +62,6 @@ public final class ProgramTrackedEntityAttribute extends BaseIdentifiableObject 
 
     public void setTrackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute) {
         this.trackedEntityAttribute = trackedEntityAttribute;
-    }
-
-    public int getSortOrder() {
-        return sortOrder;
-    }
-
-    public void setSortOrder(int sortOrder) {
-        this.sortOrder = sortOrder;
     }
 
     public boolean isAllowFutureDate() {
@@ -100,5 +94,22 @@ public final class ProgramTrackedEntityAttribute extends BaseIdentifiableObject 
 
     public void setProgram(Program program) {
         this.program = program;
+    }
+
+    private static class SortOrderComparator implements Comparator<ProgramTrackedEntityAttribute> {
+        @Override
+        public int compare(ProgramTrackedEntityAttribute one, ProgramTrackedEntityAttribute two) {
+            if (one == null || two == null) {
+                return 0;
+            }
+
+            if (one.getApiSortOrder() > two.getApiSortOrder()) {
+                return -1;
+            } else if (one.getApiSortOrder() < two.getApiSortOrder()) {
+                return 1;
+            }
+
+            return 0;
+        }
     }
 }

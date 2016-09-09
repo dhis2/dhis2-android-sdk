@@ -201,8 +201,7 @@ public class EnrollmentInteractorImpl implements EnrollmentInteractor {
             @Override
             public void call(Subscriber<? super List<Enrollment>> subscriber) {
                 try {
-                    List<Enrollment> enrollments = mEnrollmentService.list(program,
-                            organisationUnit);
+                    List<Enrollment> enrollments = mEnrollmentService.list(organisationUnit,program);
                     subscriber.onNext(enrollments);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -222,7 +221,7 @@ public class EnrollmentInteractorImpl implements EnrollmentInteractor {
             public void call(Subscriber<? super Enrollment> subscriber) {
                 try {
                     Enrollment enrollment = mEnrollmentService.getActiveEnrollment
-                            (trackedEntityInstance, organisationUnit, program);
+                            (organisationUnit, program,trackedEntityInstance);
                     subscriber.onNext(enrollment);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

@@ -75,8 +75,9 @@ public class SystemInfoPreferencesImpl implements SystemInfoPreferences {
                 systemInfo.getLastAnalyticsTableSuccess());
 
         return isBuildTimeSaved && isServerDateSaved &&
-                isCalendarSaved && isDateFormatSaved && isKeyVersionSaved &&
-                isAnalyticsSyncSaved && isLastTableSuccessSaved;
+                isCalendarSaved && isDateFormatSaved &&
+                isKeyVersionSaved && isAnalyticsSyncSaved &&
+                isLastTableSuccessSaved;
     }
 
     @Override

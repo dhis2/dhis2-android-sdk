@@ -62,6 +62,10 @@ public interface IdentifiableObject extends Model {
 
     void setAccess(Access access);
 
+    void setApiSortOrder(int apiSortOrder);
+
+    int getApiSortOrder();
+
     class NameComparator implements Comparator<IdentifiableObject> {
 
         @Override

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.models.common.base;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -58,6 +59,9 @@ public class BaseIdentifiableObject extends BaseModel implements IdentifiableObj
 
     @JsonProperty("access")
     private Access access;
+
+    @JsonIgnore
+    private int apiSortOrder;
 
     @Override
     public String getUId() {
@@ -117,6 +121,16 @@ public class BaseIdentifiableObject extends BaseModel implements IdentifiableObj
     @Override
     public void setAccess(Access access) {
         this.access = access;
+    }
+
+    @Override
+    public void setApiSortOrder(int sortOrder) {
+        this.apiSortOrder = sortOrder;
+    }
+
+    @Override
+    public int getApiSortOrder() {
+        return apiSortOrder;
     }
 
     private static class DisplayNameComparator<T extends BaseIdentifiableObject>

@@ -44,9 +44,8 @@ import java.util.List;
 public final class RelationshipStoreImpl extends AbsDataStore<Relationship,
         RelationshipFlow> implements RelationshipStore {
 
-    public RelationshipStoreImpl(Mapper<Relationship, RelationshipFlow> mapper,
-                                 StateStore stateStore) {
-        super(mapper, stateStore);
+    public RelationshipStoreImpl(StateStore stateStore) {
+        super(RelationshipFlow.MAPPER, stateStore);
     }
 
     @Override

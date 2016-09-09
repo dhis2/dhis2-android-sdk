@@ -59,6 +59,9 @@ public abstract class BaseIdentifiableObjectFlow extends BaseModelFlow
     @Column(name = "access")
     Access access;
 
+    @Column(name = "apiSortOrder")
+    int apiSortOrder;
+
     @Override
     public final String getUId() {
         return uId;
@@ -117,5 +120,15 @@ public abstract class BaseIdentifiableObjectFlow extends BaseModelFlow
     @Override
     public final void setAccess(Access access) {
         this.access = access;
+    }
+
+    @Override
+    public void setApiSortOrder(int sortOrder) {
+        this.apiSortOrder = sortOrder;
+    }
+
+    @Override
+    public int getApiSortOrder() {
+        return apiSortOrder;
     }
 }

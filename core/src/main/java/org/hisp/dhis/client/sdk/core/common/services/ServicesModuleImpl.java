@@ -31,6 +31,8 @@ package org.hisp.dhis.client.sdk.core.common.services;
 import org.hisp.dhis.client.sdk.core.common.persistence.PersistenceModule;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementService;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementServiceImpl;
+import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentService;
+import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentServiceImpl;
 import org.hisp.dhis.client.sdk.core.event.EventService;
 import org.hisp.dhis.client.sdk.core.event.EventServiceImpl;
 import org.hisp.dhis.client.sdk.core.optionset.OptionSetService;
@@ -53,10 +55,16 @@ import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionService;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionServiceImpl;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageService;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageServiceImpl;
+import org.hisp.dhis.client.sdk.core.program.ProgramTrackedEntityAttributeService;
+import org.hisp.dhis.client.sdk.core.program.ProgramTrackedEntityAttributeServiceImpl;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeService;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeServiceImpl;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeValueService;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeValueServiceImpl;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueService;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueServiceImpl;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInstanceService;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInstanceServiceImpl;
 import org.hisp.dhis.client.sdk.core.user.UserAccountService;
 import org.hisp.dhis.client.sdk.core.user.UserAccountServiceImpl;
 
@@ -78,6 +86,10 @@ public final class ServicesModuleImpl implements ServicesModule {
     private final ProgramRuleActionService programRuleActionService;
     private final TrackedEntityDataValueService trackedEntityDataValueService;
     private final OptionSetService optionSetService;
+    private final EnrollmentService enrollmentService;
+    private final TrackedEntityInstanceService trackedEntityInstanceService;
+    private final TrackedEntityAttributeValueService trackedEntityAttributeValueService;
+    private final ProgramTrackedEntityAttributeService programTrackedEntityAttributeService;
 
     public ServicesModuleImpl(PersistenceModule persistenceModule) {
         isNull(persistenceModule, "persistenceModule must not be null");
@@ -127,6 +139,20 @@ public final class ServicesModuleImpl implements ServicesModule {
 
         optionSetService = new OptionSetServiceImpl(persistenceModule.getOptionSetStore(),
                 persistenceModule.getOptionStore());
+
+        enrollmentService = new EnrollmentServiceImpl(persistenceModule.getEnrollmentStore(),
+                persistenceModule.getStateStore(), eventService);
+
+        trackedEntityInstanceService = new TrackedEntityInstanceServiceImpl(persistenceModule.getTrackedEntityInstanceStore(),
+                persistenceModule.getRelationshipStore(),
+                persistenceModule.getStateStore());
+
+        trackedEntityAttributeValueService = new TrackedEntityAttributeValueServiceImpl(
+                persistenceModule.getTrackedEntityAttributeValueStore(),
+                persistenceModule.getStateStore());
+
+        programTrackedEntityAttributeService = new ProgramTrackedEntityAttributeServiceImpl(
+                persistenceModule.getProgramTrackedEntityAttributeStore());
     }
 
     @Override
@@ -201,5 +227,25 @@ public final class ServicesModuleImpl implements ServicesModule {
     @Override
     public OptionSetService getOptionSetService() {
         return optionSetService;
+    }
+
+    @Override
+    public EnrollmentService getEnrollmentService() {
+        return enrollmentService;
+    }
+
+    @Override
+    public TrackedEntityInstanceService getTrackedEntityInstanceService() {
+        return trackedEntityInstanceService;
+    }
+
+    @Override
+    public TrackedEntityAttributeValueService getTrackedEntityAttributeValueService() {
+        return trackedEntityAttributeValueService;
+    }
+
+    @Override
+    public ProgramTrackedEntityAttributeService getProgramTrackedEntityAttributeService() {
+        return programTrackedEntityAttributeService;
     }
 }

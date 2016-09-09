@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.models.event;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -45,6 +46,11 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class Event extends BaseModel implements IdentifiableObject {
     public static final Comparator<Event> DATE_COMPARATOR = new EventDateComparator();
+
+    public static final String EVENT_DATE_KEY = "eventDate";
+    public static final String STATUS_KEY = "status";
+    public static final String EVENT_DATE_LABEL = "Event date";
+    public static final String STATUS_LABEL = "Status";
 
     @JsonProperty("event")
     private String uId;
@@ -84,6 +90,9 @@ public final class Event extends BaseModel implements IdentifiableObject {
 
     @JsonProperty("eventDate")
     private DateTime eventDate;
+
+    @JsonIgnore
+    int sortOrder;
 
     /*
     *
@@ -159,6 +168,16 @@ public final class Event extends BaseModel implements IdentifiableObject {
     @Override
     public void setAccess(Access access) {
         this.access = access;
+    }
+
+    @Override
+    public void setApiSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+
+    @Override
+    public int getApiSortOrder() {
+        return sortOrder;
     }
 
     public EventStatus getStatus() {

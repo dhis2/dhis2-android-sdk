@@ -31,6 +31,11 @@ package org.hisp.dhis.client.sdk.ui.bindings.commons;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import org.hisp.dhis.client.sdk.ui.models.ReportEntityFilter;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class SessionPreferencesImpl implements SessionPreferences {
@@ -47,7 +52,10 @@ public class SessionPreferencesImpl implements SessionPreferences {
 
     @Override
     public boolean clearSelectedPickers() {
-        return sharedPreferences.edit().clear().commit();
+
+        //TODO: fix this
+        //return sharedPreferences.edit().clear().commit();
+        return true;
     }
 
     @Override
@@ -59,4 +67,45 @@ public class SessionPreferencesImpl implements SessionPreferences {
     public boolean setSelectedPickerUid(int index, String pickerUid) {
         return sharedPreferences.edit().putString(SELECTED_PICKER_UID + index, pickerUid).commit();
     }
+
+
+    @Override
+    public void setReportEntityDataModelFilters(String programUid,
+                                                ArrayList<ReportEntityFilter> filters) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        for (ReportEntityFilter filter : filters) {
+            String filterKey = String.format("%s:%s", programUid, filter.getDataElementId());
+                editor.putBoolean(filterKey, filter.show());
+        }
+        editor.apply();
+    }
+
+    @Override
+    public ArrayList<ReportEntityFilter> getReportEntityDataModelFilters(
+            String programUid, ArrayList<ReportEntityFilter> filters) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        for (ReportEntityFilter reportEntityFilter : filters) {
+            String filterKey = String.format("%s:%s", programUid, reportEntityFilter.getDataElementId());
+
+            String dataElementLabel = reportEntityFilter.getDataElementLabel();
+
+            boolean defaultValue = reportEntityFilter.show();
+
+            if (!sharedPreferences.contains(filterKey)) {
+                editor.putBoolean(filterKey, defaultValue).apply();
+            } else {
+                boolean storedValue = sharedPreferences.getBoolean(filterKey, defaultValue);
+                if (storedValue != defaultValue) {
+                    reportEntityFilter.setShow(storedValue);
+                }
+            }
+        }
+        editor.apply();
+
+        Collections.sort(filters);
+
+        return filters;
+    }
+
 }

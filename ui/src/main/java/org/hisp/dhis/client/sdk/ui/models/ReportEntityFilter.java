@@ -26,43 +26,57 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.android.api.persistence;
+package org.hisp.dhis.client.sdk.ui.models;
 
-import com.raizlabs.android.dbflow.config.DatabaseDefinition;
-import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
-import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
+/**
+ * Created by thomaslindsjorn on 19/08/16.
+ */
+public class ReportEntityFilter implements Comparable<ReportEntityFilter> {
 
-import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
+    private String dataElementId;
+    private String dataElementLabel;
+    private boolean show;
 
-import java.util.Collection;
-
-import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
-
-public class TransactionManagerImpl implements TransactionManager {
-
-    public TransactionManagerImpl() {
-        // empty constructor
+    public ReportEntityFilter(String dataElementId, String dataElementLabel, boolean show) {
+        this.dataElementId = dataElementId;
+        this.dataElementLabel = dataElementLabel;
+        this.show = show;
     }
 
+    public String getDataElementId() {
+        return dataElementId;
+    }
+
+    public void setDataElementId(String dataElementId) {
+        this.dataElementId = dataElementId;
+    }
+
+    public String getDataElementLabel() {
+        return dataElementLabel;
+    }
+
+    public void setDataElementLabel(String dataElementLabel) {
+        this.dataElementLabel = dataElementLabel;
+    }
+
+    public boolean show() {
+        return show;
+    }
+
+    public void setShow(boolean show) {
+        this.show = show;
+    }
+
+    /**
+     * Sort alphabetically by data element label, but show checked items (enabled filters) first
+     */
     @Override
-    public void transact(final Collection<DbOperation> operations) {
-        isNull(operations, "List<DbOperationImpl> object must not be null");
-
-        if (operations.isEmpty()) {
-            return;
+    public int compareTo(ReportEntityFilter another) {
+        if (this.show == another.show) {
+            return this.dataElementLabel.compareTo(another.dataElementLabel);
         }
-
-        DatabaseDefinition databaseDefinition =
-                FlowManager.getDatabase(DbDhis.class);
-        databaseDefinition.executeTransaction(new ITransaction() {
-            @Override
-            public void execute(DatabaseWrapper databaseWrapper) {
-                for (DbOperation operation : operations) {
-                    operation.execute();
-                }
-            }
-        });
+        if (this.show) return -1;
+        if (another.show) return 1;
+        return 0;
     }
 }

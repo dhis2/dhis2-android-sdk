@@ -152,6 +152,7 @@
     <string name="report_date">Report date</string>
     <string name="choose_organisation_unit">Choose organisation unit</string>
     <string name="choose_program">Choose program</string>
+    <string name="choose_filter">Choose filter</string>
     <string name="duedate">Due date</string>
     <string name="eventname">Event name</string>
     <string name="startdate">Start date</string>
@@ -190,6 +191,7 @@
     <string name="no_organisation_units">You are not assigned to any Organisation Units. Please contact system administrator.</string>
     <string name="no_programs">You do not have any programs assigned to Organisation unit or you do not have the sufficient user roles. Please contact system administrator.</string>
     <string name="report_entity">Report Entity</string>
+    <string name="filter_title">Filter</string>
 
     <!-- About fragment strings: -->
     <string name="documentation_header">Documentation:</string>

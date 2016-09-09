@@ -73,4 +73,5 @@ dependencies {
 
     // Test
     testCompile "junit:junit:${libs.jUnitVersion}"
+    compile project(path: ':core-android')
 }

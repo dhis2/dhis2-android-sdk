@@ -35,6 +35,7 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -175,7 +176,7 @@ public class EditTextRow extends Row {
             holder.errorLabel.setVisibility(View.GONE);
         } else {
             holder.errorLabel.setVisibility(View.VISIBLE);
-            holder.errorLabel.setText(mWarning);
+            holder.errorLabel.setText(mError);
         }
 
         if (!mMandatory) {

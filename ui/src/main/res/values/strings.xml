@@ -31,7 +31,7 @@
     <!-- AbsHomeActivity -->
     <string name="drawer_item_help">Help</string>
     <string name="drawer_item_apps">Apps</string>
-    <string name="drawer_item_about">About</string>
+    <string name="drawer_item_information">Information</string>
     <string name="drawer_item_other">Other</string>
     <string name="drawer_item_status">Status</string>
     <string name="drawer_item_profile">Profile</string>
@@ -188,7 +188,12 @@
     <string name="now">now</string>
 
     <string name="no_organisation_units">You are not assigned to any Organisation Units. Please contact system administrator.</string>
-    <string name="no_programs">You do not have any programs assigned to Organisation unit or you do not have the sufficient user roles. Please contact system administrator</string>
+    <string name="no_programs">You do not have any programs assigned to Organisation unit or you do not have the sufficient user roles. Please contact system administrator.</string>
     <string name="report_entity">Report Entity</string>
 
+    <!-- About fragment strings: -->
+    <string name="documentation_header">Documentation:</string>
+    <string name="libraries_header">Libraries used:</string>
+    <string name="logged_in_as">Logged in as:</string>
+    <string name="logged_in_at">At server:</string>
 </resources>

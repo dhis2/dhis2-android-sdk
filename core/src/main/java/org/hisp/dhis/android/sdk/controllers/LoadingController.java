@@ -119,6 +119,12 @@ public final class LoadingController {
      * @param context
      */
     static void loadMetaData(Context context, DhisApi dhisApi, boolean forceSync) throws APIException {
+
+        if (context == null) {
+            Log.i(CLASS_TAG, "Unable to load metadata. We have no valid context.");
+            return;
+        }
+
         Log.d(CLASS_TAG, "loading metadata!");
         Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_START));
         try {

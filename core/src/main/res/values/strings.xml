@@ -247,6 +247,7 @@
     <string name="detailed_info_status_row">Please press the complete button when you are finished with entering data. Press the validate button to check if the entered data is valid.</string>
     <string name="delimiter"> : </string>
     <string name="enter_phone_number">Enter phone number</string>
+    <string name="choose_filter">Choose filter</string>
 
 
 </resources>

@@ -266,7 +266,7 @@ final class TrackerDataLoader extends ResourceController {
                 QUERY_MAP_FULL.put("filter", val.getTrackedEntityAttributeId() + ":LIKE:" + val.getValue());
             } else {
                 String currentFilter = QUERY_MAP_FULL.get("filter");
-                QUERY_MAP_FULL.put("filter", currentFilter + "&" + val.getTrackedEntityAttributeId() + ":LIKE:" + val.getValue());
+                QUERY_MAP_FULL.put("filter", currentFilter + "&filter=" + val.getTrackedEntityAttributeId() + ":LIKE:" + val.getValue());
             }
         }
 
@@ -313,7 +313,7 @@ final class TrackerDataLoader extends ResourceController {
                     QUERY_MAP_FULL.put("filter", val.getTrackedEntityAttributeId() + ":EQ:" + val.getValue());
                 } else {
                     String currentFilter = QUERY_MAP_FULL.get("filter");
-                    QUERY_MAP_FULL.put("filter", currentFilter + "&" + val.getTrackedEntityAttributeId() + ":EQ:" + val.getValue());
+                    QUERY_MAP_FULL.put("filter", currentFilter + "&filter=" + val.getTrackedEntityAttributeId() + ":EQ:" + val.getValue());
                 }
                 continue;
             }
@@ -322,7 +322,7 @@ final class TrackerDataLoader extends ResourceController {
                 QUERY_MAP_FULL.put("filter", val.getTrackedEntityAttributeId() + ":LIKE:" + val.getValue());
             } else {
                 String currentFilter = QUERY_MAP_FULL.get("filter");
-                QUERY_MAP_FULL.put("filter", currentFilter + "&" + val.getTrackedEntityAttributeId() + ":LIKE:" + val.getValue());
+                QUERY_MAP_FULL.put("filter", currentFilter + "&filter=" + val.getTrackedEntityAttributeId() + ":LIKE:" + val.getValue());
             }
         }
 

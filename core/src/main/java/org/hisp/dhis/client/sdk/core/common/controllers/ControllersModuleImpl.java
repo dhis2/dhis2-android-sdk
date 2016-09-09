@@ -33,6 +33,8 @@ import org.hisp.dhis.client.sdk.core.common.persistence.PersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.PreferencesModule;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementController;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementControllerImpl;
+import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentController;
+import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentControllerImpl;
 import org.hisp.dhis.client.sdk.core.event.EventController;
 import org.hisp.dhis.client.sdk.core.event.EventControllerImpl;
 import org.hisp.dhis.client.sdk.core.optionset.OptionSetController;
@@ -55,10 +57,15 @@ import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementController;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementControllerImpl;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionController;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionControllerImpl;
+import org.hisp.dhis.client.sdk.core.program.ProgramTrackedEntityAttributeController;
+import org.hisp.dhis.client.sdk.core.program.ProgramTrackedEntityAttributeControllerImpl;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoControllerImpl;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeController;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeControllerImpl;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityController;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityControllerImpl;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInstanceController;
 import org.hisp.dhis.client.sdk.core.user.AssignedOrganisationUnitControllerImpl;
 import org.hisp.dhis.client.sdk.core.user.AssignedOrganisationUnitsController;
 import org.hisp.dhis.client.sdk.core.user.AssignedProgramsController;
@@ -87,6 +94,9 @@ public class ControllersModuleImpl implements ControllersModule {
     private final OptionSetController optionSetController;
     private final TrackedEntityAttributeController trackedEntityAttributeController;
     private final EventController eventController;
+    private final TrackedEntityController trackedEntityController;
+    private final ProgramTrackedEntityAttributeController programTrackedEntityAttributeController;
+    private final EnrollmentController enrollmentController;
 
     public ControllersModuleImpl(NetworkModule networkModule,
                                  PersistenceModule persistenceModule,
@@ -200,6 +210,23 @@ public class ControllersModuleImpl implements ControllersModule {
                 persistenceModule.getProgramRuleActionStore(),
                 persistenceModule.getTransactionManager());
 
+        trackedEntityController = new TrackedEntityControllerImpl(
+                networkModule.getTrackedEntityApiClient(),
+                persistenceModule.getTransactionManager(),
+                preferencesModule.getLastUpdatedPreferences(),
+                persistenceModule.getTrackedEntityStore(),
+                systemInfoController);
+
+
+
+        programTrackedEntityAttributeController = new ProgramTrackedEntityAttributeControllerImpl(
+                persistenceModule.getProgramTrackedEntityAttributeStore(),
+                preferencesModule.getLastUpdatedPreferences(),
+                systemInfoController,
+                networkModule.getProgramTrackedEntityAttributeApiClient(),
+                trackedEntityAttributeController,
+                persistenceModule.getTransactionManager(), programControllerImpl);
+
         programRuleControllerImpl.setProgramRuleActionController(programRuleActionController);
         programRuleControllerImpl.setProgramRuleVariableController(programRuleVariableController);
         programRuleController = programRuleControllerImpl;
@@ -212,6 +239,8 @@ public class ControllersModuleImpl implements ControllersModule {
         programControllerImpl.setDataElementController(dataElementController);
         programControllerImpl.setOptionSetController(optionSetController);
         programControllerImpl.setProgramRuleController(programRuleController);
+        programControllerImpl.setTrackedEntityController(trackedEntityController);
+        programControllerImpl.setProgramTrackedEntityAttributeController(programTrackedEntityAttributeController);
         programController = programControllerImpl;
 
         eventController = new EventControllerImpl(systemInfoController,
@@ -220,6 +249,12 @@ public class ControllersModuleImpl implements ControllersModule {
                 persistenceModule.getEventStore(),
                 persistenceModule.getStateStore(),
                 persistenceModule.getTransactionManager(), logger);
+
+        enrollmentController = new EnrollmentControllerImpl(networkModule.getEnrollmentApiClient(),
+                systemInfoController, preferencesModule.getLastUpdatedPreferences(),
+                persistenceModule.getTransactionManager(),
+                eventController, persistenceModule.getEnrollmentStore(),
+                persistenceModule.getEventStore(), persistenceModule.getStateStore());
     }
 
     @Override
@@ -305,5 +340,23 @@ public class ControllersModuleImpl implements ControllersModule {
     @Override
     public OptionSetController getOptionSetController() {
         return optionSetController;
+    }
+
+    @Override
+    public TrackedEntityInstanceController getTrackedEntityInstanceController() {
+        return null;
+    }
+
+    @Override
+    public EnrollmentController getEnrollmentController() {
+        return null;
+    }
+
+    public TrackedEntityController getTrackedEntityController() {
+        return trackedEntityController;
+    }
+
+    public ProgramTrackedEntityAttributeController getProgramTrackedEntityAttributeController() {
+        return programTrackedEntityAttributeController;
     }
 }

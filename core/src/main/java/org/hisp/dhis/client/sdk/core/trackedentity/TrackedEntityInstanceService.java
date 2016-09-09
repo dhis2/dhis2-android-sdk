@@ -43,7 +43,7 @@ public interface TrackedEntityInstanceService extends Service, Save<TrackedEntit
         Remove<TrackedEntityInstance>, Get<TrackedEntityInstance>, ListAll<TrackedEntityInstance> {
     TrackedEntityInstance get(String uid);
 
-    TrackedEntityInstance create(TrackedEntity trackedEntity, OrganisationUnit organisationUnit);
+    TrackedEntityInstance create(OrganisationUnit organisationUnit, TrackedEntity trackedEntity);
 
     /**
      * Creates and adds a relationship for the given parameters.

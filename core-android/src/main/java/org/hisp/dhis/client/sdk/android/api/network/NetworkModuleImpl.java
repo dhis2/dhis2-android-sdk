@@ -34,6 +34,8 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementApiClientImpl;
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.enrollment.EnrollmentApiClientImpl;
+import org.hisp.dhis.client.sdk.android.enrollment.EnrollmentApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.event.EventApiClientImpl;
 import org.hisp.dhis.client.sdk.android.event.EventApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.optionset.OptionSetApiClientImpl;
@@ -56,8 +58,12 @@ import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementApiClient
 import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionApiClientImpl;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.program.ProgramTrackedEntityAttributeApiClientImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramTrackedEntityAttributeApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.systeminfo.SystemInfoApiClientImpl;
 import org.hisp.dhis.client.sdk.android.systeminfo.SystemInfoApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityApiClientImpl;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeApiClientImpl;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.user.UserAccountApiClientImpl;
@@ -69,6 +75,7 @@ import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
 import org.hisp.dhis.client.sdk.core.common.preferences.PreferencesModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.UserPreferences;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementApiClient;
+import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentApiClient;
 import org.hisp.dhis.client.sdk.core.event.EventApiClient;
 import org.hisp.dhis.client.sdk.core.optionset.OptionSetApiClient;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitApiClient;
@@ -80,9 +87,12 @@ import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableApiClient;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageApiClient;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementApiClient;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionApiClient;
+import org.hisp.dhis.client.sdk.core.program.ProgramTrackedEntityAttributeApiClient;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityApiClient;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeApiClient;
 import org.hisp.dhis.client.sdk.core.user.UserApiClient;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -127,6 +137,9 @@ public class NetworkModuleImpl implements NetworkModule {
     private final ProgramStageDataElementApiClient programStageDataElementApiClient;
     private final OptionSetApiClient optionSetApiClient;
     private final TrackedEntityAttributeApiClient trackedEntityAttributeApiClient;
+    private final TrackedEntityApiClient trackedEntityApiClient;
+    private final ProgramTrackedEntityAttributeApiClient programTrackedEntityAttributeApiClient;
+    private final EnrollmentApiClient enrollmentApiClient;
 
     public NetworkModuleImpl(PreferencesModule preferencesModule, OkHttpClient okClient) {
         AuthInterceptor authInterceptor = new AuthInterceptor(
@@ -200,6 +213,13 @@ public class NetworkModuleImpl implements NetworkModule {
                 retrofit.create(OptionSetApiClientRetrofit.class));
         trackedEntityAttributeApiClient = new TrackedEntityAttributeApiClientImpl(
                 retrofit.create(TrackedEntityAttributeApiClientRetrofit.class));
+        trackedEntityApiClient = new TrackedEntityApiClientImpl(
+                retrofit.create(TrackedEntityApiClientRetrofit.class));
+        programTrackedEntityAttributeApiClient = new ProgramTrackedEntityAttributeApiClientImpl(
+                retrofit.create(ProgramTrackedEntityAttributeApiClientRetrofit.class));
+        enrollmentApiClient = new EnrollmentApiClientImpl(
+                retrofit.create(EnrollmentApiClientRetrofit.class));
+
     }
 
     @Override
@@ -275,6 +295,21 @@ public class NetworkModuleImpl implements NetworkModule {
     @Override
     public ProgramIndicatorApiClient getProgramIndicatorApiClient() {
         return programIndicatorApiClient;
+    }
+
+    @Override
+    public TrackedEntityApiClient getTrackedEntityApiClient() {
+        return trackedEntityApiClient;
+    }
+
+    @Override
+    public ProgramTrackedEntityAttributeApiClient getProgramTrackedEntityAttributeApiClient() {
+        return programTrackedEntityAttributeApiClient;
+    }
+
+    @Override
+    public EnrollmentApiClient getEnrollmentApiClient() {
+        return null;
     }
 
     private static class AuthInterceptor implements Interceptor {

@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.core.common.services;
 
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementService;
+import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentService;
 import org.hisp.dhis.client.sdk.core.event.EventService;
 import org.hisp.dhis.client.sdk.core.optionset.OptionSetService;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitService;
@@ -40,8 +41,11 @@ import org.hisp.dhis.client.sdk.core.program.ProgramService;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementService;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionService;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageService;
+import org.hisp.dhis.client.sdk.core.program.ProgramTrackedEntityAttributeService;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeService;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeValueService;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueService;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInstanceService;
 import org.hisp.dhis.client.sdk.core.user.UserAccountService;
 
 public interface ServicesModule {
@@ -74,4 +78,12 @@ public interface ServicesModule {
     TrackedEntityDataValueService getTrackedEntityDataValueService();
 
     OptionSetService getOptionSetService();
+
+    EnrollmentService getEnrollmentService();
+
+    TrackedEntityInstanceService getTrackedEntityInstanceService();
+
+    TrackedEntityAttributeValueService getTrackedEntityAttributeValueService();
+
+    ProgramTrackedEntityAttributeService getProgramTrackedEntityAttributeService();
 }

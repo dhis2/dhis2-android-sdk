@@ -30,6 +30,7 @@ package org.hisp.dhis.client.sdk.core.common.persistence;
 
 import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementStore;
+import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.client.sdk.core.event.EventStore;
 import org.hisp.dhis.client.sdk.core.optionset.OptionSetStore;
 import org.hisp.dhis.client.sdk.core.optionset.OptionStore;
@@ -42,8 +43,13 @@ import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionStore;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageStore;
 import org.hisp.dhis.client.sdk.core.program.ProgramStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramTrackedEntityAttributeStore;
+import org.hisp.dhis.client.sdk.core.relationship.RelationshipStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInstanceStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityStore;
 import org.hisp.dhis.client.sdk.core.user.UserAccountStore;
 
 public interface PersistenceModule {
@@ -76,6 +82,8 @@ public interface PersistenceModule {
 
     EventStore getEventStore();
 
+    TrackedEntityStore getTrackedEntityStore();
+
     TrackedEntityDataValueStore getTrackedEntityDataValueStore();
 
     DataElementStore getDataElementStore();
@@ -83,6 +91,16 @@ public interface PersistenceModule {
     OptionSetStore getOptionSetStore();
 
     OptionStore getOptionStore();
+
+    ProgramTrackedEntityAttributeStore getProgramTrackedEntityAttributeStore();
+
+    EnrollmentStore getEnrollmentStore();
+
+    TrackedEntityInstanceStore getTrackedEntityInstanceStore();
+
+    RelationshipStore getRelationshipStore();
+
+    TrackedEntityAttributeValueStore getTrackedEntityAttributeValueStore();
 
     boolean deleteAllTables();
 }

@@ -36,6 +36,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow;
 import org.hisp.dhis.client.sdk.android.common.StateStoreImpl;
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementStoreImpl;
+import org.hisp.dhis.client.sdk.android.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.client.sdk.android.event.EventStoreImpl;
 import org.hisp.dhis.client.sdk.android.optionset.OptionSetStoreImpl;
 import org.hisp.dhis.client.sdk.android.optionset.OptionStoreImpl;
@@ -48,13 +49,19 @@ import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementStoreImpl
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionStoreImpl;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageStoreImpl;
 import org.hisp.dhis.client.sdk.android.program.ProgramStoreImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramTrackedEntityAttributeStoreImpl;
+import org.hisp.dhis.client.sdk.android.relationship.RelationshipStoreImpl;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeStoreImpl;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeValueStoreImpl;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityInstanceStoreImpl;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityStoreImpl;
 import org.hisp.dhis.client.sdk.android.user.UserAccountStoreImpl;
 import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.PersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementStore;
+import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.client.sdk.core.event.EventStore;
 import org.hisp.dhis.client.sdk.core.optionset.OptionSetStore;
 import org.hisp.dhis.client.sdk.core.optionset.OptionStore;
@@ -67,8 +74,13 @@ import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionStore;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageStore;
 import org.hisp.dhis.client.sdk.core.program.ProgramStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramTrackedEntityAttributeStore;
+import org.hisp.dhis.client.sdk.core.relationship.RelationshipStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInstanceStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityStore;
 import org.hisp.dhis.client.sdk.core.user.UserAccountStore;
 
 public class PersistenceModuleImpl implements PersistenceModule {
@@ -90,6 +102,12 @@ public class PersistenceModuleImpl implements PersistenceModule {
     private final DataElementStore dataElementStore;
     private final OptionStore optionStore;
     private final OptionSetStore optionSetStore;
+    private final TrackedEntityStore trackedEntityStore;
+    private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
+    private final EnrollmentStore enrollmentStore;
+    private final TrackedEntityInstanceStore trackedEntityInstanceStore;
+    private final RelationshipStore relationshipStore;
+    private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
     public PersistenceModuleImpl(Context context) {
         FlowConfig flowConfig = new FlowConfig
@@ -115,9 +133,16 @@ public class PersistenceModuleImpl implements PersistenceModule {
 
         trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl();
         eventStore = new EventStoreImpl(stateStore, trackedEntityDataValueStore, transactionManager);
+        trackedEntityStore = new TrackedEntityStoreImpl();
+        programTrackedEntityAttributeStore = new ProgramTrackedEntityAttributeStoreImpl();
+        enrollmentStore = new EnrollmentStoreImpl(stateStore);
 
         optionStore = new OptionStoreImpl();
         optionSetStore = new OptionSetStoreImpl();
+        trackedEntityInstanceStore = new TrackedEntityInstanceStoreImpl(stateStore);
+        relationshipStore = new RelationshipStoreImpl(stateStore);
+        trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStoreImpl(stateStore,
+                programStore);
     }
 
     @Override
@@ -191,6 +216,11 @@ public class PersistenceModuleImpl implements PersistenceModule {
     }
 
     @Override
+    public TrackedEntityStore getTrackedEntityStore() {
+        return trackedEntityStore;
+    }
+
+    @Override
     public TrackedEntityDataValueStore getTrackedEntityDataValueStore() {
         return trackedEntityDataValueStore;
     }
@@ -211,6 +241,31 @@ public class PersistenceModuleImpl implements PersistenceModule {
     }
 
     @Override
+    public ProgramTrackedEntityAttributeStore getProgramTrackedEntityAttributeStore() {
+        return programTrackedEntityAttributeStore;
+    }
+
+    @Override
+    public EnrollmentStore getEnrollmentStore() {
+        return enrollmentStore;
+    }
+
+    @Override
+    public TrackedEntityInstanceStore getTrackedEntityInstanceStore() {
+        return trackedEntityInstanceStore;
+    }
+
+    @Override
+    public RelationshipStore getRelationshipStore() {
+        return null;
+    }
+
+    @Override
+    public TrackedEntityAttributeValueStore getTrackedEntityAttributeValueStore() {
+        return trackedEntityAttributeValueStore;
+    }
+
+    @Override
     public boolean deleteAllTables() {
         return stateStore.deleteAll() &&
                 userAccountStore.deleteAll() &&
@@ -228,6 +283,11 @@ public class PersistenceModuleImpl implements PersistenceModule {
                 trackedEntityDataValueStore.deleteAll() &&
                 dataElementStore.deleteAll() &&
                 optionStore.deleteAll() &&
+                trackedEntityStore.deleteAll() &&
+                programTrackedEntityAttributeStore.deleteAll() &&
+                enrollmentStore.deleteAll() &&
+                trackedEntityInstanceStore.deleteAll() &&
+                trackedEntityAttributeValueStore.deleteAll() &&
                 optionSetStore.deleteAll();
     }
 }

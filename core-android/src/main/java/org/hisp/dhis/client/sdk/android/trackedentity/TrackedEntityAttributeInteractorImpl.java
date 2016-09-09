@@ -33,6 +33,7 @@ import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeController;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeService;
+import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 import java.util.List;

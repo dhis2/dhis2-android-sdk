@@ -40,7 +40,6 @@ import java.util.Collection;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-
 public class TransactionManagerImpl implements TransactionManager {
 
     public TransactionManagerImpl() {

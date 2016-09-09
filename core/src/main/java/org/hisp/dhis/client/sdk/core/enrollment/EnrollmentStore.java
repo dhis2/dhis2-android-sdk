@@ -40,9 +40,9 @@ public interface EnrollmentStore extends IdentifiableObjectStore<Enrollment> {
     List<Enrollment> query(Program program, TrackedEntityInstance instance);
 
     Enrollment queryActiveEnrollment(
-            TrackedEntityInstance instance, OrganisationUnit unit, Program program);
+            OrganisationUnit unit, Program program, TrackedEntityInstance instance);
 
     List<Enrollment> query(TrackedEntityInstance instance);
 
-    List<Enrollment> query(Program program, OrganisationUnit organisationUnit);
+    List<Enrollment> query(OrganisationUnit organisationUnit, Program program);
 }

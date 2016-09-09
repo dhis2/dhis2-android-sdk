@@ -26,26 +26,57 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.fragments;
+package org.hisp.dhis.client.sdk.ui.models;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+/**
+ * Created by thomaslindsjorn on 19/08/16.
+ */
+public class ReportEntityFilter implements Comparable<ReportEntityFilter> {
 
-public class AboutFragment extends Fragment {
+    private String dataElementId;
+    private String dataElementLabel;
+    private boolean show;
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
-            savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+    public ReportEntityFilter(String dataElementId, String dataElementLabel, boolean show) {
+        this.dataElementId = dataElementId;
+        this.dataElementLabel = dataElementLabel;
+        this.show = show;
     }
 
+    public String getDataElementId() {
+        return dataElementId;
+    }
+
+    public void setDataElementId(String dataElementId) {
+        this.dataElementId = dataElementId;
+    }
+
+    public String getDataElementLabel() {
+        return dataElementLabel;
+    }
+
+    public void setDataElementLabel(String dataElementLabel) {
+        this.dataElementLabel = dataElementLabel;
+    }
+
+    public boolean show() {
+        return show;
+    }
+
+    public void setShow(boolean show) {
+        this.show = show;
+    }
+
+    /**
+     * Sort alphabetically by data element label, but show checked items (enabled filters) first
+     */
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public int compareTo(ReportEntityFilter another) {
+        if (this.show == another.show) {
+            return this.dataElementLabel.compareTo(another.dataElementLabel);
+        }
+        if (this.show) return -1;
+        if (another.show) return 1;
+        return 0;
     }
 }

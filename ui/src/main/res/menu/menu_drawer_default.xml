@@ -88,10 +88,11 @@
                     android:id="@+id/drawer_item_help"
                     android:icon="@drawable/ic_help"
                     android:title="@string/drawer_item_help" />
+                    -->
                 <item
-                    android:id="@+id/drawer_item_about"
-                    android:icon="@drawable/ic_about"
-                    android:title="@string/drawer_item_about" /> -->
+                    android:id="@+id/drawer_item_information"
+                    android:icon="@drawable/ic_info"
+                    android:title="@string/drawer_item_information" />
             </group>
         </menu>
     </item>

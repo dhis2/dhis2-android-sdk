@@ -30,10 +30,12 @@
 package org.hisp.dhis.android.sdk.controllers.tracker;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.queriable.StringQuery;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.LoadingController;
@@ -79,7 +81,8 @@ public final class TrackerController extends ResourceController {
 
     private static final String CLASS_TAG = "DataValueController";
 
-    private TrackerController() {}
+    private TrackerController() {
+    }
 
     /**
      * Returns false if some data value flags that have been enabled have not been downloaded.
@@ -89,11 +92,11 @@ public final class TrackerController extends ResourceController {
      */
     public static boolean isDataLoaded(Context context) {
         Log.d(CLASS_TAG, "isdatavaluesloaded..");
-        if( context==null ) {
+        if (context == null) {
             return false;
         }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.EVENTS)) {
-            if( DateTimeManager.getInstance().getLastUpdated(ResourceType.EVENTS) == null) {
+            if (DateTimeManager.getInstance().getLastUpdated(ResourceType.EVENTS) == null) {
                 return false;
             }
         }
@@ -163,18 +166,27 @@ public final class TrackerController extends ResourceController {
      * @param endDate
      * @return
      */
-    public static List<Event> getScheduledEvents(String programId, String orgUnitId,
-                                                 String startDate, String endDate) {
-        return new Select().from(Event.class).where(Condition.column(Event$Table.PROGRAMID)
+    public static List<Event> getScheduledEventsWithActiveEnrollments(String programId, String orgUnitId,
+                                                                      String startDate, String endDate) {
+
+        List<Enrollment> activeEnrollments = new Select().from(Enrollment.class).where(Condition.column
+                (Enrollment$Table.PROGRAM).is(programId)).and(Condition.column(Enrollment$Table.STATUS).is(Enrollment.ACTIVE)).queryTableList();
+
+        String activeEnrollmentsSqlSafeString = getSqlSafeStringFromListOfEnrollments(activeEnrollments);
+
+        String rawSqlQuery = new Select().from(Event.class).where(Condition.column(Event$Table.PROGRAMID)
                 .is(programId))
                 .and(Condition.column(Event$Table.ORGANISATIONUNITID)
-                .is(orgUnitId))
+                        .is(orgUnitId))
                 .and(Condition.column(Event$Table.STATUS).isNot(Event.STATUS_OVERDUE))
                 .and(Condition.column(Event$Table.STATUS).isNot(Event.STATUS_COMPLETED))
                 .and(Condition.column(Event$Table.EVENTDATE).isNull())
                 .and(Condition.column(Event$Table.DUEDATE).isNotNull())
-                .and(Condition.column(Event$Table.DUEDATE).between(startDate)
-                .and(endDate)).orderBy(Event$Table.DUEDATE).queryList();
+                .and(Condition.column(Event$Table.DUEDATE).between(startDate).and(endDate))
+                .and(Condition.column(Event$Table.ENROLLMENT)).toString() + " IN " + activeEnrollmentsSqlSafeString
+                + " ORDER BY " + Event$Table.DUEDATE;
+
+        return new StringQuery<Event>(Event.class, rawSqlQuery).queryList();
     }
 
     /**
@@ -344,10 +356,9 @@ public final class TrackerController extends ResourceController {
                 .where(Condition.column(TrackedEntityAttributeValue$Table.TRACKEDENTITYATTRIBUTEID).eq(trackedEntityAttribute))
                 .and(Condition.column(TrackedEntityAttributeValue$Table.LOCALTRACKEDENTITYINSTANCEID).eq(trackedEntityInstance))
                 .queryList();
-        if(trackedEntityAttributeValue != null && trackedEntityAttributeValue.size() > 0) {
+        if (trackedEntityAttributeValue != null && trackedEntityAttributeValue.size() > 0) {
             return trackedEntityAttributeValue.get(0);
-        }
-        else return null;
+        } else return null;
 
     }
 
@@ -437,18 +448,19 @@ public final class TrackerController extends ResourceController {
     }
 
     public static List<TrackedEntityInstance> queryTrackedEntityInstancesDataFromServer(DhisApi dhisApi,
-                                                                                 String organisationUnitUid,
-                                                                                 String programUid,
-                                                                                 String queryString,
-                                                                                   TrackedEntityAttributeValue... params) throws APIException {
-        return TrackerDataLoader.queryTrackedEntityInstancesDataFromServer(dhisApi, organisationUnitUid, programUid, queryString, params);
-    }
-    public static List<TrackedEntityInstance> queryTrackedEntityInstancesDataFromAllAccessibleOrgUnits(DhisApi dhisApi,
                                                                                         String organisationUnitUid,
                                                                                         String programUid,
                                                                                         String queryString,
-                                                                                        boolean detailedSearch,
                                                                                         TrackedEntityAttributeValue... params) throws APIException {
+        return TrackerDataLoader.queryTrackedEntityInstancesDataFromServer(dhisApi, organisationUnitUid, programUid, queryString, params);
+    }
+
+    public static List<TrackedEntityInstance> queryTrackedEntityInstancesDataFromAllAccessibleOrgUnits(DhisApi dhisApi,
+                                                                                                       String organisationUnitUid,
+                                                                                                       String programUid,
+                                                                                                       String queryString,
+                                                                                                       boolean detailedSearch,
+                                                                                                       TrackedEntityAttributeValue... params) throws APIException {
         return TrackerDataLoader.queryTrackedEntityInstancesDataFromAllAccessibleOrgunits(dhisApi, organisationUnitUid, programUid, queryString, detailedSearch, params);
     }
 
@@ -462,6 +474,7 @@ public final class TrackerController extends ResourceController {
 
     /**
      * Refreshes event statuses after downloading
+     *
      * @param dhisApi
      * @param trackedEntityInstance
      * @param serverDateTime
@@ -471,7 +484,7 @@ public final class TrackerController extends ResourceController {
     public static List<Enrollment> getEnrollmentDataFromServer(DhisApi dhisApi, TrackedEntityInstance trackedEntityInstance, DateTime serverDateTime) throws APIException {
         List<Enrollment> enrollments = TrackerDataLoader.getEnrollmentsDataFromServer(dhisApi, trackedEntityInstance, serverDateTime);
         refreshEventStatuses();
-        return  enrollments;
+        return enrollments;
     }
 
     public static void getEventDataFromServer(DhisApi dhisApi, String uid) throws APIException {
@@ -494,19 +507,42 @@ public final class TrackerController extends ResourceController {
         List<Enrollment> activeEnrollments = new Select().from(Enrollment.class)
                 .where(Condition.column(Enrollment$Table.STATUS).eq(Enrollment.ACTIVE))
                 .queryList();
-        if(activeEnrollments != null) {
+        if (activeEnrollments != null) {
             return activeEnrollments;
-        }
-        else return new ArrayList<>();
+        } else return new ArrayList<>();
     }
 
-    public static List<Event> getOverdueEvents(String mProgramId, String mOrgUnitId) {
-        List<Event> overdueEvents = new Select().from(Event.class)
+    public static List<Event> getOverdueEventsWithActiveEnrollments(String mProgramId, String mOrgUnitId) {
+
+        List<Enrollment> activeEnrollments = new Select().from(Enrollment.class).where(Condition.column
+                (Enrollment$Table.PROGRAM).is(mProgramId)).and(Condition.column(Enrollment$Table.STATUS).is(Enrollment.ACTIVE)).queryList();
+
+        String activeEnrollmentsSqlSafeString = getSqlSafeStringFromListOfEnrollments(activeEnrollments);
+
+        String rawSqlQuery = new Select().from(Event.class)
                 .where(Condition.column(Event$Table.PROGRAMID).eq(mProgramId))
                 .and(Condition.column(Event$Table.ORGANISATIONUNITID).eq(mOrgUnitId))
                 .and(Condition.column(Event$Table.STATUS).eq(Event.STATUS_OVERDUE))
-                .queryList();
-        return overdueEvents;
+                .and(Condition.column(Event$Table.ENROLLMENT)).toString()
+                + " IN " + activeEnrollmentsSqlSafeString
+                + " ORDER BY " + Event$Table.DUEDATE;
+
+        return new StringQuery<Event>(Event.class, rawSqlQuery).queryList();
+    }
+
+    /*
+    * DBFlow does not support collections for IN statements (DBFlow v2.2.1 as of now).
+    * Use raw SQL statement to get around this
+    * */
+    @NonNull
+    private static String getSqlSafeStringFromListOfEnrollments(List<Enrollment> activeEnrollments) {
+        String activeEnrollmentsSqlSafeString = "(";
+
+        for (int i = 0; i < activeEnrollments.size() - 1; i++) {
+            activeEnrollmentsSqlSafeString += "'" + activeEnrollments.get(i).getEnrollment() + "', ";
+        }
+        activeEnrollmentsSqlSafeString += "'" + activeEnrollments.get(activeEnrollments.size() - 1).getEnrollment() + "')";
+        return activeEnrollmentsSqlSafeString;
     }
 
     public static void refreshEventStatuses() {
@@ -516,16 +552,15 @@ public final class TrackerController extends ResourceController {
                 .orderBy(Event$Table.DUEDATE)
                 .queryList();
         List<DbOperation> dbOperations = new ArrayList<>();
-        for(Event event : events) {
-            if(event.getDueDate() != null) {
+        for (Event event : events) {
+            if (event.getDueDate() != null) {
                 LocalDate dueDate = new LocalDate(DateUtils.parseDate(event.getDueDate()));
                 LocalDate now = new LocalDate(DateUtils.parseDate(DateUtils.getMediumDateString()));
 
-                if(dueDate.isBefore(now)) {
+                if (dueDate.isBefore(now)) {
                     event.setStatus(Event.STATUS_OVERDUE);
                     dbOperations.add(DbOperation.update(event));
-                }
-                else {
+                } else {
                     break;
                 }
 
@@ -535,16 +570,23 @@ public final class TrackerController extends ResourceController {
         DbUtils.applyBatch(dbOperations);
     }
 
-    public static List<Event> getActiveEvents(String mProgramId, String mOrgUnitId, String mStartDate, String mEndDate) {
+    public static List<Event> getActiveEventsWithActiveEnrollments(String mProgramId, String mOrgUnitId, String mStartDate, String mEndDate) {
 
-        return new Select().from(Event.class).where(Condition.column(Event$Table.PROGRAMID)
+        List<Enrollment> activeEnrollments = new Select().from(Enrollment.class).where(Condition.column
+                (Enrollment$Table.PROGRAM).is(mProgramId)).and(Condition.column(Enrollment$Table.STATUS).is(Enrollment.ACTIVE)).queryTableList();
+
+        String activeEnrollmentsSqlSafeString = getSqlSafeStringFromListOfEnrollments(activeEnrollments);
+
+        String rawSqlQuery = new Select().from(Event.class).where(Condition.column(Event$Table.PROGRAMID)
                 .is(mProgramId))
-                .and(Condition.column(Event$Table.ORGANISATIONUNITID)
-                        .is(mOrgUnitId))
+                .and(Condition.column(Event$Table.ORGANISATIONUNITID).is(mOrgUnitId))
                 .and(Condition.column(Event$Table.STATUS).isNot(Event.STATUS_OVERDUE))
                 .and(Condition.column(Event$Table.STATUS).isNot(Event.STATUS_SKIPPED))
                 .and(Condition.column(Event$Table.EVENTDATE).isNotNull())
-                .and(Condition.column(Event$Table.EVENTDATE).between(mStartDate)
-                        .and(mEndDate)).orderBy(Event$Table.EVENTDATE).queryList();
+                .and(Condition.column(Event$Table.EVENTDATE).between(mStartDate).and(mEndDate))
+                .and(Condition.column(Event$Table.ENROLLMENT)).toString() + " IN " + activeEnrollmentsSqlSafeString
+                + " ORDER BY " + Event$Table.DUEDATE;
+
+        return new StringQuery<Event>(Event.class, rawSqlQuery).queryList();
     }
 }

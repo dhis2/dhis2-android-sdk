@@ -23,7 +23,7 @@ import java.lang.ref.WeakReference;
 public abstract class ExportService<T extends ExportResponse> extends Service {
 
     final Messenger messenger = new Messenger(new MessageHandler<T>(this));
-    
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -43,6 +43,10 @@ public abstract class ExportService<T extends ExportResponse> extends Service {
         @Override
         public void handleMessage(Message msg) {
             if (msg.replyTo != null && exportServiceWeakReference.get() != null) {
+                // TODO: Put in security measures here.
+                // Check username and password provided by client in msg bundle extra
+                // against UserAccount.getCurrentUserAccountFromDb() ?
+
                 Message message = Message.obtain();
                 Bundle bundle = new Bundle();
                 T responseObject = exportServiceWeakReference.get().getResponseObject();

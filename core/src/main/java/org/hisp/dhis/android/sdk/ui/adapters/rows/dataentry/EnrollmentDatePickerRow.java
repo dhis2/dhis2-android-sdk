@@ -42,7 +42,6 @@ import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -64,6 +63,13 @@ public class EnrollmentDatePickerRow extends AbsEnrollmentDatePickerRow {
         this.mEnrollmentDate = enrollmentDate;
     }
 
+    public String getmEnrollmentDate() {
+        return mEnrollmentDate;
+    }
+
+    public void setmEnrollmentDate(String mEnrollmentDate) {
+        this.mEnrollmentDate = mEnrollmentDate;
+    }
 
     @Override
     public View getView(FragmentManager fragmentManager, LayoutInflater inflater, View convertView, ViewGroup container) {
@@ -105,7 +111,7 @@ public class EnrollmentDatePickerRow extends AbsEnrollmentDatePickerRow {
         final TextView textLabel;
         final TextView pickerInvoker;
         final ImageButton clearButton;
-//        final View detailedInfoButton;
+        //        final View detailedInfoButton;
         final DateSetListener dateSetListener;
         final OnEditTextClickListener invokerListener;
         final ClearButtonListener clearButtonListener;
@@ -116,7 +122,7 @@ public class EnrollmentDatePickerRow extends AbsEnrollmentDatePickerRow {
             clearButton = (ImageButton) root.findViewById(R.id.clear_text_view);
 //            this.detailedInfoButton = detailedInfoButton;
 
-            dateSetListener = new DateSetListener(pickerInvoker);
+            dateSetListener = new DateSetListener(pickerInvoker, EnrollmentDatePickerRow.this);
             invokerListener = new OnEditTextClickListener(context, dateSetListener);
             clearButtonListener = new ClearButtonListener(pickerInvoker);
 
@@ -130,7 +136,7 @@ public class EnrollmentDatePickerRow extends AbsEnrollmentDatePickerRow {
             clearButtonListener.setEnrollment(enrollment);
 
             String eventDate = null;
-            
+
             if (enrollment != null && enrollmentDate != null && !isEmpty(enrollmentDate)) {
                 dateSetListener.setEnrollmentDate(enrollmentDate);
                 clearButtonListener.setEnrollmentDate(enrollmentDate);
@@ -141,7 +147,7 @@ public class EnrollmentDatePickerRow extends AbsEnrollmentDatePickerRow {
             textLabel.setText(label);
             pickerInvoker.setText(eventDate);
         }
-        
+
     }
 
     private static class OnEditTextClickListener implements View.OnClickListener {
@@ -163,6 +169,7 @@ public class EnrollmentDatePickerRow extends AbsEnrollmentDatePickerRow {
             picker.show();
         }
     }
+
     private static class ClearButtonListener implements View.OnClickListener {
         private final TextView textView;
         private Enrollment enrollment;
@@ -185,7 +192,7 @@ public class EnrollmentDatePickerRow extends AbsEnrollmentDatePickerRow {
         public void onClick(View view) {
             textView.setText(EMPTY_FIELD);
 
-            if (enrollmentDate != null){
+            if (enrollmentDate != null) {
                 enrollment.setEnrollmentDate(EMPTY_FIELD);
             }
         }
@@ -194,11 +201,13 @@ public class EnrollmentDatePickerRow extends AbsEnrollmentDatePickerRow {
     private class DateSetListener implements DatePickerDialog.OnDateSetListener {
         private static final String DATE_FORMAT = "YYYY-MM-dd";
         private final TextView textView;
+        private final EnrollmentDatePickerRow enrollmentDatePickerRow;
         private Enrollment enrollment;
         private DataValue value;
         private String enrollmentDate;
 
-        public DateSetListener(TextView textView) {
+        public DateSetListener(TextView textView, EnrollmentDatePickerRow enrollmentDatePickerRow) {
+            this.enrollmentDatePickerRow = enrollmentDatePickerRow;
             this.textView = textView;
         }
 
@@ -214,14 +223,17 @@ public class EnrollmentDatePickerRow extends AbsEnrollmentDatePickerRow {
         public void onDateSet(DatePicker view, int year,
                               int monthOfYear, int dayOfMonth) {
             LocalDate date = new LocalDate(year, monthOfYear + 1, dayOfMonth);
-            if (value == null) value = new DataValue();
+            if (value == null) {
+                value = new DataValue();
+            }
 
-
-            if (enrollmentDate != null)
+            if (enrollmentDate != null) {
                 value.setValue(enrollmentDate);
+            }
 
             String newValue = date.toString(DATE_FORMAT);
             textView.setText(newValue);
+            enrollmentDatePickerRow.setmEnrollmentDate(newValue);
 
             if (!newValue.equals(value.getValue())) {
                 value.setValue(newValue);

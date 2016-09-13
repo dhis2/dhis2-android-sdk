@@ -114,7 +114,6 @@ public final class DhisController {
         sendData();
         loadData(context);
         getInstance().getSyncDateWrapper().setLastSyncedNow();
-        refreshLocalData();
     }
 
     public static void forceSynchronize(Context context) throws APIException, IllegalStateException {
@@ -123,16 +122,11 @@ public final class DhisController {
         LoadingController.loadMetaData(context, getInstance().getDhisApi(), true);
         LoadingController.loadDataValues(context, getInstance().getDhisApi());
         getInstance().getSyncDateWrapper().setLastSyncedNow();
-        refreshLocalData();
     }
 
     static void loadData(Context context) throws APIException, IllegalStateException {
         LoadingController.loadMetaData(context, getInstance().getDhisApi(), false);
         LoadingController.loadDataValues(context, getInstance().getDhisApi());
-    }
-
-    static void refreshLocalData() {
-        TrackerController.refreshEventStatuses();
     }
 
     static void sendData() throws APIException, IllegalStateException {

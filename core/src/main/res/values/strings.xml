@@ -59,7 +59,7 @@
     <string name="none_option">None</string>
     <string name="no_option">No</string>
     <string name="error_message">Error</string>
-    <string name="logout_option">Log out</string>
+    <string name="logout_option">Delete all local data and log out</string>
     <string name="cancel_option">Cancel</string>
     <string name="delete">Delete</string>
     <string name="missing_mandatory_field">Missing mandatory field</string>
@@ -127,7 +127,7 @@
     <string name="retrying">Retrying</string>
 
     <string name="update_frequency">Automatic synchronization frequency</string>
-    <string name="logout">Log out</string>
+    <string name="logout">Delete all local data and log out</string>
     <string name="complete">Complete</string>
     <string name="finishing_up">Finishing initial database setup. This may take several minutes so please be patient.</string>
     <string name="loading_server_info">Loading server info</string>

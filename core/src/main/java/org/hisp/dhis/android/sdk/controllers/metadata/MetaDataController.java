@@ -94,6 +94,7 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGeneratedValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGeneratedValue$Table;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGroup;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.User;
 import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
@@ -138,6 +139,11 @@ public final class MetaDataController extends ResourceController {
         }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.OPTIONSETS)) {
             if (DateTimeManager.getInstance().getLastUpdated(ResourceType.OPTIONSETS) == null) {
+                return false;
+            }
+        }
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.TRACKEDENTITYATTRIBUTEGROUPS)) {
+            if (DateTimeManager.getInstance().getLastUpdated(ResourceType.TRACKEDENTITYATTRIBUTEGROUPS) == null) {
                 return false;
             }
         }
@@ -341,6 +347,10 @@ public final class MetaDataController extends ResourceController {
         return new Select().from(TrackedEntityAttribute.class).queryList();
     }
 
+    public static List<TrackedEntityAttributeGroup> getTrackedEntityAttributeGroups() {
+        return new Select().from(TrackedEntityAttributeGroup.class).queryList();
+    }
+
     public static List<TrackedEntityAttributeGeneratedValue> getTrackedEntityAttributeGeneratedValues() {
         return new Select().from(TrackedEntityAttributeGeneratedValue.class).queryList();
     }
@@ -527,6 +537,7 @@ public final class MetaDataController extends ResourceController {
         }
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.OPTIONSETS);
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.TRACKEDENTITYATTRIBUTES);
+        DateTimeManager.getInstance().deleteLastUpdated(ResourceType.TRACKEDENTITYATTRIBUTEGROUPS);
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.CONSTANTS);
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.PROGRAMRULES);
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.PROGRAMRULEVARIABLES);
@@ -555,6 +566,7 @@ public final class MetaDataController extends ResourceController {
                 TrackedEntity.class,
                 TrackedEntityAttributeGeneratedValue.class,
                 TrackedEntityAttribute.class,
+                TrackedEntityAttributeGroup.class,
                 TrackedEntityInstance.class,
                 Enrollment.class,
                 Event.class,
@@ -633,6 +645,11 @@ public final class MetaDataController extends ResourceController {
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.TRACKEDENTITYATTRIBUTES)) {
             if (shouldLoad(serverDateTime, ResourceType.TRACKEDENTITYATTRIBUTES)) {
                 getTrackedEntityAttributeDataFromServer(dhisApi, serverDateTime);
+            }
+        }
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.TRACKEDENTITYATTRIBUTEGROUPS)) {
+            if (shouldLoad(serverDateTime, ResourceType.TRACKEDENTITYATTRIBUTEGROUPS)) {
+                getTrackedEntityAttributeGroupDataFromServer(dhisApi, serverDateTime);
             }
         }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.CONSTANTS)) {
@@ -804,6 +821,16 @@ public final class MetaDataController extends ResourceController {
                 .setLastUpdated(ResourceType.OPTIONSETS, serverDateTime);
     }
 
+    private static void getTrackedEntityAttributeGroupDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
+        Log.d(CLASS_TAG, "getTrackedEntityAttributeDataFromServer");
+        DateTime lastUpdated = DateTimeManager.getInstance()
+                .getLastUpdated(ResourceType.TRACKEDENTITYATTRIBUTEGROUPS);
+        List<TrackedEntityAttributeGroup> trackedEntityAttributeGroups = unwrapResponse(dhisApi
+                .getTrackedEntityAttributeGroups(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.TRACKED_ENTITY_ATTRIBUTE_GROUPS);
+
+        saveResourceDataFromServer(ResourceType.TRACKEDENTITYATTRIBUTEGROUPS, dhisApi, trackedEntityAttributeGroups, getTrackedEntityAttributeGroups(), serverDateTime);
+    }
+
     private static void getTrackedEntityAttributeDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
         Log.d(CLASS_TAG, "getTrackedEntityAttributeDataFromServer");
         DateTime lastUpdated = DateTimeManager.getInstance()
@@ -944,6 +971,22 @@ public final class MetaDataController extends ResourceController {
             return generatedValue;
         }
 
+        return null;
+    }
+
+    public static boolean performSearchBeforeEnrollment() {
+        return getSearchAttributeGroup() != null;
+    }
+
+    public static TrackedEntityAttributeGroup getSearchAttributeGroup() {
+        List<TrackedEntityAttributeGroup> attributeGroups = getTrackedEntityAttributeGroups();
+        for (TrackedEntityAttributeGroup attributeGroup : attributeGroups) {
+            // TODO: put in proper logic here when backend solution is in place
+            // either use a AttributeGroup.TYPE enum or put a configuration flag somewhere
+            if (attributeGroup.getDescription().equals("SEARCH_GROUP")) {
+                return attributeGroup;
+            }
+        }
         return null;
     }
 }

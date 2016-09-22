@@ -36,6 +36,7 @@ import org.hisp.dhis.client.sdk.android.common.AbsDataStore;
 import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -52,11 +53,13 @@ public final class TrackedEntityAttributeValueStoreImpl extends
         implements TrackedEntityAttributeValueStore {
 
     private final IdentifiableObjectStore<Program> programStore;
-
+    private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
     public TrackedEntityAttributeValueStoreImpl(StateStore stateStore,
-                                                IdentifiableObjectStore<Program> programStore) {
+                                                IdentifiableObjectStore<Program> programStore,
+                                                ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore) {
         super(TrackedEntityAttributeValueFlow.MAPPER, stateStore);
         this.programStore = programStore;
+        this.programTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
     }
 
     @Override
@@ -93,24 +96,24 @@ public final class TrackedEntityAttributeValueStoreImpl extends
             return null;
         }
         Program program = programStore.queryByUid(enrollment.getProgram());
-        List<ProgramTrackedEntityAttribute> trackedEntityAttributes =
-                program.getProgramTrackedEntityAttributes();
-        if (trackedEntityAttributes == null) {
+        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
+                programTrackedEntityAttributeStore.query(program);
+        if (programTrackedEntityAttributes == null) {
             return null;
         }
         List<TrackedEntityAttributeValueFlow> trackedEntityAttributeValueFlows = new ArrayList<>();
         for (ProgramTrackedEntityAttribute programTrackedEntityAttribute :
-                trackedEntityAttributes) {
-            TrackedEntityAttributeValueFlow trackedEntityAttributeValueFlow = new Select()
+                programTrackedEntityAttributes) {
+            List<TrackedEntityAttributeValueFlow> trackedEntityAttributeValueFlow = new Select()
                     .from(TrackedEntityAttributeValueFlow.class)
                     .where(TrackedEntityAttributeValueFlow_Table.trackedEntityInstance
                             .is(enrollment.getTrackedEntityInstance().getTrackedEntityInstanceUid
                                     ()))
                     .and(TrackedEntityAttributeValueFlow_Table.trackedEntityAttributeUId
                             .is(programTrackedEntityAttribute.getTrackedEntityAttribute().getUId()))
-                    .querySingle();
-            if (trackedEntityAttributeValueFlow != null) {
-                trackedEntityAttributeValueFlows.add(trackedEntityAttributeValueFlow);
+                    .queryList();
+            if (trackedEntityAttributeValueFlow != null && !trackedEntityAttributeValueFlow.isEmpty()) {
+                trackedEntityAttributeValueFlows.add(trackedEntityAttributeValueFlow.get(0));
             }
         }
         return getMapper().mapToModels(trackedEntityAttributeValueFlows);

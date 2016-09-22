@@ -142,7 +142,7 @@ public class PersistenceModuleImpl implements PersistenceModule {
         trackedEntityInstanceStore = new TrackedEntityInstanceStoreImpl(stateStore);
         relationshipStore = new RelationshipStoreImpl(stateStore);
         trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStoreImpl(stateStore,
-                programStore);
+                programStore, programTrackedEntityAttributeStore);
     }
 
     @Override

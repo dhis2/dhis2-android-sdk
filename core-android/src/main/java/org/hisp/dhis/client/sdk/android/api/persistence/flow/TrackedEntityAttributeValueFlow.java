@@ -42,12 +42,8 @@ import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttributeValue;
 
-@Table(database = DbDhis.class, uniqueColumnGroups = {
-        @UniqueGroup(
-                groupNumber = TrackedEntityAttributeValueFlow
-                        .UNIQUE_TRACKEDENTITYINSTANCE_ATTRIBUTEVALUE,
-                uniqueConflict = ConflictAction.FAIL)
-})
+@Table(database = DbDhis.class)
+
 public final class TrackedEntityAttributeValueFlow extends BaseModelFlow {
     public static final Mapper<TrackedEntityAttributeValue, TrackedEntityAttributeValueFlow>
             MAPPER = new TrackedEntityAttributeValueMapper();
@@ -59,7 +55,7 @@ public final class TrackedEntityAttributeValueFlow extends BaseModelFlow {
     String trackedEntityAttributeUId;
 
     @Column
-    @Unique(unique = true, uniqueGroups = {UNIQUE_TRACKEDENTITYINSTANCE_ATTRIBUTEVALUE})
+//    @Unique(unique = true, uniqueGroups = {UNIQUE_TRACKEDENTITYINSTANCE_ATTRIBUTEVALUE})
     @ForeignKey(
             references = {
                     @ForeignKeyReference(

@@ -55,6 +55,16 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
     private final List<FormEntity> modifiedDataEntities;
     private final List<RowView> rowViews;
 
+    public RowViewAdapter(FragmentManager fragmentManager, Type type) {
+        this.fragmentManager = isNull(fragmentManager, "fragmentManager must not be null");
+        this.rowViews = new ArrayList<>();
+
+        this.originalDataEntities = new ArrayList<>();
+        this.modifiedDataEntities = new ArrayList<>();
+
+        assignRowViewsToDataViewTypes(type);
+    }
+
     public RowViewAdapter(FragmentManager fragmentManager) {
         this.fragmentManager = isNull(fragmentManager, "fragmentManager must not be null");
         this.rowViews = new ArrayList<>();
@@ -97,6 +107,46 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
                 }
                 case EDITTEXT: {
                     rowViews.add(ordinal, new EditTextRowView());
+                    break;
+                }
+                case CHECKBOX: {
+                    rowViews.add(ordinal, new CheckBoxRowView());
+                    break;
+                }
+                case COORDINATES: {
+                    rowViews.add(ordinal, new CoordinateRowView());
+                    break;
+                }
+                case RADIO_BUTTONS: {
+                    rowViews.add(ordinal, new RadioButtonRowView());
+                    break;
+                }
+                case DATE: {
+                    rowViews.add(ordinal, new DatePickerRowView(fragmentManager));
+                    break;
+                }
+                case FILTER: {
+                    rowViews.add(ordinal, new FilterableRowView(fragmentManager));
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * This method can create row views based on Type(DATA_VIEW or DATA_ENTRY)
+     * @param type
+     */
+    private void assignRowViewsToDataViewTypes(Type type) {
+        for (int ordinal = 0; ordinal < FormEntity.Type.values().length; ordinal++) {
+            FormEntity.Type dataEntityType = FormEntity.Type.values()[ordinal];
+            switch (dataEntityType) {
+                case TEXT: {
+                    rowViews.add(ordinal, new TextRowView(type));
+                    break;
+                }
+                case EDITTEXT: {
+                    rowViews.add(ordinal, new EditTextRowView(type));
                     break;
                 }
                 case CHECKBOX: {
@@ -301,5 +351,10 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
         }
 
         return formEntityMap;
+    }
+
+    public enum Type {
+        DATA_ENTRY,
+        DATA_VIEW
     }
 }

@@ -146,7 +146,7 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
                     break;
                 }
                 case EDITTEXT: {
-                    rowViews.add(ordinal, new EditTextRowView(type));
+                    rowViews.add(ordinal, new EditTextRowView());
                     break;
                 }
                 case CHECKBOX: {

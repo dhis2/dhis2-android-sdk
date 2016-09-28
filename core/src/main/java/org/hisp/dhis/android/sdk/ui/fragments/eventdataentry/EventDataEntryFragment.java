@@ -649,6 +649,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
                         UiUtils.showConfirmDialog(getActivity(), eventClick.getLabel(), eventClick.getAction(),
                                 eventClick.getLabel(), getActivity().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                                    boolean schedulingProgramStage = false;
+
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
 
@@ -670,6 +672,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                         if (currentProgramStage.getAllowGenerateNextVisit()) {
                                             if (currentProgramStage.getRepeatable()) {
                                                 DateTime scheduleTime = calculateScheduledDate(currentProgramStage, form.getEnrollment());
+                                                schedulingProgramStage = true;
                                                 showDatePicker(currentProgramStage, scheduleTime); // datePicker will close this fragment when date is picked and new event is scheduled
                                             } else {
                                                 int sortOrder = currentProgramStage.getSortOrder();
@@ -682,6 +685,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                                 }
 
                                                 if (programStageToSchedule != null) {
+
                                                     List<Event> events = form.getEnrollment().getEvents();
                                                     List<Event> eventForStage = new ArrayList<>();
                                                     for (Event event : events) {
@@ -691,6 +695,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                                     }
                                                     if (eventForStage.size() < 1) {
                                                         DateTime dateTime = calculateScheduledDate(programStageToSchedule, form.getEnrollment());
+                                                        schedulingProgramStage = true;
                                                         showDatePicker(programStageToSchedule, dateTime); // datePicker will close this fragment when date is picked and new event is scheduled
                                                     }
                                                 }
@@ -702,7 +707,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                         }
                                         Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
                                         //Exit the activity if it has just been completed.
-                                        if (currentProgramStage.isBlockEntryForm()) {
+                                        if (currentProgramStage.isBlockEntryForm() && !schedulingProgramStage) {
                                             goBackToPreviousActivity();
                                         }
                                     }

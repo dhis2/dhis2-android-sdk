@@ -42,10 +42,10 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.fragments.common.IProgramRuleFragmentHelper;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.ValidationErrorDialog;
+import org.hisp.dhis.android.sdk.utils.api.ProgramRuleActionType;
 import org.hisp.dhis.android.sdk.utils.services.ProgramIndicatorService;
 import org.hisp.dhis.android.sdk.utils.services.ProgramRuleService;
 
@@ -82,10 +82,10 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
     public void mapFieldsToRulesAndIndicators() {
         eventDataEntryFragment.setProgramRulesForDataElements(new HashMap<String, List<ProgramRule>>());
         eventDataEntryFragment.setProgramIndicatorsForDataElements(new HashMap<String, List<ProgramIndicator>>());
-        for(ProgramRule programRule: eventDataEntryFragment.getForm().getStage().getProgram().getProgramRules()) {
-            for(String dataElement: ProgramRuleService.getDataElementsInRule(programRule)) {
+        for (ProgramRule programRule : eventDataEntryFragment.getForm().getStage().getProgram().getProgramRules()) {
+            for (String dataElement : ProgramRuleService.getDataElementsInRule(programRule)) {
                 List<ProgramRule> rulesForDataElement = eventDataEntryFragment.getProgramRulesForDataElements().get(dataElement);
-                if(rulesForDataElement == null) {
+                if (rulesForDataElement == null) {
                     rulesForDataElement = new ArrayList<>();
                     rulesForDataElement.add(programRule);
                     eventDataEntryFragment.getProgramRulesForDataElements().put(dataElement, rulesForDataElement);
@@ -94,10 +94,10 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
                 }
             }
         }
-        for(ProgramIndicator programIndicator: eventDataEntryFragment.getForm().getStage().getProgramIndicators()) {
-            for(String dataElement: ProgramIndicatorService.getDataElementsInExpression(programIndicator)) {
+        for (ProgramIndicator programIndicator : eventDataEntryFragment.getForm().getStage().getProgramIndicators()) {
+            for (String dataElement : ProgramIndicatorService.getDataElementsInExpression(programIndicator)) {
                 List<ProgramIndicator> programIndicatorsForDataElement = eventDataEntryFragment.getProgramIndicatorsForDataElements().get(dataElement);
-                if(programIndicatorsForDataElement == null) {
+                if (programIndicatorsForDataElement == null) {
                     programIndicatorsForDataElement = new ArrayList<>();
                     programIndicatorsForDataElement.add(programIndicator);
                     eventDataEntryFragment.getProgramIndicatorsForDataElements().put(dataElement, programIndicatorsForDataElement);
@@ -115,11 +115,24 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
 
     @Override
     public List<ProgramRule> getProgramRules() {
-        if(eventDataEntryFragment.getForm() == null) {
+
+        ArrayList<ProgramRule> programRules = new ArrayList<>();
+
+        if (eventDataEntryFragment.getForm() == null) {
             return new ArrayList<>();
-        } else {
-            return eventDataEntryFragment.getForm().getStage().getProgram().getProgramRules();
         }
+
+        List<ProgramRule> allRules = eventDataEntryFragment.getForm().getStage().getProgram().getProgramRules();
+        for (ProgramRule programRule : allRules) {
+            if (programRule.getProgramStage() == null || programRule.getProgramStage().isEmpty()) {
+                programRules.add(programRule);
+            } else if (getEvent() != null &&
+                    programRule.getProgramStage().equals(getEvent().getProgramStageId())) {
+                programRules.add(programRule);
+            }
+        }
+        return programRules;
+
     }
 
     @Override
@@ -168,7 +181,7 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
     @Override
     public void saveTrackedEntityAttribute(String uid) {
         TrackedEntityAttributeValue trackedEntityAttributeValue = getTrackedEntityAttributeValue(uid);
-        if(trackedEntityAttributeValue != null) {
+        if (trackedEntityAttributeValue != null) {
             trackedEntityAttributeValue.save();
         }
     }
@@ -180,10 +193,10 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
 
     @Override
     public void updateUi() {
-        if(eventDataEntryFragment.getForm().getEvent() != null
+        if (eventDataEntryFragment.getForm().getEvent() != null
                 && eventDataEntryFragment.getForm().getEvent().getEventDate() == null) {
             eventDataEntryFragment.getListViewAdapter().hideAll();
-            if(eventDataEntryFragment.getSpinnerAdapter() != null) {
+            if (eventDataEntryFragment.getSpinnerAdapter() != null) {
                 eventDataEntryFragment.getSpinnerAdapter().hideAll();
             }
         }
@@ -194,7 +207,7 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
     @Override
     public void applyShowWarningRuleAction(ProgramRuleAction programRuleAction) {
         String uid = programRuleAction.getDataElement();
-        if(uid == null) {
+        if (uid == null) {
             uid = programRuleAction.getTrackedEntityAttribute();
         }
         eventDataEntryFragment.getListViewAdapter().showWarningOnIndex(uid, programRuleAction.getContent());
@@ -203,11 +216,11 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
     @Override
     public void applyShowErrorRuleAction(ProgramRuleAction programRuleAction) {
         String uid = programRuleAction.getDataElement();
-        if(uid == null) {
+        if (uid == null) {
             uid = programRuleAction.getTrackedEntityAttribute();
         }
         eventDataEntryFragment.getListViewAdapter().showErrorOnIndex(uid, programRuleAction.getContent());
-        if(!programRuleValidationErrors.contains(programRuleAction.getContent())) {
+        if (!programRuleValidationErrors.contains(programRuleAction.getContent())) {
             programRuleValidationErrors.add(programRuleAction.getContent() + " " + programRuleAction.getData());
         }
     }
@@ -216,7 +229,7 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
     public void applyHideFieldRuleAction(ProgramRuleAction programRuleAction, List<String> affectedFieldsWithValue) {
         eventDataEntryFragment.getListViewAdapter().hideIndex(programRuleAction.getDataElement());
         DataValue dataValue = getDataElementValue(programRuleAction.getDataElement());
-        if(dataValue != null && eventDataEntryFragment.containsValue(dataValue)) {// form.getDataValues().get(programRuleAction.getDataElement()))) {
+        if (dataValue != null && eventDataEntryFragment.containsValue(dataValue)) {// form.getDataValues().get(programRuleAction.getDataElement()))) {
             affectedFieldsWithValue.add(programRuleAction.getDataElement());
             dataValue.setValue(""); // After it is hidden, remove value
             // Post changes. Using an empty string as rowtype ensures effective persistence
@@ -227,6 +240,7 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
     /**
      * Displays a warning dialog to the user, indicating the data entry rows with values in them
      * are being hidden due to program rules.
+     *
      * @param fragment
      * @param affectedValues
      */
@@ -238,7 +252,7 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
                 dataElementNames.add(de.getDisplayName());
             }
         }
-        if(dataElementNames.isEmpty()) {
+        if (dataElementNames.isEmpty()) {
             return;
         }
         if (eventDataEntryFragment.getValidationErrorDialog() == null || !eventDataEntryFragment.getValidationErrorDialog().isVisible()) {
@@ -246,7 +260,7 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
                     .newInstance(fragment.getString(R.string.warning_hidefieldwithvalue), dataElementNames
                     );
             eventDataEntryFragment.setValidationErrorDialog(validationErrorDialog);
-            if(fragment.isAdded()) {
+            if (fragment.isAdded()) {
                 eventDataEntryFragment.getValidationErrorDialog().show(fragment.getChildFragmentManager());
             }
         }
@@ -254,5 +268,19 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
 
     public void flagDataChanged(boolean hasChanged) {
         eventDataEntryFragment.flagDataChanged(hasChanged);
+    }
+
+    @Override
+    public boolean blockingSpinnerNeeded() {
+        List<ProgramRule> programRules = getProgramRules();
+        for (ProgramRule programRule : programRules) {
+            for (ProgramRuleAction programRuleAction : programRule.getProgramRuleActions()) {
+                if (programRuleAction.getProgramRuleActionType().equals(ProgramRuleActionType.HIDEFIELD)) {
+                    return true;
+                }
+            }
+        }
+        // we have no hidefield rules in this screen so no need to show a progress spinner
+        return false;
     }
 }

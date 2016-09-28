@@ -700,6 +700,9 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                         if (currentProgramStage.isBlockEntryForm()) {
                                             setEditableDataEntryRows(form, false, true);
                                         }
+
+                                        eventClick.getEvent().setCompletedDate(new DateTime().toString());
+
                                         Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
                                         //Exit the activity if it has just been completed.
                                         if (currentProgramStage.isBlockEntryForm()) {

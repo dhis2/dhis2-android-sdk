@@ -105,4 +105,11 @@ public abstract class DefaultHomeActivity extends AbsHomeActivity implements Hom
     public void setHomePresenter(HomePresenter homePresenter) {
         this.homePresenter = homePresenter;
     }
+
+    @Override
+    protected Fragment getInformationFragment() {
+        return WrapperFragment.newInstance(DefaultInformationFragment.class,
+                getString(R.string.drawer_item_information),
+                new Bundle());
+    }
 }

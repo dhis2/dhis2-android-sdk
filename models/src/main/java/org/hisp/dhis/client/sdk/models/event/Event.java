@@ -95,9 +95,8 @@ public final class Event extends BaseModel implements IdentifiableObject {
     int sortOrder;
 
     /*
-    *
     * This property is optional (used only in tracker)
-    * */
+    */
     @JsonProperty("dueDate")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private DateTime dueDate;

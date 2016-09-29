@@ -139,7 +139,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<Event> list() {
-        return eventStore.queryAll();
+        return stateStore.queryModelsWithActions(Event.class,
+                Action.SYNCED, Action.TO_POST, Action.TO_UPDATE);
     }
 
     @Override

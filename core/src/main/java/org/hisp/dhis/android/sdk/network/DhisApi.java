@@ -51,6 +51,7 @@ import org.hisp.dhis.android.sdk.persistence.models.RelationshipType;
 import org.hisp.dhis.android.sdk.persistence.models.SystemInfo;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGeneratedValue;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGroup;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
 
@@ -224,6 +225,9 @@ public interface DhisApi {
 
     @GET("/" + ApiEndpointContainer.OPTION_SETS + "?paging=false")
     Map<String, List<OptionSet>> getOptionSets(@QueryMap Map<String, String> queryParams);
+
+    @GET("/" + ApiEndpointContainer.TRACKED_ENTITY_ATTRIBUTE_GROUPS + "?paging=false")
+    Map<String, List<TrackedEntityAttributeGroup>> getTrackedEntityAttributeGroups(@QueryMap Map<String, String> queryParams);
 
     @GET("/" + ApiEndpointContainer.TRACKED_ENTITY_ATTRIBUTES + "?paging=false")
     Map<String, List<TrackedEntityAttribute>> getTrackedEntityAttributes(@QueryMap Map<String, String> queryParams);

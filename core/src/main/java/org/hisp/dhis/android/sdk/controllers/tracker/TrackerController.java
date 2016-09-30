@@ -116,13 +116,11 @@ public final class TrackerController extends ResourceController {
                 queryList();
     }
 
-
     public static List<Enrollment> getEnrollmentsForProgram(String program) {
         return new Select().from(Enrollment.class).where(Condition.column(Enrollment$Table.PROGRAM).
                 is(program)).orderBy(false, Enrollment$Table.ENROLLMENTDATE).
                 queryList();
     }
-
 
     public static List<Enrollment> getEnrollments(TrackedEntityInstance trackedEntityInstance) {
         return new Select().from(Enrollment.class).where(Condition.column(Enrollment$Table.LOCALTRACKEDENTITYINSTANCEID).
@@ -156,7 +154,8 @@ public final class TrackerController extends ResourceController {
 
     /**
      * Returns a list of Events that have dueDate between the given dates, and corresponds to
-     * program and orgunit
+     * program and orgunit.
+     * (The given dates are considered inclusive in the defined period.)
      *
      * @param programId
      * @param orgUnitId
@@ -169,7 +168,10 @@ public final class TrackerController extends ResourceController {
 
         List<Enrollment> activeEnrollments = new Select().from(Enrollment.class).where(Condition.column
                 (Enrollment$Table.PROGRAM).is(programId)).and(Condition.column(Enrollment$Table.STATUS).is(Enrollment.ACTIVE)).queryTableList();
-
+        // Modify the endDate to be +1 day, so it includes events from the selected endDate as well:
+        DateTime d = new DateTime(endDate);
+        d = d.plusDays(1);
+        endDate = d.toString("YYYY-MM-dd");
         String activeEnrollmentsSqlSafeString = getSqlSafeStringFromListOfEnrollments(activeEnrollments);
 
         // scheduled / due events should not show overdue events
@@ -320,7 +322,6 @@ public final class TrackerController extends ResourceController {
         return programTrackedEntityAttributeValues;
     }
 
-
     /**
      * Returns a tracked entity attribute value for a given trackedentityattribute and trackedEntityInstance
      *
@@ -363,7 +364,6 @@ public final class TrackerController extends ResourceController {
         if (trackedEntityAttributeValue != null && trackedEntityAttributeValue.size() > 0) {
             return trackedEntityAttributeValue.get(0);
         } else return null;
-
     }
 
     /**

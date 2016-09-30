@@ -38,7 +38,6 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.sdk.ui.fragments.eventdataentry.EventDataEntryFragment;
 import org.hisp.dhis.android.sdk.utils.comparators.ProgramRulePriorityComparator;
 import org.hisp.dhis.android.sdk.utils.services.ProgramRuleService;
 import org.hisp.dhis.android.sdk.utils.services.VariableService;
@@ -81,28 +80,17 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
                 programRuleFragmentHelper.getEnrollment().getProgram().getProgramRules().isEmpty()) {
             return;
         }
-        showBlockingProgressBar();
+        if (programRuleFragmentHelper.blockingSpinnerNeeded()) {
+            showBlockingProgressBar();
+        }
         VariableService.initialize(programRuleFragmentHelper.getEnrollment(), programRuleFragmentHelper.getEvent());
         programRuleFragmentHelper.mapFieldsToRulesAndIndicators();
         ArrayList<String> affectedFieldsWithValue = new ArrayList<>();
-        List<ProgramRule> programRules = programRuleFragmentHelper.getProgramRules();
-        List<ProgramRule> programRulesToRun = new ArrayList<>();
-        for (ProgramRule programRule : programRules) {
-            if (this instanceof EventDataEntryFragment) {
-                if (programRule.getProgramStage() == null || programRule.getProgramStage().isEmpty()) {
-                    programRulesToRun.add(programRule);
-                } else if (programRuleFragmentHelper.getEvent() != null &&
-                        programRule.getProgramStage().equals(programRuleFragmentHelper.getEvent().getProgramStageId())) {
-                    programRulesToRun.add(programRule);
-                }
-            }
-        }
-        if (!(this instanceof EventDataEntryFragment)) {
-            programRulesToRun = programRules;
-        }
 
-        Collections.sort(programRulesToRun, new ProgramRulePriorityComparator());
-        for (ProgramRule programRule : programRulesToRun) {
+        List<ProgramRule> programRules = programRuleFragmentHelper.getProgramRules();
+
+        Collections.sort(programRules, new ProgramRulePriorityComparator());
+        for (ProgramRule programRule : programRules) {
             try {
                 boolean evaluatedTrue = ProgramRuleService.evaluate(programRule.getCondition());
                 for (ProgramRuleAction action : programRule.getProgramRuleActions()) {

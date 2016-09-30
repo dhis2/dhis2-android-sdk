@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.sdk.persistence.migrations;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -11,6 +13,8 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment$Table;
+import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.persistence.models.Event$Table;
 
 import java.util.List;
 
@@ -38,8 +42,9 @@ public class MigrationUtil {
     }
 
     /*
-    * Backend does not accept empty strings in incident dates. Set the values to null
-    * */
+     * Backend does not accept empty strings in incident dates. Set the values to null
+     * This is run only once
+     */
     public static void fixInvalidIncidentDates() {
 
         List<Enrollment> enrollmentsWithEmptyIncidentDates =
@@ -52,5 +57,36 @@ public class MigrationUtil {
         }
 
         Log.d("DB migration", "Migration done");
+    }
+
+    /*
+     * Backend requires completed dates for completed events.
+     * This is run only once
+     */
+    public static void fixInvalidCompletedDates() {
+        Log.d("DB migration", "Setting completedDate on completed Events");
+        List<Event> completedEvents = new Select().from(Event.class)
+                .where(Condition.column(Event$Table.STATUS).eq(Event.STATUS_COMPLETED))
+                .and(Condition.column(Event$Table.COMPLETEDDATE).isNull()).queryList();
+        for (Event completedEvent : completedEvents) {
+            completedEvent.setCompletedDate(completedEvent.getLastUpdated());
+            completedEvent.save();
+            Log.d("DB migration", "Event " + completedEvent.getUid() + ": Completed date set to " + completedEvent.getLastUpdated());
+        }
+        Log.d("DB migration", "Migration done");
+    }
+
+    public static void migrateExistingData(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences("migrationFlags", context.MODE_PRIVATE);
+
+        if (preferences.getBoolean("incidentDatesAreInvalid", true)) {
+            fixInvalidIncidentDates();
+            preferences.edit().putBoolean("incidentDatesAreInvalid", false).apply();
+        }
+
+        if (preferences.getBoolean("completedDatesAreInvalid", true)) {
+            fixInvalidCompletedDates();
+            preferences.edit().putBoolean("completedDatesAreInvalid", false).apply();
+        }
     }
 }

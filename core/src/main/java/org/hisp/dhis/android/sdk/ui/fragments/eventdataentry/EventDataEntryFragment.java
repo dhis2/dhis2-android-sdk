@@ -220,7 +220,6 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             getActionBar().setDisplayHomeAsUpEnabled(true);
             getActionBar().setHomeButtonEnabled(true);
         }
-
     }
 
     @Override
@@ -694,9 +693,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                                         DateTime dateTime = calculateScheduledDate(programStageToSchedule, form.getEnrollment());
                                                         showDatePicker(programStageToSchedule, dateTime); // datePicker will close this fragment when date is picked and new event is scheduled
                                                     }
-
                                                 }
-
                                             }
                                         }
                                         // Checking if dataEntryForm should be blocked after completed
@@ -704,16 +701,22 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                             setEditableDataEntryRows(form, false, true);
                                         }
 
+                                        eventClick.getEvent().setCompletedDate(new DateTime().toString());
+
                                         Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
+                                        //Exit the activity if it has just been completed.
+                                        if (currentProgramStage.isBlockEntryForm()) {
+                                            goBackToPreviousActivity();
+                                        }
                                     }
                                 });
+
                     }
                 });
             } else {
                 eventClick.getComplete().setText(R.string.complete);
                 form.getEvent().setStatus(Event.STATUS_ACTIVE);
                 form.getEvent().setFromServer(false);
-
 
                 // Checking if dataEntryForm should be enabled after un-completed
                 ProgramStage currentProgramStage = MetaDataController.getProgramStage(form.getEvent().getProgramStageId());
@@ -813,7 +816,6 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
 //        LocalDate currentDate = new LocalDate();
 
-
         final DatePickerDialog enrollmentDatePickerDialog =
                 new DatePickerDialog(getActivity(),
                         null, scheduledDueDate.getYear(),
@@ -839,10 +841,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                     }
                 });
 
-
         enrollmentDatePickerDialog.show();
-
-
     }
 
     private DateTime calculateScheduledDate(ProgramStage programStage, Enrollment enrollment) {

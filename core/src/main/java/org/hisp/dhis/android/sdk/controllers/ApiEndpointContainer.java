@@ -34,12 +34,14 @@ package org.hisp.dhis.android.sdk.controllers;
  */
 public final class ApiEndpointContainer {
 
-    private ApiEndpointContainer() {}
+    private ApiEndpointContainer() {
+    }
 
     public static final String ORGANISATIONUNITS = "organisationUnits";
     public static final String PROGRAMS = "programs";
     public static final String OPTION_SETS = "optionSets";
     public static final String TRACKED_ENTITY_ATTRIBUTES = "trackedEntityAttributes";
+    public static final String TRACKED_ENTITY_ATTRIBUTE_GROUPS = "trackedEntityAttributeGroups";
     public static final String CONSTANTS = "constants";
     public static final String PROGRAMRULES = "programRules";
     public static final String PROGRAMRULEVARIABLES = "programRuleVariables";

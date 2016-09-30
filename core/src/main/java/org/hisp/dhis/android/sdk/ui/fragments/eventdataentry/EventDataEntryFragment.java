@@ -666,10 +666,11 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                                 .getProgramStage(form.getEvent().getProgramStageId());
 
                                         // checking if should schedule new event
-
+                                        boolean isShowingSchedulingOfNewEvent = false;
                                         if (currentProgramStage.getAllowGenerateNextVisit()) {
                                             if (currentProgramStage.getRepeatable()) {
                                                 DateTime scheduleTime = calculateScheduledDate(currentProgramStage, form.getEnrollment());
+                                                isShowingSchedulingOfNewEvent = true;
                                                 showDatePicker(currentProgramStage, scheduleTime); // datePicker will close this fragment when date is picked and new event is scheduled
                                             } else {
                                                 int sortOrder = currentProgramStage.getSortOrder();
@@ -691,6 +692,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                                     }
                                                     if (eventForStage.size() < 1) {
                                                         DateTime dateTime = calculateScheduledDate(programStageToSchedule, form.getEnrollment());
+                                                        isShowingSchedulingOfNewEvent = true;
                                                         showDatePicker(programStageToSchedule, dateTime); // datePicker will close this fragment when date is picked and new event is scheduled
                                                     }
                                                 }
@@ -705,7 +707,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
                                         Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
                                         //Exit the activity if it has just been completed.
-                                        if (currentProgramStage.isBlockEntryForm()) {
+                                        if (currentProgramStage.isBlockEntryForm() && !isShowingSchedulingOfNewEvent) {
                                             goBackToPreviousActivity();
                                         }
                                     }

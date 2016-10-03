@@ -44,8 +44,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 // TODO Replace JodaTime
 /* Part of RuleEngine implementation detail. Hence, class visibility defined as package private */
 class RuleEngineVariableValueMap {
@@ -210,7 +208,7 @@ class RuleEngineVariableValueMap {
                 }
                 default: {
                     // TODO: Use logger to output the not implemented source type
-                    throw new NotImplementedException();
+                    throw new UnsupportedOperationException();
                 }
             }
 

@@ -22,6 +22,7 @@ import org.hisp.dhis.client.sdk.utils.Logger;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -399,6 +400,6 @@ public class ProfilePresenterImpl implements ProfilePresenter {
             }
         }
 
-        return currentUserAccountInteractor.account().save(user);
+        return currentUserAccountInteractor.store().insert(Collections.singletonList(user));
     }
 }

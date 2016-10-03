@@ -37,7 +37,7 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class Relationship implements Serializable, Model {
+public final class Relationship implements Serializable {
 
     @JsonIgnore
     private long id;

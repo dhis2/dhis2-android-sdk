@@ -30,13 +30,13 @@ package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
 import android.content.Context;
 
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.common.network.Response;
 import org.hisp.dhis.client.sdk.ui.bindings.R;
 import org.hisp.dhis.client.sdk.utils.Logger;
 
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+
+import okhttp3.Response;
 
 public class ApiExceptionHandlerImpl implements ApiExceptionHandler {
     Context context;

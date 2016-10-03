@@ -31,97 +31,49 @@ package org.hisp.dhis.client.sdk.models.program;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
+import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class ProgramRuleAction extends BaseIdentifiableObject {
-
-    @JsonProperty("programRuleActionType")
-    private ProgramRuleActionType programRuleActionType;
-
-    @JsonProperty("programRule")
-    private ProgramRule programRule;
-
-    @JsonProperty("programStage")
-    private ProgramStage programStage;
-
-    @JsonProperty("programStageSection")
-    private ProgramStageSection programStageSection;
-
-    @JsonProperty("programIndicator")
-    private ProgramIndicator programIndicator;
-
-    @JsonProperty("trackedEntityAttribute")
-    private TrackedEntityAttribute trackedEntityAttribute;
-
-    @JsonProperty("dataElement")
-    private DataElement dataElement;
-
-    @JsonProperty("content")
-    private String content;
-
-    @JsonProperty("location")
-    private String location;
+public class ProgramRuleAction extends BaseIdentifiableObject {
 
     @JsonProperty("data")
-    private String data;
+    String data;
 
-    public ProgramRule getProgramRule() {
-        return programRule;
+    @JsonProperty("content")
+    String content;
+
+    @JsonProperty("location")
+    String location;
+
+    @JsonProperty("attribute")
+    TrackedEntityAttribute attribute;
+
+    @JsonProperty("programIndicator")
+    ProgramIndicator programIndicator;
+
+    @JsonProperty("programStageSection")
+    ProgramStageSection programStageSection;
+
+    @JsonProperty("programRuleActionType")
+    ProgramRuleActionType programRuleActionType;
+
+    @JsonProperty("programStage")
+    ProgramStage programStage;
+
+    @JsonProperty("dataElement")
+    DataElement dataElement;
+
+    public ProgramRuleAction() {
     }
 
-    public void setProgramRule(ProgramRule programRule) {
-        this.programRule = programRule;
+    public String getData() {
+        return data;
     }
 
-    public TrackedEntityAttribute getTrackedEntityAttribute() {
-        return trackedEntityAttribute;
-    }
-
-    public void setTrackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute) {
-        this.trackedEntityAttribute = trackedEntityAttribute;
-    }
-
-    public DataElement getDataElement() {
-        return dataElement;
-    }
-
-    public void setDataElement(DataElement dataElement) {
-        this.dataElement = dataElement;
-    }
-
-    public ProgramStageSection getProgramStageSection() {
-        return programStageSection;
-    }
-
-    public void setProgramStageSection(ProgramStageSection programStageSection) {
-        this.programStageSection = programStageSection;
-    }
-
-    public ProgramRuleActionType getProgramRuleActionType() {
-        return programRuleActionType;
-    }
-
-    public void setProgramRuleActionType(ProgramRuleActionType programRuleActionType) {
-        this.programRuleActionType = programRuleActionType;
-    }
-
-    public ProgramIndicator getProgramIndicator() {
-        return programIndicator;
-    }
-
-    public void setProgramIndicator(ProgramIndicator programIndicator) {
-        this.programIndicator = programIndicator;
-    }
-
-    public ProgramStage getProgramStage() {
-        return programStage;
-    }
-
-    public void setProgramStage(ProgramStage programStage) {
-        this.programStage = programStage;
+    public void setData(String data) {
+        this.data = data;
     }
 
     public String getContent() {
@@ -140,27 +92,51 @@ public final class ProgramRuleAction extends BaseIdentifiableObject {
         this.location = location;
     }
 
-    public String getData() {
-        return data;
+    public TrackedEntityAttribute getAttribute() {
+        return attribute;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public void setAttribute(TrackedEntityAttribute attribute) {
+        this.attribute = attribute;
     }
 
-    @Override
-    public String toString() {
-        return "ProgramRuleAction{" +
-                "programRuleActionType=" + programRuleActionType +
-                ", programRule=" + programRule +
-                ", programStage=" + programStage +
-                ", programStageSection=" + programStageSection +
-                ", programIndicator=" + programIndicator +
-                ", trackedEntityAttribute=" + trackedEntityAttribute +
-                ", dataElement=" + dataElement +
-                ", content='" + content + '\'' +
-                ", location='" + location + '\'' +
-                ", data='" + data + '\'' +
-                '}';
+    public ProgramIndicator getProgramIndicator() {
+        return programIndicator;
+    }
+
+    public void setProgramIndicator(ProgramIndicator programIndicator) {
+        this.programIndicator = programIndicator;
+    }
+
+    public ProgramStageSection getProgramStageSection() {
+        return programStageSection;
+    }
+
+    public void setProgramStageSection(ProgramStageSection programStageSection) {
+        this.programStageSection = programStageSection;
+    }
+
+    public ProgramRuleActionType getProgramRuleActionType() {
+        return programRuleActionType;
+    }
+
+    public void setProgramRuleActionType(ProgramRuleActionType programRuleActionType) {
+        this.programRuleActionType = programRuleActionType;
+    }
+
+    public ProgramStage getProgramStage() {
+        return programStage;
+    }
+
+    public void setProgramStage(ProgramStage programStage) {
+        this.programStage = programStage;
+    }
+
+    public DataElement getDataElement() {
+        return dataElement;
+    }
+
+    public void setDataElement(DataElement dataElement) {
+        this.dataElement = dataElement;
     }
 }

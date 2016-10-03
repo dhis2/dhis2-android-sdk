@@ -31,69 +31,64 @@ package org.hisp.dhis.client.sdk.models.trackedentity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.dataelement.ValueType;
-import org.hisp.dhis.client.sdk.models.common.base.BaseNameableObject;
-import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
+import org.hisp.dhis.client.sdk.models.common.BaseNameableObject;
+import org.hisp.dhis.client.sdk.models.common.ValueType;
+import org.hisp.dhis.client.sdk.models.option.OptionSet;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class TrackedEntityAttribute extends BaseNameableObject {
+public class TrackedEntityAttribute extends BaseNameableObject {
 
-    @JsonProperty("unique")
-    private boolean isUnique;
+    @JsonProperty("trackedEntity")
+    TrackedEntity trackedEntity;
 
     @JsonProperty("programScope")
-    private boolean programScope;
-
-    @JsonProperty("orgunitScope")
-    private boolean orgunitScope;
+    boolean programScope;
 
     @JsonProperty("displayInListNoProgram")
-    private boolean displayInListNoProgram;
+    boolean displayInListNoProgram;
 
-    @JsonProperty("displayOnVisitSchedule")
-    private boolean displayOnVisitSchedule;
-
-    @JsonProperty("externalAccess")
-    private boolean externalAccess;
-
-    @JsonProperty("valueType")
-    private ValueType valueType;
-
-    @JsonProperty("confidential")
-    private boolean confidential;
-
-    @JsonProperty("inherit")
-    private boolean inherit;
-
-    @JsonProperty("sortOrderVisitSchedule")
-    private int sortOrderVisitSchedule;
-
-    @JsonProperty("dimension")
-    private String dimension;
+    @JsonProperty("pattern")
+    String pattern;
 
     @JsonProperty("sortOrderInListNoProgram")
-    private int sortOrderInListNoProgram;
+    int sortOrderInListNoProgram;
 
-    private OptionSet optionSet;
+    @JsonProperty("optionSet")
+    OptionSet optionSet;
 
-    public OptionSet getOptionSet() {
-        return optionSet;
+    @JsonProperty("generated")
+    boolean generated;
+
+    @JsonProperty("displayOnVisitSchedule")
+    boolean displayOnVisitSchedule;
+
+    @JsonProperty("valueType")
+    ValueType valueType;
+
+    @JsonProperty("orgunitScope")
+    boolean orgunitScope;
+
+    @JsonProperty("expression")
+    String expression;
+
+    @JsonProperty("searchScope")
+    TrackedEntityAttributeSearchScope searchScope;
+
+    @JsonProperty("unique")
+    boolean unique;
+
+    @JsonProperty("inherit")
+    boolean inherit;
+
+    public TrackedEntityAttribute() {
     }
 
-    public void setOptionSet(OptionSet optionSet) {
-        this.optionSet = optionSet;
+    public TrackedEntity getTrackedEntity() {
+        return trackedEntity;
     }
 
-    public void setIsUnique(boolean isUnique) {
-        this.isUnique = isUnique;
-    }
-
-    public boolean isUnique() {
-        return isUnique;
-    }
-
-    public void setUnique(boolean isUnique) {
-        this.isUnique = isUnique;
+    public void setTrackedEntity(TrackedEntity trackedEntity) {
+        this.trackedEntity = trackedEntity;
     }
 
     public boolean isProgramScope() {
@@ -104,20 +99,44 @@ public final class TrackedEntityAttribute extends BaseNameableObject {
         this.programScope = programScope;
     }
 
-    public boolean isOrgunitScope() {
-        return orgunitScope;
-    }
-
-    public void setOrgunitScope(boolean orgunitScope) {
-        this.orgunitScope = orgunitScope;
-    }
-
     public boolean isDisplayInListNoProgram() {
         return displayInListNoProgram;
     }
 
     public void setDisplayInListNoProgram(boolean displayInListNoProgram) {
         this.displayInListNoProgram = displayInListNoProgram;
+    }
+
+    public String getPattern() {
+        return pattern;
+    }
+
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
+    }
+
+    public int getSortOrderInListNoProgram() {
+        return sortOrderInListNoProgram;
+    }
+
+    public void setSortOrderInListNoProgram(int sortOrderInListNoProgram) {
+        this.sortOrderInListNoProgram = sortOrderInListNoProgram;
+    }
+
+    public OptionSet getOptionSet() {
+        return optionSet;
+    }
+
+    public void setOptionSet(OptionSet optionSet) {
+        this.optionSet = optionSet;
+    }
+
+    public boolean isGenerated() {
+        return generated;
+    }
+
+    public void setGenerated(boolean generated) {
+        this.generated = generated;
     }
 
     public boolean isDisplayOnVisitSchedule() {
@@ -128,14 +147,6 @@ public final class TrackedEntityAttribute extends BaseNameableObject {
         this.displayOnVisitSchedule = displayOnVisitSchedule;
     }
 
-    public boolean isExternalAccess() {
-        return externalAccess;
-    }
-
-    public void setExternalAccess(boolean externalAccess) {
-        this.externalAccess = externalAccess;
-    }
-
     public ValueType getValueType() {
         return valueType;
     }
@@ -144,12 +155,36 @@ public final class TrackedEntityAttribute extends BaseNameableObject {
         this.valueType = valueType;
     }
 
-    public boolean isConfidential() {
-        return confidential;
+    public boolean isOrgunitScope() {
+        return orgunitScope;
     }
 
-    public void setConfidential(boolean confidential) {
-        this.confidential = confidential;
+    public void setOrgunitScope(boolean orgunitScope) {
+        this.orgunitScope = orgunitScope;
+    }
+
+    public String getExpression() {
+        return expression;
+    }
+
+    public void setExpression(String expression) {
+        this.expression = expression;
+    }
+
+    public TrackedEntityAttributeSearchScope getSearchScope() {
+        return searchScope;
+    }
+
+    public void setSearchScope(TrackedEntityAttributeSearchScope searchScope) {
+        this.searchScope = searchScope;
+    }
+
+    public boolean isUnique() {
+        return unique;
+    }
+
+    public void setUnique(boolean unique) {
+        this.unique = unique;
     }
 
     public boolean isInherit() {
@@ -158,29 +193,5 @@ public final class TrackedEntityAttribute extends BaseNameableObject {
 
     public void setInherit(boolean inherit) {
         this.inherit = inherit;
-    }
-
-    public int getSortOrderVisitSchedule() {
-        return sortOrderVisitSchedule;
-    }
-
-    public void setSortOrderVisitSchedule(int sortOrderVisitSchedule) {
-        this.sortOrderVisitSchedule = sortOrderVisitSchedule;
-    }
-
-    public String getDimension() {
-        return dimension;
-    }
-
-    public void setDimension(String dimension) {
-        this.dimension = dimension;
-    }
-
-    public int getSortOrderInListNoProgram() {
-        return sortOrderInListNoProgram;
-    }
-
-    public void setSortOrderInListNoProgram(int sortOrderInListNoProgram) {
-        this.sortOrderInListNoProgram = sortOrderInListNoProgram;
     }
 }

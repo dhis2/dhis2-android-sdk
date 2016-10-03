@@ -28,39 +28,52 @@
 
 package org.hisp.dhis.client.sdk.models.dataelement;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.base.BaseNameableObject;
-import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
+import org.hisp.dhis.client.sdk.models.common.BaseNameableObject;
+import org.hisp.dhis.client.sdk.models.common.ValueType;
+import org.hisp.dhis.client.sdk.models.option.OptionSet;
 
-public final class DataElement extends BaseNameableObject {
-
-    @JsonProperty("valueType")
-    private ValueType valueType;
-
-    @JsonProperty("zeroIsSignificant")
-    private boolean zeroIsSignificant;
-
-    @JsonProperty("aggregationOperator")
-    private String aggregationOperator;
-
-    @JsonProperty("formName")
-    private String formName;
-
-    @JsonProperty("numberType")
-    private String numberType;
-
-    @JsonProperty("domainType")
-    private String domainType;
-
-    @JsonProperty("dimension")
-    private String dimension;
-
-    @JsonProperty("displayFormName")
-    private String displayFormName;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class DataElement extends BaseNameableObject {
 
     @JsonProperty("optionSet")
-    private OptionSet optionSet;
+    OptionSet optionSet;
+
+    @JsonProperty("categoryCombo")
+    CategoryCombo categoryCombo;
+
+    @JsonProperty("valueType")
+    ValueType valueType;
+
+    @JsonProperty("formName")
+    String formName;
+
+    @JsonProperty("displayFormName")
+    String displayFormName;
+
+    @JsonProperty("zeroIsSignificant")
+    boolean zeroIsSignificant;
+
+    public DataElement() {
+    }
+
+    public OptionSet getOptionSet() {
+        return optionSet;
+    }
+
+    public void setOptionSet(OptionSet optionSet) {
+        this.optionSet = optionSet;
+    }
+
+    public CategoryCombo getCategoryCombo() {
+        return categoryCombo;
+    }
+
+    public void setCategoryCombo(CategoryCombo categoryCombo) {
+        this.categoryCombo = categoryCombo;
+    }
 
     public ValueType getValueType() {
         return valueType;
@@ -68,22 +81,6 @@ public final class DataElement extends BaseNameableObject {
 
     public void setValueType(ValueType valueType) {
         this.valueType = valueType;
-    }
-
-    public boolean isZeroIsSignificant() {
-        return zeroIsSignificant;
-    }
-
-    public void setZeroIsSignificant(boolean zeroIsSignificant) {
-        this.zeroIsSignificant = zeroIsSignificant;
-    }
-
-    public String getAggregationOperator() {
-        return aggregationOperator;
-    }
-
-    public void setAggregationOperator(String aggregationOperator) {
-        this.aggregationOperator = aggregationOperator;
     }
 
     public String getFormName() {
@@ -94,30 +91,6 @@ public final class DataElement extends BaseNameableObject {
         this.formName = formName;
     }
 
-    public String getNumberType() {
-        return numberType;
-    }
-
-    public void setNumberType(String numberType) {
-        this.numberType = numberType;
-    }
-
-    public String getDomainType() {
-        return domainType;
-    }
-
-    public void setDomainType(String domainType) {
-        this.domainType = domainType;
-    }
-
-    public String getDimension() {
-        return dimension;
-    }
-
-    public void setDimension(String dimension) {
-        this.dimension = dimension;
-    }
-
     public String getDisplayFormName() {
         return displayFormName;
     }
@@ -126,11 +99,11 @@ public final class DataElement extends BaseNameableObject {
         this.displayFormName = displayFormName;
     }
 
-    public OptionSet getOptionSet() {
-        return optionSet;
+    public boolean isZeroIsSignificant() {
+        return zeroIsSignificant;
     }
 
-    public void setOptionSet(OptionSet optionSet) {
-        this.optionSet = optionSet;
+    public void setZeroIsSignificant(boolean zeroIsSignificant) {
+        this.zeroIsSignificant = zeroIsSignificant;
     }
 }

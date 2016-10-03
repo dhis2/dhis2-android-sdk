@@ -29,21 +29,10 @@
 package org.hisp.dhis.client.sdk.models.program;
 
 public enum ProgramRuleVariableSourceType {
-    DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE("dataelement_newest_event_program_stage"),
-    DATAELEMENT_NEWEST_EVENT_PROGRAM("dataelement_newest_event_program"),
-    DATAELEMENT_CURRENT_EVENT("dataelement_current_event"),
-    DATAELEMENT_PREVIOUS_EVENT("dataelement_previous_event"),
-    CALCULATED_VALUE("calculated_value"),
-    TEI_ATTRIBUTE("tei_attribute"),
-    CONSTANT("constant");
-
-    private final String value;
-
-    ProgramRuleVariableSourceType(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
+    DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE,
+    DATAELEMENT_NEWEST_EVENT_PROGRAM,
+    DATAELEMENT_CURRENT_EVENT,
+    DATAELEMENT_PREVIOUS_EVENT,
+    CALCULATED_VALUE,
+    TEI_ATTRIBUTE
 }

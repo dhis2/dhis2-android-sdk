@@ -28,62 +28,34 @@
 
 package org.hisp.dhis.client.sdk.models.program;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
+import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
-import java.util.Comparator;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class ProgramStageDataElement extends BaseIdentifiableObject {
-    public static final Comparator<ProgramStageDataElement>
-            SORT_ORDER_COMPARATOR = new SortOrderComparator();
-
-    @JsonProperty("allowFutureDate")
-    private boolean allowFutureDate;
-
-    @JsonProperty("sortOrder")
-    private int sortOrder;
+public class ProgramStageDataElement extends BaseIdentifiableObject {
 
     @JsonProperty("displayInReports")
-    private boolean displayInReports;
-
-    @JsonProperty("allowProvidedElsewhere")
-    private boolean allowProvidedElsewhere;
-
-    @JsonProperty("compulsory")
-    private boolean compulsory;
-
-    @JsonProperty("programStage")
-    private ProgramStage programStage;
+    boolean displayInReports;
 
     @JsonProperty("dataElement")
-    private DataElement dataElement;
+    DataElement dataElement;
 
-    @JsonIgnore
-    private ProgramStageSection programStageSection;
+    @JsonProperty("compulsory")
+    boolean compulsory;
+
+    @JsonProperty("allowProvidedElsewhere")
+    boolean allowProvidedElsewhere;
+
+    @JsonProperty("sortOrder")
+    int sortOrder;
+
+    @JsonProperty("allowFutureDate")
+    boolean allowFutureDate;
 
     public ProgramStageDataElement() {
-        //
-    }
-
-    public boolean isAllowFutureDate() {
-        return allowFutureDate;
-    }
-
-    public void setAllowFutureDate(boolean allowFutureDate) {
-        this.allowFutureDate = allowFutureDate;
-    }
-
-    public int getSortOrder() {
-        return sortOrder;
-    }
-
-    public void setSortOrder(int sortOrder) {
-        this.sortOrder = sortOrder;
     }
 
     public boolean isDisplayInReports() {
@@ -94,12 +66,12 @@ public final class ProgramStageDataElement extends BaseIdentifiableObject {
         this.displayInReports = displayInReports;
     }
 
-    public boolean isAllowProvidedElsewhere() {
-        return allowProvidedElsewhere;
+    public DataElement getDataElement() {
+        return dataElement;
     }
 
-    public void setAllowProvidedElsewhere(boolean allowProvidedElsewhere) {
-        this.allowProvidedElsewhere = allowProvidedElsewhere;
+    public void setDataElement(DataElement dataElement) {
+        this.dataElement = dataElement;
     }
 
     public boolean isCompulsory() {
@@ -110,45 +82,27 @@ public final class ProgramStageDataElement extends BaseIdentifiableObject {
         this.compulsory = compulsory;
     }
 
-    public ProgramStage getProgramStage() {
-        return programStage;
+    public boolean isAllowProvidedElsewhere() {
+        return allowProvidedElsewhere;
     }
 
-    public void setProgramStage(ProgramStage programStage) {
-        this.programStage = programStage;
+    public void setAllowProvidedElsewhere(boolean allowProvidedElsewhere) {
+        this.allowProvidedElsewhere = allowProvidedElsewhere;
     }
 
-    public DataElement getDataElement() {
-        return dataElement;
+    public int getSortOrder() {
+        return sortOrder;
     }
 
-    public void setDataElement(DataElement dataElement) {
-        this.dataElement = dataElement;
+    public void setSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
     }
 
-    public ProgramStageSection getProgramStageSection() {
-        return programStageSection;
+    public boolean isAllowFutureDate() {
+        return allowFutureDate;
     }
 
-    public void setProgramStageSection(ProgramStageSection programStageSection) {
-        this.programStageSection = programStageSection;
-    }
-
-    private static final class SortOrderComparator implements Comparator<ProgramStageDataElement> {
-
-        @Override
-        public int compare(ProgramStageDataElement one, ProgramStageDataElement two) {
-            if (one == null || two == null) {
-                return 0;
-            }
-
-            if (one.getSortOrder() > two.getSortOrder()) {
-                return 1;
-            } else if (one.getSortOrder() < two.getSortOrder()) {
-                return -1;
-            }
-
-            return 0;
-        }
+    public void setAllowFutureDate(boolean allowFutureDate) {
+        this.allowFutureDate = allowFutureDate;
     }
 }

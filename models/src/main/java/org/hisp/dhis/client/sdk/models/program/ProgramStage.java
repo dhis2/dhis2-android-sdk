@@ -31,116 +31,69 @@ package org.hisp.dhis.client.sdk.models.program;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
+import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.client.sdk.models.common.FormType;
 
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class ProgramStage extends BaseIdentifiableObject {
-
-    @JsonProperty("program")
-    private Program program;
-
-    @JsonProperty("dataEntryType")
-    private String dataEntryType;
-
-    @JsonProperty("blockEntryForm")
-    private boolean blockEntryForm;
-
-    @JsonProperty("reportDateDescription")
-    private String reportDateDescription;
+public class ProgramStage extends BaseIdentifiableObject {
 
     @JsonProperty("executionDateLabel")
-    private String executionDateLabel;
-
-    @JsonProperty("displayGenerateEventBox")
-    private boolean displayGenerateEventBox;
-
-    @JsonProperty("description")
-    private String description;
-
-    @JsonProperty("externalAccess")
-    private boolean externalAccess;
-
-    @JsonProperty("openAfterEnrollment")
-    private boolean openAfterEnrollment;
-
-    @JsonProperty("captureCoordinates")
-    private boolean captureCoordinates;
-
-    @JsonProperty("defaultTemplateMessage")
-    private String defaultTemplateMessage;
-
-    @JsonProperty("remindCompleted")
-    private boolean remindCompleted;
-
-    @JsonProperty("validCompleteOnly")
-    private boolean validCompleteOnly;
-
-    @JsonProperty("sortOrder")
-    private int sortOrder;
-
-    @JsonProperty("generatedByEnrollmentDate")
-    private boolean generatedByEnrollmentDate;
-
-    @JsonProperty("preGenerateUID")
-    private boolean preGenerateUID;
-
-    @JsonProperty("autoGenerateEvent")
-    private boolean autoGenerateEvent;
+    String executionDateLabel;
 
     @JsonProperty("allowGenerateNextVisit")
-    private boolean allowGenerateNextVisit;
+    boolean allowGenerateNextVisit;
 
-    @JsonProperty("repeatable")
-    private boolean repeatable;
+    @JsonProperty("validCompleteOnly")
+    boolean validCompleteOnly;
 
-    @JsonProperty("minDaysFromStart")
-    private int minDaysFromStart;
+    @JsonProperty("reportDateToUse")
+    String reportDateToUse;
+
+    @JsonProperty("openAfterEnrollment")
+    boolean openAfterEnrollment;
 
     @JsonProperty("programStageDataElements")
-    private List<ProgramStageDataElement> programStageDataElements;
+    List<ProgramStageDataElement> programStageDataElements;
+
+    @JsonProperty("repeatable")
+    boolean repeatable;
+
+    @JsonProperty("captureCoordinates")
+    boolean captureCoordinates;
+
+    @JsonProperty("formType")
+    FormType formType;
+
+    @JsonProperty("displayGenerateEventBox")
+    boolean displayGenerateEventBox;
+
+    @JsonProperty("generatedByEnrollmentDate")
+    boolean generatedByEnrollmentDate;
+
+    @JsonProperty("autoGenerateEvent")
+    boolean autoGenerateEvent;
+
+    @JsonProperty("sortOrder")
+    int sortOrder;
+
+    @JsonProperty("hideDueDate")
+    boolean hideDueDate;
+
+    @JsonProperty("blockEntryForm")
+    boolean blockEntryForm;
+
+    @JsonProperty("minDaysFromStart")
+    int minDaysFromStart;
+
+    @JsonProperty("standardInterval")
+    int standardInterval;
 
     @JsonProperty("programStageSections")
-    private List<ProgramStageSection> programStageSections;
-
-    @JsonProperty("programIndicators")
-    private List<ProgramIndicator> programIndicators;
+    List<ProgramStageSection> programStageSections;
 
     public ProgramStage() {
-        // explicit empty constructor
-    }
-
-    public Program getProgram() {
-        return program;
-    }
-
-    public void setProgram(Program program) {
-        this.program = program;
-    }
-
-    public String getDataEntryType() {
-        return dataEntryType;
-    }
-
-    public void setDataEntryType(String dataEntryType) {
-        this.dataEntryType = dataEntryType;
-    }
-
-    public boolean isBlockEntryForm() {
-        return blockEntryForm;
-    }
-
-    public void setBlockEntryForm(boolean blockEntryForm) {
-        this.blockEntryForm = blockEntryForm;
-    }
-
-    public String getReportDateDescription() {
-        return reportDateDescription;
-    }
-
-    public void setReportDateDescription(String reportDateDescription) {
-        this.reportDateDescription = reportDateDescription;
     }
 
     public String getExecutionDateLabel() {
@@ -151,60 +104,12 @@ public final class ProgramStage extends BaseIdentifiableObject {
         this.executionDateLabel = executionDateLabel;
     }
 
-    public boolean isDisplayGenerateEventBox() {
-        return displayGenerateEventBox;
+    public boolean isAllowGenerateNextVisit() {
+        return allowGenerateNextVisit;
     }
 
-    public void setDisplayGenerateEventBox(boolean displayGenerateEventBox) {
-        this.displayGenerateEventBox = displayGenerateEventBox;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public boolean isExternalAccess() {
-        return externalAccess;
-    }
-
-    public void setExternalAccess(boolean externalAccess) {
-        this.externalAccess = externalAccess;
-    }
-
-    public boolean isOpenAfterEnrollment() {
-        return openAfterEnrollment;
-    }
-
-    public void setOpenAfterEnrollment(boolean openAfterEnrollment) {
-        this.openAfterEnrollment = openAfterEnrollment;
-    }
-
-    public boolean isCaptureCoordinates() {
-        return captureCoordinates;
-    }
-
-    public void setCaptureCoordinates(boolean captureCoordinates) {
-        this.captureCoordinates = captureCoordinates;
-    }
-
-    public String getDefaultTemplateMessage() {
-        return defaultTemplateMessage;
-    }
-
-    public void setDefaultTemplateMessage(String defaultTemplateMessage) {
-        this.defaultTemplateMessage = defaultTemplateMessage;
-    }
-
-    public boolean isRemindCompleted() {
-        return remindCompleted;
-    }
-
-    public void setRemindCompleted(boolean remindCompleted) {
-        this.remindCompleted = remindCompleted;
+    public void setAllowGenerateNextVisit(boolean allowGenerateNextVisit) {
+        this.allowGenerateNextVisit = allowGenerateNextVisit;
     }
 
     public boolean isValidCompleteOnly() {
@@ -215,44 +120,20 @@ public final class ProgramStage extends BaseIdentifiableObject {
         this.validCompleteOnly = validCompleteOnly;
     }
 
-    public int getSortOrder() {
-        return sortOrder;
+    public boolean isOpenAfterEnrollment() {
+        return openAfterEnrollment;
     }
 
-    public void setSortOrder(int sortOrder) {
-        this.sortOrder = sortOrder;
+    public void setOpenAfterEnrollment(boolean openAfterEnrollment) {
+        this.openAfterEnrollment = openAfterEnrollment;
     }
 
-    public boolean isGeneratedByEnrollmentDate() {
-        return generatedByEnrollmentDate;
+    public List<ProgramStageDataElement> getProgramStageDataElements() {
+        return programStageDataElements;
     }
 
-    public void setGeneratedByEnrollmentDate(boolean generatedByEnrollmentDate) {
-        this.generatedByEnrollmentDate = generatedByEnrollmentDate;
-    }
-
-    public boolean isPreGenerateUID() {
-        return preGenerateUID;
-    }
-
-    public void setPreGenerateUID(boolean preGenerateUID) {
-        this.preGenerateUID = preGenerateUID;
-    }
-
-    public boolean isAutoGenerateEvent() {
-        return autoGenerateEvent;
-    }
-
-    public void setAutoGenerateEvent(boolean autoGenerateEvent) {
-        this.autoGenerateEvent = autoGenerateEvent;
-    }
-
-    public boolean isAllowGenerateNextVisit() {
-        return allowGenerateNextVisit;
-    }
-
-    public void setAllowGenerateNextVisit(boolean allowGenerateNextVisit) {
-        this.allowGenerateNextVisit = allowGenerateNextVisit;
+    public void setProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
+        this.programStageDataElements = programStageDataElements;
     }
 
     public boolean isRepeatable() {
@@ -263,6 +144,78 @@ public final class ProgramStage extends BaseIdentifiableObject {
         this.repeatable = repeatable;
     }
 
+    public boolean isCaptureCoordinates() {
+        return captureCoordinates;
+    }
+
+    public void setCaptureCoordinates(boolean captureCoordinates) {
+        this.captureCoordinates = captureCoordinates;
+    }
+
+    public FormType getFormType() {
+        return formType;
+    }
+
+    public void setFormType(FormType formType) {
+        this.formType = formType;
+    }
+
+    public boolean isDisplayGenerateEventBox() {
+        return displayGenerateEventBox;
+    }
+
+    public void setDisplayGenerateEventBox(boolean displayGenerateEventBox) {
+        this.displayGenerateEventBox = displayGenerateEventBox;
+    }
+
+    public boolean isGeneratedByEnrollmentDate() {
+        return generatedByEnrollmentDate;
+    }
+
+    public void setGeneratedByEnrollmentDate(boolean generatedByEnrollmentDate) {
+        this.generatedByEnrollmentDate = generatedByEnrollmentDate;
+    }
+
+    public String getReportDateToUse() {
+        return reportDateToUse;
+    }
+
+    public void setReportDateToUse(String reportDateToUse) {
+        this.reportDateToUse = reportDateToUse;
+    }
+
+    public boolean isAutoGenerateEvent() {
+        return autoGenerateEvent;
+    }
+
+    public void setAutoGenerateEvent(boolean autoGenerateEvent) {
+        this.autoGenerateEvent = autoGenerateEvent;
+    }
+
+    public int getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+
+    public boolean isHideDueDate() {
+        return hideDueDate;
+    }
+
+    public void setHideDueDate(boolean hideDueDate) {
+        this.hideDueDate = hideDueDate;
+    }
+
+    public boolean isBlockEntryForm() {
+        return blockEntryForm;
+    }
+
+    public void setBlockEntryForm(boolean blockEntryForm) {
+        this.blockEntryForm = blockEntryForm;
+    }
+
     public int getMinDaysFromStart() {
         return minDaysFromStart;
     }
@@ -271,12 +224,12 @@ public final class ProgramStage extends BaseIdentifiableObject {
         this.minDaysFromStart = minDaysFromStart;
     }
 
-    public List<ProgramStageDataElement> getProgramStageDataElements() {
-        return programStageDataElements;
+    public int getStandardInterval() {
+        return standardInterval;
     }
 
-    public void setProgramStageDataElements(List<ProgramStageDataElement> stageDataElements) {
-        this.programStageDataElements = stageDataElements;
+    public void setStandardInterval(int standardInterval) {
+        this.standardInterval = standardInterval;
     }
 
     public List<ProgramStageSection> getProgramStageSections() {
@@ -285,13 +238,5 @@ public final class ProgramStage extends BaseIdentifiableObject {
 
     public void setProgramStageSections(List<ProgramStageSection> programStageSections) {
         this.programStageSections = programStageSections;
-    }
-
-    public List<ProgramIndicator> getProgramIndicators() {
-        return programIndicators;
-    }
-
-    public void setProgramIndicators(List<ProgramIndicator> programIndicators) {
-        this.programIndicators = programIndicators;
     }
 }

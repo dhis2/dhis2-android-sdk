@@ -128,7 +128,7 @@ public class RulesEngineExpressionTests {
         //Payload
         ArrayList<TrackedEntityDataValue> dataValues = new ArrayList<>();
         TrackedEntityDataValue trueDataValue = new TrackedEntityDataValue();
-        trueDataValue.setDataElement(d1.getUId());
+        trueDataValue.setDataElement(d1.getUid());
         trueDataValue.setValue("true");
         dataValues.add(trueDataValue);
 
@@ -166,12 +166,12 @@ public class RulesEngineExpressionTests {
         //Payload
         ArrayList<TrackedEntityDataValue> dataValues = new ArrayList<>();
         TrackedEntityDataValue boolean1DataValue = new TrackedEntityDataValue();
-        boolean1DataValue.setDataElement(d1.getUId());
+        boolean1DataValue.setDataElement(d1.getUid());
         boolean1DataValue.setValue("false");
         dataValues.add(boolean1DataValue);
 
         TrackedEntityDataValue boolean2DataValue = new TrackedEntityDataValue();
-        boolean2DataValue.setDataElement(d2.getUId());
+        boolean2DataValue.setDataElement(d2.getUid());
         boolean2DataValue.setValue("true");
         dataValues.add(boolean2DataValue);
 

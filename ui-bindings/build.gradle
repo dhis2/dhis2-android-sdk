@@ -37,7 +37,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     compile project(":ui")
-    compile project(":core-android")
+    compile project(":core")
 
     // Square dependencies
     compile "com.squareup.okhttp3:logging-interceptor:${libs.okhttpVersion}"

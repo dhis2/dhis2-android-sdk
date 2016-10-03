@@ -31,51 +31,29 @@ package org.hisp.dhis.client.sdk.models.program;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
+import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 
-import java.util.Comparator;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class ProgramRule extends BaseIdentifiableObject {
-
-    public static final Comparator<ProgramRule> PRIORITY_COMPARATOR = new PriorityComparator();
+public class ProgramRule extends BaseIdentifiableObject {
 
     @JsonProperty("programStage")
-    private ProgramStage programStage;
+    ProgramStage programStage;
 
     @JsonProperty("program")
-    private Program program;
-
-    @JsonProperty("description")
-    private String description;
-
-    @JsonProperty("condition")
-    private String condition;
+    Program program;
 
     @JsonProperty("priority")
-    private Integer priority;
+    int priority;
 
-    @JsonProperty("externalAction")
-    private boolean externalAction;
+    @JsonProperty("condition")
+    String condition;
 
     @JsonProperty("programRuleActions")
-    private List<ProgramRuleAction> programRuleActions;
+    List<ProgramRuleAction> programRuleActions;
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getPriority() {
-        return priority;
-    }
-
-    public void setPriority(Integer priority) {
-        this.priority = priority;
+    public ProgramRule() {
     }
 
     public ProgramStage getProgramStage() {
@@ -94,6 +72,14 @@ public final class ProgramRule extends BaseIdentifiableObject {
         this.program = program;
     }
 
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
     public String getCondition() {
         return condition;
     }
@@ -102,62 +88,11 @@ public final class ProgramRule extends BaseIdentifiableObject {
         this.condition = condition;
     }
 
-    public boolean isExternalAction() {
-        return externalAction;
-    }
-
-    public void setExternalAction(boolean externalAction) {
-        this.externalAction = externalAction;
-    }
-
     public List<ProgramRuleAction> getProgramRuleActions() {
         return programRuleActions;
     }
 
     public void setProgramRuleActions(List<ProgramRuleAction> programRuleActions) {
         this.programRuleActions = programRuleActions;
-    }
-
-    @Override
-    public String toString() {
-        return "ProgramRule{" +
-                "programStage=" + programStage +
-                ", program=" + program +
-                ", description='" + description + '\'' +
-                ", condition='" + condition + '\'' +
-                ", priority=" + priority +
-                ", externalAction=" + externalAction +
-                ", programRuleActions=" + programRuleActions +
-                '}';
-    }
-
-    public static class PriorityComparator implements Comparator<ProgramRule> {
-
-        @Override
-        public int compare(ProgramRule first, ProgramRule second) {
-            if (first == null && second == null) {
-                return 0;
-            } else if (first == null) {
-                return 1;
-            } else if (second == null) {
-                return -1;
-            }
-
-            if (first.getPriority() == null && second.getPriority() == null) {
-                return 0;
-            } else if (first.getPriority() == null) {
-                return 1;
-            } else if (second.getPriority() == null) {
-                return -1;
-            }
-
-            if (first.getPriority() < second.getPriority()) {
-                return -1;
-            } else if (first.getPriority().equals(second.getPriority())) {
-                return 0;
-            } else {
-                return 1;
-            }
-        }
     }
 }

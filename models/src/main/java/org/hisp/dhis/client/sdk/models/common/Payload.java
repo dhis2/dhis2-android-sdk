@@ -26,41 +26,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.user;
+package org.hisp.dhis.client.sdk.models.common;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class UserCredentials extends BaseIdentifiableObject {
+public final class Payload<T> {
+    @JsonProperty("pager")
+    Pager pager;
 
-    @JsonProperty("username")
-    String username;
+    @JsonIgnore
+    List<T> items;
 
-    @JsonProperty("userRoles")
-    List<UserRole> userRoles;
-
-    public UserCredentials() {
+    public Payload() {
         // explicit empty constructor
     }
 
-    public List<UserRole> getUserRoles() {
-        return userRoles;
+    @JsonAnySetter
+    @SuppressWarnings("unused")
+    private void processItems(String key, List<T> values) {
+        this.items = values;
     }
 
-    public void setUserRoles(List<UserRole> userRoles) {
-        this.userRoles = userRoles;
+    public Pager pager() {
+        return this.pager;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public List<T> items() {
+        return this.items;
     }
 }

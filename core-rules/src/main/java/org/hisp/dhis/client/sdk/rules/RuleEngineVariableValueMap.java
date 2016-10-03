@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.rules;
 
-import org.hisp.dhis.client.sdk.models.dataelement.ValueType;
+import org.hisp.dhis.client.sdk.models.common.ValueType;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
@@ -45,6 +45,7 @@ import java.util.Map;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+// TODO Replace JodaTime
 /* Part of RuleEngine implementation detail. Hence, class visibility defined as package private */
 class RuleEngineVariableValueMap {
     public static final String DATE_PATTERN = "yyyy-MM-dd";
@@ -129,20 +130,20 @@ class RuleEngineVariableValueMap {
         for (ProgramRuleVariable variable : programRuleVariables) {
 
             boolean valueFound = false;
-            switch (variable.getSourceType()) {
+            switch (variable.getProgramRuleVariableSourceType()) {
                 case DATAELEMENT_CURRENT_EVENT: {
-                    if (currentEventToValuesMap.containsKey(variable.getDataElement().getUId())) {
+                    if (currentEventToValuesMap.containsKey(variable.getDataElement().getUid())) {
                         TrackedEntityDataValue dataValue = currentEventToValuesMap
-                                .get(variable.getDataElement().getUId());
+                                .get(variable.getDataElement().getUid());
                         valueFound = true;
                         addProgramRuleVariableValueToMap(variable, dataValue, null, valueFound);
                     }
                     break;
                 }
                 case DATAELEMENT_NEWEST_EVENT_PROGRAM: {
-                    if (allEventsToValuesMap.containsKey(variable.getDataElement().getUId())) {
+                    if (allEventsToValuesMap.containsKey(variable.getDataElement().getUid())) {
                         List<TrackedEntityDataValue> valueList = allEventsToValuesMap.get(
-                                variable.getDataElement().getUId());
+                                variable.getDataElement().getUid());
                         TrackedEntityDataValue dataValue = valueList.get(valueList.size() - 1);
                         valueFound = true;
                         addProgramRuleVariableValueToMap(variable, dataValue, valueList, valueFound);
@@ -151,15 +152,15 @@ class RuleEngineVariableValueMap {
                 }
                 case DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE: {
                     if (variable.getProgramStage() != null && allEventsToValuesMap.containsKey(
-                            variable.getDataElement().getUId())) {
+                            variable.getDataElement().getUid())) {
 
                         List<TrackedEntityDataValue> valueList = allEventsToValuesMap.get(
-                                variable.getDataElement().getUId());
+                                variable.getDataElement().getUid());
 
                         TrackedEntityDataValue bestCandidate = null;
                         for (TrackedEntityDataValue candidate : valueList) {
 
-                            if (variable.getProgramStage().getUId().equals(
+                            if (variable.getProgramStage().getUid().equals(
                                     candidate.getEvent().getProgramStage())) {
 
                                 // The candidate matches the program stage, and will be newer than
@@ -177,9 +178,9 @@ class RuleEngineVariableValueMap {
                 }
                 case DATAELEMENT_PREVIOUS_EVENT: {
                     if (currentEvent != null && allEventsToValuesMap.containsKey(
-                            variable.getDataElement().getUId())) {
+                            variable.getDataElement().getUid())) {
                         List<TrackedEntityDataValue> valueList = allEventsToValuesMap.get(
-                                variable.getDataElement().getUId());
+                                variable.getDataElement().getUid());
 
                         TrackedEntityDataValue bestCandidate = null;
                         for (TrackedEntityDataValue candidate : valueList) {
@@ -244,16 +245,13 @@ class RuleEngineVariableValueMap {
         }
     }
 
-    private void addEnvironmentVariables(Event currentEvent)
-    {
+    private void addEnvironmentVariables(Event currentEvent) {
         DateFormat df = new SimpleDateFormat(DATE_PATTERN, Locale.ENGLISH);
 
-        if(currentEvent != null) {
+        if (currentEvent != null) {
             DateTime eventDate = currentEvent.getEventDate() != null ? currentEvent.getEventDate() : DateTime.now();
             addEnviromentVariableValueToMap("event_date", df.format(eventDate.toDate()), ValueType.DATE, currentEvent.getEventDate() != null);
-        }
-        else
-        {
+        } else {
             addEnviromentVariableValueToMap("event_date", df.format(DateTime.now().toDate()), ValueType.DATE, false);
         }
 
@@ -279,8 +277,8 @@ class RuleEngineVariableValueMap {
         programRuleVariableValueMap.put(programRuleVariable.getDisplayName(), variableValue);
     }
 
-    private void addEnviromentVariableValueToMap( String name, String value,
-                                                  ValueType valueType, boolean hasValue) {
+    private void addEnviromentVariableValueToMap(String name, String value,
+                                                 ValueType valueType, boolean hasValue) {
         ProgramRuleVariableValue variableValue = new ProgramRuleVariableValue(value, valueType, hasValue);
         programRuleVariableValueMap.put(name, variableValue);
     }

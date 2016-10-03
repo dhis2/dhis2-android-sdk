@@ -28,12 +28,205 @@
 
 package org.hisp.dhis.client.sdk.models.user;
 
-import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
+
+import java.util.List;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User extends BaseIdentifiableObject {
-    // no additional fields
+
+    @JsonProperty("birthday")
+    String birthday;
+
+    @JsonProperty("education")
+    String education;
+
+    @JsonProperty("gender")
+    String gender;
+
+    @JsonProperty("jobTitle")
+    String jobTitle;
+
+    @JsonProperty("surname")
+    String surname;
+
+    @JsonProperty("firstName")
+    String firstName;
+
+    @JsonProperty("introduction")
+    String introduction;
+
+    @JsonProperty("employer")
+    String employer;
+
+    @JsonProperty("interests")
+    String interests;
+
+    @JsonProperty("languages")
+    String languages;
+
+    @JsonProperty("email")
+    String email;
+
+    @JsonProperty("phoneNumber")
+    String phoneNumber;
+
+    @JsonProperty("nationality")
+    String nationality;
+
+    @JsonProperty("userCredentials")
+    UserCredentials userCredentials;
+
+    @JsonProperty("organisationUnits")
+    List<OrganisationUnit> organisationUnits;
+
+    @JsonProperty("teiSearchOrganisationUnits")
+    List<OrganisationUnit> teiSearchOrganisationUnits;
+
+    @JsonProperty("dataViewOrganisationUnits")
+    List<OrganisationUnit> dataViewOrganisationUnits;
 
     public User() {
-        // empty constructor
+        // explicit empty constructor
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getEducation() {
+        return education;
+    }
+
+    public void setEducation(String education) {
+        this.education = education;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getJobTitle() {
+        return jobTitle;
+    }
+
+    public void setJobTitle(String jobTitle) {
+        this.jobTitle = jobTitle;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
+    public String getEmployer() {
+        return employer;
+    }
+
+    public void setEmployer(String employer) {
+        this.employer = employer;
+    }
+
+    public String getInterests() {
+        return interests;
+    }
+
+    public void setInterests(String interests) {
+        this.interests = interests;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getLanguages() {
+        return languages;
+    }
+
+    public void setLanguages(String languages) {
+        this.languages = languages;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
+    }
+
+    public UserCredentials getUserCredentials() {
+        return userCredentials;
+    }
+
+    public void setUserCredentials(UserCredentials userCredentials) {
+        this.userCredentials = userCredentials;
+    }
+
+    public List<OrganisationUnit> getOrganisationUnits() {
+        return organisationUnits;
+    }
+
+    public void setOrganisationUnits(List<OrganisationUnit> organisationUnits) {
+        this.organisationUnits = organisationUnits;
+    }
+
+    public List<OrganisationUnit> getDataViewOrganisationUnits() {
+        return dataViewOrganisationUnits;
+    }
+
+    public void setDataViewOrganisationUnits(List<OrganisationUnit> dataViewOrganisationUnits) {
+        this.dataViewOrganisationUnits = dataViewOrganisationUnits;
+    }
+
+    public List<OrganisationUnit> getTeiSearchOrganisationUnits() {
+        return teiSearchOrganisationUnits;
+    }
+
+    public void setTeiSearchOrganisationUnits(List<OrganisationUnit> teiSearchOrganisationUnits) {
+        this.teiSearchOrganisationUnits = teiSearchOrganisationUnits;
     }
 }

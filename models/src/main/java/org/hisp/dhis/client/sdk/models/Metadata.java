@@ -26,24 +26,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.user;
+package org.hisp.dhis.client.sdk.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.client.sdk.models.option.OptionSet;
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramRule;
+import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
+import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserRole extends BaseIdentifiableObject {
+public class Metadata {
 
     @JsonProperty("programs")
     List<Program> programs;
 
-    public UserRole() {
-        // explicit empty constructor
+    @JsonProperty("optionSets")
+    List<OptionSet> optionSets;
+
+    @JsonProperty("trackedEntities")
+    List<TrackedEntity> trackedEntities;
+
+    @JsonProperty("programRules")
+    List<ProgramRule> programRules;
+
+    @JsonProperty("programRuleActions")
+    List<ProgramRuleAction> programRuleActions;
+
+    @JsonProperty("programRuleVariables")
+    List<ProgramRuleVariable> programRuleVariables;
+
+    public Metadata() {
     }
 
     public List<Program> getPrograms() {
@@ -52,5 +70,45 @@ public class UserRole extends BaseIdentifiableObject {
 
     public void setPrograms(List<Program> programs) {
         this.programs = programs;
+    }
+
+    public List<OptionSet> getOptionSets() {
+        return optionSets;
+    }
+
+    public void setOptionSets(List<OptionSet> optionSets) {
+        this.optionSets = optionSets;
+    }
+
+    public List<TrackedEntity> getTrackedEntities() {
+        return trackedEntities;
+    }
+
+    public void setTrackedEntities(List<TrackedEntity> trackedEntities) {
+        this.trackedEntities = trackedEntities;
+    }
+
+    public List<ProgramRule> getProgramRules() {
+        return programRules;
+    }
+
+    public void setProgramRules(List<ProgramRule> programRules) {
+        this.programRules = programRules;
+    }
+
+    public List<ProgramRuleAction> getProgramRuleActions() {
+        return programRuleActions;
+    }
+
+    public void setProgramRuleActions(List<ProgramRuleAction> programRuleActions) {
+        this.programRuleActions = programRuleActions;
+    }
+
+    public List<ProgramRuleVariable> getProgramRuleVariables() {
+        return programRuleVariables;
+    }
+
+    public void setProgramRuleVariables(List<ProgramRuleVariable> programRuleVariables) {
+        this.programRuleVariables = programRuleVariables;
     }
 }

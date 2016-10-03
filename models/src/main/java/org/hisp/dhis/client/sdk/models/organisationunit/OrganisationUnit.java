@@ -28,107 +28,39 @@
 
 package org.hisp.dhis.client.sdk.models.organisationunit;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
-import org.hisp.dhis.client.sdk.models.dataset.DataSet;
+import org.hisp.dhis.client.sdk.models.common.BaseNameableObject;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
-import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class OrganisationUnit extends BaseIdentifiableObject {
-
-    @JsonProperty("level")
-    private int level;
+public class OrganisationUnit extends BaseNameableObject {
 
     @JsonProperty("parent")
-    private OrganisationUnit parent;
+    OrganisationUnit parent;
+
+    @JsonProperty("path")
+    String path;
+
+    @JsonProperty("children")
+    List<OrganisationUnit> children;
 
     @JsonProperty("openingDate")
-    private String openingDate;
+    Date openingDate;
 
-    @JsonProperty("programs")
-    private List<Program> programs;
+    @JsonProperty("closedDate")
+    Date closedDate;
 
-    @JsonProperty("dataSets")
-    private List<DataSet> dataSets;
+    @JsonProperty("level")
+    int level;
 
-    @JsonIgnore
-    private boolean isAssignedToUser;
+    @JsonProperty("get")
+    List<Program> programs;
 
     public OrganisationUnit() {
-        // explicit empty constructor
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public OrganisationUnit getParent() {
-        return parent;
-    }
-
-    public void setParent(OrganisationUnit parent) {
-        this.parent = parent;
-    }
-
-    public String getOpeningDate() {
-        return openingDate;
-    }
-
-    public void setOpeningDate(String openingDate) {
-        this.openingDate = openingDate;
-    }
-
-    public List<Program> getPrograms() {
-        return programs;
-    }
-
-    public void setPrograms(List<Program> programs) {
-        this.programs = programs;
-    }
-
-    public List<DataSet> getDataSets() {
-        return dataSets;
-    }
-
-    public void setDataSets(List<DataSet> dataSets) {
-        this.dataSets = dataSets;
-    }
-
-    public boolean isAssignedToUser() {
-        return isAssignedToUser;
-    }
-
-    public void setIsAssignedToUser(boolean isAssignedToUser) {
-        this.isAssignedToUser = isAssignedToUser;
-    }
-
-    public static class LevelComparator implements Comparator<OrganisationUnit> {
-
-        public LevelComparator() {
-            // explicit empty constructor
-        }
-
-        @Override
-        public int compare(OrganisationUnit first, OrganisationUnit second) {
-            if (first.getLevel() == second.getLevel()) {
-                return 0;
-            }
-
-            if (first.getLevel() > second.getLevel()) {
-                return 1;
-            }
-
-            return -1;
-        }
     }
 }

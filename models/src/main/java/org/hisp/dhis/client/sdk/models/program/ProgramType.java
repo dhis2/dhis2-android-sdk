@@ -29,16 +29,5 @@
 package org.hisp.dhis.client.sdk.models.program;
 
 public enum ProgramType {
-    WITH_REGISTRATION("with_registration"),
-    WITHOUT_REGISTRATION("without_registration");
-
-    private final String value;
-
-    ProgramType(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
+    WITH_REGISTRATION, WITHOUT_REGISTRATION
 }

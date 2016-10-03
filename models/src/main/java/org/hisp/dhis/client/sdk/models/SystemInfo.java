@@ -26,41 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.user;
+package org.hisp.dhis.client.sdk.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
-
-import java.util.List;
+import java.util.Date;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserCredentials extends BaseIdentifiableObject {
+public class SystemInfo {
 
-    @JsonProperty("username")
-    String username;
+    @JsonProperty("serverDate")
+    private Date serverDateTime;
 
-    @JsonProperty("userRoles")
-    List<UserRole> userRoles;
+    @JsonProperty("dateFormat")
+    private String dateFormat;
 
-    public UserCredentials() {
+    public SystemInfo() {
         // explicit empty constructor
     }
 
-    public List<UserRole> getUserRoles() {
-        return userRoles;
+    public Date getServerDateTime() {
+        return serverDateTime;
     }
 
-    public void setUserRoles(List<UserRole> userRoles) {
-        this.userRoles = userRoles;
+    public void setServerDateTime(Date serverDateTime) {
+        this.serverDateTime = serverDateTime;
     }
 
-    public String getUsername() {
-        return username;
+    public String getDateFormat() {
+        return dateFormat;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
     }
 }

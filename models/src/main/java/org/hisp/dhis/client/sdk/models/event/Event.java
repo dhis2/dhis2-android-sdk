@@ -28,23 +28,21 @@
 
 package org.hisp.dhis.client.sdk.models.event;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.Access;
 import org.hisp.dhis.client.sdk.models.common.Coordinates;
-import org.hisp.dhis.client.sdk.models.common.base.BaseModel;
-import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
+import org.hisp.dhis.client.sdk.models.common.IdentifiableObject;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
-import org.joda.time.DateTime;
 
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class Event extends BaseModel implements IdentifiableObject {
+public class Event implements IdentifiableObject {
+
     public static final Comparator<Event> DATE_COMPARATOR = new EventDateComparator();
 
     public static final String EVENT_DATE_KEY = "eventDate";
@@ -53,7 +51,7 @@ public final class Event extends BaseModel implements IdentifiableObject {
     public static final String STATUS_LABEL = "Status";
 
     @JsonProperty("event")
-    private String uId;
+    private String uid;
 
     @JsonProperty("name")
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -64,14 +62,13 @@ public final class Event extends BaseModel implements IdentifiableObject {
     private String displayName;
 
     @JsonProperty("created")
-    private DateTime created;
+    private Date created;
 
     @JsonProperty("lastUpdated")
-    private DateTime lastUpdated;
+    private Date lastUpdated;
 
-    @JsonProperty("access")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Access access;
+    @JsonProperty("code")
+    private String code;
 
     @JsonProperty("status")
     private EventStatus status;
@@ -89,17 +86,18 @@ public final class Event extends BaseModel implements IdentifiableObject {
     private String orgUnit;
 
     @JsonProperty("eventDate")
-    private DateTime eventDate;
+    private Date eventDate;
 
-    @JsonIgnore
-    int sortOrder;
+    @JsonProperty("completedDate")
+    private Date completedDate;
+
 
     /*
-    * This property is optional (used only in tracker)
-    */
+     * This property is optional (used only in tracker)
+     */
     @JsonProperty("dueDate")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private DateTime dueDate;
+    private Date dueDate;
 
     @JsonProperty("dataValues")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -110,13 +108,13 @@ public final class Event extends BaseModel implements IdentifiableObject {
     }
 
     @Override
-    public String getUId() {
-        return uId;
+    public String getUid() {
+        return uid;
     }
 
     @Override
-    public void setUId(String uId) {
-        this.uId = uId;
+    public String getCode() {
+        return code;
     }
 
     @Override
@@ -125,58 +123,42 @@ public final class Event extends BaseModel implements IdentifiableObject {
     }
 
     @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
     public String getDisplayName() {
         return displayName;
     }
 
     @Override
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    @Override
-    public DateTime getCreated() {
+    public Date getCreated() {
         return created;
     }
 
     @Override
-    public void setCreated(DateTime created) {
-        this.created = created;
-    }
-
-    @Override
-    public DateTime getLastUpdated() {
+    public Date getLastUpdated() {
         return lastUpdated;
     }
 
-    @Override
-    public void setLastUpdated(DateTime lastUpdated) {
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 
-    @Override
-    public Access getAccess() {
-        return access;
-    }
-
-    @Override
-    public void setAccess(Access access) {
-        this.access = access;
-    }
-
-    @Override
-    public void setApiSortOrder(int sortOrder) {
-        this.sortOrder = sortOrder;
-    }
-
-    @Override
-    public int getApiSortOrder() {
-        return sortOrder;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public EventStatus getStatus() {
@@ -219,19 +201,19 @@ public final class Event extends BaseModel implements IdentifiableObject {
         this.orgUnit = orgUnit;
     }
 
-    public DateTime getEventDate() {
+    public Date getEventDate() {
         return eventDate;
     }
 
-    public void setEventDate(DateTime eventDate) {
+    public void setEventDate(Date eventDate) {
         this.eventDate = eventDate;
     }
 
-    public DateTime getDueDate() {
+    public Date getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(DateTime dueDate) {
+    public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
     }
 
@@ -241,6 +223,14 @@ public final class Event extends BaseModel implements IdentifiableObject {
 
     public void setDataValues(List<TrackedEntityDataValue> dataValues) {
         this.dataValues = dataValues;
+    }
+
+    public Date getCompletedDate() {
+        return completedDate;
+    }
+
+    public void setCompletedDate(Date completedDate) {
+        this.completedDate = completedDate;
     }
 
     public enum EventStatus {

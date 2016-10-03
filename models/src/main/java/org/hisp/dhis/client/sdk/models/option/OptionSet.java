@@ -26,41 +26,52 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.user;
+package org.hisp.dhis.client.sdk.models.option;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.client.sdk.models.common.ValueType;
 
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserCredentials extends BaseIdentifiableObject {
+public class OptionSet extends BaseIdentifiableObject {
 
-    @JsonProperty("username")
-    String username;
+    @JsonProperty("version")
+    int version;
 
-    @JsonProperty("userRoles")
-    List<UserRole> userRoles;
+    @JsonProperty("valueType")
+    ValueType valueType;
 
-    public UserCredentials() {
-        // explicit empty constructor
+    @JsonProperty("options")
+    List<Option> options;
+
+    public OptionSet() {
     }
 
-    public List<UserRole> getUserRoles() {
-        return userRoles;
+    public int getVersion() {
+        return version;
     }
 
-    public void setUserRoles(List<UserRole> userRoles) {
-        this.userRoles = userRoles;
+    public void setVersion(int version) {
+        this.version = version;
     }
 
-    public String getUsername() {
-        return username;
+    public ValueType getValueType() {
+        return valueType;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setValueType(ValueType valueType) {
+        this.valueType = valueType;
+    }
+
+    public List<Option> getOptions() {
+        return options;
+    }
+
+    public void setOptions(List<Option> options) {
+        this.options = options;
     }
 }

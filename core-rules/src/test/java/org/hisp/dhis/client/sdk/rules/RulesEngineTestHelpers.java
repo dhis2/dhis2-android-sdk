@@ -182,7 +182,7 @@ public class RulesEngineTestHelpers {
         if (original == null) {
             return true;
         } else {
-            return original.getUId() == toCompare.getUId();
+            return original.getUid() == toCompare.getUid();
         }
     }
 
@@ -191,7 +191,7 @@ public class RulesEngineTestHelpers {
         if (original == null) {
             return true;
         } else {
-            return original.getUId() == toCompare.getUId();
+            return original.getUid() == toCompare.getUid();
         }
     }
 
@@ -200,7 +200,7 @@ public class RulesEngineTestHelpers {
         if (original == null) {
             return true;
         } else {
-            return original.getUId() == toCompare.getUId();
+            return original.getUid() == toCompare.getUid();
         }
     }
 
@@ -208,7 +208,7 @@ public class RulesEngineTestHelpers {
         if (original == null) {
             return true;
         } else {
-            return original.getUId() == toCompare.getUId();
+            return original.getUid() == toCompare.getUid();
         }
     }
 
@@ -217,7 +217,7 @@ public class RulesEngineTestHelpers {
             e.setDataValues(new ArrayList<TrackedEntityDataValue>());
         }
         TrackedEntityDataValue dataValue = new TrackedEntityDataValue();
-        dataValue.setDataElement(de.getUId());
+        dataValue.setDataElement(de.getUid());
         dataValue.setValue(value);
         e.getDataValues().add(dataValue);
     }

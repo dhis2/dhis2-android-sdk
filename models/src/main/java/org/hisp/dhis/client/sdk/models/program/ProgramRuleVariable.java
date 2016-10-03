@@ -28,36 +28,68 @@
 
 package org.hisp.dhis.client.sdk.models.program;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
+import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
-import java.util.List;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class ProgramRuleVariable extends BaseIdentifiableObject {
-
-    @JsonProperty("programRuleVariableSourceType")
-    private ProgramRuleVariableSourceType sourceType;
-
-    @JsonProperty("program")
-    private Program program;
+public class ProgramRuleVariable extends BaseIdentifiableObject {
 
     @JsonProperty("programStage")
-    private ProgramStage programStage;
+    ProgramStage programStage;
+
+    @JsonProperty("programRuleVariableSourceType")
+    ProgramRuleVariableSourceType programRuleVariableSourceType;
+
+    @JsonProperty("useCodeForOptionSet")
+    boolean useCodeForOptionSet;
+
+    @JsonProperty("program")
+    Program program;
 
     @JsonProperty("dataElement")
-    private DataElement dataElement;
+    DataElement dataElement;
 
     @JsonProperty("trackedEntityAttribute")
-    private TrackedEntityAttribute trackedEntityAttribute;
+    TrackedEntityAttribute trackedEntityAttribute;
 
-    @JsonIgnore
-    private List<String> allValues;
+    public ProgramRuleVariable() {
+    }
+
+    public ProgramStage getProgramStage() {
+        return programStage;
+    }
+
+    public void setProgramStage(ProgramStage programStage) {
+        this.programStage = programStage;
+    }
+
+    public ProgramRuleVariableSourceType getProgramRuleVariableSourceType() {
+        return programRuleVariableSourceType;
+    }
+
+    public void setProgramRuleVariableSourceType(ProgramRuleVariableSourceType programRuleVariableSourceType) {
+        this.programRuleVariableSourceType = programRuleVariableSourceType;
+    }
+
+    public boolean isUseCodeForOptionSet() {
+        return useCodeForOptionSet;
+    }
+
+    public void setUseCodeForOptionSet(boolean useCodeForOptionSet) {
+        this.useCodeForOptionSet = useCodeForOptionSet;
+    }
+
+    public Program getProgram() {
+        return program;
+    }
+
+    public void setProgram(Program program) {
+        this.program = program;
+    }
 
     public DataElement getDataElement() {
         return dataElement;
@@ -73,49 +105,5 @@ public final class ProgramRuleVariable extends BaseIdentifiableObject {
 
     public void setTrackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute) {
         this.trackedEntityAttribute = trackedEntityAttribute;
-    }
-
-    public ProgramRuleVariableSourceType getSourceType() {
-        return sourceType;
-    }
-
-    public void setSourceType(ProgramRuleVariableSourceType sourceType) {
-        this.sourceType = sourceType;
-    }
-
-    public Program getProgram() {
-        return program;
-    }
-
-    public void setProgram(Program program) {
-        this.program = program;
-    }
-
-    public ProgramStage getProgramStage() {
-        return programStage;
-    }
-
-    public void setProgramStage(ProgramStage programStage) {
-        this.programStage = programStage;
-    }
-
-    public List<String> getAllValues() {
-        return allValues;
-    }
-
-    public void setAllValues(List<String> allValues) {
-        this.allValues = allValues;
-    }
-
-    @Override
-    public String toString() {
-        return "ProgramRuleVariable{" +
-                "sourceType=" + sourceType +
-                ", program=" + program +
-                ", programStage=" + programStage +
-                ", dataElement=" + dataElement +
-                ", trackedEntityAttribute=" + trackedEntityAttribute +
-                ", allValues=" + allValues +
-                '}';
     }
 }

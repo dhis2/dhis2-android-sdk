@@ -31,85 +31,28 @@ package org.hisp.dhis.client.sdk.models.program;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
+import org.hisp.dhis.client.sdk.models.common.BaseNameableObject;
+import org.hisp.dhis.client.sdk.models.common.ValueType;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
-import java.util.Comparator;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class ProgramTrackedEntityAttribute extends BaseIdentifiableObject {
-    public static final Comparator<ProgramTrackedEntityAttribute>
-            SORT_ORDER_COMPARATOR = new SortOrderComparator();
-
-    @JsonProperty("allowFutureDate")
-    private boolean allowFutureDate;
-
-    @JsonProperty("displayInList")
-    private boolean displayInList;
+public class ProgramTrackedEntityAttribute extends BaseNameableObject {
 
     @JsonProperty("mandatory")
-    private boolean mandatory;
-
-    @JsonProperty("program")
-    private Program program;
+    boolean mandatory;
 
     @JsonProperty("trackedEntityAttribute")
-    private TrackedEntityAttribute trackedEntityAttribute;
+    TrackedEntityAttribute trackedEntityAttribute;
 
-    public TrackedEntityAttribute getTrackedEntityAttribute() {
-        return trackedEntityAttribute;
-    }
+    @JsonProperty("valueType")
+    ValueType valueType;
 
-    public void setTrackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute) {
-        this.trackedEntityAttribute = trackedEntityAttribute;
-    }
+    @JsonProperty("allowFutureDate")
+    boolean allowFutureDate;
 
-    public boolean isAllowFutureDate() {
-        return allowFutureDate;
-    }
+    @JsonProperty("displayInList")
+    boolean displayInList;
 
-    public void setAllowFutureDate(boolean allowFutureDate) {
-        this.allowFutureDate = allowFutureDate;
-    }
-
-    public boolean isDisplayInList() {
-        return displayInList;
-    }
-
-    public void setDisplayInList(boolean displayInList) {
-        this.displayInList = displayInList;
-    }
-
-    public boolean isMandatory() {
-        return mandatory;
-    }
-
-    public void setMandatory(boolean mandatory) {
-        this.mandatory = mandatory;
-    }
-
-    public Program getProgram() {
-        return program;
-    }
-
-    public void setProgram(Program program) {
-        this.program = program;
-    }
-
-    private static class SortOrderComparator implements Comparator<ProgramTrackedEntityAttribute> {
-        @Override
-        public int compare(ProgramTrackedEntityAttribute one, ProgramTrackedEntityAttribute two) {
-            if (one == null || two == null) {
-                return 0;
-            }
-
-            if (one.getApiSortOrder() > two.getApiSortOrder()) {
-                return -1;
-            } else if (one.getApiSortOrder() < two.getApiSortOrder()) {
-                return 1;
-            }
-
-            return 0;
-        }
+    public ProgramTrackedEntityAttribute() {
     }
 }

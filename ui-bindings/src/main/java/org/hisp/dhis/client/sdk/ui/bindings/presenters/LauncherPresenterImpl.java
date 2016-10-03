@@ -28,22 +28,21 @@
 
 package org.hisp.dhis.client.sdk.ui.bindings.presenters;
 
-import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractor;
+import org.hisp.dhis.client.sdk.core.UserInteractor;
 import org.hisp.dhis.client.sdk.ui.bindings.views.LauncherView;
 import org.hisp.dhis.client.sdk.ui.bindings.views.View;
 
 public class LauncherPresenterImpl implements LauncherPresenter {
-    private final CurrentUserInteractor userAccountInteractor;
+    private final UserInteractor userAccountInteractor;
     private LauncherView launcherView;
 
-    public LauncherPresenterImpl(CurrentUserInteractor userAccountInteractor) {
+    public LauncherPresenterImpl(UserInteractor userAccountInteractor) {
         this.userAccountInteractor = userAccountInteractor;
     }
 
     @Override
     public void checkIfUserIsLoggedIn() {
-        if (userAccountInteractor != null &&
-                userAccountInteractor.isSignedIn().toBlocking().first()) {
+        if (userAccountInteractor != null && userAccountInteractor.isLoggedIn()) {
             launcherView.navigateToHome();
         } else {
             launcherView.navigateToLogin();

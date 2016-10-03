@@ -26,41 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.user;
+package org.hisp.dhis.client.sdk.models.option;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 
-import java.util.List;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserCredentials extends BaseIdentifiableObject {
-
-    @JsonProperty("username")
-    String username;
-
-    @JsonProperty("userRoles")
-    List<UserRole> userRoles;
-
-    public UserCredentials() {
-        // explicit empty constructor
-    }
-
-    public List<UserRole> getUserRoles() {
-        return userRoles;
-    }
-
-    public void setUserRoles(List<UserRole> userRoles) {
-        this.userRoles = userRoles;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
+public class Option extends BaseIdentifiableObject {
 }

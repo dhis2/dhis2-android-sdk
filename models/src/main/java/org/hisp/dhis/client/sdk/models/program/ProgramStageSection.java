@@ -31,76 +31,22 @@ package org.hisp.dhis.client.sdk.models.program;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
+import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 
-import java.util.Comparator;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class ProgramStageSection extends BaseIdentifiableObject {
-    public static final Comparator<ProgramStageSection>
-            SORT_ORDER_COMPARATOR = new SortOrderComparator();
-
-    @JsonProperty("sortOrder")
-    private int sortOrder;
-
-    @JsonProperty("programStage")
-    private ProgramStage programStage;
-
-    @JsonProperty("programStageDataElements")
-    private List<ProgramStageDataElement> programStageDataElements;
+public class ProgramStageSection extends BaseIdentifiableObject {
 
     @JsonProperty("programIndicators")
-    private List<ProgramIndicator> programIndicators;
+    List<ProgramIndicator> programIndicators;
 
-    public int getSortOrder() {
-        return sortOrder;
-    }
+    @JsonProperty("programStageDataElements")
+    List<ProgramStageDataElement> programStageDataElements;
 
-    public void setSortOrder(int sortOrder) {
-        this.sortOrder = sortOrder;
-    }
+    @JsonProperty("sortOrder")
+    int sortOrder;
 
-    public ProgramStage getProgramStage() {
-        return programStage;
-    }
-
-    public void setProgramStage(ProgramStage programStage) {
-        this.programStage = programStage;
-    }
-
-    public List<ProgramStageDataElement> getProgramStageDataElements() {
-        return programStageDataElements;
-    }
-
-    public void setProgramStageDataElements(List<ProgramStageDataElement>
-                                                    programStageDataElements) {
-        this.programStageDataElements = programStageDataElements;
-    }
-
-    public List<ProgramIndicator> getProgramIndicators() {
-        return programIndicators;
-    }
-
-    public void setProgramIndicators(List<ProgramIndicator> programIndicators) {
-        this.programIndicators = programIndicators;
-    }
-
-    private static final class SortOrderComparator implements Comparator<ProgramStageSection> {
-
-        @Override
-        public int compare(ProgramStageSection one, ProgramStageSection two) {
-            if (one == null || two == null) {
-                return 0;
-            }
-
-            if (one.getSortOrder() > two.getSortOrder()) {
-                return 1;
-            } else if (one.getSortOrder() < two.getSortOrder()) {
-                return -1;
-            }
-
-            return 0;
-        }
+    public ProgramStageSection() {
     }
 }

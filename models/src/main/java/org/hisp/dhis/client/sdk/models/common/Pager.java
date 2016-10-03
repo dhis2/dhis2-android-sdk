@@ -26,41 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.user;
+package org.hisp.dhis.client.sdk.models.common;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
-
-import java.util.List;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserCredentials extends BaseIdentifiableObject {
+public final class Pager {
+    private final int page;
+    private final int pageCount;
+    private final int pageSize;
+    private final int total;
 
-    @JsonProperty("username")
-    String username;
-
-    @JsonProperty("userRoles")
-    List<UserRole> userRoles;
-
-    public UserCredentials() {
-        // explicit empty constructor
+    @JsonCreator
+    public Pager(@JsonProperty("page") int page,
+                 @JsonProperty("pageCount") int pageCount,
+                 @JsonProperty("pageSize") int pageSize,
+                 @JsonProperty("total") int total) {
+        this.page = page;
+        this.pageCount = pageCount;
+        this.pageSize = pageSize;
+        this.total = total;
     }
-
-    public List<UserRole> getUserRoles() {
-        return userRoles;
+    public int page() {
+        return page;
     }
-
-    public void setUserRoles(List<UserRole> userRoles) {
-        this.userRoles = userRoles;
+    public int pageCount() {
+        return pageCount;
     }
-
-    public String getUsername() {
-        return username;
+    public int pageSize() {
+        return pageSize;
     }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public int total() {
+        return total;
     }
 }

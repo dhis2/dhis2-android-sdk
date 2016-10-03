@@ -31,30 +31,17 @@ package org.hisp.dhis.client.sdk.models.relationship;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
+import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class RelationshipType extends BaseIdentifiableObject {
+public class RelationshipType extends BaseIdentifiableObject {
 
-    @JsonProperty
-    private String aIsToB;
+    @JsonProperty("bIsToA")
+    String bIsToA;
 
-    @JsonProperty
-    private String bIsToA;
+    @JsonProperty("aIsToB")
+    String aIsToB;
 
-    public String getaIsToB() {
-        return aIsToB;
-    }
-
-    public void setaIsToB(String aIsToB) {
-        this.aIsToB = aIsToB;
-    }
-
-    public String getbIsToA() {
-        return bIsToA;
-    }
-
-    public void setbIsToA(String bIsToA) {
-        this.bIsToA = bIsToA;
+    public RelationshipType() {
     }
 }

@@ -29,24 +29,14 @@
 package org.hisp.dhis.client.sdk.models.program;
 
 public enum ProgramRuleActionType {
-    DISPLAYTEXT("displaytext"),
-    DISPLAYKEYVALUEPAIR("displaykeyvaluepair"),
-    HIDEFIELD("hidefield"),
-    HIDESECTION("hidesection"),
-    ASSIGN("assign"),
-    SHOWWARNING("showwarning"),
-    WARNINGONCOMPLETE("warningoncomplete"),
-    SHOWERROR("showerror"),
-    ERRORONCOMPLETE("erroroncomplete"),
-    CREATEEVENT("createevent");
-
-    private final String value;
-
-    ProgramRuleActionType(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
+    DISPLAYTEXT,
+    DISPLAYKEYVALUEPAIR,
+    HIDEFIELD,
+    HIDESECTION,
+    ASSIGN,
+    SHOWWARNING,
+    WARNINGONCOMPLETE,
+    SHOWERROR,
+    ERRORONCOMPLETE,
+    CREATEEVENT
 }

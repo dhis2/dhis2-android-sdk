@@ -26,41 +26,63 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.user;
+package org.hisp.dhis.client.sdk.models.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
-
-import java.util.List;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserCredentials extends BaseIdentifiableObject {
+public abstract class BaseNameableObject extends BaseIdentifiableObject implements NameableObject {
 
-    @JsonProperty("username")
-    String username;
+    @JsonProperty("shortName")
+    String shortName;
 
-    @JsonProperty("userRoles")
-    List<UserRole> userRoles;
+    @JsonProperty("displayShortName")
+    String displayShortName;
 
-    public UserCredentials() {
+    @JsonProperty("description")
+    String description;
+
+    @JsonProperty("displayDescription")
+    String displayDescription;
+
+    public BaseNameableObject() {
         // explicit empty constructor
     }
 
-    public List<UserRole> getUserRoles() {
-        return userRoles;
+    @Override
+    public String getShortName() {
+        return shortName;
     }
 
-    public void setUserRoles(List<UserRole> userRoles) {
-        this.userRoles = userRoles;
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
     }
 
-    public String getUsername() {
-        return username;
+    @Override
+    public String getDisplayShortName() {
+        return displayShortName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setDisplayShortName(String displayShortName) {
+        this.displayShortName = displayShortName;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public String getDisplayDescription() {
+        return displayDescription;
+    }
+
+    public void setDisplayDescription(String displayDescription) {
+        this.displayDescription = displayDescription;
     }
 }

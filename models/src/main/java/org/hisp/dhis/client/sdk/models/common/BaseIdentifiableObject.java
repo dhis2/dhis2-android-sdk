@@ -26,41 +26,87 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.user;
+package org.hisp.dhis.client.sdk.models.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
-
-import java.util.List;
+import java.util.Date;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserCredentials extends BaseIdentifiableObject {
+public abstract class BaseIdentifiableObject implements IdentifiableObject {
 
-    @JsonProperty("username")
-    String username;
+    @JsonProperty("id")
+    String uid;
 
-    @JsonProperty("userRoles")
-    List<UserRole> userRoles;
+    @JsonProperty("code")
+    String code;
 
-    public UserCredentials() {
-        // explicit empty constructor
+    // nameable
+    @JsonProperty("name")
+    String name;
+
+    @JsonProperty("displayName")
+    String displayName;
+
+    // timestamps
+    @JsonProperty("created")
+    Date created;
+
+    @JsonProperty("lastUpdated")
+    Date lastUpdated;
+
+    @Override
+    public String getUid() {
+        return uid;
     }
 
-    public List<UserRole> getUserRoles() {
-        return userRoles;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
-    public void setUserRoles(List<UserRole> userRoles) {
-        this.userRoles = userRoles;
+    @Override
+    public String getCode() {
+        return code;
     }
 
-    public String getUsername() {
-        return username;
+    public void setCode(String code) {
+        this.code = code;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    @Override
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    @Override
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 }

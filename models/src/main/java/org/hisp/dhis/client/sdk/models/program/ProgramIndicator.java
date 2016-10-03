@@ -28,147 +28,29 @@
 
 package org.hisp.dhis.client.sdk.models.program;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.dataelement.ValueType;
-import org.hisp.dhis.client.sdk.models.common.base.BaseNameableObject;
+import org.hisp.dhis.client.sdk.models.common.BaseNameableObject;
 
-import java.util.regex.Pattern;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ProgramIndicator extends BaseNameableObject {
 
-public final class ProgramIndicator extends BaseNameableObject {
-    public static final String SEPARATOR_ID = "\\.";
-    public static final String KEY_DATAELEMENT = "#";
-    public static final String KEY_ATTRIBUTE = "A";
-    public static final String KEY_PROGRAM_VARIABLE = "V";
-    public static final String KEY_CONSTANT = "C";
-    public static final String INCIDENT_DATE = "incident_date";
-    public static final String ENROLLMENT_DATE = "enrollment_date";
-    public static final String CURRENT_DATE = "current_date";
-    public static final String VALUE_COUNT = "value_count";
-    public static final String VAR_VALUE_COUNT = "value_count";
-    public static final String VAR_ZERO_POS_VALUE_COUNT = "zero_pos_value_count";
-    public static final String VALUE_TYPE_DATE = "date";
-    public static final String VALUE_TYPE_INT = "int";
-    public static final String EXPRESSION_REGEXP = "(" + KEY_DATAELEMENT + "|" + KEY_ATTRIBUTE +
-            "|" + KEY_PROGRAM_VARIABLE + "|" + KEY_CONSTANT + ")\\{(\\w+|" +
-            INCIDENT_DATE + "|" + ENROLLMENT_DATE + "|" + CURRENT_DATE + ")" + SEPARATOR_ID + "?" +
-            "(\\w*)\\}";
-    public static final Pattern EXPRESSION_PATTERN = Pattern.compile(EXPRESSION_REGEXP);
-    public static final Pattern DATAELEMENT_PATTERN = Pattern.compile(KEY_DATAELEMENT + "\\{" +
-            "(\\w{11})" + SEPARATOR_ID + "(\\w{11})\\}");
-    public static final Pattern ATTRIBUTE_PATTERN = Pattern.compile(KEY_ATTRIBUTE + "\\{(\\w{11})" +
-            "\\}");
-    public static final Pattern VALUECOUNT_PATTERN = Pattern.compile("V\\{(" + VAR_VALUE_COUNT +
-            "|" + VAR_ZERO_POS_VALUE_COUNT + ")\\}");
-    public static final String VALID = "valid";
-    public static final String EXPRESSION_NOT_WELL_FORMED = "expression_not_well_formed";
-    public static String SEP_OBJECT = ":";
-
-    @JsonProperty("code")
-    private String code;
+    @JsonProperty("displayInForm")
+    boolean displayInForm;
 
     @JsonProperty("expression")
-    private String expression;
+    String expression;
 
-    @JsonProperty("displayDescription")
-    private String displayDescription;
+    @JsonProperty("dimensionItem")
+    String dimensionItem;
 
-    @JsonProperty("rootDate")
-    private String rootDate;
+    @JsonProperty("filter")
+    String filter;
 
-    @JsonProperty("externalAccess")
-    private boolean externalAccess;
+    @JsonProperty("decimals")
+    int decimals;
 
-    @JsonProperty("valueType")
-    private ValueType valueType;
-
-    @JsonProperty("displayShortName")
-    private String displayShortName;
-
-    @JsonProperty("program")
-    private Program program;
-
-    private ProgramStage programStage;
-
-    private ProgramStageSection programStageSection;
-
-    public ProgramStage getProgramStage() {
-        return programStage;
-    }
-
-    public void setProgramStage(ProgramStage programStage) {
-        this.programStage = programStage;
-    }
-
-    public ProgramStageSection getProgramStageSection() {
-        return programStageSection;
-    }
-
-    public void setProgramStageSection(ProgramStageSection programStageSection) {
-        this.programStageSection = programStageSection;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getExpression() {
-        return expression;
-    }
-
-    public void setExpression(String expression) {
-        this.expression = expression;
-    }
-
-    public String getDisplayDescription() {
-        return displayDescription;
-    }
-
-    public void setDisplayDescription(String displayDescription) {
-        this.displayDescription = displayDescription;
-    }
-
-    public String getRootDate() {
-        return rootDate;
-    }
-
-    public void setRootDate(String rootDate) {
-        this.rootDate = rootDate;
-    }
-
-    public boolean isExternalAccess() {
-        return externalAccess;
-    }
-
-    public void setExternalAccess(boolean externalAccess) {
-        this.externalAccess = externalAccess;
-    }
-
-    public ValueType getValueType() {
-        return valueType;
-    }
-
-    public void setValueType(ValueType valueType) {
-        this.valueType = valueType;
-    }
-
-    public String getDisplayShortName() {
-        return displayShortName;
-    }
-
-    public void setDisplayShortName(String displayShortName) {
-        this.displayShortName = displayShortName;
-    }
-
-    public Program getProgram() {
-        return program;
-    }
-
-    public void setProgram(Program program) {
-        this.program = program;
+    public ProgramIndicator() {
     }
 }

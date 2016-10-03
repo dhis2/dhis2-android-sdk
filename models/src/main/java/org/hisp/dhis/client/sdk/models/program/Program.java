@@ -28,24 +28,22 @@
 
 package org.hisp.dhis.client.sdk.models.program;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
-import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.client.sdk.models.common.BaseNameableObject;
+import org.hisp.dhis.client.sdk.models.dataelement.CategoryCombo;
+import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class Program extends BaseIdentifiableObject {
+public class Program extends BaseNameableObject {
 
     @JsonProperty("version")
     private int version;
-
-    @JsonProperty("description")
-    private String description;
 
     @JsonProperty("externalAccess")
     private boolean externalAccess;
@@ -83,45 +81,50 @@ public final class Program extends BaseIdentifiableObject {
     @JsonProperty("selectIncidentDatesInFuture")
     private boolean selectIncidentDatesInFuture;
 
+    @JsonProperty("programIndicators")
+    List<ProgramIndicator> programIndicators;
+
+    @JsonProperty("categoryCombo")
+    CategoryCombo categoryCombo;
+
+    @JsonProperty("captureCoordinates")
+    boolean captureCoordinates;
+
+    @JsonProperty("useFirstStageDuringRegistration")
+    boolean useFirstStageDuringRegistration;
+
     @JsonProperty("trackedEntity")
-    private TrackedEntity trackedEntity;
+    TrackedEntity trackedEntity;
+
+    @JsonProperty("programTrackedEntityAttribute")
+    List<TrackedEntityAttribute> programTrackedEntityAttribute;
+
+    @JsonProperty("relatedProgram")
+    Program relatedProgram;
+
+    @JsonProperty("displayFrontPageList")
+    boolean displayFrontPageList;
 
     @JsonProperty("programType")
-    private ProgramType programType;
+    ProgramType programType;
+
+    @JsonProperty("relationshipType")
+    RelationshipType relationshipType;
+
+    @JsonProperty("relationshipText")
+    String relationshipText;
 
     @JsonProperty("programStages")
-    private List<ProgramStage> programStages;
+    List<ProgramStage> programStages;
 
-    @JsonProperty("organisationUnits")
-    private List<OrganisationUnit> organisationUnits;
+    @JsonProperty("programRules")
+    List<ProgramRule> programRules;
 
-    @JsonProperty("programIndicators")
-    private List<ProgramIndicator> programIndicators;
-
-    @JsonProperty("programTrackedEntityAttributes")
-    private List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes;
-
-    @JsonIgnore
-    private boolean isAssignedToUser;
+    @JsonProperty("programRuleVariables")
+    List<ProgramRuleVariable> programRuleVariables;
 
     public Program() {
         // explicit empty constructor
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public boolean isExternalAccess() {
@@ -132,20 +135,20 @@ public final class Program extends BaseIdentifiableObject {
         this.externalAccess = externalAccess;
     }
 
-    public boolean isOnlyEnrollOnce() {
-        return onlyEnrollOnce;
-    }
-
-    public void setOnlyEnrollOnce(boolean onlyEnrollOnce) {
-        this.onlyEnrollOnce = onlyEnrollOnce;
-    }
-
     public String getEnrollmentDateLabel() {
         return enrollmentDateLabel;
     }
 
     public void setEnrollmentDateLabel(String enrollmentDateLabel) {
         this.enrollmentDateLabel = enrollmentDateLabel;
+    }
+
+    public boolean isOnlyEnrollOnce() {
+        return onlyEnrollOnce;
+    }
+
+    public void setOnlyEnrollOnce(boolean onlyEnrollOnce) {
+        this.onlyEnrollOnce = onlyEnrollOnce;
     }
 
     public boolean isDisplayIncidentDate() {
@@ -220,12 +223,68 @@ public final class Program extends BaseIdentifiableObject {
         this.selectIncidentDatesInFuture = selectIncidentDatesInFuture;
     }
 
+    public List<ProgramIndicator> getProgramIndicators() {
+        return programIndicators;
+    }
+
+    public void setProgramIndicators(List<ProgramIndicator> programIndicators) {
+        this.programIndicators = programIndicators;
+    }
+
+    public CategoryCombo getCategoryCombo() {
+        return categoryCombo;
+    }
+
+    public void setCategoryCombo(CategoryCombo categoryCombo) {
+        this.categoryCombo = categoryCombo;
+    }
+
+    public boolean isCaptureCoordinates() {
+        return captureCoordinates;
+    }
+
+    public void setCaptureCoordinates(boolean captureCoordinates) {
+        this.captureCoordinates = captureCoordinates;
+    }
+
+    public boolean isUseFirstStageDuringRegistration() {
+        return useFirstStageDuringRegistration;
+    }
+
+    public void setUseFirstStageDuringRegistration(boolean useFirstStageDuringRegistration) {
+        this.useFirstStageDuringRegistration = useFirstStageDuringRegistration;
+    }
+
     public TrackedEntity getTrackedEntity() {
         return trackedEntity;
     }
 
     public void setTrackedEntity(TrackedEntity trackedEntity) {
         this.trackedEntity = trackedEntity;
+    }
+
+    public List<TrackedEntityAttribute> getProgramTrackedEntityAttribute() {
+        return programTrackedEntityAttribute;
+    }
+
+    public void setProgramTrackedEntityAttribute(List<TrackedEntityAttribute> programTrackedEntityAttribute) {
+        this.programTrackedEntityAttribute = programTrackedEntityAttribute;
+    }
+
+    public Program getRelatedProgram() {
+        return relatedProgram;
+    }
+
+    public void setRelatedProgram(Program relatedProgram) {
+        this.relatedProgram = relatedProgram;
+    }
+
+    public boolean isDisplayFrontPageList() {
+        return displayFrontPageList;
+    }
+
+    public void setDisplayFrontPageList(boolean displayFrontPageList) {
+        this.displayFrontPageList = displayFrontPageList;
     }
 
     public ProgramType getProgramType() {
@@ -236,20 +295,20 @@ public final class Program extends BaseIdentifiableObject {
         this.programType = programType;
     }
 
-    public List<OrganisationUnit> getOrganisationUnits() {
-        return organisationUnits;
+    public RelationshipType getRelationshipType() {
+        return relationshipType;
     }
 
-    public void setOrganisationUnits(List<OrganisationUnit> organisationUnits) {
-        this.organisationUnits = organisationUnits;
+    public void setRelationshipType(RelationshipType relationshipType) {
+        this.relationshipType = relationshipType;
     }
 
-    public List<ProgramIndicator> getProgramIndicators() {
-        return programIndicators;
+    public String getRelationshipText() {
+        return relationshipText;
     }
 
-    public void setProgramIndicators(List<ProgramIndicator> programIndicators) {
-        this.programIndicators = programIndicators;
+    public void setRelationshipText(String relationshipText) {
+        this.relationshipText = relationshipText;
     }
 
     public List<ProgramStage> getProgramStages() {
@@ -260,20 +319,27 @@ public final class Program extends BaseIdentifiableObject {
         this.programStages = programStages;
     }
 
-    public List<ProgramTrackedEntityAttribute> getProgramTrackedEntityAttributes() {
-        return programTrackedEntityAttributes;
+    public List<ProgramRule> getProgramRules() {
+        return programRules;
     }
 
-    public void setProgramTrackedEntityAttributes(
-            List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes) {
-        this.programTrackedEntityAttributes = programTrackedEntityAttributes;
+    public void setProgramRules(List<ProgramRule> programRules) {
+        this.programRules = programRules;
     }
 
-    public boolean isAssignedToUser() {
-        return isAssignedToUser;
+    public List<ProgramRuleVariable> getProgramRuleVariables() {
+        return programRuleVariables;
     }
 
-    public void setIsAssignedToUser(boolean isAssignedToUser) {
-        this.isAssignedToUser = isAssignedToUser;
+    public void setProgramRuleVariables(List<ProgramRuleVariable> programRuleVariables) {
+        this.programRuleVariables = programRuleVariables;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 }

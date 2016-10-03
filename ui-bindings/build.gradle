@@ -39,6 +39,9 @@ dependencies {
     compile project(":ui")
     compile project(":core")
 
+    // ReactiveX
+    compile "io.reactivex:rxandroid:${libs.rxAndroidVersion}";
+
     // Square dependencies
     compile "com.squareup.okhttp3:logging-interceptor:${libs.okhttpVersion}"
 }

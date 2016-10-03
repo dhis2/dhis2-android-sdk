@@ -12,42 +12,25 @@ import org.hisp.dhis.client.sdk.ui.models.FormEntity;
 import org.hisp.dhis.client.sdk.ui.models.FormEntityText;
 
 public class TextRowView implements RowView {
-    private RowViewAdapter.Type type;
-
-    public TextRowView(RowViewAdapter.Type type) {
-        this.type = type;
-    }
 
     public TextRowView() {
-        this.type = RowViewAdapter.Type.DATA_ENTRY;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(LayoutInflater inflater, ViewGroup parent) {
-        if(RowViewAdapter.Type.DATA_ENTRY.equals(this.type)) {
-            return new TextViewHolder(inflater.inflate(
-                    R.layout.recyclerview_row_textview, parent, false));
-        }
-        else {
-            return new TextViewDataViewHolder(inflater.inflate(
-                    R.layout.recyclerview_row_textview_dataview, parent, false));
-        }
+
+        return new TextViewDataViewHolder(inflater.inflate(
+                R.layout.recyclerview_row_textview_dataview, parent, false));
+
 
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, FormEntity formEntity) {
         FormEntityText formEntityText = ((FormEntityText) formEntity);
-        if(RowViewAdapter.Type.DATA_ENTRY.equals(this.type)) {
-            ((TextViewHolder) viewHolder).update(formEntityText);
-        }
-        else {
-            ((TextViewDataViewHolder) viewHolder).update(formEntityText);
-        }
-    }
 
-    public RowViewAdapter.Type getType() {
-        return type;
+        ((TextViewDataViewHolder) viewHolder).update(formEntityText);
+
     }
 
     private static class TextViewHolder extends RecyclerView.ViewHolder {

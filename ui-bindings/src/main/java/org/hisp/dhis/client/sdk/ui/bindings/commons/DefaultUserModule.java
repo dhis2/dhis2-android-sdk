@@ -2,7 +2,7 @@ package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
 import android.content.Context;
 
-import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractor;
+import org.hisp.dhis.client.sdk.core.UserInteractor;
 import org.hisp.dhis.client.sdk.ui.AppPreferences;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.HomePresenter;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.LauncherPresenter;
@@ -12,17 +12,17 @@ import org.hisp.dhis.client.sdk.ui.bindings.presenters.SettingsPresenter;
 import org.hisp.dhis.client.sdk.utils.Logger;
 
 public interface DefaultUserModule {
-    CurrentUserInteractor providesCurrentUserInteractor();
+    UserInteractor providesCurrentUserInteractor();
 
-    LauncherPresenter providesLauncherPresenter(CurrentUserInteractor currentUserInteractor);
+    LauncherPresenter providesLauncherPresenter(UserInteractor currentUserInteractor);
 
-    LoginPresenter providesLoginPresenter(CurrentUserInteractor currentUserInteractor,
+    LoginPresenter providesLoginPresenter(UserInteractor currentUserInteractor,
                                           ApiExceptionHandler apiExceptionHandler, Logger logger);
 
-    HomePresenter providesHomePresenter(CurrentUserInteractor currentUserInteractor,
+    HomePresenter providesHomePresenter(UserInteractor currentUserInteractor,
                                         SyncDateWrapper syncDateWrapper, Logger logger);
 
-    ProfilePresenter providesProfilePresenter(CurrentUserInteractor currentUserInteractor,
+    ProfilePresenter providesProfilePresenter(UserInteractor currentUserInteractor,
                                               SyncDateWrapper syncDateWrapper,
                                               DefaultAppAccountManager appAccountManager,
                                               DefaultNotificationHandler defaultNotificationHandler,
@@ -33,7 +33,7 @@ public interface DefaultUserModule {
 
     DefaultAppAccountManager providesAppAccountManager(Context context,
                                                        AppPreferences appPreferences,
-                                                       CurrentUserInteractor currentUserInteractor,
+                                                       UserInteractor currentUserInteractor,
                                                        Logger logger);
 
     DefaultNotificationHandler providesNotificationHandler(Context context);

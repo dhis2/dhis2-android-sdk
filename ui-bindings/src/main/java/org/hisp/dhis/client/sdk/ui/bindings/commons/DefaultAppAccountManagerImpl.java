@@ -1,16 +1,19 @@
 package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
-import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractor;
+import org.hisp.dhis.client.sdk.core.UserInteractor;
 import org.hisp.dhis.client.sdk.ui.AppPreferences;
 import org.hisp.dhis.client.sdk.utils.Logger;
 import org.hisp.dhis.client.sdk.utils.StringUtils;
@@ -26,13 +29,13 @@ public class DefaultAppAccountManagerImpl implements DefaultAppAccountManager {
     private final Logger logger;
     private final Context appContext;
     private final AppPreferences appPreferences;
-    private final CurrentUserInteractor currentUserInteractor;
+    private final UserInteractor currentUserInteractor;
     private final String authority;
     private final String accountType;
 
     public DefaultAppAccountManagerImpl(Context context,
                                         AppPreferences appPreferences,
-                                        CurrentUserInteractor currentUserInteractor,
+                                        UserInteractor currentUserInteractor,
                                         String authority,
                                         String accountType,
                                         Logger logger) {
@@ -57,7 +60,7 @@ public class DefaultAppAccountManagerImpl implements DefaultAppAccountManager {
     }
 
     private boolean userIsSignedIn() {
-        return currentUserInteractor != null && currentUserInteractor.isSignedIn().toBlocking().first();
+        return currentUserInteractor != null && currentUserInteractor.isLoggedIn();
     }
 
     private Account fetchOrCreateAccount() {
@@ -72,11 +75,21 @@ public class DefaultAppAccountManagerImpl implements DefaultAppAccountManager {
     }
 
     private String getUsername() {
-        return currentUserInteractor.userCredentials().toBlocking().first().getUsername();
+        return currentUserInteractor.username();
     }
 
     private Account fetchAccount(String accountName) {
 
+        if (ActivityCompat.checkSelfPermission(appContext, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            throw new RuntimeException("Permissions not granted");
+        }
         Account accounts[] = ((AccountManager) appContext
                 .getSystemService(Context.ACCOUNT_SERVICE))
                 .getAccountsByType(accountType);

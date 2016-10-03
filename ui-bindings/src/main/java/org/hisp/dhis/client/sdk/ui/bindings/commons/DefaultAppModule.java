@@ -1,12 +1,13 @@
 package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
+import android.app.Application;
 import android.content.Context;
 
 import org.hisp.dhis.client.sdk.ui.AppPreferences;
 import org.hisp.dhis.client.sdk.utils.Logger;
 
 public interface DefaultAppModule {
-    Context providesContext();
+    Application providesApplication();
 
     Logger providesLogger();
 

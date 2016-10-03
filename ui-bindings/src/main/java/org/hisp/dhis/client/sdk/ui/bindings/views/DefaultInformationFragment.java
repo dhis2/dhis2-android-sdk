@@ -6,9 +6,9 @@ import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.TextView;
 
-import org.hisp.dhis.client.sdk.android.api.D2;
-import org.hisp.dhis.client.sdk.android.api.preferences.PreferencesModuleImpl;
-import org.hisp.dhis.client.sdk.core.common.preferences.PreferencesModule;
+import org.hisp.dhis.client.sdk.core.D2;
+import org.hisp.dhis.client.sdk.core.PreferencesModule;
+import org.hisp.dhis.client.sdk.core.PreferencesModuleImpl;
 import org.hisp.dhis.client.sdk.ui.bindings.R;
 import org.hisp.dhis.client.sdk.ui.fragments.AbsInformationFragment;
 
@@ -26,9 +26,8 @@ public class DefaultInformationFragment extends AbsInformationFragment {
         // inside app_session:
         sessionText.setText(String.format(Locale.getDefault(), "%s %s\n",
                 getString(R.string.logged_in_as),
-                D2.me().userCredentials().toBlocking().first().getUsername())
+                D2.me().username())
         );
-
         sessionText.append(getString(R.string.logged_in_at) + " ");
         addUrl(sessionText, preferencesModule.getConfigurationPreferences().get().getServerUrl());
         sessionText.setMovementMethod(LinkMovementMethod.getInstance());

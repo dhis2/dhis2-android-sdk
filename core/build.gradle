@@ -36,13 +36,6 @@ def libs = rootProject.ext.libraries
 dependencies {
     compile project(":models")
 
-    // Apache
-    compile "org.apache.commons:commons-lang3:${libs.commonsLang3Version}"
-    compile "org.apache.commons:commons-math3:${libs.commonsMath3Version}"
-    compile("org.apache.commons:commons-jexl:${libs.jexlVersion}") {
-        exclude module: 'commons-logging'
-    }
-
     // Test compile dependencies.
     testCompile "junit:junit:${libs.jUnitVersion}"
     testCompile "org.mockito:mockito-core:${libs.mockitoVersion}"

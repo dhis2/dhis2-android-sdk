@@ -1,13 +1,11 @@
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInstanceController;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInstanceService;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.common.state.State;
-import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
@@ -20,7 +18,6 @@ import java.util.Set;
 import rx.Observable;
 
 public class TrackedEntityInstanceInteractorImpl implements TrackedEntityInstanceInteractor {
-
     private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final TrackedEntityInstanceController trackedEntityInstanceController;
 
@@ -80,7 +77,7 @@ public class TrackedEntityInstanceInteractorImpl implements TrackedEntityInstanc
         return Observable.create(new DefaultOnSubscribe<State>() {
             @Override
             public State call() {
-                throw new NotImplementedException("Not implemented yet");
+                throw new UnsupportedOperationException("Not implemented yet");
 //                return trackedEntityInstanceService.get(trackedEntityInstance);
             }
         });
@@ -91,7 +88,7 @@ public class TrackedEntityInstanceInteractorImpl implements TrackedEntityInstanc
         return Observable.create(new DefaultOnSubscribe<Map<Long, State>>() {
             @Override
             public Map<Long, State> call() {
-                throw new NotImplementedException("Not implemented yet");
+                throw new UnsupportedOperationException("Not implemented yet");
 //                return trackedEntityInstanceService.map(events);
             }
         });
@@ -112,7 +109,7 @@ public class TrackedEntityInstanceInteractorImpl implements TrackedEntityInstanc
         return Observable.create(new DefaultOnSubscribe<List<TrackedEntityInstance>>() {
             @Override
             public List<TrackedEntityInstance> call() {
-                throw new NotImplementedException("Not implemented yet");
+                throw new UnsupportedOperationException("Not implemented yet");
 //                return trackedEntityInstanceService.list(organisationUnit, program);
             }
         });
@@ -123,7 +120,7 @@ public class TrackedEntityInstanceInteractorImpl implements TrackedEntityInstanc
         return Observable.create(new DefaultOnSubscribe<List<TrackedEntityInstance>>() {
             @Override
             public List<TrackedEntityInstance> call() {
-                throw new NotImplementedException("Not implemented yet");
+                throw new UnsupportedOperationException("Not implemented yet");
 //                return trackedEntityInstanceService.listByActions(actionSet);
             }
         });
@@ -131,14 +128,14 @@ public class TrackedEntityInstanceInteractorImpl implements TrackedEntityInstanc
 
     @Override
     public Observable<List<TrackedEntityInstance>> pull(Set<String> uids) {
-        throw new NotImplementedException("Not implemented yet");
+        throw new UnsupportedOperationException("Not implemented yet");
 //        return pull(SyncStrategy.DEFAULT, uids);
 
     }
 
     @Override
     public Observable<List<TrackedEntityInstance>> pull(SyncStrategy strategy, Set<String> uids) {
-        throw new NotImplementedException("Not implemented yet");
+        throw new UnsupportedOperationException("Not implemented yet");
 //        return Observable.create(new DefaultOnSubscribe<List<TrackedEntityInstance>>() {
 //            @Override
 //            public List<TrackedEntityInstance> call() {
@@ -150,7 +147,7 @@ public class TrackedEntityInstanceInteractorImpl implements TrackedEntityInstanc
 
     @Override
     public Observable<List<TrackedEntityInstance>> push(final Set<String> uids) {
-        throw new NotImplementedException("Not implemented yet");
+        throw new UnsupportedOperationException("Not implemented yet");
 //        return Observable.create(new DefaultOnSubscribe<List<TrackedEntityInstance>>() {
 //            @Override
 //            public List<TrackedEntityInstance> call() {
@@ -165,6 +162,7 @@ public class TrackedEntityInstanceInteractorImpl implements TrackedEntityInstanc
     public Observable<List<TrackedEntityInstance>> sync(Set<String> uids) {
         return sync(SyncStrategy.DEFAULT, uids);
     }
+
     //TODO Create sync functionality from interactor to controller level
     @Override
     public Observable<List<TrackedEntityInstance>> sync(final SyncStrategy strategy, final Set<String> uids) {
@@ -173,7 +171,7 @@ public class TrackedEntityInstanceInteractorImpl implements TrackedEntityInstanc
             public List<TrackedEntityInstance> call() {
 //                trackedEntityInstanceController.sync(strategy, uids);
 //                return trackedEntityInstanceService.list(uids);
-                throw new NotImplementedException("Not implemented yet");
+                throw new UnsupportedOperationException("Not implemented yet");
             }
         });
     }

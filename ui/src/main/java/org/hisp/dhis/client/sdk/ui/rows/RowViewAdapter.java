@@ -55,16 +55,6 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
     private final List<FormEntity> modifiedDataEntities;
     private final List<RowView> rowViews;
 
-    public RowViewAdapter(FragmentManager fragmentManager, Type type) {
-        this.fragmentManager = isNull(fragmentManager, "fragmentManager must not be null");
-        this.rowViews = new ArrayList<>();
-
-        this.originalDataEntities = new ArrayList<>();
-        this.modifiedDataEntities = new ArrayList<>();
-
-        assignRowViewsToDataViewTypes(type);
-    }
-
     public RowViewAdapter(FragmentManager fragmentManager) {
         this.fragmentManager = isNull(fragmentManager, "fragmentManager must not be null");
         this.rowViews = new ArrayList<>();
@@ -133,16 +123,13 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
         }
     }
 
-    /**
-     * This method can create row views based on Type(DATA_VIEW or DATA_ENTRY)
-     * @param type
-     */
-    private void assignRowViewsToDataViewTypes(Type type) {
+
+    private void assignRowViewsToDataViewTypes() {
         for (int ordinal = 0; ordinal < FormEntity.Type.values().length; ordinal++) {
             FormEntity.Type dataEntityType = FormEntity.Type.values()[ordinal];
             switch (dataEntityType) {
                 case TEXT: {
-                    rowViews.add(ordinal, new TextRowView(type));
+                    rowViews.add(ordinal, new TextRowView());
                     break;
                 }
                 case EDITTEXT: {
@@ -245,7 +232,7 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
 
                     // nullifying value in entity
                     if (formEntity instanceof FormEntityCharSequence) {
-                        ((FormEntityCharSequence) formEntity).setValue("");
+                        ((FormEntityCharSequence) formEntity).setValue("", false);
                     } else if (formEntity instanceof FormEntityFilter) {
                         Picker picker = ((FormEntityFilter) formEntity).getPicker();
 
@@ -296,7 +283,7 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
                 }
             } else {
                 // assigning new value
-                formEntityEditText.setValue(entityAction.getValue());
+                formEntityEditText.setValue(entityAction.getValue(), false);
 
                 // conditionally updating ui
                 if (!formEntityEditText.isLocked()) {
@@ -339,22 +326,5 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
         }
 
         return formEntityActionMap;
-    }
-
-    private static Map<String, FormEntity> mapFormEntities(List<FormEntity> formEntities) {
-        Map<String, FormEntity> formEntityMap = new HashMap<>();
-
-        if (formEntities != null && !formEntities.isEmpty()) {
-            for (FormEntity formEntity : formEntities) {
-                formEntityMap.put(formEntity.getId(), formEntity);
-            }
-        }
-
-        return formEntityMap;
-    }
-
-    public enum Type {
-        DATA_ENTRY,
-        DATA_VIEW
     }
 }

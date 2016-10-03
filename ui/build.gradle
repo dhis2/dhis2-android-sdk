@@ -56,7 +56,6 @@ android {
 dependencies {
     // Local
     compile project(":utils")
-    compile project(":core-android")
 
     // Google
     compile "com.android.support:support-annotations:${libs.supportVersion}"
@@ -73,5 +72,4 @@ dependencies {
 
     // Test
     testCompile "junit:junit:${libs.jUnitVersion}"
-    compile project(path: ':core-android')
 }

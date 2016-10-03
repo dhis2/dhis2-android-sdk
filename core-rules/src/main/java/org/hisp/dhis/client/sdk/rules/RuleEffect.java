@@ -37,26 +37,27 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 public class RuleEffect {
-
+    /**
+     * meta-data which was used to process program rules
+     */
     private ProgramRule programRule;
-
     private TrackedEntityAttribute trackedEntityAttribute;
-
     private DataElement dataElement;
-
     private ProgramIndicator programIndicator;
-
     private ProgramStage programStage;
-
     private ProgramStageSection programStageSection;
-
     private ProgramRuleActionType programRuleActionType;
 
+    /**
+     * Actual data which represents RuleEffect
+     */
     private String content;
-
     private String location;
-
     private String data;
+
+    public RuleEffect() {
+        // explicit empty constructor
+    }
 
     public ProgramRule getProgramRule() {
         return programRule;
@@ -139,8 +140,35 @@ public class RuleEffect {
     }
 
     @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+
+        RuleEffect that = (RuleEffect) object;
+        if (content != null ? !content.equals(that.content) : that.content != null) {
+            return false;
+        }
+        if (location != null ? !location.equals(that.location) : that.location != null) {
+            return false;
+        }
+
+        return data != null ? data.equals(that.data) : that.data == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = content != null ? content.hashCode() : 0;
+        result = 31 * result + (location != null ? location.hashCode() : 0);
+        result = 31 * result + (data != null ? data.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
-        // return "";
         return "RuleEffect{" +
                 "programRuleActionType=" + programRuleActionType +
                 ", content='" + content + '\'' +

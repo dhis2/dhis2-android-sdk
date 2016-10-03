@@ -45,7 +45,6 @@ public class SystemInfoPreferencesImpl implements SystemInfoPreferences {
     private static final String KEY_SERVER_DATE = "key:serverDate";
     private static final String KEY_CALENDAR = "key:calendar";
     private static final String KEY_DATE_FORMAT = "key:dateFormat";
-    private static final String KEY_REVISION = "key:revision";
     private static final String KEY_VERSION = "key:version";
     private static final String KEY_ANALYTICS_SYNC = "key:intervalSinceLastAnalyticsTableSuccess";
     private static final String KEY_LAST_TABLE_SUCCESS = "key:lastAnalyticsTableSuccess";

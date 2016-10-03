@@ -116,7 +116,7 @@ public class RadioButtonRowView implements RowView {
                 newValue = EMPTY_FIELD;
             }
 
-            dataEntity.setValue(newValue);
+            dataEntity.setValue(newValue, true);
         }
     }
 }

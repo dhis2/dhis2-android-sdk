@@ -202,13 +202,13 @@ public class ProfilePresenterImpl implements ProfilePresenter {
         ///////////////////////////////////////////////////////////////////////////////
         FormEntityEditText firstName = new FormEntityEditText(ProfileView.ID_FIRST_NAME,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_FIRST_NAME), InputType.TEXT);
-        firstName.setValue(userAccount.getFirstName());
+        firstName.setValue(userAccount.getFirstName(), false);
         firstName.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(firstName);
 
         FormEntityEditText surname = new FormEntityEditText(ProfileView.ID_SURNAME,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_SURNAME), InputType.TEXT);
-        surname.setValue(userAccount.getSurname());
+        surname.setValue(userAccount.getSurname(), false);
         surname.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(surname);
 
@@ -265,55 +265,55 @@ public class ProfilePresenterImpl implements ProfilePresenter {
 
         FormEntityDate birthday = new FormEntityDate(ProfileView.ID_BIRTHDAY,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_BIRTHDAY));
-        birthday.setValue(birthdayString);
+        birthday.setValue(birthdayString, false);
         birthday.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(birthday);
 
         FormEntityEditText introduction = new FormEntityEditText(ProfileView.ID_INTRODUCTION,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_INTRODUCTION), InputType.TEXT);
-        introduction.setValue(userAccount.getIntroduction());
+        introduction.setValue(userAccount.getIntroduction(), false);
         introduction.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(introduction);
 
         FormEntityEditText education = new FormEntityEditText(ProfileView.ID_EDUCATION,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_EDUCATION), InputType.TEXT);
-        education.setValue(userAccount.getEducation());
+        education.setValue(userAccount.getEducation(), false);
         education.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(education);
 
         FormEntityEditText employer = new FormEntityEditText(ProfileView.ID_EMPLOYER,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_EMPLOYER), InputType.TEXT);
-        employer.setValue(userAccount.getEmployer());
+        employer.setValue(userAccount.getEmployer(), false);
         employer.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(employer);
 
         FormEntityEditText interests = new FormEntityEditText(ProfileView.ID_INTERESTS,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_INTERESTS), InputType.TEXT);
-        interests.setValue(userAccount.getInterests());
+        interests.setValue(userAccount.getInterests(), false);
         interests.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(interests);
 
         FormEntityEditText jobTitle = new FormEntityEditText(ProfileView.ID_JOB_TITLE,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_JOB_TITLE), InputType.TEXT);
-        jobTitle.setValue(userAccount.getJobTitle());
+        jobTitle.setValue(userAccount.getJobTitle(), false);
         jobTitle.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(jobTitle);
 
         FormEntityEditText languages = new FormEntityEditText(ProfileView.ID_LANGUAGES,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_LANGUAGES), InputType.TEXT);
-        languages.setValue(userAccount.getLanguages());
+        languages.setValue(userAccount.getLanguages(), false);
         languages.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(languages);
 
         FormEntityEditText email = new FormEntityEditText(ProfileView.ID_EMAIL,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_EMAIL), InputType.TEXT);
-        email.setValue(userAccount.getEmail());
+        email.setValue(userAccount.getEmail(), false);
         email.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(email);
 
         FormEntityEditText phoneNumber = new FormEntityEditText(ProfileView.ID_PHONE_NUMBER,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_PHONE_NUMBER), InputType.TEXT);
-        phoneNumber.setValue(userAccount.getPhoneNumber());
+        phoneNumber.setValue(userAccount.getPhoneNumber(), false);
         phoneNumber.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(phoneNumber);
 

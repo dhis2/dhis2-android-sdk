@@ -205,7 +205,7 @@ public final class EditTextRowView implements RowView {
         @Override
         public void afterTextChanged(Editable editable) {
             if (dataEntity != null) {
-                dataEntity.setValue(editable.toString());
+                dataEntity.setValue(editable.toString(), true);
             }
         }
     }

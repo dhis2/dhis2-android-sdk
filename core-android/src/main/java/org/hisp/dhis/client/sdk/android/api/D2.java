@@ -93,7 +93,6 @@ import org.hisp.dhis.client.sdk.utils.Logger;
 import okhttp3.OkHttpClient;
 import rx.Observable;
 
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 // TODO D2 fails on 500 errors (because of
@@ -149,8 +148,8 @@ public class D2 {
         persistenceModule = new PersistenceModuleImpl(applicationContext);
         preferencesModule = new PreferencesModuleImpl(applicationContext);
 
-        isD2Configured = !isEmpty(preferencesModule
-                .getConfigurationPreferences().get().getServerUrl());
+        String serverUrl = preferencesModule.getConfigurationPreferences().get().getServerUrl();
+        isD2Configured = serverUrl != null && !serverUrl.isEmpty();
 
         if (!isD2Configured) {
             currentUserInteractor = null;
@@ -297,7 +296,7 @@ public class D2 {
 
     /**
      * Initialises D2.
-     * <p>
+     * <p/>
      * Warning! Use only application context to init D2, otherwise you
      * will certainly create a memory leak of activity or other
      * android component.

@@ -28,34 +28,17 @@
 
 package org.hisp.dhis.client.sdk.android.enrollment;
 
-import com.raizlabs.android.dbflow.sql.language.Select;
-
-import org.apache.commons.lang3.NotImplementedException;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EnrollmentFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.EnrollmentFlow_Table;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectDataStore;
 import org.hisp.dhis.client.sdk.core.common.StateStore;
-import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.DbOperationImpl;
-import org.hisp.dhis.client.sdk.core.common.utils.ModelUtils;
 import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentStore;
-import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
-import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
-import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public final class EnrollmentStoreImpl extends AbsIdentifiableObjectDataStore<Enrollment, EnrollmentFlow> implements
         EnrollmentStore {
@@ -168,7 +151,7 @@ public final class EnrollmentStoreImpl extends AbsIdentifiableObjectDataStore<En
 //
 //        List<Enrollment> enrollments = getMapper().mapToModels(enrollmentFlows);
 //        return mapEventsToDataValues(enrollments, dataValueStore.query(enrollments));
-        throw new NotImplementedException("Not implemented yet");
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
 //    private void saveEnrollmentTrackedEntityAttributeValues(Enrollment enrollment) {

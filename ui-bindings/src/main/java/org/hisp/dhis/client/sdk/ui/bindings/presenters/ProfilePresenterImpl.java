@@ -1,6 +1,8 @@
 package org.hisp.dhis.client.sdk.ui.bindings.presenters;
 
 import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractor;
+import org.hisp.dhis.client.sdk.core.UserInteractor;
+import org.hisp.dhis.client.sdk.models.user.User;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.SyncDateWrapper;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.DefaultAppAccountManager;
@@ -38,7 +40,7 @@ public class ProfilePresenterImpl implements ProfilePresenter {
 
     // callback which will be called when values change in view
     private final RxOnValueChangedListener onFormEntityChangeListener;
-    private final CurrentUserInteractor currentUserAccountInteractor;
+    private final UserInteractor currentUserAccountInteractor;
     private final Logger logger;
     private final DefaultNotificationHandler defaultNotificationHandler;
 
@@ -47,9 +49,9 @@ public class ProfilePresenterImpl implements ProfilePresenter {
 
     private ProfileView profileView;
     private CompositeSubscription subscription;
-    private UserAccount userAccount;
+    private User user;
 
-    public ProfilePresenterImpl(CurrentUserInteractor currentUserAccountInteractor,
+    public ProfilePresenterImpl(UserInteractor currentUserAccountInteractor,
                                 SyncDateWrapper syncDateWrapper,
                                 DefaultAppAccountManager appAccountManager,
                                 DefaultNotificationHandler defaultNotificationHandler,
@@ -73,11 +75,11 @@ public class ProfilePresenterImpl implements ProfilePresenter {
 
         // create a new one
         subscription = new CompositeSubscription();
-        subscription.add(currentUserAccountInteractor.account().get()
-                .map(new Func1<UserAccount, List<FormEntity>>() {
+        subscription.add(currentUserAccountInteractor.store().list()
+                .map(new Func1<User, List<FormEntity>>() {
                     @Override
-                    public List<FormEntity> call(UserAccount userAccount) {
-                        return transformUserAccount(userAccount);
+                    public List<FormEntity> call(User user) {
+                        return transformUserAccount(user);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -150,13 +152,13 @@ public class ProfilePresenterImpl implements ProfilePresenter {
             subscription = new CompositeSubscription();
         }
 
-        subscription.add(currentUserAccountInteractor.account().sync()
+        subscription.add(currentUserAccountInteractor.sync()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<UserAccount>() {
+                .subscribe(new Action1<User>() {
                     @Override
-                    public void call(UserAccount userAccount) {
-                        logger.d(TAG, "UserAccount is successfully synced");
+                    public void call(User user) {
+                        logger.d(TAG, "User is successfully synced");
 
                         if (profileView != null) {
                             profileView.hideProgressBar();
@@ -166,7 +168,7 @@ public class ProfilePresenterImpl implements ProfilePresenter {
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        logger.e(TAG, "UserAccount syncMetaData() failed", throwable);
+                        logger.e(TAG, "User syncMetaData() failed", throwable);
 
                         if (profileView != null) {
                             profileView.hideProgressBar();
@@ -186,13 +188,13 @@ public class ProfilePresenterImpl implements ProfilePresenter {
         // remove last synced (assume next user will be different)
         syncDateWrapper.clearLastSynced();
 
-        currentUserAccountInteractor.signOut().toBlocking().first();
+        currentUserAccountInteractor.logOut();
     }
 
-    private List<FormEntity> transformUserAccount(UserAccount userAccount) {
-        this.userAccount = userAccount;
+    private List<FormEntity> transformUserAccount(User user) {
+        this.user = user;
 
-        isNull(this.userAccount, "userAccount must not be null");
+        isNull(this.user, "user must not be null");
         isNull(this.profileView, "profileView must not be null");
 
         List<FormEntity> formEntities = new ArrayList<>();
@@ -202,13 +204,13 @@ public class ProfilePresenterImpl implements ProfilePresenter {
         ///////////////////////////////////////////////////////////////////////////////
         FormEntityEditText firstName = new FormEntityEditText(ProfileView.ID_FIRST_NAME,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_FIRST_NAME), InputType.TEXT);
-        firstName.setValue(userAccount.getFirstName(), false);
+        firstName.setValue(user.getFirstName(), false);
         firstName.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(firstName);
 
         FormEntityEditText surname = new FormEntityEditText(ProfileView.ID_SURNAME,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_SURNAME), InputType.TEXT);
-        surname.setValue(userAccount.getSurname(), false);
+        surname.setValue(user.getSurname(), false);
         surname.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(surname);
 
@@ -219,17 +221,17 @@ public class ProfilePresenterImpl implements ProfilePresenter {
                 .hint(profileView.getUserAccountFieldLabel(ProfileView.ID_GENDER))
                 .build();
         Picker pickerItemMale = new Picker.Builder()
-                .id(UserAccount.GENDER_MALE)
+                .id(User.GENDER_MALE)
                 .name(profileView.getUserAccountFieldLabel(ProfileView.ID_GENDER_MALE))
                 .parent(genderPicker)
                 .build();
         Picker pickerItemFemale = new Picker.Builder()
-                .id(UserAccount.GENDER_FEMALE)
+                .id(User.GENDER_FEMALE)
                 .name(profileView.getUserAccountFieldLabel(ProfileView.ID_GENDER_FEMALE))
                 .parent(genderPicker)
                 .build();
         Picker pickerItemOther = new Picker.Builder()
-                .id(UserAccount.GENDER_OTHER)
+                .id(User.GENDER_OTHER)
                 .name(profileView.getUserAccountFieldLabel(ProfileView.ID_GENDER_OTHER))
                 .parent(genderPicker)
                 .build();
@@ -238,11 +240,11 @@ public class ProfilePresenterImpl implements ProfilePresenter {
         genderPicker.addChild(pickerItemFemale);
         genderPicker.addChild(pickerItemOther);
 
-        if (UserAccount.GENDER_MALE.equals(userAccount.getGender())) {
+        if (User.GENDER_MALE.equals(user.getGender())) {
             genderPicker.setSelectedChild(pickerItemMale);
-        } else if (UserAccount.GENDER_FEMALE.equals(userAccount.getGender())) {
+        } else if (User.GENDER_FEMALE.equals(user.getGender())) {
             genderPicker.setSelectedChild(pickerItemFemale);
-        } else if (UserAccount.GENDER_OTHER.equals(userAccount.getGender())) {
+        } else if (User.GENDER_OTHER.equals(user.getGender())) {
             genderPicker.setSelectedChild(pickerItemOther);
         }
 
@@ -258,8 +260,8 @@ public class ProfilePresenterImpl implements ProfilePresenter {
 
         // formatting the string
         String birthdayString = "";
-        if (!isEmpty(userAccount.getBirthday())) {
-            DateTime birthdayDate = DateTime.parse(userAccount.getBirthday());
+        if (!isEmpty(user.getBirthday())) {
+            DateTime birthdayDate = DateTime.parse(user.getBirthday());
             birthdayString = birthdayDate.toString(DatePickerRowView.DATE_FORMAT);
         }
 
@@ -271,49 +273,49 @@ public class ProfilePresenterImpl implements ProfilePresenter {
 
         FormEntityEditText introduction = new FormEntityEditText(ProfileView.ID_INTRODUCTION,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_INTRODUCTION), InputType.TEXT);
-        introduction.setValue(userAccount.getIntroduction(), false);
+        introduction.setValue(user.getIntroduction(), false);
         introduction.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(introduction);
 
         FormEntityEditText education = new FormEntityEditText(ProfileView.ID_EDUCATION,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_EDUCATION), InputType.TEXT);
-        education.setValue(userAccount.getEducation(), false);
+        education.setValue(user.getEducation(), false);
         education.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(education);
 
         FormEntityEditText employer = new FormEntityEditText(ProfileView.ID_EMPLOYER,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_EMPLOYER), InputType.TEXT);
-        employer.setValue(userAccount.getEmployer(), false);
+        employer.setValue(user.getEmployer(), false);
         employer.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(employer);
 
         FormEntityEditText interests = new FormEntityEditText(ProfileView.ID_INTERESTS,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_INTERESTS), InputType.TEXT);
-        interests.setValue(userAccount.getInterests(), false);
+        interests.setValue(user.getInterests(), false);
         interests.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(interests);
 
         FormEntityEditText jobTitle = new FormEntityEditText(ProfileView.ID_JOB_TITLE,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_JOB_TITLE), InputType.TEXT);
-        jobTitle.setValue(userAccount.getJobTitle(), false);
+        jobTitle.setValue(user.getJobTitle(), false);
         jobTitle.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(jobTitle);
 
         FormEntityEditText languages = new FormEntityEditText(ProfileView.ID_LANGUAGES,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_LANGUAGES), InputType.TEXT);
-        languages.setValue(userAccount.getLanguages(), false);
+        languages.setValue(user.getLanguages(), false);
         languages.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(languages);
 
         FormEntityEditText email = new FormEntityEditText(ProfileView.ID_EMAIL,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_EMAIL), InputType.TEXT);
-        email.setValue(userAccount.getEmail(), false);
+        email.setValue(user.getEmail(), false);
         email.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(email);
 
         FormEntityEditText phoneNumber = new FormEntityEditText(ProfileView.ID_PHONE_NUMBER,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_PHONE_NUMBER), InputType.TEXT);
-        phoneNumber.setValue(userAccount.getPhoneNumber(), false);
+        phoneNumber.setValue(user.getPhoneNumber(), false);
         phoneNumber.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(phoneNumber);
 
@@ -321,7 +323,7 @@ public class ProfilePresenterImpl implements ProfilePresenter {
     }
 
     private Observable<Boolean> onFormEntityChanged(FormEntity formEntity) {
-        if (userAccount == null) {
+        if (user == null) {
             logger.e(TAG, "onFormEntityChanged() is called without UserAccount");
             throw new IllegalArgumentException("No UserAccount instance is found");
         }
@@ -348,55 +350,55 @@ public class ProfilePresenterImpl implements ProfilePresenter {
 
         switch (formEntity.getId()) {
             case ProfileView.ID_FIRST_NAME: {
-                userAccount.setFirstName(value);
+                user.setFirstName(value);
                 break;
             }
             case ProfileView.ID_SURNAME: {
-                userAccount.setSurname(value);
+                user.setSurname(value);
                 break;
             }
             case ProfileView.ID_GENDER: {
-                userAccount.setGender(value);
+                user.setGender(value);
                 break;
             }
             case ProfileView.ID_BIRTHDAY: {
-                userAccount.setBirthday(value);
+                user.setBirthday(value);
                 break;
             }
             case ProfileView.ID_INTRODUCTION: {
-                userAccount.setIntroduction(value);
+                user.setIntroduction(value);
                 break;
             }
             case ProfileView.ID_EDUCATION: {
-                userAccount.setEducation(value);
+                user.setEducation(value);
                 break;
             }
             case ProfileView.ID_EMPLOYER: {
-                userAccount.setEmployer(value);
+                user.setEmployer(value);
                 break;
             }
             case ProfileView.ID_INTERESTS: {
-                userAccount.setInterests(value);
+                user.setInterests(value);
                 break;
             }
             case ProfileView.ID_JOB_TITLE: {
-                userAccount.setJobTitle(value);
+                user.setJobTitle(value);
                 break;
             }
             case ProfileView.ID_LANGUAGES: {
-                userAccount.setLanguages(value);
+                user.setLanguages(value);
                 break;
             }
             case ProfileView.ID_EMAIL: {
-                userAccount.setEmail(value);
+                user.setEmail(value);
                 break;
             }
             case ProfileView.ID_PHONE_NUMBER: {
-                userAccount.setPhoneNumber(value);
+                user.setPhoneNumber(value);
                 break;
             }
         }
 
-        return currentUserAccountInteractor.account().save(userAccount);
+        return currentUserAccountInteractor.account().save(user);
     }
 }

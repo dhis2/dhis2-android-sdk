@@ -38,6 +38,9 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User extends BaseIdentifiableObject {
+    public static final String GENDER_MALE = "gender_male";
+    public static final String GENDER_FEMALE = "gender_female";
+    public static final String GENDER_OTHER = "gender_other";
 
     @JsonProperty("birthday")
     String birthday;

@@ -26,52 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.option;
+package org.hisp.dhis.client.sdk.models.common;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+public interface Model {
+    long getId();
 
-import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
-import org.hisp.dhis.client.sdk.models.common.ValueType;
-
-import java.util.List;
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-    public class OptionSet extends BaseIdentifiableObject {
-
-    @JsonProperty("version")
-    int version;
-
-    @JsonProperty("valueType")
-    ValueType valueType;
-
-    @JsonProperty("options")
-    List<Option> options;
-
-    public OptionSet() {
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    public ValueType getValueType() {
-        return valueType;
-    }
-
-    public void setValueType(ValueType valueType) {
-        this.valueType = valueType;
-    }
-
-    public List<Option> getOptions() {
-        return options;
-    }
-
-    public void setOptions(List<Option> options) {
-        this.options = options;
-    }
+    void setId(long id);
 }

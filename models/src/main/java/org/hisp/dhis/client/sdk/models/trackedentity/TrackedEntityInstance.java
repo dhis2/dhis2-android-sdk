@@ -33,7 +33,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.Access;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.IdentifiableObject;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;
@@ -45,13 +44,10 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TrackedEntityInstance extends BaseIdentifiableObject implements Serializable, IdentifiableObject {
+public class TrackedEntityInstance extends BaseIdentifiableObject implements IdentifiableObject {
 
-    @JsonIgnore
-    private long id;
-
-    @JsonProperty("trackedEntityInstanceUid")
-    private String trackedEntityInstanceUid;
+    @JsonProperty("uid")
+    private String uid;
 
     @JsonProperty("trackedEntity")
     private String trackedEntity;
@@ -76,22 +72,6 @@ public class TrackedEntityInstance extends BaseIdentifiableObject implements Ser
 
     public TrackedEntityInstance() {
         // explicit empty constructor
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getTrackedEntityInstanceUid() {
-        return trackedEntityInstanceUid;
-    }
-
-    public void setTrackedEntityInstanceUid(String trackedEntityInstanceUid) {
-        this.trackedEntityInstanceUid = trackedEntityInstanceUid;
     }
 
     public String getTrackedEntity() {
@@ -128,13 +108,13 @@ public class TrackedEntityInstance extends BaseIdentifiableObject implements Ser
 
     @Override
     public String getUid() {
-        return trackedEntityInstanceUid;
+        return uid;
     }
 
 
     @Override
     public void setUid(String uId) {
-        this.trackedEntityInstanceUid = uId;
+        this.uid = uId;
     }
 
     @Override

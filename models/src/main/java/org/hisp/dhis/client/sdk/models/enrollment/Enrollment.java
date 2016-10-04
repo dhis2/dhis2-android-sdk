@@ -33,7 +33,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.Access;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.IdentifiableObject;
 import org.hisp.dhis.client.sdk.models.event.Event;
@@ -47,14 +46,13 @@ import java.util.List;
 public final class Enrollment extends BaseIdentifiableObject implements IdentifiableObject {
 
     @JsonProperty("enrollment")
-    private String uId;
+    private String uid;
 
     @JsonProperty("code")
     private String code;
 
     @JsonProperty("orgUnit")
     private String orgUnit;
-
 
     @JsonProperty("program")
     private String program;
@@ -85,10 +83,6 @@ public final class Enrollment extends BaseIdentifiableObject implements Identifi
     @JsonProperty("lastUpdated")
     private Date lastUpdated;
 
-    @JsonProperty("access")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Access access;
-
     @JsonIgnore
     int sortOrder;
 
@@ -115,12 +109,12 @@ public final class Enrollment extends BaseIdentifiableObject implements Identifi
 
     @JsonProperty("trackedEntityInstance")
     public String getTrackedEntityInstanceUid() {
-        return trackedEntityInstance.getTrackedEntityInstanceUid();
+        return trackedEntityInstance.getUid();
     }
 
     public void setTrackedEntityInstanceUid(String trackedEntityInstanceUid) {
         this.trackedEntityInstance = new TrackedEntityInstance();
-        this.trackedEntityInstance.setTrackedEntityInstanceUid(trackedEntityInstanceUid);
+        this.trackedEntityInstance.setUid(trackedEntityInstanceUid);
     }
 
     public TrackedEntityInstance getTrackedEntityInstance() {
@@ -181,12 +175,12 @@ public final class Enrollment extends BaseIdentifiableObject implements Identifi
     }
     @Override
     public String getUid() {
-        return uId;
+        return uid;
     }
 
     @Override
     public void setUid(String uId) {
-        this.uId = uId;
+        this.uid = uId;
     }
 
     @Override

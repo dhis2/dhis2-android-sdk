@@ -37,7 +37,7 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class Relationship implements Serializable {
+public final class Relationship {
 
     @JsonIgnore
     private long id;
@@ -76,24 +76,24 @@ public final class Relationship implements Serializable {
 
     @JsonProperty("trackedEntityInstanceA")
     public String getTrackedEntityInstanceAUid() {
-        return trackedEntityInstanceA.getTrackedEntityInstanceUid();
+        return trackedEntityInstanceA.getUid();
     }
 
     @JsonProperty("trackedEntityInstanceA")
     public void setTrackedEntityInstanceA(String trackedEntityInstanceA) {
         this.trackedEntityInstanceA = new TrackedEntityInstance();
-        this.trackedEntityInstanceA.setTrackedEntityInstanceUid(trackedEntityInstanceA);
+        this.trackedEntityInstanceA.setUid(trackedEntityInstanceA);
     }
 
     @JsonProperty("trackedEntityInstanceB")
     public String getTrackedEntityInstanceBUid() {
-        return trackedEntityInstanceB.getTrackedEntityInstanceUid();
+        return trackedEntityInstanceB.getUid();
     }
 
     @JsonProperty("trackedEntityInstanceB")
     public void setTrackedEntityInstanceB(String trackedEntityInstanceB) {
         this.trackedEntityInstanceB = new TrackedEntityInstance();
-        this.trackedEntityInstanceB.setTrackedEntityInstanceUid(trackedEntityInstanceB);
+        this.trackedEntityInstanceB.setUid(trackedEntityInstanceB);
     }
 
     public TrackedEntityInstance getTrackedEntityInstanceA() {

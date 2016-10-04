@@ -413,10 +413,8 @@ public class ProfilePresenterImpl implements ProfilePresenter {
                 try {
                     List<User> users = new ArrayList<>();
                     users.add(user);
-                    currentUserAccountInteractor.store().insert(users);
-                    subscriber.onNext(true);
+                    subscriber.onNext(currentUserAccountInteractor.store().insert(users));
                 } catch (Exception e) {
-                    subscriber.onNext(false);
                     subscriber.onError(e);
                 }
                 subscriber.onCompleted();

@@ -85,7 +85,7 @@ public class LoginPresenterImpl implements LoginPresenter, LoginPresenter.OnLogi
     public void validateCredentials(final String serverUrl, final String username,
                                     final String password) {
         loginView.showProgress();
-        subscription.add(RxUtils.observable(userAccountInteractor.logIn(username, password))
+        subscription.add(RxUtils.single(userAccountInteractor.logIn(username, password))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<User>() {

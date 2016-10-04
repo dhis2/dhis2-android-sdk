@@ -58,7 +58,7 @@ public class OrganisationUnit extends BaseNameableObject {
     @JsonProperty("level")
     int level;
 
-    @JsonProperty("get")
+    @JsonProperty("programs")
     List<Program> programs;
 
     public OrganisationUnit() {

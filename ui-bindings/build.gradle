@@ -40,5 +40,5 @@ dependencies {
     compile project(":core")
 
     // Square dependencies
-    compile "com.squareup.okhttp3:logging-interceptor:${libs.okhttpVersion}"
+    // compile "com.squareup.okhttp3:logging-interceptor:${libs.okhttpVersion}"
 }

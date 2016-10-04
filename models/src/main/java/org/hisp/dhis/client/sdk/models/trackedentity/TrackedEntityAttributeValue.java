@@ -26,52 +26,64 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.option;
+package org.hisp.dhis.client.sdk.models.trackedentity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
-import org.hisp.dhis.client.sdk.models.common.ValueType;
 
-import java.util.List;
+
+import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-    public class OptionSet extends BaseIdentifiableObject {
+public final class TrackedEntityAttributeValue implements Serializable {
 
-    @JsonProperty("version")
-    int version;
+    @JsonIgnore
+    private long id;
 
-    @JsonProperty("valueType")
-    ValueType valueType;
+    @JsonProperty("attribute")
+    private String trackedEntityAttributeUId;
 
-    @JsonProperty("options")
-    List<Option> options;
+    @JsonIgnore
+    private TrackedEntityInstance trackedEntityInstance;
 
-    public OptionSet() {
+    @JsonProperty("value")
+    private String value;
+
+    public TrackedEntityAttributeValue() {
+
     }
 
-    public int getVersion() {
-        return version;
+    public long getId() {
+        return id;
     }
 
-    public void setVersion(int version) {
-        this.version = version;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public ValueType getValueType() {
-        return valueType;
+    public String getTrackedEntityAttributeUId() {
+        return trackedEntityAttributeUId;
     }
 
-    public void setValueType(ValueType valueType) {
-        this.valueType = valueType;
+    public void setTrackedEntityAttributeUId(String trackedEntityAttributeUId) {
+        this.trackedEntityAttributeUId = trackedEntityAttributeUId;
     }
 
-    public List<Option> getOptions() {
-        return options;
+    public TrackedEntityInstance getTrackedEntityInstance() {
+        return trackedEntityInstance;
     }
 
-    public void setOptions(List<Option> options) {
-        this.options = options;
+    public void setTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance) {
+        this.trackedEntityInstance = trackedEntityInstance;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

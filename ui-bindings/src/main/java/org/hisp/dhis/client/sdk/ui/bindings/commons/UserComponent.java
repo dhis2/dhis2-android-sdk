@@ -1,8 +1,9 @@
 package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
+import android.app.Application;
 import android.content.Context;
 
-import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractor;
+import org.hisp.dhis.client.sdk.core.UserInteractor;
 import org.hisp.dhis.client.sdk.ui.AppPreferences;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.HomePresenter;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.LauncherPresenter;
@@ -30,24 +31,24 @@ public final class UserComponent {
         isNull(defaultAppModule, "DefaultAppModule must not be null");
         isNull(defaultUserModule, "DefaultUserModule must not be null");
 
-        Context context = defaultAppModule.providesContext();
+        Application application = defaultAppModule.providesApplication();
 
         // application module dependencies
         logger = defaultAppModule.providesLogger();
 
         AppPreferences appPreferences = defaultAppModule
-                .providesApplicationPreferences(context);
+                .providesApplicationPreferences(application);
         SyncDateWrapper syncDateWrapper = defaultAppModule
-                .providesSyncDateWrapper(context, appPreferences, logger);
+                .providesSyncDateWrapper(application, appPreferences, logger);
         ApiExceptionHandler apiExceptionHandler = defaultAppModule
-                .providesApiExceptionHandler(context, logger);
+                .providesApiExceptionHandler(application, logger);
 
         // user module related dependencies
-        CurrentUserInteractor currentUserInteractor = defaultUserModule
+        UserInteractor currentUserInteractor = defaultUserModule
                 .providesCurrentUserInteractor();
         DefaultAppAccountManager accountManager = defaultUserModule
-                .providesAppAccountManager(context, appPreferences, currentUserInteractor, logger);
-        DefaultNotificationHandler defaultNotificationHandler = defaultUserModule.providesNotificationHandler(context);
+                .providesAppAccountManager(application, appPreferences, currentUserInteractor, logger);
+        DefaultNotificationHandler defaultNotificationHandler = defaultUserModule.providesNotificationHandler(application);
         profilePresenter = defaultUserModule
                 .providesProfilePresenter(currentUserInteractor, syncDateWrapper, accountManager, defaultNotificationHandler, logger);
         settingsPresenter = defaultUserModule

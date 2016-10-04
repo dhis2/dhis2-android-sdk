@@ -31,9 +31,12 @@ package org.hisp.dhis.client.sdk.rules;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.option.OptionSet;
+import org.hisp.dhis.client.sdk.models.constant.Constant;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
+import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
 import java.util.ArrayList;
 import java.util.List;

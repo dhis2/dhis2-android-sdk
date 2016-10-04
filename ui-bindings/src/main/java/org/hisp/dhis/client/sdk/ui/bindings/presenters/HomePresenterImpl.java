@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.client.sdk.ui.bindings.presenters;
 
-import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractor;
-import org.hisp.dhis.client.sdk.models.user.UserAccount;
+import org.hisp.dhis.client.sdk.core.UserInteractor;
+import org.hisp.dhis.client.sdk.models.user.User;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.SyncDateWrapper;
 import org.hisp.dhis.client.sdk.ui.bindings.views.HomeView;
 import org.hisp.dhis.client.sdk.ui.bindings.views.View;
@@ -44,14 +44,14 @@ import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 import static org.hisp.dhis.client.sdk.utils.StringUtils.isEmpty;
 
 public class HomePresenterImpl implements HomePresenter {
-    private final CurrentUserInteractor userAccountInteractor;
+    private final UserInteractor userAccountInteractor;
     private final SyncDateWrapper syncDateWrapper;
     private final Logger logger;
 
     private Subscription subscription;
     private HomeView homeView;
 
-    public HomePresenterImpl(CurrentUserInteractor userAccountInteractor,
+    public HomePresenterImpl(UserInteractor userAccountInteractor,
                              SyncDateWrapper syncDateWrapper,
                              Logger logger) {
 //        this.userAccountInteractor = isNull(userAccountInteractor,
@@ -66,25 +66,25 @@ public class HomePresenterImpl implements HomePresenter {
         isNull(view, "HomeView must not be null");
         homeView = (HomeView) view;
 
-        subscription = userAccountInteractor.account().get()
+        subscription = userAccountInteractor.store().list()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<UserAccount>() {
+                .subscribe(new Action1<User>() {
                     @Override
-                    public void call(UserAccount userAccount) {
+                    public void call(User user) {
                         String name = "";
-                        if (!isEmpty(userAccount.getFirstName()) &&
-                                !isEmpty(userAccount.getSurname())) {
-                            name = String.valueOf(userAccount.getFirstName().charAt(0)) +
-                                    String.valueOf(userAccount.getSurname().charAt(0));
-                        } else if (userAccount.getDisplayName() != null &&
-                                userAccount.getDisplayName().length() > 1) {
-                            name = String.valueOf(userAccount.getDisplayName().charAt(0)) +
-                                    String.valueOf(userAccount.getDisplayName().charAt(1));
+                        if (!isEmpty(user.getFirstName()) &&
+                                !isEmpty(user.getSurname())) {
+                            name = String.valueOf(user.getFirstName().charAt(0)) +
+                                    String.valueOf(user.getSurname().charAt(0));
+                        } else if (user.getDisplayName() != null &&
+                                user.getDisplayName().length() > 1) {
+                            name = String.valueOf(user.getDisplayName().charAt(0)) +
+                                    String.valueOf(user.getDisplayName().charAt(1));
                         }
 
-                        homeView.setUsername(userAccount.getDisplayName());
-                        homeView.setUserInfo(userAccount.getEmail());
+                        homeView.setUsername(user.getDisplayName());
+                        homeView.setUserInfo(user.getEmail());
                         homeView.setUserLetter(name);
                     }
                 }, new Action1<Throwable>() {

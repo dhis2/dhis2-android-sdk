@@ -33,10 +33,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 
+import java.util.Comparator;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ProgramRule extends BaseIdentifiableObject {
+
+    public static final Comparator<ProgramRule> PRIORITY_COMPARATOR = new PriorityComparator();
 
     @JsonProperty("programStage")
     ProgramStage programStage;
@@ -94,5 +97,21 @@ public class ProgramRule extends BaseIdentifiableObject {
 
     public void setProgramRuleActions(List<ProgramRuleAction> programRuleActions) {
         this.programRuleActions = programRuleActions;
+    }
+
+    public static class PriorityComparator implements Comparator<ProgramRule> {
+
+        @Override
+        public int compare(ProgramRule first, ProgramRule second) {
+            if (first == null && second == null) {
+                return 0;
+            } else if (first == null) {
+                return 1;
+            } else if (second == null) {
+                return -1;
+            }
+
+            return second.getPriority() - first.getPriority();
+        }
     }
 }

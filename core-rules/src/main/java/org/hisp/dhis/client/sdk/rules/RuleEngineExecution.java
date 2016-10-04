@@ -57,7 +57,7 @@ public class RuleEngineExecution {
         for (ProgramRule rule : programRules) {
             if (conditionIsTrue(rule.getCondition(), variableValueMap)) {
                 for (ProgramRuleAction action : rule.getProgramRuleActions()) {
-                    effects.add(createEffect(action, variableValueMap));
+                    effects.add(createEffect(action, rule, variableValueMap));
                 }
             }
         }
@@ -221,9 +221,9 @@ public class RuleEngineExecution {
      * @return
      */
     private static RuleEffect createEffect(
-            ProgramRuleAction action, RuleEngineVariableValueMap variableValueMap) {
+            ProgramRuleAction action, ProgramRule programRule, RuleEngineVariableValueMap variableValueMap) {
         RuleEffect effect = new RuleEffect();
-        effect.setProgramRule(action.getProgramRule());
+        effect.setProgramRule(programRule);
         effect.setProgramRuleActionType(action.getProgramRuleActionType());
         effect.setContent(action.getContent());
         //run expressions to evaluate content of data column:
@@ -233,7 +233,7 @@ public class RuleEngineExecution {
         effect.setLocation(action.getLocation());
         effect.setProgramStage(action.getProgramStage());
         effect.setProgramStageSection(action.getProgramStageSection());
-        effect.setTrackedEntityAttribute(action.getTrackedEntityAttribute());
+        effect.setTrackedEntityAttribute(action.getAttribute());
 
         if (effect.getProgramRuleActionType() == ProgramRuleActionType.ASSIGN) {
             //in case the action type is assign, it might be needed to update the variable value map:

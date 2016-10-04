@@ -38,12 +38,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 // TODO Replace JodaTime
 /* Part of RuleEngine implementation detail. Hence, class visibility defined as package private */
@@ -209,7 +208,7 @@ class RuleEngineVariableValueMap {
                 }
                 default: {
                     // TODO: Use logger to output the not implemented source type
-                    throw new NotImplementedException();
+                    throw new UnsupportedOperationException();
                 }
             }
 
@@ -249,8 +248,8 @@ class RuleEngineVariableValueMap {
         DateFormat df = new SimpleDateFormat(DATE_PATTERN, Locale.ENGLISH);
 
         if (currentEvent != null) {
-            DateTime eventDate = currentEvent.getEventDate() != null ? currentEvent.getEventDate() : DateTime.now();
-            addEnviromentVariableValueToMap("event_date", df.format(eventDate.toDate()), ValueType.DATE, currentEvent.getEventDate() != null);
+            Date eventDate = currentEvent.getEventDate() != null ? currentEvent.getEventDate() : new Date();
+            addEnviromentVariableValueToMap("event_date", df.format(eventDate), ValueType.DATE, currentEvent.getEventDate() != null);
         } else {
             addEnviromentVariableValueToMap("event_date", df.format(DateTime.now().toDate()), ValueType.DATE, false);
         }

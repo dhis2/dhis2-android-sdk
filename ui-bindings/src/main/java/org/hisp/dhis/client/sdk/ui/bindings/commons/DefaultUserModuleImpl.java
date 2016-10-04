@@ -4,9 +4,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.client.sdk.android.api.D2;
-import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractor;
-import org.hisp.dhis.client.sdk.core.common.network.Configuration;
+import org.hisp.dhis.client.sdk.core.D2;
+import org.hisp.dhis.client.sdk.core.UserInteractor;
 import org.hisp.dhis.client.sdk.ui.AppPreferences;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.HomePresenter;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.HomePresenterImpl;
@@ -34,8 +33,9 @@ final class DefaultUserModuleImpl implements DefaultUserModule {
         if (!isEmpty(serverUrl)) {
 
             // configure D2
-            Configuration configuration = new Configuration(serverUrl);
-            D2.configure(configuration).toBlocking().first();
+//            Configuration configuration = new Configuration(serverUrl);
+//            D2.configure(configuration).toBlocking().first();
+            D2.configure(serverUrl);
         }
     }
 
@@ -44,30 +44,30 @@ final class DefaultUserModuleImpl implements DefaultUserModule {
     }
 
     @Override
-    public CurrentUserInteractor providesCurrentUserInteractor() {
+    public UserInteractor providesCurrentUserInteractor() {
         return D2.isConfigured() ? D2.me() : null;
     }
 
     @Override
-    public LauncherPresenter providesLauncherPresenter(CurrentUserInteractor currentUserInteractor) {
+    public LauncherPresenter providesLauncherPresenter(UserInteractor currentUserInteractor) {
         return new LauncherPresenterImpl(currentUserInteractor);
     }
 
     @Override
-    public LoginPresenter providesLoginPresenter(CurrentUserInteractor currentUserInteractor,
+    public LoginPresenter providesLoginPresenter(UserInteractor currentUserInteractor,
                                                  ApiExceptionHandler apiExceptionHandler,
                                                  Logger logger) {
         return new LoginPresenterImpl(currentUserInteractor, apiExceptionHandler, logger);
     }
 
     @Override
-    public HomePresenter providesHomePresenter(CurrentUserInteractor currentUserInteractor,
+    public HomePresenter providesHomePresenter(UserInteractor currentUserInteractor,
                                                SyncDateWrapper syncDateWrapper, Logger logger) {
         return new HomePresenterImpl(currentUserInteractor, syncDateWrapper, logger);
     }
 
     @Override
-    public ProfilePresenter providesProfilePresenter(CurrentUserInteractor currentUserInteractor,
+    public ProfilePresenter providesProfilePresenter(UserInteractor currentUserInteractor,
                                                      SyncDateWrapper syncDateWrapper,
                                                      DefaultAppAccountManager appAccountManager,
                                                      DefaultNotificationHandler defaultNotificationHandler,
@@ -85,7 +85,7 @@ final class DefaultUserModuleImpl implements DefaultUserModule {
     @Override
     public DefaultAppAccountManager providesAppAccountManager(Context context,
                                                               AppPreferences appPreferences,
-                                                              CurrentUserInteractor currentUserInteractor,
+                                                              UserInteractor currentUserInteractor,
                                                               Logger logger) {
         return new DefaultAppAccountManagerImpl(context, appPreferences, currentUserInteractor, authority, accountType, logger);
     }

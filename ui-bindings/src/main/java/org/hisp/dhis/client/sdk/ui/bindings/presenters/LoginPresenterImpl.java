@@ -28,9 +28,11 @@
 
 package org.hisp.dhis.client.sdk.ui.bindings.presenters;
 
-import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractor;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.models.user.UserAccount;
+import org.hisp.dhis.client.sdk.core.ApiException;
+import org.hisp.dhis.client.sdk.core.Callback;
+import org.hisp.dhis.client.sdk.core.Task;
+import org.hisp.dhis.client.sdk.core.UserInteractor;
+import org.hisp.dhis.client.sdk.models.user.User;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.ApiExceptionHandler;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.AppError;
 import org.hisp.dhis.client.sdk.ui.bindings.views.LoginView;
@@ -49,14 +51,14 @@ import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class LoginPresenterImpl implements LoginPresenter, LoginPresenter.OnLoginFinishedListener {
     private static final String TAG = LoginPresenter.class.getSimpleName();
-    private final CurrentUserInteractor userAccountInteractor;
+    private final UserInteractor userAccountInteractor;
     private final CompositeSubscription subscription;
     private final Logger logger;
 
     private final ApiExceptionHandler apiExceptionHandler;
     private LoginView loginView;
 
-    public LoginPresenterImpl(CurrentUserInteractor userAccountInteractor,
+    public LoginPresenterImpl(UserInteractor userAccountInteractor,
                               ApiExceptionHandler apiExceptionHandler, Logger logger) {
         this.userAccountInteractor = userAccountInteractor;
         this.subscription = new CompositeSubscription();
@@ -70,7 +72,7 @@ public class LoginPresenterImpl implements LoginPresenter, LoginPresenter.OnLogi
         loginView = (LoginView) view;
 
         if (userAccountInteractor != null &&
-                userAccountInteractor.isSignedIn().toBlocking().first()) {
+                userAccountInteractor.isLoggedIn()) {
             onSuccess();
         }
     }
@@ -84,20 +86,32 @@ public class LoginPresenterImpl implements LoginPresenter, LoginPresenter.OnLogi
     public void validateCredentials(final String serverUrl, final String username,
                                     final String password) {
         loginView.showProgress();
-        subscription.add(userAccountInteractor.signIn(username, password)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<UserAccount>() {
-                    @Override
-                    public void call(UserAccount userAccount) {
-                        onSuccess();
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        handleError(throwable);
-                    }
-                }));
+        Task<User> userTask = userAccountInteractor.logIn(username,password);
+        userTask.enqueue(new Callback<User>() {
+            @Override
+            public void onSuccess(Task<User> task, User result) {
+                LoginPresenterImpl.this.onSuccess();
+            }
+
+            @Override
+            public void onFailure(Task<User> task, Throwable throwable) {
+                LoginPresenterImpl.this.handleError(throwable);
+            }
+        });
+//        subscription.add(userAccountInteractor.logIn(username, password)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Action1<User>() {
+//                    @Override
+//                    public void call(User user) {
+//                        onSuccess();
+//                    }
+//                }, new Action1<Throwable>() {
+//                    @Override
+//                    public void call(Throwable throwable) {
+//                        handleError(throwable);
+//                    }
+//                }));
     }
 
     @Override

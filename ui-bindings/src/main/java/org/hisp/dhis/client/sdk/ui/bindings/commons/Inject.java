@@ -1,5 +1,6 @@
 package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
+import android.app.Application;
 import android.content.Context;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
@@ -30,8 +31,8 @@ public final class Inject {
         this.userComponent = new UserComponent(defaultAppModule, defaultUserModule);
     }
 
-    public static void init(Context context, String authority, String accountType) {
-        DefaultAppModule defaultAppModule = new DefaultAppModuleImpl(context);
+    public static void init(Application application, String authority, String accountType) {
+        DefaultAppModule defaultAppModule = new DefaultAppModuleImpl(application);
         DefaultUserModule defaultUserModule = new DefaultUserModuleImpl(authority, accountType);
 
         inject = new Inject(defaultAppModule, defaultUserModule);

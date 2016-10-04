@@ -48,5 +48,4 @@ public interface UserInteractor {
 
     boolean isLoggedIn();
 
-    void sync();
 }

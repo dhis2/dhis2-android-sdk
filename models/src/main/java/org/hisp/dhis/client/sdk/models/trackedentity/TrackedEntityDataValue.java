@@ -31,11 +31,9 @@ package org.hisp.dhis.client.sdk.models.trackedentity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.event.Event;
-
 public class TrackedEntityDataValue {
     @JsonIgnore
-    private Event event;
+    private String eventUid;
 
     @JsonProperty("dataElement")
     private String dataElement;
@@ -50,12 +48,12 @@ public class TrackedEntityDataValue {
         // explicit empty constructor
     }
 
-    public Event getEvent() {
-        return event;
+    public String getEventUid() {
+        return eventUid;
     }
 
-    public void setEvent(Event event) {
-        this.event = event;
+    public void setEventUid(String eventUid) {
+        this.eventUid = eventUid;
     }
 
     public String getDataElement() {
@@ -85,7 +83,7 @@ public class TrackedEntityDataValue {
     @Override
     public String toString() {
         return "TrackedEntityDataValue{" +
-                "event=" + event +
+                "eventUid=" + eventUid +
                 ", dataElement='" + dataElement + '\'' +
                 ", storedBy='" + storedBy + '\'' +
                 ", value='" + value + '\'' +

@@ -108,8 +108,8 @@ class RuleEngineVariableValueMap {
 
                 // make sure the event is assigned, it is used later to check event date for
                 // the data values
-                if (value.getEvent() == null) {
-                    value.setEvent(event);
+                if (value.getEventUid() == null) {
+                    value.setEventUid(event);
                 }
 
                 if (value.getValue() != null && value.getValue().length() != 0) {
@@ -160,7 +160,7 @@ class RuleEngineVariableValueMap {
                         for (TrackedEntityDataValue candidate : valueList) {
 
                             if (variable.getProgramStage().getUid().equals(
-                                    candidate.getEvent().getProgramStage())) {
+                                    candidate.getEventUid().getProgramStage())) {
 
                                 // The candidate matches the program stage, and will be newer than
                                 // the potential previous candidate:
@@ -183,7 +183,7 @@ class RuleEngineVariableValueMap {
 
                         TrackedEntityDataValue bestCandidate = null;
                         for (TrackedEntityDataValue candidate : valueList) {
-                            if (candidate.getEvent().getEventDate().compareTo(
+                            if (candidate.getEventUid().getEventDate().compareTo(
                                     currentEvent.getEventDate()) >= 0) {
                                 // we have reached the current event time, stop iterating, keep the
                                 // previous candidate, if any

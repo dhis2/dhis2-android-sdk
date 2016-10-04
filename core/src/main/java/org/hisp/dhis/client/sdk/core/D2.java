@@ -63,6 +63,7 @@ public class D2 {
 
     /* holds true if D2 is configured */
     private final boolean isConfigured;
+    private static String serverUrl;
 
     private ProgramInteractor programInteractor;
     private UserInteractor userInteractor;
@@ -132,7 +133,7 @@ public class D2 {
 
     private D2(Application app, ObjectMapper mapper, OkHttpClient client, Executor executor) {
         ServerUrlPreferences urlPreferences = new ServerUrlPreferences(app);
-        String serverUrl = urlPreferences.get();
+        serverUrl = urlPreferences.get();
 
         this.isConfigured = !TextUtils.isEmpty(serverUrl);
         this.application = app;
@@ -201,6 +202,10 @@ public class D2 {
         return instance().optionSetInteractor;
     }
 
+    public static String getServerUrl() {
+        return serverUrl;
+    }
+
     public static TrackedEntityInteractor trackedEntities() {
         if (isConfigured() && instance().trackedEntityInteractor == null) {
             TrackedEntityApi trackedEntityApi = instance().retrofit.create(TrackedEntityApi.class);
@@ -211,6 +216,7 @@ public class D2 {
         }
 
         return instance().trackedEntityInteractor;
+
     }
 
     public static class Builder {

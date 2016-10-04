@@ -25,7 +25,7 @@ public class DefaultInformationFragment extends AbsInformationFragment {
                 D2.me().username())
         );
         sessionText.append(getString(R.string.logged_in_at) + " ");
-        addUrl(sessionText, D2.serverUrl());
+        addUrl(sessionText, D2.getServerUrl());
         sessionText.setMovementMethod(LinkMovementMethod.getInstance());
     }
 }

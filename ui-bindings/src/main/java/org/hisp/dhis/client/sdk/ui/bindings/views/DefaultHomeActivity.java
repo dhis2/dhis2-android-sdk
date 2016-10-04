@@ -98,7 +98,7 @@ public abstract class DefaultHomeActivity extends AbsHomeActivity implements Hom
     }
 
     @Override
-    public void setUserLetter(CharSequence userLetters) {
+    public void setUserInitials(CharSequence userLetters) {
         getUsernameLetterTextView().setText(userLetters);
     }
 

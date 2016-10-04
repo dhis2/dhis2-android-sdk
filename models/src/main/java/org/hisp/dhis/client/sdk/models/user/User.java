@@ -36,6 +36,8 @@ import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
 import java.util.List;
 
+import static org.hisp.dhis.client.sdk.utils.StringUtils.isEmpty;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User extends BaseIdentifiableObject {
     public static final String GENDER_MALE = "gender_male";
@@ -231,5 +233,18 @@ public class User extends BaseIdentifiableObject {
 
     public void setTeiSearchOrganisationUnits(List<OrganisationUnit> teiSearchOrganisationUnits) {
         this.teiSearchOrganisationUnits = teiSearchOrganisationUnits;
+    }
+
+    public String getInitials() {
+        if (!isEmpty(getFirstName()) &&
+                !isEmpty(getSurname())) {
+            return String.valueOf(getFirstName().charAt(0)) +
+                    String.valueOf(getSurname().charAt(0));
+        } else if (getDisplayName() != null &&
+                getDisplayName().length() > 1) {
+            return String.valueOf(getDisplayName().charAt(0)) +
+                    String.valueOf(getDisplayName().charAt(1));
+        }
+        return "";
     }
 }

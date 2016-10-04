@@ -34,8 +34,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
+import java.util.Comparator;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ProgramStageDataElement extends BaseIdentifiableObject {
+
+    public static final Comparator<ProgramStageDataElement>
+            SORT_ORDER_COMPARATOR = new SortOrderComparator();
 
     @JsonProperty("displayInReports")
     boolean displayInReports;
@@ -104,5 +109,23 @@ public class ProgramStageDataElement extends BaseIdentifiableObject {
 
     public void setAllowFutureDate(boolean allowFutureDate) {
         this.allowFutureDate = allowFutureDate;
+    }
+
+    private static final class SortOrderComparator implements Comparator<ProgramStageDataElement> {
+
+        @Override
+        public int compare(ProgramStageDataElement one, ProgramStageDataElement two) {
+            if (one == null || two == null) {
+                return 0;
+            }
+
+            if (one.getSortOrder() > two.getSortOrder()) {
+                return 1;
+            } else if (one.getSortOrder() < two.getSortOrder()) {
+                return -1;
+            }
+
+            return 0;
+        }
     }
 }

@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-// TODO Replace JodaTime
 /* Part of RuleEngine implementation detail. Hence, class visibility defined as package private */
 class RuleEngineVariableValueMap {
     public static final String DATE_PATTERN = "yyyy-MM-dd";

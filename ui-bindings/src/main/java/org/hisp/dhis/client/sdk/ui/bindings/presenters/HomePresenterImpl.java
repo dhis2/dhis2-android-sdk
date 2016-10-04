@@ -35,13 +35,14 @@ import org.hisp.dhis.client.sdk.ui.bindings.views.HomeView;
 import org.hisp.dhis.client.sdk.ui.bindings.views.View;
 import org.hisp.dhis.client.sdk.utils.Logger;
 
+import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
-import static org.hisp.dhis.client.sdk.utils.StringUtils.isEmpty;
 
 public class HomePresenterImpl implements HomePresenter {
     private final UserInteractor userAccountInteractor;
@@ -61,39 +62,35 @@ public class HomePresenterImpl implements HomePresenter {
         this.logger = isNull(logger, "Logger must not be null");
     }
 
+
     @Override
     public void attachView(View view) {
         isNull(view, "HomeView must not be null");
         homeView = (HomeView) view;
 
-        subscription = userAccountInteractor.store().list()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        subscription = Observable.create(new Observable.OnSubscribe<User>() {
+            @Override
+            public void call(Subscriber<? super User> subscriber) {
+                userAccountInteractor.store().list();
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<User>() {
                     @Override
                     public void call(User user) {
-                        String name = "";
-                        if (!isEmpty(user.getFirstName()) &&
-                                !isEmpty(user.getSurname())) {
-                            name = String.valueOf(user.getFirstName().charAt(0)) +
-                                    String.valueOf(user.getSurname().charAt(0));
-                        } else if (user.getDisplayName() != null &&
-                                user.getDisplayName().length() > 1) {
-                            name = String.valueOf(user.getDisplayName().charAt(0)) +
-                                    String.valueOf(user.getDisplayName().charAt(1));
-                        }
-
                         homeView.setUsername(user.getDisplayName());
                         homeView.setUserInfo(user.getEmail());
-                        homeView.setUserLetter(name);
+                        homeView.setUserInitials(user.getInitials());
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
                         logger.e(HomePresenterImpl.class.getSimpleName(),
                                 "Something went wrong", throwable);
+
                     }
                 });
+
+
     }
 
     @Override

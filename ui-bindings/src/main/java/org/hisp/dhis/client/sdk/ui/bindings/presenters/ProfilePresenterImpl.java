@@ -2,10 +2,10 @@ package org.hisp.dhis.client.sdk.ui.bindings.presenters;
 
 import org.hisp.dhis.client.sdk.core.UserInteractor;
 import org.hisp.dhis.client.sdk.models.user.User;
-import org.hisp.dhis.client.sdk.ui.bindings.commons.SyncDateWrapper;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.DefaultAppAccountManager;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.DefaultNotificationHandler;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.RxOnValueChangedListener;
+import org.hisp.dhis.client.sdk.ui.bindings.commons.SyncDateWrapper;
 import org.hisp.dhis.client.sdk.ui.bindings.views.ProfileView;
 import org.hisp.dhis.client.sdk.ui.bindings.views.View;
 import org.hisp.dhis.client.sdk.ui.models.FormEntity;
@@ -20,11 +20,11 @@ import org.hisp.dhis.client.sdk.utils.Logger;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -74,14 +74,23 @@ public class ProfilePresenterImpl implements ProfilePresenter {
 
         // create a new one
         subscription = new CompositeSubscription();
-        subscription.add(currentUserAccountInteractor.store().list()
+        subscription.add(Observable.create(new Observable.OnSubscribe<User>() {
+            @Override
+            public void call(Subscriber<? super User> subscriber) {
+                try {
+                    subscriber.onNext(currentUserAccountInteractor.store().list());
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+                subscriber.onCompleted();
+            }
+        })
                 .map(new Func1<User, List<FormEntity>>() {
                     @Override
                     public List<FormEntity> call(User user) {
                         return transformUserAccount(user);
                     }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
+                }).observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Action1<List<FormEntity>>() {
                     @Override
@@ -150,7 +159,7 @@ public class ProfilePresenterImpl implements ProfilePresenter {
         if (subscription == null) {
             subscription = new CompositeSubscription();
         }
-
+        /* TODO: add sync logic
         subscription.add(currentUserAccountInteractor.sync()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -173,7 +182,7 @@ public class ProfilePresenterImpl implements ProfilePresenter {
                             profileView.hideProgressBar();
                         }
                     }
-                }));
+                }));*/
     }
 
     @Override
@@ -398,6 +407,20 @@ public class ProfilePresenterImpl implements ProfilePresenter {
             }
         }
 
-        return currentUserAccountInteractor.store().insert(Collections.singletonList(user));
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                try {
+                    List<User> users = new ArrayList<>();
+                    users.add(user);
+                    currentUserAccountInteractor.store().insert(users);
+                    subscriber.onNext(true);
+                } catch (Exception e) {
+                    subscriber.onNext(false);
+                    subscriber.onError(e);
+                }
+                subscriber.onCompleted();
+            }
+        });
     }
 }

@@ -63,4 +63,60 @@ public class OrganisationUnit extends BaseNameableObject {
 
     public OrganisationUnit() {
     }
+
+    public OrganisationUnit getParent() {
+        return parent;
+    }
+
+    public void setParent(OrganisationUnit parent) {
+        this.parent = parent;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public List<OrganisationUnit> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<OrganisationUnit> children) {
+        this.children = children;
+    }
+
+    public Date getOpeningDate() {
+        return openingDate;
+    }
+
+    public void setOpeningDate(Date openingDate) {
+        this.openingDate = openingDate;
+    }
+
+    public Date getClosedDate() {
+        return closedDate;
+    }
+
+    public void setClosedDate(Date closedDate) {
+        this.closedDate = closedDate;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public List<Program> getPrograms() {
+        return programs;
+    }
+
+    public void setPrograms(List<Program> programs) {
+        this.programs = programs;
+    }
 }

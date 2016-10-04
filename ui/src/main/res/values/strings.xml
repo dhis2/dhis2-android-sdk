@@ -114,7 +114,7 @@
     <!-- Status indicators: -->
     <string name="syncing">Synchronizing</string>
     <string name="logout_title">Logging out</string>
-    <string name="logout_option">Delete all local data and log out</string>
+    <string name="logout_option">Log out</string>
     <string name="cancel_option">Cancel</string>
 
     <!-- Messages: -->

@@ -7,8 +7,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.core.D2;
-import org.hisp.dhis.client.sdk.core.PreferencesModule;
-import org.hisp.dhis.client.sdk.core.PreferencesModuleImpl;
 import org.hisp.dhis.client.sdk.ui.bindings.R;
 import org.hisp.dhis.client.sdk.ui.fragments.AbsInformationFragment;
 
@@ -20,8 +18,6 @@ public class DefaultInformationFragment extends AbsInformationFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        PreferencesModule preferencesModule = new PreferencesModuleImpl(getContext());
-
         TextView sessionText = (TextView) getActivity().findViewById(R.id.app_session);
         // inside app_session:
         sessionText.setText(String.format(Locale.getDefault(), "%s %s\n",
@@ -29,7 +25,7 @@ public class DefaultInformationFragment extends AbsInformationFragment {
                 D2.me().username())
         );
         sessionText.append(getString(R.string.logged_in_at) + " ");
-        addUrl(sessionText, preferencesModule.getConfigurationPreferences().get().getServerUrl());
+        addUrl(sessionText, D2.serverUrl());
         sessionText.setMovementMethod(LinkMovementMethod.getInstance());
     }
 }

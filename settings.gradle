@@ -26,4 +26,4 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ":models", ":core", ':core-rules', ":core-android", ":ui", ':ui-bindings', ':utils'
+include ":models", ":core", ':core-rules', ":ui", ':ui-bindings', ':utils'

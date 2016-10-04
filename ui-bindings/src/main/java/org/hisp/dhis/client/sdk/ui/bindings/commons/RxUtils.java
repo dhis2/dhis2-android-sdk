@@ -30,12 +30,49 @@ package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
 import org.hisp.dhis.client.sdk.core.Task;
 
+import rx.Observable;
+import rx.Single;
+import rx.SingleSubscriber;
+import rx.Subscriber;
+
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
+
 public class RxUtils {
     private RxUtils() {
         // no instances
     }
 
-    public static <T> Observable<T> wrap(Task<T> task) {
+    public static <T> Observable<T> observable(final Task<T> task) {
+        isNull(task, "task must not be null");
 
+        return Observable.create(new Observable.OnSubscribe<T>() {
+            @Override
+            public void call(Subscriber<? super T> subscriber) {
+                try {
+                    T result = task.execute();
+                    subscriber.onNext(result);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    public static <T> Single<T> single(final Task<T> task) {
+        isNull(task, "task must not be null");
+
+        return Single.create(new Single.OnSubscribe<T>() {
+            @Override
+            public void call(SingleSubscriber<? super T> subscriber) {
+                try {
+                    T result = task.execute();
+                    subscriber.onSuccess(result);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+            }
+        });
     }
 }

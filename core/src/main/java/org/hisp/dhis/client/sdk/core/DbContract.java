@@ -42,4 +42,18 @@ interface DbContract {
     interface LastUpdatedColumn {
         String COLUMN_LAST_UPDATED = "lastUpdated";
     }
+
+    interface IdentifiableColumns {
+        String COLUMN_UID = "uid";
+        String COLUMN_CODE = "code";
+        String COLUMN_NAME = "name";
+        String COLUMN_DISPLAY_NAME = "displayName";
+        String COLUMN_CREATED = "created";
+        String COLUMN_LAST_UPDATED = "lastUpdated";
+    }
+
+    interface CoordinatesColumn {
+        String COLUMN_LONGITUDE = "longitude";
+        String COLUMN_LATITUDE = "latitude";
+    }
 }

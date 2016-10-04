@@ -35,8 +35,9 @@ import org.hisp.dhis.client.sdk.ui.bindings.views.HomeView;
 import org.hisp.dhis.client.sdk.ui.bindings.views.View;
 import org.hisp.dhis.client.sdk.utils.Logger;
 
-import rx.Observable;
-import rx.Subscriber;
+
+import rx.Single;
+import rx.SingleSubscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -68,10 +69,15 @@ public class HomePresenterImpl implements HomePresenter {
         isNull(view, "HomeView must not be null");
         homeView = (HomeView) view;
 
-        subscription = Observable.create(new Observable.OnSubscribe<User>() {
+
+        subscription = Single.create(new Single.OnSubscribe<User>() {
             @Override
-            public void call(Subscriber<? super User> subscriber) {
-                userAccountInteractor.store().list();
+            public void call(SingleSubscriber<? super User> singleSubscriber) {
+                try {
+                    singleSubscriber.onSuccess(userAccountInteractor.store().list());
+                } catch (Throwable throwable) {
+                    singleSubscriber.onError(throwable);
+                }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<User>() {

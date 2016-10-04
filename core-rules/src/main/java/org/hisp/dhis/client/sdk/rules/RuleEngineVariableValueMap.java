@@ -108,7 +108,7 @@ class RuleEngineVariableValueMap {
                 // make sure the event is assigned, it is used later to check event date for
                 // the data values
                 if (value.getEventUid() == null) {
-                    value.setEventUid(event);
+                    value.setEventUid(event.getUid());
                 }
 
                 if (value.getValue() != null && value.getValue().length() != 0) {

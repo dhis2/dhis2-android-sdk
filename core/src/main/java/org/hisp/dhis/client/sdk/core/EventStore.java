@@ -17,8 +17,9 @@ import org.hisp.dhis.client.sdk.models.common.Coordinates;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.event.Event.EventStatus;
 import org.hisp.dhis.client.sdk.models.option.OptionSet;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.client.sdk.models.program.Program;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,13 +50,24 @@ public class EventStore {
             EventColumns.COLUMN_COMPLETED_DATE + " DATE," +
             EventColumns.COLUMN_LONGITUDE + " REAL," +
             EventColumns.COLUMN_LATITUDE + " REAL," +
-            EventColumns.COLUMN_PROGRAM + " TEXT"  +
-            "FOREIGN KEY(" + EventColumns.COLUMN_PROGRAM + ")"  +
-            "REFERENCES "+ ProgramColumns.TABLE_NAME +
-            "("+ ProgramColumns.COLUMN_NAME_KEY + ")"  + " )";
+            EventColumns.COLUMN_PROGRAM + " TEXT" +
+            "FOREIGN KEY(" + EventColumns.COLUMN_PROGRAM + ")" +
+            "REFERENCES " + ProgramColumns.TABLE_NAME +
+            "(" + ProgramColumns.COLUMN_NAME_KEY + ")" + " )";
 
     public static final String DROP_TABLE_EVENTS = "DROP TABLE IF EXISTS " +
             EventColumns.TABLE_NAME;
+
+    public List<Event> list(OrganisationUnit organisationUnit, Program program) {
+        SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
+        String selection = EventColumns.COLUMN_ORGANISATION_UNIT + " EQUALS ? + and " + EventColumns.COLUMN_PROGRAM + " EQUALS ?";
+        String[] selectionArgs = new String[]{organisationUnit.getUid(), program.getUid()};
+        Cursor cursor = database.query(EventColumns.TABLE_NAME, null,
+                selection, selectionArgs, null, null, null);
+
+        List<Event> events = new ArrayList<>();
+        return events;
+    }
 
     public interface EventColumns extends IdentifiableColumns, CoordinatesColumn {
         String TABLE_NAME = "event";
@@ -201,12 +213,12 @@ public class EventStore {
             cursor.close();
         }
 
-
         return events;
     }
 
     /**
      * Right now will only return you list of events with uid. Needs to be modified
+     *
      * @param projection
      * @return
      */
@@ -353,5 +365,10 @@ public class EventStore {
 
 
         return events;
+    }
+
+    public Event get(String uid) {
+        //TODO: get proper Event
+        return new Event();
     }
 }

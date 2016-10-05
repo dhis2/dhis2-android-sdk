@@ -168,4 +168,39 @@ public class ProgramStore {
 
         return programs;
     }
+
+    //TODO get Program
+    public Program get(String uid)
+    {
+        SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
+        Program program=new Program();
+
+        Cursor cursor = database.rawQuery("SELECT * FROM " + ProgramStore.ProgramColumns.TABLE_NAME + " where " + ProgramStore.ProgramColumns.COLUMN_NAME_KEY + "=" + uid, null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            do {
+                IOException error = null;
+                String id = cursor.getString(cursor.getColumnIndex(ProgramStore.ProgramColumns.COLUMN_NAME_KEY));
+                int version = cursor.getInt(cursor.getColumnIndex(ProgramStore.ProgramColumns.COLUMN_VERSION));
+                String value = cursor.getString(cursor.getColumnIndex(ProgramStore.ProgramColumns.COLUMN_NAME_VALUE));
+
+                try {
+                    program = objectMapper.readValue(value, Program.class);
+
+                } catch (IOException e) {
+                    error = e;
+                    e.printStackTrace();
+                }
+                if (error == null) {
+                    program.setUid(id);
+                    program.setVersion(version);
+                }
+            } while (cursor.moveToNext());
+
+        }
+        return program;
+    }
+
+
+
 }

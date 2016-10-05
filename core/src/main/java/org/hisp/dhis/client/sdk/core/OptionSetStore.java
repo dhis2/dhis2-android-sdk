@@ -195,4 +195,35 @@ public class OptionSetStore {
         return optionSets;
     }
 
+    //ToDo get OptionSet
+    public OptionSet get(String uid) {
+
+        SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
+        OptionSet optionSet = new OptionSet();
+
+        Cursor cursor = database.rawQuery("SELECT * FROM " + OptionSetColumns.TABLE_NAME + " where " + OptionSetColumns.COLUMN_NAME_KEY + "=" + uid, null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            do {
+                IOException error = null;
+                String id = cursor.getString(cursor.getColumnIndex(OptionSetColumns.COLUMN_NAME_KEY));
+                int version = cursor.getInt(cursor.getColumnIndex(OptionSetColumns.COLUMN_VERSION));
+                String value = cursor.getString(cursor.getColumnIndex(OptionSetColumns.COLUMN_NAME_VALUE));
+
+                try {
+                    optionSet = objectMapper.readValue(value, OptionSet.class);
+                } catch (IOException e) {
+                    error = e;
+                    e.printStackTrace();
+                }
+
+                if (error == null) {
+                    optionSet.setUid(id);
+                    optionSet.setVersion(version);
+                }
+            } while (cursor.moveToNext());
+
+        }
+        return optionSet;
+    }
 }

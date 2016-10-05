@@ -369,6 +369,64 @@ public class EventStore {
 
     public Event get(String uid) {
         //TODO: get proper Event
-        return new Event();
+
+        SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
+        Event event = new Event();
+        ParseException error = null;
+        Cursor cursor = database.rawQuery("SELECT * FROM " + EventColumns.TABLE_NAME + " where " + EventColumns.COLUMN_UID + "=" + uid, null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            do {
+                String id = cursor.getString(cursor.getColumnIndex(EventColumns.COLUMN_UID));
+                String name = cursor.getString(cursor.getColumnIndex(EventColumns.COLUMN_NAME));
+                String displayName = cursor.getString(cursor.getColumnIndex(EventColumns.COLUMN_DISPLAY_NAME));
+                String organisationUnit = cursor.getString(cursor.getColumnIndex(EventColumns.COLUMN_ORGANISATION_UNIT));
+                String program = cursor.getString(cursor.getColumnIndex(EventColumns.COLUMN_PROGRAM));
+                String code = cursor.getString(cursor.getColumnIndex(EventColumns.COLUMN_CODE));
+
+                String eventStatus = cursor.getString(cursor.getColumnIndex(EventColumns.COLUMN_EVENT_STATUS));
+                EventStatus eventStatusEnum = null;
+                for (EventStatus status : EventStatus.values()) {
+                    if (status.toString().equals(eventStatus)) {
+                        eventStatusEnum = status;
+                    }
+                }
+
+                double latitude = cursor.getDouble(cursor.getColumnIndex(EventColumns.COLUMN_LATITUDE));
+                double longitude = cursor.getDouble(cursor.getColumnIndex(EventColumns.COLUMN_LONGITUDE));
+                Date completedDate = null;
+                Date eventDate = null;
+                Date created = null;
+                Date lastUpdated = null;
+                try {
+                    completedDate = simpleDateFormat.parse(cursor.getString(cursor.getColumnIndex(EventColumns.COLUMN_COMPLETED_DATE)));
+                    eventDate = simpleDateFormat.parse(cursor.getString(cursor.getColumnIndex(EventColumns.COLUMN_EVENT_DATE)));
+                    created = simpleDateFormat.parse(cursor.getString(cursor.getColumnIndex(EventColumns.COLUMN_CREATED)));
+                    lastUpdated = simpleDateFormat.parse(cursor.getString(cursor.getColumnIndex(EventColumns.COLUMN_LAST_UPDATED)));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+
+                if (error == null) {
+                    event.setUid(id);
+                    event.setName(name);
+                    event.setDisplayName(displayName);
+                    event.setLastUpdated(lastUpdated);
+                    event.setCreated(created);
+                    event.setStatus(eventStatusEnum);
+                    event.setCompletedDate(completedDate);
+                    event.setEventDate(eventDate);
+                    event.setOrgUnit(organisationUnit);
+                    event.setProgram(program);
+                    event.setCode(code);
+                    event.setCoordinate(new Coordinates(latitude, longitude));
+                }
+            } while (cursor.moveToNext());
+
+
+
+        }
+        return event;
     }
 }

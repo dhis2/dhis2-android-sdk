@@ -16,7 +16,6 @@ import org.hisp.dhis.client.sdk.core.ProgramStore.ProgramColumns;
 import org.hisp.dhis.client.sdk.models.common.Coordinates;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.event.Event.EventStatus;
-import org.hisp.dhis.client.sdk.models.option.OptionSet;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
@@ -165,7 +164,7 @@ public class EventStore {
                     String eventStatus = cursor.getString(3);
                     EventStatus eventStatusEnum = null;
                     for (EventStatus status : EventStatus.values()) {
-                        if(status.toString().equals(eventStatus)) {
+                        if (status.toString().equals(eventStatus)) {
                             eventStatusEnum = status;
                         }
                     }
@@ -200,7 +199,7 @@ public class EventStore {
                     event.setProgram(program);
                     event.setProgramStage(programStage);
                     event.setCode(code);
-                    event.setCoordinate(new Coordinates(latitude,longitude));
+                    event.setCoordinate(new Coordinates(latitude, longitude));
                     event.setCompletedDate(completedDate);
                     event.setEventDate(eventDate);
                     event.setCreated(created);
@@ -209,7 +208,7 @@ public class EventStore {
                     events.add(event);
                 } while (cursor.moveToNext());
             }
-        }  finally {
+        } finally {
             cursor.close();
         }
 
@@ -261,7 +260,7 @@ public class EventStore {
                             String eventStatus = cursor.getString(i);
                             EventStatus eventStatusEnum = null;
                             for (EventStatus status : EventStatus.values()) {
-                                if(status.toString().equals(eventStatus)) {
+                                if (status.toString().equals(eventStatus)) {
                                     eventStatusEnum = status;
                                 }
                             }
@@ -286,22 +285,20 @@ public class EventStore {
                         case EventColumns.COLUMN_LATITUDE:
                             double latitude = cursor.getDouble(i);
                             double lng = 0.00;
-                            if(event.getCoordinate() != null) {
+                            if (event.getCoordinate() != null) {
                                 lng = event.getCoordinate().getLongitude();
-                                event.setCoordinate(new Coordinates(latitude,lng));
-                            }
-                            else {
+                                event.setCoordinate(new Coordinates(latitude, lng));
+                            } else {
                                 event.setCoordinate(new Coordinates(latitude, 0.00));
                             }
                             break;
                         case EventColumns.COLUMN_LONGITUDE:
                             double longitude = cursor.getDouble(i);
                             double lat = 0.00;
-                            if(event.getCoordinate() != null) {
+                            if (event.getCoordinate() != null) {
                                 lat = event.getCoordinate().getLatitude();
-                                event.setCoordinate(new Coordinates(lat,longitude));
-                            }
-                            else {
+                                event.setCoordinate(new Coordinates(lat, longitude));
+                            } else {
                                 event.setCoordinate(new Coordinates(0.00, longitude));
                             }
                             break;

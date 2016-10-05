@@ -30,6 +30,7 @@ package org.hisp.dhis.client.sdk.core;
 
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -38,6 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,5 +101,28 @@ public class TrackedEntityStore {
             contentValuesList.add(contentValues);
         }
         return contentValuesList;
+    }
+
+    //TODO: test this:
+    public TrackedEntity getTrackedEntity(String uid) {
+        isNull(uid, "Uid must not be null");
+        TrackedEntity trackedEntity = null;
+        Cursor cursor = sqLiteOpenHelper.getReadableDatabase().rawQuery(
+                "SELECT * FROM" + TrackedEntityStore.TrackedEntityColumns.TABLE_NAME +
+                        " where " +
+                        TrackedEntityColumns.COLUMN_NAME_KEY + "=" + uid,
+                null);
+
+        if(cursor.getColumnCount() > 0) {
+            cursor.moveToFirst();
+            try {
+                trackedEntity = objectMapper.readValue(cursor.getString(cursor.getColumnIndex(TrackedEntityColumns.COLUMN_NAME_VALUE)), TrackedEntity.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                cursor.close();
+            }
+        }
+        return trackedEntity;
     }
 }

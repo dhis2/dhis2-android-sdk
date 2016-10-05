@@ -27,7 +27,6 @@ public class TrackedEntityDataValueStore {
             TrackedEntityDataValueColumns.COLUMN_STORED_BY + " TEXT NOT NULL," +
             TrackedEntityDataValueColumns.COLUMN_VALUE + " TEXT" + " )";
 
-
     public static final String DROP_TABLE_TRACKED_ENTITY_DATA_VALUES = "DROP TABLE IF EXISTS " +
             TrackedEntityDataValueColumns.TABLE_NAME;
 
@@ -126,20 +125,18 @@ public class TrackedEntityDataValueStore {
         isNull(projection, "Projection must not be null");
 
         List<TrackedEntityDataValue> trackedEntityDataValues = new ArrayList<>();
-
         SparseArray<String> columnIndices = new SparseArray<>();
+
         for (int i = 0; i < projection.length; i++) {
             columnIndices.append(i, projection[i]);
         }
-        SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
 
+        SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
         Cursor cursor = database.query(TrackedEntityDataValueColumns.TABLE_NAME, projection,
                 null, null, null, null, null);
 
-
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
-
             do {
                 TrackedEntityDataValue trackedEntityDataValue = new TrackedEntityDataValue();
                 for (int i = 0; i < cursor.getColumnCount(); i++) {
@@ -162,16 +159,10 @@ public class TrackedEntityDataValueStore {
                             break;
                     }
                 }
-
                 trackedEntityDataValues.add(trackedEntityDataValue);
-
             } while (cursor.moveToNext());
         }
-
         cursor.close();
-
-
         return trackedEntityDataValues;
     }
-
 }

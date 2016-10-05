@@ -31,7 +31,7 @@ package org.hisp.dhis.client.sdk.core;
 interface DbContract {
 
     interface KeyValueColumns {
-        String COLUMN_NAME_KEY = "key";
+        String COLUMN_NAME_KEY = "uid";
         String COLUMN_NAME_VALUE = "value";
     }
 

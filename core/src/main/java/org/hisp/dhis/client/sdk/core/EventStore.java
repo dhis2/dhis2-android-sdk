@@ -1,6 +1,5 @@
 package org.hisp.dhis.client.sdk.core;
 
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -176,7 +175,6 @@ public class EventStore {
                     double latitude = cursor.getDouble(8);
                     double longitude = cursor.getDouble(9);
 
-
                     Date completedDate = null;
                     Date eventDate = null;
                     Date created = null;
@@ -234,7 +232,6 @@ public class EventStore {
 
         Cursor cursor = database.query(EventColumns.TABLE_NAME, projection,
                 null, null, null, null, null);
-
 
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
@@ -346,8 +343,6 @@ public class EventStore {
                             }
                             event.setLastUpdated(lastUpdated);
                             break;
-
-
                     }
                 }
                 if (error == null) {
@@ -360,17 +355,15 @@ public class EventStore {
 
         cursor.close();
 
-
         return events;
     }
 
     public Event get(String uid) {
-        //TODO: get proper Event
+        isNull(uid, "Uid must not be null");
 
-        SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
-        Event event = new Event();
+        Event event = null;
         ParseException error = null;
-        Cursor cursor = database.rawQuery("SELECT * FROM " + EventColumns.TABLE_NAME + " where " + EventColumns.COLUMN_UID + "=" + uid, null);
+        Cursor cursor = sqLiteOpenHelper.getReadableDatabase().rawQuery("SELECT * FROM " + EventColumns.TABLE_NAME + " where " + EventColumns.COLUMN_UID + "=" + uid, null);
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
             do {
@@ -380,8 +373,8 @@ public class EventStore {
                 String organisationUnit = cursor.getString(cursor.getColumnIndex(EventColumns.COLUMN_ORGANISATION_UNIT));
                 String program = cursor.getString(cursor.getColumnIndex(EventColumns.COLUMN_PROGRAM));
                 String code = cursor.getString(cursor.getColumnIndex(EventColumns.COLUMN_CODE));
-
                 String eventStatus = cursor.getString(cursor.getColumnIndex(EventColumns.COLUMN_EVENT_STATUS));
+
                 EventStatus eventStatusEnum = null;
                 for (EventStatus status : EventStatus.values()) {
                     if (status.toString().equals(eventStatus)) {
@@ -404,7 +397,6 @@ public class EventStore {
                     e.printStackTrace();
                 }
 
-
                 if (error == null) {
                     event.setUid(id);
                     event.setName(name);
@@ -420,9 +412,7 @@ public class EventStore {
                     event.setCoordinate(new Coordinates(latitude, longitude));
                 }
             } while (cursor.moveToNext());
-
-
-
+            cursor.close();
         }
         return event;
     }

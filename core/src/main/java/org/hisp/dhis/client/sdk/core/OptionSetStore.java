@@ -197,11 +197,15 @@ public class OptionSetStore {
 
     //ToDo get OptionSet
     public OptionSet get(String uid) {
-
+        isNull(uid, "Uid must not be null");
         SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
         OptionSet optionSet = new OptionSet();
+        Cursor cursor = database.rawQuery(
+                "SELECT * FROM " + OptionSetColumns.TABLE_NAME
+                        + " where "
+                        + OptionSetColumns.COLUMN_NAME_KEY + "=" + uid
+                , null);
 
-        Cursor cursor = database.rawQuery("SELECT * FROM " + OptionSetColumns.TABLE_NAME + " where " + OptionSetColumns.COLUMN_NAME_KEY + "=" + uid, null);
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
             do {
@@ -222,7 +226,7 @@ public class OptionSetStore {
                     optionSet.setVersion(version);
                 }
             } while (cursor.moveToNext());
-
+            cursor.close();
         }
         return optionSet;
     }

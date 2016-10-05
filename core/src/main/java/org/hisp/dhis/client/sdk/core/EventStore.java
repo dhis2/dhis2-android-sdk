@@ -84,7 +84,7 @@ public class EventStore {
         this.simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
     }
 
-    public synchronized boolean save(List<Event> events) throws JsonProcessingException {
+    public synchronized boolean save(List<Event> events) {
         isNull(events, "Events cannot be null");
         SQLiteDatabase database = sqLiteOpenHelper.getWritableDatabase();
         List<ContentValues> contentValuesList = mapToContentValues(events);

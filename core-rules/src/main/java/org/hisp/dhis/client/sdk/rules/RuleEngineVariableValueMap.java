@@ -156,15 +156,15 @@ class RuleEngineVariableValueMap {
                                 variable.getDataElement().getUid());
 
                         TrackedEntityDataValue bestCandidate = null;
+
+                        // TODO fix before running RuleEngine
                         for (TrackedEntityDataValue candidate : valueList) {
 
-                            if (variable.getProgramStage().getUid().equals(
-                                    candidate.getEventUid().getProgramStage())) {
-
+                            // if (variable.getProgramStage().getUid().equals(candidate.getEventUid().getProgramStage())) {
                                 // The candidate matches the program stage, and will be newer than
                                 // the potential previous candidate:
-                                bestCandidate = candidate;
-                            }
+                                // bestCandidate = candidate;
+                            // }
                         }
 
                         if (bestCandidate != null) {
@@ -182,16 +182,17 @@ class RuleEngineVariableValueMap {
 
                         TrackedEntityDataValue bestCandidate = null;
                         for (TrackedEntityDataValue candidate : valueList) {
-                            if (candidate.getEventUid().getEventDate().compareTo(
-                                    currentEvent.getEventDate()) >= 0) {
+                            // TODO fix before running RuleEngine
+                            // if (candidate.getEventUid().getEventDate().compareTo(
+                            //        currentEvent.getEventDate()) >= 0) {
                                 // we have reached the current event time, stop iterating, keep the
                                 // previous candidate, if any
-                                break;
-                            } else {
+                            //    break;
+                            // } else {
                                 // we have not yet reached the current event, keep this candidate
                                 // as it is the newest one examined:
-                                bestCandidate = candidate;
-                            }
+                            //    bestCandidate = candidate;
+                            // }
                         }
 
                         if (bestCandidate != null) {

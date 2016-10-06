@@ -26,36 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.bindings.presenters;
+package org.hisp.dhis.client.sdk.core.user;
 
-import org.hisp.dhis.client.sdk.core.user.UserInteractor;
-import org.hisp.dhis.client.sdk.ui.bindings.views.LauncherView;
-import org.hisp.dhis.client.sdk.ui.bindings.views.View;
+import org.hisp.dhis.client.sdk.core.commons.Task;
+import org.hisp.dhis.client.sdk.models.user.User;
 
-public class LauncherPresenterImpl implements LauncherPresenter {
-    private final UserInteractor userAccountInteractor;
-    private LauncherView launcherView;
+public interface UserInteractor {
+    UserStore store();
 
-    public LauncherPresenterImpl(UserInteractor userAccountInteractor) {
-        this.userAccountInteractor = userAccountInteractor;
-    }
+    UsersApi api();
 
-    @Override
-    public void checkIfUserIsLoggedIn() {
-        if (userAccountInteractor != null && userAccountInteractor.isLoggedIn()) {
-            launcherView.navigateToHome();
-        } else {
-            launcherView.navigateToLogin();
-        }
-    }
+    String username();
 
-    @Override
-    public void attachView(View view) {
-        launcherView = (LauncherView) view;
-    }
+    String password();
 
-    @Override
-    public void detachView() {
-        launcherView = null;
-    }
+    Task<User> logIn(String username, String password);
+
+    Object logOut();
+
+    boolean isLoggedIn();
+
 }

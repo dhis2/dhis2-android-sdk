@@ -1,6 +1,12 @@
 package org.hisp.dhis.client.sdk.core;
 
-import org.hisp.dhis.client.sdk.core.ProgramStore.ProgramColumns;
+import org.hisp.dhis.client.sdk.core.option.OptionSetInteractor;
+import org.hisp.dhis.client.sdk.core.option.OptionSetStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramInteractor;
+import org.hisp.dhis.client.sdk.core.program.ProgramStore.ProgramColumns;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInteractor;
+import org.hisp.dhis.client.sdk.core.user.UserInteractor;
+import org.hisp.dhis.client.sdk.models.common.IdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.Payload;
 import org.hisp.dhis.client.sdk.models.option.OptionSet;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -9,7 +15,6 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.client.sdk.models.user.User;
 import org.hisp.dhis.client.sdk.models.user.UserRole;
-import org.hisp.dhis.client.sdk.utils.CollectionUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +27,6 @@ import java.util.Map;
 
 import retrofit2.Call;
 
-import static org.hisp.dhis.client.sdk.utils.ModelUtils.toMap;
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class MetadataTask {
@@ -113,7 +117,7 @@ public class MetadataTask {
             if (programsToDownload.size() > REQUEST_SPLIT_THRESHOLD && programsToDownload.size() > 0) {
                 List<Program> programsCache = new ArrayList<>();
                 List<List<String>> listOfListsOfProgramUids =
-                        CollectionUtils.slice(programsToDownload, REQUEST_SPLIT_THRESHOLD);
+                        slice(programsToDownload, REQUEST_SPLIT_THRESHOLD);
                 for (List<String> listOfSlicedProgramUids : listOfListsOfProgramUids) {
                     Payload<Program> programsFromApi = getPrograms(listOfSlicedProgramUids).execute().body();
                     programsCache.addAll(programsFromApi.items());
@@ -162,7 +166,7 @@ public class MetadataTask {
             if (optionSetsToDownload.size() > REQUEST_SPLIT_THRESHOLD && optionSetsToDownload.size() > 0) {
                 List<OptionSet> optionSetCache = new ArrayList<>();
                 List<List<String>> listOfListsOfOptionSetUids =
-                        CollectionUtils.slice(optionSetsToDownload, REQUEST_SPLIT_THRESHOLD);
+                        slice(optionSetsToDownload, REQUEST_SPLIT_THRESHOLD);
                 for (List<String> listOfSlicedOptionSetUids : listOfListsOfOptionSetUids) {
                     Payload<OptionSet> optionSetsFromApi = getOptionSets(listOfSlicedOptionSetUids).execute().body();
                     optionSetCache.addAll(optionSetsFromApi.items());
@@ -187,7 +191,7 @@ public class MetadataTask {
             if (trackedEntityUidHashSet.size() > REQUEST_SPLIT_THRESHOLD) {
                 List<TrackedEntity> trackedEntityCache = new ArrayList<>();
                 List<List<String>> listOfListsOfTrackedEntityUids =
-                        CollectionUtils.slice(getKeysFromHashSet(trackedEntityUidHashSet), REQUEST_SPLIT_THRESHOLD);
+                        slice(getKeysFromHashSet(trackedEntityUidHashSet), REQUEST_SPLIT_THRESHOLD);
                 for (List<String> listOfSlicedTrackedEntityUids : listOfListsOfTrackedEntityUids) {
                     Payload<TrackedEntity> trackedEntitiesFromApi = getTrackedEntities(listOfSlicedTrackedEntityUids).execute().body();
                     trackedEntityCache.addAll(trackedEntitiesFromApi.items());
@@ -304,5 +308,38 @@ public class MetadataTask {
         }
 
         return uniqueUids;
+    }
+
+    private static List<List<String>> slice(List<String> stringList, int subListSize) {
+        List<List<String>> listOfSubLists = new ArrayList<>();
+
+        if (stringList != null) {
+            int leftBoundary = 0;
+            int rightBoundary = subListSize < stringList.size() ? subListSize : stringList.size();
+
+            do {
+                listOfSubLists.add(stringList.subList(leftBoundary, rightBoundary));
+
+                leftBoundary = rightBoundary;
+                rightBoundary = rightBoundary + subListSize < stringList.size() ?
+                        rightBoundary + subListSize : stringList.size();
+            } while (leftBoundary != rightBoundary);
+
+            return listOfSubLists;
+        }
+
+        return listOfSubLists;
+    }
+
+    private static <T extends IdentifiableObject> Map<String, T> toMap(Collection<T> objects) {
+        Map<String, T> map = new HashMap<>();
+        if (objects != null && objects.size() > 0) {
+            for (T object : objects) {
+                if (object.getUid() != null) {
+                    map.put(object.getUid(), object);
+                }
+            }
+        }
+        return map;
     }
 }

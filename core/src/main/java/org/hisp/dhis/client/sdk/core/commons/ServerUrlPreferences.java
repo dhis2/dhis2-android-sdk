@@ -26,36 +26,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.bindings.presenters;
+package org.hisp.dhis.client.sdk.core.commons;
 
-import org.hisp.dhis.client.sdk.core.user.UserInteractor;
-import org.hisp.dhis.client.sdk.ui.bindings.views.LauncherView;
-import org.hisp.dhis.client.sdk.ui.bindings.views.View;
+import android.content.Context;
+import android.content.SharedPreferences;
 
-public class LauncherPresenterImpl implements LauncherPresenter {
-    private final UserInteractor userAccountInteractor;
-    private LauncherView launcherView;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-    public LauncherPresenterImpl(UserInteractor userAccountInteractor) {
-        this.userAccountInteractor = userAccountInteractor;
+public class ServerUrlPreferences {
+    private static final String SERVER_URL_PREFERENCES = "preferences:serverUrlPreferences";
+    private static final String SERVER_URL_KEY = "key:serverUrl";
+
+    private final SharedPreferences mPrefs;
+
+    public ServerUrlPreferences(Context context) {
+        mPrefs = context.getSharedPreferences(SERVER_URL_PREFERENCES, Context.MODE_PRIVATE);
     }
 
-    @Override
-    public void checkIfUserIsLoggedIn() {
-        if (userAccountInteractor != null && userAccountInteractor.isLoggedIn()) {
-            launcherView.navigateToHome();
-        } else {
-            launcherView.navigateToLogin();
-        }
+    public boolean save(String serverUrl) {
+        isNull(serverUrl, "Server URL must not be null");
+
+        return putString(SERVER_URL_KEY, serverUrl);
     }
 
-    @Override
-    public void attachView(View view) {
-        launcherView = (LauncherView) view;
+    public String get() {
+        return getString(SERVER_URL_KEY);
     }
 
-    @Override
-    public void detachView() {
-        launcherView = null;
+    public boolean clear() {
+        return mPrefs.edit().clear().commit();
+    }
+
+    private boolean putString(String key, String value) {
+        return mPrefs.edit().putString(key, value).commit();
+    }
+
+    private String getString(String key) {
+        return mPrefs.getString(key, null);
     }
 }

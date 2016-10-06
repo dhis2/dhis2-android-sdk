@@ -26,36 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.bindings.presenters;
+package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.user.UserInteractor;
-import org.hisp.dhis.client.sdk.ui.bindings.views.LauncherView;
-import org.hisp.dhis.client.sdk.ui.bindings.views.View;
+public class TrackedEntityInteractorImpl implements TrackedEntityInteractor {
+    private final TrackedEntityStore trackedEntityStore;
+    private final TrackedEntityApi trackedEntityApi;
 
-public class LauncherPresenterImpl implements LauncherPresenter {
-    private final UserInteractor userAccountInteractor;
-    private LauncherView launcherView;
-
-    public LauncherPresenterImpl(UserInteractor userAccountInteractor) {
-        this.userAccountInteractor = userAccountInteractor;
+    public TrackedEntityInteractorImpl(TrackedEntityStore trackedEntityStore, TrackedEntityApi trackedEntityApi) {
+        this.trackedEntityStore = trackedEntityStore;
+        this.trackedEntityApi = trackedEntityApi;
     }
 
     @Override
-    public void checkIfUserIsLoggedIn() {
-        if (userAccountInteractor != null && userAccountInteractor.isLoggedIn()) {
-            launcherView.navigateToHome();
-        } else {
-            launcherView.navigateToLogin();
-        }
+    public TrackedEntityStore store() {
+        return trackedEntityStore;
     }
 
     @Override
-    public void attachView(View view) {
-        launcherView = (LauncherView) view;
-    }
-
-    @Override
-    public void detachView() {
-        launcherView = null;
+    public TrackedEntityApi api() {
+        return trackedEntityApi;
     }
 }

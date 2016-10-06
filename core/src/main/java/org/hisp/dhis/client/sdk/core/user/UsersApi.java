@@ -26,36 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.bindings.presenters;
+package org.hisp.dhis.client.sdk.core.user;
 
-import org.hisp.dhis.client.sdk.core.user.UserInteractor;
-import org.hisp.dhis.client.sdk.ui.bindings.views.LauncherView;
-import org.hisp.dhis.client.sdk.ui.bindings.views.View;
+import org.hisp.dhis.client.sdk.models.user.User;
 
-public class LauncherPresenterImpl implements LauncherPresenter {
-    private final UserInteractor userAccountInteractor;
-    private LauncherView launcherView;
+import java.util.Map;
 
-    public LauncherPresenterImpl(UserInteractor userAccountInteractor) {
-        this.userAccountInteractor = userAccountInteractor;
-    }
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.QueryMap;
 
-    @Override
-    public void checkIfUserIsLoggedIn() {
-        if (userAccountInteractor != null && userAccountInteractor.isLoggedIn()) {
-            launcherView.navigateToHome();
-        } else {
-            launcherView.navigateToLogin();
-        }
-    }
+public interface UsersApi {
 
-    @Override
-    public void attachView(View view) {
-        launcherView = (LauncherView) view;
-    }
-
-    @Override
-    public void detachView() {
-        launcherView = null;
-    }
+    @GET("me")
+    Call<User> me(@QueryMap Map<String, String> queryMap);
 }

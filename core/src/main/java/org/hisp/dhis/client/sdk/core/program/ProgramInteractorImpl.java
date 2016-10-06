@@ -26,36 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.bindings.presenters;
+package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.user.UserInteractor;
-import org.hisp.dhis.client.sdk.ui.bindings.views.LauncherView;
-import org.hisp.dhis.client.sdk.ui.bindings.views.View;
+import org.hisp.dhis.client.sdk.core.MetadataApi;
 
-public class LauncherPresenterImpl implements LauncherPresenter {
-    private final UserInteractor userAccountInteractor;
-    private LauncherView launcherView;
+public class ProgramInteractorImpl implements ProgramInteractor {
+    private final ProgramStore programStore;
+    private final ProgramsApi programsApi;
+    private final MetadataApi metadataApi;
 
-    public LauncherPresenterImpl(UserInteractor userAccountInteractor) {
-        this.userAccountInteractor = userAccountInteractor;
+    public ProgramInteractorImpl(ProgramsApi programsApi,
+                             ProgramStore programStore,
+                             MetadataApi metadataApi) {
+        this.programsApi = programsApi;
+        this.programStore = programStore;
+        this.metadataApi = metadataApi;
+    }
+
+
+    @Override
+    public ProgramStore store() {
+        return programStore;
     }
 
     @Override
-    public void checkIfUserIsLoggedIn() {
-        if (userAccountInteractor != null && userAccountInteractor.isLoggedIn()) {
-            launcherView.navigateToHome();
-        } else {
-            launcherView.navigateToLogin();
-        }
-    }
-
-    @Override
-    public void attachView(View view) {
-        launcherView = (LauncherView) view;
-    }
-
-    @Override
-    public void detachView() {
-        launcherView = null;
+    public ProgramsApi api() {
+        return programsApi;
     }
 }

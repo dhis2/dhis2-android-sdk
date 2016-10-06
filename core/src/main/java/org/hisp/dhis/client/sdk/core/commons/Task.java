@@ -26,36 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.bindings.presenters;
+package org.hisp.dhis.client.sdk.core.commons;
 
-import org.hisp.dhis.client.sdk.core.user.UserInteractor;
-import org.hisp.dhis.client.sdk.ui.bindings.views.LauncherView;
-import org.hisp.dhis.client.sdk.ui.bindings.views.View;
+import java.io.IOException;
 
-public class LauncherPresenterImpl implements LauncherPresenter {
-    private final UserInteractor userAccountInteractor;
-    private LauncherView launcherView;
+public interface Task<T> {
 
-    public LauncherPresenterImpl(UserInteractor userAccountInteractor) {
-        this.userAccountInteractor = userAccountInteractor;
-    }
+    /* execute task synchronously */
+    T execute() throws IOException;
 
-    @Override
-    public void checkIfUserIsLoggedIn() {
-        if (userAccountInteractor != null && userAccountInteractor.isLoggedIn()) {
-            launcherView.navigateToHome();
-        } else {
-            launcherView.navigateToLogin();
-        }
-    }
+    /* enqueue task */
+    void enqueue(Callback<T> callback);
 
-    @Override
-    public void attachView(View view) {
-        launcherView = (LauncherView) view;
-    }
+    /* returns true if task was successfully executed */
+    boolean isExecuted();
 
-    @Override
-    public void detachView() {
-        launcherView = null;
-    }
+    /* returns true if task was canceled */
+    boolean isCanceled();
+
+    /* cancel task */
+    void cancel();
 }

@@ -26,36 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.bindings.presenters;
+package org.hisp.dhis.client.sdk.core.option;
 
-import org.hisp.dhis.client.sdk.core.user.UserInteractor;
-import org.hisp.dhis.client.sdk.ui.bindings.views.LauncherView;
-import org.hisp.dhis.client.sdk.ui.bindings.views.View;
+public class OptionSetInteractorImpl implements OptionSetInteractor {
+    private final OptionSetStore optionSetStore;
+    private final OptionSetApi optionSetApi;
 
-public class LauncherPresenterImpl implements LauncherPresenter {
-    private final UserInteractor userAccountInteractor;
-    private LauncherView launcherView;
+    public OptionSetInteractorImpl(OptionSetStore optionSetStore, OptionSetApi optionSetApi) {
+        this.optionSetStore = optionSetStore;
+        this.optionSetApi = optionSetApi;
+    }
 
-    public LauncherPresenterImpl(UserInteractor userAccountInteractor) {
-        this.userAccountInteractor = userAccountInteractor;
+
+    @Override
+    public OptionSetStore store() {
+        return optionSetStore;
     }
 
     @Override
-    public void checkIfUserIsLoggedIn() {
-        if (userAccountInteractor != null && userAccountInteractor.isLoggedIn()) {
-            launcherView.navigateToHome();
-        } else {
-            launcherView.navigateToLogin();
-        }
-    }
-
-    @Override
-    public void attachView(View view) {
-        launcherView = (LauncherView) view;
-    }
-
-    @Override
-    public void detachView() {
-        launcherView = null;
+    public OptionSetApi api() {
+        return optionSetApi;
     }
 }

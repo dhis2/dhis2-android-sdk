@@ -26,53 +26,59 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.bindings.commons;
+package org.hisp.dhis.client.sdk.core.systeminfo;
 
-import org.hisp.dhis.client.sdk.core.commons.Task;
+import android.util.Log;
 
-import rx.Observable;
-import rx.Single;
-import rx.SingleSubscriber;
-import rx.Subscriber;
+import org.hisp.dhis.client.sdk.models.SystemInfo;
 
-import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
+import java.util.HashMap;
+import java.util.Map;
 
-public class RxUtils {
-    private RxUtils() {
-        // no instances
+import retrofit2.Call;
+import retrofit2.Callback;
+
+public class SystemInfoController {
+    private final SystemInfoApi systemInfoApi;
+    private final SystemInfoStore systemInfoStore;
+    private Call<SystemInfo> systemInfoCall;
+
+    public SystemInfoController(SystemInfoApi systemInfoApi, SystemInfoStore systemInfoStore) {
+        this.systemInfoApi = systemInfoApi;
+        this.systemInfoStore = systemInfoStore;
     }
 
-    public static <T> Observable<T> observable(final Task<T> task) {
-        isNull(task, "task must not be null");
+    public void pull() {
+        systemInfoCall = getSystemInfo();
+        systemInfoCall.enqueue(new Callback<SystemInfo>() {
 
-        return Observable.create(new Observable.OnSubscribe<T>() {
             @Override
-            public void call(Subscriber<? super T> subscriber) {
-                try {
-                    T result = task.execute();
-                    subscriber.onNext(result);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
+            public void onResponse(Call<SystemInfo> call, retrofit2.Response<SystemInfo> response) {
+                SystemInfo systemInfo = response.body();
 
-                subscriber.onCompleted();
+                systemInfoStore.save(systemInfo);
+
+                Log.d(SystemInfoController.class.getSimpleName(),
+                        "serverDateTime: " + systemInfo.getServerDateTime().toString());
+            }
+
+            @Override
+            public void onFailure(Call<SystemInfo> call, Throwable t) {
+                t.printStackTrace();
             }
         });
+
     }
 
-    public static <T> Single<T> single(final Task<T> task) {
-        isNull(task, "task must not be null");
+    private Call<SystemInfo> getSystemInfo() {
+        Map<String, String> queryMap = new HashMap<>();
+        return systemInfoApi.systemInfo(queryMap);
+    }
 
-        return Single.create(new Single.OnSubscribe<T>() {
-            @Override
-            public void call(SingleSubscriber<? super T> subscriber) {
-                try {
-                    T result = task.execute();
-                    subscriber.onSuccess(result);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-            }
-        });
+    public void cancel() {
+        if (systemInfoCall != null && (!systemInfoCall.isCanceled() ||
+                !systemInfoCall.isExecuted())) {
+            systemInfoCall.cancel();
+        }
     }
 }

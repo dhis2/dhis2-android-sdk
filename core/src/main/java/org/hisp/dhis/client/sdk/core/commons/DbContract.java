@@ -26,36 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.bindings.presenters;
+package org.hisp.dhis.client.sdk.core.commons;
 
-import org.hisp.dhis.client.sdk.core.user.UserInteractor;
-import org.hisp.dhis.client.sdk.ui.bindings.views.LauncherView;
-import org.hisp.dhis.client.sdk.ui.bindings.views.View;
+public interface DbContract {
 
-public class LauncherPresenterImpl implements LauncherPresenter {
-    private final UserInteractor userAccountInteractor;
-    private LauncherView launcherView;
-
-    public LauncherPresenterImpl(UserInteractor userAccountInteractor) {
-        this.userAccountInteractor = userAccountInteractor;
+    public interface KeyValueColumns {
+        String COLUMN_NAME_KEY = "uid";
+        String COLUMN_NAME_VALUE = "value";
     }
 
-    @Override
-    public void checkIfUserIsLoggedIn() {
-        if (userAccountInteractor != null && userAccountInteractor.isLoggedIn()) {
-            launcherView.navigateToHome();
-        } else {
-            launcherView.navigateToLogin();
-        }
+    public interface VersionColumn {
+        String COLUMN_VERSION = "version";
     }
 
-    @Override
-    public void attachView(View view) {
-        launcherView = (LauncherView) view;
+    public interface LastUpdatedColumn {
+        String COLUMN_LAST_UPDATED = "lastUpdated";
     }
 
-    @Override
-    public void detachView() {
-        launcherView = null;
+    public interface IdentifiableColumns {
+        String COLUMN_UID = "uid";
+        String COLUMN_CODE = "code";
+        String COLUMN_NAME = "name";
+        String COLUMN_DISPLAY_NAME = "displayName";
+        String COLUMN_CREATED = "created";
+        String COLUMN_LAST_UPDATED = "lastUpdated";
+    }
+
+    public interface CoordinatesColumn {
+        String COLUMN_LONGITUDE = "longitude";
+        String COLUMN_LATITUDE = "latitude";
     }
 }

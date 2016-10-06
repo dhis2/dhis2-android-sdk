@@ -26,36 +26,62 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.bindings.presenters;
+package org.hisp.dhis.client.sdk.core.user;
 
-import org.hisp.dhis.client.sdk.core.user.UserInteractor;
-import org.hisp.dhis.client.sdk.ui.bindings.views.LauncherView;
-import org.hisp.dhis.client.sdk.ui.bindings.views.View;
+import org.hisp.dhis.client.sdk.core.commons.Task;
+import org.hisp.dhis.client.sdk.models.user.User;
 
-public class LauncherPresenterImpl implements LauncherPresenter {
-    private final UserInteractor userAccountInteractor;
-    private LauncherView launcherView;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
-    public LauncherPresenterImpl(UserInteractor userAccountInteractor) {
-        this.userAccountInteractor = userAccountInteractor;
+public class UserInteractorImpl implements UserInteractor{
+    private final Executor callbackExecutor;
+    private final UserStore userStore;
+    private final UsersApi usersApi;
+    private final UserPreferences userPreferences;
+
+    public UserInteractorImpl(Executor callbackExecutor, UsersApi usersApi,
+                          UserStore userStore, UserPreferences userPreferences) {
+        this.callbackExecutor = callbackExecutor;
+        this.userStore = userStore;
+        this.usersApi = usersApi;
+        this.userPreferences = userPreferences;
     }
 
     @Override
-    public void checkIfUserIsLoggedIn() {
-        if (userAccountInteractor != null && userAccountInteractor.isLoggedIn()) {
-            launcherView.navigateToHome();
-        } else {
-            launcherView.navigateToLogin();
-        }
+    public UserStore store() {
+        return userStore;
     }
 
     @Override
-    public void attachView(View view) {
-        launcherView = (LauncherView) view;
+    public UsersApi api() {
+        return usersApi;
     }
 
     @Override
-    public void detachView() {
-        launcherView = null;
+    public String username() {
+        return userPreferences.getUsername();
     }
+
+    @Override
+    public String password() {
+        return userPreferences.getPassword();
+    }
+
+    @Override
+    public Task<User> logIn(String username, String password) {
+        return new UserLoginTask(Executors.newCachedThreadPool(),
+                callbackExecutor, username, password, usersApi, userStore, userPreferences);
+    }
+
+    @Override
+    public Object logOut() {
+        return null;
+    }
+
+    @Override
+    public boolean isLoggedIn() {
+        return userPreferences.isUserConfirmed();
+    }
+
 }

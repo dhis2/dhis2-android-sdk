@@ -26,36 +26,54 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.bindings.presenters;
+package org.hisp.dhis.client.sdk.core.commons;
 
-import org.hisp.dhis.client.sdk.core.user.UserInteractor;
-import org.hisp.dhis.client.sdk.ui.bindings.views.LauncherView;
-import org.hisp.dhis.client.sdk.ui.bindings.views.View;
+import org.hisp.dhis.client.sdk.core.user.UserPreferences;
 
-public class LauncherPresenterImpl implements LauncherPresenter {
-    private final UserInteractor userAccountInteractor;
-    private LauncherView launcherView;
+import java.io.IOException;
+import java.net.HttpURLConnection;
 
-    public LauncherPresenterImpl(UserInteractor userAccountInteractor) {
-        this.userAccountInteractor = userAccountInteractor;
+import okhttp3.Interceptor;
+import okhttp3.Request;
+import okhttp3.Response;
+
+import static android.text.TextUtils.isEmpty;
+import static okhttp3.Credentials.basic;
+
+public class BasicAuthenticator implements Interceptor {
+    private final UserPreferences mUserPreferences;
+
+    public BasicAuthenticator(UserPreferences preferences) {
+        mUserPreferences = preferences;
     }
 
     @Override
-    public void checkIfUserIsLoggedIn() {
-        if (userAccountInteractor != null && userAccountInteractor.isLoggedIn()) {
-            launcherView.navigateToHome();
-        } else {
-            launcherView.navigateToLogin();
+    public Response intercept(Chain chain) throws IOException {
+        String username = mUserPreferences.getUsername();
+        String password = mUserPreferences.getPassword();
+
+        if (isEmpty(username) || isEmpty(password)) {
+            return chain.proceed(chain.request());
         }
-    }
 
-    @Override
-    public void attachView(View view) {
-        launcherView = (LauncherView) view;
-    }
+        String base64Credentials = basic(username, password);
+        Request request = chain.request().newBuilder()
+                .addHeader("Authorization", base64Credentials)
+                .build();
 
-    @Override
-    public void detachView() {
-        launcherView = null;
+        Response response = chain.proceed(request);
+        if (mUserPreferences.isUserConfirmed()) {
+            if (response.code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                mUserPreferences.invalidateUser();
+            }
+        } else {
+            if (response.isSuccessful()) {
+                mUserPreferences.confirmUser();
+            } else {
+                mUserPreferences.clear();
+            }
+        }
+
+        return response;
     }
 }

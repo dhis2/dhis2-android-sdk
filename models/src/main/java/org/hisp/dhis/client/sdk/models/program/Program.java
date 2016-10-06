@@ -31,6 +31,7 @@ package org.hisp.dhis.client.sdk.models.program;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.BaseNameableObject;
 import org.hisp.dhis.client.sdk.models.dataelement.CategoryCombo;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
@@ -44,9 +45,6 @@ public class Program extends BaseNameableObject {
 
     @JsonProperty("version")
     private int version;
-
-    @JsonProperty("externalAccess")
-    private boolean externalAccess;
 
     @JsonProperty("onlyEnrollOnce")
     private boolean onlyEnrollOnce;
@@ -69,9 +67,6 @@ public class Program extends BaseNameableObject {
     @JsonProperty("dataEntryMethod")
     private boolean dataEntryMethod;
 
-    @JsonProperty("singleEvent")
-    private boolean singleEvent;
-
     @JsonProperty("ignoreOverdueEvents")
     private boolean ignoreOverdueEvents;
 
@@ -81,26 +76,11 @@ public class Program extends BaseNameableObject {
     @JsonProperty("selectIncidentDatesInFuture")
     private boolean selectIncidentDatesInFuture;
 
-    @JsonProperty("programIndicators")
-    List<ProgramIndicator> programIndicators;
-
-    @JsonProperty("categoryCombo")
-    CategoryCombo categoryCombo;
-
     @JsonProperty("captureCoordinates")
     boolean captureCoordinates;
 
     @JsonProperty("useFirstStageDuringRegistration")
     boolean useFirstStageDuringRegistration;
-
-    @JsonProperty("trackedEntity")
-    TrackedEntity trackedEntity;
-
-    @JsonProperty("programTrackedEntityAttribute")
-    List<TrackedEntityAttribute> programTrackedEntityAttribute;
-
-    @JsonProperty("relatedProgram")
-    Program relatedProgram;
 
     @JsonProperty("displayFrontPageList")
     boolean displayFrontPageList;
@@ -114,6 +94,21 @@ public class Program extends BaseNameableObject {
     @JsonProperty("relationshipText")
     String relationshipText;
 
+    @JsonProperty("programTrackedEntityAttribute")
+    List<TrackedEntityAttribute> programTrackedEntityAttribute;
+
+    @JsonProperty("relatedProgram")
+    Program relatedProgram;
+
+    @JsonProperty("trackedEntity")
+    TrackedEntity trackedEntity;
+
+    @JsonProperty("categoryCombo")
+    CategoryCombo categoryCombo;
+
+    @JsonProperty("programIndicators")
+    List<ProgramIndicator> programIndicators;
+
     @JsonProperty("programStages")
     List<ProgramStage> programStages;
 
@@ -123,16 +118,26 @@ public class Program extends BaseNameableObject {
     @JsonProperty("programRuleVariables")
     List<ProgramRuleVariable> programRuleVariables;
 
+    public static void validate(Program program) {
+        BaseIdentifiableObject.validate(program);
+
+        if (program.getProgramType() == null) {
+            throw new IllegalArgumentException("Program type must not be null");
+        }
+
+        if (program.getProgramStages() != null && !program.getProgramStages().isEmpty()) {
+            throw new IllegalArgumentException("Program stages cannot be null or empty");
+        }
+
+        if (program.getProgramTrackedEntityAttribute() != null &&
+                !program.getProgramTrackedEntityAttribute().isEmpty()) {
+            throw new IllegalArgumentException("Program tracked entity attributes " +
+                    "cannot be null or empty");
+        }
+    }
+
     public Program() {
         // explicit empty constructor
-    }
-
-    public boolean isExternalAccess() {
-        return externalAccess;
-    }
-
-    public void setExternalAccess(boolean externalAccess) {
-        this.externalAccess = externalAccess;
     }
 
     public String getEnrollmentDateLabel() {
@@ -189,14 +194,6 @@ public class Program extends BaseNameableObject {
 
     public void setDataEntryMethod(boolean dataEntryMethod) {
         this.dataEntryMethod = dataEntryMethod;
-    }
-
-    public boolean isSingleEvent() {
-        return singleEvent;
-    }
-
-    public void setSingleEvent(boolean singleEvent) {
-        this.singleEvent = singleEvent;
     }
 
     public boolean isIgnoreOverdueEvents() {

@@ -28,32 +28,45 @@
 
 package org.hisp.dhis.client.sdk.core.commons;
 
+import android.net.Uri;
+
 public interface DbContract {
+    String AUTHORITY = "org.hisp.dhis.client.sdk.core";
+    Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
-    public interface KeyValueColumns {
-        String COLUMN_NAME_KEY = "uid";
-        String COLUMN_NAME_VALUE = "value";
-    }
-
-    public interface VersionColumn {
+    interface VersionColumn {
         String COLUMN_VERSION = "version";
     }
 
-    public interface LastUpdatedColumn {
-        String COLUMN_LAST_UPDATED = "lastUpdated";
+    interface IdColumn {
+        String COLUMN_ID = "id";
     }
 
-    public interface IdentifiableColumns {
-        String COLUMN_UID = "uid";
-        String COLUMN_CODE = "code";
-        String COLUMN_NAME = "name";
-        String COLUMN_DISPLAY_NAME = "displayName";
+    interface TimeStampColumns {
         String COLUMN_CREATED = "created";
         String COLUMN_LAST_UPDATED = "lastUpdated";
     }
 
-    public interface CoordinatesColumn {
+    interface IdentifiableColumns extends IdColumn, TimeStampColumns {
+        String COLUMN_UID = "uid";
+        String COLUMN_CODE = "code";
+        String COLUMN_NAME = "name";
+        String COLUMN_DISPLAY_NAME = "displayName";
+    }
+
+    interface NameableColumns extends IdentifiableColumns {
+        String COLUMN_SHORT_NAME = "shortName";
+        String COLUMN_DESCRIPTION = "description";
+        String COLUMN_DISPLAY_SHORT_NAME = "displayShortName";
+        String COLUMN_DISPLAY_DESCRIPTION = "displayDescription";
+    }
+
+    interface CoordinatesColumn {
         String COLUMN_LONGITUDE = "longitude";
         String COLUMN_LATITUDE = "latitude";
+    }
+
+    interface BodyColumn {
+        String COLUMN_BODY = "body";
     }
 }

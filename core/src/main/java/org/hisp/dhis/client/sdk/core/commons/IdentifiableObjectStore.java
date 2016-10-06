@@ -26,20 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.common;
+package org.hisp.dhis.client.sdk.core.commons;
 
-import java.util.Date;
+import org.hisp.dhis.client.sdk.models.common.IdentifiableObject;
 
-public interface IdentifiableObject extends Model {
-    String getUid();
+import java.util.List;
 
-    String getCode();
+public interface IdentifiableObjectStore<T extends IdentifiableObject> {
+    List<T> queryByUid(String uid);
 
-    String getName();
-
-    String getDisplayName();
-
-    Date getCreated();
-
-    Date getLastUpdated();
+    List<T> queryByCode(String code);
 }

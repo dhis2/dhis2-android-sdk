@@ -28,168 +28,24 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.client.sdk.core.commons.DbContract;
+import org.hisp.dhis.client.sdk.core.commons.DbContract.BodyColumn;
+import org.hisp.dhis.client.sdk.core.commons.DbContract.NameableColumns;
+import org.hisp.dhis.client.sdk.core.commons.DbContract.TimeStampColumns;
+import org.hisp.dhis.client.sdk.core.commons.DbContract.VersionColumn;
+import org.hisp.dhis.client.sdk.core.commons.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramType;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
-
-public class ProgramStore {
-    private SQLiteOpenHelper sqLiteOpenHelper;
-    private ObjectMapper objectMapper;
-
-    public static final String CREATE_TABLE_PROGRAMS = "CREATE TABLE IF NOT EXISTS " + ProgramColumns.TABLE_NAME + " (" +
-            ProgramColumns.COLUMN_NAME_KEY + " TEXT PRIMARY KEY," +
-            ProgramColumns.COLUMN_NAME_VALUE + " TEXT NOT NULL," +
-            ProgramColumns.COLUMN_VERSION + " INTEGER NOT NULL" + " )";
-
-    public static final String DROP_TABLE_PROGRAMS = "DROP TABLE IF EXISTS " +
-            ProgramColumns.TABLE_NAME;
-
-    public interface ProgramColumns extends DbContract.KeyValueColumns, DbContract.VersionColumn {
-        String TABLE_NAME = "program";
+public interface ProgramStore extends IdentifiableObjectStore<Program> {
+    interface ProgramColumns extends NameableColumns, TimeStampColumns, VersionColumn, BodyColumn {
+        String TABLE_NAME = "programs";
+        String COLUMN_PROGRAM_TYPE = "programType";
+        String COLUMN_DISPLAY_FRONT_PAGE_LIST = "displayFrontPageList";
     }
 
-    public ProgramStore(SQLiteOpenHelper sqLiteOpenHelper, ObjectMapper objectMapper) {
-        this.sqLiteOpenHelper = sqLiteOpenHelper;
-        this.objectMapper = objectMapper;
-    }
+    List<Program> query(ProgramType programType);
 
-    public synchronized boolean save(List<Program> programs) throws JsonProcessingException {
-        isNull(programs, "Programs cannot be null");
-        SQLiteDatabase database = sqLiteOpenHelper.getWritableDatabase();
-        List<ContentValues> contentValuesList = mapToContentValues(programs);
-
-        if (contentValuesList.isEmpty()) {
-            return false;
-        }
-
-        for (ContentValues contentValues : contentValuesList) {
-            database.insertWithOnConflict(ProgramColumns.TABLE_NAME,
-                    null, contentValues, SQLiteDatabase.CONFLICT_REPLACE);
-        }
-
-        database.close();
-        return true;
-    }
-
-    private List<ContentValues> mapToContentValues(List<Program> programs) {
-        List<ContentValues> contentValuesList = new ArrayList<>();
-
-        for (Program program : programs) {
-            String programJson;
-            try {
-                programJson = objectMapper.writeValueAsString(program);
-            } catch (JsonProcessingException exception) {
-                throw new RuntimeException(exception);
-            }
-
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(ProgramColumns.COLUMN_NAME_KEY, program.getUid());
-            contentValues.put(ProgramColumns.COLUMN_VERSION, program.getVersion());
-            contentValues.put(ProgramColumns.COLUMN_NAME_VALUE, programJson);
-
-            contentValuesList.add(contentValues);
-        }
-        return contentValuesList;
-    }
-
-    public List<Program> list() {
-        List<Program> programs = new ArrayList<>();
-
-        String[] projection = new String[]{
-                ProgramColumns.COLUMN_NAME_KEY,
-                ProgramColumns.COLUMN_VERSION,
-                ProgramColumns.COLUMN_NAME_VALUE
-        };
-
-        SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
-
-        Cursor cursor = database.query(ProgramStore.ProgramColumns.TABLE_NAME, projection,
-                null, null, null, null, null);
-
-        try {
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-
-                do {
-                    String json = cursor.getString(1);
-                    Program program = objectMapper.readValue(json, Program.class);
-
-                    programs.add(program);
-                } while (cursor.moveToNext());
-            }
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        } finally {
-            cursor.close();
-        }
-
-        return programs;
-    }
-
-    public List<Program> listBy(String[] projection) {
-        isNull(projection, "Projection must not be null");
-
-        List<Program> programs = new ArrayList<>();
-
-        SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
-
-        Cursor cursor = database.query(ProgramStore.ProgramColumns.TABLE_NAME, projection,
-                null, null, null, null, null);
-
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-
-            do {
-                String uid = cursor.getString(0);
-                int version = cursor.getInt(1);
-                Program program = new Program();
-                program.setUid(uid);
-                program.setVersion(version);
-
-                programs.add(program);
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-
-        return programs;
-    }
-
-    //TODO get Program
-    public Program get(String uid) {
-        isNull(uid, "Uid must not be null");
-        Program program = null;
-        Cursor cursor = sqLiteOpenHelper.getReadableDatabase().rawQuery(
-                "SELECT * FROM " + ProgramStore.ProgramColumns.TABLE_NAME
-                        + " where "
-                        + ProgramStore.ProgramColumns.COLUMN_NAME_KEY + "=" + uid,
-                null);
-
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-            try {
-                program = objectMapper.readValue(
-                        cursor.getString(cursor.getColumnIndex(ProgramStore.ProgramColumns.COLUMN_NAME_VALUE))
-                        , Program.class);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                cursor.close();
-            }
-        }
-        return program;
-    }
+    List<Program> query(boolean displayFrontPageList);
 }

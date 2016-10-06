@@ -26,20 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.common;
+package org.hisp.dhis.client.sdk.core.option;
 
-import java.util.Date;
+import org.hisp.dhis.client.sdk.core.commons.DbContract;
+import org.hisp.dhis.client.sdk.core.commons.DbContract.IdColumn;
+import org.hisp.dhis.client.sdk.core.commons.DbContract.IdentifiableColumns;
+import org.hisp.dhis.client.sdk.core.commons.DbContract.VersionColumn;
+import org.hisp.dhis.client.sdk.core.commons.DbContract.BodyColumn;
+import org.hisp.dhis.client.sdk.core.commons.IdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.models.option.OptionSet;
 
-public interface IdentifiableObject extends Model {
-    String getUid();
+public interface OptionSetStoreI extends IdentifiableObjectStore<OptionSet> {
 
-    String getCode();
-
-    String getName();
-
-    String getDisplayName();
-
-    Date getCreated();
-
-    Date getLastUpdated();
+    interface OptionSetColumns extends IdColumn, IdentifiableColumns, VersionColumn, BodyColumn {
+        String TABLE_NAME = "optionSet";
+    }
 }

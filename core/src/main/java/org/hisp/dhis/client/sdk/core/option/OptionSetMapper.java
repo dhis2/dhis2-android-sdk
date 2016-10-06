@@ -26,20 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.common;
+package org.hisp.dhis.client.sdk.core.option;
 
-import java.util.Date;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
 
-public interface IdentifiableObject extends Model {
-    String getUid();
+import org.hisp.dhis.client.sdk.core.commons.Mapper;
+import org.hisp.dhis.client.sdk.models.option.OptionSet;
 
-    String getCode();
+public class OptionSetMapper implements Mapper<OptionSet> {
+    @Override
+    public Uri getContentUri() {
+        return null;
+    }
 
-    String getName();
+    @Override
+    public Uri getContentItemUri(long id) {
+        return null;
+    }
 
-    String getDisplayName();
+    @Override
+    public String[] getProjection() {
+        return new String[0];
+    }
 
-    Date getCreated();
+    @Override
+    public ContentValues toContentValues(OptionSet model) {
+        return null;
+    }
 
-    Date getLastUpdated();
+    @Override
+    public OptionSet toModel(Cursor cursor) {
+        return null;
+    }
 }

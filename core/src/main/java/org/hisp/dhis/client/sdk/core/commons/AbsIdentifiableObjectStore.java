@@ -26,20 +26,46 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.common;
+package org.hisp.dhis.client.sdk.core.commons;
 
-import java.util.Date;
+import android.content.ContentResolver;
+import android.database.Cursor;
 
-public interface IdentifiableObject extends Model {
-    String getUid();
+import org.hisp.dhis.client.sdk.core.event.ProgramColumns;
+import org.hisp.dhis.client.sdk.models.common.IdentifiableObject;
 
-    String getCode();
+import java.util.List;
 
-    String getName();
+public class AbsIdentifiableObjectStore<T extends IdentifiableObject> extends AbsStore<T> implements IdentifiableObjectStore<T> {
+    public AbsIdentifiableObjectStore(ContentResolver contentResolver, Mapper<T> mapper) {
+        super(contentResolver, mapper);
+    }
 
-    String getDisplayName();
+    @Override
+    public List<T> queryByUid(String uid) {
+        if (uid == null) {
+            throw new IllegalArgumentException("uid must not be null");
+        }
 
-    Date getCreated();
+        final String[] selectionArgs = new String[]{uid};
+        final String selection = EventColumns.COLUMN_UID + " = ?";
 
-    Date getLastUpdated();
+        Cursor cursor = contentResolver.query(mapper.getContentUri(),
+                mapper.getProjection(), selection, selectionArgs, null);
+        return toModels(cursor);
+    }
+
+    @Override
+    public List<T> queryByCode(String code) {
+        if (code == null) {
+            throw new IllegalArgumentException("code must not be null");
+        }
+
+        final String[] selectionArgs = new String[]{code};
+        final String selection = EventColumns.COLUMN_CODE + " = ?";
+
+        Cursor cursor = contentResolver.query(mapper.getContentUri(),
+                mapper.getProjection(), selection, selectionArgs, null);
+        return toModels(cursor);
+    }
 }

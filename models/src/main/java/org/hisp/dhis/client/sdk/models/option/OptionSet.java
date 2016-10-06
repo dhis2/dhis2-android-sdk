@@ -37,7 +37,7 @@ import org.hisp.dhis.client.sdk.models.common.ValueType;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-    public class OptionSet extends BaseIdentifiableObject {
+public class OptionSet extends BaseIdentifiableObject {
 
     @JsonProperty("version")
     int version;

@@ -28,18 +28,8 @@
 
 package org.hisp.dhis.client.sdk.models.common;
 
-import java.util.Date;
+public interface Model {
+    long getId();
 
-public interface IdentifiableObject extends Model {
-    String getUid();
-
-    String getCode();
-
-    String getName();
-
-    String getDisplayName();
-
-    Date getCreated();
-
-    Date getLastUpdated();
+    void setId(long id);
 }

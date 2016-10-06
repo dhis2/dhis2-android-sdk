@@ -26,20 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.common;
+package org.hisp.dhis.client.sdk.core.commons;
 
-import java.util.Date;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
 
-public interface IdentifiableObject extends Model {
-    String getUid();
+import org.hisp.dhis.client.sdk.models.common.Model;
 
-    String getCode();
+public interface Mapper<ModelType extends Model> {
+    Uri getContentUri();
 
-    String getName();
+    Uri getContentItemUri(long id);
 
-    String getDisplayName();
+    String[] getProjection();
 
-    Date getCreated();
+    ContentValues toContentValues(ModelType model);
 
-    Date getLastUpdated();
+    ModelType toModel(Cursor cursor);
 }

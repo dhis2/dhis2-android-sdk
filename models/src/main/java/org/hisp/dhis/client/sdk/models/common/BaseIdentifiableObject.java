@@ -31,10 +31,13 @@ package org.hisp.dhis.client.sdk.models.common;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public abstract class BaseIdentifiableObject implements IdentifiableObject {
+public abstract class BaseIdentifiableObject extends BaseModel implements IdentifiableObject {
+    public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
     @JsonProperty("id")
     String uid;
@@ -55,6 +58,28 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject {
 
     @JsonProperty("lastUpdated")
     Date lastUpdated;
+
+    public static <T extends IdentifiableObject> void validate(T model) {
+        if (model == null) {
+            throw new IllegalArgumentException("model must not be null");
+        }
+
+        if (model.getUid() == null || model.getUid().length() != 11) {
+            throw new IllegalArgumentException("Uid must be 11 characters long");
+        }
+
+        if (model.getCreated() == null) {
+            throw new IllegalArgumentException("created must not be null");
+        }
+
+        if (model.getLastUpdated() == null) {
+            throw new IllegalArgumentException("lastUpdated must not be null");
+        }
+    }
+
+    public BaseIdentifiableObject() {
+        // explicit constructor
+    }
 
     @Override
     public String getUid() {

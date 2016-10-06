@@ -32,7 +32,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import org.hisp.dhis.client.sdk.core.event.EventStore;
+import org.hisp.dhis.client.sdk.core.event.EventStoreImpl;
 import org.hisp.dhis.client.sdk.core.option.OptionSetStore;
 import org.hisp.dhis.client.sdk.core.program.ProgramStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueStore;
@@ -53,7 +53,7 @@ public class DbHelper extends SQLiteOpenHelper {
         database.execSQL(UserStore.CREATE_TABLE_USERS);
         database.execSQL(OptionSetStore.CREATE_TABLE_OPTION_SET);
         database.execSQL(TrackedEntityStore.CREATE_TABLE_TRACKED_ENTITY);
-        database.execSQL(EventStore.CREATE_TABLE_EVENTS);
+        database.execSQL(EventStoreImpl.CREATE_TABLE_EVENTS);
         database.execSQL(TrackedEntityDataValueStore.CREATE_TABLE_TRACKED_ENTITY_DATA_VALUES);
     }
 
@@ -63,7 +63,7 @@ public class DbHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(UserStore.DROP_TABLE_USERS);
         sqLiteDatabase.execSQL(OptionSetStore.DROP_TABLE_OPTION_SET);
         sqLiteDatabase.execSQL(TrackedEntityStore.DROP_TABLE_TRACKED_ENTITY);
-        sqLiteDatabase.execSQL(EventStore.DROP_TABLE_EVENTS);
+        sqLiteDatabase.execSQL(EventStoreImpl.DROP_TABLE_EVENTS);
         sqLiteDatabase.execSQL(TrackedEntityDataValueStore.DROP_TABLE_TRACKED_ENTITY_DATA_VALUES);
     }
 }

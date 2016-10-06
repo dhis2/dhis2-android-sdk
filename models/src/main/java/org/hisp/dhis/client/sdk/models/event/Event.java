@@ -28,12 +28,15 @@
 
 package org.hisp.dhis.client.sdk.models.event;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.Coordinates;
 import org.hisp.dhis.client.sdk.models.common.IdentifiableObject;
+import org.hisp.dhis.client.sdk.models.common.Model;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
 import java.util.Comparator;
@@ -41,7 +44,7 @@ import java.util.Date;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Event implements IdentifiableObject {
+public class Event implements IdentifiableObject, Model {
 
     public static final Comparator<Event> DATE_COMPARATOR = new EventDateComparator();
 
@@ -49,6 +52,9 @@ public class Event implements IdentifiableObject {
     public static final String STATUS_KEY = "status";
     public static final String EVENT_DATE_LABEL = "Event date";
     public static final String STATUS_LABEL = "Status";
+
+    @JsonIgnore
+    private long id;
 
     @JsonProperty("event")
     private String uid;
@@ -91,10 +97,6 @@ public class Event implements IdentifiableObject {
     @JsonProperty("completedDate")
     private Date completedDate;
 
-
-    /*
-     * This property is optional (used only in tracker)
-     */
     @JsonProperty("dueDate")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Date dueDate;
@@ -103,8 +105,42 @@ public class Event implements IdentifiableObject {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<TrackedEntityDataValue> dataValues;
 
+    public static void validate(Event event) {
+        BaseIdentifiableObject.validate(event);
+
+        if (event.getStatus() == null) {
+            throw new IllegalArgumentException("EventStatus must not be null");
+        }
+
+        if (event.getProgram() == null) {
+            throw new IllegalArgumentException("Program must not be null");
+        }
+
+        if (event.getProgramStage() == null) {
+            throw new IllegalArgumentException("Program stage must not be null");
+        }
+
+        if (event.getOrgUnit() == null) {
+            throw new IllegalArgumentException("Organisation unit must not be null");
+        }
+
+        if (event.getEventDate() == null) {
+            throw new IllegalArgumentException("Event date must not be null");
+        }
+    }
+
     public Event() {
         // explicit empty constructor
+    }
+
+    @Override
+    public long getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(long id) {
+        this.id = id;
     }
 
     @Override
@@ -231,10 +267,6 @@ public class Event implements IdentifiableObject {
 
     public void setCompletedDate(Date completedDate) {
         this.completedDate = completedDate;
-    }
-
-    public enum EventStatus {
-        ACTIVE, COMPLETED, SCHEDULE, SKIPPED
     }
 
     /**

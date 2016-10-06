@@ -26,20 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.common;
+package org.hisp.dhis.client.sdk.models.event;
 
-import java.util.Date;
-
-public interface IdentifiableObject extends Model {
-    String getUid();
-
-    String getCode();
-
-    String getName();
-
-    String getDisplayName();
-
-    Date getCreated();
-
-    Date getLastUpdated();
+public enum EventStatus {
+    ACTIVE, COMPLETED, SCHEDULE, SKIPPED
 }

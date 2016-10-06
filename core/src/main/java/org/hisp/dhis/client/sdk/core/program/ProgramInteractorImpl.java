@@ -43,7 +43,6 @@ public class ProgramInteractorImpl implements ProgramInteractor {
         this.metadataApi = metadataApi;
     }
 
-
     @Override
     public ProgramStore store() {
         return programStore;

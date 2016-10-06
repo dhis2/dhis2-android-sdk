@@ -26,20 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.common;
+package org.hisp.dhis.client.sdk.core.commons;
 
-import java.util.Date;
+import org.hisp.dhis.client.sdk.models.common.Model;
 
-public interface IdentifiableObject extends Model {
-    String getUid();
+import java.util.List;
 
-    String getCode();
+public interface Store<T extends Model> {
 
-    String getName();
+    boolean insert(T object);
 
-    String getDisplayName();
+    boolean update(T object);
 
-    Date getCreated();
+    boolean save(T object);
 
-    Date getLastUpdated();
+    /**
+     * @return int The number of rows deleted.
+     */
+    int delete(T object);
+
+    /**
+     * @return int The number of rows deleted.
+     */
+    int deleteAll();
+
+    T queryById(long id);
+
+    List<T> queryAll();
 }

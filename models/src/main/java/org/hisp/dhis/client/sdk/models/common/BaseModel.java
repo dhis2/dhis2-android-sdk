@@ -28,18 +28,24 @@
 
 package org.hisp.dhis.client.sdk.models.common;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public interface IdentifiableObject extends Model {
-    String getUid();
+public class BaseModel implements Model {
 
-    String getCode();
+    @JsonIgnore
+    private long id;
 
-    String getName();
+    public BaseModel() {
+        // explicit empty public constructor
+    }
 
-    String getDisplayName();
+    @Override
+    public final long getId() {
+        return id;
+    }
 
-    Date getCreated();
-
-    Date getLastUpdated();
+    @Override
+    public final void setId(long id) {
+        this.id = id;
+    }
 }

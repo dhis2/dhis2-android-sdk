@@ -31,10 +31,8 @@ package org.hisp.dhis.client.sdk.core.commons;
 import android.content.ContentResolver;
 import android.database.Cursor;
 
-import org.hisp.dhis.client.sdk.core.event.ProgramColumns;
+import org.hisp.dhis.client.sdk.core.commons.DbContract.IdentifiableColumns;
 import org.hisp.dhis.client.sdk.models.common.IdentifiableObject;
-
-import java.util.List;
 
 public class AbsIdentifiableObjectStore<T extends IdentifiableObject> extends AbsStore<T> implements IdentifiableObjectStore<T> {
     public AbsIdentifiableObjectStore(ContentResolver contentResolver, Mapper<T> mapper) {
@@ -42,30 +40,30 @@ public class AbsIdentifiableObjectStore<T extends IdentifiableObject> extends Ab
     }
 
     @Override
-    public List<T> queryByUid(String uid) {
+    public T queryByUid(String uid) {
         if (uid == null) {
             throw new IllegalArgumentException("uid must not be null");
         }
 
         final String[] selectionArgs = new String[]{uid};
-        final String selection = EventColumns.COLUMN_UID + " = ?";
+        final String selection = IdentifiableColumns.COLUMN_UID + " = ?";
 
         Cursor cursor = contentResolver.query(mapper.getContentUri(),
                 mapper.getProjection(), selection, selectionArgs, null);
-        return toModels(cursor);
+        return toModel(cursor);
     }
 
     @Override
-    public List<T> queryByCode(String code) {
+    public T queryByCode(String code) {
         if (code == null) {
             throw new IllegalArgumentException("code must not be null");
         }
 
         final String[] selectionArgs = new String[]{code};
-        final String selection = EventColumns.COLUMN_CODE + " = ?";
+        final String selection = IdentifiableColumns.COLUMN_CODE + " = ?";
 
         Cursor cursor = contentResolver.query(mapper.getContentUri(),
                 mapper.getProjection(), selection, selectionArgs, null);
-        return toModels(cursor);
+        return toModel(cursor);
     }
 }

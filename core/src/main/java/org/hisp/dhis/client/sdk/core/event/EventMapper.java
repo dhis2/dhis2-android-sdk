@@ -38,6 +38,7 @@ import org.hisp.dhis.client.sdk.core.commons.Mapper;
 import org.hisp.dhis.client.sdk.core.event.EventStore.EventColumns;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.Coordinates;
+import org.hisp.dhis.client.sdk.models.common.State;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.event.EventStatus;
 
@@ -63,6 +64,7 @@ public class EventMapper implements Mapper<Event> {
             EventColumns.COLUMN_PROGRAM_STAGE,
             EventColumns.COLUMN_LATITUDE,
             EventColumns.COLUMN_LONGITUDE,
+            EventColumns.COLUMN_STATE
     };
 
     private static final int COLUMN_ID = 0;
@@ -80,6 +82,7 @@ public class EventMapper implements Mapper<Event> {
     private static final int COLUMN_PROGRAM_STAGE = 12;
     private static final int COLUMN_LATITUDE = 13;
     private static final int COLUMN_LONGITUDE = 14;
+    private static final int COLUMN_STATE = 15;
 
     public EventMapper() {
         // explicit constructor
@@ -120,6 +123,7 @@ public class EventMapper implements Mapper<Event> {
         contentValues.put(EventColumns.COLUMN_PROGRAM_STAGE, event.getProgramStage());
         contentValues.put(EventColumns.COLUMN_LATITUDE, event.getCoordinate().getLatitude());
         contentValues.put(EventColumns.COLUMN_LONGITUDE, event.getCoordinate().getLongitude());
+        contentValues.put(EventColumns.COLUMN_STATE, event.getState().toString());
 
         return contentValues;
     }
@@ -137,6 +141,7 @@ public class EventMapper implements Mapper<Event> {
         event.setProgram(cursor.getString(COLUMN_PROGRAM));
         event.setProgramStage(cursor.getString(COLUMN_PROGRAM_STAGE));
         event.setStatus(EventStatus.valueOf(cursor.getString(COLUMN_EVENT_STATUS)));
+        event.setState(State.valueOf(cursor.getString(COLUMN_STATE)));
 
         event.setCoordinate(new Coordinates(
                 cursor.getDouble(COLUMN_LATITUDE),

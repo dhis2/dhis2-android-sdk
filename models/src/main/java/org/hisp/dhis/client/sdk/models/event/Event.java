@@ -34,6 +34,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.client.sdk.models.common.BaseDataModel;
 import org.hisp.dhis.client.sdk.models.common.Coordinates;
 import org.hisp.dhis.client.sdk.models.common.IdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.Model;
@@ -44,7 +45,7 @@ import java.util.Date;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Event implements IdentifiableObject, Model {
+public class Event extends BaseDataModel implements IdentifiableObject, Model {
 
     public static final Comparator<Event> DATE_COMPARATOR = new EventDateComparator();
 
@@ -126,6 +127,10 @@ public class Event implements IdentifiableObject, Model {
 
         if (event.getEventDate() == null) {
             throw new IllegalArgumentException("Event date must not be null");
+        }
+
+        if (event.getState() == null) {
+            throw new IllegalArgumentException("State must not be null");
         }
     }
 

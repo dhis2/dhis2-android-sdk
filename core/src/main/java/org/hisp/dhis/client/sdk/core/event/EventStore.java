@@ -28,13 +28,16 @@
 
 package org.hisp.dhis.client.sdk.core.event;
 
-import org.hisp.dhis.client.sdk.core.commons.DbContract;
+import org.hisp.dhis.client.sdk.core.commons.DbContract.CoordinatesColumn;
+import org.hisp.dhis.client.sdk.core.commons.DbContract.IdentifiableColumns;
+import org.hisp.dhis.client.sdk.core.commons.DbContract.StateColumn;
+import org.hisp.dhis.client.sdk.core.commons.IdentifiableObjectDataStore;
 import org.hisp.dhis.client.sdk.models.event.Event;
 
 import java.util.List;
 
-public interface EventStore {
-    interface EventColumns extends DbContract.IdentifiableColumns, DbContract.CoordinatesColumn {
+public interface EventStore extends IdentifiableObjectDataStore<Event> {
+    interface EventColumns extends IdentifiableColumns, CoordinatesColumn, StateColumn {
         String TABLE_NAME = "events";
 
         String COLUMN_PROGRAM = "program";
@@ -46,4 +49,5 @@ public interface EventStore {
     }
 
     List<Event> query(String organisationUnit, String program);
+
 }

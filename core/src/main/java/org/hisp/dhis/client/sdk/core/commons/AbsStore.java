@@ -71,9 +71,6 @@ public abstract class AbsStore<T extends Model> implements Store<T> {
             insert(object);
         }
 
-        Store<T> store = this;
-        store.deleteAll();
-
         return true;
     }
 

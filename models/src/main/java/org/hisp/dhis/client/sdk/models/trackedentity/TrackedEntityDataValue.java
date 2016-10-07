@@ -32,9 +32,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.client.sdk.models.common.BaseModel;
+import org.hisp.dhis.client.sdk.models.common.DataModel;
 import org.hisp.dhis.client.sdk.models.common.State;
 
-public class TrackedEntityDataValue extends BaseModel {
+public class TrackedEntityDataValue extends BaseModel implements DataModel {
 
     @JsonIgnore
     private String eventUid;
@@ -117,6 +118,4 @@ public class TrackedEntityDataValue extends BaseModel {
                 ", value='" + value + '\'' +
                 '}';
     }
-
-
 }

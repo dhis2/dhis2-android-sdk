@@ -33,7 +33,10 @@ import android.database.Cursor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import org.hisp.dhis.client.sdk.core.commons.AbsDataStore;
+import org.hisp.dhis.client.sdk.core.commons.AbsIdentifiableObjectDataStore;
 import org.hisp.dhis.client.sdk.core.commons.AbsIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.commons.DbContract;
 import org.hisp.dhis.client.sdk.core.program.ProgramStore.ProgramColumns;
 import org.hisp.dhis.client.sdk.models.event.Event;
 
@@ -41,7 +44,7 @@ import java.util.List;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-public class EventStoreImpl extends AbsIdentifiableObjectStore<Event> implements EventStore {
+public class EventStoreImpl extends AbsIdentifiableObjectDataStore<Event> implements EventStore {
 
     public static final String CREATE_TABLE_EVENTS = "CREATE TABLE IF NOT EXISTS " +
             EventColumns.TABLE_NAME + " (" +
@@ -60,6 +63,7 @@ public class EventStoreImpl extends AbsIdentifiableObjectStore<Event> implements
             EventColumns.COLUMN_LONGITUDE + " REAL," +
             EventColumns.COLUMN_LATITUDE + " REAL," +
             EventColumns.COLUMN_PROGRAM + " TEXT," +
+            EventColumns.COLUMN_STATE + " TEXT," +
             "FOREIGN KEY " + "(" + EventColumns.COLUMN_PROGRAM + ")" +
             "REFERENCES " + ProgramColumns.TABLE_NAME + "(" + ProgramColumns.COLUMN_UID + ")" +
             " ON DELETE CASCADE " +
@@ -86,10 +90,5 @@ public class EventStoreImpl extends AbsIdentifiableObjectStore<Event> implements
         Cursor cursor = contentResolver.query(mapper.getContentUri(),
                 mapper.getProjection(), selection, selectionArgs, null);
         return toModels(cursor);
-    }
-
-    public synchronized boolean save(List<Event> events) throws JsonProcessingException {
-        isNull(events, "Events cannot be null");
-        return false;
     }
 }

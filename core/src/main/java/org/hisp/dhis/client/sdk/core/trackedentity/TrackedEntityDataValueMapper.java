@@ -7,7 +7,7 @@ import android.net.Uri;
 
 import org.hisp.dhis.client.sdk.core.commons.DbContract;
 import org.hisp.dhis.client.sdk.core.commons.Mapper;
-import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueStoreI.TrackedEntityDataValueColumns;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueStore.TrackedEntityDataValueColumns;
 import org.hisp.dhis.client.sdk.models.common.State;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
@@ -77,7 +77,6 @@ public class TrackedEntityDataValueMapper implements Mapper<TrackedEntityDataVal
         trackedEntityDataValue.setStoredBy(cursor.getString(COLUMN_STORED_BY));
         trackedEntityDataValue.setValue(cursor.getString(COLUMN_VALUE));
         trackedEntityDataValue.setState(State.valueOf(cursor.getString(COLUMN_STATE)));
-
 
         return trackedEntityDataValue;
     }

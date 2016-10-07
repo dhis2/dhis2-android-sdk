@@ -33,11 +33,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.ValueType;
+import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-    public class OptionSet extends BaseIdentifiableObject {
+public class OptionSet extends BaseIdentifiableObject {
 
     @JsonProperty("version")
     int version;
@@ -48,6 +49,18 @@ import java.util.List;
     @JsonProperty("options")
     List<Option> options;
 
+    public static void validate(OptionSet optionSet) {
+        BaseIdentifiableObject.validate(optionSet);
+
+        if (optionSet.getValueType() == null) {
+            throw new IllegalArgumentException("Value type must not be null");
+        }
+
+        if (optionSet.getOptions() != null && !optionSet.getOptions().isEmpty()) {
+            throw new IllegalArgumentException("Options cannot be null or empty");
+        }
+
+    }
     public OptionSet() {
     }
 

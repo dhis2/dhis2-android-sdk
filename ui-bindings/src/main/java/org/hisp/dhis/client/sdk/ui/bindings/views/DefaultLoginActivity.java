@@ -33,7 +33,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.widget.Toast;
 
-import org.hisp.dhis.client.sdk.core.ApiException;
+import org.hisp.dhis.client.sdk.core.commons.ApiException;
 import org.hisp.dhis.client.sdk.ui.activities.AbsLoginActivity;
 import org.hisp.dhis.client.sdk.ui.bindings.R;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.Inject;

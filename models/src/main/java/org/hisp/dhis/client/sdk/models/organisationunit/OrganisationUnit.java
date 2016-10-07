@@ -46,9 +46,6 @@ public class OrganisationUnit extends BaseNameableObject {
     @JsonProperty("path")
     String path;
 
-    @JsonProperty("children")
-    List<OrganisationUnit> children;
-
     @JsonProperty("openingDate")
     Date openingDate;
 
@@ -60,6 +57,9 @@ public class OrganisationUnit extends BaseNameableObject {
 
     @JsonProperty("programs")
     List<Program> programs;
+
+    @JsonProperty("children")
+    List<OrganisationUnit> children;
 
     public OrganisationUnit() {
     }

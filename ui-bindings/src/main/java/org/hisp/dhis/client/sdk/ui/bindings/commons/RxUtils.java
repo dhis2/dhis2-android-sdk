@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
-import org.hisp.dhis.client.sdk.core.Task;
+import org.hisp.dhis.client.sdk.core.commons.Task;
 
 import rx.Observable;
 import rx.Single;

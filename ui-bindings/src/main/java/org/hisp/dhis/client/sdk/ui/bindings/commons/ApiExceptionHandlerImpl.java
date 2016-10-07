@@ -30,7 +30,7 @@ package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
 import android.content.Context;
 
-import org.hisp.dhis.client.sdk.core.ApiException;
+import org.hisp.dhis.client.sdk.core.commons.ApiException;
 import org.hisp.dhis.client.sdk.core.Response;
 import org.hisp.dhis.client.sdk.ui.bindings.R;
 import org.hisp.dhis.client.sdk.utils.Logger;

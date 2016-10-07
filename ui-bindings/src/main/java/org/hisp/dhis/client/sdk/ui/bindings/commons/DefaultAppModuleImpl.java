@@ -5,7 +5,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.client.sdk.core.D2;
-import org.hisp.dhis.client.sdk.core.LoggerImpl;
+import org.hisp.dhis.client.sdk.core.commons.LoggerImpl;
 import org.hisp.dhis.client.sdk.ui.AppPreferences;
 import org.hisp.dhis.client.sdk.ui.AppPreferencesImpl;
 import org.hisp.dhis.client.sdk.utils.Logger;

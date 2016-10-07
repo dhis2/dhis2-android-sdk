@@ -34,6 +34,25 @@ import android.text.TextUtils;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.client.sdk.core.commons.BasicAuthenticator;
+import org.hisp.dhis.client.sdk.core.commons.DbHelper;
+import org.hisp.dhis.client.sdk.core.commons.ServerUrlPreferences;
+import org.hisp.dhis.client.sdk.core.option.OptionSetApi;
+import org.hisp.dhis.client.sdk.core.option.OptionSetInteractor;
+import org.hisp.dhis.client.sdk.core.option.OptionSetInteractorImpl;
+import org.hisp.dhis.client.sdk.core.program.ProgramInteractor;
+import org.hisp.dhis.client.sdk.core.program.ProgramInteractorImpl;
+import org.hisp.dhis.client.sdk.core.program.ProgramStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramsApi;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityApi;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInteractor;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInteractorImpl;
+import org.hisp.dhis.client.sdk.core.user.UserInteractor;
+import org.hisp.dhis.client.sdk.core.user.UserInteractorImpl;
+import org.hisp.dhis.client.sdk.core.user.UserPreferences;
+import org.hisp.dhis.client.sdk.core.user.UserStore;
+import org.hisp.dhis.client.sdk.core.user.UsersApi;
+
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 

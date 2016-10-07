@@ -31,7 +31,11 @@ package org.hisp.dhis.client.sdk.models.trackedentity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TrackedEntityDataValue {
+import org.hisp.dhis.client.sdk.models.common.BaseModel;
+import org.hisp.dhis.client.sdk.models.common.State;
+
+public class TrackedEntityDataValue extends BaseModel {
+
     @JsonIgnore
     private String eventUid;
 
@@ -44,6 +48,22 @@ public class TrackedEntityDataValue {
     @JsonProperty("value")
     private String value;
 
+    @JsonIgnore
+    private State state;
+
+    public static void validate(TrackedEntityDataValue trackedEntityDataValue) {
+        if(trackedEntityDataValue.getEventUid() == null) {
+            throw new IllegalArgumentException("Event uid must not be null");
+        }
+
+        if (trackedEntityDataValue.getStoredBy() == null) {
+            throw new IllegalArgumentException("Stored by must not be null");
+        }
+
+        if(trackedEntityDataValue.getDataElement() == null) {
+            throw new IllegalArgumentException("Data element must not be null");
+        }
+    }
     public TrackedEntityDataValue() {
         // explicit empty constructor
     }
@@ -80,6 +100,14 @@ public class TrackedEntityDataValue {
         this.value = value;
     }
 
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
     @Override
     public String toString() {
         return "TrackedEntityDataValue{" +
@@ -89,4 +117,6 @@ public class TrackedEntityDataValue {
                 ", value='" + value + '\'' +
                 '}';
     }
+
+
 }

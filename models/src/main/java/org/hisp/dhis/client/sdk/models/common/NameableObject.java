@@ -30,7 +30,10 @@ package org.hisp.dhis.client.sdk.models.common;
 
 public interface NameableObject {
     String getShortName();
+
     String getDisplayShortName();
+
     String getDescription();
+
     String getDisplayDescription();
 }

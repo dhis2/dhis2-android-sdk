@@ -30,8 +30,13 @@ package org.hisp.dhis.client.sdk.models.trackedentity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.BaseNameableObject;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TrackedEntity extends BaseNameableObject {
+
+    public static void validate(TrackedEntity trackedEntity) {
+        BaseIdentifiableObject.validate(trackedEntity);
+    }
 }

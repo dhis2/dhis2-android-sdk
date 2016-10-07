@@ -30,11 +30,16 @@ package org.hisp.dhis.client.sdk.models.common;
 
 import java.util.Date;
 
-public interface IdentifiableObject {
+public interface IdentifiableObject extends Model {
     String getUid();
+
     String getCode();
+
     String getName();
+
     String getDisplayName();
+
     Date getCreated();
+
     Date getLastUpdated();
 }

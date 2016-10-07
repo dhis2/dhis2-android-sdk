@@ -90,7 +90,7 @@ public abstract class Dhis2Application extends Application {
             }
         });
 
-        MigrationUtil.migrateExistingData(this);
+        //MigrationUtil.migrateExistingData(this);
     }
 
     @Override

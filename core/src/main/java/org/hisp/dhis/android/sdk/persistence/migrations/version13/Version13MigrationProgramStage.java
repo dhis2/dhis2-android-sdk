@@ -9,19 +9,22 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStage$Table;
 
 @Migration(version = 13, databaseName = Dhis2Database.NAME)
-public class Version13MigrationProgramStagePeriodType extends AlterTableMigration<ProgramStage> {
+public class Version13MigrationProgramStage extends AlterTableMigration<ProgramStage> {
 
-    public Version13MigrationProgramStagePeriodType(Class<ProgramStage> table) {
+    public Version13MigrationProgramStage(Class<ProgramStage> table) {
         super(ProgramStage.class);
     }
 
-    public Version13MigrationProgramStagePeriodType() {
+    public Version13MigrationProgramStage() {
         super(ProgramStage.class);
     }
 
     @Override
     public void onPreMigrate() {
         super.onPreMigrate();
+        if (!MigrationUtil.columnExists(ProgramStage.class, ProgramStage$Table.HIDEDUEDATE)) {
+            addColumn(Boolean.class, ProgramStage$Table.HIDEDUEDATE);
+        }
         if (!MigrationUtil.columnExists(ProgramStage.class, ProgramStage$Table.PERIODTYPE)) {
             addColumn(String.class, ProgramStage$Table.PERIODTYPE);
         }

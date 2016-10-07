@@ -13,7 +13,6 @@ import org.hisp.dhis.client.sdk.ui.models.FormEntityText;
 public class TextRowView implements RowView {
 
     public TextRowView() {
-
     }
 
     @Override

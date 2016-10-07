@@ -31,6 +31,7 @@ package org.hisp.dhis.client.sdk.models.organisationunit;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.BaseNameableObject;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
@@ -60,6 +61,18 @@ public class OrganisationUnit extends BaseNameableObject {
 
     @JsonProperty("children")
     List<OrganisationUnit> children;
+
+    public static void validate(OrganisationUnit organisationUnit) {
+        BaseIdentifiableObject.validate(organisationUnit);
+
+        if (organisationUnit.getPath() == null) {
+            throw new IllegalArgumentException("path must not be null");
+        }
+
+        if (organisationUnit.getOpeningDate() == null) {
+            throw new IllegalArgumentException("opening date must not be null");
+        }
+    }
 
     public OrganisationUnit() {
     }

@@ -31,12 +31,7 @@ package org.hisp.dhis.client.sdk.core.event;
 import android.content.ContentResolver;
 import android.database.Cursor;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-import org.hisp.dhis.client.sdk.core.commons.AbsDataStore;
 import org.hisp.dhis.client.sdk.core.commons.AbsIdentifiableObjectDataStore;
-import org.hisp.dhis.client.sdk.core.commons.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.core.commons.DbContract;
 import org.hisp.dhis.client.sdk.core.program.ProgramStore.ProgramColumns;
 import org.hisp.dhis.client.sdk.models.event.Event;
 

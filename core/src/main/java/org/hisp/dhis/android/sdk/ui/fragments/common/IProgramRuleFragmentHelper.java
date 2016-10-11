@@ -180,4 +180,6 @@ public interface IProgramRuleFragmentHelper {
      * @param uid
      */
     void saveTrackedEntityAttribute(String uid);
+
+    boolean blockingSpinnerNeeded();
 }

@@ -76,31 +76,6 @@ public class TrackedEntityAttributeValue extends BaseValue implements Serializab
         this.localTrackedEntityInstanceId = trackedEntityAttributeValue.getLocalTrackedEntityInstanceId();
     }
 
-    /**
-     * workaround for sending code if attribute is option set.
-     *
-     * @return String value.
-     */
-    @JsonProperty("value")
-    public String getValue() {
-        TrackedEntityAttribute tea = MetaDataController.
-                getTrackedEntityAttribute(trackedEntityAttributeId);
-
-        if(tea == null) {
-            return null;
-        }
-        if (tea.isOptionSetValue()) {
-            OptionSet optionSet = MetaDataController.getOptionSet(tea.getOptionSet());
-            if (optionSet == null) return "";
-            for (Option o : optionSet.getOptions()) {
-                if (o.name.equals(value)) {
-                    return o.getCode();
-                }
-            }
-        } else return value;
-        return null;
-    }
-
     @Override
     public void save() {
         if (Utils.isLocal(trackedEntityInstanceId) && TrackerController.

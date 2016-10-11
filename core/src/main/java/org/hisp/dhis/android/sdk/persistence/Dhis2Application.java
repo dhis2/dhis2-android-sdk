@@ -31,7 +31,6 @@ package org.hisp.dhis.android.sdk.persistence;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.crashlytics.android.Crashlytics;
@@ -91,19 +90,7 @@ public abstract class Dhis2Application extends Application {
             }
         });
 
-        fixInvalidIncidentDates();
-    }
-
-    /*
-    * Backend does not accept empty strings in incident dates. Set the values to null
-    * This is run only once
-    * */
-    private void fixInvalidIncidentDates() {
-        SharedPreferences preferences = getSharedPreferences("migrationFlags", MODE_PRIVATE);
-        if (preferences.getBoolean("incidentDatesAreInvalid", true)) {
-            MigrationUtil.fixInvalidIncidentDates();
-            preferences.edit().putBoolean("incidentDatesAreInvalid", false).apply();
-        }
+        //MigrationUtil.migrateExistingData(this);
     }
 
     @Override

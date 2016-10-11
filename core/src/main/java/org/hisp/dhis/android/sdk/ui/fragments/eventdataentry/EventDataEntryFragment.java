@@ -89,6 +89,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import retrofit.http.HEAD;
+
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFragmentForm> {
@@ -649,7 +651,6 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
                         UiUtils.showConfirmDialog(getActivity(), eventClick.getLabel(), eventClick.getAction(),
                                 eventClick.getLabel(), getActivity().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                                    boolean schedulingProgramStage = false;
 
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -668,11 +669,11 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                                 .getProgramStage(form.getEvent().getProgramStageId());
 
                                         // checking if should schedule new event
-
+                                        boolean isShowingSchedulingOfNewEvent = false;
                                         if (currentProgramStage.getAllowGenerateNextVisit()) {
                                             if (currentProgramStage.getRepeatable()) {
                                                 DateTime scheduleTime = calculateScheduledDate(currentProgramStage, form.getEnrollment());
-                                                schedulingProgramStage = true;
+                                                isShowingSchedulingOfNewEvent = true;
                                                 showDatePicker(currentProgramStage, scheduleTime); // datePicker will close this fragment when date is picked and new event is scheduled
                                             } else {
                                                 int sortOrder = currentProgramStage.getSortOrder();
@@ -695,7 +696,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                                     }
                                                     if (eventForStage.size() < 1) {
                                                         DateTime dateTime = calculateScheduledDate(programStageToSchedule, form.getEnrollment());
-                                                        schedulingProgramStage = true;
+                                                        isShowingSchedulingOfNewEvent = true;
                                                         showDatePicker(programStageToSchedule, dateTime); // datePicker will close this fragment when date is picked and new event is scheduled
                                                     }
                                                 }
@@ -705,9 +706,12 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                         if (currentProgramStage.isBlockEntryForm()) {
                                             setEditableDataEntryRows(form, false, true);
                                         }
+
+                                        eventClick.getEvent().setCompletedDate(new DateTime().toString());
+
                                         Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
                                         //Exit the activity if it has just been completed.
-                                        if (currentProgramStage.isBlockEntryForm() && !schedulingProgramStage) {
+                                        if (currentProgramStage.isBlockEntryForm() && !isShowingSchedulingOfNewEvent) {
                                             goBackToPreviousActivity();
                                         }
                                     }

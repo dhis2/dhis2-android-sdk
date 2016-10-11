@@ -36,9 +36,15 @@ public interface Store<T extends Model> {
 
     boolean insert(T object);
 
+    boolean insert(List<T> objects);
+
     boolean update(T object);
 
+    boolean update(List<T> objects);
+
     boolean save(T object);
+
+    boolean save(List<T> objects);
 
     /**
      * @return int The number of rows deleted.
@@ -49,6 +55,8 @@ public interface Store<T extends Model> {
      * @return int The number of rows deleted.
      */
     int deleteAll();
+
+    boolean delete(List<T> objects);
 
     T queryById(long id);
 

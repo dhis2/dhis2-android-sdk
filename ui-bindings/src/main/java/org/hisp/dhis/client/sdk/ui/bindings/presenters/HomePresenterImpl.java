@@ -64,6 +64,7 @@ public class HomePresenterImpl implements HomePresenter {
     }
 
 
+    //TODO: Fix hack that queryAll and gets first User
     @Override
     public void attachView(View view) {
         isNull(view, "HomeView must not be null");
@@ -74,7 +75,7 @@ public class HomePresenterImpl implements HomePresenter {
             @Override
             public void call(SingleSubscriber<? super User> singleSubscriber) {
                 try {
-                    singleSubscriber.onSuccess(userAccountInteractor.store().list());
+                    singleSubscriber.onSuccess(userAccountInteractor.store().queryAll().get(0));
                 } catch (Throwable throwable) {
                     singleSubscriber.onError(throwable);
                 }

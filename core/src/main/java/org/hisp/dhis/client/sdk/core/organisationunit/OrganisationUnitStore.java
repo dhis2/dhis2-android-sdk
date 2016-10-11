@@ -5,6 +5,8 @@ import org.hisp.dhis.client.sdk.core.commons.DbContract.NameableColumns;
 import org.hisp.dhis.client.sdk.core.commons.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
+import java.util.List;
+
 public interface OrganisationUnitStore extends IdentifiableObjectStore<OrganisationUnit> {
     interface OrganisationUnitColumns extends NameableColumns, BodyColumn {
         String TABLE_NAME = "organisationUnits";
@@ -12,5 +14,8 @@ public interface OrganisationUnitStore extends IdentifiableObjectStore<Organisat
         String COLUMN_OPENING_DATE = "openingDate";
         String COLUMN_CLOSED_DATE = "closedDate";
         String COLUMN_LEVEL = "level";
+        String COLUMN_PATH = "path";
     }
+
+    List<OrganisationUnit> query(String parentOrganisationUnitId);
 }

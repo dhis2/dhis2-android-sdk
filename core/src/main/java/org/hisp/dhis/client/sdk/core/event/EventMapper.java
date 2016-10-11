@@ -44,9 +44,15 @@ import org.hisp.dhis.client.sdk.models.event.EventStatus;
 
 import java.text.ParseException;
 
+import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getDouble;
+import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getInt;
+import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getString;
+
 public class EventMapper implements Mapper<Event> {
-    private static Uri CONTENT_URI = DbContract.BASE_CONTENT_URI.buildUpon()
+    public static Uri CONTENT_URI = DbContract.BASE_CONTENT_URI.buildUpon()
             .appendPath(EventColumns.TABLE_NAME).build();
+
+    public static String CONTENT_TYPE = ""
 
     private static final String[] PROJECTION = new String[]{
             EventColumns.COLUMN_ID,
@@ -66,23 +72,6 @@ public class EventMapper implements Mapper<Event> {
             EventColumns.COLUMN_LONGITUDE,
             EventColumns.COLUMN_STATE
     };
-
-    private static final int COLUMN_ID = 0;
-    private static final int COLUMN_UID = 1;
-    private static final int COLUMN_CODE = 2;
-    private static final int COLUMN_CREATED = 3;
-    private static final int COLUMN_LAST_UPDATED = 4;
-    private static final int COLUMN_NAME = 5;
-    private static final int COLUMN_DISPLAY_NAME = 6;
-    private static final int COLUMN_COMPLETED_DATE = 7;
-    private static final int COLUMN_EVENT_DATE = 8;
-    private static final int COLUMN_EVENT_STATUS = 9;
-    private static final int COLUMN_ORGANISATION_UNIT = 10;
-    private static final int COLUMN_PROGRAM = 11;
-    private static final int COLUMN_PROGRAM_STAGE = 12;
-    private static final int COLUMN_LATITUDE = 13;
-    private static final int COLUMN_LONGITUDE = 14;
-    private static final int COLUMN_STATE = 15;
 
     public EventMapper() {
         // explicit constructor
@@ -132,30 +121,33 @@ public class EventMapper implements Mapper<Event> {
     public Event toModel(Cursor cursor) {
         Event event = new Event();
 
-        event.setId(cursor.getInt(COLUMN_ID));
-        event.setUid(cursor.getString(COLUMN_UID));
-        event.setCode(cursor.getString(COLUMN_CODE));
-        event.setName(cursor.getString(COLUMN_NAME));
-        event.setDisplayName(cursor.getString(COLUMN_DISPLAY_NAME));
-        event.setOrgUnit(cursor.getString(COLUMN_ORGANISATION_UNIT));
-        event.setProgram(cursor.getString(COLUMN_PROGRAM));
-        event.setProgramStage(cursor.getString(COLUMN_PROGRAM_STAGE));
-        event.setStatus(EventStatus.valueOf(cursor.getString(COLUMN_EVENT_STATUS)));
-        event.setState(State.valueOf(cursor.getString(COLUMN_STATE)));
+        event.setId(getInt(cursor, EventColumns.COLUMN_ID));
+        event.setUid(getString(cursor, EventColumns.COLUMN_UID));
+        event.setCode(getString(cursor, EventColumns.COLUMN_CODE));
+        event.setName(getString(cursor, EventColumns.COLUMN_NAME));
+        event.setDisplayName(getString(cursor, EventColumns.COLUMN_DISPLAY_NAME));
+        event.setStatus(EventStatus.valueOf(getString(cursor, EventColumns.COLUMN_EVENT_STATUS)));
+        event.setOrgUnit(getString(cursor, EventColumns.COLUMN_ORGANISATION_UNIT));
+        event.setProgram(getString(cursor, EventColumns.COLUMN_PROGRAM));
+        event.setProgramStage(getString(cursor, EventColumns.COLUMN_PROGRAM_STAGE));
+        event.setState(State.valueOf(getString(cursor, EventColumns.COLUMN_STATE)));
 
         event.setCoordinate(new Coordinates(
-                cursor.getDouble(COLUMN_LATITUDE),
-                cursor.getDouble(COLUMN_LONGITUDE)));
+                getDouble(cursor, EventColumns.COLUMN_LATITUDE),
+                getDouble(cursor, EventColumns.COLUMN_LONGITUDE)));
 
         try {
+
             event.setCreated(BaseIdentifiableObject.SIMPLE_DATE_FORMAT
-                    .parse(cursor.getString(COLUMN_CREATED)));
+                    .parse(getString(cursor, EventColumns.COLUMN_CREATED)));
             event.setLastUpdated(BaseIdentifiableObject.SIMPLE_DATE_FORMAT
-                    .parse(cursor.getString(COLUMN_LAST_UPDATED)));
+                    .parse(getString(cursor, EventColumns.COLUMN_LAST_UPDATED)));
+
             event.setCompletedDate(BaseIdentifiableObject.SIMPLE_DATE_FORMAT
-                    .parse(cursor.getString(COLUMN_COMPLETED_DATE)));
+                    .parse(getString(cursor, EventColumns.COLUMN_COMPLETED_DATE)));
             event.setEventDate(BaseIdentifiableObject.SIMPLE_DATE_FORMAT
-                    .parse(cursor.getString(COLUMN_EVENT_DATE)));
+                    .parse(getString(cursor, EventColumns.COLUMN_EVENT_DATE)));
+
         } catch (ParseException e) {
             throw new IllegalArgumentException(e);
         }

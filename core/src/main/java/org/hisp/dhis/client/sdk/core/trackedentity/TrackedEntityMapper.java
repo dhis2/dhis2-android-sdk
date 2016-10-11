@@ -13,6 +13,9 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 
 import java.text.ParseException;
 
+import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getInt;
+import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getString;
+
 public class TrackedEntityMapper implements Mapper<TrackedEntity> {
     private static Uri CONTENT_URI = DbContract.BASE_CONTENT_URI.buildUpon()
             .appendPath(TrackedEntityColumns.TABLE_NAME).build();
@@ -30,19 +33,6 @@ public class TrackedEntityMapper implements Mapper<TrackedEntity> {
             TrackedEntityColumns.COLUMN_DESCRIPTION,
             TrackedEntityColumns.COLUMN_DISPLAY_DESCRIPTION,
     };
-
-    private static final int COLUMN_ID = 0;
-    private static final int COLUMN_UID = 1;
-    private static final int COLUMN_CODE = 2;
-    private static final int COLUMN_CREATED = 3;
-    private static final int COLUMN_LAST_UPDATED = 4;
-    private static final int COLUMN_NAME = 5;
-    private static final int COLUMN_DISPLAY_NAME = 6;
-    private static final int COLUMN_SHORT_NAME = 7;
-    private static final int COLUMN_DISPLAY_SHORT_NAME = 8;
-    private static final int COLUMN_DESCRIPTION = 9;
-    private static final int COLUMN_DISPLAY_DESCRIPTION = 10;
-
 
     public TrackedEntityMapper() {
         // Explicit empty constructor
@@ -87,21 +77,21 @@ public class TrackedEntityMapper implements Mapper<TrackedEntity> {
     public TrackedEntity toModel(Cursor cursor) {
         TrackedEntity trackedEntity = new TrackedEntity();
 
-        trackedEntity.setId(cursor.getInt(COLUMN_ID));
-        trackedEntity.setUid(cursor.getString(COLUMN_UID));
-        trackedEntity.setCode(cursor.getString(COLUMN_CODE));
-        trackedEntity.setName(cursor.getString(COLUMN_NAME));
-        trackedEntity.setDisplayName(cursor.getString(COLUMN_DISPLAY_NAME));
-        trackedEntity.setShortName(cursor.getString(COLUMN_SHORT_NAME));
-        trackedEntity.setDisplayShortName(cursor.getString(COLUMN_DISPLAY_SHORT_NAME));
-        trackedEntity.setDescription(cursor.getString(COLUMN_DESCRIPTION));
-        trackedEntity.setDisplayDescription(cursor.getString(COLUMN_DISPLAY_DESCRIPTION));
+        trackedEntity.setId(getInt(cursor, TrackedEntityColumns.COLUMN_ID));
+        trackedEntity.setUid(getString(cursor, TrackedEntityColumns.COLUMN_UID));
+        trackedEntity.setCode(getString(cursor, TrackedEntityColumns.COLUMN_CODE));
+        trackedEntity.setName(getString(cursor, TrackedEntityColumns.COLUMN_NAME));
+        trackedEntity.setDisplayName(getString(cursor, TrackedEntityColumns.COLUMN_DISPLAY_NAME));
+        trackedEntity.setShortName(getString(cursor, TrackedEntityColumns.COLUMN_SHORT_NAME));
+        trackedEntity.setDisplayShortName(getString(cursor, TrackedEntityColumns.COLUMN_DISPLAY_SHORT_NAME));
+        trackedEntity.setDescription(getString(cursor, TrackedEntityColumns.COLUMN_DESCRIPTION));
+        trackedEntity.setDisplayDescription(getString(cursor, TrackedEntityColumns.COLUMN_DISPLAY_DESCRIPTION));
 
         try {
             trackedEntity.setCreated(BaseIdentifiableObject.SIMPLE_DATE_FORMAT
-                    .parse(cursor.getString(COLUMN_CREATED)));
+                    .parse(getString(cursor, TrackedEntityColumns.COLUMN_CREATED)));
             trackedEntity.setLastUpdated(BaseIdentifiableObject.SIMPLE_DATE_FORMAT
-                    .parse(cursor.getString(COLUMN_LAST_UPDATED)));
+                    .parse(getString(cursor, TrackedEntityColumns.COLUMN_LAST_UPDATED)));
         } catch (ParseException e) {
             throw new IllegalArgumentException(e);
         }

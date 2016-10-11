@@ -29,28 +29,34 @@
 package org.hisp.dhis.client.sdk.core;
 
 import android.app.Application;
+import android.content.ContentResolver;
 import android.text.TextUtils;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.client.sdk.core.commons.BasicAuthenticator;
-import org.hisp.dhis.client.sdk.core.commons.DbHelper;
 import org.hisp.dhis.client.sdk.core.commons.ServerUrlPreferences;
 import org.hisp.dhis.client.sdk.core.option.OptionSetApi;
 import org.hisp.dhis.client.sdk.core.option.OptionSetInteractor;
 import org.hisp.dhis.client.sdk.core.option.OptionSetInteractorImpl;
+import org.hisp.dhis.client.sdk.core.option.OptionSetStore;
+import org.hisp.dhis.client.sdk.core.option.OptionSetStoreImpl;
 import org.hisp.dhis.client.sdk.core.program.ProgramInteractor;
 import org.hisp.dhis.client.sdk.core.program.ProgramInteractorImpl;
 import org.hisp.dhis.client.sdk.core.program.ProgramStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramStoreImpl;
 import org.hisp.dhis.client.sdk.core.program.ProgramsApi;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityApi;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInteractor;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInteractorImpl;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityStoreImpl;
 import org.hisp.dhis.client.sdk.core.user.UserInteractor;
 import org.hisp.dhis.client.sdk.core.user.UserInteractorImpl;
 import org.hisp.dhis.client.sdk.core.user.UserPreferences;
 import org.hisp.dhis.client.sdk.core.user.UserStore;
+import org.hisp.dhis.client.sdk.core.user.UserStoreImpl;
 import org.hisp.dhis.client.sdk.core.user.UsersApi;
 
 import java.util.concurrent.Executor;
@@ -72,8 +78,7 @@ public class D2 {
 
     // persistence
     private final ServerUrlPreferences serverUrlPreferences;
-    private final DbHelper dbHelper;
-
+    private final ContentResolver contentResolver;
     // retrofit dependencies
     private final ObjectMapper objectMapper;
     private final OkHttpClient okHttpClient;
@@ -151,6 +156,7 @@ public class D2 {
     }
 
     private D2(Application app, ObjectMapper mapper, OkHttpClient client, Executor executor) {
+        this.contentResolver = app.getContentResolver();
         ServerUrlPreferences urlPreferences = new ServerUrlPreferences(app);
         serverUrl = urlPreferences.get();
 
@@ -158,7 +164,6 @@ public class D2 {
         this.application = app;
 
         // persistence
-        this.dbHelper = new DbHelper(app);
         this.serverUrlPreferences = urlPreferences;
 
         // retrofit
@@ -188,8 +193,8 @@ public class D2 {
         if (isConfigured() && instance().programInteractor == null) {
             ProgramsApi programsApi = instance().retrofit.create(ProgramsApi.class);
             MetadataApi metadataApi = instance().retrofit.create(MetadataApi.class);
-            ProgramStore programStore = new ProgramStore(
-                    instance().dbHelper, instance().objectMapper);
+            ProgramStore programStore = new ProgramStoreImpl(instance().contentResolver,
+                    instance().objectMapper);
 
             instance().programInteractor = new ProgramInteractorImpl(
                     programsApi, programStore, metadataApi);
@@ -201,7 +206,8 @@ public class D2 {
     public static UserInteractor me() {
         if (isConfigured() && instance().userInteractor == null) {
             UsersApi usersApi = instance().retrofit.create(UsersApi.class);
-            UserStore userStore = new UserStore(instance().dbHelper, instance().objectMapper);
+            UserStore userStore = new UserStoreImpl(instance().contentResolver,
+                    instance().objectMapper);
 
             instance().userInteractor = new UserInteractorImpl(null, usersApi, userStore, null);
         }
@@ -211,7 +217,7 @@ public class D2 {
     public static OptionSetInteractor optionSets() {
         if (isConfigured() && instance().optionSetInteractor == null) {
             OptionSetStore optionSetStore =
-                    new OptionSetStore(instance().dbHelper, instance().objectMapper);
+                    new OptionSetStoreImpl(instance().contentResolver, instance().objectMapper);
             OptionSetApi optionSetApi =
                     instance().retrofit.create(OptionSetApi.class);
             instance().optionSetInteractor =
@@ -229,7 +235,7 @@ public class D2 {
         if (isConfigured() && instance().trackedEntityInteractor == null) {
             TrackedEntityApi trackedEntityApi = instance().retrofit.create(TrackedEntityApi.class);
             TrackedEntityStore trackedEntityStore =
-                    new TrackedEntityStore(instance().dbHelper, instance().objectMapper);
+                    new TrackedEntityStoreImpl(instance().contentResolver);
             instance().trackedEntityInteractor =
                     new TrackedEntityInteractorImpl(trackedEntityStore, trackedEntityApi);
         }

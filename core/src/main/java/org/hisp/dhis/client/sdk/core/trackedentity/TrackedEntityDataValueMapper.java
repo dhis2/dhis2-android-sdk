@@ -11,6 +11,9 @@ import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueStore.T
 import org.hisp.dhis.client.sdk.models.common.State;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
+import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getInt;
+import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getString;
+
 public class TrackedEntityDataValueMapper implements Mapper<TrackedEntityDataValue> {
 
     private static Uri CONTENT_URI = DbContract.BASE_CONTENT_URI.buildUpon()
@@ -26,13 +29,6 @@ public class TrackedEntityDataValueMapper implements Mapper<TrackedEntityDataVal
 
     };
 
-    private static final int COLUMN_ID = 0;
-    private static final int COLUMN_DATA_ELEMENT = 1;
-    private static final int COLUMN_EVENT = 2;
-    private static final int COLUMN_STORED_BY = 3;
-    private static final int COLUMN_VALUE = 4;
-    private static final int COLUMN_STATE = 5;
-
     public TrackedEntityDataValueMapper() {
         // explicit constructor
     }
@@ -44,7 +40,7 @@ public class TrackedEntityDataValueMapper implements Mapper<TrackedEntityDataVal
 
     @Override
     public Uri getContentItemUri(long id) {
-        return ContentUris.withAppendedId(CONTENT_URI,id);
+        return ContentUris.withAppendedId(CONTENT_URI, id);
     }
 
     @Override
@@ -70,13 +66,12 @@ public class TrackedEntityDataValueMapper implements Mapper<TrackedEntityDataVal
     @Override
     public TrackedEntityDataValue toModel(Cursor cursor) {
         TrackedEntityDataValue trackedEntityDataValue = new TrackedEntityDataValue();
-
-        trackedEntityDataValue.setId(cursor.getInt(COLUMN_ID));
-        trackedEntityDataValue.setDataElement(cursor.getString(COLUMN_DATA_ELEMENT));
-        trackedEntityDataValue.setEventUid(cursor.getString(COLUMN_EVENT));
-        trackedEntityDataValue.setStoredBy(cursor.getString(COLUMN_STORED_BY));
-        trackedEntityDataValue.setValue(cursor.getString(COLUMN_VALUE));
-        trackedEntityDataValue.setState(State.valueOf(cursor.getString(COLUMN_STATE)));
+        trackedEntityDataValue.setId(getInt(cursor, TrackedEntityDataValueColumns.COLUMN_ID));
+        trackedEntityDataValue.setDataElement(getString(cursor, TrackedEntityDataValueColumns.COLUMN_DATA_ELEMENT));
+        trackedEntityDataValue.setEventUid(getString(cursor, TrackedEntityDataValueColumns.COLUMN_EVENT));
+        trackedEntityDataValue.setStoredBy(getString(cursor, TrackedEntityDataValueColumns.COLUMN_STORED_BY));
+        trackedEntityDataValue.setValue(getString(cursor, TrackedEntityDataValueColumns.COLUMN_VALUE));
+        trackedEntityDataValue.setState(State.valueOf(getString(cursor, TrackedEntityDataValueColumns.COLUMN_STATE)));
 
         return trackedEntityDataValue;
     }

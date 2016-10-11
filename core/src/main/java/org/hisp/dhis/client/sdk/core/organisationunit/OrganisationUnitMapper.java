@@ -61,9 +61,10 @@ public class OrganisationUnitMapper implements Mapper<OrganisationUnit> {
             OrganisationUnitColumns.COLUMN_DESCRIPTION,
             OrganisationUnitColumns.COLUMN_DISPLAY_DESCRIPTION,
             OrganisationUnitColumns.COLUMN_PARENT,
+            OrganisationUnitColumns.COLUMN_PATH,
             OrganisationUnitColumns.COLUMN_OPENING_DATE,
             OrganisationUnitColumns.COLUMN_CLOSED_DATE,
-            OrganisationUnitColumns.COLUMN_LEVEL,
+            OrganisationUnitColumns.COLUMN_LEVEL
     };
 
     @Override
@@ -105,6 +106,7 @@ public class OrganisationUnitMapper implements Mapper<OrganisationUnit> {
         contentValues.put(OrganisationUnitColumns.COLUMN_CLOSED_DATE,
                 orgUnit.getClosedDate() != null ? orgUnit.getClosedDate().toString() : null);
         contentValues.put(OrganisationUnitColumns.COLUMN_LEVEL, orgUnit.getLevel());
+        contentValues.put(OrganisationUnitColumns.COLUMN_PATH, orgUnit.getPath());
 
         return contentValues;
     }
@@ -128,6 +130,7 @@ public class OrganisationUnitMapper implements Mapper<OrganisationUnit> {
 
         organisationUnit.setParent(parent);
         organisationUnit.setLevel(getInt(cursor, OrganisationUnitColumns.COLUMN_LEVEL));
+        organisationUnit.setPath(getString(cursor, OrganisationUnitColumns.COLUMN_PATH));
 
         try {
             organisationUnit.setCreated(BaseIdentifiableObject.SIMPLE_DATE_FORMAT

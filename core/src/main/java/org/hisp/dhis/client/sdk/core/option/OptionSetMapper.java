@@ -45,6 +45,9 @@ import org.hisp.dhis.client.sdk.models.option.OptionSet;
 import java.io.IOException;
 import java.text.ParseException;
 
+import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getInt;
+import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getString;
+
 public class OptionSetMapper implements Mapper<OptionSet> {
     private static Uri CONTENT_URI = DbContract.BASE_CONTENT_URI.buildUpon()
             .appendPath(OptionSetColumns.TABLE_NAME).build();
@@ -59,15 +62,6 @@ public class OptionSetMapper implements Mapper<OptionSet> {
             OptionSetColumns.COLUMN_DISPLAY_NAME,
             OptionSetColumns.COLUMN_BODY
     };
-
-    private static final int COLUMN_ID = 0;
-    private static final int COLUMN_UID = 1;
-    private static final int COLUMN_CODE = 2;
-    private static final int COLUMN_CREATED = 3;
-    private static final int COLUMN_LAST_UPDATED = 4;
-    private static final int COLUMN_NAME = 5;
-    private static final int COLUMN_DISPLAY_NAME = 6;
-    private static final int COLUMN_BODY = 7;
 
     private final ObjectMapper objectMapper;
 
@@ -117,22 +111,22 @@ public class OptionSetMapper implements Mapper<OptionSet> {
         OptionSet optionSet;
         // trying to deserialize the JSON blob into OptionSet instance
         try {
-            optionSet = objectMapper.readValue(cursor.getString(COLUMN_BODY), OptionSet.class);
+            optionSet = objectMapper.readValue(getString(cursor, OptionSetColumns.COLUMN_BODY), OptionSet.class);
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
 
-        optionSet.setId(cursor.getInt(COLUMN_ID));
-        optionSet.setUid(cursor.getString(COLUMN_UID));
-        optionSet.setCode(cursor.getString(COLUMN_CODE));
-        optionSet.setName(cursor.getString(COLUMN_NAME));
-        optionSet.setDisplayName(cursor.getString(COLUMN_DISPLAY_NAME));
+        optionSet.setId(getInt(cursor, OptionSetColumns.COLUMN_ID));
+        optionSet.setUid(getString(cursor, OptionSetColumns.COLUMN_UID));
+        optionSet.setCode(getString(cursor, OptionSetColumns.COLUMN_CODE));
+        optionSet.setName(getString(cursor, OptionSetColumns.COLUMN_NAME));
+        optionSet.setDisplayName(getString(cursor, OptionSetColumns.COLUMN_DISPLAY_NAME));
 
         try {
             optionSet.setCreated(BaseIdentifiableObject.SIMPLE_DATE_FORMAT
-                    .parse(cursor.getString(COLUMN_CREATED)));
+                    .parse(getString(cursor, OptionSetColumns.COLUMN_CREATED)));
             optionSet.setLastUpdated(BaseIdentifiableObject.SIMPLE_DATE_FORMAT
-                    .parse(cursor.getString(COLUMN_LAST_UPDATED)));
+                    .parse(getString(cursor, OptionSetColumns.COLUMN_LAST_UPDATED)));
         } catch (ParseException e) {
             throw new IllegalArgumentException(e);
         }

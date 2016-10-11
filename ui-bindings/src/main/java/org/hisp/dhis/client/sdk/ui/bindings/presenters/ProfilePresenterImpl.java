@@ -63,6 +63,7 @@ public class ProfilePresenterImpl implements ProfilePresenter {
         this.logger = logger;
     }
 
+    //TODO: Fix hack that queryAll and gets first User
     @Override
     public void createUserAccountForm() {
         logger.d(TAG, "createUserAccountForm()");
@@ -78,7 +79,7 @@ public class ProfilePresenterImpl implements ProfilePresenter {
             @Override
             public void call(Subscriber<? super User> subscriber) {
                 try {
-                    subscriber.onNext(currentUserAccountInteractor.store().list());
+                    subscriber.onNext(currentUserAccountInteractor.store().queryAll().get(0));
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }

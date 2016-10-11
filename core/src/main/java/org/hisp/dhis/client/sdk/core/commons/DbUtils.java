@@ -40,6 +40,11 @@ public final class DbUtils {
         return cursor.getInt(columnIndex);
     }
 
+    public static double getDouble(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        return cursor.getDouble(columnIndex);
+    }
+
     public static String getString(Cursor cursor, String columnName) {
         int columnIndex = cursor.getColumnIndex(columnName);
         return cursor.getString(columnIndex);

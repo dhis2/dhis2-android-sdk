@@ -38,7 +38,7 @@ public abstract class AbsTask<T> implements Task<T> {
     private boolean isExecuted;
     private boolean isCanceled;
 
-    AbsTask(Executor executor, Executor callbackExecutor) {
+    public AbsTask(Executor executor, Executor callbackExecutor) {
         this.executor = executor;
         this.callbackExecutor = callbackExecutor;
     }

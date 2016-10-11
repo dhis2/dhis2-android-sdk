@@ -26,6 +26,7 @@ import java.util.Map;
 
 import retrofit2.Call;
 
+import static org.hisp.dhis.client.sdk.core.ModelUtils.toMap;
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class MetadataTask {
@@ -84,12 +85,7 @@ public class MetadataTask {
             // FILTERING OUT WHICH PROGRAMS TO DOWNLOAD BASED ON VERSION AND EXISTENCE IN DB
             // -----------------------------------------------------------------------------
 
-            String[] programProjection = new String[]{
-                    ProgramColumns.COLUMN_NAME_KEY,
-                    ProgramColumns.COLUMN_VERSION
-            };
-
-            Map<String, Program> persistedPrograms = toMap(programInteractor.store().listBy(programProjection));
+            Map<String, Program> persistedPrograms = toMap(programInteractor.store().queryAll());
             System.out.println("Persisted programs: " + persistedPrograms.values().toString());
             List<String> programsToDownload = new ArrayList<>();
             for (Program program : programMap.values()) {
@@ -135,12 +131,9 @@ public class MetadataTask {
             // FILTERING OUT WHICH OPTION SETS TO DOWNLOAD BASED ON VERSION AND EXISTENCE IN DB
             // --------------------------------------------------------------------------------
 
-            String[] optionSetProjection = new String[]{
-                    OptionSetStore.OptionSetColumns.COLUMN_NAME_KEY,
-                    OptionSetStore.OptionSetColumns.COLUMN_VERSION
-            };
 
-            Map<String, OptionSet> persistedOptionSets = toMap(optionSetInteractor.store().listBy(optionSetProjection));
+
+            Map<String, OptionSet> persistedOptionSets = toMap(optionSetInteractor.store().queryAll());
             System.out.println("Persisted optionSets: " + persistedOptionSets.values().toString());
             List<String> optionSetsToDownload = new ArrayList<>();
             for (OptionSet optionSet : optionSetMap.values()) {
@@ -328,17 +321,5 @@ public class MetadataTask {
         }
 
         return listOfSubLists;
-    }
-
-    private static <T extends IdentifiableObject> Map<String, T> toMap(Collection<T> objects) {
-        Map<String, T> map = new HashMap<>();
-        if (objects != null && objects.size() > 0) {
-            for (T object : objects) {
-                if (object.getUid() != null) {
-                    map.put(object.getUid(), object);
-                }
-            }
-        }
-        return map;
     }
 }

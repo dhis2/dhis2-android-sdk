@@ -2,6 +2,8 @@ package org.hisp.dhis.client.sdk.core.trackedentity;
 
 import android.content.ContentResolver;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.hisp.dhis.client.sdk.core.commons.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.commons.Mapper;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
@@ -23,11 +25,11 @@ public class TrackedEntityStoreImpl extends AbsIdentifiableObjectStore<TrackedEn
             TrackedEntityColumns.COLUMN_DISPLAY_DESCRIPTION + "TEXT" +
             " UNIQUE " + "(" + TrackedEntityColumns.COLUMN_UID + ")" + " ON CONFLICT REPLACE" + " )";
 
-    private static final String DROP_TABLE_TRACKED_ENTITIES = "DROP TABLE IF EXISTS " +
+    public static final String DROP_TABLE_TRACKED_ENTITIES = "DROP TABLE IF EXISTS " +
             TrackedEntityColumns.TABLE_NAME;
 
-    public TrackedEntityStoreImpl(ContentResolver contentResolver, Mapper<TrackedEntity> mapper) {
-        super(contentResolver, mapper);
+    public TrackedEntityStoreImpl(ContentResolver contentResolver) {
+        super(contentResolver, new TrackedEntityMapper());
     }
 
 

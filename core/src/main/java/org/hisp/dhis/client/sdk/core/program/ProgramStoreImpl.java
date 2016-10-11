@@ -31,6 +31,8 @@ package org.hisp.dhis.client.sdk.core.program;
 import android.content.ContentResolver;
 import android.database.Cursor;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.hisp.dhis.client.sdk.core.commons.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.commons.Mapper;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -58,11 +60,11 @@ public class ProgramStoreImpl extends AbsIdentifiableObjectStore<Program> implem
             ProgramColumns.COLUMN_BODY + "TEXT NOT NULL" +
             " UNIQUE " + "(" + ProgramColumns.COLUMN_UID + ")" + " ON CONFLICT REPLACE" + " )";
 
-    private static final String DROP_TABLE_PROGRAMS = "DROP TABLE IF EXISTS " +
+    public static final String DROP_TABLE_PROGRAMS = "DROP TABLE IF EXISTS " +
             ProgramColumns.TABLE_NAME;
 
-    public ProgramStoreImpl(ContentResolver contentResolver, Mapper<Program> mapper) {
-        super(contentResolver, mapper);
+    public ProgramStoreImpl(ContentResolver contentResolver, ObjectMapper objectMapper) {
+        super(contentResolver, new ProgramMapper(objectMapper));
     }
 
     @Override

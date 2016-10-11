@@ -146,7 +146,7 @@ public class LoginPresenterImpl implements LoginPresenter, LoginPresenter.OnLogi
             ApiException exception = (ApiException) throwable;
 
             if (exception.getResponse() != null) {
-                switch (exception.getResponse().getStatus()) {
+                switch (exception.getResponse().code()) {
                     case HttpURLConnection.HTTP_UNAUTHORIZED: {
                         onInvalidCredentialsError(error);
                         break;

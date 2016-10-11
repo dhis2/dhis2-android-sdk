@@ -40,6 +40,9 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.client.sdk.core.event.EventMapper;
+import org.hisp.dhis.client.sdk.models.event.Event;
+
 import java.util.ArrayList;
 
 import static android.content.ContentUris.parseId;
@@ -47,18 +50,17 @@ import static android.content.ContentUris.withAppendedId;
 import static android.text.TextUtils.isEmpty;
 
 public class DbContentProvider extends ContentProvider {
-    private static final int COURSES = 100;
-    private static final int COURSE_ID = 101;
+    private static final int EVENTS = 100;
+    private static final int EVENT_ID = 101;
 
     private static final UriMatcher URI_MATCHER = buildMatcher();
 
     private DbHelper mDbHelper;
-
     private static UriMatcher buildMatcher() {
         UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 
-        // matcher.addURI(DbContract.AUTHORITY, Courses.COURSES, COURSES);
-        // matcher.addURI(DbContract.AUTHORITY, Courses.COURSE_ID, COURSE_ID);
+        // matcher.addURI(DbContract.AUTHORITY, Courses.EVENTS, EVENTS);
+        // matcher.addURI(DbContract.AUTHORITY, Courses.EVENT_ID, EVENT_ID);
 
         return matcher;
     }
@@ -72,10 +74,11 @@ public class DbContentProvider extends ContentProvider {
     @Override
     public String getType(Uri uri) {
         switch (URI_MATCHER.match(uri)) {
-            case COURSES:
-                return null;
+            case EVENTS:
+                Event.class.getName()
+                return EventMapper.CONTENT_URI.toString();
             // return Courses.CONTENT_TYPE;
-            case COURSE_ID:
+            case EVENT_ID:
                 return null;
             // return Courses.CONTENT_ITEM_TYPE;
             default:
@@ -87,12 +90,12 @@ public class DbContentProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
         switch (URI_MATCHER.match(uri)) {
-            case COURSES: {
+            case EVENTS: {
                 // return query(uri, Courses.TABLE_NAME, projection,
                 //        selection, selectionArgs, sortOrder);
                 return null;
             }
-            case COURSE_ID: {
+            case EVENT_ID: {
 //                String id = String.valueOf(parseId(uri));
 //                return queryId(uri, Courses.TABLE_NAME, Courses.ID, projection,
 //                        selection, selectionArgs, sortOrder, id);
@@ -136,7 +139,7 @@ public class DbContentProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         switch (URI_MATCHER.match(uri)) {
-            case COURSES: {
+            case EVENTS: {
 //                return insert(Courses.TABLE_NAME, values, uri);
                 return null;
             }
@@ -155,11 +158,11 @@ public class DbContentProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         switch (URI_MATCHER.match(uri)) {
-            case COURSES: {
+            case EVENTS: {
                 // return delete(Courses.TABLE_NAME, selection, selectionArgs);
                 return 1;
             }
-            case COURSE_ID: {
+            case EVENT_ID: {
 //                return deleteId(uri, Courses.TABLE_NAME,
 //                        Courses.ID, selection, selectionArgs);
                 return 1;
@@ -192,12 +195,12 @@ public class DbContentProvider extends ContentProvider {
     public int update(Uri uri, ContentValues values,
                       String selection, String[] selectionArgs) {
         switch (URI_MATCHER.match(uri)) {
-            case COURSES: {
+            case EVENTS: {
 //                return update(Courses.TABLE_NAME,
 //                        selection, selectionArgs, values);
                 return 1;
             }
-            case COURSE_ID: {
+            case EVENT_ID: {
 //                return updateId(uri, Courses.TABLE_NAME,
 //                        Courses.ID, selection, selectionArgs, values);
                 return 1;

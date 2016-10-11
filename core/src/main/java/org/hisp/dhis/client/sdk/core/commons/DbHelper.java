@@ -33,8 +33,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import org.hisp.dhis.client.sdk.core.event.EventStoreImpl;
+import org.hisp.dhis.client.sdk.core.option.OptionSetStoreImpl;
 import org.hisp.dhis.client.sdk.core.program.ProgramStore;
-import org.hisp.dhis.client.sdk.core.user.UserStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramStoreImpl;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityStoreImpl;
+import org.hisp.dhis.client.sdk.core.user.UserStoreImpl;
 
 public class DbHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "DhisDb.db";
@@ -46,21 +50,21 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database) {
-        database.execSQL(ProgramStore.CREATE_TABLE_PROGRAMS);
-        database.execSQL(UserStore.CREATE_TABLE_USERS);
-        database.execSQL(OptionSetStore.CREATE_TABLE_OPTION_SET);
-        database.execSQL(TrackedEntityStore.CREATE_TABLE_TRACKED_ENTITY);
+        database.execSQL(ProgramStoreImpl.CREATE_TABLE_PROGRAMS);
+        database.execSQL(UserStoreImpl.CREATE_TABLE_USERS);
+        database.execSQL(OptionSetStoreImpl.CREATE_TABLE_OPTION_SETS);
+        database.execSQL(TrackedEntityStoreImpl.CREATE_TABLE_TRACKED_ENTITIES);
         database.execSQL(EventStoreImpl.CREATE_TABLE_EVENTS);
-        database.execSQL(TrackedEntityDataValueStore.CREATE_TABLE_TRACKED_ENTITY_DATA_VALUES);
+        database.execSQL(TrackedEntityDataValueStoreImpl.CREATE_TABLE_TRACKED_ENTITY_DATA_VALUES);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        sqLiteDatabase.execSQL(ProgramStore.DROP_TABLE_PROGRAMS);
-        sqLiteDatabase.execSQL(UserStore.DROP_TABLE_USERS);
-        sqLiteDatabase.execSQL(OptionSetStore.DROP_TABLE_OPTION_SET);
-        sqLiteDatabase.execSQL(TrackedEntityStore.DROP_TABLE_TRACKED_ENTITY);
+        sqLiteDatabase.execSQL(ProgramStoreImpl.DROP_TABLE_PROGRAMS);
+        sqLiteDatabase.execSQL(UserStoreImpl.DROP_TABLE_USERS);
+        sqLiteDatabase.execSQL(OptionSetStoreImpl.DROP_TABLE_OPTION_SETS);
+        sqLiteDatabase.execSQL(TrackedEntityStoreImpl.DROP_TABLE_TRACKED_ENTITIES);
         sqLiteDatabase.execSQL(EventStoreImpl.DROP_TABLE_EVENTS);
-        sqLiteDatabase.execSQL(TrackedEntityDataValueStore.DROP_TABLE_TRACKED_ENTITY_DATA_VALUES);
+        sqLiteDatabase.execSQL(TrackedEntityDataValueStoreImpl.DROP_TABLE_TRACKED_ENTITY_DATA_VALUES);
     }
 }

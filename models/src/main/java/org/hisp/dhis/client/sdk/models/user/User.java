@@ -95,6 +95,12 @@ public class User extends BaseIdentifiableObject {
     @JsonProperty("dataViewOrganisationUnits")
     List<OrganisationUnit> dataViewOrganisationUnits;
 
+    public static void validate(User user) {
+        if(user.getUserCredentials() == null) {
+            throw new IllegalArgumentException("User credentials must noe be null");
+        }
+    }
+
     public User() {
         // explicit empty constructor
     }

@@ -32,7 +32,7 @@ import org.hisp.dhis.client.sdk.models.common.IdentifiableObject;
 
 import java.util.List;
 
-public interface IdentifiableObjectStore<T extends IdentifiableObject> {
+public interface IdentifiableObjectStore<T extends IdentifiableObject> extends Store<T> {
     T queryByUid(String uid);
 
     T queryByCode(String code);

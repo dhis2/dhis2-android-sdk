@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.commons;
 
+import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -64,8 +65,7 @@ public abstract class AbsStore<T extends Model> implements Store<T> {
 
     @Override
     public boolean save(T object) {
-        T databaseRow = queryById(object.getId());
-        if (databaseRow != null) {
+        if (doObjectExist(object)) {
             update(object);
         } else {
             insert(object);
@@ -134,5 +134,101 @@ public abstract class AbsStore<T extends Model> implements Store<T> {
         }
 
         return items;
+    }
+
+    @Override
+    public boolean insert(List<T> objects) {
+        isNull(objects, "Objects must not be null");
+
+        if (objects.isEmpty()) {
+            throw new IllegalArgumentException("Objects to insert must not be empty");
+        }
+
+        ContentProviderOperation.Builder insertOperations = ContentProviderOperation.newInsert(mapper.getContentUri());
+
+        for (T object : objects) {
+            isNull(object, "Object to insert must not be null");
+            insertOperations.withValues(mapper.toContentValues(object));
+        }
+
+        insertOperations.build();
+
+        return true;
+    }
+
+    @Override
+    public boolean update(List<T> objects) {
+        isNull(objects, "Objects must not be null");
+
+        if (objects.isEmpty()) {
+            throw new IllegalArgumentException("Objects to update must not be empty");
+        }
+
+        ContentProviderOperation.Builder updateOperations = ContentProviderOperation.newUpdate(mapper.getContentUri());
+
+        for (T object : objects) {
+            isNull(object, "Object to update must not be null");
+            updateOperations.withValues(mapper.toContentValues(object));
+        }
+
+        updateOperations.build();
+
+        return true;
+    }
+
+    @Override
+    public boolean save(List<T> objects) {
+        isNull(objects, "Objects to save must not be null");
+
+        if (objects.isEmpty()) {
+            throw new IllegalArgumentException("Objects to update must not be empty");
+
+        }
+
+        List<T> objectsToUpdate = new ArrayList<>();
+        List<T> objectsToInsert = new ArrayList<>();
+
+        for (T object : objects) {
+            if (doObjectExist(object)) {
+                objectsToUpdate.add(object);
+            } else {
+                objectsToInsert.add(object);
+            }
+        }
+        if (!objectsToInsert.isEmpty()) {
+            this.insert(objectsToInsert);
+        }
+
+        if (!objectsToUpdate.isEmpty()) {
+            this.update(objectsToUpdate);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean delete(List<T> objects) {
+        isNull(objects, "Objects to delete must not be null");
+
+        if(objects.isEmpty()) {
+            throw new IllegalArgumentException("Objects to delete must not be empty");
+        }
+
+        ContentProviderOperation.Builder deleteOperations = ContentProviderOperation.newDelete(mapper.getContentUri());
+
+        for (T object : objects) {
+            isNull(object, "Object to delete must not be null");
+            deleteOperations.withValues(mapper.toContentValues(object));
+
+        }
+
+        deleteOperations.build();
+
+        return true;
+    }
+
+    private boolean doObjectExist(T object) {
+        if (queryById(object.getId()) == null) {
+            return false;
+        } else return true;
     }
 }

@@ -46,6 +46,9 @@ import org.hisp.dhis.client.sdk.models.program.ProgramType;
 import java.io.IOException;
 import java.text.ParseException;
 
+import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getInt;
+import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getString;
+
 public class ProgramMapper implements Mapper<Program> {
     private static Uri CONTENT_URI = DbContract.BASE_CONTENT_URI.buildUpon()
             .appendPath(ProgramStore.ProgramColumns.TABLE_NAME).build();
@@ -66,21 +69,6 @@ public class ProgramMapper implements Mapper<Program> {
             ProgramColumns.COLUMN_PROGRAM_TYPE,
             ProgramColumns.COLUMN_BODY
     };
-
-    private static final int COLUMN_ID = 0;
-    private static final int COLUMN_UID = 1;
-    private static final int COLUMN_CODE = 2;
-    private static final int COLUMN_CREATED = 3;
-    private static final int COLUMN_LAST_UPDATED = 4;
-    private static final int COLUMN_NAME = 5;
-    private static final int COLUMN_DISPLAY_NAME = 6;
-    private static final int COLUMN_SHORT_NAME = 7;
-    private static final int COLUMN_DISPLAY_SHORT_NAME = 8;
-    private static final int COLUMN_DESCRIPTION = 9;
-    private static final int COLUMN_DISPLAY_DESCRIPTION = 10;
-    private static final int COLUMN_DISPLAY_FRONT_PAGE_LIST = 11;
-    private static final int COLUMN_PROGRAM_TYPE = 12;
-    private static final int COLUMN_BODY = 13;
 
     private final ObjectMapper objectMapper;
 
@@ -136,28 +124,30 @@ public class ProgramMapper implements Mapper<Program> {
         Program program;
         // trying to deserialize the JSON blob into Program instance
         try {
-            program = objectMapper.readValue(cursor.getString(COLUMN_BODY), Program.class);
+            program = objectMapper.readValue(getString(cursor, ProgramColumns.COLUMN_BODY), Program.class);
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
 
-        program.setId(cursor.getInt(COLUMN_ID));
-        program.setUid(cursor.getString(COLUMN_UID));
-        program.setCode(cursor.getString(COLUMN_CODE));
-        program.setName(cursor.getString(COLUMN_NAME));
-        program.setDisplayName(cursor.getString(COLUMN_DISPLAY_NAME));
-        program.setShortName(cursor.getString(COLUMN_SHORT_NAME));
-        program.setDisplayShortName(cursor.getString(COLUMN_DISPLAY_SHORT_NAME));
-        program.setDescription(cursor.getString(COLUMN_DESCRIPTION));
-        program.setDisplayDescription(cursor.getString(COLUMN_DISPLAY_DESCRIPTION));
-        program.setDisplayFrontPageList(cursor.getInt(COLUMN_DISPLAY_FRONT_PAGE_LIST) == 1);
-        program.setProgramType(ProgramType.valueOf(cursor.getString(COLUMN_PROGRAM_TYPE)));
+        program.setId(getInt(cursor, ProgramColumns.COLUMN_ID));
+        program.setUid(getString(cursor, ProgramColumns.COLUMN_UID));
+        program.setCode(getString(cursor, ProgramColumns.COLUMN_CODE));
+        program.setName(getString(cursor, ProgramColumns.COLUMN_NAME));
+        program.setDisplayName(getString(cursor, ProgramColumns.COLUMN_DISPLAY_NAME));
+
+        program.setShortName(getString(cursor, ProgramColumns.COLUMN_SHORT_NAME));
+        program.setDisplayShortName(getString(cursor, ProgramColumns.COLUMN_DISPLAY_SHORT_NAME));
+        program.setDescription(getString(cursor, ProgramColumns.COLUMN_DISPLAY_DESCRIPTION));
+        program.setDisplayDescription(getString(cursor, ProgramColumns.COLUMN_DISPLAY_DESCRIPTION));
+
+        program.setDisplayFrontPageList(getInt(cursor, ProgramColumns.COLUMN_DISPLAY_FRONT_PAGE_LIST) == 1);
+        program.setProgramType(ProgramType.valueOf(getString(cursor, ProgramColumns.COLUMN_PROGRAM_TYPE)));
 
         try {
             program.setCreated(BaseIdentifiableObject.SIMPLE_DATE_FORMAT
-                    .parse(cursor.getString(COLUMN_CREATED)));
+                    .parse(getString(cursor, ProgramColumns.COLUMN_CREATED)));
             program.setLastUpdated(BaseIdentifiableObject.SIMPLE_DATE_FORMAT
-                    .parse(cursor.getString(COLUMN_LAST_UPDATED)));
+                    .parse(getString(cursor, ProgramColumns.COLUMN_LAST_UPDATED)));
         } catch (ParseException e) {
             throw new IllegalArgumentException(e);
         }

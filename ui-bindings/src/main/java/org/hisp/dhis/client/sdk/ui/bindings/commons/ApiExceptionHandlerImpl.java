@@ -31,12 +31,13 @@ package org.hisp.dhis.client.sdk.ui.bindings.commons;
 import android.content.Context;
 
 import org.hisp.dhis.client.sdk.core.commons.ApiException;
-import org.hisp.dhis.client.sdk.core.Response;
 import org.hisp.dhis.client.sdk.ui.bindings.R;
 import org.hisp.dhis.client.sdk.utils.Logger;
 
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+
+import retrofit2.Response;
 
 public class ApiExceptionHandlerImpl implements ApiExceptionHandler {
     Context context;
@@ -56,7 +57,7 @@ public class ApiExceptionHandlerImpl implements ApiExceptionHandler {
             Response response = ((ApiException) apiException).getResponse();
 
             if (response != null) {
-                status = response.getStatus();
+                status = response.code();
             }
 
             switch (status) { //Custom error messages :

@@ -22,7 +22,7 @@ public class TrackedEntityDataValueStoreImpl extends AbsDataStore<TrackedEntityD
             TrackedEntityDataValueColumns.COLUMN_VALUE + " TEXT," +
             TrackedEntityDataValueColumns.COLUMN_STATE + " TEXT" + ")";
 
-    public static final String DROP_TABLE_TRACKED_ENTITY_DATA_VALUE = "DROP TABLE IF EXISTS " +
+    public static final String DROP_TABLE_TRACKED_ENTITY_DATA_VALUES = "DROP TABLE IF EXISTS " +
             TrackedEntityDataValueColumns.TABLE_NAME;
 
     public TrackedEntityDataValueStoreImpl(ContentResolver contentResolver, Mapper<TrackedEntityDataValue> mapper) {

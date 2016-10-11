@@ -29,4 +29,5 @@
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
 public interface TrackedEntityDataValueInteractor {
+    TrackedEntityDataValueStore store();
 }

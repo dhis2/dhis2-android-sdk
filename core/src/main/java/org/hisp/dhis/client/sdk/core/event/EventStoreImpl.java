@@ -32,9 +32,9 @@ import android.content.ContentResolver;
 import android.database.Cursor;
 
 import org.hisp.dhis.client.sdk.core.commons.AbsIdentifiableObjectDataStore;
-import org.hisp.dhis.client.sdk.core.program.ProgramStore.ProgramColumns;
+import org.hisp.dhis.client.sdk.core.program.ProgramMapper.ProgramColumns;
 import org.hisp.dhis.client.sdk.models.event.Event;
-
+import org.hisp.dhis.client.sdk.core.event.EventMapper.EventColumns;
 import java.util.List;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;

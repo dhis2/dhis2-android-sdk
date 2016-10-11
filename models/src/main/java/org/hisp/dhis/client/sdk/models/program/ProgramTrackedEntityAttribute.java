@@ -55,4 +55,44 @@ public class ProgramTrackedEntityAttribute extends BaseNameableObject {
 
     public ProgramTrackedEntityAttribute() {
     }
+
+    public boolean isMandatory() {
+        return mandatory;
+    }
+
+    public void setMandatory(boolean mandatory) {
+        this.mandatory = mandatory;
+    }
+
+    public TrackedEntityAttribute getTrackedEntityAttribute() {
+        return trackedEntityAttribute;
+    }
+
+    public void setTrackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute) {
+        this.trackedEntityAttribute = trackedEntityAttribute;
+    }
+
+    public ValueType getValueType() {
+        return valueType;
+    }
+
+    public void setValueType(ValueType valueType) {
+        this.valueType = valueType;
+    }
+
+    public boolean isAllowFutureDate() {
+        return allowFutureDate;
+    }
+
+    public void setAllowFutureDate(boolean allowFutureDate) {
+        this.allowFutureDate = allowFutureDate;
+    }
+
+    public boolean isDisplayInList() {
+        return displayInList;
+    }
+
+    public void setDisplayInList(boolean displayInList) {
+        this.displayInList = displayInList;
+    }
 }

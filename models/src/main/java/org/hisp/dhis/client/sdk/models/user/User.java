@@ -96,7 +96,7 @@ public class User extends BaseIdentifiableObject {
     List<OrganisationUnit> dataViewOrganisationUnits;
 
     public static void validate(User user) {
-        if(user.getUserCredentials() == null) {
+        if (user.getUserCredentials() == null) {
             throw new IllegalArgumentException("User credentials must noe be null");
         }
     }
@@ -242,12 +242,10 @@ public class User extends BaseIdentifiableObject {
     }
 
     public String getInitials() {
-        if (!isEmpty(getFirstName()) &&
-                !isEmpty(getSurname())) {
+        if (!isEmpty(getFirstName()) && !isEmpty(getSurname())) {
             return String.valueOf(getFirstName().charAt(0)) +
                     String.valueOf(getSurname().charAt(0));
-        } else if (getDisplayName() != null &&
-                getDisplayName().length() > 1) {
+        } else if (getDisplayName() != null && getDisplayName().length() > 1) {
             return String.valueOf(getDisplayName().charAt(0)) +
                     String.valueOf(getDisplayName().charAt(1));
         }

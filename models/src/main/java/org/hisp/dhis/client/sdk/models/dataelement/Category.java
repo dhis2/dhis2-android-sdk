@@ -43,4 +43,12 @@ public class Category extends BaseNameableObject {
 
     public Category() {
     }
+
+    public List<CategoryOption> getCategoryOptions() {
+        return categoryOptions;
+    }
+
+    public void setCategoryOptions(List<CategoryOption> categoryOptions) {
+        this.categoryOptions = categoryOptions;
+    }
 }

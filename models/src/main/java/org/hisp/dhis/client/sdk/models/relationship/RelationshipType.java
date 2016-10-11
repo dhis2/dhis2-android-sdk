@@ -44,4 +44,20 @@ public class RelationshipType extends BaseIdentifiableObject {
 
     public RelationshipType() {
     }
+
+    public String getbIsToA() {
+        return bIsToA;
+    }
+
+    public void setbIsToA(String bIsToA) {
+        this.bIsToA = bIsToA;
+    }
+
+    public String getaIsToB() {
+        return aIsToB;
+    }
+
+    public void setaIsToB(String aIsToB) {
+        this.aIsToB = aIsToB;
+    }
 }

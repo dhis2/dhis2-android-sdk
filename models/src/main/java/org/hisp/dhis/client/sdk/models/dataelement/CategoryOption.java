@@ -50,4 +50,28 @@ public class CategoryOption extends BaseNameableObject {
 
     public CategoryOption() {
     }
+
+    public List<CategoryOptionCombo> getCategoryOptionCombos() {
+        return categoryOptionCombos;
+    }
+
+    public void setCategoryOptionCombos(List<CategoryOptionCombo> categoryOptionCombos) {
+        this.categoryOptionCombos = categoryOptionCombos;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
 }

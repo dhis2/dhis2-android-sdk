@@ -2,10 +2,8 @@ package org.hisp.dhis.client.sdk.core;
 
 import org.hisp.dhis.client.sdk.core.option.OptionSetInteractor;
 import org.hisp.dhis.client.sdk.core.program.ProgramInteractor;
-import org.hisp.dhis.client.sdk.core.program.ProgramStore.ProgramColumns;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInteractor;
 import org.hisp.dhis.client.sdk.core.user.UserInteractor;
-import org.hisp.dhis.client.sdk.models.common.IdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.Payload;
 import org.hisp.dhis.client.sdk.models.option.OptionSet;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -130,7 +128,6 @@ public class MetadataTask {
             // --------------------------------------------------------------------------------
             // FILTERING OUT WHICH OPTION SETS TO DOWNLOAD BASED ON VERSION AND EXISTENCE IN DB
             // --------------------------------------------------------------------------------
-
 
 
             Map<String, OptionSet> persistedOptionSets = toMap(optionSetInteractor.store().queryAll());

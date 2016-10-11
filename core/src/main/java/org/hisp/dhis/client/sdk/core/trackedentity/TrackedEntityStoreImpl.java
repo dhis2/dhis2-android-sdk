@@ -2,10 +2,8 @@ package org.hisp.dhis.client.sdk.core.trackedentity;
 
 import android.content.ContentResolver;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.hisp.dhis.client.sdk.core.commons.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.core.commons.Mapper;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityMapper.TrackedEntityColumns;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 
 public class TrackedEntityStoreImpl extends AbsIdentifiableObjectStore<TrackedEntity> implements TrackedEntityStore {

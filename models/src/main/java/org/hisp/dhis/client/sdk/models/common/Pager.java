@@ -49,15 +49,19 @@ public final class Pager {
         this.pageSize = pageSize;
         this.total = total;
     }
+
     public int page() {
         return page;
     }
+
     public int pageCount() {
         return pageCount;
     }
+
     public int pageSize() {
         return pageSize;
     }
+
     public int total() {
         return total;
     }

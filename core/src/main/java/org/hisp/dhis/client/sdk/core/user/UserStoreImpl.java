@@ -5,12 +5,12 @@ import android.content.ContentResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.client.sdk.core.commons.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.core.commons.Mapper;
 import org.hisp.dhis.client.sdk.models.user.User;
+import org.hisp.dhis.client.sdk.core.user.UserMapper.UserColumns;
 
 public class UserStoreImpl extends AbsIdentifiableObjectStore<User> implements UserStore {
     public static final String CREATE_TABLE_USERS = "CREATE TABLE IF NOT EXISTS " +
-            UserColumns.TABLE_NAME + " (" +
+            UserMapper.UserColumns.TABLE_NAME + " (" +
             UserColumns.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             UserColumns.COLUMN_UID + " TEXT NOT NULL," +
             UserColumns.COLUMN_CODE + " TEXT," +

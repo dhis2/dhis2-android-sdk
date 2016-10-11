@@ -5,7 +5,7 @@ import android.database.Cursor;
 
 import org.hisp.dhis.client.sdk.core.commons.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.commons.Mapper;
-import org.hisp.dhis.client.sdk.core.program.ProgramStore;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitMapper.OrganisationUnitColumns;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
 import java.util.List;

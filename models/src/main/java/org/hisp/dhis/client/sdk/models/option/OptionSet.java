@@ -33,7 +33,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.ValueType;
-import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
 

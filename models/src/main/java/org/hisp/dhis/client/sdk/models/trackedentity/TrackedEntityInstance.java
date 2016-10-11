@@ -37,8 +37,6 @@ import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.IdentifiableObject;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;
 
-
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -111,7 +109,6 @@ public class TrackedEntityInstance extends BaseIdentifiableObject implements Ide
         return uid;
     }
 
-
     @Override
     public void setUid(String uId) {
         this.uid = uId;
@@ -119,24 +116,23 @@ public class TrackedEntityInstance extends BaseIdentifiableObject implements Ide
 
     @Override
     public String getName() {
-        return "";
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setName(String name) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public String getDisplayName() {
-        return "";
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setDisplayName(String displayName) {
-
+        throw new UnsupportedOperationException();
     }
-
 
     @Override
     public Date getCreated() {
@@ -157,6 +153,4 @@ public class TrackedEntityInstance extends BaseIdentifiableObject implements Ide
     public void setLastUpdated(Date lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
-
-
 }

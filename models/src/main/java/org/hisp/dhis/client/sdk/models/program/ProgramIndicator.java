@@ -53,4 +53,44 @@ public class ProgramIndicator extends BaseNameableObject {
 
     public ProgramIndicator() {
     }
+
+    public boolean isDisplayInForm() {
+        return displayInForm;
+    }
+
+    public void setDisplayInForm(boolean displayInForm) {
+        this.displayInForm = displayInForm;
+    }
+
+    public String getExpression() {
+        return expression;
+    }
+
+    public void setExpression(String expression) {
+        this.expression = expression;
+    }
+
+    public String getDimensionItem() {
+        return dimensionItem;
+    }
+
+    public void setDimensionItem(String dimensionItem) {
+        this.dimensionItem = dimensionItem;
+    }
+
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
+
+    public int getDecimals() {
+        return decimals;
+    }
+
+    public void setDecimals(int decimals) {
+        this.decimals = decimals;
+    }
 }

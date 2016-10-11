@@ -33,7 +33,7 @@ import android.content.ContentResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.client.sdk.core.commons.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.core.commons.Mapper;
+import org.hisp.dhis.client.sdk.core.option.OptionSetMapper.OptionSetColumns;
 import org.hisp.dhis.client.sdk.models.option.OptionSet;
 
 public class OptionSetStoreImpl extends AbsIdentifiableObjectStore<OptionSet> implements OptionSetStore {

@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import org.hisp.dhis.client.sdk.core.commons.AbsDataStore;
 import org.hisp.dhis.client.sdk.core.commons.Mapper;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueMapper.TrackedEntityDataValueColumns;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
 import java.util.List;

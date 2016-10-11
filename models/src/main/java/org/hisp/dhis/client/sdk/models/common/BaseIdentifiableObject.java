@@ -52,7 +52,6 @@ public abstract class BaseIdentifiableObject extends BaseModel implements Identi
     @JsonProperty("displayName")
     String displayName;
 
-    // timestamps
     @JsonProperty("created")
     Date created;
 

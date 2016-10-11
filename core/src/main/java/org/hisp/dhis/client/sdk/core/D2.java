@@ -79,13 +79,14 @@ public class D2 {
     // persistence
     private final ServerUrlPreferences serverUrlPreferences;
     private final ContentResolver contentResolver;
+
     // retrofit dependencies
     private final ObjectMapper objectMapper;
     private final OkHttpClient okHttpClient;
     private final Executor executor;
     private final Retrofit retrofit;
 
-    /* holds true if D2 is configured */
+    // holds true if D2 is configured
     private final boolean isConfigured;
     private static String serverUrl;
 
@@ -189,6 +190,21 @@ public class D2 {
         this.retrofit = retrofit;
     }
 
+    public static String getServerUrl() {
+        return serverUrl;
+    }
+
+    public static UserInteractor me() {
+        if (isConfigured() && instance().userInteractor == null) {
+            UsersApi usersApi = instance().retrofit.create(UsersApi.class);
+            UserStore userStore = new UserStoreImpl(instance().contentResolver,
+                    instance().objectMapper);
+
+            instance().userInteractor = new UserInteractorImpl(null, usersApi, userStore, null);
+        }
+        return instance().userInteractor;
+    }
+
     public static ProgramInteractor programs() {
         if (isConfigured() && instance().programInteractor == null) {
             ProgramsApi programsApi = instance().retrofit.create(ProgramsApi.class);
@@ -201,17 +217,6 @@ public class D2 {
         }
 
         return instance().programInteractor;
-    }
-
-    public static UserInteractor me() {
-        if (isConfigured() && instance().userInteractor == null) {
-            UsersApi usersApi = instance().retrofit.create(UsersApi.class);
-            UserStore userStore = new UserStoreImpl(instance().contentResolver,
-                    instance().objectMapper);
-
-            instance().userInteractor = new UserInteractorImpl(null, usersApi, userStore, null);
-        }
-        return instance().userInteractor;
     }
 
     public static OptionSetInteractor optionSets() {
@@ -227,10 +232,6 @@ public class D2 {
         return instance().optionSetInteractor;
     }
 
-    public static String getServerUrl() {
-        return serverUrl;
-    }
-
     public static TrackedEntityInteractor trackedEntities() {
         if (isConfigured() && instance().trackedEntityInteractor == null) {
             TrackedEntityApi trackedEntityApi = instance().retrofit.create(TrackedEntityApi.class);
@@ -241,7 +242,6 @@ public class D2 {
         }
 
         return instance().trackedEntityInteractor;
-
     }
 
     public static class Builder {

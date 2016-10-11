@@ -9,6 +9,8 @@ import org.hisp.dhis.client.sdk.utils.Logger;
 public interface DefaultAppModule {
     Application providesApplication();
 
+    Context providesContext();
+
     Logger providesLogger();
 
     ApiExceptionHandler providesApiExceptionHandler(Context context, Logger logger);

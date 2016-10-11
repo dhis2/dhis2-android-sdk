@@ -32,6 +32,7 @@ final class DefaultUserModuleImpl implements DefaultUserModule {
         this.accountType = accountType;
         if (!isEmpty(serverUrl)) {
 
+            // TODO REFACTOR
             // configure D2
 //            Configuration configuration = new Configuration(serverUrl);
 //            D2.configure(configuration).toBlocking().first();

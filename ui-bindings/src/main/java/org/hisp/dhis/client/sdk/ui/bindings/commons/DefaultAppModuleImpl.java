@@ -49,6 +49,11 @@ final class DefaultAppModuleImpl implements DefaultAppModule {
     }
 
     @Override
+    public Context providesContext() {
+        return application;
+    }
+
+    @Override
     public Logger providesLogger() {
         return new LoggerImpl();
     }

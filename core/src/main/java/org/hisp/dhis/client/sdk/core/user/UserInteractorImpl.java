@@ -83,5 +83,4 @@ public class UserInteractorImpl implements UserInteractor{
     public boolean isLoggedIn() {
         return userPreferences.isUserConfirmed();
     }
-
 }

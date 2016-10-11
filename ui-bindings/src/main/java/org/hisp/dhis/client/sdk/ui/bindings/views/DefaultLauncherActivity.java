@@ -34,7 +34,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import org.hisp.dhis.client.sdk.ui.bindings.R;
-import org.hisp.dhis.client.sdk.ui.bindings.commons.Inject;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.NavigationHandler;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.LauncherPresenter;
 
@@ -47,17 +46,17 @@ public class DefaultLauncherActivity extends AppCompatActivity implements Launch
         setContentView(R.layout.activity_launcher);
 
         // injecting dependencies
-        Inject.getUserComponent().inject(this);
+        // Inject.getUserComponent().inject(this);
 
-        launcherPresenter.attachView(this);
-        launcherPresenter.checkIfUserIsLoggedIn();
+        // launcherPresenter.attachView(this);
+        // launcherPresenter.checkIfUserIsLoggedIn();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        launcherPresenter.detachView();
+        // launcherPresenter.detachView();
     }
 
     @Override

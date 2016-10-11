@@ -1,7 +1,6 @@
 package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
 import android.app.Application;
-import android.content.Context;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 

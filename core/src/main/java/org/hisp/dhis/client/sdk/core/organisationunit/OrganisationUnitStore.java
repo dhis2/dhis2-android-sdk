@@ -8,14 +8,6 @@ import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import java.util.List;
 
 public interface OrganisationUnitStore extends IdentifiableObjectStore<OrganisationUnit> {
-    interface OrganisationUnitColumns extends NameableColumns, BodyColumn {
-        String TABLE_NAME = "organisationUnits";
-        String COLUMN_PARENT = "parent";
-        String COLUMN_OPENING_DATE = "openingDate";
-        String COLUMN_CLOSED_DATE = "closedDate";
-        String COLUMN_LEVEL = "level";
-        String COLUMN_PATH = "path";
-    }
 
     List<OrganisationUnit> query(String parentOrganisationUnitId);
 }

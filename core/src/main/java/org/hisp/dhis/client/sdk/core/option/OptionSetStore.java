@@ -28,17 +28,8 @@
 
 package org.hisp.dhis.client.sdk.core.option;
 
-import org.hisp.dhis.client.sdk.core.commons.DbContract;
-import org.hisp.dhis.client.sdk.core.commons.DbContract.IdColumn;
-import org.hisp.dhis.client.sdk.core.commons.DbContract.IdentifiableColumns;
-import org.hisp.dhis.client.sdk.core.commons.DbContract.VersionColumn;
-import org.hisp.dhis.client.sdk.core.commons.DbContract.BodyColumn;
 import org.hisp.dhis.client.sdk.core.commons.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.option.OptionSet;
 
 public interface OptionSetStore extends IdentifiableObjectStore<OptionSet> {
-
-    interface OptionSetColumns extends IdColumn, IdentifiableColumns, VersionColumn, BodyColumn {
-        String TABLE_NAME = "optionSet";
-    }
 }

@@ -34,7 +34,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import org.hisp.dhis.client.sdk.core.event.EventStoreImpl;
 import org.hisp.dhis.client.sdk.core.option.OptionSetStoreImpl;
-import org.hisp.dhis.client.sdk.core.program.ProgramStore;
 import org.hisp.dhis.client.sdk.core.program.ProgramStoreImpl;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityStoreImpl;

@@ -64,7 +64,7 @@ public class EventMapper implements Mapper<Event> {
             .appendPath(EventColumns.TABLE_NAME).build();
 
     public static final String EVENTS = EventColumns.TABLE_NAME;
-    public static final String EVENTS_ID = EventColumns.TABLE_NAME + "/#";
+    public static final String EVENT_ID = EventColumns.TABLE_NAME + "/#";
 
     public static String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
             "/org.hisp.dhis.models.Event";

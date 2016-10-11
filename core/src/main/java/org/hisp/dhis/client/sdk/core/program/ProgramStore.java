@@ -28,10 +28,6 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.commons.DbContract.BodyColumn;
-import org.hisp.dhis.client.sdk.core.commons.DbContract.NameableColumns;
-import org.hisp.dhis.client.sdk.core.commons.DbContract.TimeStampColumns;
-import org.hisp.dhis.client.sdk.core.commons.DbContract.VersionColumn;
 import org.hisp.dhis.client.sdk.core.commons.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramType;
@@ -39,11 +35,6 @@ import org.hisp.dhis.client.sdk.models.program.ProgramType;
 import java.util.List;
 
 public interface ProgramStore extends IdentifiableObjectStore<Program> {
-    interface ProgramColumns extends NameableColumns, TimeStampColumns, VersionColumn, BodyColumn {
-        String TABLE_NAME = "programs";
-        String COLUMN_PROGRAM_TYPE = "programType";
-        String COLUMN_DISPLAY_FRONT_PAGE_LIST = "displayFrontPageList";
-    }
 
     List<Program> query(ProgramType programType);
 

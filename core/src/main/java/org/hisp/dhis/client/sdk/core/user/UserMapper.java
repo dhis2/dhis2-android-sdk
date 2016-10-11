@@ -1,5 +1,6 @@
 package org.hisp.dhis.client.sdk.core.user;
 
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -10,7 +11,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.client.sdk.core.commons.DbContract;
 import org.hisp.dhis.client.sdk.core.commons.Mapper;
-import org.hisp.dhis.client.sdk.core.user.UserStore.UserColumns;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.user.User;
 
@@ -21,8 +21,19 @@ import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getInt;
 import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getString;
 
 public class UserMapper implements Mapper<User> {
+    public interface UserColumns extends DbContract.IdentifiableColumns, DbContract.BodyColumn {
+        String TABLE_NAME = "users";
+    }
+
     private static Uri CONTENT_URI = DbContract.BASE_CONTENT_URI.buildUpon()
             .appendPath(UserColumns.TABLE_NAME).build();
+    public static final String USERS = UserColumns.TABLE_NAME;
+    public static final String USER_ID = UserColumns.TABLE_NAME + "/#";
+
+    public static String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
+            "/org.hisp.dhis.models.User";
+    public static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE +
+            "/org.hisp.dhis.models.User";
 
     private static final String[] PROJECTION = new String[]{
             UserColumns.COLUMN_ID,

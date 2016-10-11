@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.option;
 
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -38,7 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.client.sdk.core.commons.DbContract;
 import org.hisp.dhis.client.sdk.core.commons.Mapper;
-import org.hisp.dhis.client.sdk.core.option.OptionSetStore.OptionSetColumns;
+import org.hisp.dhis.client.sdk.core.event.EventMapper;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.option.OptionSet;
 
@@ -49,8 +50,20 @@ import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getInt;
 import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getString;
 
 public class OptionSetMapper implements Mapper<OptionSet> {
+    public interface OptionSetColumns extends DbContract.IdColumn, DbContract.IdentifiableColumns, DbContract.VersionColumn, DbContract.BodyColumn {
+        String TABLE_NAME = "optionSet";
+    }
+
     private static Uri CONTENT_URI = DbContract.BASE_CONTENT_URI.buildUpon()
             .appendPath(OptionSetColumns.TABLE_NAME).build();
+
+    public static final String OPTION_SETS = OptionSetColumns.TABLE_NAME;
+    public static final String OPTION_SET_ID = OptionSetColumns.TABLE_NAME + "/#";
+
+    public static String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
+            "/org.hisp.dhis.models.OptionSet";
+    public static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE +
+            "/org.hisp.dhis.models.OptionSet";
 
     private static final String[] PROJECTION = new String[]{
             OptionSetColumns.COLUMN_ID,

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.organisationunit;
 
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -35,7 +36,7 @@ import android.net.Uri;
 
 import org.hisp.dhis.client.sdk.core.commons.DbContract;
 import org.hisp.dhis.client.sdk.core.commons.Mapper;
-import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitStore.OrganisationUnitColumns;
+import org.hisp.dhis.client.sdk.core.option.OptionSetMapper;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
@@ -45,8 +46,25 @@ import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getInt;
 import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getString;
 
 public class OrganisationUnitMapper implements Mapper<OrganisationUnit> {
+    public interface OrganisationUnitColumns extends DbContract.NameableColumns, DbContract.BodyColumn {
+        String TABLE_NAME = "organisationUnits";
+        String COLUMN_PARENT = "parent";
+        String COLUMN_OPENING_DATE = "openingDate";
+        String COLUMN_CLOSED_DATE = "closedDate";
+        String COLUMN_LEVEL = "level";
+        String COLUMN_PATH = "path";
+    }
+
     private static final Uri CONTENT_URI = DbContract.BASE_CONTENT_URI.buildUpon()
             .appendPath(OrganisationUnitColumns.TABLE_NAME).build();
+
+    public static final String ORGANISATION_UNITS = OrganisationUnitColumns.TABLE_NAME;
+    public static final String ORGANISATION_UNIT_ID = OrganisationUnitColumns.TABLE_NAME + "/#";
+
+    public static String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
+            "/org.hisp.dhis.models.OrganisationUnit";
+    public static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE +
+            "/org.hisp.dhis.models.OrganisationUnit";
 
     private static final String[] PROJECTION = new String[]{
             OrganisationUnitColumns.COLUMN_ID,

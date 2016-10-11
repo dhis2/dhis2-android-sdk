@@ -41,6 +41,19 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.client.sdk.core.event.EventMapper;
+import org.hisp.dhis.client.sdk.core.event.EventMapper.EventColumns;
+import org.hisp.dhis.client.sdk.core.option.OptionSetMapper;
+import org.hisp.dhis.client.sdk.core.option.OptionSetMapper.OptionSetColumns;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitMapper;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitMapper.OrganisationUnitColumns;
+import org.hisp.dhis.client.sdk.core.program.ProgramMapper;
+import org.hisp.dhis.client.sdk.core.program.ProgramMapper.ProgramColumns;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueMapper;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueMapper.TrackedEntityDataValueColumns;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityMapper;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityMapper.TrackedEntityColumns;
+import org.hisp.dhis.client.sdk.core.user.UserMapper;
+import org.hisp.dhis.client.sdk.core.user.UserMapper.UserColumns;
 
 import java.util.ArrayList;
 
@@ -52,6 +65,24 @@ public class DbContentProvider extends ContentProvider {
     private static final int EVENTS = 100;
     private static final int EVENT_ID = 101;
 
+    private static final int PROGRAMS = 200;
+    private static final int PROGRAM_ID = 201;
+
+    private static final int OPTIONSETS = 300;
+    private static final int OPTIONSET_ID = 301;
+
+    private static final int ORGANISATION_UNITS = 400;
+    private static final int ORGANISATION_UNIT_ID = 401;
+
+    private static final int TRACKED_ENTITIES = 500;
+    private static final int TRACKED_ENTITY_ID = 501;
+
+    private static final int TRACKED_ENTITY_DATA_VALUES = 600;
+    private static final int TRACKED_ENTITY_DATA_VALUE_ID = 601;
+
+    private static final int USERS = 700;
+    private static final int USER_ID = 701;
+
     private static final UriMatcher URI_MATCHER = buildMatcher();
 
     private DbHelper mDbHelper;
@@ -60,7 +91,25 @@ public class DbContentProvider extends ContentProvider {
         UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 
         matcher.addURI(DbContract.AUTHORITY, EventMapper.EVENTS, EVENTS);
-        matcher.addURI(DbContract.AUTHORITY, EventMapper.EVENTS_ID, EVENT_ID);
+        matcher.addURI(DbContract.AUTHORITY, EventMapper.EVENT_ID, EVENT_ID);
+
+        matcher.addURI(DbContract.AUTHORITY, ProgramMapper.PROGRAMS, PROGRAMS);
+        matcher.addURI(DbContract.AUTHORITY, ProgramMapper.PROGRAM_ID, PROGRAM_ID);
+
+        matcher.addURI(DbContract.AUTHORITY, OptionSetMapper.OPTION_SETS, OPTIONSETS);
+        matcher.addURI(DbContract.AUTHORITY, OptionSetMapper.OPTION_SET_ID, OPTIONSET_ID);
+
+        matcher.addURI(DbContract.AUTHORITY, OrganisationUnitMapper.ORGANISATION_UNITS, ORGANISATION_UNITS);
+        matcher.addURI(DbContract.AUTHORITY, OrganisationUnitMapper.ORGANISATION_UNIT_ID, ORGANISATION_UNIT_ID);
+
+        matcher.addURI(DbContract.AUTHORITY, TrackedEntityMapper.TRACKED_ENTITIES, TRACKED_ENTITIES);
+        matcher.addURI(DbContract.AUTHORITY, TrackedEntityMapper.TRACKED_ENTITY_ID, TRACKED_ENTITY_ID);
+
+        matcher.addURI(DbContract.AUTHORITY, TrackedEntityDataValueMapper.TRACKED_ENTITY_DATA_VALUES, TRACKED_ENTITY_DATA_VALUES);
+        matcher.addURI(DbContract.AUTHORITY, TrackedEntityDataValueMapper.TRACKED_ENTITY_DATA_VALUE_ID, TRACKED_ENTITY_DATA_VALUE_ID);
+
+        matcher.addURI(DbContract.AUTHORITY, UserMapper.USERS, USERS);
+        matcher.addURI(DbContract.AUTHORITY, UserMapper.USER_ID, USER_ID);
 
         return matcher;
     }
@@ -78,6 +127,30 @@ public class DbContentProvider extends ContentProvider {
                 return EventMapper.CONTENT_TYPE;
             case EVENT_ID:
                 return EventMapper.CONTENT_ITEM_TYPE;
+            case PROGRAMS:
+                return ProgramMapper.CONTENT_TYPE;
+            case PROGRAM_ID:
+                return ProgramMapper.CONTENT_ITEM_TYPE;
+            case OPTIONSETS:
+                return OptionSetMapper.CONTENT_TYPE;
+            case OPTIONSET_ID:
+                return OptionSetMapper.CONTENT_ITEM_TYPE;
+            case ORGANISATION_UNITS:
+                return OrganisationUnitMapper.CONTENT_TYPE;
+            case ORGANISATION_UNIT_ID:
+                return OrganisationUnitMapper.CONTENT_ITEM_TYPE;
+            case TRACKED_ENTITIES:
+                return TrackedEntityMapper.CONTENT_TYPE;
+            case TRACKED_ENTITY_ID:
+                return TrackedEntityMapper.CONTENT_ITEM_TYPE;
+            case TRACKED_ENTITY_DATA_VALUES:
+                return TrackedEntityDataValueMapper.CONTENT_TYPE;
+            case TRACKED_ENTITY_DATA_VALUE_ID:
+                return TrackedEntityDataValueMapper.CONTENT_ITEM_TYPE;
+            case USERS:
+                return UserMapper.CONTENT_TYPE;
+            case USER_ID:
+                return UserMapper.CONTENT_ITEM_TYPE;
             default:
                 throw new IllegalArgumentException("No corresponding Uri type was found");
         }
@@ -88,13 +161,67 @@ public class DbContentProvider extends ContentProvider {
                         String[] selectionArgs, String sortOrder) {
         switch (URI_MATCHER.match(uri)) {
             case EVENTS: {
-                return query(uri, EventMapper.EventColumns.TABLE_NAME, projection,
+                return query(uri, EventColumns.TABLE_NAME, projection,
                         selection, selectionArgs, sortOrder);
             }
             case EVENT_ID: {
                 String id = String.valueOf(parseId(uri));
-                return queryId(uri, EventMapper.EventColumns.TABLE_NAME,
-                        EventMapper.EventColumns.COLUMN_ID, projection, selection, selectionArgs, sortOrder, id);
+                return queryId(uri, EventColumns.TABLE_NAME,
+                        EventColumns.COLUMN_ID, projection, selection, selectionArgs, sortOrder, id);
+            }
+            case PROGRAMS: {
+                return query(uri, ProgramColumns.TABLE_NAME, projection,
+                        selection, selectionArgs, sortOrder);
+            }
+            case PROGRAM_ID: {
+                String id = String.valueOf(parseId(uri));
+                return queryId(uri, ProgramColumns.TABLE_NAME,
+                        ProgramColumns.COLUMN_ID, projection, selection, selectionArgs, sortOrder, id);
+            }
+            case OPTIONSETS: {
+                return query(uri, OptionSetColumns.TABLE_NAME, projection,
+                        selection, selectionArgs, sortOrder);
+            }
+            case OPTIONSET_ID: {
+                String id = String.valueOf(parseId(uri));
+                return queryId(uri, OptionSetColumns.TABLE_NAME,
+                        OptionSetColumns.COLUMN_ID, projection, selection, selectionArgs, sortOrder, id);
+            }
+            case ORGANISATION_UNITS: {
+                return query(uri, OrganisationUnitColumns.TABLE_NAME, projection,
+                        selection, selectionArgs, sortOrder);
+            }
+            case ORGANISATION_UNIT_ID: {
+                String id = String.valueOf(parseId(uri));
+                return queryId(uri, OrganisationUnitColumns.TABLE_NAME,
+                        OrganisationUnitColumns.COLUMN_ID, projection, selection, selectionArgs, sortOrder, id);
+            }
+            case TRACKED_ENTITIES: {
+                return query(uri, TrackedEntityColumns.TABLE_NAME, projection,
+                        selection, selectionArgs, sortOrder);
+            }
+            case TRACKED_ENTITY_ID: {
+                String id = String.valueOf(parseId(uri));
+                return queryId(uri, TrackedEntityColumns.TABLE_NAME,
+                        TrackedEntityColumns.COLUMN_ID, projection, selection, selectionArgs, sortOrder, id);
+            }
+            case TRACKED_ENTITY_DATA_VALUES: {
+                return query(uri, TrackedEntityDataValueColumns.TABLE_NAME, projection,
+                        selection, selectionArgs, sortOrder);
+            }
+            case TRACKED_ENTITY_DATA_VALUE_ID: {
+                String id = String.valueOf(parseId(uri));
+                return queryId(uri, TrackedEntityDataValueColumns.TABLE_NAME,
+                        TrackedEntityDataValueColumns.COLUMN_ID, projection, selection, selectionArgs, sortOrder, id);
+            }
+            case USERS: {
+                return query(uri, UserColumns.TABLE_NAME, projection,
+                        selection, selectionArgs, sortOrder);
+            }
+            case USER_ID: {
+                String id = String.valueOf(parseId(uri));
+                return queryId(uri, UserColumns.TABLE_NAME,
+                        UserColumns.COLUMN_ID, projection, selection, selectionArgs, sortOrder, id);
             }
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -135,7 +262,25 @@ public class DbContentProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues values) {
         switch (URI_MATCHER.match(uri)) {
             case EVENTS: {
-                return insert(EventMapper.EventColumns.TABLE_NAME, values, uri);
+                return insert(EventColumns.TABLE_NAME, values, uri);
+            }
+            case PROGRAMS: {
+                return insert(ProgramColumns.TABLE_NAME, values, uri);
+            }
+            case OPTIONSETS: {
+                return insert(OptionSetColumns.TABLE_NAME, values, uri);
+            }
+            case ORGANISATION_UNITS: {
+                return insert(OrganisationUnitColumns.TABLE_NAME, values, uri);
+            }
+            case TRACKED_ENTITIES: {
+                return insert(TrackedEntityColumns.TABLE_NAME, values, uri);
+            }
+            case TRACKED_ENTITY_DATA_VALUES: {
+                return insert(TrackedEntityDataValueColumns.TABLE_NAME, values, uri);
+            }
+            case USERS: {
+                return insert(UserColumns.TABLE_NAME, values, uri);
             }
             default: {
                 throw new IllegalArgumentException("Unsupported URI for insertion: " + uri);
@@ -156,8 +301,51 @@ public class DbContentProvider extends ContentProvider {
                 return delete(EventMapper.EventColumns.TABLE_NAME, selection, selectionArgs);
             }
             case EVENT_ID: {
-                return deleteId(uri, EventMapper.EventColumns.TABLE_NAME,
-                        EventMapper.EventColumns.COLUMN_ID, selection, selectionArgs);
+                return deleteId(uri, EventColumns.TABLE_NAME,
+                        EventColumns.COLUMN_ID, selection, selectionArgs);
+            }
+            case PROGRAMS: {
+                return delete(ProgramColumns.TABLE_NAME, selection, selectionArgs);
+            }
+            case PROGRAM_ID: {
+                return deleteId(uri, ProgramColumns.TABLE_NAME,
+                        ProgramColumns.COLUMN_ID, selection, selectionArgs);
+            }
+            case OPTIONSETS: {
+                return delete(OptionSetColumns.TABLE_NAME, selection, selectionArgs);
+            }
+            case OPTIONSET_ID: {
+                return deleteId(uri, OptionSetColumns.TABLE_NAME,
+                        OptionSetColumns.COLUMN_ID, selection, selectionArgs);
+            }
+            case ORGANISATION_UNITS: {
+                return delete(OrganisationUnitColumns.TABLE_NAME, selection, selectionArgs);
+            }
+            case ORGANISATION_UNIT_ID: {
+                return deleteId(uri, OrganisationUnitColumns.TABLE_NAME,
+                        OrganisationUnitColumns.COLUMN_ID, selection, selectionArgs);
+            }
+            case TRACKED_ENTITIES: {
+                return delete(TrackedEntityColumns.TABLE_NAME, selection, selectionArgs);
+
+            }
+            case TRACKED_ENTITY_ID: {
+                return deleteId(uri, TrackedEntityColumns.TABLE_NAME,
+                        TrackedEntityColumns.COLUMN_ID, selection, selectionArgs);
+            }
+            case TRACKED_ENTITY_DATA_VALUES: {
+                return delete(TrackedEntityDataValueColumns.TABLE_NAME, selection, selectionArgs);
+            }
+            case TRACKED_ENTITY_DATA_VALUE_ID: {
+                return deleteId(uri, TrackedEntityDataValueColumns.TABLE_NAME,
+                        TrackedEntityDataValueColumns.COLUMN_ID, selection, selectionArgs);
+            }
+            case USERS: {
+                return delete(UserColumns.TABLE_NAME, selection, selectionArgs);
+            }
+            case USER_ID: {
+                return deleteId(uri, UserColumns.TABLE_NAME,
+                        UserColumns.COLUMN_ID, selection, selectionArgs);
             }
             default: {
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
@@ -188,12 +376,60 @@ public class DbContentProvider extends ContentProvider {
                       String selection, String[] selectionArgs) {
         switch (URI_MATCHER.match(uri)) {
             case EVENTS: {
-                return update(EventMapper.EventColumns.TABLE_NAME,
+                return update(EventColumns.TABLE_NAME,
                         selection, selectionArgs, values);
             }
             case EVENT_ID: {
-                return updateId(uri, EventMapper.EventColumns.TABLE_NAME,
-                        EventMapper.EventColumns.COLUMN_ID, selection, selectionArgs, values);
+                return updateId(uri, EventColumns.TABLE_NAME,
+                        EventColumns.COLUMN_ID, selection, selectionArgs, values);
+            }
+            case PROGRAMS: {
+                return update(ProgramColumns.TABLE_NAME,
+                        selection, selectionArgs, values);
+            }
+            case PROGRAM_ID: {
+                return updateId(uri, ProgramColumns.TABLE_NAME,
+                        ProgramColumns.COLUMN_ID, selection, selectionArgs, values);
+            }
+            case OPTIONSETS: {
+                return update(OptionSetColumns.TABLE_NAME,
+                        selection, selectionArgs, values);
+            }
+            case OPTIONSET_ID: {
+                return updateId(uri, OptionSetColumns.TABLE_NAME,
+                        OptionSetColumns.COLUMN_ID, selection, selectionArgs, values);
+            }
+            case ORGANISATION_UNITS: {
+                return update(OrganisationUnitColumns.TABLE_NAME,
+                        selection, selectionArgs, values);
+            }
+            case ORGANISATION_UNIT_ID: {
+                return updateId(uri, OrganisationUnitColumns.TABLE_NAME,
+                        OrganisationUnitColumns.COLUMN_ID, selection, selectionArgs, values);
+            }
+            case TRACKED_ENTITIES: {
+                return update(TrackedEntityColumns.TABLE_NAME,
+                        selection, selectionArgs, values);
+            }
+            case TRACKED_ENTITY_ID: {
+                return updateId(uri, TrackedEntityColumns.TABLE_NAME,
+                        TrackedEntityColumns.COLUMN_ID, selection, selectionArgs, values);
+            }
+            case TRACKED_ENTITY_DATA_VALUES: {
+                return update(TrackedEntityDataValueColumns.TABLE_NAME,
+                        selection, selectionArgs, values);
+            }
+            case TRACKED_ENTITY_DATA_VALUE_ID: {
+                return updateId(uri, TrackedEntityDataValueColumns.TABLE_NAME,
+                        TrackedEntityDataValueColumns.COLUMN_ID, selection, selectionArgs, values);
+            }
+            case USERS: {
+                return update(UserColumns.TABLE_NAME,
+                        selection, selectionArgs, values);
+            }
+            case USER_ID: {
+                return updateId(uri, UserColumns.TABLE_NAME,
+                        UserColumns.COLUMN_ID, selection, selectionArgs, values);
             }
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);

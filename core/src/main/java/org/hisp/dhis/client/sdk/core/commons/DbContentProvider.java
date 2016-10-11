@@ -41,7 +41,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.client.sdk.core.event.EventMapper;
-import org.hisp.dhis.client.sdk.models.event.Event;
 
 import java.util.ArrayList;
 
@@ -56,11 +55,12 @@ public class DbContentProvider extends ContentProvider {
     private static final UriMatcher URI_MATCHER = buildMatcher();
 
     private DbHelper mDbHelper;
+
     private static UriMatcher buildMatcher() {
         UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 
-        // matcher.addURI(DbContract.AUTHORITY, Courses.EVENTS, EVENTS);
-        // matcher.addURI(DbContract.AUTHORITY, Courses.EVENT_ID, EVENT_ID);
+        matcher.addURI(DbContract.AUTHORITY, EventMapper.EVENTS, EVENTS);
+        matcher.addURI(DbContract.AUTHORITY, EventMapper.EVENTS_ID, EVENT_ID);
 
         return matcher;
     }
@@ -75,12 +75,9 @@ public class DbContentProvider extends ContentProvider {
     public String getType(Uri uri) {
         switch (URI_MATCHER.match(uri)) {
             case EVENTS:
-                Event.class.getName()
-                return EventMapper.CONTENT_URI.toString();
-            // return Courses.CONTENT_TYPE;
+                return EventMapper.CONTENT_TYPE;
             case EVENT_ID:
-                return null;
-            // return Courses.CONTENT_ITEM_TYPE;
+                return EventMapper.CONTENT_ITEM_TYPE;
             default:
                 throw new IllegalArgumentException("No corresponding Uri type was found");
         }
@@ -91,15 +88,13 @@ public class DbContentProvider extends ContentProvider {
                         String[] selectionArgs, String sortOrder) {
         switch (URI_MATCHER.match(uri)) {
             case EVENTS: {
-                // return query(uri, Courses.TABLE_NAME, projection,
-                //        selection, selectionArgs, sortOrder);
-                return null;
+                return query(uri, EventMapper.EventColumns.TABLE_NAME, projection,
+                        selection, selectionArgs, sortOrder);
             }
             case EVENT_ID: {
-//                String id = String.valueOf(parseId(uri));
-//                return queryId(uri, Courses.TABLE_NAME, Courses.ID, projection,
-//                        selection, selectionArgs, sortOrder, id);
-                return null;
+                String id = String.valueOf(parseId(uri));
+                return queryId(uri, EventMapper.EventColumns.TABLE_NAME,
+                        EventMapper.EventColumns.COLUMN_ID, projection, selection, selectionArgs, sortOrder, id);
             }
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -140,8 +135,7 @@ public class DbContentProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues values) {
         switch (URI_MATCHER.match(uri)) {
             case EVENTS: {
-//                return insert(Courses.TABLE_NAME, values, uri);
-                return null;
+                return insert(EventMapper.EventColumns.TABLE_NAME, values, uri);
             }
             default: {
                 throw new IllegalArgumentException("Unsupported URI for insertion: " + uri);
@@ -159,13 +153,11 @@ public class DbContentProvider extends ContentProvider {
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         switch (URI_MATCHER.match(uri)) {
             case EVENTS: {
-                // return delete(Courses.TABLE_NAME, selection, selectionArgs);
-                return 1;
+                return delete(EventMapper.EventColumns.TABLE_NAME, selection, selectionArgs);
             }
             case EVENT_ID: {
-//                return deleteId(uri, Courses.TABLE_NAME,
-//                        Courses.ID, selection, selectionArgs);
-                return 1;
+                return deleteId(uri, EventMapper.EventColumns.TABLE_NAME,
+                        EventMapper.EventColumns.COLUMN_ID, selection, selectionArgs);
             }
             default: {
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
@@ -196,14 +188,12 @@ public class DbContentProvider extends ContentProvider {
                       String selection, String[] selectionArgs) {
         switch (URI_MATCHER.match(uri)) {
             case EVENTS: {
-//                return update(Courses.TABLE_NAME,
-//                        selection, selectionArgs, values);
-                return 1;
+                return update(EventMapper.EventColumns.TABLE_NAME,
+                        selection, selectionArgs, values);
             }
             case EVENT_ID: {
-//                return updateId(uri, Courses.TABLE_NAME,
-//                        Courses.ID, selection, selectionArgs, values);
-                return 1;
+                return updateId(uri, EventMapper.EventColumns.TABLE_NAME,
+                        EventMapper.EventColumns.COLUMN_ID, selection, selectionArgs, values);
             }
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);

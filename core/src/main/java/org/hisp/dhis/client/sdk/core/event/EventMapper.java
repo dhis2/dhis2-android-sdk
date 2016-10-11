@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.event;
 
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -35,7 +36,6 @@ import android.net.Uri;
 
 import org.hisp.dhis.client.sdk.core.commons.DbContract;
 import org.hisp.dhis.client.sdk.core.commons.Mapper;
-import org.hisp.dhis.client.sdk.core.event.EventStore.EventColumns;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.Coordinates;
 import org.hisp.dhis.client.sdk.models.common.State;
@@ -49,10 +49,27 @@ import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getInt;
 import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getString;
 
 public class EventMapper implements Mapper<Event> {
+    public interface EventColumns extends DbContract.IdentifiableColumns, DbContract.CoordinatesColumn, DbContract.StateColumn {
+        String TABLE_NAME = "events";
+
+        String COLUMN_PROGRAM = "program";
+        String COLUMN_PROGRAM_STAGE = "programStage";
+        String COLUMN_ORGANISATION_UNIT = "organisationUnit";
+        String COLUMN_EVENT_STATUS = "eventStatus";
+        String COLUMN_EVENT_DATE = "eventDate";
+        String COLUMN_COMPLETED_DATE = "completedDate";
+    }
+
     public static Uri CONTENT_URI = DbContract.BASE_CONTENT_URI.buildUpon()
             .appendPath(EventColumns.TABLE_NAME).build();
 
-    public static String CONTENT_TYPE = ""
+    public static final String EVENTS = EventColumns.TABLE_NAME;
+    public static final String EVENTS_ID = EventColumns.TABLE_NAME + "/#";
+
+    public static String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
+            "/org.hisp.dhis.models.Event";
+    public static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE +
+            "/org.hisp.dhis.models.Event";
 
     private static final String[] PROJECTION = new String[]{
             EventColumns.COLUMN_ID,

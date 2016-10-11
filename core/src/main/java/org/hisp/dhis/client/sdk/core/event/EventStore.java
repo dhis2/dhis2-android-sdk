@@ -28,26 +28,11 @@
 
 package org.hisp.dhis.client.sdk.core.event;
 
-import org.hisp.dhis.client.sdk.core.commons.DbContract.CoordinatesColumn;
-import org.hisp.dhis.client.sdk.core.commons.DbContract.IdentifiableColumns;
-import org.hisp.dhis.client.sdk.core.commons.DbContract.StateColumn;
 import org.hisp.dhis.client.sdk.core.commons.IdentifiableObjectDataStore;
 import org.hisp.dhis.client.sdk.models.event.Event;
 
 import java.util.List;
 
 public interface EventStore extends IdentifiableObjectDataStore<Event> {
-    interface EventColumns extends IdentifiableColumns, CoordinatesColumn, StateColumn {
-        String TABLE_NAME = "events";
-
-        String COLUMN_PROGRAM = "program";
-        String COLUMN_PROGRAM_STAGE = "programStage";
-        String COLUMN_ORGANISATION_UNIT = "organisationUnit";
-        String COLUMN_EVENT_STATUS = "eventStatus";
-        String COLUMN_EVENT_DATE = "eventDate";
-        String COLUMN_COMPLETED_DATE = "completedDate";
-    }
-
     List<Event> query(String organisationUnit, String program);
-
 }

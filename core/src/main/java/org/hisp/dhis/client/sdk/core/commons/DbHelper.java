@@ -33,11 +33,18 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import org.hisp.dhis.client.sdk.core.event.EventStoreImpl;
+import org.hisp.dhis.client.sdk.core.event.EventTable;
 import org.hisp.dhis.client.sdk.core.option.OptionSetStoreImpl;
+import org.hisp.dhis.client.sdk.core.option.OptionSetTable;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitTable;
 import org.hisp.dhis.client.sdk.core.program.ProgramStoreImpl;
+import org.hisp.dhis.client.sdk.core.program.ProgramTable;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueTable;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityStoreImpl;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityTable;
 import org.hisp.dhis.client.sdk.core.user.UserStoreImpl;
+import org.hisp.dhis.client.sdk.core.user.UserTable;
 
 public class DbHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "DhisDb.db";
@@ -49,21 +56,24 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database) {
-        database.execSQL(ProgramStoreImpl.CREATE_TABLE_PROGRAMS);
-        database.execSQL(UserStoreImpl.CREATE_TABLE_USERS);
-        database.execSQL(OptionSetStoreImpl.CREATE_TABLE_OPTION_SETS);
-        database.execSQL(TrackedEntityStoreImpl.CREATE_TABLE_TRACKED_ENTITIES);
-        database.execSQL(EventStoreImpl.CREATE_TABLE_EVENTS);
-        database.execSQL(TrackedEntityDataValueStoreImpl.CREATE_TABLE_TRACKED_ENTITY_DATA_VALUES);
+        database.execSQL(ProgramTable.CREATE_TABLE_PROGRAMS);
+        database.execSQL(UserTable.CREATE_TABLE_USERS);
+        database.execSQL(OptionSetTable.CREATE_TABLE_OPTION_SETS);
+        database.execSQL(TrackedEntityTable.CREATE_TABLE_TRACKED_ENTITIES);
+        database.execSQL(EventTable.CREATE_TABLE_EVENTS);
+        database.execSQL(TrackedEntityDataValueTable.CREATE_TABLE_TRACKED_ENTITY_DATA_VALUES);
+        database.execSQL(OrganisationUnitTable.CREATE_TABLE_ORGANISATION_UNITS);
+
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        sqLiteDatabase.execSQL(ProgramStoreImpl.DROP_TABLE_PROGRAMS);
-        sqLiteDatabase.execSQL(UserStoreImpl.DROP_TABLE_USERS);
-        sqLiteDatabase.execSQL(OptionSetStoreImpl.DROP_TABLE_OPTION_SETS);
-        sqLiteDatabase.execSQL(TrackedEntityStoreImpl.DROP_TABLE_TRACKED_ENTITIES);
-        sqLiteDatabase.execSQL(EventStoreImpl.DROP_TABLE_EVENTS);
-        sqLiteDatabase.execSQL(TrackedEntityDataValueStoreImpl.DROP_TABLE_TRACKED_ENTITY_DATA_VALUES);
+    public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
+        database.execSQL(ProgramTable.DROP_TABLE_PROGRAMS);
+        database.execSQL(UserTable.DROP_TABLE_USERS);
+        database.execSQL(OptionSetTable.DROP_TABLE_OPTION_SETS);
+        database.execSQL(TrackedEntityTable.DROP_TABLE_TRACKED_ENTITIES);
+        database.execSQL(EventTable.DROP_TABLE_EVENTS);
+        database.execSQL(TrackedEntityDataValueTable.DROP_TABLE_TRACKED_ENTITY_DATA_VALUES);
+        database.execSQL(OrganisationUnitTable.DROP_TABLE_ORGANISATION_UNITS);
     }
 }

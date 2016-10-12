@@ -33,11 +33,16 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import org.hisp.dhis.client.sdk.android.api.D2;
+import org.hisp.dhis.client.sdk.android.api.preferences.PreferencesModuleImpl;
 import org.hisp.dhis.client.sdk.ui.activities.AbsHomeActivity;
 import org.hisp.dhis.client.sdk.ui.bindings.R;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.Inject;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.HomePresenter;
+import org.hisp.dhis.client.sdk.ui.fragments.InformationFragment;
 import org.hisp.dhis.client.sdk.ui.fragments.WrapperFragment;
+
+import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
 
 public abstract class DefaultHomeActivity extends AbsHomeActivity implements HomeView {
     private HomePresenter homePresenter;
@@ -108,8 +113,12 @@ public abstract class DefaultHomeActivity extends AbsHomeActivity implements Hom
 
     @Override
     protected Fragment getInformationFragment() {
-        return WrapperFragment.newInstance(DefaultInformationFragment.class,
+        Bundle args = new Bundle();
+        args.putString(InformationFragment.USERNAME, D2.me().userCredentials().toBlocking().first().getUsername());
+        args.putString(InformationFragment.URL, new PreferencesModuleImpl(getContext()).getConfigurationPreferences().get().getServerUrl());
+
+        return WrapperFragment.newInstance(InformationFragment.class,
                 getString(R.string.drawer_item_information),
-                new Bundle());
+                args);
     }
 }

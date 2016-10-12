@@ -63,6 +63,7 @@
             android:id="@+id/parent_nested_scroll_view_tei_dashboard"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
             android:animateLayoutChanges="true"
             android:clipChildren="false"
             android:clipToPadding="false">
@@ -71,15 +72,8 @@
                 android:id="@+id/content_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="8dp"
                 android:animateLayoutChanges="true"
-                android:orientation="vertical">
-
-                <include layout="@layout/dashboard_profile" />
-
-                <include layout="@layout/dashboard_relationships" />
-
-            </LinearLayout>
+                android:orientation="vertical" />
 
         </android.support.v4.widget.NestedScrollView>
 

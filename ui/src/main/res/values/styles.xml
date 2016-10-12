@@ -73,7 +73,10 @@
     </style>
 
     <style name="DenseListErrorText" parent="DenseListItemText">
-        <item name="android:textColor">@color/color_material_red_default</item>
+        <item name="android:textColor">@color/color_accent_default</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="TransparentIconButton">

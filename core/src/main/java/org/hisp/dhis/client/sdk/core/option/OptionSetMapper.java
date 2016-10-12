@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.client.sdk.core.option;
 
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -37,9 +36,8 @@ import android.net.Uri;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.hisp.dhis.client.sdk.core.commons.DbContract;
 import org.hisp.dhis.client.sdk.core.commons.Mapper;
-import org.hisp.dhis.client.sdk.core.event.EventMapper;
+import org.hisp.dhis.client.sdk.core.option.OptionSetTable.OptionSetColumns;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.option.OptionSet;
 
@@ -50,31 +48,6 @@ import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getInt;
 import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getString;
 
 public class OptionSetMapper implements Mapper<OptionSet> {
-    public interface OptionSetColumns extends DbContract.IdColumn, DbContract.IdentifiableColumns, DbContract.VersionColumn, DbContract.BodyColumn {
-        String TABLE_NAME = "optionSet";
-    }
-
-    private static Uri CONTENT_URI = DbContract.BASE_CONTENT_URI.buildUpon()
-            .appendPath(OptionSetColumns.TABLE_NAME).build();
-
-    public static final String OPTION_SETS = OptionSetColumns.TABLE_NAME;
-    public static final String OPTION_SET_ID = OptionSetColumns.TABLE_NAME + "/#";
-
-    public static String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
-            "/org.hisp.dhis.models.OptionSet";
-    public static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE +
-            "/org.hisp.dhis.models.OptionSet";
-
-    private static final String[] PROJECTION = new String[]{
-            OptionSetColumns.COLUMN_ID,
-            OptionSetColumns.COLUMN_UID,
-            OptionSetColumns.COLUMN_CODE,
-            OptionSetColumns.COLUMN_CREATED,
-            OptionSetColumns.COLUMN_LAST_UPDATED,
-            OptionSetColumns.COLUMN_NAME,
-            OptionSetColumns.COLUMN_DISPLAY_NAME,
-            OptionSetColumns.COLUMN_BODY
-    };
 
     private final ObjectMapper objectMapper;
 
@@ -84,17 +57,17 @@ public class OptionSetMapper implements Mapper<OptionSet> {
 
     @Override
     public Uri getContentUri() {
-        return CONTENT_URI;
+        return OptionSetTable.CONTENT_URI;
     }
 
     @Override
     public Uri getContentItemUri(long id) {
-        return ContentUris.withAppendedId(CONTENT_URI, id);
+        return ContentUris.withAppendedId(OptionSetTable.CONTENT_URI, id);
     }
 
     @Override
     public String[] getProjection() {
-        return PROJECTION;
+        return OptionSetTable.PROJECTION;
     }
 
     @Override

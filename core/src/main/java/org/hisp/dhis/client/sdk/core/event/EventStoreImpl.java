@@ -32,40 +32,13 @@ import android.content.ContentResolver;
 import android.database.Cursor;
 
 import org.hisp.dhis.client.sdk.core.commons.AbsIdentifiableObjectDataStore;
-import org.hisp.dhis.client.sdk.core.program.ProgramMapper.ProgramColumns;
 import org.hisp.dhis.client.sdk.models.event.Event;
-import org.hisp.dhis.client.sdk.core.event.EventMapper.EventColumns;
+import org.hisp.dhis.client.sdk.core.event.EventTable.EventColumns;
 import java.util.List;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class EventStoreImpl extends AbsIdentifiableObjectDataStore<Event> implements EventStore {
-
-    public static final String CREATE_TABLE_EVENTS = "CREATE TABLE IF NOT EXISTS " +
-            EventColumns.TABLE_NAME + " (" +
-            EventColumns.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            EventColumns.COLUMN_UID + " TEXT NOT NULL," +
-            EventColumns.COLUMN_NAME + " TEXT NOT NULL," +
-            EventColumns.COLUMN_DISPLAY_NAME + " TEXT NOT NULL," +
-            EventColumns.COLUMN_CODE + " TEXT," +
-            EventColumns.COLUMN_CREATED + " TEXT NOT NULL," +
-            EventColumns.COLUMN_LAST_UPDATED + " TEXT NOT NULL," +
-            EventColumns.COLUMN_EVENT_STATUS + " TEXT NOT NULL," +
-            EventColumns.COLUMN_PROGRAM_STAGE + " TEXT NOT NULL," +
-            EventColumns.COLUMN_ORGANISATION_UNIT + " TEXT NOT NULL," +
-            EventColumns.COLUMN_EVENT_DATE + " TEXT," +
-            EventColumns.COLUMN_COMPLETED_DATE + " TEXT," +
-            EventColumns.COLUMN_LONGITUDE + " REAL," +
-            EventColumns.COLUMN_LATITUDE + " REAL," +
-            EventColumns.COLUMN_PROGRAM + " TEXT," +
-            EventColumns.COLUMN_STATE + " TEXT," +
-            "FOREIGN KEY " + "(" + EventColumns.COLUMN_PROGRAM + ")" +
-            "REFERENCES " + ProgramColumns.TABLE_NAME + "(" + ProgramColumns.COLUMN_UID + ")" +
-            " ON DELETE CASCADE " +
-            " UNIQUE " + "(" + ProgramColumns.COLUMN_UID + ")" + " ON CONFLICT REPLACE" + " )";
-
-    public static final String DROP_TABLE_EVENTS = "DROP TABLE IF EXISTS " +
-            EventColumns.TABLE_NAME;
 
     public EventStoreImpl(ContentResolver contentResolver) {
         super(contentResolver, new EventMapper());

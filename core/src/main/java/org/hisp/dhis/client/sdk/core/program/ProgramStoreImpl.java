@@ -34,34 +34,13 @@ import android.database.Cursor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.client.sdk.core.commons.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.core.program.ProgramMapper.ProgramColumns;
+import org.hisp.dhis.client.sdk.core.program.ProgramTable.ProgramColumns;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramType;
 
 import java.util.List;
 
 public class ProgramStoreImpl extends AbsIdentifiableObjectStore<Program> implements ProgramStore {
-
-    public static final String CREATE_TABLE_PROGRAMS = "CREATE TABLE IF NOT EXISTS " +
-            ProgramColumns.TABLE_NAME + " (" +
-            ProgramColumns.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            ProgramColumns.COLUMN_UID + " TEXT NOT NULL," +
-            ProgramColumns.COLUMN_CODE + " TEXT," +
-            ProgramColumns.COLUMN_CREATED + " TEXT NOT NULL," +
-            ProgramColumns.COLUMN_LAST_UPDATED + " TEXT NOT NULL," +
-            ProgramColumns.COLUMN_NAME + " TEXT," +
-            ProgramColumns.COLUMN_DISPLAY_NAME + " TEXT," +
-            ProgramColumns.COLUMN_SHORT_NAME + "TEXT," +
-            ProgramColumns.COLUMN_DISPLAY_SHORT_NAME + "TEXT," +
-            ProgramColumns.COLUMN_DESCRIPTION + "TEXT," +
-            ProgramColumns.COLUMN_DISPLAY_DESCRIPTION + "TEXT," +
-            ProgramColumns.COLUMN_PROGRAM_TYPE + " TEXT NOT NULL," +
-            ProgramColumns.COLUMN_DISPLAY_FRONT_PAGE_LIST + " INTEGER NOT NULL," +
-            ProgramColumns.COLUMN_BODY + "TEXT NOT NULL" +
-            " UNIQUE " + "(" + ProgramColumns.COLUMN_UID + ")" + " ON CONFLICT REPLACE" + " )";
-
-    public static final String DROP_TABLE_PROGRAMS = "DROP TABLE IF EXISTS " +
-            ProgramColumns.TABLE_NAME;
 
     public ProgramStoreImpl(ContentResolver contentResolver, ObjectMapper objectMapper) {
         super(contentResolver, new ProgramMapper(objectMapper));

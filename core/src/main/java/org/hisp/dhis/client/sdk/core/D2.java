@@ -37,17 +37,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.client.sdk.core.commons.BasicAuthenticator;
 import org.hisp.dhis.client.sdk.core.commons.ServerUrlPreferences;
+import org.hisp.dhis.client.sdk.core.event.EventApi;
+import org.hisp.dhis.client.sdk.core.event.EventInteractor;
+import org.hisp.dhis.client.sdk.core.event.EventInteractorImpl;
+import org.hisp.dhis.client.sdk.core.event.EventStore;
+import org.hisp.dhis.client.sdk.core.event.EventStoreImpl;
 import org.hisp.dhis.client.sdk.core.option.OptionSetApi;
 import org.hisp.dhis.client.sdk.core.option.OptionSetInteractor;
 import org.hisp.dhis.client.sdk.core.option.OptionSetInteractorImpl;
 import org.hisp.dhis.client.sdk.core.option.OptionSetStore;
 import org.hisp.dhis.client.sdk.core.option.OptionSetStoreImpl;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitInteractor;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitInteractorImpl;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.client.sdk.core.program.ProgramInteractor;
 import org.hisp.dhis.client.sdk.core.program.ProgramInteractorImpl;
 import org.hisp.dhis.client.sdk.core.program.ProgramStore;
 import org.hisp.dhis.client.sdk.core.program.ProgramStoreImpl;
 import org.hisp.dhis.client.sdk.core.program.ProgramsApi;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityApi;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueInteractor;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueInteractorImpl;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInteractor;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInteractorImpl;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityStore;
@@ -93,6 +106,9 @@ public class D2 {
     private ProgramInteractor programInteractor;
     private UserInteractor userInteractor;
     private OptionSetInteractor optionSetInteractor;
+    private OrganisationUnitInteractor organisationUnitInteractor;
+    private EventInteractor eventInteractor;
+    TrackedEntityDataValueInteractor trackedEntityDataValueInteractor;
     private TrackedEntityInteractor trackedEntityInteractor;
 
     public static void init(Application application) {
@@ -194,6 +210,14 @@ public class D2 {
         return serverUrl;
     }
 
+    public static EventInteractor events() {
+        if(isConfigured() && instance().eventInteractor == null) {
+            EventStore eventStore = new EventStoreImpl(instance().contentResolver);
+            EventApi eventApi = instance().retrofit.create(EventApi.class);
+            instance().eventInteractor = new EventInteractorImpl(eventStore, eventApi);
+        }
+        return instance().eventInteractor;
+    }
     public static UserInteractor me() {
         if (isConfigured() && instance().userInteractor == null) {
             UsersApi usersApi = instance().retrofit.create(UsersApi.class);
@@ -218,7 +242,17 @@ public class D2 {
 
         return instance().programInteractor;
     }
+    public static OrganisationUnitInteractor organisationUnits() {
+        if(isConfigured() && instance().organisationUnitInteractor == null) {
+            OrganisationUnitStore organisationUnitStore =
+                    new OrganisationUnitStoreImpl(instance().contentResolver);
 
+            instance().organisationUnitInteractor =
+                    new OrganisationUnitInteractorImpl(organisationUnitStore);
+        }
+
+        return instance().organisationUnitInteractor;
+    }
     public static OptionSetInteractor optionSets() {
         if (isConfigured() && instance().optionSetInteractor == null) {
             OptionSetStore optionSetStore =
@@ -242,6 +276,17 @@ public class D2 {
         }
 
         return instance().trackedEntityInteractor;
+    }
+
+    public static TrackedEntityDataValueInteractor trackedEntityDataValues() {
+        if(isConfigured() && instance().trackedEntityDataValueInteractor == null) {
+            TrackedEntityDataValueStore trackedEntityDataValueStore =
+                    new TrackedEntityDataValueStoreImpl(instance().contentResolver);
+
+            instance().trackedEntityDataValueInteractor =
+                    new TrackedEntityDataValueInteractorImpl(trackedEntityDataValueStore);
+        }
+        return instance().trackedEntityDataValueInteractor;
     }
 
     public static class Builder {

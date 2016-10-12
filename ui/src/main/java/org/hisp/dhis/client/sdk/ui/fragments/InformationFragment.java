@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.client.sdk.ui.fragments;
 
+import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -42,10 +42,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
+import org.hisp.dhis.client.sdk.ui.activities.BaseActivity;
+import org.hisp.dhis.client.sdk.ui.activities.OnBackPressedCallback;
+import org.hisp.dhis.client.sdk.ui.activities.OnBackPressedFromFragmentCallback;
 
 import java.util.Locale;
 
-public class InformationFragment extends Fragment {
+public class InformationFragment extends BaseFragment implements OnBackPressedCallback {
 
     public static final String LIBS_LIST = "libraires_list";
     public static final String USERNAME = "username";
@@ -53,6 +56,7 @@ public class InformationFragment extends Fragment {
 
     private String username;
     private String url;
+    private OnBackPressedFromFragmentCallback onBackPressedFromFragmentCallback;
 
     public static InformationFragment newInstance(String username, String url) {
         Bundle args = new Bundle();
@@ -151,5 +155,35 @@ public class InformationFragment extends Fragment {
                                 url
                                 ,
                                 url)));
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        if (context instanceof BaseActivity) {
+            ((BaseActivity) context).setOnBackPressedCallback(this);
+        }
+        if (context instanceof OnBackPressedFromFragmentCallback) {
+            onBackPressedFromFragmentCallback = (OnBackPressedFromFragmentCallback) context;
+        }
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onDetach() {
+        // nullifying callback references
+        if (getActivity() != null && getActivity() instanceof BaseActivity) {
+            ((BaseActivity) getActivity()).setOnBackPressedCallback(null);
+        }
+        onBackPressedFromFragmentCallback = null;
+        super.onDetach();
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        if (onBackPressedFromFragmentCallback != null) {
+            onBackPressedFromFragmentCallback.onBackPressedFromFragment();
+            return false;
+        }
+        return true;
     }
 }

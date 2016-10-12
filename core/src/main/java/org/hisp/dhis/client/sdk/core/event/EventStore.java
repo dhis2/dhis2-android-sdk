@@ -28,11 +28,12 @@
 
 package org.hisp.dhis.client.sdk.core.event;
 
+import org.hisp.dhis.client.sdk.core.commons.DataStore;
 import org.hisp.dhis.client.sdk.core.commons.IdentifiableObjectDataStore;
 import org.hisp.dhis.client.sdk.models.event.Event;
 
 import java.util.List;
 
-public interface EventStore extends IdentifiableObjectDataStore<Event> {
+public interface EventStore extends IdentifiableObjectDataStore<Event>, DataStore<Event> {
     List<Event> query(String organisationUnit, String program);
 }

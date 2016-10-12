@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2016, University of Oslo
   ~
   ~ All rights reserved.
@@ -44,8 +43,7 @@
         <item name="android:windowBackground">@android:color/white</item>
     </style>
 
-    <style name="AppTheme.Main" parent="AppTheme.Base" >
-    </style>
+    <style name="AppTheme.Main" parent="AppTheme.Base"></style>
 
     <style name="AppTheme.Dialog" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorPrimary">@color/color_primary_default</item>
@@ -60,6 +58,40 @@
         <item name="colorPrimary">@color/color_primary_default</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorAccent">@color/color_accent_default</item>
+    </style>
+
+    <!-- Dense two line list as per https://material.google.com/components/lists.html#lists-specs -->
+    <style name="DenseTwoLineListItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:background">?android:selectableItemBackground</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="DenseListItemText">
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="DenseListErrorText" parent="DenseListItemText">
+        <item name="android:textColor">@color/color_material_red_default</item>
+    </style>
+
+    <style name="TransparentIconButton">
+        <item name="android:background">?android:selectableItemBackground</item>
+        <item name="android:padding">12dp</item>
+    </style>
+
+    <style name="CardTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:layout_marginTop">24dp</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">24sp</item>
     </style>
 
 </resources>

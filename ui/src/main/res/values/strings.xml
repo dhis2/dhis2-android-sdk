@@ -199,4 +199,9 @@
     <string name="libraries_header">Libraries used:</string>
     <string name="logged_in_as">Logged in as:</string>
     <string name="logged_in_at">At server:</string>
+    <string name="menu_icon">Menu Icon</string>
+    <string name="status_label">Status:</string>
+    <string name="profile_title">Profile</string>
+    <string name="relationships_title">Relationships</string>
+    <string name="edit_button_text">EDIT</string>
 </resources>

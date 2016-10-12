@@ -50,8 +50,8 @@ import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.SettingPreferences;
-import org.hisp.dhis.client.sdk.ui.fragments.HelpFragment;
 import org.hisp.dhis.client.sdk.ui.fragments.AbsInformationFragment;
+import org.hisp.dhis.client.sdk.ui.fragments.HelpFragment;
 import org.hisp.dhis.client.sdk.ui.fragments.WrapperFragment;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
@@ -211,10 +211,10 @@ public abstract class AbsHomeActivity extends BaseActivity
     }
 
     protected void attachFragment(Fragment fragment) {
-        getSupportFragmentManager()
+        /*getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.content_frame, fragment)
-                .commit();
+                .commit();*/
     }
 
     protected void attachFragmentDelayed(final Fragment fragment) {

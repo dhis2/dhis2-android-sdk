@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2016, University of Oslo
   ~
   ~ All rights reserved.
@@ -43,4 +42,7 @@
     <dimen name="titlebar_height">56dp</dimen>
 
     <integer name="activity_anim_duration">300</integer>
+
+    <dimen name="list_item_vertical_padding">20dp</dimen>
+    <dimen name="cardview_button_elevation">3dp</dimen>
 </resources>

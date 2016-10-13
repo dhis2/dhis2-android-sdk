@@ -20,7 +20,7 @@
 
         <TextView
             android:id="@+id/event_name"
-            style="@style/DenseListItemText"
+            style="@style/ListItemText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="16dp"
@@ -29,7 +29,7 @@
 
         <TextView
             android:id="@+id/date_text"
-            style="@style/DenseListItemText"
+            style="@style/ListItemText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="16dp"
@@ -50,7 +50,7 @@
 
     <TextView
         android:id="@+id/error_text"
-        style="@style/DenseListErrorText"
+        style="@style/ListItemErrorText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"

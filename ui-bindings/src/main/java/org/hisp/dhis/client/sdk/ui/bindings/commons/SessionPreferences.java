@@ -31,6 +31,7 @@ package org.hisp.dhis.client.sdk.ui.bindings.commons;
 import org.hisp.dhis.client.sdk.ui.models.ReportEntityFilter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface SessionPreferences {
 
@@ -40,7 +41,7 @@ public interface SessionPreferences {
 
     boolean setSelectedPickerUid(int index, String pickerUid);
 
-    ArrayList<ReportEntityFilter> getReportEntityDataModelFilters(
+    List<ReportEntityFilter> getReportEntityDataModelFilters(
             String programUid, ArrayList<ReportEntityFilter> filters);
 
     void setReportEntityDataModelFilters(

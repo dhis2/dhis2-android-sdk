@@ -35,7 +35,6 @@ import org.hisp.dhis.client.sdk.ui.bindings.views.HomeView;
 import org.hisp.dhis.client.sdk.ui.bindings.views.View;
 import org.hisp.dhis.client.sdk.utils.Logger;
 
-
 import rx.Single;
 import rx.SingleSubscriber;
 import rx.Subscription;
@@ -56,13 +55,11 @@ public class HomePresenterImpl implements HomePresenter {
     public HomePresenterImpl(UserInteractor userAccountInteractor,
                              SyncDateWrapper syncDateWrapper,
                              Logger logger) {
-//        this.userAccountInteractor = isNull(userAccountInteractor,
-//                "UserAccountInteractor must not be null");
-        this.userAccountInteractor = userAccountInteractor;
+        this.userAccountInteractor = isNull(userAccountInteractor,
+                "UserAccountInteractor must not be null");
         this.syncDateWrapper = syncDateWrapper;
         this.logger = isNull(logger, "Logger must not be null");
     }
-
 
     //TODO: Fix hack that queryAll and gets first User
     @Override

@@ -32,18 +32,12 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import org.hisp.dhis.client.sdk.core.event.EventStoreImpl;
 import org.hisp.dhis.client.sdk.core.event.EventTable;
-import org.hisp.dhis.client.sdk.core.option.OptionSetStoreImpl;
 import org.hisp.dhis.client.sdk.core.option.OptionSetTable;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitTable;
-import org.hisp.dhis.client.sdk.core.program.ProgramStoreImpl;
 import org.hisp.dhis.client.sdk.core.program.ProgramTable;
-import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueTable;
-import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityStoreImpl;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityTable;
-import org.hisp.dhis.client.sdk.core.user.UserStoreImpl;
 import org.hisp.dhis.client.sdk.core.user.UserTable;
 
 public class DbHelper extends SQLiteOpenHelper {

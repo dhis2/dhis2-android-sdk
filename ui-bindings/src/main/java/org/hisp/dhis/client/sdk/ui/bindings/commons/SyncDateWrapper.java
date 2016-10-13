@@ -5,12 +5,8 @@ import android.support.annotation.Nullable;
 
 import org.hisp.dhis.client.sdk.ui.AppPreferences;
 import org.hisp.dhis.client.sdk.ui.bindings.R;
-import org.joda.time.DateTime;
-import org.joda.time.Period;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.PeriodFormatter;
-import org.joda.time.format.PeriodFormatterBuilder;
+
+import java.util.Date;
 
 public class SyncDateWrapper {
     //Constants:
@@ -35,7 +31,7 @@ public class SyncDateWrapper {
     }
 
     public void setLastSyncedNow() {
-        appPreferences.setLastSynced(DateTime.now().getMillis());
+        // appPreferences.setLastSynced(DateTime.now().getMillis());
     }
 
     public void clearLastSynced() {
@@ -43,12 +39,12 @@ public class SyncDateWrapper {
     }
 
     @Nullable
-    public DateTime getLastSyncedDate() {
-        long lastSynced = appPreferences.getLastSynced();
-
-        if (lastSynced > NEVER) {
-            return new DateTime().withMillis(lastSynced);
-        }
+    public Date getLastSyncedDate() {
+//        long lastSynced = appPreferences.getLastSynced();
+//
+//        if (lastSynced > NEVER) {
+//            return new DateTime().withMillis(lastSynced);
+//        }
         return null;
     }
 
@@ -57,33 +53,34 @@ public class SyncDateWrapper {
     }
 
     public String getLastSyncedString() {
-        long lastSync = getLastSyncedLong();
-
-        if (lastSync == NEVER) {
-            return NEVER_SYNCED;
-        }
-
-        DateTime now = DateTime.now();
-        DateTime lastSynced = new DateTime().withMillis(lastSync);
-
-        //older than 24h
-        if (now.minusHours(24).compareTo(lastSynced) == 0) {
-            DateTimeFormatter format = DateTimeFormat.forPattern(DATE_FORMAT);
-            return format.print(lastSynced);
-        }
-
-        Period period = new Period(lastSynced, now);
-
-        PeriodFormatter formatter = new PeriodFormatterBuilder()
-                .appendHours().appendSuffix(HOURS)
-                .appendSeparator(" ")
-                .appendMinutes().appendSuffix(MIN_AGO)
-                .toFormatter();
-
-        String result = formatter.print(period);
-        if (result.isEmpty()) {
-            result = NOW;
-        }
-        return result;
+//        long lastSync = getLastSyncedLong();
+//
+//        if (lastSync == NEVER) {
+//            return NEVER_SYNCED;
+//        }
+//
+//        DateTime now = DateTime.now();
+//        DateTime lastSynced = new DateTime().withMillis(lastSync);
+//
+//        //older than 24h
+//        if (now.minusHours(24).compareTo(lastSynced) == 0) {
+//            DateTimeFormatter format = DateTimeFormat.forPattern(DATE_FORMAT);
+//            return format.print(lastSynced);
+//        }
+//
+//        Period period = new Period(lastSynced, now);
+//
+//        PeriodFormatter formatter = new PeriodFormatterBuilder()
+//                .appendHours().appendSuffix(HOURS)
+//                .appendSeparator(" ")
+//                .appendMinutes().appendSuffix(MIN_AGO)
+//                .toFormatter();
+//
+//        String result = formatter.print(period);
+//        if (result.isEmpty()) {
+//            result = NOW;
+//        }
+//        return result;
+        return null;
     }
 }

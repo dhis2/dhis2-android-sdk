@@ -26,22 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package org.hisp.dhis.client.sdk.models.event;
 
-apply plugin: 'java'
+import org.junit.Test;
 
-sourceCompatibility = JavaVersion.VERSION_1_7
-targetCompatibility = JavaVersion.VERSION_1_7
+import static org.assertj.core.api.Assertions.assertThat;
 
-def libs = rootProject.ext.libraries
+public class EventTests {
 
-dependencies {
-    compile project(":utils")
+    @Test(expected = IllegalArgumentException.class)
+    public void testValidate() {
+        Event event = new Event();
+        event.setUid("abc");
 
-    // Jackson libraries.
-    compile "com.fasterxml.jackson.core:jackson-databind:${libs.jacksonVersion}"
+        Event.validate(event);
+    }
 
-    // Test compile dependencies.
-    testCompile "junit:junit:${libs.jUnitVersion}"
-    testCompile "org.assertj:assertj-core:${libs.assertJ}"
-    testCompile "org.mockito:mockito-core:${libs.mockitoVersion}"
+    @Test
+    public void testEquals() {
+        Event eventOne = new Event();
+        Event eventTwo = new Event();
+
+        eventOne.setUid("abc");
+        eventTwo.setUid("abc");
+
+        assertThat(eventOne).isEqualTo(eventTwo);
+        assertThat(eventTwo).isEqualTo(eventOne);
+    }
 }

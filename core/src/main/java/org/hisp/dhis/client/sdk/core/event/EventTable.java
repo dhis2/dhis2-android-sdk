@@ -72,5 +72,4 @@ public interface EventTable {
             EventColumns.COLUMN_LONGITUDE,
             EventColumns.COLUMN_STATE
     };
-
 }

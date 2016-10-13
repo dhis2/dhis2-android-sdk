@@ -29,7 +29,7 @@
 package org.hisp.dhis.client.sdk.core.event;
 
 public interface EventInteractor {
-    EventStoreImpl store();
+    EventStore store();
 
     EventApi api();
 }

@@ -28,14 +28,13 @@
 
 package org.hisp.dhis.client.sdk.core.event;
 
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
-import org.hisp.dhis.client.sdk.core.commons.DbContract;
 import org.hisp.dhis.client.sdk.core.commons.Mapper;
+import org.hisp.dhis.client.sdk.core.event.EventTable.EventColumns;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.Coordinates;
 import org.hisp.dhis.client.sdk.models.common.State;
@@ -49,46 +48,6 @@ import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getInt;
 import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getString;
 
 public class EventMapper implements Mapper<Event> {
-    public interface EventColumns extends DbContract.IdentifiableColumns, DbContract.CoordinatesColumn, DbContract.StateColumn {
-        String TABLE_NAME = "events";
-
-        String COLUMN_PROGRAM = "program";
-        String COLUMN_PROGRAM_STAGE = "programStage";
-        String COLUMN_ORGANISATION_UNIT = "organisationUnit";
-        String COLUMN_EVENT_STATUS = "eventStatus";
-        String COLUMN_EVENT_DATE = "eventDate";
-        String COLUMN_COMPLETED_DATE = "completedDate";
-    }
-
-    public static Uri CONTENT_URI = DbContract.BASE_CONTENT_URI.buildUpon()
-            .appendPath(EventColumns.TABLE_NAME).build();
-
-    public static final String EVENTS = EventColumns.TABLE_NAME;
-    public static final String EVENT_ID = EventColumns.TABLE_NAME + "/#";
-
-    public static String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
-            "/org.hisp.dhis.models.Event";
-    public static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE +
-            "/org.hisp.dhis.models.Event";
-
-    private static final String[] PROJECTION = new String[]{
-            EventColumns.COLUMN_ID,
-            EventColumns.COLUMN_UID,
-            EventColumns.COLUMN_CODE,
-            EventColumns.COLUMN_CREATED,
-            EventColumns.COLUMN_LAST_UPDATED,
-            EventColumns.COLUMN_NAME,
-            EventColumns.COLUMN_DISPLAY_NAME,
-            EventColumns.COLUMN_COMPLETED_DATE,
-            EventColumns.COLUMN_EVENT_DATE,
-            EventColumns.COLUMN_EVENT_STATUS,
-            EventColumns.COLUMN_ORGANISATION_UNIT,
-            EventColumns.COLUMN_PROGRAM,
-            EventColumns.COLUMN_PROGRAM_STAGE,
-            EventColumns.COLUMN_LATITUDE,
-            EventColumns.COLUMN_LONGITUDE,
-            EventColumns.COLUMN_STATE
-    };
 
     public EventMapper() {
         // explicit constructor
@@ -96,17 +55,17 @@ public class EventMapper implements Mapper<Event> {
 
     @Override
     public Uri getContentUri() {
-        return CONTENT_URI;
+        return EventTable.CONTENT_URI;
     }
 
     @Override
     public Uri getContentItemUri(long id) {
-        return ContentUris.withAppendedId(CONTENT_URI, id);
+        return ContentUris.withAppendedId(EventTable.CONTENT_URI, id);
     }
 
     @Override
     public String[] getProjection() {
-        return PROJECTION;
+        return EventTable.PROJECTION;
     }
 
     @Override

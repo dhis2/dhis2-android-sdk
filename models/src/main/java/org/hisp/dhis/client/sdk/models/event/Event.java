@@ -128,10 +128,6 @@ public class Event extends BaseDataModel implements IdentifiableObject, Model {
         if (event.getEventDate() == null) {
             throw new IllegalArgumentException("Event date must not be null");
         }
-
-        if (event.getState() == null) {
-            throw new IllegalArgumentException("State must not be null");
-        }
     }
 
     public Event() {

@@ -182,7 +182,6 @@ public abstract class AbsStore<T extends Model> implements Store<T> {
 
         if (objects.isEmpty()) {
             throw new IllegalArgumentException("Objects to update must not be empty");
-
         }
 
         List<T> objectsToUpdate = new ArrayList<>();
@@ -209,7 +208,7 @@ public abstract class AbsStore<T extends Model> implements Store<T> {
     public boolean delete(List<T> objects) {
         isNull(objects, "Objects to delete must not be null");
 
-        if(objects.isEmpty()) {
+        if (objects.isEmpty()) {
             throw new IllegalArgumentException("Objects to delete must not be empty");
         }
 

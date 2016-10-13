@@ -1,13 +1,12 @@
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
-import org.hisp.dhis.client.sdk.core.commons.DbContract;
 import org.hisp.dhis.client.sdk.core.commons.Mapper;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityTable.TrackedEntityColumns;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 
@@ -17,34 +16,6 @@ import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getInt;
 import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getString;
 
 public class TrackedEntityMapper implements Mapper<TrackedEntity> {
-    public interface TrackedEntityColumns extends DbContract.NameableColumns {
-        String TABLE_NAME = "trackedEntities";
-    }
-
-    private static Uri CONTENT_URI = DbContract.BASE_CONTENT_URI.buildUpon()
-            .appendPath(TrackedEntityColumns.TABLE_NAME).build();
-
-    public static final String TRACKED_ENTITIES = TrackedEntityColumns.TABLE_NAME;
-    public static final String TRACKED_ENTITY_ID = TrackedEntityColumns.TABLE_NAME + "/#";
-
-    public static String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
-            "/org.hisp.dhis.models.TrackedEntity";
-    public static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE +
-            "/org.hisp.dhis.models.TrackedEntity";
-
-    private static final String[] PROJECTION = new String[]{
-            TrackedEntityColumns.COLUMN_ID,
-            TrackedEntityColumns.COLUMN_UID,
-            TrackedEntityColumns.COLUMN_CODE,
-            TrackedEntityColumns.COLUMN_CREATED,
-            TrackedEntityColumns.COLUMN_LAST_UPDATED,
-            TrackedEntityColumns.COLUMN_NAME,
-            TrackedEntityColumns.COLUMN_DISPLAY_NAME,
-            TrackedEntityColumns.COLUMN_SHORT_NAME,
-            TrackedEntityColumns.COLUMN_DISPLAY_SHORT_NAME,
-            TrackedEntityColumns.COLUMN_DESCRIPTION,
-            TrackedEntityColumns.COLUMN_DISPLAY_DESCRIPTION,
-    };
 
     public TrackedEntityMapper() {
         // Explicit empty constructor
@@ -52,17 +23,17 @@ public class TrackedEntityMapper implements Mapper<TrackedEntity> {
 
     @Override
     public Uri getContentUri() {
-        return CONTENT_URI;
+        return TrackedEntityTable.CONTENT_URI;
     }
 
     @Override
     public Uri getContentItemUri(long id) {
-        return ContentUris.withAppendedId(CONTENT_URI, id);
+        return ContentUris.withAppendedId(TrackedEntityTable.CONTENT_URI, id);
     }
 
     @Override
     public String[] getProjection() {
-        return PROJECTION;
+        return TrackedEntityTable.PROJECTION;
     }
 
     @Override

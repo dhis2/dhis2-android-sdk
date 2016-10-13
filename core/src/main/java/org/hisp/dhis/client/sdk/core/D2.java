@@ -36,17 +36,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.client.sdk.core.commons.BasicAuthenticator;
 import org.hisp.dhis.client.sdk.core.commons.ServerUrlPreferences;
+import org.hisp.dhis.client.sdk.core.event.EventApi;
+import org.hisp.dhis.client.sdk.core.event.EventInteractor;
+import org.hisp.dhis.client.sdk.core.event.EventInteractorImpl;
+import org.hisp.dhis.client.sdk.core.event.EventStore;
+import org.hisp.dhis.client.sdk.core.event.EventStoreImpl;
 import org.hisp.dhis.client.sdk.core.option.OptionSetApi;
 import org.hisp.dhis.client.sdk.core.option.OptionSetInteractor;
 import org.hisp.dhis.client.sdk.core.option.OptionSetInteractorImpl;
 import org.hisp.dhis.client.sdk.core.option.OptionSetStore;
 import org.hisp.dhis.client.sdk.core.option.OptionSetStoreImpl;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitInteractor;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitInteractorImpl;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.client.sdk.core.program.ProgramInteractor;
 import org.hisp.dhis.client.sdk.core.program.ProgramInteractorImpl;
 import org.hisp.dhis.client.sdk.core.program.ProgramStore;
 import org.hisp.dhis.client.sdk.core.program.ProgramStoreImpl;
 import org.hisp.dhis.client.sdk.core.program.ProgramsApi;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityApi;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueInteractor;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueInteractorImpl;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInteractor;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInteractorImpl;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityStore;
@@ -87,15 +100,18 @@ public class D2 {
     // true if valid server URL is set to D2
     private final boolean isConfigured;
 
+    public static void init(Application application) {
+        isNull(application, "Application must not be null");
+    }
+
     // interactors which will be exposed to client applications
     private final UserInteractor userInteractor;
     private final ProgramInteractor programInteractor;
     private final OptionSetInteractor optionSetInteractor;
     private final TrackedEntityInteractor trackedEntityInteractor;
-
-    public static Builder builder(Application application) {
-        return new Builder(application);
-    }
+    private final OrganisationUnitInteractor organisationUnitInteractor;
+    private final EventInteractor eventInteractor;
+    private final TrackedEntityDataValueInteractor trackedEntityDataValueInteractor;
 
     public D2.Builder configure(HttpUrl okBaseUrl) {
         isNull(okBaseUrl, "Base URL must not be null");
@@ -171,28 +187,37 @@ public class D2 {
             // tracked entities
             TrackedEntityApi trackedEntityApi = retrofit.create(TrackedEntityApi.class);
             TrackedEntityStore trackedEntityStore = new TrackedEntityStoreImpl(contentResolver);
-            trackedEntityInteractor = new TrackedEntityInteractorImpl(trackedEntityStore, trackedEntityApi);
+            trackedEntityInteractor = new TrackedEntityInteractorImpl(
+                    trackedEntityStore, trackedEntityApi);
+
+            // events
+            EventStore eventStore = new EventStoreImpl(contentResolver);
+            EventApi eventApi = retrofit.create(EventApi.class);
+            eventInteractor = new EventInteractorImpl(eventStore, eventApi);
+
+            // organisation units
+            OrganisationUnitStore organisationUnitStore =
+                    new OrganisationUnitStoreImpl(contentResolver);
+            organisationUnitInteractor = new OrganisationUnitInteractorImpl(organisationUnitStore);
+
+            // tracked entity data values
+            TrackedEntityDataValueStore trackedEntityDataValueStore =
+                    new TrackedEntityDataValueStoreImpl(contentResolver);
+            trackedEntityDataValueInteractor =
+                    new TrackedEntityDataValueInteractorImpl(trackedEntityDataValueStore);
         } else {
             userInteractor = null;
             programInteractor = null;
             optionSetInteractor = null;
             trackedEntityInteractor = null;
+            trackedEntityDataValueInteractor = null;
+            eventInteractor = null;
+            organisationUnitInteractor = null;
         }
-    }
-
-    /**
-     * @return true if D2 is configured with valid URL pointing to DHIS2 instance
-     */
-    public boolean isConfigured() {
-        return isConfigured;
     }
 
     public Application application() {
         return application;
-    }
-
-    public ObjectMapper objectMapper() {
-        return objectMapper;
     }
 
     public OkHttpClient okHttpClient() {
@@ -207,12 +232,27 @@ public class D2 {
         return retrofit;
     }
 
-    public String serverUrl() {
-        return serverUrlPreferences.get();
+    public ObjectMapper objectMapper() {
+        return objectMapper;
+    }
+
+    public EventInteractor events() {
+        return eventInteractor;
+    }
+
+    /**
+     * @return true if D2 is configured with valid URL pointing to DHIS2 instance
+     */
+    public boolean isConfigured() {
+        return isConfigured;
     }
 
     public UserInteractor me() {
         return userInteractor;
+    }
+
+    public OrganisationUnitInteractor organisationUnits() {
+        return organisationUnitInteractor;
     }
 
     public ProgramInteractor programs() {
@@ -225,6 +265,10 @@ public class D2 {
 
     public TrackedEntityInteractor trackedEntities() {
         return trackedEntityInteractor;
+    }
+
+    public TrackedEntityDataValueInteractor trackedEntityDataValues() {
+        return trackedEntityDataValueInteractor;
     }
 
     public static class Builder {

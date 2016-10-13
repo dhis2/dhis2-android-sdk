@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -37,8 +36,8 @@ import android.net.Uri;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.hisp.dhis.client.sdk.core.commons.DbContract;
 import org.hisp.dhis.client.sdk.core.commons.Mapper;
+import org.hisp.dhis.client.sdk.core.program.ProgramTable.ProgramColumns;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramType;
@@ -50,40 +49,6 @@ import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getInt;
 import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getString;
 
 public class ProgramMapper implements Mapper<Program> {
-    public interface ProgramColumns extends DbContract.NameableColumns, DbContract.TimeStampColumns, DbContract.VersionColumn, DbContract.BodyColumn {
-        String TABLE_NAME = "programs";
-        String COLUMN_PROGRAM_TYPE = "programType";
-        String COLUMN_DISPLAY_FRONT_PAGE_LIST = "displayFrontPageList";
-    }
-
-    private static Uri CONTENT_URI = DbContract.BASE_CONTENT_URI.buildUpon()
-            .appendPath(ProgramColumns.TABLE_NAME).build();
-
-    private static final String[] PROJECTION = new String[]{
-            ProgramColumns.COLUMN_ID,
-            ProgramColumns.COLUMN_UID,
-            ProgramColumns.COLUMN_CODE,
-            ProgramColumns.COLUMN_CREATED,
-            ProgramColumns.COLUMN_LAST_UPDATED,
-            ProgramColumns.COLUMN_NAME,
-            ProgramColumns.COLUMN_DISPLAY_NAME,
-            ProgramColumns.COLUMN_SHORT_NAME,
-            ProgramColumns.COLUMN_DISPLAY_SHORT_NAME,
-            ProgramColumns.COLUMN_DESCRIPTION,
-            ProgramColumns.COLUMN_DISPLAY_DESCRIPTION,
-            ProgramColumns.COLUMN_DISPLAY_FRONT_PAGE_LIST,
-            ProgramColumns.COLUMN_PROGRAM_TYPE,
-            ProgramColumns.COLUMN_BODY
-    };
-
-    public static final String PROGRAMS = ProgramColumns.TABLE_NAME;
-    public static final String PROGRAM_ID = ProgramColumns.TABLE_NAME + "/#";
-
-    public static String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
-            "/org.hisp.dhis.models.Program";
-    public static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE +
-            "/org.hisp.dhis.models.Program";
-
     private final ObjectMapper objectMapper;
 
     public ProgramMapper(ObjectMapper objectMapper) {
@@ -92,17 +57,17 @@ public class ProgramMapper implements Mapper<Program> {
 
     @Override
     public Uri getContentUri() {
-        return CONTENT_URI;
+        return ProgramTable.CONTENT_URI;
     }
 
     @Override
     public Uri getContentItemUri(long id) {
-        return ContentUris.withAppendedId(CONTENT_URI, id);
+        return ContentUris.withAppendedId(ProgramTable.CONTENT_URI, id);
     }
 
     @Override
     public String[] getProjection() {
-        return PROJECTION;
+        return ProgramTable.PROJECTION;
     }
 
     @Override

@@ -28,7 +28,10 @@
 
 package org.hisp.dhis.client.sdk.core.commons;
 
+import android.content.ContentResolver;
 import android.database.Cursor;
+
+import java.util.Locale;
 
 public final class DbUtils {
     private DbUtils() {
@@ -48,5 +51,15 @@ public final class DbUtils {
     public static String getString(Cursor cursor, String columnName) {
         int columnIndex = cursor.getColumnIndex(columnName);
         return cursor.getString(columnIndex);
+    }
+
+    public static String getContentType(Class<?> clazz) {
+        return String.format(Locale.getDefault(), "%s/%s",
+                ContentResolver.CURSOR_DIR_BASE_TYPE, clazz.getCanonicalName());
+    }
+
+    public static String getContentItemType(Class<?> clazz) {
+        return String.format(Locale.getDefault(), "%s/%s",
+                ContentResolver.CURSOR_ITEM_BASE_TYPE, clazz.getCanonicalName());
     }
 }

@@ -29,13 +29,21 @@
 package org.hisp.dhis.client.sdk.core.event;
 
 public class EventInteractorImpl implements EventInteractor {
+    private final EventStore eventStore;
+    private final EventApi eventApi;
+
+    public EventInteractorImpl(EventStore eventStore, EventApi eventApi) {
+        this.eventStore = eventStore;
+        this.eventApi = eventApi;
+    }
+
     @Override
-    public EventStoreImpl store() {
-        return null;
+    public EventStore store() {
+        return eventStore;
     }
 
     @Override
     public EventApi api() {
-        return null;
+        return eventApi;
     }
 }

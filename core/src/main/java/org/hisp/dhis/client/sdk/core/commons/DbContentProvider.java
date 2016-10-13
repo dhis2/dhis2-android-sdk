@@ -40,20 +40,20 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.client.sdk.core.event.EventMapper;
-import org.hisp.dhis.client.sdk.core.event.EventMapper.EventColumns;
-import org.hisp.dhis.client.sdk.core.option.OptionSetMapper;
-import org.hisp.dhis.client.sdk.core.option.OptionSetMapper.OptionSetColumns;
-import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitMapper;
-import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitMapper.OrganisationUnitColumns;
-import org.hisp.dhis.client.sdk.core.program.ProgramMapper;
-import org.hisp.dhis.client.sdk.core.program.ProgramMapper.ProgramColumns;
-import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueMapper;
-import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueMapper.TrackedEntityDataValueColumns;
-import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityMapper;
-import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityMapper.TrackedEntityColumns;
-import org.hisp.dhis.client.sdk.core.user.UserMapper;
-import org.hisp.dhis.client.sdk.core.user.UserMapper.UserColumns;
+import org.hisp.dhis.client.sdk.core.event.EventTable;
+import org.hisp.dhis.client.sdk.core.event.EventTable.EventColumns;
+import org.hisp.dhis.client.sdk.core.option.OptionSetTable;
+import org.hisp.dhis.client.sdk.core.option.OptionSetTable.OptionSetColumns;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitTable;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitTable.OrganisationUnitColumns;
+import org.hisp.dhis.client.sdk.core.program.ProgramTable;
+import org.hisp.dhis.client.sdk.core.program.ProgramTable.ProgramColumns;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueTable;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueTable.TrackedEntityDataValueColumns;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityTable;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityTable.TrackedEntityColumns;
+import org.hisp.dhis.client.sdk.core.user.UserTable;
+import org.hisp.dhis.client.sdk.core.user.UserTable.UserColumns;
 
 import java.util.ArrayList;
 
@@ -90,26 +90,26 @@ public class DbContentProvider extends ContentProvider {
     private static UriMatcher buildMatcher() {
         UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 
-        matcher.addURI(DbContract.AUTHORITY, EventMapper.EVENTS, EVENTS);
-        matcher.addURI(DbContract.AUTHORITY, EventMapper.EVENT_ID, EVENT_ID);
+        matcher.addURI(DbContract.AUTHORITY, EventTable.EVENTS, EVENTS);
+        matcher.addURI(DbContract.AUTHORITY, EventTable.EVENT_ID, EVENT_ID);
 
-        matcher.addURI(DbContract.AUTHORITY, ProgramMapper.PROGRAMS, PROGRAMS);
-        matcher.addURI(DbContract.AUTHORITY, ProgramMapper.PROGRAM_ID, PROGRAM_ID);
+        matcher.addURI(DbContract.AUTHORITY, ProgramTable.PROGRAMS, PROGRAMS);
+        matcher.addURI(DbContract.AUTHORITY, ProgramTable.PROGRAM_ID, PROGRAM_ID);
 
-        matcher.addURI(DbContract.AUTHORITY, OptionSetMapper.OPTION_SETS, OPTIONSETS);
-        matcher.addURI(DbContract.AUTHORITY, OptionSetMapper.OPTION_SET_ID, OPTIONSET_ID);
+        matcher.addURI(DbContract.AUTHORITY, OptionSetTable.OPTION_SETS, OPTIONSETS);
+        matcher.addURI(DbContract.AUTHORITY, OptionSetTable.OPTION_SET_ID, OPTIONSET_ID);
 
-        matcher.addURI(DbContract.AUTHORITY, OrganisationUnitMapper.ORGANISATION_UNITS, ORGANISATION_UNITS);
-        matcher.addURI(DbContract.AUTHORITY, OrganisationUnitMapper.ORGANISATION_UNIT_ID, ORGANISATION_UNIT_ID);
+        matcher.addURI(DbContract.AUTHORITY, OrganisationUnitTable.ORGANISATION_UNITS, ORGANISATION_UNITS);
+        matcher.addURI(DbContract.AUTHORITY, OrganisationUnitTable.ORGANISATION_UNIT_ID, ORGANISATION_UNIT_ID);
 
-        matcher.addURI(DbContract.AUTHORITY, TrackedEntityMapper.TRACKED_ENTITIES, TRACKED_ENTITIES);
-        matcher.addURI(DbContract.AUTHORITY, TrackedEntityMapper.TRACKED_ENTITY_ID, TRACKED_ENTITY_ID);
+        matcher.addURI(DbContract.AUTHORITY, TrackedEntityTable.TRACKED_ENTITIES, TRACKED_ENTITIES);
+        matcher.addURI(DbContract.AUTHORITY, TrackedEntityTable.TRACKED_ENTITY_ID, TRACKED_ENTITY_ID);
 
-        matcher.addURI(DbContract.AUTHORITY, TrackedEntityDataValueMapper.TRACKED_ENTITY_DATA_VALUES, TRACKED_ENTITY_DATA_VALUES);
-        matcher.addURI(DbContract.AUTHORITY, TrackedEntityDataValueMapper.TRACKED_ENTITY_DATA_VALUE_ID, TRACKED_ENTITY_DATA_VALUE_ID);
+        matcher.addURI(DbContract.AUTHORITY, TrackedEntityDataValueTable.TRACKED_ENTITY_DATA_VALUES, TRACKED_ENTITY_DATA_VALUES);
+        matcher.addURI(DbContract.AUTHORITY, TrackedEntityDataValueTable.TRACKED_ENTITY_DATA_VALUE_ID, TRACKED_ENTITY_DATA_VALUE_ID);
 
-        matcher.addURI(DbContract.AUTHORITY, UserMapper.USERS, USERS);
-        matcher.addURI(DbContract.AUTHORITY, UserMapper.USER_ID, USER_ID);
+        matcher.addURI(DbContract.AUTHORITY, UserTable.USERS, USERS);
+        matcher.addURI(DbContract.AUTHORITY, UserTable.USER_ID, USER_ID);
 
         return matcher;
     }
@@ -124,33 +124,33 @@ public class DbContentProvider extends ContentProvider {
     public String getType(Uri uri) {
         switch (URI_MATCHER.match(uri)) {
             case EVENTS:
-                return EventMapper.CONTENT_TYPE;
+                return EventTable.CONTENT_TYPE;
             case EVENT_ID:
-                return EventMapper.CONTENT_ITEM_TYPE;
+                return EventTable.CONTENT_ITEM_TYPE;
             case PROGRAMS:
-                return ProgramMapper.CONTENT_TYPE;
+                return ProgramTable.CONTENT_TYPE;
             case PROGRAM_ID:
-                return ProgramMapper.CONTENT_ITEM_TYPE;
+                return ProgramTable.CONTENT_ITEM_TYPE;
             case OPTIONSETS:
-                return OptionSetMapper.CONTENT_TYPE;
+                return OptionSetTable.CONTENT_TYPE;
             case OPTIONSET_ID:
-                return OptionSetMapper.CONTENT_ITEM_TYPE;
+                return OptionSetTable.CONTENT_ITEM_TYPE;
             case ORGANISATION_UNITS:
-                return OrganisationUnitMapper.CONTENT_TYPE;
+                return OrganisationUnitTable.CONTENT_TYPE;
             case ORGANISATION_UNIT_ID:
-                return OrganisationUnitMapper.CONTENT_ITEM_TYPE;
+                return OrganisationUnitTable.CONTENT_ITEM_TYPE;
             case TRACKED_ENTITIES:
-                return TrackedEntityMapper.CONTENT_TYPE;
+                return TrackedEntityTable.CONTENT_TYPE;
             case TRACKED_ENTITY_ID:
-                return TrackedEntityMapper.CONTENT_ITEM_TYPE;
+                return TrackedEntityTable.CONTENT_ITEM_TYPE;
             case TRACKED_ENTITY_DATA_VALUES:
-                return TrackedEntityDataValueMapper.CONTENT_TYPE;
+                return TrackedEntityDataValueTable.CONTENT_TYPE;
             case TRACKED_ENTITY_DATA_VALUE_ID:
-                return TrackedEntityDataValueMapper.CONTENT_ITEM_TYPE;
+                return TrackedEntityDataValueTable.CONTENT_ITEM_TYPE;
             case USERS:
-                return UserMapper.CONTENT_TYPE;
+                return UserTable.CONTENT_TYPE;
             case USER_ID:
-                return UserMapper.CONTENT_ITEM_TYPE;
+                return UserTable.CONTENT_ITEM_TYPE;
             default:
                 throw new IllegalArgumentException("No corresponding Uri type was found");
         }
@@ -298,7 +298,7 @@ public class DbContentProvider extends ContentProvider {
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         switch (URI_MATCHER.match(uri)) {
             case EVENTS: {
-                return delete(EventMapper.EventColumns.TABLE_NAME, selection, selectionArgs);
+                return delete(EventColumns.TABLE_NAME, selection, selectionArgs);
             }
             case EVENT_ID: {
                 return deleteId(uri, EventColumns.TABLE_NAME,

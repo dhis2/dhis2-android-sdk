@@ -34,8 +34,8 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import org.hisp.dhis.client.sdk.ui.activities.AbsHomeActivity;
+import org.hisp.dhis.client.sdk.ui.bindings.App;
 import org.hisp.dhis.client.sdk.ui.bindings.R;
-import org.hisp.dhis.client.sdk.ui.bindings.commons.Inject;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.HomePresenter;
 import org.hisp.dhis.client.sdk.ui.fragments.WrapperFragment;
 
@@ -47,7 +47,7 @@ public abstract class DefaultHomeActivity extends AbsHomeActivity implements Hom
         super.onCreate(savedInstanceState);
 
         // injecting dependencies
-        Inject.getUserComponent().inject(this);
+        homePresenter = App.from(getApplication()).getUserComponent().homePresenter();
     }
 
     @Override
@@ -102,14 +102,9 @@ public abstract class DefaultHomeActivity extends AbsHomeActivity implements Hom
         getUsernameLetterTextView().setText(userLetters);
     }
 
-    public void setHomePresenter(HomePresenter homePresenter) {
-        this.homePresenter = homePresenter;
-    }
-
     @Override
     protected Fragment getInformationFragment() {
         return WrapperFragment.newInstance(DefaultInformationFragment.class,
-                getString(R.string.drawer_item_information),
-                new Bundle());
+                getString(R.string.drawer_item_information), new Bundle());
     }
 }

@@ -16,8 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.hisp.dhis.client.sdk.ui.bindings.App;
 import org.hisp.dhis.client.sdk.ui.bindings.R;
-import org.hisp.dhis.client.sdk.ui.bindings.commons.Inject;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.NavigationHandler;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.ProfilePresenter;
 import org.hisp.dhis.client.sdk.ui.fragments.BaseFragment;
@@ -44,9 +44,11 @@ public class DefaultProfileFragment extends BaseFragment implements ProfileView 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // injection of profile presenter and logger
-        Inject.getUserComponent().inject(this);
-
+        // injection of logger and profile presenter
+        logger = App.from(getActivity().getApplication())
+                .getAppComponent().logger();
+        profilePresenter = App.from(getActivity().getApplication())
+                .getUserComponent().profilePresenter();
         alertDialog = createAlertDialog();
     }
 
@@ -136,14 +138,6 @@ public class DefaultProfileFragment extends BaseFragment implements ProfileView 
             default:
                 throw new IllegalArgumentException("Unsupported prompt");
         }
-    }
-
-    public void setProfilePresenter(ProfilePresenter profilePresenter) {
-        this.profilePresenter = profilePresenter;
-    }
-
-    public void setLogger(Logger logger) {
-        this.logger = logger;
     }
 
     private void setupToolbar() {

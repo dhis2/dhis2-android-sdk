@@ -33,6 +33,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 
+import org.hisp.dhis.client.sdk.ui.bindings.App;
 import org.hisp.dhis.client.sdk.ui.bindings.R;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.NavigationHandler;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.LauncherPresenter;
@@ -45,18 +46,18 @@ public class DefaultLauncherActivity extends AppCompatActivity implements Launch
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
 
-        // injecting dependencies
-        // Inject.getUserComponent().inject(this);
+        // get instance of launcherPresenter
+        launcherPresenter = App.from(getApplication()).getUserComponent().launcherPresenter();
 
-        // launcherPresenter.attachView(this);
-        // launcherPresenter.checkIfUserIsLoggedIn();
+        launcherPresenter.attachView(this);
+        launcherPresenter.checkIfUserIsLoggedIn();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        // launcherPresenter.detachView();
+        launcherPresenter.detachView();
     }
 
     @Override
@@ -72,9 +73,5 @@ public class DefaultLauncherActivity extends AppCompatActivity implements Launch
     private void navigateTo(Intent intent) {
         ActivityCompat.startActivity(this, intent, null);
         finish();
-    }
-
-    public void setLauncherPresenter(LauncherPresenter launcherPresenter) {
-        this.launcherPresenter = launcherPresenter;
     }
 }

@@ -33,22 +33,22 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
+import org.hisp.dhis.client.sdk.ui.bindings.App;
 import org.hisp.dhis.client.sdk.ui.bindings.R;
-import org.hisp.dhis.client.sdk.ui.bindings.commons.Inject;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.SettingsPresenter;
 import org.hisp.dhis.client.sdk.ui.fragments.AbsSettingsFragment;
 
 
 public class DefaultSettingsFragment extends AbsSettingsFragment implements SettingsView {
-    private String androidSyncWarning;
     private SettingsPresenter settingsPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        androidSyncWarning = getResources().getString(R.string.sys_sync_disabled_warning);
 
-        Inject.getUserComponent().inject(this);
+        // injecting presenter
+        settingsPresenter = App.from(getActivity().getApplication())
+                .getUserComponent().settingsPresenter();
     }
 
     @Override
@@ -77,7 +77,8 @@ public class DefaultSettingsFragment extends AbsSettingsFragment implements Sett
 
     @Override
     public boolean onBackgroundSynchronizationChanged(boolean isEnabled) {
-        settingsPresenter.setBackgroundSynchronisation(isEnabled, androidSyncWarning);
+        settingsPresenter.setBackgroundSynchronisation(isEnabled,
+                getResources().getString(R.string.sys_sync_disabled_warning));
         return true;
     }
 
@@ -114,9 +115,5 @@ public class DefaultSettingsFragment extends AbsSettingsFragment implements Sett
         if (getView() != null) {
             Snackbar.make(getView(), msg, Snackbar.LENGTH_LONG).show();
         }
-    }
-
-    public void setSettingsPresenter(SettingsPresenter settingsPresenter) {
-        this.settingsPresenter = settingsPresenter;
     }
 }

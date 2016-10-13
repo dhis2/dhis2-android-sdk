@@ -35,6 +35,7 @@ import android.widget.Toast;
 
 import org.hisp.dhis.client.sdk.core.commons.ApiException;
 import org.hisp.dhis.client.sdk.ui.activities.AbsLoginActivity;
+import org.hisp.dhis.client.sdk.ui.bindings.App;
 import org.hisp.dhis.client.sdk.ui.bindings.R;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.Inject;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.NavigationHandler;
@@ -48,11 +49,8 @@ public class DefaultLoginActivity extends AbsLoginActivity implements LoginView 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Inject.getUserComponent().inject(this);
-
-        // getServerUrl().setText(BuildConfig.SERVER_URL);
-        // getUsername().setText(BuildConfig.USERNAME);
-        // getPassword().setText(BuildConfig.PASSWORD);
+        // Inject.getUserComponent().inject(this);
+        loginPresenter = App.from(getApplication()).getUserComponent().loginPresenter();
     }
 
     @Override
@@ -77,9 +75,12 @@ public class DefaultLoginActivity extends AbsLoginActivity implements LoginView 
     @Override
     protected void onLoginButtonClicked(Editable server, Editable username, Editable password) {
         try {
-            String authority = getString(R.string.authority);
-            String accountType = getString(R.string.account_type);
-            Inject.createUserComponent(server.toString(), authority, accountType).inject(this);
+            // String authority = getString(R.string.authority);
+            // String accountType = getString(R.string.account_type);
+
+            // recreate object graph (since URL has changed, as well D2 instance)
+            loginPresenter = App.from(getApplication())
+                    .createUserComponent(server.toString()).loginPresenter();
         } catch (ApiException e) {
             loginPresenter.handleError(e);
             return;
@@ -143,9 +144,5 @@ public class DefaultLoginActivity extends AbsLoginActivity implements LoginView 
         alertDialog.setTitle(title);
         alertDialog.setMessage(message);
         alertDialog.show();
-    }
-
-    public void setLoginPresenter(LoginPresenter loginPresenter) {
-        this.loginPresenter = loginPresenter;
     }
 }

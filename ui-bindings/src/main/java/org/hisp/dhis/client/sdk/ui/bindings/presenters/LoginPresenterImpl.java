@@ -70,8 +70,7 @@ public class LoginPresenterImpl implements LoginPresenter, LoginPresenter.OnLogi
         isNull(view, "LoginView must not be null");
         loginView = (LoginView) view;
 
-        if (userAccountInteractor != null &&
-                userAccountInteractor.isLoggedIn()) {
+        if (userAccountInteractor != null && userAccountInteractor.isLoggedIn()) {
             onSuccess();
         }
     }
@@ -100,7 +99,6 @@ public class LoginPresenterImpl implements LoginPresenter, LoginPresenter.OnLogi
                                    LoginPresenterImpl.this.handleError(throwable);
                                }
                            }
-
                 ));
     }
 

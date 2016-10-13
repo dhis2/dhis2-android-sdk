@@ -10,8 +10,6 @@ import org.hisp.dhis.client.sdk.ui.bindings.presenters.LoginPresenter;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.ProfilePresenter;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.SettingsPresenter;
 import org.hisp.dhis.client.sdk.ui.bindings.views.DefaultHomeActivity;
-import org.hisp.dhis.client.sdk.ui.bindings.views.DefaultLauncherActivity;
-import org.hisp.dhis.client.sdk.ui.bindings.views.DefaultLoginActivity;
 import org.hisp.dhis.client.sdk.ui.bindings.views.DefaultProfileFragment;
 import org.hisp.dhis.client.sdk.ui.bindings.views.DefaultSettingsFragment;
 import org.hisp.dhis.client.sdk.utils.Logger;
@@ -71,18 +69,6 @@ public final class UserComponent {
     public void inject(DefaultSettingsFragment defaultSettingsFragment) {
         if (defaultSettingsFragment != null) {
             defaultSettingsFragment.setSettingsPresenter(settingsPresenter);
-        }
-    }
-
-    public void inject(DefaultLauncherActivity defaultLauncherActivity) {
-        if (defaultLauncherActivity != null) {
-            defaultLauncherActivity.setLauncherPresenter(launcherPresenter);
-        }
-    }
-
-    public void inject(DefaultLoginActivity defaultLoginActivity) {
-        if (defaultLoginActivity != null) {
-            defaultLoginActivity.setLoginPresenter(loginPresenter);
         }
     }
 

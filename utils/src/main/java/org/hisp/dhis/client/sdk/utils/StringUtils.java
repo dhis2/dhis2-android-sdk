@@ -29,7 +29,6 @@
 package org.hisp.dhis.client.sdk.utils;
 
 public class StringUtils {
-
     private StringUtils() {
         // no instances
     }

@@ -10,9 +10,9 @@ import org.hisp.dhis.client.sdk.utils.Logger;
 public interface DefaultAppModule {
     Logger providesLogger();
 
-    Context providesContext();
-
     Application providesApplication();
+
+    Context providesContext(Application application);
 
     D2 providesSdkInstance(Application application);
 
@@ -22,5 +22,5 @@ public interface DefaultAppModule {
 
     ApiExceptionHandler providesApiExceptionHandler(Context context, Logger logger);
 
-    SyncDateWrapper providesSyncDateWrapper(Context context, AppPreferences preferences, Logger logger);
+    SyncDateWrapper providesSyncDateWrapper(Context context, AppPreferences prefs, Logger logger);
 }

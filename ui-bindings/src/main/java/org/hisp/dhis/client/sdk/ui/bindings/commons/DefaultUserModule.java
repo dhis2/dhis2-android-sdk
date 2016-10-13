@@ -15,6 +15,8 @@ import org.hisp.dhis.client.sdk.utils.Logger;
 public interface DefaultUserModule {
     UserInteractor providesUserInteractor(D2 d2);
 
+    DefaultNotificationHandler providesNotificationHandler(Context context);
+
     LauncherPresenter providesLauncherPresenter(UserInteractor userInteractor);
 
     LoginPresenter providesLoginPresenter(
@@ -23,17 +25,13 @@ public interface DefaultUserModule {
     HomePresenter providesHomePresenter(
             UserInteractor userInteractor, SyncDateWrapper syncDateWrapper, Logger logger);
 
-    ProfilePresenter providesProfilePresenter(UserInteractor userInteractor,
-                                              SyncDateWrapper syncDateWrapper,
-                                              DefaultAppAccountManager appAccountManager,
-                                              DefaultNotificationHandler defaultNotificationHandler,
-                                              Logger logger);
+    ProfilePresenter providesProfilePresenter(
+            UserInteractor userInteractor, SyncDateWrapper dateWrapper,
+            DefaultAppAccountManager manager, DefaultNotificationHandler handler, Logger logger);
 
     SettingsPresenter providesSettingsPresenter(
             AppPreferences appPreferences, DefaultAppAccountManager appAccountManager);
 
     DefaultAppAccountManager providesAppAccountManager(
             Context context, AppPreferences prefs, UserInteractor userInteractor, Logger logger);
-
-    DefaultNotificationHandler providesNotificationHandler(Context context);
 }

@@ -41,13 +41,13 @@ public final class Inject {
         inject = new Inject(provider);
     }
 
-    public static UserComponent createUserComponent(String serverUrl, String authority, String accountType) {
+    public static UserComponent createUserComponent(String url, String authority, String type) {
         isNull(inject, "you must call init first");
 
         if (inject.moduleProvider != null) {
-            inject.defaultUserModule = inject.moduleProvider.provideUserModule(serverUrl);
+            inject.defaultUserModule = inject.moduleProvider.provideUserModule(url);
         } else {
-            inject.defaultUserModule = new DefaultUserModuleImpl(null, serverUrl, authority, accountType);
+            inject.defaultUserModule = new DefaultUserModuleImpl(authority, type);
         }
 
         inject.userComponent = new UserComponent(

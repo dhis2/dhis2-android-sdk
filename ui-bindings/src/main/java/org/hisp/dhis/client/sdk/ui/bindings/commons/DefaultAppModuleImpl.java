@@ -22,8 +22,8 @@ final class DefaultAppModuleImpl implements DefaultAppModule {
     }
 
     @Override
-    public Context providesContext() {
-        return application;
+    public Logger providesLogger() {
+        return new LoggerImpl();
     }
 
     @Override
@@ -32,13 +32,13 @@ final class DefaultAppModuleImpl implements DefaultAppModule {
     }
 
     @Override
-    public D2 providesSdkInstance(Application application) {
-        return D2.builder(application).build();
+    public Context providesContext(Application application) {
+        return application;
     }
 
     @Override
-    public Logger providesLogger() {
-        return new LoggerImpl();
+    public D2 providesSdkInstance(Application application) {
+        return D2.builder(application).build();
     }
 
     @Override
@@ -57,7 +57,7 @@ final class DefaultAppModuleImpl implements DefaultAppModule {
     }
 
     @Override
-    public SyncDateWrapper providesSyncDateWrapper(Context context, AppPreferences preferences, Logger logger) {
-        return new SyncDateWrapper(context, preferences);
+    public SyncDateWrapper providesSyncDateWrapper(Context context, AppPreferences prefs, Logger logger) {
+        return new SyncDateWrapper(context, prefs);
     }
 }

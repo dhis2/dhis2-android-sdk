@@ -60,19 +60,35 @@
         <item name="colorAccent">@color/color_accent_default</item>
     </style>
 
-    <!-- Dense two line list as per https://material.google.com/components/lists.html#lists-specs -->
-    <style name="DenseTwoLineListItem">
+    <!-- Two line list as per https://material.google.com/components/lists.html#lists-specs -->
+    <style name="TwoLineListItem">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_height">72dp</item>
         <item name="android:background">?android:selectableItemBackground</item>
         <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <!-- Dense two line list as per https://material.google.com/components/lists.html#lists-specs -->
+    <style name="DenseTwoLineListItem" parent="TwoLineListItem">
+        <item name="android:layout_height">60dp</item>
+    </style>
+
+    <style name="ListItemText">
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="DenseListItemText">
         <item name="android:textSize">13sp</item>
     </style>
 
-    <style name="DenseListErrorText" parent="DenseListItemText">
+    <style name="ListItemErrorText">
+        <item name="android:textColor">@color/color_accent_default</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="DenseListItemErrorText" parent="ListItemErrorText">
         <item name="android:textColor">@color/color_accent_default</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textSize">12sp</item>

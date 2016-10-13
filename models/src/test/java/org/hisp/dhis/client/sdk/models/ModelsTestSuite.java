@@ -26,21 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package org.hisp.dhis.client.sdk.models;
 
-apply plugin: 'java'
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-sourceCompatibility = JavaVersion.VERSION_1_7
-targetCompatibility = JavaVersion.VERSION_1_7
-
-def libs = rootProject.ext.libraries
-
-dependencies {
-    compile project(":utils")
-
-    // Jackson libraries.
-    compile "com.fasterxml.jackson.core:jackson-databind:${libs.jacksonVersion}"
-
-    // Test compile dependencies.
-    testCompile "junit:junit:${libs.jUnitVersion}"
-    testCompile "org.mockito:mockito-core:${libs.mockitoVersion}"
+@RunWith(Suite.class)
+public class ModelsTestSuite {
 }

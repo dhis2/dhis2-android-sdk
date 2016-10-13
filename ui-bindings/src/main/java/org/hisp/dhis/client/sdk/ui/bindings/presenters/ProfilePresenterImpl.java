@@ -17,10 +17,13 @@ import org.hisp.dhis.client.sdk.ui.models.FormEntityFilter;
 import org.hisp.dhis.client.sdk.ui.models.Picker;
 import org.hisp.dhis.client.sdk.ui.rows.DatePickerRowView;
 import org.hisp.dhis.client.sdk.utils.Logger;
-import org.joda.time.DateTime;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -36,6 +39,7 @@ import static org.hisp.dhis.client.sdk.utils.StringUtils.isEmpty;
 
 public class ProfilePresenterImpl implements ProfilePresenter {
     static final String TAG = ProfilePresenter.class.getSimpleName();
+    static final String DATE_FORMAT = "yyyy-mm-dd";
 
     // callback which will be called when values change in view
     private final RxOnValueChangedListener onFormEntityChangeListener;
@@ -270,8 +274,14 @@ public class ProfilePresenterImpl implements ProfilePresenter {
         // formatting the string
         String birthdayString = "";
         if (!isEmpty(user.getBirthday())) {
-            DateTime birthdayDate = DateTime.parse(user.getBirthday());
-            birthdayString = birthdayDate.toString(DatePickerRowView.DATE_FORMAT);
+            try {
+                Date birthdayDate = (new SimpleDateFormat(
+                        DATE_FORMAT, Locale.getDefault())).parse(user.getBirthday());
+                birthdayString = (new SimpleDateFormat(
+                        DatePickerRowView.DATE_FORMAT, Locale.getDefault()).format(birthdayDate));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
 
         FormEntityDate birthday = new FormEntityDate(ProfileView.ID_BIRTHDAY,

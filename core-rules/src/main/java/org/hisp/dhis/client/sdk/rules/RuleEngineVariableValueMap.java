@@ -32,7 +32,6 @@ import org.hisp.dhis.client.sdk.models.common.ValueType;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
-import org.joda.time.DateTime;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -230,7 +229,7 @@ class RuleEngineVariableValueMap {
                         defaultValue.setValue("0");
                     } else if (variable.getDataElement().getValueType() == ValueType.DATE
                             || variable.getDataElement().getValueType() == ValueType.DATETIME) {
-                        defaultValue.setValue("'" + DateTime.now().toString() + "'");
+                        defaultValue.setValue("'" + (new Date()).toString() + "'");
                     } else if (variable.getDataElement().getValueType() == ValueType.BOOLEAN
                             || variable.getDataElement().getValueType() == ValueType.TRUE_ONLY) {
                         defaultValue.setValue("false");
@@ -251,10 +250,10 @@ class RuleEngineVariableValueMap {
             Date eventDate = currentEvent.getEventDate() != null ? currentEvent.getEventDate() : new Date();
             addEnviromentVariableValueToMap("event_date", df.format(eventDate), ValueType.DATE, currentEvent.getEventDate() != null);
         } else {
-            addEnviromentVariableValueToMap("event_date", df.format(DateTime.now().toDate()), ValueType.DATE, false);
+            addEnviromentVariableValueToMap("event_date", df.format(new Date()), ValueType.DATE, false);
         }
 
-        addEnviromentVariableValueToMap("current_date", df.format(DateTime.now().toDate()), ValueType.DATE, true);
+        addEnviromentVariableValueToMap("current_date", df.format(new Date()), ValueType.DATE, true);
 
     }
 

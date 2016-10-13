@@ -106,12 +106,17 @@ public class D2 {
 
     // interactors which will be exposed to client applications
     private final UserInteractor userInteractor;
+    private final EventInteractor eventInteractor;
     private final ProgramInteractor programInteractor;
     private final OptionSetInteractor optionSetInteractor;
     private final TrackedEntityInteractor trackedEntityInteractor;
     private final OrganisationUnitInteractor organisationUnitInteractor;
-    private final EventInteractor eventInteractor;
     private final TrackedEntityDataValueInteractor trackedEntityDataValueInteractor;
+
+    public static D2.Builder builder(Application application) {
+        isNull(application, "application must not be null");
+        return new D2.Builder(application);
+    }
 
     public D2.Builder configure(HttpUrl okBaseUrl) {
         isNull(okBaseUrl, "Base URL must not be null");

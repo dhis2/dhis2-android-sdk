@@ -35,6 +35,7 @@ import org.hisp.dhis.client.sdk.ui.models.ReportEntityFilter;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
@@ -81,7 +82,7 @@ public class SessionPreferencesImpl implements SessionPreferences {
     }
 
     @Override
-    public ArrayList<ReportEntityFilter> getReportEntityDataModelFilters(
+    public List<ReportEntityFilter> getReportEntityDataModelFilters(
             String programUid, ArrayList<ReportEntityFilter> filters) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
 

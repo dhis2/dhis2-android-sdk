@@ -42,5 +42,6 @@ dependencies {
 
     // Test compile dependencies.
     testCompile "junit:junit:${libs.jUnitVersion}"
+    testCompile "org.assertj:assertj-core:${libs.assertJ}"
     testCompile "org.mockito:mockito-core:${libs.mockitoVersion}"
 }

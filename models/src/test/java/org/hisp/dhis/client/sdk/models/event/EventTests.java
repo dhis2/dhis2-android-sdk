@@ -26,15 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models;
+package org.hisp.dhis.client.sdk.models.event;
 
-import org.hisp.dhis.client.sdk.models.event.EventTests;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.Test;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        EventTests.class
-})
-public class ModelsTestSuite {
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class EventTests {
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testValidate() {
+        Event event = new Event();
+        event.setUid("abc");
+
+        Event.validate(event);
+    }
+
+    @Test
+    public void testEquals() {
+        Event eventOne = new Event();
+        Event eventTwo = new Event();
+
+        eventOne.setUid("abc");
+        eventTwo.setUid("abc");
+
+        assertThat(eventOne).isEqualTo(eventTwo);
+        assertThat(eventTwo).isEqualTo(eventOne);
+    }
 }

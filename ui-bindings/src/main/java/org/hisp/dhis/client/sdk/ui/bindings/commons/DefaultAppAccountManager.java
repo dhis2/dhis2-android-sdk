@@ -29,7 +29,6 @@
 package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
 public interface DefaultAppAccountManager {
-
     void removeAccount();
 
     void removePeriodicSync();
@@ -37,5 +36,4 @@ public interface DefaultAppAccountManager {
     void setPeriodicSync(int minutes);
 
     void syncNow();
-
 }

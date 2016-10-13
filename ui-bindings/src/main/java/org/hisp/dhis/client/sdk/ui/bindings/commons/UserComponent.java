@@ -44,7 +44,7 @@ public final class UserComponent {
 
         // user module related dependencies
         UserInteractor currentUserInteractor = defaultUserModule
-                .providesCurrentUserInteractor();
+                .providesUserInteractor(defaultAppModule.providesSdkInstance(application));
         DefaultAppAccountManager accountManager = defaultUserModule
                 .providesAppAccountManager(application, appPreferences, currentUserInteractor, logger);
         DefaultNotificationHandler defaultNotificationHandler = defaultUserModule.providesNotificationHandler(application);

@@ -18,8 +18,7 @@ public class Authenticator extends AbstractAccountAuthenticator {
 
     // Editing properties is not supported
     @Override
-    public Bundle editProperties(
-            AccountAuthenticatorResponse r, String s) {
+    public Bundle editProperties(AccountAuthenticatorResponse r, String s) {
         throw new UnsupportedOperationException();
     }
 

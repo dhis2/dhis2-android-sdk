@@ -38,7 +38,6 @@ import android.support.v4.app.TaskStackBuilder;
 import org.hisp.dhis.client.sdk.ui.bindings.R;
 
 public class DefaultNotificationHandlerImpl implements DefaultNotificationHandler {
-
     private final Context context;
 
     public DefaultNotificationHandlerImpl(Context context) {
@@ -56,7 +55,6 @@ public class DefaultNotificationHandlerImpl implements DefaultNotificationHandle
     }
 
     public void showSyncCompletedNotification(boolean completedSuccessfully) {
-
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
         if (completedSuccessfully) {
@@ -77,14 +75,12 @@ public class DefaultNotificationHandlerImpl implements DefaultNotificationHandle
 
     @Override
     public void removeAllNotifications() {
-
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
     }
 
     private void showSyncNotification(NotificationCompat.Builder builder) {
-
         if (NavigationHandler.homeActivity() != null) {
 
             Class homeActivity = NavigationHandler.homeActivity();

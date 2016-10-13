@@ -47,7 +47,7 @@ public final class Inject {
         if (inject.moduleProvider != null) {
             inject.defaultUserModule = inject.moduleProvider.provideUserModule(serverUrl);
         } else {
-            inject.defaultUserModule = new DefaultUserModuleImpl(serverUrl, authority, accountType);
+            inject.defaultUserModule = new DefaultUserModuleImpl(null, serverUrl, authority, accountType);
         }
 
         inject.userComponent = new UserComponent(

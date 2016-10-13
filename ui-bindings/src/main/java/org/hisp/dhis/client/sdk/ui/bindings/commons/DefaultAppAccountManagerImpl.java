@@ -23,7 +23,6 @@ import org.hisp.dhis.client.sdk.utils.StringUtils;
  */
 
 public class DefaultAppAccountManagerImpl implements DefaultAppAccountManager {
-
     private final String TAG = DefaultAppAccountManagerImpl.class.getSimpleName();
 
     private final Logger logger;
@@ -49,7 +48,6 @@ public class DefaultAppAccountManagerImpl implements DefaultAppAccountManager {
     }
 
     private void init() {
-
         if (!appPreferences.getBackgroundSyncState() || !userIsSignedIn()) {
             logger.i(TAG, "No syncing performed: Synchronizing is turned off or user is not signed in. ");
             return;
@@ -105,7 +103,6 @@ public class DefaultAppAccountManagerImpl implements DefaultAppAccountManager {
     }
 
     private Account createAccount(String accountName) {
-
         if (StringUtils.isEmpty(accountName) || StringUtils.isEmpty(accountType)) {
             Log.i(TAG, "Unable to create account. Account name or account type is invalid");
             return null;
@@ -124,7 +121,6 @@ public class DefaultAppAccountManagerImpl implements DefaultAppAccountManager {
     }
 
     private void initPeriodicSync() {
-
         if (errorWithAccount()) {
             Log.i(TAG, "Unable to init periodic sync. Account, Authority or Account Type is invalid");
             return;
@@ -154,7 +150,6 @@ public class DefaultAppAccountManagerImpl implements DefaultAppAccountManager {
     }
 
     public void setPeriodicSync(int minutes) {
-
         if (errorWithAccount()) {
             Log.i(TAG, "Unable to set periodic sync.  Account, Authority or Account Type is invalid");
             return;
@@ -174,7 +169,6 @@ public class DefaultAppAccountManagerImpl implements DefaultAppAccountManager {
     }
 
     public void syncNow() {
-
         if (errorWithAccount()) {
             Log.i(TAG, "Unable to set periodic sync.  Account, Authority or Account Type is invalid");
             return;
@@ -191,7 +185,6 @@ public class DefaultAppAccountManagerImpl implements DefaultAppAccountManager {
 
 
     public void removeAccount() {
-
         if (userIsSignedIn() && accountExists()) {
             Account account = fetchAccount(getUsername());
             AccountManager accountManager =
@@ -221,15 +214,12 @@ public class DefaultAppAccountManagerImpl implements DefaultAppAccountManager {
     }
 
     public void removePeriodicSync() {
-
         if (errorWithAccount()) {
             Log.i(TAG, "Unable to remove periodic sync.  Account, Authority or Account Type is invalid");
             return;
         }
 
         Account account = fetchAccount(getUsername());
-
         ContentResolver.removePeriodicSync(account, authority, Bundle.EMPTY);
     }
-
 }

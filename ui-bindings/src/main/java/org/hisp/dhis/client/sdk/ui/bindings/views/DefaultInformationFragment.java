@@ -18,14 +18,15 @@ public class DefaultInformationFragment extends AbsInformationFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TextView sessionText = (TextView) getActivity().findViewById(R.id.app_session);
-        // inside app_session:
-        sessionText.setText(String.format(Locale.getDefault(), "%s %s\n",
-                getString(R.string.logged_in_as),
-                D2.me().username())
-        );
-        sessionText.append(getString(R.string.logged_in_at) + " ");
-        addUrl(sessionText, D2.getServerUrl());
-        sessionText.setMovementMethod(LinkMovementMethod.getInstance());
+        // TODO REFACTOR
+//        TextView sessionText = (TextView) getActivity().findViewById(R.id.app_session);
+//        // inside app_session:
+//        sessionText.setText(String.format(Locale.getDefault(), "%s %s\n",
+//                getString(R.string.logged_in_as),
+//                D2.me().username())
+//        );
+//        sessionText.append(getString(R.string.logged_in_at) + " ");
+//        addUrl(sessionText, D2.getServerUrl());
+//        sessionText.setMovementMethod(LinkMovementMethod.getInstance());
     }
 }

@@ -22,31 +22,32 @@ import org.hisp.dhis.client.sdk.utils.Logger;
 import static org.hisp.dhis.client.sdk.utils.StringUtils.isEmpty;
 
 final class DefaultUserModuleImpl implements DefaultUserModule {
-
     private final String authority;
-
     private final String accountType;
+    private final D2 d2;
 
-    public DefaultUserModuleImpl(@NonNull String authority, @NonNull String accountType, @Nullable String serverUrl) {
+    DefaultUserModuleImpl(@Nullable D2 d2, @NonNull String authority, @NonNull String accountType, @Nullable String serverUrl) {
         this.authority = authority;
         this.accountType = accountType;
-        if (!isEmpty(serverUrl)) {
 
-            // TODO REFACTOR
-            // configure D2
-//            Configuration configuration = new Configuration(serverUrl);
-//            D2.configure(configuration).toBlocking().first();
-            D2.configure(serverUrl);
+        if (d2 != null && !isEmpty(serverUrl)) {
+            this.d2 = d2.configure(serverUrl).build();
+        } else {
+            this.d2 = null;
         }
     }
 
-    public DefaultUserModuleImpl(@NonNull String authority, @NonNull String accountType) {
-        this(authority, accountType, null);
+    DefaultUserModuleImpl(@NonNull String authority, @NonNull String accountType) {
+        this(null, authority, accountType, null);
     }
 
     @Override
-    public UserInteractor providesCurrentUserInteractor() {
-        return D2.isConfigured() ? D2.me() : null;
+    public UserInteractor providesUserInteractor(D2 d2) {
+        if (d2 != null && d2.isConfigured()) {
+            return d2.me();
+        }
+
+        return null;
     }
 
     @Override
@@ -95,5 +96,4 @@ final class DefaultUserModuleImpl implements DefaultUserModule {
     public DefaultNotificationHandler providesNotificationHandler(Context context) {
         return new DefaultNotificationHandlerImpl(context);
     }
-
 }

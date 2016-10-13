@@ -30,7 +30,6 @@ package org.hisp.dhis.client.sdk.core;
 
 import android.app.Application;
 import android.content.ContentResolver;
-import android.text.TextUtils;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,11 +57,13 @@ import org.hisp.dhis.client.sdk.core.user.UserPreferences;
 import org.hisp.dhis.client.sdk.core.user.UserStore;
 import org.hisp.dhis.client.sdk.core.user.UserStoreImpl;
 import org.hisp.dhis.client.sdk.core.user.UsersApi;
+import org.hisp.dhis.client.sdk.utils.StringUtils;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -70,9 +71,6 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class D2 {
-    // singleton instance
-    private static D2 instance;
-
     // context
     private final Application application;
 
@@ -86,31 +84,25 @@ public class D2 {
     private final Executor executor;
     private final Retrofit retrofit;
 
-    // holds true if D2 is configured
+    // true if valid server URL is set to D2
     private final boolean isConfigured;
-    private static String serverUrl;
 
-    private ProgramInteractor programInteractor;
-    private UserInteractor userInteractor;
-    private OptionSetInteractor optionSetInteractor;
-    private TrackedEntityInteractor trackedEntityInteractor;
-
-    public static void init(Application application) {
-        isNull(application, "Application must not be null");
-
-        /* using default version of builder */
-        with(new D2.Builder(application).build());
-    }
-
-    public static void with(D2 d2) {
-        instance = isNull(d2, "D2 instance must not be null");
-    }
+    // interactors which will be exposed to client applications
+    private final UserInteractor userInteractor;
+    private final ProgramInteractor programInteractor;
+    private final OptionSetInteractor optionSetInteractor;
+    private final TrackedEntityInteractor trackedEntityInteractor;
 
     public static Builder builder(Application application) {
         return new Builder(application);
     }
 
-    public static void configure(String baseUrl) {
+    public D2.Builder configure(HttpUrl okBaseUrl) {
+        isNull(okBaseUrl, "Base URL must not be null");
+        return configure(okBaseUrl.toString());
+    }
+
+    public D2.Builder configure(String baseUrl) {
         isNull(baseUrl, "Base URL must not be null");
 
         if (isConfigured()) {
@@ -118,53 +110,22 @@ public class D2 {
         }
 
         String url = baseUrl.endsWith("/") ? baseUrl.concat("api/") : baseUrl.concat("/api/");
-        instance().serverUrlPreferences.save(url);
+        serverUrlPreferences.save(url);
 
         // re-instantiate D2 with new URL set
-        instance = new D2(instance().application, instance().objectMapper,
-                instance().okHttpClient, instance().executor);
-    }
-
-    public static void configure(HttpUrl okBaseUrl) {
-        isNull(okBaseUrl, "Base URL must not be null");
-
-        if (isConfigured()) {
-            throw new IllegalStateException("D2 has been already configured");
-        }
-
-        String baseUrl = okBaseUrl.url().toString();
-        String url = baseUrl.endsWith("/") ? baseUrl.concat("api/") : baseUrl.concat("/api/");
-        instance().serverUrlPreferences.save(url);
-
-        // re-instantiate D2 with new URL set
-        instance = new D2(instance().application, instance().objectMapper,
-                instance().okHttpClient, instance().executor);
-    }
-
-    /**
-     * @return true if D2 is configured with valid URL pointing to DHIS2 instance
-     */
-    public static boolean isConfigured() {
-        return instance().isConfigured;
-    }
-
-    /*
-    * Helper method which returns singleton instance and
-    * makes sure that everything is instantiated
-    */
-    private static D2 instance() {
-        return isNull(instance, "D2 is null. Call init first");
+        return new D2.Builder(this);
     }
 
     private D2(Application app, ObjectMapper mapper, OkHttpClient client, Executor executor) {
-        this.contentResolver = app.getContentResolver();
+        // retrieve server url
         ServerUrlPreferences urlPreferences = new ServerUrlPreferences(app);
-        serverUrl = urlPreferences.get();
+        String serverUrl = urlPreferences.get();
 
-        this.isConfigured = !TextUtils.isEmpty(serverUrl);
+        this.isConfigured = !StringUtils.isEmpty(serverUrl);
         this.application = app;
 
         // persistence
+        this.contentResolver = app.getContentResolver();
         this.serverUrlPreferences = urlPreferences;
 
         // retrofit
@@ -188,60 +149,82 @@ public class D2 {
 
         // can be null in case if D2 is not configured
         this.retrofit = retrofit;
-    }
 
-    public static String getServerUrl() {
-        return serverUrl;
-    }
+        // constructing interactors
+        if (retrofit != null) {
+            // user interactor
+            UserStore userStore = new UserStoreImpl(contentResolver, objectMapper);
+            UsersApi usersApi = retrofit.create(UsersApi.class);
+            userInteractor = new UserInteractorImpl(null, usersApi, userStore, null);
 
-    public static UserInteractor me() {
-        if (isConfigured() && instance().userInteractor == null) {
-            UsersApi usersApi = instance().retrofit.create(UsersApi.class);
-            UserStore userStore = new UserStoreImpl(instance().contentResolver,
-                    instance().objectMapper);
+            // program interactor
+            ProgramsApi programsApi = retrofit.create(ProgramsApi.class);
+            MetadataApi metadataApi = retrofit.create(MetadataApi.class);
+            ProgramStore programStore = new ProgramStoreImpl(contentResolver, objectMapper);
+            programInteractor = new ProgramInteractorImpl(programsApi, programStore, metadataApi);
 
-            instance().userInteractor = new UserInteractorImpl(null, usersApi, userStore, null);
+            // option set interactor
+            OptionSetStore optionSetStore = new OptionSetStoreImpl(contentResolver, objectMapper);
+            OptionSetApi optionSetApi = retrofit.create(OptionSetApi.class);
+            optionSetInteractor = new OptionSetInteractorImpl(optionSetStore, optionSetApi);
+
+            // tracked entities
+            TrackedEntityApi trackedEntityApi = retrofit.create(TrackedEntityApi.class);
+            TrackedEntityStore trackedEntityStore = new TrackedEntityStoreImpl(contentResolver);
+            trackedEntityInteractor = new TrackedEntityInteractorImpl(trackedEntityStore, trackedEntityApi);
+        } else {
+            userInteractor = null;
+            programInteractor = null;
+            optionSetInteractor = null;
+            trackedEntityInteractor = null;
         }
-        return instance().userInteractor;
     }
 
-    public static ProgramInteractor programs() {
-        if (isConfigured() && instance().programInteractor == null) {
-            ProgramsApi programsApi = instance().retrofit.create(ProgramsApi.class);
-            MetadataApi metadataApi = instance().retrofit.create(MetadataApi.class);
-            ProgramStore programStore = new ProgramStoreImpl(instance().contentResolver,
-                    instance().objectMapper);
-
-            instance().programInteractor = new ProgramInteractorImpl(
-                    programsApi, programStore, metadataApi);
-        }
-
-        return instance().programInteractor;
+    /**
+     * @return true if D2 is configured with valid URL pointing to DHIS2 instance
+     */
+    public boolean isConfigured() {
+        return isConfigured;
     }
 
-    public static OptionSetInteractor optionSets() {
-        if (isConfigured() && instance().optionSetInteractor == null) {
-            OptionSetStore optionSetStore =
-                    new OptionSetStoreImpl(instance().contentResolver, instance().objectMapper);
-            OptionSetApi optionSetApi =
-                    instance().retrofit.create(OptionSetApi.class);
-            instance().optionSetInteractor =
-                    new OptionSetInteractorImpl(optionSetStore, optionSetApi);
-        }
-
-        return instance().optionSetInteractor;
+    public Application application() {
+        return application;
     }
 
-    public static TrackedEntityInteractor trackedEntities() {
-        if (isConfigured() && instance().trackedEntityInteractor == null) {
-            TrackedEntityApi trackedEntityApi = instance().retrofit.create(TrackedEntityApi.class);
-            TrackedEntityStore trackedEntityStore =
-                    new TrackedEntityStoreImpl(instance().contentResolver);
-            instance().trackedEntityInteractor =
-                    new TrackedEntityInteractorImpl(trackedEntityStore, trackedEntityApi);
-        }
+    public ObjectMapper objectMapper() {
+        return objectMapper;
+    }
 
-        return instance().trackedEntityInteractor;
+    public OkHttpClient okHttpClient() {
+        return okHttpClient;
+    }
+
+    public Executor executor() {
+        return executor;
+    }
+
+    public Retrofit retrofit() {
+        return retrofit;
+    }
+
+    public String serverUrl() {
+        return serverUrlPreferences.get();
+    }
+
+    public UserInteractor me() {
+        return userInteractor;
+    }
+
+    public ProgramInteractor programs() {
+        return programInteractor;
+    }
+
+    public OptionSetInteractor optionSets() {
+        return optionSetInteractor;
+    }
+
+    public TrackedEntityInteractor trackedEntities() {
+        return trackedEntityInteractor;
     }
 
     public static class Builder {
@@ -250,17 +233,24 @@ public class D2 {
         private static final int DEFAULT_WRITE_TIMEOUT_MILLIS = 20 * 1000;     // 20s
 
         private final Application application;
-        private final BasicAuthenticator basicAuthenticator;
 
-        // customizable dependencies
+        // builder which can be used to set custom interceptors
+        private final OkHttpClient.Builder clientBuilder;
+
         private ObjectMapper objectMapper;
-        private OkHttpClient okHttpClient;
         private Executor executor;
 
-        private Builder(Application application) {
-            this.application = application;
+        Builder(D2 d2) {
+            this.application = d2.application();
+            this.clientBuilder = d2.okHttpClient().newBuilder();
+            this.objectMapper = d2.objectMapper();
+            this.executor = d2.executor();
+        }
 
-            // Constructing default jackson's object mapper
+        Builder(Application application) {
+            this.application = isNull(application, "Application must not be null");
+
+            // constructing default jackson's object mapper
             this.objectMapper = new ObjectMapper();
             this.objectMapper.disable(MapperFeature.AUTO_DETECT_CREATORS,
                     MapperFeature.AUTO_DETECT_FIELDS,
@@ -268,18 +258,18 @@ public class D2 {
                     MapperFeature.AUTO_DETECT_IS_GETTERS,
                     MapperFeature.AUTO_DETECT_SETTERS);
 
+            // user preferences
             UserPreferences userPreferences = new UserPreferences(application);
 
             // basic authentication handler
-            this.basicAuthenticator = new BasicAuthenticator(userPreferences);
+            BasicAuthenticator basicAuthenticator = new BasicAuthenticator(userPreferences);
 
             // constructing default version of OkHttp client
-            this.okHttpClient = new OkHttpClient.Builder()
+            this.clientBuilder = new OkHttpClient.Builder()
                     .addInterceptor(basicAuthenticator)
                     .connectTimeout(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
                     .writeTimeout(DEFAULT_WRITE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
-                    .readTimeout(DEFAULT_READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
-                    .build();
+                    .readTimeout(DEFAULT_READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         }
 
         public Builder objectMapper(ObjectMapper objectMapper) {
@@ -287,14 +277,10 @@ public class D2 {
             return this;
         }
 
-        public Builder client(OkHttpClient okHttpClient) {
-            this.okHttpClient = isNull(okHttpClient, "OkHttpClient must not be null");
+        public Builder interceptor(Interceptor interceptor) {
+            isNull(interceptor, "interceptor must not be null");
 
-            // even if user sets custom instance of OkHttpClient,
-            // we need to supply authentication mechanism
-            this.okHttpClient = this.okHttpClient.newBuilder()
-                    .addInterceptor(basicAuthenticator)
-                    .build();
+            clientBuilder.addInterceptor(interceptor);
             return this;
         }
 
@@ -304,6 +290,7 @@ public class D2 {
         }
 
         public D2 build() {
+            OkHttpClient okHttpClient = clientBuilder.build();
             return new D2(application, objectMapper, okHttpClient, executor);
         }
     }

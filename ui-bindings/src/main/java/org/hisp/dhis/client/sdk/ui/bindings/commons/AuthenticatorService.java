@@ -8,7 +8,6 @@ import android.os.IBinder;
  * A service for the stub authenticator required by the syncMetaData adapter framework.
  */
 public class AuthenticatorService extends Service {
-
     private Authenticator mAuthenticator;
 
     @Override

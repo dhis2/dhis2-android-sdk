@@ -40,8 +40,8 @@ import java.net.MalformedURLException;
 import retrofit2.Response;
 
 public class ApiExceptionHandlerImpl implements ApiExceptionHandler {
-    Context context;
-    Logger logger;
+    private final Context context;
+    private final Logger logger;
 
     public ApiExceptionHandlerImpl(Context context, Logger logger) {
         this.context = context;

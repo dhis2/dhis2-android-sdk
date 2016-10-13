@@ -29,6 +29,5 @@
 package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
 public interface ApiExceptionHandler {
-
     AppError handleException(String tag, final Throwable apiException);
 }

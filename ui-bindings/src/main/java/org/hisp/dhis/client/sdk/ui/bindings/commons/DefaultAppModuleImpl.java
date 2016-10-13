@@ -17,15 +17,28 @@ final class DefaultAppModuleImpl implements DefaultAppModule {
     @NonNull
     private final Application application;
 
-    public DefaultAppModuleImpl(Application application) {
+    DefaultAppModuleImpl(Application application) {
         this.application = isNull(application, "Context must not be null");
-
-        D2.init(application);
     }
 
     @Override
-    public ApiExceptionHandler providesApiExceptionHandler(Context context, Logger logger) {
-        return new ApiExceptionHandlerImpl(context, logger);
+    public Context providesContext() {
+        return application;
+    }
+
+    @Override
+    public Application providesApplication() {
+        return application;
+    }
+
+    @Override
+    public D2 providesSdkInstance(Application application) {
+        return D2.builder(application).build();
+    }
+
+    @Override
+    public Logger providesLogger() {
+        return new LoggerImpl();
     }
 
     @Override
@@ -39,23 +52,12 @@ final class DefaultAppModuleImpl implements DefaultAppModule {
     }
 
     @Override
+    public ApiExceptionHandler providesApiExceptionHandler(Context context, Logger logger) {
+        return new ApiExceptionHandlerImpl(context, logger);
+    }
+
+    @Override
     public SyncDateWrapper providesSyncDateWrapper(Context context, AppPreferences preferences, Logger logger) {
         return new SyncDateWrapper(context, preferences);
     }
-
-    @Override
-    public Application providesApplication() {
-        return application;
-    }
-
-    @Override
-    public Context providesContext() {
-        return application;
-    }
-
-    @Override
-    public Logger providesLogger() {
-        return new LoggerImpl();
-    }
-
 }

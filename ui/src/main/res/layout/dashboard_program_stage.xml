@@ -42,6 +42,7 @@
             android:layout_marginLeft="24dp"
             android:layout_marginRight="16dp"
             android:layout_toLeftOf="@+id/action_button"
+            android:alpha="0.87"
             android:ellipsize="end"
             android:maxLines="2"
             android:text="@string/profile_title"
@@ -63,5 +64,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/color_divider" />
+        android:alpha="0.12"
+        android:background="@android:color/black" />
 </LinearLayout>

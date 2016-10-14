@@ -17,6 +17,7 @@ public abstract class App extends Application {
 
         // create default application component on start
         appComponent = new DefaultAppComponent(this);
+        userComponent = new DefaultUserComponent(appComponent);
     }
 
     public static App from(Application application) {
@@ -37,6 +38,6 @@ public abstract class App extends Application {
 
     // replace instance of existing user component with a new one
     public UserComponent createUserComponent(String serverUrl) {
-        return (userComponent = new DefaultUserComponent(serverUrl));
+        return (userComponent = new DefaultUserComponent(appComponent, serverUrl));
     }
 }

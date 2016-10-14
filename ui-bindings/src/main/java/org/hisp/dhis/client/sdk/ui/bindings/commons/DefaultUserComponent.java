@@ -3,32 +3,48 @@ package org.hisp.dhis.client.sdk.ui.bindings.commons;
 import org.hisp.dhis.client.sdk.core.D2;
 import org.hisp.dhis.client.sdk.ui.bindings.BuildConfig;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.HomePresenter;
+import org.hisp.dhis.client.sdk.ui.bindings.presenters.HomePresenterImpl;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.LauncherPresenter;
+import org.hisp.dhis.client.sdk.ui.bindings.presenters.LauncherPresenterImpl;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.LoginPresenter;
+import org.hisp.dhis.client.sdk.ui.bindings.presenters.LoginPresenterImpl;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.ProfilePresenter;
+import org.hisp.dhis.client.sdk.ui.bindings.presenters.ProfilePresenterImpl;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.SettingsPresenter;
+import org.hisp.dhis.client.sdk.ui.bindings.presenters.SettingsPresenterImpl;
 
 import okhttp3.logging.HttpLoggingInterceptor;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public final class DefaultUserComponent implements UserComponent {
-    private final AppComponent appComponent;
     private final D2 sdkInstance;
 
+    // presenters
+    private final LauncherPresenter launcherPresenter;
+    private final LoginPresenter loginPresenter;
+    private final HomePresenter homePresenter;
+    private final ProfilePresenter profilePresenter;
+    private final SettingsPresenter settingsPresenter;
+
+    public DefaultUserComponent(AppComponent appComponent) {
+        this(appComponent, provideSdkInstance(appComponent));
+    }
+
     public DefaultUserComponent(AppComponent appComponent, String serverUrl) {
-        this.appComponent = isNull(appComponent, "AppComponent must not be null");
-        this.sdkInstance = provideSdkInstance();
+        this(appComponent, provideSdkInstance(appComponent)
+                .configure(serverUrl).build());
     }
 
-    @Override
-    public LauncherPresenter launcherPresenter() {
-        return null;
-    }
+    private DefaultUserComponent(AppComponent appComponent, D2 sdkInstance) {
+        isNull(appComponent, "AppComponent must not be null");
+        this.sdkInstance = sdkInstance;
 
-    @Override
-    public LoginPresenter loginPresenter() {
-        return null;
+        this.launcherPresenter = new LauncherPresenterImpl(sdkInstance.me());
+        this.loginPresenter = new LoginPresenterImpl(sdkInstance.me(), null, appComponent.logger());
+        this.homePresenter = new HomePresenterImpl(sdkInstance.me(), null, appComponent.logger());
+        this.profilePresenter = new ProfilePresenterImpl(sdkInstance.me(), null, null, null, null);
+        this.settingsPresenter = new SettingsPresenterImpl(null, null);
     }
 
     @Override
@@ -37,21 +53,31 @@ public final class DefaultUserComponent implements UserComponent {
     }
 
     @Override
+    public LauncherPresenter launcherPresenter() {
+        return launcherPresenter;
+    }
+
+    @Override
+    public LoginPresenter loginPresenter() {
+        return loginPresenter;
+    }
+
+    @Override
     public HomePresenter homePresenter() {
-        return null;
+        return homePresenter;
     }
 
     @Override
     public ProfilePresenter profilePresenter() {
-        return null;
+        return profilePresenter;
     }
 
     @Override
     public SettingsPresenter settingsPresenter() {
-        return null;
+        return settingsPresenter;
     }
 
-    private D2 provideSdkInstance() {
+    private static D2 provideSdkInstance(AppComponent appComponent) {
         D2.Builder builder = D2.builder(appComponent.application());
 
         if (BuildConfig.DEBUG) {

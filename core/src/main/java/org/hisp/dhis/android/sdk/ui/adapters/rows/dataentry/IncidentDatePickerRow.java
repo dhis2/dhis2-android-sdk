@@ -55,12 +55,10 @@ public class IncidentDatePickerRow extends AbsEnrollmentDatePickerRow {
 
     private Enrollment mEnrollment;
     private String mLabel;
-    private String mIncidentDate;
 
-    public IncidentDatePickerRow(String label, Enrollment enrollment, String incidentDate) {
-        super(label, enrollment, incidentDate);
+    public IncidentDatePickerRow(String label, Enrollment enrollment) {
+        super();
         this.mEnrollment = enrollment;
-        this.mIncidentDate = incidentDate;
         this.mLabel = label;
     }
 
@@ -92,7 +90,7 @@ public class IncidentDatePickerRow extends AbsEnrollmentDatePickerRow {
             holder.pickerInvoker.setEnabled(true);
         }
 //        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
-        holder.updateViews(mLabel, mEnrollment, mIncidentDate);
+        holder.updateViews(mLabel, mEnrollment, mEnrollment.getIncidentDate());
 
 //        if (isDetailedInfoButtonHidden())
 //            holder.detailedInfoButton.setVisibility(View.INVISIBLE);
@@ -139,7 +137,6 @@ public class IncidentDatePickerRow extends AbsEnrollmentDatePickerRow {
             if(enrollment != null && incidentDate != null && !isEmpty(incidentDate))
             {
                 dateSetListener.setIncidentDate(enrollment.getIncidentDate());
-                clearButtonListener.setIncidentDate(enrollment.getIncidentDate());
                 DateTime incidentDateTime = DateTime.parse(enrollment.getIncidentDate());
                 eventDate = incidentDateTime.toString(DATE_FORMAT);
             }
@@ -173,8 +170,6 @@ public class IncidentDatePickerRow extends AbsEnrollmentDatePickerRow {
     private static class ClearButtonListener implements View.OnClickListener {
         private final TextView textView;
         private Enrollment enrollment;
-        private String enrollmentDate;
-        private String incidentDate;
 
         public ClearButtonListener(TextView textView) {
             this.textView = textView;
@@ -184,20 +179,12 @@ public class IncidentDatePickerRow extends AbsEnrollmentDatePickerRow {
             this.enrollment = enrollment;
         }
 
-        public void setEnrollmentDate(String enrollmentDate) {
-            this.enrollmentDate = enrollmentDate;
-        }
-
-        public void setIncidentDate(String incidentDate) {
-            this.incidentDate = incidentDate;
-        }
-
         @Override
         public void onClick(View view) {
             textView.setText(EMPTY_FIELD);
+            enrollment.setIncidentDate(EMPTY_FIELD);
 
-            if (incidentDate != null)
-                enrollment.setIncidentDate(EMPTY_FIELD);
+            Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, DataEntryRowTypes.ENROLLMENT_DATE.toString()));
         }
     }
 
@@ -206,7 +193,6 @@ public class IncidentDatePickerRow extends AbsEnrollmentDatePickerRow {
         private final TextView textView;
         private Enrollment enrollment;
         private DataValue value;
-        private String enrollmentDate;
         private String incidentDate;
 
         public DateSetListener(TextView textView) {

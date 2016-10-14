@@ -41,17 +41,8 @@ public abstract class AbsEnrollmentDatePickerRow extends Row {
 
     public static final String EMPTY_FIELD = "";
     public static final String DATE_FORMAT = "YYYY-MM-dd";
-    private final Enrollment mEnrollment;
-    private final String date;
 
-    public AbsEnrollmentDatePickerRow(String label, Enrollment enrollment, String date) {
-        if (date == null)
-            throw new IllegalArgumentException("Date must not be null");
-
-
-        mLabel = label;
-        mEnrollment = enrollment;
-        this.date = date;
+    public AbsEnrollmentDatePickerRow() {
 
         checkNeedsForDescriptionButton();
     }

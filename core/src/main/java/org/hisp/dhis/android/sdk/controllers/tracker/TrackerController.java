@@ -547,7 +547,11 @@ public final class TrackerController extends ResourceController {
         for (int i = 0; i < activeEnrollments.size() - 1; i++) {
             activeEnrollmentsSqlSafeString += "'" + activeEnrollments.get(i).getEnrollment() + "', ";
         }
-        activeEnrollmentsSqlSafeString += "'" + activeEnrollments.get(activeEnrollments.size() - 1).getEnrollment() + "')";
+        if(activeEnrollments.size() > 0) {
+            activeEnrollmentsSqlSafeString += "'" + activeEnrollments.get(activeEnrollments.size() - 1).getEnrollment() + "')";
+        } else {
+            activeEnrollmentsSqlSafeString += ")";
+        }
         return activeEnrollmentsSqlSafeString;
     }
 

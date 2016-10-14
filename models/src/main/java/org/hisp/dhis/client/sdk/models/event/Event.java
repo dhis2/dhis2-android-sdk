@@ -45,7 +45,7 @@ import java.util.Date;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Event extends BaseDataModel implements IdentifiableObject, Model {
+public final class Event extends BaseDataModel implements IdentifiableObject, Model {
 
     public static final Comparator<Event> DATE_COMPARATOR = new EventDateComparator();
 
@@ -172,6 +172,61 @@ public class Event extends BaseDataModel implements IdentifiableObject, Model {
     @Override
     public Date getLastUpdated() {
         return lastUpdated;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Event event = (Event) o;
+
+        if (id != event.id) return false;
+        if (uid != null ? !uid.equals(event.uid) : event.uid != null) return false;
+        if (name != null ? !name.equals(event.name) : event.name != null) return false;
+        if (displayName != null ? !displayName.equals(event.displayName) : event.displayName != null)
+            return false;
+        if (created != null ? !created.equals(event.created) : event.created != null) return false;
+        if (lastUpdated != null ? !lastUpdated.equals(event.lastUpdated) : event.lastUpdated != null)
+            return false;
+        if (code != null ? !code.equals(event.code) : event.code != null) return false;
+        if (status != event.status) return false;
+        if (coordinate != null ? !coordinate.equals(event.coordinate) : event.coordinate != null)
+            return false;
+        if (program != null ? !program.equals(event.program) : event.program != null) return false;
+        if (programStage != null ? !programStage.equals(event.programStage) : event.programStage != null)
+            return false;
+        if (orgUnit != null ? !orgUnit.equals(event.orgUnit) : event.orgUnit != null) return false;
+        if (eventDate != null ? !eventDate.equals(event.eventDate) : event.eventDate != null)
+            return false;
+        if (completedDate != null ? !completedDate.equals(event.completedDate) : event.completedDate != null)
+            return false;
+        if (dueDate != null ? !dueDate.equals(event.dueDate) : event.dueDate != null) return false;
+        return dataValues != null ? dataValues.equals(event.dataValues) : event.dataValues == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (int) (id ^ (id >>> 32));
+        result = 31 * result + (uid != null ? uid.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (displayName != null ? displayName.hashCode() : 0);
+        result = 31 * result + (created != null ? created.hashCode() : 0);
+        result = 31 * result + (lastUpdated != null ? lastUpdated.hashCode() : 0);
+        result = 31 * result + (code != null ? code.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (coordinate != null ? coordinate.hashCode() : 0);
+        result = 31 * result + (program != null ? program.hashCode() : 0);
+        result = 31 * result + (programStage != null ? programStage.hashCode() : 0);
+        result = 31 * result + (orgUnit != null ? orgUnit.hashCode() : 0);
+        result = 31 * result + (eventDate != null ? eventDate.hashCode() : 0);
+        result = 31 * result + (completedDate != null ? completedDate.hashCode() : 0);
+        result = 31 * result + (dueDate != null ? dueDate.hashCode() : 0);
+        result = 31 * result + (dataValues != null ? dataValues.hashCode() : 0);
+        return result;
     }
 
     public void setUid(String uid) {

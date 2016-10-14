@@ -44,4 +44,5 @@ dependencies {
     testCompile "junit:junit:${libs.jUnitVersion}"
     testCompile "org.assertj:assertj-core:${libs.assertJ}"
     testCompile "org.mockito:mockito-core:${libs.mockitoVersion}"
+    testCompile "nl.jqno.equalsverifier:equalsverifier:${libs.equalsVerifier}"
 }

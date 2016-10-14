@@ -2,13 +2,21 @@ package org.hisp.dhis.client.sdk.ui.bindings;
 
 import android.app.Application;
 
-public class App extends Application {
-    private AppComponent2 appComponent;
-    private UserComponent2 userComponent;
+import org.hisp.dhis.client.sdk.ui.bindings.commons.AppComponent;
+import org.hisp.dhis.client.sdk.ui.bindings.commons.DefaultAppComponent;
+import org.hisp.dhis.client.sdk.ui.bindings.commons.DefaultUserComponent;
+import org.hisp.dhis.client.sdk.ui.bindings.commons.UserComponent;
+
+public abstract class App extends Application {
+    private AppComponent appComponent;
+    private UserComponent userComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        // create default application component on start
+        appComponent = new DefaultAppComponent(this);
     }
 
     public static App from(Application application) {
@@ -19,15 +27,16 @@ public class App extends Application {
         throw new IllegalArgumentException("application must be instance of App");
     }
 
-    public AppComponent2 getAppComponent() {
+    public AppComponent getAppComponent() {
         return appComponent;
     }
 
-    public UserComponent2 getUserComponent() {
+    public UserComponent getUserComponent() {
         return userComponent;
     }
 
-    public UserComponent2 createUserComponent(String serverUrl) {
-        return null;
+    // replace instance of existing user component with a new one
+    public UserComponent createUserComponent(String serverUrl) {
+        return (userComponent = new DefaultUserComponent(serverUrl));
     }
 }

@@ -145,6 +145,9 @@ public class EditTextRow extends Row {
             view = root;
         }
 
+        //when recycling views we don't want to keep the focus on the edittext
+        holder.editText.clearFocus();
+
         if (!isEditable()) {
             holder.editText.setEnabled(false);
         } else {

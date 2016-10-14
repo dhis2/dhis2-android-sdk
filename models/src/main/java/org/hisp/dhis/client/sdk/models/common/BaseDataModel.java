@@ -20,4 +20,22 @@ public class BaseDataModel implements DataModel {
     public void setState(State state) {
         this.state = state;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        BaseDataModel that = (BaseDataModel) o;
+        return state == that.state;
+    }
+
+    @Override
+    public int hashCode() {
+        return state != null ? state.hashCode() : 0;
+    }
 }

@@ -61,6 +61,7 @@ ext {
             jUnitVersion       : "4.12",
             mockitoVersion     : "1.10.19",
             powerMockVersion   : "1.6.3",
+            equalsVerifier     : "2.1.6",
     ]
 }
 

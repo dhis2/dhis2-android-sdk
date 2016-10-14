@@ -30,6 +30,9 @@ package org.hisp.dhis.client.sdk.models.event;
 
 import org.junit.Test;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class EventTests {
@@ -39,7 +42,12 @@ public class EventTests {
         Event event = new Event();
         event.setUid("abc");
 
+        // TODO: Assert exception inside test
         Event.validate(event);
+
+        // TODO: Assert that null and empty  object fails
+
+        //TODO: Assert that "proper" objects don' fail
     }
 
     @Test
@@ -52,5 +60,39 @@ public class EventTests {
 
         assertThat(eventOne).isEqualTo(eventTwo);
         assertThat(eventTwo).isEqualTo(eventOne);
+
+        //TODO: Test notEquals
+    }
+
+    @Test
+    public void testHashCode() {
+        Event eventOne = new Event();
+        Event eventTwo = new Event();
+        Event eventThree = new Event();
+
+        eventOne.setUid("abc");
+        eventTwo.setUid("abc");
+
+        eventThree.setUid("def");
+
+        // Test that same object has same hashCode
+        assertThat(eventOne.hashCode()).isEqualTo(eventOne.hashCode());
+
+        // Test that different objects with same values have same hashCode
+        assertThat(eventOne.hashCode()).isEqualTo(eventTwo.hashCode());
+
+        // Test that different objetcts with different values don't have same hashCode
+        assertThat(eventOne.hashCode()).isNotEqualTo(eventThree.hashCode());
+    }
+
+    @Test
+    public void crazyTestEquals() {
+        // TODO: Add comments
+        // TODO: Consider abstracting this further
+        EqualsVerifier
+                .forClass(Event.class)
+                .suppress(Warning.NONFINAL_FIELDS)
+                .withRedefinedSuperclass()
+                .verify();
     }
 }

@@ -48,6 +48,8 @@ import org.hisp.dhis.android.sdk.ui.views.FontTextView;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -138,18 +140,22 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
             view = mInflater.inflate(
                     R.layout.dialog_fragment_listview_item_teiqueryresult, parent, false);
 
-            List<FontTextView> views = new ArrayList<>();
+            List<FontTextView> labelViews = new ArrayList<>();
+            List<FontTextView> valueViews = new ArrayList<>();
             if(trackedEntityInstance!=null && trackedEntityInstance.getAttributes()!=null) {
                 for (int i = 0; i < trackedEntityInstance.getAttributes().size(); i++) {
-                    LinearLayout textViewLayout = (LinearLayout) mInflater.inflate(R.layout.listview_row_text_view_label, parent, false);
-                    FontTextView textView = (FontTextView) textViewLayout.findViewById(R.id.text_label);
+                    LinearLayout textViewLayout = (LinearLayout) mInflater.inflate(R.layout.two_horizontal_textviews, parent, false);
+                    FontTextView labelTextView = (FontTextView) textViewLayout.findViewById(R.id.left_textview);
+                    FontTextView valueTextView = (FontTextView) textViewLayout.findViewById(R.id.right_textview);
+
                     LinearLayout ll = (LinearLayout) view.findViewById(R.id.textviewcontainer);
                     ll.addView(textViewLayout);
-                    views.add(textView);
+                    labelViews.add(labelTextView);
+                    valueViews.add(valueTextView);
                 }
             }
 
-            holder = new ViewHolder(views);
+            holder = new ViewHolder(labelViews, valueViews);
             view.setTag(holder);
         } else {
             view = convertView;
@@ -166,10 +172,12 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
     }
 
     private static class ViewHolder {
-        public final List<FontTextView> textViews;
+        final List<FontTextView> labelViews;
+        final List<FontTextView> valueViews;
 
-        private ViewHolder(List<FontTextView> textViews) {
-            this.textViews = textViews;
+        private ViewHolder(List<FontTextView> labelViews, List<FontTextView> valueViews) {
+            this.labelViews = labelViews;
+            this.valueViews = valueViews;
         }
 
         /**
@@ -177,11 +185,18 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
          * @param values
          */
         public void setData(List<TrackedEntityAttributeValue> values, Map<String,ProgramTrackedEntityAttribute> programTrackedEntityAttributeMap) {
-            for(FontTextView fontTextView: textViews) {
+            for(FontTextView fontTextView: labelViews) {
                 fontTextView.setText("");
             }
+            for(FontTextView fontTextView: valueViews) {
+                fontTextView.setText("");
+            }
+
             if(values!=null) {
-                for (int i = 0; i < values.size() && i < textViews.size(); i++) {
+                //sort teav by programtrackedentityattributes
+                Comparator<TrackedEntityAttributeValue> trackedEntityAttributeValueComparator = new TrackedEntityAttributeValueByIndexInProgramSorter(programTrackedEntityAttributeMap);
+                Collections.sort(values, trackedEntityAttributeValueComparator);
+                for (int i = 0; i < values.size() && i < labelViews.size(); i++) {
                     TrackedEntityAttributeValue teav = values.get(i);
                     if(teav != null) {
                         if(programTrackedEntityAttributeMap.containsKey(teav.getTrackedEntityAttributeId())) {
@@ -189,12 +204,11 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
 
                             StringBuilder builder = new StringBuilder();
                             builder.append(ptea.getTrackedEntityAttribute().getDisplayName());
-                            builder.append(textViews.get(i).getContext().getString(R.string.delimiter));
-                            builder.append(teav.getValue());
+                            builder.append(labelViews.get(i).getContext().getString(R.string.delimiter));
 
-                            textViews.get(i).setText(builder.toString());
+                            labelViews.get(i).setText(builder.toString());
+                            valueViews.get(i).setText(teav.getValue());
                         }
-
                     }
                 }
             }

@@ -37,7 +37,6 @@ import org.hisp.dhis.client.sdk.core.commons.ApiException;
 import org.hisp.dhis.client.sdk.ui.activities.AbsLoginActivity;
 import org.hisp.dhis.client.sdk.ui.bindings.App;
 import org.hisp.dhis.client.sdk.ui.bindings.R;
-import org.hisp.dhis.client.sdk.ui.bindings.commons.Inject;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.NavigationHandler;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.LoginPresenter;
 
@@ -49,7 +48,6 @@ public class DefaultLoginActivity extends AbsLoginActivity implements LoginView 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Inject.getUserComponent().inject(this);
         loginPresenter = App.from(getApplication()).getUserComponent().loginPresenter();
     }
 

@@ -143,9 +143,13 @@ class RuleEngineVariableValueMap {
                     if (allEventsToValuesMap.containsKey(variable.getDataElement().getUId())) {
                         List<TrackedEntityDataValue> valueList = allEventsToValuesMap.get(
                                 variable.getDataElement().getUId());
-                        TrackedEntityDataValue dataValue = valueList.get(valueList.size() - 1);
-                        valueFound = true;
-                        addProgramRuleVariableValueToMap(variable, dataValue, valueList, valueFound);
+
+                        if (!valueList.isEmpty()) {
+                            TrackedEntityDataValue dataValue = valueList.get(valueList.size() - 1);
+                            valueFound = true;
+
+                            addProgramRuleVariableValueToMap(variable, dataValue, valueList, valueFound);
+                        }
                     }
                     break;
                 }

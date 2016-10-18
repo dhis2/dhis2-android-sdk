@@ -25,12 +25,12 @@
 
         <ImageButton
             android:id="@+id/action_button"
-            style="@style/SelectableBackground"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/expand_collapse_button"
             android:alpha="0.54"
+            android:background="?android:selectableItemBackgroundBorderless"
             android:src="@drawable/ic_add_black" />
 
         <TextView

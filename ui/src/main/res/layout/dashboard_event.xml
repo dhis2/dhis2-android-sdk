@@ -24,7 +24,7 @@
             style="@style/ListItemErrorText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?android:selectableItemBackgroundBorderless"
+            android:background="?android:selectableItemBackground"
             android:paddingBottom="8dp"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"

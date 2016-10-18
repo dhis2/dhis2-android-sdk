@@ -60,6 +60,9 @@
         <item name="colorAccent">@color/color_accent_default</item>
     </style>
 
+    <style name="SelectableBackground">
+        <item name="android:background">?android:selectableItemBackground</item>
+    </style>
     <!-- Two line list as per https://material.google.com/components/lists.html#lists-specs -->
     <style name="TwoLineListItem">
         <item name="android:layout_width">match_parent</item>
@@ -81,7 +84,7 @@
         <item name="android:textSize">13sp</item>
     </style>
 
-    <style name="ListItemErrorText">
+    <style name="ListItemErrorText" parent="SelectableBackground">
         <item name="android:textColor">@color/color_accent_default</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textSize">14sp</item>

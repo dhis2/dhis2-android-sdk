@@ -33,8 +33,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
-    <style name="TransparentIconButton">
+    <style name="SelectableBackground">
         <item name="android:background">?android:selectableItemBackgroundBorderless</item>
-        <item name="android:padding">12dp</item>
     </style>
 </resources>

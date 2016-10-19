@@ -9,7 +9,7 @@ public abstract class FormEntity {
     private final String label;
     private final Object tag;
 
-    public FormEntity(String id, String label){
+    public FormEntity(String id, String label) {
         this(id, label, null);
     }
 
@@ -35,6 +35,6 @@ public abstract class FormEntity {
     public abstract Type getType();
 
     public enum Type {
-        EDITTEXT, CHECKBOX, COORDINATES, RADIO_BUTTONS, DATE, FILTER, TEXT
+        EDITTEXT, CHECKBOX, COORDINATES, RADIO_BUTTONS, DATE, FILTER, TEXT, EXPANSION_PANEL
     }
 }

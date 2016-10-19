@@ -3,7 +3,7 @@ package org.hisp.dhis.client.sdk.core.trackedentity;
 import android.content.ContentResolver;
 import android.database.Cursor;
 
-import org.hisp.dhis.client.sdk.core.commons.AbsDataStore;
+import org.hisp.dhis.client.sdk.core.commons.database.AbsDataStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueTable.TrackedEntityDataValueColumns;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
@@ -11,10 +11,9 @@ import java.util.List;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-public class TrackedEntityDataValueStoreImpl extends AbsDataStore<TrackedEntityDataValue> implements TrackedEntityDataValueStore {
+class TrackedEntityDataValueStoreImpl extends AbsDataStore<TrackedEntityDataValue> implements TrackedEntityDataValueStore {
 
-
-    public TrackedEntityDataValueStoreImpl(ContentResolver contentResolver) {
+    TrackedEntityDataValueStoreImpl(ContentResolver contentResolver) {
         super(contentResolver, new TrackedEntityDataValueMapper());
     }
 

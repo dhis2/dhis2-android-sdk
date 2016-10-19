@@ -2,8 +2,8 @@ package org.hisp.dhis.client.sdk.core.user;
 
 import android.net.Uri;
 
-import org.hisp.dhis.client.sdk.core.commons.DbContract;
-import org.hisp.dhis.client.sdk.core.commons.DbUtils;
+import org.hisp.dhis.client.sdk.core.commons.database.DbContract;
+import org.hisp.dhis.client.sdk.core.commons.database.DbUtils;
 import org.hisp.dhis.client.sdk.models.user.User;
 
 public interface UserTable {
@@ -29,6 +29,7 @@ public interface UserTable {
             UserColumns.COLUMN_DISPLAY_NAME,
             UserColumns.COLUMN_BODY
     };
+
     String CREATE_TABLE_USERS = "CREATE TABLE IF NOT EXISTS " +
             UserColumns.TABLE_NAME + " (" +
             UserColumns.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +

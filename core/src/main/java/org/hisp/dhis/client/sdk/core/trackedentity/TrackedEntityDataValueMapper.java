@@ -5,17 +5,17 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
-import org.hisp.dhis.client.sdk.core.commons.Mapper;
+import org.hisp.dhis.client.sdk.core.commons.database.Mapper;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueTable.TrackedEntityDataValueColumns;
 import org.hisp.dhis.client.sdk.models.common.State;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
-import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getInt;
-import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getString;
+import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getInt;
+import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getString;
 
-public class TrackedEntityDataValueMapper implements Mapper<TrackedEntityDataValue> {
+class TrackedEntityDataValueMapper implements Mapper<TrackedEntityDataValue> {
 
-    public TrackedEntityDataValueMapper() {
+    TrackedEntityDataValueMapper() {
         // explicit constructor
     }
 

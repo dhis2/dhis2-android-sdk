@@ -129,7 +129,7 @@ public class DefaultLoginActivity extends AbsLoginActivity implements LoginView 
 
     @Override
     public void navigateToHome() {
-        navigateTo(NavigationHandler.homeActivity());
+        // navigateTo(NavigationHandler.homeActivity());
     }
 
     private void showErrorDialog(String title, String message) {

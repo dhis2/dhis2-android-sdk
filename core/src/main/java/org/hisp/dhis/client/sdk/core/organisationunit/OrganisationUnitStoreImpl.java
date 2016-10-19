@@ -3,7 +3,7 @@ package org.hisp.dhis.client.sdk.core.organisationunit;
 import android.content.ContentResolver;
 import android.database.Cursor;
 
-import org.hisp.dhis.client.sdk.core.commons.AbsIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.commons.database.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitTable.OrganisationUnitColumns;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 

@@ -50,22 +50,10 @@ android {
     lintOptions {
         abortOnError false
     }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
 }
 
 dependencies {
     compile project(":models")
-
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    // androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-    //  exclude group: 'com.android.support', module: 'support-annotations'
-    // }
 
     // Android
     compile "com.android.support:appcompat-v7:${libs.supportVersion}"
@@ -73,6 +61,7 @@ dependencies {
     // Square
     compile "com.squareup.retrofit2:retrofit:${libs.retrofitVersion}"
     compile "com.squareup.retrofit2:converter-jackson:${libs.retrofitVersion}"
+
     compile "com.squareup.okhttp3:okhttp:${libs.okhttpVersion}"
     compile "com.squareup.okhttp3:logging-interceptor:${libs.okhttpVersion}"
 }

@@ -3,7 +3,7 @@ package org.hisp.dhis.client.sdk.core.option;
 import android.content.ContentResolver;
 import android.net.Uri;
 
-import org.hisp.dhis.client.sdk.core.commons.DbContract;
+import org.hisp.dhis.client.sdk.core.commons.database.DbContract;
 
 public interface OptionSetTable {
     interface OptionSetColumns extends DbContract.IdColumn, DbContract.IdentifiableColumns, DbContract.VersionColumn, DbContract.BodyColumn {

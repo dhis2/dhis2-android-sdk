@@ -36,73 +36,44 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.client.sdk.core.commons.BasicAuthenticator;
 import org.hisp.dhis.client.sdk.core.commons.ServerUrlPreferences;
-import org.hisp.dhis.client.sdk.core.event.EventApi;
+import org.hisp.dhis.client.sdk.core.commons.ServerUrlPreferencesImpl;
+import org.hisp.dhis.client.sdk.core.event.EventFactory;
 import org.hisp.dhis.client.sdk.core.event.EventInteractor;
-import org.hisp.dhis.client.sdk.core.event.EventInteractorImpl;
-import org.hisp.dhis.client.sdk.core.event.EventStore;
-import org.hisp.dhis.client.sdk.core.event.EventStoreImpl;
-import org.hisp.dhis.client.sdk.core.option.OptionSetApi;
+import org.hisp.dhis.client.sdk.core.option.OptionFactory;
 import org.hisp.dhis.client.sdk.core.option.OptionSetInteractor;
-import org.hisp.dhis.client.sdk.core.option.OptionSetInteractorImpl;
-import org.hisp.dhis.client.sdk.core.option.OptionSetStore;
-import org.hisp.dhis.client.sdk.core.option.OptionSetStoreImpl;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitFactory;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitInteractor;
-import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitInteractorImpl;
-import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitStore;
-import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitStoreImpl;
+import org.hisp.dhis.client.sdk.core.program.ProgramFactory;
 import org.hisp.dhis.client.sdk.core.program.ProgramInteractor;
-import org.hisp.dhis.client.sdk.core.program.ProgramInteractorImpl;
-import org.hisp.dhis.client.sdk.core.program.ProgramStore;
-import org.hisp.dhis.client.sdk.core.program.ProgramStoreImpl;
-import org.hisp.dhis.client.sdk.core.program.ProgramsApi;
-import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityApi;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueInteractor;
-import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueInteractorImpl;
-import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueStore;
-import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityFactory;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInteractor;
-import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInteractorImpl;
-import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityStore;
-import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityStoreImpl;
+import org.hisp.dhis.client.sdk.core.user.UserFactory;
 import org.hisp.dhis.client.sdk.core.user.UserInteractor;
-import org.hisp.dhis.client.sdk.core.user.UserInteractorImpl;
 import org.hisp.dhis.client.sdk.core.user.UserPreferences;
-import org.hisp.dhis.client.sdk.core.user.UserStore;
-import org.hisp.dhis.client.sdk.core.user.UserStoreImpl;
-import org.hisp.dhis.client.sdk.core.user.UsersApi;
 import org.hisp.dhis.client.sdk.utils.StringUtils;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.HttpUrl;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-public class D2 {
+public final class D2 {
     // context
     private final Application application;
 
     // persistence
+    private final UserPreferences userPreferences;
     private final ServerUrlPreferences serverUrlPreferences;
     private final ContentResolver contentResolver;
 
     // retrofit dependencies
     private final ObjectMapper objectMapper;
     private final OkHttpClient okHttpClient;
-    private final Executor executor;
     private final Retrofit retrofit;
-
-    // true if valid server URL is set to D2
-    private final boolean isConfigured;
-
-    public static void init(Application application) {
-        isNull(application, "Application must not be null");
-    }
 
     // interactors which will be exposed to client applications
     private final UserInteractor userInteractor;
@@ -118,108 +89,39 @@ public class D2 {
         return new D2.Builder(application);
     }
 
-    public D2.Builder configure(HttpUrl okBaseUrl) {
-        isNull(okBaseUrl, "Base URL must not be null");
-        return configure(okBaseUrl.toString());
-    }
-
-    public D2.Builder configure(String baseUrl) {
-        isNull(baseUrl, "Base URL must not be null");
-
-        if (isConfigured()) {
-            throw new IllegalStateException("D2 has been already configured");
-        }
-
-        String url = baseUrl.endsWith("/") ? baseUrl.concat("api/") : baseUrl.concat("/api/");
-        serverUrlPreferences.save(url);
-
-        // re-instantiate D2 with new URL set
-        return new D2.Builder(this);
-    }
-
-    private D2(Application app, ObjectMapper mapper, OkHttpClient client, Executor executor) {
-        // retrieve server url
-        ServerUrlPreferences urlPreferences = new ServerUrlPreferences(app);
-        String serverUrl = urlPreferences.get();
-
-        this.isConfigured = !StringUtils.isEmpty(serverUrl);
-        this.application = app;
+    // injecting dependencies through constructor by hand, in order to make code testable
+    D2(Application application, ContentResolver contentResolver, UserPreferences userPreferences,
+            ServerUrlPreferences serverUrlPreferences, ObjectMapper objectMapper,
+            OkHttpClient okHttpClient, Retrofit retrofit, UserInteractor userInteractor,
+            ProgramInteractor programInteractor, OptionSetInteractor optionSetInteractor,
+            TrackedEntityInteractor trackedEntityInteractor, EventInteractor eventInteractor,
+            OrganisationUnitInteractor organisationUnitInteractor,
+            TrackedEntityDataValueInteractor trackedEntityDataValueInteractor) {
+        this.application = application;
 
         // persistence
-        this.contentResolver = app.getContentResolver();
-        this.serverUrlPreferences = urlPreferences;
+        this.userPreferences = userPreferences;
+        this.serverUrlPreferences = serverUrlPreferences;
+        this.contentResolver = contentResolver;
 
         // retrofit
-        this.objectMapper = mapper;
-        this.okHttpClient = client;
-        this.executor = executor;
-
-        Retrofit retrofit = null;
-        if (isConfigured) {
-            Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
-                    .baseUrl(serverUrl)
-                    .addConverterFactory(JacksonConverterFactory.create(objectMapper))
-                    .client(client);
-
-            if (executor != null) {
-                retrofitBuilder = retrofitBuilder.callbackExecutor(executor);
-            }
-
-            retrofit = retrofitBuilder.build();
-        }
-
-        // can be null in case if D2 is not configured
+        this.objectMapper = objectMapper;
+        this.okHttpClient = okHttpClient;
         this.retrofit = retrofit;
 
-        // constructing interactors
-        if (retrofit != null) {
-            // user interactor
-            UserStore userStore = new UserStoreImpl(contentResolver, objectMapper);
-            UsersApi usersApi = retrofit.create(UsersApi.class);
-            userInteractor = new UserInteractorImpl(null, usersApi, userStore, null);
-
-            // program interactor
-            ProgramsApi programsApi = retrofit.create(ProgramsApi.class);
-            MetadataApi metadataApi = retrofit.create(MetadataApi.class);
-            ProgramStore programStore = new ProgramStoreImpl(contentResolver, objectMapper);
-            programInteractor = new ProgramInteractorImpl(programsApi, programStore, metadataApi);
-
-            // option set interactor
-            OptionSetStore optionSetStore = new OptionSetStoreImpl(contentResolver, objectMapper);
-            OptionSetApi optionSetApi = retrofit.create(OptionSetApi.class);
-            optionSetInteractor = new OptionSetInteractorImpl(optionSetStore, optionSetApi);
-
-            // tracked entities
-            TrackedEntityApi trackedEntityApi = retrofit.create(TrackedEntityApi.class);
-            TrackedEntityStore trackedEntityStore = new TrackedEntityStoreImpl(contentResolver);
-            trackedEntityInteractor = new TrackedEntityInteractorImpl(
-                    trackedEntityStore, trackedEntityApi);
-
-            // events
-            EventStore eventStore = new EventStoreImpl(contentResolver);
-            EventApi eventApi = retrofit.create(EventApi.class);
-            eventInteractor = new EventInteractorImpl(eventStore, eventApi);
-
-            // organisation units
-            OrganisationUnitStore organisationUnitStore =
-                    new OrganisationUnitStoreImpl(contentResolver);
-            organisationUnitInteractor = new OrganisationUnitInteractorImpl(organisationUnitStore);
-
-            // tracked entity data values
-            TrackedEntityDataValueStore trackedEntityDataValueStore =
-                    new TrackedEntityDataValueStoreImpl(contentResolver);
-            trackedEntityDataValueInteractor =
-                    new TrackedEntityDataValueInteractorImpl(trackedEntityDataValueStore);
-        } else {
-            userInteractor = null;
-            programInteractor = null;
-            optionSetInteractor = null;
-            trackedEntityInteractor = null;
-            trackedEntityDataValueInteractor = null;
-            eventInteractor = null;
-            organisationUnitInteractor = null;
-        }
+        // interactors
+        this.userInteractor = userInteractor;
+        this.programInteractor = programInteractor;
+        this.optionSetInteractor = optionSetInteractor;
+        this.trackedEntityInteractor = trackedEntityInteractor;
+        this.eventInteractor = eventInteractor;
+        this.organisationUnitInteractor = organisationUnitInteractor;
+        this.trackedEntityDataValueInteractor = trackedEntityDataValueInteractor;
     }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // Getters for internal dependencies
+    ////////////////////////////////////////////////////////////////////////////////
 
     public Application application() {
         return application;
@@ -227,10 +129,6 @@ public class D2 {
 
     public OkHttpClient okHttpClient() {
         return okHttpClient;
-    }
-
-    public Executor executor() {
-        return executor;
     }
 
     public Retrofit retrofit() {
@@ -241,23 +139,28 @@ public class D2 {
         return objectMapper;
     }
 
-    public EventInteractor events() {
-        return eventInteractor;
+    public ContentResolver contentResolver() {
+        return contentResolver;
     }
 
-    /**
-     * @return true if D2 is configured with valid URL pointing to DHIS2 instance
-     */
-    public boolean isConfigured() {
-        return isConfigured;
+    ////////////////////////////////////////////////////////////////////////////////
+    // Getters for properties like server url, username, etc
+    ////////////////////////////////////////////////////////////////////////////////
+
+    public String serverUrl() {
+        return serverUrlPreferences.get();
     }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // Getters for interactors
+    ////////////////////////////////////////////////////////////////////////////////
 
     public UserInteractor me() {
         return userInteractor;
     }
 
-    public OrganisationUnitInteractor organisationUnits() {
-        return organisationUnitInteractor;
+    public EventInteractor events() {
+        return eventInteractor;
     }
 
     public ProgramInteractor programs() {
@@ -272,6 +175,10 @@ public class D2 {
         return trackedEntityInteractor;
     }
 
+    public OrganisationUnitInteractor organisationUnits() {
+        return organisationUnitInteractor;
+    }
+
     public TrackedEntityDataValueInteractor trackedEntityDataValues() {
         return trackedEntityDataValueInteractor;
     }
@@ -282,65 +189,85 @@ public class D2 {
         private static final int DEFAULT_WRITE_TIMEOUT_MILLIS = 20 * 1000;     // 20s
 
         private final Application application;
-
-        // builder which can be used to set custom interceptors
-        private final OkHttpClient.Builder clientBuilder;
-
-        private ObjectMapper objectMapper;
-        private Executor executor;
-
-        Builder(D2 d2) {
-            this.application = d2.application();
-            this.clientBuilder = d2.okHttpClient().newBuilder();
-            this.objectMapper = d2.objectMapper();
-            this.executor = d2.executor();
-        }
+        private final ServerUrlPreferences serverUrlPreferences;
 
         Builder(Application application) {
             this.application = isNull(application, "Application must not be null");
+            this.serverUrlPreferences = new ServerUrlPreferencesImpl(application);
+        }
 
-            // constructing default jackson's object mapper
-            this.objectMapper = new ObjectMapper();
-            this.objectMapper.disable(MapperFeature.AUTO_DETECT_CREATORS,
+        public Builder baseUrl(String baseUrl) {
+            isNull(baseUrl, "Base URL must not be null");
+
+//            String existingServerUrl = serverUrlPreferences.get();
+//            if (!StringUtils.isEmpty(existingServerUrl)) {
+//                throw new IllegalStateException("D2 has been already configured");
+//            }
+
+            String url = baseUrl.endsWith("/") ? baseUrl.concat("api/") : baseUrl.concat("/api/");
+            serverUrlPreferences.save(url);
+
+            return this;
+        }
+
+        public D2 build() {
+            ContentResolver contentResolver = application.getContentResolver();
+
+            // user preferences
+            UserPreferences userPreferences = UserFactory.create(application);
+
+            // basic authentication handler
+            BasicAuthenticator basicAuthenticator = new BasicAuthenticator(userPreferences);
+
+            // jackson's object mapper
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.disable(MapperFeature.AUTO_DETECT_CREATORS,
                     MapperFeature.AUTO_DETECT_FIELDS,
                     MapperFeature.AUTO_DETECT_GETTERS,
                     MapperFeature.AUTO_DETECT_IS_GETTERS,
                     MapperFeature.AUTO_DETECT_SETTERS);
 
-            // user preferences
-            UserPreferences userPreferences = new UserPreferences(application);
-
-            // basic authentication handler
-            BasicAuthenticator basicAuthenticator = new BasicAuthenticator(userPreferences);
-
-            // constructing default version of OkHttp client
-            this.clientBuilder = new OkHttpClient.Builder()
+            // default OkHttp client implementation
+            OkHttpClient okHttpClient = new OkHttpClient.Builder()
                     .addInterceptor(basicAuthenticator)
                     .connectTimeout(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
                     .writeTimeout(DEFAULT_WRITE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
-                    .readTimeout(DEFAULT_READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-        }
+                    .readTimeout(DEFAULT_READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
+                    .build();
 
-        public Builder objectMapper(ObjectMapper objectMapper) {
-            this.objectMapper = isNull(objectMapper, "ObjectMapper must not be null");
-            return this;
-        }
+            // if server url is absent, we cannot construct retrofit
+            Retrofit retrofit = null;
 
-        public Builder interceptor(Interceptor interceptor) {
-            isNull(interceptor, "interceptor must not be null");
+            // extracting server url
+            String serverUrl = serverUrlPreferences.get();
+            if (!StringUtils.isEmpty(serverUrl)) {
+                retrofit = new Retrofit.Builder()
+                        .baseUrl(serverUrl)
+                        .addConverterFactory(JacksonConverterFactory.create(objectMapper))
+                        .client(okHttpClient)
+                        .build();
+            }
 
-            clientBuilder.addInterceptor(interceptor);
-            return this;
-        }
+            // interactors
+            UserInteractor userInteractor = retrofit != null ? UserFactory.create(
+                    userPreferences, retrofit, contentResolver, objectMapper) : null;
+            ProgramInteractor programInteractor = retrofit != null ? ProgramFactory.create(
+                    retrofit, contentResolver, objectMapper) : null;
+            OptionSetInteractor optionSetInteractor = retrofit != null ? OptionFactory.create(
+                    retrofit, contentResolver, objectMapper) : null;
+            TrackedEntityInteractor trackedEntityInteractor = retrofit != null ?
+                    TrackedEntityFactory.create(retrofit, contentResolver) : null;
+            EventInteractor eventInteractor = retrofit != null ? EventFactory.create(
+                    retrofit, contentResolver) : null;
+            OrganisationUnitInteractor organisationUnitInteractor = retrofit != null ?
+                    OrganisationUnitFactory.create(contentResolver) : null;
+            TrackedEntityDataValueInteractor dataValueInteractor = retrofit != null ?
+                    TrackedEntityFactory.create(contentResolver) : null;
 
-        public Builder callbackExecutor(Executor executor) {
-            this.executor = executor;
-            return this;
-        }
-
-        public D2 build() {
-            OkHttpClient okHttpClient = clientBuilder.build();
-            return new D2(application, objectMapper, okHttpClient, executor);
+            return new D2(application, contentResolver, userPreferences, serverUrlPreferences,
+                    objectMapper, okHttpClient, retrofit, userInteractor, programInteractor,
+                    optionSetInteractor, trackedEntityInteractor, eventInteractor,
+                    organisationUnitInteractor, dataValueInteractor);
         }
     }
 }

@@ -36,7 +36,7 @@ import android.net.Uri;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.hisp.dhis.client.sdk.core.commons.Mapper;
+import org.hisp.dhis.client.sdk.core.commons.database.Mapper;
 import org.hisp.dhis.client.sdk.core.option.OptionSetTable.OptionSetColumns;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.option.OptionSet;
@@ -44,14 +44,13 @@ import org.hisp.dhis.client.sdk.models.option.OptionSet;
 import java.io.IOException;
 import java.text.ParseException;
 
-import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getInt;
-import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getString;
+import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getInt;
+import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getString;
 
-public class OptionSetMapper implements Mapper<OptionSet> {
-
+class OptionSetMapper implements Mapper<OptionSet> {
     private final ObjectMapper objectMapper;
 
-    public OptionSetMapper(ObjectMapper objectMapper) {
+    OptionSetMapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 

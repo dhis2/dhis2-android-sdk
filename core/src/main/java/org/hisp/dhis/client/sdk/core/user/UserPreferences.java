@@ -28,88 +28,20 @@
 
 package org.hisp.dhis.client.sdk.core.user;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+public interface UserPreferences {
+    boolean confirmUser();
 
-import static android.text.TextUtils.isEmpty;
-import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
+    boolean invalidateUser();
 
-public class UserPreferences {
-    private static final String USER_CREDENTIALS = "preferences:userCredentials";
-    private static final String USERNAME = "key:username";
-    private static final String PASSWORD = "key:password";
-    private static final String USER_STATE = "key:userState";
+    boolean isUserConfirmed();
 
-    private final SharedPreferences mPrefs;
+    boolean isUserInvalidated();
 
-    public UserPreferences(Context context) {
-        mPrefs = context.getSharedPreferences(USER_CREDENTIALS, Context.MODE_PRIVATE);
-    }
+    boolean save(String username, String password);
 
-    public synchronized boolean save(String username, String password) {
-        isNull(username, "username must not be null");
-        isNull(password, "password must not be null");
+    boolean clear();
 
-        putString(USERNAME, username);
-        putString(PASSWORD, password);
+    String getUsername();
 
-        return true;
-    }
-
-    public boolean confirmUser() {
-        return hasUserCredentials() && setUserState(UserState.CONFIRMED);
-    }
-
-    public boolean isUserConfirmed() {
-        return hasUserCredentials() && UserState.CONFIRMED.equals(getUserState());
-    }
-
-    public synchronized boolean invalidateUser() {
-        return hasUserCredentials() && isUserConfirmed() && setUserState(UserState.INVALIDATED);
-    }
-
-    public synchronized boolean isUserInvalidated() {
-        return hasUserCredentials() && UserState.INVALIDATED.equals(getUserState());
-    }
-
-    public synchronized boolean clear() {
-        return mPrefs.edit().clear().commit();
-    }
-
-    public synchronized String getUsername() {
-        return getString(USERNAME);
-    }
-
-    public synchronized String getPassword() {
-        return getString(PASSWORD);
-    }
-
-    private boolean hasUserCredentials() {
-        return !isEmpty(getUsername()) && !isEmpty(getPassword());
-    }
-
-    private boolean setUserState(UserState userState) {
-        return putString(USER_STATE, userState.toString());
-    }
-
-    private UserState getUserState() {
-        String stateString = getString(USER_STATE, UserState.NO_USER.toString());
-        return UserState.valueOf(stateString);
-    }
-
-    private boolean putString(String key, String value) {
-        return mPrefs.edit().putString(key, value).commit();
-    }
-
-    private String getString(String key) {
-        return mPrefs.getString(key, null);
-    }
-
-    private String getString(String key, String def) {
-        return mPrefs.getString(key, def);
-    }
-
-    private enum UserState {
-        NO_USER, CONFIRMED, INVALIDATED,
-    }
+    String getPassword();
 }

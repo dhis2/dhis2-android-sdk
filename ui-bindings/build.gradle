@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
 
 def cfg = rootProject.ext.configuration
 def libs = rootProject.ext.libraries
@@ -24,13 +23,6 @@ android {
     lintOptions {
         abortOnError false
     }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
 }
 
 dependencies {
@@ -41,7 +33,4 @@ dependencies {
 
     // ReactiveX
     compile "io.reactivex:rxandroid:${libs.rxAndroidVersion}";
-
-    // Square dependencies
-    // compile "com.squareup.okhttp3:logging-interceptor:${libs.okhttpVersion}"
 }

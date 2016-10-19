@@ -31,18 +31,15 @@ package org.hisp.dhis.client.sdk.core.user;
 import org.hisp.dhis.client.sdk.core.commons.Task;
 import org.hisp.dhis.client.sdk.models.user.User;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class UserInteractorImpl implements UserInteractor{
-    private final Executor callbackExecutor;
+class UserInteractorImpl implements UserInteractor {
     private final UserStore userStore;
     private final UsersApi usersApi;
     private final UserPreferences userPreferences;
 
-    public UserInteractorImpl(Executor callbackExecutor, UsersApi usersApi,
-                          UserStore userStore, UserPreferences userPreferences) {
-        this.callbackExecutor = callbackExecutor;
+    public UserInteractorImpl(UsersApi usersApi,
+            UserStore userStore, UserPreferences userPreferences) {
         this.userStore = userStore;
         this.usersApi = usersApi;
         this.userPreferences = userPreferences;
@@ -71,7 +68,7 @@ public class UserInteractorImpl implements UserInteractor{
     @Override
     public Task<User> logIn(String username, String password) {
         return new UserLoginTask(Executors.newCachedThreadPool(),
-                callbackExecutor, username, password, usersApi, userStore, userPreferences);
+                null, username, password, usersApi, userStore, userPreferences);
     }
 
     @Override

@@ -58,7 +58,7 @@ public class LoginPresenterImpl implements LoginPresenter, LoginPresenter.OnLogi
     private LoginView loginView;
 
     public LoginPresenterImpl(UserInteractor userAccountInteractor,
-                              ApiExceptionHandler apiExceptionHandler, Logger logger) {
+            ApiExceptionHandler apiExceptionHandler, Logger logger) {
         this.userAccountInteractor = userAccountInteractor;
         this.subscription = new CompositeSubscription();
         this.apiExceptionHandler = apiExceptionHandler;
@@ -81,8 +81,8 @@ public class LoginPresenterImpl implements LoginPresenter, LoginPresenter.OnLogi
     }
 
     @Override
-    public void validateCredentials(final String serverUrl, final String username,
-                                    final String password) {
+    public void validateCredentials(final String serverUrl,
+            final String username, final String password) {
         loginView.showProgress();
 
         subscription.add(RxUtils.single(userAccountInteractor.logIn(username, password))
@@ -159,7 +159,7 @@ public class LoginPresenterImpl implements LoginPresenter, LoginPresenter.OnLogi
                     }
                 }
             } else if (throwable.getCause() instanceof MalformedURLException) {
-                //handle the case where the url was malformed and
+                // handle the case where the url was malformed and
                 onServerError(error);
             }
         } else {

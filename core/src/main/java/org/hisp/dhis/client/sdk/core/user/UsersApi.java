@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.client.sdk.core.user;
 
+import android.support.annotation.Nullable;
+
 import org.hisp.dhis.client.sdk.models.user.User;
 
 import java.util.Map;
@@ -39,5 +41,8 @@ import retrofit2.http.QueryMap;
 public interface UsersApi {
 
     @GET("me")
-    Call<User> me(@QueryMap Map<String, String> queryMap);
+    Call<User> me();
+
+    @GET("me")
+    Call<User> me(@Nullable @QueryMap Map<String, String> queryMap);
 }

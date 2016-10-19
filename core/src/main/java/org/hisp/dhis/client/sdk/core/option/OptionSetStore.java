@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.option;
 
-import org.hisp.dhis.client.sdk.core.commons.IdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.commons.database.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.option.OptionSet;
 
 public interface OptionSetStore extends IdentifiableObjectStore<OptionSet> {

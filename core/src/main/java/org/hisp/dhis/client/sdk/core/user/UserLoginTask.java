@@ -32,6 +32,8 @@ import org.hisp.dhis.client.sdk.core.commons.AbsTask;
 import org.hisp.dhis.client.sdk.models.user.User;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executor;
 
 import retrofit2.Call;
@@ -49,7 +51,7 @@ class UserLoginTask extends AbsTask<User> {
     private Call<User> userCall;
 
     UserLoginTask(Executor executor, Executor callbackExecutor, String username, String password,
-                  UsersApi usersApi, UserStore userStore, UserPreferences preferences) {
+            UsersApi usersApi, UserStore userStore, UserPreferences preferences) {
         super(executor, callbackExecutor);
 
         this.username = username;
@@ -75,9 +77,13 @@ class UserLoginTask extends AbsTask<User> {
             // used by authentication interceptor
             userPreferences.save(username, password);
 
+            // query parameters
+            Map<String, String> query = new HashMap<>();
+            query.put("fields", "id,displayName");
+
             // call /api/me/ endpoint in order to make
             // sure that credentials are correct
-            userCall = usersApi.me(null);
+            userCall = usersApi.me(query);
             Response<User> userResponse = userCall.execute();
 
             if (userResponse != null && userResponse.isSuccessful()) {

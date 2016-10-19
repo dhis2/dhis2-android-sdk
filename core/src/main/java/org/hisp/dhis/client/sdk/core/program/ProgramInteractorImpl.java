@@ -30,7 +30,7 @@ package org.hisp.dhis.client.sdk.core.program;
 
 import org.hisp.dhis.client.sdk.core.MetadataApi;
 
-public class ProgramInteractorImpl implements ProgramInteractor {
+class ProgramInteractorImpl implements ProgramInteractor {
     private final ProgramStore programStore;
     private final ProgramsApi programsApi;
     private final MetadataApi metadataApi;

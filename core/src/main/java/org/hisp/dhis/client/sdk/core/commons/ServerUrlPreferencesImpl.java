@@ -28,5 +28,43 @@
 
 package org.hisp.dhis.client.sdk.core.commons;
 
-public class ChangeableBaseUrl {
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
+
+public class ServerUrlPreferencesImpl implements ServerUrlPreferences {
+    private static final String SERVER_URL_PREFERENCES = "preferences:serverUrlPreferences";
+    private static final String SERVER_URL_KEY = "key:serverUrl";
+
+    private final SharedPreferences preferences;
+
+    public ServerUrlPreferencesImpl(Context context) {
+        preferences = context.getSharedPreferences(SERVER_URL_PREFERENCES, Context.MODE_PRIVATE);
+    }
+
+    @Override
+    public boolean save(@NonNull String serverUrl) {
+        isNull(serverUrl, "Server URL must not be null");
+        return putString(SERVER_URL_KEY, serverUrl);
+    }
+
+    @Override
+    public String get() {
+        return getString(SERVER_URL_KEY);
+    }
+
+    @Override
+    public boolean clear() {
+        return preferences.edit().clear().commit();
+    }
+
+    private boolean putString(String key, String value) {
+        return preferences.edit().putString(key, value).commit();
+    }
+
+    private String getString(String key) {
+        return preferences.getString(key, null);
+    }
 }

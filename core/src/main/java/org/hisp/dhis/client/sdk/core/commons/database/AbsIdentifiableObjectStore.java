@@ -26,39 +26,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.commons;
+package org.hisp.dhis.client.sdk.core.commons.database;
 
-import org.hisp.dhis.client.sdk.models.common.Model;
+import android.content.ContentResolver;
+import android.database.Cursor;
 
-import java.util.List;
+import org.hisp.dhis.client.sdk.core.commons.database.DbContract.IdentifiableColumns;
+import org.hisp.dhis.client.sdk.models.common.IdentifiableObject;
 
-public interface Store<T extends Model> {
+public class AbsIdentifiableObjectStore<T extends IdentifiableObject> extends AbsStore<T> implements IdentifiableObjectStore<T> {
+    public AbsIdentifiableObjectStore(ContentResolver contentResolver, Mapper<T> mapper) {
+        super(contentResolver, mapper);
+    }
 
-    boolean insert(T object);
+    @Override
+    public T queryByUid(String uid) {
+        if (uid == null) {
+            throw new IllegalArgumentException("uid must not be null");
+        }
 
-    boolean insert(List<T> objects);
+        final String[] selectionArgs = new String[]{uid};
+        final String selection = IdentifiableColumns.COLUMN_UID + " = ?";
 
-    boolean update(T object);
+        Cursor cursor = contentResolver.query(mapper.getContentUri(),
+                mapper.getProjection(), selection, selectionArgs, null);
+        return toModel(cursor);
+    }
 
-    boolean update(List<T> objects);
+    @Override
+    public T queryByCode(String code) {
+        if (code == null) {
+            throw new IllegalArgumentException("code must not be null");
+        }
 
-    boolean save(T object);
+        final String[] selectionArgs = new String[]{code};
+        final String selection = IdentifiableColumns.COLUMN_CODE + " = ?";
 
-    boolean save(List<T> objects);
-
-    /**
-     * @return int The number of rows deleted.
-     */
-    int delete(T object);
-
-    /**
-     * @return int The number of rows deleted.
-     */
-    int deleteAll();
-
-    boolean delete(List<T> objects);
-
-    T queryById(long id);
-
-    List<T> queryAll();
+        Cursor cursor = contentResolver.query(mapper.getContentUri(),
+                mapper.getProjection(), selection, selectionArgs, null);
+        return toModel(cursor);
+    }
 }

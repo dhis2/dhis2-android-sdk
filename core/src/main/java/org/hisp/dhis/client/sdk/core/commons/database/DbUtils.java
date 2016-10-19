@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.commons;
+package org.hisp.dhis.client.sdk.core.commons.database;
 
 import android.content.ContentResolver;
 import android.database.Cursor;

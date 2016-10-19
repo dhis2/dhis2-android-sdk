@@ -33,7 +33,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
-import org.hisp.dhis.client.sdk.core.commons.Mapper;
+import org.hisp.dhis.client.sdk.core.commons.database.Mapper;
 import org.hisp.dhis.client.sdk.core.event.EventTable.EventColumns;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.Coordinates;
@@ -43,13 +43,13 @@ import org.hisp.dhis.client.sdk.models.event.EventStatus;
 
 import java.text.ParseException;
 
-import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getDouble;
-import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getInt;
-import static org.hisp.dhis.client.sdk.core.commons.DbUtils.getString;
+import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getDouble;
+import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getInt;
+import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getString;
 
-public class EventMapper implements Mapper<Event> {
+class EventMapper implements Mapper<Event> {
 
-    public EventMapper() {
+    EventMapper() {
         // explicit constructor
     }
 

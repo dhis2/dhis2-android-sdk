@@ -1,9 +1,9 @@
-package org.hisp.dhis.client.sdk.core.commons;
+package org.hisp.dhis.client.sdk.core.commons.database;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
 
-import org.hisp.dhis.client.sdk.core.commons.DbContract.StateColumn;
+import org.hisp.dhis.client.sdk.core.commons.database.DbContract.StateColumn;
 import org.hisp.dhis.client.sdk.models.common.DataModel;
 import org.hisp.dhis.client.sdk.models.common.Model;
 import org.hisp.dhis.client.sdk.models.common.State;

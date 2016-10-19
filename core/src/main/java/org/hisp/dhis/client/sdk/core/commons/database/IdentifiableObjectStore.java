@@ -26,51 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.commons;
+package org.hisp.dhis.client.sdk.core.commons.database;
 
-import android.net.Uri;
+import org.hisp.dhis.client.sdk.models.common.IdentifiableObject;
 
-public interface DbContract {
-    String AUTHORITY = "org.hisp.dhis.client.sdk.core";
-    Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+public interface IdentifiableObjectStore<T extends IdentifiableObject> extends Store<T> {
+    T queryByUid(String uid);
 
-    interface VersionColumn {
-        String COLUMN_VERSION = "version";
-    }
-
-    interface IdColumn {
-        String COLUMN_ID = "id";
-    }
-
-    interface TimeStampColumns {
-        String COLUMN_CREATED = "created";
-        String COLUMN_LAST_UPDATED = "lastUpdated";
-    }
-
-    interface IdentifiableColumns extends IdColumn, TimeStampColumns {
-        String COLUMN_UID = "uid";
-        String COLUMN_CODE = "code";
-        String COLUMN_NAME = "name";
-        String COLUMN_DISPLAY_NAME = "displayName";
-    }
-
-    interface NameableColumns extends IdentifiableColumns {
-        String COLUMN_SHORT_NAME = "shortName";
-        String COLUMN_DESCRIPTION = "description";
-        String COLUMN_DISPLAY_SHORT_NAME = "displayShortName";
-        String COLUMN_DISPLAY_DESCRIPTION = "displayDescription";
-    }
-
-    interface CoordinatesColumn {
-        String COLUMN_LONGITUDE = "longitude";
-        String COLUMN_LATITUDE = "latitude";
-    }
-
-    interface BodyColumn {
-        String COLUMN_BODY = "body";
-    }
-
-    interface StateColumn {
-        String COLUMN_STATE = "state";
-    }
+    T queryByCode(String code);
 }

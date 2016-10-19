@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.commons.IdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.commons.database.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramType;
 

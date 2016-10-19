@@ -33,14 +33,14 @@ import android.database.Cursor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.hisp.dhis.client.sdk.core.commons.AbsIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.commons.database.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.program.ProgramTable.ProgramColumns;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramType;
 
 import java.util.List;
 
-public class ProgramStoreImpl extends AbsIdentifiableObjectStore<Program> implements ProgramStore {
+class ProgramStoreImpl extends AbsIdentifiableObjectStore<Program> implements ProgramStore {
 
     public ProgramStoreImpl(ContentResolver contentResolver, ObjectMapper objectMapper) {
         super(contentResolver, new ProgramMapper(objectMapper));

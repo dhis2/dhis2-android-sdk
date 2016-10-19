@@ -2,8 +2,8 @@ package org.hisp.dhis.client.sdk.core.organisationunit;
 
 import android.net.Uri;
 
-import org.hisp.dhis.client.sdk.core.commons.DbContract;
-import org.hisp.dhis.client.sdk.core.commons.DbUtils;
+import org.hisp.dhis.client.sdk.core.commons.database.DbContract;
+import org.hisp.dhis.client.sdk.core.commons.database.DbUtils;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
 public interface OrganisationUnitTable {

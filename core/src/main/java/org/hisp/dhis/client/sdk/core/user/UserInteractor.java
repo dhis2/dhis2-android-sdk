@@ -45,5 +45,4 @@ public interface UserInteractor {
     Object logOut();
 
     boolean isLoggedIn();
-
 }

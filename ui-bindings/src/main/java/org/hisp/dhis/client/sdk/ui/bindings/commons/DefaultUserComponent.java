@@ -28,23 +28,29 @@ public final class DefaultUserComponent implements UserComponent {
     private final SettingsPresenter settingsPresenter;
 
     public DefaultUserComponent(AppComponent appComponent) {
-        this(appComponent, provideSdkInstance(appComponent));
+        this(appComponent, provideSdkInstance(appComponent).build());
     }
 
     public DefaultUserComponent(AppComponent appComponent, String serverUrl) {
-        this(appComponent, provideSdkInstance(appComponent)
-                .configure(serverUrl).build());
+        this(appComponent, provideSdkInstance(appComponent).baseUrl(serverUrl).build());
     }
 
     private DefaultUserComponent(AppComponent appComponent, D2 sdkInstance) {
         isNull(appComponent, "AppComponent must not be null");
-        this.sdkInstance = sdkInstance;
 
+        this.sdkInstance = sdkInstance;
         this.launcherPresenter = new LauncherPresenterImpl(sdkInstance.me());
         this.loginPresenter = new LoginPresenterImpl(sdkInstance.me(), null, appComponent.logger());
-        this.homePresenter = new HomePresenterImpl(sdkInstance.me(), null, appComponent.logger());
-        this.profilePresenter = new ProfilePresenterImpl(sdkInstance.me(), null, null, null, null);
-        this.settingsPresenter = new SettingsPresenterImpl(null, null);
+
+        if (sdkInstance.me() != null) {
+            this.homePresenter = new HomePresenterImpl(sdkInstance.me(), null, appComponent.logger());
+            this.profilePresenter = new ProfilePresenterImpl(sdkInstance.me(), null, null, null, null);
+            this.settingsPresenter = new SettingsPresenterImpl(null, null);
+        } else {
+            this.homePresenter = null;
+            this.profilePresenter = null;
+            this.settingsPresenter = null;
+        }
     }
 
     @Override
@@ -77,7 +83,7 @@ public final class DefaultUserComponent implements UserComponent {
         return settingsPresenter;
     }
 
-    private static D2 provideSdkInstance(AppComponent appComponent) {
+    private static D2.Builder provideSdkInstance(AppComponent appComponent) {
         D2.Builder builder = D2.builder(appComponent.application());
 
         if (BuildConfig.DEBUG) {
@@ -85,9 +91,9 @@ public final class DefaultUserComponent implements UserComponent {
             HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
             logInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
 
-            builder = builder.interceptor(logInterceptor);
+            // builder = builder.interceptor(logInterceptor);
         }
 
-        return builder.build();
+        return builder;
     }
 }

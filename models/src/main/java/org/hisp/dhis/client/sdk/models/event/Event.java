@@ -46,7 +46,6 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class Event extends BaseDataModel implements IdentifiableObject, Model {
-
     public static final Comparator<Event> DATE_COMPARATOR = new EventDateComparator();
 
     public static final String EVENT_DATE_KEY = "eventDate";

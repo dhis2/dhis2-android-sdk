@@ -29,9 +29,20 @@
 buildscript {
     repositories {
         jcenter()
+
+        // gradle plugin repository
+        // (required for java apt plugin)
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
+        // android gradle plugin
         classpath 'com.android.tools.build:gradle:2.2.2'
+
+        // annotation processing plugin for java modules.
+        // Please, see: https://github.com/tbroyer/gradle-apt-plugin
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
     }
 }
 
@@ -56,13 +67,14 @@ ext {
 
     libraries = [
             // android
-            support : "25.0.0",
+            support  : "25.0.0",
 
             // java
-            jackson : "2.8.4",
+            jackson  : "2.8.4",
+            autovalue: "1.2",
 
             // test dependencies
-            junit   : "4.12",
-            espresso: "2.2.2"
+            junit    : "4.12",
+            espresso : "2.2.2"
     ]
 }

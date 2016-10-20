@@ -26,7 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'java'
+apply plugin: "java"
+apply plugin: "idea"
+apply plugin: "net.ltgt.apt"
 
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
@@ -36,6 +38,11 @@ def libraries = rootProject.ext.libraries
 dependencies {
     // Jackson
     compile "com.fasterxml.jackson.core:jackson-databind:${libraries.jackson}"
+
+    // Google's auto-value. Annotations are used only during compilation time, as well as
+    // annotation processor which hoops up into compilation process
+    compileOnly "com.google.auto.value:auto-value:${libraries.autovalue}"
+    apt "com.google.auto.value:auto-value:${libraries.autovalue}"
 
     // Test dependencies
     testCompile "junit:junit:${libraries.junit}"

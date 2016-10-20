@@ -26,22 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.models;
+package org.hisp.dhis.client.models.common;
 
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class Stub {
-    public abstract String title();
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_Stub.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder title(String title);
-        public abstract Stub build();
-    }
+public interface Model {
+    Long id();
 }

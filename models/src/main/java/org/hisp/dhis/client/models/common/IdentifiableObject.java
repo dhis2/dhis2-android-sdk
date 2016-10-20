@@ -26,55 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-buildscript {
-    repositories {
-        jcenter()
+package org.hisp.dhis.client.models.common;
 
-        // gradle plugin repository
-        // (required for java apt plugin)
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        // android gradle plugin
-        classpath 'com.android.tools.build:gradle:2.2.2'
+import java.util.Date;
 
-        // annotation processing plugin for java modules.
-        // Please, see: https://github.com/tbroyer/gradle-apt-plugin
-        classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
-    }
-}
+public interface IdentifiableObject extends Model {
+    String uid();
 
-allprojects {
-    repositories {
-        jcenter()
-    }
-}
+    String code();
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
+    String name();
 
-ext {
-    configuration = [
-            buildToolsVersion: "24.0.2",
-            minSdkVersion    : 15,
-            targetSdkVersion : 24,
-            versionCode      : 1,
-            versionName      : "0.1"
-    ]
+    String displayName();
 
-    libraries = [
-            // android
-            support  : "25.0.0",
+    Date created();
 
-            // java
-            jackson  : "2.8.4",
-            autovalue: "1.3",
-
-            // test dependencies
-            junit    : "4.12",
-            espresso : "2.2.2"
-    ]
+    Date lastUpdated();
 }

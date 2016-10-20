@@ -26,55 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-buildscript {
-    repositories {
-        jcenter()
+package org.hisp.dhis.client.models.constant;
 
-        // gradle plugin repository
-        // (required for java apt plugin)
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.client.models.common.BaseIdentifiableObject;
+
+@AutoValue
+@JsonDeserialize(builder = AutoValue_Constant.Builder.class)
+public abstract class Constant extends BaseIdentifiableObject {
+    private static final String JSON_PROPERTY_VALUE = "value";
+
+    @JsonProperty(JSON_PROPERTY_VALUE)
+    public abstract double value();
+
+    public static Builder builder() {
+        return new AutoValue_Constant.Builder();
     }
-    dependencies {
-        // android gradle plugin
-        classpath 'com.android.tools.build:gradle:2.2.2'
 
-        // annotation processing plugin for java modules.
-        // Please, see: https://github.com/tbroyer/gradle-apt-plugin
-        classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+        @JsonProperty(JSON_PROPERTY_VALUE)
+        public abstract Builder value(double value);
+
+        public abstract Constant build();
     }
-}
-
-allprojects {
-    repositories {
-        jcenter()
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
-
-ext {
-    configuration = [
-            buildToolsVersion: "24.0.2",
-            minSdkVersion    : 15,
-            targetSdkVersion : 24,
-            versionCode      : 1,
-            versionName      : "0.1"
-    ]
-
-    libraries = [
-            // android
-            support  : "25.0.0",
-
-            // java
-            jackson  : "2.8.4",
-            autovalue: "1.3",
-
-            // test dependencies
-            junit    : "4.12",
-            espresso : "2.2.2"
-    ]
 }

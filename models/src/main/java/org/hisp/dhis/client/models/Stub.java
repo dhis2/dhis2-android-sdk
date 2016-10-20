@@ -26,4 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':core', ':models'
+package org.hisp.dhis.client.models;
+
+public class Stub {
+}

@@ -55,10 +55,14 @@ ext {
     ]
 
     libraries = [
-            support: "25.0.0",
+            // android
+            support : "25.0.0",
+
+            // java
+            jackson : "2.8.4",
 
             // test dependencies
-            junit  : "4.12",
+            junit   : "4.12",
             espresso: "2.2.2"
     ]
 }

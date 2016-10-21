@@ -28,6 +28,6 @@
 
 package org.hisp.dhis.client.models.common;
 
-public interface Model extends Validatable {
-    Long id();
+public interface Validatable {
+    boolean isValid();
 }

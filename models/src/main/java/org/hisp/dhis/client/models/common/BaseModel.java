@@ -30,8 +30,11 @@ package org.hisp.dhis.client.models.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import javax.annotation.Nullable;
+
 public abstract class BaseModel implements Model {
     @Override
+    @Nullable
     @JsonIgnore
     public abstract Long id();
 

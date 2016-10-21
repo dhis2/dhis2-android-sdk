@@ -34,13 +34,16 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.models.common.BaseIdentifiableObject;
 
+import javax.annotation.Nullable;
+
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Constant.Builder.class)
 public abstract class Constant extends BaseIdentifiableObject {
     private static final String JSON_PROPERTY_VALUE = "value";
 
+    @Nullable
     @JsonProperty(JSON_PROPERTY_VALUE)
-    public abstract double value();
+    public abstract Double value();
 
     public static Builder builder() {
         return new AutoValue_Constant.Builder();
@@ -49,7 +52,7 @@ public abstract class Constant extends BaseIdentifiableObject {
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
         @JsonProperty(JSON_PROPERTY_VALUE)
-        public abstract Builder value(double value);
+        public abstract Builder value(Double value);
 
         public abstract Constant build();
     }

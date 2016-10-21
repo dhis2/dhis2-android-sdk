@@ -30,6 +30,8 @@ package org.hisp.dhis.client.models.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.annotation.Nullable;
+
 public abstract class BaseNameableObject extends BaseIdentifiableObject implements NameableObject {
     private static final String JSON_PROPERTY_SHORT_NAME = "shortName";
     private static final String JSON_PROPERTY_DISPLAY_SHORT_NAME = "displayShortName";
@@ -37,32 +39,36 @@ public abstract class BaseNameableObject extends BaseIdentifiableObject implemen
     private static final String JSON_PROPERTY_DISPLAY_DESCRIPTION = "displayDescription";
 
     @Override
+    @Nullable
     @JsonProperty(JSON_PROPERTY_SHORT_NAME)
     public abstract String shortName();
 
     @Override
+    @Nullable
     @JsonProperty(JSON_PROPERTY_DISPLAY_SHORT_NAME)
     public abstract String displayShortName();
 
     @Override
+    @Nullable
     @JsonProperty(JSON_PROPERTY_DESCRIPTION)
     public abstract String description();
 
     @Override
+    @Nullable
     @JsonProperty(JSON_PROPERTY_DISPLAY_DESCRIPTION)
     public abstract String displayDescription();
 
     protected static abstract class Builder<T extends Builder> extends BaseIdentifiableObject.Builder<T> {
         @JsonProperty(JSON_PROPERTY_SHORT_NAME)
-        public abstract String shortName(String shortName);
+        public abstract String shortName(@Nullable String shortName);
 
         @JsonProperty(JSON_PROPERTY_DISPLAY_SHORT_NAME)
-        public abstract String displayShortName(String displayShortName);
+        public abstract String displayShortName(@Nullable String displayShortName);
 
         @JsonProperty(JSON_PROPERTY_DESCRIPTION)
-        public abstract String description(String description);
+        public abstract String description(@Nullable String description);
 
         @JsonProperty(JSON_PROPERTY_DISPLAY_DESCRIPTION)
-        public abstract String displayDescription(String displayDescription);
+        public abstract String displayDescription(@Nullable String displayDescription);
     }
 }

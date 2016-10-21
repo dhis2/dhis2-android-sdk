@@ -32,7 +32,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 
+import javax.annotation.Nullable;
+
 public abstract class BaseIdentifiableObject extends BaseModel implements IdentifiableObject {
+    private static final int UID_LENGTH = 11;
+
     private static final String JSON_PROPERTY_UID = "id";
     private static final String JSON_PROPERTY_CODE = "code";
     private static final String JSON_PROPERTY_NAME = "name";
@@ -45,24 +49,44 @@ public abstract class BaseIdentifiableObject extends BaseModel implements Identi
     public abstract String uid();
 
     @Override
+    @Nullable
     @JsonProperty(JSON_PROPERTY_CODE)
     public abstract String code();
 
     @Override
+    @Nullable
     @JsonProperty(JSON_PROPERTY_NAME)
     public abstract String name();
 
     @Override
+    @Nullable
     @JsonProperty(JSON_PROPERTY_DISPLAY_NAME)
     public abstract String displayName();
 
     @Override
+    @Nullable
     @JsonProperty(JSON_PROPERTY_CREATED)
     public abstract Date created();
 
     @Override
+    @Nullable
     @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
     public abstract Date lastUpdated();
+
+    @Override
+    public boolean isValid() {
+        // check if properties are null or not
+        if (created() == null || lastUpdated() == null) {
+            return false;
+        }
+
+        // check uid length which must be 11 characters long
+        if (uid().length() != UID_LENGTH) {
+            return false;
+        }
+
+        return true;
+    }
 
     protected static abstract class Builder<T extends Builder> extends BaseModel.Builder<T> {
 
@@ -70,18 +94,18 @@ public abstract class BaseIdentifiableObject extends BaseModel implements Identi
         public abstract T uid(String uid);
 
         @JsonProperty(JSON_PROPERTY_CODE)
-        public abstract T code(String code);
+        public abstract T code(@Nullable String code);
 
         @JsonProperty(JSON_PROPERTY_NAME)
-        public abstract T name(String name);
+        public abstract T name(@Nullable String name);
 
         @JsonProperty(JSON_PROPERTY_DISPLAY_NAME)
-        public abstract T displayName(String displayName);
+        public abstract T displayName(@Nullable String displayName);
 
         @JsonProperty(JSON_PROPERTY_CREATED)
-        public abstract T created(Date created);
+        public abstract T created(@Nullable Date created);
 
         @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
-        public abstract T lastUpdated(Date lastUpdated);
+        public abstract T lastUpdated(@Nullable Date lastUpdated);
     }
 }

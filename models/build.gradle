@@ -44,6 +44,12 @@ dependencies {
     compileOnly "com.google.auto.value:auto-value:${libraries.autovalue}"
     apt "com.google.auto.value:auto-value:${libraries.autovalue}"
 
+    // Using javax annotations in conjunction with auto-value in order
+    // to have optional values in models
+    compileOnly "com.google.code.findbugs:jsr305:${libraries.javaxannotations}"
+
     // Test dependencies
     testCompile "junit:junit:${libraries.junit}"
+    testCompile "org.assertj:assertj-core:${libraries.assertj}"
+    testCompile "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
 }

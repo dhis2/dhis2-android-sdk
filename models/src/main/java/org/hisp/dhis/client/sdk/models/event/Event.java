@@ -33,11 +33,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.BaseDataModel;
+import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.Coordinates;
 import org.hisp.dhis.client.sdk.models.common.IdentifiableObject;
-import org.hisp.dhis.client.sdk.models.common.Model;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
 import java.util.Comparator;
@@ -45,7 +44,7 @@ import java.util.Date;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class Event extends BaseDataModel implements IdentifiableObject, Model {
+public final class Event extends BaseDataModel implements IdentifiableObject {
 
     public static final Comparator<Event> DATE_COMPARATOR = new EventDateComparator();
 

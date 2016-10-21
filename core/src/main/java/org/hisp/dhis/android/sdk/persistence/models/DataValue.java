@@ -75,6 +75,15 @@ public class DataValue extends BaseValue {
     public DataValue() {
     }
 
+    public DataValue(DataValue dataValue) {
+        super(dataValue);
+        this.localEventId = dataValue.localEventId;
+        this.event = dataValue.event;
+        this.dataElement = dataValue.dataElement;
+        this.providedElsewhere = dataValue.providedElsewhere;
+        this.storedBy = dataValue.storedBy;
+    }
+
     public DataValue(Event event, String value, String dataElement,
                      boolean providedElsewhere, String storedBy) {
         this.localEventId = event.getLocalId();

@@ -29,12 +29,19 @@
 
 package org.hisp.dhis.android.sdk.utils.services;
 
+import android.util.Log;
+
+import com.raizlabs.android.dbflow.sql.queriable.StringQuery;
+
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.models.Constant;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
+import org.hisp.dhis.android.sdk.persistence.models.DataElement$Table;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.persistence.models.Option;
+import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
@@ -242,13 +249,62 @@ public class VariableService {
     private static void initEventDataValueMaps(List<Event> eventsForEnrollment) {
         //setting data values in map for each event
         getInstance().setEventDataValueMaps(new HashMap<Event, Map<String, DataValue>>());
+        List<OptionSet> allOptionSets = MetaDataController.getOptionSets();
+        Map<String, Map<String, Option>> cachedOptionsForOptionSets = getCachedOptionsForOptionSets(allOptionSets);
         for (Event event : eventsForEnrollment) {
             Map<String, DataValue> dataValueMap = new HashMap<>();
             for (DataValue dataValue : event.getDataValues()) {
-                dataValueMap.put(dataValue.getDataElement(), dataValue);
+                DataValue copiedDataValue = new DataValue(dataValue);
+                dataValueMap.put(copiedDataValue.getDataElement(), copiedDataValue);
+            }
+
+            //replacing option code value with option code name as the name is used in expressions
+            StringBuilder stringBuilder = new StringBuilder();
+            for(String dataElement : dataValueMap.keySet()) {
+                stringBuilder.append("'");
+                stringBuilder.append(dataElement);
+                stringBuilder.append("'");
+                stringBuilder.append(',');
+            }
+            stringBuilder.deleteCharAt(stringBuilder.length()-1);
+            String dataElementListForQuery = stringBuilder.toString();
+            String sqlQuery = "SELECT * FROM " + DataElement.class.getSimpleName() + " WHERE " + DataElement$Table.ID + " IN (" + dataElementListForQuery + ") AND " + DataElement$Table.OPTIONSET + " != '';";
+            List<DataElement> dataElementsWithOptionSets = new StringQuery<>(DataElement.class, sqlQuery).queryList();
+            for(DataElement dataElementWithOptionSet : dataElementsWithOptionSets) {
+                DataValue dataValueToReplaceCodeWithValue = dataValueMap.get(dataElementWithOptionSet.getUid());
+                Map<String, Option> optionMapForOptionSet = cachedOptionsForOptionSets.get(dataElementWithOptionSet.getOptionSet());
+                String optionSetCode = dataValueToReplaceCodeWithValue.getValue();
+                if(optionSetCode != null) {
+                    Option optionWithCode = optionMapForOptionSet.get(optionSetCode);
+                    if(optionWithCode != null) {
+                        String valueForCode = optionWithCode.getName();
+                        if (valueForCode != null) {
+                            dataValueToReplaceCodeWithValue.setValue(valueForCode);
+                        }
+                    }
+                }
             }
             getInstance().getEventDataValueMaps().put(event, dataValueMap);
         }
+    }
+
+    private static Map<String, Map<String, Option>> getCachedOptionsForOptionSets(List<OptionSet> optionSets) {
+        Map<String, Map<String, Option>> optionsForOptionSetMap = new HashMap<>();
+        for(OptionSet optionSet : optionSets) {
+                if (optionSet == null) {
+                    continue;
+                }
+                List<Option> options = MetaDataController.getOptions(optionSet.getUid());
+                if (options == null) {
+                    continue;
+                }
+                HashMap<String, Option> optionsHashMap = new HashMap<>();
+                optionsForOptionSetMap.put(optionSet.getUid(), optionsHashMap);
+                for (Option option : options) {
+                    optionsHashMap.put(option.getCode(), option);
+                }
+        }
+        return optionsForOptionSetMap;
     }
 
     private static void initProgramRuleVariableMap() {

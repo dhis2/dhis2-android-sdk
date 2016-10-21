@@ -54,6 +54,14 @@ public abstract class BaseValue extends BaseModel implements Serializable {
     @Column(name = "value")
     String value;
 
+    public BaseValue() {
+
+    }
+
+    protected BaseValue(BaseValue baseValue) {
+        this.value = baseValue.value;
+    }
+
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
     }

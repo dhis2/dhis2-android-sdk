@@ -47,6 +47,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowFactory;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EventDueDatePickerRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragmentSection;
@@ -229,7 +230,16 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
                 form.getDataElementNames().put(stageDataElement.getDataelement(),
                         dataElement.getDisplayName());
                 form.getDataValues().put(dataValue.getDataElement(), dataValue);
-                rows.add(createDataEntryRow(stageDataElement, dataElement, dataValue));
+                String dataElementName;
+                if (!isEmpty(dataElement.getDisplayFormName())) {
+                    dataElementName = dataElement.getDisplayFormName();
+                } else {
+                    dataElementName = dataElement.getDisplayName();
+                }
+                Row row = DataEntryRowFactory.createDataEntryView(stageDataElement.getCompulsory(),
+                        stageDataElement.getAllowFutureDate(), dataElement.getOptionSet(),
+                        dataElementName, dataValue, dataElement.getValueType(), true, false);
+                rows.add(row);
             }
         }
     }
@@ -281,51 +291,6 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
         }
 
         return event;
-    }
-
-    private static Row createDataEntryRow(ProgramStageDataElement programStageDataElement, DataElement dataElement, DataValue dataValue) {
-        Row row;
-
-        String dataElementName;
-        if (!isEmpty(dataElement.getDisplayFormName())) {
-            dataElementName = dataElement.getDisplayFormName();
-        } else {
-            dataElementName = dataElement.getDisplayName();
-        }
-
-        if (dataElement.getOptionSet() != null) {
-            OptionSet optionSet = MetaDataController.getOptionSet(dataElement.getOptionSet());
-            if (optionSet == null) {
-                row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.TEXT);
-            } else {
-                row = new AutoCompleteRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, optionSet);
-            }
-        } else if (dataElement.getValueType().equals(ValueType.TEXT)) {
-            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.TEXT);
-        } else if (dataElement.getValueType().equals(ValueType.LONG_TEXT)) {
-            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.LONG_TEXT);
-        } else if (dataElement.getValueType().equals(ValueType.NUMBER)) {
-            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.NUMBER);
-        } else if (dataElement.getValueType().equals(ValueType.INTEGER)) {
-            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.INTEGER);
-        } else if (dataElement.getValueType().equals(ValueType.INTEGER_ZERO_OR_POSITIVE)) {
-            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE);
-        } else if (dataElement.getValueType().equals(ValueType.INTEGER_POSITIVE)) {
-            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.INTEGER_POSITIVE);
-        } else if (dataElement.getValueType().equals(ValueType.INTEGER_NEGATIVE)) {
-            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.INTEGER_NEGATIVE);
-        } else if (dataElement.getValueType().equals(ValueType.BOOLEAN)) {
-            row = new RadioButtonsRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.BOOLEAN);
-        } else if (dataElement.getValueType().equals(ValueType.TRUE_ONLY)) {
-            row = new CheckBoxRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue);
-        } else if (dataElement.getValueType().equals(ValueType.DATE)) {
-            row = new DatePickerRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, programStageDataElement.getAllowFutureDate());
-        } else if (dataElement.getValueType().equals(ValueType.PHONE_NUMBER)) {
-            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.PHONE_NUMBER);
-        } else {
-            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.LONG_TEXT);
-        }
-        return row;
     }
 
     public static DataValue getDataValue(String dataElement, Event event,

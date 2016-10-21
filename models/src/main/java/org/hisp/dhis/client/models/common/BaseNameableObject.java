@@ -58,17 +58,19 @@ public abstract class BaseNameableObject extends BaseIdentifiableObject implemen
     @JsonProperty(JSON_PROPERTY_DISPLAY_DESCRIPTION)
     public abstract String displayDescription();
 
-    protected static abstract class Builder<T extends Builder> extends BaseIdentifiableObject.Builder<T> {
+    protected static abstract class Builder<T extends Builder, E extends IdentifiableObject>
+            extends BaseIdentifiableObject.Builder<T, E> {
+
         @JsonProperty(JSON_PROPERTY_SHORT_NAME)
-        public abstract String shortName(@Nullable String shortName);
+        public abstract T shortName(@Nullable String shortName);
 
         @JsonProperty(JSON_PROPERTY_DISPLAY_SHORT_NAME)
-        public abstract String displayShortName(@Nullable String displayShortName);
+        public abstract T displayShortName(@Nullable String displayShortName);
 
         @JsonProperty(JSON_PROPERTY_DESCRIPTION)
-        public abstract String description(@Nullable String description);
+        public abstract T description(@Nullable String description);
 
         @JsonProperty(JSON_PROPERTY_DISPLAY_DESCRIPTION)
-        public abstract String displayDescription(@Nullable String displayDescription);
+        public abstract T displayDescription(@Nullable String displayDescription);
     }
 }

@@ -33,12 +33,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.annotation.Nullable;
 
 public abstract class BaseModel implements Model {
+
     @Override
     @Nullable
     @JsonIgnore
     public abstract Long id();
 
-    protected static abstract class Builder<T extends Builder> {
+    protected static abstract class Builder<T extends Builder, E extends Model> {
         public abstract T id(Long id);
+        public abstract E build();
     }
 }

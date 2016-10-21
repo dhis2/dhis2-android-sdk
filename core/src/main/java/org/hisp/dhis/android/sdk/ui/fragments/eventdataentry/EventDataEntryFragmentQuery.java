@@ -33,6 +33,7 @@ import android.content.Context;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
+import org.hisp.dhis.android.sdk.controllers.GpsController;
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.loaders.Query;
@@ -150,7 +151,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
             }
             addEventDateRow(context, form, rows);
             addCoordinateRow(form, rows);
-            populateDataEntryRows(form, stage.getProgramStageDataElements(), rows, username);
+            populateDataEntryRows(form, stage.getProgramStageDataElements(), rows, username, context);
             populateIndicatorRows(form, stage.getProgramIndicators(), rows);
             form.getSections().add(new DataEntryFragmentSection(DEFAULT_SECTION, null, rows));
         } else {
@@ -169,7 +170,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
                     addEventDateRow(context, form, rows);
                     addCoordinateRow(form, rows);
                 }
-                populateDataEntryRows(form, section.getProgramStageDataElements(), rows, username);
+                populateDataEntryRows(form, section.getProgramStageDataElements(), rows, username, context);
                 populateIndicatorRows(form, section.getProgramIndicators(), rows);
                 form.getSections().add(new DataEntryFragmentSection(section.getName(), section.getUid(), rows));
             }
@@ -222,7 +223,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
 
     private static void populateDataEntryRows(EventDataEntryFragmentForm form,
                                               List<ProgramStageDataElement> dataElements,
-                                              List<Row> rows, String username) {
+                                              List<Row> rows, String username, Context context) {
         for (ProgramStageDataElement stageDataElement : dataElements) {
             DataValue dataValue = getDataValue(stageDataElement.getDataelement(), form.getEvent(), username);
             DataElement dataElement = getDataElement(stageDataElement.getDataelement());
@@ -235,6 +236,9 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
                     dataElementName = dataElement.getDisplayFormName();
                 } else {
                     dataElementName = dataElement.getDisplayName();
+                }
+                if(ValueType.COORDINATE.equals(stageDataElement.getDataElement().getValueType())) {
+                    GpsController.activateGps(context);
                 }
                 Row row = DataEntryRowFactory.createDataEntryView(stageDataElement.getCompulsory(),
                         stageDataElement.getAllowFutureDate(), dataElement.getOptionSet(),

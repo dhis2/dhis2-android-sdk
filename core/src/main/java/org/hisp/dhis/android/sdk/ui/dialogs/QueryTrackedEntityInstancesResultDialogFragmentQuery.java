@@ -32,6 +32,7 @@ package org.hisp.dhis.android.sdk.ui.dialogs;
 import android.content.Context;
 import android.util.Log;
 
+import org.hisp.dhis.android.sdk.controllers.GpsController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.loaders.Query;
 import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
@@ -86,7 +87,9 @@ public class QueryTrackedEntityInstancesResultDialogFragmentQuery implements Que
             TrackedEntityAttributeValue value = new TrackedEntityAttributeValue();
             value.setTrackedEntityAttributeId(trackedEntityAttribute.getUid());
             values.add(value);
-
+            if(ValueType.COORDINATE.equals(ptea.getTrackedEntityAttribute().getValueType())) {
+                GpsController.activateGps(context);
+            }
             Row row = DataEntryRowFactory.createDataEntryView(ptea.getMandatory(),
                     ptea.getAllowFutureDate(), trackedEntityAttribute.getOptionSet(),
                     trackedEntityAttribute.getName(), value, trackedEntityAttribute.getValueType(), true, false);

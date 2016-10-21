@@ -46,6 +46,8 @@ public class DataEntryRowFactory {
             row = new CheckBoxRow(trackedEntityAttributeName, mandatory, null, baseValue);
         } else if (valueType.equals(ValueType.DATE)) {
             row = new DatePickerRow(trackedEntityAttributeName, mandatory, null, baseValue, allowFutureDate);
+        } else if(valueType.equals(ValueType.COORDINATE)) {
+            row = new DataValueCoordinatesRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.DATAVALUECOORDINATES);
         } else {
             row = new EditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.LONG_TEXT);
         }

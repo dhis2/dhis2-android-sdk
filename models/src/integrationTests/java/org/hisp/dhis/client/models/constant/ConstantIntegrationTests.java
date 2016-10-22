@@ -43,7 +43,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConstantIntegrationTests {
     DateFormat dateFormat;
-
     ObjectMapper objectMapper;
 
     @Before

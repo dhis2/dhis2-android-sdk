@@ -61,9 +61,10 @@ public abstract class Category extends BaseNameableObject {
         @JsonProperty(JSON_PROPERTY_CATEGORY_OPTIONS)
         public abstract Builder categoryOptions(@Nullable List<CategoryOption> categoryOptions);
 
-        // internal, not exposed
+        // used only to support unmodifiable collections
         abstract List<CategoryOption> categoryOptions();
 
+        // used only to support unmodifiable collections
         abstract Category autoBuild();
 
         public Category build() {

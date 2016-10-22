@@ -28,12 +28,71 @@
 
 package org.hisp.dhis.client.models.constant;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.junit.Before;
 import org.junit.Test;
 
-public class ConstantIntegrationTests {
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class ConstantIntegrationTests {
+    DateFormat dateFormat;
+
+    ObjectMapper objectMapper;
+
+    @Before
+    public void setup() {
+        dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.US);
+
+        objectMapper = new ObjectMapper();
+        objectMapper.setDateFormat(dateFormat);
+    }
+
+    /**
+     * Checks whether the parsing from JSON string works as expected. Payload intentionally
+     * contains properties which are not present in the model, in order to check if model
+     * explicitly ignores unknown values.
+     *
+     * @throws IOException if parsing fails.
+     */
     @Test
-    public void dummyTest() {
-        // nothing is here
+    public void constant_shouldMapFromJsonString() throws IOException, ParseException {
+        // parse payload into model instance
+        Constant constant = objectMapper.readValue("{" +
+                "\"created\":\"2013-03-11T16:39:33.083\"," +
+                "\"lastUpdated\":\"2013-03-11T16:39:33.083\"," +
+                "\"name\":\"Pi\"," +
+                "\"href\":\"https://play.dhis2.org/demo/api/constants/bCqvfPR02Im\"," +
+                "\"id\":\"bCqvfPR02Im\"," +
+                "\"displayName\":\"Pi\"," +
+                "\"externalAccess\":false," +
+                "\"value\":3.14," +
+                "\"access\":{" +
+                "\"read\":true," +
+                "\"update\":false," +
+                "\"externalize\":false," +
+                "\"delete\":false," +
+                "\"write\":false," +
+                "\"manage\":false}," +
+                "\"userGroupAccesses\":[]," +
+                "\"attributeValues\":[]," +
+                "\"translations\":[]" +
+                "}", Constant.class);
+
+        // we need to make sure that jackson is parsing dates in correct way
+        assertThat(constant.created()).isEqualTo(dateFormat.parse("2013-03-11T16:39:33.083"));
+        assertThat(constant.lastUpdated()).isEqualTo(dateFormat.parse("2013-03-11T16:39:33.083"));
+
+        // check if all properties are present and correspond to values in payload
+        assertThat(constant.name()).isEqualTo("Pi");
+        assertThat(constant.displayName()).isEqualTo("Pi");
+        assertThat(constant.value()).isEqualTo(3.14);
+        assertThat(constant.uid()).isEqualTo("bCqvfPR02Im");
     }
 }

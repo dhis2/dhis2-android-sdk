@@ -26,34 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.models.constant;
+package org.hisp.dhis.client.models.dataelement;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.google.auto.value.AutoValue;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.hisp.dhis.client.models.common.BaseIdentifiableObject;
+import org.junit.Test;
 
-import javax.annotation.Nullable;
+import java.io.IOException;
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_Constant.Builder.class)
-public abstract class Constant extends BaseIdentifiableObject {
-    private static final String JSON_PROPERTY_VALUE = "value";
+import static org.assertj.core.api.Assertions.assertThat;
 
-    @Nullable
-    @JsonProperty(JSON_PROPERTY_VALUE)
-    public abstract Double value();
+public class CategoryOptionIntegrationTests {
 
-    public static Builder builder() {
-        return new AutoValue_Constant.Builder();
-    }
+    @Test
+    public void categoryOptionCombo_shouldMapFromJsonString() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        @JsonProperty(JSON_PROPERTY_VALUE)
-        public abstract Builder value(Double value);
+        CategoryOption categoryOption = objectMapper.readValue("{" +
+                        "\"id\":\"FbLZS3ueWbQ\"," +
+                        "\"categoryOptionCombos\":[" +
+                        "{\"id\":\"sqGRzCziswD\"}," +
+                        "{\"id\":\"S34ULMcHMca\"}" +
+                        "]}",
+                CategoryOption.class);
 
-        public abstract Constant build();
+        assertThat(categoryOption.uid()).isEqualTo("FbLZS3ueWbQ");
+        assertThat(categoryOption.categoryOptionCombos().get(0).uid()).isEqualTo("sqGRzCziswD");
+        assertThat(categoryOption.categoryOptionCombos().get(1).uid()).isEqualTo("S34ULMcHMca");
     }
 }

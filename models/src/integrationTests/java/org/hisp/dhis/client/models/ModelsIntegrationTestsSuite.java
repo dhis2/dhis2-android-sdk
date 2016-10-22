@@ -26,34 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.models.constant;
+package org.hisp.dhis.client.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.client.models.constant.ConstantIntegrationTests;
+import org.hisp.dhis.client.models.dataelement.CategoryOptionIntegrationTests;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-import org.hisp.dhis.client.models.common.BaseIdentifiableObject;
-
-import javax.annotation.Nullable;
-
-@AutoValue
-@JsonDeserialize(builder = AutoValue_Constant.Builder.class)
-public abstract class Constant extends BaseIdentifiableObject {
-    private static final String JSON_PROPERTY_VALUE = "value";
-
-    @Nullable
-    @JsonProperty(JSON_PROPERTY_VALUE)
-    public abstract Double value();
-
-    public static Builder builder() {
-        return new AutoValue_Constant.Builder();
-    }
-
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        @JsonProperty(JSON_PROPERTY_VALUE)
-        public abstract Builder value(Double value);
-
-        public abstract Constant build();
-    }
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+        ConstantIntegrationTests.class,
+        CategoryOptionIntegrationTests.class
+})
+public class ModelsIntegrationTestsSuite {
 }

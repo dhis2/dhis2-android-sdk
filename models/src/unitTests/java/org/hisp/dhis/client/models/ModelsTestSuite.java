@@ -28,14 +28,16 @@
 
 package org.hisp.dhis.client.models;
 
-import org.hisp.dhis.client.models.constant.ConstantTests;
+import org.hisp.dhis.client.models.constant.ConstantIntegrationTests;
 import org.hisp.dhis.client.models.dataelement.CategoryOptionComboTests;
+import org.hisp.dhis.client.models.dataelement.CategoryOptionTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        ConstantTests.class,
+        ConstantIntegrationTests.class,
+        CategoryOptionTests.class,
         CategoryOptionComboTests.class
 })
 public class ModelsTestSuite {

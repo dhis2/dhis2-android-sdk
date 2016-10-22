@@ -26,34 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.models.constant;
+package org.hisp.dhis.client.models.dataelement;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.google.auto.value.AutoValue;
+import org.junit.Test;
 
-import org.hisp.dhis.client.models.common.BaseIdentifiableObject;
+import java.util.Arrays;
 
-import javax.annotation.Nullable;
+public class CategoryOptionTests {
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_Constant.Builder.class)
-public abstract class Constant extends BaseIdentifiableObject {
-    private static final String JSON_PROPERTY_VALUE = "value";
+    @Test(expected = UnsupportedOperationException.class)
+    public void categoryOptionCombos_shouldThrowOnCollectionMutations() {
+        CategoryOption categoryOption = CategoryOption.builder()
+                .uid("abc")
+                .categoryOptionCombos(Arrays.asList(
+                        CategoryOptionCombo.builder().uid("cde").build(),
+                        CategoryOptionCombo.builder().uid("fgp").build()
+                ))
+                .build();
 
-    @Nullable
-    @JsonProperty(JSON_PROPERTY_VALUE)
-    public abstract Double value();
-
-    public static Builder builder() {
-        return new AutoValue_Constant.Builder();
-    }
-
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        @JsonProperty(JSON_PROPERTY_VALUE)
-        public abstract Builder value(Double value);
-
-        public abstract Constant build();
+        categoryOption.categoryOptionCombos().add(
+                CategoryOptionCombo.builder().uid("kpc").build());
     }
 }

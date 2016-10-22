@@ -43,7 +43,7 @@ public abstract class CategoryOptionCombo extends BaseNameableObject {
     }
 
     @AutoValue.Builder
-    public static abstract class Builder
-            extends BaseNameableObject.Builder<Builder, CategoryOptionCombo> {
+    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+        public abstract CategoryOptionCombo build();
     }
 }

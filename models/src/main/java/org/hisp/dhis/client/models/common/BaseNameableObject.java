@@ -58,8 +58,7 @@ public abstract class BaseNameableObject extends BaseIdentifiableObject implemen
     @JsonProperty(JSON_PROPERTY_DISPLAY_DESCRIPTION)
     public abstract String displayDescription();
 
-    protected static abstract class Builder<T extends Builder, E extends IdentifiableObject>
-            extends BaseIdentifiableObject.Builder<T, E> {
+    protected static abstract class Builder<T extends Builder> extends BaseIdentifiableObject.Builder<T> {
 
         @JsonProperty(JSON_PROPERTY_SHORT_NAME)
         public abstract T shortName(@Nullable String shortName);

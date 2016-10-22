@@ -39,8 +39,7 @@ public abstract class BaseModel implements Model {
     @JsonIgnore
     public abstract Long id();
 
-    protected static abstract class Builder<T extends Builder, E extends Model> {
+    protected static abstract class Builder<T extends Builder> {
         public abstract T id(Long id);
-        public abstract E build();
     }
 }

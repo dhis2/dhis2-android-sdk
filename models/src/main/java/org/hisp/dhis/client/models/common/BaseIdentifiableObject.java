@@ -88,8 +88,7 @@ public abstract class BaseIdentifiableObject extends BaseModel implements Identi
         return true;
     }
 
-    protected static abstract class Builder<T extends Builder,
-            E extends IdentifiableObject> extends BaseModel.Builder<T, E> {
+    protected static abstract class Builder<T extends Builder> extends BaseModel.Builder<T> {
 
         @JsonProperty(JSON_PROPERTY_UID)
         public abstract T uid(String uid);

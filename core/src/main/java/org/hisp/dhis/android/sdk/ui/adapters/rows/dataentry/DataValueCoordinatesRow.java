@@ -115,13 +115,8 @@ public final class DataValueCoordinatesRow extends Row {
     }
 
     private static class CoordinateViewHolder {
-//        private final EditText latitude;
-//        private final EditText longitude;
         private final EditText coordinates;
         private final ImageButton captureCoords;
-//        private final View detailedInfoButton;
-//        private final LatitudeWatcher latitudeWatcher;
-//        private final LongitudeWatcher longitudeWatcher;
         private final CoordinateWatcher coordinateWatcher;
         private final OnCaptureCoordsClickListener onButtonClickListener;
 
@@ -132,39 +127,24 @@ public final class DataValueCoordinatesRow extends Row {
                     .getString(R.string.longitude_error_message);
 
             /* views */
-//            latitude = (EditText) view.findViewById(R.id.latitude_edittext);
-//            longitude = (EditText) view.findViewById(R.id.longitude_edittext);
             coordinates = (EditText) view.findViewById(R.id.coordinates_edittext);
             captureCoords = (ImageButton) view.findViewById(R.id.capture_coordinates);
 //            this.detailedInfoButton = detailedInfoButton;
 
             /* text watchers and click listener */
-//            latitudeWatcher = new LatitudeWatcher(latitude, latitudeMessage);
-//            longitudeWatcher = new LongitudeWatcher(longitude, longitudeMessage);
             String coordinateMessage = latitudeMessage + ". " + longitudeMessage;
             coordinateWatcher = new CoordinateWatcher(coordinates, coordinateMessage);
             onButtonClickListener = new OnCaptureCoordsClickListener(coordinates);
 
-//            latitude.addTextChangedListener(latitudeWatcher);
-//            longitude.addTextChangedListener(longitudeWatcher);
             coordinates.addTextChangedListener(coordinateWatcher);
             captureCoords.setOnClickListener(onButtonClickListener);
         }
 
         public void updateViews(BaseValue baseValue) {
             coordinateWatcher.setBaseValue(baseValue);
-//            latitudeWatcher.setEvent(event);
-//            longitudeWatcher.setEvent(event);
-
-//            String lat = event.getLatitude() == null ? EMPTY_FIELD
-//                    : String.valueOf(event.getLatitude());
-//            String lon = event.getLongitude() == null ? EMPTY_FIELD
-//                    : String.valueOf(event.getLongitude());
             String coordinatesString = baseValue.getValue() == null ? EMPTY_FIELD : baseValue.getValue();
 
             coordinates.setText(coordinatesString);
-//            latitude.setText(lat);
-//            longitude.setText(lon);
         }
     }
     private static class CoordinateWatcher extends AbsTextWatcher {
@@ -187,101 +167,30 @@ public final class DataValueCoordinatesRow extends Row {
 
         @Override
         public void afterTextChanged(Editable s) {
-            if(mBaseValue.getValue() != null)
-//                value = mEvent.getLatitude();
-
+            if(mBaseValue.getValue() != null) {
+                value = mBaseValue.getValue();
+            }
             if (s.length() > 1) {
-//                double newValue = Double.parseDouble(s.toString());
-//                if (newValue < -90 || newValue > 90) {
-//                    mEditText.setError(mCoordinateMessage);
-//                }
                 String newValue = s.toString();
 
-                if(newValue != value)
-                {
-                    //mEvent.setLatitude(Double.valueOf(newValue));
-                    DataValue dataValue = new DataValue();
-                    dataValue.setValue(newValue);
+                if(!newValue.equals(value)) {
                     mBaseValue.setValue(newValue);
-                    Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue, DataEntryRowTypes.DATAVALUECOORDINATES.toString()));
-
+                    Dhis2Application.getEventBus().post(new RowValueChangedEvent(mBaseValue, DataEntryRowTypes.DATAVALUECOORDINATES.toString()));
                 }
             }
         }
     }
-//    private static class LatitudeWatcher extends CoordinateWatcher {
-//
-//        public LatitudeWatcher(EditText mLatitude, String mLatitudeMessage) {
-//            super(mLatitude,mLatitudeMessage);
-//        }
-//
-//        @Override
-//        public void afterTextChanged(Editable s) {
-//            if(mEvent.getLatitude() != null)
-//                value = mEvent.getLatitude();
-//
-//            if (s.length() > 1) {
-//                double newValue = Double.parseDouble(s.toString());
-//                if (newValue < -90 || newValue > 90) {
-//                    mEditText.setError(mCoordinateMessage);
-//                }
-//
-//                if(newValue != value)
-//                {
-//                    mEvent.setLatitude(Double.valueOf(newValue));
-//                    DataValue dataValue = new DataValue();
-//                    dataValue.setValue("" + newValue);
-//                    Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue, DataEntryRowTypes.COORDINATES.toString()));
-//
-//                }
-//            }
-//        }
-//    }
-
-//    private static class LongitudeWatcher extends CoordinateWatcher {
-//
-//        public LongitudeWatcher(EditText mLongitude, String mLongitudeMessage) {
-//            super(mLongitude, mLongitudeMessage);
-//        }
-//
-//        @Override
-//        public void afterTextChanged(Editable s) {
-//            if(mEvent.getLongitude() != null)
-//                value = mEvent.getLongitude();
-//
-//            if (s.length() > 1) {
-////                double newValue = Double.parseDouble(s.toString());
-////                if (newValue < -180 || newValue > 180) {
-////                    mEditText.setError(mCoordinateMessage);
-////                }
-//
-//
-//                if(newValue != value)
-//                {
-//                    mEvent.setLongitude(Double.valueOf(newValue));
-//                    DataValue dataValue = new DataValue();
-//                    dataValue.setValue("" + newValue);
-//                    Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue, DataEntryRowTypes.DATAVALUECOORDINATES.toString()));
-//                }
-//            }
-//        }
-//    }
 
     private static class OnCaptureCoordsClickListener implements View.OnClickListener {
         private final EditText mCoordinates;
-//        private final EditText mLongitude;
 
         public OnCaptureCoordsClickListener(EditText coordinates) {
-//            mLatitude = latitude;
-//            mLongitude = longitude;
             mCoordinates = coordinates;
         }
 
         @Override
         public void onClick(View v) {
             Location location = GpsController.getLocation();
-//            mLatitude.setText(String.valueOf(location.getLatitude()));
-//            mLongitude.setText(String.valueOf(location.getLongitude()));
             mCoordinates.setText(String.valueOf(location.getLatitude() + ", " + String.valueOf(location.getLongitude())));
         }
     }

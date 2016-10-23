@@ -66,6 +66,8 @@ import static android.text.TextUtils.isEmpty;
  */
 public class VariableService {
 
+    private static final String CLASS_TAG = VariableService.class.getSimpleName();
+
     private static VariableService variableService;
 
     /**
@@ -249,8 +251,8 @@ public class VariableService {
     private static void initEventDataValueMaps(List<Event> eventsForEnrollment) {
         //setting data values in map for each event
         getInstance().setEventDataValueMaps(new HashMap<Event, Map<String, DataValue>>());
-        List<OptionSet> allOptionSets = MetaDataController.getOptionSets();
-        Map<String, Map<String, Option>> cachedOptionsForOptionSets = getCachedOptionsForOptionSets(allOptionSets);
+//        List<OptionSet> allOptionSets = MetaDataController.getOptionSets();
+        Map<String, Map<String, Option>> cachedOptionsForOptionSets = new HashMap();//getCachedOptionsForOptionSets(allOptionSets);
         for (Event event : eventsForEnrollment) {
             Map<String, DataValue> dataValueMap = new HashMap<>();
             for (DataValue dataValue : event.getDataValues()) {
@@ -266,13 +268,19 @@ public class VariableService {
                 stringBuilder.append("'");
                 stringBuilder.append(',');
             }
-            stringBuilder.deleteCharAt(stringBuilder.length()-1);
+            if(stringBuilder.length()>0) {
+                stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+            }
             String dataElementListForQuery = stringBuilder.toString();
             String sqlQuery = "SELECT * FROM " + DataElement.class.getSimpleName() + " WHERE " + DataElement$Table.ID + " IN (" + dataElementListForQuery + ") AND " + DataElement$Table.OPTIONSET + " != '';";
             List<DataElement> dataElementsWithOptionSets = new StringQuery<>(DataElement.class, sqlQuery).queryList();
             for(DataElement dataElementWithOptionSet : dataElementsWithOptionSets) {
                 DataValue dataValueToReplaceCodeWithValue = dataValueMap.get(dataElementWithOptionSet.getUid());
                 Map<String, Option> optionMapForOptionSet = cachedOptionsForOptionSets.get(dataElementWithOptionSet.getOptionSet());
+                if(optionMapForOptionSet == null) {
+                    optionMapForOptionSet = getOptionsForOptionSet(dataElementWithOptionSet.getOptionSet());
+                    cachedOptionsForOptionSets.put(dataElementWithOptionSet.getOptionSet(), optionMapForOptionSet);
+                }
                 String optionSetCode = dataValueToReplaceCodeWithValue.getValue();
                 if(optionSetCode != null) {
                     Option optionWithCode = optionMapForOptionSet.get(optionSetCode);
@@ -286,6 +294,17 @@ public class VariableService {
             }
             getInstance().getEventDataValueMaps().put(event, dataValueMap);
         }
+    }
+
+    private static Map<String, Option> getOptionsForOptionSet(String optionSetId) {
+        List<Option> options = MetaDataController.getOptions(optionSetId);
+        Map<String, Option> optionMap = new HashMap<>();
+        if(options != null) {
+            for (Option option : options) {
+                optionMap.put(option.getCode(), option);
+            }
+        }
+        return optionMap;
     }
 
     private static Map<String, Map<String, Option>> getCachedOptionsForOptionSets(List<OptionSet> optionSets) {

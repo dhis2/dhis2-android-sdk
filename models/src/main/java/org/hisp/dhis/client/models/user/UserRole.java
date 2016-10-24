@@ -17,9 +17,9 @@ import javax.annotation.Nullable;
 @AutoValue
 @JsonDeserialize(builder = AutoValue_UserRole.Builder.class)
 public abstract class UserRole extends BaseIdentifiableObject {
+    private static final String JSON_PROPERTY_PROGRAMS = "programs";
 
-    public static final String JSON_PROPERTY_PROGRAMS = "programs";
-
+    @Nullable
     @JsonProperty(JSON_PROPERTY_PROGRAMS)
     public abstract List<Program> programs();
 

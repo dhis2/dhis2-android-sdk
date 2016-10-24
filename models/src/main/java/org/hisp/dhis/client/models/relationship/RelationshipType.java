@@ -50,17 +50,11 @@ public abstract class RelationshipType extends BaseIdentifiableObject {
 
     @Override
     public boolean isValid() {
-        boolean isValid = super.isValid();
-
-        if (!isValid) {
-            return false;
-        }
-
         if (bIsToA() == null || aIsToB() == null) {
             return false;
         }
 
-        return true;
+        return super.isValid();
     }
 
     public static Builder builder() {

@@ -55,7 +55,7 @@ public class CategoryOptionIntegrationTests {
 
     @Test
     public void categoryOption_shouldMapFromJsonString() throws IOException, ParseException {
-        CategoryOption categoryOption = objectMapper.readValue("{" +
+        CategoryOption option = objectMapper.readValue("{" +
                         "\"lastUpdated\":\"2016-08-08T11:17:59.448\"," +
                         "\"id\":\"cQYFfHX9oIT\"," +
                         "\"href\":\"https://play.dhis2.org/demo/api/categoryOptions/cQYFfHX9oIT\"," +
@@ -81,26 +81,22 @@ public class CategoryOptionIntegrationTests {
                         "}",
                 CategoryOption.class);
 
-        assertThat(categoryOption.uid()).isEqualTo("cQYFfHX9oIT");
-        assertThat(categoryOption.lastUpdated())
-                .isEqualTo(dateFormat.parse("2016-08-08T11:17:59.448"));
-        assertThat(categoryOption.created())
-                .isEqualTo(dateFormat.parse("2016-08-08T11:17:59.448"));
+        assertThat(option.uid()).isEqualTo("cQYFfHX9oIT");
+        assertThat(option.created()).isEqualTo(dateFormat.parse("2016-08-08T11:17:59.448"));
+        assertThat(option.lastUpdated()).isEqualTo(dateFormat.parse("2016-08-08T11:17:59.448"));
 
-        assertThat(categoryOption.name()).isEqualTo("Green");
-        assertThat(categoryOption.displayName()).isEqualTo("Green");
-        assertThat(categoryOption.displayShortName()).isEqualTo("Green");
-        assertThat(categoryOption.displayName()).isEqualTo("Green");
+        assertThat(option.name()).isEqualTo("Green");
+        assertThat(option.shortName()).isEqualTo("Green");
+        assertThat(option.displayName()).isEqualTo("Green");
+        assertThat(option.displayShortName()).isEqualTo("Green");
 
-        assertThat(categoryOption.startDate())
-                .isEqualTo(dateFormat.parse("2016-04-01T00:00:00.000"));
-        assertThat(categoryOption.endDate())
-                .isEqualTo(dateFormat.parse("2016-05-01T00:00:00.000"));
+        assertThat(option.startDate()).isEqualTo(dateFormat.parse("2016-04-01T00:00:00.000"));
+        assertThat(option.endDate()).isEqualTo(dateFormat.parse("2016-05-01T00:00:00.000"));
 
         // check if list maintains order of the items in payload
-        assertThat(categoryOption.categoryOptionCombos().get(0).uid()).isEqualTo("S34ULMcHMca");
-        assertThat(categoryOption.categoryOptionCombos().get(1).uid()).isEqualTo("sqGRzCziswD");
-        assertThat(categoryOption.categoryOptionCombos().get(2).uid()).isEqualTo("WVzTbHctjok");
-        assertThat(categoryOption.categoryOptionCombos().get(3).uid()).isEqualTo("QFcGyiRFFH5");
+        assertThat(option.categoryOptionCombos().get(0).uid()).isEqualTo("S34ULMcHMca");
+        assertThat(option.categoryOptionCombos().get(1).uid()).isEqualTo("sqGRzCziswD");
+        assertThat(option.categoryOptionCombos().get(2).uid()).isEqualTo("WVzTbHctjok");
+        assertThat(option.categoryOptionCombos().get(3).uid()).isEqualTo("QFcGyiRFFH5");
     }
 }

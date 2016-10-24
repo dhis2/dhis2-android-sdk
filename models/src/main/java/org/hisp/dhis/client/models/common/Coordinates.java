@@ -5,9 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
-
-//TODO: Implement test
-
+//TODO: Tests
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Coordinates.Builder.class)
 public abstract class Coordinates {
@@ -26,7 +24,7 @@ public abstract class Coordinates {
 
     @AutoValue.Builder
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static abstract class Builder extends Builder<Builder> {
+    public static abstract class Builder {
         @JsonProperty(JSON_PROPERTY_LATITUDE)
         public abstract Builder latitude(Double latitude);
 
@@ -35,6 +33,4 @@ public abstract class Coordinates {
 
         public abstract Coordinates build();
     }
-
-
 }

@@ -31,16 +31,18 @@ package org.hisp.dhis.client.models;
 import org.hisp.dhis.client.models.constant.ConstantIntegrationTests;
 import org.hisp.dhis.client.models.dataelement.CategoryComboIntegrationTests;
 import org.hisp.dhis.client.models.dataelement.CategoryIntegrationTests;
+import org.hisp.dhis.client.models.dataelement.CategoryOptionComboIntegrationTests;
 import org.hisp.dhis.client.models.dataelement.CategoryOptionIntegrationTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        CategoryIntegrationTests.class,
         ConstantIntegrationTests.class,
+        CategoryIntegrationTests.class,
         CategoryOptionIntegrationTests.class,
-        CategoryComboIntegrationTests.class
+        CategoryComboIntegrationTests.class,
+        CategoryOptionComboIntegrationTests.class
 })
 public class ModelsIntegrationTestsSuite {
 }

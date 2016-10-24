@@ -81,7 +81,7 @@ public class CategoryIntegrationTests {
                 "{\"id\":\"OjIOxG7vgna\"}," +
                 "{\"id\":\"uZUnebiT5DI\"}," +
                 "{\"id\":\"HTHvCohKoXt\"}]," +
-                "\"userGroupAccesses\":[],"+
+                "\"userGroupAccesses\":[]"+
                 "}", Category.class);
 
         assertThat(category.uid()).isEqualTo("KfdsGBcoiCa");

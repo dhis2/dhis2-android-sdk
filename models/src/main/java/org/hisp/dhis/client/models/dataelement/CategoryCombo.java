@@ -40,7 +40,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-// TODO (unit and integration tests)
+// TODO: Tests
 @AutoValue
 @JsonDeserialize(builder = AutoValue_CategoryCombo.Builder.class)
 public abstract class CategoryCombo extends BaseIdentifiableObject {

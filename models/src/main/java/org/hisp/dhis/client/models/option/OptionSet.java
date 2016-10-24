@@ -26,27 +26,63 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.models.dataelement;
+package org.hisp.dhis.client.models.option;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.client.models.common.BaseNameableObject;
+import org.hisp.dhis.client.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.client.models.common.ValueType;
+
+import java.util.Collections;
+import java.util.List;
+
+import javax.annotation.Nullable;
 
 // TODO: Tests
 @AutoValue
-@JsonDeserialize(builder = AutoValue_CategoryOptionCombo.Builder.class)
-public abstract class CategoryOptionCombo extends BaseNameableObject {
-    // no fields
+@JsonDeserialize(builder = AutoValue_OptionSet.Builder.class)
+public abstract class OptionSet extends BaseIdentifiableObject {
+    private static final String JSON_PROPERTY_VERSION = "version";
+    private static final String JSON_PROPERTY_VALUE_TYPE = "valueType";
+    private static final String JSON_PROPERTY_OPTIONS = "options";
 
-    public static Builder builder() {
-        return new AutoValue_CategoryOptionCombo.Builder();
-    }
+    @JsonProperty(JSON_PROPERTY_VERSION)
+    public abstract Integer version();
+
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_OPTIONS)
+    public abstract List<Option> options();
+
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_VALUE_TYPE)
+    public abstract ValueType valueType();
 
     @AutoValue.Builder
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
-        public abstract CategoryOptionCombo build();
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+
+        @JsonProperty(JSON_PROPERTY_VERSION)
+        public abstract Builder version(Integer version);
+
+        @JsonProperty(JSON_PROPERTY_OPTIONS)
+        public abstract Builder options(@Nullable List<Option> options);
+
+        @JsonProperty(JSON_PROPERTY_VALUE_TYPE)
+        public abstract Builder valueType(@Nullable ValueType valueType);
+
+        abstract List<Option> options();
+
+        abstract OptionSet autoBuild();
+
+        public OptionSet build() {
+            if (options() != null) {
+                options(Collections.unmodifiableList(options()));
+            }
+
+            return autoBuild();
+        }
     }
 }

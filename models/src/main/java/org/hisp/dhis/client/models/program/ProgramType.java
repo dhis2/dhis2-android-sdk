@@ -26,27 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.models.dataelement;
+package org.hisp.dhis.client.models.program;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.client.models.common.BaseNameableObject;
-
-// TODO: Tests
-@AutoValue
-@JsonDeserialize(builder = AutoValue_CategoryOptionCombo.Builder.class)
-public abstract class CategoryOptionCombo extends BaseNameableObject {
-    // no fields
-
-    public static Builder builder() {
-        return new AutoValue_CategoryOptionCombo.Builder();
-    }
-
-    @AutoValue.Builder
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
-        public abstract CategoryOptionCombo build();
-    }
+public enum ProgramType {
+    WITH_REGISTRATION, WITHOUT_REGISTRATION
 }

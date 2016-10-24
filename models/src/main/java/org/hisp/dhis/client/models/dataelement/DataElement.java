@@ -10,8 +10,8 @@ import org.hisp.dhis.client.models.common.ValueType;
 import org.hisp.dhis.client.models.option.OptionSet;
 
 import javax.annotation.Nullable;
-//TODO: Implement test
 
+// TODO: Tests
 @AutoValue
 @JsonDeserialize(builder = AutoValue_DataElement.Builder.class)
 public abstract class DataElement extends BaseNameableObject {
@@ -97,7 +97,5 @@ public abstract class DataElement extends BaseNameableObject {
         public abstract Builder optionSet(@Nullable OptionSet optionSet);
 
         public abstract DataElement build();
-
     }
-
 }

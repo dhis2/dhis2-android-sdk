@@ -10,8 +10,7 @@ import org.hisp.dhis.client.models.common.BaseModel;
 
 import javax.annotation.Nullable;
 
-//TODO: Implement test
-
+//TODO: Tests
 @AutoValue
 @JsonDeserialize(builder = AutoValue_TrackedEntityDataValue.Builder.class)
 public abstract class TrackedEntityDataValue extends BaseModel {
@@ -41,19 +40,19 @@ public abstract class TrackedEntityDataValue extends BaseModel {
 
     @Override
     public boolean isValid() {
-        if(event() == null) {
+        if (event() == null) {
             return false;
         }
 
-        if(dataElement() == null) {
+        if (dataElement() == null) {
             return false;
         }
 
-        if(storedBy() == null) {
+        if (storedBy() == null) {
             return false;
         }
 
-        if(value() == null) {
+        if (value() == null) {
             return false;
         }
 
@@ -77,7 +76,5 @@ public abstract class TrackedEntityDataValue extends BaseModel {
         public abstract Builder event(@Nullable String event);
 
         public abstract TrackedEntityDataValue build();
-
     }
-
 }

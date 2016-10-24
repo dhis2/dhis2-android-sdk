@@ -12,7 +12,7 @@ public abstract class BaseDataModel extends BaseModel implements DataModel {
     @JsonIgnore
     public abstract State state();
 
-    protected static abstract class Builder<T extends Builder> extends BaseModel.Builder<Builder> {
+    protected static abstract class Builder<T extends Builder> extends BaseModel.Builder<T> {
         public abstract T state(State state);
     }
 }

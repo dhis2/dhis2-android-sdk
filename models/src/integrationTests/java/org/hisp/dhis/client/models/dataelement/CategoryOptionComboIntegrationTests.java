@@ -56,23 +56,23 @@ public class CategoryOptionComboIntegrationTests {
     @Test
     public void categoryOptionCombo_shouldMapFromJsonString() throws IOException, ParseException {
         CategoryOptionCombo categoryOptionCombo = objectMapper.readValue("{" +
-                "\"code\":\"COC_358963\"," +
-                "\"lastUpdated\":\"2011-12-24T12:24:25.319\"," +
-                "\"href\":\"https://play.dhis2.org/demo/api/categoryOptionCombos/S34ULMcHMca\"," +
-                "\"id\":\"S34ULMcHMca\"," +
-                "\"created\":\"2011-12-24T12:24:25.319\"," +
-                "\"name\":\"0-11m\"," +
-                "\"shortName\":\"0-11m\"," +
-                "\"displayName\":\"0-11m\"," +
-                "\"displayShortName\":\"0-11m\"," +
-                "\"externalAccess\":false," +
-                "\"ignoreApproval\":false," +
-                "\"dimensionItem\":\"S34ULMcHMca\"," +
-                "\"categoryCombo\":{\"id\":\"t3aNCvHsoSn\"}," +
-                "\"translations\":[]," +
-                "\"categoryOptions\":[{\"id\":\"FbLZS3ueWbQ\"}]," +
-                "\"userGroupAccesses\":[]," +
-                "\"attributeValues\":[]}", CategoryOptionCombo.class);
+                        "\"code\":\"COC_358963\"," +
+                        "\"lastUpdated\":\"2011-12-24T12:24:25.319\"," +
+                        "\"id\":\"S34ULMcHMca\"," +
+                        "\"created\":\"2011-12-24T12:24:25.319\"," +
+                        "\"name\":\"0-11m\"," +
+                        "\"shortName\":\"0-11m\"," +
+                        "\"displayName\":\"0-11m\"," +
+                        "\"displayShortName\":\"0-11m\"," +
+                        "\"externalAccess\":false," +
+                        "\"ignoreApproval\":false," +
+                        "\"dimensionItem\":\"S34ULMcHMca\"," +
+                        "\"categoryCombo\":{\"id\":\"t3aNCvHsoSn\"}," +
+                        "\"translations\":[]," +
+                        "\"categoryOptions\":[{\"id\":\"FbLZS3ueWbQ\"}]," +
+                        "\"userGroupAccesses\":[]," +
+                        "\"attributeValues\":[]}",
+                CategoryOptionCombo.class);
 
         assertThat(categoryOptionCombo.uid()).isEqualTo("S34ULMcHMca");
         assertThat(categoryOptionCombo.code()).isEqualTo("COC_358963");

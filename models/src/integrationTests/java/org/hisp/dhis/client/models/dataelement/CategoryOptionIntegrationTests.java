@@ -58,7 +58,6 @@ public class CategoryOptionIntegrationTests {
         CategoryOption option = objectMapper.readValue("{" +
                         "\"lastUpdated\":\"2016-08-08T11:17:59.448\"," +
                         "\"id\":\"cQYFfHX9oIT\"," +
-                        "\"href\":\"https://play.dhis2.org/demo/api/categoryOptions/cQYFfHX9oIT\"," +
                         "\"created\":\"2016-08-08T11:17:59.448\"," +
                         "\"name\":\"Green\"," +
                         "\"shortName\":\"Green\"," +

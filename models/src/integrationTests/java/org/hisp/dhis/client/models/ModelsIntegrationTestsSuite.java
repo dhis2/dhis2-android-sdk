@@ -33,6 +33,7 @@ import org.hisp.dhis.client.models.dataelement.CategoryComboIntegrationTests;
 import org.hisp.dhis.client.models.dataelement.CategoryIntegrationTests;
 import org.hisp.dhis.client.models.dataelement.CategoryOptionComboIntegrationTests;
 import org.hisp.dhis.client.models.dataelement.CategoryOptionIntegrationTests;
+import org.hisp.dhis.client.models.dataelement.DataElementIntegrationTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -42,7 +43,8 @@ import org.junit.runners.Suite;
         CategoryIntegrationTests.class,
         CategoryOptionIntegrationTests.class,
         CategoryComboIntegrationTests.class,
-        CategoryOptionComboIntegrationTests.class
+        CategoryOptionComboIntegrationTests.class,
+        DataElementIntegrationTests.class
 })
 public class ModelsIntegrationTestsSuite {
 }

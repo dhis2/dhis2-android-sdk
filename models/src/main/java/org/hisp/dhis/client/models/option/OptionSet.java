@@ -49,6 +49,7 @@ public abstract class OptionSet extends BaseIdentifiableObject {
     private static final String JSON_PROPERTY_VALUE_TYPE = "valueType";
     private static final String JSON_PROPERTY_OPTIONS = "options";
 
+    @Nullable
     @JsonProperty(JSON_PROPERTY_VERSION)
     public abstract Integer version();
 
@@ -65,7 +66,7 @@ public abstract class OptionSet extends BaseIdentifiableObject {
     public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
         @JsonProperty(JSON_PROPERTY_VERSION)
-        public abstract Builder version(Integer version);
+        public abstract Builder version(@Nullable Integer version);
 
         @JsonProperty(JSON_PROPERTY_OPTIONS)
         public abstract Builder options(@Nullable List<Option> options);

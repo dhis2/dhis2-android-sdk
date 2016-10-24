@@ -28,13 +28,7 @@
 
 package org.hisp.dhis.client.models.trackedentity;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.client.models.common.BaseIdentifiableObject;
-
 // TODO: Tests
-@AutoValue
-@JsonDeserialize()
-public abstract class TrackedEntityInstance extends BaseIdentifiableObject{
+public enum TrackedEntityAttributeSearchScope {
+    NOT_SEARCHABLE, DATA_CAPTURE_ORG_UNITS, SEARCH_ORG_UNITS, ALL_ORG_UNITS
 }

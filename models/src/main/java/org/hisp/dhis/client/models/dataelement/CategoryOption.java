@@ -13,7 +13,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-// TODO: Tests
 @AutoValue
 @JsonDeserialize(builder = AutoValue_CategoryOption.Builder.class)
 public abstract class CategoryOption extends BaseNameableObject {

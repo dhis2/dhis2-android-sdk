@@ -70,8 +70,7 @@ public abstract class DataElement extends BaseNameableObject {
     public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
 
         @JsonProperty(JSON_PROPERTY_VALUE_TYPE)
-        public abstract Builder valueType(
-                @Nullable ValueType valueType);
+        public abstract Builder valueType(@Nullable ValueType valueType);
 
         @JsonProperty(JSON_PROPERTY_ZERO_IS_SIGNIFICANT)
         public abstract Builder zeroIsSignificant(@Nullable Boolean zeroIsSignificant);

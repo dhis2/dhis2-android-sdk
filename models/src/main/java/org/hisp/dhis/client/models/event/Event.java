@@ -18,23 +18,24 @@ import javax.annotation.Nullable;
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Event.Builder.class)
 public abstract class Event extends BaseDataModel {
-    private static final String JSON_PROPERTY_EVENT = "event";
+    private static final String JSON_PROPERTY_EVENT_UID = "event";
+    private static final String JSON_PROPERTY_ENROLLMENT_UID = "enrollment";
     private static final String JSON_PROPERTY_CREATED = "created";
     private static final String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
     private static final String JSON_PROPERTY_STATUS = "status";
     private static final String JSON_PROPERTY_COORDINATE = "coordinate";
     private static final String JSON_PROPERTY_PROGRAM = "program";
     private static final String JSON_PROPERTY_PROGRAM_STAGE = "programStage";
-    private static final String JSON_PROPERTY_ORG_UNIT = "orgUnit";
+    private static final String JSON_PROPERTY_ORGANISATION_UNIT = "organisationUnit";
     private static final String JSON_PROPERTY_EVENT_DATE = "eventDate";
     private static final String JSON_PROPERTY_COMPLETE_DATE = "completedDate";
     private static final String JSON_PROPERTY_DUE_DATE = "dueDate";
-    private static final String JSON_PROPERTY_DATA_VALUES = "dataValues";
+    private static final String JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES = "trackedEntityDataValues";
 
     // Mandatory, non-null properties
 
-    @JsonProperty(JSON_PROPERTY_EVENT)
-    public abstract String event();
+    @JsonProperty(JSON_PROPERTY_EVENT_UID)
+    public abstract String uid();
 
     @JsonProperty(JSON_PROPERTY_STATUS)
     public abstract EventStatus status();
@@ -45,13 +46,16 @@ public abstract class Event extends BaseDataModel {
     @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE)
     public abstract String programStage();
 
-    @JsonProperty(JSON_PROPERTY_ORG_UNIT)
-    public abstract String orgUnit();
+    @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
+    public abstract String organisationUnit();
 
     @JsonProperty(JSON_PROPERTY_EVENT_DATE)
     public abstract Date eventDate();
 
     // Nullable properties
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_ENROLLMENT_UID)
+    public abstract String enrollmentUid();
 
     @Nullable
     @JsonProperty(JSON_PROPERTY_CREATED)
@@ -74,8 +78,8 @@ public abstract class Event extends BaseDataModel {
     public abstract Date dueDate();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_DATA_VALUES)
-    public abstract List<TrackedEntityDataValue> dataValues();
+    @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES)
+    public abstract List<TrackedEntityDataValue> trackedEntityDataValues();
 
     @Override
     public boolean isValid() {
@@ -83,7 +87,7 @@ public abstract class Event extends BaseDataModel {
             return false;
         }
 
-        if (dataValues() == null || dataValues().isEmpty()) {
+        if (trackedEntityDataValues() == null || trackedEntityDataValues().isEmpty()) {
             return false;
         }
 
@@ -96,8 +100,8 @@ public abstract class Event extends BaseDataModel {
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseDataModel.Builder<Builder> {
-        @JsonProperty(JSON_PROPERTY_EVENT)
-        public abstract Builder event(@Nullable String event);
+        @JsonProperty(JSON_PROPERTY_EVENT_UID)
+        public abstract Builder uid(@Nullable String uid);
 
         @JsonProperty(JSON_PROPERTY_CREATED)
         public abstract Builder created(@Nullable Date created);
@@ -111,14 +115,17 @@ public abstract class Event extends BaseDataModel {
         @JsonProperty(JSON_PROPERTY_COORDINATE)
         public abstract Builder coordinates(@Nullable Coordinates coordinates);
 
+        @JsonProperty(JSON_PROPERTY_ENROLLMENT_UID)
+        public abstract Builder enrollmentUid(@Nullable String enrollmentUid);
+
         @JsonProperty(JSON_PROPERTY_PROGRAM)
         public abstract Builder program(String program);
 
         @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE)
         public abstract Builder programStage(String programStage);
 
-        @JsonProperty(JSON_PROPERTY_ORG_UNIT)
-        public abstract Builder orgUnit(String orgUnit);
+        @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
+        public abstract Builder organisationUnit(String organisationUnit);
 
         @JsonProperty(JSON_PROPERTY_EVENT_DATE)
         public abstract Builder eventDate(Date eventDate);
@@ -129,16 +136,16 @@ public abstract class Event extends BaseDataModel {
         @JsonProperty(JSON_PROPERTY_DUE_DATE)
         public abstract Builder dueDate(@Nullable Date dueDate);
 
-        @JsonProperty(JSON_PROPERTY_DATA_VALUES)
-        public abstract Builder dataValues(@Nullable List<TrackedEntityDataValue> dataValues);
+        @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES)
+        public abstract Builder trackedEntityDataValues(@Nullable List<TrackedEntityDataValue> trackedEntityDataValues);
 
-        abstract List<TrackedEntityDataValue> dataValues();
+        abstract List<TrackedEntityDataValue> trackedEntityDataValues();
 
         abstract Event autoBuild();
 
         public Event build() {
-            if (dataValues() != null) {
-                dataValues(Collections.unmodifiableList(dataValues()));
+            if (trackedEntityDataValues() != null) {
+                trackedEntityDataValues(Collections.unmodifiableList(trackedEntityDataValues()));
             }
 
             return autoBuild();

@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.client.models.Inject;
 import org.hisp.dhis.client.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.client.models.common.ValueType;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -39,47 +40,67 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OptionIntegrationTests {
+public class OptionSetIntegrationTests {
 
     @Test
-    public void option_shouldMapFromJsonString() throws IOException, ParseException {
+    public void optionSet_shouldMapFromJsonString() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
 
-        Option option = objectMapper.readValue("{\n" +
+        OptionSet optionSet = objectMapper.readValue("{\n" +
                         "\n" +
-                        "    \"code\": \"15-19 years\",\n" +
-                        "    \"created\": \"2014-08-18T12:39:16.000\",\n" +
-                        "    \"lastUpdated\": \"2014-08-18T12:39:16.000\",\n" +
-                        "    \"name\": \"15-19 years\",\n" +
-                        "    \"href\": \"https://play.dhis2.org/demo/api/options/egT1YqFWsVk\",\n" +
-                        "    \"id\": \"egT1YqFWsVk\",\n" +
-                        "    \"displayName\": \"15-19 years\",\n" +
+                        "    \"created\": \"2014-06-22T10:59:26.564\",\n" +
+                        "    \"lastUpdated\": \"2015-08-06T14:23:38.789\",\n" +
+                        "    \"name\": \"Age category\",\n" +
+                        "    \"id\": \"VQ2lai3OfVG\",\n" +
+                        "    \"displayName\": \"Age category\",\n" +
+                        "    \"publicAccess\": \"rw------\",\n" +
+                        "    \"version\": 1,\n" +
                         "    \"externalAccess\": false,\n" +
+                        "    \"valueType\": \"TEXT\",\n" +
                         "    \"access\": {\n" +
                         "        \"read\": true,\n" +
                         "        \"update\": true,\n" +
                         "        \"externalize\": false,\n" +
                         "        \"delete\": true,\n" +
                         "        \"write\": true,\n" +
-                        "        \"manage\": false\n" +
+                        "        \"manage\": true\n" +
                         "    },\n" +
-                        "    \"optionSet\": {\n" +
-                        "        \"id\": \"VQ2lai3OfVG\"\n" +
+                        "    \"user\": {\n" +
+                        "        \"id\": \"GOLswS44mh8\"\n" +
                         "    },\n" +
                         "    \"userGroupAccesses\": [ ],\n" +
                         "    \"attributeValues\": [ ],\n" +
-                        "    \"translations\": [ ]\n" +
+                        "    \"translations\": [ ],\n" +
+                        "    \"options\": [\n" +
+                        "        {\n" +
+                        "            \"id\": \"Y1ILwhy5VDY\"\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "            \"id\": \"egT1YqFWsVk\"\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "            \"id\": \"WckXGsyYola\"\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "            \"id\": \"EmQGvSlg0GD\"\n" +
+                        "        }\n" +
+                        "    ]\n" +
                         "\n" +
                         "}",
-                Option.class);
+                OptionSet.class);
 
-        assertThat(option.uid()).isEqualTo("egT1YqFWsVk");
-        assertThat(option.code()).isEqualTo("15-19 years");
-        assertThat(option.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2014-08-18T12:39:16.000"));
-        assertThat(option.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2014-08-18T12:39:16.000"));
-        assertThat(option.name()).isEqualTo("15-19 years");
-        assertThat(option.displayName()).isEqualTo("15-19 years");
+        assertThat(optionSet.uid()).isEqualTo("VQ2lai3OfVG");
+        assertThat(optionSet.name()).isEqualTo("Age category");
+        assertThat(optionSet.displayName()).isEqualTo("Age category");
+        assertThat(optionSet.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2014-06-22T10:59:26.564"));
+        assertThat(optionSet.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-06T14:23:38.789"));
+        assertThat(optionSet.version()).isEqualTo(1);
+        assertThat(optionSet.valueType()).isEqualTo(ValueType.TEXT);
+        assertThat(optionSet.options().get(0).uid()).isEqualTo("Y1ILwhy5VDY");
+        assertThat(optionSet.options().get(1).uid()).isEqualTo("egT1YqFWsVk");
+        assertThat(optionSet.options().get(2).uid()).isEqualTo("WckXGsyYola");
+        assertThat(optionSet.options().get(3).uid()).isEqualTo("EmQGvSlg0GD");
     }
 }

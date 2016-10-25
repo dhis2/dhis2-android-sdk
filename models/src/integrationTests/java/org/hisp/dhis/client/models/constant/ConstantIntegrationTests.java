@@ -30,28 +30,16 @@ package org.hisp.dhis.client.models.constant;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.junit.Before;
+import org.hisp.dhis.client.models.Inject;
+import org.hisp.dhis.client.models.common.BaseIdentifiableObject;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConstantIntegrationTests {
-    DateFormat dateFormat;
-    ObjectMapper objectMapper;
-
-    @Before
-    public void setup() {
-        dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.US);
-
-        objectMapper = new ObjectMapper();
-        objectMapper.setDateFormat(dateFormat);
-    }
 
     /**
      * Checks whether the parsing from JSON string works as expected. Payload intentionally
@@ -62,6 +50,8 @@ public class ConstantIntegrationTests {
      */
     @Test
     public void constant_shouldMapFromJsonString() throws IOException, ParseException {
+        ObjectMapper objectMapper = Inject.objectMapper();
+
         // parse payload into model instance
         Constant constant = objectMapper.readValue("{" +
                 "\"created\":\"2013-03-11T16:39:33.083\"," +
@@ -85,8 +75,10 @@ public class ConstantIntegrationTests {
                 "}", Constant.class);
 
         // we need to make sure that jackson is parsing dates in correct way
-        assertThat(constant.created()).isEqualTo(dateFormat.parse("2013-03-11T16:39:33.083"));
-        assertThat(constant.lastUpdated()).isEqualTo(dateFormat.parse("2013-03-11T16:39:33.083"));
+        assertThat(constant.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2013-03-11T16:39:33.083"));
+        assertThat(constant.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2013-03-11T16:39:33.083"));
 
         // check if all properties are present and correspond to values in payload
         assertThat(constant.name()).isEqualTo("Pi");

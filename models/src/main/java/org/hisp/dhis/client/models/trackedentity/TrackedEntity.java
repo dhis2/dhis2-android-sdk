@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.client.models.trackedentity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
@@ -45,7 +44,6 @@ public abstract class TrackedEntity extends BaseNameableObject {
     }
 
     @AutoValue.Builder
-    @JsonIgnoreProperties(ignoreUnknown = true)
     public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
         public abstract TrackedEntity build();
     }

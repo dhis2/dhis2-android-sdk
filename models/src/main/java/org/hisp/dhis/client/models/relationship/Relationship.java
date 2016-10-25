@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.client.models.relationship;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
@@ -68,7 +67,6 @@ public abstract class Relationship extends BaseModel {
     }
 
     @AutoValue.Builder
-    @JsonIgnoreProperties(ignoreUnknown = true)
     public static abstract class Builder extends BaseModel.Builder<Builder> {
         @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_A)
         public abstract Builder trackedEntityInstanceA(TrackedEntityInstance entityInstanceA);

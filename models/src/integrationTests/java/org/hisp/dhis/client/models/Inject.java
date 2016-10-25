@@ -26,25 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.models.option;
+package org.hisp.dhis.client.models;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.google.auto.value.AutoValue;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.client.models.common.BaseIdentifiableObject;
 
-// TODO: Tests
-@AutoValue
-@JsonDeserialize(builder = AutoValue_Option.Builder.class)
-public abstract class Option extends BaseIdentifiableObject {
-    // no fields
-
-    public static Builder builder() {
-        return new AutoValue_Option.Builder();
+public class Inject {
+    private Inject() {
+        // no instances
     }
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Option build();
+    // configures and returns instance of object mapper
+    public static ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // setting date format which is used across all models
+        objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT);
+
+        // don't fail on unknown properties
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        return objectMapper;
     }
 }

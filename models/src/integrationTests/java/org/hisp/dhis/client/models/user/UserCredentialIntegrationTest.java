@@ -2,31 +2,21 @@ package org.hisp.dhis.client.models.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.junit.Before;
+import org.hisp.dhis.client.models.Inject;
+import org.hisp.dhis.client.models.common.BaseIdentifiableObject;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserCredentialIntegrationTest {
-    DateFormat dateFormat;
-    ObjectMapper objectMapper;
-
-    @Before
-    public void setup() {
-        dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.US);
-
-        objectMapper = new ObjectMapper();
-        objectMapper.setDateFormat(dateFormat);
-    }
 
     @Test
     public void userCredentials_shouldMapFromJsonString() throws IOException, ParseException {
+        ObjectMapper objectMapper = Inject.objectMapper();
+
         UserCredentials userCredentials = objectMapper.readValue("{\n" +
                 "\n" +
                 "    \"code\": \"admin\",\n" +
@@ -63,10 +53,10 @@ public class UserCredentialIntegrationTest {
                 "},", UserCredentials.class);
 
 
-        assertThat(userCredentials.lastUpdated())
-                .isEqualTo(dateFormat.parse("2016-10-25T09:21:33.884"));
-        assertThat(userCredentials.created())
-                .isEqualTo(dateFormat.parse("2013-04-18T17:15:08.401"));
+        assertThat(userCredentials.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2016-10-25T09:21:33.884"));
+        assertThat(userCredentials.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2013-04-18T17:15:08.401"));
         assertThat(userCredentials.uid()).isEqualTo("ZyjSDLHGPv4");
         assertThat(userCredentials.username()).isEqualTo("admin");
         assertThat(userCredentials.code()).isEqualTo("admin");

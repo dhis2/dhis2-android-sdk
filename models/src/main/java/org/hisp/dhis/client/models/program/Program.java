@@ -30,4 +30,7 @@ package org.hisp.dhis.client.models.program;
 
 // TODO: implement
 public class Program {
+    public String uid() {
+        return "";
+    }
 }

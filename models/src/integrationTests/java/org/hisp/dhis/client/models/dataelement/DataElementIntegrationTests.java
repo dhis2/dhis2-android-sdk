@@ -30,32 +30,21 @@ package org.hisp.dhis.client.models.dataelement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.client.models.Inject;
+import org.hisp.dhis.client.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.models.common.ValueType;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DataElementIntegrationTests {
-    DateFormat dateFormat;
-    ObjectMapper objectMapper;
-
-    @Before
-    public void setup() {
-        dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.US);
-
-        objectMapper = new ObjectMapper();
-        objectMapper.setDateFormat(dateFormat);
-    }
 
     @Test
     public void dataElement_shouldMapFromJsonString() throws IOException, ParseException {
+        ObjectMapper objectMapper = Inject.objectMapper();
         DataElement dataElement = objectMapper.readValue("{" +
                         "\"code\":\"DE_2005735\"," +
                         "\"lastUpdated\":\"2014-11-11T21:56:05.560\"," +
@@ -92,9 +81,9 @@ public class DataElementIntegrationTests {
         assertThat(dataElement.uid()).isEqualTo("g9eOBujte1U");
         assertThat(dataElement.code()).isEqualTo("DE_2005735");
         assertThat(dataElement.created()).isEqualTo(
-                dateFormat.parse("2012-09-20T08:36:46.552"));
+                BaseIdentifiableObject.DATE_FORMAT.parse("2012-09-20T08:36:46.552"));
         assertThat(dataElement.lastUpdated()).isEqualTo(
-                dateFormat.parse("2014-11-11T21:56:05.560"));
+                BaseIdentifiableObject.DATE_FORMAT.parse("2014-11-11T21:56:05.560"));
 
         // names
         assertThat(dataElement.name()).isEqualTo("MCH ANC Visit");

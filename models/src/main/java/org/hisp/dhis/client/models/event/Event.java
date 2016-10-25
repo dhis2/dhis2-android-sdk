@@ -1,7 +1,5 @@
 package org.hisp.dhis.client.models.event;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
@@ -101,7 +99,6 @@ public abstract class Event extends BaseDataModel {
     }
 
     @AutoValue.Builder
-    @JsonIgnoreProperties(ignoreUnknown = true)
     public static abstract class Builder extends BaseDataModel.Builder<Builder> {
         @JsonProperty(JSON_PROPERTY_EVENT_UID)
         public abstract Builder uid(@Nullable String uid);

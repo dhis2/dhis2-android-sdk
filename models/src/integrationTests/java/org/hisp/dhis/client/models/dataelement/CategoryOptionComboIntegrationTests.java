@@ -30,31 +30,21 @@ package org.hisp.dhis.client.models.dataelement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.junit.Before;
+import org.hisp.dhis.client.models.Inject;
+import org.hisp.dhis.client.models.common.BaseIdentifiableObject;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CategoryOptionComboIntegrationTests {
-    DateFormat dateFormat;
-    ObjectMapper objectMapper;
-
-    @Before
-    public void setup() {
-        dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.US);
-
-        objectMapper = new ObjectMapper();
-        objectMapper.setDateFormat(dateFormat);
-    }
 
     @Test
     public void categoryOptionCombo_shouldMapFromJsonString() throws IOException, ParseException {
+        ObjectMapper objectMapper = Inject.objectMapper();
+
         CategoryOptionCombo categoryOptionCombo = objectMapper.readValue("{" +
                         "\"code\":\"COC_358963\"," +
                         "\"lastUpdated\":\"2011-12-24T12:24:25.319\"," +
@@ -78,9 +68,9 @@ public class CategoryOptionComboIntegrationTests {
         assertThat(categoryOptionCombo.code()).isEqualTo("COC_358963");
 
         assertThat(categoryOptionCombo.created()).isEqualTo(
-                dateFormat.parse("2011-12-24T12:24:25.319"));
+                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.319"));
         assertThat(categoryOptionCombo.lastUpdated()).isEqualTo(
-                dateFormat.parse("2011-12-24T12:24:25.319"));
+                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.319"));
 
         assertThat(categoryOptionCombo.name()).isEqualTo("0-11m");
         assertThat(categoryOptionCombo.shortName()).isEqualTo("0-11m");

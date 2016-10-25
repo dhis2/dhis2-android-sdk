@@ -73,7 +73,7 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
         @JsonProperty(ALLOW_FUTURE_DATE)
         public abstract Builder allowFutureDate(@Nullable Boolean allowFutureDate);
 
-        abstract ProgramStageDataElement build();
+        public abstract ProgramStageDataElement build();
     }
 
     private static final class SortOrderComparator implements Comparator<ProgramStageDataElement> {

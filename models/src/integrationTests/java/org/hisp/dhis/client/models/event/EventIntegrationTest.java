@@ -2,6 +2,8 @@ package org.hisp.dhis.client.models.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.client.models.Inject;
+import org.hisp.dhis.client.models.common.BaseIdentifiableObject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,19 +16,10 @@ import java.util.Locale;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class EventIntegrationTest {
-    DateFormat dateFormat;
-    ObjectMapper objectMapper;
-
-    @Before
-    public void setup() {
-        dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.US);
-
-        objectMapper = new ObjectMapper();
-        objectMapper.setDateFormat(dateFormat);
-    }
 
     @Test
     public void event_shouldMapFromJsonString() throws IOException, ParseException {
+        ObjectMapper objectMapper = Inject.objectMapper();
         Event event = objectMapper.readValue("{\n" +
                 "\n" +
                 "    \"href\": \"https://play.dhis2.org/dev/api/events/wYdGdw16H8F\",\n" +
@@ -112,13 +105,13 @@ public class EventIntegrationTest {
                 "}", Event.class);
 
         assertThat(event.lastUpdated())
-                .isEqualTo(dateFormat.parse("2016-10-25T09:21:33.884"));
+                .isEqualTo(BaseIdentifiableObject.DATE_FORMAT.parse("2016-10-25T09:21:33.884"));
         assertThat(event.created())
-                .isEqualTo(dateFormat.parse("2013-04-18T17:15:08.401"));
+                .isEqualTo(BaseIdentifiableObject.DATE_FORMAT.parse("2013-04-18T17:15:08.401"));
         assertThat(event.eventDate())
-                .isEqualTo(dateFormat.parse("2015-01-27T00:00:00"));
+                .isEqualTo(BaseIdentifiableObject.DATE_FORMAT.parse("2015-01-27T00:00:00"));
         assertThat(event.completedDate())
-                .isEqualTo(dateFormat.parse("2016-04-21T00:00:00"));
+                .isEqualTo(BaseIdentifiableObject.DATE_FORMAT.parse("2016-04-21T00:00:00"));
         assertThat(event.uid()).isEqualTo("ZyjSDLHGPv4");
         assertThat(event.status().toString()).isEqualTo("ACTIVE");
         assertThat(event.organisationUnit()).isEqualTo("Rp268JB6Ne4");

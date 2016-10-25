@@ -43,19 +43,19 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
         @JsonProperty(MANDATORY)
-        public abstract ProgramTrackedEntityAttribute.Builder mandatory(@Nullable Boolean mandatory);
+        public abstract Builder mandatory(@Nullable Boolean mandatory);
 
         @JsonProperty(TRACKED_ENTITY_ATTRIBUTE)
-        public abstract ProgramTrackedEntityAttribute.Builder trackedEntityAttribute(@Nullable TrackedEntityAttribute trackedEntityAttribute);
+        public abstract Builder trackedEntityAttribute(@Nullable TrackedEntityAttribute trackedEntityAttribute);
 
         @JsonProperty(VALUE_TYPE)
-        public abstract ProgramTrackedEntityAttribute.Builder valueType(@Nullable ValueType valueType);
+        public abstract Builder valueType(@Nullable ValueType valueType);
 
         @JsonProperty(ALLOW_FUTURE_DATE)
-        public abstract ProgramTrackedEntityAttribute.Builder allowFutureDate(@Nullable Boolean allowFutureFate);
+        public abstract Builder allowFutureDate(@Nullable Boolean allowFutureFate);
 
         @JsonProperty(DISPLAY_IN_LIST)
-        public abstract ProgramTrackedEntityAttribute.Builder displayInList(@Nullable Boolean displayInList);
+        public abstract Builder displayInList(@Nullable Boolean displayInList);
 
         abstract ProgramTrackedEntityAttribute build();
     }

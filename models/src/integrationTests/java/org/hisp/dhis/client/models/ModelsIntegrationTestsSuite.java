@@ -38,6 +38,7 @@ import org.hisp.dhis.client.models.event.EventIntegrationTest;
 import org.hisp.dhis.client.models.option.OptionIntegrationTests;
 import org.hisp.dhis.client.models.option.OptionSetIntegrationTests;
 import org.hisp.dhis.client.models.organisationunit.OrganisationUnitIntegrationTests;
+import org.hisp.dhis.client.models.trackedentity.TrackedEntityAttributeIntegrationTest;
 import org.hisp.dhis.client.models.trackedentity.TrackedEntityIntegrationTest;
 import org.hisp.dhis.client.models.user.UserCredentialIntegrationTest;
 import org.hisp.dhis.client.models.user.UserIntegrationTest;
@@ -61,7 +62,8 @@ import org.junit.runners.Suite;
         OptionSetIntegrationTests.class,
         OptionIntegrationTests.class,
         OrganisationUnitIntegrationTests.class,
-        TrackedEntityIntegrationTest.class
+        TrackedEntityIntegrationTest.class,
+        TrackedEntityAttributeIntegrationTest.class
 })
 public class ModelsIntegrationTestsSuite {
 }

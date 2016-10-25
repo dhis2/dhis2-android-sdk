@@ -58,10 +58,6 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
     private static final String JSON_PROPERTY_INHERIT = "inherit";
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY)
-    public abstract TrackedEntity trackedEntity();
-
-    @Nullable
     @JsonProperty(JSON_PROPERTY_PATTERN)
     public abstract String pattern();
 
@@ -119,9 +115,6 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
-        @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY)
-        public abstract Builder trackedEntity(@Nullable TrackedEntity trackedEntity);
-
         @JsonProperty(JSON_PROPERTY_PATTERN)
         public abstract Builder pattern(@Nullable String pattern);
 

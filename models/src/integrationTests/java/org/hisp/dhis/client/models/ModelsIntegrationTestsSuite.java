@@ -34,6 +34,7 @@ import org.hisp.dhis.client.models.dataelement.CategoryIntegrationTests;
 import org.hisp.dhis.client.models.dataelement.CategoryOptionComboIntegrationTests;
 import org.hisp.dhis.client.models.dataelement.CategoryOptionIntegrationTests;
 import org.hisp.dhis.client.models.dataelement.DataElementIntegrationTests;
+import org.hisp.dhis.client.models.event.EventIntegrationTest;
 import org.hisp.dhis.client.models.user.UserCredentialIntegrationTest;
 import org.hisp.dhis.client.models.user.UserIntegrationTest;
 import org.junit.runner.RunWith;
@@ -49,7 +50,8 @@ import org.junit.runners.Suite;
         CategoryOptionIntegrationTests.class,
         CategoryComboIntegrationTests.class,
         CategoryOptionComboIntegrationTests.class,
-        DataElementIntegrationTests.class
+        DataElementIntegrationTests.class,
+        EventIntegrationTest.class
 })
 public class ModelsIntegrationTestsSuite {
 }

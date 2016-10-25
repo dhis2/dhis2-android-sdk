@@ -21,9 +21,11 @@ public abstract class UserCredentials extends BaseIdentifiableObject {
     private static final String JSON_PROPERTY_USER_ROLES = "userRoles";
     private static final String JSON_PROPERTY_USERNAME = "username";
 
+    @Nullable
     @JsonProperty(JSON_PROPERTY_USERNAME)
     public abstract String username();
 
+    @Nullable
     @JsonProperty(JSON_PROPERTY_USER_ROLES)
     public abstract List<UserRole> userRoles();
 
@@ -36,10 +38,10 @@ public abstract class UserCredentials extends BaseIdentifiableObject {
     public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
         @JsonProperty(JSON_PROPERTY_USER_ROLES)
-        public abstract Builder userRoles(List<UserRole> userRoles);
+        public abstract Builder userRoles(@Nullable List<UserRole> userRoles);
 
         @JsonProperty(JSON_PROPERTY_USERNAME)
-        public abstract Builder username(String username);
+        public abstract Builder username(@Nullable String username);
 
         // internal, not exposed
         abstract List<UserRole> userRoles();

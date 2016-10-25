@@ -54,7 +54,7 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
     }
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<ProgramStageDataElement.Builder> {
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
         @JsonProperty(DISPLAY_IN_REPORTS)
         public abstract ProgramStageDataElement.Builder displayInReports(@Nullable Boolean displayInReports);
 

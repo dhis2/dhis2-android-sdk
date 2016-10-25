@@ -41,7 +41,7 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
     public abstract Boolean displayInList();
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseNameableObject.Builder<ProgramTrackedEntityAttribute.Builder> {
+    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
         @JsonProperty(MANDATORY)
         public abstract ProgramTrackedEntityAttribute.Builder mandatory(@Nullable Boolean mandatory);
 

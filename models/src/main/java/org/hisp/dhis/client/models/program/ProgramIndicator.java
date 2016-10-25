@@ -86,7 +86,7 @@ public abstract class ProgramIndicator extends BaseNameableObject {
     public abstract Program program();
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseNameableObject.Builder<ProgramIndicator.Builder> {
+    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
         @JsonProperty(CODE)
         public abstract ProgramIndicator.Builder code(@Nullable String code);
 

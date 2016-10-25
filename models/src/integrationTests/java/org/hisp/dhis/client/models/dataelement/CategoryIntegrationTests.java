@@ -30,31 +30,20 @@ package org.hisp.dhis.client.models.dataelement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.junit.Before;
+import org.hisp.dhis.client.models.Inject;
+import org.hisp.dhis.client.models.common.BaseIdentifiableObject;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CategoryIntegrationTests {
-    DateFormat dateFormat;
-    ObjectMapper objectMapper;
-
-    @Before
-    public void setup() {
-        dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.US);
-
-        objectMapper = new ObjectMapper();
-        objectMapper.setDateFormat(dateFormat);
-    }
-
     @Test
     public void category_shouldMapFromJsonString() throws IOException, ParseException {
+        ObjectMapper objectMapper = Inject.objectMapper();
+
         Category category = objectMapper.readValue("{\"" +
                         "lastUpdated\":\"2014-11-19T12:58:52.558\"," +
                         "\"id\":\"KfdsGBcoiCa\"," +
@@ -86,8 +75,10 @@ public class CategoryIntegrationTests {
                 Category.class);
 
         assertThat(category.uid()).isEqualTo("KfdsGBcoiCa");
-        assertThat(category.created()).isEqualTo(dateFormat.parse("2011-12-24T12:24:25.155"));
-        assertThat(category.lastUpdated()).isEqualTo(dateFormat.parse("2014-11-19T12:58:52.558"));
+        assertThat(category.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.155"));
+        assertThat(category.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2014-11-19T12:58:52.558"));
 
         // names
         assertThat(category.name()).isEqualTo("Births attended by");

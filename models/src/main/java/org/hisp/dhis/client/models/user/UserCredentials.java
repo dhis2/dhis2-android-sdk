@@ -1,7 +1,6 @@
 package org.hisp.dhis.client.models.user;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
@@ -20,9 +19,11 @@ public abstract class UserCredentials extends BaseIdentifiableObject {
     private static final String JSON_PROPERTY_USER_ROLES = "userRoles";
     private static final String JSON_PROPERTY_USERNAME = "username";
 
+    @Nullable
     @JsonProperty(JSON_PROPERTY_USERNAME)
     public abstract String username();
 
+    @Nullable
     @JsonProperty(JSON_PROPERTY_USER_ROLES)
     public abstract List<UserRole> userRoles();
 
@@ -31,14 +32,13 @@ public abstract class UserCredentials extends BaseIdentifiableObject {
     }
 
     @AutoValue.Builder
-    @JsonIgnoreProperties(ignoreUnknown = true)
     public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
         @JsonProperty(JSON_PROPERTY_USER_ROLES)
-        public abstract Builder userRoles(List<UserRole> userRoles);
+        public abstract Builder userRoles(@Nullable List<UserRole> userRoles);
 
         @JsonProperty(JSON_PROPERTY_USERNAME)
-        public abstract Builder username(String username);
+        public abstract Builder username(@Nullable String username);
 
         // internal, not exposed
         abstract List<UserRole> userRoles();
@@ -53,5 +53,4 @@ public abstract class UserCredentials extends BaseIdentifiableObject {
             return autoBuild();
         }
     }
-
 }

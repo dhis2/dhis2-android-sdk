@@ -1,6 +1,5 @@
 package org.hisp.dhis.client.models.common;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
@@ -23,7 +22,6 @@ public abstract class Coordinates {
     }
 
     @AutoValue.Builder
-    @JsonIgnoreProperties(ignoreUnknown = true)
     public static abstract class Builder {
         @JsonProperty(JSON_PROPERTY_LATITUDE)
         public abstract Builder latitude(Double latitude);

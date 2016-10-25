@@ -34,12 +34,17 @@ import org.hisp.dhis.client.models.dataelement.CategoryIntegrationTests;
 import org.hisp.dhis.client.models.dataelement.CategoryOptionComboIntegrationTests;
 import org.hisp.dhis.client.models.dataelement.CategoryOptionIntegrationTests;
 import org.hisp.dhis.client.models.dataelement.DataElementIntegrationTests;
+import org.hisp.dhis.client.models.user.UserCredentialIntegrationTest;
+import org.hisp.dhis.client.models.user.UserIntegrationTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         ConstantIntegrationTests.class,
+        CategoryOptionIntegrationTests.class,
+        UserIntegrationTest.class,
+        UserCredentialIntegrationTest.class,
         CategoryIntegrationTests.class,
         CategoryOptionIntegrationTests.class,
         CategoryComboIntegrationTests.class,

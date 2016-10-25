@@ -1,7 +1,6 @@
 package org.hisp.dhis.client.models.trackedentity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
@@ -60,7 +59,6 @@ public abstract class TrackedEntityDataValue extends BaseModel {
     }
 
     @AutoValue.Builder
-    @JsonIgnoreProperties(ignoreUnknown = true)
     public static abstract class Builder extends BaseModel.Builder<Builder> {
 
         @JsonProperty(JSON_PROPERTY_DATA_ELEMENT)

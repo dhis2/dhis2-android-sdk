@@ -30,31 +30,21 @@ package org.hisp.dhis.client.models.dataelement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.junit.Before;
+import org.hisp.dhis.client.models.Inject;
+import org.hisp.dhis.client.models.common.BaseIdentifiableObject;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CategoryComboIntegrationTests {
-    DateFormat dateFormat;
-    ObjectMapper objectMapper;
-
-    @Before
-    public void setup() {
-        dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.US);
-
-        objectMapper = new ObjectMapper();
-        objectMapper.setDateFormat(dateFormat);
-    }
 
     @Test
     public void categoryCombo_shouldMapFromJsonString() throws IOException, ParseException {
+        ObjectMapper objectMapper = Inject.objectMapper();
+
         CategoryCombo combo = objectMapper.readValue("{" +
                         "\"code\":\"BIRTHS\"," +
                         "\"created\":\"2011-12-24T12:24:25.203\"," +
@@ -83,8 +73,10 @@ public class CategoryComboIntegrationTests {
 
         assertThat(combo.uid()).isEqualTo("m2jTvAj5kkm");
         assertThat(combo.code()).isEqualTo("BIRTHS");
-        assertThat(combo.created()).isEqualTo(dateFormat.parse("2011-12-24T12:24:25.203"));
-        assertThat(combo.lastUpdated()).isEqualTo(dateFormat.parse("2016-04-18T16:04:34.745"));
+        assertThat(combo.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.203"));
+        assertThat(combo.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2016-04-18T16:04:34.745"));
         assertThat(combo.name()).isEqualTo("Births");
         assertThat(combo.displayName()).isEqualTo("Births");
         assertThat(combo.isDefault()).isEqualTo(false);

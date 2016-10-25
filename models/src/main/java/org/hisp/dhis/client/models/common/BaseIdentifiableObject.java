@@ -30,11 +30,19 @@ package org.hisp.dhis.client.models.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.annotation.Nullable;
 
 public abstract class BaseIdentifiableObject extends BaseModel implements IdentifiableObject {
+    /* date format which should be used for all Date instances
+    within models which extend BaseIdentifiableObject */
+    public static final DateFormat DATE_FORMAT =
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.US);
+
     private static final int UID_LENGTH = 11;
 
     private static final String JSON_PROPERTY_UID = "id";

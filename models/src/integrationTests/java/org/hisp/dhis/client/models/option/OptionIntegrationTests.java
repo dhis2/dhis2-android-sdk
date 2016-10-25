@@ -28,23 +28,14 @@
 
 package org.hisp.dhis.client.models.option;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.google.auto.value.AutoValue;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.hisp.dhis.client.models.common.BaseIdentifiableObject;
+import org.junit.Before;
 
-// TODO: Tests
-@AutoValue
-@JsonDeserialize(builder = AutoValue_Option.Builder.class)
-public abstract class Option extends BaseIdentifiableObject {
-    // no fields
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
-    public static Builder builder() {
-        return new AutoValue_Option.Builder();
-    }
+public class OptionIntegrationTests {
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Option build();
-    }
 }

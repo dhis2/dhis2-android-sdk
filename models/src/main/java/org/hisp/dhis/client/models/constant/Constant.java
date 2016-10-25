@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.client.models.constant;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
@@ -51,7 +50,6 @@ public abstract class Constant extends BaseIdentifiableObject {
     }
 
     @AutoValue.Builder
-    @JsonIgnoreProperties(ignoreUnknown = true)
     public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
         @JsonProperty(JSON_PROPERTY_VALUE)
         public abstract Builder value(Double value);

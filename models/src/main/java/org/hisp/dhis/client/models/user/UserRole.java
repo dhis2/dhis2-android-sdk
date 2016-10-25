@@ -21,7 +21,6 @@ public abstract class UserRole extends BaseIdentifiableObject {
 
     @Nullable
     @JsonProperty(JSON_PROPERTY_PROGRAMS)
-    @Nullable
     public abstract List<Program> programs();
 
     public static Builder builder() {

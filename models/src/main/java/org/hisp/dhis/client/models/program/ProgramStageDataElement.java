@@ -56,22 +56,22 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
         @JsonProperty(DISPLAY_IN_REPORTS)
-        public abstract ProgramStageDataElement.Builder displayInReports(@Nullable Boolean displayInReports);
+        public abstract Builder displayInReports(@Nullable Boolean displayInReports);
 
         @JsonProperty(DATA_ELEMENT)
-        public abstract ProgramStageDataElement.Builder dataElement(@Nullable DataElement dataElement);
+        public abstract Builder dataElement(@Nullable DataElement dataElement);
 
         @JsonProperty(COMPULSORY)
-        public abstract ProgramStageDataElement.Builder compulsory(@Nullable Boolean compulsory);
+        public abstract Builder compulsory(@Nullable Boolean compulsory);
 
         @JsonProperty(ALLOW_PROVIDED_ELSEWHERE)
-        public abstract ProgramStageDataElement.Builder allowProvidedElsewhere(@Nullable Boolean allowProvidedElsewhere);
+        public abstract Builder allowProvidedElsewhere(@Nullable Boolean allowProvidedElsewhere);
 
         @JsonProperty(SORT_ORDER)
-        public abstract ProgramStageDataElement.Builder sortOrder(@Nullable Integer sortOrder);
+        public abstract Builder sortOrder(@Nullable Integer sortOrder);
 
         @JsonProperty(ALLOW_FUTURE_DATE)
-        public abstract ProgramStageDataElement.Builder allowFutureDate(@Nullable Boolean allowFutureDate);
+        public abstract Builder allowFutureDate(@Nullable Boolean allowFutureDate);
 
         abstract ProgramStageDataElement build();
     }

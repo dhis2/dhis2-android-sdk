@@ -40,6 +40,7 @@ import org.hisp.dhis.client.models.option.OptionSetIntegrationTests;
 import org.hisp.dhis.client.models.organisationunit.OrganisationUnitIntegrationTests;
 import org.hisp.dhis.client.models.user.UserCredentialIntegrationTest;
 import org.hisp.dhis.client.models.user.UserIntegrationTest;
+import org.hisp.dhis.client.models.user.UserRoleIntegrationTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -49,6 +50,7 @@ import org.junit.runners.Suite;
         CategoryOptionIntegrationTests.class,
         UserIntegrationTest.class,
         UserCredentialIntegrationTest.class,
+        UserRoleIntegrationTest.class,
         CategoryIntegrationTests.class,
         CategoryOptionIntegrationTests.class,
         CategoryComboIntegrationTests.class,

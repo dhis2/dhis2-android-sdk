@@ -10,11 +10,6 @@ import android.widget.Toast;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.models.FormEntity;
-import org.hisp.dhis.client.sdk.ui.models.FormEntityEditText;
-
-/**
- * Created by thomaslindsjorn on 18/10/16.
- */
 
 public class ExpansionPanelRowView implements RowView {
 
@@ -30,8 +25,8 @@ public class ExpansionPanelRowView implements RowView {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, FormEntity formEntity) {
-        FormEntityEditText entity = (FormEntityEditText) formEntity;
-        ((ExpansionPanelRowView.ExpansionPanelRowViewHolder) viewHolder).update(entity);
+        //ExpansionPanel entity = (ExpansionPanel) formEntity;
+        //((ExpansionPanelRowView.ExpansionPanelRowViewHolder) viewHolder).update(entity);
     }
 
     private static class ExpansionPanelRowViewHolder extends RecyclerView.ViewHolder {

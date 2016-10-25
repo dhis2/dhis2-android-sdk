@@ -72,4 +72,6 @@ dependencies {
 
     // Test
     testCompile "junit:junit:${libs.jUnitVersion}"
+
+    compile 'com.bignerdranch.android:expandablerecyclerview:3.0.0-RC1'
 }

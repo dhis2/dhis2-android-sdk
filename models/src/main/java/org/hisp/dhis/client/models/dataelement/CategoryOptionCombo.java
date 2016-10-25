@@ -34,7 +34,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.models.common.BaseNameableObject;
 
-// TODO: Tests
+// TODO: Unit tests
 @AutoValue
 @JsonDeserialize(builder = AutoValue_CategoryOptionCombo.Builder.class)
 public abstract class CategoryOptionCombo extends BaseNameableObject {

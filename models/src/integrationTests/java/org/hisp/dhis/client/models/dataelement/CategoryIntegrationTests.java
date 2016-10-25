@@ -39,6 +39,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class CategoryIntegrationTests {
     DateFormat dateFormat;
     ObjectMapper objectMapper;
@@ -53,6 +55,52 @@ public class CategoryIntegrationTests {
 
     @Test
     public void category_shouldMapFromJsonString() throws IOException, ParseException {
-        // test
+        Category category = objectMapper.readValue("{\"" +
+                        "lastUpdated\":\"2014-11-19T12:58:52.558\"," +
+                        "\"id\":\"KfdsGBcoiCa\"," +
+                        "\"href\":\"https://play.dhis2.org/demo/api/categories/KfdsGBcoiCa\"," +
+                        "\"created\":\"2011-12-24T12:24:25.155\"," +
+                        "\"name\":\"Births attended by\"," +
+                        "\"shortName\":\"Births attended by\"," +
+                        "\"dataDimensionType\":\"DISAGGREGATION\"," +
+                        "\"dimensionType\":\"CATEGORY\"," +
+                        "\"displayName\":\"Births attended by\"," +
+                        "\"publicAccess\":\"rw------\"," +
+                        "\"displayShortName\":\"Births attended by\"," +
+                        "\"externalAccess\":false," +
+                        "\"dimension\":\"KfdsGBcoiCa\"," +
+                        "\"allItems\":false," +
+                        "\"dataDimension\":false," +
+                        "\"user\":{\"id\":\"GOLswS44mh8\"}," +
+                        "\"translations\":[]," +
+                        "\"categoryCombos\":[{\"id\":\"m2jTvAj5kkm\"}]," +
+                        "\"categoryOptions\":[" +
+                        "{\"id\":\"TNYQzTHdoxL\"}," +
+                        "{\"id\":\"TXGfLxZlInA\"}," +
+                        "{\"id\":\"QgULqw9YDu2\"}," +
+                        "{\"id\":\"OjIOxG7vgna\"}," +
+                        "{\"id\":\"uZUnebiT5DI\"}," +
+                        "{\"id\":\"HTHvCohKoXt\"}]," +
+                        "\"userGroupAccesses\":[]" +
+                        "}",
+                Category.class);
+
+        assertThat(category.uid()).isEqualTo("KfdsGBcoiCa");
+        assertThat(category.created()).isEqualTo(dateFormat.parse("2011-12-24T12:24:25.155"));
+        assertThat(category.lastUpdated()).isEqualTo(dateFormat.parse("2014-11-19T12:58:52.558"));
+
+        // names
+        assertThat(category.name()).isEqualTo("Births attended by");
+        assertThat(category.shortName()).isEqualTo("Births attended by");
+        assertThat(category.displayName()).isEqualTo("Births attended by");
+        assertThat(category.displayShortName()).isEqualTo("Births attended by");
+
+        // checking options
+        assertThat(category.categoryOptions().get(0).uid()).isEqualTo("TNYQzTHdoxL");
+        assertThat(category.categoryOptions().get(1).uid()).isEqualTo("TXGfLxZlInA");
+        assertThat(category.categoryOptions().get(2).uid()).isEqualTo("QgULqw9YDu2");
+        assertThat(category.categoryOptions().get(3).uid()).isEqualTo("OjIOxG7vgna");
+        assertThat(category.categoryOptions().get(4).uid()).isEqualTo("uZUnebiT5DI");
+        assertThat(category.categoryOptions().get(5).uid()).isEqualTo("HTHvCohKoXt");
     }
 }

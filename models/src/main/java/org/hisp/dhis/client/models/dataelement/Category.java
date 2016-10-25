@@ -40,7 +40,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-// TODO: Tests
+// TODO: Unit tests
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Category.Builder.class)
 public abstract class Category extends BaseNameableObject {

@@ -17,7 +17,6 @@ import javax.annotation.Nullable;
 @AutoValue
 @JsonDeserialize(builder = AutoValue_UserCredentials.Builder.class)
 public abstract class UserCredentials extends BaseIdentifiableObject {
-
     private static final String JSON_PROPERTY_USER_ROLES = "userRoles";
     private static final String JSON_PROPERTY_USERNAME = "username";
 

@@ -12,6 +12,7 @@ import java.text.ParseException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProgramStageDataElementIntegrationTest {
+
     @Test
     public void programStageDataElement_shouldMapFromJsonString() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
@@ -53,13 +54,11 @@ public class ProgramStageDataElementIntegrationTest {
                 BaseIdentifiableObject.DATE_FORMAT.parse("2015-03-27T16:27:19.000"));
         assertThat(programStageDataElement.uid()).isEqualTo("LfgZNmadu4W");
         assertThat(programStageDataElement.dataElement().uid()).isEqualTo("aei1xRjSU2l");
-        assertThat(programStageDataElement.programStage().uid()).isEqualTo("ZzYYXq4fJie");
         assertThat(programStageDataElement.allowFutureDate()).isFalse();
         assertThat(programStageDataElement.compulsory()).isFalse();
         assertThat(programStageDataElement.sortOrder()).isEqualTo(11);
         assertThat(programStageDataElement.allowProvidedElsewhere()).isFalse();
         assertThat(programStageDataElement.displayInReports()).isFalse();
     }
-
 
 }

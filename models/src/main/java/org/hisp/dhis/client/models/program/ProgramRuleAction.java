@@ -18,7 +18,7 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject {
     private static final String LOCATION = "location";
     private static final String ATTRIBUTE = "attribute";
     private static final String PROGRAM_INDICATOR = "programIndicator";
-    private static final String PRGORAM_STAGE_SECTION = "programStageSection";
+    private static final String PROGRAM_STAGE_SECTION = "programStageSection";
     private static final String PROGRAM_RULE_ACTION_TYPE = "programRuleActionType";
     private static final String PROGRAM_STAGE = "programStage";
     private static final String DATA_ELEMENT = "dataElement";
@@ -44,7 +44,7 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject {
     public abstract ProgramIndicator programIndicator();
 
     @Nullable
-    @JsonProperty(PRGORAM_STAGE_SECTION)
+    @JsonProperty(PROGRAM_STAGE_SECTION)
     public abstract ProgramStageSection programStageSection();
 
     @Nullable
@@ -76,7 +76,7 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject {
         @JsonProperty(PROGRAM_INDICATOR)
         public abstract Builder programIndicator(@Nullable ProgramIndicator programIndicator);
 
-        @JsonProperty(PRGORAM_STAGE_SECTION)
+        @JsonProperty(PROGRAM_STAGE_SECTION)
         public abstract Builder programStageSection(@Nullable ProgramStageSection programStageSection);
 
         @JsonProperty(PROGRAM_RULE_ACTION_TYPE)

@@ -34,6 +34,8 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.models.common.BaseIdentifiableObject;
 
+import javax.annotation.Nullable;
+
 // TODO: Tests
 @AutoValue
 @JsonDeserialize(builder = AutoValue_RelationshipType.Builder.class)
@@ -41,9 +43,11 @@ public abstract class RelationshipType extends BaseIdentifiableObject {
     private static final String JSON_PROPERTY_B_TO_A = "bIsToA";
     private static final String JSON_PROPERTY_A_TO_B = "aIsToB";
 
+    @Nullable
     @JsonProperty(JSON_PROPERTY_B_TO_A)
     public abstract String bIsToA();
 
+    @Nullable
     @JsonProperty(JSON_PROPERTY_A_TO_B)
     public abstract String aIsToB();
 
@@ -63,10 +67,10 @@ public abstract class RelationshipType extends BaseIdentifiableObject {
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
         @JsonProperty(JSON_PROPERTY_B_TO_A)
-        public abstract Builder bIsToA(String bIsToA);
+        public abstract Builder bIsToA(@Nullable String bIsToA);
 
         @JsonProperty(JSON_PROPERTY_A_TO_B)
-        public abstract Builder aIsToB(String aIsToB);
+        public abstract Builder aIsToB(@Nullable String aIsToB);
 
         public abstract RelationshipType build();
     }

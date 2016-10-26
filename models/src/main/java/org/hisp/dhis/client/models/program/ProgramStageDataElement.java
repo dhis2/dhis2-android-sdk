@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ProgramStageDataElement.Builder.class)
+//TODO: ProgramStageDataElement is not a true BaseIdentifiableObject. It lacks name and displayName in API. Override those properties and return dataElement.getName() and dataElement.getDisplayName()
 public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
 
     private static final String DISPLAY_IN_REPORTS = "displayInReports";
@@ -21,6 +22,7 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
     private static final String ALLOW_PROVIDED_ELSEWHERE = "allowProvidedElsewhere";
     private static final String SORT_ORDER = "sortOrder";
     private static final String ALLOW_FUTURE_DATE = "allowFutureDate";
+    private static final String JSON_PROPERTY_PROGRAM_STAGE = "programStage";
 
     public static final Comparator<ProgramStageDataElement>
             SORT_ORDER_COMPARATOR = new SortOrderComparator();
@@ -49,6 +51,10 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
     @JsonProperty(ALLOW_FUTURE_DATE)
     public abstract Boolean allowFutureDate();
 
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE)
+    public abstract ProgramStage programStage();
+
     public static ProgramStageDataElement.Builder builder() {
         return new AutoValue_ProgramStageDataElement.Builder();
     }
@@ -72,6 +78,9 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
 
         @JsonProperty(ALLOW_FUTURE_DATE)
         public abstract Builder allowFutureDate(@Nullable Boolean allowFutureDate);
+
+        @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE)
+        public abstract Builder programStage(@Nullable ProgramStage programStage);
 
         public abstract ProgramStageDataElement build();
     }

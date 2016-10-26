@@ -4,14 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.client.models.Inject;
 import org.hisp.dhis.client.models.common.BaseIdentifiableObject;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,7 +21,7 @@ public class EventIntegrationTest {
                 "    \"href\": \"https://play.dhis2.org/dev/api/events/wYdGdw16H8F\",\n" +
                 "    \"event\": \"wYdGdw16H8F\",\n" +
                 "    \"status\": \"COMPLETED\",\n" +
-                "    \"program\": \"eBAyeGv0exc\",\n" +
+                "    \"program\": \"eBAyeGv0excﬁ\",\n" +
                 "    \"programStage\": \"Zj7UnCAulEk\",\n" +
                 "    \"enrollment\": \"RiLEKhWHlxZ\",\n" +
                 "    \"enrollmentStatus\": \"ACTIVE\",\n" +

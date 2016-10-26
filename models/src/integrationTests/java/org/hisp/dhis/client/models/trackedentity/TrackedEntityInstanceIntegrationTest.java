@@ -201,7 +201,7 @@ public class TrackedEntityInstanceIntegrationTest {
                 "        }\n" +
                 "    ]\n" +
                 "\n" +
-                "}",TrackedEntityInstance.class);
+                "}", TrackedEntityInstance.class);
 
         assertThat(trackedEntityInstance.lastUpdated()).isEqualTo(
                 BaseIdentifiableObject.DATE_FORMAT.parse("2014-03-28T12:39:39.372+0000"));

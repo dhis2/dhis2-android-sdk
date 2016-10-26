@@ -13,8 +13,9 @@ import java.text.ParseException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProgramStageIntegrationTest {
+
     @Test
-    public void programStageSection_shouldMapFromJsonString() throws IOException, ParseException {
+    public void programStage_shouldMapFromJsonString() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
         ProgramStage programStage = objectMapper.readValue("{\n" +
                 "\n" +
@@ -117,6 +118,7 @@ public class ProgramStageIntegrationTest {
                 BaseIdentifiableObject.DATE_FORMAT.parse("2013-04-10T12:15:02.041"));
         assertThat(programStage.created()).isEqualTo(
                 BaseIdentifiableObject.DATE_FORMAT.parse("2013-03-04T11:41:07.541"));
+
         assertThat(programStage.uid()).isEqualTo("eaDHS084uMp");
         assertThat(programStage.name()).isEqualTo("ANC 1st visit");
         assertThat(programStage.displayName()).isEqualTo("ANC 1st visit");
@@ -130,13 +132,11 @@ public class ProgramStageIntegrationTest {
         assertThat(programStage.formType()).isEqualTo(FormType.DEFAULT);
         assertThat(programStage.generatedByEnrollmentDate()).isFalse();
         assertThat(programStage.hideDueDate()).isFalse();
-
         assertThat(programStage.minDaysFromStart()).isEqualTo(0);
         assertThat(programStage.openAfterEnrollment()).isFalse();
         assertThat(programStage.repeatable()).isFalse();
         assertThat(programStage.reportDateToUse()).isEqualTo("false");
         assertThat(programStage.standardInterval()).isNull();
-
         assertThat(programStage.programStageSections()).isEmpty();
 
         assertThat(programStage.programStageDataElements().get(0).uid()).isEqualTo("EQCf1l2Mdr8");

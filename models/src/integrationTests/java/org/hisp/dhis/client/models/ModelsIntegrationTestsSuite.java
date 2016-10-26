@@ -40,6 +40,7 @@ import org.hisp.dhis.client.models.option.OptionSetIntegrationTests;
 import org.hisp.dhis.client.models.organisationunit.OrganisationUnitIntegrationTests;
 import org.hisp.dhis.client.models.program.ProgramIntegrationTest;
 import org.hisp.dhis.client.models.program.ProgramRuleActionIntegrationTest;
+import org.hisp.dhis.client.models.program.ProgramRuleIntegrationTest;
 import org.hisp.dhis.client.models.program.ProgramStageDataElementIntegrationTest;
 import org.hisp.dhis.client.models.program.ProgramStageIntegrationTest;
 import org.hisp.dhis.client.models.program.ProgramStageSectionIntegrationTest;
@@ -73,7 +74,8 @@ import org.junit.runners.Suite;
         ProgramRuleActionIntegrationTest.class,
         ProgramStageSectionIntegrationTest.class,
         ProgramStageIntegrationTest.class,
-        ProgramIntegrationTest.class
+        ProgramIntegrationTest.class,
+        ProgramRuleIntegrationTest.class
 })
 public class ModelsIntegrationTestsSuite {
 }

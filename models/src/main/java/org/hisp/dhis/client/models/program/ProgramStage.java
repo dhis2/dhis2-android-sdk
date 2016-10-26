@@ -108,75 +108,58 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        @Nullable
+
         @JsonProperty(EXECUTION_DATE_LABEL)
         public abstract Builder executionDateLabel(@Nullable String executionDateLabel);
 
-        @Nullable
         @JsonProperty(ALLOW_GENERATE_NEXT_VISIT)
         public abstract Builder allowGenerateNextVisit(@Nullable Boolean allowGenerateNextVisit);
 
-        @Nullable
         @JsonProperty(VALID_COMPLETE_ONLY)
         public abstract Builder validCompleteOnly(@Nullable Boolean validCompleteOnly);
 
-        @Nullable
         @JsonProperty(REPORT_DATE_TO_USE)
         public abstract Builder reportDateToUse(@Nullable String reportDateToUse);
 
-        @Nullable
         @JsonProperty(OPEN_AFTER_ENROLLMENT)
         public abstract Builder openAfterEnrollment(@Nullable Boolean openAfterEnrollment);
 
-        @Nullable
         @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS)
         public abstract Builder programStageDataElements(@Nullable List<ProgramStageDataElement> programStageDataElements);
 
-        @Nullable
         @JsonProperty(REPEATABLE)
         public abstract Builder repeatable(@Nullable Boolean repeatable);
 
-        @Nullable
         @JsonProperty(CAPTURE_COORDINATES)
         public abstract Builder captureCoordinates(@Nullable Boolean captureCoordinates);
 
-        @Nullable
         @JsonProperty(FORM_TYPE)
         public abstract Builder formType(@Nullable FormType formType);
 
-        @Nullable
         @JsonProperty(DISPLAY_GENERATE_EVENT_BOX)
         public abstract Builder displayGenerateEventBox(@Nullable Boolean displayGenerateEventBox);
 
-        @Nullable
         @JsonProperty(GENERATED_BY_ENROLMENT_DATE)
         public abstract Builder generatedByEnrollmentDate(@Nullable Boolean generatedByEnrollmentDate);
 
-        @Nullable
         @JsonProperty(AUTO_GENERATE_EVENT)
         public abstract Builder autoGenerateEvent(@Nullable Boolean autoGenerateEvent);
 
-        @Nullable
         @JsonProperty(SORT_ORDER)
         public abstract Builder sortOrder(@Nullable Integer sortOrder);
 
-        @Nullable
         @JsonProperty(HIDE_DUE_DATE)
         public abstract Builder hideDueDate(@Nullable Boolean hideDueDate);
 
-        @Nullable
         @JsonProperty(BLOCK_ENTRY_FORM)
         public abstract Builder blockEntryForm(@Nullable Boolean blockEntryForm);
 
-        @Nullable
         @JsonProperty(MIN_DAYS_FROM_START)
         public abstract Builder minDaysFromStart(@Nullable Integer minDaysFromStart);
 
-        @Nullable
         @JsonProperty(STANDARD_INTERVAL)
         public abstract Builder standardInterval(@Nullable Integer standardInterval);
 
-        @Nullable
         @JsonProperty(PROGRAM_STAGE_SECTIONS)
         public abstract Builder programStageSections(@Nullable List<ProgramStageSection> programStageSections);
 

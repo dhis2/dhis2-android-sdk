@@ -46,6 +46,7 @@ import org.hisp.dhis.client.models.program.ProgramRuleVariableIntegrationTest;
 import org.hisp.dhis.client.models.program.ProgramStageDataElementIntegrationTest;
 import org.hisp.dhis.client.models.program.ProgramStageIntegrationTest;
 import org.hisp.dhis.client.models.program.ProgramStageSectionIntegrationTest;
+import org.hisp.dhis.client.models.program.ProgramTrackedEntityAttributeIntegrationTest;
 import org.hisp.dhis.client.models.trackedentity.TrackedEntityAttributeIntegrationTest;
 import org.hisp.dhis.client.models.trackedentity.TrackedEntityIntegrationTest;
 import org.hisp.dhis.client.models.user.UserCredentialIntegrationTest;
@@ -80,7 +81,8 @@ import org.junit.runners.Suite;
         ProgramRuleVariableIntegrationTest.class,
         ProgramIntegrationTest.class,
         ProgramRuleIntegrationTest.class,
-        ProgramIndicatorIntegrationTest.class
+        ProgramIndicatorIntegrationTest.class,
+        ProgramTrackedEntityAttributeIntegrationTest.class
 })
 public class ModelsIntegrationTestsSuite {
 }

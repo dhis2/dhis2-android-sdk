@@ -28,13 +28,97 @@
 
 package org.hisp.dhis.client.models.trackedentity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.client.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.client.models.common.BaseDataModel;
+import org.hisp.dhis.client.models.relationship.Relationship;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Nullable;
 
 // TODO: Tests
 @AutoValue
-@JsonDeserialize()
-public abstract class TrackedEntityInstance extends BaseIdentifiableObject{
+@JsonDeserialize(builder = AutoValue_TrackedEntityInstance.Builder.class)
+public abstract class TrackedEntityInstance extends BaseDataModel {
+    private static final String JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_UID = "trackedEntityInstance";
+    private static final String JSON_PROPERTY_CREATED = "created";
+    private static final String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
+    private static final String JSON_PROPERTY_ORGANISATION_UNIT = "orgUnit";
+    private static final String JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES = "trackedEntityDataValues";
+    private static final String JSON_PROPERTY_RELATIONSHIPS = "relationships";
+
+
+    @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_UID)
+    public abstract String uid();
+
+    @JsonProperty(JSON_PROPERTY_CREATED)
+    public abstract Date created();
+
+    @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
+    public abstract Date lastUpdated();
+
+    @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
+    public abstract String organisationUnit();
+
+    @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES)
+    public abstract List<TrackedEntityAttributeValue> trackedEntityAttributeValues();
+
+    @JsonProperty(JSON_PROPERTY_RELATIONSHIPS)
+    public abstract List<Relationship> relationships();
+
+    @Override
+    public boolean isValid() {
+        if (created() == null || lastUpdated() == null) {
+            return false;
+        }
+
+        if (trackedEntityAttributeValues() == null || trackedEntityAttributeValues().isEmpty()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static Builder builder() {
+        return new AutoValue_TrackedEntityInstance.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseDataModel.Builder<Builder> {
+        @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_UID)
+        public abstract Builder uid(@Nullable String uid);
+
+        @JsonProperty(JSON_PROPERTY_CREATED)
+        public abstract Builder created(@Nullable Date created);
+
+        @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
+        public abstract Builder lastUpdated(@Nullable Date lastUpdated);
+
+        @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
+        public abstract Builder organisationUnit(String organisationUnit);
+
+        @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES)
+        public abstract Builder trackedEntityAttributeValues(List<TrackedEntityAttributeValue> trackedEntityAttributeValues);
+
+        @JsonProperty(JSON_PROPERTY_RELATIONSHIPS)
+        public abstract Builder relationships(@Nullable List<Relationship> relationships);
+
+        abstract List<TrackedEntityAttributeValue> trackedEntityAttributeValues();
+
+        abstract TrackedEntityInstance autoBuild();
+
+        public TrackedEntityInstance build() {
+            if (trackedEntityAttributeValues() != null) {
+                trackedEntityAttributeValues(Collections.unmodifiableList(trackedEntityAttributeValues()));
+            }
+
+            return autoBuild();
+        }
+    }
+
 }

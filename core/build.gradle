@@ -45,8 +45,14 @@ android {
 }
 
 dependencies {
+    // client models
+    compile project(":models")
+
     // Google support libraries
     compile "com.android.support:appcompat-v7:${libraries.support}"
+
+    // ReactiveX
+    compile "io.reactivex.rxjava2:rxjava:${libraries.rxjava}"
 
     // Java test dependencies
     testCompile "junit:junit:${libraries.junit}"

@@ -39,19 +39,21 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ProgramRuleVariableIntegrationTest {
+public class ProgramRuleIntegrationTests {
+
     @Test
-    public void programRuleVariable_shouldMapFromJsonString() throws IOException, ParseException {
+    public void programRule_shouldMapFromJsonString() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
-        ProgramRuleVariable programRuleVariable = objectMapper.readValue("{\n" +
-                "\"created\": \"2015-08-07T18:38:12.931\",\n" +
-                "\"lastUpdated\": \"2015-08-07T18:38:12.932\",\n" +
-                "\"name\": \"age\",\n" +
-                "\"href\": \"https://play.dhis2.org/dev/api/programRuleVariables/RycV5uDi66i\",\n" +
-                "\"id\": \"RycV5uDi66i\",\n" +
-                "\"displayName\": \"age\",\n" +
-                "\"programRuleVariableSourceType\": \"DATAELEMENT_NEWEST_EVENT_PROGRAM\",\n" +
+        ProgramRule programRule = objectMapper.readValue("{\n" +
+                "\"created\": \"2015-09-14T21:17:40.841\",\n" +
+                "\"lastUpdated\": \"2015-09-14T22:22:15.383\",\n" +
+                "\"name\": \"Ask for comment for low apgar\",\n" +
+                "\"href\": \"https://play.dhis2.org/dev/api/programRules/NAgjOfWMXg6\",\n" +
+                "\"id\": \"NAgjOfWMXg6\",\n" +
+                "\"displayName\": \"Ask for comment for low apgar\",\n" +
+                "\"description\": \"Show warrning if Apgar is between 0 and 4 and there is no comment provided.\",\n" +
                 "\"externalAccess\": false,\n" +
+                "\"condition\": \"#{apgarscore} >= 0 && #{apgarscore} < 4 && #{apgarcomment} == ''\",\n" +
                 "\"access\": {\n" +
                 "\"read\": true,\n" +
                 "\"update\": true,\n" +
@@ -61,30 +63,33 @@ public class ProgramRuleVariableIntegrationTest {
                 "\"manage\": false\n" +
                 "},\n" +
                 "\"program\": {\n" +
-                "\"id\": \"eBAyeGv0exc\"\n" +
-                "},\n" +
-                "\"dataElement\": {\n" +
-                "\"id\": \"qrur9Dvnyt5\"\n" +
+                "\"id\": \"IpHINAT79UW\"\n" +
                 "},\n" +
                 "\"userGroupAccesses\": [],\n" +
                 "\"attributeValues\": [],\n" +
+                "\"programRuleActions\": [\n" +
+                "{\n" +
+                "\"id\": \"v434s5YPDcP\"\n" +
+                "}\n" +
+                "],\n" +
                 "\"translations\": []\n" +
-                "}", ProgramRuleVariable.class);
+                "},", ProgramRule.class);
 
-        assertThat(programRuleVariable.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-07T18:38:12.931"));
-        assertThat(programRuleVariable.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-07T18:38:12.932"));
-        assertThat(programRuleVariable.uid()).isEqualTo("RycV5uDi66i");
+        assertThat(programRule.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-14T21:17:40.841"));
+        assertThat(programRule.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-14T22:22:15.383"));
+        assertThat(programRule.uid()).isEqualTo("NAgjOfWMXg6");
 
-        assertThat(programRuleVariable.name()).isEqualTo("age");
-        assertThat(programRuleVariable.displayName()).isEqualTo("age");
+        assertThat(programRule.name()).isEqualTo("Ask for comment for low apgar");
+        assertThat(programRule.displayName()).isEqualTo("Ask for comment for low apgar");
 
-        assertThat(programRuleVariable.programStage()).isNull();
-        assertThat(programRuleVariable.programRuleVariableSourceType()).isEqualTo(ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM);
-        assertThat(programRuleVariable.useCodeForOptionSet()).isNull();
-        assertThat(programRuleVariable.program().uid()).isEqualTo("eBAyeGv0exc");
-        assertThat(programRuleVariable.dataElement().uid()).isEqualTo("qrur9Dvnyt5");
-        assertThat(programRuleVariable.trackedEntityAttribute()).isNull();
+        assertThat(programRule.programStage()).isNull();
+        assertThat(programRule.program().uid()).isEqualTo("IpHINAT79UW");
+        assertThat(programRule.priority()).isNull();
+        assertThat(programRule.condition()).isEqualTo("#{apgarscore} >= 0 && #{apgarscore} < 4 && #{apgarcomment} == ''");
+        assertThat(programRule.programRuleActions()).isNotNull();
+        assertThat(programRule.programRuleActions()).isNotEmpty();
+        assertThat(programRule.programRuleActions().get(0).uid()).isEqualTo("v434s5YPDcP");
     }
 }

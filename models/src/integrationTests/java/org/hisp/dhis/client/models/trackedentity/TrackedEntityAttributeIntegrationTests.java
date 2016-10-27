@@ -40,7 +40,7 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TrackedEntityAttributeIntegrationTest {
+public class TrackedEntityAttributeIntegrationTests {
 
     @Test
     public void trackedEntity_shouldMapFromJsonString() throws IOException, ParseException {

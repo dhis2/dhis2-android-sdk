@@ -39,7 +39,7 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class UserCredentialIntegrationTest {
+public class UserCredentialIntegrationTests {
 
     @Test
     public void userCredentials_shouldMapFromJsonString() throws IOException, ParseException {

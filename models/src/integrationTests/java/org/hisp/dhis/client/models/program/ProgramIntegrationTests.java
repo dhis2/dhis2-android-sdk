@@ -40,7 +40,7 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ProgramIntegrationTest {
+public class ProgramIntegrationTests {
     @Test
     public void program_shouldMapFromJsonString() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();

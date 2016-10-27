@@ -35,6 +35,8 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.models.common.BaseModel;
 
+import java.util.Date;
+
 import javax.annotation.Nullable;
 
 //TODO: Tests
@@ -44,10 +46,21 @@ public abstract class TrackedEntityDataValue extends BaseModel {
     private final static String JSON_PROPERTY_DATA_ELEMENT = "dataElement";
     private final static String JSON_PROPERTY_STORED_BY = "storedBy";
     private final static String JSON_PROPERTY_VALUE = "value";
+    private static final String JSON_PROPERTY_CREATED = "created";
+    private static final String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
+    public static final String JSON_PROPERTY_PROVIDED_ELSEWHERE = "providedElsewhere";
 
     @Nullable
     @JsonIgnore
     public abstract String event();
+
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_CREATED)
+    public abstract Date created();
+
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
+    public abstract Date lastUpdated();
 
     @Nullable
     @JsonProperty(JSON_PROPERTY_DATA_ELEMENT)
@@ -60,6 +73,10 @@ public abstract class TrackedEntityDataValue extends BaseModel {
     @Nullable
     @JsonProperty(JSON_PROPERTY_VALUE)
     public abstract String value();
+
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROVIDED_ELSEWHERE)
+    public abstract Boolean providedElsewhere();
 
     public static Builder builder() {
         return new AutoValue_TrackedEntityDataValue.Builder();
@@ -89,6 +106,12 @@ public abstract class TrackedEntityDataValue extends BaseModel {
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
 
+        @JsonProperty(JSON_PROPERTY_CREATED)
+        public abstract Builder created(@Nullable Date created);
+
+        @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
+        public abstract Builder lastUpdated(@Nullable Date lastUpdated);
+
         @JsonProperty(JSON_PROPERTY_DATA_ELEMENT)
         public abstract Builder dataElement(@Nullable String dataElement);
 
@@ -100,6 +123,9 @@ public abstract class TrackedEntityDataValue extends BaseModel {
 
         @JsonIgnore
         public abstract Builder event(@Nullable String event);
+
+        @JsonProperty(JSON_PROPERTY_PROVIDED_ELSEWHERE)
+        public abstract Builder providedElsewhere(@Nullable Boolean providedElsewhere);
 
         public abstract TrackedEntityDataValue build();
     }

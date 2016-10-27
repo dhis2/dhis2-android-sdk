@@ -34,24 +34,25 @@ import org.hisp.dhis.client.models.dataelement.CategoryIntegrationTests;
 import org.hisp.dhis.client.models.dataelement.CategoryOptionComboIntegrationTests;
 import org.hisp.dhis.client.models.dataelement.CategoryOptionIntegrationTests;
 import org.hisp.dhis.client.models.dataelement.DataElementIntegrationTests;
-import org.hisp.dhis.client.models.event.EventIntegrationTest;
+import org.hisp.dhis.client.models.event.EventIntegrationTests;
 import org.hisp.dhis.client.models.option.OptionIntegrationTests;
 import org.hisp.dhis.client.models.option.OptionSetIntegrationTests;
 import org.hisp.dhis.client.models.organisationunit.OrganisationUnitIntegrationTests;
-import org.hisp.dhis.client.models.program.ProgramIndicatorIntegrationTest;
-import org.hisp.dhis.client.models.program.ProgramIntegrationTest;
-import org.hisp.dhis.client.models.program.ProgramRuleActionIntegrationTest;
-import org.hisp.dhis.client.models.program.ProgramRuleIntegrationTest;
-import org.hisp.dhis.client.models.program.ProgramRuleVariableIntegrationTest;
-import org.hisp.dhis.client.models.program.ProgramStageDataElementIntegrationTest;
-import org.hisp.dhis.client.models.program.ProgramStageIntegrationTest;
-import org.hisp.dhis.client.models.program.ProgramStageSectionIntegrationTest;
-import org.hisp.dhis.client.models.program.ProgramTrackedEntityAttributeIntegrationTest;
-import org.hisp.dhis.client.models.trackedentity.TrackedEntityAttributeIntegrationTest;
-import org.hisp.dhis.client.models.trackedentity.TrackedEntityIntegrationTest;
-import org.hisp.dhis.client.models.user.UserCredentialIntegrationTest;
-import org.hisp.dhis.client.models.user.UserIntegrationTest;
-import org.hisp.dhis.client.models.user.UserRoleIntegrationTest;
+import org.hisp.dhis.client.models.program.ProgramIndicatorIntegrationTests;
+import org.hisp.dhis.client.models.program.ProgramIntegrationTests;
+import org.hisp.dhis.client.models.program.ProgramRuleActionIntegrationTests;
+import org.hisp.dhis.client.models.program.ProgramRuleIntegrationTests;
+import org.hisp.dhis.client.models.program.ProgramRuleVariableIntegrationTests;
+import org.hisp.dhis.client.models.program.ProgramStageDataElementIntegrationTests;
+import org.hisp.dhis.client.models.program.ProgramStageIntegrationTests;
+import org.hisp.dhis.client.models.program.ProgramStageSectionIntegrationTests;
+import org.hisp.dhis.client.models.program.ProgramTrackedEntityAttributeIntegrationTests;
+import org.hisp.dhis.client.models.trackedentity.TrackedEntityAttributeIntegrationTests;
+import org.hisp.dhis.client.models.trackedentity.TrackedEntityDataValueIntegrationTests;
+import org.hisp.dhis.client.models.trackedentity.TrackedEntityIntegrationTests;
+import org.hisp.dhis.client.models.user.UserCredentialIntegrationTests;
+import org.hisp.dhis.client.models.user.UserIntegrationTests;
+import org.hisp.dhis.client.models.user.UserRoleIntegrationTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -59,30 +60,31 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         ConstantIntegrationTests.class,
         CategoryOptionIntegrationTests.class,
-        UserIntegrationTest.class,
-        UserCredentialIntegrationTest.class,
-        UserRoleIntegrationTest.class,
+        UserIntegrationTests.class,
+        UserCredentialIntegrationTests.class,
+        UserRoleIntegrationTests.class,
         CategoryIntegrationTests.class,
         CategoryOptionIntegrationTests.class,
         CategoryComboIntegrationTests.class,
         CategoryOptionComboIntegrationTests.class,
         DataElementIntegrationTests.class,
-        EventIntegrationTest.class,
+        EventIntegrationTests.class,
         OptionSetIntegrationTests.class,
         OptionIntegrationTests.class,
         OrganisationUnitIntegrationTests.class,
-        TrackedEntityIntegrationTest.class,
-        TrackedEntityAttributeIntegrationTest.class,
-        ProgramStageDataElementIntegrationTest.class,
-        ProgramRuleActionIntegrationTest.class,
-        ProgramStageSectionIntegrationTest.class,
-        ProgramStageIntegrationTest.class,
-        ProgramRuleIntegrationTest.class,
-        ProgramRuleVariableIntegrationTest.class,
-        ProgramIntegrationTest.class,
-        ProgramRuleIntegrationTest.class,
-        ProgramIndicatorIntegrationTest.class,
-        ProgramTrackedEntityAttributeIntegrationTest.class
+        TrackedEntityIntegrationTests.class,
+        TrackedEntityAttributeIntegrationTests.class,
+        TrackedEntityDataValueIntegrationTests.class,
+        ProgramStageDataElementIntegrationTests.class,
+        ProgramRuleActionIntegrationTests.class,
+        ProgramStageSectionIntegrationTests.class,
+        ProgramStageIntegrationTests.class,
+        ProgramRuleIntegrationTests.class,
+        ProgramRuleVariableIntegrationTests.class,
+        ProgramIntegrationTests.class,
+        ProgramRuleIntegrationTests.class,
+        ProgramIndicatorIntegrationTests.class,
+        ProgramTrackedEntityAttributeIntegrationTests.class
 })
 public class ModelsIntegrationTestsSuite {
 }

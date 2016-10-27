@@ -39,7 +39,7 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ProgramStageSectionIntegrationTest {
+public class ProgramStageSectionIntegrationTests {
 
     @Test
     public void programStageSection_shouldMapFromJsonString() throws IOException, ParseException {

@@ -32,7 +32,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.client.models.Inject;
 import org.hisp.dhis.client.models.common.BaseIdentifiableObject;
-import org.hisp.dhis.client.models.common.ValueType;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -40,61 +39,61 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ProgramTrackedEntityAttributeIntegrationTest {
-
+public class ProgramIndicatorIntegrationTests {
     @Test
     public void programIndicator_shouldMapFromJsonString() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
-        ProgramTrackedEntityAttribute programTrackedEntityAttribute = objectMapper.readValue("{\n" +
-                "\"lastUpdated\": \"2016-10-11T10:41:40.401\",\n" +
-                "\"id\": \"YhqgQ6Iy4c4\",\n" +
-                "\"href\": \"https://play.dhis2.org/dev/api/programTrackedEntityAttributes/YhqgQ6Iy4c4\",\n" +
-                "\"created\": \"2016-10-11T10:41:40.401\",\n" +
-                "\"name\": \"Child Programme Gender\",\n" +
-                "\"shortName\": \"Child Programme Gender\",\n" +
-                "\"displayName\": \"Child Programme Gender\",\n" +
-                "\"mandatory\": false,\n" +
-                "\"displayShortName\": \"Child Programme Gender\",\n" +
+        ProgramIndicator programIndicator = objectMapper.readValue("{\n" +
+                "\"lastUpdated\": \"2015-09-21T23:47:57.820\",\n" +
+                "\"id\": \"GSae40Fyppf\",\n" +
+                "\"href\": \"https://play.dhis2.org/dev/api/programIndicators/GSae40Fyppf\",\n" +
+                "\"created\": \"2015-09-21T23:35:50.945\",\n" +
+                "\"name\": \"Age at visit\",\n" +
+                "\"shortName\": \"Age\",\n" +
+                "\"aggregationType\": \"AVERAGE\",\n" +
+                "\"displayName\": \"Age at visit\",\n" +
+                "\"displayInForm\": true,\n" +
+                "\"publicAccess\": \"rw------\",\n" +
+                "\"description\": \"Age at visit\",\n" +
+                "\"displayShortName\": \"Age\",\n" +
                 "\"externalAccess\": false,\n" +
-                "\"valueType\": \"TEXT\",\n" +
-                "\"allowFutureDate\": false,\n" +
-                "\"dimensionItem\": \"IpHINAT79UW.cejWyOfXge6\",\n" +
-                "\"displayInList\": false,\n" +
-                "\"dimensionItemType\": \"PROGRAM_ATTRIBUTE\",\n" +
+                "\"displayDescription\": \"Age at visit\",\n" +
+                "\"expression\": \"d2:yearsBetween(A{iESIqZ0R0R0},V{event_date})\",\n" +
+                "\"dimensionItem\": \"GSae40Fyppf\",\n" +
+                "\"dimensionItemType\": \"PROGRAM_INDICATOR\",\n" +
                 "\"access\": {\n" +
                 "\"read\": true,\n" +
                 "\"update\": true,\n" +
                 "\"externalize\": false,\n" +
                 "\"delete\": true,\n" +
                 "\"write\": true,\n" +
-                "\"manage\": false\n" +
+                "\"manage\": true\n" +
                 "},\n" +
                 "\"program\": {\n" +
-                "\"id\": \"IpHINAT79UW\"\n" +
+                "\"id\": \"uy2gU8kT1jF\"\n" +
                 "},\n" +
-                "\"trackedEntityAttribute\": {\n" +
-                "\"id\": \"cejWyOfXge6\"\n" +
+                "\"user\": {\n" +
+                "\"id\": \"xE7jOejl9FI\"\n" +
                 "},\n" +
                 "\"translations\": [],\n" +
+                "\"programIndicatorGroups\": [],\n" +
                 "\"userGroupAccesses\": [],\n" +
                 "\"attributeValues\": []\n" +
-                "}", ProgramTrackedEntityAttribute.class);
+                "}", ProgramIndicator.class);
 
-        assertThat(programTrackedEntityAttribute.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2016-10-11T10:41:40.401"));
-        assertThat(programTrackedEntityAttribute.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2016-10-11T10:41:40.401"));
-        assertThat(programTrackedEntityAttribute.uid()).isEqualTo("YhqgQ6Iy4c4");
+        assertThat(programIndicator.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-21T23:35:50.945"));
+        assertThat(programIndicator.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-21T23:47:57.820"));
+        assertThat(programIndicator.uid()).isEqualTo("GSae40Fyppf");
 
-        assertThat(programTrackedEntityAttribute.name()).isEqualTo("Child Programme Gender");
-        assertThat(programTrackedEntityAttribute.displayName()).isEqualTo("Child Programme Gender");
-        assertThat(programTrackedEntityAttribute.shortName()).isEqualTo("Child Programme Gender");
-        assertThat(programTrackedEntityAttribute.displayShortName()).isEqualTo("Child Programme Gender");
+        assertThat(programIndicator.name()).isEqualTo("Age at visit");
+        assertThat(programIndicator.displayName()).isEqualTo("Age at visit");
 
-        assertThat(programTrackedEntityAttribute.mandatory()).isEqualTo(false);
-        assertThat(programTrackedEntityAttribute.trackedEntityAttribute().uid()).isEqualTo("cejWyOfXge6");
-        assertThat(programTrackedEntityAttribute.valueType()).isEqualTo(ValueType.TEXT);
-        assertThat(programTrackedEntityAttribute.allowFutureDate()).isEqualTo(false);
-        assertThat(programTrackedEntityAttribute.displayInList()).isEqualTo(false);
+        assertThat(programIndicator.displayInForm()).isEqualTo(true);
+        assertThat(programIndicator.expression()).isEqualTo("d2:yearsBetween(A{iESIqZ0R0R0},V{event_date})");
+        assertThat(programIndicator.dimensionItem()).isEqualTo("GSae40Fyppf");
+        assertThat(programIndicator.filter()).isNull();
+        assertThat(programIndicator.decimals()).isNull();
     }
 }

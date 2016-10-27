@@ -39,61 +39,50 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ProgramIndicatorIntegrationTest {
+public class ProgramRuleActionIntegrationTests {
     @Test
-    public void programIndicator_shouldMapFromJsonString() throws IOException, ParseException {
+    public void programRuleAction_shouldMapFromJsonString() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
-        ProgramIndicator programIndicator = objectMapper.readValue("{\n" +
-                "\"lastUpdated\": \"2015-09-21T23:47:57.820\",\n" +
-                "\"id\": \"GSae40Fyppf\",\n" +
-                "\"href\": \"https://play.dhis2.org/dev/api/programIndicators/GSae40Fyppf\",\n" +
-                "\"created\": \"2015-09-21T23:35:50.945\",\n" +
-                "\"name\": \"Age at visit\",\n" +
-                "\"shortName\": \"Age\",\n" +
-                "\"aggregationType\": \"AVERAGE\",\n" +
-                "\"displayName\": \"Age at visit\",\n" +
-                "\"displayInForm\": true,\n" +
-                "\"publicAccess\": \"rw------\",\n" +
-                "\"description\": \"Age at visit\",\n" +
-                "\"displayShortName\": \"Age\",\n" +
+        ProgramRuleAction programRuleAction = objectMapper.readValue("{\n" +
+                "\"lastUpdated\": \"2015-09-14T22:22:15.458\",\n" +
+                "\"href\": \"https://play.dhis2.org/dev/api/programRuleActions/v434s5YPDcP\",\n" +
+                "\"id\": \"v434s5YPDcP\",\n" +
+                "\"created\": \"2015-09-14T21:17:41.033\",\n" +
+                "\"content\": \"It is suggested that an explanation is provided when the Apgar score is below 4\",\n" +
                 "\"externalAccess\": false,\n" +
-                "\"displayDescription\": \"Age at visit\",\n" +
-                "\"expression\": \"d2:yearsBetween(A{iESIqZ0R0R0},V{event_date})\",\n" +
-                "\"dimensionItem\": \"GSae40Fyppf\",\n" +
-                "\"dimensionItemType\": \"PROGRAM_INDICATOR\",\n" +
+                "\"programRuleActionType\": \"SHOWWARNING\",\n" +
                 "\"access\": {\n" +
                 "\"read\": true,\n" +
                 "\"update\": true,\n" +
                 "\"externalize\": false,\n" +
                 "\"delete\": true,\n" +
                 "\"write\": true,\n" +
-                "\"manage\": true\n" +
+                "\"manage\": false\n" +
                 "},\n" +
-                "\"program\": {\n" +
-                "\"id\": \"uy2gU8kT1jF\"\n" +
+                "\"programRule\": {\n" +
+                "\"id\": \"NAgjOfWMXg6\"\n" +
                 "},\n" +
-                "\"user\": {\n" +
-                "\"id\": \"xE7jOejl9FI\"\n" +
+                "\"dataElement\": {\n" +
+                "\"id\": \"H6uSAMO5WLD\"\n" +
                 "},\n" +
                 "\"translations\": [],\n" +
-                "\"programIndicatorGroups\": [],\n" +
                 "\"userGroupAccesses\": [],\n" +
                 "\"attributeValues\": []\n" +
-                "}", ProgramIndicator.class);
+                "}", ProgramRuleAction.class);
 
-        assertThat(programIndicator.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-21T23:35:50.945"));
-        assertThat(programIndicator.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-21T23:47:57.820"));
-        assertThat(programIndicator.uid()).isEqualTo("GSae40Fyppf");
-
-        assertThat(programIndicator.name()).isEqualTo("Age at visit");
-        assertThat(programIndicator.displayName()).isEqualTo("Age at visit");
-
-        assertThat(programIndicator.displayInForm()).isEqualTo(true);
-        assertThat(programIndicator.expression()).isEqualTo("d2:yearsBetween(A{iESIqZ0R0R0},V{event_date})");
-        assertThat(programIndicator.dimensionItem()).isEqualTo("GSae40Fyppf");
-        assertThat(programIndicator.filter()).isNull();
-        assertThat(programIndicator.decimals()).isNull();
+        assertThat(programRuleAction.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-14T22:22:15.458"));
+        assertThat(programRuleAction.uid()).isEqualTo("v434s5YPDcP");
+        assertThat(programRuleAction.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-14T21:17:41.033"));
+        assertThat(programRuleAction.content()).isEqualTo("It is suggested that an explanation is provided when the Apgar score is below 4");
+        assertThat(programRuleAction.data()).isNull();
+        assertThat(programRuleAction.location()).isNull();
+        assertThat(programRuleAction.trackedEntityAttribute()).isNull();
+        assertThat(programRuleAction.programIndicator()).isNull();
+        assertThat(programRuleAction.programStageSection()).isNull();
+        assertThat(programRuleAction.programRuleActionType()).isEqualTo(ProgramRuleActionType.SHOWWARNING);
+        assertThat(programRuleAction.programStage()).isNull();
+        assertThat(programRuleAction.dataElement().uid()).isEqualTo("H6uSAMO5WLD");
     }
 }

@@ -17,9 +17,9 @@ import javax.annotation.Nullable;
 @JsonDeserialize(builder = AutoValue_Enrollment.Builder.class)
 public abstract class Enrollment extends BaseDataModel {
 
+    private static final String JSON_PROPERTY_UID = "enrollment";
     private static final String JSON_PROPERTY_CREATED = "created";
     private static final String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
-    private static final String JSON_PROPERTY_UID = "enrollment";
     private static final String JSON_PROPERTY_ORGANISATION_UNIT = "orgUnit";
     private static final String JSON_PROPERTY_PROGRAM = "program";
     private static final String JSON_PROPERTY_DATE_OF_ENROLLMENT = "enrollmentDate";
@@ -29,14 +29,16 @@ public abstract class Enrollment extends BaseDataModel {
     private static final String JSON_PROPERTY_TRACKED_ENTITY_ATTRIBUTE_VALUES = "attributes";
     private static final String JSON_PROPERTY_TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
 
+    @JsonProperty(JSON_PROPERTY_UID)
+    public abstract String uid();
+
+    @Nullable
     @JsonProperty(JSON_PROPERTY_CREATED)
     public abstract Date created();
 
+    @Nullable
     @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
     public abstract Date lastUpdated();
-
-    @JsonProperty(JSON_PROPERTY_UID)
-    public abstract String uid();
 
     @Nullable
     @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
@@ -86,14 +88,14 @@ public abstract class Enrollment extends BaseDataModel {
     @AutoValue.Builder
     public static abstract class Builder extends BaseDataModel.Builder<Builder> {
 
+        @JsonProperty(JSON_PROPERTY_UID)
+        public abstract Builder uid(String uid);
+
         @JsonProperty(JSON_PROPERTY_CREATED)
         public abstract Builder created(@Nullable Date created);
 
         @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
         public abstract Builder lastUpdated(@Nullable Date lastUpdated);
-
-        @JsonProperty(JSON_PROPERTY_UID)
-        public abstract Builder uid(@Nullable String uid);
 
         @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
         public abstract Builder organisationUnit(@Nullable String orgUnit);

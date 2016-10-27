@@ -54,11 +54,11 @@ public abstract class Event extends BaseDataModel {
     private static final String JSON_PROPERTY_COORDINATE = "coordinate";
     private static final String JSON_PROPERTY_PROGRAM = "program";
     private static final String JSON_PROPERTY_PROGRAM_STAGE = "programStage";
-    private static final String JSON_PROPERTY_ORGANISATION_UNIT = "organisationUnit";
+    private static final String JSON_PROPERTY_ORGANISATION_UNIT = "orgUnit";
     private static final String JSON_PROPERTY_EVENT_DATE = "eventDate";
     private static final String JSON_PROPERTY_COMPLETE_DATE = "completedDate";
     private static final String JSON_PROPERTY_DUE_DATE = "dueDate";
-    private static final String JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES = "trackedEntityDataValues";
+    private static final String JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES = "dataValues";
 
     // Mandatory, non-null properties
 
@@ -165,7 +165,8 @@ public abstract class Event extends BaseDataModel {
         public abstract Builder dueDate(@Nullable Date dueDate);
 
         @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES)
-        public abstract Builder trackedEntityDataValues(@Nullable List<TrackedEntityDataValue> trackedEntityDataValues);
+        public abstract Builder trackedEntityDataValues(
+                @Nullable List<TrackedEntityDataValue> trackedEntityDataValues);
 
         abstract List<TrackedEntityDataValue> trackedEntityDataValues();
 

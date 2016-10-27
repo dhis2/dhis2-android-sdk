@@ -45,116 +45,122 @@ public class EventIntegrationTest {
     public void event_shouldMapFromJsonString() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
         Event event = objectMapper.readValue("{\n" +
-                "\n" +
-                "    \"href\": \"https://play.dhis2.org/dev/api/events/wYdGdw16H8F\",\n" +
-                "    \"event\": \"wYdGdw16H8F\",\n" +
-                "    \"status\": \"COMPLETED\",\n" +
-                "    \"program\": \"eBAyeGv0excﬁ\",\n" +
-                "    \"programStage\": \"Zj7UnCAulEk\",\n" +
-                "    \"enrollment\": \"RiLEKhWHlxZ\",\n" +
-                "    \"enrollmentStatus\": \"ACTIVE\",\n" +
-                "    \"organisationUnit\": \"Rp268JB6Ne4\",\n" +
-                "    \"eventDate\": \"2015-01-27T00:00:00\",\n" +
-                "    \"trackedEntityDataValues\": [\n" +
-                "        {\n" +
-                "            \"created\": \"2015-04-21T14:19:09.186+0000\",\n" +
-                "            \"lastUpdated\": \"2015-04-21T14:19:09.186+0000\",\n" +
-                "            \"value\": \"142\",\n" +
-                "            \"dataElement\": \"GieVkTxp4HH\",\n" +
-                "            \"providedElsewhere\": false,\n" +
-                "            \"storedBy\": \"[Unknown]\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"created\": \"2015-04-21T14:19:09.186+0000\",\n" +
-                "            \"lastUpdated\": \"2015-04-21T14:19:09.186+0000\",\n" +
-                "            \"value\": \"76\",\n" +
-                "            \"dataElement\": \"vV9UWAZohSf\",\n" +
-                "            \"providedElsewhere\": false,\n" +
-                "            \"storedBy\": \"[Unknown]\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"created\": \"2015-04-21T14:19:09.186+0000\",\n" +
-                "            \"lastUpdated\": \"2015-04-21T14:19:09.186+0000\",\n" +
-                "            \"value\": \"44\",\n" +
-                "            \"dataElement\": \"qrur9Dvnyt5\",\n" +
-                "            \"providedElsewhere\": false,\n" +
-                "            \"storedBy\": \"[Unknown]\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"created\": \"2015-04-21T14:19:09.186+0000\",\n" +
-                "            \"lastUpdated\": \"2015-04-21T14:19:09.186+0000\",\n" +
-                "            \"value\": \"Male\",\n" +
-                "            \"dataElement\": \"oZg33kd9taw\",\n" +
-                "            \"providedElsewhere\": false,\n" +
-                "            \"storedBy\": \"[Unknown]\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"created\": \"2015-04-21T14:19:09.186+0000\",\n" +
-                "            \"lastUpdated\": \"2015-04-21T14:19:09.186+0000\",\n" +
-                "            \"value\": \"2014-01-13\",\n" +
-                "            \"dataElement\": \"eMyVanycQSC\",\n" +
-                "            \"providedElsewhere\": false,\n" +
-                "            \"storedBy\": \"[Unknown]\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"created\": \"2015-04-21T14:19:09.186+0000\",\n" +
-                "            \"lastUpdated\": \"2015-04-21T14:19:09.186+0000\",\n" +
-                "            \"value\": \"2014-01-27\",\n" +
-                "            \"dataElement\": \"msodh3rEMJa\",\n" +
-                "            \"providedElsewhere\": false,\n" +
-                "            \"storedBy\": \"[Unknown]\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"created\": \"2015-04-21T14:19:09.186+0000\",\n" +
-                "            \"lastUpdated\": \"2015-04-21T14:19:09.186+0000\",\n" +
-                "            \"value\": \"MODABSC\",\n" +
-                "            \"dataElement\": \"fWIAEtYVEGk\",\n" +
-                "            \"providedElsewhere\": false,\n" +
-                "            \"storedBy\": \"[Unknown]\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"created\": \"2015-04-21T14:19:09.186+0000\",\n" +
-                "            \"lastUpdated\": \"2015-04-21T14:19:09.186+0000\",\n" +
-                "            \"value\": \"V595\",\n" +
-                "            \"dataElement\": \"K6uUAvq500H\",\n" +
-                "            \"providedElsewhere\": false,\n" +
-                "            \"storedBy\": \"[Unknown]\"\n" +
-                "        }\n" +
-                "    ],\n" +
-                "    \"followup\": false,\n" +
-                "    \"created\": \"2016-04-21T14:19:09\",\n" +
-                "    \"lastUpdated\": \"2016-04-21T14:19:09\",\n" +
-                "    \"completedDate\": \"2016-04-21T00:00:00\"\n" +
-                "\n" +
-                "}", Event.class);
+                        "\n" +
+                        "    \"programStage\": \"Zj7UnCAulEk\",\n" +
+                        "    \"storedBy\": \"system\",\n" +
+                        "    \"orgUnit\": \"DiszpKrYNg8\",\n" +
+                        "    \"dueDate\": \"2015-05-01T00:00:00.000\",\n" +
+                        "    \"program\": \"eBAyeGv0exc\",\n" +
+                        "    \"href\": \"https://play.dhis2.org/demo/api/events/hnaWBxMw5j3\",\n" +
+                        "    \"event\": \"hnaWBxMw5j3\",\n" +
+                        "    \"status\": \"COMPLETED\",\n" +
+                        "    \"eventDate\": \"2015-05-01T00:00:00.000\",\n" +
+                        "    \"orgUnitName\": \"Ngelehun CHC\",\n" +
+                        "    \"attributeCategoryOptions\": \"as6ygGvUGNg\",\n" +
+                        "    \"created\": \"2015-09-08T21:40:22.000\",\n" +
+                        "    \"completedDate\": \"2015-11-15T00:00:00.000\",\n" +
+                        "    \"lastUpdated\": \"2015-11-15T14:55:22.995\",\n" +
+                        "    \"completedBy\": \"system\",\n" +
+                        "    \"enrollment\": \"RiLEKhWHlxZ\",\n" +
+                        "    \"coordinate\": {\n" +
+                        "        \"latitude\": 0.0,\n" +
+                        "        \"longitude\": 0.0\n" +
+                        "    },\n" +
+                        "    \"dataValues\": [\n" +
+                        "        {\n" +
+                        "            \"lastUpdated\": \"2014-11-15T14:55:23.007\",\n" +
+                        "            \"storedBy\": \"system\",\n" +
+                        "            \"created\": \"2014-11-15T14:55:23.007\",\n" +
+                        "            \"dataElement\": \"vV9UWAZohSf\",\n" +
+                        "            \"value\": \"24\",\n" +
+                        "            \"providedElsewhere\": false\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "            \"lastUpdated\": \"2014-11-15T14:55:23.007\",\n" +
+                        "            \"storedBy\": \"system\",\n" +
+                        "            \"created\": \"2014-11-15T14:55:23.007\",\n" +
+                        "            \"dataElement\": \"K6uUAvq500H\",\n" +
+                        "            \"value\": \"A00\",\n" +
+                        "            \"providedElsewhere\": false\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "            \"lastUpdated\": \"2014-11-15T14:55:23.007\",\n" +
+                        "            \"storedBy\": \"system\",\n" +
+                        "            \"created\": \"2014-11-15T14:55:23.007\",\n" +
+                        "            \"dataElement\": \"fWIAEtYVEGk\",\n" +
+                        "            \"value\": \"MODDISCH\",\n" +
+                        "            \"providedElsewhere\": false\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "            \"lastUpdated\": \"2014-11-15T14:55:23.006\",\n" +
+                        "            \"storedBy\": \"system\",\n" +
+                        "            \"created\": \"2014-11-15T14:55:23.006\",\n" +
+                        "            \"dataElement\": \"msodh3rEMJa\",\n" +
+                        "            \"value\": \"2013-05-31\",\n" +
+                        "            \"providedElsewhere\": false\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "            \"lastUpdated\": \"2014-11-15T14:55:23.007\",\n" +
+                        "            \"storedBy\": \"system\",\n" +
+                        "            \"created\": \"2014-11-15T14:55:23.007\",\n" +
+                        "            \"dataElement\": \"eMyVanycQSC\",\n" +
+                        "            \"value\": \"2013-05-01\",\n" +
+                        "            \"providedElsewhere\": false\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "            \"lastUpdated\": \"2014-11-15T14:55:23.007\",\n" +
+                        "            \"storedBy\": \"system\",\n" +
+                        "            \"created\": \"2014-11-15T14:55:23.007\",\n" +
+                        "            \"dataElement\": \"oZg33kd9taw\",\n" +
+                        "            \"value\": \"Female\",\n" +
+                        "            \"providedElsewhere\": false\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "            \"lastUpdated\": \"2014-11-15T14:55:23.007\",\n" +
+                        "            \"storedBy\": \"system\",\n" +
+                        "            \"created\": \"2014-11-15T14:55:23.007\",\n" +
+                        "            \"dataElement\": \"qrur9Dvnyt5\",\n" +
+                        "            \"value\": \"16\",\n" +
+                        "            \"providedElsewhere\": false\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "            \"lastUpdated\": \"2014-11-15T14:55:23.007\",\n" +
+                        "            \"storedBy\": \"system\",\n" +
+                        "            \"created\": \"2014-11-15T14:55:23.007\",\n" +
+                        "            \"dataElement\": \"GieVkTxp4HH\",\n" +
+                        "            \"value\": \"140\",\n" +
+                        "            \"providedElsewhere\": false\n" +
+                        "        }\n" +
+                        "    ],\n" +
+                        "    \"notes\": [ ]\n" +
+                        "\n" +
+                        "}",
+                Event.class);
 
-        assertThat(event.lastUpdated())
-                .isEqualTo(BaseIdentifiableObject.DATE_FORMAT.parse("2016-10-25T09:21:33.884"));
-        assertThat(event.created())
-                .isEqualTo(BaseIdentifiableObject.DATE_FORMAT.parse("2013-04-18T17:15:08.401"));
-        assertThat(event.eventDate())
-                .isEqualTo(BaseIdentifiableObject.DATE_FORMAT.parse("2015-01-27T00:00:00"));
-        assertThat(event.completedDate())
-                .isEqualTo(BaseIdentifiableObject.DATE_FORMAT.parse("2016-04-21T00:00:00"));
-        assertThat(event.uid()).isEqualTo("ZyjSDLHGPv4");
-        assertThat(event.status().toString()).isEqualTo("ACTIVE");
-        assertThat(event.organisationUnit()).isEqualTo("Rp268JB6Ne4");
+
+        assertThat(event.uid()).isEqualTo("hnaWBxMw5j3");
+        assertThat(event.status()).isEqualTo(EventStatus.COMPLETED);
+        assertThat(event.organisationUnit()).isEqualTo("DiszpKrYNg8");
         assertThat(event.program()).isEqualTo("eBAyeGv0exc");
         assertThat(event.programStage()).isEqualTo("Zj7UnCAulEk");
         assertThat(event.enrollmentUid()).isEqualTo("RiLEKhWHlxZ");
 
-        assertThat(event.trackedEntityDataValues().get(0).dataElement()).isEqualTo("GieVkTxp4HH");
-        assertThat(event.trackedEntityDataValues().get(1).dataElement()).isEqualTo("vV9UWAZohSf");
-        assertThat(event.trackedEntityDataValues().get(2).dataElement()).isEqualTo("vV9UWAZohSf");
-        assertThat(event.trackedEntityDataValues().get(3).dataElement()).isEqualTo("qrur9Dvnyt5");
-        assertThat(event.trackedEntityDataValues().get(4).dataElement()).isEqualTo("oZg33kd9taw");
-        assertThat(event.trackedEntityDataValues().get(5).dataElement()).isEqualTo("eMyVanycQSC");
-        assertThat(event.trackedEntityDataValues().get(6).dataElement()).isEqualTo("msodh3rEMJa");
-        assertThat(event.trackedEntityDataValues().get(7).dataElement()).isEqualTo("fWIAEtYVEGk");
-        assertThat(event.trackedEntityDataValues().get(8).dataElement()).isEqualTo("K6uUAvq500H");
+        assertThat(event.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-08T21:40:22.000"));
+        assertThat(event.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2015-11-15T14:55:22.995"));
+        assertThat(event.eventDate()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2015-05-01T00:00:00.000"));
+        assertThat(event.completedDate()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2015-11-15T00:00:00.000"));
 
-
-
-
+        assertThat(event.trackedEntityDataValues().get(0).dataElement()).isEqualTo("vV9UWAZohSf");
+        assertThat(event.trackedEntityDataValues().get(1).dataElement()).isEqualTo("K6uUAvq500H");
+        assertThat(event.trackedEntityDataValues().get(2).dataElement()).isEqualTo("fWIAEtYVEGk");
+        assertThat(event.trackedEntityDataValues().get(3).dataElement()).isEqualTo("msodh3rEMJa");
+        assertThat(event.trackedEntityDataValues().get(4).dataElement()).isEqualTo("eMyVanycQSC");
+        assertThat(event.trackedEntityDataValues().get(5).dataElement()).isEqualTo("oZg33kd9taw");
+        assertThat(event.trackedEntityDataValues().get(6).dataElement()).isEqualTo("qrur9Dvnyt5");
+        assertThat(event.trackedEntityDataValues().get(7).dataElement()).isEqualTo("GieVkTxp4HH");
     }
 }

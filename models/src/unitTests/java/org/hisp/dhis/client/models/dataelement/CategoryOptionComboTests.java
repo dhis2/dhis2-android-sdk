@@ -71,9 +71,9 @@ public class CategoryOptionComboTests {
         CategoryOptionCombo cocWithLongUid = CategoryOptionCombo
                 .builder().uid("a1b2c3d4e5ff").build();
 
-        assertThat(!cocWithEmptyUid.isValid());
-        assertThat(!cocWithShortUid.isValid());
-        assertThat(!cocWithLongUid.isValid());
+        assertThat(cocWithEmptyUid.isValid()).isFalse();
+        assertThat(cocWithShortUid.isValid()).isFalse();
+        assertThat(cocWithLongUid.isValid()).isFalse();
     }
 
     @Test
@@ -83,7 +83,7 @@ public class CategoryOptionComboTests {
                 .lastUpdated(new Date())
                 .build();
 
-        assertThat(!categoryOptionCombo.isValid());
+        assertThat(categoryOptionCombo.isValid()).isFalse();
     }
 
     @Test
@@ -93,7 +93,7 @@ public class CategoryOptionComboTests {
                 .created(new Date())
                 .build();
 
-        assertThat(!categoryOptionCombo.isValid());
+        assertThat(categoryOptionCombo.isValid()).isFalse();
     }
 
     @Test
@@ -102,7 +102,7 @@ public class CategoryOptionComboTests {
                 .uid("a1b2c3d4e5f")
                 .build();
 
-        assertThat(!categoryOptionCombo.isValid());
+        assertThat(categoryOptionCombo.isValid()).isFalse();
     }
 
     @Test
@@ -113,6 +113,6 @@ public class CategoryOptionComboTests {
                 .lastUpdated(new Date())
                 .build();
 
-        assertThat(categoryOptionCombo.isValid());
+        assertThat(categoryOptionCombo.isValid()).isTrue();
     }
 }

@@ -68,9 +68,9 @@ public class ConstantTests {
         // uid of 12 chars long
         Constant constantWithLongUid = Constant.builder().uid("a1b2c3d4e5ff").build();
 
-        assertThat(!constantWithEmptyUid.isValid());
-        assertThat(!constantWithShortUid.isValid());
-        assertThat(!constantWithLongUid.isValid());
+        assertThat(constantWithEmptyUid.isValid()).isFalse();
+        assertThat(constantWithShortUid.isValid()).isFalse();
+        assertThat(constantWithLongUid.isValid()).isFalse();
     }
 
     @Test
@@ -80,7 +80,7 @@ public class ConstantTests {
                 .lastUpdated(new Date())
                 .build();
 
-        assertThat(!constant.isValid());
+        assertThat(constant.isValid()).isFalse();
     }
 
     @Test
@@ -90,7 +90,7 @@ public class ConstantTests {
                 .created(new Date())
                 .build();
 
-        assertThat(!constant.isValid());
+        assertThat(constant.isValid()).isFalse();
     }
 
     @Test
@@ -99,7 +99,7 @@ public class ConstantTests {
                 .uid("a1b2c3d4e5f")
                 .build();
 
-        assertThat(!constant.isValid());
+        assertThat(constant.isValid()).isFalse();
     }
 
     @Test
@@ -110,6 +110,6 @@ public class ConstantTests {
                 .lastUpdated(new Date())
                 .build();
 
-        assertThat(constant.isValid());
+        assertThat(constant.isValid()).isTrue();
     }
 }

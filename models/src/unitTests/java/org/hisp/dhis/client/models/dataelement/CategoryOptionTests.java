@@ -31,8 +31,81 @@ package org.hisp.dhis.client.models.dataelement;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Date;
+
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CategoryOptionTests {
+
+    @Test
+    public void equals_shouldConformToContract() {
+        CategoryOption validCategoryOption = CategoryOption.builder()
+                .uid("a1b2c3d4e5f")
+                .created(new Date())
+                .lastUpdated(new Date())
+                .build();
+
+        EqualsVerifier.forClass(validCategoryOption.getClass())
+                .suppress(Warning.NULL_FIELDS)
+                .verify();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void build_shouldThrowOnNullUidField() { CategoryOption.builder().build(); }
+
+    @Test
+    public void isValid_shouldReturnFalseOnMalformedUid() {
+        CategoryOption.Builder builder = CategoryOption.builder()
+                .created(new Date())
+                .lastUpdated(new Date());
+
+        // corner case: empty string
+        CategoryOption categoryOptionWithEmptyUid = builder.uid("").build();
+
+        // uid of 10 chars long
+        CategoryOption categoryOptionWithShortUid = builder.uid("a1b2c3d4e5").build();
+
+        // uid of 12 chars long
+        CategoryOption categoryOptionWithLongUid = builder.uid("a1b2c3d4e5ff").build();
+
+        assertThat(categoryOptionWithEmptyUid.isValid()).isFalse();
+        assertThat(categoryOptionWithShortUid.isValid()).isFalse();
+        assertThat(categoryOptionWithLongUid.isValid()).isFalse();
+    }
+
+    @Test
+    public void isValid_shouldReturnFalseOnNullCreatedField() {
+        CategoryOption categoryOption = CategoryOption.builder()
+                .uid("a1b2c3d4e5f")
+                .lastUpdated(new Date())
+                .build();
+
+        assertThat(categoryOption.isValid()).isFalse();
+    }
+
+    @Test
+    public void isValid_shouldReturnFalseOnNullLastUpdatedField() {
+        CategoryOption categoryOption = CategoryOption.builder()
+                .uid("a1b2c3d4e5f")
+                .created(new Date())
+                .build();
+
+        assertThat(categoryOption.isValid()).isFalse();
+    }
+
+    @Test
+    public void isValid_shouldReturnTrueOnValidObject() {
+        CategoryOption validCategoryOption = CategoryOption.builder()
+                .uid("a1b2c3d4e5f")
+                .created(new Date())
+                .lastUpdated(new Date())
+                .build();
+
+        assertThat(validCategoryOption.isValid()).isTrue();
+    }
 
     @Test(expected = UnsupportedOperationException.class)
     public void categoryOptionCombos_shouldThrowOnCollectionMutations() {

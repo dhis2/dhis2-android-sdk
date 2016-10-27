@@ -45,7 +45,7 @@ public abstract class SystemInfo {
 
     @Nullable
     @JsonProperty(JSON_PROPERTY_SERVER_DATE_TIME)
-    public abstract Date serverDateTime();
+    public abstract Date serverDate();
 
     @Nullable
     @JsonProperty(JSON_PROPERTY_DATE_FORMAT)
@@ -55,7 +55,7 @@ public abstract class SystemInfo {
     public static abstract class Builder {
 
         @JsonProperty(JSON_PROPERTY_SERVER_DATE_TIME)
-        public abstract Builder serverDateTime(@Nullable Date serverDateTime);
+        public abstract Builder serverDate(@Nullable Date serverDate);
 
         @JsonProperty(JSON_PROPERTY_DATE_FORMAT)
         public abstract Builder dateFormat(@Nullable String dateFormat);

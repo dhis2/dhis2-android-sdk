@@ -80,7 +80,7 @@ public class SystemInfoIntegrationTest {
                         "}",
                 SystemInfo.class);
 
-        assertThat(systemInfo.serverDateTime()).isEqualTo("2016-10-27T12:59:32.733");
+        assertThat(systemInfo.serverDate()).isEqualTo("2016-10-27T12:59:32.733");
         assertThat(systemInfo.dateFormat()).isEqualTo("yyyy-mm-dd");
     }
 }

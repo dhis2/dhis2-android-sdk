@@ -28,108 +28,88 @@
 
 package org.hisp.dhis.client.sdk.models.organisationunit;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.BaseNameableObject;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class OrganisationUnit extends BaseNameableObject {
+import javax.annotation.Nullable;
 
-    @JsonProperty("parent")
-    OrganisationUnit parent;
+// TODO: Tests
+@AutoValue
+@JsonDeserialize(builder = AutoValue_OrganisationUnit.Builder.class)
+public abstract class OrganisationUnit extends BaseNameableObject {
+    private static final String JSON_PROPERTY_PARENT = "parent";
+    private static final String JSON_PROPERTY_PATH = "path";
+    private static final String JSON_PROPERTY_OPENING_DATE = "openingDate";
+    private static final String JSON_PROPERTY_CLOSED_DATE = "closedDate";
+    private static final String JSON_PROPERTY_LEVEL = "level";
+    private static final String JSON_PROPERTY_PROGRAMS = "programs";
 
-    @JsonProperty("path")
-    String path;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PARENT)
+    public abstract OrganisationUnit parent();
 
-    @JsonProperty("openingDate")
-    Date openingDate;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PATH)
+    public abstract String path();
 
-    @JsonProperty("closedDate")
-    Date closedDate;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_OPENING_DATE)
+    public abstract Date openingDate();
 
-    @JsonProperty("level")
-    int level;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_CLOSED_DATE)
+    public abstract Date closedDate();
 
-    @JsonProperty("programs")
-    List<Program> programs;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_LEVEL)
+    public abstract Integer level();
 
-    @JsonProperty("children")
-    List<OrganisationUnit> children;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAMS)
+    public abstract List<Program> programs();
 
-    public static void validate(OrganisationUnit organisationUnit) {
-        BaseIdentifiableObject.validate(organisationUnit);
+    public static Builder builder() {
+        return new AutoValue_OrganisationUnit.Builder();
+    }
 
-        if (organisationUnit.getPath() == null) {
-            throw new IllegalArgumentException("path must not be null");
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+        @JsonProperty(JSON_PROPERTY_PARENT)
+        public abstract Builder parent(@Nullable OrganisationUnit parent);
+
+        @JsonProperty(JSON_PROPERTY_PATH)
+        public abstract Builder path(@Nullable String path);
+
+        @JsonProperty(JSON_PROPERTY_OPENING_DATE)
+        public abstract Builder openingDate(@Nullable Date openingDate);
+
+        @JsonProperty(JSON_PROPERTY_CLOSED_DATE)
+        public abstract Builder closedDate(@Nullable Date closedDate);
+
+        @JsonProperty(JSON_PROPERTY_LEVEL)
+        public abstract Builder level(@Nullable Integer level);
+
+        @JsonProperty(JSON_PROPERTY_PROGRAMS)
+        public abstract Builder programs(@Nullable List<Program> programs);
+
+        abstract List<Program> programs();
+
+        abstract OrganisationUnit autoBuild();
+
+        public OrganisationUnit build() {
+            if (programs() != null) {
+                programs(Collections.unmodifiableList(programs()));
+            }
+
+            return autoBuild();
         }
-
-        if (organisationUnit.getOpeningDate() == null) {
-            throw new IllegalArgumentException("opening date must not be null");
-        }
-    }
-
-    public OrganisationUnit() {
-    }
-
-    public OrganisationUnit getParent() {
-        return parent;
-    }
-
-    public void setParent(OrganisationUnit parent) {
-        this.parent = parent;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public List<OrganisationUnit> getChildren() {
-        return children;
-    }
-
-    public void setChildren(List<OrganisationUnit> children) {
-        this.children = children;
-    }
-
-    public Date getOpeningDate() {
-        return openingDate;
-    }
-
-    public void setOpeningDate(Date openingDate) {
-        this.openingDate = openingDate;
-    }
-
-    public Date getClosedDate() {
-        return closedDate;
-    }
-
-    public void setClosedDate(Date closedDate) {
-        this.closedDate = closedDate;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public List<Program> getPrograms() {
-        return programs;
-    }
-
-    public void setPrograms(List<Program> programs) {
-        this.programs = programs;
     }
 }

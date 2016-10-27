@@ -28,62 +28,66 @@
 
 package org.hisp.dhis.client.sdk.models.option;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.ValueType;
 
+import java.util.Collections;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class OptionSet extends BaseIdentifiableObject {
+import javax.annotation.Nullable;
 
-    @JsonProperty("version")
-    int version;
+// TODO: Tests
+@AutoValue
+@JsonDeserialize(builder = AutoValue_OptionSet.Builder.class)
+public abstract class OptionSet extends BaseIdentifiableObject {
+    private static final String JSON_PROPERTY_VERSION = "version";
+    private static final String JSON_PROPERTY_VALUE_TYPE = "valueType";
+    private static final String JSON_PROPERTY_OPTIONS = "options";
 
-    @JsonProperty("valueType")
-    ValueType valueType;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_VERSION)
+    public abstract Integer version();
 
-    @JsonProperty("options")
-    List<Option> options;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_OPTIONS)
+    public abstract List<Option> options();
 
-    public static void validate(OptionSet optionSet) {
-        BaseIdentifiableObject.validate(optionSet);
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_VALUE_TYPE)
+    public abstract ValueType valueType();
 
-        if (optionSet.getValueType() == null) {
-            throw new IllegalArgumentException("Value type must not be null");
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_OptionSet.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+
+        @JsonProperty(JSON_PROPERTY_VERSION)
+        public abstract Builder version(@Nullable Integer version);
+
+        @JsonProperty(JSON_PROPERTY_OPTIONS)
+        public abstract Builder options(@Nullable List<Option> options);
+
+        @JsonProperty(JSON_PROPERTY_VALUE_TYPE)
+        public abstract Builder valueType(@Nullable ValueType valueType);
+
+        abstract List<Option> options();
+
+        abstract OptionSet autoBuild();
+
+        public OptionSet build() {
+            if (options() != null) {
+                options(Collections.unmodifiableList(options()));
+            }
+
+            return autoBuild();
         }
-
-        if (optionSet.getOptions() != null && !optionSet.getOptions().isEmpty()) {
-            throw new IllegalArgumentException("Options cannot be null or empty");
-        }
-
-    }
-    public OptionSet() {
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    public ValueType getValueType() {
-        return valueType;
-    }
-
-    public void setValueType(ValueType valueType) {
-        this.valueType = valueType;
-    }
-
-    public List<Option> getOptions() {
-        return options;
-    }
-
-    public void setOptions(List<Option> options) {
-        this.options = options;
     }
 }

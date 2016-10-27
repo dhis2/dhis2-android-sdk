@@ -28,227 +28,204 @@
 
 package org.hisp.dhis.client.sdk.models.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
+import java.util.Collections;
 import java.util.List;
 
-import static org.hisp.dhis.client.sdk.utils.StringUtils.isEmpty;
+import javax.annotation.Nullable;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class User extends BaseIdentifiableObject {
+// TODO: Tests
+@AutoValue
+@JsonDeserialize(builder = AutoValue_User.Builder.class)
+public abstract class User extends BaseIdentifiableObject {
     public static final String GENDER_MALE = "gender_male";
     public static final String GENDER_FEMALE = "gender_female";
     public static final String GENDER_OTHER = "gender_other";
 
-    @JsonProperty("birthday")
-    String birthday;
+    private static final String JSON_PROPERTY_BIRTHDAY = "birthday";
+    private static final String JSON_PROPERTY_EDUCATION = "education";
+    private static final String JSON_PROPERTY_GENDER = "gender";
+    private static final String JSON_PROPERTY_JOB_TITLE = "jobTitle";
+    private static final String JSON_PROPERTY_SURNAME = "surname";
+    private static final String JSON_PROPERTY_FIRST_NAME = "firstName";
+    private static final String JSON_PROPERTY_INTRODUCTION = "introduction";
+    private static final String JSON_PROPERTY_EMPLOYER = "employer";
+    private static final String JSON_PROPERTY_INTERESTS = "interests";
+    private static final String JSON_PROPERTY_LANGUAGES = "languages";
+    private static final String JSON_PROPERTY_EMAIL = "email";
+    private static final String JSON_PROPERTY_PHONE_NUMBER = "phoneNumber";
+    private static final String JSON_PROPERTY_NATIONALITY = "nationality";
+    private static final String JSON_PROPERTY_USER_CREDENTIALS = "userCredentials";
+    private static final String JSON_PROPERTY_ORGANISATION_UNITS = "organisationUnits";
+    private static final String JSON_PROPERTY_TEI_SEARCH_ORGANISATION_UNITS = "teiSearchOrganisationUnits";
+    private static final String JSON_PROPERTY_DATA_VIEW_ORGANISATION_UNITS = "dataViewOrganisationUnits";
 
-    @JsonProperty("education")
-    String education;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_BIRTHDAY)
+    public abstract String birthday();
 
-    @JsonProperty("gender")
-    String gender;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_EDUCATION)
+    public abstract String education();
 
-    @JsonProperty("jobTitle")
-    String jobTitle;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_GENDER)
+    public abstract String gender();
 
-    @JsonProperty("surname")
-    String surname;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_JOB_TITLE)
+    public abstract String jobTitle();
 
-    @JsonProperty("firstName")
-    String firstName;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_SURNAME)
+    public abstract String surname();
 
-    @JsonProperty("introduction")
-    String introduction;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_FIRST_NAME)
+    public abstract String firstName();
 
-    @JsonProperty("employer")
-    String employer;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_INTRODUCTION)
+    public abstract String introduction();
 
-    @JsonProperty("interests")
-    String interests;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_EMPLOYER)
+    public abstract String employer();
 
-    @JsonProperty("languages")
-    String languages;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_INTERESTS)
+    public abstract String interests();
 
-    @JsonProperty("email")
-    String email;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_LANGUAGES)
+    public abstract String languages();
 
-    @JsonProperty("phoneNumber")
-    String phoneNumber;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_EMAIL)
+    public abstract String email();
 
-    @JsonProperty("nationality")
-    String nationality;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PHONE_NUMBER)
+    public abstract String phoneNumber();
 
-    @JsonProperty("userCredentials")
-    UserCredentials userCredentials;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_NATIONALITY)
+    public abstract String nationality();
 
-    @JsonProperty("organisationUnits")
-    List<OrganisationUnit> organisationUnits;
+    @JsonProperty(JSON_PROPERTY_USER_CREDENTIALS)
+    public abstract UserCredentials userCredentials();
 
-    @JsonProperty("teiSearchOrganisationUnits")
-    List<OrganisationUnit> teiSearchOrganisationUnits;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_ORGANISATION_UNITS)
+    public abstract List<OrganisationUnit> organisationUnits();
 
-    @JsonProperty("dataViewOrganisationUnits")
-    List<OrganisationUnit> dataViewOrganisationUnits;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_TEI_SEARCH_ORGANISATION_UNITS)
+    public abstract List<OrganisationUnit> teiSearchOrganisationUnits();
 
-    public static void validate(User user) {
-        if (user.getUserCredentials() == null) {
-            throw new IllegalArgumentException("User credentials must noe be null");
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DATA_VIEW_ORGANISATION_UNITS)
+    public abstract List<OrganisationUnit> dataViewOrganisationUnits();
+
+    public abstract Builder toBuilder();
+
+    @Override
+    public boolean isValid() {
+        if (userCredentials() == null) {
+            return false;
         }
+        return super.isValid();
     }
 
-    public User() {
-        // explicit empty constructor
+    public static Builder builder() {
+        return new AutoValue_User.Builder();
     }
 
-    public String getBirthday() {
-        return birthday;
-    }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
-    }
+        @JsonProperty(JSON_PROPERTY_BIRTHDAY)
+        public abstract Builder birthday(@Nullable String birthday);
 
-    public String getEducation() {
-        return education;
-    }
+        @JsonProperty(JSON_PROPERTY_EDUCATION)
+        public abstract Builder education(@Nullable String education);
 
-    public void setEducation(String education) {
-        this.education = education;
-    }
+        @JsonProperty(JSON_PROPERTY_GENDER)
+        public abstract Builder gender(@Nullable String gender);
 
-    public String getGender() {
-        return gender;
-    }
+        @JsonProperty(JSON_PROPERTY_JOB_TITLE)
+        public abstract Builder jobTitle(@Nullable String jobTitle);
 
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
+        @JsonProperty(JSON_PROPERTY_SURNAME)
+        public abstract Builder surname(@Nullable String surName);
 
-    public String getJobTitle() {
-        return jobTitle;
-    }
+        @JsonProperty(JSON_PROPERTY_FIRST_NAME)
+        public abstract Builder firstName(@Nullable String firstName);
 
-    public void setJobTitle(String jobTitle) {
-        this.jobTitle = jobTitle;
-    }
+        @JsonProperty(JSON_PROPERTY_INTRODUCTION)
+        public abstract Builder introduction(@Nullable String introduction);
 
-    public String getSurname() {
-        return surname;
-    }
+        @JsonProperty(JSON_PROPERTY_EMPLOYER)
+        public abstract Builder employer(@Nullable String employer);
 
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
+        @JsonProperty(JSON_PROPERTY_INTERESTS)
+        public abstract Builder interests(@Nullable String interests);
 
-    public String getFirstName() {
-        return firstName;
-    }
+        @JsonProperty(JSON_PROPERTY_LANGUAGES)
+        public abstract Builder languages(@Nullable String languages);
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+        @JsonProperty(JSON_PROPERTY_EMAIL)
+        public abstract Builder email(@Nullable String email);
 
-    public String getIntroduction() {
-        return introduction;
-    }
+        @JsonProperty(JSON_PROPERTY_PHONE_NUMBER)
+        public abstract Builder phoneNumber(@Nullable String phoneNumber);
 
-    public void setIntroduction(String introduction) {
-        this.introduction = introduction;
-    }
+        @JsonProperty(JSON_PROPERTY_NATIONALITY)
+        public abstract Builder nationality(@Nullable String nationality);
 
-    public String getEmployer() {
-        return employer;
-    }
+        @JsonProperty(JSON_PROPERTY_USER_CREDENTIALS)
+        public abstract Builder userCredentials(UserCredentials userCredentials);
 
-    public void setEmployer(String employer) {
-        this.employer = employer;
-    }
+        @JsonProperty(JSON_PROPERTY_ORGANISATION_UNITS)
+        public abstract Builder organisationUnits(@Nullable List<OrganisationUnit> organisationUnits);
 
-    public String getInterests() {
-        return interests;
-    }
+        @JsonProperty(JSON_PROPERTY_TEI_SEARCH_ORGANISATION_UNITS)
+        public abstract Builder teiSearchOrganisationUnits(@Nullable List<OrganisationUnit> organisationUnits);
 
-    public void setInterests(String interests) {
-        this.interests = interests;
-    }
+        @JsonProperty(JSON_PROPERTY_DATA_VIEW_ORGANISATION_UNITS)
+        public abstract Builder dataViewOrganisationUnits(@Nullable List<OrganisationUnit> organisationUnits);
 
-    public String getEmail() {
-        return email;
-    }
+        // internal, not exposed
+        abstract List<OrganisationUnit> organisationUnits();
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+        abstract List<OrganisationUnit> teiSearchOrganisationUnits();
 
-    public String getLanguages() {
-        return languages;
-    }
+        abstract List<OrganisationUnit> dataViewOrganisationUnits();
 
-    public void setLanguages(String languages) {
-        this.languages = languages;
-    }
+        abstract UserCredentials userCredentials();
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
+        abstract User autoBuild();
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
+        public User build() {
+            if (organisationUnits() != null) {
+                organisationUnits(Collections.unmodifiableList(organisationUnits()));
+            }
 
-    public String getNationality() {
-        return nationality;
-    }
+            if (teiSearchOrganisationUnits() != null) {
+                teiSearchOrganisationUnits(Collections.unmodifiableList(teiSearchOrganisationUnits()));
+            }
 
-    public void setNationality(String nationality) {
-        this.nationality = nationality;
-    }
+            if (dataViewOrganisationUnits() != null) {
+                dataViewOrganisationUnits(Collections.unmodifiableList(dataViewOrganisationUnits()));
+            }
 
-    public UserCredentials getUserCredentials() {
-        return userCredentials;
-    }
-
-    public void setUserCredentials(UserCredentials userCredentials) {
-        this.userCredentials = userCredentials;
-    }
-
-    public List<OrganisationUnit> getOrganisationUnits() {
-        return organisationUnits;
-    }
-
-    public void setOrganisationUnits(List<OrganisationUnit> organisationUnits) {
-        this.organisationUnits = organisationUnits;
-    }
-
-    public List<OrganisationUnit> getDataViewOrganisationUnits() {
-        return dataViewOrganisationUnits;
-    }
-
-    public void setDataViewOrganisationUnits(List<OrganisationUnit> dataViewOrganisationUnits) {
-        this.dataViewOrganisationUnits = dataViewOrganisationUnits;
-    }
-
-    public List<OrganisationUnit> getTeiSearchOrganisationUnits() {
-        return teiSearchOrganisationUnits;
-    }
-
-    public void setTeiSearchOrganisationUnits(List<OrganisationUnit> teiSearchOrganisationUnits) {
-        this.teiSearchOrganisationUnits = teiSearchOrganisationUnits;
-    }
-
-    public String getInitials() {
-        if (!isEmpty(getFirstName()) && !isEmpty(getSurname())) {
-            return String.valueOf(getFirstName().charAt(0)) +
-                    String.valueOf(getSurname().charAt(0));
-        } else if (getDisplayName() != null && getDisplayName().length() > 1) {
-            return String.valueOf(getDisplayName().charAt(0)) +
-                    String.valueOf(getDisplayName().charAt(1));
+            return autoBuild();
         }
-        return "";
     }
 }

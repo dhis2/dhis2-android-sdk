@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.client.sdk.rules;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hisp.dhis.client.sdk.models.common.ValueType;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,21 +56,19 @@ class ProgramRuleVariableValue {
         this.hasValue = hasValue;
     }
 
-    private void initializeAllValuesString(){
+    private void initializeAllValuesString() {
         this.allValuesString = new ArrayList<>();
         if (this.allValues != null) {
             for (TrackedEntityDataValue otherValue : this.allValues) {
-                this.allValuesString.add(otherValue.getValue());
+                this.allValuesString.add(otherValue.value());
             }
         }
     }
 
     public void setValueString(String value) {
-        if(this.value == null) {
-            this.value = new TrackedEntityDataValue();
+        if (this.value == null) {
+            this.value = TrackedEntityDataValue.builder().value(value).build();
         }
-
-        this.value.setValue(value);
 
         this.allValues = new ArrayList<>();
         this.allValues.add(this.value);
@@ -79,14 +77,16 @@ class ProgramRuleVariableValue {
 
     public String getValueString() {
 
-        return formatValue(this.value.getValue(), this.valueType );
+        return formatValue(this.value.value(), this.valueType);
     }
 
     public List<String> getAllValuesString() {
         return this.allValuesString;
     }
 
-    public boolean hasValue() { return this.hasValue; }
+    public boolean hasValue() {
+        return this.hasValue;
+    }
 
     @Override
     public String toString() {
@@ -94,13 +94,13 @@ class ProgramRuleVariableValue {
     }
 
     public static String formatValue(String value, ValueType type) {
-        value = StringUtils.strip(value,"'");
+        value = StringUtils.strip(value, "'");
         if (type == ValueType.TEXT
-        || type == ValueType.LONG_TEXT
-        || type == ValueType.EMAIL
-        || type == ValueType.PHONE_NUMBER
-        || type == ValueType.DATE
-        || type == ValueType.DATETIME) {
+                || type == ValueType.LONG_TEXT
+                || type == ValueType.EMAIL
+                || type == ValueType.PHONE_NUMBER
+                || type == ValueType.DATE
+                || type == ValueType.DATETIME) {
             return "'" + value + "'";
         } else if (type == ValueType.INTEGER
                 || type == ValueType.INTEGER_POSITIVE

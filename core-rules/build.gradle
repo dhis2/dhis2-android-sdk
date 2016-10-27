@@ -36,6 +36,7 @@ targetCompatibility = JavaVersion.VERSION_1_7
 
 dependencies {
     compile project(":models")
+    compile project(":utils")
 
     compile "org.hisp.dhis:dhis2-support-commons:${libs.dhisCommonsVersion}"
     compile("org.apache.commons:commons-jexl:${libs.jexlVersion}") {

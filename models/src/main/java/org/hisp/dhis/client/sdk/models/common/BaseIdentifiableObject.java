@@ -28,109 +28,92 @@
 
 package org.hisp.dhis.client.sdk.models.common;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+import javax.annotation.Nullable;
+
 public abstract class BaseIdentifiableObject extends BaseModel implements IdentifiableObject {
-    public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+    /* date format which should be used for all Date instances
+    within models which extend BaseIdentifiableObject */
+    public static final DateFormat DATE_FORMAT =
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.US);
 
-    @JsonProperty("id")
-    String uid;
+    private static final int UID_LENGTH = 11;
 
-    @JsonProperty("code")
-    String code;
+    private static final String JSON_PROPERTY_UID = "id";
+    private static final String JSON_PROPERTY_CODE = "code";
+    private static final String JSON_PROPERTY_NAME = "name";
+    private static final String JSON_PROPERTY_DISPLAY_NAME = "displayName";
+    private static final String JSON_PROPERTY_CREATED = "created";
+    private static final String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
 
-    // nameable
-    @JsonProperty("name")
-    String name;
+    @Override
+    @JsonProperty(JSON_PROPERTY_UID)
+    public abstract String uid();
 
-    @JsonProperty("displayName")
-    String displayName;
+    @Override
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_CODE)
+    public abstract String code();
 
-    @JsonProperty("created")
-    Date created;
+    @Override
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_NAME)
+    public abstract String name();
 
-    @JsonProperty("lastUpdated")
-    Date lastUpdated;
+    @Override
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DISPLAY_NAME)
+    public abstract String displayName();
 
-    public static <T extends IdentifiableObject> void validate(T model) {
-        if (model == null) {
-            throw new IllegalArgumentException("model must not be null");
+    @Override
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_CREATED)
+    public abstract Date created();
+
+    @Override
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
+    public abstract Date lastUpdated();
+
+    @Override
+    public boolean isValid() {
+        // check if properties are null or not
+        if (created() == null || lastUpdated() == null) {
+            return false;
         }
 
-        if (model.getUid() == null || model.getUid().length() != 11) {
-            throw new IllegalArgumentException("Uid must be 11 characters long");
+        // check uid length which must be 11 characters long
+        if (uid().length() != UID_LENGTH) {
+            return false;
         }
 
-        if (model.getCreated() == null) {
-            throw new IllegalArgumentException("created must not be null");
-        }
-
-        if (model.getLastUpdated() == null) {
-            throw new IllegalArgumentException("lastUpdated must not be null");
-        }
+        return true;
     }
 
-    public BaseIdentifiableObject() {
-        // explicit constructor
-    }
+    protected static abstract class Builder<T extends Builder> extends BaseModel.Builder<T> {
 
-    @Override
-    public String getUid() {
-        return uid;
-    }
+        @JsonProperty(JSON_PROPERTY_UID)
+        public abstract T uid(String uid);
 
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
+        @JsonProperty(JSON_PROPERTY_CODE)
+        public abstract T code(@Nullable String code);
 
-    @Override
-    public String getCode() {
-        return code;
-    }
+        @JsonProperty(JSON_PROPERTY_NAME)
+        public abstract T name(@Nullable String name);
 
-    public void setCode(String code) {
-        this.code = code;
-    }
+        @JsonProperty(JSON_PROPERTY_DISPLAY_NAME)
+        public abstract T displayName(@Nullable String displayName);
 
-    @Override
-    public String getName() {
-        return name;
-    }
+        @JsonProperty(JSON_PROPERTY_CREATED)
+        public abstract T created(@Nullable Date created);
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    @Override
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    @Override
-    public Date getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(Date lastUpdated) {
-        this.lastUpdated = lastUpdated;
+        @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
+        public abstract T lastUpdated(@Nullable Date lastUpdated);
     }
 }

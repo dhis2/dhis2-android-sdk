@@ -28,27 +28,49 @@
 
 package org.hisp.dhis.client.sdk.models.dataelement;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseNameableObject;
 
+import java.util.Collections;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Category extends BaseNameableObject {
+import javax.annotation.Nullable;
 
-    @JsonProperty("categoryOptions")
-    List<CategoryOption> categoryOptions;
+// TODO: Unit tests
+@AutoValue
+@JsonDeserialize(builder = AutoValue_Category.Builder.class)
+public abstract class Category extends BaseNameableObject {
+    private static final String JSON_PROPERTY_CATEGORY_OPTIONS = "categoryOptions";
 
-    public Category() {
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_CATEGORY_OPTIONS)
+    public abstract List<CategoryOption> categoryOptions();
+
+    public static Builder builder() {
+        return new AutoValue_Category.Builder();
     }
 
-    public List<CategoryOption> getCategoryOptions() {
-        return categoryOptions;
-    }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
 
-    public void setCategoryOptions(List<CategoryOption> categoryOptions) {
-        this.categoryOptions = categoryOptions;
+        @JsonProperty(JSON_PROPERTY_CATEGORY_OPTIONS)
+        public abstract Builder categoryOptions(@Nullable List<CategoryOption> categoryOptions);
+
+        // used only to support unmodifiable collections
+        abstract List<CategoryOption> categoryOptions();
+
+        // used only to support unmodifiable collections
+        abstract Category autoBuild();
+
+        public Category build() {
+            if (categoryOptions() != null) {
+                categoryOptions(Collections.unmodifiableList(categoryOptions()));
+            }
+
+            return autoBuild();
+        }
     }
 }

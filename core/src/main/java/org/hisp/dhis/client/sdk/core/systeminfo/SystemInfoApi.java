@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.client.sdk.core.systeminfo;
 
-import org.hisp.dhis.client.sdk.models.SystemInfo;
 
 import java.util.Map;
 

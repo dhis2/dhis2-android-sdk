@@ -28,38 +28,56 @@
 
 package org.hisp.dhis.client.sdk.models.dataelement;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 
+import java.util.Collections;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class CategoryCombo extends BaseIdentifiableObject {
+import javax.annotation.Nullable;
 
-    @JsonProperty("isDefault")
-    boolean isDefault;
+// TODO: Unit tests
+@AutoValue
+@JsonDeserialize(builder = AutoValue_CategoryCombo.Builder.class)
+public abstract class CategoryCombo extends BaseIdentifiableObject {
+    private static final String JSON_PROPERTY_IS_DEFAULT = "isDefault";
+    private static final String JSON_PROPERTY_CATEGORIES = "categories";
 
-    @JsonProperty("categories")
-    List<Category> categories;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_IS_DEFAULT)
+    public abstract Boolean isDefault();
 
-    public CategoryCombo() {
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_CATEGORIES)
+    public abstract List<Category> categories();
+
+    public static Builder builder() {
+        return new AutoValue_CategoryCombo.Builder();
     }
 
-    public boolean isDefault() {
-        return isDefault;
-    }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
-    public void setDefault(boolean aDefault) {
-        isDefault = aDefault;
-    }
+        @JsonProperty(JSON_PROPERTY_IS_DEFAULT)
+        public abstract Builder isDefault(@Nullable Boolean isDefault);
 
-    public List<Category> getCategories() {
-        return categories;
-    }
+        @JsonProperty(JSON_PROPERTY_CATEGORIES)
+        public abstract Builder categories(@Nullable List<Category> categories);
 
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
+        // internal, not exposed
+        abstract List<Category> categories();
+
+        abstract CategoryCombo autoBuild();
+
+        public CategoryCombo build() {
+            if (categories() != null) {
+                categories(Collections.unmodifiableList(categories()));
+            }
+
+            return autoBuild();
+        }
     }
 }

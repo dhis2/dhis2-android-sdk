@@ -28,50 +28,65 @@
 
 package org.hisp.dhis.client.sdk.models.dataelement;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseNameableObject;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class CategoryOption extends BaseNameableObject {
+import javax.annotation.Nullable;
 
-    @JsonProperty("categoryOptionCombos")
-    List<CategoryOptionCombo> categoryOptionCombos;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_CategoryOption.Builder.class)
+public abstract class CategoryOption extends BaseNameableObject {
+    private static final String JSON_PROPERTY_CATEGORY_OPTION_COMBOS = "categoryOptionCombos";
+    private static final String JSON_PROPERTY_START_DATE = "startDate";
+    private static final String JSON_PROPERTY_END_DATE = "endDate";
 
-    @JsonProperty("startDate")
-    Date startDate;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_CATEGORY_OPTION_COMBOS)
+    public abstract List<CategoryOptionCombo> categoryOptionCombos();
 
-    @JsonProperty("endDate")
-    Date endDate;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_START_DATE)
+    public abstract Date startDate();
 
-    public CategoryOption() {
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_END_DATE)
+    public abstract Date endDate();
+
+    public static Builder builder() {
+        return new AutoValue_CategoryOption.Builder();
     }
 
-    public List<CategoryOptionCombo> getCategoryOptionCombos() {
-        return categoryOptionCombos;
-    }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
 
-    public void setCategoryOptionCombos(List<CategoryOptionCombo> categoryOptionCombos) {
-        this.categoryOptionCombos = categoryOptionCombos;
-    }
+        @JsonProperty(JSON_PROPERTY_CATEGORY_OPTION_COMBOS)
+        public abstract Builder categoryOptionCombos(
+                @Nullable List<CategoryOptionCombo> categoryOptionCombos);
 
-    public Date getStartDate() {
-        return startDate;
-    }
+        @JsonProperty(JSON_PROPERTY_START_DATE)
+        public abstract Builder startDate(@Nullable Date startDate);
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
+        @JsonProperty(JSON_PROPERTY_END_DATE)
+        public abstract Builder endDate(@Nullable Date endDate);
 
-    public Date getEndDate() {
-        return endDate;
-    }
+        // internal, not exposed
+        abstract List<CategoryOptionCombo> categoryOptionCombos();
 
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+        abstract CategoryOption autoBuild();
+
+        public CategoryOption build() {
+            if (categoryOptionCombos() != null) {
+                categoryOptionCombos(Collections.unmodifiableList(categoryOptionCombos()));
+            }
+
+            return autoBuild();
+        }
     }
 }

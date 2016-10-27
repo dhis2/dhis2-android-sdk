@@ -34,6 +34,7 @@ import org.hisp.dhis.client.sdk.models.event.Event;
 
 import java.util.List;
 
-public interface EventStore extends IdentifiableObjectDataStore<Event>, DataStore<Event> {
+public interface EventStore extends DataStore<Event> {
     List<Event> query(String organisationUnit, String program);
+    Event query(String uid);
 }

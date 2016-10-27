@@ -28,10 +28,23 @@
 
 package org.hisp.dhis.client.sdk.models.option;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Option extends BaseIdentifiableObject {
+// TODO: Tests
+@AutoValue
+@JsonDeserialize(builder = AutoValue_Option.Builder.class)
+public abstract class Option extends BaseIdentifiableObject {
+    // no fields
+
+    public static Builder builder() {
+        return new AutoValue_Option.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+        public abstract Option build();
+    }
 }

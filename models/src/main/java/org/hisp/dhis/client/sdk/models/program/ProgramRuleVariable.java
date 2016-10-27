@@ -28,82 +28,73 @@
 
 package org.hisp.dhis.client.sdk.models.program;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class ProgramRuleVariable extends BaseIdentifiableObject {
+import javax.annotation.Nullable;
 
-    @JsonProperty("programStage")
-    ProgramStage programStage;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_ProgramRuleVariable.Builder.class)
+public abstract class ProgramRuleVariable extends BaseIdentifiableObject {
+    private static final String JSON_PROPERTY_PROGRAM_STAGE = "programStage";
+    private static final String JSON_PROPERTY_PROGRAM_RULE_VARIABLE_SOURCE_TYPE = "programRuleVariableSourceType";
+    private static final String JSON_PROPERTY_USE_CODE_FOR_OPTION_SET = "useCodeForOptionSet";
+    private static final String JSON_PROPERTY_PROGRAM = "program";
+    private static final String JSON_PROPERTY_DATA_ELEMENT = "dataElement";
+    private static final String JSON_PROPERTY_TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
 
-    @JsonProperty("programRuleVariableSourceType")
-    ProgramRuleVariableSourceType programRuleVariableSourceType;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE)
+    public abstract ProgramStage programStage();
 
-    @JsonProperty("useCodeForOptionSet")
-    boolean useCodeForOptionSet;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAM_RULE_VARIABLE_SOURCE_TYPE)
+    public abstract ProgramRuleVariableSourceType programRuleVariableSourceType();
 
-    @JsonProperty("program")
-    Program program;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_USE_CODE_FOR_OPTION_SET)
+    public abstract Boolean useCodeForOptionSet();
 
-    @JsonProperty("dataElement")
-    DataElement dataElement;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAM)
+    public abstract Program program();
 
-    @JsonProperty("trackedEntityAttribute")
-    TrackedEntityAttribute trackedEntityAttribute;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DATA_ELEMENT)
+    public abstract DataElement dataElement();
 
-    public ProgramRuleVariable() {
-    }
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_ATTRIBUTE)
+    public abstract TrackedEntityAttribute trackedEntityAttribute();
 
-    public ProgramStage getProgramStage() {
-        return programStage;
-    }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
-    public void setProgramStage(ProgramStage programStage) {
-        this.programStage = programStage;
-    }
+        @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE)
+        public abstract Builder programStage(@Nullable ProgramStage programStage);
 
-    public ProgramRuleVariableSourceType getProgramRuleVariableSourceType() {
-        return programRuleVariableSourceType;
-    }
+        @JsonProperty(JSON_PROPERTY_PROGRAM_RULE_VARIABLE_SOURCE_TYPE)
+        public abstract Builder programRuleVariableSourceType(
+                @Nullable ProgramRuleVariableSourceType programRuleVariableSourceType);
 
-    public void setProgramRuleVariableSourceType(ProgramRuleVariableSourceType programRuleVariableSourceType) {
-        this.programRuleVariableSourceType = programRuleVariableSourceType;
-    }
+        @JsonProperty(JSON_PROPERTY_USE_CODE_FOR_OPTION_SET)
+        public abstract Builder useCodeForOptionSet(@Nullable Boolean useCodeForOptionSet);
 
-    public boolean isUseCodeForOptionSet() {
-        return useCodeForOptionSet;
-    }
+        @JsonProperty(JSON_PROPERTY_PROGRAM)
+        public abstract Builder program(@Nullable Program program);
 
-    public void setUseCodeForOptionSet(boolean useCodeForOptionSet) {
-        this.useCodeForOptionSet = useCodeForOptionSet;
-    }
+        @JsonProperty(JSON_PROPERTY_DATA_ELEMENT)
+        public abstract Builder dataElement(@Nullable DataElement dataElement);
 
-    public Program getProgram() {
-        return program;
-    }
+        @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_ATTRIBUTE)
+        public abstract Builder trackedEntityAttribute(
+                @Nullable TrackedEntityAttribute trackedEntityAttribute);
 
-    public void setProgram(Program program) {
-        this.program = program;
-    }
-
-    public DataElement getDataElement() {
-        return dataElement;
-    }
-
-    public void setDataElement(DataElement dataElement) {
-        this.dataElement = dataElement;
-    }
-
-    public TrackedEntityAttribute getTrackedEntityAttribute() {
-        return trackedEntityAttribute;
-    }
-
-    public void setTrackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute) {
-        this.trackedEntityAttribute = trackedEntityAttribute;
+        public abstract ProgramRuleVariable build();
     }
 }

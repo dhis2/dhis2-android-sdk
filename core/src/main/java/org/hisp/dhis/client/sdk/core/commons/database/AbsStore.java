@@ -59,7 +59,7 @@ public abstract class AbsStore<T extends Model> implements Store<T> {
     @Override
     public boolean update(T object) {
         ContentValues contentValues = mapper.toContentValues(object);
-        contentResolver.update(mapper.getContentItemUri(object.getId()), contentValues, null, null);
+        contentResolver.update(mapper.getContentItemUri(object.id()), contentValues, null, null);
         return true;
     }
 
@@ -77,7 +77,7 @@ public abstract class AbsStore<T extends Model> implements Store<T> {
     @Override
     public int delete(T object) {
         isNull(object, "object must not be null");
-        return contentResolver.delete(mapper.getContentItemUri(object.getId()), null, null);
+        return contentResolver.delete(mapper.getContentItemUri(object.id()), null, null);
     }
 
     @Override
@@ -226,7 +226,7 @@ public abstract class AbsStore<T extends Model> implements Store<T> {
     }
 
     private boolean doObjectExist(T object) {
-        if (queryById(object.getId()) == null) {
+        if (queryById(object.id()) == null) {
             return false;
         } else return true;
     }

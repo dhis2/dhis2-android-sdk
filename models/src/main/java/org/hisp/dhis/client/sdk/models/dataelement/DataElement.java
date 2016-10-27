@@ -28,82 +28,100 @@
 
 package org.hisp.dhis.client.sdk.models.dataelement;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseNameableObject;
 import org.hisp.dhis.client.sdk.models.common.ValueType;
 import org.hisp.dhis.client.sdk.models.option.OptionSet;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class DataElement extends BaseNameableObject {
+import javax.annotation.Nullable;
 
-    @JsonProperty("optionSet")
-    OptionSet optionSet;
+// TODO: Unit tests
+@AutoValue
+@JsonDeserialize(builder = AutoValue_DataElement.Builder.class)
+public abstract class DataElement extends BaseNameableObject {
+    private final static String JSON_PROPERTY_VALUE_TYPE = "valueType";
+    private final static String JSON_PROPERTY_ZERO_IS_SIGNIFICANT = "zeroIsSignificant";
+    private final static String JSON_PROPERTY_AGGREGATION_OPERATOR = "aggregationOperator";
+    private final static String JSON_PROPERTY_FORM_NAME = "formName";
+    private final static String JSON_PROPERTY_NUMBER_TYPE = "numberType";
+    private final static String JSON_PROPERTY_DOMAIN_TYPE = "domainType";
+    private final static String JSON_PROPERTY_DIMENSION = "dimension";
+    private final static String JSON_PROPERTY_DISPLAY_FORM_NAME = "displayFormName";
+    private final static String JSON_PROPERTY_OPTION_SET = "optionSet";
 
-    @JsonProperty("categoryCombo")
-    CategoryCombo categoryCombo;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_VALUE_TYPE)
+    public abstract ValueType valueType();
 
-    @JsonProperty("valueType")
-    ValueType valueType;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_ZERO_IS_SIGNIFICANT)
+    public abstract Boolean zeroIsSignificant();
 
-    @JsonProperty("formName")
-    String formName;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_AGGREGATION_OPERATOR)
+    public abstract String aggregationOperator();
 
-    @JsonProperty("displayFormName")
-    String displayFormName;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_FORM_NAME)
+    public abstract String formName();
 
-    @JsonProperty("zeroIsSignificant")
-    boolean zeroIsSignificant;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_NUMBER_TYPE)
+    public abstract String numberType();
 
-    public DataElement() {
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DOMAIN_TYPE)
+    public abstract String domainType();
+
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DIMENSION)
+    public abstract String dimension();
+
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DISPLAY_FORM_NAME)
+    public abstract String displayFormName();
+
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_OPTION_SET)
+    public abstract OptionSet optionSet();
+
+    public static Builder builder() {
+        return new AutoValue_DataElement.Builder();
     }
 
-    public OptionSet getOptionSet() {
-        return optionSet;
-    }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
 
-    public void setOptionSet(OptionSet optionSet) {
-        this.optionSet = optionSet;
-    }
+        @JsonProperty(JSON_PROPERTY_VALUE_TYPE)
+        public abstract Builder valueType(@Nullable ValueType valueType);
 
-    public CategoryCombo getCategoryCombo() {
-        return categoryCombo;
-    }
+        @JsonProperty(JSON_PROPERTY_ZERO_IS_SIGNIFICANT)
+        public abstract Builder zeroIsSignificant(@Nullable Boolean zeroIsSignificant);
 
-    public void setCategoryCombo(CategoryCombo categoryCombo) {
-        this.categoryCombo = categoryCombo;
-    }
+        @JsonProperty(JSON_PROPERTY_AGGREGATION_OPERATOR)
+        public abstract Builder aggregationOperator(@Nullable String aggregationOperator);
 
-    public ValueType getValueType() {
-        return valueType;
-    }
+        @JsonProperty(JSON_PROPERTY_FORM_NAME)
+        public abstract Builder formName(@Nullable String formName);
 
-    public void setValueType(ValueType valueType) {
-        this.valueType = valueType;
-    }
+        @JsonProperty(JSON_PROPERTY_NUMBER_TYPE)
+        public abstract Builder numberType(@Nullable String numberType);
 
-    public String getFormName() {
-        return formName;
-    }
+        @JsonProperty(JSON_PROPERTY_DOMAIN_TYPE)
+        public abstract Builder domainType(@Nullable String domainType);
 
-    public void setFormName(String formName) {
-        this.formName = formName;
-    }
+        @JsonProperty(JSON_PROPERTY_DIMENSION)
+        public abstract Builder dimension(@Nullable String dimension);
 
-    public String getDisplayFormName() {
-        return displayFormName;
-    }
+        @JsonProperty(JSON_PROPERTY_DISPLAY_FORM_NAME)
+        public abstract Builder displayFormName(@Nullable String displayFormName);
 
-    public void setDisplayFormName(String displayFormName) {
-        this.displayFormName = displayFormName;
-    }
+        @JsonProperty(JSON_PROPERTY_OPTION_SET)
+        public abstract Builder optionSet(@Nullable OptionSet optionSet);
 
-    public boolean isZeroIsSignificant() {
-        return zeroIsSignificant;
-    }
-
-    public void setZeroIsSignificant(boolean zeroIsSignificant) {
-        this.zeroIsSignificant = zeroIsSignificant;
+        public abstract DataElement build();
     }
 }

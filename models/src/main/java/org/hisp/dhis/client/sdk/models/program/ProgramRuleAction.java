@@ -28,115 +28,98 @@
 
 package org.hisp.dhis.client.sdk.models.program;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class ProgramRuleAction extends BaseIdentifiableObject {
+import javax.annotation.Nullable;
 
-    @JsonProperty("data")
-    String data;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_ProgramRuleAction.Builder.class)
+public abstract class ProgramRuleAction extends BaseIdentifiableObject {
+    private static final String JSON_PROPERTY_DATA = "data";
+    private static final String JSON_PROPERTY_CONTENT = "content";
+    private static final String JSON_PROPERTY_LOCATION = "location";
+    private static final String JSON_PROPERTY_ATTRIBUTE = "trackedEntityAttribute";
+    private static final String JSON_PROPERTY_PROGRAM_INDICATOR = "programIndicator";
+    private static final String JSON_PROPERTY_PROGRAM_STAGE_SECTION = "programStageSection";
+    private static final String JSON_PROPERTY_PROGRAM_RULE_ACTION_TYPE = "programRuleActionType";
+    private static final String JSON_PROPERTY_PROGRAM_STAGE = "programStage";
+    private static final String JSON_PROPERTY_DATA_ELEMENT = "dataElement";
 
-    @JsonProperty("content")
-    String content;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DATA)
+    public abstract String data();
 
-    @JsonProperty("location")
-    String location;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_CONTENT)
+    public abstract String content();
 
-    @JsonProperty("attribute")
-    TrackedEntityAttribute attribute;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_LOCATION)
+    public abstract String location();
 
-    @JsonProperty("programIndicator")
-    ProgramIndicator programIndicator;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_ATTRIBUTE)
+    public abstract TrackedEntityAttribute trackedEntityAttribute();
 
-    @JsonProperty("programStageSection")
-    ProgramStageSection programStageSection;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAM_INDICATOR)
+    public abstract ProgramIndicator programIndicator();
 
-    @JsonProperty("programRuleActionType")
-    ProgramRuleActionType programRuleActionType;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE_SECTION)
+    public abstract ProgramStageSection programStageSection();
 
-    @JsonProperty("programStage")
-    ProgramStage programStage;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAM_RULE_ACTION_TYPE)
+    public abstract ProgramRuleActionType programRuleActionType();
 
-    @JsonProperty("dataElement")
-    DataElement dataElement;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE)
+    public abstract ProgramStage programStage();
 
-    public ProgramRuleAction() {
-    }
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DATA_ELEMENT)
+    public abstract DataElement dataElement();
 
-    public String getData() {
-        return data;
-    }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
-    public void setData(String data) {
-        this.data = data;
-    }
+        @JsonProperty(JSON_PROPERTY_DATA)
+        public abstract Builder data(@Nullable String data);
 
-    public String getContent() {
-        return content;
-    }
+        @JsonProperty(JSON_PROPERTY_CONTENT)
+        public abstract Builder content(@Nullable String content);
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+        @JsonProperty(JSON_PROPERTY_LOCATION)
+        public abstract Builder location(@Nullable String location);
 
-    public String getLocation() {
-        return location;
-    }
+        @JsonProperty(JSON_PROPERTY_ATTRIBUTE)
+        public abstract Builder trackedEntityAttribute(
+                @Nullable TrackedEntityAttribute trackedEntityAttribute);
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
+        @JsonProperty(JSON_PROPERTY_PROGRAM_INDICATOR)
+        public abstract Builder programIndicator(@Nullable ProgramIndicator programIndicator);
 
-    public TrackedEntityAttribute getAttribute() {
-        return attribute;
-    }
+        @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE_SECTION)
+        public abstract Builder programStageSection(
+                @Nullable ProgramStageSection programStageSection);
 
-    public void setAttribute(TrackedEntityAttribute attribute) {
-        this.attribute = attribute;
-    }
+        @JsonProperty(JSON_PROPERTY_PROGRAM_RULE_ACTION_TYPE)
+        public abstract Builder programRuleActionType(
+                @Nullable ProgramRuleActionType programRuleActionType);
 
-    public ProgramIndicator getProgramIndicator() {
-        return programIndicator;
-    }
+        @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE)
+        public abstract Builder programStage(@Nullable ProgramStage programStage);
 
-    public void setProgramIndicator(ProgramIndicator programIndicator) {
-        this.programIndicator = programIndicator;
-    }
+        @JsonProperty(JSON_PROPERTY_DATA_ELEMENT)
+        public abstract Builder dataElement(@Nullable DataElement dataElement);
 
-    public ProgramStageSection getProgramStageSection() {
-        return programStageSection;
-    }
-
-    public void setProgramStageSection(ProgramStageSection programStageSection) {
-        this.programStageSection = programStageSection;
-    }
-
-    public ProgramRuleActionType getProgramRuleActionType() {
-        return programRuleActionType;
-    }
-
-    public void setProgramRuleActionType(ProgramRuleActionType programRuleActionType) {
-        this.programRuleActionType = programRuleActionType;
-    }
-
-    public ProgramStage getProgramStage() {
-        return programStage;
-    }
-
-    public void setProgramStage(ProgramStage programStage) {
-        this.programStage = programStage;
-    }
-
-    public DataElement getDataElement() {
-        return dataElement;
-    }
-
-    public void setDataElement(DataElement dataElement) {
-        this.dataElement = dataElement;
+        public abstract ProgramRuleAction build();
     }
 }

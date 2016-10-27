@@ -38,13 +38,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.client.sdk.core.commons.database.Mapper;
 import org.hisp.dhis.client.sdk.core.option.OptionSetTable.OptionSetColumns;
-import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.option.OptionSet;
 
 import java.io.IOException;
-import java.text.ParseException;
 
-import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getInt;
+import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getLong;
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getString;
 
 class OptionSetMapper implements Mapper<OptionSet> {
@@ -71,16 +69,18 @@ class OptionSetMapper implements Mapper<OptionSet> {
 
     @Override
     public ContentValues toContentValues(OptionSet optionSet) {
-        OptionSet.validate(optionSet);
+        if (!optionSet.isValid()) {
+            throw new IllegalArgumentException("OptionSet is not valid");
+        }
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(OptionSetColumns.COLUMN_ID, optionSet.getId());
-        contentValues.put(OptionSetColumns.COLUMN_UID, optionSet.getUid());
-        contentValues.put(OptionSetColumns.COLUMN_CODE, optionSet.getCode());
-        contentValues.put(OptionSetColumns.COLUMN_CREATED, optionSet.getCreated().toString());
-        contentValues.put(OptionSetColumns.COLUMN_LAST_UPDATED, optionSet.getLastUpdated().toString());
-        contentValues.put(OptionSetColumns.COLUMN_NAME, optionSet.getName());
-        contentValues.put(OptionSetColumns.COLUMN_DISPLAY_NAME, optionSet.getDisplayName());
+        contentValues.put(OptionSetColumns.COLUMN_ID, optionSet.id());
+        contentValues.put(OptionSetColumns.COLUMN_UID, optionSet.uid());
+        contentValues.put(OptionSetColumns.COLUMN_CODE, optionSet.code());
+        contentValues.put(OptionSetColumns.COLUMN_CREATED, optionSet.created().toString());
+        contentValues.put(OptionSetColumns.COLUMN_LAST_UPDATED, optionSet.lastUpdated().toString());
+        contentValues.put(OptionSetColumns.COLUMN_NAME, optionSet.name());
+        contentValues.put(OptionSetColumns.COLUMN_DISPLAY_NAME, optionSet.displayName());
 
         // try to serialize the optionSet into JSON blob
         try {
@@ -93,26 +93,13 @@ class OptionSetMapper implements Mapper<OptionSet> {
 
     @Override
     public OptionSet toModel(Cursor cursor) {
-        OptionSet optionSet;
+        OptionSet optionSet = null;
         // trying to deserialize the JSON blob into OptionSet instance
         try {
+
             optionSet = objectMapper.readValue(getString(cursor, OptionSetColumns.COLUMN_BODY), OptionSet.class);
+            optionSet.toBuilder().id(getLong(cursor, OptionSetColumns.COLUMN_ID)).build();
         } catch (IOException e) {
-            throw new IllegalArgumentException(e);
-        }
-
-        optionSet.setId(getInt(cursor, OptionSetColumns.COLUMN_ID));
-        optionSet.setUid(getString(cursor, OptionSetColumns.COLUMN_UID));
-        optionSet.setCode(getString(cursor, OptionSetColumns.COLUMN_CODE));
-        optionSet.setName(getString(cursor, OptionSetColumns.COLUMN_NAME));
-        optionSet.setDisplayName(getString(cursor, OptionSetColumns.COLUMN_DISPLAY_NAME));
-
-        try {
-            optionSet.setCreated(BaseIdentifiableObject.SIMPLE_DATE_FORMAT
-                    .parse(getString(cursor, OptionSetColumns.COLUMN_CREATED)));
-            optionSet.setLastUpdated(BaseIdentifiableObject.SIMPLE_DATE_FORMAT
-                    .parse(getString(cursor, OptionSetColumns.COLUMN_LAST_UPDATED)));
-        } catch (ParseException e) {
             throw new IllegalArgumentException(e);
         }
 

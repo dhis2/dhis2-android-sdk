@@ -30,92 +30,77 @@ package org.hisp.dhis.client.sdk.models.trackedentity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.client.sdk.models.common.BaseModel;
-import org.hisp.dhis.client.sdk.models.common.DataModel;
-import org.hisp.dhis.client.sdk.models.common.State;
+import org.hisp.dhis.client.sdk.models.common.BaseDataModel;
 
-public class TrackedEntityDataValue extends BaseModel implements DataModel {
+import javax.annotation.Nullable;
 
+//TODO: Tests
+@AutoValue
+@JsonDeserialize(builder = AutoValue_TrackedEntityDataValue.Builder.class)
+public abstract class TrackedEntityDataValue extends BaseDataModel {
+    private final static String JSON_PROPERTY_DATA_ELEMENT = "dataElement";
+    private final static String JSON_PROPERTY_STORED_BY = "storedBy";
+    private final static String JSON_PROPERTY_VALUE = "value";
+
+    @Nullable
     @JsonIgnore
-    private String eventUid;
+    public abstract String event();
 
-    @JsonProperty("dataElement")
-    private String dataElement;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DATA_ELEMENT)
+    public abstract String dataElement();
 
-    @JsonProperty("storedBy")
-    private String storedBy;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_STORED_BY)
+    public abstract String storedBy();
 
-    @JsonProperty("value")
-    private String value;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_VALUE)
+    public abstract String value();
 
-    @JsonIgnore
-    private State state;
-
-    public static void validate(TrackedEntityDataValue trackedEntityDataValue) {
-        if(trackedEntityDataValue.getEventUid() == null) {
-            throw new IllegalArgumentException("Event uid must not be null");
-        }
-
-        if (trackedEntityDataValue.getStoredBy() == null) {
-            throw new IllegalArgumentException("Stored by must not be null");
-        }
-
-        if(trackedEntityDataValue.getDataElement() == null) {
-            throw new IllegalArgumentException("Data element must not be null");
-        }
-    }
-    public TrackedEntityDataValue() {
-        // explicit empty constructor
-    }
-
-    public String getEventUid() {
-        return eventUid;
-    }
-
-    public void setEventUid(String eventUid) {
-        this.eventUid = eventUid;
-    }
-
-    public String getDataElement() {
-        return dataElement;
-    }
-
-    public void setDataElement(String dataElement) {
-        this.dataElement = dataElement;
-    }
-
-    public String getStoredBy() {
-        return storedBy;
-    }
-
-    public void setStoredBy(String storedBy) {
-        this.storedBy = storedBy;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
+    public static Builder builder() {
+        return new AutoValue_TrackedEntityDataValue.Builder();
     }
 
     @Override
-    public String toString() {
-        return "TrackedEntityDataValue{" +
-                "eventUid=" + eventUid +
-                ", dataElement='" + dataElement + '\'' +
-                ", storedBy='" + storedBy + '\'' +
-                ", value='" + value + '\'' +
-                '}';
+    public boolean isValid() {
+        if (event() == null) {
+            return false;
+        }
+
+        if (dataElement() == null) {
+            return false;
+        }
+
+        if (storedBy() == null) {
+            return false;
+        }
+
+        if (value() == null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseDataModel.Builder<Builder> {
+
+        @JsonProperty(JSON_PROPERTY_DATA_ELEMENT)
+        public abstract Builder dataElement(@Nullable String dataElement);
+
+        @JsonProperty(JSON_PROPERTY_STORED_BY)
+        public abstract Builder storedBy(@Nullable String storedBy);
+
+        @JsonProperty(JSON_PROPERTY_VALUE)
+        public abstract Builder value(@Nullable String value);
+
+        @JsonIgnore
+        public abstract Builder event(@Nullable String event);
+
+        public abstract TrackedEntityDataValue build();
     }
 }

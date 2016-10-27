@@ -28,95 +28,55 @@
 
 package org.hisp.dhis.client.sdk.models.relationship;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.client.sdk.models.common.BaseModel;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
-import java.io.Serializable;
+// TODO: Tests
+@AutoValue
+@JsonDeserialize(builder = AutoValue_Relationship.Builder.class)
+public abstract class Relationship extends BaseModel {
+    private static final String JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_A = "trackedEntityInstanceA";
+    private static final String JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_B = "trackedEntityInstanceB";
+    private static final String JSON_PROPERTY_RELATIONSHIP_TYPE = "relationshipType";
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public final class Relationship {
+    @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_A)
+    public abstract TrackedEntityInstance trackedEntityInstanceA();
 
-    @JsonIgnore
-    private long id;
+    @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_B)
+    public abstract TrackedEntityInstance trackedEntityInstanceB();
 
-    @JsonProperty
-    private String relationship;
+    @JsonProperty(JSON_PROPERTY_RELATIONSHIP_TYPE)
+    public abstract RelationshipType relationshipType();
 
-    @JsonIgnore
-    private TrackedEntityInstance trackedEntityInstanceA;
-
-    @JsonIgnore
-    private TrackedEntityInstance trackedEntityInstanceB;
-
-    @JsonProperty
-    private String displayName;
-
-    public Relationship() {
-
+    public static Builder builder() {
+        return new AutoValue_Relationship.Builder();
     }
 
-    public long getId() {
-        return id;
+    @Override
+    public boolean isValid() {
+        if (relationshipType() == null || trackedEntityInstanceA() == null ||
+                trackedEntityInstanceB() == null) {
+            return false;
+        }
+
+        return true;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+        @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_A)
+        public abstract Builder trackedEntityInstanceA(TrackedEntityInstance entityInstanceA);
 
-    public String getRelationship() {
-        return relationship;
-    }
+        @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_B)
+        public abstract Builder trackedEntityInstanceB(TrackedEntityInstance entityInstanceB);
 
-    public void setRelationship(String relationship) {
-        this.relationship = relationship;
-    }
+        @JsonProperty(JSON_PROPERTY_RELATIONSHIP_TYPE)
+        public abstract Builder relationshipType(RelationshipType relationshipType);
 
-    @JsonProperty("trackedEntityInstanceA")
-    public String getTrackedEntityInstanceAUid() {
-        return trackedEntityInstanceA.getUid();
-    }
-
-    @JsonProperty("trackedEntityInstanceA")
-    public void setTrackedEntityInstanceA(String trackedEntityInstanceA) {
-        this.trackedEntityInstanceA = new TrackedEntityInstance();
-        this.trackedEntityInstanceA.setUid(trackedEntityInstanceA);
-    }
-
-    @JsonProperty("trackedEntityInstanceB")
-    public String getTrackedEntityInstanceBUid() {
-        return trackedEntityInstanceB.getUid();
-    }
-
-    @JsonProperty("trackedEntityInstanceB")
-    public void setTrackedEntityInstanceB(String trackedEntityInstanceB) {
-        this.trackedEntityInstanceB = new TrackedEntityInstance();
-        this.trackedEntityInstanceB.setUid(trackedEntityInstanceB);
-    }
-
-    public TrackedEntityInstance getTrackedEntityInstanceA() {
-        return trackedEntityInstanceA;
-    }
-
-    public void setTrackedEntityInstanceA(TrackedEntityInstance trackedEntityInstanceA) {
-        this.trackedEntityInstanceA = trackedEntityInstanceA;
-    }
-
-    public TrackedEntityInstance getTrackedEntityInstanceB() {
-        return trackedEntityInstanceB;
-    }
-
-    public void setTrackedEntityInstanceB(TrackedEntityInstance trackedEntityInstanceB) {
-        this.trackedEntityInstanceB = trackedEntityInstanceB;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
+        public abstract Relationship build();
     }
 }

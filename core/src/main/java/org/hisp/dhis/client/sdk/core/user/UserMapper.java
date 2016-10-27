@@ -9,13 +9,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.client.sdk.core.commons.database.Mapper;
-import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.user.User;
 
 import java.io.IOException;
-import java.text.ParseException;
 
-import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getInt;
+import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getLong;
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getString;
 import static org.hisp.dhis.client.sdk.core.user.UserTable.UserColumns;
 
@@ -43,16 +41,18 @@ class UserMapper implements Mapper<User> {
 
     @Override
     public ContentValues toContentValues(User user) {
-        User.validate(user);
+        if (!user.isValid()) {
+            throw new IllegalArgumentException("User is not valid");
+        }
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(UserColumns.COLUMN_ID, user.getId());
-        contentValues.put(UserColumns.COLUMN_UID, user.getUid());
-        contentValues.put(UserColumns.COLUMN_CODE, user.getCode());
-        contentValues.put(UserColumns.COLUMN_CREATED, user.getCreated().toString());
-        contentValues.put(UserColumns.COLUMN_LAST_UPDATED, user.getLastUpdated().toString());
-        contentValues.put(UserColumns.COLUMN_NAME, user.getName());
-        contentValues.put(UserColumns.COLUMN_DISPLAY_NAME, user.getDisplayName());
+        contentValues.put(UserColumns.COLUMN_ID, user.id());
+        contentValues.put(UserColumns.COLUMN_UID, user.uid());
+        contentValues.put(UserColumns.COLUMN_CODE, user.code());
+        contentValues.put(UserColumns.COLUMN_CREATED, user.created().toString());
+        contentValues.put(UserColumns.COLUMN_LAST_UPDATED, user.lastUpdated().toString());
+        contentValues.put(UserColumns.COLUMN_NAME, user.name());
+        contentValues.put(UserColumns.COLUMN_DISPLAY_NAME, user.displayName());
 
         // try to serialize the user into JSON blob
         try {
@@ -69,22 +69,8 @@ class UserMapper implements Mapper<User> {
         // trying to deserialize the JSON blob into User instance
         try {
             user = objectMapper.readValue(getString(cursor, UserColumns.COLUMN_BODY), User.class);
+            user.toBuilder().id(getLong(cursor, UserColumns.COLUMN_ID));
         } catch (IOException e) {
-            throw new IllegalArgumentException(e);
-        }
-
-        user.setId(getInt(cursor, UserColumns.COLUMN_ID));
-        user.setUid(getString(cursor, UserColumns.COLUMN_UID));
-        user.setCode(getString(cursor, UserColumns.COLUMN_CODE));
-        user.setName(getString(cursor, UserColumns.COLUMN_NAME));
-        user.setDisplayName(getString(cursor, UserColumns.COLUMN_DISPLAY_NAME));
-
-        try {
-            user.setCreated(BaseIdentifiableObject.SIMPLE_DATE_FORMAT
-                    .parse(getString(cursor, UserColumns.COLUMN_CREATED)));
-            user.setLastUpdated(BaseIdentifiableObject.SIMPLE_DATE_FORMAT
-                    .parse(getString(cursor, UserColumns.COLUMN_LAST_UPDATED)));
-        } catch (ParseException e) {
             throw new IllegalArgumentException(e);
         }
 

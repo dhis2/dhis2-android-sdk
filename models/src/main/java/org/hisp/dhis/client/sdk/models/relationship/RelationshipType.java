@@ -28,36 +28,50 @@
 
 package org.hisp.dhis.client.sdk.models.relationship;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class RelationshipType extends BaseIdentifiableObject {
+import javax.annotation.Nullable;
 
-    @JsonProperty("bIsToA")
-    String bIsToA;
+// TODO: Tests
+@AutoValue
+@JsonDeserialize(builder = AutoValue_RelationshipType.Builder.class)
+public abstract class RelationshipType extends BaseIdentifiableObject {
+    private static final String JSON_PROPERTY_B_TO_A = "bIsToA";
+    private static final String JSON_PROPERTY_A_TO_B = "aIsToB";
 
-    @JsonProperty("aIsToB")
-    String aIsToB;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_B_TO_A)
+    public abstract String bIsToA();
 
-    public RelationshipType() {
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_A_TO_B)
+    public abstract String aIsToB();
+
+    @Override
+    public boolean isValid() {
+        if (bIsToA() == null || aIsToB() == null) {
+            return false;
+        }
+
+        return super.isValid();
     }
 
-    public String getbIsToA() {
-        return bIsToA;
+    public static Builder builder() {
+        return new AutoValue_RelationshipType.Builder();
     }
 
-    public void setbIsToA(String bIsToA) {
-        this.bIsToA = bIsToA;
-    }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+        @JsonProperty(JSON_PROPERTY_B_TO_A)
+        public abstract Builder bIsToA(@Nullable String bIsToA);
 
-    public String getaIsToB() {
-        return aIsToB;
-    }
+        @JsonProperty(JSON_PROPERTY_A_TO_B)
+        public abstract Builder aIsToB(@Nullable String aIsToB);
 
-    public void setaIsToB(String aIsToB) {
-        this.aIsToB = aIsToB;
+        public abstract RelationshipType build();
     }
 }

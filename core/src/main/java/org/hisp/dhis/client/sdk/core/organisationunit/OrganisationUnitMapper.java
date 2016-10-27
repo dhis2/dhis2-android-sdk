@@ -41,6 +41,7 @@ import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import java.text.ParseException;
 
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getInt;
+import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getLong;
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getString;
 
 public class OrganisationUnitMapper implements Mapper<OrganisationUnit> {
@@ -61,70 +62,66 @@ public class OrganisationUnitMapper implements Mapper<OrganisationUnit> {
     }
 
     @Override
-    public ContentValues toContentValues(OrganisationUnit orgUnit) {
-        OrganisationUnit.validate(orgUnit);
+    public ContentValues toContentValues(OrganisationUnit organisationUnit) {
+        if (!organisationUnit.isValid()) {
+            throw new IllegalArgumentException("Organisation unit is not valid");
+        }
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(OrganisationUnitColumns.COLUMN_ID, orgUnit.getId());
-        contentValues.put(OrganisationUnitColumns.COLUMN_UID, orgUnit.getUid());
-        contentValues.put(OrganisationUnitColumns.COLUMN_CODE, orgUnit.getCode());
-        contentValues.put(OrganisationUnitColumns.COLUMN_CREATED, orgUnit.getCreated().toString());
-        contentValues.put(OrganisationUnitColumns.COLUMN_LAST_UPDATED, orgUnit.getLastUpdated().toString());
-        contentValues.put(OrganisationUnitColumns.COLUMN_NAME, orgUnit.getName());
-        contentValues.put(OrganisationUnitColumns.COLUMN_DISPLAY_NAME, orgUnit.getDisplayName());
-        contentValues.put(OrganisationUnitColumns.COLUMN_SHORT_NAME, orgUnit.getShortName());
-        contentValues.put(OrganisationUnitColumns.COLUMN_DISPLAY_SHORT_NAME, orgUnit.getDisplayShortName());
-        contentValues.put(OrganisationUnitColumns.COLUMN_DESCRIPTION, orgUnit.getDescription());
-        contentValues.put(OrganisationUnitColumns.COLUMN_DISPLAY_DESCRIPTION, orgUnit.getDisplayDescription());
+        contentValues.put(OrganisationUnitColumns.COLUMN_ID, organisationUnit.id());
+        contentValues.put(OrganisationUnitColumns.COLUMN_UID, organisationUnit.uid());
+        contentValues.put(OrganisationUnitColumns.COLUMN_CODE, organisationUnit.code());
+        contentValues.put(OrganisationUnitColumns.COLUMN_CREATED, organisationUnit.created().toString());
+        contentValues.put(OrganisationUnitColumns.COLUMN_LAST_UPDATED, organisationUnit.lastUpdated().toString());
+        contentValues.put(OrganisationUnitColumns.COLUMN_NAME, organisationUnit.name());
+        contentValues.put(OrganisationUnitColumns.COLUMN_DISPLAY_NAME, organisationUnit.displayName());
+        contentValues.put(OrganisationUnitColumns.COLUMN_SHORT_NAME, organisationUnit.shortName());
+        contentValues.put(OrganisationUnitColumns.COLUMN_DISPLAY_SHORT_NAME, organisationUnit.displayShortName());
+        contentValues.put(OrganisationUnitColumns.COLUMN_DESCRIPTION, organisationUnit.description());
+        contentValues.put(OrganisationUnitColumns.COLUMN_DISPLAY_DESCRIPTION, organisationUnit.displayDescription());
 
         contentValues.put(OrganisationUnitColumns.COLUMN_PARENT,
-                orgUnit.getParent() != null ? orgUnit.getParent().getUid() : null);
+                organisationUnit.parent() != null ? organisationUnit.parent().uid() : null);
         contentValues.put(OrganisationUnitColumns.COLUMN_OPENING_DATE,
-                orgUnit.getOpeningDate() != null ? orgUnit.getOpeningDate().toString() : null);
+                organisationUnit.openingDate() != null ? organisationUnit.openingDate().toString() : null);
         contentValues.put(OrganisationUnitColumns.COLUMN_CLOSED_DATE,
-                orgUnit.getClosedDate() != null ? orgUnit.getClosedDate().toString() : null);
-        contentValues.put(OrganisationUnitColumns.COLUMN_LEVEL, orgUnit.getLevel());
-        contentValues.put(OrganisationUnitColumns.COLUMN_PATH, orgUnit.getPath());
+                organisationUnit.closedDate() != null ? organisationUnit.closedDate().toString() : null);
+        contentValues.put(OrganisationUnitColumns.COLUMN_LEVEL, organisationUnit.level());
+        contentValues.put(OrganisationUnitColumns.COLUMN_PATH, organisationUnit.path());
 
         return contentValues;
     }
 
     @Override
     public OrganisationUnit toModel(Cursor cursor) {
-        OrganisationUnit organisationUnit = new OrganisationUnit();
-        organisationUnit.setId(getInt(cursor, OrganisationUnitColumns.COLUMN_ID));
-        organisationUnit.setUid(getString(cursor, OrganisationUnitColumns.COLUMN_UID));
-        organisationUnit.setCode(getString(cursor, OrganisationUnitColumns.COLUMN_CODE));
-        organisationUnit.setName(getString(cursor, OrganisationUnitColumns.COLUMN_NAME));
-        organisationUnit.setDisplayName(getString(cursor, OrganisationUnitColumns.COLUMN_DISPLAY_NAME));
+        OrganisationUnit parentOrganisationUnit = OrganisationUnit.builder()
+                .uid(getString(cursor, OrganisationUnitColumns.COLUMN_PARENT)).build();
 
-        organisationUnit.setShortName(getString(cursor, OrganisationUnitColumns.COLUMN_SHORT_NAME));
-        organisationUnit.setDisplayShortName(getString(cursor, OrganisationUnitColumns.COLUMN_DISPLAY_SHORT_NAME));
-        organisationUnit.setDescription(getString(cursor, OrganisationUnitColumns.COLUMN_DISPLAY_DESCRIPTION));
-        organisationUnit.setDisplayDescription(getString(cursor, OrganisationUnitColumns.COLUMN_DISPLAY_DESCRIPTION));
-
-        OrganisationUnit parent = new OrganisationUnit();
-        parent.setUid(getString(cursor, OrganisationUnitColumns.COLUMN_PARENT));
-
-        organisationUnit.setParent(parent);
-        organisationUnit.setLevel(getInt(cursor, OrganisationUnitColumns.COLUMN_LEVEL));
-        organisationUnit.setPath(getString(cursor, OrganisationUnitColumns.COLUMN_PATH));
-
+        OrganisationUnit organisationUnit = null;
         try {
-            organisationUnit.setCreated(BaseIdentifiableObject.SIMPLE_DATE_FORMAT
-                    .parse(getString(cursor, OrganisationUnitColumns.COLUMN_CREATED)));
-            organisationUnit.setLastUpdated(BaseIdentifiableObject.SIMPLE_DATE_FORMAT
-                    .parse(getString(cursor, OrganisationUnitColumns.COLUMN_LAST_UPDATED)));
+            organisationUnit = OrganisationUnit.builder()
+                    .id(getLong(cursor, OrganisationUnitColumns.COLUMN_ID))
+                    .uid(getString(cursor, OrganisationUnitColumns.COLUMN_UID))
+                    .code(getString(cursor, OrganisationUnitColumns.COLUMN_CODE))
+                    .name(getString(cursor, OrganisationUnitColumns.COLUMN_NAME))
+                    .displayName(getString(cursor, OrganisationUnitColumns.COLUMN_DISPLAY_NAME))
+                    .created(BaseIdentifiableObject.DATE_FORMAT
+                            .parse(getString(cursor, OrganisationUnitColumns.COLUMN_CREATED)))
+                    .lastUpdated(BaseIdentifiableObject.DATE_FORMAT
+                            .parse(getString(cursor, OrganisationUnitColumns.COLUMN_LAST_UPDATED)))
+                    .shortName(getString(cursor, OrganisationUnitColumns.COLUMN_SHORT_NAME))
+                    .displayShortName(getString(cursor, OrganisationUnitColumns.COLUMN_DISPLAY_SHORT_NAME))
+                    .description(getString(cursor, OrganisationUnitColumns.COLUMN_DISPLAY_DESCRIPTION))
+                    .displayDescription(getString(cursor, OrganisationUnitColumns.COLUMN_DISPLAY_DESCRIPTION))
+                    .parent(parentOrganisationUnit)
+                    .level(getInt(cursor, OrganisationUnitColumns.COLUMN_LEVEL))
+                    .path(getString(cursor, OrganisationUnitColumns.COLUMN_PATH))
+                    .openingDate(BaseIdentifiableObject.DATE_FORMAT
+                            .parse(getString(cursor, OrganisationUnitColumns.COLUMN_OPENING_DATE)))
+                    .closedDate(BaseIdentifiableObject.DATE_FORMAT
+                            .parse(getString(cursor, OrganisationUnitColumns.COLUMN_CLOSED_DATE)))
+                    .build();
 
-            if (getString(cursor, OrganisationUnitColumns.COLUMN_OPENING_DATE) != null) {
-                organisationUnit.setOpeningDate(BaseIdentifiableObject.SIMPLE_DATE_FORMAT
-                        .parse(getString(cursor, OrganisationUnitColumns.COLUMN_OPENING_DATE)));
-            }
-
-            if (getString(cursor, OrganisationUnitColumns.COLUMN_CLOSED_DATE) != null) {
-                organisationUnit.setClosedDate(BaseIdentifiableObject.SIMPLE_DATE_FORMAT
-                        .parse(getString(cursor, OrganisationUnitColumns.COLUMN_CLOSED_DATE)));
-            }
         } catch (ParseException e) {
             throw new IllegalArgumentException(e);
         }

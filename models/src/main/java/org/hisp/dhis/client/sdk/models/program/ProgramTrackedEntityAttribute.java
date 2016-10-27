@@ -28,71 +28,63 @@
 
 package org.hisp.dhis.client.sdk.models.program;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseNameableObject;
 import org.hisp.dhis.client.sdk.models.common.ValueType;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class ProgramTrackedEntityAttribute extends BaseNameableObject {
+import javax.annotation.Nullable;
 
-    @JsonProperty("mandatory")
-    boolean mandatory;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_ProgramTrackedEntityAttribute.Builder.class)
+public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
+    private static final String JSON_PROPERTY_MANDATORY = "mandatory";
+    private static final String JSON_PROPERTY_TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+    private static final String JSON_PROPERTY_VALUE_TYPE = "valueType";
+    private static final String JSON_PROPERTY_ALLOW_FUTURE_DATE = "allowFutureDate";
+    private static final String JSON_PROPERTY_DISPLAY_IN_LIST = "displayInList";
 
-    @JsonProperty("trackedEntityAttribute")
-    TrackedEntityAttribute trackedEntityAttribute;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_MANDATORY)
+    public abstract Boolean mandatory();
 
-    @JsonProperty("valueType")
-    ValueType valueType;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_ATTRIBUTE)
+    public abstract TrackedEntityAttribute trackedEntityAttribute();
 
-    @JsonProperty("allowFutureDate")
-    boolean allowFutureDate;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_VALUE_TYPE)
+    public abstract ValueType valueType();
 
-    @JsonProperty("displayInList")
-    boolean displayInList;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_ALLOW_FUTURE_DATE)
+    public abstract Boolean allowFutureDate();
 
-    public ProgramTrackedEntityAttribute() {
-    }
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DISPLAY_IN_LIST)
+    public abstract Boolean displayInList();
 
-    public boolean isMandatory() {
-        return mandatory;
-    }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+        @JsonProperty(JSON_PROPERTY_MANDATORY)
+        public abstract Builder mandatory(@Nullable Boolean mandatory);
 
-    public void setMandatory(boolean mandatory) {
-        this.mandatory = mandatory;
-    }
+        @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_ATTRIBUTE)
+        public abstract Builder trackedEntityAttribute(
+                @Nullable TrackedEntityAttribute trackedEntityAttribute);
 
-    public TrackedEntityAttribute getTrackedEntityAttribute() {
-        return trackedEntityAttribute;
-    }
+        @JsonProperty(JSON_PROPERTY_VALUE_TYPE)
+        public abstract Builder valueType(@Nullable ValueType valueType);
 
-    public void setTrackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute) {
-        this.trackedEntityAttribute = trackedEntityAttribute;
-    }
+        @JsonProperty(JSON_PROPERTY_ALLOW_FUTURE_DATE)
+        public abstract Builder allowFutureDate(@Nullable Boolean allowFutureFate);
 
-    public ValueType getValueType() {
-        return valueType;
-    }
+        @JsonProperty(JSON_PROPERTY_DISPLAY_IN_LIST)
+        public abstract Builder displayInList(@Nullable Boolean displayInList);
 
-    public void setValueType(ValueType valueType) {
-        this.valueType = valueType;
-    }
-
-    public boolean isAllowFutureDate() {
-        return allowFutureDate;
-    }
-
-    public void setAllowFutureDate(boolean allowFutureDate) {
-        this.allowFutureDate = allowFutureDate;
-    }
-
-    public boolean isDisplayInList() {
-        return displayInList;
-    }
-
-    public void setDisplayInList(boolean displayInList) {
-        this.displayInList = displayInList;
+        abstract ProgramTrackedEntityAttribute build();
     }
 }

@@ -28,10 +28,23 @@
 
 package org.hisp.dhis.client.sdk.models.dataelement;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseNameableObject;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class CategoryOptionCombo extends BaseNameableObject {
+// TODO: Unit tests
+@AutoValue
+@JsonDeserialize(builder = AutoValue_CategoryOptionCombo.Builder.class)
+public abstract class CategoryOptionCombo extends BaseNameableObject {
+    // no fields
+
+    public static Builder builder() {
+        return new AutoValue_CategoryOptionCombo.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+        public abstract CategoryOptionCombo build();
+    }
 }

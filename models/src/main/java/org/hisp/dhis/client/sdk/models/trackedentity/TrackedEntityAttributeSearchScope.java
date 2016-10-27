@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.models.trackedentity;
 
+// TODO: Tests
 public enum TrackedEntityAttributeSearchScope {
     NOT_SEARCHABLE, DATA_CAPTURE_ORG_UNITS, SEARCH_ORG_UNITS, ALL_ORG_UNITS
 }

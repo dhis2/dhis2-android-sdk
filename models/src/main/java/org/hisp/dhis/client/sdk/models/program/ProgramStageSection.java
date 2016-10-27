@@ -28,70 +28,65 @@
 
 package org.hisp.dhis.client.sdk.models.program;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class ProgramStageSection extends BaseIdentifiableObject {
-    public static final Comparator<ProgramStageSection>
-            SORT_ORDER_COMPARATOR = new SortOrderComparator();
+import javax.annotation.Nullable;
 
-    @JsonProperty("programIndicators")
-    List<ProgramIndicator> programIndicators;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_ProgramStageSection.Builder.class)
+public abstract class ProgramStageSection extends BaseIdentifiableObject {
+    private static final String JSON_PROPERTY_PROGRAM_INDICATORS = "programIndicators";
+    private static final String JSON_PROPERTY_PROGRAM_STAGE_DATA_ELEMENTS = "programStageDataElements";
+    private static final String JSON_PROPERTY_SORT_ORDER = "sortOrder";
 
-    @JsonProperty("programStageDataElements")
-    List<ProgramStageDataElement> programStageDataElements;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAM_INDICATORS)
+    public abstract List<ProgramIndicator> programIndicators();
 
-    @JsonProperty("sortOrder")
-    int sortOrder;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE_DATA_ELEMENTS)
+    public abstract List<ProgramStageDataElement> programStageDataElements();
 
-    public ProgramStageSection() {
-    }
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_SORT_ORDER)
+    public abstract Integer sortOrder();
 
-    public List<ProgramIndicator> getProgramIndicators() {
-        return programIndicators;
-    }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
-    public void setProgramIndicators(List<ProgramIndicator> programIndicators) {
-        this.programIndicators = programIndicators;
-    }
+        @JsonProperty(JSON_PROPERTY_PROGRAM_INDICATORS)
+        public abstract Builder programIndicators(@Nullable List<ProgramIndicator> programIndicators);
 
-    public List<ProgramStageDataElement> getProgramStageDataElements() {
-        return programStageDataElements;
-    }
+        @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE_DATA_ELEMENTS)
+        public abstract Builder programStageDataElements(
+                @Nullable List<ProgramStageDataElement> programStageDataElements);
 
-    public void setProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
-        this.programStageDataElements = programStageDataElements;
-    }
+        @JsonProperty(JSON_PROPERTY_SORT_ORDER)
+        public abstract Builder sortOrder(@Nullable Integer sortOrder);
 
-    public int getSortOrder() {
-        return sortOrder;
-    }
+        abstract List<ProgramIndicator> programIndicators();
 
-    public void setSortOrder(int sortOrder) {
-        this.sortOrder = sortOrder;
-    }
+        abstract List<ProgramStageDataElement> programStageDataElements();
 
-    private static final class SortOrderComparator implements Comparator<ProgramStageSection> {
+        abstract ProgramStageSection autoBuild();
 
-        @Override
-        public int compare(ProgramStageSection one, ProgramStageSection two) {
-            if (one == null || two == null) {
-                return 0;
+        public ProgramStageSection build() {
+            if (programIndicators() != null) {
+                programIndicators(Collections.unmodifiableList(programIndicators()));
             }
 
-            if (one.getSortOrder() > two.getSortOrder()) {
-                return 1;
-            } else if (one.getSortOrder() < two.getSortOrder()) {
-                return -1;
+            if (programStageDataElements() != null) {
+                programStageDataElements(Collections.unmodifiableList(programStageDataElements()));
             }
 
-            return 0;
+            return autoBuild();
         }
     }
 }

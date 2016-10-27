@@ -31,14 +31,16 @@ package org.hisp.dhis.client.sdk.core.event;
 import android.content.ContentResolver;
 import android.database.Cursor;
 
+import org.hisp.dhis.client.sdk.core.commons.database.AbsDataStore;
 import org.hisp.dhis.client.sdk.core.commons.database.AbsIdentifiableObjectDataStore;
-import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.core.event.EventTable.EventColumns;
+import org.hisp.dhis.client.sdk.models.event.Event;
+
 import java.util.List;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-class EventStoreImpl extends AbsIdentifiableObjectDataStore<Event> implements EventStore {
+class EventStoreImpl extends AbsDataStore<Event> implements EventStore {
 
     EventStoreImpl(ContentResolver contentResolver) {
         super(contentResolver, new EventMapper());
@@ -58,5 +60,19 @@ class EventStoreImpl extends AbsIdentifiableObjectDataStore<Event> implements Ev
         Cursor cursor = contentResolver.query(mapper.getContentUri(),
                 mapper.getProjection(), selection, selectionArgs, null);
         return toModels(cursor);
+    }
+
+    @Override
+    public Event query(String uid) {
+        isNull(uid, "Uid must not be null");
+
+        final String selection = EventColumns.COLUMN_UID + " = ?";
+        final String[] selectionArgs = new String[]{
+                uid
+        };
+
+        Cursor cursor = contentResolver.query(mapper.getContentUri(),
+                mapper.getProjection(), selection, selectionArgs, null);
+        return toModel(cursor);
     }
 }

@@ -28,129 +28,100 @@
 
 package org.hisp.dhis.client.sdk.models.trackedentity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
-import org.hisp.dhis.client.sdk.models.common.IdentifiableObject;
+import org.hisp.dhis.client.sdk.models.common.BaseDataModel;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class TrackedEntityInstance extends BaseIdentifiableObject implements IdentifiableObject {
+import javax.annotation.Nullable;
 
-    @JsonProperty("uid")
-    private String uid;
+// TODO: Tests
+@AutoValue
+@JsonDeserialize(builder = AutoValue_TrackedEntityInstance.Builder.class)
+public abstract class TrackedEntityInstance extends BaseDataModel {
+    private static final String JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_UID = "trackedEntityInstance";
+    private static final String JSON_PROPERTY_CREATED = "created";
+    private static final String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
+    private static final String JSON_PROPERTY_ORGANISATION_UNIT = "orgUnit";
+    private static final String JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES = "trackedEntityDataValues";
+    private static final String JSON_PROPERTY_RELATIONSHIPS = "relationships";
 
-    @JsonProperty("trackedEntity")
-    private String trackedEntity;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_UID)
+    public abstract String uid();
 
-    @JsonProperty("orgUnit")
-    private String orgUnit;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_CREATED)
+    public abstract Date created();
 
-    @JsonProperty("created")
-    private Date created;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
+    public abstract Date lastUpdated();
 
-    @JsonProperty("lastUpdated")
-    private Date lastUpdated;
+    @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
+    public abstract String organisationUnit();
 
-    @JsonProperty("attributes")
-    private List<TrackedEntityAttributeValue> attributes;
+    @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES)
+    public abstract List<TrackedEntityAttributeValue> trackedEntityAttributeValues();
 
-    @JsonProperty("relationships")
-    private List<Relationship> relationships;
-
-    @JsonIgnore
-    int sortOrder;
-
-    public TrackedEntityInstance() {
-        // explicit empty constructor
-    }
-
-    public String getTrackedEntity() {
-        return trackedEntity;
-    }
-
-    public void setTrackedEntity(String trackedEntity) {
-        this.trackedEntity = trackedEntity;
-    }
-
-    public String getOrgUnit() {
-        return orgUnit;
-    }
-
-    public void setOrgUnit(String orgUnit) {
-        this.orgUnit = orgUnit;
-    }
-
-    public List<TrackedEntityAttributeValue> getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(List<TrackedEntityAttributeValue> attributes) {
-        this.attributes = attributes;
-    }
-
-    public List<Relationship> getRelationships() {
-        return relationships;
-    }
-
-    public void setRelationships(List<Relationship> relationships) {
-        this.relationships = relationships;
-    }
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_RELATIONSHIPS)
+    public abstract List<Relationship> relationships();
 
     @Override
-    public String getUid() {
-        return uid;
+    public boolean isValid() {
+        if (created() == null || lastUpdated() == null) {
+            return false;
+        }
+
+        if (trackedEntityAttributeValues() == null || trackedEntityAttributeValues().isEmpty()) {
+            return false;
+        }
+
+        return true;
     }
 
-    @Override
-    public void setUid(String uId) {
-        this.uid = uId;
+    public static Builder builder() {
+        return new AutoValue_TrackedEntityInstance.Builder();
     }
 
-    @Override
-    public String getName() {
-        throw new UnsupportedOperationException();
-    }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseDataModel.Builder<Builder> {
+        @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_UID)
+        public abstract Builder uid(@Nullable String uid);
 
-    @Override
-    public void setName(String name) {
-        throw new UnsupportedOperationException();
-    }
+        @JsonProperty(JSON_PROPERTY_CREATED)
+        public abstract Builder created(@Nullable Date created);
 
-    @Override
-    public String getDisplayName() {
-        throw new UnsupportedOperationException();
-    }
+        @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
+        public abstract Builder lastUpdated(@Nullable Date lastUpdated);
 
-    @Override
-    public void setDisplayName(String displayName) {
-        throw new UnsupportedOperationException();
-    }
+        @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
+        public abstract Builder organisationUnit(String organisationUnit);
 
-    @Override
-    public Date getCreated() {
-        return created;
-    }
+        @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES)
+        public abstract Builder trackedEntityAttributeValues(List<TrackedEntityAttributeValue> trackedEntityAttributeValues);
 
-    @Override
-    public void setCreated(Date created) {
-        this.created = created;
-    }
+        @JsonProperty(JSON_PROPERTY_RELATIONSHIPS)
+        public abstract Builder relationships(@Nullable List<Relationship> relationships);
 
-    @Override
-    public Date getLastUpdated() {
-        return lastUpdated;
-    }
+        abstract List<TrackedEntityAttributeValue> trackedEntityAttributeValues();
 
-    @Override
-    public void setLastUpdated(Date lastUpdated) {
-        this.lastUpdated = lastUpdated;
+        abstract TrackedEntityInstance autoBuild();
+
+        public TrackedEntityInstance build() {
+            if (trackedEntityAttributeValues() != null) {
+                trackedEntityAttributeValues(Collections.unmodifiableList(
+                        trackedEntityAttributeValues()));
+            }
+
+            return autoBuild();
+        }
     }
 }

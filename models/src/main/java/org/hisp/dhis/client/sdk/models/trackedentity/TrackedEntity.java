@@ -28,15 +28,23 @@
 
 package org.hisp.dhis.client.sdk.models.trackedentity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.BaseNameableObject;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class TrackedEntity extends BaseNameableObject {
+// TODO: Tests
+@AutoValue
+@JsonDeserialize(builder = AutoValue_TrackedEntity.Builder.class)
+public abstract class TrackedEntity extends BaseNameableObject {
+    // no fields
 
-    public static void validate(TrackedEntity trackedEntity) {
-        BaseIdentifiableObject.validate(trackedEntity);
+    public static Builder builder() {
+        return new AutoValue_TrackedEntity.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+        public abstract TrackedEntity build();
     }
 }

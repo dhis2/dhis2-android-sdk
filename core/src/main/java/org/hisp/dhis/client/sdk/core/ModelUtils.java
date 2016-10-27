@@ -16,8 +16,8 @@ public class ModelUtils {
         Map<String, T> map = new HashMap<>();
         if (objects != null && objects.size() > 0) {
             for (T object : objects) {
-                if (object.getUid() != null) {
-                    map.put(object.getUid(), object);
+                if (object.uid() != null) {
+                    map.put(object.uid(), object);
                 }
             }
         }

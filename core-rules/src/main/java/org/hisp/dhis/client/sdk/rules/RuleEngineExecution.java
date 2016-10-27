@@ -55,8 +55,8 @@ public class RuleEngineExecution {
         // defensive copy which should fix the problem with concurrency.
         List<ProgramRule> programRules = new ArrayList<>(rules);
         for (ProgramRule rule : programRules) {
-            if (conditionIsTrue(rule.getCondition(), variableValueMap)) {
-                for (ProgramRuleAction action : rule.getProgramRuleActions()) {
+            if (conditionIsTrue(rule.condition(), variableValueMap)) {
+                for (ProgramRuleAction action : rule.programRuleActions()) {
                     effects.add(createEffect(action, rule, variableValueMap));
                 }
             }
@@ -224,16 +224,16 @@ public class RuleEngineExecution {
             ProgramRuleAction action, ProgramRule programRule, RuleEngineVariableValueMap variableValueMap) {
         RuleEffect effect = new RuleEffect();
         effect.setProgramRule(programRule);
-        effect.setProgramRuleActionType(action.getProgramRuleActionType());
-        effect.setContent(action.getContent());
+        effect.setProgramRuleActionType(action.programRuleActionType());
+        effect.setContent(action.content());
         //run expressions to evaluate content of data column:
-        effect.setData(runExpression(action.getData(), variableValueMap));
-        effect.setDataElement(action.getDataElement());
-        effect.setProgramIndicator(action.getProgramIndicator());
-        effect.setLocation(action.getLocation());
-        effect.setProgramStage(action.getProgramStage());
-        effect.setProgramStageSection(action.getProgramStageSection());
-        effect.setTrackedEntityAttribute(action.getAttribute());
+        effect.setData(runExpression(action.data(), variableValueMap));
+        effect.setDataElement(action.dataElement());
+        effect.setProgramIndicator(action.programIndicator());
+        effect.setLocation(action.location());
+        effect.setProgramStage(action.programStage());
+        effect.setProgramStageSection(action.programStageSection());
+        effect.setTrackedEntityAttribute(action.trackedEntityAttribute());
 
         if (effect.getProgramRuleActionType() == ProgramRuleActionType.ASSIGN) {
             //in case the action type is assign, it might be needed to update the variable value map:

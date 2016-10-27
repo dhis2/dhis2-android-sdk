@@ -46,6 +46,7 @@ import java.io.IOException;
 import java.text.ParseException;
 
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getInt;
+import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getLong;
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getString;
 
 class ProgramMapper implements Mapper<Program> {
@@ -72,22 +73,24 @@ class ProgramMapper implements Mapper<Program> {
 
     @Override
     public ContentValues toContentValues(Program program) {
-        Program.validate(program);
+        if(!program.isValid()) {
+            throw new IllegalArgumentException("Program is not valid");
+        }
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ProgramColumns.COLUMN_ID, program.getId());
-        contentValues.put(ProgramColumns.COLUMN_UID, program.getUid());
-        contentValues.put(ProgramColumns.COLUMN_CODE, program.getCode());
-        contentValues.put(ProgramColumns.COLUMN_CREATED, program.getCreated().toString());
-        contentValues.put(ProgramColumns.COLUMN_LAST_UPDATED, program.getLastUpdated().toString());
-        contentValues.put(ProgramColumns.COLUMN_NAME, program.getName());
-        contentValues.put(ProgramColumns.COLUMN_DISPLAY_NAME, program.getDisplayName());
-        contentValues.put(ProgramColumns.COLUMN_SHORT_NAME, program.getShortName());
-        contentValues.put(ProgramColumns.COLUMN_DISPLAY_SHORT_NAME, program.getDisplayShortName());
-        contentValues.put(ProgramColumns.COLUMN_DESCRIPTION, program.getDescription());
-        contentValues.put(ProgramColumns.COLUMN_DISPLAY_DESCRIPTION, program.getDisplayDescription());
-        contentValues.put(ProgramColumns.COLUMN_DISPLAY_FRONT_PAGE_LIST, program.isDisplayFrontPageList() ? 1 : 0);
-        contentValues.put(ProgramColumns.COLUMN_PROGRAM_TYPE, program.getProgramType().toString());
+        contentValues.put(ProgramColumns.COLUMN_ID, program.id());
+        contentValues.put(ProgramColumns.COLUMN_UID, program.uid());
+        contentValues.put(ProgramColumns.COLUMN_CODE, program.code());
+        contentValues.put(ProgramColumns.COLUMN_CREATED, program.created().toString());
+        contentValues.put(ProgramColumns.COLUMN_LAST_UPDATED, program.lastUpdated().toString());
+        contentValues.put(ProgramColumns.COLUMN_NAME, program.name());
+        contentValues.put(ProgramColumns.COLUMN_DISPLAY_NAME, program.displayName());
+        contentValues.put(ProgramColumns.COLUMN_SHORT_NAME, program.shortName());
+        contentValues.put(ProgramColumns.COLUMN_DISPLAY_SHORT_NAME, program.displayShortName());
+        contentValues.put(ProgramColumns.COLUMN_DESCRIPTION, program.description());
+        contentValues.put(ProgramColumns.COLUMN_DISPLAY_DESCRIPTION, program.displayDescription());
+        contentValues.put(ProgramColumns.COLUMN_DISPLAY_FRONT_PAGE_LIST, program.displayFrontPageList() ? 1 : 0);
+        contentValues.put(ProgramColumns.COLUMN_PROGRAM_TYPE, program.programType().toString());
 
         // try to serialize the program into JSON blob
         try {
@@ -104,30 +107,8 @@ class ProgramMapper implements Mapper<Program> {
         // trying to deserialize the JSON blob into Program instance
         try {
             program = objectMapper.readValue(getString(cursor, ProgramColumns.COLUMN_BODY), Program.class);
+            program.toBuilder().id((getLong(cursor, ProgramColumns.COLUMN_ID)));
         } catch (IOException e) {
-            throw new IllegalArgumentException(e);
-        }
-
-        program.setId(getInt(cursor, ProgramColumns.COLUMN_ID));
-        program.setUid(getString(cursor, ProgramColumns.COLUMN_UID));
-        program.setCode(getString(cursor, ProgramColumns.COLUMN_CODE));
-        program.setName(getString(cursor, ProgramColumns.COLUMN_NAME));
-        program.setDisplayName(getString(cursor, ProgramColumns.COLUMN_DISPLAY_NAME));
-
-        program.setShortName(getString(cursor, ProgramColumns.COLUMN_SHORT_NAME));
-        program.setDisplayShortName(getString(cursor, ProgramColumns.COLUMN_DISPLAY_SHORT_NAME));
-        program.setDescription(getString(cursor, ProgramColumns.COLUMN_DISPLAY_DESCRIPTION));
-        program.setDisplayDescription(getString(cursor, ProgramColumns.COLUMN_DISPLAY_DESCRIPTION));
-
-        program.setDisplayFrontPageList(getInt(cursor, ProgramColumns.COLUMN_DISPLAY_FRONT_PAGE_LIST) == 1);
-        program.setProgramType(ProgramType.valueOf(getString(cursor, ProgramColumns.COLUMN_PROGRAM_TYPE)));
-
-        try {
-            program.setCreated(BaseIdentifiableObject.SIMPLE_DATE_FORMAT
-                    .parse(getString(cursor, ProgramColumns.COLUMN_CREATED)));
-            program.setLastUpdated(BaseIdentifiableObject.SIMPLE_DATE_FORMAT
-                    .parse(getString(cursor, ProgramColumns.COLUMN_LAST_UPDATED)));
-        } catch (ParseException e) {
             throw new IllegalArgumentException(e);
         }
 

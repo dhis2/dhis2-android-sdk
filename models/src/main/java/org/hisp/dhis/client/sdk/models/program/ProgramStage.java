@@ -28,215 +28,181 @@
 
 package org.hisp.dhis.client.sdk.models.program;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.FormType;
 
+import java.util.Collections;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class ProgramStage extends BaseIdentifiableObject {
+import javax.annotation.Nullable;
 
-    @JsonProperty("executionDateLabel")
-    String executionDateLabel;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_ProgramStage.Builder.class)
+public abstract class ProgramStage extends BaseIdentifiableObject {
+    private static final String JSON_PROPERTY_EXECUTION_DATE_LABEL = "executionDateLabel";
+    private static final String JSON_PROPERTY_ALLOW_GENERATE_NEXT_VISIT = "allowGenerateNextVisit";
+    private static final String JSON_PROPERTY_VALID_COMPLETE_ONLY = "validCompleteOnly";
+    private static final String JSON_PROPERTY_REPORT_DATE_TO_USE = "reportDateToUse";
+    private static final String JSON_PROPERTY_OPEN_AFTER_ENROLLMENT = "openAfterEnrollment";
+    private static final String JSON_PROPERTY_PROGRAM_STAGE_DATA_ELEMENTS = "programStageDataElements";
+    private static final String JSON_PROPERTY_REPEATABLE = "repeatable";
+    private static final String JSON_PROPERTY_CAPTURE_COORDINATES = "captureCoordinates";
+    private static final String JSON_PROPERTY_FORM_TYPE = "formType";
+    private static final String JSON_PROPERTY_DISPLAY_GENERATE_EVENT_BOX = "displayGenerateEventBox";
+    private static final String JSON_PROPERTY_GENERATED_BY_ENROLMENT_DATE = "generatedByEnrollmentDate";
+    private static final String JSON_PROPERTY_AUTO_GENERATE_EVENT = "autoGenerateEvent";
+    private static final String JSON_PROPERTY_SORT_ORDER = "sortOrder";
+    private static final String JSON_PROPERTY_HIDE_DUE_DATE = "hideDueDate";
+    private static final String JSON_PROPERTY_BLOCK_ENTRY_FORM = "blockEntryForm";
+    private static final String JSON_PROPERTY_MIN_DAYS_FROM_START = "minDaysFromStart";
+    private static final String JSON_PROPERTY_STANDARD_INTERVAL = "standardInterval";
+    private static final String JSON_PROPERTY_PROGRAM_STAGE_SECTIONS = "programStageSections";
 
-    @JsonProperty("allowGenerateNextVisit")
-    boolean allowGenerateNextVisit;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_EXECUTION_DATE_LABEL)
+    public abstract String executionDateLabel();
 
-    @JsonProperty("validCompleteOnly")
-    boolean validCompleteOnly;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_ALLOW_GENERATE_NEXT_VISIT)
+    public abstract Boolean allowGenerateNextVisit();
 
-    @JsonProperty("reportDateToUse")
-    String reportDateToUse;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_VALID_COMPLETE_ONLY)
+    public abstract Boolean validCompleteOnly();
 
-    @JsonProperty("openAfterEnrollment")
-    boolean openAfterEnrollment;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_REPORT_DATE_TO_USE)
+    public abstract String reportDateToUse();
 
-    @JsonProperty("programStageDataElements")
-    List<ProgramStageDataElement> programStageDataElements;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_OPEN_AFTER_ENROLLMENT)
+    public abstract Boolean openAfterEnrollment();
 
-    @JsonProperty("repeatable")
-    boolean repeatable;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE_DATA_ELEMENTS)
+    public abstract List<ProgramStageDataElement> programStageDataElements();
 
-    @JsonProperty("captureCoordinates")
-    boolean captureCoordinates;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_REPEATABLE)
+    public abstract Boolean repeatable();
 
-    @JsonProperty("formType")
-    FormType formType;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_CAPTURE_COORDINATES)
+    public abstract Boolean captureCoordinates();
 
-    @JsonProperty("displayGenerateEventBox")
-    boolean displayGenerateEventBox;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_FORM_TYPE)
+    public abstract FormType formType();
 
-    @JsonProperty("generatedByEnrollmentDate")
-    boolean generatedByEnrollmentDate;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DISPLAY_GENERATE_EVENT_BOX)
+    public abstract Boolean displayGenerateEventBox();
 
-    @JsonProperty("autoGenerateEvent")
-    boolean autoGenerateEvent;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_GENERATED_BY_ENROLMENT_DATE)
+    public abstract Boolean generatedByEnrollmentDate();
 
-    @JsonProperty("sortOrder")
-    int sortOrder;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_AUTO_GENERATE_EVENT)
+    public abstract Boolean autoGenerateEvent();
 
-    @JsonProperty("hideDueDate")
-    boolean hideDueDate;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_SORT_ORDER)
+    public abstract Integer sortOrder();
 
-    @JsonProperty("blockEntryForm")
-    boolean blockEntryForm;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_HIDE_DUE_DATE)
+    public abstract Boolean hideDueDate();
 
-    @JsonProperty("minDaysFromStart")
-    int minDaysFromStart;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_BLOCK_ENTRY_FORM)
+    public abstract Boolean blockEntryForm();
 
-    @JsonProperty("standardInterval")
-    int standardInterval;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_MIN_DAYS_FROM_START)
+    public abstract Integer minDaysFromStart();
 
-    @JsonProperty("programStageSections")
-    List<ProgramStageSection> programStageSections;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_STANDARD_INTERVAL)
+    public abstract Integer standardInterval();
 
-    public ProgramStage() {
-    }
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE_SECTIONS)
+    public abstract List<ProgramStageSection> programStageSections();
 
-    public String getExecutionDateLabel() {
-        return executionDateLabel;
-    }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
-    public void setExecutionDateLabel(String executionDateLabel) {
-        this.executionDateLabel = executionDateLabel;
-    }
+        @JsonProperty(JSON_PROPERTY_EXECUTION_DATE_LABEL)
+        public abstract Builder executionDateLabel(@Nullable String executionDateLabel);
 
-    public boolean isAllowGenerateNextVisit() {
-        return allowGenerateNextVisit;
-    }
+        @JsonProperty(JSON_PROPERTY_ALLOW_GENERATE_NEXT_VISIT)
+        public abstract Builder allowGenerateNextVisit(@Nullable Boolean allowGenerateNextVisit);
 
-    public void setAllowGenerateNextVisit(boolean allowGenerateNextVisit) {
-        this.allowGenerateNextVisit = allowGenerateNextVisit;
-    }
+        @JsonProperty(JSON_PROPERTY_VALID_COMPLETE_ONLY)
+        public abstract Builder validCompleteOnly(@Nullable Boolean validCompleteOnly);
 
-    public boolean isValidCompleteOnly() {
-        return validCompleteOnly;
-    }
+        @JsonProperty(JSON_PROPERTY_REPORT_DATE_TO_USE)
+        public abstract Builder reportDateToUse(@Nullable String reportDateToUse);
 
-    public void setValidCompleteOnly(boolean validCompleteOnly) {
-        this.validCompleteOnly = validCompleteOnly;
-    }
+        @JsonProperty(JSON_PROPERTY_OPEN_AFTER_ENROLLMENT)
+        public abstract Builder openAfterEnrollment(@Nullable Boolean openAfterEnrollment);
 
-    public boolean isOpenAfterEnrollment() {
-        return openAfterEnrollment;
-    }
+        @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE_DATA_ELEMENTS)
+        public abstract Builder programStageDataElements(
+                @Nullable List<ProgramStageDataElement> programStageDataElements);
 
-    public void setOpenAfterEnrollment(boolean openAfterEnrollment) {
-        this.openAfterEnrollment = openAfterEnrollment;
-    }
+        @JsonProperty(JSON_PROPERTY_REPEATABLE)
+        public abstract Builder repeatable(@Nullable Boolean repeatable);
 
-    public List<ProgramStageDataElement> getProgramStageDataElements() {
-        return programStageDataElements;
-    }
+        @JsonProperty(JSON_PROPERTY_CAPTURE_COORDINATES)
+        public abstract Builder captureCoordinates(@Nullable Boolean captureCoordinates);
 
-    public void setProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
-        this.programStageDataElements = programStageDataElements;
-    }
+        @JsonProperty(JSON_PROPERTY_FORM_TYPE)
+        public abstract Builder formType(@Nullable FormType formType);
 
-    public boolean isRepeatable() {
-        return repeatable;
-    }
+        @JsonProperty(JSON_PROPERTY_DISPLAY_GENERATE_EVENT_BOX)
+        public abstract Builder displayGenerateEventBox(@Nullable Boolean displayGenerateEventBox);
 
-    public void setRepeatable(boolean repeatable) {
-        this.repeatable = repeatable;
-    }
+        @JsonProperty(JSON_PROPERTY_GENERATED_BY_ENROLMENT_DATE)
+        public abstract Builder generatedByEnrollmentDate(@Nullable Boolean generatedByEnrollmentDate);
 
-    public boolean isCaptureCoordinates() {
-        return captureCoordinates;
-    }
+        @JsonProperty(JSON_PROPERTY_AUTO_GENERATE_EVENT)
+        public abstract Builder autoGenerateEvent(@Nullable Boolean autoGenerateEvent);
 
-    public void setCaptureCoordinates(boolean captureCoordinates) {
-        this.captureCoordinates = captureCoordinates;
-    }
+        @JsonProperty(JSON_PROPERTY_SORT_ORDER)
+        public abstract Builder sortOrder(@Nullable Integer sortOrder);
 
-    public FormType getFormType() {
-        return formType;
-    }
+        @JsonProperty(JSON_PROPERTY_HIDE_DUE_DATE)
+        public abstract Builder hideDueDate(@Nullable Boolean hideDueDate);
 
-    public void setFormType(FormType formType) {
-        this.formType = formType;
-    }
+        @JsonProperty(JSON_PROPERTY_BLOCK_ENTRY_FORM)
+        public abstract Builder blockEntryForm(@Nullable Boolean blockEntryForm);
 
-    public boolean isDisplayGenerateEventBox() {
-        return displayGenerateEventBox;
-    }
+        @JsonProperty(JSON_PROPERTY_MIN_DAYS_FROM_START)
+        public abstract Builder minDaysFromStart(@Nullable Integer minDaysFromStart);
 
-    public void setDisplayGenerateEventBox(boolean displayGenerateEventBox) {
-        this.displayGenerateEventBox = displayGenerateEventBox;
-    }
+        @JsonProperty(JSON_PROPERTY_STANDARD_INTERVAL)
+        public abstract Builder standardInterval(@Nullable Integer standardInterval);
 
-    public boolean isGeneratedByEnrollmentDate() {
-        return generatedByEnrollmentDate;
-    }
+        @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE_SECTIONS)
+        public abstract Builder programStageSections(
+                @Nullable List<ProgramStageSection> programStageSections);
 
-    public void setGeneratedByEnrollmentDate(boolean generatedByEnrollmentDate) {
-        this.generatedByEnrollmentDate = generatedByEnrollmentDate;
-    }
+        abstract List<ProgramStageSection> programStageSections();
 
-    public String getReportDateToUse() {
-        return reportDateToUse;
-    }
+        abstract ProgramStage autoBuild();
 
-    public void setReportDateToUse(String reportDateToUse) {
-        this.reportDateToUse = reportDateToUse;
-    }
+        public ProgramStage build() {
+            if (programStageSections() != null) {
+                programStageSections(Collections.unmodifiableList(programStageSections()));
+            }
 
-    public boolean isAutoGenerateEvent() {
-        return autoGenerateEvent;
-    }
-
-    public void setAutoGenerateEvent(boolean autoGenerateEvent) {
-        this.autoGenerateEvent = autoGenerateEvent;
-    }
-
-    public int getSortOrder() {
-        return sortOrder;
-    }
-
-    public void setSortOrder(int sortOrder) {
-        this.sortOrder = sortOrder;
-    }
-
-    public boolean isHideDueDate() {
-        return hideDueDate;
-    }
-
-    public void setHideDueDate(boolean hideDueDate) {
-        this.hideDueDate = hideDueDate;
-    }
-
-    public boolean isBlockEntryForm() {
-        return blockEntryForm;
-    }
-
-    public void setBlockEntryForm(boolean blockEntryForm) {
-        this.blockEntryForm = blockEntryForm;
-    }
-
-    public int getMinDaysFromStart() {
-        return minDaysFromStart;
-    }
-
-    public void setMinDaysFromStart(int minDaysFromStart) {
-        this.minDaysFromStart = minDaysFromStart;
-    }
-
-    public int getStandardInterval() {
-        return standardInterval;
-    }
-
-    public void setStandardInterval(int standardInterval) {
-        this.standardInterval = standardInterval;
-    }
-
-    public List<ProgramStageSection> getProgramStageSections() {
-        return programStageSections;
-    }
-
-    public void setProgramStageSections(List<ProgramStageSection> programStageSections) {
-        this.programStageSections = programStageSections;
+            return autoBuild();
+        }
     }
 }

@@ -28,61 +28,48 @@
 
 package org.hisp.dhis.client.sdk.models.common;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class BaseNameableObject extends BaseIdentifiableObject implements NameableObject {
+import javax.annotation.Nullable;
 
-    @JsonProperty("shortName")
-    String shortName;
-
-    @JsonProperty("displayShortName")
-    String displayShortName;
-
-    @JsonProperty("description")
-    String description;
-
-    @JsonProperty("displayDescription")
-    String displayDescription;
-
-    public BaseNameableObject() {
-        // explicit empty constructor
-    }
+public abstract class BaseNameableObject extends BaseIdentifiableObject implements NameableObject {
+    private static final String JSON_PROPERTY_SHORT_NAME = "shortName";
+    private static final String JSON_PROPERTY_DISPLAY_SHORT_NAME = "displayShortName";
+    private static final String JSON_PROPERTY_DESCRIPTION = "description";
+    private static final String JSON_PROPERTY_DISPLAY_DESCRIPTION = "displayDescription";
 
     @Override
-    public String getShortName() {
-        return shortName;
-    }
-
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
-    }
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_SHORT_NAME)
+    public abstract String shortName();
 
     @Override
-    public String getDisplayShortName() {
-        return displayShortName;
-    }
-
-    public void setDisplayShortName(String displayShortName) {
-        this.displayShortName = displayShortName;
-    }
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DISPLAY_SHORT_NAME)
+    public abstract String displayShortName();
 
     @Override
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DESCRIPTION)
+    public abstract String description();
 
     @Override
-    public String getDisplayDescription() {
-        return displayDescription;
-    }
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DISPLAY_DESCRIPTION)
+    public abstract String displayDescription();
 
-    public void setDisplayDescription(String displayDescription) {
-        this.displayDescription = displayDescription;
+    protected static abstract class Builder<T extends Builder> extends BaseIdentifiableObject.Builder<T> {
+
+        @JsonProperty(JSON_PROPERTY_SHORT_NAME)
+        public abstract T shortName(@Nullable String shortName);
+
+        @JsonProperty(JSON_PROPERTY_DISPLAY_SHORT_NAME)
+        public abstract T displayShortName(@Nullable String displayShortName);
+
+        @JsonProperty(JSON_PROPERTY_DESCRIPTION)
+        public abstract T description(@Nullable String description);
+
+        @JsonProperty(JSON_PROPERTY_DISPLAY_DESCRIPTION)
+        public abstract T displayDescription(@Nullable String displayDescription);
     }
 }

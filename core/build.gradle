@@ -54,6 +54,7 @@ android {
 
 dependencies {
     compile project(":models")
+    compile project(":utils")
 
     // Android
     compile "com.android.support:appcompat-v7:${libs.supportVersion}"

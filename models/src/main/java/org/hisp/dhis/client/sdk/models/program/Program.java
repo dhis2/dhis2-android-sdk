@@ -28,315 +28,270 @@
 
 package org.hisp.dhis.client.sdk.models.program;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.BaseNameableObject;
 import org.hisp.dhis.client.sdk.models.dataelement.CategoryCombo;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
+import java.util.Collections;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Program extends BaseNameableObject {
+import javax.annotation.Nullable;
 
-    @JsonProperty("version")
-    private int version;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_Program.Builder.class)
+public abstract class Program extends BaseNameableObject {
+    private static final String JSON_PROPERTY_VERSION = "version";
+    private static final String JSON_PROPERTY_ONLY_ENROLL_ONCE = "onlyEnrollOnce";
+    private static final String JSON_PROPERTY_ENROLLMENT_DATE_LABEL = "enrollmentDateLabel";
+    private static final String JSON_PROPERTY_DISPLAY_INCIDENT_DATE = "displayIncidentDate";
+    private static final String JSON_PROPERTY_INCIDENT_DATE_LABEL = "incidentDateLabel";
+    private static final String JSON_PROPERTY_REGISTRATION = "registration";
+    private static final String JSON_PROPERTY_SELECT_ENROLLMENT_DATES_IN_FUTURE = "selectEnrollmentDatesInFuture";
+    private static final String JSON_PROPERTY_DATA_ENTRY_METHOD = "dataEntryMethod";
+    private static final String JSON_PROPERTY_IGNORE_OVERDUE_EVENTS = "ignoreOverdueEvents";
+    private static final String JSON_PROPERTY_RELATIONSHIP_FROM_A = "relationshipFromA";
+    private static final String JSON_PROPERTY_SELECT_INCIDENT_DATES_IN_FUTURE = "selectIncidentDatesInFuture";
+    private static final String JSON_PROPERTY_CAPTURE_COORDINATES = "captureCoordinates";
+    private static final String JSON_PROPERTY_USE_FIRST_STAGE_DURING_REGISTRATION = "useFirstStageDuringRegistration";
+    private static final String JSON_PROPERTY_DISPLAY_FRONT_PAGE_LIST = "displayFrontPageList";
+    private static final String JSON_PROPERTY_PROGRAM_TYPE = "programType";
+    private static final String JSON_PROPERTY_RELATIONSHIP_TYPE = "relationshipType";
+    private static final String JSON_PROPERTY_RELATIONSHIP_TEXT = "relationshipText";
+    private static final String JSON_PROPERTY_PROGRAM_TRACKEDENTITY_ATTRIBUTES = "programTrackedEntityAttributes";
+    private static final String JSON_PROPERTY_RELATED_PROGRAM = "relatedProgram";
+    private static final String JSON_PROPERTY_TRACKED_ENTITY = "trackedEntity";
+    private static final String JSON_PROPERTY_CATEGORY_COMBO = "categoryCombo";
+    private static final String JSON_PROPERTY_PROGRAM_INDICATORS = "programIndicators";
+    private static final String JSON_PROPERTY_PROGRAM_STAGES = "programStages";
+    private static final String JSON_PROPERTY_PROGRAM_RULES = "programRules";
+    private static final String JSON_PROPERTY_PROGRAM_RULE_VARIABLES = "programRuleVariables";
 
-    @JsonProperty("onlyEnrollOnce")
-    private boolean onlyEnrollOnce;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_VERSION)
+    public abstract Integer version();
 
-    @JsonProperty("enrollmentDateLabel")
-    private String enrollmentDateLabel;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_ONLY_ENROLL_ONCE)
+    public abstract Boolean onlyEnrollOnce();
 
-    @JsonProperty("displayIncidentDate")
-    private boolean displayIncidentDate;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_ENROLLMENT_DATE_LABEL)
+    public abstract String enrollmentDateLabel();
 
-    @JsonProperty("incidentDateLabel")
-    private String incidentDateLabel;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DISPLAY_INCIDENT_DATE)
+    public abstract Boolean displayIncidentDate();
 
-    @JsonProperty("registration")
-    private boolean registration;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_INCIDENT_DATE_LABEL)
+    public abstract String incidentDateLabel();
 
-    @JsonProperty("selectEnrollmentDatesInFuture")
-    private boolean selectEnrollmentDatesInFuture;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_REGISTRATION)
+    public abstract Boolean registration();
 
-    @JsonProperty("dataEntryMethod")
-    private boolean dataEntryMethod;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_SELECT_ENROLLMENT_DATES_IN_FUTURE)
+    public abstract Boolean selectEnrollmentDatesInFuture();
 
-    @JsonProperty("ignoreOverdueEvents")
-    private boolean ignoreOverdueEvents;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DATA_ENTRY_METHOD)
+    public abstract Boolean dataEntryMethod();
 
-    @JsonProperty("relationshipFromA")
-    private boolean relationshipFromA;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_IGNORE_OVERDUE_EVENTS)
+    public abstract Boolean ignoreOverdueEvents();
 
-    @JsonProperty("selectIncidentDatesInFuture")
-    private boolean selectIncidentDatesInFuture;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_RELATIONSHIP_FROM_A)
+    public abstract Boolean relationshipFromA();
 
-    @JsonProperty("captureCoordinates")
-    boolean captureCoordinates;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_SELECT_INCIDENT_DATES_IN_FUTURE)
+    public abstract Boolean selectIncidentDatesInFuture();
 
-    @JsonProperty("useFirstStageDuringRegistration")
-    boolean useFirstStageDuringRegistration;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_CAPTURE_COORDINATES)
+    public abstract Boolean captureCoordinates();
 
-    @JsonProperty("displayFrontPageList")
-    boolean displayFrontPageList;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_USE_FIRST_STAGE_DURING_REGISTRATION)
+    public abstract Boolean useFirstStageDuringRegistration();
 
-    @JsonProperty("programType")
-    ProgramType programType;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DISPLAY_FRONT_PAGE_LIST)
+    public abstract Boolean displayFrontPageList();
 
-    @JsonProperty("relationshipType")
-    RelationshipType relationshipType;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAM_TYPE)
+    public abstract ProgramType programType();
 
-    @JsonProperty("relationshipText")
-    String relationshipText;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_RELATIONSHIP_TYPE)
+    public abstract RelationshipType relationshipType();
 
-    @JsonProperty("programTrackedEntityAttribute")
-    List<TrackedEntityAttribute> programTrackedEntityAttribute;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_RELATIONSHIP_TEXT)
+    public abstract String relationshipText();
 
-    @JsonProperty("relatedProgram")
-    Program relatedProgram;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAM_TRACKEDENTITY_ATTRIBUTES)
+    public abstract List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes();
 
-    @JsonProperty("trackedEntity")
-    TrackedEntity trackedEntity;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_RELATED_PROGRAM)
+    public abstract Program relatedProgram();
 
-    @JsonProperty("categoryCombo")
-    CategoryCombo categoryCombo;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY)
+    public abstract TrackedEntity trackedEntity();
 
-    @JsonProperty("programIndicators")
-    List<ProgramIndicator> programIndicators;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_CATEGORY_COMBO)
+    public abstract CategoryCombo categoryCombo();
 
-    @JsonProperty("programStages")
-    List<ProgramStage> programStages;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAM_INDICATORS)
+    public abstract List<ProgramIndicator> programIndicators();
 
-    @JsonProperty("programRules")
-    List<ProgramRule> programRules;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAM_STAGES)
+    public abstract List<ProgramStage> programStages();
 
-    @JsonProperty("programRuleVariables")
-    List<ProgramRuleVariable> programRuleVariables;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAM_RULES)
+    public abstract List<ProgramRule> programRules();
 
-    public static void validate(Program program) {
-        BaseIdentifiableObject.validate(program);
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAM_RULE_VARIABLES)
+    public abstract List<ProgramRuleVariable> programRuleVariables();
 
-        if (program.getProgramType() == null) {
-            throw new IllegalArgumentException("Program type must not be null");
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+
+        @JsonProperty(JSON_PROPERTY_VERSION)
+        public abstract Builder version(@Nullable Integer version);
+
+        @JsonProperty(JSON_PROPERTY_ONLY_ENROLL_ONCE)
+        public abstract Builder onlyEnrollOnce(@Nullable Boolean onlyEnrollOnce);
+
+        @JsonProperty(JSON_PROPERTY_ENROLLMENT_DATE_LABEL)
+        public abstract Builder enrollmentDateLabel(@Nullable String enrollmentDateLabel);
+
+        @JsonProperty(JSON_PROPERTY_DISPLAY_INCIDENT_DATE)
+        public abstract Builder displayIncidentDate(@Nullable Boolean displayIncidentDate);
+
+        @JsonProperty(JSON_PROPERTY_INCIDENT_DATE_LABEL)
+        public abstract Builder incidentDateLabel(@Nullable String incidentDateLabel);
+
+        @JsonProperty(JSON_PROPERTY_REGISTRATION)
+        public abstract Builder registration(@Nullable Boolean registration);
+
+        @JsonProperty(JSON_PROPERTY_SELECT_ENROLLMENT_DATES_IN_FUTURE)
+        public abstract Builder selectEnrollmentDatesInFuture(
+                @Nullable Boolean selectEnrollmentDatesInFuture);
+
+        @JsonProperty(JSON_PROPERTY_DATA_ENTRY_METHOD)
+        public abstract Builder dataEntryMethod(@Nullable Boolean dataEntryMethod);
+
+        @JsonProperty(JSON_PROPERTY_IGNORE_OVERDUE_EVENTS)
+        public abstract Builder ignoreOverdueEvents(@Nullable Boolean ignoreOverdueEvents);
+
+        @JsonProperty(JSON_PROPERTY_RELATIONSHIP_FROM_A)
+        public abstract Builder relationshipFromA(@Nullable Boolean relationshipFromA);
+
+        @JsonProperty(JSON_PROPERTY_SELECT_INCIDENT_DATES_IN_FUTURE)
+        public abstract Builder selectIncidentDatesInFuture(
+                @Nullable Boolean selectIncidentDatesInFuture);
+
+        @JsonProperty(JSON_PROPERTY_CAPTURE_COORDINATES)
+        public abstract Builder captureCoordinates(@Nullable Boolean captureCoordinates);
+
+        @JsonProperty(JSON_PROPERTY_USE_FIRST_STAGE_DURING_REGISTRATION)
+        public abstract Builder useFirstStageDuringRegistration(
+                @Nullable Boolean useFirstStageDuringRegistration);
+
+        @JsonProperty(JSON_PROPERTY_DISPLAY_FRONT_PAGE_LIST)
+        public abstract Builder displayFrontPageList(@Nullable Boolean displayInFrontPageList);
+
+        @JsonProperty(JSON_PROPERTY_PROGRAM_TYPE)
+        public abstract Builder programType(@Nullable ProgramType programType);
+
+        @JsonProperty(JSON_PROPERTY_RELATIONSHIP_TYPE)
+        public abstract Builder relationshipType(@Nullable RelationshipType relationshipType);
+
+        @JsonProperty(JSON_PROPERTY_RELATIONSHIP_TEXT)
+        public abstract Builder relationshipText(@Nullable String relationshipText);
+
+        @JsonProperty(JSON_PROPERTY_PROGRAM_TRACKEDENTITY_ATTRIBUTES)
+        public abstract Builder programTrackedEntityAttributes(
+                @Nullable List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes);
+
+        @JsonProperty(JSON_PROPERTY_RELATED_PROGRAM)
+        public abstract Builder relatedProgram(@Nullable Program relatedProgram);
+
+        @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY)
+        public abstract Builder trackedEntity(@Nullable TrackedEntity trackedEntity);
+
+        @JsonProperty(JSON_PROPERTY_CATEGORY_COMBO)
+        public abstract Builder categoryCombo(@Nullable CategoryCombo categoryCombo);
+
+        @JsonProperty(JSON_PROPERTY_PROGRAM_INDICATORS)
+        public abstract Builder programIndicators(
+                @Nullable List<ProgramIndicator> programIndicators);
+
+        @JsonProperty(JSON_PROPERTY_PROGRAM_STAGES)
+        public abstract Builder programStages(@Nullable List<ProgramStage> programStages);
+
+        @JsonProperty(JSON_PROPERTY_PROGRAM_RULES)
+        public abstract Builder programRules(@Nullable List<ProgramRule> programRules);
+
+        @JsonProperty(JSON_PROPERTY_PROGRAM_RULE_VARIABLES)
+        public abstract Builder programRuleVariables(
+                @Nullable List<ProgramRuleVariable> programRuleVariables);
+
+        abstract List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes();
+
+        abstract List<ProgramIndicator> programIndicators();
+
+        abstract List<ProgramStage> programStages();
+
+        abstract List<ProgramRule> programRules();
+
+        abstract List<ProgramRuleVariable> programRuleVariables();
+
+        abstract Program autoBuild();
+
+        public Program build() {
+            if (programTrackedEntityAttributes() != null) {
+                programTrackedEntityAttributes(Collections.unmodifiableList(
+                        programTrackedEntityAttributes()));
+            }
+
+            if (programIndicators() != null) {
+                programIndicators(Collections.unmodifiableList(programIndicators()));
+            }
+
+            if (programStages() != null) {
+                programStages(Collections.unmodifiableList(programStages()));
+            }
+
+            if (programRules() != null) {
+                programRules(Collections.unmodifiableList(programRules()));
+            }
+
+            if (programRuleVariables() != null) {
+                programRuleVariables(Collections.unmodifiableList(programRuleVariables()));
+            }
+
+            return autoBuild();
         }
-
-        if (program.getProgramStages() != null && !program.getProgramStages().isEmpty()) {
-            throw new IllegalArgumentException("Program stages cannot be null or empty");
-        }
-
-        if (program.getProgramTrackedEntityAttribute() != null &&
-                !program.getProgramTrackedEntityAttribute().isEmpty()) {
-            throw new IllegalArgumentException("Program tracked entity attributes " +
-                    "cannot be null or empty");
-        }
-    }
-
-    public Program() {
-        // explicit empty constructor
-    }
-
-    public String getEnrollmentDateLabel() {
-        return enrollmentDateLabel;
-    }
-
-    public void setEnrollmentDateLabel(String enrollmentDateLabel) {
-        this.enrollmentDateLabel = enrollmentDateLabel;
-    }
-
-    public boolean isOnlyEnrollOnce() {
-        return onlyEnrollOnce;
-    }
-
-    public void setOnlyEnrollOnce(boolean onlyEnrollOnce) {
-        this.onlyEnrollOnce = onlyEnrollOnce;
-    }
-
-    public boolean isDisplayIncidentDate() {
-        return displayIncidentDate;
-    }
-
-    public void setDisplayIncidentDate(boolean displayIncidentDate) {
-        this.displayIncidentDate = displayIncidentDate;
-    }
-
-    public String getIncidentDateLabel() {
-        return incidentDateLabel;
-    }
-
-    public void setIncidentDateLabel(String incidentDateLabel) {
-        this.incidentDateLabel = incidentDateLabel;
-    }
-
-    public boolean isRegistration() {
-        return registration;
-    }
-
-    public void setRegistration(boolean registration) {
-        this.registration = registration;
-    }
-
-    public boolean isSelectEnrollmentDatesInFuture() {
-        return selectEnrollmentDatesInFuture;
-    }
-
-    public void setSelectEnrollmentDatesInFuture(boolean selectEnrollmentDatesInFuture) {
-        this.selectEnrollmentDatesInFuture = selectEnrollmentDatesInFuture;
-    }
-
-    public boolean isDataEntryMethod() {
-        return dataEntryMethod;
-    }
-
-    public void setDataEntryMethod(boolean dataEntryMethod) {
-        this.dataEntryMethod = dataEntryMethod;
-    }
-
-    public boolean isIgnoreOverdueEvents() {
-        return ignoreOverdueEvents;
-    }
-
-    public void setIgnoreOverdueEvents(boolean ignoreOverdueEvents) {
-        this.ignoreOverdueEvents = ignoreOverdueEvents;
-    }
-
-    public boolean isRelationshipFromA() {
-        return relationshipFromA;
-    }
-
-    public void setRelationshipFromA(boolean relationshipFromA) {
-        this.relationshipFromA = relationshipFromA;
-    }
-
-    public boolean isSelectIncidentDatesInFuture() {
-        return selectIncidentDatesInFuture;
-    }
-
-    public void setSelectIncidentDatesInFuture(boolean selectIncidentDatesInFuture) {
-        this.selectIncidentDatesInFuture = selectIncidentDatesInFuture;
-    }
-
-    public List<ProgramIndicator> getProgramIndicators() {
-        return programIndicators;
-    }
-
-    public void setProgramIndicators(List<ProgramIndicator> programIndicators) {
-        this.programIndicators = programIndicators;
-    }
-
-    public CategoryCombo getCategoryCombo() {
-        return categoryCombo;
-    }
-
-    public void setCategoryCombo(CategoryCombo categoryCombo) {
-        this.categoryCombo = categoryCombo;
-    }
-
-    public boolean isCaptureCoordinates() {
-        return captureCoordinates;
-    }
-
-    public void setCaptureCoordinates(boolean captureCoordinates) {
-        this.captureCoordinates = captureCoordinates;
-    }
-
-    public boolean isUseFirstStageDuringRegistration() {
-        return useFirstStageDuringRegistration;
-    }
-
-    public void setUseFirstStageDuringRegistration(boolean useFirstStageDuringRegistration) {
-        this.useFirstStageDuringRegistration = useFirstStageDuringRegistration;
-    }
-
-    public TrackedEntity getTrackedEntity() {
-        return trackedEntity;
-    }
-
-    public void setTrackedEntity(TrackedEntity trackedEntity) {
-        this.trackedEntity = trackedEntity;
-    }
-
-    public List<TrackedEntityAttribute> getProgramTrackedEntityAttribute() {
-        return programTrackedEntityAttribute;
-    }
-
-    public void setProgramTrackedEntityAttribute(List<TrackedEntityAttribute> programTrackedEntityAttribute) {
-        this.programTrackedEntityAttribute = programTrackedEntityAttribute;
-    }
-
-    public Program getRelatedProgram() {
-        return relatedProgram;
-    }
-
-    public void setRelatedProgram(Program relatedProgram) {
-        this.relatedProgram = relatedProgram;
-    }
-
-    public boolean isDisplayFrontPageList() {
-        return displayFrontPageList;
-    }
-
-    public void setDisplayFrontPageList(boolean displayFrontPageList) {
-        this.displayFrontPageList = displayFrontPageList;
-    }
-
-    public ProgramType getProgramType() {
-        return programType;
-    }
-
-    public void setProgramType(ProgramType programType) {
-        this.programType = programType;
-    }
-
-    public RelationshipType getRelationshipType() {
-        return relationshipType;
-    }
-
-    public void setRelationshipType(RelationshipType relationshipType) {
-        this.relationshipType = relationshipType;
-    }
-
-    public String getRelationshipText() {
-        return relationshipText;
-    }
-
-    public void setRelationshipText(String relationshipText) {
-        this.relationshipText = relationshipText;
-    }
-
-    public List<ProgramStage> getProgramStages() {
-        return programStages;
-    }
-
-    public void setProgramStages(List<ProgramStage> programStages) {
-        this.programStages = programStages;
-    }
-
-    public List<ProgramRule> getProgramRules() {
-        return programRules;
-    }
-
-    public void setProgramRules(List<ProgramRule> programRules) {
-        this.programRules = programRules;
-    }
-
-    public List<ProgramRuleVariable> getProgramRuleVariables() {
-        return programRuleVariables;
-    }
-
-    public void setProgramRuleVariables(List<ProgramRuleVariable> programRuleVariables) {
-        this.programRuleVariables = programRuleVariables;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
     }
 }

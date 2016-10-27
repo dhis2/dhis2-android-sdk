@@ -28,39 +28,57 @@
 
 package org.hisp.dhis.client.sdk.models.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 
+import java.util.Collections;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class UserCredentials extends BaseIdentifiableObject {
+import javax.annotation.Nullable;
 
-    @JsonProperty("username")
-    String username;
+// TODO: Tests
+@AutoValue
+@JsonDeserialize(builder = AutoValue_UserCredentials.Builder.class)
+public abstract class UserCredentials extends BaseIdentifiableObject {
+    private static final String JSON_PROPERTY_USER_ROLES = "userRoles";
+    private static final String JSON_PROPERTY_USERNAME = "username";
 
-    @JsonProperty("userRoles")
-    List<UserRole> userRoles;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_USERNAME)
+    public abstract String username();
 
-    public UserCredentials() {
-        // explicit empty constructor
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_USER_ROLES)
+    public abstract List<UserRole> userRoles();
+
+    public static Builder builder() {
+        return new AutoValue_UserCredentials.Builder();
     }
 
-    public List<UserRole> getUserRoles() {
-        return userRoles;
-    }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
-    public void setUserRoles(List<UserRole> userRoles) {
-        this.userRoles = userRoles;
-    }
+        @JsonProperty(JSON_PROPERTY_USER_ROLES)
+        public abstract Builder userRoles(@Nullable List<UserRole> userRoles);
 
-    public String getUsername() {
-        return username;
-    }
+        @JsonProperty(JSON_PROPERTY_USERNAME)
+        public abstract Builder username(@Nullable String username);
 
-    public void setUsername(String username) {
-        this.username = username;
+        // internal, not exposed
+        abstract List<UserRole> userRoles();
+
+        abstract UserCredentials autoBuild();
+
+        public UserCredentials build() {
+            if (userRoles() != null) {
+                userRoles(Collections.unmodifiableList(userRoles()));
+            }
+
+            return autoBuild();
+        }
     }
 }

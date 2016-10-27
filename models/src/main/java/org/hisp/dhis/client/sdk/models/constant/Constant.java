@@ -28,22 +28,32 @@
 
 package org.hisp.dhis.client.sdk.models.constant;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public final class Constant extends BaseIdentifiableObject {
+import javax.annotation.Nullable;
 
-    @JsonProperty("value")
-    private double value;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_Constant.Builder.class)
+public abstract class Constant extends BaseIdentifiableObject {
+    private static final String JSON_PROPERTY_VALUE = "value";
 
-    public double getValue() {
-        return value;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_VALUE)
+    public abstract Double value();
+
+    public static Builder builder() {
+        return new AutoValue_Constant.Builder();
     }
 
-    public void setValue(double value) {
-        this.value = value;
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+        @JsonProperty(JSON_PROPERTY_VALUE)
+        public abstract Builder value(Double value);
+
+        public abstract Constant build();
     }
 }

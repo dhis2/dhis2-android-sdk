@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.event;
 
-import org.hisp.dhis.client.sdk.models.common.Payload;
+import org.hisp.dhis.client.sdk.core.commons.Payload;
 import org.hisp.dhis.client.sdk.models.event.Event;
 
 import java.util.Map;

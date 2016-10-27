@@ -28,104 +28,75 @@
 
 package org.hisp.dhis.client.sdk.models.program;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
-import java.util.Comparator;
+import javax.annotation.Nullable;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class ProgramStageDataElement extends BaseIdentifiableObject {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_ProgramStageDataElement.Builder.class)
+//TODO: ProgramStageDataElement is not a true BaseIdentifiableObject. It lacks name and displayName in API. Override those properties and return dataElement.getName() and dataElement.getDisplayName()
+public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
+    private static final String JSON_PROPERTY_DISPLAY_IN_REPORTS = "displayInReports";
+    private static final String JSON_PROPERTY_DATA_ELEMENT = "dataElement";
+    private static final String JSON_PROPERTY_COMPULSORY = "compulsory";
+    private static final String JSON_PROPERTY_ALLOW_PROVIDED_ELSEWHERE = "allowProvidedElsewhere";
+    private static final String JSON_PROPERTY_SORT_ORDER = "sortOrder";
+    private static final String JSON_PROPERTY_ALLOW_FUTURE_DATE = "allowFutureDate";
 
-    public static final Comparator<ProgramStageDataElement>
-            SORT_ORDER_COMPARATOR = new SortOrderComparator();
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DISPLAY_IN_REPORTS)
+    public abstract Boolean displayInReports();
 
-    @JsonProperty("displayInReports")
-    boolean displayInReports;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DATA_ELEMENT)
+    public abstract DataElement dataElement();
 
-    @JsonProperty("dataElement")
-    DataElement dataElement;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_COMPULSORY)
+    public abstract Boolean compulsory();
 
-    @JsonProperty("compulsory")
-    boolean compulsory;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_ALLOW_PROVIDED_ELSEWHERE)
+    public abstract Boolean allowProvidedElsewhere();
 
-    @JsonProperty("allowProvidedElsewhere")
-    boolean allowProvidedElsewhere;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_SORT_ORDER)
+    public abstract Integer sortOrder();
 
-    @JsonProperty("sortOrder")
-    int sortOrder;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_ALLOW_FUTURE_DATE)
+    public abstract Boolean allowFutureDate();
 
-    @JsonProperty("allowFutureDate")
-    boolean allowFutureDate;
-
-    public ProgramStageDataElement() {
+    public static ProgramStageDataElement.Builder builder() {
+        return new AutoValue_ProgramStageDataElement.Builder();
     }
 
-    public boolean isDisplayInReports() {
-        return displayInReports;
-    }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
-    public void setDisplayInReports(boolean displayInReports) {
-        this.displayInReports = displayInReports;
-    }
+        @JsonProperty(JSON_PROPERTY_DISPLAY_IN_REPORTS)
+        public abstract Builder displayInReports(@Nullable Boolean displayInReports);
 
-    public DataElement getDataElement() {
-        return dataElement;
-    }
+        @JsonProperty(JSON_PROPERTY_DATA_ELEMENT)
+        public abstract Builder dataElement(@Nullable DataElement dataElement);
 
-    public void setDataElement(DataElement dataElement) {
-        this.dataElement = dataElement;
-    }
+        @JsonProperty(JSON_PROPERTY_COMPULSORY)
+        public abstract Builder compulsory(@Nullable Boolean compulsory);
 
-    public boolean isCompulsory() {
-        return compulsory;
-    }
+        @JsonProperty(JSON_PROPERTY_ALLOW_PROVIDED_ELSEWHERE)
+        public abstract Builder allowProvidedElsewhere(@Nullable Boolean allowProvidedElsewhere);
 
-    public void setCompulsory(boolean compulsory) {
-        this.compulsory = compulsory;
-    }
+        @JsonProperty(JSON_PROPERTY_SORT_ORDER)
+        public abstract Builder sortOrder(@Nullable Integer sortOrder);
 
-    public boolean isAllowProvidedElsewhere() {
-        return allowProvidedElsewhere;
-    }
+        @JsonProperty(JSON_PROPERTY_ALLOW_FUTURE_DATE)
+        public abstract Builder allowFutureDate(@Nullable Boolean allowFutureDate);
 
-    public void setAllowProvidedElsewhere(boolean allowProvidedElsewhere) {
-        this.allowProvidedElsewhere = allowProvidedElsewhere;
-    }
-
-    public int getSortOrder() {
-        return sortOrder;
-    }
-
-    public void setSortOrder(int sortOrder) {
-        this.sortOrder = sortOrder;
-    }
-
-    public boolean isAllowFutureDate() {
-        return allowFutureDate;
-    }
-
-    public void setAllowFutureDate(boolean allowFutureDate) {
-        this.allowFutureDate = allowFutureDate;
-    }
-
-    private static final class SortOrderComparator implements Comparator<ProgramStageDataElement> {
-
-        @Override
-        public int compare(ProgramStageDataElement one, ProgramStageDataElement two) {
-            if (one == null || two == null) {
-                return 0;
-            }
-
-            if (one.getSortOrder() > two.getSortOrder()) {
-                return 1;
-            } else if (one.getSortOrder() < two.getSortOrder()) {
-                return -1;
-            }
-
-            return 0;
-        }
+        public abstract ProgramStageDataElement build();
     }
 }

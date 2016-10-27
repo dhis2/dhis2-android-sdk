@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.client.sdk.models.common;
 
-public interface Model {
-    long getId();
-
-    void setId(long id);
+public interface Model extends Validatable {
+    Long id();
 }

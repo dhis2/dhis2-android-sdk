@@ -28,314 +28,155 @@
 
 package org.hisp.dhis.client.sdk.models.event;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseDataModel;
-import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.Coordinates;
-import org.hisp.dhis.client.sdk.models.common.IdentifiableObject;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public final class Event extends BaseDataModel implements IdentifiableObject {
-    public static final Comparator<Event> DATE_COMPARATOR = new EventDateComparator();
+import javax.annotation.Nullable;
 
-    public static final String EVENT_DATE_KEY = "eventDate";
-    public static final String STATUS_KEY = "status";
-    public static final String EVENT_DATE_LABEL = "Event date";
-    public static final String STATUS_LABEL = "Status";
+// TODO: Tests
+@AutoValue
+@JsonDeserialize(builder = AutoValue_Event.Builder.class)
+public abstract class Event extends BaseDataModel {
+    private static final String JSON_PROPERTY_EVENT_UID = "event";
+    private static final String JSON_PROPERTY_ENROLLMENT_UID = "enrollment";
+    private static final String JSON_PROPERTY_CREATED = "created";
+    private static final String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
+    private static final String JSON_PROPERTY_STATUS = "status";
+    private static final String JSON_PROPERTY_COORDINATE = "coordinate";
+    private static final String JSON_PROPERTY_PROGRAM = "program";
+    private static final String JSON_PROPERTY_PROGRAM_STAGE = "programStage";
+    private static final String JSON_PROPERTY_ORGANISATION_UNIT = "organisationUnit";
+    private static final String JSON_PROPERTY_EVENT_DATE = "eventDate";
+    private static final String JSON_PROPERTY_COMPLETE_DATE = "completedDate";
+    private static final String JSON_PROPERTY_DUE_DATE = "dueDate";
+    private static final String JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES = "trackedEntityDataValues";
 
-    @JsonIgnore
-    private long id;
+    // Mandatory, non-null properties
 
-    @JsonProperty("event")
-    private String uid;
+    @JsonProperty(JSON_PROPERTY_EVENT_UID)
+    public abstract String uid();
 
-    @JsonProperty("name")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String name;
+    @JsonProperty(JSON_PROPERTY_STATUS)
+    public abstract EventStatus status();
 
-    @JsonProperty("displayName")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String displayName;
+    @JsonProperty(JSON_PROPERTY_PROGRAM)
+    public abstract String program();
 
-    @JsonProperty("created")
-    private Date created;
+    @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE)
+    public abstract String programStage();
 
-    @JsonProperty("lastUpdated")
-    private Date lastUpdated;
+    @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
+    public abstract String organisationUnit();
 
-    @JsonProperty("code")
-    private String code;
+    @JsonProperty(JSON_PROPERTY_EVENT_DATE)
+    public abstract Date eventDate();
 
-    @JsonProperty("status")
-    private EventStatus status;
+    // Nullable properties
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_ENROLLMENT_UID)
+    public abstract String enrollmentUid();
 
-    @JsonProperty("coordinate")
-    private Coordinates coordinate;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_CREATED)
+    public abstract Date created();
 
-    @JsonProperty("program")
-    private String program;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
+    public abstract Date lastUpdated();
 
-    @JsonProperty("programStage")
-    private String programStage;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_COORDINATE)
+    public abstract Coordinates coordinates();
 
-    @JsonProperty("orgUnit")
-    private String orgUnit;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_COMPLETE_DATE)
+    public abstract Date completedDate();
 
-    @JsonProperty("eventDate")
-    private Date eventDate;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DUE_DATE)
+    public abstract Date dueDate();
 
-    @JsonProperty("completedDate")
-    private Date completedDate;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES)
+    public abstract List<TrackedEntityDataValue> trackedEntityDataValues();
 
-    @JsonProperty("dueDate")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Date dueDate;
-
-    @JsonProperty("dataValues")
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private List<TrackedEntityDataValue> dataValues;
-
-    public static void validate(Event event) {
-        BaseIdentifiableObject.validate(event);
-
-        if (event.getStatus() == null) {
-            throw new IllegalArgumentException("EventStatus must not be null");
+    @Override
+    public boolean isValid() {
+        if (created() == null || lastUpdated() == null) {
+            return false;
         }
 
-        if (event.getProgram() == null) {
-            throw new IllegalArgumentException("Program must not be null");
+        if (trackedEntityDataValues() == null || trackedEntityDataValues().isEmpty()) {
+            return false;
         }
 
-        if (event.getProgramStage() == null) {
-            throw new IllegalArgumentException("Program stage must not be null");
-        }
-
-        if (event.getOrgUnit() == null) {
-            throw new IllegalArgumentException("Organisation unit must not be null");
-        }
-
-        if (event.getEventDate() == null) {
-            throw new IllegalArgumentException("Event date must not be null");
-        }
+        return true;
     }
 
-    public Event() {
-        // explicit empty constructor
+    public static Builder builder() {
+        return new AutoValue_Event.Builder();
     }
 
-    @Override
-    public long getId() {
-        return id;
-    }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseDataModel.Builder<Builder> {
+        @JsonProperty(JSON_PROPERTY_EVENT_UID)
+        public abstract Builder uid(@Nullable String uid);
 
-    @Override
-    public void setId(long id) {
-        this.id = id;
-    }
+        @JsonProperty(JSON_PROPERTY_CREATED)
+        public abstract Builder created(@Nullable Date created);
 
-    @Override
-    public String getUid() {
-        return uid;
-    }
+        @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
+        public abstract Builder lastUpdated(@Nullable Date lastUpdated);
 
-    @Override
-    public String getCode() {
-        return code;
-    }
+        @JsonProperty(JSON_PROPERTY_STATUS)
+        public abstract Builder status(EventStatus eventStatus);
 
-    @Override
-    public String getName() {
-        return name;
-    }
+        @JsonProperty(JSON_PROPERTY_COORDINATE)
+        public abstract Builder coordinates(@Nullable Coordinates coordinates);
 
-    @Override
-    public String getDisplayName() {
-        return displayName;
-    }
+        @JsonProperty(JSON_PROPERTY_ENROLLMENT_UID)
+        public abstract Builder enrollmentUid(@Nullable String enrollmentUid);
 
-    @Override
-    public Date getCreated() {
-        return created;
-    }
+        @JsonProperty(JSON_PROPERTY_PROGRAM)
+        public abstract Builder program(String program);
 
-    @Override
-    public Date getLastUpdated() {
-        return lastUpdated;
-    }
+        @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE)
+        public abstract Builder programStage(String programStage);
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
+        public abstract Builder organisationUnit(String organisationUnit);
 
-        Event event = (Event) o;
+        @JsonProperty(JSON_PROPERTY_EVENT_DATE)
+        public abstract Builder eventDate(Date eventDate);
 
-        if (id != event.id) return false;
-        if (uid != null ? !uid.equals(event.uid) : event.uid != null) return false;
-        if (name != null ? !name.equals(event.name) : event.name != null) return false;
-        if (displayName != null ? !displayName.equals(event.displayName) : event.displayName != null)
-            return false;
-        if (created != null ? !created.equals(event.created) : event.created != null) return false;
-        if (lastUpdated != null ? !lastUpdated.equals(event.lastUpdated) : event.lastUpdated != null)
-            return false;
-        if (code != null ? !code.equals(event.code) : event.code != null) return false;
-        if (status != event.status) return false;
-        if (coordinate != null ? !coordinate.equals(event.coordinate) : event.coordinate != null)
-            return false;
-        if (program != null ? !program.equals(event.program) : event.program != null) return false;
-        if (programStage != null ? !programStage.equals(event.programStage) : event.programStage != null)
-            return false;
-        if (orgUnit != null ? !orgUnit.equals(event.orgUnit) : event.orgUnit != null) return false;
-        if (eventDate != null ? !eventDate.equals(event.eventDate) : event.eventDate != null)
-            return false;
-        if (completedDate != null ? !completedDate.equals(event.completedDate) : event.completedDate != null)
-            return false;
-        if (dueDate != null ? !dueDate.equals(event.dueDate) : event.dueDate != null) return false;
-        return dataValues != null ? dataValues.equals(event.dataValues) : event.dataValues == null;
+        @JsonProperty(JSON_PROPERTY_COMPLETE_DATE)
+        public abstract Builder completedDate(@Nullable Date completedDate);
 
-    }
+        @JsonProperty(JSON_PROPERTY_DUE_DATE)
+        public abstract Builder dueDate(@Nullable Date dueDate);
 
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (int) (id ^ (id >>> 32));
-        result = 31 * result + (uid != null ? uid.hashCode() : 0);
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (displayName != null ? displayName.hashCode() : 0);
-        result = 31 * result + (created != null ? created.hashCode() : 0);
-        result = 31 * result + (lastUpdated != null ? lastUpdated.hashCode() : 0);
-        result = 31 * result + (code != null ? code.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
-        result = 31 * result + (coordinate != null ? coordinate.hashCode() : 0);
-        result = 31 * result + (program != null ? program.hashCode() : 0);
-        result = 31 * result + (programStage != null ? programStage.hashCode() : 0);
-        result = 31 * result + (orgUnit != null ? orgUnit.hashCode() : 0);
-        result = 31 * result + (eventDate != null ? eventDate.hashCode() : 0);
-        result = 31 * result + (completedDate != null ? completedDate.hashCode() : 0);
-        result = 31 * result + (dueDate != null ? dueDate.hashCode() : 0);
-        result = 31 * result + (dataValues != null ? dataValues.hashCode() : 0);
-        return result;
-    }
+        @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES)
+        public abstract Builder trackedEntityDataValues(@Nullable List<TrackedEntityDataValue> trackedEntityDataValues);
 
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
+        abstract List<TrackedEntityDataValue> trackedEntityDataValues();
 
-    public void setName(String name) {
-        this.name = name;
-    }
+        abstract Event autoBuild();
 
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    public void setLastUpdated(Date lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public EventStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(EventStatus status) {
-        this.status = status;
-    }
-
-    public Coordinates getCoordinate() {
-        return coordinate;
-    }
-
-    public void setCoordinate(Coordinates coordinate) {
-        this.coordinate = coordinate;
-    }
-
-    public String getProgram() {
-        return program;
-    }
-
-    public void setProgram(String program) {
-        this.program = program;
-    }
-
-    public String getProgramStage() {
-        return programStage;
-    }
-
-    public void setProgramStage(String programStage) {
-        this.programStage = programStage;
-    }
-
-    public String getOrgUnit() {
-        return orgUnit;
-    }
-
-    public void setOrgUnit(String orgUnit) {
-        this.orgUnit = orgUnit;
-    }
-
-    public Date getEventDate() {
-        return eventDate;
-    }
-
-    public void setEventDate(Date eventDate) {
-        this.eventDate = eventDate;
-    }
-
-    public Date getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
-    }
-
-    public List<TrackedEntityDataValue> getDataValues() {
-        return dataValues;
-    }
-
-    public void setDataValues(List<TrackedEntityDataValue> dataValues) {
-        this.dataValues = dataValues;
-    }
-
-    public Date getCompletedDate() {
-        return completedDate;
-    }
-
-    public void setCompletedDate(Date completedDate) {
-        this.completedDate = completedDate;
-    }
-
-    /**
-     * Comparator that returns the Event with the latest EventDate
-     * as the greater of the two given.
-     */
-    private static class EventDateComparator implements Comparator<Event> {
-
-        @Override
-        public int compare(Event first, Event second) {
-            if (first != null && second != null && first.getEventDate() != null) {
-                return first.getEventDate().compareTo(second.getEventDate());
+        public Event build() {
+            if (trackedEntityDataValues() != null) {
+                trackedEntityDataValues(Collections.unmodifiableList(trackedEntityDataValues()));
             }
 
-            return 0;
+            return autoBuild();
         }
     }
 }

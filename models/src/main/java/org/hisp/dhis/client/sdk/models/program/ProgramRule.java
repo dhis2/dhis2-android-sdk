@@ -28,90 +28,74 @@
 
 package org.hisp.dhis.client.sdk.models.program;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class ProgramRule extends BaseIdentifiableObject {
+import javax.annotation.Nullable;
 
-    public static final Comparator<ProgramRule> PRIORITY_COMPARATOR = new PriorityComparator();
+@AutoValue
+@JsonDeserialize(builder = AutoValue_ProgramRule.Builder.class)
+public abstract class ProgramRule extends BaseIdentifiableObject {
+    private static final String JSON_PROPERTY_PROGRAM_STAGE = "programStage";
+    private static final String JSON_PROPERTY_PROGRAM = "program";
+    private static final String JSON_PROPERTY_PRIORITY = "priority";
+    private static final String JSON_PROPERTY_CONDITION = "condition";
+    private static final String JSON_PROPERTY_PROGRAM_RULE_ACTIONS = "programRuleActions";
 
-    @JsonProperty("programStage")
-    ProgramStage programStage;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE)
+    public abstract ProgramStage programStage();
 
-    @JsonProperty("program")
-    Program program;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAM)
+    public abstract Program program();
 
-    @JsonProperty("priority")
-    int priority;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PRIORITY)
+    public abstract Integer priority();
 
-    @JsonProperty("condition")
-    String condition;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_CONDITION)
+    public abstract String condition();
 
-    @JsonProperty("programRuleActions")
-    List<ProgramRuleAction> programRuleActions;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAM_RULE_ACTIONS)
+    public abstract List<ProgramRuleAction> programRuleActions();
 
-    public ProgramRule() {
-    }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
-    public ProgramStage getProgramStage() {
-        return programStage;
-    }
+        @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE)
+        public abstract Builder programStage(@Nullable ProgramStage programStage);
 
-    public void setProgramStage(ProgramStage programStage) {
-        this.programStage = programStage;
-    }
+        @JsonProperty(JSON_PROPERTY_PROGRAM)
+        public abstract Builder program(@Nullable Program program);
 
-    public Program getProgram() {
-        return program;
-    }
+        @JsonProperty(JSON_PROPERTY_PRIORITY)
+        public abstract Builder priority(@Nullable Integer priority);
 
-    public void setProgram(Program program) {
-        this.program = program;
-    }
+        @JsonProperty(JSON_PROPERTY_CONDITION)
+        public abstract Builder condition(@Nullable String condition);
 
-    public int getPriority() {
-        return priority;
-    }
+        @JsonProperty(JSON_PROPERTY_PROGRAM_RULE_ACTIONS)
+        public abstract Builder programRuleActions(@Nullable List<ProgramRuleAction> programRuleActions);
 
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
+        abstract ProgramRule autoBuild();
 
-    public String getCondition() {
-        return condition;
-    }
+        abstract List<ProgramRuleAction> programRuleActions();
 
-    public void setCondition(String condition) {
-        this.condition = condition;
-    }
-
-    public List<ProgramRuleAction> getProgramRuleActions() {
-        return programRuleActions;
-    }
-
-    public void setProgramRuleActions(List<ProgramRuleAction> programRuleActions) {
-        this.programRuleActions = programRuleActions;
-    }
-
-    public static class PriorityComparator implements Comparator<ProgramRule> {
-
-        @Override
-        public int compare(ProgramRule first, ProgramRule second) {
-            if (first == null && second == null) {
-                return 0;
-            } else if (first == null) {
-                return 1;
-            } else if (second == null) {
-                return -1;
+        public ProgramRule build() {
+            if (programRuleActions() != null) {
+                programRuleActions(Collections.unmodifiableList(programRuleActions()));
             }
 
-            return second.getPriority() - first.getPriority();
+            return autoBuild();
         }
     }
 }

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.models.common.Payload;
+import org.hisp.dhis.client.sdk.core.commons.Payload;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 
 import java.util.Map;

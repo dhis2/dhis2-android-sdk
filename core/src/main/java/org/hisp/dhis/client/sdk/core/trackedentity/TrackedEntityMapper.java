@@ -12,7 +12,7 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 
 import java.text.ParseException;
 
-import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getInt;
+import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getLong;
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getString;
 
 class TrackedEntityMapper implements Mapper<TrackedEntity> {
@@ -38,43 +38,48 @@ class TrackedEntityMapper implements Mapper<TrackedEntity> {
 
     @Override
     public ContentValues toContentValues(TrackedEntity trackedEntity) {
-        TrackedEntity.validate(trackedEntity);
+        if (!trackedEntity.isValid()) {
+            throw new IllegalArgumentException("TrackedEntity is not valid");
+
+        }
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(TrackedEntityColumns.COLUMN_ID, trackedEntity.getId());
-        contentValues.put(TrackedEntityColumns.COLUMN_UID, trackedEntity.getUid());
-        contentValues.put(TrackedEntityColumns.COLUMN_CODE, trackedEntity.getCode());
-        contentValues.put(TrackedEntityColumns.COLUMN_CREATED, trackedEntity.getCreated().toString());
-        contentValues.put(TrackedEntityColumns.COLUMN_LAST_UPDATED, trackedEntity.getLastUpdated().toString());
-        contentValues.put(TrackedEntityColumns.COLUMN_NAME, trackedEntity.getName());
-        contentValues.put(TrackedEntityColumns.COLUMN_DISPLAY_NAME, trackedEntity.getDisplayName());
-        contentValues.put(TrackedEntityColumns.COLUMN_SHORT_NAME, trackedEntity.getShortName());
-        contentValues.put(TrackedEntityColumns.COLUMN_DISPLAY_SHORT_NAME, trackedEntity.getDisplayShortName());
-        contentValues.put(TrackedEntityColumns.COLUMN_DESCRIPTION, trackedEntity.getDescription());
-        contentValues.put(TrackedEntityColumns.COLUMN_DISPLAY_DESCRIPTION, trackedEntity.getDisplayDescription());
+        contentValues.put(TrackedEntityColumns.COLUMN_ID, trackedEntity.id());
+        contentValues.put(TrackedEntityColumns.COLUMN_UID, trackedEntity.uid());
+        contentValues.put(TrackedEntityColumns.COLUMN_CODE, trackedEntity.code());
+        contentValues.put(TrackedEntityColumns.COLUMN_CREATED, trackedEntity.created().toString());
+        contentValues.put(TrackedEntityColumns.COLUMN_LAST_UPDATED, trackedEntity.lastUpdated().toString());
+        contentValues.put(TrackedEntityColumns.COLUMN_NAME, trackedEntity.name());
+        contentValues.put(TrackedEntityColumns.COLUMN_DISPLAY_NAME, trackedEntity.displayName());
+        contentValues.put(TrackedEntityColumns.COLUMN_SHORT_NAME, trackedEntity.shortName());
+        contentValues.put(TrackedEntityColumns.COLUMN_DISPLAY_SHORT_NAME, trackedEntity.displayShortName());
+        contentValues.put(TrackedEntityColumns.COLUMN_DESCRIPTION, trackedEntity.description());
+        contentValues.put(TrackedEntityColumns.COLUMN_DISPLAY_DESCRIPTION, trackedEntity.displayDescription());
 
         return contentValues;
     }
 
     @Override
     public TrackedEntity toModel(Cursor cursor) {
-        TrackedEntity trackedEntity = new TrackedEntity();
 
-        trackedEntity.setId(getInt(cursor, TrackedEntityColumns.COLUMN_ID));
-        trackedEntity.setUid(getString(cursor, TrackedEntityColumns.COLUMN_UID));
-        trackedEntity.setCode(getString(cursor, TrackedEntityColumns.COLUMN_CODE));
-        trackedEntity.setName(getString(cursor, TrackedEntityColumns.COLUMN_NAME));
-        trackedEntity.setDisplayName(getString(cursor, TrackedEntityColumns.COLUMN_DISPLAY_NAME));
-        trackedEntity.setShortName(getString(cursor, TrackedEntityColumns.COLUMN_SHORT_NAME));
-        trackedEntity.setDisplayShortName(getString(cursor, TrackedEntityColumns.COLUMN_DISPLAY_SHORT_NAME));
-        trackedEntity.setDescription(getString(cursor, TrackedEntityColumns.COLUMN_DESCRIPTION));
-        trackedEntity.setDisplayDescription(getString(cursor, TrackedEntityColumns.COLUMN_DISPLAY_DESCRIPTION));
+        TrackedEntity trackedEntity;
 
         try {
-            trackedEntity.setCreated(BaseIdentifiableObject.SIMPLE_DATE_FORMAT
-                    .parse(getString(cursor, TrackedEntityColumns.COLUMN_CREATED)));
-            trackedEntity.setLastUpdated(BaseIdentifiableObject.SIMPLE_DATE_FORMAT
-                    .parse(getString(cursor, TrackedEntityColumns.COLUMN_LAST_UPDATED)));
+            trackedEntity = TrackedEntity.builder()
+                    .id(getLong(cursor, TrackedEntityColumns.COLUMN_ID))
+                    .uid(getString(cursor, TrackedEntityColumns.COLUMN_UID))
+                    .code(getString(cursor, TrackedEntityColumns.COLUMN_CODE))
+                    .name(getString(cursor, TrackedEntityColumns.COLUMN_NAME))
+                    .displayName(getString(cursor, TrackedEntityColumns.COLUMN_DISPLAY_NAME))
+                    .created(BaseIdentifiableObject.DATE_FORMAT
+                            .parse(getString(cursor, TrackedEntityColumns.COLUMN_CREATED)))
+                    .lastUpdated(BaseIdentifiableObject.DATE_FORMAT
+                            .parse(getString(cursor, TrackedEntityColumns.COLUMN_LAST_UPDATED)))
+                    .shortName(getString(cursor, TrackedEntityColumns.COLUMN_SHORT_NAME))
+                    .displayShortName(getString(cursor, TrackedEntityColumns.COLUMN_DISPLAY_SHORT_NAME))
+                    .description(getString(cursor, TrackedEntityColumns.COLUMN_DESCRIPTION))
+                    .displayDescription(getString(cursor, TrackedEntityColumns.COLUMN_DISPLAY_DESCRIPTION))
+                    .build();
         } catch (ParseException e) {
             throw new IllegalArgumentException(e);
         }

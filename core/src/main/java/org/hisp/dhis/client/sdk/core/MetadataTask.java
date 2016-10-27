@@ -1,10 +1,10 @@
 package org.hisp.dhis.client.sdk.core;
 
+import org.hisp.dhis.client.sdk.core.commons.Payload;
 import org.hisp.dhis.client.sdk.core.option.OptionSetInteractor;
 import org.hisp.dhis.client.sdk.core.program.ProgramInteractor;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInteractor;
 import org.hisp.dhis.client.sdk.core.user.UserInteractor;
-import org.hisp.dhis.client.sdk.models.common.Payload;
 import org.hisp.dhis.client.sdk.models.option.OptionSet;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
@@ -63,15 +63,15 @@ public class MetadataTask {
             // DOWNLOADING ID AND VERSIONS FOR PROGRAMS AND OPTION SETS
             // --------------------------------------------------------
 
-            for (UserRole userRole : user.getUserCredentials().getUserRoles()) {
-                for (Program program : userRole.getPrograms()) {
+            for (UserRole userRole : user.userCredentials().userRoles()) {
+                for (Program program : userRole.programs()) {
                     if (program != null) {
-                        programMap.put(program.getUid(), program);
-                        for (ProgramStage programStage : program.getProgramStages()) {
-                            for (ProgramStageDataElement programStageDataElement : programStage.getProgramStageDataElements()) {
-                                if (programStageDataElement.getDataElement().getOptionSet() != null) {
-                                    OptionSet optionSet = programStageDataElement.getDataElement().getOptionSet();
-                                    optionSetMap.put(optionSet.getUid(), optionSet);
+                        programMap.put(program.uid(), program);
+                        for (ProgramStage programStage : program.programStages()) {
+                            for (ProgramStageDataElement programStageDataElement : programStage.programStageDataElements()) {
+                                if (programStageDataElement.dataElement().optionSet() != null) {
+                                    OptionSet optionSet = programStageDataElement.dataElement().optionSet();
+                                    optionSetMap.put(optionSet.uid(), optionSet);
                                 }
                             }
                         }
@@ -87,15 +87,15 @@ public class MetadataTask {
             System.out.println("Persisted programs: " + persistedPrograms.values().toString());
             List<String> programsToDownload = new ArrayList<>();
             for (Program program : programMap.values()) {
-                if (persistedPrograms.containsKey(program.getUid())) {
-                    Program persistedProgram = persistedPrograms.get(program.getUid());
-                    if (program.getVersion() > persistedProgram.getVersion()) {
+                if (persistedPrograms.containsKey(program.uid())) {
+                    Program persistedProgram = persistedPrograms.get(program.uid());
+                    if (program.version() > persistedProgram.version()) {
                         // if program version from api is higher than in local db, download it
-                        programsToDownload.add(program.getUid());
+                        programsToDownload.add(program.uid());
                     }
                 } else {
                     // if program doesn't exist in db, download it
-                    programsToDownload.add(program.getUid());
+                    programsToDownload.add(program.uid());
                 }
             }
 
@@ -134,15 +134,15 @@ public class MetadataTask {
             System.out.println("Persisted optionSets: " + persistedOptionSets.values().toString());
             List<String> optionSetsToDownload = new ArrayList<>();
             for (OptionSet optionSet : optionSetMap.values()) {
-                if (persistedOptionSets.containsKey(optionSet.getUid())) {
-                    OptionSet persistedOptionSet = persistedOptionSets.get(optionSet.getUid());
-                    if (optionSet.getVersion() > persistedOptionSet.getVersion()) {
+                if (persistedOptionSets.containsKey(optionSet.uid())) {
+                    OptionSet persistedOptionSet = persistedOptionSets.get(optionSet.uid());
+                    if (optionSet.version() > persistedOptionSet.version()) {
                         // if optionSet version from api is higher than in local db, download it
-                        optionSetsToDownload.add(optionSet.getUid());
+                        optionSetsToDownload.add(optionSet.uid());
                     }
                 } else {
                     // if optionSet doesn't exist in db, download it
-                    optionSetsToDownload.add(optionSet.getUid());
+                    optionSetsToDownload.add(optionSet.uid());
                 }
             }
             System.out.println("OptionSetUids to download: " + optionSetsToDownload.toString());

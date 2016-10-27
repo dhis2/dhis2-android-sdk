@@ -26,23 +26,56 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+apply plugin: "java"
 
-apply plugin: 'java'
+// used for complement apt plugin
+// for generated sources
+apply plugin: "idea"
+
+// annotation processing tool plugin
+apply plugin: "net.ltgt.apt"
 
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
 
-def libs = rootProject.ext.libraries
+def libraries = rootProject.ext.libraries
+
+// using custom source sets in order to set clear
+// boundaries between different type of tests
+sourceSets {
+    test {
+        java {
+            srcDirs = [
+                    "src/unitTests/java",
+                    "src/integrationTests/java"
+            ]
+        }
+    }
+}
+
+// This allows us see tests execution progress in the output on the CI.
+test {
+    testLogging {
+        events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+        exceptionFormat 'full'
+    }
+}
 
 dependencies {
-    compile project(":utils")
+    // Jackson
+    compile "com.fasterxml.jackson.core:jackson-databind:${libraries.jacksonVersion}"
 
-    // Jackson libraries.
-    compile "com.fasterxml.jackson.core:jackson-databind:${libs.jacksonVersion}"
+    // Google's auto-value. Annotations are used only during compilation time, as well as
+    // annotation processor which hoops up into compilation process
+    compileOnly "com.google.auto.value:auto-value:${libraries.autovalue}"
+    apt "com.google.auto.value:auto-value:${libraries.autovalue}"
 
-    // Test compile dependencies.
-    testCompile "junit:junit:${libs.jUnitVersion}"
-    testCompile "org.assertj:assertj-core:${libs.assertJ}"
-    testCompile "org.mockito:mockito-core:${libs.mockitoVersion}"
-    testCompile "nl.jqno.equalsverifier:equalsverifier:${libs.equalsVerifier}"
+    // Using javax annotations in conjunction with auto-value in order
+    // to have optional values in models
+    compileOnly "com.google.code.findbugs:jsr305:${libraries.javaxannotations}"
+
+    // Test dependencies
+    testCompile "junit:junit:${libraries.jUnitVersion}"
+    testCompile "org.assertj:assertj-core:${libraries.assertJ}"
+    testCompile "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsVerifier}"
 }

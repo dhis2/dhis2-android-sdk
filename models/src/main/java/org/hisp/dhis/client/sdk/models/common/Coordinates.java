@@ -28,40 +28,35 @@
 
 package org.hisp.dhis.client.sdk.models.common;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Coordinates {
+//TODO: Tests
+@AutoValue
+@JsonDeserialize(builder = AutoValue_Coordinates.Builder.class)
+public abstract class Coordinates {
+    private final static String JSON_PROPERTY_LATITUDE = "latitude";
+    private final static String JSON_PROPERTY_LONGITUDE = "longitude";
 
-    @JsonProperty("latitude")
-    private Double latitude;
+    @JsonProperty(JSON_PROPERTY_LATITUDE)
+    public abstract Double latitude();
 
-    @JsonProperty("longitude")
-    private Double longitude;
+    @JsonProperty(JSON_PROPERTY_LONGITUDE)
+    public abstract Double longitude();
 
-    public Coordinates() {
-        // explicit empty constructor
+    public static Builder builder() {
+        return new AutoValue_Coordinates.Builder();
     }
 
-    public Coordinates(Double latitude, Double longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-    }
+    @AutoValue.Builder
+    public static abstract class Builder {
+        @JsonProperty(JSON_PROPERTY_LATITUDE)
+        public abstract Builder latitude(Double latitude);
 
-    public Double getLatitude() {
-        return latitude;
-    }
+        @JsonProperty(JSON_PROPERTY_LONGITUDE)
+        public abstract Builder longitude(Double longitude);
 
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
+        public abstract Coordinates build();
     }
 }

@@ -32,6 +32,7 @@ import org.hisp.dhis.client.sdk.models.common.ValueType;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.client.sdk.utils.LocaleUtils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -40,7 +41,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /* Part of RuleEngine implementation detail. Hence, class visibility defined as package private */
@@ -70,11 +70,11 @@ class RuleEngineVariableValueMap {
     private Map<String, TrackedEntityDataValue> initEventToValuesMap(Event currentEvent) {
         Map<String, TrackedEntityDataValue> eventToValueMap = new HashMap<>();
 
-        if (currentEvent != null && currentEvent.getDataValues() != null) {
-            for (TrackedEntityDataValue value : currentEvent.getDataValues()) {
+        if (currentEvent != null && currentEvent.trackedEntityDataValues() != null) {
+            for (TrackedEntityDataValue value : currentEvent.trackedEntityDataValues()) {
 
-                if (value.getValue() != null && value.getValue().length() != 0) {
-                    eventToValueMap.put(value.getDataElement(), value);
+                if (value.value() != null && value.value().length() != 0) {
+                    eventToValueMap.put(value.dataElement(), value);
                 }
             }
         }
@@ -94,24 +94,29 @@ class RuleEngineVariableValueMap {
         for (Event event : allEvents) {
 
             // if event does not contain values, skip it
-            if (event.getDataValues() == null) {
+            if (event.trackedEntityDataValues() == null) {
                 continue;
             }
 
-            for (TrackedEntityDataValue value : event.getDataValues()) {
-                if (!eventsToValuesMap.containsKey(value.getDataElement())) {
-                    eventsToValuesMap.put(value.getDataElement(),
+            for (TrackedEntityDataValue value : event.trackedEntityDataValues()) {
+                if (!eventsToValuesMap.containsKey(value.dataElement())) {
+                    eventsToValuesMap.put(value.dataElement(),
                             new ArrayList<TrackedEntityDataValue>());
                 }
 
                 // make sure the event is assigned, it is used later to check event date for
                 // the data values
-                if (value.getEventUid() == null) {
-                    value.setEventUid(event.getUid());
+
+                if (value.event() == null) {
+                    value = TrackedEntityDataValue.builder()
+                            .event(event.uid())
+                            .value(value.value())
+                            .dataElement(value.dataElement())
+                            .storedBy(value.storedBy()).build();
                 }
 
-                if (value.getValue() != null && value.getValue().length() != 0) {
-                    eventsToValuesMap.get(value.getDataElement()).add(value);
+                if (value.value() != null && value.value().length() != 0) {
+                    eventsToValuesMap.get(value.dataElement()).add(value);
                 }
             }
         }
@@ -127,20 +132,20 @@ class RuleEngineVariableValueMap {
         for (ProgramRuleVariable variable : programRuleVariables) {
 
             boolean valueFound = false;
-            switch (variable.getProgramRuleVariableSourceType()) {
+            switch (variable.programRuleVariableSourceType()) {
                 case DATAELEMENT_CURRENT_EVENT: {
-                    if (currentEventToValuesMap.containsKey(variable.getDataElement().getUid())) {
+                    if (currentEventToValuesMap.containsKey(variable.dataElement().uid())) {
                         TrackedEntityDataValue dataValue = currentEventToValuesMap
-                                .get(variable.getDataElement().getUid());
+                                .get(variable.dataElement().uid());
                         valueFound = true;
                         addProgramRuleVariableValueToMap(variable, dataValue, null, valueFound);
                     }
                     break;
                 }
                 case DATAELEMENT_NEWEST_EVENT_PROGRAM: {
-                    if (allEventsToValuesMap.containsKey(variable.getDataElement().getUid())) {
+                    if (allEventsToValuesMap.containsKey(variable.dataElement().uid())) {
                         List<TrackedEntityDataValue> valueList = allEventsToValuesMap.get(
-                                variable.getDataElement().getUid());
+                                variable.dataElement().uid());
                         TrackedEntityDataValue dataValue = valueList.get(valueList.size() - 1);
                         valueFound = true;
                         addProgramRuleVariableValueToMap(variable, dataValue, valueList, valueFound);
@@ -148,11 +153,11 @@ class RuleEngineVariableValueMap {
                     break;
                 }
                 case DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE: {
-                    if (variable.getProgramStage() != null && allEventsToValuesMap.containsKey(
-                            variable.getDataElement().getUid())) {
+                    if (variable.programStage() != null && allEventsToValuesMap.containsKey(
+                            variable.dataElement().uid())) {
 
                         List<TrackedEntityDataValue> valueList = allEventsToValuesMap.get(
-                                variable.getDataElement().getUid());
+                                variable.dataElement().uid());
 
                         TrackedEntityDataValue bestCandidate = null;
 
@@ -160,9 +165,9 @@ class RuleEngineVariableValueMap {
                         for (TrackedEntityDataValue candidate : valueList) {
 
                             // if (variable.getProgramStage().getUid().equals(candidate.getEventUid().getProgramStage())) {
-                                // The candidate matches the program stage, and will be newer than
-                                // the potential previous candidate:
-                                // bestCandidate = candidate;
+                            // The candidate matches the program stage, and will be newer than
+                            // the potential previous candidate:
+                            // bestCandidate = candidate;
                             // }
                         }
 
@@ -175,21 +180,21 @@ class RuleEngineVariableValueMap {
                 }
                 case DATAELEMENT_PREVIOUS_EVENT: {
                     if (currentEvent != null && allEventsToValuesMap.containsKey(
-                            variable.getDataElement().getUid())) {
+                            variable.dataElement().uid())) {
                         List<TrackedEntityDataValue> valueList = allEventsToValuesMap.get(
-                                variable.getDataElement().getUid());
+                                variable.dataElement().uid());
 
                         TrackedEntityDataValue bestCandidate = null;
                         for (TrackedEntityDataValue candidate : valueList) {
                             // TODO fix before running RuleEngine
                             // if (candidate.getEventUid().getEventDate().compareTo(
                             //        currentEvent.getEventDate()) >= 0) {
-                                // we have reached the current event time, stop iterating, keep the
-                                // previous candidate, if any
+                            // we have reached the current event time, stop iterating, keep the
+                            // previous candidate, if any
                             //    break;
                             // } else {
-                                // we have not yet reached the current event, keep this candidate
-                                // as it is the newest one examined:
+                            // we have not yet reached the current event, keep this candidate
+                            // as it is the newest one examined:
                             //    bestCandidate = candidate;
                             // }
                         }
@@ -212,30 +217,31 @@ class RuleEngineVariableValueMap {
             }
 
             if (!valueFound) {
-                TrackedEntityDataValue defaultValue = new TrackedEntityDataValue();
+                TrackedEntityDataValue defaultValue = null;
 
-                if (variable.getDataElement() != null) {
-                    if (variable.getDataElement().getValueType() == ValueType.TEXT
-                            || variable.getDataElement().getValueType() == ValueType.LONG_TEXT
-                            || variable.getDataElement().getValueType() == ValueType.EMAIL
-                            || variable.getDataElement().getValueType() == ValueType.PHONE_NUMBER) {
-                        defaultValue.setValue("''");
-                    } else if (variable.getDataElement().getValueType() == ValueType.INTEGER
-                            || variable.getDataElement().getValueType() == ValueType.INTEGER_POSITIVE
-                            || variable.getDataElement().getValueType() == ValueType.INTEGER_NEGATIVE
-                            || variable.getDataElement().getValueType() == ValueType.INTEGER_ZERO_OR_POSITIVE
-                            || variable.getDataElement().getValueType() == ValueType.NUMBER
-                            || variable.getDataElement().getValueType() == ValueType.PERCENTAGE) {
-                        defaultValue.setValue("0");
-                    } else if (variable.getDataElement().getValueType() == ValueType.DATE
-                            || variable.getDataElement().getValueType() == ValueType.DATETIME) {
-                        defaultValue.setValue("'" + (new Date()).toString() + "'");
-                    } else if (variable.getDataElement().getValueType() == ValueType.BOOLEAN
-                            || variable.getDataElement().getValueType() == ValueType.TRUE_ONLY) {
-                        defaultValue.setValue("false");
+                if (variable.dataElement() != null && variable.dataElement().valueType() != null) {
+                    if (variable.dataElement().valueType() == ValueType.TEXT
+                            || variable.dataElement().valueType() == ValueType.LONG_TEXT
+                            || variable.dataElement().valueType() == ValueType.EMAIL
+                            || variable.dataElement().valueType() == ValueType.PHONE_NUMBER) {
+                        defaultValue = TrackedEntityDataValue.builder().value("''").build();
+                    } else if (variable.dataElement().valueType() == ValueType.INTEGER
+                            || variable.dataElement().valueType() == ValueType.INTEGER_POSITIVE
+                            || variable.dataElement().valueType() == ValueType.INTEGER_NEGATIVE
+                            || variable.dataElement().valueType() == ValueType.INTEGER_ZERO_OR_POSITIVE
+                            || variable.dataElement().valueType() == ValueType.NUMBER
+                            || variable.dataElement().valueType() == ValueType.PERCENTAGE) {
+                        defaultValue = TrackedEntityDataValue.builder().value("0").build();
+                    } else if (variable.dataElement().valueType() == ValueType.DATE
+                            || variable.dataElement().valueType() == ValueType.DATETIME) {
+                        defaultValue = TrackedEntityDataValue.builder()
+                                .value("'" + (new Date()).toString() + "'").build();
+                    } else if (variable.dataElement().valueType() == ValueType.BOOLEAN
+                            || variable.dataElement().valueType() == ValueType.TRUE_ONLY) {
+                        defaultValue = TrackedEntityDataValue.builder().value("false").build();
                     }
                 } else {
-                    defaultValue.setValue("''");
+                    defaultValue = TrackedEntityDataValue.builder().value("''").build();
                 }
 
                 addProgramRuleVariableValueToMap(variable, defaultValue, null, valueFound);
@@ -244,11 +250,11 @@ class RuleEngineVariableValueMap {
     }
 
     private void addEnvironmentVariables(Event currentEvent) {
-        DateFormat df = new SimpleDateFormat(DATE_PATTERN, Locale.ENGLISH);
+        DateFormat df = new SimpleDateFormat(DATE_PATTERN, LocaleUtils.getLocale());
 
         if (currentEvent != null) {
-            Date eventDate = currentEvent.getEventDate() != null ? currentEvent.getEventDate() : new Date();
-            addEnviromentVariableValueToMap("event_date", df.format(eventDate), ValueType.DATE, currentEvent.getEventDate() != null);
+            Date eventDate = currentEvent.eventDate() != null ? currentEvent.eventDate() : new Date();
+            addEnviromentVariableValueToMap("event_date", df.format(eventDate), ValueType.DATE, currentEvent.eventDate() != null);
         } else {
             addEnviromentVariableValueToMap("event_date", df.format(new Date()), ValueType.DATE, false);
         }
@@ -269,10 +275,10 @@ class RuleEngineVariableValueMap {
                                                   TrackedEntityDataValue value,
                                                   List<TrackedEntityDataValue> allValues,
                                                   boolean hasValue) {
-        ValueType valueType = programRuleVariable.getDataElement() != null ? programRuleVariable.getDataElement().getValueType() :
-                programRuleVariable.getTrackedEntityAttribute() != null ? programRuleVariable.getTrackedEntityAttribute().getValueType() : determineValueType(value.toString());
+        ValueType valueType = programRuleVariable.dataElement() != null ? programRuleVariable.dataElement().valueType() :
+                programRuleVariable.trackedEntityAttribute() != null ? programRuleVariable.trackedEntityAttribute().valueType() : determineValueType(value.toString());
         ProgramRuleVariableValue variableValue = new ProgramRuleVariableValue(value, allValues, valueType, hasValue);
-        programRuleVariableValueMap.put(programRuleVariable.getDisplayName(), variableValue);
+        programRuleVariableValueMap.put(programRuleVariable.displayName(), variableValue);
     }
 
     private void addEnviromentVariableValueToMap(String name, String value,

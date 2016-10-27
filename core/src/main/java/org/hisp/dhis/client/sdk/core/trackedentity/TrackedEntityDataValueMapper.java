@@ -10,7 +10,7 @@ import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueTable.T
 import org.hisp.dhis.client.sdk.models.common.State;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
-import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getInt;
+import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getLong;
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getString;
 
 class TrackedEntityDataValueMapper implements Mapper<TrackedEntityDataValue> {
@@ -36,28 +36,31 @@ class TrackedEntityDataValueMapper implements Mapper<TrackedEntityDataValue> {
 
     @Override
     public ContentValues toContentValues(TrackedEntityDataValue trackedEntityDataValue) {
-        TrackedEntityDataValue.validate(trackedEntityDataValue);
+        if (!trackedEntityDataValue.isValid()) {
+            throw new IllegalArgumentException("TrackedEntityDataValue is not valid");
+        }
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(TrackedEntityDataValueColumns.COLUMN_ID, trackedEntityDataValue.getId());
-        contentValues.put(TrackedEntityDataValueColumns.COLUMN_DATA_ELEMENT, trackedEntityDataValue.getDataElement());
-        contentValues.put(TrackedEntityDataValueColumns.COLUMN_EVENT, trackedEntityDataValue.getEventUid());
-        contentValues.put(TrackedEntityDataValueColumns.COLUMN_STORED_BY, trackedEntityDataValue.getStoredBy());
-        contentValues.put(TrackedEntityDataValueColumns.COLUMN_VALUE, trackedEntityDataValue.getValue());
-        contentValues.put(TrackedEntityDataValueColumns.COLUMN_STATE, trackedEntityDataValue.getState().toString());
+        contentValues.put(TrackedEntityDataValueColumns.COLUMN_ID, trackedEntityDataValue.id());
+        contentValues.put(TrackedEntityDataValueColumns.COLUMN_DATA_ELEMENT, trackedEntityDataValue.dataElement());
+        contentValues.put(TrackedEntityDataValueColumns.COLUMN_EVENT, trackedEntityDataValue.event());
+        contentValues.put(TrackedEntityDataValueColumns.COLUMN_STORED_BY, trackedEntityDataValue.storedBy());
+        contentValues.put(TrackedEntityDataValueColumns.COLUMN_VALUE, trackedEntityDataValue.value());
+        contentValues.put(TrackedEntityDataValueColumns.COLUMN_STATE, trackedEntityDataValue.state().toString());
 
         return contentValues;
     }
 
     @Override
     public TrackedEntityDataValue toModel(Cursor cursor) {
-        TrackedEntityDataValue trackedEntityDataValue = new TrackedEntityDataValue();
-        trackedEntityDataValue.setId(getInt(cursor, TrackedEntityDataValueColumns.COLUMN_ID));
-        trackedEntityDataValue.setDataElement(getString(cursor, TrackedEntityDataValueColumns.COLUMN_DATA_ELEMENT));
-        trackedEntityDataValue.setEventUid(getString(cursor, TrackedEntityDataValueColumns.COLUMN_EVENT));
-        trackedEntityDataValue.setStoredBy(getString(cursor, TrackedEntityDataValueColumns.COLUMN_STORED_BY));
-        trackedEntityDataValue.setValue(getString(cursor, TrackedEntityDataValueColumns.COLUMN_VALUE));
-        trackedEntityDataValue.setState(State.valueOf(getString(cursor, TrackedEntityDataValueColumns.COLUMN_STATE)));
+        TrackedEntityDataValue trackedEntityDataValue = TrackedEntityDataValue.builder()
+                .id(getLong(cursor, TrackedEntityDataValueColumns.COLUMN_ID))
+                .dataElement(getString(cursor, TrackedEntityDataValueColumns.COLUMN_DATA_ELEMENT))
+                .event(getString(cursor, TrackedEntityDataValueColumns.COLUMN_EVENT))
+                .storedBy(getString(cursor, TrackedEntityDataValueColumns.COLUMN_STORED_BY))
+                .value(getString(cursor, TrackedEntityDataValueColumns.COLUMN_VALUE))
+                .state(State.valueOf(getString(cursor, TrackedEntityDataValueColumns.COLUMN_STATE)))
+                .build();
 
         return trackedEntityDataValue;
     }

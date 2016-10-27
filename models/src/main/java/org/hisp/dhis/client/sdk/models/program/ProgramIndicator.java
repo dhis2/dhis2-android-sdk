@@ -28,69 +28,61 @@
 
 package org.hisp.dhis.client.sdk.models.program;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseNameableObject;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class ProgramIndicator extends BaseNameableObject {
+import javax.annotation.Nullable;
 
-    @JsonProperty("displayInForm")
-    boolean displayInForm;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_ProgramIndicator.Builder.class)
+public abstract class ProgramIndicator extends BaseNameableObject {
+    private static final String JSON_PROPERTY_DISPLAY_IN_FORM = "displayInForm";
+    private static final String JSON_PROPERTY_EXPRESSION = "expression";
+    private static final String JSON_PROPERTY_DIMENSION_ITEM = "dimensionItem";
+    private static final String JSON_PROPERTY_FILTER = "filter";
+    private static final String JSON_PROPERTY_DECIMALS = "decimals";
 
-    @JsonProperty("expression")
-    String expression;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DISPLAY_IN_FORM)
+    public abstract Boolean displayInForm();
 
-    @JsonProperty("dimensionItem")
-    String dimensionItem;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_EXPRESSION)
+    public abstract String expression();
 
-    @JsonProperty("filter")
-    String filter;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DIMENSION_ITEM)
+    public abstract String dimensionItem();
 
-    @JsonProperty("decimals")
-    int decimals;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_FILTER)
+    public abstract String filter();
 
-    public ProgramIndicator() {
-    }
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DECIMALS)
+    public abstract Integer decimals();
 
-    public boolean isDisplayInForm() {
-        return displayInForm;
-    }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
 
-    public void setDisplayInForm(boolean displayInForm) {
-        this.displayInForm = displayInForm;
-    }
+        @JsonProperty(JSON_PROPERTY_DISPLAY_IN_FORM)
+        public abstract Builder displayInForm(@Nullable Boolean displayInForm);
 
-    public String getExpression() {
-        return expression;
-    }
+        @JsonProperty(JSON_PROPERTY_EXPRESSION)
+        public abstract Builder expression(@Nullable String expression);
 
-    public void setExpression(String expression) {
-        this.expression = expression;
-    }
+        @JsonProperty(JSON_PROPERTY_DIMENSION_ITEM)
+        public abstract Builder dimensionItem(@Nullable String dimensionItem);
 
-    public String getDimensionItem() {
-        return dimensionItem;
-    }
+        @JsonProperty(JSON_PROPERTY_FILTER)
+        public abstract Builder filter(@Nullable String filter);
 
-    public void setDimensionItem(String dimensionItem) {
-        this.dimensionItem = dimensionItem;
-    }
+        @JsonProperty(JSON_PROPERTY_DECIMALS)
+        public abstract Builder decimals(@Nullable Integer decimals);
 
-    public String getFilter() {
-        return filter;
-    }
-
-    public void setFilter(String filter) {
-        this.filter = filter;
-    }
-
-    public int getDecimals() {
-        return decimals;
-    }
-
-    public void setDecimals(int decimals) {
-        this.decimals = decimals;
+        abstract ProgramIndicator build();
     }
 }

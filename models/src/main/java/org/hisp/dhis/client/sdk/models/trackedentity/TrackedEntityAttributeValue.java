@@ -29,61 +29,51 @@
 package org.hisp.dhis.client.sdk.models.trackedentity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.client.sdk.models.common.BaseModel;
 
-
-import java.io.Serializable;
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-public final class TrackedEntityAttributeValue implements Serializable {
-
-    @JsonIgnore
-    private long id;
-
-    @JsonProperty("attribute")
-    private String trackedEntityAttributeUId;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_TrackedEntityAttributeValue.Builder.class)
+public abstract class TrackedEntityAttributeValue extends BaseModel {
+    private static final String JSON_PROPERTY_ATTRIBUTE = "attribute";
+    private static final String JSON_PROPERTY_VALUE = "value";
 
     @JsonIgnore
-    private TrackedEntityInstance trackedEntityInstance;
+    public abstract TrackedEntityInstance trackedEntityInstance();
 
-    @JsonProperty("value")
-    private String value;
+    @JsonProperty(JSON_PROPERTY_ATTRIBUTE)
+    public abstract String trackedEntityAttribute();
 
-    public TrackedEntityAttributeValue() {
+    @JsonProperty(JSON_PROPERTY_VALUE)
+    public abstract String value();
 
+    @Override
+    public boolean isValid() {
+        // since all properties are mandatory, auto-value will prevent instantiation
+        // of malformed TrackedEntityDataValues. Hence, there is no need to perform soft
+        // validation, since TrackedEntityDataValues always should be valid
+        return true;
     }
 
-    public long getId() {
-        return id;
+    public static Builder builder() {
+        return new AutoValue_TrackedEntityAttributeValue.Builder();
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
 
-    public String getTrackedEntityAttributeUId() {
-        return trackedEntityAttributeUId;
-    }
+        @JsonIgnore
+        public abstract Builder trackedEntityInstance(TrackedEntityInstance trackedEntityInstance);
 
-    public void setTrackedEntityAttributeUId(String trackedEntityAttributeUId) {
-        this.trackedEntityAttributeUId = trackedEntityAttributeUId;
-    }
+        @JsonProperty(JSON_PROPERTY_ATTRIBUTE)
+        public abstract Builder trackedEntityAttribute(String trackedEntityAttribute);
 
-    public TrackedEntityInstance getTrackedEntityInstance() {
-        return trackedEntityInstance;
-    }
+        @JsonProperty(JSON_PROPERTY_VALUE)
+        public abstract Builder value(String value);
 
-    public void setTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance) {
-        this.trackedEntityInstance = trackedEntityInstance;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
+        public abstract TrackedEntityAttributeValue build();
     }
 }

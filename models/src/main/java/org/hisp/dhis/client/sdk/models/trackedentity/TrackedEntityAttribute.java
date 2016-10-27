@@ -28,170 +28,132 @@
 
 package org.hisp.dhis.client.sdk.models.trackedentity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseNameableObject;
 import org.hisp.dhis.client.sdk.models.common.ValueType;
 import org.hisp.dhis.client.sdk.models.option.OptionSet;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class TrackedEntityAttribute extends BaseNameableObject {
+import javax.annotation.Nullable;
 
-    @JsonProperty("trackedEntity")
-    TrackedEntity trackedEntity;
+// TODO: Tests
+@AutoValue
+@JsonDeserialize(builder = AutoValue_TrackedEntityAttribute.Builder.class)
+public abstract class TrackedEntityAttribute extends BaseNameableObject {
+    private static final String JSON_PROPERTY_TRACKED_ENTITY = "trackedEntity";
+    private static final String JSON_PROPERTY_PROGRAM_SCOPE = "programScope";
+    private static final String JSON_PROPERTY_DISPLAY_IN_LIST_NO_PROGRAM = "displayInListNoProgram";
+    private static final String JSON_PROPERTY_PATTERN = "pattern";
+    private static final String JSON_PROPERTY_SORT_ORDER_IN_LIST_NO_PROGRAM = "sortOrderInListNoProgram";
+    private static final String JSON_PROPERTY_OPTION_SET = "optionSet";
+    private static final String JSON_PROPERTY_GENERATED = "generated";
+    private static final String JSON_PROPERTY_DISPLAY_ON_VISIT_SCHEDULE = "displayOnVisitSchedule";
+    private static final String JSON_PROPERTY_VALUE_TYPE = "valueType";
+    private static final String JSON_PROPERTY_ORGUNIT_SCOPE = "orgunitScope";
+    private static final String JSON_PROPERTY_EXPRESSION = "expression";
+    private static final String JSON_PROPERTY_SEARCH_SCOPE = "searchScope";
+    private static final String JSON_PROPERTY_UNIQUE = "unique";
+    private static final String JSON_PROPERTY_INHERIT = "inherit";
 
-    @JsonProperty("programScope")
-    boolean programScope;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PATTERN)
+    public abstract String pattern();
 
-    @JsonProperty("displayInListNoProgram")
-    boolean displayInListNoProgram;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_SORT_ORDER_IN_LIST_NO_PROGRAM)
+    public abstract Integer sortOrderInListNoProgram();
 
-    @JsonProperty("pattern")
-    String pattern;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_OPTION_SET)
+    public abstract OptionSet optionSet();
 
-    @JsonProperty("sortOrderInListNoProgram")
-    int sortOrderInListNoProgram;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_VALUE_TYPE)
+    public abstract ValueType valueType();
 
-    @JsonProperty("optionSet")
-    OptionSet optionSet;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_EXPRESSION)
+    public abstract String expression();
 
-    @JsonProperty("generated")
-    boolean generated;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_SEARCH_SCOPE)
+    public abstract TrackedEntityAttributeSearchScope searchScope();
 
-    @JsonProperty("displayOnVisitSchedule")
-    boolean displayOnVisitSchedule;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_PROGRAM_SCOPE)
+    public abstract Boolean programScope();
 
-    @JsonProperty("valueType")
-    ValueType valueType;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DISPLAY_IN_LIST_NO_PROGRAM)
+    public abstract Boolean displayInListNoProgram();
 
-    @JsonProperty("orgunitScope")
-    boolean orgunitScope;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_GENERATED)
+    public abstract Boolean generated();
 
-    @JsonProperty("expression")
-    String expression;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DISPLAY_ON_VISIT_SCHEDULE)
+    public abstract Boolean displayOnVisitSchedule();
 
-    @JsonProperty("searchScope")
-    TrackedEntityAttributeSearchScope searchScope;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_ORGUNIT_SCOPE)
+    public abstract Boolean orgunitScope();
 
-    @JsonProperty("unique")
-    boolean unique;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_UNIQUE)
+    public abstract Boolean unique();
 
-    @JsonProperty("inherit")
-    boolean inherit;
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_INHERIT)
+    public abstract Boolean inherit();
 
-    public TrackedEntityAttribute() {
+    public static Builder builder() {
+        return new AutoValue_TrackedEntityAttribute.Builder();
     }
 
-    public TrackedEntity getTrackedEntity() {
-        return trackedEntity;
-    }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+        @JsonProperty(JSON_PROPERTY_PATTERN)
+        public abstract Builder pattern(@Nullable String pattern);
 
-    public void setTrackedEntity(TrackedEntity trackedEntity) {
-        this.trackedEntity = trackedEntity;
-    }
+        @JsonProperty(JSON_PROPERTY_SORT_ORDER_IN_LIST_NO_PROGRAM)
+        public abstract Builder sortOrderInListNoProgram(@Nullable Integer sortInProgram);
 
-    public boolean isProgramScope() {
-        return programScope;
-    }
+        @JsonProperty(JSON_PROPERTY_OPTION_SET)
+        public abstract Builder optionSet(@Nullable OptionSet optionSet);
 
-    public void setProgramScope(boolean programScope) {
-        this.programScope = programScope;
-    }
+        @JsonProperty(JSON_PROPERTY_VALUE_TYPE)
+        public abstract Builder valueType(@Nullable ValueType valueType);
 
-    public boolean isDisplayInListNoProgram() {
-        return displayInListNoProgram;
-    }
+        @JsonProperty(JSON_PROPERTY_EXPRESSION)
+        public abstract Builder expression(@Nullable String expression);
 
-    public void setDisplayInListNoProgram(boolean displayInListNoProgram) {
-        this.displayInListNoProgram = displayInListNoProgram;
-    }
+        @JsonProperty(JSON_PROPERTY_SEARCH_SCOPE)
+        public abstract Builder searchScope(@Nullable TrackedEntityAttributeSearchScope searchScope);
 
-    public String getPattern() {
-        return pattern;
-    }
+        @JsonProperty(JSON_PROPERTY_PROGRAM_SCOPE)
+        public abstract Builder programScope(@Nullable Boolean programScope);
 
-    public void setPattern(String pattern) {
-        this.pattern = pattern;
-    }
+        @JsonProperty(JSON_PROPERTY_DISPLAY_IN_LIST_NO_PROGRAM)
+        public abstract Builder displayInListNoProgram(@Nullable Boolean displayInListNoProgram);
 
-    public int getSortOrderInListNoProgram() {
-        return sortOrderInListNoProgram;
-    }
+        @JsonProperty(JSON_PROPERTY_GENERATED)
+        public abstract Builder generated(@Nullable Boolean generated);
 
-    public void setSortOrderInListNoProgram(int sortOrderInListNoProgram) {
-        this.sortOrderInListNoProgram = sortOrderInListNoProgram;
-    }
+        @JsonProperty(JSON_PROPERTY_DISPLAY_ON_VISIT_SCHEDULE)
+        public abstract Builder displayOnVisitSchedule(@Nullable Boolean displayOnVisitSchedule);
 
-    public OptionSet getOptionSet() {
-        return optionSet;
-    }
+        @JsonProperty(JSON_PROPERTY_ORGUNIT_SCOPE)
+        public abstract Builder orgunitScope(@Nullable Boolean orgUnitScope);
 
-    public void setOptionSet(OptionSet optionSet) {
-        this.optionSet = optionSet;
-    }
+        @JsonProperty(JSON_PROPERTY_UNIQUE)
+        public abstract Builder unique(@Nullable Boolean unique);
 
-    public boolean isGenerated() {
-        return generated;
-    }
+        @JsonProperty(JSON_PROPERTY_INHERIT)
+        public abstract Builder inherit(@Nullable Boolean inherit);
 
-    public void setGenerated(boolean generated) {
-        this.generated = generated;
-    }
-
-    public boolean isDisplayOnVisitSchedule() {
-        return displayOnVisitSchedule;
-    }
-
-    public void setDisplayOnVisitSchedule(boolean displayOnVisitSchedule) {
-        this.displayOnVisitSchedule = displayOnVisitSchedule;
-    }
-
-    public ValueType getValueType() {
-        return valueType;
-    }
-
-    public void setValueType(ValueType valueType) {
-        this.valueType = valueType;
-    }
-
-    public boolean isOrgunitScope() {
-        return orgunitScope;
-    }
-
-    public void setOrgunitScope(boolean orgunitScope) {
-        this.orgunitScope = orgunitScope;
-    }
-
-    public String getExpression() {
-        return expression;
-    }
-
-    public void setExpression(String expression) {
-        this.expression = expression;
-    }
-
-    public TrackedEntityAttributeSearchScope getSearchScope() {
-        return searchScope;
-    }
-
-    public void setSearchScope(TrackedEntityAttributeSearchScope searchScope) {
-        this.searchScope = searchScope;
-    }
-
-    public boolean isUnique() {
-        return unique;
-    }
-
-    public void setUnique(boolean unique) {
-        this.unique = unique;
-    }
-
-    public boolean isInherit() {
-        return inherit;
-    }
-
-    public void setInherit(boolean inherit) {
-        this.inherit = inherit;
+        public abstract TrackedEntityAttribute build();
     }
 }

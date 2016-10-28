@@ -37,6 +37,7 @@ import org.hisp.dhis.client.sdk.models.common.Coordinates;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -59,6 +60,9 @@ public abstract class Event extends BaseDataModel {
     private static final String JSON_PROPERTY_COMPLETE_DATE = "completedDate";
     private static final String JSON_PROPERTY_DUE_DATE = "dueDate";
     private static final String JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES = "trackedEntityDataValues";
+
+    public static final Comparator<Event> DESCENDING_EVENT_DATE_COMPARATOR = new DescendingEventDateComparator();
+    public static final Comparator<Event> ASCENDING_DATE_COMPARATOR = new AscendingEventDateComparator();
 
     // Mandatory, non-null properties
 
@@ -177,6 +181,39 @@ public abstract class Event extends BaseDataModel {
             }
 
             return autoBuild();
+        }
+    }
+
+
+    /**
+     * Comparator that returns the Event with the latest EventDate
+     * as the greater of the two given.
+     */
+    private static class DescendingEventDateComparator implements Comparator<Event> {
+
+        @Override
+        public int compare(Event first, Event second) {
+            if (first != null && second != null && first.eventDate() != null) {
+                return first.eventDate().compareTo(second.eventDate());
+            }
+
+            return 0;
+        }
+    }
+
+    /**
+     * Comparator that returns the Event with the latest EventDate
+     * as the greater of the two given.
+     */
+    private static class AscendingEventDateComparator implements Comparator<Event> {
+
+        @Override
+        public int compare(Event first, Event second) {
+            if (first != null && second != null && first.eventDate() != null) {
+                return second.eventDate().compareTo(first.eventDate());
+            }
+
+            return 0;
         }
     }
 }

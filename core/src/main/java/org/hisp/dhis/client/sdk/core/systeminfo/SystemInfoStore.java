@@ -31,7 +31,7 @@ package org.hisp.dhis.client.sdk.core.systeminfo;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import org.hisp.dhis.client.sdk.models.SystemInfo;
+import org.hisp.dhis.client.sdk.models.systeminfo.SystemInfo;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -55,11 +55,11 @@ public class SystemInfoStore {
 
     public synchronized boolean save(SystemInfo systemInfo) {
         isNull(systemInfo, "SystemInfo object must not be null");
-        isNull(systemInfo.getDateFormat(), "dateFormat object must not be null");
-        isNull(systemInfo.getServerDateTime(), "serverDateTime object must not be null");
+        isNull(systemInfo.dateFormat(), "dateFormat object must not be null");
+        isNull(systemInfo.serverDate(), "serverDate object must not be null");
 
-        String serverDate = systemInfo.getServerDateTime().toString();
-        String dateFormat = systemInfo.getDateFormat();
+        String serverDate = systemInfo.serverDate().toString();
+        String dateFormat = systemInfo.dateFormat();
 
         return preferences.edit().putString(KEY_SERVER_DATE, serverDate).commit() &&
                 preferences.edit().putString(KEY_DATE_FORMAT, dateFormat).commit();
@@ -74,9 +74,10 @@ public class SystemInfoStore {
             try {
                 Date date = simpleDateFormat.parse(dateTime);
 
-                SystemInfo systemInfo = new SystemInfo();
-                systemInfo.setServerDateTime(date);
-                systemInfo.setDateFormat(dateFormat);
+                return SystemInfo.builder()
+                        .dateFormat(dateFormat)
+                        .serverDate(date)
+                        .build();
             } catch (ParseException exception) {
                 // throwing exception out in order not to
                 // miss important information

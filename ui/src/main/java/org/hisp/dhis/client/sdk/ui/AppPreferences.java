@@ -1,11 +1,14 @@
 package org.hisp.dhis.client.sdk.ui;
 
 
+import java.text.ParseException;
+import java.util.Date;
+
 public interface AppPreferences {
 
-    long getLastSynced();
+    Date getLastSynced() throws ParseException;
 
-    boolean setLastSynced(long date);
+    boolean setLastSynced(Date date);
 
     void setBackgroundSyncFrequency(int frequency);
 

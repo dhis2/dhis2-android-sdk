@@ -31,6 +31,11 @@ package org.hisp.dhis.client.sdk.ui;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import org.hisp.dhis.client.sdk.utils.DateUtils;
+
+import java.text.ParseException;
+import java.util.Date;
+
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class AppPreferencesImpl implements AppPreferences {
@@ -57,13 +62,13 @@ public class AppPreferencesImpl implements AppPreferences {
     }
 
     @Override
-    public long getLastSynced() {
-        return sharedPreferences.getLong(SYNC_DATE, 0L);
+    public Date getLastSynced() throws ParseException {
+        return DateUtils.parseDate(sharedPreferences.getString(SYNC_DATE, new Date(0).toString()));
     }
 
     @Override
-    public boolean setLastSynced(long date) {
-        return sharedPreferences.edit().putLong(SYNC_DATE, date).commit();
+    public boolean setLastSynced(Date date) {
+        return sharedPreferences.edit().putString(SYNC_DATE, date.toString()).commit();
     }
 
     @Override

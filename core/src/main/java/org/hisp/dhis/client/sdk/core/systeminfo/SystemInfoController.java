@@ -30,7 +30,7 @@ package org.hisp.dhis.client.sdk.core.systeminfo;
 
 import android.util.Log;
 
-import org.hisp.dhis.client.sdk.models.SystemInfo;
+import org.hisp.dhis.client.sdk.models.systeminfo.SystemInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +59,7 @@ public class SystemInfoController {
                 systemInfoStore.save(systemInfo);
 
                 Log.d(SystemInfoController.class.getSimpleName(),
-                        "serverDateTime: " + systemInfo.getServerDateTime().toString());
+                        "serverDate: " + systemInfo.serverDate().toString());
             }
 
             @Override

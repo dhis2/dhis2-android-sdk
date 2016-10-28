@@ -35,6 +35,8 @@ import org.hisp.dhis.client.sdk.ui.bindings.views.HomeView;
 import org.hisp.dhis.client.sdk.ui.bindings.views.View;
 import org.hisp.dhis.client.sdk.utils.Logger;
 
+import java.text.ParseException;
+
 import rx.Single;
 import rx.SingleSubscriber;
 import rx.Subscription;
@@ -43,6 +45,7 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
+import static org.hisp.dhis.client.sdk.utils.StringUtils.isEmpty;
 
 public class HomePresenterImpl implements HomePresenter {
     private final UserInteractor userAccountInteractor;
@@ -81,9 +84,9 @@ public class HomePresenterImpl implements HomePresenter {
                 .subscribe(new Action1<User>() {
                     @Override
                     public void call(User user) {
-                        homeView.setUsername(user.getDisplayName());
-                        homeView.setUserInfo(user.getEmail());
-                        homeView.setUserInitials(user.getInitials());
+                        homeView.setUsername(user.displayName());
+                        homeView.setUserInfo(user.email());
+                        homeView.setUserInitials(getInitials(user));
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -108,7 +111,24 @@ public class HomePresenterImpl implements HomePresenter {
 
     @Override
     public void calculateLastSyncedPeriod() {
-        String lastSynced = syncDateWrapper.getLastSyncedString();
+        String lastSynced = null;
+        try {
+            lastSynced = syncDateWrapper.getLastSyncedString();
+        } catch (ParseException e) {
+            lastSynced = "Error";
+            e.printStackTrace();
+        }
         homeView.showLastSyncedMessage(lastSynced);
+    }
+
+    public String getInitials(User user) {
+        if (!isEmpty(user.firstName()) && !isEmpty(user.surname())) {
+            return String.valueOf(user.firstName().charAt(0)) +
+                    String.valueOf(user.surname().charAt(0));
+        } else if (user.displayName() != null && user.displayName().length() > 1) {
+            return String.valueOf(user.displayName().charAt(0)) +
+                    String.valueOf(user.displayName().charAt(1));
+        }
+        return "";
     }
 }

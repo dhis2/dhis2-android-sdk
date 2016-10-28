@@ -16,6 +16,7 @@ import org.hisp.dhis.client.sdk.ui.models.FormEntityEditText.InputType;
 import org.hisp.dhis.client.sdk.ui.models.FormEntityFilter;
 import org.hisp.dhis.client.sdk.ui.models.Picker;
 import org.hisp.dhis.client.sdk.ui.rows.DatePickerRowView;
+import org.hisp.dhis.client.sdk.utils.LocaleUtils;
 import org.hisp.dhis.client.sdk.utils.Logger;
 
 import java.text.ParseException;
@@ -23,7 +24,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -217,13 +217,13 @@ public class ProfilePresenterImpl implements ProfilePresenter {
         ///////////////////////////////////////////////////////////////////////////////
         FormEntityEditText firstName = new FormEntityEditText(ProfileView.ID_FIRST_NAME,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_FIRST_NAME), InputType.TEXT);
-        firstName.setValue(user.getFirstName(), false);
+        firstName.setValue(user.firstName(), false);
         firstName.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(firstName);
 
         FormEntityEditText surname = new FormEntityEditText(ProfileView.ID_SURNAME,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_SURNAME), InputType.TEXT);
-        surname.setValue(user.getSurname(), false);
+        surname.setValue(user.surname(), false);
         surname.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(surname);
 
@@ -253,11 +253,11 @@ public class ProfilePresenterImpl implements ProfilePresenter {
         genderPicker.addChild(pickerItemFemale);
         genderPicker.addChild(pickerItemOther);
 
-        if (User.GENDER_MALE.equals(user.getGender())) {
+        if (User.GENDER_MALE.equals(user.gender())) {
             genderPicker.setSelectedChild(pickerItemMale);
-        } else if (User.GENDER_FEMALE.equals(user.getGender())) {
+        } else if (User.GENDER_FEMALE.equals(user.gender())) {
             genderPicker.setSelectedChild(pickerItemFemale);
-        } else if (User.GENDER_OTHER.equals(user.getGender())) {
+        } else if (User.GENDER_OTHER.equals(user.gender())) {
             genderPicker.setSelectedChild(pickerItemOther);
         }
 
@@ -273,12 +273,12 @@ public class ProfilePresenterImpl implements ProfilePresenter {
 
         // formatting the string
         String birthdayString = "";
-        if (!isEmpty(user.getBirthday())) {
+        if (!isEmpty(user.birthday())) {
             try {
                 Date birthdayDate = (new SimpleDateFormat(
-                        DATE_FORMAT, Locale.getDefault())).parse(user.getBirthday());
+                        DATE_FORMAT, LocaleUtils.getLocale())).parse(user.birthday());
                 birthdayString = (new SimpleDateFormat(
-                        DatePickerRowView.DATE_FORMAT, Locale.getDefault()).format(birthdayDate));
+                        DatePickerRowView.DATE_FORMAT, LocaleUtils.getLocale()).format(birthdayDate));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -292,49 +292,49 @@ public class ProfilePresenterImpl implements ProfilePresenter {
 
         FormEntityEditText introduction = new FormEntityEditText(ProfileView.ID_INTRODUCTION,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_INTRODUCTION), InputType.TEXT);
-        introduction.setValue(user.getIntroduction(), false);
+        introduction.setValue(user.introduction(), false);
         introduction.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(introduction);
 
         FormEntityEditText education = new FormEntityEditText(ProfileView.ID_EDUCATION,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_EDUCATION), InputType.TEXT);
-        education.setValue(user.getEducation(), false);
+        education.setValue(user.education(), false);
         education.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(education);
 
         FormEntityEditText employer = new FormEntityEditText(ProfileView.ID_EMPLOYER,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_EMPLOYER), InputType.TEXT);
-        employer.setValue(user.getEmployer(), false);
+        employer.setValue(user.employer(), false);
         employer.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(employer);
 
         FormEntityEditText interests = new FormEntityEditText(ProfileView.ID_INTERESTS,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_INTERESTS), InputType.TEXT);
-        interests.setValue(user.getInterests(), false);
+        interests.setValue(user.interests(), false);
         interests.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(interests);
 
         FormEntityEditText jobTitle = new FormEntityEditText(ProfileView.ID_JOB_TITLE,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_JOB_TITLE), InputType.TEXT);
-        jobTitle.setValue(user.getJobTitle(), false);
+        jobTitle.setValue(user.jobTitle(), false);
         jobTitle.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(jobTitle);
 
         FormEntityEditText languages = new FormEntityEditText(ProfileView.ID_LANGUAGES,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_LANGUAGES), InputType.TEXT);
-        languages.setValue(user.getLanguages(), false);
+        languages.setValue(user.languages(), false);
         languages.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(languages);
 
         FormEntityEditText email = new FormEntityEditText(ProfileView.ID_EMAIL,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_EMAIL), InputType.TEXT);
-        email.setValue(user.getEmail(), false);
+        email.setValue(user.email(), false);
         email.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(email);
 
         FormEntityEditText phoneNumber = new FormEntityEditText(ProfileView.ID_PHONE_NUMBER,
                 profileView.getUserAccountFieldLabel(ProfileView.ID_PHONE_NUMBER), InputType.TEXT);
-        phoneNumber.setValue(user.getPhoneNumber(), false);
+        phoneNumber.setValue(user.phoneNumber(), false);
         phoneNumber.setOnFormEntityChangeListener(onFormEntityChangeListener);
         formEntities.add(phoneNumber);
 
@@ -363,57 +363,56 @@ public class ProfilePresenterImpl implements ProfilePresenter {
                 value = formEntityFilter.getPicker().getSelectedChild().getId();
             }
         }
-
+        User.Builder builder = user.toBuilder();
         logger.d(TAG, String.format("New value '%s' is emitted for field: '%s'",
                 value, label));
-
         switch (formEntity.getId()) {
             case ProfileView.ID_FIRST_NAME: {
-                user.setFirstName(value);
+                user = builder.firstName(value).build();
                 break;
             }
             case ProfileView.ID_SURNAME: {
-                user.setSurname(value);
+                user = builder.surname(value).build();
                 break;
             }
             case ProfileView.ID_GENDER: {
-                user.setGender(value);
+                user = builder.gender(value).build();
                 break;
             }
             case ProfileView.ID_BIRTHDAY: {
-                user.setBirthday(value);
+                user = builder.birthday(value).build();
                 break;
             }
             case ProfileView.ID_INTRODUCTION: {
-                user.setIntroduction(value);
+                user = builder.introduction(value).build();
                 break;
             }
             case ProfileView.ID_EDUCATION: {
-                user.setEducation(value);
+                user = builder.education(value).build();
                 break;
             }
             case ProfileView.ID_EMPLOYER: {
-                user.setEmployer(value);
+                user = builder.employer(value).build();
                 break;
             }
             case ProfileView.ID_INTERESTS: {
-                user.setInterests(value);
+                user = builder.interests(value).build();
                 break;
             }
             case ProfileView.ID_JOB_TITLE: {
-                user.setJobTitle(value);
+                user = builder.jobTitle(value).build();
                 break;
             }
             case ProfileView.ID_LANGUAGES: {
-                user.setLanguages(value);
+                user = builder.languages(value).build();
                 break;
             }
             case ProfileView.ID_EMAIL: {
-                user.setEmail(value);
+                user = builder.email(value).build();
                 break;
             }
             case ProfileView.ID_PHONE_NUMBER: {
-                user.setPhoneNumber(value);
+                user = builder.phoneNumber(value).build();
                 break;
             }
         }

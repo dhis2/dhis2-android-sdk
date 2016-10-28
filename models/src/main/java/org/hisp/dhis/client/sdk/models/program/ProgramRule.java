@@ -35,6 +35,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -47,6 +48,8 @@ public abstract class ProgramRule extends BaseIdentifiableObject {
     private static final String JSON_PROPERTY_PRIORITY = "priority";
     private static final String JSON_PROPERTY_CONDITION = "condition";
     private static final String JSON_PROPERTY_PROGRAM_RULE_ACTIONS = "programRuleActions";
+
+    public static final Comparator<ProgramRule> PRIORITY_COMPARATOR = new PriorityComparator();
 
     @Nullable
     @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE)
@@ -96,6 +99,35 @@ public abstract class ProgramRule extends BaseIdentifiableObject {
             }
 
             return autoBuild();
+        }
+    }
+
+    public static class PriorityComparator implements Comparator<ProgramRule> {
+        @Override
+        public int compare(ProgramRule first, ProgramRule second) {
+            if (first == null && second == null) {
+                return 0;
+            } else if (first == null) {
+                return 1;
+            } else if (second == null) {
+                return -1;
+            }
+
+            if (first.priority() == null && second.priority() == null) {
+                return 0;
+            } else if (first.priority() == null) {
+                return 1;
+            } else if (second.priority() == null) {
+                return -1;
+            }
+
+            if (first.priority() < second.priority()) {
+                return -1;
+            } else if (first.priority().equals(second.priority())) {
+                return 0;
+            } else {
+                return 1;
+            }
         }
     }
 }

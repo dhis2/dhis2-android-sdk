@@ -89,7 +89,7 @@ class RuleEngineVariableValueMap {
             return eventsToValuesMap;
         }
 
-        Collections.sort(allEvents, Event.DATE_COMPARATOR);
+        Collections.sort(allEvents, Event.DESCENDING_EVENT_DATE_COMPARATOR);
 
         for (Event event : allEvents) {
 

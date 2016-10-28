@@ -1,3 +1,6 @@
+package org.hisp.dhis.client.sdk.models.systeminfo;
+
+
 /*
  * Copyright (c) 2016, University of Oslo
  *
@@ -26,18 +29,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.systeminfo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.client.sdk.models.systeminfo.SystemInfo;
+import java.util.Date;
 
-import java.util.Map;
+import javax.annotation.Nullable;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.QueryMap;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_SystemInfo.Builder.class)
+public abstract class SystemInfo {
 
-public interface SystemInfoApi {
-    @GET("system/info")
-    Call<SystemInfo> systemInfo(@QueryMap Map<String, String> queryMap);
+    private static final String JSON_PROPERTY_SERVER_DATE_TIME = "serverDate";
+    private static final String JSON_PROPERTY_DATE_FORMAT = "dateFormat";
+
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_SERVER_DATE_TIME)
+    public abstract Date serverDate();
+
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DATE_FORMAT)
+    public abstract String dateFormat();
+
+    public static Builder builder() {
+        return new AutoValue_SystemInfo.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder {
+
+        @JsonProperty(JSON_PROPERTY_SERVER_DATE_TIME)
+        public abstract Builder serverDate(@Nullable Date serverDate);
+
+        @JsonProperty(JSON_PROPERTY_DATE_FORMAT)
+        public abstract Builder dateFormat(@Nullable String dateFormat);
+
+        public abstract SystemInfo build();
+    }
 }

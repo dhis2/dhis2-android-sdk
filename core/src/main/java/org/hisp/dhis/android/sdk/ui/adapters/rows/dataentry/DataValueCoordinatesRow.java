@@ -39,6 +39,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.GpsController;
@@ -79,7 +80,13 @@ public final class DataValueCoordinatesRow extends Row {
             View root = inflater.inflate(
                     R.layout.listview_row_coordinate_picker_with_one_edittext, container, false);
 //            detailedInfoButton =  root.findViewById(R.id.detailed_info_button_layout);
-            holder = new CoordinateViewHolder(root);
+            TextView label = (TextView) root.findViewById(R.id.text_label);
+            TextView mandatoryIndicator = (TextView) root.findViewById(R.id.mandatory_indicator);
+            TextView warningLabel = (TextView) root.findViewById(R.id.warning_label);
+            TextView errorLabel = (TextView) root.findViewById(R.id.error_label);
+            EditText coordinates = (EditText) root.findViewById(R.id.coordinates_edittext);
+            ImageButton captureCoords = (ImageButton) root.findViewById(R.id.capture_coordinates);
+            holder = new CoordinateViewHolder(label, mandatoryIndicator, warningLabel, errorLabel, coordinates, captureCoords, root);
 
             root.setTag(holder);
             view = root;
@@ -99,12 +106,34 @@ public final class DataValueCoordinatesRow extends Row {
 //
 //        holder.latitude.setFilters(latitudeFilters);
 //        holder.longitude.setFilters(longitudeFilters);
+
         holder.updateViews(mValue);
 
         // Coordinates cannot be manually entered
 //        holder.latitude.setEnabled(false);
 //        holder.longitude.setEnabled(false);
+        holder.textLabel.setText(mLabel);
         holder.coordinates.setEnabled(false);
+
+        if (mWarning == null) {
+            holder.warningLabel.setVisibility(View.GONE);
+        } else {
+            holder.warningLabel.setVisibility(View.VISIBLE);
+            holder.warningLabel.setText(mWarning);
+        }
+
+        if (mError == null) {
+            holder.errorLabel.setVisibility(View.GONE);
+        } else {
+            holder.errorLabel.setVisibility(View.VISIBLE);
+            holder.errorLabel.setText(mError);
+        }
+
+        if (!mMandatory) {
+            holder.mandatoryIndicator.setVisibility(View.GONE);
+        } else {
+            holder.mandatoryIndicator.setVisibility(View.VISIBLE);
+        }
 
         return view;
     }
@@ -119,17 +148,28 @@ public final class DataValueCoordinatesRow extends Row {
         private final ImageButton captureCoords;
         private final CoordinateWatcher coordinateWatcher;
         private final OnCaptureCoordsClickListener onButtonClickListener;
+        private final TextView textLabel;
+        private final TextView mandatoryIndicator;
+        private final TextView warningLabel;
+        private final TextView errorLabel;
 
-        public CoordinateViewHolder(View view) {
+        public CoordinateViewHolder(TextView textLabel,
+                                    TextView mandatoryIndicator, TextView warningLabel,
+                                    TextView errorLabel, EditText coordinates,
+                                    ImageButton captureCoords, View view) {
             final String latitudeMessage = view.getContext()
                     .getString(R.string.latitude_error_message);
             final String longitudeMessage = view.getContext()
                     .getString(R.string.longitude_error_message);
 
             /* views */
-            coordinates = (EditText) view.findViewById(R.id.coordinates_edittext);
-            captureCoords = (ImageButton) view.findViewById(R.id.capture_coordinates);
 //            this.detailedInfoButton = detailedInfoButton;
+            this.coordinates = coordinates;
+            this.captureCoords = captureCoords;
+            this.textLabel = textLabel;
+            this.mandatoryIndicator = mandatoryIndicator;
+            this.warningLabel = warningLabel;
+            this.errorLabel = errorLabel;
 
             /* text watchers and click listener */
             String coordinateMessage = latitudeMessage + ". " + longitudeMessage;

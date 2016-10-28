@@ -47,17 +47,7 @@
         android:gravity="center_vertical"
         android:orientation="vertical">
 
-        <org.hisp.dhis.android.sdk.ui.views.FontTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_marginTop="6dp"
-            android:singleLine="true"
-            android:text="@string/enter_coordinates"
-            android:textSize="@dimen/medium_text_size"
-            app:font="@string/condensed_font_name"/>
+        <include layout="@layout/listview_row_text_view_label"/>
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -70,7 +70,7 @@ public class TrackedEntityAttributeValue extends BaseValue implements Serializab
     }
 
     public TrackedEntityAttributeValue(TrackedEntityAttributeValue trackedEntityAttributeValue) {
-        this.value = trackedEntityAttributeValue.getValue();
+        super(trackedEntityAttributeValue);
         this.trackedEntityAttributeId = trackedEntityAttributeValue.getTrackedEntityAttributeId();
         this.trackedEntityInstanceId = trackedEntityAttributeValue.getTrackedEntityInstanceId();
         this.localTrackedEntityInstanceId = trackedEntityAttributeValue.getLocalTrackedEntityInstanceId();

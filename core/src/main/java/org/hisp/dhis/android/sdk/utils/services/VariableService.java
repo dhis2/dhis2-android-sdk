@@ -31,6 +31,8 @@ package org.hisp.dhis.android.sdk.utils.services;
 
 import android.util.Log;
 
+import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.queriable.StringQuery;
 
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
@@ -41,9 +43,11 @@ import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.Option;
+import org.hisp.dhis.android.sdk.persistence.models.Option$Table;
 import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.utils.api.ContextVariableType;
 import org.hisp.dhis.android.sdk.utils.api.ProgramRuleVariableSourceType;
@@ -119,6 +123,12 @@ public class VariableService {
      */
     private Map<Event, Map<String, DataValue>> eventDataValueMaps;
 
+    /**
+     * Map of all {@link TrackedEntityAttributeValue}s for the {@link Enrollment} used in
+     * populating variables
+     */
+    private Map<String, TrackedEntityAttributeValue> trackedEntityAttributeValueMap;
+
     static {
         variableService = new VariableService();
     }
@@ -136,6 +146,7 @@ public class VariableService {
         getInstance().trackedEntityAttributeMap = null;
         getInstance().eventsForEnrollment = null;
         getInstance().eventDataValueMaps = null;
+        getInstance().trackedEntityAttributeValueMap = null;
     }
 
     /**
@@ -167,6 +178,7 @@ public class VariableService {
         initEventsForProgramStages(eventsForEnrollment);
 
         initEventDataValueMaps(eventsForEnrollment);
+        initTrackedEntityAttributeValuesMap(enrollment);
 
         initProgramRuleVariableMap();
 
@@ -251,8 +263,6 @@ public class VariableService {
     private static void initEventDataValueMaps(List<Event> eventsForEnrollment) {
         //setting data values in map for each event
         getInstance().setEventDataValueMaps(new HashMap<Event, Map<String, DataValue>>());
-//        List<OptionSet> allOptionSets = MetaDataController.getOptionSets();
-        Map<String, Map<String, Option>> cachedOptionsForOptionSets = new HashMap();//getCachedOptionsForOptionSets(allOptionSets);
         for (Event event : eventsForEnrollment) {
             Map<String, DataValue> dataValueMap = new HashMap<>();
             for (DataValue dataValue : event.getDataValues()) {
@@ -276,24 +286,49 @@ public class VariableService {
             List<DataElement> dataElementsWithOptionSets = new StringQuery<>(DataElement.class, sqlQuery).queryList();
             for(DataElement dataElementWithOptionSet : dataElementsWithOptionSets) {
                 DataValue dataValueToReplaceCodeWithValue = dataValueMap.get(dataElementWithOptionSet.getUid());
-                Map<String, Option> optionMapForOptionSet = cachedOptionsForOptionSets.get(dataElementWithOptionSet.getOptionSet());
-                if(optionMapForOptionSet == null) {
-                    optionMapForOptionSet = getOptionsForOptionSet(dataElementWithOptionSet.getOptionSet());
-                    cachedOptionsForOptionSets.put(dataElementWithOptionSet.getOptionSet(), optionMapForOptionSet);
-                }
                 String optionSetCode = dataValueToReplaceCodeWithValue.getValue();
-                if(optionSetCode != null) {
-                    Option optionWithCode = optionMapForOptionSet.get(optionSetCode);
-                    if(optionWithCode != null) {
-                        String valueForCode = optionWithCode.getName();
-                        if (valueForCode != null) {
-                            dataValueToReplaceCodeWithValue.setValue(valueForCode);
-                        }
-                    }
+                Option option = new Select().from(Option.class).where(Condition.column(Option$Table.OPTIONSET).eq(dataElementWithOptionSet.getOptionSet())).and(Condition.column(Option$Table.CODE).eq(optionSetCode)).querySingle();
+                if(option != null) {
+                    dataValueToReplaceCodeWithValue.setValue(option.getName());
                 }
             }
             getInstance().getEventDataValueMaps().put(event, dataValueMap);
         }
+    }
+
+    private static void initTrackedEntityAttributeValuesMap(Enrollment enrollment) {
+        //setting data values in map for each event
+        Map<String, TrackedEntityAttributeValue> trackedEntityAttributeValueMap = new HashMap<>();
+        getInstance().setTrackedEntityAttributeValueMap(trackedEntityAttributeValueMap);
+
+            for (TrackedEntityAttributeValue trackedEntityAttributeValue : enrollment.getAttributes()) {
+                TrackedEntityAttributeValue copiedTrackedEntityAttributeValue = new TrackedEntityAttributeValue(trackedEntityAttributeValue);
+                trackedEntityAttributeValueMap.put(copiedTrackedEntityAttributeValue.getTrackedEntityAttributeId(), copiedTrackedEntityAttributeValue);
+            }
+
+            //replacing option code value with option code name as the name is used in expressions
+            StringBuilder stringBuilder = new StringBuilder();
+            for(String trackedEntityAttribute : trackedEntityAttributeValueMap.keySet()) {
+                stringBuilder.append("'");
+                stringBuilder.append(trackedEntityAttribute);
+                stringBuilder.append("'");
+                stringBuilder.append(',');
+            }
+            if(stringBuilder.length()>0) {
+                stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+            }
+            String trackedEntityAttributeListForQuery = stringBuilder.toString();
+            String sqlQuery = "SELECT * FROM " + TrackedEntityAttribute.class.getSimpleName() + " WHERE " + TrackedEntityAttribute$Table.ID + " IN (" + trackedEntityAttributeListForQuery + ") AND " + TrackedEntityAttribute$Table.OPTIONSET + " != '';";
+            List<TrackedEntityAttribute> trackedEntityAttributesWithOptionSets = new StringQuery<>(TrackedEntityAttribute.class, sqlQuery).queryList();
+            for(TrackedEntityAttribute trackedEntityAttributeWithOptionSet : trackedEntityAttributesWithOptionSets) {
+                TrackedEntityAttributeValue trackedEntityAttributeValueToReplaceCodeWithValue = trackedEntityAttributeValueMap.get(trackedEntityAttributeWithOptionSet.getUid());
+                String optionSetCode = trackedEntityAttributeValueToReplaceCodeWithValue.getValue();
+                Option option = new Select().from(Option.class).where(Condition.column(Option$Table.OPTIONSET).eq(trackedEntityAttributeWithOptionSet.getOptionSet())).and(Condition.column(Option$Table.CODE).eq(optionSetCode)).querySingle();
+                if(option != null) {
+                    trackedEntityAttributeValueToReplaceCodeWithValue.setValue(option.getName());
+                }
+            }
+
     }
 
     private static Map<String, Option> getOptionsForOptionSet(String optionSetId) {
@@ -307,24 +342,24 @@ public class VariableService {
         return optionMap;
     }
 
-    private static Map<String, Map<String, Option>> getCachedOptionsForOptionSets(List<OptionSet> optionSets) {
-        Map<String, Map<String, Option>> optionsForOptionSetMap = new HashMap<>();
-        for(OptionSet optionSet : optionSets) {
-                if (optionSet == null) {
-                    continue;
-                }
-                List<Option> options = MetaDataController.getOptions(optionSet.getUid());
-                if (options == null) {
-                    continue;
-                }
-                HashMap<String, Option> optionsHashMap = new HashMap<>();
-                optionsForOptionSetMap.put(optionSet.getUid(), optionsHashMap);
-                for (Option option : options) {
-                    optionsHashMap.put(option.getCode(), option);
-                }
-        }
-        return optionsForOptionSetMap;
-    }
+//    private static Map<String, Map<String, Option>> getCachedOptionsForOptionSets(List<OptionSet> optionSets) {
+//        Map<String, Map<String, Option>> optionsForOptionSetMap = new HashMap<>();
+//        for(OptionSet optionSet : optionSets) {
+//                if (optionSet == null) {
+//                    continue;
+//                }
+//                List<Option> options = MetaDataController.getOptions(optionSet.getUid());
+//                if (options == null) {
+//                    continue;
+//                }
+//                HashMap<String, Option> optionsHashMap = new HashMap<>();
+//                optionsForOptionSetMap.put(optionSet.getUid(), optionsHashMap);
+//                for (Option option : options) {
+//                    optionsHashMap.put(option.getCode(), option);
+//                }
+//        }
+//        return optionsForOptionSetMap;
+//    }
 
     private static void initProgramRuleVariableMap() {
         //setting programRuleVariables
@@ -471,6 +506,14 @@ public class VariableService {
 
     public void setEventDataValueMaps(Map<Event, Map<String, DataValue>> eventDataValueMaps) {
         this.eventDataValueMaps = eventDataValueMaps;
+    }
+
+    public Map<String, TrackedEntityAttributeValue> getTrackedEntityAttributeValueMap() {
+        return trackedEntityAttributeValueMap;
+    }
+
+    public void setTrackedEntityAttributeValueMap(Map<String, TrackedEntityAttributeValue> trackedEntityAttributeValueMap) {
+        this.trackedEntityAttributeValueMap = trackedEntityAttributeValueMap;
     }
 
     /**
@@ -626,13 +669,17 @@ public class VariableService {
             }
             case TEI_ATTRIBUTE: {
                 if (getInstance().getCurrentEnrollment() != null) {
-                    TrackedEntityAttributeValue trackedEntityAttributeValue = null;
-                    for (TrackedEntityAttributeValue storedValue : getInstance().getCurrentEnrollment().getAttributes()) {
-                        if (storedValue.getTrackedEntityAttributeId().equals(programRuleVariable.getTrackedEntityAttribute())) {
-                            trackedEntityAttributeValue = storedValue;
-                            break;
-                        }
+//                    TrackedEntityAttributeValue trackedEntityAttributeValue = null;
+//                    for (TrackedEntityAttributeValue storedValue : getInstance().getCurrentEnrollment().getAttributes()) {
+//                        if (storedValue.getTrackedEntityAttributeId().equals(programRuleVariable.getTrackedEntityAttribute())) {
+//                            trackedEntityAttributeValue = storedValue;
+//                            break;
+//                        }
+//                    }
+                    if(programRuleVariable.getTrackedEntityAttribute() == null) {
+                        break;
                     }
+                    TrackedEntityAttributeValue trackedEntityAttributeValue = getInstance().getTrackedEntityAttributeValueMap().get(programRuleVariable.getTrackedEntityAttribute());
                     if (trackedEntityAttributeValue != null) {
                         value = trackedEntityAttributeValue.getValue();
                         allValues.add(value);

@@ -34,6 +34,7 @@ import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,6 +107,11 @@ public final class DataValueCoordinatesRow extends Row {
 //
 //        holder.latitude.setFilters(latitudeFilters);
 //        holder.longitude.setFilters(longitudeFilters);
+
+        InvalidInputValueFilter invalidInputValueFilter = new InvalidInputValueFilterImpl(mValue);
+        InputFilter[] inputFilters = new InputFilter[1];
+        inputFilters[0] = invalidInputValueFilter;
+        holder.coordinates.setFilters(inputFilters);
 
         holder.updateViews(mValue);
 
@@ -237,7 +243,7 @@ public final class DataValueCoordinatesRow extends Row {
 
     private abstract class InvalidInputValueFilter implements InputFilter{
         final BaseValue baseValue;
-        final String invalidValue = "0.0"; // we don't want users to overwrite existing coordinates with 0.0 - aka no network coords
+        final String invalidValue = "0.0, 0.0"; // we don't want users to overwrite existing coordinates with 0.0 - aka no network coords
 
         protected InvalidInputValueFilter(BaseValue baseValue) {
             this.baseValue = baseValue;
@@ -245,6 +251,26 @@ public final class DataValueCoordinatesRow extends Row {
 
         @Override
         public abstract CharSequence filter(CharSequence charSequence, int i, int i2, Spanned spanned, int i3, int i4);
+    }
+
+    private class InvalidInputValueFilterImpl extends InvalidInputValueFilter
+    {
+        public InvalidInputValueFilterImpl(BaseValue baseValue) {
+            super(baseValue);
+        }
+
+        @Override
+        public CharSequence filter(CharSequence charSequence, int i, int i2, Spanned spanned, int i3, int i4) {
+            if(charSequence != null && charSequence.toString().trim().equals(invalidValue))
+            {
+                if(baseValue.getValue() == null)
+                    return invalidValue; //if getLat == null && location.getLat== 0.0, return 0.0
+                else
+                    return baseValue.getValue();
+            }
+
+            return null;
+        }
     }
 
     private class InvalidLatitudeInputValueFilter extends InvalidInputValueFilter

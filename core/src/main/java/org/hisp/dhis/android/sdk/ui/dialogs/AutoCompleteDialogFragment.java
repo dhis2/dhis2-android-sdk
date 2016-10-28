@@ -34,6 +34,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -128,6 +129,14 @@ public class AutoCompleteDialogFragment extends DialogFragment
         }
 
         dismiss();
+    }
+
+    @Override
+    public void dismiss() {
+        InputMethodManager imm = (InputMethodManager)
+                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mFilter.getWindowToken(), 0);
+        super.dismiss();
     }
 
     /* This method must be called only after onViewCreated() */

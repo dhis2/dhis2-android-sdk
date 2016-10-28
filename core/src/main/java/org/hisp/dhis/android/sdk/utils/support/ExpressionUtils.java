@@ -29,6 +29,8 @@
 
 package org.hisp.dhis.android.sdk.utils.support;
 
+import android.util.Log;
+
 import org.apache.commons.jexl2.Expression;
 import org.apache.commons.jexl2.JexlContext;
 import org.apache.commons.jexl2.JexlEngine;
@@ -46,6 +48,7 @@ import java.util.regex.Pattern;
  * @author Lars Helge Overland
  */
 public class ExpressionUtils {
+    private static final String CLASS_TAG = ExpressionUtils.class.getSimpleName();
     private static final JexlEngine JEXL = new JexlEngine();
     private static final JexlEngine JEXL_STRICT = new JexlEngine();
 

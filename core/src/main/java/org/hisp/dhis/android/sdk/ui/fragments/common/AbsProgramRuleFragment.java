@@ -81,7 +81,7 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
             return;
         }
         if (programRuleFragmentHelper.blockingSpinnerNeeded()) {
-            showBlockingProgressBar();
+            //showBlockingProgressBar();
         }
         VariableService.initialize(programRuleFragmentHelper.getEnrollment(), programRuleFragmentHelper.getEvent());
         programRuleFragmentHelper.mapFieldsToRulesAndIndicators();
@@ -120,7 +120,7 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
         if (!affectedFieldsWithValue.isEmpty()) {
             programRuleFragmentHelper.showWarningHiddenValuesDialog(programRuleFragmentHelper.getFragment(), affectedFieldsWithValue);
         }
-        hideBlockingProgressBar();
+        //hideBlockingProgressBar();
         programRuleFragmentHelper.updateUi();
     }
 

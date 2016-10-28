@@ -29,6 +29,8 @@
 
 package org.hisp.dhis.android.sdk.utils.support.math;
 
+import android.util.Log;
+
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
@@ -40,6 +42,8 @@ import org.joda.time.Months;
 import org.joda.time.Years;
 
 import java.text.ParseException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -50,6 +54,7 @@ import static android.text.TextUtils.isEmpty;
  * the functions in this class are called.
  */
 public class ExpressionFunctions {
+    public static final String CLASS_TAG = ExpressionFunctions.class.getSimpleName();
     public static final String NAMESPACE = "d2";
 
     /**
@@ -286,5 +291,19 @@ public class ExpressionFunctions {
             }
         }
         return valueFound;
+    }
+
+    public Boolean validatePattern(String inputToValidate, String patternString) {
+        Log.d(CLASS_TAG, inputToValidate + " : " + patternString);
+        Pattern pattern = Pattern.compile(patternString);
+        Matcher matcher = pattern.matcher(inputToValidate);
+        boolean matchFound = matcher.find();
+        return matchFound;
+    }
+
+    public Boolean validatePattern(Integer inputToValidate, String patternString) {
+
+        String inputString = Integer.toString(inputToValidate);
+        return this.validatePattern(inputString, patternString);
     }
 }

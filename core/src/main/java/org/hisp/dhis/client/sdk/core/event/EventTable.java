@@ -22,7 +22,7 @@ public interface EventTable {
     String CREATE_TABLE_EVENTS = "CREATE TABLE IF NOT EXISTS " +
             EventColumns.TABLE_NAME + " (" +
             EventColumns.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            EventColumns.COLUMN_UID + " TEXT NOT NULL," +
+            EventColumns.COLUMN_UID + " TEXT UNIQUE NOT NULL ON CONFLICT REPLACE," +
             EventColumns.COLUMN_NAME + " TEXT NOT NULL," +
             EventColumns.COLUMN_DISPLAY_NAME + " TEXT NOT NULL," +
             EventColumns.COLUMN_CODE + " TEXT," +
@@ -39,8 +39,7 @@ public interface EventTable {
             EventColumns.COLUMN_STATE + " TEXT," +
             "FOREIGN KEY " + "(" + EventColumns.COLUMN_PROGRAM + ")" +
             "REFERENCES " + ProgramColumns.TABLE_NAME + "(" + ProgramColumns.COLUMN_UID + ")" +
-            " ON DELETE CASCADE " +
-            " UNIQUE " + "(" + ProgramColumns.COLUMN_UID + ")" + " ON CONFLICT REPLACE" + " )";
+            " ON DELETE CASCADE )";
 
     String DROP_TABLE_EVENTS = "DROP TABLE IF EXISTS " +
             EventColumns.TABLE_NAME;

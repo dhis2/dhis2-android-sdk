@@ -35,15 +35,14 @@ public interface OptionSetTable {
     String CREATE_TABLE_OPTION_SETS = "CREATE TABLE IF NOT EXISTS " +
             OptionSetColumns.TABLE_NAME + " (" +
             OptionSetColumns.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            OptionSetColumns.COLUMN_UID + " TEXT NOT NULL," +
+            OptionSetColumns.COLUMN_UID + " TEXT UNIQUE NOT NULL ON CONFLICT REPLACE," +
             OptionSetColumns.COLUMN_NAME + " TEXT," +
             OptionSetColumns.COLUMN_DISPLAY_NAME + " TEXT," +
             OptionSetColumns.COLUMN_CODE + " TEXT," +
             OptionSetColumns.COLUMN_CREATED + " TEXT NOT NULL," +
             OptionSetColumns.COLUMN_LAST_UPDATED + " TEXT NOT NULL," +
             OptionSetColumns.COLUMN_VERSION + " INTEGER NOT NULL," +
-            OptionSetColumns.COLUMN_BODY + " TEXT NOT NULL" +
-            " UNIQUE " + "(" + OptionSetColumns.COLUMN_UID + ")" + " ON CONFLICT REPLACE" + " )";
+            OptionSetColumns.COLUMN_BODY + " TEXT NOT NULL )";
 
     String DROP_TABLE_OPTION_SETS = "DROP TABLE IF EXISTS " +
             OptionSetColumns.TABLE_NAME;

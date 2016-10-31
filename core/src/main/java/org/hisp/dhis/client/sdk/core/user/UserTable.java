@@ -33,14 +33,13 @@ public interface UserTable {
     String CREATE_TABLE_USERS = "CREATE TABLE IF NOT EXISTS " +
             UserColumns.TABLE_NAME + " (" +
             UserColumns.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            UserColumns.COLUMN_UID + " TEXT NOT NULL," +
+            UserColumns.COLUMN_UID + " TEXT UNIQUE NOT NULL ON CONFLICT REPLACE," +
             UserColumns.COLUMN_CODE + " TEXT," +
             UserColumns.COLUMN_CREATED + " TEXT NOT NULL," +
             UserColumns.COLUMN_LAST_UPDATED + " TEXT NOT NULL," +
             UserColumns.COLUMN_NAME + " TEXT," +
             UserColumns.COLUMN_DISPLAY_NAME + " TEXT," +
-            UserColumns.COLUMN_BODY + " TEXT " +
-            " UNIQUE " + "(" + UserColumns.COLUMN_UID + ")" + " ON CONFLICT REPLACE" + " )";
+            UserColumns.COLUMN_BODY + " TEXT )";
 
     String DROP_TABLE_USERS = "DROP TABLE IF EXISTS " +
             UserColumns.TABLE_NAME;

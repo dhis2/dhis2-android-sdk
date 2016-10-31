@@ -42,7 +42,7 @@ public interface ProgramTable {
     String CREATE_TABLE_PROGRAMS = "CREATE TABLE IF NOT EXISTS " +
             ProgramColumns.TABLE_NAME + "(" +
             ProgramColumns.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            ProgramColumns.COLUMN_UID + " TEXT NOT NULL," +
+            ProgramColumns.COLUMN_UID + " TEXT UNIQUE NOT NULL ON CONFLICT REPLACE," +
             ProgramColumns.COLUMN_CODE + " TEXT," +
             ProgramColumns.COLUMN_CREATED + " TEXT NOT NULL," +
             ProgramColumns.COLUMN_LAST_UPDATED + " TEXT NOT NULL," +
@@ -54,8 +54,7 @@ public interface ProgramTable {
             ProgramColumns.COLUMN_DISPLAY_DESCRIPTION + " TEXT," +
             ProgramColumns.COLUMN_PROGRAM_TYPE + " TEXT NOT NULL," +
             ProgramColumns.COLUMN_DISPLAY_FRONT_PAGE_LIST + " INTEGER NOT NULL," +
-            ProgramColumns.COLUMN_BODY + " TEXT NOT NULL " +
-            "UNIQUE " + "(" + ProgramColumns.TABLE_NAME  + "." + ProgramColumns.COLUMN_UID + ")" + " ON CONFLICT REPLACE" + " )";
+            ProgramColumns.COLUMN_BODY + " TEXT NOT NULL )";
 
     String DROP_TABLE_PROGRAMS = "DROP TABLE IF EXISTS " +
             ProgramColumns.TABLE_NAME;

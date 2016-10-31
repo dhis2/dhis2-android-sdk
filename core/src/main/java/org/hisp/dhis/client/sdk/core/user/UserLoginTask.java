@@ -79,7 +79,8 @@ class UserLoginTask extends AbsTask<User> {
 
             // query parameters
             Map<String, String> query = new HashMap<>();
-            query.put("fields", "id,displayName");
+//            query.put("fields", "id,displayName");
+            query.put("fields", "*,userCredentials[*,userRoles[*]]");
 
             // call /api/me/ endpoint in order to make
             // sure that credentials are correct
@@ -90,6 +91,8 @@ class UserLoginTask extends AbsTask<User> {
                 user = userResponse.body();
             }
         }
+
+        userStore.insert(user);
 
         return user;
     }

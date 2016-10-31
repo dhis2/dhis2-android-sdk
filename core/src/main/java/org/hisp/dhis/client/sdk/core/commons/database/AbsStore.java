@@ -226,7 +226,7 @@ public abstract class AbsStore<T extends Model> implements Store<T> {
     }
 
     private boolean doObjectExist(T object) {
-        if (queryById(object.id()) == null) {
+        if (object.id() == null || queryById(object.id()) == null) {
             return false;
         } else return true;
     }

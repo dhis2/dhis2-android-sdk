@@ -40,7 +40,7 @@ public interface ProgramTable {
     String CONTENT_ITEM_TYPE = DbUtils.getContentItemType(Program.class);
 
     String CREATE_TABLE_PROGRAMS = "CREATE TABLE IF NOT EXISTS " +
-            ProgramColumns.TABLE_NAME + " (" +
+            ProgramColumns.TABLE_NAME + "(" +
             ProgramColumns.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             ProgramColumns.COLUMN_UID + " TEXT NOT NULL," +
             ProgramColumns.COLUMN_CODE + " TEXT," +
@@ -48,14 +48,14 @@ public interface ProgramTable {
             ProgramColumns.COLUMN_LAST_UPDATED + " TEXT NOT NULL," +
             ProgramColumns.COLUMN_NAME + " TEXT," +
             ProgramColumns.COLUMN_DISPLAY_NAME + " TEXT," +
-            ProgramColumns.COLUMN_SHORT_NAME + "TEXT," +
-            ProgramColumns.COLUMN_DISPLAY_SHORT_NAME + "TEXT," +
-            ProgramColumns.COLUMN_DESCRIPTION + "TEXT," +
-            ProgramColumns.COLUMN_DISPLAY_DESCRIPTION + "TEXT," +
+            ProgramColumns.COLUMN_SHORT_NAME + " TEXT," +
+            ProgramColumns.COLUMN_DISPLAY_SHORT_NAME + " TEXT," +
+            ProgramColumns.COLUMN_DESCRIPTION + " TEXT," +
+            ProgramColumns.COLUMN_DISPLAY_DESCRIPTION + " TEXT," +
             ProgramColumns.COLUMN_PROGRAM_TYPE + " TEXT NOT NULL," +
             ProgramColumns.COLUMN_DISPLAY_FRONT_PAGE_LIST + " INTEGER NOT NULL," +
-            ProgramColumns.COLUMN_BODY + "TEXT NOT NULL" +
-            " UNIQUE " + "(" + ProgramColumns.COLUMN_UID + ")" + " ON CONFLICT REPLACE" + " )";
+            ProgramColumns.COLUMN_BODY + " TEXT NOT NULL " +
+            "UNIQUE " + "(" + ProgramColumns.TABLE_NAME  + "." + ProgramColumns.COLUMN_UID + ")" + " ON CONFLICT REPLACE" + " )";
 
     String DROP_TABLE_PROGRAMS = "DROP TABLE IF EXISTS " +
             ProgramColumns.TABLE_NAME;

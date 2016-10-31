@@ -42,5 +42,6 @@
 
     <dimen name="titlebar_height">56dp</dimen>
 
+    <dimen name="bottomsheet_peek_height">88dp</dimen>
     <integer name="activity_anim_duration">300</integer>
 </resources>

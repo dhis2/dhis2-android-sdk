@@ -25,16 +25,16 @@ public interface OrganisationUnitTable {
             OrganisationUnitColumns.COLUMN_LAST_UPDATED + " TEXT NOT NULL," +
             OrganisationUnitColumns.COLUMN_NAME + " TEXT," +
             OrganisationUnitColumns.COLUMN_DISPLAY_NAME + " TEXT," +
-            OrganisationUnitColumns.COLUMN_SHORT_NAME + "TEXT," +
-            OrganisationUnitColumns.COLUMN_DISPLAY_SHORT_NAME + "TEXT," +
-            OrganisationUnitColumns.COLUMN_DESCRIPTION + "TEXT," +
-            OrganisationUnitColumns.COLUMN_DISPLAY_DESCRIPTION + "TEXT," +
-            OrganisationUnitColumns.COLUMN_PARENT + "TEXT," +
-            OrganisationUnitColumns.COLUMN_PATH + "TEXT NOT NULL," +
-            OrganisationUnitColumns.COLUMN_OPENING_DATE + "TEXT NOT NULL," +
-            OrganisationUnitColumns.COLUMN_CLOSED_DATE + "TEXT," +
-            OrganisationUnitColumns.COLUMN_LEVEL + "INTEGER," +
-            OrganisationUnitColumns.COLUMN_BODY + "TEXT NOT NULL )";
+            OrganisationUnitColumns.COLUMN_SHORT_NAME + " TEXT," +
+            OrganisationUnitColumns.COLUMN_DISPLAY_SHORT_NAME + " TEXT," +
+            OrganisationUnitColumns.COLUMN_DESCRIPTION + " TEXT," +
+            OrganisationUnitColumns.COLUMN_DISPLAY_DESCRIPTION + " TEXT," +
+            OrganisationUnitColumns.COLUMN_PARENT + " TEXT," +
+            OrganisationUnitColumns.COLUMN_PATH + " TEXT NOT NULL," +
+            OrganisationUnitColumns.COLUMN_OPENING_DATE + " TEXT NOT NULL," +
+            OrganisationUnitColumns.COLUMN_CLOSED_DATE + " TEXT," +
+            OrganisationUnitColumns.COLUMN_LEVEL + " INTEGER," +
+            OrganisationUnitColumns.COLUMN_BODY + " TEXT NOT NULL )";
 
     String DROP_TABLE_ORGANISATION_UNITS = "DROP TABLE IF EXISTS " +
             OrganisationUnitColumns.TABLE_NAME;

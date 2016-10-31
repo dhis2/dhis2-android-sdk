@@ -121,7 +121,7 @@ public abstract class AbsStore<T extends Model> implements Store<T> {
     protected List<T> toModels(Cursor cursor) {
         List<T> items = new ArrayList<>();
 
-        if (cursor != null && !cursor.isClosed()) {
+        if (cursor != null && !cursor.isClosed() && cursor.getCount() > 0) {
             try {
                 cursor.moveToFirst();
 

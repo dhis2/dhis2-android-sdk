@@ -1,6 +1,8 @@
 package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
 import org.hisp.dhis.client.sdk.core.D2;
+import org.hisp.dhis.client.sdk.ui.AppPreferences;
+import org.hisp.dhis.client.sdk.ui.AppPreferencesImpl;
 import org.hisp.dhis.client.sdk.ui.bindings.BuildConfig;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.HomePresenter;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.HomePresenterImpl;
@@ -41,11 +43,13 @@ public final class DefaultUserComponent implements UserComponent {
         this.sdkInstance = sdkInstance;
         this.launcherPresenter = new LauncherPresenterImpl(sdkInstance.me());
         this.loginPresenter = new LoginPresenterImpl(sdkInstance.me(), null, appComponent.logger());
+        AppPreferences appPreferences = new AppPreferencesImpl(appComponent.context());
+        SyncDateWrapper syncDateWrapper = new SyncDateWrapper(appPreferences);
 
         if (sdkInstance.me() != null) {
-            this.homePresenter = new HomePresenterImpl(sdkInstance.me(), null, appComponent.logger());
-            this.profilePresenter = new ProfilePresenterImpl(sdkInstance.me(), null, null, null, null);
-            this.settingsPresenter = new SettingsPresenterImpl(null, null);
+            this.homePresenter = new HomePresenterImpl(sdkInstance.me(), syncDateWrapper, appComponent.logger());
+            this.profilePresenter = new ProfilePresenterImpl(sdkInstance.me(), syncDateWrapper, null, null, null);
+            this.settingsPresenter = new SettingsPresenterImpl(appPreferences, null);
         } else {
             this.homePresenter = null;
             this.profilePresenter = null;

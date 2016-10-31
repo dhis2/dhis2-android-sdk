@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-class TrackedEntityDataValueInteractorImpl implements TrackedEntityDataValueInteractor {
+public class TrackedEntityDataValueInteractorImpl implements TrackedEntityDataValueInteractor {
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
 
-    TrackedEntityDataValueInteractorImpl(TrackedEntityDataValueStore trackedEntityDataValueStore) {
+    public TrackedEntityDataValueInteractorImpl(TrackedEntityDataValueStore trackedEntityDataValueStore) {
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
     }
 

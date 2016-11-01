@@ -35,8 +35,6 @@ import org.hisp.dhis.client.sdk.ui.bindings.views.HomeView;
 import org.hisp.dhis.client.sdk.ui.bindings.views.View;
 import org.hisp.dhis.client.sdk.utils.Logger;
 
-import java.text.ParseException;
-
 import rx.Single;
 import rx.SingleSubscriber;
 import rx.Subscription;
@@ -111,14 +109,15 @@ public class HomePresenterImpl implements HomePresenter {
 
     @Override
     public void calculateLastSyncedPeriod() {
-        String lastSynced = null;
+        return;
+        /*String lastSynced = null;
         try {
             lastSynced = syncDateWrapper.getLastSyncedString();
         } catch (ParseException e) {
             lastSynced = "Error";
             e.printStackTrace();
         }
-        homeView.showLastSyncedMessage(lastSynced);
+        homeView.showLastSyncedMessage(lastSynced);*/
     }
 
     public String getInitials(User user) {

@@ -91,12 +91,12 @@ public final class D2 {
 
     // injecting dependencies through constructor by hand, in order to make code testable
     D2(Application application, ContentResolver contentResolver, UserPreferences userPreferences,
-            ServerUrlPreferences serverUrlPreferences, ObjectMapper objectMapper,
-            OkHttpClient okHttpClient, Retrofit retrofit, UserInteractor userInteractor,
-            ProgramInteractor programInteractor, OptionSetInteractor optionSetInteractor,
-            TrackedEntityInteractor trackedEntityInteractor, EventInteractor eventInteractor,
-            OrganisationUnitInteractor organisationUnitInteractor,
-            TrackedEntityDataValueInteractor trackedEntityDataValueInteractor) {
+       ServerUrlPreferences serverUrlPreferences, ObjectMapper objectMapper,
+       OkHttpClient okHttpClient, Retrofit retrofit, UserInteractor userInteractor,
+       ProgramInteractor programInteractor, OptionSetInteractor optionSetInteractor,
+       TrackedEntityInteractor trackedEntityInteractor, EventInteractor eventInteractor,
+       OrganisationUnitInteractor organisationUnitInteractor,
+       TrackedEntityDataValueInteractor trackedEntityDataValueInteractor) {
         this.application = application;
 
         // persistence
@@ -260,7 +260,7 @@ public final class D2 {
             EventInteractor eventInteractor = retrofit != null ? EventFactory.create(
                     retrofit, contentResolver) : null;
             OrganisationUnitInteractor organisationUnitInteractor = retrofit != null ?
-                    OrganisationUnitFactory.create(contentResolver) : null;
+                    OrganisationUnitFactory.create(retrofit, contentResolver) : null;
             TrackedEntityDataValueInteractor dataValueInteractor = retrofit != null ?
                     TrackedEntityFactory.create(contentResolver) : null;
 

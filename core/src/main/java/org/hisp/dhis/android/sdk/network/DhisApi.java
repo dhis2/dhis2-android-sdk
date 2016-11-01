@@ -80,7 +80,7 @@ public interface DhisApi {
     @GET("/system/info/")
     SystemInfo getSystemInfo();
 
-    @GET("/me/")
+    @GET("/23/me/")
     UserAccount getCurrentUserAccount(@QueryMap Map<String, String> queryParams);
 
 

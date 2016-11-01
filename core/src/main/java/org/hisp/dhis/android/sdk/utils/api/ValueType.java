@@ -34,6 +34,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 
 /**
@@ -59,6 +60,7 @@ public enum ValueType
     INTEGER_NEGATIVE( Integer.class ),
     INTEGER_ZERO_OR_POSITIVE( Integer.class ),
     TRACKER_ASSOCIATE( TrackedEntityInstance.class ),
+    ORGANISATION_UNIT(OrganisationUnit.class),
     USERNAME( String.class ),
     FILE_RESOURCE( String.class ),
     COORDINATE( String.class);

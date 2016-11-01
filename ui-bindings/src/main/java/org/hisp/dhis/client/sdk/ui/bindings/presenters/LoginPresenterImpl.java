@@ -58,7 +58,7 @@ public class LoginPresenterImpl implements LoginPresenter, LoginPresenter.OnLogi
     private LoginView loginView;
 
     public LoginPresenterImpl(UserInteractor userAccountInteractor,
-            ApiExceptionHandler apiExceptionHandler, Logger logger) {
+                              ApiExceptionHandler apiExceptionHandler, Logger logger) {
         this.userAccountInteractor = userAccountInteractor;
         this.subscription = new CompositeSubscription();
         this.apiExceptionHandler = apiExceptionHandler;
@@ -82,7 +82,19 @@ public class LoginPresenterImpl implements LoginPresenter, LoginPresenter.OnLogi
 
     @Override
     public void validateCredentials(final String serverUrl,
-            final String username, final String password) {
+                                    final String username, final String password) {
+
+        if (userAccountInteractor == null) {
+            //retrofit was not initialized correctly. Probably caused by a malformed url
+            loginView.hideProgress(new LoginView.OnProgressFinishedListener() {
+                @Override
+                public void onProgressFinished() {
+                    loginView.showServerError(null);
+                }
+            });
+            return;
+        }
+
         loginView.showProgress();
 
         subscription.add(RxUtils.single(userAccountInteractor.logIn(username, password))

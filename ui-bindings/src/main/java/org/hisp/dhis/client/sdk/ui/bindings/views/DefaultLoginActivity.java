@@ -111,6 +111,9 @@ public class DefaultLoginActivity extends AbsLoginActivity implements LoginView 
 
     @Override
     public void showServerError(String message) {
+        if (message == null) {
+            message = getString(R.string.generic_server_error);
+        }
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         getServerUrl().setError(message);
     }

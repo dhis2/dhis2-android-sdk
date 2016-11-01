@@ -241,11 +241,16 @@ public final class D2 {
             // extracting server url
             String serverUrl = serverUrlPreferences.get();
             if (!StringUtils.isEmpty(serverUrl)) {
-                retrofit = new Retrofit.Builder()
-                        .baseUrl(serverUrl)
-                        .addConverterFactory(JacksonConverterFactory.create(objectMapper))
-                        .client(okHttpClient)
-                        .build();
+                try {
+                    retrofit = new Retrofit.Builder()
+                            .baseUrl(serverUrl)
+                            .addConverterFactory(JacksonConverterFactory.create(objectMapper))
+                            .client(okHttpClient)
+                            .build();
+                } catch (IllegalArgumentException e) {
+                    // if url is malformed - clear it and show the login screen
+                    serverUrlPreferences.clear();
+                }
             }
 
             // interactors

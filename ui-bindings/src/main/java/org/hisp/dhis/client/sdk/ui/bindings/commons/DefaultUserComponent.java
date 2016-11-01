@@ -42,7 +42,8 @@ public final class DefaultUserComponent implements UserComponent {
 
         this.sdkInstance = sdkInstance;
         this.launcherPresenter = new LauncherPresenterImpl(sdkInstance.me());
-        this.loginPresenter = new LoginPresenterImpl(sdkInstance.me(), null, appComponent.logger());
+        ApiExceptionHandler apiExceptionHandler = new ApiExceptionHandlerImpl(sdkInstance.application().getApplicationContext(), appComponent.logger());
+        this.loginPresenter = new LoginPresenterImpl(sdkInstance.me(), apiExceptionHandler, appComponent.logger());
         AppPreferences appPreferences = new AppPreferencesImpl(appComponent.context());
         SyncDateWrapper syncDateWrapper = new SyncDateWrapper(appPreferences);
 

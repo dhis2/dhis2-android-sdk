@@ -85,13 +85,8 @@ public class LoginPresenterImpl implements LoginPresenter, LoginPresenter.OnLogi
                                     final String username, final String password) {
 
         if (userAccountInteractor == null) {
-            //retrofit was not initialized correctly. Probably caused by a malformed url
-            loginView.hideProgress(new LoginView.OnProgressFinishedListener() {
-                @Override
-                public void onProgressFinished() {
-                    loginView.showServerError(null);
-                }
-            });
+            //retrofit was not initialized correctly. Caused by a malformed url
+            loginView.showServerError(null);
             return;
         }
 
@@ -154,6 +149,11 @@ public class LoginPresenterImpl implements LoginPresenter, LoginPresenter.OnLogi
 
         if (throwable instanceof ApiException && loginView != null) {
             ApiException exception = (ApiException) throwable;
+
+            if (exception.getKind() == ApiException.Kind.INVALID_USER) {
+                onInvalidCredentialsError(error);
+                return;
+            }
 
             if (exception.getResponse() != null) {
                 switch (exception.getResponse().code()) {

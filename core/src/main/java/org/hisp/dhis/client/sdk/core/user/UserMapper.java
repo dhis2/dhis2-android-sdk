@@ -8,6 +8,7 @@ import android.net.Uri;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.client.sdk.core.commons.ApiException;
 import org.hisp.dhis.client.sdk.core.commons.database.Mapper;
 import org.hisp.dhis.client.sdk.models.user.User;
 
@@ -41,8 +42,8 @@ class UserMapper implements Mapper<User> {
 
     @Override
     public ContentValues toContentValues(User user) {
-        if (!user.isValid()) {
-            throw new IllegalArgumentException("User is not valid");
+        if (user == null || !user.isValid()) {
+            throw ApiException.invalidUserError("Username and password do not match");
         }
 
         ContentValues contentValues = new ContentValues();

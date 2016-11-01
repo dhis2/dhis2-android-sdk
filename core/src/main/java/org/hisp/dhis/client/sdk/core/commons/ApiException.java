@@ -45,7 +45,12 @@ public class ApiException extends RuntimeException {
         this.kind = kind;
     }
 
-    public static ApiException networkError(String url, IOException exception) {
+    public static ApiException invalidUserError(String message) {
+        return new ApiException(message, "",
+                null, Kind.INVALID_USER, null);
+    }
+
+    public static ApiException networkError(String url, Exception exception) {
         return new ApiException(exception.getMessage(), url,
                 null, Kind.NETWORK, exception);
     }
@@ -107,6 +112,7 @@ public class ApiException extends RuntimeException {
          * An internal error occurred while attempting to execute a request. It is best practice to
          * re-throw this exception so your application crashes.
          */
-        UNEXPECTED
+        UNEXPECTED,
+        INVALID_USER
     }
 }

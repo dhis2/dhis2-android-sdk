@@ -41,7 +41,7 @@ public interface OptionSetTable {
             OptionSetColumns.COLUMN_CODE + " TEXT," +
             OptionSetColumns.COLUMN_CREATED + " TEXT NOT NULL," +
             OptionSetColumns.COLUMN_LAST_UPDATED + " TEXT NOT NULL," +
-            OptionSetColumns.COLUMN_VERSION + " INTEGER NOT NULL," +
+            OptionSetColumns.COLUMN_VERSION + " INTEGER," +
             OptionSetColumns.COLUMN_BODY + " TEXT NOT NULL )";
 
     String DROP_TABLE_OPTION_SETS = "DROP TABLE IF EXISTS " +

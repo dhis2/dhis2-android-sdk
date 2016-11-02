@@ -36,6 +36,7 @@ import android.net.Uri;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.client.sdk.core.commons.database.AbsMapper;
 import org.hisp.dhis.client.sdk.core.commons.database.Mapper;
 import org.hisp.dhis.client.sdk.core.program.ProgramTable.ProgramColumns;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
@@ -49,7 +50,7 @@ import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getInt;
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getLong;
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getString;
 
-class ProgramMapper implements Mapper<Program> {
+class ProgramMapper extends AbsMapper<Program> {
     private final ObjectMapper objectMapper;
 
     public ProgramMapper(ObjectMapper objectMapper) {
@@ -81,8 +82,8 @@ class ProgramMapper implements Mapper<Program> {
         contentValues.put(ProgramColumns.COLUMN_ID, program.id());
         contentValues.put(ProgramColumns.COLUMN_UID, program.uid());
         contentValues.put(ProgramColumns.COLUMN_CODE, program.code());
-        contentValues.put(ProgramColumns.COLUMN_CREATED, program.created().toString());
-        contentValues.put(ProgramColumns.COLUMN_LAST_UPDATED, program.lastUpdated().toString());
+        contentValues.put(ProgramColumns.COLUMN_CREATED, BaseIdentifiableObject.DATE_FORMAT.format(program.created()));
+        contentValues.put(ProgramColumns.COLUMN_LAST_UPDATED, BaseIdentifiableObject.DATE_FORMAT.format(program.lastUpdated()));
         contentValues.put(ProgramColumns.COLUMN_NAME, program.name());
         contentValues.put(ProgramColumns.COLUMN_DISPLAY_NAME, program.displayName());
         contentValues.put(ProgramColumns.COLUMN_SHORT_NAME, program.shortName());

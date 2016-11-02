@@ -77,6 +77,8 @@ public abstract class OrganisationUnit extends BaseNameableObject {
     @JsonProperty(JSON_PROPERTY_PROGRAMS)
     public abstract List<Program> programs();
 
+    public abstract Builder toBuilder();
+
     public static Builder builder() {
         return new AutoValue_OrganisationUnit.Builder();
     }

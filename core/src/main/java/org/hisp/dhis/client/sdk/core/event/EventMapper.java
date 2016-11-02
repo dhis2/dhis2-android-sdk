@@ -33,7 +33,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
-import org.hisp.dhis.client.sdk.core.commons.database.Mapper;
+import org.hisp.dhis.client.sdk.core.commons.database.AbsMapper;
 import org.hisp.dhis.client.sdk.core.event.EventTable.EventColumns;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.Coordinates;
@@ -44,11 +44,10 @@ import org.hisp.dhis.client.sdk.models.event.EventStatus;
 import java.text.ParseException;
 
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getDouble;
-import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getInt;
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getLong;
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getString;
 
-class EventMapper implements Mapper<Event> {
+class EventMapper extends AbsMapper<Event> {
 
     EventMapper() {
         // explicit constructor
@@ -71,16 +70,16 @@ class EventMapper implements Mapper<Event> {
 
     @Override
     public ContentValues toContentValues(Event event) {
-        if(!event.isValid()) {
+        if (!event.isValid()) {
             throw new IllegalArgumentException("Event is not valid");
         }
         ContentValues contentValues = new ContentValues();
         contentValues.put(EventColumns.COLUMN_ID, event.id());
         contentValues.put(EventColumns.COLUMN_UID, event.uid());
-        contentValues.put(EventColumns.COLUMN_CREATED, event.created().toString());
-        contentValues.put(EventColumns.COLUMN_LAST_UPDATED, event.lastUpdated().toString());
-        contentValues.put(EventColumns.COLUMN_COMPLETED_DATE, event.completedDate().toString());
-        contentValues.put(EventColumns.COLUMN_EVENT_DATE, event.eventDate().toString());
+        contentValues.put(EventColumns.COLUMN_CREATED, BaseIdentifiableObject.DATE_FORMAT.format(event.created()));
+        contentValues.put(EventColumns.COLUMN_LAST_UPDATED, BaseIdentifiableObject.DATE_FORMAT.format(event.lastUpdated()));
+        contentValues.put(EventColumns.COLUMN_COMPLETED_DATE, BaseIdentifiableObject.DATE_FORMAT.format(event.completedDate()));
+        contentValues.put(EventColumns.COLUMN_EVENT_DATE, BaseIdentifiableObject.DATE_FORMAT.format(event.eventDate()));
         contentValues.put(EventColumns.COLUMN_EVENT_STATUS, event.status().toString());
         contentValues.put(EventColumns.COLUMN_ORGANISATION_UNIT, event.organisationUnit());
         contentValues.put(EventColumns.COLUMN_PROGRAM, event.program());

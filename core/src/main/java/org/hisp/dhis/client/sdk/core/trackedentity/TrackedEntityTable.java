@@ -42,10 +42,10 @@ public interface TrackedEntityTable {
             TrackedEntityColumns.COLUMN_LAST_UPDATED + " TEXT NOT NULL," +
             TrackedEntityColumns.COLUMN_NAME + " TEXT," +
             TrackedEntityColumns.COLUMN_DISPLAY_NAME + " TEXT," +
-            TrackedEntityColumns.COLUMN_SHORT_NAME + "TEXT," +
-            TrackedEntityColumns.COLUMN_DISPLAY_SHORT_NAME + "TEXT," +
-            TrackedEntityColumns.COLUMN_DESCRIPTION + "TEXT," +
-            TrackedEntityColumns.COLUMN_DISPLAY_DESCRIPTION + "TEXT )";
+            TrackedEntityColumns.COLUMN_SHORT_NAME + " TEXT," +
+            TrackedEntityColumns.COLUMN_DISPLAY_SHORT_NAME + " TEXT," +
+            TrackedEntityColumns.COLUMN_DESCRIPTION + " TEXT," +
+            TrackedEntityColumns.COLUMN_DISPLAY_DESCRIPTION + " TEXT )";
 
     String DROP_TABLE_TRACKED_ENTITIES = "DROP TABLE IF EXISTS " +
             TrackedEntityColumns.TABLE_NAME;

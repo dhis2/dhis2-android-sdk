@@ -144,26 +144,19 @@ public abstract class AbsStore<T extends Model> implements Store<T> {
             throw new IllegalArgumentException("Objects to insert must not be empty");
         }
 
-        ContentProviderOperation.Builder insertOperations = ContentProviderOperation.newInsert(mapper.getContentUri());
-
-        for (T object : objects) {
-            isNull(object, "Object to insert must not be null");
-            insertOperations.withValues(mapper.toContentValues(object));
-        }
-
-        insertOperations.build();
+        contentResolver.bulkInsert(mapper.getContentUri(), mapper.toContentValues(objects));
 
         return true;
     }
 
     @Override
+    //TODO: Use ApplyBatch
     public boolean update(List<T> objects) {
         isNull(objects, "Objects must not be null");
 
         if (objects.isEmpty()) {
             throw new IllegalArgumentException("Objects to update must not be empty");
         }
-
         ContentProviderOperation.Builder updateOperations = ContentProviderOperation.newUpdate(mapper.getContentUri());
 
         for (T object : objects) {

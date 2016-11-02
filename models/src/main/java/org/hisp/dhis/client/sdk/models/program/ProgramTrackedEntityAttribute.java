@@ -46,6 +46,7 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
     private static final String JSON_PROPERTY_VALUE_TYPE = "valueType";
     private static final String JSON_PROPERTY_ALLOW_FUTURE_DATE = "allowFutureDate";
     private static final String JSON_PROPERTY_DISPLAY_IN_LIST = "displayInList";
+    private static final String JSON_PROPERTY_SORT_ORDER = "sortOrder";
 
     @Nullable
     @JsonProperty(JSON_PROPERTY_MANDATORY)
@@ -67,6 +68,10 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
     @JsonProperty(JSON_PROPERTY_DISPLAY_IN_LIST)
     public abstract Boolean displayInList();
 
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_SORT_ORDER)
+    public abstract Integer sortOrder();
+
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
         @JsonProperty(JSON_PROPERTY_MANDATORY)
@@ -84,6 +89,10 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
 
         @JsonProperty(JSON_PROPERTY_DISPLAY_IN_LIST)
         public abstract Builder displayInList(@Nullable Boolean displayInList);
+
+        @JsonProperty(JSON_PROPERTY_SORT_ORDER)
+        public abstract Builder sortOrder(@Nullable Integer sortOrder);
+
 
         abstract ProgramTrackedEntityAttribute build();
     }

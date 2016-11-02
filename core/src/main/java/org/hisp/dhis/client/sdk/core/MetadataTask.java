@@ -2,10 +2,12 @@ package org.hisp.dhis.client.sdk.core;
 
 import org.hisp.dhis.client.sdk.core.commons.Payload;
 import org.hisp.dhis.client.sdk.core.option.OptionSetInteractor;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitInteractor;
 import org.hisp.dhis.client.sdk.core.program.ProgramInteractor;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInteractor;
 import org.hisp.dhis.client.sdk.core.user.UserInteractor;
 import org.hisp.dhis.client.sdk.models.option.OptionSet;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
@@ -28,6 +30,7 @@ import static org.hisp.dhis.client.sdk.core.ModelUtils.toMap;
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class MetadataTask {
+    private final OrganisationUnitInteractor organisationUnitInteractor;
     private final ProgramInteractor programInteractor;
     private final UserInteractor userInteractor;
     private final OptionSetInteractor optionSetInteractor;
@@ -41,10 +44,12 @@ public class MetadataTask {
     static final String NAMEABLE_PROPERTIES =
             "shortName,displayShortName,description,displayDescription";
 
-    public MetadataTask(UserInteractor userInteractor,
+    public MetadataTask(OrganisationUnitInteractor organisationUnitInteractor,
+                        UserInteractor userInteractor,
                         ProgramInteractor programInteractor,
                         OptionSetInteractor optionSetInteractor,
                         TrackedEntityInteractor trackedEntityInteractor) {
+        this.organisationUnitInteractor = organisationUnitInteractor;
         this.userInteractor = userInteractor;
         this.optionSetInteractor = optionSetInteractor;
         this.programInteractor = programInteractor;
@@ -56,17 +61,29 @@ public class MetadataTask {
 
             User user = getCurrentUser().execute().body();
 
+            Map<String, OrganisationUnit> organisationUnitMap = new HashMap<>();
             Map<String, Program> programMap = new HashMap<>();
             Map<String, OptionSet> optionSetMap = new HashMap<>();
+            Map<String, TrackedEntity> trackedEntityMap = new HashMap<>();
 
             //---------------------------------------------------------
             // DOWNLOADING ID AND VERSIONS FOR PROGRAMS AND OPTION SETS
             // --------------------------------------------------------
 
+            if (user.organisationUnits() != null) {
+                for (OrganisationUnit organisationUnit : user.organisationUnits()) {
+                    organisationUnitMap.put(organisationUnit.uid(), organisationUnit);
+                }
+            }
+
             for (UserRole userRole : user.userCredentials().userRoles()) {
                 for (Program program : userRole.programs()) {
                     if (program != null) {
                         programMap.put(program.uid(), program);
+
+                        if (program.trackedEntity() != null) {
+                            trackedEntityMap.put(program.trackedEntity().uid(), program.trackedEntity());
+                        }
                         for (ProgramStage programStage : program.programStages()) {
                             for (ProgramStageDataElement programStageDataElement : programStage.programStageDataElements()) {
                                 if (programStageDataElement.dataElement().optionSet() != null) {
@@ -78,6 +95,48 @@ public class MetadataTask {
                     }
                 }
             }
+
+            // -----------------------------------------------------------------------------
+            // FILTERING OUT WHICH ORGANISATION UNITS TO DOWNLOAD BASED ON EXISTENCE IN DB
+            // -----------------------------------------------------------------------------
+
+            Map<String, OrganisationUnit> persistedOrganisationUnits = toMap(organisationUnitInteractor.store().queryAll());
+            System.out.println("Persisted orgUnits: " + persistedOrganisationUnits.values().toString());
+            List<String> organisationUnitsToDownload = new ArrayList<>();
+            for (OrganisationUnit organisationUnit : organisationUnitMap.values()) {
+                if (persistedOrganisationUnits.containsKey(organisationUnit.uid())) {
+                    OrganisationUnit persistedOrgUnit = persistedOrganisationUnits.get(organisationUnit.uid());
+                    if (organisationUnit.lastUpdated().getTime() > persistedOrgUnit.lastUpdated().getTime()) {
+                        // if program version from api is higher than in local db, download it
+                        organisationUnitsToDownload.add(organisationUnit.uid());
+                    }
+                } else {
+                    // if program doesn't exist in db, download it
+                    organisationUnitsToDownload.add(organisationUnit.uid());
+                }
+            }
+
+            System.out.println("OrgUnitUids to download: " + organisationUnitsToDownload.toString());
+
+            System.out.println(getPrograms(organisationUnitsToDownload).request().url().toString());
+
+            // -------------------------
+            // START ORGANISATION UNIT DOWNLOADING
+            // -------------------------
+            List<OrganisationUnit> organisationUnits = new ArrayList<>();
+            if (organisationUnitsToDownload.size() > REQUEST_SPLIT_THRESHOLD && organisationUnitsToDownload.size() > 0) {
+                List<OrganisationUnit> organisationUnitCache = new ArrayList<>();
+                List<List<String>> listOfListsOfOrgUnitUids =
+                        slice(organisationUnitsToDownload, REQUEST_SPLIT_THRESHOLD);
+                for (List<String> listOfSlicedOrgUnitUids : listOfListsOfOrgUnitUids) {
+                    Payload<OrganisationUnit> orgUnitsFromApi = getOrganisationUnits(listOfSlicedOrgUnitUids).execute().body();
+                    organisationUnitCache.addAll(orgUnitsFromApi.items());
+                }
+                organisationUnits.addAll(organisationUnitCache);
+            } else {
+                organisationUnits = getOrganisationUnits(organisationUnitsToDownload).execute().body().items();
+            }
+
 
             // -----------------------------------------------------------------------------
             // FILTERING OUT WHICH PROGRAMS TO DOWNLOAD BASED ON VERSION AND EXISTENCE IN DB
@@ -174,20 +233,42 @@ public class MetadataTask {
             // START TRACKED ENTITY DOWNLOAD
             // --------------------------
 
-            HashSet<String> trackedEntityUidHashSet = new HashSet<>();
-            System.out.println("TrackedEntityUids: " + trackedEntityUidHashSet.toString());
+
+            // --------------------------------------------------------------------------------
+            // FILTERING OUT WHICH TRACKED ENTITIES TO DOWNLOAD BASED EXISTENCE IN DB
+            // --------------------------------------------------------------------------------
+
+
+            Map<String, TrackedEntity> persistedTrackedEntities = toMap(trackedEntityInteractor.store().queryAll());
+            System.out.println("Persisted trackedEntities: " + persistedTrackedEntities.values().toString());
+            List<String> trackedEntitiesToDownload = new ArrayList<>();
+            for (TrackedEntity trackedEntity : trackedEntityMap.values()) {
+                if (persistedTrackedEntities.containsKey(trackedEntity.uid())) {
+                    TrackedEntity persistedTrackedEntity = persistedTrackedEntities.get(trackedEntity.uid());
+                    if (trackedEntity.lastUpdated().getTime() > persistedTrackedEntity.lastUpdated().getTime()) {
+                        // if trackedEntity lastUpdated from api is newer than in local db, download it
+                        trackedEntitiesToDownload.add(trackedEntity.uid());
+                    }
+                } else {
+                    // if optionSet doesn't exist in db, download it
+                    trackedEntitiesToDownload.add(trackedEntity.uid());
+                }
+            }
+            System.out.println("TrackedEntityUids to download: " + trackedEntitiesToDownload.toString());
+
+            System.out.println("TrackedEntityUids: " + trackedEntityMap.toString());
             List<TrackedEntity> trackedEntities = new ArrayList<>();
-            if (trackedEntityUidHashSet.size() > REQUEST_SPLIT_THRESHOLD) {
+            if (trackedEntityMap.size() > REQUEST_SPLIT_THRESHOLD) {
                 List<TrackedEntity> trackedEntityCache = new ArrayList<>();
                 List<List<String>> listOfListsOfTrackedEntityUids =
-                        slice(getKeysFromHashSet(trackedEntityUidHashSet), REQUEST_SPLIT_THRESHOLD);
+                        slice(trackedEntitiesToDownload, REQUEST_SPLIT_THRESHOLD);
                 for (List<String> listOfSlicedTrackedEntityUids : listOfListsOfTrackedEntityUids) {
                     Payload<TrackedEntity> trackedEntitiesFromApi = getTrackedEntities(listOfSlicedTrackedEntityUids).execute().body();
                     trackedEntityCache.addAll(trackedEntitiesFromApi.items());
                 }
                 trackedEntities.addAll(trackedEntityCache);
             } else {
-                trackedEntities = getTrackedEntities(trackedEntityUidHashSet).execute().body().items();
+                trackedEntities = getTrackedEntities(trackedEntitiesToDownload).execute().body().items();
             }
 
             // ------------------------
@@ -198,16 +279,43 @@ public class MetadataTask {
             // FLUSHING TO DATABASE
             // --------------------
 
-
-            programInteractor.store().save(programs);
-            optionSetInteractor.store().save(optionSets);
-            trackedEntityInteractor.store().save(trackedEntities);
+            if(!organisationUnits.isEmpty()) {
+                organisationUnitInteractor.store().save(organisationUnits);
+            }
+            if (!programs.isEmpty()) {
+                programInteractor.store().save(programs);
+            }
+            if (!optionSets.isEmpty()) {
+                optionSetInteractor.store().save(optionSets);
+            }
+            if (!trackedEntities.isEmpty()) {
+                trackedEntityInteractor.store().save(trackedEntities);
+            }
         }
+    }
+
+    private Call<Payload<OrganisationUnit>> getOrganisationUnits(Collection<String> organisationUnitUids) {
+        Map<String, String> queryMap = new HashMap<>();
+        queryMap.put("fields", "id,name,displayName,code,lastUpdated,level,created,shortName," +
+                "displayShortName,path,openingDate,closedDate,parent[id],programs[id,version]");
+        queryMap.put("filter", "id:in:" + ids(organisationUnitUids));
+        return organisationUnitInteractor.api().list(queryMap);
     }
 
     private Call<User> getCurrentUser() {
         Map<String, String> queryMap = new HashMap<>();
-        queryMap.put("fields", "userCredentials[username,userRoles[programs[id,version,programStages[id,programStageSections[id],programStageDataElements[dataElement[id,optionSet[id,version]]]]]," +
+        queryMap.put("fields", "id,organisationUnits[id],dataViewOrganisationUnits[id]," +
+                "userCredentials[" +
+                    "id,username,userRoles[" +
+                "       id,programs[" +
+                "                   id,version,trackedEntity[id],programStages[" +
+                "                       id,programStageSections[id],programStageDataElements[" +
+                "                           id,dataElement[" +
+                "                               id,optionSet[id,version]" +
+                "                                                   ]" +
+                "                                               ]" +
+                "                                           ]" +
+                "                                       ]," +
                 "dataSets[id]]," +
                 "organisationUnits[id,name,displayName,code,lastUpdated,level,created,shortName," +
                 "displayShortName,path,openingDate,closedDate,parent[id],programs[id,version]");

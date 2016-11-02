@@ -33,4 +33,7 @@ dependencies {
 
     // ReactiveX
     compile "io.reactivex:rxandroid:${libs.rxAndroidVersion}";
+
+    // Mockito
+    compile "org.mockito:mockito-core:${libs.mockitoVersion}"
 }

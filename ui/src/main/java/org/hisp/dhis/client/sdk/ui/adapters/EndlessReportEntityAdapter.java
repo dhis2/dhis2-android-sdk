@@ -212,7 +212,7 @@ public abstract class EndlessReportEntityAdapter extends RecyclerView.Adapter {
             this.reportEntity = reportEntity;
             onRecyclerViewItemClickListener.setReportEntity(reportEntity);
 
-            switch (reportEntity.getStatus()) {
+            switch (reportEntity.getSyncStatus()) {
                 // TODO: show deleteButton for all statuses when deletion is supported in SDK
                 case SENT: {
                     deleteButton.setVisibility(View.GONE);
@@ -249,7 +249,7 @@ public abstract class EndlessReportEntityAdapter extends RecyclerView.Adapter {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle(R.string.drawer_item_status);
 
-            switch (reportEntity.getStatus()) {
+            switch (reportEntity.getSyncStatus()) {
                 case SENT: {
                     Drawable mutableSentIcon = ContextCompat.getDrawable(context, R.drawable.ic_tick).mutate();
                     mutableSentIcon.setColorFilter(colorSent, PorterDuff.Mode.MULTIPLY);

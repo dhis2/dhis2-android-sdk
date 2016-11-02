@@ -10,13 +10,13 @@ import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class ReportEntity implements Parcelable {
     private final String id;
-    private final Status status;
+    private final SyncStatus syncStatus;
 
     private final Map<String, String> dataElementMap;
 
-    public ReportEntity(String id, Status status, Map<String, String> dataElementMap) {
+    public ReportEntity(String id, SyncStatus syncStatus, Map<String, String> dataElementMap) {
         this.id = isNull(id, "id must not be null");
-        this.status = isNull(status, "status must not be null");
+        this.syncStatus = isNull(syncStatus, "syncStatus must not be null");
         this.dataElementMap = dataElementMap;
     }
 
@@ -24,8 +24,8 @@ public class ReportEntity implements Parcelable {
         return id;
     }
 
-    public Status getStatus() {
-        return status;
+    public SyncStatus getSyncStatus() {
+        return syncStatus;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class ReportEntity implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
-        dest.writeString(status.name());
+        dest.writeString(syncStatus.name());
         dest.writeMap(dataElementMap);
     }
 
@@ -53,7 +53,7 @@ public class ReportEntity implements Parcelable {
 
     private ReportEntity(Parcel in) {
         id = in.readString();
-        status = Status.valueOf(in.readString());
+        syncStatus = SyncStatus.valueOf(in.readString());
         dataElementMap = new HashMap<>();
         in.readMap(dataElementMap, null);
     }
@@ -67,7 +67,7 @@ public class ReportEntity implements Parcelable {
         return dataElementMap.get(uid);
     }
 
-    public enum Status {
+    public enum SyncStatus {//SyncStatus
         SENT, TO_UPDATE, TO_POST, ERROR
     }
 }

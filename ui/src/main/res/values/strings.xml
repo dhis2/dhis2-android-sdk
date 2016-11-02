@@ -111,7 +111,7 @@
     <!--Settings menu label -->
     <string name="action_settings">Settings</string>
 
-    <!-- Status indicators: -->
+    <!-- SyncStatus indicators: -->
     <string name="syncing">Synchronizing</string>
     <string name="logout_title">Logging out</string>
     <string name="logout_option">Log out</string>

@@ -152,7 +152,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
             this.reportEntity = reportEntity;
             onRecyclerViewItemClickListener.setReportEntity(reportEntity);
 
-            switch (reportEntity.getStatus()) {
+            switch (reportEntity.getSyncStatus()) {
                 // TODO: show deleteButton for all statuses when deletion is supported in SDK
                 case SENT: {
                     deleteButton.setVisibility(View.INVISIBLE);
@@ -289,7 +289,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
         private void showStatusDialog(Context context) {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-            switch (reportEntity.getStatus()) {
+            switch (reportEntity.getSyncStatus()) {
                 case SENT: {
                     builder.setTitle(R.string.sync_status_ok_title);
                     Drawable mutableSentIcon = ContextCompat.getDrawable(context, R.drawable.ic_tick).mutate();

@@ -52,12 +52,14 @@ public abstract class AbsStore<T extends Model> implements Store<T> {
 
     @Override
     public boolean insert(T object) {
+        isNull(object, "object must not be null");
         contentResolver.insert(mapper.getContentUri(), mapper.toContentValues(object));
         return true;
     }
 
     @Override
     public boolean update(T object) {
+        isNull(object, "object must not be null");
         ContentValues contentValues = mapper.toContentValues(object);
         contentResolver.update(mapper.getContentItemUri(object.id()), contentValues, null, null);
         return true;
@@ -65,7 +67,7 @@ public abstract class AbsStore<T extends Model> implements Store<T> {
 
     @Override
     public boolean save(T object) {
-        if (doObjectExist(object)) {
+        if (objectExists(object)) {
             update(object);
         } else {
             insert(object);
@@ -181,7 +183,7 @@ public abstract class AbsStore<T extends Model> implements Store<T> {
         List<T> objectsToInsert = new ArrayList<>();
 
         for (T object : objects) {
-            if (doObjectExist(object)) {
+            if (objectExists(object)) {
                 objectsToUpdate.add(object);
             } else {
                 objectsToInsert.add(object);
@@ -218,7 +220,7 @@ public abstract class AbsStore<T extends Model> implements Store<T> {
         return true;
     }
 
-    private boolean doObjectExist(T object) {
+    private boolean objectExists(T object) {
         if (object.id() == null || queryById(object.id()) == null) {
             return false;
         } else return true;

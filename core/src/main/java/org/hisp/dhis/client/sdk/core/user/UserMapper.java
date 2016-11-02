@@ -8,8 +8,8 @@ import android.net.Uri;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.client.sdk.core.commons.ApiException;
 import org.hisp.dhis.client.sdk.core.commons.database.AbsMapper;
-import org.hisp.dhis.client.sdk.core.commons.database.Mapper;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.user.User;
 
@@ -43,6 +43,11 @@ class UserMapper extends AbsMapper<User> {
 
     @Override
     public ContentValues toContentValues(User user) {
+
+        if (user == null) {
+            throw ApiException.invalidUserError("Username and password do not match");
+        }
+
         if (!user.isValid()) {
             throw new IllegalArgumentException("User is not valid");
         }

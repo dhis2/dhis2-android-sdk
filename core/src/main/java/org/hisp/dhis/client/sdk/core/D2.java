@@ -55,6 +55,7 @@ import org.hisp.dhis.client.sdk.utils.StringUtils;
 
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -204,6 +205,7 @@ public final class D2 {
 //                throw new IllegalStateException("D2 has been already configured");
 //            }
 
+
             String url = baseUrl.endsWith("/") ? baseUrl.concat("api/") : baseUrl.concat("/api/");
             serverUrlPreferences.save(url);
 
@@ -240,7 +242,11 @@ public final class D2 {
 
             // extracting server url
             String serverUrl = serverUrlPreferences.get();
-            if (!StringUtils.isEmpty(serverUrl)) {
+
+            if (StringUtils.isEmpty(serverUrl) || HttpUrl.parse(serverUrl) == null) {
+                // if url is malformed - clear it and show the login screen
+                serverUrlPreferences.clear();
+            } else {
                 retrofit = new Retrofit.Builder()
                         .baseUrl(serverUrl)
                         .addConverterFactory(JacksonConverterFactory.create(objectMapper))

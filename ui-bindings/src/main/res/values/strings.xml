@@ -6,7 +6,7 @@
     <string name="title_error_unexpected">Unexpected error</string>
     <string name="error_not_found">Server not found.</string>
     <string name="error_unauthorized">Wrong username or password.</string>
-
+    <string name="generic_server_error">Server error</string>
 
     <!-- Logout warning dialog: -->
     <string name="warning_logout_body">
@@ -20,7 +20,7 @@
     <!-- Background syncing -->
     <string name="authority">DHIS2_DEFAULT_AUTHORITY</string>
     <string name="account_type">DHIS2_DEFAULT_ACCOUNT_TYPE</string>
-    
+
     <!-- Sync notifications -->
     <string name="sync_complete_notification_title">Sync complete</string>
     <string name="sync_complete_notification_content">Your DHIS2 data has been synchronized</string>

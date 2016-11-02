@@ -40,6 +40,7 @@ import org.hisp.dhis.client.sdk.utils.Logger;
 
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -58,7 +59,7 @@ public class LoginPresenterImpl implements LoginPresenter, LoginPresenter.OnLogi
     private LoginView loginView;
 
     public LoginPresenterImpl(UserInteractor userAccountInteractor,
-            ApiExceptionHandler apiExceptionHandler, Logger logger) {
+                              ApiExceptionHandler apiExceptionHandler, Logger logger) {
         this.userAccountInteractor = userAccountInteractor;
         this.subscription = new CompositeSubscription();
         this.apiExceptionHandler = apiExceptionHandler;
@@ -82,7 +83,14 @@ public class LoginPresenterImpl implements LoginPresenter, LoginPresenter.OnLogi
 
     @Override
     public void validateCredentials(final String serverUrl,
-            final String username, final String password) {
+                                    final String username, final String password) {
+
+        if (userAccountInteractor == null) {
+            //retrofit was not initialized correctly. Caused by a malformed url
+            loginView.showServerError(null);
+            return;
+        }
+
         loginView.showProgress();
 
         subscription.add(RxUtils.single(userAccountInteractor.logIn(username, password))
@@ -139,28 +147,38 @@ public class LoginPresenterImpl implements LoginPresenter, LoginPresenter.OnLogi
 
     public void handleError(final Throwable throwable) {
         AppError error = apiExceptionHandler.handleException(TAG, throwable);
+        if (loginView != null) {
+            if (throwable instanceof ApiException) {
+                ApiException exception = (ApiException) throwable;
 
-        if (throwable instanceof ApiException && loginView != null) {
-            ApiException exception = (ApiException) throwable;
-
-            if (exception.getResponse() != null) {
-                switch (exception.getResponse().code()) {
-                    case HttpURLConnection.HTTP_UNAUTHORIZED: {
-                        onInvalidCredentialsError(error);
-                        break;
-                    }
-                    case HttpURLConnection.HTTP_NOT_FOUND: {
-                        onServerError(error);
-                        break;
-                    }
-                    default: {
-                        onUnexpectedError(error);
-                        break;
-                    }
+                if (exception.getKind() == ApiException.Kind.INVALID_USER) {
+                    onInvalidCredentialsError(error);
+                    return;
                 }
-            } else if (throwable.getCause() instanceof MalformedURLException) {
-                // handle the case where the url was malformed and
+
+                if (exception.getResponse() != null) {
+                    switch (exception.getResponse().code()) {
+                        case HttpURLConnection.HTTP_UNAUTHORIZED: {
+                            onInvalidCredentialsError(error);
+                            break;
+                        }
+                        case HttpURLConnection.HTTP_NOT_FOUND: {
+                            onServerError(error);
+                            break;
+                        }
+                        default: {
+                            onUnexpectedError(error);
+                            break;
+                        }
+                    }
+                } else if (throwable.getCause() instanceof MalformedURLException) {
+                    // handle the case where the url was malformed and
+                    onServerError(error);
+                }
+            } else if (throwable instanceof UnknownHostException) {
                 onServerError(error);
+            } else {
+                onUnexpectedError(error);
             }
         } else {
             logger.e(TAG, "handleError", throwable);

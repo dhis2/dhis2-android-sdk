@@ -28,7 +28,10 @@
 
 package org.hisp.dhis.client.sdk.core.user;
 
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.client.sdk.core.commons.AbsTask;
+import org.hisp.dhis.client.sdk.core.commons.ApiException;
 import org.hisp.dhis.client.sdk.models.user.User;
 
 import java.io.IOException;
@@ -36,6 +39,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
+import okhttp3.MediaType;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -51,7 +56,7 @@ class UserLoginTask extends AbsTask<User> {
     private Call<User> userCall;
 
     UserLoginTask(Executor executor, Executor callbackExecutor, String username, String password,
-            UsersApi usersApi, UserStore userStore, UserPreferences preferences) {
+                  UsersApi usersApi, UserStore userStore, UserPreferences preferences) {
         super(executor, callbackExecutor);
 
         this.username = username;
@@ -87,14 +92,28 @@ class UserLoginTask extends AbsTask<User> {
             userCall = usersApi.me(query);
             Response<User> userResponse = userCall.execute();
 
-            if (userResponse != null && userResponse.isSuccessful()) {
+            userResponse = handleNullResponse(userResponse);
+
+            if (userResponse.isSuccessful()) {
                 user = userResponse.body();
+            } else {
+                // if call is unsuccessful, do not store anything in the userStore, throw error instead
+                throw ApiException.httpError(userCall.request().url().toString(), userResponse);
             }
         }
 
         userStore.insert(user);
 
         return user;
+    }
+
+    @NonNull
+    private Response<User> handleNullResponse(Response<User> userResponse) {
+        if (userResponse == null) {
+            // response is null - create a new error response
+            userResponse = Response.error(409, ResponseBody.create(MediaType.parse("text"), "Unauthorized user"));
+        }
+        return userResponse;
     }
 
     @Override

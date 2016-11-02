@@ -42,8 +42,13 @@ class UserMapper implements Mapper<User> {
 
     @Override
     public ContentValues toContentValues(User user) {
-        if (user == null || !user.isValid()) {
+
+        if (user == null) {
             throw ApiException.invalidUserError("Username and password do not match");
+        }
+
+        if (!user.isValid()) {
+            throw new IllegalArgumentException("User is not valid");
         }
 
         ContentValues contentValues = new ContentValues();

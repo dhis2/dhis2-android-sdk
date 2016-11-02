@@ -38,7 +38,6 @@ public class EventListFragment extends Fragment {
         ((TextView) event.findViewById(R.id.event_name)).setText(eventName);
         if (drawRefreshButton) {
             event.findViewById(R.id.refresh_button).setVisibility(View.VISIBLE);
-            event.findViewById(R.id.error_text).setVisibility(View.VISIBLE);
         }
         event.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -204,4 +204,11 @@
     <string name="profile_title">Profile</string>
     <string name="relationships_title">Relationships</string>
     <string name="edit_button_text">EDIT</string>
+
+    <!-- Event status labels: -->
+    <string name="active">Active</string>
+    <string name="scheduled">Scheduled</string>
+    <string name="completed">Completed</string>
+    <string name="skipped">Skipped</string>
+
 </resources>

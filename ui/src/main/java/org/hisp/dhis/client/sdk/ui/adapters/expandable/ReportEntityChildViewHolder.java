@@ -1,6 +1,7 @@
 package org.hisp.dhis.client.sdk.ui.adapters.expandable;
 
-import android.graphics.drawable.Drawable;
+import android.content.Context;
+import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageButton;
@@ -22,34 +23,27 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
     public static final String STATUS_LABEL = "SyncStatus";
     public static final String ORG_UNIT = "OrgUnit";
 
-    final ImageView statusIcon;
     final CircleView statusBackground;
     final TextView label;
     final TextView date;
+    final TextView eventStatusText;
     final ImageButton syncButton;
-
-    final Drawable drawableActive;
-    final Drawable drawableCompleted;
-    final Drawable drawableSkipped;
-    final Drawable drawableSchedule;
 
     final int colorGreen;
     final int colorOrange;
     final int colorRed;
 
+    final Context context;
+
     public ReportEntityChildViewHolder(View itemView) {
         super(itemView);
 
-        statusIcon = (ImageView) itemView.findViewById(R.id.status_icon);
+        context = itemView.getContext();
         statusBackground = (CircleView) itemView.findViewById(R.id.circleview_status_background);
         syncButton = (ImageButton) itemView.findViewById(R.id.refresh_button);
         label = (TextView) itemView.findViewById(R.id.event_name);
         date = (TextView) itemView.findViewById(R.id.date_text);
-
-        drawableActive = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_tick);
-        drawableCompleted = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_double_tick);
-        drawableSchedule = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_chevron_right);
-        drawableSkipped = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_cancel_white);
+        eventStatusText = (TextView) itemView.findViewById(R.id.status_text);
 
         colorGreen = ContextCompat.getColor(itemView.getContext(), R.color.color_material_green_default);
         colorOrange = ContextCompat.getColor(itemView.getContext(), R.color.color_accent_default);
@@ -64,9 +58,9 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
 
         date.setText(reportEntity.getValueForDataElement(EVENT_DATE_KEY));
 
+        //Display the EventSyncStatus:
         switch (reportEntity.getSyncStatus()) {
-            // TODO: show deleteButton for all statuses when deletion is supported in SDK
-            case SENT: {
+            case SENT: { //no-op.
                 break;
             }
             case TO_POST: {
@@ -86,28 +80,28 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
                 syncButton.setImageResource(R.drawable.ic_sync_problem_black);
                 syncButton.setVisibility(View.VISIBLE);
                 syncButton.setClickable(true);
-                //syncButton.setBackgroundColor(colorRed);
                 break;
             }
         }
 
+        //Display the event status
         String status = reportEntity.getValueForDataElement(EVENT_STATUS);
         switch (status) {
             case "ACTIVE":
-                statusBackground.setFillColor(colorGreen);
-                statusIcon.setImageDrawable(drawableActive);
+                eventStatusText.setText(context.getString(R.string.active));
+                eventStatusText.setTextColor(Color.BLACK);
                 break;
             case "COMPLETED":
-                statusBackground.setFillColor(colorRed);
-                statusIcon.setImageDrawable(drawableCompleted);
+                eventStatusText.setText(context.getString(R.string.completed));
+                eventStatusText.setTextColor(colorGreen);
                 break;
-            case "SCHEDULE":
-                statusBackground.setFillColor(colorOrange);
-                statusIcon.setImageDrawable(drawableSchedule);
+            case "SCHEDULED":
+                eventStatusText.setText(context.getString(R.string.scheduled));
+                eventStatusText.setTextColor(colorOrange);
                 break;
             case "SKIPPED":
-                statusBackground.setFillColor(colorRed);
-                statusIcon.setImageDrawable(drawableSkipped);
+                eventStatusText.setText(context.getString(R.string.skipped));
+                eventStatusText.setTextColor(colorRed);
                 break;
         }
         //label.setText(reportEntity.getValueForDataElement(ORG_UNIT));

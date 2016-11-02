@@ -121,7 +121,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             for (ProgramStage programStage : program.getProgramStages()) {
                 if (programStage.isAutoGenerateEvent()) {
                 Event event = eventService.create(organisationUnit, program,
-                        programStage, Event.EventStatus.SCHEDULE); //.STATUS_FUTURE_VISIT
+                        programStage, Event.EventStatus.SCHEDULED); //.STATUS_FUTURE_VISIT
                      events.add(event);
                 }
             }

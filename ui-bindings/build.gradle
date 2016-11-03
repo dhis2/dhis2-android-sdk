@@ -26,14 +26,16 @@ android {
 }
 
 dependencies {
-    testCompile 'junit:junit:4.12'
-
     compile project(":ui")
     compile project(":core")
 
     // ReactiveX
     compile "io.reactivex:rxandroid:${libs.rxAndroidVersion}";
 
-    // Mockito
-    compile "org.mockito:mockito-core:${libs.mockitoVersion}"
+    // Testing
+    testCompile "junit:junit:${libs.jUnitVersion}"
+    testCompile "org.mockito:mockito-all:${libs.mockitoVersion}"
+    testCompile "org.powermock:powermock:${libs.powerMockVersion}"
+    testCompile "org.powermock:powermock-api-mockito:${libs.powerMockVersion}"
+    testCompile "org.powermock:powermock-module-junit4:${libs.powerMockVersion}"
 }

@@ -66,6 +66,9 @@ public class SettingsPresenterTest {
 
         when(appPreferences.getBackgroundSyncFrequency()).thenReturn(syncFrequency);
 
+        mockStatic(SystemSettings.class);
+        when(SystemSettings.getMasterSyncAutomatically()).thenReturn(false);
+
         settingsPresenter.setBackgroundSynchronisation(syncEnabled, null);
 
         verify(appPreferences).setBackgroundSyncState(syncEnabled);

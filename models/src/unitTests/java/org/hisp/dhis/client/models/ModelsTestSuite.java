@@ -29,9 +29,11 @@
 package org.hisp.dhis.client.models;
 
 import org.hisp.dhis.client.models.constant.ConstantTests;
+import org.hisp.dhis.client.models.dataelement.CategoryComboTests;
 import org.hisp.dhis.client.models.dataelement.CategoryOptionComboTests;
 import org.hisp.dhis.client.models.dataelement.CategoryOptionTests;
 import org.hisp.dhis.client.models.dataelement.CategoryTests;
+import org.hisp.dhis.client.models.dataelement.DataElementTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -39,8 +41,10 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         ConstantTests.class,
         CategoryTests.class,
+        CategoryComboTests.class,
         CategoryOptionTests.class,
-        CategoryOptionComboTests.class
+        CategoryOptionComboTests.class,
+        DataElementTests.class
 })
 public class ModelsTestSuite {
 }

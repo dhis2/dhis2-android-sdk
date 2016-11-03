@@ -33,18 +33,27 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
-import org.hisp.dhis.client.sdk.core.commons.database.Mapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.hisp.dhis.client.sdk.core.commons.database.AbsMapper;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitTable.OrganisationUnitColumns;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
+import java.io.IOException;
 import java.text.ParseException;
 
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getInt;
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getLong;
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getString;
 
-public class OrganisationUnitMapper implements Mapper<OrganisationUnit> {
+public class OrganisationUnitMapper extends AbsMapper<OrganisationUnit> {
+    private final ObjectMapper objectMapper;
+
+    public OrganisationUnitMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     public Uri getContentUri() {
@@ -71,8 +80,8 @@ public class OrganisationUnitMapper implements Mapper<OrganisationUnit> {
         contentValues.put(OrganisationUnitColumns.COLUMN_ID, organisationUnit.id());
         contentValues.put(OrganisationUnitColumns.COLUMN_UID, organisationUnit.uid());
         contentValues.put(OrganisationUnitColumns.COLUMN_CODE, organisationUnit.code());
-        contentValues.put(OrganisationUnitColumns.COLUMN_CREATED, organisationUnit.created().toString());
-        contentValues.put(OrganisationUnitColumns.COLUMN_LAST_UPDATED, organisationUnit.lastUpdated().toString());
+        contentValues.put(OrganisationUnitColumns.COLUMN_CREATED, BaseIdentifiableObject.DATE_FORMAT.format(organisationUnit.created()));
+        contentValues.put(OrganisationUnitColumns.COLUMN_LAST_UPDATED, BaseIdentifiableObject.DATE_FORMAT.format(organisationUnit.lastUpdated()));
         contentValues.put(OrganisationUnitColumns.COLUMN_NAME, organisationUnit.name());
         contentValues.put(OrganisationUnitColumns.COLUMN_DISPLAY_NAME, organisationUnit.displayName());
         contentValues.put(OrganisationUnitColumns.COLUMN_SHORT_NAME, organisationUnit.shortName());
@@ -83,46 +92,28 @@ public class OrganisationUnitMapper implements Mapper<OrganisationUnit> {
         contentValues.put(OrganisationUnitColumns.COLUMN_PARENT,
                 organisationUnit.parent() != null ? organisationUnit.parent().uid() : null);
         contentValues.put(OrganisationUnitColumns.COLUMN_OPENING_DATE,
-                organisationUnit.openingDate() != null ? organisationUnit.openingDate().toString() : null);
+                organisationUnit.openingDate() != null ? BaseIdentifiableObject.DATE_FORMAT.format(organisationUnit.openingDate()) : null);
         contentValues.put(OrganisationUnitColumns.COLUMN_CLOSED_DATE,
-                organisationUnit.closedDate() != null ? organisationUnit.closedDate().toString() : null);
+                organisationUnit.closedDate() != null ? BaseIdentifiableObject.DATE_FORMAT.format(organisationUnit.closedDate()) : null);
         contentValues.put(OrganisationUnitColumns.COLUMN_LEVEL, organisationUnit.level());
         contentValues.put(OrganisationUnitColumns.COLUMN_PATH, organisationUnit.path());
 
+        try{
+            contentValues.put(OrganisationUnitColumns.COLUMN_BODY, objectMapper.writeValueAsString(organisationUnit));
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException(e);
+        }
         return contentValues;
     }
 
     @Override
     public OrganisationUnit toModel(Cursor cursor) {
-        OrganisationUnit parentOrganisationUnit = OrganisationUnit.builder()
-                .uid(getString(cursor, OrganisationUnitColumns.COLUMN_PARENT)).build();
-
         OrganisationUnit organisationUnit = null;
-        try {
-            organisationUnit = OrganisationUnit.builder()
-                    .id(getLong(cursor, OrganisationUnitColumns.COLUMN_ID))
-                    .uid(getString(cursor, OrganisationUnitColumns.COLUMN_UID))
-                    .code(getString(cursor, OrganisationUnitColumns.COLUMN_CODE))
-                    .name(getString(cursor, OrganisationUnitColumns.COLUMN_NAME))
-                    .displayName(getString(cursor, OrganisationUnitColumns.COLUMN_DISPLAY_NAME))
-                    .created(BaseIdentifiableObject.DATE_FORMAT
-                            .parse(getString(cursor, OrganisationUnitColumns.COLUMN_CREATED)))
-                    .lastUpdated(BaseIdentifiableObject.DATE_FORMAT
-                            .parse(getString(cursor, OrganisationUnitColumns.COLUMN_LAST_UPDATED)))
-                    .shortName(getString(cursor, OrganisationUnitColumns.COLUMN_SHORT_NAME))
-                    .displayShortName(getString(cursor, OrganisationUnitColumns.COLUMN_DISPLAY_SHORT_NAME))
-                    .description(getString(cursor, OrganisationUnitColumns.COLUMN_DISPLAY_DESCRIPTION))
-                    .displayDescription(getString(cursor, OrganisationUnitColumns.COLUMN_DISPLAY_DESCRIPTION))
-                    .parent(parentOrganisationUnit)
-                    .level(getInt(cursor, OrganisationUnitColumns.COLUMN_LEVEL))
-                    .path(getString(cursor, OrganisationUnitColumns.COLUMN_PATH))
-                    .openingDate(BaseIdentifiableObject.DATE_FORMAT
-                            .parse(getString(cursor, OrganisationUnitColumns.COLUMN_OPENING_DATE)))
-                    .closedDate(BaseIdentifiableObject.DATE_FORMAT
-                            .parse(getString(cursor, OrganisationUnitColumns.COLUMN_CLOSED_DATE)))
-                    .build();
 
-        } catch (ParseException e) {
+        try {
+            organisationUnit = objectMapper.readValue(getString(cursor, OrganisationUnitColumns.COLUMN_BODY), OrganisationUnit.class);
+            organisationUnit.toBuilder().id((getLong(cursor, OrganisationUnitColumns.COLUMN_ID)));
+        } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
 

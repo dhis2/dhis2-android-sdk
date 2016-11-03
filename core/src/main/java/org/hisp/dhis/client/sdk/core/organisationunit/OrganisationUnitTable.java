@@ -34,7 +34,7 @@ public interface OrganisationUnitTable {
             OrganisationUnitColumns.COLUMN_OPENING_DATE + " TEXT NOT NULL," +
             OrganisationUnitColumns.COLUMN_CLOSED_DATE + " TEXT," +
             OrganisationUnitColumns.COLUMN_LEVEL + " INTEGER," +
-            OrganisationUnitColumns.COLUMN_BODY + " TEXT NOT NULL )";
+            OrganisationUnitColumns.COLUMN_BODY + " TEXT )";
 
     String DROP_TABLE_ORGANISATION_UNITS = "DROP TABLE IF EXISTS " +
             OrganisationUnitColumns.TABLE_NAME;
@@ -64,6 +64,7 @@ public interface OrganisationUnitTable {
             OrganisationUnitColumns.COLUMN_PATH,
             OrganisationUnitColumns.COLUMN_OPENING_DATE,
             OrganisationUnitColumns.COLUMN_CLOSED_DATE,
-            OrganisationUnitColumns.COLUMN_LEVEL
+            OrganisationUnitColumns.COLUMN_LEVEL,
+            OrganisationUnitColumns.COLUMN_BODY
     };
 }

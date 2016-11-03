@@ -9,7 +9,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.client.sdk.core.commons.ApiException;
-import org.hisp.dhis.client.sdk.core.commons.database.Mapper;
+import org.hisp.dhis.client.sdk.core.commons.database.AbsMapper;
+import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.user.User;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getLong;
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getString;
 import static org.hisp.dhis.client.sdk.core.user.UserTable.UserColumns;
 
-class UserMapper implements Mapper<User> {
+class UserMapper extends AbsMapper<User> {
     private final ObjectMapper objectMapper;
 
     UserMapper(ObjectMapper objectMapper) {
@@ -55,8 +56,8 @@ class UserMapper implements Mapper<User> {
         contentValues.put(UserColumns.COLUMN_ID, user.id());
         contentValues.put(UserColumns.COLUMN_UID, user.uid());
         contentValues.put(UserColumns.COLUMN_CODE, user.code());
-        contentValues.put(UserColumns.COLUMN_CREATED, user.created().toString());
-        contentValues.put(UserColumns.COLUMN_LAST_UPDATED, user.lastUpdated().toString());
+        contentValues.put(UserColumns.COLUMN_CREATED, BaseIdentifiableObject.DATE_FORMAT.format(user.created()));
+        contentValues.put(UserColumns.COLUMN_LAST_UPDATED, BaseIdentifiableObject.DATE_FORMAT.format(user.lastUpdated()));
         contentValues.put(UserColumns.COLUMN_NAME, user.name());
         contentValues.put(UserColumns.COLUMN_DISPLAY_NAME, user.displayName());
 

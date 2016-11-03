@@ -266,7 +266,7 @@ public final class D2 {
             EventInteractor eventInteractor = retrofit != null ? EventFactory.create(
                     retrofit, contentResolver) : null;
             OrganisationUnitInteractor organisationUnitInteractor = retrofit != null ?
-                    OrganisationUnitFactory.create(retrofit, contentResolver) : null;
+                    OrganisationUnitFactory.create(retrofit, contentResolver, objectMapper) : null;
             TrackedEntityDataValueInteractor dataValueInteractor = retrofit != null ?
                     TrackedEntityFactory.create(contentResolver) : null;
 

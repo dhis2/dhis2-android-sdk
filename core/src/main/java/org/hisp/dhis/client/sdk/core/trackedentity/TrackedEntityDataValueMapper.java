@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
+import org.hisp.dhis.client.sdk.core.commons.database.AbsMapper;
 import org.hisp.dhis.client.sdk.core.commons.database.Mapper;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueTable.TrackedEntityDataValueColumns;
 import org.hisp.dhis.client.sdk.models.common.State;
@@ -13,7 +14,7 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getLong;
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getString;
 
-class TrackedEntityDataValueMapper implements Mapper<TrackedEntityDataValue> {
+class TrackedEntityDataValueMapper extends AbsMapper<TrackedEntityDataValue> {
 
     TrackedEntityDataValueMapper() {
         // explicit constructor

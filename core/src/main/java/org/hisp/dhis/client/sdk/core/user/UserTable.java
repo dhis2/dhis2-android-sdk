@@ -6,6 +6,7 @@ import org.hisp.dhis.client.sdk.core.commons.database.DbContract;
 import org.hisp.dhis.client.sdk.core.commons.database.DbUtils;
 import org.hisp.dhis.client.sdk.models.user.User;
 
+//TODO: Add column Active session, or maybe we should create a new Session table for Multiple user support.
 public interface UserTable {
     interface UserColumns extends DbContract.IdentifiableColumns, DbContract.BodyColumn {
         String TABLE_NAME = "users";

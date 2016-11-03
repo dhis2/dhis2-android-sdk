@@ -28,16 +28,23 @@
 
 package org.hisp.dhis.client.sdk.models.option;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 
+import javax.annotation.Nullable;
+
 // TODO: Tests
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Option.Builder.class)
 public abstract class Option extends BaseIdentifiableObject {
-    // no fields
+    private static final String JSON_PROPERTY_SORT_ORDER = "sortOrder";
+
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_SORT_ORDER)
+    public abstract Integer sortOrder();
 
     public static Builder builder() {
         return new AutoValue_Option.Builder();
@@ -45,6 +52,10 @@ public abstract class Option extends BaseIdentifiableObject {
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+
+        @JsonProperty(JSON_PROPERTY_SORT_ORDER)
+        public abstract Builder sortOrder(@Nullable Integer sortOrder);
+
         public abstract Option build();
     }
 }

@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
+import org.hisp.dhis.client.sdk.core.commons.database.AbsMapper;
 import org.hisp.dhis.client.sdk.core.commons.database.Mapper;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityTable.TrackedEntityColumns;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
@@ -15,7 +16,7 @@ import java.text.ParseException;
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getLong;
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getString;
 
-class TrackedEntityMapper implements Mapper<TrackedEntity> {
+class TrackedEntityMapper extends AbsMapper<TrackedEntity> {
 
     TrackedEntityMapper() {
         // Explicit empty constructor
@@ -47,8 +48,8 @@ class TrackedEntityMapper implements Mapper<TrackedEntity> {
         contentValues.put(TrackedEntityColumns.COLUMN_ID, trackedEntity.id());
         contentValues.put(TrackedEntityColumns.COLUMN_UID, trackedEntity.uid());
         contentValues.put(TrackedEntityColumns.COLUMN_CODE, trackedEntity.code());
-        contentValues.put(TrackedEntityColumns.COLUMN_CREATED, trackedEntity.created().toString());
-        contentValues.put(TrackedEntityColumns.COLUMN_LAST_UPDATED, trackedEntity.lastUpdated().toString());
+        contentValues.put(TrackedEntityColumns.COLUMN_CREATED, BaseIdentifiableObject.DATE_FORMAT.format(trackedEntity.created()));
+        contentValues.put(TrackedEntityColumns.COLUMN_LAST_UPDATED, BaseIdentifiableObject.DATE_FORMAT.format(trackedEntity.lastUpdated()));
         contentValues.put(TrackedEntityColumns.COLUMN_NAME, trackedEntity.name());
         contentValues.put(TrackedEntityColumns.COLUMN_DISPLAY_NAME, trackedEntity.displayName());
         contentValues.put(TrackedEntityColumns.COLUMN_SHORT_NAME, trackedEntity.shortName());

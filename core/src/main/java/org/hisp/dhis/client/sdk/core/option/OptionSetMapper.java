@@ -36,8 +36,10 @@ import android.net.Uri;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.client.sdk.core.commons.database.AbsMapper;
 import org.hisp.dhis.client.sdk.core.commons.database.Mapper;
 import org.hisp.dhis.client.sdk.core.option.OptionSetTable.OptionSetColumns;
+import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.option.OptionSet;
 
 import java.io.IOException;
@@ -45,7 +47,7 @@ import java.io.IOException;
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getLong;
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getString;
 
-class OptionSetMapper implements Mapper<OptionSet> {
+class OptionSetMapper extends AbsMapper<OptionSet> {
     private final ObjectMapper objectMapper;
 
     OptionSetMapper(ObjectMapper objectMapper) {
@@ -77,8 +79,8 @@ class OptionSetMapper implements Mapper<OptionSet> {
         contentValues.put(OptionSetColumns.COLUMN_ID, optionSet.id());
         contentValues.put(OptionSetColumns.COLUMN_UID, optionSet.uid());
         contentValues.put(OptionSetColumns.COLUMN_CODE, optionSet.code());
-        contentValues.put(OptionSetColumns.COLUMN_CREATED, optionSet.created().toString());
-        contentValues.put(OptionSetColumns.COLUMN_LAST_UPDATED, optionSet.lastUpdated().toString());
+        contentValues.put(OptionSetColumns.COLUMN_CREATED, BaseIdentifiableObject.DATE_FORMAT.format(optionSet.created()));
+        contentValues.put(OptionSetColumns.COLUMN_LAST_UPDATED, BaseIdentifiableObject.DATE_FORMAT.format(optionSet.lastUpdated()));
         contentValues.put(OptionSetColumns.COLUMN_NAME, optionSet.name());
         contentValues.put(OptionSetColumns.COLUMN_DISPLAY_NAME, optionSet.displayName());
 

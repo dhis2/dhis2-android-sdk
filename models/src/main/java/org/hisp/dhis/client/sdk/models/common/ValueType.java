@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.client.sdk.models.common;
 
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -55,10 +57,10 @@ public enum ValueType {
     // TODO: Categorize
     PHONE_NUMBER(String.class),
     EMAIL(String.class),
+    ORGANISATION_UNIT(OrganisationUnit.class),
     USERNAME(String.class);
 
     // TODO: Implement later
-    // ORGANISATION_UNIT(OrganisationUnit.class),
     // TRACKER_ASSOCIATE(TrackedEntityInstance.class),
 
     public static final Set<ValueType> INTEGER_TYPES = new HashSet<>(Arrays.asList(INTEGER,

@@ -7,7 +7,7 @@ import org.hisp.dhis.client.sdk.core.commons.database.DbUtils;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
 public interface ProgramTable {
-    interface ProgramColumns extends DbContract.NameableColumns, DbContract.TimeStampColumns, DbContract.VersionColumn, DbContract.BodyColumn {
+    interface ProgramColumns extends DbContract.NameableColumns, DbContract.VersionColumn, DbContract.BodyColumn {
         String TABLE_NAME = "programs";
         String COLUMN_PROGRAM_TYPE = "programType";
         String COLUMN_DISPLAY_FRONT_PAGE_LIST = "displayFrontPageList";
@@ -24,6 +24,7 @@ public interface ProgramTable {
             ProgramColumns.COLUMN_LAST_UPDATED,
             ProgramColumns.COLUMN_NAME,
             ProgramColumns.COLUMN_DISPLAY_NAME,
+            ProgramColumns.COLUMN_VERSION,
             ProgramColumns.COLUMN_SHORT_NAME,
             ProgramColumns.COLUMN_DISPLAY_SHORT_NAME,
             ProgramColumns.COLUMN_DESCRIPTION,
@@ -48,6 +49,7 @@ public interface ProgramTable {
             ProgramColumns.COLUMN_LAST_UPDATED + " TEXT NOT NULL," +
             ProgramColumns.COLUMN_NAME + " TEXT," +
             ProgramColumns.COLUMN_DISPLAY_NAME + " TEXT," +
+            ProgramColumns.COLUMN_VERSION + " INTEGER NOT NULL," +
             ProgramColumns.COLUMN_SHORT_NAME + " TEXT," +
             ProgramColumns.COLUMN_DISPLAY_SHORT_NAME + " TEXT," +
             ProgramColumns.COLUMN_DESCRIPTION + " TEXT," +

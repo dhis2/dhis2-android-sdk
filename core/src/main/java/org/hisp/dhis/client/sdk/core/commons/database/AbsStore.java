@@ -35,6 +35,7 @@ import android.database.Cursor;
 
 import org.hisp.dhis.client.sdk.models.common.Model;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,14 +54,25 @@ public abstract class AbsStore<T extends Model> implements Store<T> {
     @Override
     public boolean insert(T object) {
         isNull(object, "object must not be null");
-        contentResolver.insert(mapper.getContentUri(), mapper.toContentValues(object));
+        try {
+            contentResolver.insert(mapper.getContentUri(), mapper.toContentValues(object));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
         return true;
     }
 
     @Override
     public boolean update(T object) {
         isNull(object, "object must not be null");
-        ContentValues contentValues = mapper.toContentValues(object);
+        ContentValues contentValues = null;
+        try {
+            contentValues = mapper.toContentValues(object);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
         contentResolver.update(mapper.getContentItemUri(object.id()), contentValues, null, null);
         return true;
     }
@@ -146,7 +158,12 @@ public abstract class AbsStore<T extends Model> implements Store<T> {
             throw new IllegalArgumentException("Objects to insert must not be empty");
         }
 
-        contentResolver.bulkInsert(mapper.getContentUri(), mapper.toContentValues(objects));
+        try {
+            contentResolver.bulkInsert(mapper.getContentUri(), mapper.toContentValues(objects));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
 
         return true;
     }
@@ -163,7 +180,12 @@ public abstract class AbsStore<T extends Model> implements Store<T> {
 
         for (T object : objects) {
             isNull(object, "Object to update must not be null");
-            updateOperations.withValues(mapper.toContentValues(object));
+            try {
+                updateOperations.withValues(mapper.toContentValues(object));
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
 
         updateOperations.build();
@@ -211,7 +233,12 @@ public abstract class AbsStore<T extends Model> implements Store<T> {
 
         for (T object : objects) {
             isNull(object, "Object to delete must not be null");
-            deleteOperations.withValues(mapper.toContentValues(object));
+            try {
+                deleteOperations.withValues(mapper.toContentValues(object));
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
 
         }
 

@@ -30,6 +30,7 @@ package org.hisp.dhis.client.sdk.core.option;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -37,21 +38,28 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.client.sdk.core.commons.database.AbsMapper;
-import org.hisp.dhis.client.sdk.core.commons.database.Mapper;
 import org.hisp.dhis.client.sdk.core.option.OptionSetTable.OptionSetColumns;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.option.OptionSet;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getLong;
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getString;
 
 class OptionSetMapper extends AbsMapper<OptionSet> {
     private final ObjectMapper objectMapper;
+    private final Context context;
 
-    OptionSetMapper(ObjectMapper objectMapper) {
+    OptionSetMapper(ObjectMapper objectMapper, Context context) {
         this.objectMapper = objectMapper;
+        this.context = context;
     }
 
     @Override
@@ -70,7 +78,7 @@ class OptionSetMapper extends AbsMapper<OptionSet> {
     }
 
     @Override
-    public ContentValues toContentValues(OptionSet optionSet) {
+    public ContentValues toContentValues(OptionSet optionSet) throws IOException{
         if (!optionSet.isValid()) {
             throw new IllegalArgumentException("OptionSet is not valid");
         }
@@ -83,23 +91,40 @@ class OptionSetMapper extends AbsMapper<OptionSet> {
         contentValues.put(OptionSetColumns.COLUMN_LAST_UPDATED, BaseIdentifiableObject.DATE_FORMAT.format(optionSet.lastUpdated()));
         contentValues.put(OptionSetColumns.COLUMN_NAME, optionSet.name());
         contentValues.put(OptionSetColumns.COLUMN_DISPLAY_NAME, optionSet.displayName());
+        contentValues.put(OptionSetColumns.COLUMN_VERSION, optionSet.version());
 
         // try to serialize the optionSet into JSON blob
-        try {
-            contentValues.put(OptionSetColumns.COLUMN_BODY, objectMapper.writeValueAsString(optionSet));
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException(e);
+
+        String optionSetJson = objectMapper.writeValueAsString(optionSet);
+        if(optionSetJson.length() >= COLUMN_CHARACTER_LIMIT) {
+            String filePath = saveBlobToFile(context, OptionSet.class, optionSet, optionSetJson);
+
+            contentValues.put(OptionSetColumns.COLUMN_BODY, filePath);
         }
+        else {
+            contentValues.put(OptionSetColumns.COLUMN_BODY, objectMapper.writeValueAsString(optionSet));
+        }
+
         return contentValues;
     }
 
     @Override
     public OptionSet toModel(Cursor cursor) {
-        OptionSet optionSet = null;
+        OptionSet optionSet;
         // trying to deserialize the JSON blob into OptionSet instance
         try {
+            String bodyContent = getString(cursor, OptionSetColumns.COLUMN_BODY);
 
-            optionSet = objectMapper.readValue(getString(cursor, OptionSetColumns.COLUMN_BODY), OptionSet.class);
+            // if bodyContent starts with '{', it means we are dealing with a json structure
+            if(bodyContent.charAt(0) == '{') {
+               optionSet = objectMapper.readValue(bodyContent, OptionSet.class);
+            }
+            else {
+                String optionSetUid = getString(cursor, OptionSetColumns.COLUMN_UID);
+                String bodyContentFromFile = readFromBlobFile(context, OptionSet.class, optionSetUid);
+                optionSet = objectMapper.readValue(bodyContentFromFile, OptionSet.class);
+            }
+
             optionSet.toBuilder().id(getLong(cursor, OptionSetColumns.COLUMN_ID)).build();
         } catch (IOException e) {
             throw new IllegalArgumentException(e);

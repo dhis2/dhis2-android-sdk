@@ -260,7 +260,7 @@ public final class D2 {
             ProgramInteractor programInteractor = retrofit != null ? ProgramFactory.create(
                     retrofit, contentResolver, objectMapper) : null;
             OptionSetInteractor optionSetInteractor = retrofit != null ? OptionFactory.create(
-                    retrofit, contentResolver, objectMapper) : null;
+                    retrofit, contentResolver, objectMapper, application.getApplicationContext()) : null;
             TrackedEntityInteractor trackedEntityInteractor = retrofit != null ?
                     TrackedEntityFactory.create(retrofit, contentResolver) : null;
             EventInteractor eventInteractor = retrofit != null ? EventFactory.create(

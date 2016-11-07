@@ -34,6 +34,7 @@ import android.net.Uri;
 
 import org.hisp.dhis.client.sdk.models.common.Model;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface Mapper<ModelType extends Model> {
@@ -43,9 +44,9 @@ public interface Mapper<ModelType extends Model> {
 
     String[] getProjection();
 
-    ContentValues toContentValues(ModelType model);
+    ContentValues toContentValues(ModelType model) throws IOException;
 
-    ContentValues[] toContentValues(List<ModelType> models);
+    ContentValues[] toContentValues(List<ModelType> models) throws IOException;
 
     ModelType toModel(Cursor cursor);
 }

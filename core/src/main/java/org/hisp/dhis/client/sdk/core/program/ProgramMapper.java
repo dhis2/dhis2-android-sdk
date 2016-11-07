@@ -37,16 +37,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.client.sdk.core.commons.database.AbsMapper;
-import org.hisp.dhis.client.sdk.core.commons.database.Mapper;
 import org.hisp.dhis.client.sdk.core.program.ProgramTable.ProgramColumns;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.program.ProgramType;
 
 import java.io.IOException;
-import java.text.ParseException;
 
-import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getInt;
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getLong;
 import static org.hisp.dhis.client.sdk.core.commons.database.DbUtils.getString;
 
@@ -74,7 +70,7 @@ class ProgramMapper extends AbsMapper<Program> {
 
     @Override
     public ContentValues toContentValues(Program program) {
-        if(!program.isValid()) {
+        if (!program.isValid()) {
             throw new IllegalArgumentException("Program is not valid");
         }
 
@@ -92,6 +88,7 @@ class ProgramMapper extends AbsMapper<Program> {
         contentValues.put(ProgramColumns.COLUMN_DISPLAY_DESCRIPTION, program.displayDescription());
         contentValues.put(ProgramColumns.COLUMN_DISPLAY_FRONT_PAGE_LIST, program.displayFrontPageList() ? 1 : 0);
         contentValues.put(ProgramColumns.COLUMN_PROGRAM_TYPE, program.programType().toString());
+        contentValues.put(ProgramColumns.COLUMN_VERSION, program.version());
 
         // try to serialize the program into JSON blob
         try {

@@ -28,4 +28,5 @@
 
 <resources>
     <string name="app_name">core</string>
+    <string name="dir_json_blobs">jsonblob</string>
 </resources>

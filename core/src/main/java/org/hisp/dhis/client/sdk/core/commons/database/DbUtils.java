@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.core.commons.database;
 
 import android.content.ContentResolver;
+import android.database.CharArrayBuffer;
 import android.database.Cursor;
 
 import java.util.Locale;
@@ -56,6 +57,13 @@ public final class DbUtils {
     public static String getString(Cursor cursor, String columnName) {
         int columnIndex = cursor.getColumnIndex(columnName);
         return cursor.getString(columnIndex);
+    }
+
+    public static String getLongString(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        CharArrayBuffer buffer = new CharArrayBuffer(128);
+        cursor.copyStringToBuffer(columnIndex, buffer);
+        return String.copyValueOf(buffer.data);
     }
 
     public static String getContentType(Class<?> clazz) {

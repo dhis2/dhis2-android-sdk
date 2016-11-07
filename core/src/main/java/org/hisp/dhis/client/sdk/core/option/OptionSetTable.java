@@ -6,7 +6,7 @@ import android.net.Uri;
 import org.hisp.dhis.client.sdk.core.commons.database.DbContract;
 
 public interface OptionSetTable {
-    interface OptionSetColumns extends DbContract.IdColumn, DbContract.IdentifiableColumns, DbContract.VersionColumn, DbContract.BodyColumn {
+    interface OptionSetColumns extends DbContract.IdentifiableColumns, DbContract.VersionColumn, DbContract.BodyColumn {
         String TABLE_NAME = "optionSet";
     }
 
@@ -29,6 +29,7 @@ public interface OptionSetTable {
             OptionSetColumns.COLUMN_LAST_UPDATED,
             OptionSetColumns.COLUMN_NAME,
             OptionSetColumns.COLUMN_DISPLAY_NAME,
+            OptionSetColumns.COLUMN_VERSION,
             OptionSetColumns.COLUMN_BODY
     };
 
@@ -36,12 +37,12 @@ public interface OptionSetTable {
             OptionSetColumns.TABLE_NAME + " (" +
             OptionSetColumns.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             OptionSetColumns.COLUMN_UID + " TEXT UNIQUE NOT NULL ON CONFLICT REPLACE," +
-            OptionSetColumns.COLUMN_NAME + " TEXT," +
-            OptionSetColumns.COLUMN_DISPLAY_NAME + " TEXT," +
             OptionSetColumns.COLUMN_CODE + " TEXT," +
             OptionSetColumns.COLUMN_CREATED + " TEXT NOT NULL," +
             OptionSetColumns.COLUMN_LAST_UPDATED + " TEXT NOT NULL," +
-            OptionSetColumns.COLUMN_VERSION + " INTEGER," +
+            OptionSetColumns.COLUMN_NAME + " TEXT," +
+            OptionSetColumns.COLUMN_DISPLAY_NAME + " TEXT," +
+            OptionSetColumns.COLUMN_VERSION + " INTEGER NOT NULL," +
             OptionSetColumns.COLUMN_BODY + " TEXT NOT NULL )";
 
     String DROP_TABLE_OPTION_SETS = "DROP TABLE IF EXISTS " +

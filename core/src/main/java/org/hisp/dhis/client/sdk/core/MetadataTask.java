@@ -104,21 +104,15 @@ public class MetadataTask {
             System.out.println("Persisted orgUnits: " + persistedOrganisationUnits.values().toString());
             List<String> organisationUnitsToDownload = new ArrayList<>();
             for (OrganisationUnit organisationUnit : organisationUnitMap.values()) {
-                if (persistedOrganisationUnits.containsKey(organisationUnit.uid())) {
-                    OrganisationUnit persistedOrgUnit = persistedOrganisationUnits.get(organisationUnit.uid());
-                    if (organisationUnit.lastUpdated().getTime() > persistedOrgUnit.lastUpdated().getTime()) {
-                        // if program version from api is higher than in local db, download it
-                        organisationUnitsToDownload.add(organisationUnit.uid());
-                    }
-                } else {
-                    // if program doesn't exist in db, download it
+                if (!persistedOrganisationUnits.containsKey(organisationUnit.uid())) {
+                    // if org unit doesn't exist in db, download it
                     organisationUnitsToDownload.add(organisationUnit.uid());
                 }
             }
 
             System.out.println("OrgUnitUids to download: " + organisationUnitsToDownload.toString());
 
-            System.out.println(getPrograms(organisationUnitsToDownload).request().url().toString());
+            System.out.println(getOrganisationUnits(organisationUnitsToDownload).request().url().toString());
 
             // -------------------------
             // START ORGANISATION UNIT DOWNLOADING
@@ -143,7 +137,7 @@ public class MetadataTask {
             // -----------------------------------------------------------------------------
 
             Map<String, Program> persistedPrograms = toMap(programInteractor.store().queryAll());
-            System.out.println("Persisted programs: " + persistedPrograms.values().toString());
+            System.out.println("Persisted programs: (" + persistedPrograms.values().size() + ")");
             List<String> programsToDownload = new ArrayList<>();
             for (Program program : programMap.values()) {
                 if (persistedPrograms.containsKey(program.uid())) {
@@ -206,6 +200,9 @@ public class MetadataTask {
             }
             System.out.println("OptionSetUids to download: " + optionSetsToDownload.toString());
 
+
+            System.out.println(getOptionSets(optionSetsToDownload).request().url().toString());
+
             // --------------------------
             // START OPTION SETS DOWNLOAD
             // --------------------------
@@ -243,14 +240,8 @@ public class MetadataTask {
             System.out.println("Persisted trackedEntities: " + persistedTrackedEntities.values().toString());
             List<String> trackedEntitiesToDownload = new ArrayList<>();
             for (TrackedEntity trackedEntity : trackedEntityMap.values()) {
-                if (persistedTrackedEntities.containsKey(trackedEntity.uid())) {
-                    TrackedEntity persistedTrackedEntity = persistedTrackedEntities.get(trackedEntity.uid());
-                    if (trackedEntity.lastUpdated().getTime() > persistedTrackedEntity.lastUpdated().getTime()) {
-                        // if trackedEntity lastUpdated from api is newer than in local db, download it
-                        trackedEntitiesToDownload.add(trackedEntity.uid());
-                    }
-                } else {
-                    // if optionSet doesn't exist in db, download it
+                if (!persistedTrackedEntities.containsKey(trackedEntity.uid())) {
+                    // if tracked entity doesn't exist in db, download it
                     trackedEntitiesToDownload.add(trackedEntity.uid());
                 }
             }
@@ -279,7 +270,7 @@ public class MetadataTask {
             // FLUSHING TO DATABASE
             // --------------------
 
-            if(!organisationUnits.isEmpty()) {
+            if (!organisationUnits.isEmpty()) {
                 organisationUnitInteractor.store().save(organisationUnits);
             }
             if (!programs.isEmpty()) {
@@ -294,7 +285,8 @@ public class MetadataTask {
         }
     }
 
-    private Call<Payload<OrganisationUnit>> getOrganisationUnits(Collection<String> organisationUnitUids) {
+    private Call<Payload<OrganisationUnit>> getOrganisationUnits
+            (Collection<String> organisationUnitUids) {
         Map<String, String> queryMap = new HashMap<>();
         queryMap.put("fields", "id,name,displayName,code,lastUpdated,level,created,shortName," +
                 "displayShortName,path,openingDate,closedDate,parent[id],programs[id,version]");
@@ -306,7 +298,7 @@ public class MetadataTask {
         Map<String, String> queryMap = new HashMap<>();
         queryMap.put("fields", "id,organisationUnits[id],dataViewOrganisationUnits[id]," +
                 "userCredentials[" +
-                    "id,username,userRoles[" +
+                "id,username,userRoles[" +
                 "       id,programs[" +
                 "                   id,version,trackedEntity[id],programStages[" +
                 "                       id,programStageSections[id],programStageDataElements[" +
@@ -367,7 +359,8 @@ public class MetadataTask {
         return optionSetInteractor.api().list(queryMap);
     }
 
-    private Call<Payload<TrackedEntity>> getTrackedEntities(Collection<String> trackedEntityUids) {
+    private Call<Payload<TrackedEntity>> getTrackedEntities
+            (Collection<String> trackedEntityUids) {
         Map<String, String> queryMap = new HashMap<>();
         queryMap.put("fields", IDENTIFIABLE_PROPERTIES + "," + NAMEABLE_PROPERTIES);
         queryMap.put("filter", "id:in:" + ids(trackedEntityUids));

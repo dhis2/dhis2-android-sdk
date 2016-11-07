@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.client.sdk.ui.bindings.presenters;
 
-import android.content.ContentResolver;
-
 import org.hisp.dhis.client.sdk.ui.AppPreferences;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.DefaultAppAccountManager;
+import org.hisp.dhis.client.sdk.ui.bindings.util.SystemSettings;
 import org.hisp.dhis.client.sdk.ui.bindings.views.SettingsView;
 import org.hisp.dhis.client.sdk.ui.bindings.views.View;
 
@@ -85,7 +84,7 @@ public class SettingsPresenterImpl implements SettingsPresenter {
         appPreferences.setBackgroundSyncState(enabled);
 
         if (enabled) {
-            if (!ContentResolver.getMasterSyncAutomatically()) {
+            if (!SystemSettings.getMasterSyncAutomatically()) {
                 //display a notification to the user to enable synchronization globally.
                 settingsView.showMessage(warning);
             }

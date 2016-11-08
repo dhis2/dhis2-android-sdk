@@ -36,7 +36,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         TaskUnitTests.class,
-        QueryUnitTests.class
+        QueryUnitTests.class,
 })
 public class CoreTestSuite {
 }

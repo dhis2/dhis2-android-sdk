@@ -42,6 +42,15 @@ android {
         versionName configuration.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    packagingOptions {
+        // excluding duplicate license files
+        // from jackson modules
+        exclude 'META-INF/LICENSE'
+
+        // should be removed with interoperability library
+        exclude 'META-INF/rxjava.properties'
+    }
 }
 
 dependencies {
@@ -69,6 +78,8 @@ dependencies {
     testCompile "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
 
     // Android test dependencies
+    androidTestCompile "org.mockito:mockito-core:${libraries.mockito}"
+    androidTestCompile "com.android.support.test:runner:${libraries.testrunner}"
     androidTestCompile("com.android.support.test.espresso:espresso-core:${libraries.espresso}", {
         exclude group: "com.android.support", module: "support-annotations"
     })

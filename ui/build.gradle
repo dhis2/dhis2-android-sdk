@@ -23,8 +23,6 @@ android {
 }
 
 dependencies {
-    // Local
-    //compile project(":utils")
 
     // Google
     compile "com.android.support:support-annotations:${libraries.support}"
@@ -35,9 +33,6 @@ dependencies {
     compile "com.android.support:cardview-v7:${libraries.support}"
     compile "com.android.support:percent:${libraries.support}"
     compile "com.android.support:design:${libraries.support}"
-
-    // Other
-    compile "com.github.castorflex.smoothprogressbar:library-circular:${libraries.progressbar}"
 
     // Test
     testCompile "junit:junit:${libraries.junit}"

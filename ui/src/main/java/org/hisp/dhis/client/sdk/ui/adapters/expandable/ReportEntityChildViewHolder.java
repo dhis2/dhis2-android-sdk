@@ -2,6 +2,7 @@ package org.hisp.dhis.client.sdk.ui.adapters.expandable;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageButton;
@@ -23,12 +24,19 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
     public static final String STATUS_LABEL = "SyncStatus";
     public static final String ORG_UNIT = "OrgUnit";
 
+    final ImageView statusIcon;
     final CircleView statusBackground;
     final TextView label;
     final TextView date;
-    final TextView eventStatusText;
     final ImageButton syncButton;
 
+
+    final Drawable drawableActive;
+    final Drawable drawableCompleted;
+    final Drawable drawableSkipped;
+    final Drawable drawableSchedule;
+
+    final int colorGray;
     final int colorGreen;
     final int colorOrange;
     final int colorRed;
@@ -39,15 +47,21 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
         super(itemView);
 
         context = itemView.getContext();
+        statusIcon = (ImageView) itemView.findViewById(R.id.status_icon);
         statusBackground = (CircleView) itemView.findViewById(R.id.circleview_status_background);
         syncButton = (ImageButton) itemView.findViewById(R.id.refresh_button);
         label = (TextView) itemView.findViewById(R.id.event_name);
         date = (TextView) itemView.findViewById(R.id.date_text);
-        eventStatusText = (TextView) itemView.findViewById(R.id.status_text);
 
+        drawableActive = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_event_note_white);
+        drawableCompleted = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_event_available_white);
+        drawableSchedule = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_event_white);
+        drawableSkipped = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_event_busy_white);
+
+        colorGray = ContextCompat.getColor(itemView.getContext(), R.color.color_gray_icon);
         colorGreen = ContextCompat.getColor(itemView.getContext(), R.color.color_material_green_default);
         colorOrange = ContextCompat.getColor(itemView.getContext(), R.color.color_accent_default);
-        colorRed = ContextCompat.getColor(itemView.getContext(), R.color.color_material_red_default);
+        colorRed = ContextCompat.getColor(itemView.getContext(), android.R.color.black);
     }
 
     public void bind(ReportEntity reportEntity) {
@@ -88,20 +102,21 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
         String status = reportEntity.getValueForDataElement(EVENT_STATUS);
         switch (status) {
             case "ACTIVE":
-                eventStatusText.setText(context.getString(R.string.active));
-                eventStatusText.setTextColor(Color.BLACK);
+                statusBackground.setFillColor(colorGray);
+                statusIcon.setImageDrawable(drawableActive);
                 break;
             case "COMPLETED":
-                eventStatusText.setText(context.getString(R.string.completed));
-                eventStatusText.setTextColor(colorGreen);
+                statusBackground.setFillColor(colorGreen);
+                statusIcon.setImageDrawable(drawableCompleted);
                 break;
             case "SCHEDULED":
-                eventStatusText.setText(context.getString(R.string.scheduled));
-                eventStatusText.setTextColor(colorOrange);
+                statusBackground.setFillColor(colorOrange);
+                statusIcon.setImageDrawable(drawableSchedule);
                 break;
             case "SKIPPED":
-                eventStatusText.setText(context.getString(R.string.skipped));
-                eventStatusText.setTextColor(colorRed);
+                statusBackground.setFillColor(colorRed);
+                statusIcon.setImageDrawable(drawableSkipped);
+
                 break;
         }
         //label.setText(reportEntity.getValueForDataElement(ORG_UNIT));

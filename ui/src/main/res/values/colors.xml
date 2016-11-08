@@ -57,9 +57,10 @@
     <color name="white_unselected">#ccffffff</color>
 
 
-    <color name="color_gray_300">#bdbdbd</color>
-    <color name="color_green_300">#66bb6a</color>
-    <color name="color_orange_300">#ffa726</color>
-    <color name="color_red_300">#ef5350</color>
+    <color name="color_gray_400">#bdbdbd</color>
+    <color name="color_green_300">#81c784</color>
+    <color name="color_orange_300">#ffb74d</color>
+    <color name="color_red_300">#e57373</color>
+    <color name="color_gray_700">#616161</color>
 
 </resources>

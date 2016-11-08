@@ -26,8 +26,38 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.hisp.dhis.client.sdk.ui">
+<resources>
 
-    <application android:theme="@style/AppTheme.Base" />
-</manifest>
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- PreferenceFragment theme -->
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+        <!-- AlertDialogTheme theme -->
+        <item name="alertDialogTheme">@style/AppTheme.AlertDialog</item>
+
+        <!-- Colour palette -->
+        <item name="colorPrimary">@color/color_primary_default</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/color_accent_default</item>
+
+        <!-- General properties -->
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.Main" parent="AppTheme.Base"></style>
+
+    <style name="AppTheme.Dialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/color_primary_default</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/color_accent_default</item>
+
+        <!-- General properties -->
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.AlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorPrimary">@color/color_primary_default</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/color_accent_default</item>
+    </style>
+
+</resources>

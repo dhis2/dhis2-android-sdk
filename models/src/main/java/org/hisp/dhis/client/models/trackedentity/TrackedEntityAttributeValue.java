@@ -35,6 +35,8 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.models.common.BaseModel;
 
+import javax.annotation.Nullable;
+
 @AutoValue
 @JsonDeserialize(builder = AutoValue_TrackedEntityAttributeValue.Builder.class)
 public abstract class TrackedEntityAttributeValue extends BaseModel {
@@ -42,6 +44,7 @@ public abstract class TrackedEntityAttributeValue extends BaseModel {
     private static final String JSON_PROPERTY_VALUE = "value";
 
     @JsonIgnore
+    @Nullable
     public abstract TrackedEntityInstance trackedEntityInstance();
 
     @JsonProperty(JSON_PROPERTY_ATTRIBUTE)
@@ -66,7 +69,8 @@ public abstract class TrackedEntityAttributeValue extends BaseModel {
     public static abstract class Builder extends BaseModel.Builder<Builder> {
 
         @JsonIgnore
-        public abstract Builder trackedEntityInstance(TrackedEntityInstance trackedEntityInstance);
+        public abstract Builder trackedEntityInstance(
+                @Nullable TrackedEntityInstance trackedEntityInstance);
 
         @JsonProperty(JSON_PROPERTY_ATTRIBUTE)
         public abstract Builder trackedEntityAttribute(String trackedEntityAttribute);

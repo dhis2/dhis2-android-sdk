@@ -49,10 +49,9 @@ public abstract class TrackedEntityInstance extends BaseDataModel {
     private static final String JSON_PROPERTY_CREATED = "created";
     private static final String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
     private static final String JSON_PROPERTY_ORGANISATION_UNIT = "orgUnit";
-    private static final String JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES = "trackedEntityDataValues";
+    private static final String JSON_PROPERTY_ATTRIBUTES = "attributes";
     private static final String JSON_PROPERTY_RELATIONSHIPS = "relationships";
 
-    @Nullable
     @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_UID)
     public abstract String uid();
 
@@ -67,7 +66,7 @@ public abstract class TrackedEntityInstance extends BaseDataModel {
     @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
     public abstract String organisationUnit();
 
-    @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES)
+    @JsonProperty(JSON_PROPERTY_ATTRIBUTES)
     public abstract List<TrackedEntityAttributeValue> trackedEntityAttributeValues();
 
     @Nullable
@@ -94,7 +93,7 @@ public abstract class TrackedEntityInstance extends BaseDataModel {
     @AutoValue.Builder
     public static abstract class Builder extends BaseDataModel.Builder<Builder> {
         @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_UID)
-        public abstract Builder uid(@Nullable String uid);
+        public abstract Builder uid(String uid);
 
         @JsonProperty(JSON_PROPERTY_CREATED)
         public abstract Builder created(@Nullable Date created);
@@ -105,7 +104,7 @@ public abstract class TrackedEntityInstance extends BaseDataModel {
         @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
         public abstract Builder organisationUnit(String organisationUnit);
 
-        @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES)
+        @JsonProperty(JSON_PROPERTY_ATTRIBUTES)
         public abstract Builder trackedEntityAttributeValues(List<TrackedEntityAttributeValue> trackedEntityAttributeValues);
 
         @JsonProperty(JSON_PROPERTY_RELATIONSHIPS)

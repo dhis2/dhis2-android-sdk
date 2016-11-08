@@ -68,6 +68,7 @@ ext {
     libraries = [
             // android
             support         : "25.0.0",
+            progressbar     : "1.2.0",
 
             // java
             jackson         : "2.8.4",

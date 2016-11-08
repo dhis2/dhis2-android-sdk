@@ -55,4 +55,11 @@
 
     <color name="color_default_error">@color/color_material_red_default</color>
     <color name="white_unselected">#ccffffff</color>
+
+
+    <color name="color_gray_300">#bdbdbd</color>
+    <color name="color_green_300">#66bb6a</color>
+    <color name="color_orange_300">#ffa726</color>
+    <color name="color_red_300">#ef5350</color>
+
 </resources>

@@ -1,7 +1,6 @@
 package org.hisp.dhis.client.sdk.ui.adapters.expandable;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -58,10 +57,10 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
         drawableSchedule = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_event_white);
         drawableSkipped = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_event_busy_white);
 
-        colorGray = ContextCompat.getColor(itemView.getContext(), R.color.color_gray_icon);
-        colorGreen = ContextCompat.getColor(itemView.getContext(), R.color.color_material_green_default);
-        colorOrange = ContextCompat.getColor(itemView.getContext(), R.color.color_accent_default);
-        colorRed = ContextCompat.getColor(itemView.getContext(), android.R.color.black);
+        colorGray = ContextCompat.getColor(itemView.getContext(), R.color.color_gray_300);
+        colorGreen = ContextCompat.getColor(itemView.getContext(), R.color.color_green_300);
+        colorOrange = ContextCompat.getColor(itemView.getContext(), R.color.color_orange_300);
+        colorRed = ContextCompat.getColor(itemView.getContext(), R.color.color_red_300);
     }
 
     public void bind(ReportEntity reportEntity) {

@@ -28,13 +28,15 @@
 
 package org.hisp.dhis.android.core;
 
+import org.hisp.dhis.android.core.commons.QueryUnitTests;
 import org.hisp.dhis.android.core.commons.TaskUnitTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        TaskUnitTests.class
+        TaskUnitTests.class,
+        QueryUnitTests.class
 })
 public class CoreTestSuite {
 }

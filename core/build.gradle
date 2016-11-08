@@ -66,6 +66,7 @@ dependencies {
     testCompile "junit:junit:${libraries.junit}"
     testCompile "org.mockito:mockito-core:${libraries.mockito}"
     testCompile "org.assertj:assertj-core:${libraries.assertj}"
+    testCompile "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
 
     // Android test dependencies
     androidTestCompile("com.android.support.test.espresso:espresso-core:${libraries.espresso}", {

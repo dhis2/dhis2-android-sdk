@@ -26,8 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.commons;
 
-public class Stub {
+public interface Task<T> {
+    T execute() throws RuntimeException;
 
+    void execute(Callback<T> callback);
+
+    boolean isExecuted();
 }

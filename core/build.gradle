@@ -45,7 +45,7 @@ android {
 }
 
 dependencies {
-    // client models
+    // Client models
     compile project(":models")
 
     // Google support libraries
@@ -53,9 +53,19 @@ dependencies {
 
     // ReactiveX
     compile "io.reactivex.rxjava2:rxjava:${libraries.rxjava}"
+    compile "com.github.akarnokd:rxjava2-interop:${libraries.rxjavacompat}"
+
+    // Square
+    compile "com.squareup.sqlbrite:sqlbrite:${libraries.sqlbrite}"
+
+    // Using javax annotations in conjunction with auto-value in order
+    // to have optional values in models
+    provided "com.google.code.findbugs:jsr305:${libraries.javaxannotations}"
 
     // Java test dependencies
     testCompile "junit:junit:${libraries.junit}"
+    testCompile "org.mockito:mockito-core:${libraries.mockito}"
+    testCompile "org.assertj:assertj-core:${libraries.assertj}"
 
     // Android test dependencies
     androidTestCompile("com.android.support.test.espresso:espresso-core:${libraries.espresso}", {

@@ -26,62 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-buildscript {
-    repositories {
-        jcenter()
+package org.hisp.dhis.android.core.commons;
 
-        // gradle plugin repository
-        // (required for java apt plugin)
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        // android gradle plugin
-        classpath 'com.android.tools.build:gradle:2.2.2'
+public interface Callback<T> {
+    void onSuccess(Task<T> task, T result);
 
-        // annotation processing plugin for java modules.
-        // Please, see: https://github.com/tbroyer/gradle-apt-plugin
-        classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
-    }
-}
-
-allprojects {
-    repositories {
-        jcenter()
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
-
-ext {
-    configuration = [
-            buildToolsVersion: "24.0.2",
-            minSdkVersion    : 15,
-            targetSdkVersion : 24,
-            versionCode      : 1,
-            versionName      : "0.1"
-    ]
-
-    libraries = [
-            // android
-            support         : "25.0.0",
-
-            // java
-            jackson         : "2.8.4",
-            autovalue       : "1.3",
-            javaxannotations: "3.0.1",
-            rxjava          : "2.0.0",
-            rxjavacompat    : "0.6.0",
-            sqlbrite        : "0.8.0",
-
-            // test dependencies
-            junit           : "4.12",
-            assertj         : "3.5.2",
-            mockito         : "2.2.10",
-            espresso        : "2.2.2",
-            equalsverifier  : "2.1.6",
-    ]
+    void onFailure(Task<T> task, Throwable throwable);
 }

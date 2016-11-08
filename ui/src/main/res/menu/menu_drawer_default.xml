@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2016, University of Oslo
+  ~
+  ~ All rights reserved.
+  ~ Redistribution and use in source and binary forms, with or without
+  ~ modification, are permitted provided that the following conditions are met:
+  ~ Redistributions of source code must retain the above copyright notice, this
+  ~ list of conditions and the following disclaimer.
+  ~
+  ~ Redistributions in binary form must reproduce the above copyright notice,
+  ~ this list of conditions and the following disclaimer in the documentation
+  ~ and/or other materials provided with the distribution.
+  ~ Neither the name of the HISP project nor the names of its contributors may
+  ~ be used to endorse or promote products derived from this software without
+  ~ specific prior written permission.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ~ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  ~ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  ~ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+  ~ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  ~ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  ~ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  ~ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/drawer_group_main"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/drawer_item_profile"
+            android:icon="@drawable/ic_profile"
+            android:orderInCategory="110"
+            android:title="@string/drawer_item_profile"/>
+        <item
+            android:id="@+id/drawer_item_apps"
+            android:orderInCategory="200"
+            android:title="@string/drawer_item_apps">
+            <menu>
+                <group
+                    android:id="@+id/drawer_group_apps"
+                    android:checkableBehavior="none">
+                    <item
+                        android:id="@+id/drawer_item_dashboard"
+                        android:icon="@drawable/ic_dashboard"
+                        android:orderInCategory="200"
+                        android:title="@string/drawer_item_dashboard"/>
+                    <item
+                        android:id="@+id/drawer_item_data_capture"
+                        android:icon="@drawable/ic_data_capture"
+                        android:orderInCategory="200"
+                        android:title="@string/drawer_item_data_capture"/>
+                    <item
+                        android:id="@+id/drawer_item_event_capture"
+                        android:icon="@drawable/ic_event_capture"
+                        android:orderInCategory="200"
+                        android:title="@string/drawer_item_event_capture"/>
+                    <item
+                        android:id="@+id/drawer_item_tracker_capture"
+                        android:icon="@drawable/ic_tracker_capture"
+                        android:orderInCategory="200"
+                        android:title="@string/drawer_item_tracker_capture"/>
+                    <item
+                        android:id="@+id/drawer_item_tracker_capture_reports"
+                        android:orderInCategory="200"
+                        android:title="@string/drawer_item_tracker_capture_reports"/>
+                </group>
+            </menu>
+        </item>
+    </group>
+    <item
+        android:id="@+id/drawer_item_other"
+        android:orderInCategory="300"
+        android:title="@string/drawer_item_other">
+        <menu>
+            <group
+                android:id="@+id/drawer_group_other"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/drawer_item_settings"
+                    android:icon="@drawable/ic_settings"
+                    android:title="@string/drawer_item_settings"/>
+                <!--<item
+                    android:id="@+id/drawer_item_help"
+                    android:icon="@drawable/ic_help"
+                    android:title="@string/drawer_item_help" />
+                    -->
+                <item
+                    android:id="@+id/drawer_item_information"
+                    android:icon="@drawable/ic_info"
+                    android:title="@string/drawer_item_information" />
+            </group>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/drawer_item_status"
+        android:orderInCategory="400"
+        android:title="@string/drawer_item_status">
+        <menu>
+            <group
+                android:id="@+id/drawer_group_status"
+                android:checkableBehavior="none">
+                <item
+                    android:id="@+id/drawer_item_synchronized"
+                    android:enabled="false"
+                    android:icon="@drawable/ic_synchronized"
+                    android:title="@string/drawer_item_synchronized"/>
+            </group>
+        </menu>
+    </item>
+</menu>

@@ -50,6 +50,11 @@ android {
             minifyEnabled false
         }
     }
+
+    lintOptions {
+        warningsAsErrors true
+        abortOnError true // Fail early.
+    }
 }
 
 dependencies {

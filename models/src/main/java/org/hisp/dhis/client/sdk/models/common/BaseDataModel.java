@@ -40,6 +40,13 @@ public abstract class BaseDataModel extends BaseModel implements DataModel {
     @JsonIgnore
     public abstract State state();
 
+    public boolean isValid() {
+        if(state() == null) {
+            return false;
+        }
+        return true;
+    }
+
     protected static abstract class Builder<T extends Builder> extends BaseModel.Builder<T> {
         public abstract T state(State state);
     }

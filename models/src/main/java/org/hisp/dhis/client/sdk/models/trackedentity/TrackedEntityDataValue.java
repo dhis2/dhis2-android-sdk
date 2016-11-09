@@ -61,12 +61,16 @@ public abstract class TrackedEntityDataValue extends BaseDataModel {
     @JsonProperty(JSON_PROPERTY_VALUE)
     public abstract String value();
 
+    public abstract Builder toBuilder();
+
     public static Builder builder() {
         return new AutoValue_TrackedEntityDataValue.Builder();
     }
 
     @Override
     public boolean isValid() {
+        super.isValid();
+
         if (event() == null) {
             return false;
         }

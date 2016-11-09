@@ -113,13 +113,13 @@ public abstract class Event extends BaseDataModel {
     @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES)
     public abstract List<TrackedEntityDataValue> trackedEntityDataValues();
 
+    public abstract Builder toBuilder();
+
     @Override
     public boolean isValid() {
-        if (created() == null || lastUpdated() == null) {
-            return false;
-        }
+        super.isValid();
 
-        if (trackedEntityDataValues() == null || trackedEntityDataValues().isEmpty()) {
+        if (uid() == null || created() == null) {
             return false;
         }
 

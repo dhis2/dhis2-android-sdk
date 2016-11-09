@@ -56,8 +56,8 @@ sourceSets {
 // This allows us see tests execution progress in the output on the CI.
 test {
     testLogging {
-        events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
-        exceptionFormat 'full'
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+        exceptionFormat "full"
     }
 }
 

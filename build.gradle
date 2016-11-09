@@ -38,11 +38,14 @@ buildscript {
     }
     dependencies {
         // android gradle plugin
-        classpath 'com.android.tools.build:gradle:2.2.2'
+        classpath "com.android.tools.build:gradle:2.2.2"
 
         // annotation processing plugin for java modules.
         // Please, see: https://github.com/tbroyer/gradle-apt-plugin
         classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
+
+        // method count plugin
+        classpath "com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.6.1"
     }
 }
 
@@ -80,7 +83,7 @@ ext {
             // test dependencies
             junit           : "4.12",
             assertj         : "3.5.2",
-            mockito         : "2.2.10",
+            mockito         : "2.2.15",
             espresso        : "2.2.2",
             testrunner      : "0.5",
             equalsverifier  : "2.1.6",

@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+apply plugin: "com.android.library"
 
 def configuration = rootProject.ext.configuration
 def libraries = rootProject.ext.libraries
@@ -46,19 +46,30 @@ android {
     packagingOptions {
         // excluding duplicate license files
         // from jackson modules
-        exclude 'META-INF/LICENSE'
+        exclude "META-INF/LICENSE"
 
         // should be removed with interoperability library
-        exclude 'META-INF/rxjava.properties'
+        exclude "META-INF/rxjava.properties"
+    }
+}
+
+// Check if the build requires dex count, if yes analyze dex for amount of methods
+def withDexCount = project.hasProperty("withDexCount")
+if (withDexCount) {
+    apply plugin: "com.getkeepsafe.dexcount"
+
+    dexcount {
+        format = "list"
+        verbose = false
+        includeFieldCount = true
+        includeTotalMethodCount = true
+        maxTreeDepth = Integer.MAX_VALUE
     }
 }
 
 dependencies {
     // Client models
     compile project(":models")
-
-    // Google support libraries
-    compile "com.android.support:appcompat-v7:${libraries.support}"
 
     // ReactiveX
     compile "io.reactivex.rxjava2:rxjava:${libraries.rxjava}"
@@ -78,7 +89,6 @@ dependencies {
     testCompile "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
 
     // Android test dependencies
-    androidTestCompile "org.mockito:mockito-core:${libraries.mockito}"
     androidTestCompile "com.android.support.test:runner:${libraries.testrunner}"
     androidTestCompile("com.android.support.test.espresso:espresso-core:${libraries.espresso}", {
         exclude group: "com.android.support", module: "support-annotations"

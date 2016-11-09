@@ -35,6 +35,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -42,6 +43,7 @@ import javax.annotation.Nullable;
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ProgramStageSection.Builder.class)
 public abstract class ProgramStageSection extends BaseIdentifiableObject {
+    public static final Comparator<ProgramStageSection> DESCENDING_SORT_ORDER_COMPARATOR = new DescendingSortOrderComparator();
     private static final String JSON_PROPERTY_PROGRAM_INDICATORS = "programIndicators";
     private static final String JSON_PROPERTY_PROGRAM_STAGE_DATA_ELEMENTS = "programStageDataElements";
     private static final String JSON_PROPERTY_SORT_ORDER = "sortOrder";
@@ -57,6 +59,22 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject {
     @Nullable
     @JsonProperty(JSON_PROPERTY_SORT_ORDER)
     public abstract Integer sortOrder();
+
+    /**
+     * Comparator that returns the ProgramStageDataElement with the sortOrder
+     * as the greater of the two given.
+     */
+    private static class DescendingSortOrderComparator implements Comparator<ProgramStageSection> {
+
+        @Override
+        public int compare(ProgramStageSection first, ProgramStageSection second) {
+            if (first != null && second != null && first.sortOrder() != null) {
+                return first.sortOrder().compareTo(second.sortOrder());
+            }
+
+            return 0;
+        }
+    }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {

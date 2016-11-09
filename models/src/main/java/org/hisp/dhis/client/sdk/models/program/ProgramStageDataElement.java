@@ -36,12 +36,16 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.client.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
+import java.util.Comparator;
+
 import javax.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ProgramStageDataElement.Builder.class)
 //TODO: ProgramStageDataElement is not a true BaseIdentifiableObject. It lacks name and displayName in API. Override those properties and return dataElement.getName() and dataElement.getDisplayName()
 public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
+    public static final Comparator<ProgramStageDataElement> DESCENDING_SORT_ORDER_COMPARATOR = new DescendingSortOrderComparator();
+
     private static final String JSON_PROPERTY_DISPLAY_IN_REPORTS = "displayInReports";
     private static final String JSON_PROPERTY_DATA_ELEMENT = "dataElement";
     private static final String JSON_PROPERTY_COMPULSORY = "compulsory";
@@ -75,6 +79,22 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
 
     public static ProgramStageDataElement.Builder builder() {
         return new AutoValue_ProgramStageDataElement.Builder();
+    }
+
+    /**
+     * Comparator that returns the ProgramStageDataElement with the sortOrder
+     * as the greater of the two given.
+     */
+    private static class DescendingSortOrderComparator implements Comparator<ProgramStageDataElement> {
+
+        @Override
+        public int compare(ProgramStageDataElement first, ProgramStageDataElement second) {
+            if (first != null && second != null && first.sortOrder() != null) {
+                return first.sortOrder().compareTo(second.sortOrder());
+            }
+
+            return 0;
+        }
     }
 
     @AutoValue.Builder

@@ -26,4 +26,4 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':core', ':models', ':ui', ':utils'
+include ':core', ':models', ':ui', ':utils', ':ui-bindings'

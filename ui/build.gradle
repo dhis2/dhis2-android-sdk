@@ -25,14 +25,9 @@ android {
 dependencies {
 
     // Google
-    compile "com.android.support:support-annotations:${libraries.support}"
-    compile "com.android.support:recyclerview-v7:${libraries.support}"
     compile "com.android.support:preference-v7:${libraries.support}"
     compile "com.android.support:preference-v14:${libraries.support}"
-    compile "com.android.support:appcompat-v7:${libraries.support}"
     compile "com.android.support:cardview-v7:${libraries.support}"
-    compile "com.android.support:percent:${libraries.support}"
-    compile "com.android.support:design:${libraries.support}"
 
     // Test
     testCompile "junit:junit:${libraries.junit}"

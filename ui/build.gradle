@@ -52,8 +52,8 @@ android {
 
 dependencies {
 
-    // Internal
-    compile project(path: ':utils')
+    // Local
+    compile project(":utils")
 
     // Google
     compile "com.android.support:preference-v7:${libraries.support}"

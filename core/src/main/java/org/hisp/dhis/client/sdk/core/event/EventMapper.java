@@ -77,15 +77,16 @@ class EventMapper extends AbsMapper<Event> {
         contentValues.put(EventColumns.COLUMN_ID, event.id());
         contentValues.put(EventColumns.COLUMN_UID, event.uid());
         contentValues.put(EventColumns.COLUMN_CREATED, BaseIdentifiableObject.DATE_FORMAT.format(event.created()));
-        contentValues.put(EventColumns.COLUMN_LAST_UPDATED, BaseIdentifiableObject.DATE_FORMAT.format(event.lastUpdated()));
-        contentValues.put(EventColumns.COLUMN_COMPLETED_DATE, BaseIdentifiableObject.DATE_FORMAT.format(event.completedDate()));
-        contentValues.put(EventColumns.COLUMN_EVENT_DATE, BaseIdentifiableObject.DATE_FORMAT.format(event.eventDate()));
+        contentValues.put(EventColumns.COLUMN_LAST_UPDATED, event.lastUpdated() != null ? BaseIdentifiableObject.DATE_FORMAT.format(event.lastUpdated()) : null);
+        contentValues.put(EventColumns.COLUMN_COMPLETED_DATE, event.completedDate() != null ? BaseIdentifiableObject.DATE_FORMAT.format(event.completedDate()) : null);
+        contentValues.put(EventColumns.COLUMN_EVENT_DATE, event.eventDate() != null ? BaseIdentifiableObject.DATE_FORMAT.format(event.eventDate()) : null);
+        contentValues.put(EventColumns.COLUMN_DUE_DATE, event.dueDate() != null ? BaseIdentifiableObject.DATE_FORMAT.format(event.dueDate()) : null);
         contentValues.put(EventColumns.COLUMN_EVENT_STATUS, event.status().toString());
         contentValues.put(EventColumns.COLUMN_ORGANISATION_UNIT, event.organisationUnit());
         contentValues.put(EventColumns.COLUMN_PROGRAM, event.program());
         contentValues.put(EventColumns.COLUMN_PROGRAM_STAGE, event.programStage());
-        contentValues.put(EventColumns.COLUMN_LATITUDE, event.coordinates().latitude());
-        contentValues.put(EventColumns.COLUMN_LONGITUDE, event.coordinates().longitude());
+        contentValues.put(EventColumns.COLUMN_LATITUDE, event.coordinates() != null ? event.coordinates().latitude() : null);
+        contentValues.put(EventColumns.COLUMN_LONGITUDE, event.coordinates() != null ? event.coordinates().longitude() : null);
         contentValues.put(EventColumns.COLUMN_STATE, event.state().toString());
 
         return contentValues;
@@ -100,6 +101,7 @@ class EventMapper extends AbsMapper<Event> {
                     .id(getLong(cursor, EventColumns.COLUMN_ID))
                     .uid(getString(cursor, EventColumns.COLUMN_UID))
                     .status(EventStatus.valueOf(getString(cursor, EventColumns.COLUMN_EVENT_STATUS)))
+                    .organisationUnit(getString(cursor, EventColumns.COLUMN_ORGANISATION_UNIT))
                     .program(getString(cursor, EventColumns.COLUMN_PROGRAM))
                     .programStage(getString(cursor, EventColumns.COLUMN_PROGRAM_STAGE))
                     .state(State.valueOf(getString(cursor, EventColumns.COLUMN_STATE)))
@@ -107,12 +109,14 @@ class EventMapper extends AbsMapper<Event> {
                             .longitude(getDouble(cursor, EventColumns.COLUMN_LONGITUDE)).build())
                     .created(BaseIdentifiableObject.DATE_FORMAT
                             .parse(getString(cursor, EventColumns.COLUMN_CREATED)))
-                    .lastUpdated(BaseIdentifiableObject.DATE_FORMAT
-                            .parse(getString(cursor, EventColumns.COLUMN_LAST_UPDATED)))
-                    .completedDate(BaseIdentifiableObject.DATE_FORMAT
-                            .parse(getString(cursor, EventColumns.COLUMN_COMPLETED_DATE)))
-                    .eventDate(BaseIdentifiableObject.DATE_FORMAT
-                            .parse(getString(cursor, EventColumns.COLUMN_EVENT_DATE))).build();
+                    .lastUpdated(getString(cursor, EventColumns.COLUMN_LAST_UPDATED) != null ? BaseIdentifiableObject.DATE_FORMAT
+                            .parse(getString(cursor, EventColumns.COLUMN_LAST_UPDATED)) : null)
+                    .completedDate(getString(cursor, EventColumns.COLUMN_COMPLETED_DATE) != null ? BaseIdentifiableObject.DATE_FORMAT
+                            .parse(getString(cursor, EventColumns.COLUMN_COMPLETED_DATE)) : null)
+                    .dueDate(getString(cursor, EventColumns.COLUMN_DUE_DATE) != null ? BaseIdentifiableObject.DATE_FORMAT
+                            .parse(getString(cursor, EventColumns.COLUMN_DUE_DATE)) : null)
+                    .eventDate(getString(cursor, EventColumns.COLUMN_EVENT_DATE) != null ? BaseIdentifiableObject.DATE_FORMAT
+                            .parse(getString(cursor, EventColumns.COLUMN_EVENT_DATE)) : null).build();
 
         } catch (ParseException e) {
             throw new IllegalArgumentException(e);

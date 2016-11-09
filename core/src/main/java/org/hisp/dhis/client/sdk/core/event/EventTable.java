@@ -8,7 +8,7 @@ import org.hisp.dhis.client.sdk.core.program.ProgramTable.ProgramColumns;
 import org.hisp.dhis.client.sdk.models.event.Event;
 
 public interface EventTable {
-    interface EventColumns extends DbContract.IdentifiableColumns, DbContract.CoordinatesColumn, DbContract.StateColumn {
+    interface EventColumns extends DbContract.IdColumn, DbContract.UidColumn, DbContract.TimeStampColumns, DbContract.CoordinatesColumn, DbContract.StateColumn {
         String TABLE_NAME = "events";
 
         String COLUMN_PROGRAM = "program";
@@ -16,6 +16,7 @@ public interface EventTable {
         String COLUMN_ORGANISATION_UNIT = "organisationUnit";
         String COLUMN_EVENT_STATUS = "eventStatus";
         String COLUMN_EVENT_DATE = "eventDate";
+        String COLUMN_DUE_DATE = "dueDate";
         String COLUMN_COMPLETED_DATE = "completedDate";
     }
 
@@ -23,15 +24,13 @@ public interface EventTable {
             EventColumns.TABLE_NAME + " (" +
             EventColumns.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             EventColumns.COLUMN_UID + " TEXT UNIQUE NOT NULL ON CONFLICT REPLACE," +
-            EventColumns.COLUMN_NAME + " TEXT NOT NULL," +
-            EventColumns.COLUMN_DISPLAY_NAME + " TEXT NOT NULL," +
-            EventColumns.COLUMN_CODE + " TEXT," +
             EventColumns.COLUMN_CREATED + " TEXT NOT NULL," +
-            EventColumns.COLUMN_LAST_UPDATED + " TEXT NOT NULL," +
+            EventColumns.COLUMN_LAST_UPDATED + " TEXT," +
             EventColumns.COLUMN_EVENT_STATUS + " TEXT NOT NULL," +
             EventColumns.COLUMN_PROGRAM_STAGE + " TEXT NOT NULL," +
             EventColumns.COLUMN_ORGANISATION_UNIT + " TEXT NOT NULL," +
             EventColumns.COLUMN_EVENT_DATE + " TEXT," +
+            EventColumns.COLUMN_DUE_DATE + " TEXT," +
             EventColumns.COLUMN_COMPLETED_DATE + " TEXT," +
             EventColumns.COLUMN_LONGITUDE + " REAL," +
             EventColumns.COLUMN_LATITUDE + " REAL," +
@@ -56,13 +55,11 @@ public interface EventTable {
     String[] PROJECTION = new String[]{
             EventColumns.COLUMN_ID,
             EventColumns.COLUMN_UID,
-            EventColumns.COLUMN_CODE,
             EventColumns.COLUMN_CREATED,
             EventColumns.COLUMN_LAST_UPDATED,
-            EventColumns.COLUMN_NAME,
-            EventColumns.COLUMN_DISPLAY_NAME,
             EventColumns.COLUMN_COMPLETED_DATE,
             EventColumns.COLUMN_EVENT_DATE,
+            EventColumns.COLUMN_DUE_DATE,
             EventColumns.COLUMN_EVENT_STATUS,
             EventColumns.COLUMN_ORGANISATION_UNIT,
             EventColumns.COLUMN_PROGRAM,

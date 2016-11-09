@@ -311,9 +311,11 @@ public class MetadataTask {
                 "dataSets[id]]," +
                 "organisationUnits[id,name,displayName,code,lastUpdated,level,created,shortName," +
                 "displayShortName,path,openingDate,closedDate,parent[id],programs[id,version]");
+        queryMap.put("paging", "false");
         return userInteractor.api().me(queryMap);
     }
 
+    //TODO: Revise if this is the best way of fetching programStageDataElements within programStageSections
     private Call<Payload<Program>> getPrograms(Collection<String> programUids) {
         Map<String, String> queryMap = new HashMap<>();
 
@@ -334,7 +336,10 @@ public class MetadataTask {
                 "repeatable,captureCoordinates,formType,displayGenerateEventBox," +
                 "generatedByEnrollmentDate,autoGenerateEvent,sortOrder,hideDueDate,blockEntryForm," +
                 "minDaysFromStart,standardInterval," +
-                "programStageSections[" + IDENTIFIABLE_PROPERTIES + ",sortOrder]," +
+                "programStageSections[" + IDENTIFIABLE_PROPERTIES + ",sortOrder,programStageDataElements" + //revise from here
+                "[" + IDENTIFIABLE_PROPERTIES + ",displayInReports,compulsory,allowProvidedElsewhere," +
+                "sortOrder,allowFutureDate,dataElement" +
+                "[" + IDENTIFIABLE_PROPERTIES + "," + NAMEABLE_PROPERTIES + ",valueType,formName,displayFormName,zeroIsSignificant,optionSet[id]]]]," + //Revise stop
                 "programStageDataElements[" + IDENTIFIABLE_PROPERTIES + ",displayInReports," +
                 "compulsory,allowProvidedElsewhere,sortOrder,allowFutureDate," +
                 "dataElement[" + IDENTIFIABLE_PROPERTIES + "," + NAMEABLE_PROPERTIES +
@@ -345,6 +350,7 @@ public class MetadataTask {
                 "]"); // end programStages
 
         queryMap.put("filter", "id:in:" + ids(programUids));
+        queryMap.put("paging", "false");
 
         return programInteractor.api().list(queryMap);
     }
@@ -355,6 +361,7 @@ public class MetadataTask {
         queryMap.put("fields", IDENTIFIABLE_PROPERTIES +
                 ",version,valueType,options[" + IDENTIFIABLE_PROPERTIES + "]");
         queryMap.put("filter", "id:in:" + ids(optionSetUids));
+        queryMap.put("paging", "false");
 
         return optionSetInteractor.api().list(queryMap);
     }

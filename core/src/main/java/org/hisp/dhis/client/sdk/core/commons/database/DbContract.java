@@ -42,13 +42,16 @@ public interface DbContract {
         String COLUMN_ID = "id";
     }
 
+    interface UidColumn {
+        String COLUMN_UID = "uid";
+    }
+
     interface TimeStampColumns {
         String COLUMN_CREATED = "created";
         String COLUMN_LAST_UPDATED = "lastUpdated";
     }
 
-    interface IdentifiableColumns extends IdColumn, TimeStampColumns {
-        String COLUMN_UID = "uid";
+    interface IdentifiableColumns extends IdColumn, UidColumn, TimeStampColumns {
         String COLUMN_CODE = "code";
         String COLUMN_NAME = "name";
         String COLUMN_DISPLAY_NAME = "displayName";

@@ -59,6 +59,7 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
         date = (TextView) itemView.findViewById(R.id.date_text);
 
         drawableActive = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_event_note_white);
+
         drawableCompleted = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_event_available_white);
         drawableSchedule = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_event_white);
         drawableSkipped = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_date_range_white);
@@ -69,6 +70,7 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
         colorYellow = ContextCompat.getColor(itemView.getContext(), R.color.color_amber_300);
         colorBrown = ContextCompat.getColor(itemView.getContext(), R.color.color_brown_300);
         colorRed = ContextCompat.getColor(itemView.getContext(), R.color.color_red_300);
+
     }
 
     public void bind(ReportEntity reportEntity) {

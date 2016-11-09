@@ -61,19 +61,19 @@
     <color name="color_gray_700">#616161</color>
 
     <!-- Event status colors: -->
-<!-- Closest material design colors:
+    <!-- Closest material design colors: -->
     <color name="color_gray_400">#bdbdbd</color>
     <color name="color_green_300">#81c784</color>
     <color name="color_amber_300">#ffd54f</color>
     <color name="color_brown_300">#a1887f</color>
-    <color name="color_gray_700">#616161</color>-->
+    <color name="color_red_300">#E57373</color>
 
     <!-- Colors from the tracker web : -->
-    <color name="color_amber_300">#eed659</color>
+<!--    <color name="color_amber_300">#eed659</color>
     <color name="color_gray_400">#8A8A8A</color>
     <color name="color_green_300">#85C66A</color>
-    <color name="color_brown_300">#e2dfcc</color>
-    <color name="color_red_300">#C67070</color>
+    <color name="color_brown_300">#c4c2b1</color>
+    <color name="color_red_300">#C67070</color>-->
     <!--
     Yellow: (Open/Active)
      selected: EED659

@@ -26,4 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':core', ':models', ':ui', ':utils'
+package org.hisp.dhis.client.sdk.utils;
+
+public interface Logger {
+    void v(String tag, String message);
+
+    void v(String tag, String message, Throwable throwable);
+
+    void d(String tag, String message);
+
+    void d(String tag, String message, Throwable throwable);
+
+    void i(String tag, String message);
+
+    void i(String tag, String message, Throwable throwable);
+
+    void w(String tag, String message);
+
+    void w(String tag, String message, Throwable throwable);
+
+    void e(String tag, String message);
+
+    void e(String tag, String message, Throwable throwable);
+}

@@ -28,17 +28,13 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>-->
-    <!-- Theme colours -->
-    <color name="color_primary_dark">#FF194261</color>
-    <color name="color_primary_default">#FF276696</color>
-    <color name="color_primary_light">#FF3284C3</color>
-
-    <color name="color_accent_dark">#FFF57C00</color>
-    <color name="color_accent_default">#FFFF9800</color>
-    <color name="color_accent_light">#FFFFE0B2</color>
-
-    <color name="color_material_red_dark">#FFD32F2F</color>
-    <color name="color_material_red_default">#FFF44336</color>
-    <color name="color_material_red_light">#FFFFCDD2</color>
+<resources>
+    <!-- AbsLoginActivity strings -->
+    <string name="server_url">Server URL</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="log_in">Log in</string>
+    <string name="confirm_user">Confirm user</string>
+    <string name="clear_and_logout">Clear and log out</string>
+    <string name="two">2</string>
 </resources>

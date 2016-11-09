@@ -28,17 +28,20 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>-->
-    <!-- Theme colours -->
-    <color name="color_primary_dark">#FF194261</color>
-    <color name="color_primary_default">#FF276696</color>
-    <color name="color_primary_light">#FF3284C3</color>
+<resources>
+    <declare-styleable name="ViewFont">
+        <attr name="font" format="reference" />
+    </declare-styleable>
 
-    <color name="color_accent_dark">#FFF57C00</color>
-    <color name="color_accent_default">#FFFF9800</color>
-    <color name="color_accent_light">#FFFFE0B2</color>
+    <declare-styleable name="ButtonHint">
+        <attr name="hint" format="string" />
+    </declare-styleable>
 
-    <color name="color_material_red_dark">#FFD32F2F</color>
-    <color name="color_material_red_default">#FFF44336</color>
-    <color name="color_material_red_light">#FFFFCDD2</color>
+    <declare-styleable name="CircleView">
+        <attr name="stroke_color" format="color|reference" />
+        <attr name="stroke_width" format="dimension|reference" />
+        <attr name="circle_radius" format="dimension" />
+        <attr name="circle_gap" format="dimension" />
+        <attr name="fill_color" format="color|reference" />
+    </declare-styleable>
 </resources>

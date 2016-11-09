@@ -28,17 +28,20 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>-->
-    <!-- Theme colours -->
-    <color name="color_primary_dark">#FF194261</color>
-    <color name="color_primary_default">#FF276696</color>
-    <color name="color_primary_light">#FF3284C3</color>
+<resources>
+    <dimen name="circle_stroke_width">6dp</dimen>
+    <dimen name="progressbar_stroke_width">10dp</dimen>
 
-    <color name="color_accent_dark">#FFF57C00</color>
-    <color name="color_accent_default">#FFFF9800</color>
-    <color name="color_accent_light">#FFFFE0B2</color>
+    <dimen name="keyline_default">16dp</dimen>
 
-    <color name="color_material_red_dark">#FFD32F2F</color>
-    <color name="color_material_red_default">#FFF44336</color>
-    <color name="color_material_red_light">#FFFFCDD2</color>
+    <dimen name="navigation_header_height">192dp</dimen>
+    <dimen name="navigation_avatar_radius">32dp</dimen>
+    <dimen name="navigation_drawer_width">304dp</dimen>
+
+    <dimen name="text_size_medium">14sp</dimen>
+    <dimen name="text_size_large">17sp</dimen>
+
+    <dimen name="titlebar_height">56dp</dimen>
+
+    <integer name="activity_anim_duration">300</integer>
 </resources>

@@ -28,17 +28,25 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>-->
-    <!-- Theme colours -->
-    <color name="color_primary_dark">#FF194261</color>
-    <color name="color_primary_default">#FF276696</color>
-    <color name="color_primary_light">#FF3284C3</color>
-
-    <color name="color_accent_dark">#FFF57C00</color>
-    <color name="color_accent_default">#FFFF9800</color>
-    <color name="color_accent_light">#FFFFE0B2</color>
-
-    <color name="color_material_red_dark">#FFD32F2F</color>
-    <color name="color_material_red_default">#FFF44336</color>
-    <color name="color_material_red_light">#FFFFCDD2</color>
-</resources>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#ff000000"
+    android:fillAfter="true"
+    android:fillBefore="false"
+    android:fillEnabled="true"
+    android:shareInterpolator="false"
+    android:zAdjustment="normal">
+    <alpha
+        android:duration="@integer/activity_anim_duration"
+        android:fromAlpha="1.0"
+        android:interpolator="@anim/decelerate_quint"
+        android:toAlpha="0.2" />
+    <scale
+        android:duration="@integer/activity_anim_duration"
+        android:fromXScale="1.0"
+        android:fromYScale="1.0"
+        android:interpolator="@anim/decelerate_quint"
+        android:pivotX="50.0%p"
+        android:pivotY="50.0%p"
+        android:toXScale="0.9"
+        android:toYScale="0.9" />
+</set>

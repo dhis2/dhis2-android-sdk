@@ -26,4 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':core', ':models', ':ui', ':utils'
+package org.hisp.dhis.client.sdk.utils;
+
+public class Preconditions {
+    private Preconditions() {
+        // no instances
+    }
+
+    public static <T> T isNull(T obj, String message) {
+        if (obj == null) {
+            throw new IllegalArgumentException(message);
+        }
+
+        return obj;
+    }
+}

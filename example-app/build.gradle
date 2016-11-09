@@ -26,4 +26,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':core', ':models', ':ui', ':utils', ':ui-bindings', ':example-app'
+apply plugin: 'com.android.application'
+
+def configuration = rootProject.ext.configuration
+def libraries = rootProject.ext.libraries
+
+android {
+    compileSdkVersion configuration.targetSdkVersion
+    buildToolsVersion configuration.buildToolsVersion
+
+    defaultConfig {
+        applicationId "org.hisp.dhis.android.app.example"
+        minSdkVersion configuration.minSdkVersion
+        targetSdkVersion configuration.targetSdkVersion
+        versionCode configuration.versionCode
+        versionName configuration.versionName
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+}
+
+dependencies {
+
+    // Local
+    compile project(":ui")
+
+    // Android test dependencies
+    androidTestCompile("com.android.support.test.espresso:espresso-core:${libraries.espresso}", {
+        exclude group: "com.android.support", module: "support-annotations"
+    })
+
+    // Test
+    testCompile "junit:junit:${libraries.junit}"
+}

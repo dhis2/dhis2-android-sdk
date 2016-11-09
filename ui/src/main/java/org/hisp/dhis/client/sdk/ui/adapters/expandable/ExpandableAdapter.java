@@ -14,6 +14,10 @@ import java.util.List;
 
 public class ExpandableAdapter extends ExpandableRecyclerAdapter<ExpansionPanel, ReportEntity, ExpansionPanelViewHolder, ReportEntityChildViewHolder> {
 
+    // store the selected id:
+    private String selectedChildId = "";
+    //private String selectedParentId="";
+
     /**
      * Primary constructor. Sets up {@link #mParentList} and {@link #mFlatItemList}.
      * <p>
@@ -84,6 +88,15 @@ public class ExpandableAdapter extends ExpandableRecyclerAdapter<ExpansionPanel,
 
     @Override
     public void onBindChildViewHolder(@NonNull ReportEntityChildViewHolder childViewHolder, int parentPosition, int childPosition, @NonNull ReportEntity child) {
-        childViewHolder.bind(child);
+        childViewHolder.bind(child, this, selectedChildId.equals(child.getId()));
+    }
+
+    //Selection set/get methods:
+    public String getSelectedChildId() {
+        return selectedChildId;
+    }
+
+    public void setSelectedChildId(String selectedChildId) {
+        this.selectedChildId = selectedChildId;
     }
 }

@@ -25,13 +25,14 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
     public static final String ORG_UNIT = "OrgUnit";
     public static final String EVENT_LOCKED = "eventLocked";
 
+    View itemView;
+
     final ImageView statusIcon;
     final CircleView statusBackground;
     final FrameLayout statusLockLayout;
     final TextView label;
     final TextView date;
     final ImageButton syncButton;
-
 
     final Drawable drawableActive;
     final Drawable drawableCompleted;
@@ -50,6 +51,7 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
     public ReportEntityChildViewHolder(View itemView) {
         super(itemView);
 
+        this.itemView = itemView;
         context = itemView.getContext();
         statusIcon = (ImageView) itemView.findViewById(R.id.status_icon);
         statusBackground = (CircleView) itemView.findViewById(R.id.circleview_status_background);
@@ -63,24 +65,23 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
         drawableCompleted = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_event_available_white);
         drawableSchedule = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_event_white);
         drawableSkipped = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_date_range_white);
-        drawableOverdue =ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_event_busy_white);
+        drawableOverdue = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_event_busy_white);
 
         colorGray = ContextCompat.getColor(itemView.getContext(), R.color.color_gray_400);
         colorGreen = ContextCompat.getColor(itemView.getContext(), R.color.color_green_300);
         colorYellow = ContextCompat.getColor(itemView.getContext(), R.color.color_amber_300);
         colorBrown = ContextCompat.getColor(itemView.getContext(), R.color.color_brown_300);
         colorRed = ContextCompat.getColor(itemView.getContext(), R.color.color_red_300);
-
     }
 
-    public void bind(ReportEntity reportEntity) {
+    public void bind(ReportEntity reportEntity, final ExpandableAdapter expandableAdapter, boolean selected) {
+        itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), android.R.color.white));
         label.setText(reportEntity.getId());
 
         //Map<String, String> dataElementToValueMap =
         //dataElementToValueMap.put(Event.EVENT_STATUS, event.getSyncStatus().toString());
 
         date.setText(reportEntity.getValueForDataElement(EVENT_DATE_KEY));
-
 
         //Display the EventSyncStatus:
         switch (reportEntity.getSyncStatus()) {
@@ -135,11 +136,19 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
         }
 
         //Display lock status: TODO: When Event locking becomes available doulbe check that:
-        if( !reportEntity.getValueForDataElement(EVENT_LOCKED).equals("none")) {
+        if (!reportEntity.getValueForDataElement(EVENT_LOCKED).equals("none")) {
             statusLockLayout.setVisibility(View.VISIBLE);
         } else {
             statusLockLayout.setVisibility(View.GONE);
         }
+
+        //On click listener & draw selected (for selection) ???
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.color_gray_300));
+            }
+        });
 
         //label.setText(reportEntity.getValueForDataElement(ORG_UNIT));
 

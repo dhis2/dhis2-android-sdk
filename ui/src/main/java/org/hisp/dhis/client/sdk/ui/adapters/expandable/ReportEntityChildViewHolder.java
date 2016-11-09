@@ -35,12 +35,14 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
 
     final Drawable drawableActive;
     final Drawable drawableCompleted;
-    final Drawable drawableSkipped;
     final Drawable drawableSchedule;
+    final Drawable drawableSkipped;
+    final Drawable drawableOverdue;
 
     final int colorGray;
     final int colorGreen;
-    final int colorOrange;
+    final int colorYellow;
+    final int colorBrown;
     final int colorRed;
 
     final Context context;
@@ -59,11 +61,13 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
         drawableActive = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_event_note_white);
         drawableCompleted = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_event_available_white);
         drawableSchedule = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_event_white);
-        drawableSkipped = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_event_busy_white);
+        drawableSkipped = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_date_range_white);
+        drawableOverdue =ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_event_busy_white);
 
         colorGray = ContextCompat.getColor(itemView.getContext(), R.color.color_gray_400);
         colorGreen = ContextCompat.getColor(itemView.getContext(), R.color.color_green_300);
-        colorOrange = ContextCompat.getColor(itemView.getContext(), R.color.color_orange_300);
+        colorYellow = ContextCompat.getColor(itemView.getContext(), R.color.color_amber_300);
+        colorBrown = ContextCompat.getColor(itemView.getContext(), R.color.color_brown_300);
         colorRed = ContextCompat.getColor(itemView.getContext(), R.color.color_red_300);
     }
 
@@ -106,20 +110,25 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
         String status = reportEntity.getValueForDataElement(EVENT_STATUS);
         switch (status) {
             case "ACTIVE":
-                statusBackground.setFillColor(colorGray);
+                statusBackground.setFillColor(colorYellow);
                 statusIcon.setImageDrawable(drawableActive);
                 break;
             case "COMPLETED":
-                statusBackground.setFillColor(colorGreen);
+
+                statusBackground.setFillColor(colorGray);
                 statusIcon.setImageDrawable(drawableCompleted);
                 break;
             case "SCHEDULED":
-                statusBackground.setFillColor(colorOrange);
+                statusBackground.setFillColor(colorGreen);
                 statusIcon.setImageDrawable(drawableSchedule);
                 break;
             case "SKIPPED":
-                statusBackground.setFillColor(colorRed);
+                statusBackground.setFillColor(colorBrown);
                 statusIcon.setImageDrawable(drawableSkipped);
+                break;
+            case "OVERDUE":
+                statusBackground.setFillColor(colorRed);
+                statusIcon.setImageDrawable(drawableOverdue);
                 break;
         }
 

@@ -245,7 +245,7 @@ public final class Event extends BaseModel implements IdentifiableObject {
     }
 
     public enum EventStatus {
-        ACTIVE, COMPLETED, SCHEDULED, SKIPPED
+        ACTIVE, COMPLETED, SCHEDULED, SKIPPED , OVERDUE
     }
 
     /**

@@ -89,8 +89,9 @@ dependencies {
     testCompile "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
 
     // Android test dependencies
+    // androidTestCompile "org.mockito:mockito-core:${libraries.mockito}"
     androidTestCompile "com.android.support.test:runner:${libraries.testrunner}"
-    androidTestCompile("com.android.support.test.espresso:espresso-core:${libraries.espresso}", {
-        exclude group: "com.android.support", module: "support-annotations"
-    })
+    androidTestCompile("com.google.truth:truth:${libraries.truth}") {
+        exclude group: 'junit' // Android has JUnit built in.
+    }
 }

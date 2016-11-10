@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.commons;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
@@ -42,6 +44,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+@RunWith(JUnit4.class)
 public class TaskUnitTests {
     private Executor currentThreadExecutor;
 

@@ -84,7 +84,7 @@ ext {
             junit           : "4.12",
             assertj         : "3.5.2",
             mockito         : "2.2.15",
-            espresso        : "2.2.2",
+            truth           : "0.30",
             testrunner      : "0.5",
             equalsverifier  : "2.1.6",
     ]

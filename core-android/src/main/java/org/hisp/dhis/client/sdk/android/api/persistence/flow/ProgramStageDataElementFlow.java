@@ -100,6 +100,9 @@ public final class ProgramStageDataElementFlow extends BaseIdentifiableObjectFlo
     @Column
     boolean compulsory;
 
+    @Column
+    int sortOrderWithinProgramStageSection;
+
     public ProgramStageDataElementFlow() {
         // empty constructor
     }
@@ -168,6 +171,14 @@ public final class ProgramStageDataElementFlow extends BaseIdentifiableObjectFlo
         this.programStageSection = programStageSection;
     }
 
+    public int getSortOrderWithinProgramStageSection() {
+        return sortOrderWithinProgramStageSection;
+    }
+
+    public void setSortOrderWithinProgramStageSection(int sortOrderWithinProgramStageSection) {
+        this.sortOrderWithinProgramStageSection = sortOrderWithinProgramStageSection;
+    }
+
     private static class ProgramStageDataElementMapper extends AbsMapper<ProgramStageDataElement,
             ProgramStageDataElementFlow> {
 
@@ -190,6 +201,7 @@ public final class ProgramStageDataElementFlow extends BaseIdentifiableObjectFlo
             flow.setDisplayInReports(model.isDisplayInReports());
             flow.setAllowProvidedElsewhere(model.isAllowProvidedElsewhere());
             flow.setCompulsory(model.isCompulsory());
+            flow.setSortOrderWithinProgramStageSection(model.getSortOrderWithinProgramStageSection());
 
             flow.setProgramStage(ProgramStageFlow.MAPPER
                     .mapToDatabaseEntity(model.getProgramStage()));
@@ -220,6 +232,7 @@ public final class ProgramStageDataElementFlow extends BaseIdentifiableObjectFlo
             model.setDisplayInReports(flow.isDisplayInReports());
             model.setAllowProvidedElsewhere(flow.isAllowProvidedElsewhere());
             model.setCompulsory(flow.isCompulsory());
+            model.setSortOrderWithinProgramStageSection(flow.getSortOrderWithinProgramStageSection());
 
             model.setProgramStage(ProgramStageFlow.MAPPER
                     .mapToModel(flow.getProgramStage()));

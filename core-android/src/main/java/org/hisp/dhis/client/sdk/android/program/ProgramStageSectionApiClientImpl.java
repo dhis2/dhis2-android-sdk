@@ -32,6 +32,8 @@ import org.hisp.dhis.client.sdk.android.api.network.ApiResource;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionApiClient;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 import org.joda.time.DateTime;
 
@@ -53,12 +55,14 @@ public class ProgramStageSectionApiClientImpl implements ProgramStageSectionApiC
     @Override
     public List<ProgramStageSection> getProgramStageSections(
             Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException {
+
         return getCollection(apiResource, fields, lastUpdated, uids);
     }
 
     @Override
     public List<ProgramStageSection> getProgramStageSections(
             Fields fields, Set<String> stageDataElementUids) throws ApiException {
+
         return getCollection(apiResource, "programStageDataElements.id",
                 fields, null, stageDataElementUids);
     }
@@ -72,7 +76,7 @@ public class ProgramStageSectionApiClientImpl implements ProgramStageSectionApiC
 
         @Override
         public String getBasicProperties() {
-            return "id";
+            return "id,programStageDataElements[id]";
         }
 
         @Override

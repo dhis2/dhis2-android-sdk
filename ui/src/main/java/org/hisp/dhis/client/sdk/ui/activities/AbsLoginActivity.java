@@ -103,10 +103,6 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
     // Action which should be executed after animation is finished
     private OnPostAnimationRunnable onPostAnimationAction;
 
-    // Callback which will be triggered when animations are finished
-    private OnPostAnimationListener onPostAnimationListener;
-
-
     //--------------------------------------------------------------------------------------
     // Factory methods
     //--------------------------------------------------------------------------------------
@@ -202,7 +198,8 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
             }
         }
 
-        onPostAnimationListener = new OnPostAnimationListener();
+        // Callback which will be triggered when animations are finished
+        OnPostAnimationListener onPostAnimationListener = new OnPostAnimationListener();
 
         /* adding transition animations to root layout */
         if (isGreaterThanOrJellyBean()) {

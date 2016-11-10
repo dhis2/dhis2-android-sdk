@@ -38,7 +38,6 @@ import android.view.View;
 
 import org.hisp.dhis.client.sdk.ui.R;
 
-
 public class CircleView extends View {
     private int strokeWidth;
     private int circleRadius;

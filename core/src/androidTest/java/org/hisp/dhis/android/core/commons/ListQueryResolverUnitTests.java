@@ -29,12 +29,16 @@
 package org.hisp.dhis.android.core.commons;
 
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.test.ProviderTestCase2;
 
 import com.squareup.sqlbrite.BriteContentResolver;
 import com.squareup.sqlbrite.SqlBrite;
 
+import org.hisp.dhis.client.models.common.Model;
+
+import java.util.List;
 import java.util.concurrent.Executor;
 
 import javax.annotation.Nonnull;
@@ -44,18 +48,17 @@ import io.reactivex.disposables.Disposables;
 import io.reactivex.functions.Consumer;
 import rx.schedulers.Schedulers;
 
-import static org.hisp.dhis.android.core.commons.CursorAssert.assertThatCursor;
+import static com.google.common.truth.Truth.assertThat;
 
-public class CursorQueryResolverUnitTests extends ProviderTestCase2<TestContentProvider> {
+public class ListQueryResolverUnitTests extends ProviderTestCase2<TestContentProvider> {
     // content resolver which is used to interact with database
     private ContentResolver contentResolver;
 
     // instance to test
-    private ReadQueryResolver<Cursor> cursorReadQueryResolver;
-    private RecordingObserver recordingObserver;
+    private ReadQueryResolver<List<TestModel>> cursorReadQueryResolver;
     private Disposable subscription;
 
-    public CursorQueryResolverUnitTests() {
+    public ListQueryResolverUnitTests() {
         super(TestContentProvider.class, TestContentProvider.AUTHORITY.getAuthority());
     }
 
@@ -73,7 +76,6 @@ public class CursorQueryResolverUnitTests extends ProviderTestCase2<TestContentP
 
         // ProviderTestCase2 supplies mocked content resolver
         contentResolver = getMockContentResolver();
-        recordingObserver = new RecordingObserver();
         subscription = Disposables.empty();
 
         // concrete implementation of SqlBrite's content provider
@@ -84,16 +86,14 @@ public class CursorQueryResolverUnitTests extends ProviderTestCase2<TestContentP
         // passing mock / concrete fields to mocked provider
         getProvider().init(contentResolver);
 
-        cursorReadQueryResolver = new CursorQueryResolver(executor, briteContentResolver,
-                contentResolver, TestContentProvider.TABLE, Query.builder().build());
+        cursorReadQueryResolver = new ListQueryResolver<>(executor, briteContentResolver,
+                contentResolver, new TestMapper(), TestContentProvider.TABLE, Query.builder().build());
     }
 
     @Override
     public void tearDown() throws Exception {
         super.tearDown();
 
-        recordingObserver.assertNoMoreEvents();
-        recordingObserver.dispose();
         subscription.dispose();
     }
 
@@ -102,9 +102,10 @@ public class CursorQueryResolverUnitTests extends ProviderTestCase2<TestContentP
         contentResolver.insert(TestContentProvider.TABLE,
                 TestContentProvider.values("valueOne", "valueTwo"));
 
-        Cursor cursor = cursorReadQueryResolver.asTask().execute();
+        TestModel testModel = cursorReadQueryResolver.asTask().execute().get(0);
 
-        assertThatCursor(cursor).hasRow("valueOne", "valueTwo").isExhausted();
+        assertThat(testModel.getKey()).isEqualTo("valueOne");
+        assertThat(testModel.getValue()).isEqualTo("valueTwo");
     }
 
     public void testAsTaskExecuteAsynchronously_shouldCallContentResolver() {
@@ -112,17 +113,21 @@ public class CursorQueryResolverUnitTests extends ProviderTestCase2<TestContentP
         contentResolver.insert(TestContentProvider.TABLE,
                 TestContentProvider.values("valueOne", "valueTwo"));
 
-        cursorReadQueryResolver.asTask().execute(new Callback<Cursor>() {
-            @Override
-            public void onSuccess(Task<Cursor> task, Cursor cursor) {
-                assertThatCursor(cursor).hasRow("valueOne", "valueTwo").isExhausted();
-            }
+        cursorReadQueryResolver.asTask()
+                .execute(new Callback<List<TestModel>>() {
+                    @Override
+                    public void onSuccess(Task<List<TestModel>> task, List<TestModel> result) {
+                        TestModel testModel = result.get(0);
 
-            @Override
-            public void onFailure(Task<Cursor> task, Throwable throwable) {
-                fail("onFailure() should not be called");
-            }
-        });
+                        assertThat(testModel.getKey()).isEqualTo("valueOne");
+                        assertThat(testModel.getValue()).isEqualTo("valueTwo");
+                    }
+
+                    @Override
+                    public void onFailure(Task<List<TestModel>> task, Throwable throwable) {
+                        fail("onFailure() should not be called");
+                    }
+                });
     }
 
     public void testAsSingle_shouldCallContentResolverOnSubscribe() {
@@ -133,10 +138,13 @@ public class CursorQueryResolverUnitTests extends ProviderTestCase2<TestContentP
         // without any schedulers set, single should be
         // executed on current thread
         subscription = cursorReadQueryResolver.asSingle()
-                .subscribe(new Consumer<Cursor>() {
+                .subscribe(new Consumer<List<TestModel>>() {
                     @Override
-                    public void accept(Cursor cursor) throws Exception {
-                        assertThatCursor(cursor).hasRow("valueOne", "valueTwo").isExhausted();
+                    public void accept(List<TestModel> testModels) throws Exception {
+                        TestModel testModel = testModels.get(0);
+
+                        assertThat(testModel.getKey()).isEqualTo("valueOne");
+                        assertThat(testModel.getValue()).isEqualTo("valueTwo");
                     }
                 });
     }
@@ -146,7 +154,58 @@ public class CursorQueryResolverUnitTests extends ProviderTestCase2<TestContentP
         contentResolver.insert(TestContentProvider.TABLE,
                 TestContentProvider.values("valueOne", "valueTwo"));
 
-        cursorReadQueryResolver.asObservable().subscribe(recordingObserver);
-        recordingObserver.assertCursor().hasRow("valueOne", "valueTwo").isExhausted();
+        subscription = cursorReadQueryResolver.asObservable()
+                .subscribe(new Consumer<List<TestModel>>() {
+                    @Override
+                    public void accept(List<TestModel> testModels) throws Exception {
+                        TestModel testModel = testModels.get(0);
+
+                        assertThat(testModel.getKey()).isEqualTo("valueOne");
+                        assertThat(testModel.getValue()).isEqualTo("valueTwo");
+                    }
+                });
+    }
+
+    private static class TestModel implements Model {
+        private final String key;
+        private final String value;
+
+        TestModel(String key, String value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        @Override
+        public Long id() {
+            return null;
+        }
+
+        @Override
+        public boolean isValid() {
+            return key != null;
+        }
+
+        String getKey() {
+            return key;
+        }
+
+        String getValue() {
+            return value;
+        }
+    }
+
+    private static class TestMapper implements Mapper<TestModel> {
+
+        @Override
+        public ContentValues toContentValues(TestModel model) {
+            return TestContentProvider.values(model.getKey(), model.getValue());
+        }
+
+        @Override
+        public TestModel toModel(Cursor cursor) {
+            return new TestModel(
+                    cursor.getString(cursor.getColumnIndex(TestContentProvider.KEY)),
+                    cursor.getString(cursor.getColumnIndex(TestContentProvider.VALUE)));
+        }
     }
 }

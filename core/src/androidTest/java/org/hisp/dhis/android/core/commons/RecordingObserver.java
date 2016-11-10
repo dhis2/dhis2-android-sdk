@@ -10,7 +10,7 @@ import io.reactivex.disposables.Disposable;
 
 import static com.google.common.truth.Truth.assertThat;
 
-class RecordingObserver implements Observer<Cursor> {
+final class RecordingObserver implements Observer<Cursor> {
     private static final Object COMPLETED = "<completed>";
     private final BlockingDeque<Object> events;
     private Disposable disposable;

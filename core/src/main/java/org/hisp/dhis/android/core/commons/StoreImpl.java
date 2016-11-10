@@ -32,14 +32,16 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.squareup.sqlbrite.BriteContentResolver;
 
 import org.hisp.dhis.android.models.common.Model;
 
+import java.util.List;
 import java.util.concurrent.Executor;
 
-class StoreImpl<T extends Model> implements Store<T> {
+public class StoreImpl<T extends Model> implements Store<T> {
     private final BriteContentResolver briteContentResolver;
     private final ContentResolver contentResolver;
     private final Mapper<T> modelMapper;
@@ -80,5 +82,65 @@ class StoreImpl<T extends Model> implements Store<T> {
     @Override
     public WriteQueryResolver<Long> insert(@NonNull ContentValues contentValues) {
         return new InsertQueryResolver<>(executor, contentResolver, contentUri, contentValues);
+    }
+
+    @NonNull
+    @Override
+    public WriteQueryResolver<Long> insert(@NonNull List<T> models) {
+        return null;
+    }
+
+    @NonNull
+    @Override
+    public WriteQueryResolver<Long> insert(@NonNull ContentValues[] values) {
+        return null;
+    }
+
+    @NonNull
+    @Override
+    public WriteQueryResolver<Integer> update(@NonNull T model) {
+        return null;
+    }
+
+    @NonNull
+    @Override
+    public WriteQueryResolver<Integer> update(@NonNull ContentValues contentValues) {
+        return null;
+    }
+
+    @NonNull
+    @Override
+    public WriteQueryResolver<Integer> update(@NonNull T model, @Nullable Where where) {
+        return null;
+    }
+
+    @NonNull
+    @Override
+    public WriteQueryResolver<Integer> update(@NonNull ContentValues contentValues, @Nullable Where where) {
+        return null;
+    }
+
+    @NonNull
+    @Override
+    public WriteQueryResolver<Integer> update(@NonNull Long id, @NonNull ContentValues contentValues) {
+        return null;
+    }
+
+    @NonNull
+    @Override
+    public WriteQueryResolver<Integer> delete() {
+        return null;
+    }
+
+    @NonNull
+    @Override
+    public WriteQueryResolver<Integer> delete(@NonNull T model) {
+        return null;
+    }
+
+    @NonNull
+    @Override
+    public WriteQueryResolver<Integer> delete(@NonNull Where where) {
+        return null;
     }
 }

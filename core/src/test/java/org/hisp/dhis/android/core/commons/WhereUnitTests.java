@@ -28,63 +28,53 @@
 
 package org.hisp.dhis.android.core.commons;
 
-import android.content.ContentValues;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import org.hisp.dhis.android.models.common.Model;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 
-import java.util.List;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public interface Store<T extends Model> {
+@RunWith(JUnit4.class)
+public class WhereUnitTests {
+    private Where where;
 
-    // insert methods
+    @Before
+    public void setUp() {
+        where = Where.builder()
+                .where("where")
+                .arguments(new String[]{
+                        "argumentOne",
+                        "argumentTwo"
+                })
+                .build();
+    }
 
-    @NonNull
-    WriteQueryResolver<Long> insert(@NonNull T model);
+    @Test
+    public void where_builderShouldPropagateProperties() {
+        assertThat(where.where()).isEqualTo("where");
 
-    @NonNull
-    WriteQueryResolver<Long> insert(@NonNull ContentValues contentValues);
+        assertThat(where.arguments()[0]).isEqualTo("argumentOne");
+        assertThat(where.arguments()[1]).isEqualTo("argumentTwo");
+    }
 
-    @NonNull
-    WriteQueryResolver<Long> insert(@NonNull List<T> models);
+    @Test
+    public void where_shouldBeImmutable() {
+        // try to mutate projection array
+        where.arguments()[0] = "a";
+        where.arguments()[1] = "b";
 
-    @NonNull
-    WriteQueryResolver<Long> insert(@NonNull ContentValues[] values);
+        assertThat(where.arguments()[0]).isEqualTo("argumentOne");
+        assertThat(where.arguments()[1]).isEqualTo("argumentTwo");
+    }
 
-
-    // update methods
-
-    @NonNull
-    WriteQueryResolver<Integer> update(@NonNull T model);
-
-    @NonNull
-    WriteQueryResolver<Integer> update(@NonNull ContentValues contentValues);
-
-    @NonNull
-    WriteQueryResolver<Integer> update(@NonNull T model, @Nullable Where where);
-
-    @NonNull
-    WriteQueryResolver<Integer> update(@NonNull ContentValues contentValues, @Nullable Where where);
-
-    @NonNull
-    WriteQueryResolver<Integer> update(@NonNull Long id, @NonNull ContentValues contentValues);
-
-
-    // delete methods
-
-    @NonNull
-    WriteQueryResolver<Integer> delete();
-
-    @NonNull
-    WriteQueryResolver<Integer> delete(@NonNull T model);
-
-    @NonNull
-    WriteQueryResolver<Integer> delete(@NonNull Where where);
-
-    @NonNull
-    TypeResolver<T> query();
-
-    @NonNull
-    TypeResolver<T> query(@NonNull Query query);
+    @Test
+    public void equals_shouldConformToContract() {
+        EqualsVerifier.forClass(Where.class)
+                .suppress(Warning.NULL_FIELDS)
+                .verify();
+    }
 }

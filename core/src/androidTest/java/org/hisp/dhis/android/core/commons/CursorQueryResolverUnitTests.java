@@ -100,35 +100,36 @@ public class CursorQueryResolverUnitTests extends ProviderTestCase2<TestContentP
     public void testAsTaskExecute_shouldCallContentResolver() {
         // insert dummy data to database
         contentResolver.insert(TestContentProvider.TABLE,
-                TestContentProvider.values("valueOne", "valueTwo"));
+                TestModel.values(11L, "valueTwo"));
 
         Cursor cursor = cursorReadQueryResolver.asTask().execute();
 
-        assertThatCursor(cursor).hasRow("valueOne", "valueTwo").isExhausted();
+        assertThatCursor(cursor).hasRow(11L, "valueTwo").isExhausted();
     }
 
     public void testAsTaskExecuteAsynchronously_shouldCallContentResolver() {
         // insert dummy data to database
         contentResolver.insert(TestContentProvider.TABLE,
-                TestContentProvider.values("valueOne", "valueTwo"));
+                TestModel.values(11L, "valueTwo"));
 
-        cursorReadQueryResolver.asTask().execute(new Callback<Cursor>() {
-            @Override
-            public void onSuccess(Task<Cursor> task, Cursor cursor) {
-                assertThatCursor(cursor).hasRow("valueOne", "valueTwo").isExhausted();
-            }
+        cursorReadQueryResolver.asTask()
+                .execute(new Callback<Cursor>() {
+                    @Override
+                    public void onSuccess(Task<Cursor> task, Cursor cursor) {
+                        assertThatCursor(cursor).hasRow(11L, "valueTwo").isExhausted();
+                    }
 
-            @Override
-            public void onFailure(Task<Cursor> task, Throwable throwable) {
-                fail("onFailure() should not be called");
-            }
-        });
+                    @Override
+                    public void onFailure(Task<Cursor> task, Throwable throwable) {
+                        fail("onFailure() should not be called");
+                    }
+                });
     }
 
     public void testAsSingle_shouldCallContentResolverOnSubscribe() {
         // insert dummy data to database
         contentResolver.insert(TestContentProvider.TABLE,
-                TestContentProvider.values("valueOne", "valueTwo"));
+                TestModel.values(11L, "valueTwo"));
 
         // without any schedulers set, single should be
         // executed on current thread
@@ -136,7 +137,7 @@ public class CursorQueryResolverUnitTests extends ProviderTestCase2<TestContentP
                 .subscribe(new Consumer<Cursor>() {
                     @Override
                     public void accept(Cursor cursor) throws Exception {
-                        assertThatCursor(cursor).hasRow("valueOne", "valueTwo").isExhausted();
+                        assertThatCursor(cursor).hasRow(11L, "valueTwo").isExhausted();
                     }
                 });
     }
@@ -144,9 +145,9 @@ public class CursorQueryResolverUnitTests extends ProviderTestCase2<TestContentP
     public void testAsObservable_shouldCallContentResolverOnSubscribe() {
         // insert dummy data to database
         contentResolver.insert(TestContentProvider.TABLE,
-                TestContentProvider.values("valueOne", "valueTwo"));
+                TestModel.values(11L, "valueTwo"));
 
         cursorReadQueryResolver.asObservable().subscribe(recordingObserver);
-        recordingObserver.assertCursor().hasRow("valueOne", "valueTwo").isExhausted();
+        recordingObserver.assertCursor().hasRow(11L, "valueTwo").isExhausted();
     }
 }

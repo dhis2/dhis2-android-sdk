@@ -31,14 +31,14 @@ package org.hisp.dhis.android.core.commons;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 
-public class TaskImpl<T> implements Task<T> {
+class TaskImpl<T> implements Task<T> {
     private final Executor executor;
     private final Callable<T> callable;
 
     /* true if task was already executed */
     private boolean isExecuted;
 
-    public TaskImpl(Executor executor, Callable<T> callable) {
+    TaskImpl(Executor executor, Callable<T> callable) {
         this.executor = executor;
         this.callable = callable;
     }

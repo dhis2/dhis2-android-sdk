@@ -14,12 +14,8 @@ public final class TestContentProvider extends MockContentProvider {
     static final Uri AUTHORITY = Uri.parse("content://test_authority");
     static final Uri TABLE = AUTHORITY.buildUpon().appendPath("test_table").build();
 
-    // projection
-    static final String KEY = "test_key";
-    static final String VALUE = "test_value";
-
     // faking database behaviour
-    private Map<String, String> storage;
+    private Map<Long, String> storage;
     private ContentResolver contentResolver;
 
     void init(ContentResolver contentResolver) {
@@ -29,9 +25,9 @@ public final class TestContentProvider extends MockContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        storage.put(values.getAsString(KEY), values.getAsString(VALUE));
+        storage.put(values.getAsLong(TestModel.ID), values.getAsString(TestModel.VALUE));
         contentResolver.notifyChange(uri, null);
-        return Uri.parse(TABLE + "/" + values.getAsString(KEY));
+        return Uri.parse(TABLE + "/" + values.getAsString(TestModel.ID));
     }
 
     @Override
@@ -39,22 +35,15 @@ public final class TestContentProvider extends MockContentProvider {
             String[] selectionArgs, String sortOrder) {
 
         MatrixCursor result = new MatrixCursor(new String[]{
-                KEY, VALUE
+                TestModel.ID, TestModel.VALUE
         });
 
-        for (Map.Entry<String, String> entry : storage.entrySet()) {
+        for (Map.Entry<Long, String> entry : storage.entrySet()) {
             result.addRow(new String[]{
-                    entry.getKey(), entry.getValue()
+                    String.valueOf(entry.getKey()), entry.getValue()
             });
         }
 
         return result;
-    }
-
-    public static ContentValues values(String valueOne, String valueTwo) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(TestContentProvider.KEY, valueOne);
-        contentValues.put(TestContentProvider.VALUE, valueTwo);
-        return contentValues;
     }
 }

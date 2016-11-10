@@ -27,7 +27,7 @@ final class CursorAssert {
         for (int index = 0; index < values.length; index++) {
             assertThat(cursor.getString(index))
                     .named("row " + row + " column '" + cursor.getColumnName(index) + "'")
-                    .isEqualTo(values[index]);
+                    .isEqualTo(String.valueOf(values[index]));
         }
 
         return this;

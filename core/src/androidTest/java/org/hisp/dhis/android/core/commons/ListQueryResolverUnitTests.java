@@ -29,14 +29,10 @@
 package org.hisp.dhis.android.core.commons;
 
 import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.database.Cursor;
 import android.test.ProviderTestCase2;
 
 import com.squareup.sqlbrite.BriteContentResolver;
 import com.squareup.sqlbrite.SqlBrite;
-
-import org.hisp.dhis.client.models.common.Model;
 
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -55,7 +51,7 @@ public class ListQueryResolverUnitTests extends ProviderTestCase2<TestContentPro
     private ContentResolver contentResolver;
 
     // instance to test
-    private ReadQueryResolver<List<TestModel>> cursorReadQueryResolver;
+    private ReadQueryResolver<List<TestModel>> listReadQueryResolver;
     private Disposable subscription;
 
     public ListQueryResolverUnitTests() {
@@ -86,7 +82,7 @@ public class ListQueryResolverUnitTests extends ProviderTestCase2<TestContentPro
         // passing mock / concrete fields to mocked provider
         getProvider().init(contentResolver);
 
-        cursorReadQueryResolver = new ListQueryResolver<>(executor, briteContentResolver,
+        listReadQueryResolver = new ListQueryResolver<>(executor, briteContentResolver,
                 contentResolver, new TestMapper(), TestContentProvider.TABLE, Query.builder().build());
     }
 
@@ -100,27 +96,27 @@ public class ListQueryResolverUnitTests extends ProviderTestCase2<TestContentPro
     public void testAsTaskExecute_shouldCallContentResolver() {
         // insert dummy data to database
         contentResolver.insert(TestContentProvider.TABLE,
-                TestContentProvider.values("valueOne", "valueTwo"));
+                TestModel.values(11L, "valueTwo"));
 
-        TestModel testModel = cursorReadQueryResolver.asTask().execute().get(0);
+        TestModel testModel = listReadQueryResolver.asTask().execute().get(0);
 
-        assertThat(testModel.getKey()).isEqualTo("valueOne");
-        assertThat(testModel.getValue()).isEqualTo("valueTwo");
+        assertThat(testModel.id()).isEqualTo(11L);
+        assertThat(testModel.value()).isEqualTo("valueTwo");
     }
 
     public void testAsTaskExecuteAsynchronously_shouldCallContentResolver() {
         // insert dummy data to database
         contentResolver.insert(TestContentProvider.TABLE,
-                TestContentProvider.values("valueOne", "valueTwo"));
+                TestModel.values(11L, "valueTwo"));
 
-        cursorReadQueryResolver.asTask()
+        listReadQueryResolver.asTask()
                 .execute(new Callback<List<TestModel>>() {
                     @Override
                     public void onSuccess(Task<List<TestModel>> task, List<TestModel> result) {
                         TestModel testModel = result.get(0);
 
-                        assertThat(testModel.getKey()).isEqualTo("valueOne");
-                        assertThat(testModel.getValue()).isEqualTo("valueTwo");
+                        assertThat(testModel.id()).isEqualTo(11L);
+                        assertThat(testModel.value()).isEqualTo("valueTwo");
                     }
 
                     @Override
@@ -133,18 +129,18 @@ public class ListQueryResolverUnitTests extends ProviderTestCase2<TestContentPro
     public void testAsSingle_shouldCallContentResolverOnSubscribe() {
         // insert dummy data to database
         contentResolver.insert(TestContentProvider.TABLE,
-                TestContentProvider.values("valueOne", "valueTwo"));
+                TestModel.values(11L, "valueTwo"));
 
         // without any schedulers set, single should be
         // executed on current thread
-        subscription = cursorReadQueryResolver.asSingle()
+        subscription = listReadQueryResolver.asSingle()
                 .subscribe(new Consumer<List<TestModel>>() {
                     @Override
                     public void accept(List<TestModel> testModels) throws Exception {
                         TestModel testModel = testModels.get(0);
 
-                        assertThat(testModel.getKey()).isEqualTo("valueOne");
-                        assertThat(testModel.getValue()).isEqualTo("valueTwo");
+                        assertThat(testModel.id()).isEqualTo(11L);
+                        assertThat(testModel.value()).isEqualTo("valueTwo");
                     }
                 });
     }
@@ -152,60 +148,17 @@ public class ListQueryResolverUnitTests extends ProviderTestCase2<TestContentPro
     public void testAsObservable_shouldCallContentResolverOnSubscribe() {
         // insert dummy data to database
         contentResolver.insert(TestContentProvider.TABLE,
-                TestContentProvider.values("valueOne", "valueTwo"));
+                TestModel.values(11L, "valueTwo"));
 
-        subscription = cursorReadQueryResolver.asObservable()
+        subscription = listReadQueryResolver.asObservable()
                 .subscribe(new Consumer<List<TestModel>>() {
                     @Override
                     public void accept(List<TestModel> testModels) throws Exception {
                         TestModel testModel = testModels.get(0);
 
-                        assertThat(testModel.getKey()).isEqualTo("valueOne");
-                        assertThat(testModel.getValue()).isEqualTo("valueTwo");
+                        assertThat(testModel.id()).isEqualTo(11L);
+                        assertThat(testModel.value()).isEqualTo("valueTwo");
                     }
                 });
-    }
-
-    private static class TestModel implements Model {
-        private final String key;
-        private final String value;
-
-        TestModel(String key, String value) {
-            this.key = key;
-            this.value = value;
-        }
-
-        @Override
-        public Long id() {
-            return null;
-        }
-
-        @Override
-        public boolean isValid() {
-            return key != null;
-        }
-
-        String getKey() {
-            return key;
-        }
-
-        String getValue() {
-            return value;
-        }
-    }
-
-    private static class TestMapper implements Mapper<TestModel> {
-
-        @Override
-        public ContentValues toContentValues(TestModel model) {
-            return TestContentProvider.values(model.getKey(), model.getValue());
-        }
-
-        @Override
-        public TestModel toModel(Cursor cursor) {
-            return new TestModel(
-                    cursor.getString(cursor.getColumnIndex(TestContentProvider.KEY)),
-                    cursor.getString(cursor.getColumnIndex(TestContentProvider.VALUE)));
-        }
     }
 }

@@ -59,10 +59,6 @@ import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
 import static android.text.TextUtils.isEmpty;
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-
-// TODO show snackbars for errors (not dialogs)
-// TODO when serverUrl, username or password are
-// TODO invalid highlight corresponding fields
 public abstract class AbsLoginActivity extends AppCompatActivity {
     private static final String ARG_LOGIN_ACTIVITY_LAUNCH_MODE = "arg:launchMode";
     private static final String ARG_LAUNCH_MODE_LOGIN_USER = "mode:loginUser";
@@ -119,7 +115,7 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
      * @param serverUrl       ServerUrl which will be set to serverUrl address and locked
      */
     public static void navigateTo(Activity currentActivity, Class<? extends Activity> target,
-                                  String serverUrl, String username) {
+            String serverUrl, String username) {
         isNull(currentActivity, "Activity must not be null");
         isNull(target, "Target activity class must not be null");
         isNull(serverUrl, "ServerUrl must not be null");
@@ -385,7 +381,7 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         private final boolean showProgress;
 
         public OnPostAnimationRunnable(OnAnimationFinishListener listener,
-                                       AbsLoginActivity loginActivity, boolean showProgress) {
+                AbsLoginActivity loginActivity, boolean showProgress) {
             this.listener = listener;
             this.loginActivity = loginActivity;
             this.showProgress = showProgress;
@@ -437,8 +433,7 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         }
 
         @Override
-        public void startTransition(
-                LayoutTransition transition, ViewGroup container, View view, int type) {
+        public void startTransition(LayoutTransition transition, ViewGroup container, View view, int type) {
             // stub implementation
         }
 

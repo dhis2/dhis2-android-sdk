@@ -33,6 +33,7 @@
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- PreferenceFragment theme -->
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+
         <!-- AlertDialogTheme theme -->
         <item name="alertDialogTheme">@style/AppTheme.AlertDialog</item>
 
@@ -45,7 +46,7 @@
         <item name="android:windowBackground">@android:color/white</item>
     </style>
 
-    <style name="AppTheme.Main" parent="AppTheme.Base"></style>
+    <style name="AppTheme.Main" parent="AppTheme.Base" />
 
     <style name="AppTheme.Dialog" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorPrimary">@color/color_primary_default</item>

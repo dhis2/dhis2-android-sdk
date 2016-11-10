@@ -1,6 +1,5 @@
 package org.hisp.dhis.client.models.dataelement;
 
-import org.hisp.dhis.client.models.BaseIdendifiableObjectTestMethods;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,7 +10,7 @@ import nl.jqno.equalsverifier.Warning;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CategoryComboTests implements BaseIdendifiableObjectTestMethods {
+public class CategoryComboTests {
 
     private static CategoryCombo.Builder VALID_BUILDER;
 
@@ -32,30 +31,27 @@ public class CategoryComboTests implements BaseIdendifiableObjectTestMethods {
     // BASE IDENTIFIABLE OBJECT TESTS
     //
     //**************************************************************************************
-    
-    @Override
+
     @Test(expected = IllegalStateException.class)
     public void build_shouldThrowOnNullUidField() {
         VALID_BUILDER.uid(null).build();
     }
 
-    @Override
     @Test
     public void isValid_shouldReturnFalseOnMalformedUid() {
         CategoryCombo categoryComboWithEmptyUid = VALID_BUILDER.uid("").build();
         CategoryCombo categoryComboWithShortUid = VALID_BUILDER.uid("a1b2c3d4e5").build();
-        CategoryCombo categoryComboWithLongUid =  VALID_BUILDER.uid("a1b2c3d4e5ff").build();
+        CategoryCombo categoryComboWithLongUid = VALID_BUILDER.uid("a1b2c3d4e5ff").build();
 
-        assertThat (categoryComboWithEmptyUid.uid().length()) .isEqualTo(0);
-        assertThat (categoryComboWithShortUid.uid().length()) .isEqualTo(10);
-        assertThat (categoryComboWithLongUid.uid().length())  .isEqualTo(12);
+        assertThat(categoryComboWithEmptyUid.uid().length()).isEqualTo(0);
+        assertThat(categoryComboWithShortUid.uid().length()).isEqualTo(10);
+        assertThat(categoryComboWithLongUid.uid().length()).isEqualTo(12);
 
         assertThat(categoryComboWithEmptyUid.isValid()).isFalse();  // corner case: empty string
         assertThat(categoryComboWithShortUid.isValid()).isFalse();  // uid of 10 chars long
         assertThat(categoryComboWithLongUid.isValid()).isFalse();   // uid of 12 chars long
     }
 
-    @Override
     @Test
     public void isValid_shouldReturnFalseOnNullCreatedField() {
         CategoryCombo categoryCombo = VALID_BUILDER.created(null).build();
@@ -63,7 +59,6 @@ public class CategoryComboTests implements BaseIdendifiableObjectTestMethods {
         assertThat(categoryCombo.isValid()).isFalse();
     }
 
-    @Override
     @Test
     public void isValid_shouldReturnFalseOnNullLastUpdatedField() {
         CategoryCombo categoryCombo = VALID_BUILDER.lastUpdated(null).build();
@@ -71,7 +66,6 @@ public class CategoryComboTests implements BaseIdendifiableObjectTestMethods {
         assertThat(categoryCombo.isValid()).isFalse();
     }
 
-    @Override
     @Test
     public void isValid_shouldReturnTrueOnValidObject() {
         CategoryCombo categoryCombo = VALID_BUILDER.build();
@@ -84,7 +78,6 @@ public class CategoryComboTests implements BaseIdendifiableObjectTestMethods {
     //
     //**************************************************************************************
 
-    @Override
     @Test
     public void equals_shouldConformToContract() {
         EqualsVerifier.forClass(VALID_BUILDER.build().getClass())

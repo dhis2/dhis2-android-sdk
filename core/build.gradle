@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+apply plugin: "com.android.library"
 
 def configuration = rootProject.ext.configuration
 def libraries = rootProject.ext.libraries
@@ -42,17 +42,56 @@ android {
         versionName configuration.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    packagingOptions {
+        // excluding duplicate license files
+        // from jackson modules
+        exclude "META-INF/LICENSE"
+
+        // should be removed with interoperability library
+        exclude "META-INF/rxjava.properties"
+    }
+}
+
+// Check if the build requires dex count, if yes analyze dex for amount of methods
+def withDexCount = project.hasProperty("withDexCount")
+if (withDexCount) {
+    apply plugin: "com.getkeepsafe.dexcount"
+
+    dexcount {
+        format = "list"
+        verbose = false
+        includeFieldCount = true
+        includeTotalMethodCount = true
+        maxTreeDepth = Integer.MAX_VALUE
+    }
 }
 
 dependencies {
-    // Google support libraries
-    compile "com.android.support:appcompat-v7:${libraries.support}"
+    // Client models
+    compile project(":models")
+
+    // ReactiveX
+    compile "io.reactivex.rxjava2:rxjava:${libraries.rxjava}"
+    compile "com.github.akarnokd:rxjava2-interop:${libraries.rxjavacompat}"
+
+    // Square
+    compile "com.squareup.sqlbrite:sqlbrite:${libraries.sqlbrite}"
+
+    // Using javax annotations in conjunction with auto-value in order
+    // to have optional values in models
+    provided "com.google.code.findbugs:jsr305:${libraries.javaxannotations}"
 
     // Java test dependencies
     testCompile "junit:junit:${libraries.junit}"
+    testCompile "org.mockito:mockito-core:${libraries.mockito}"
+    testCompile "org.assertj:assertj-core:${libraries.assertj}"
+    testCompile "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
 
     // Android test dependencies
-    androidTestCompile("com.android.support.test.espresso:espresso-core:${libraries.espresso}", {
-        exclude group: "com.android.support", module: "support-annotations"
-    })
+    // androidTestCompile "org.mockito:mockito-core:${libraries.mockito}"
+    androidTestCompile "com.android.support.test:runner:${libraries.testrunner}"
+    androidTestCompile("com.google.truth:truth:${libraries.truth}") {
+        exclude group: 'junit' // Android has JUnit built in.
+    }
 }

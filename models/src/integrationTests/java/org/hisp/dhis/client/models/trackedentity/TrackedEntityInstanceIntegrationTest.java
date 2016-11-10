@@ -48,7 +48,7 @@ public class TrackedEntityInstanceIntegrationTest {
                 "\n" +
                 "    \"lastUpdated\": \"2014-03-28T12:39:39.372+0000\",\n" +
                 "    \"trackedEntity\": \"nEenWmSyUEp\",\n" +
-                "    \"created\": \"2014-03-26 15:50:14.381\",\n" +
+                "    \"created\": \"2014-03-28T12:39:39.372+0000\",\n" +
                 "    \"orgUnit\": \"DiszpKrYNg8\",\n" +
                 "    \"trackedEntityInstance\": \"CVUuL8RIpPI\",\n" +
                 "    \"relationships\": [ ],\n" +
@@ -234,8 +234,9 @@ public class TrackedEntityInstanceIntegrationTest {
         assertThat(trackedEntityInstance.lastUpdated()).isEqualTo(
                 BaseIdentifiableObject.DATE_FORMAT.parse("2014-03-28T12:39:39.372+0000"));
         assertThat(trackedEntityInstance.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2014-03-26 15:50:14.381"));
-        assertThat(trackedEntityInstance.uid()).isEqualTo("nEenWmSyUEp");
+                BaseIdentifiableObject.DATE_FORMAT.parse("2014-03-28T12:39:39.372+0000"));
+
+        assertThat(trackedEntityInstance.uid()).isEqualTo("CVUuL8RIpPI");
         assertThat(trackedEntityInstance.organisationUnit()).isEqualTo("DiszpKrYNg8");
         assertThat(trackedEntityInstance.relationships()).isEmpty();
 
@@ -259,8 +260,5 @@ public class TrackedEntityInstanceIntegrationTest {
         assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(17).trackedEntityAttribute().equals("NDXw0cluzSw"));
         assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(18).trackedEntityAttribute().equals("FO4sWYJ64LQ"));
         assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(19).trackedEntityAttribute().equals("P2cwLGskgxn"));
-
-
     }
-
 }

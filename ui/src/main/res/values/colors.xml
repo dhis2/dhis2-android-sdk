@@ -32,7 +32,6 @@
     <!-- Theme colours -->
     <color name="color_primary_dark">#FF194261</color>
     <color name="color_primary_default">#FF276696</color>
-    <color name="color_primary_light">#FF3284C3</color>
 
     <color name="color_accent_dark">#FFF57C00</color>
     <color name="color_accent_default">#FFFF9800</color>

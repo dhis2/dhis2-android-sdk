@@ -60,7 +60,7 @@ import static android.text.TextUtils.isEmpty;
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 
-// TODO show snackbars for errors (not dialogs)
+// TODO show snackbar for errors (not dialogs)
 // TODO when serverUrl, username or password are
 // TODO invalid highlight corresponding fields
 public abstract class AbsLoginActivity extends AppCompatActivity {

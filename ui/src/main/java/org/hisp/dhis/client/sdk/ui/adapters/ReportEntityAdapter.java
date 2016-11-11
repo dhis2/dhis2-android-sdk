@@ -37,7 +37,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
     private ArrayList<ReportEntity> reportEntities;
     private final LayoutInflater layoutInflater;
-    private ArrayList<ReportEntityFilter> ReportEntityFilters;
+    private List<ReportEntityFilter> ReportEntityFilters;
 
     // click listener
     private OnReportEntityInteractionListener onReportEntityInteractionListener;
@@ -85,7 +85,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    public void notifyFiltersChanged(ArrayList<ReportEntityFilter> filters) {
+    public void notifyFiltersChanged(List<ReportEntityFilter> filters) {
         this.ReportEntityFilters = filters;
         notifyDataSetChanged();
     }
@@ -379,7 +379,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
         }
     }
 
-    private boolean noDataElementsToShow(ArrayList<ReportEntityFilter> ReportEntityFilters) {
+    private boolean noDataElementsToShow(List<ReportEntityFilter> ReportEntityFilters) {
         for (ReportEntityFilter ReportEntityFilter : ReportEntityFilters) {
             if (ReportEntityFilter.show()) {
                 return false;
@@ -414,7 +414,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public ArrayList<ReportEntityFilter> getReportEntityFilters() {
+    public List<ReportEntityFilter> getReportEntityFilters() {
         return ReportEntityFilters;
     }
 }

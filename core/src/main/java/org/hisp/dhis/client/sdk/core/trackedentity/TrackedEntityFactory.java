@@ -22,4 +22,10 @@ public final class TrackedEntityFactory {
                 new TrackedEntityDataValueStoreImpl(resolver);
         return new TrackedEntityDataValueInteractorImpl(trackedEntityDataValueStore);
     }
+
+    public static TrackedEntityAttributeValueInteractor createTrackedEntityAttributeValueInteractor(@NonNull ContentResolver resolver) {
+        TrackedEntityAttributeValueStore trackedEntityAttributeValueStore =
+                new TrackedEntityAttributeValueStoreImpl(resolver);
+        return new TrackedEntityAttributeValueInteractorImpl(trackedEntityAttributeValueStore);
+    }
 }

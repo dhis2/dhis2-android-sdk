@@ -37,6 +37,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.client.sdk.core.commons.BasicAuthenticator;
 import org.hisp.dhis.client.sdk.core.commons.ServerUrlPreferences;
 import org.hisp.dhis.client.sdk.core.commons.ServerUrlPreferencesImpl;
+import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentFactory;
+import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentInteractor;
 import org.hisp.dhis.client.sdk.core.event.EventFactory;
 import org.hisp.dhis.client.sdk.core.event.EventInteractor;
 import org.hisp.dhis.client.sdk.core.option.OptionFactory;
@@ -45,6 +47,7 @@ import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitFactory;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitInteractor;
 import org.hisp.dhis.client.sdk.core.program.ProgramFactory;
 import org.hisp.dhis.client.sdk.core.program.ProgramInteractor;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeValueInteractor;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueInteractor;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityFactory;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInteractor;
@@ -84,6 +87,8 @@ public final class D2 {
     private final TrackedEntityInteractor trackedEntityInteractor;
     private final OrganisationUnitInteractor organisationUnitInteractor;
     private final TrackedEntityDataValueInteractor trackedEntityDataValueInteractor;
+    private final TrackedEntityAttributeValueInteractor trackedEntityAttributeValueInteractor;
+    private final EnrollmentInteractor enrollmentInteractor;
 
     public static D2.Builder builder(Application application) {
         isNull(application, "application must not be null");
@@ -97,7 +102,7 @@ public final class D2 {
        ProgramInteractor programInteractor, OptionSetInteractor optionSetInteractor,
        TrackedEntityInteractor trackedEntityInteractor, EventInteractor eventInteractor,
        OrganisationUnitInteractor organisationUnitInteractor,
-       TrackedEntityDataValueInteractor trackedEntityDataValueInteractor) {
+       TrackedEntityDataValueInteractor trackedEntityDataValueInteractor, TrackedEntityAttributeValueInteractor trackedEntityAttributeValueInteractor, EnrollmentInteractor enrollmentInteractor) {
         this.application = application;
 
         // persistence
@@ -118,6 +123,8 @@ public final class D2 {
         this.eventInteractor = eventInteractor;
         this.organisationUnitInteractor = organisationUnitInteractor;
         this.trackedEntityDataValueInteractor = trackedEntityDataValueInteractor;
+        this.trackedEntityAttributeValueInteractor = trackedEntityAttributeValueInteractor;
+        this.enrollmentInteractor = enrollmentInteractor;
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -269,11 +276,15 @@ public final class D2 {
                     OrganisationUnitFactory.create(retrofit, contentResolver, objectMapper) : null;
             TrackedEntityDataValueInteractor dataValueInteractor = retrofit != null ?
                     TrackedEntityFactory.create(contentResolver) : null;
+            TrackedEntityAttributeValueInteractor trackedEntityAttributeValueInteractor = retrofit != null ?
+                    TrackedEntityFactory.createTrackedEntityAttributeValueInteractor(contentResolver) : null;
+            EnrollmentInteractor enrollmentInteractor = retrofit != null ?
+                    EnrollmentFactory.create(retrofit, contentResolver) : null;
 
             return new D2(application, contentResolver, userPreferences, serverUrlPreferences,
                     objectMapper, okHttpClient, retrofit, userInteractor, programInteractor,
                     optionSetInteractor, trackedEntityInteractor, eventInteractor,
-                    organisationUnitInteractor, dataValueInteractor);
+                    organisationUnitInteractor, dataValueInteractor, trackedEntityAttributeValueInteractor, enrollmentInteractor);
         }
     }
 }

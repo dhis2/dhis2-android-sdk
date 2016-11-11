@@ -33,11 +33,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.client.sdk.models.common.BaseDataModel;
 import org.hisp.dhis.client.sdk.models.common.BaseModel;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_TrackedEntityAttributeValue.Builder.class)
-public abstract class TrackedEntityAttributeValue extends BaseModel {
+public abstract class TrackedEntityAttributeValue extends BaseDataModel {
     private static final String JSON_PROPERTY_ATTRIBUTE = "attribute";
     private static final String JSON_PROPERTY_VALUE = "value";
 

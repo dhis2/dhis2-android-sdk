@@ -72,7 +72,7 @@ public class SessionPreferencesImpl implements SessionPreferences {
 
     @Override
     public void setReportEntityDataModelFilters(String programUid,
-                                                ArrayList<ReportEntityFilter> filters) {
+                                                List<ReportEntityFilter> filters) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         for (ReportEntityFilter filter : filters) {
             String filterKey = String.format("%s:%s", programUid, filter.getDataElementId());
@@ -83,7 +83,7 @@ public class SessionPreferencesImpl implements SessionPreferences {
 
     @Override
     public List<ReportEntityFilter> getReportEntityDataModelFilters(
-            String programUid, ArrayList<ReportEntityFilter> filters) {
+            String programUid, List<ReportEntityFilter> filters) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         for (ReportEntityFilter reportEntityFilter : filters) {

@@ -42,9 +42,9 @@ public interface SessionPreferences {
     boolean setSelectedPickerUid(int index, String pickerUid);
 
     List<ReportEntityFilter> getReportEntityDataModelFilters(
-            String programUid, ArrayList<ReportEntityFilter> filters);
+            String programUid, List<ReportEntityFilter> filters);
 
     void setReportEntityDataModelFilters(
-            String programUid, ArrayList<ReportEntityFilter> filters);
+            String programUid, List<ReportEntityFilter> filters);
 
 }

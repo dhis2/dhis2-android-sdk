@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.models;
 
+import org.hisp.dhis.client.models.enrollment.EnrollmentIntegrationTest;
 import org.hisp.dhis.client.sdk.models.constant.ConstantIntegrationTests;
 import org.hisp.dhis.client.sdk.models.dataelement.CategoryComboIntegrationTests;
 import org.hisp.dhis.client.sdk.models.dataelement.CategoryIntegrationTests;
@@ -82,7 +83,8 @@ import org.junit.runners.Suite;
         ProgramIntegrationTest.class,
         ProgramRuleIntegrationTest.class,
         ProgramIndicatorIntegrationTest.class,
-        ProgramTrackedEntityAttributeIntegrationTest.class
+        ProgramTrackedEntityAttributeIntegrationTest.class,
+        EnrollmentIntegrationTest.class
 })
 public class ModelsIntegrationTestsSuite {
 }

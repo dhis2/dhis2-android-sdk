@@ -33,6 +33,7 @@
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- PreferenceFragment theme -->
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+
         <!-- AlertDialogTheme theme -->
         <item name="alertDialogTheme">@style/AppTheme.AlertDialog</item>
 

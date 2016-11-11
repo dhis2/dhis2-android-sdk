@@ -26,7 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android;
+package org.hisp.dhis.android.core.commons;
 
-public class Stub {
+import android.content.ContentValues;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.client.models.common.Model;
+
+public interface Store<T extends Model> {
+
+    @NonNull
+    TypeResolver<T> query();
+
+    @NonNull
+    TypeResolver<T> query(@NonNull Query query);
+
+    @NonNull
+    WriteQueryResolver<Long> insert(@NonNull T model);
+
+    @NonNull
+    WriteQueryResolver<Long> insert(@NonNull ContentValues contentValues);
 }

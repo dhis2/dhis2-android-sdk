@@ -59,10 +59,6 @@ import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
 import static android.text.TextUtils.isEmpty;
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-
-// TODO show snackbar for errors (not dialogs)
-// TODO when serverUrl, username or password are
-// TODO invalid highlight corresponding fields
 public abstract class AbsLoginActivity extends AppCompatActivity {
     private static final String ARG_LOGIN_ACTIVITY_LAUNCH_MODE = "arg:launchMode";
     private static final String ARG_LAUNCH_MODE_LOGIN_USER = "mode:loginUser";
@@ -434,8 +430,7 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         }
 
         @Override
-        public void startTransition(
-                LayoutTransition transition, ViewGroup container, View view, int type) {
+        public void startTransition(LayoutTransition transition, ViewGroup container, View view, int type) {
             // stub implementation
         }
 

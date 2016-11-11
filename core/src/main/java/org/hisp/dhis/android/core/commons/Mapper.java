@@ -26,50 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: "com.android.library"
+package org.hisp.dhis.android.core.commons;
 
-def configuration = rootProject.ext.configuration
-def libraries = rootProject.ext.libraries
+import android.content.ContentValues;
+import android.database.Cursor;
 
-android {
-    compileSdkVersion configuration.targetSdkVersion
-    buildToolsVersion configuration.buildToolsVersion
+import org.hisp.dhis.client.models.common.Model;
 
-    defaultConfig {
-        minSdkVersion configuration.minSdkVersion
-        targetSdkVersion configuration.targetSdkVersion
-        versionCode configuration.versionCode
-        versionName configuration.versionName
+public interface Mapper<T extends Model> {
+    ContentValues toContentValues(T model);
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
-
-    lintOptions {
-        warningsAsErrors true
-        abortOnError true // Fail early.
-    }
-}
-
-dependencies {
-
-    // Local
-    compile project(":utils")
-
-    // Google
-    compile "com.android.support:preference-v7:${libraries.support}"
-    compile "com.android.support:preference-v14:${libraries.support}"
-    compile "com.android.support:cardview-v7:${libraries.support}"
-
-    // Other
-    compile "com.github.castorflex.smoothprogressbar:library-circular:${libraries.progressbar}"
-
-    // Test
-    testCompile "junit:junit:${libraries.junit}"
-    testCompile "org.mockito:mockito-all:${libraries.mockito}"
-    testCompile "org.assertj:assertj-core:${libraries.assertj}"
-
-    // Android test dependencies
-    androidTestCompile("com.android.support.test.espresso:espresso-core:${libraries.espresso}", {
-        exclude group: "com.android.support", module: "support-annotations"
-    })
+    T toModel(Cursor cursor);
 }

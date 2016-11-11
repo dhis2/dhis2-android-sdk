@@ -26,50 +26,46 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: "com.android.library"
+package org.hisp.dhis.android.core.commons;
 
-def configuration = rootProject.ext.configuration
-def libraries = rootProject.ext.libraries
+import android.content.ContentResolver;
+import android.database.Cursor;
+import android.net.Uri;
 
-android {
-    compileSdkVersion configuration.targetSdkVersion
-    buildToolsVersion configuration.buildToolsVersion
+import com.squareup.sqlbrite.BriteContentResolver;
 
-    defaultConfig {
-        minSdkVersion configuration.minSdkVersion
-        targetSdkVersion configuration.targetSdkVersion
-        versionCode configuration.versionCode
-        versionName configuration.versionName
+import org.hisp.dhis.client.models.common.Model;
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+import java.util.List;
+import java.util.concurrent.Executor;
+
+final class TypeResolverImpl<T extends Model> implements TypeResolver<T> {
+    private final Executor executor;
+    private final BriteContentResolver briteContentResolver;
+    private final ContentResolver contentResolver;
+    private final Mapper<T> contentMapper;
+    private final Uri contentUri;
+    private final Query query;
+
+    TypeResolverImpl(Executor executor, BriteContentResolver briteContentResolver,
+            ContentResolver contentResolver, Mapper<T> contentMapper, Uri contentUri, Query query) {
+        this.executor = executor;
+        this.briteContentResolver = briteContentResolver;
+        this.contentResolver = contentResolver;
+        this.contentMapper = contentMapper;
+        this.contentUri = contentUri;
+        this.query = query;
     }
 
-    lintOptions {
-        warningsAsErrors true
-        abortOnError true // Fail early.
+    @Override
+    public ReadQueryResolver<Cursor> cursor() {
+        return new CursorQueryResolver(executor, briteContentResolver,
+                contentResolver, contentUri, query);
     }
-}
 
-dependencies {
-
-    // Local
-    compile project(":utils")
-
-    // Google
-    compile "com.android.support:preference-v7:${libraries.support}"
-    compile "com.android.support:preference-v14:${libraries.support}"
-    compile "com.android.support:cardview-v7:${libraries.support}"
-
-    // Other
-    compile "com.github.castorflex.smoothprogressbar:library-circular:${libraries.progressbar}"
-
-    // Test
-    testCompile "junit:junit:${libraries.junit}"
-    testCompile "org.mockito:mockito-all:${libraries.mockito}"
-    testCompile "org.assertj:assertj-core:${libraries.assertj}"
-
-    // Android test dependencies
-    androidTestCompile("com.android.support.test.espresso:espresso-core:${libraries.espresso}", {
-        exclude group: "com.android.support", module: "support-annotations"
-    })
+    @Override
+    public ReadQueryResolver<List<T>> list() {
+        return new ListQueryResolver<>(executor, briteContentResolver,
+                contentResolver, contentMapper, contentUri, query);
+    }
 }

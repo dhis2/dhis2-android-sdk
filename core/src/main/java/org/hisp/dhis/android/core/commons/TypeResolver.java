@@ -26,20 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android;
+package org.hisp.dhis.android.core.commons;
 
-import org.junit.Test;
+import android.database.Cursor;
 
-import static org.junit.Assert.*;
+import org.hisp.dhis.client.models.common.Model;
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
-public class ExampleUnitTest {
-    @Test
-    public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
-    }
+import java.util.List;
+
+public interface TypeResolver<T extends Model> {
+    ReadQueryResolver<Cursor> cursor();
+
+    ReadQueryResolver<List<T>> list();
 }

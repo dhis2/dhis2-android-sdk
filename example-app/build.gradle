@@ -54,6 +54,8 @@ android {
     lintOptions {
         warningsAsErrors true
         abortOnError true // Fail early.
+
+        disable 'GoogleAppIndexingWarning' // App does not have deep linking.
     }
 }
 

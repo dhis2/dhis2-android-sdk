@@ -79,6 +79,7 @@ ext {
             // test dependencies
             junit           : "4.12",
             espresso        : "2.2.2",
-            equalsverifier  : "2.1.6"
+            equalsverifier  : "2.1.6",
+            mockito         : "1.10.19"
     ]
 }

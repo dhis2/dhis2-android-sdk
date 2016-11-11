@@ -35,6 +35,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -58,6 +59,7 @@ import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
 
 import static android.text.TextUtils.isEmpty;
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
+
 
 public abstract class AbsLoginActivity extends AppCompatActivity {
     private static final String ARG_LOGIN_ACTIVITY_LAUNCH_MODE = "arg:launchMode";
@@ -125,14 +127,13 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         ActivityCompat.startActivity(currentActivity, intent, null);
     }
 
+    private static boolean isGreaterThanOrJellyBean() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
+    }
 
     //--------------------------------------------------------------------------------------
     // Activity life-cycle callbacks
     //--------------------------------------------------------------------------------------
-
-    private static boolean isGreaterThanOrJellyBean() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,12 +201,7 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
 
         /* adding transition animations to root layout */
         if (isGreaterThanOrJellyBean()) {
-            layoutTransition = new LayoutTransition();
-            layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
-            layoutTransition.addTransitionListener(onPostAnimationListener);
-
-            RelativeLayout loginLayoutContent = (RelativeLayout) findViewById(R.id.layout_content);
-            loginLayoutContent.setLayoutTransition(layoutTransition);
+            setLayoutTransitionOnJellyBeanAndGreater(onPostAnimationListener);
         } else {
             layoutTransitionSlideIn = AnimationUtils.loadAnimation(this, R.anim.in_up);
             layoutTransitionSlideOut = AnimationUtils.loadAnimation(this, R.anim.out_down);
@@ -225,6 +221,19 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
                         password.getText());
             }
         });
+    }
+
+    /*
+    * @RequiresApi annotation needed to pass lint checks run outside of Android Studio
+    * */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    private void setLayoutTransitionOnJellyBeanAndGreater(OnPostAnimationListener onPostAnimationListener) {
+        layoutTransition = new LayoutTransition();
+        layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
+        layoutTransition.addTransitionListener(onPostAnimationListener);
+
+        RelativeLayout loginLayoutContent = (RelativeLayout) findViewById(R.id.layout_content);
+        loginLayoutContent.setLayoutTransition(layoutTransition);
     }
 
     @Override

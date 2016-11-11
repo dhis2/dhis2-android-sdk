@@ -57,15 +57,15 @@ public interface EventTable {
             EventColumns.COLUMN_UID,
             EventColumns.COLUMN_CREATED,
             EventColumns.COLUMN_LAST_UPDATED,
-            EventColumns.COLUMN_COMPLETED_DATE,
+            EventColumns.COLUMN_EVENT_STATUS,
+            EventColumns.COLUMN_PROGRAM_STAGE,
+            EventColumns.COLUMN_ORGANISATION_UNIT,
             EventColumns.COLUMN_EVENT_DATE,
             EventColumns.COLUMN_DUE_DATE,
-            EventColumns.COLUMN_EVENT_STATUS,
-            EventColumns.COLUMN_ORGANISATION_UNIT,
-            EventColumns.COLUMN_PROGRAM,
-            EventColumns.COLUMN_PROGRAM_STAGE,
-            EventColumns.COLUMN_LATITUDE,
+            EventColumns.COLUMN_COMPLETED_DATE,
             EventColumns.COLUMN_LONGITUDE,
+            EventColumns.COLUMN_LATITUDE,
+            EventColumns.COLUMN_PROGRAM,
             EventColumns.COLUMN_STATE
     };
 }

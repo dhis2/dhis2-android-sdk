@@ -16,6 +16,18 @@ public interface TrackedEntityDataValueTable {
         String COLUMN_VALUE = "value";
     }
 
+    String CREATE_TABLE_TRACKED_ENTITY_DATA_VALUES = "CREATE TABLE IF NOT EXISTS " +
+            TrackedEntityDataValueColumns.TABLE_NAME + " (" +
+            TrackedEntityDataValueColumns.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            TrackedEntityDataValueColumns.COLUMN_DATA_ELEMENT + " TEXT NOT NULL," +
+            TrackedEntityDataValueColumns.COLUMN_EVENT + " TEXT NOT NULL," +
+            TrackedEntityDataValueColumns.COLUMN_STORED_BY + " TEXT NOT NULL," +
+            TrackedEntityDataValueColumns.COLUMN_VALUE + " TEXT," +
+            TrackedEntityDataValueColumns.COLUMN_STATE + " TEXT" + ")";
+
+    String DROP_TABLE_TRACKED_ENTITY_DATA_VALUES = "DROP TABLE IF EXISTS " +
+            TrackedEntityDataValueColumns.TABLE_NAME;
+
     Uri CONTENT_URI = DbContract.BASE_CONTENT_URI.buildUpon()
             .appendPath(TrackedEntityDataValueColumns.TABLE_NAME).build();
 
@@ -32,18 +44,6 @@ public interface TrackedEntityDataValueTable {
             TrackedEntityDataValueColumns.COLUMN_STORED_BY,
             TrackedEntityDataValueColumns.COLUMN_VALUE,
             TrackedEntityDataValueColumns.COLUMN_STATE
-
     };
 
-    String CREATE_TABLE_TRACKED_ENTITY_DATA_VALUES = "CREATE TABLE IF NOT EXISTS " +
-            TrackedEntityDataValueColumns.TABLE_NAME + " (" +
-            TrackedEntityDataValueColumns.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            TrackedEntityDataValueColumns.COLUMN_DATA_ELEMENT + " TEXT NOT NULL," +
-            TrackedEntityDataValueColumns.COLUMN_EVENT + " TEXT NOT NULL," +
-            TrackedEntityDataValueColumns.COLUMN_STORED_BY + " TEXT NOT NULL," +
-            TrackedEntityDataValueColumns.COLUMN_VALUE + " TEXT," +
-            TrackedEntityDataValueColumns.COLUMN_STATE + " TEXT" + ")";
-
-    String DROP_TABLE_TRACKED_ENTITY_DATA_VALUES = "DROP TABLE IF EXISTS " +
-            TrackedEntityDataValueColumns.TABLE_NAME;
 }

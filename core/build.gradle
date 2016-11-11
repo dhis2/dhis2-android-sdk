@@ -51,6 +51,11 @@ android {
         // should be removed with interoperability library
         exclude "META-INF/rxjava.properties"
     }
+
+    lintOptions {
+        warningsAsErrors true
+        abortOnError true // Fail early.
+    }
 }
 
 // Check if the build requires dex count, if yes analyze dex for amount of methods

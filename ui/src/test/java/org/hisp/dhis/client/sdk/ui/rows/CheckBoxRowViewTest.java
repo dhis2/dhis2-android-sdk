@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.ui.rows;
 
+import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +42,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -49,15 +51,7 @@ public class CheckBoxRowViewTest {
     private static final String TRUE = "true";
     private static final String EMPTY_FIELD = "";
 
-    private String label = "test_label";
-
     private CheckBoxRowView checkBoxRowView;
-
-    @Mock
-    private LayoutInflater layoutInflater;
-
-    @Mock
-    private View itemView;
 
     @Mock
     private CheckBox checkBoxView;
@@ -66,37 +60,50 @@ public class CheckBoxRowViewTest {
     private TextView textViewLabel;
 
     private RecyclerView.ViewHolder viewHolder;
-    private FormEntityCheckBox formEntityCheckBox;
 
+    @SuppressLint("InflateParams")
     @Before
     public void setUp() {
+
         MockitoAnnotations.initMocks(this);
         checkBoxRowView = new CheckBoxRowView();
 
-        when(layoutInflater.inflate(
+        LayoutInflater inflater = mock(LayoutInflater.class);
+        View itemView = mock(View.class);
+
+        when(inflater.inflate(
                 R.layout.recyclerview_row_checkbox, null, false)).thenReturn(itemView);
 
         when(itemView.findViewById(R.id.checkbox_row_checkbox)).thenReturn(checkBoxView);
         when(itemView.findViewById(R.id.textview_row_label)).thenReturn(textViewLabel);
 
-        viewHolder = checkBoxRowView.onCreateViewHolder(layoutInflater, null);
-
-        String id = "test_id";
-        formEntityCheckBox = new FormEntityCheckBox(id, label);
-        formEntityCheckBox.setValue(TRUE, false);
+        viewHolder = checkBoxRowView.onCreateViewHolder(inflater, null);
     }
 
     @Test
     public void onBindViewHolder_valuesAreSet() throws Exception {
+
+        String label = "test_label";
+        FormEntityCheckBox formEntityCheckBox = new FormEntityCheckBox("test_id", label);
+        formEntityCheckBox.setValue(TRUE, false); // value set to true
+
         checkBoxRowView.onBindViewHolder(viewHolder, formEntityCheckBox);
+
         verify(textViewLabel).setText(label);
-        verify(checkBoxView).setChecked(true);
+        verify(checkBoxView).setChecked(true); // check that value is set to true
     }
 
     @Test
     public void onBindViewHolder_viewIsUpdated() throws Exception {
-        formEntityCheckBox.setValue(EMPTY_FIELD, false);
+
+        String updatedLabel = "updated_test_label"; // new label
+
+        FormEntityCheckBox formEntityCheckBox = new FormEntityCheckBox("test_id", updatedLabel);
+        formEntityCheckBox.setValue(EMPTY_FIELD, false); // value set to false
+
         checkBoxRowView.onBindViewHolder(viewHolder, formEntityCheckBox);
-        verify(checkBoxView).setChecked(false);
+
+        verify(textViewLabel).setText(updatedLabel);  // check that new label is set
+        verify(checkBoxView).setChecked(false); // check that value is set to false
     }
 }

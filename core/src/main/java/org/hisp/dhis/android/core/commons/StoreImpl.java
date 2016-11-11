@@ -45,17 +45,17 @@ public class StoreImpl<T extends Model> implements Store<T> {
     private final BriteContentResolver briteContentResolver;
     private final ContentResolver contentResolver;
     private final Mapper<T> modelMapper;
-    private final Uri contentUri;
+    private final Uri uri;
 
     // executor necessary for asynchronous tasks
     private final Executor executor;
 
     public StoreImpl(BriteContentResolver briteContentResolver, ContentResolver contentResolver,
-            Mapper<T> modelMapper, Uri contentUri, Executor executor) {
+            Mapper<T> modelMapper, Uri uri, Executor executor) {
         this.briteContentResolver = briteContentResolver;
         this.contentResolver = contentResolver;
         this.modelMapper = modelMapper;
-        this.contentUri = contentUri;
+        this.uri = uri;
         this.executor = executor;
     }
 
@@ -69,61 +69,64 @@ public class StoreImpl<T extends Model> implements Store<T> {
     @Override
     public TypeResolver<T> query(@NonNull Query query) {
         return new TypeResolverImpl<>(executor, briteContentResolver, contentResolver, modelMapper,
-                contentUri, query);
+                uri, query);
     }
 
     @NonNull
     @Override
     public WriteQueryResolver<Long> insert(@NonNull final T model) {
-        return new InsertQueryResolver<>(executor, contentResolver, contentUri, modelMapper, model);
+        return new InsertQueryResolver<>(executor, contentResolver, uri, modelMapper, model);
     }
 
     @NonNull
     @Override
     public WriteQueryResolver<Long> insert(@NonNull ContentValues contentValues) {
-        return new InsertQueryResolver<>(executor, contentResolver, contentUri, contentValues);
+        return new InsertQueryResolver<>(executor, contentResolver, uri, contentValues);
     }
 
     @NonNull
     @Override
     public WriteQueryResolver<Long> insert(@NonNull List<T> models) {
+        // TODO
         return null;
     }
 
     @NonNull
     @Override
     public WriteQueryResolver<Long> insert(@NonNull ContentValues[] values) {
+        // TODO
         return null;
     }
 
     @NonNull
     @Override
     public WriteQueryResolver<Integer> update(@NonNull T model) {
-        return null;
+        return new UpdateQueryResolver<>(executor, contentResolver, uri, null, modelMapper, model);
     }
 
     @NonNull
     @Override
     public WriteQueryResolver<Integer> update(@NonNull ContentValues contentValues) {
-        return null;
+        return new UpdateQueryResolver<>(executor, contentResolver, uri, contentValues);
     }
 
     @NonNull
     @Override
     public WriteQueryResolver<Integer> update(@NonNull T model, @Nullable Where where) {
-        return null;
+        return new UpdateQueryResolver<>(executor, contentResolver, uri, where, modelMapper, model);
     }
 
     @NonNull
     @Override
-    public WriteQueryResolver<Integer> update(@NonNull ContentValues contentValues, @Nullable Where where) {
-        return null;
+    public WriteQueryResolver<Integer> update(@NonNull ContentValues values, @Nullable Where where) {
+        return new UpdateQueryResolver<>(executor, contentResolver, uri, where, values);
     }
 
     @NonNull
     @Override
-    public WriteQueryResolver<Integer> update(@NonNull Long id, @NonNull ContentValues contentValues) {
-        return null;
+    public WriteQueryResolver<Integer> update(@NonNull Long id,
+            @NonNull ContentValues contentValues) {
+        return new UpdateQueryResolver<>(executor, contentResolver, uri, id, contentValues);
     }
 
     @NonNull

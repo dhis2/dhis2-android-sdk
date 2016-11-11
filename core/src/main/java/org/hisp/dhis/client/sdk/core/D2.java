@@ -102,7 +102,9 @@ public final class D2 {
        ProgramInteractor programInteractor, OptionSetInteractor optionSetInteractor,
        TrackedEntityInteractor trackedEntityInteractor, EventInteractor eventInteractor,
        OrganisationUnitInteractor organisationUnitInteractor,
-       TrackedEntityDataValueInteractor trackedEntityDataValueInteractor, TrackedEntityAttributeValueInteractor trackedEntityAttributeValueInteractor, EnrollmentInteractor enrollmentInteractor) {
+       TrackedEntityDataValueInteractor trackedEntityDataValueInteractor,
+       TrackedEntityAttributeValueInteractor trackedEntityAttributeValueInteractor,
+       EnrollmentInteractor enrollmentInteractor) {
         this.application = application;
 
         // persistence
@@ -189,6 +191,14 @@ public final class D2 {
 
     public TrackedEntityDataValueInteractor trackedEntityDataValues() {
         return trackedEntityDataValueInteractor;
+    }
+
+    public EnrollmentInteractor enrollments() {
+        return enrollmentInteractor;
+    }
+
+    public TrackedEntityAttributeValueInteractor trackedEntityAttributeValues() {
+        return trackedEntityAttributeValueInteractor;
     }
 
     public static class Builder {

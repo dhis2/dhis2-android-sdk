@@ -71,6 +71,8 @@ dependencies {
 
     // Test
     testCompile "junit:junit:${libraries.junit}"
+    testCompile "org.mockito:mockito-all:${libraries.mockito}"
+    testCompile "org.assertj:assertj-core:${libraries.assertj}"
 
     // Android test dependencies
     androidTestCompile("com.android.support.test.espresso:espresso-core:${libraries.espresso}", {

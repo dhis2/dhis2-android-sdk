@@ -29,7 +29,7 @@
   -->
 
 <resources>
-    <!-- AbsLoginActivity strings -->
+    <!-- DefaultLoginActivity strings -->
     <string name="server_url">Server URL</string>
     <string name="username">Username</string>
     <string name="password">Password</string>

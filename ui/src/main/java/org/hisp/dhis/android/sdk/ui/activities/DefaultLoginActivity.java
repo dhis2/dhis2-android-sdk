@@ -61,7 +61,7 @@ import static android.text.TextUtils.isEmpty;
 import static org.hisp.dhis.android.sdk.utils.Preconditions.isNull;
 
 
-public abstract class AbsLoginActivity extends AppCompatActivity {
+public class DefaultLoginActivity extends AppCompatActivity {
     private static final String ARG_LOGIN_ACTIVITY_LAUNCH_MODE = "arg:launchMode";
     private static final String ARG_LAUNCH_MODE_LOGIN_USER = "mode:loginUser";
     private static final String ARG_LAUNCH_MODE_CONFIRM_USER = "mode:confirmUser";
@@ -106,10 +106,10 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
     //--------------------------------------------------------------------------------------
 
     /**
-     * Creates intent for AbsLoginActivity to be launched in "User confirmation" mode.
+     * Creates intent for DefaultLoginActivity to be launched in "User confirmation" mode.
      *
-     * @param currentActivity Activity from which we want to fire AbsLoginActivity
-     * @param target          Implementation of AbsLoginActivity
+     * @param currentActivity Activity from which we want to fire DefaultLoginActivity
+     * @param target          Implementation of DefaultLoginActivity
      * @param serverUrl       ServerUrl which will be set to serverUrl address and locked
      */
     public static void navigateTo(Activity currentActivity, Class<? extends Activity> target,
@@ -369,8 +369,13 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         return logoutButton;
     }
 
-    protected abstract void onLoginButtonClicked(
-            Editable serverUrl, Editable username, Editable password);
+    /**
+     * Override this in subclass. Login logic goes here
+     */
+    protected void onLoginButtonClicked(
+            Editable serverUrl, Editable username, Editable password) {
+        showProgress();
+    }
 
     protected void onLogoutButtonClicked() {
         // empty implementation for subclasses to override
@@ -384,11 +389,11 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
     be careful and not keep any implicit references to activities */
     private static class OnPostAnimationRunnable implements Runnable {
         private final OnAnimationFinishListener listener;
-        private final AbsLoginActivity loginActivity;
+        private final DefaultLoginActivity loginActivity;
         private final boolean showProgress;
 
         public OnPostAnimationRunnable(OnAnimationFinishListener listener,
-                                       AbsLoginActivity loginActivity, boolean showProgress) {
+                                       DefaultLoginActivity loginActivity, boolean showProgress) {
             this.listener = listener;
             this.loginActivity = loginActivity;
             this.showProgress = showProgress;
@@ -418,7 +423,7 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            AbsLoginActivity.this.onTextChanged();
+            DefaultLoginActivity.this.onTextChanged();
         }
     }
 

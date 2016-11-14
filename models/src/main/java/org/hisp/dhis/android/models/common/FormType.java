@@ -26,15 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.commons;
+package org.hisp.dhis.android.models.common;
 
-import android.content.ContentValues;
-import android.database.Cursor;
+public enum FormType {
+    DEFAULT, CUSTOM, SECTION, SECTION_MULTIORG;
 
-import org.hisp.dhis.android.models.common.Model;
+    public boolean isDefault() {
+        return this == DEFAULT;
+    }
 
-public interface Mapper<T extends Model> {
-    ContentValues toContentValues(T model);
+    public boolean isCustom() {
+        return this == CUSTOM;
+    }
 
-    T toModel(Cursor cursor);
+    public boolean isSection() {
+        return this == SECTION || this == SECTION_MULTIORG;
+    }
 }

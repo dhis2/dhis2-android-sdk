@@ -33,7 +33,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.net.Uri;
 
-import org.hisp.dhis.client.models.common.Model;
+import org.hisp.dhis.android.models.common.Model;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;

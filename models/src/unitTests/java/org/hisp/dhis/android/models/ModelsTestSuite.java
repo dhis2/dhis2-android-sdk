@@ -26,15 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.commons;
+package org.hisp.dhis.android.models;
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import org.hisp.dhis.android.models.dataelement.CategoryComboTests;
+import org.hisp.dhis.android.models.dataelement.CategoryTests;
+import org.hisp.dhis.android.models.dataelement.DataElementTests;
+import org.hisp.dhis.android.models.constant.ConstantTests;
+import org.hisp.dhis.android.models.dataelement.CategoryOptionComboTests;
+import org.hisp.dhis.android.models.dataelement.CategoryOptionTests;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-import org.hisp.dhis.android.models.common.Model;
-
-public interface Mapper<T extends Model> {
-    ContentValues toContentValues(T model);
-
-    T toModel(Cursor cursor);
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+        ConstantTests.class,
+        CategoryTests.class,
+        CategoryComboTests.class,
+        CategoryOptionTests.class,
+        CategoryOptionComboTests.class,
+        DataElementTests.class
+})
+public class ModelsTestSuite {
 }

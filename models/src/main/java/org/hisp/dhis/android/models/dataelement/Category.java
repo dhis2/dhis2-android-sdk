@@ -26,15 +26,51 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.commons;
+package org.hisp.dhis.android.models.dataelement;
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.models.common.Model;
+import org.hisp.dhis.android.models.common.BaseNameableObject;
 
-public interface Mapper<T extends Model> {
-    ContentValues toContentValues(T model);
+import java.util.Collections;
+import java.util.List;
 
-    T toModel(Cursor cursor);
+import javax.annotation.Nullable;
+
+// TODO: Unit tests
+@AutoValue
+@JsonDeserialize(builder = AutoValue_Category.Builder.class)
+public abstract class Category extends BaseNameableObject {
+    private static final String JSON_PROPERTY_CATEGORY_OPTIONS = "categoryOptions";
+
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_CATEGORY_OPTIONS)
+    public abstract List<CategoryOption> categoryOptions();
+
+    public static Builder builder() {
+        return new AutoValue_Category.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+
+        @JsonProperty(JSON_PROPERTY_CATEGORY_OPTIONS)
+        public abstract Builder categoryOptions(@Nullable List<CategoryOption> categoryOptions);
+
+        // used only to support unmodifiable collections
+        abstract List<CategoryOption> categoryOptions();
+
+        // used only to support unmodifiable collections
+        abstract Category autoBuild();
+
+        public Category build() {
+            if (categoryOptions() != null) {
+                categoryOptions(Collections.unmodifiableList(categoryOptions()));
+            }
+
+            return autoBuild();
+        }
+    }
 }

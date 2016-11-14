@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.commons;
 
 import android.database.Cursor;
 
-import org.hisp.dhis.client.models.common.Model;
+import org.hisp.dhis.android.models.common.Model;
 
 import java.util.List;
 

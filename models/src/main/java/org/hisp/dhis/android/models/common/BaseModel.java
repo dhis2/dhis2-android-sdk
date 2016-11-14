@@ -26,15 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.commons;
+package org.hisp.dhis.android.models.common;
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.hisp.dhis.android.models.common.Model;
+import javax.annotation.Nullable;
 
-public interface Mapper<T extends Model> {
-    ContentValues toContentValues(T model);
+public abstract class BaseModel implements Model {
 
-    T toModel(Cursor cursor);
+    @Override
+    @Nullable
+    @JsonIgnore
+    public abstract Long id();
+
+    protected static abstract class Builder<T extends Builder> {
+        public abstract T id(Long id);
+    }
 }

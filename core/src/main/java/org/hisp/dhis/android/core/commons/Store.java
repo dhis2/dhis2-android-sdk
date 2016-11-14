@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.commons;
 import android.content.ContentValues;
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.client.models.common.Model;
+import org.hisp.dhis.android.models.common.Model;
 
 public interface Store<T extends Model> {
 

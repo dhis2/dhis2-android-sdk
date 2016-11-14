@@ -26,15 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.commons;
+package org.hisp.dhis.android.models.trackedentity;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-
-import org.hisp.dhis.android.models.common.Model;
-
-public interface Mapper<T extends Model> {
-    ContentValues toContentValues(T model);
-
-    T toModel(Cursor cursor);
+// TODO: Tests
+public enum TrackedEntityAttributeSearchScope {
+    NOT_SEARCHABLE, DATA_CAPTURE_ORG_UNITS, SEARCH_ORG_UNITS, ALL_ORG_UNITS
 }

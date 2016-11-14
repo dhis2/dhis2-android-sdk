@@ -26,15 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.commons;
+package org.hisp.dhis.android.models.dataelement;
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.models.common.Model;
+import org.hisp.dhis.android.models.common.BaseNameableObject;
 
-public interface Mapper<T extends Model> {
-    ContentValues toContentValues(T model);
+// TODO: Unit tests
+@AutoValue
+@JsonDeserialize(builder = AutoValue_CategoryOptionCombo.Builder.class)
+public abstract class CategoryOptionCombo extends BaseNameableObject {
+    // no fields
 
-    T toModel(Cursor cursor);
+    public static Builder builder() {
+        return new AutoValue_CategoryOptionCombo.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+        public abstract CategoryOptionCombo build();
+    }
 }

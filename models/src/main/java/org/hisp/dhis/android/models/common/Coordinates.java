@@ -26,15 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.commons;
+package org.hisp.dhis.android.models.common;
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.models.common.Model;
+//TODO: Tests
+@AutoValue
+@JsonDeserialize(builder = AutoValue_Coordinates.Builder.class)
+public abstract class Coordinates {
+    private final static String JSON_PROPERTY_LATITUDE = "latitude";
+    private final static String JSON_PROPERTY_LONGITUDE = "longitude";
 
-public interface Mapper<T extends Model> {
-    ContentValues toContentValues(T model);
+    @JsonProperty(JSON_PROPERTY_LATITUDE)
+    public abstract Double latitude();
 
-    T toModel(Cursor cursor);
+    @JsonProperty(JSON_PROPERTY_LONGITUDE)
+    public abstract Double longitude();
+
+    public static Builder builder() {
+        return new AutoValue_Coordinates.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder {
+        @JsonProperty(JSON_PROPERTY_LATITUDE)
+        public abstract Builder latitude(Double latitude);
+
+        @JsonProperty(JSON_PROPERTY_LONGITUDE)
+        public abstract Builder longitude(Double longitude);
+
+        public abstract Coordinates build();
+    }
 }

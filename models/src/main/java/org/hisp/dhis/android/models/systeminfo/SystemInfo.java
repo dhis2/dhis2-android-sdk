@@ -26,15 +26,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.commons;
+package org.hisp.dhis.android.models.systeminfo;
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.models.common.Model;
+import java.util.Date;
 
-public interface Mapper<T extends Model> {
-    ContentValues toContentValues(T model);
+import javax.annotation.Nullable;
 
-    T toModel(Cursor cursor);
+@AutoValue
+@JsonDeserialize(builder = AutoValue_SystemInfo.Builder.class)
+public abstract class SystemInfo {
+
+    private static final String JSON_PROPERTY_SERVER_DATE_TIME = "serverDate";
+    private static final String JSON_PROPERTY_DATE_FORMAT = "dateFormat";
+
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_SERVER_DATE_TIME)
+    public abstract Date serverDate();
+
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_DATE_FORMAT)
+    public abstract String dateFormat();
+
+    @AutoValue.Builder
+    public static abstract class Builder {
+
+        @JsonProperty(JSON_PROPERTY_SERVER_DATE_TIME)
+        public abstract Builder serverDate(@Nullable Date serverDate);
+
+        @JsonProperty(JSON_PROPERTY_DATE_FORMAT)
+        public abstract Builder dateFormat(@Nullable String dateFormat);
+
+        public abstract SystemInfo build();
+    }
 }

@@ -26,15 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.commons;
+package org.hisp.dhis.android.models.common;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-
-import org.hisp.dhis.android.models.common.Model;
-
-public interface Mapper<T extends Model> {
-    ContentValues toContentValues(T model);
-
-    T toModel(Cursor cursor);
+public enum State {
+    TO_POST, TO_UPDATE, TO_DELETE, ERROR, SYNCED
 }

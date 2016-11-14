@@ -26,15 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.commons;
+package org.hisp.dhis.android.models.common;
 
-import android.content.ContentValues;
-import android.database.Cursor;
+public interface NameableObject {
+    String shortName();
 
-import org.hisp.dhis.android.models.common.Model;
+    String displayShortName();
 
-public interface Mapper<T extends Model> {
-    ContentValues toContentValues(T model);
+    String description();
 
-    T toModel(Cursor cursor);
+    String displayDescription();
 }

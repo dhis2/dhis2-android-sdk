@@ -26,15 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.commons;
+package org.hisp.dhis.android.models;
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.hisp.dhis.android.models.common.Model;
+import org.hisp.dhis.android.models.common.BaseIdentifiableObject;
 
-public interface Mapper<T extends Model> {
-    ContentValues toContentValues(T model);
+public class Inject {
+    private Inject() {
+        // no instances
+    }
 
-    T toModel(Cursor cursor);
+    // configures and returns instance of object mapper
+    public static ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // setting date format which is used across all models
+        objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT);
+
+        // don't fail on unknown properties
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        return objectMapper;
+    }
 }

@@ -26,15 +26,52 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.commons;
+package org.hisp.dhis.android.models.relationship;
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.models.common.Model;
+import org.hisp.dhis.android.models.common.BaseIdentifiableObject;
 
-public interface Mapper<T extends Model> {
-    ContentValues toContentValues(T model);
+import javax.annotation.Nullable;
 
-    T toModel(Cursor cursor);
+// TODO: Tests
+@AutoValue
+@JsonDeserialize(builder = AutoValue_RelationshipType.Builder.class)
+public abstract class RelationshipType extends BaseIdentifiableObject {
+    private static final String JSON_PROPERTY_B_TO_A = "bIsToA";
+    private static final String JSON_PROPERTY_A_TO_B = "aIsToB";
+
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_B_TO_A)
+    public abstract String bIsToA();
+
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_A_TO_B)
+    public abstract String aIsToB();
+
+    @Override
+    public boolean isValid() {
+        if (bIsToA() == null || aIsToB() == null) {
+            return false;
+        }
+
+        return super.isValid();
+    }
+
+    public static Builder builder() {
+        return new AutoValue_RelationshipType.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+        @JsonProperty(JSON_PROPERTY_B_TO_A)
+        public abstract Builder bIsToA(@Nullable String bIsToA);
+
+        @JsonProperty(JSON_PROPERTY_A_TO_B)
+        public abstract Builder aIsToB(@Nullable String aIsToB);
+
+        public abstract RelationshipType build();
+    }
 }

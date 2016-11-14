@@ -1,0 +1,52 @@
+package org.hisp.dhis.android.models.enrollment;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.hisp.dhis.android.models.Inject;
+import org.hisp.dhis.android.models.common.BaseIdentifiableObject;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.text.ParseException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class EnrollmentIntegrationTest {
+    @Test
+    public void enrollment_shouldMapFromJsonString() throws IOException, ParseException {
+        ObjectMapper objectMapper = Inject.objectMapper();
+        Enrollment enrollment = objectMapper.readValue("{\n" +
+                "\"trackedEntity\": \"nEenWmSyUEp\",\n" +
+                "\"created\": \"2015-03-28T12:27:50.740\",\n" +
+                "\"orgUnit\": \"Rp268JB6Ne4\",\n" +
+                "\"program\": \"ur1Edk5Oe2n\",\n" +
+                "\"trackedEntityInstance\": \"D2dUWKQErfQ\",\n" +
+                "\"enrollment\": \"BVJQIxoM2o4\",\n" +
+                "\"lastUpdated\": \"2015-03-28T12:27:50.748\",\n" +
+                "\"orgUnitName\": \"Adonkia CHP\",\n" +
+                "\"enrollmentDate\": \"2014-08-07T12:27:50.730\",\n" +
+                "\"followup\": false,\n" +
+                "\"incidentDate\": \"2014-07-21T12:27:50.730\",\n" +
+                "\"status\": \"ACTIVE\",\n" +
+                "\"notes\": [],\n" +
+                "\"attributes\": []\n" +
+                "}", Enrollment.class);
+
+        assertThat(enrollment.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2015-03-28T12:27:50.740"));
+        assertThat(enrollment.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2015-03-28T12:27:50.748"));
+        assertThat(enrollment.uid()).isEqualTo("BVJQIxoM2o4");
+        assertThat(enrollment.organisationUnit()).isEqualTo("Rp268JB6Ne4");
+        assertThat(enrollment.program()).isEqualTo("ur1Edk5Oe2n");
+        assertThat(enrollment.dateOfEnrollment()).isEqualTo("2014-08-07T12:27:50.730");
+        assertThat(enrollment.dateOfIncident()).isEqualTo("2014-07-21T12:27:50.730");
+        assertThat(enrollment.followUp()).isEqualTo(false);
+        assertThat(enrollment.enrollmentStatus()).isEqualTo(EnrollmentStatus.ACTIVE);
+        assertThat(enrollment.trackedEntityInstance()).isEqualTo("D2dUWKQErfQ");
+
+        // TODO: Find an example Enrollment with a non-empty list of trackedEntityAttributeValues for testing:
+        assertThat(enrollment.trackedEntityAttributeValues()).isEmpty();
+    }
+
+}

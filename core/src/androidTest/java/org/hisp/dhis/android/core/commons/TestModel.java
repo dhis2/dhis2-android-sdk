@@ -2,7 +2,7 @@ package org.hisp.dhis.android.core.commons;
 
 import android.content.ContentValues;
 
-import org.hisp.dhis.client.models.common.Model;
+import org.hisp.dhis.android.models.common.Model;
 
 final class TestModel implements Model {
     // projection

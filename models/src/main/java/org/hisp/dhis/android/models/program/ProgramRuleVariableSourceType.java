@@ -26,15 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.commons;
+package org.hisp.dhis.android.models.program;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-
-import org.hisp.dhis.android.models.common.Model;
-
-public interface Mapper<T extends Model> {
-    ContentValues toContentValues(T model);
-
-    T toModel(Cursor cursor);
+public enum ProgramRuleVariableSourceType {
+    DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE,
+    DATAELEMENT_NEWEST_EVENT_PROGRAM,
+    DATAELEMENT_CURRENT_EVENT,
+    DATAELEMENT_PREVIOUS_EVENT,
+    CALCULATED_VALUE,
+    TEI_ATTRIBUTE
 }

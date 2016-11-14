@@ -26,52 +26,58 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: "com.android.library"
+package org.hisp.dhis.android.sdk.ui.models;
 
-def configuration = rootProject.ext.configuration
-def libraries = rootProject.ext.libraries
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-android {
-    compileSdkVersion configuration.targetSdkVersion
-    buildToolsVersion configuration.buildToolsVersion
+import static org.hisp.dhis.android.sdk.utils.Preconditions.isNull;
 
-    defaultConfig {
-        minSdkVersion configuration.minSdkVersion
-        targetSdkVersion configuration.targetSdkVersion
-        versionCode configuration.versionCode
-        versionName configuration.versionName
+public class FormEntityEditText extends FormEntityCharSequence {
+    private final String hint;
+    private final InputType inputType;
+    private boolean isLocked;
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    public FormEntityEditText(String id, String label, String hint, InputType inputType, Object tag) {
+        super(id, label, tag);
+        this.hint = hint;
+        this.inputType = isNull(inputType, "inputType must not be null");
     }
 
-    lintOptions {
-        warningsAsErrors true
-        abortOnError true // Fail early.
+    public FormEntityEditText(String id, String label, InputType inputType) {
+        this(id, label, null, inputType, null);
     }
-}
 
-dependencies {
+    public FormEntityEditText(String id, String label, InputType inputType, Object tag) {
+        this(id, label, null, inputType, tag);
+    }
 
-    // Local
-    compile project(":utils")
+    @NonNull
+    @Override
+    public Type getType() {
+        return Type.EDITTEXT;
+    }
 
-    // Google
-    compile "com.android.support:preference-v7:${libraries.support}"
-    compile "com.android.support:preference-v14:${libraries.support}"
-    compile "com.android.support:cardview-v7:${libraries.support}"
-    compile "com.android.support:appcompat-v7:${libraries.support}"
-    compile "com.android.support:design:${libraries.support}"
+    @Nullable
+    public String getHint() {
+        return hint;
+    }
 
-    // Other
-    compile "com.github.castorflex.smoothprogressbar:library-circular:${libraries.progressbar}"
+    @NonNull
+    public InputType getInputType() {
+        return inputType;
+    }
 
-    // Test
-    testCompile "junit:junit:${libraries.junit}"
-    testCompile "org.mockito:mockito-all:${libraries.mockito}"
-    testCompile "org.assertj:assertj-core:${libraries.assertj}"
+    public boolean isLocked() {
+        return isLocked;
+    }
 
-    // Android test dependencies
-    androidTestCompile("com.android.support.test.espresso:espresso-core:${libraries.espresso}", {
-        exclude group: "com.android.support", module: "support-annotations"
-    })
+    public void setLocked(boolean locked) {
+        isLocked = locked;
+    }
+
+    public enum InputType {
+        TEXT, LONG_TEXT, NUMBER, INTEGER, INTEGER_NEGATIVE,
+        INTEGER_ZERO_OR_POSITIVE, INTEGER_POSITIVE,
+    }
 }

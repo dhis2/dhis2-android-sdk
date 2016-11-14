@@ -28,22 +28,29 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
-    <!-- DefaultLoginActivity strings -->
-    <string name="server_url">Server URL</string>
-    <string name="username">Username</string>
-    <string name="password">Password</string>
-    <string name="log_in">Log in</string>
-    <string name="confirm_user">Confirm user</string>
-    <string name="clear_and_logout">Clear and log out</string>
-    <string name="two">2</string>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/keyline_default">
 
-    <!-- FormEntity input hints -->
-    <string name="enter_text">Enter text</string>
-    <string name="enter_long_text">Enter long text</string>
-    <string name="enter_number">Enter number</string>
-    <string name="enter_integer">Enter integer</string>
-    <string name="enter_negative_integer">Enter negative integer</string>
-    <string name="enter_positive_integer_or_zero">Enter positive integer or zero</string>
-    <string name="enter_positive_integer">Enter positive integer</string>
-</resources>
+    <include layout="@layout/recyclerview_row_label" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/edittext_row_textinputlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <org.hisp.dhis.client.sdk.ui.views.FontTextInputEditText
+            android:id="@+id/edittext_row_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_large"
+            app:font="@string/font_name_regular" />
+
+    </android.support.design.widget.TextInputLayout>
+
+</LinearLayout>

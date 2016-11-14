@@ -42,6 +42,7 @@ public final class Option extends BaseIdentifiableObject {
     public static final Comparator<Option>
             SORT_ORDER_COMPARATOR = new SortOrderComparator();
 
+    @JsonIgnore
     private int sortOrder;
 
     @JsonIgnore

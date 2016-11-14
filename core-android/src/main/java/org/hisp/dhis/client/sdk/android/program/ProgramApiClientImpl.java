@@ -84,7 +84,7 @@ public class ProgramApiClientImpl implements ProgramApiClient {
                 return IDENTIFIABLE_PROPERTIES + ",version,programType,organisationUnits[id],trackedEntity[" + IDENTIFIABLE_PROPERTIES + "]," +
                         "programTrackedEntityAttributes[" + IDENTIFIABLE_PROPERTIES + ",mandatory," + // start programTrackedEntityAttributes
                         "displayShortName,externalAccess,valueType,allowFutureDate,displayInList,program[id]," +
-                        "trackedEntityAttribute["+ IDENTIFIABLE_PROPERTIES + ",unique,programScope," + // start trackedEntityAttribute of parent programTrackedEntityAttributes
+                        "trackedEntityAttribute[" + IDENTIFIABLE_PROPERTIES + ",unique,programScope," + // start trackedEntityAttribute of parent programTrackedEntityAttributes
                         "orgunitScope,displayInListNoProgram,displayOnVisitSchedule,externalAccess," +
                         "valueType,confidential,inherit,sortOrderVisitSchedule,dimension,sortOrderInListNoProgram," +
                         "optionSet[" + IDENTIFIABLE_PROPERTIES + ",version,options[" + IDENTIFIABLE_PROPERTIES + ",code]]]]" + //end programTrackedEntityAttributes
@@ -118,24 +118,27 @@ public class ProgramApiClientImpl implements ProgramApiClient {
         List<Program> programs = getCollection(apiResource, fields, lastUpdated, uids);
 
         for (Program program : programs) {
-            if(program.getProgramStages() != null && !program.getProgramStages().isEmpty()) {
+            if (program.getProgramStages() != null && !program.getProgramStages().isEmpty()) {
                 for (ProgramStage programStage : program.getProgramStages()) {
-                    if(programStage.getProgramStageSections() != null && !programStage.getProgramStageSections().isEmpty()) {
+                    if (programStage.getProgramStageSections() != null && !programStage.getProgramStageSections().isEmpty()) {
                         for (ProgramStageSection programStageSection : programStage.getProgramStageSections()) {
-                            if(programStageSection.getProgramStageDataElements() != null && !programStageSection.getProgramStageDataElements().isEmpty()) {
+                            if (programStageSection.getProgramStageDataElements() != null && !programStageSection.getProgramStageDataElements().isEmpty()) {
                                 for (int i = 0; i < programStageSection.getProgramStageDataElements().size(); i++) {
                                     ProgramStageDataElement programStageDataElement = programStageSection.getProgramStageDataElements().get(i);
                                     programStageDataElement.setSortOrderWithinProgramStageSection(i);
-
                                 }
                             }
-                            if(programStage.getProgramStageDataElements() != null && !programStage.getProgramStageDataElements().isEmpty()) {
+
+                            if (programStage.getProgramStageDataElements() != null && !programStage.getProgramStageDataElements().isEmpty()) {
                                 for (ProgramStageDataElement programStageDataElement : programStage.getProgramStageDataElements()) {
-                                    if(programStageDataElement.getDataElement() != null && programStageDataElement.getDataElement().getOptionSet() != null) {
+                                    if (programStageDataElement.getDataElement() != null && programStageDataElement.getDataElement().getOptionSet() != null) {
                                         OptionSet optionSet = programStageDataElement.getDataElement().getOptionSet();
-                                        for (int i = 0; i < optionSet.getOptions().size(); i++) {
-                                            Option option = optionSet.getOptions().get(i);
-                                            option.setSortOrder(i);
+
+                                        if (optionSet.getOptions() != null) {
+                                            for (int i = 0; i < optionSet.getOptions().size(); i++) {
+                                                Option option = optionSet.getOptions().get(i);
+                                                option.setSortOrder(i);
+                                            }
                                         }
                                     }
                                 }

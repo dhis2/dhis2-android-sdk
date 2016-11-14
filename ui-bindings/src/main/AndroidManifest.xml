@@ -29,7 +29,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.hisp.dhis.client.sdk.ui.bindings">
+    package="org.hisp.dhis.android.sdk.ui.bindings">
 
     <application android:supportsRtl="true" />
 

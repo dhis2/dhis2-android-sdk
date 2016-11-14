@@ -38,7 +38,7 @@
     android:padding="@dimen/keyline_default"
     android:theme="@style/AppTheme.SelectableItemBackground">
 
-    <org.hisp.dhis.client.sdk.ui.views.FontCheckBox
+    <org.hisp.dhis.android.sdk.ui.views.FontCheckBox
         android:id="@+id/checkbox_row_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

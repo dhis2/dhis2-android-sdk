@@ -46,7 +46,7 @@ import rx.schedulers.Schedulers;
 
 import static org.hisp.dhis.android.core.commons.CursorAssert.assertThatCursor;
 
-public class CursorQueryResolverUnitTests extends ProviderTestCase2<TestContentProvider> {
+public class CursorQueryResolverUnitTests extends ProviderTestCase2<FakeContentProvider> {
     // content resolver which is used to interact with database
     private ContentResolver contentResolver;
 
@@ -56,7 +56,7 @@ public class CursorQueryResolverUnitTests extends ProviderTestCase2<TestContentP
     private Disposable subscription;
 
     public CursorQueryResolverUnitTests() {
-        super(TestContentProvider.class, TestContentProvider.AUTHORITY.getAuthority());
+        super(FakeContentProvider.class, FakeContentProvider.AUTHORITY.getAuthority());
     }
 
     @Override
@@ -85,7 +85,7 @@ public class CursorQueryResolverUnitTests extends ProviderTestCase2<TestContentP
         getProvider().init(contentResolver);
 
         cursorReadQueryResolver = new CursorQueryResolver(executor, briteContentResolver,
-                contentResolver, TestContentProvider.TABLE, Query.builder().build());
+                contentResolver, FakeContentProvider.TABLE, Query.builder().build());
     }
 
     @Override
@@ -99,7 +99,7 @@ public class CursorQueryResolverUnitTests extends ProviderTestCase2<TestContentP
 
     public void testAsTaskExecute_shouldCallContentResolver() {
         // insert dummy data to database
-        contentResolver.insert(TestContentProvider.TABLE,
+        contentResolver.insert(FakeContentProvider.TABLE,
                 TestModel.values(11L, "valueTwo"));
 
         Cursor cursor = cursorReadQueryResolver.asTask().execute();
@@ -109,7 +109,7 @@ public class CursorQueryResolverUnitTests extends ProviderTestCase2<TestContentP
 
     public void testAsTaskExecuteAsynchronously_shouldCallContentResolver() {
         // insert dummy data to database
-        contentResolver.insert(TestContentProvider.TABLE,
+        contentResolver.insert(FakeContentProvider.TABLE,
                 TestModel.values(11L, "valueTwo"));
 
         cursorReadQueryResolver.asTask()
@@ -128,7 +128,7 @@ public class CursorQueryResolverUnitTests extends ProviderTestCase2<TestContentP
 
     public void testAsSingle_shouldCallContentResolverOnSubscribe() {
         // insert dummy data to database
-        contentResolver.insert(TestContentProvider.TABLE,
+        contentResolver.insert(FakeContentProvider.TABLE,
                 TestModel.values(11L, "valueTwo"));
 
         // without any schedulers set, single should be
@@ -144,7 +144,7 @@ public class CursorQueryResolverUnitTests extends ProviderTestCase2<TestContentP
 
     public void testAsObservable_shouldCallContentResolverOnSubscribe() {
         // insert dummy data to database
-        contentResolver.insert(TestContentProvider.TABLE,
+        contentResolver.insert(FakeContentProvider.TABLE,
                 TestModel.values(11L, "valueTwo"));
 
         cursorReadQueryResolver.asObservable().subscribe(recordingObserver);

@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import org.hisp.dhis.android.models.common.Model;
 
 final class TestModel implements Model {
-    // projection
     static final String ID = "test_id";
     static final String VALUE = "test_value";
 
@@ -34,6 +33,12 @@ final class TestModel implements Model {
     static ContentValues values(Long id, String value) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(TestModel.ID, id);
+        contentValues.put(TestModel.VALUE, value);
+        return contentValues;
+    }
+
+    static ContentValues values(String value) {
+        ContentValues contentValues = new ContentValues();
         contentValues.put(TestModel.VALUE, value);
         return contentValues;
     }

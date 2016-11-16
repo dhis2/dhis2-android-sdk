@@ -12,7 +12,7 @@ import android.test.mock.MockContentProvider;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class TestContentProvider extends MockContentProvider {
+public final class FakeContentProvider extends MockContentProvider {
     static final Uri AUTHORITY = Uri.parse("content://test_authority");
     static final Uri TABLE = AUTHORITY.buildUpon().appendPath("test_table").build();
     static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
@@ -38,15 +38,26 @@ public final class TestContentProvider extends MockContentProvider {
     public int update(Uri uri, ContentValues values, String where, String[] selectionArgs) {
         switch (URI_MATCHER.match(uri)) {
             case TABLE_PATH: {
-                storage.put(values.getAsLong(TestModel.ID), values.getAsString(TestModel.VALUE));
+                Long id = values.getAsLong(TestModel.ID);
+
+                if (!storage.containsKey(id)) {
+                    throw new RuntimeException("Row does not exist: " + id);
+                }
+
+                storage.put(id, values.getAsString(TestModel.VALUE));
                 contentResolver.notifyChange(uri, null);
                 return 1;
             }
             case TABLE_PATH_ITEM: {
                 Long id = ContentUris.parseId(uri);
+
+                if (!storage.containsKey(id)) {
+                    throw new RuntimeException("Row does not exist: " + id);
+                }
+
                 storage.put(id, values.getAsString(TestModel.VALUE));
                 contentResolver.notifyChange(uri, null);
-                break;
+                return 1;
             }
         }
 

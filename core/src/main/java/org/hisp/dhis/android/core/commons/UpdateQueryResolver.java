@@ -29,12 +29,13 @@
 package org.hisp.dhis.android.core.commons;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.client.models.common.Model;
+import org.hisp.dhis.android.models.common.Model;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
@@ -144,9 +145,9 @@ class UpdateQueryResolver<T extends Model> implements WriteQueryResolver<Integer
         String[] selectionArgs = where != null ? where.arguments() : null;
 
         Uri uri = contentUri;
-//        if (id != null) {
-//            uri = ContentUris.withAppendedId(uri, id);
-//        }
+        if (id != null) {
+            uri = ContentUris.withAppendedId(uri, id);
+        }
 
         return contentResolver.update(uri, values, selection, selectionArgs);
     }

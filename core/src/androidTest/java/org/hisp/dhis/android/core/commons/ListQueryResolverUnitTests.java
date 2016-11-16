@@ -46,7 +46,7 @@ import rx.schedulers.Schedulers;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public class ListQueryResolverUnitTests extends ProviderTestCase2<TestContentProvider> {
+public class ListQueryResolverUnitTests extends ProviderTestCase2<FakeContentProvider> {
     // content resolver which is used to interact with database
     private ContentResolver contentResolver;
 
@@ -55,7 +55,7 @@ public class ListQueryResolverUnitTests extends ProviderTestCase2<TestContentPro
     private Disposable subscription;
 
     public ListQueryResolverUnitTests() {
-        super(TestContentProvider.class, TestContentProvider.AUTHORITY.getAuthority());
+        super(FakeContentProvider.class, FakeContentProvider.AUTHORITY.getAuthority());
     }
 
     @Override
@@ -83,7 +83,7 @@ public class ListQueryResolverUnitTests extends ProviderTestCase2<TestContentPro
         getProvider().init(contentResolver);
 
         listReadQueryResolver = new ListQueryResolver<>(executor, briteContentResolver,
-                contentResolver, new TestMapper(), TestContentProvider.TABLE, Query.builder().build());
+                contentResolver, new TestMapper(), FakeContentProvider.TABLE, Query.builder().build());
     }
 
     @Override
@@ -95,7 +95,7 @@ public class ListQueryResolverUnitTests extends ProviderTestCase2<TestContentPro
 
     public void testAsTaskExecute_shouldCallContentResolver() {
         // insert dummy data to database
-        contentResolver.insert(TestContentProvider.TABLE,
+        contentResolver.insert(FakeContentProvider.TABLE,
                 TestModel.values(11L, "valueTwo"));
 
         TestModel testModel = listReadQueryResolver.asTask().execute().get(0);
@@ -106,7 +106,7 @@ public class ListQueryResolverUnitTests extends ProviderTestCase2<TestContentPro
 
     public void testAsTaskExecuteAsynchronously_shouldCallContentResolver() {
         // insert dummy data to database
-        contentResolver.insert(TestContentProvider.TABLE,
+        contentResolver.insert(FakeContentProvider.TABLE,
                 TestModel.values(11L, "valueTwo"));
 
         listReadQueryResolver.asTask()
@@ -128,7 +128,7 @@ public class ListQueryResolverUnitTests extends ProviderTestCase2<TestContentPro
 
     public void testAsSingle_shouldCallContentResolverOnSubscribe() {
         // insert dummy data to database
-        contentResolver.insert(TestContentProvider.TABLE,
+        contentResolver.insert(FakeContentProvider.TABLE,
                 TestModel.values(11L, "valueTwo"));
 
         // without any schedulers set, single should be
@@ -147,7 +147,7 @@ public class ListQueryResolverUnitTests extends ProviderTestCase2<TestContentPro
 
     public void testAsObservable_shouldCallContentResolverOnSubscribe() {
         // insert dummy data to database
-        contentResolver.insert(TestContentProvider.TABLE,
+        contentResolver.insert(FakeContentProvider.TABLE,
                 TestModel.values(11L, "valueTwo"));
 
         subscription = listReadQueryResolver.asObservable()

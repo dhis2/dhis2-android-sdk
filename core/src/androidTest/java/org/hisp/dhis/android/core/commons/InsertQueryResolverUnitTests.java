@@ -42,7 +42,7 @@ import io.reactivex.functions.Consumer;
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.commons.CursorAssert.assertThatCursor;
 
-public class InsertQueryResolverUnitTests extends ProviderTestCase2<TestContentProvider> {
+public class InsertQueryResolverUnitTests extends ProviderTestCase2<FakeContentProvider> {
     // content resolver which is used to interact with database
     private ContentResolver contentResolver;
 
@@ -52,7 +52,7 @@ public class InsertQueryResolverUnitTests extends ProviderTestCase2<TestContentP
     private Disposable subscription;
 
     public InsertQueryResolverUnitTests() {
-        super(TestContentProvider.class, TestContentProvider.AUTHORITY.getAuthority());
+        super(FakeContentProvider.class, FakeContentProvider.AUTHORITY.getAuthority());
     }
 
     @Override
@@ -75,9 +75,9 @@ public class InsertQueryResolverUnitTests extends ProviderTestCase2<TestContentP
         getProvider().init(contentResolver);
 
         contentValuesWriteQueryResolver = new InsertQueryResolver<>(executor, contentResolver,
-                TestContentProvider.TABLE, TestModel.values(11L, "valueTwo"));
+                FakeContentProvider.TABLE, TestModel.values(11L, "valueTwo"));
         modelValuesWriteQueryResolver = new InsertQueryResolver<>(executor, contentResolver,
-                TestContentProvider.TABLE, new TestMapper(), new TestModel(11L, "valueTwo"));
+                FakeContentProvider.TABLE, new TestMapper(), new TestModel(11L, "valueTwo"));
     }
 
     @Override
@@ -95,7 +95,7 @@ public class InsertQueryResolverUnitTests extends ProviderTestCase2<TestContentP
 
         // check that content provider contains inserted item
         // and values are matching original ones
-        assertThatCursor(contentResolver.query(TestContentProvider.TABLE,
+        assertThatCursor(contentResolver.query(FakeContentProvider.TABLE,
                 null, null, null, null)).hasRow(11L, "valueTwo").isExhausted();
     }
 
@@ -107,7 +107,7 @@ public class InsertQueryResolverUnitTests extends ProviderTestCase2<TestContentP
 
         // check that content provider contains inserted item
         // and values are matching original ones
-        assertThatCursor(contentResolver.query(TestContentProvider.TABLE,
+        assertThatCursor(contentResolver.query(FakeContentProvider.TABLE,
                 null, null, null, null)).hasRow(11L, "valueTwo").isExhausted();
     }
 
@@ -121,7 +121,7 @@ public class InsertQueryResolverUnitTests extends ProviderTestCase2<TestContentP
 
                         // check that content provider contains inserted item
                         // and values are matching original ones
-                        assertThatCursor(contentResolver.query(TestContentProvider.TABLE,
+                        assertThatCursor(contentResolver.query(FakeContentProvider.TABLE,
                                 null, null, null, null)).hasRow(11L, "valueTwo").isExhausted();
                     }
 
@@ -142,7 +142,7 @@ public class InsertQueryResolverUnitTests extends ProviderTestCase2<TestContentP
 
                         // check that content provider contains inserted item
                         // and values are matching original ones
-                        assertThatCursor(contentResolver.query(TestContentProvider.TABLE,
+                        assertThatCursor(contentResolver.query(FakeContentProvider.TABLE,
                                 null, null, null, null)).hasRow(11L, "valueTwo").isExhausted();
                     }
 
@@ -165,7 +165,7 @@ public class InsertQueryResolverUnitTests extends ProviderTestCase2<TestContentP
 
                         // check that content provider contains inserted item
                         // and values are matching original ones
-                        assertThatCursor(contentResolver.query(TestContentProvider.TABLE,
+                        assertThatCursor(contentResolver.query(FakeContentProvider.TABLE,
                                 null, null, null, null)).hasRow(11L, "valueTwo").isExhausted();
                     }
                 });
@@ -183,7 +183,7 @@ public class InsertQueryResolverUnitTests extends ProviderTestCase2<TestContentP
 
                         // check that content provider contains inserted item
                         // and values are matching original ones
-                        assertThatCursor(contentResolver.query(TestContentProvider.TABLE,
+                        assertThatCursor(contentResolver.query(FakeContentProvider.TABLE,
                                 null, null, null, null)).hasRow(11L, "valueTwo").isExhausted();
                     }
                 });

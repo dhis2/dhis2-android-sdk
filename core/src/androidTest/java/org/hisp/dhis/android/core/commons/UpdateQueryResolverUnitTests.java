@@ -41,21 +41,18 @@ import io.reactivex.functions.Consumer;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.commons.CursorAssert.assertThatCursor;
-import static org.hisp.dhis.android.core.commons.TestContentProvider.TABLE;
+import static org.hisp.dhis.android.core.commons.FakeContentProvider.TABLE;
 
-
-// TODO: add tests for use cases of resolver in conjunction with specific URIs
-public class UpdateQueryResolverUnitTests extends ProviderTestCase2<TestContentProvider> {
+public class UpdateQueryResolverUnitTests extends ProviderTestCase2<FakeContentProvider> {
     // content resolver which is used to interact with database
+    private Executor executor;
     private ContentResolver contentResolver;
 
     // instance to test
-    private WriteQueryResolver<Integer> contentValuesWriteQueryResolver;
-    private WriteQueryResolver<Integer> modelValuesWriteQueryResolver;
     private Disposable subscription;
 
     public UpdateQueryResolverUnitTests() {
-        super(TestContentProvider.class, TestContentProvider.AUTHORITY.getAuthority());
+        super(FakeContentProvider.class, FakeContentProvider.AUTHORITY.getAuthority());
     }
 
     @Override
@@ -63,7 +60,7 @@ public class UpdateQueryResolverUnitTests extends ProviderTestCase2<TestContentP
         super.setUp();
 
         /* for testing purposes */
-        Executor executor = new Executor() {
+        executor = new Executor() {
             @Override
             public void execute(@Nonnull Runnable runnable) {
                 runnable.run();
@@ -76,11 +73,6 @@ public class UpdateQueryResolverUnitTests extends ProviderTestCase2<TestContentP
 
         // passing mock / concrete fields to mocked provider
         getProvider().init(contentResolver);
-
-        contentValuesWriteQueryResolver = new UpdateQueryResolver<>(executor, contentResolver,
-                TABLE, TestModel.values(11L, "anotherValue"));
-        modelValuesWriteQueryResolver = new UpdateQueryResolver<>(executor, contentResolver,
-                TABLE, Where.builder().build(), new TestMapper(), new TestModel(11L, "anotherValue"));
     }
 
     @Override
@@ -90,7 +82,10 @@ public class UpdateQueryResolverUnitTests extends ProviderTestCase2<TestContentP
         subscription.dispose();
     }
 
-    public void testAsTaskExecuteOnValues_shouldCallContentResolver() {
+    public void testAsTaskWithValues_shouldCallContentResolverOnExecute() {
+        WriteQueryResolver<Integer> contentValuesWriteQueryResolver = new UpdateQueryResolver<>(
+                executor, contentResolver, TABLE, TestModel.values(11L, "anotherValue"));
+
         // insert values which have to be updated later
         contentResolver.insert(TABLE, TestModel.values(11L, "someValue"));
 
@@ -105,7 +100,41 @@ public class UpdateQueryResolverUnitTests extends ProviderTestCase2<TestContentP
                 null, null, null, null)).hasRow(11L, "anotherValue").isExhausted();
     }
 
+    public void testAsTaskExecuteOnValuesAsynchronously_shouldCallContentResolver() {
+        WriteQueryResolver<Integer> contentValuesWriteQueryResolver = new UpdateQueryResolver<>(
+                executor, contentResolver, TABLE, TestModel.values(11L, "anotherValue"));
+
+        // insert values which have to be updated later
+        contentResolver.insert(TABLE, TestModel.values(11L, "someValue"));
+
+        contentValuesWriteQueryResolver.asTask()
+                .execute(new Callback<Integer>() {
+                    @Override
+                    public void onSuccess(Task<Integer> task, Integer updatedCount) {
+                        // check that content provider returns correct number of updated rows
+                        assertThat(updatedCount).isEqualTo(1);
+
+                        // check that content provider contains updated item
+                        assertThatCursor(contentResolver.query(FakeContentProvider.TABLE,
+                                null, null, null, null)).hasRow(11L, "anotherValue").isExhausted();
+                    }
+
+                    @Override
+                    public void onFailure(Task<Integer> task, Throwable throwable) {
+                        fail("onFailure() should not be called");
+                    }
+                });
+    }
+
     public void testAsTaskExecuteOnModel_shouldCallContentResolver() {
+        WriteQueryResolver<Integer> modelValuesWriteQueryResolver = new UpdateQueryResolver<>(
+                executor, contentResolver, TABLE, Where.builder().build(), new TestMapper(),
+                new TestModel(11L, "anotherValue"));
+
+
+        // insert values which have to be updated later
+        contentResolver.insert(TABLE, TestModel.values(11L, "someValue"));
+
         // count of update rows returned from content provider
         Integer updatedCount = modelValuesWriteQueryResolver.asTask().execute();
 
@@ -117,27 +146,14 @@ public class UpdateQueryResolverUnitTests extends ProviderTestCase2<TestContentP
                 null, null, null, null)).hasRow(11L, "anotherValue").isExhausted();
     }
 
-    public void testAsTaskExecuteOnValuesAsynchronously_shouldCallContentResolver() {
-        contentValuesWriteQueryResolver.asTask()
-                .execute(new Callback<Integer>() {
-                    @Override
-                    public void onSuccess(Task<Integer> task, Integer updatedCount) {
-                        // check that content provider returns correct number of updated rows
-                        assertThat(updatedCount).isEqualTo(1);
-
-                        // check that content provider contains updated item
-                        assertThatCursor(contentResolver.query(TestContentProvider.TABLE,
-                                null, null, null, null)).hasRow(11L, "anotherValue").isExhausted();
-                    }
-
-                    @Override
-                    public void onFailure(Task<Integer> task, Throwable throwable) {
-                        fail("onFailure() should not be called");
-                    }
-                });
-    }
-
     public void testAsTaskExecuteOnModelAsynchronously_shouldCallContentResolver() {
+        WriteQueryResolver<Integer> modelValuesWriteQueryResolver = new UpdateQueryResolver<>(
+                executor, contentResolver, TABLE, Where.builder().build(), new TestMapper(),
+                new TestModel(11L, "anotherValue"));
+
+        // insert values which have to be updated later
+        contentResolver.insert(TABLE, TestModel.values(11L, "someValue"));
+
         modelValuesWriteQueryResolver.asTask()
                 .execute(new Callback<Integer>() {
                     @Override
@@ -146,7 +162,7 @@ public class UpdateQueryResolverUnitTests extends ProviderTestCase2<TestContentP
                         assertThat(updatedCount).isEqualTo(1);
 
                         // check that content provider contains updated item
-                        assertThatCursor(contentResolver.query(TestContentProvider.TABLE,
+                        assertThatCursor(contentResolver.query(FakeContentProvider.TABLE,
                                 null, null, null, null)).hasRow(11L, "anotherValue").isExhausted();
                     }
 
@@ -158,6 +174,12 @@ public class UpdateQueryResolverUnitTests extends ProviderTestCase2<TestContentP
     }
 
     public void testAsSingleOnValues_shouldCallContentResolverOnSubscribe() {
+        WriteQueryResolver<Integer> contentValuesWriteQueryResolver = new UpdateQueryResolver<>(
+                executor, contentResolver, TABLE, TestModel.values(11L, "anotherValue"));
+
+        // insert values which have to be updated later
+        contentResolver.insert(TABLE, TestModel.values(11L, "someValue"));
+
         // without any schedulers set, single should be executed on current thread
         subscription = contentValuesWriteQueryResolver.asSingle()
                 .subscribe(new Consumer<Integer>() {
@@ -167,13 +189,20 @@ public class UpdateQueryResolverUnitTests extends ProviderTestCase2<TestContentP
                         assertThat(updatedCount).isEqualTo(1);
 
                         // check that content provider contains updated item
-                        assertThatCursor(contentResolver.query(TestContentProvider.TABLE,
+                        assertThatCursor(contentResolver.query(FakeContentProvider.TABLE,
                                 null, null, null, null)).hasRow(11L, "anotherValue").isExhausted();
                     }
                 });
     }
 
     public void testAsSingleOnModel_shouldCallContentResolverOnSubscribe() {
+        WriteQueryResolver<Integer> modelValuesWriteQueryResolver = new UpdateQueryResolver<>(
+                executor, contentResolver, TABLE, Where.builder().build(), new TestMapper(),
+                new TestModel(11L, "anotherValue"));
+
+        // insert values which have to be updated later
+        contentResolver.insert(TABLE, TestModel.values(11L, "someValue"));
+
         // without any schedulers set, single should be executed on current thread
         subscription = modelValuesWriteQueryResolver.asSingle()
                 .subscribe(new Consumer<Integer>() {
@@ -183,9 +212,27 @@ public class UpdateQueryResolverUnitTests extends ProviderTestCase2<TestContentP
                         assertThat(updatedCount).isEqualTo(1);
 
                         // check that content provider contains updated item
-                        assertThatCursor(contentResolver.query(TestContentProvider.TABLE,
+                        assertThatCursor(contentResolver.query(FakeContentProvider.TABLE,
                                 null, null, null, null)).hasRow(11L, "anotherValue").isExhausted();
                     }
                 });
+    }
+
+    public void testAsTaskExecuteOnValuesWithId_shouldCallContentResolver() {
+        WriteQueryResolver<Integer> contentValuesWriteQueryResolver = new UpdateQueryResolver<>(
+                executor, contentResolver, TABLE, 11L, TestModel.values("anotherValue"));
+
+        // insert values which have to be updated later
+        contentResolver.insert(TABLE, TestModel.values(11L, "someValue"));
+
+        // count of update rows returned from content provider
+        Integer updatedCount = contentValuesWriteQueryResolver.asTask().execute();
+
+        // check that content provider returns correct number of updated rows
+        assertThat(updatedCount).isEqualTo(1);
+
+        // check that content provider contains updated item
+        assertThatCursor(contentResolver.query(TABLE,
+                null, null, null, null)).hasRow(11L, "anotherValue").isExhausted();
     }
 }

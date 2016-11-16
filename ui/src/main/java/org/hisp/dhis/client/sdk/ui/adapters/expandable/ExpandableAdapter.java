@@ -14,9 +14,11 @@ import java.util.List;
 
 public class ExpandableAdapter extends ExpandableRecyclerAdapter<ExpansionPanel, ReportEntity, ExpansionPanelViewHolder, ReportEntityChildViewHolder> {
 
-    // store the selected id:
-    private String selectedChildId = "";
-    //private String selectedParentId="";
+    private RecyclerViewSelection recyclerViewSelection;
+
+    public void setRecyclerViewSelectionCallback(RecyclerViewSelection recyclerViewSelection) {
+        this.recyclerViewSelection = recyclerViewSelection;
+    }
 
     /**
      * Primary constructor. Sets up {@link #mParentList} and {@link #mFlatItemList}.
@@ -37,7 +39,6 @@ public class ExpandableAdapter extends ExpandableRecyclerAdapter<ExpansionPanel,
     public ExpandableAdapter(@NonNull List<ExpansionPanel> parentList) {
         super(parentList);
     }
-
 
     /**
      * Set a new list of parents and notify any registered observers that the data set has changed.
@@ -88,15 +89,6 @@ public class ExpandableAdapter extends ExpandableRecyclerAdapter<ExpansionPanel,
 
     @Override
     public void onBindChildViewHolder(@NonNull ReportEntityChildViewHolder childViewHolder, int parentPosition, int childPosition, @NonNull ReportEntity child) {
-        childViewHolder.bind(child, this, selectedChildId.equals(child.getId()));
-    }
-
-    //Selection set/get methods:
-    public String getSelectedChildId() {
-        return selectedChildId;
-    }
-
-    public void setSelectedChildId(String selectedChildId) {
-        this.selectedChildId = selectedChildId;
+        childViewHolder.bind(child, recyclerViewSelection);
     }
 }

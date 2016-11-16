@@ -80,8 +80,17 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
         colorRed = ContextCompat.getColor(itemView.getContext(), R.color.color_red_300);
     }
 
-    public void bind(ReportEntity reportEntity, final ExpandableAdapter expandableAdapter, boolean selected) {
-        itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), android.R.color.white));
+    public void bind(final ReportEntity reportEntity, final RecyclerViewSelection recyclerViewSelection) {
+
+        // handle if selected
+        if (recyclerViewSelection != null &&
+                recyclerViewSelection.getSelectedUid() != null &&
+                recyclerViewSelection.getSelectedUid().equals(reportEntity.getId())) {
+            itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.color_gray_300));
+        } else {
+            itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), android.R.color.white));
+        }
+
         label.setText(reportEntity.getId());
 
         //Map<String, String> dataElementToValueMap =
@@ -173,6 +182,9 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (recyclerViewSelection != null) {
+                    recyclerViewSelection.setSelectedUid(reportEntity.getId());
+                }
                 itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.color_gray_300));
             }
         });

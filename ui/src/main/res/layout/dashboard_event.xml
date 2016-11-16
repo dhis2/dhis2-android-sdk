@@ -83,7 +83,7 @@
             android:paddingRight="8dp"
             android:text="Event 1"
             android:textColor="@android:color/black"
-            android:textSize="13sp"/>
+            android:textSize="16sp"/>
 
         <TextView
             android:id="@+id/date_text"
@@ -93,25 +93,34 @@
             android:fontFamily="@string/font_name_regular"
             android:paddingRight="16dp"
             android:text="2016-09-10"
-            android:textSize="13sp"/>
+            android:textSize="16sp"/>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/sync_area"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_centerInParent="true"
-        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/refresh_button"
             style="@style/TransparentIconButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
+            android:layout_height="wrap_content"/>
             android:src="@drawable/ic_refresh_gray"
+            android:visibility="gone"
+            tools:visibility="visible"
+
+
+        <ImageButton
+            android:id="@+id/overflow_button"
+            style="@style/TransparentIconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_more_vert_gray"
+            android:layout_marginRight="8dp"
             android:visibility="gone"
             tools:visibility="visible"/>
     </LinearLayout>

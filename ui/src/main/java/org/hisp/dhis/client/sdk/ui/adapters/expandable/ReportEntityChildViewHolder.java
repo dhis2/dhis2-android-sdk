@@ -3,11 +3,14 @@ package org.hisp.dhis.client.sdk.ui.adapters.expandable;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bignerdranch.expandablerecyclerview.ChildViewHolder;
 
@@ -33,6 +36,7 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
     final TextView label;
     final TextView date;
     final ImageButton syncButton;
+    final ImageButton overflowButton;
 
     final Drawable drawableActive;
     final Drawable drawableCompleted;
@@ -52,11 +56,13 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
         super(itemView);
 
         this.itemView = itemView;
+
         context = itemView.getContext();
         statusIcon = (ImageView) itemView.findViewById(R.id.status_icon);
         statusBackground = (CircleView) itemView.findViewById(R.id.circleview_status_background);
         statusLockLayout = (FrameLayout) itemView.findViewById(R.id.status_lock_container);
         syncButton = (ImageButton) itemView.findViewById(R.id.refresh_button);
+        overflowButton = (ImageButton) itemView.findViewById(R.id.overflow_button);
         label = (TextView) itemView.findViewById(R.id.event_name);
         date = (TextView) itemView.findViewById(R.id.date_text);
 
@@ -86,18 +92,28 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
         //Display the EventSyncStatus:
         switch (reportEntity.getSyncStatus()) {
             case SENT: { //no-op.
+                syncButton.setVisibility(View.GONE);
+                syncButton.setClickable(true);
+                overflowButton.setVisibility(View.GONE);
+                overflowButton.setClickable(true);
                 break;
             }
             case TO_POST: {
                 syncButton.setImageResource(R.drawable.ic_refresh_gray);
                 syncButton.setVisibility(View.VISIBLE);
                 syncButton.setClickable(true);
+                overflowButton.setOnClickListener(new MenuClickHandler(itemView.getContext(), reportEntity));
+                overflowButton.setVisibility(View.VISIBLE);
+                overflowButton.setClickable(true);
                 break;
             }
             case TO_UPDATE: {
                 syncButton.setImageResource(R.drawable.ic_refresh_gray);
                 syncButton.setVisibility(View.VISIBLE);
                 syncButton.setClickable(true);
+                overflowButton.setOnClickListener(new MenuClickHandler(itemView.getContext(), reportEntity));
+                overflowButton.setVisibility(View.VISIBLE);
+                overflowButton.setClickable(true);
                 break;
             }
             case ERROR: {
@@ -105,8 +121,19 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
                 syncButton.setImageResource(R.drawable.ic_sync_problem_black);
                 syncButton.setVisibility(View.VISIBLE);
                 syncButton.setClickable(true);
+                overflowButton.setOnClickListener(new MenuClickHandler(itemView.getContext(), reportEntity));
+                overflowButton.setVisibility(View.VISIBLE);
+                overflowButton.setClickable(true);
                 break;
             }
+            default:
+                syncButton.setImageResource(R.drawable.ic_refresh_gray);
+                syncButton.setVisibility(View.VISIBLE);
+                syncButton.setClickable(true);
+                overflowButton.setOnClickListener(new MenuClickHandler(itemView.getContext(), reportEntity));
+                overflowButton.setVisibility(View.VISIBLE);
+                overflowButton.setClickable(true);
+                break;
         }
 
         //Display the event status
@@ -152,5 +179,43 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
 
         //label.setText(reportEntity.getValueForDataElement(ORG_UNIT));
 
+    }
+
+    private class MenuClickHandler implements View.OnClickListener {
+        static final int MENU_GROUP_ID = 9382352;
+        static final int MENU_DELETE_ITEM_ID = 149232;
+        static final int MENU_DELETE_ITEM_ORDER = 110;
+
+        private Context context;
+        private ReportEntity reportEntity;
+
+        public MenuClickHandler(Context context, ReportEntity reportEntity) {
+            this.context = context;
+            this.reportEntity = reportEntity;
+        }
+
+        @Override
+        public void onClick(View view) {
+            PopupMenu popupMenu = new PopupMenu(itemView.getContext(), view);
+
+            if (reportEntity.getSyncStatus() == ReportEntity.SyncStatus.TO_POST ||
+                    reportEntity.getSyncStatus() == ReportEntity.SyncStatus.TO_UPDATE ||
+                    reportEntity.getSyncStatus() == ReportEntity.SyncStatus.ERROR) {
+                popupMenu.getMenu().add(MENU_GROUP_ID,
+                        MENU_DELETE_ITEM_ID, MENU_DELETE_ITEM_ORDER,
+                        R.string.delete);
+            }
+
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem) {
+                    if (menuItem.getItemId() == MENU_DELETE_ITEM_ID) {
+                        Toast.makeText(context, "Delete item", Toast.LENGTH_SHORT).show();
+                    }
+                    return true;
+                }
+            });
+            popupMenu.show();
+        }
     }
 }

@@ -42,6 +42,9 @@ public final class ProgramStageDataElement extends BaseIdentifiableObject {
     public static final Comparator<ProgramStageDataElement>
             SORT_ORDER_COMPARATOR = new SortOrderComparator();
 
+    public static final Comparator<ProgramStageDataElement>
+            SORT_ORDER_WITHIN_PROGRAM_STAGE_SECTION_COMPARATOR = new SortOrderWithinSectionComparator();
+
     @JsonProperty("allowFutureDate")
     private boolean allowFutureDate;
 
@@ -65,6 +68,9 @@ public final class ProgramStageDataElement extends BaseIdentifiableObject {
 
     @JsonIgnore
     private ProgramStageSection programStageSection;
+
+    @JsonIgnore
+    private int sortOrderWithinProgramStageSection;
 
     public ProgramStageDataElement() {
         //
@@ -134,6 +140,14 @@ public final class ProgramStageDataElement extends BaseIdentifiableObject {
         this.programStageSection = programStageSection;
     }
 
+    public int getSortOrderWithinProgramStageSection() {
+        return sortOrderWithinProgramStageSection;
+    }
+
+    public void setSortOrderWithinProgramStageSection(int sortOrderWithinProgramStageSection) {
+        this.sortOrderWithinProgramStageSection = sortOrderWithinProgramStageSection;
+    }
+
     private static final class SortOrderComparator implements Comparator<ProgramStageDataElement> {
 
         @Override
@@ -145,6 +159,24 @@ public final class ProgramStageDataElement extends BaseIdentifiableObject {
             if (one.getSortOrder() > two.getSortOrder()) {
                 return 1;
             } else if (one.getSortOrder() < two.getSortOrder()) {
+                return -1;
+            }
+
+            return 0;
+        }
+    }
+
+    private static final class SortOrderWithinSectionComparator implements Comparator<ProgramStageDataElement> {
+
+        @Override
+        public int compare(ProgramStageDataElement one, ProgramStageDataElement two) {
+            if (one == null || two == null) {
+                return 0;
+            }
+
+            if (one.getSortOrderWithinProgramStageSection() > two.getSortOrderWithinProgramStageSection()) {
+                return 1;
+            } else if (one.getSortOrderWithinProgramStageSection() < two.getSortOrderWithinProgramStageSection()) {
                 return -1;
             }
 

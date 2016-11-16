@@ -28,12 +28,13 @@
 
 package org.hisp.dhis.client.sdk.ui.fragments;
 
+import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,12 +42,30 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
+import org.hisp.dhis.client.sdk.ui.activities.BaseActivity;
+import org.hisp.dhis.client.sdk.ui.activities.OnBackPressedCallback;
+import org.hisp.dhis.client.sdk.ui.activities.OnBackPressedFromFragmentCallback;
 
 import java.util.Locale;
 
-public class AbsInformationFragment extends Fragment {
+public class InformationFragment extends BaseFragment implements OnBackPressedCallback {
 
     public static final String LIBS_LIST = "libraires_list";
+    public static final String USERNAME = "username";
+    public static final String URL = "url";
+
+    private String username;
+    private String url;
+    private OnBackPressedFromFragmentCallback onBackPressedFromFragmentCallback;
+
+    public static InformationFragment newInstance(String username, String url) {
+        Bundle args = new Bundle();
+        args.putString(USERNAME, username);
+        args.putString(URL, url);
+        InformationFragment fragment = new InformationFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Nullable
     @Override
@@ -58,6 +77,11 @@ public class AbsInformationFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Bundle args = getArguments();
+        if (args != null) {
+            username = args.getString(USERNAME);
+            url = args.getString(URL);
+        }
         // setup fields :
         setAppNameAndVersion(getContext().getApplicationInfo().packageName);
     }
@@ -70,6 +94,7 @@ public class AbsInformationFragment extends Fragment {
      */
     private void setAppNameAndVersion(String packageName) {
         TextView appNameTextView = (TextView) getActivity().findViewById(R.id.app_name);
+        TextView sessionText = (TextView) getActivity().findViewById(R.id.app_session);
         TextView appVersionTextView = (TextView) getActivity().findViewById(R.id.app_version);
         ImageView appIconImageView = (ImageView) getActivity().findViewById(R.id.app_icon);
 
@@ -104,6 +129,17 @@ public class AbsInformationFragment extends Fragment {
                 appVersionTextView.setText(appVersion);
             }
         }
+
+        if (url != null && username != null) {
+            // inside app_session:
+            sessionText.setText(String.format(Locale.getDefault(), "%s %s\n",
+                    getString(R.string.logged_in_as),
+                    username));
+
+            sessionText.append(getString(R.string.logged_in_at) + " ");
+            addUrl(sessionText, url);
+            sessionText.setMovementMethod(LinkMovementMethod.getInstance());
+        }
     }
 
     /**
@@ -116,7 +152,38 @@ public class AbsInformationFragment extends Fragment {
         textView.append(
                 Html.fromHtml(
                         String.format(Locale.getDefault(), "<a href=\"%s\">%s</a>",
-                                url,
+                                url
+                                ,
                                 url)));
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        if (context instanceof BaseActivity) {
+            ((BaseActivity) context).setOnBackPressedCallback(this);
+        }
+        if (context instanceof OnBackPressedFromFragmentCallback) {
+            onBackPressedFromFragmentCallback = (OnBackPressedFromFragmentCallback) context;
+        }
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onDetach() {
+        // nullifying callback references
+        if (getActivity() != null && getActivity() instanceof BaseActivity) {
+            ((BaseActivity) getActivity()).setOnBackPressedCallback(null);
+        }
+        onBackPressedFromFragmentCallback = null;
+        super.onDetach();
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        if (onBackPressedFromFragmentCallback != null) {
+            onBackPressedFromFragmentCallback.onBackPressedFromFragment();
+            return false;
+        }
+        return true;
     }
 }

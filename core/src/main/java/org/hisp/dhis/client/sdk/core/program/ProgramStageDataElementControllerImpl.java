@@ -182,6 +182,7 @@ public class ProgramStageDataElementControllerImpl
                 ProgramStageDataElement updatedDataElement =
                         stageDataElementMap.get(element.getUId());
                 updatedDataElement.setProgramStageSection(stageSection);
+                updatedDataElement.setSortOrderWithinProgramStageSection(element.getSortOrderWithinProgramStageSection());
             }
         }
 

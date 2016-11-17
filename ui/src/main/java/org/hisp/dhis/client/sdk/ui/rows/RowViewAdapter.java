@@ -119,6 +119,10 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
                     rowViews.add(ordinal, new FilterableRowView(fragmentManager));
                     break;
                 }
+                case EXPANSION_PANEL: {
+                    rowViews.add(ordinal, new ExpansionPanelRowView());
+                    break;
+                }
             }
         }
     }

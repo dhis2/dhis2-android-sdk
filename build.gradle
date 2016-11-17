@@ -52,6 +52,8 @@ ext {
             jexlVersion        : "2.1.1",
             commonsLang3Version: "3.3.2",
             commonsMath3Version: "3.6",
+            autovalue          : "1.3",
+            javaxannotations   : "3.0.1",
 
             // testing libs
             assertJ            : "2.5.0",

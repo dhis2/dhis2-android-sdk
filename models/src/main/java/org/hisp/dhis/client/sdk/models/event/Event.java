@@ -47,19 +47,19 @@ import javax.annotation.Nullable;
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Event.Builder.class)
 public abstract class Event extends BaseDataModel {
-    private static final String JSON_PROPERTY_EVENT_UID = "event";
-    private static final String JSON_PROPERTY_ENROLLMENT_UID = "enrollment";
-    private static final String JSON_PROPERTY_CREATED = "created";
-    private static final String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
-    private static final String JSON_PROPERTY_STATUS = "status";
-    private static final String JSON_PROPERTY_COORDINATE = "coordinate";
-    private static final String JSON_PROPERTY_PROGRAM = "program";
-    private static final String JSON_PROPERTY_PROGRAM_STAGE = "programStage";
-    private static final String JSON_PROPERTY_ORGANISATION_UNIT = "organisationUnit";
-    private static final String JSON_PROPERTY_EVENT_DATE = "eventDate";
-    private static final String JSON_PROPERTY_COMPLETE_DATE = "completedDate";
-    private static final String JSON_PROPERTY_DUE_DATE = "dueDate";
-    private static final String JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES = "trackedEntityDataValues";
+    public static final String JSON_PROPERTY_EVENT_UID = "event";
+    public static final String JSON_PROPERTY_ENROLLMENT_UID = "enrollment";
+    public static final String JSON_PROPERTY_CREATED = "created";
+    public static final String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
+    public static final String JSON_PROPERTY_STATUS = "status";
+    public static final String JSON_PROPERTY_COORDINATE = "coordinate";
+    public static final String JSON_PROPERTY_PROGRAM = "program";
+    public static final String JSON_PROPERTY_PROGRAM_STAGE = "programStage";
+    public static final String JSON_PROPERTY_ORGANISATION_UNIT = "organisationUnit";
+    public static final String JSON_PROPERTY_EVENT_DATE = "eventDate";
+    public static final String JSON_PROPERTY_COMPLETE_DATE = "completedDate";
+    public static final String JSON_PROPERTY_DUE_DATE = "dueDate";
+    public static final String JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES = "trackedEntityDataValues";
 
     public static final Comparator<Event> DESCENDING_EVENT_DATE_COMPARATOR = new DescendingEventDateComparator();
     public static final Comparator<Event> ASCENDING_DATE_COMPARATOR = new AscendingEventDateComparator();

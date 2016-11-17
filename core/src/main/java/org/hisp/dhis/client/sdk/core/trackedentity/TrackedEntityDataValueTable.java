@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import org.hisp.dhis.client.sdk.core.commons.database.DbContract;
 import org.hisp.dhis.client.sdk.core.commons.database.DbUtils;
+import org.hisp.dhis.client.sdk.core.event.EventTable.EventColumns;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
 public interface TrackedEntityDataValueTable {
@@ -23,7 +24,11 @@ public interface TrackedEntityDataValueTable {
             TrackedEntityDataValueColumns.COLUMN_EVENT + " TEXT NOT NULL," +
             TrackedEntityDataValueColumns.COLUMN_STORED_BY + " TEXT NOT NULL," +
             TrackedEntityDataValueColumns.COLUMN_VALUE + " TEXT," +
-            TrackedEntityDataValueColumns.COLUMN_STATE + " TEXT" + ")";
+            TrackedEntityDataValueColumns.COLUMN_STATE + " TEXT," +
+            " FOREIGN KEY " + "(" +
+            TrackedEntityDataValueColumns.COLUMN_EVENT + ")" +
+            "REFERENCES " + EventColumns.TABLE_NAME + "(" + EventColumns.COLUMN_UID + ")" +
+            ")";
 
     String DROP_TABLE_TRACKED_ENTITY_DATA_VALUES = "DROP TABLE IF EXISTS " +
             TrackedEntityDataValueColumns.TABLE_NAME;

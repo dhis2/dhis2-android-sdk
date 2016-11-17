@@ -11,6 +11,7 @@ import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
+import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.client.sdk.models.user.User;
 import org.hisp.dhis.client.sdk.models.user.UserRole;
@@ -83,6 +84,14 @@ public class MetadataTask {
 
                         if (program.trackedEntity() != null) {
                             trackedEntityMap.put(program.trackedEntity().uid(), program.trackedEntity());
+                        }
+
+                        if(program.programTrackedEntityAttributes() != null) {
+                            for (ProgramTrackedEntityAttribute programTrackedEntityAttribute : program.programTrackedEntityAttributes()) {
+                                if(programTrackedEntityAttribute.trackedEntityAttribute() != null && programTrackedEntityAttribute.trackedEntityAttribute().optionSet() != null) {
+                                    optionSetMap.put(programTrackedEntityAttribute.trackedEntityAttribute().optionSet().uid(), programTrackedEntityAttribute.trackedEntityAttribute().optionSet());
+                                }
+                            }
                         }
                         for (ProgramStage programStage : program.programStages()) {
                             for (ProgramStageDataElement programStageDataElement : programStage.programStageDataElements()) {
@@ -300,7 +309,8 @@ public class MetadataTask {
                 "userCredentials[" +
                 "id,username,userRoles[" +
                 "       id,programs[" +
-                "                   id,version,trackedEntity[id],programStages[" +
+                "                   id,version,trackedEntity[id],programTrackedEntityAttributes[id,trackedEntityAttribute[id,optionSet[id,version]]]," +
+                "                   programStages[" +
                 "                       id,programStageSections[id],programStageDataElements[" +
                 "                           id,dataElement[" +
                 "                               id,optionSet[id,version]" +
@@ -325,6 +335,14 @@ public class MetadataTask {
                 "singleEvent,ignoreOverdueEvents,relationshipFromA,selectIncidentDatesInFuture," +
                 "captureCoordinates,useFirstStageDuringRegistration,displayFrontPageList," +
                 "programType,relationshipType,relationshipText,trackedEntity[id]," +
+                "programTrackedEntityAttributes[" +
+                IDENTIFIABLE_PROPERTIES + "," + NAMEABLE_PROPERTIES + "," +
+                "mandatory,valueType,allowFutureDate,displayInList,sortOrder," +
+                "trackedEntityAttribute[" +
+                IDENTIFIABLE_PROPERTIES + "," + NAMEABLE_PROPERTIES + ",programScope,displayInListNoProgram," +
+                "pattern,sortOrderInListNoProgram,generated,displayOnVisitSchedule,valueType,orgunitScope," +
+                "expression,searchScope,unique,inherit,optionSet[id]" + "]" +
+                "]" +
                 "programRules[" + IDENTIFIABLE_PROPERTIES + ",priority,condition," +
                 "programRuleActions[id,content,location,data,programRuleActionType," +
                 "programStageSection[id],dataElement[id],trackedEntityAttribute[id]," +

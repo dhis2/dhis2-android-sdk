@@ -28,4 +28,11 @@ public final class TrackedEntityFactory {
                 new TrackedEntityAttributeValueStoreImpl(resolver);
         return new TrackedEntityAttributeValueInteractorImpl(trackedEntityAttributeValueStore);
     }
+
+    public static TrackedEntityInstanceInteractor createTrackedEntityInstanceInteractor(@NonNull Retrofit retrofit,
+                                                                                        @NonNull ContentResolver contentResolver) {
+        TrackedEntityInstanceApi trackedEntityInstanceApi = retrofit.create(TrackedEntityInstanceApi.class);
+        TrackedEntityInstanceStore trackedEntityInstanceStore = new TrackedEntityInstanceStoreImpl(contentResolver);
+        return new TrackedEntityInstanceInteractorImpl(trackedEntityInstanceStore, trackedEntityInstanceApi);
+    }
 }

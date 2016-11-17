@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface TrackedEntityAttributeValueStore extends DataStore<TrackedEntityAttributeValue> {
     List<TrackedEntityAttributeValue> query(String trackedEntityInstanceUid);
-    List<TrackedEntityAttributeValue> query(String trackedEntityInstanceUid, String programUid);
 }

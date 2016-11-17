@@ -40,6 +40,8 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentTable;
+import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentTable.EnrollmentColumns;
 import org.hisp.dhis.client.sdk.core.event.EventTable;
 import org.hisp.dhis.client.sdk.core.event.EventTable.EventColumns;
 import org.hisp.dhis.client.sdk.core.option.OptionSetTable;
@@ -48,8 +50,12 @@ import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitTable;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitTable.OrganisationUnitColumns;
 import org.hisp.dhis.client.sdk.core.program.ProgramTable;
 import org.hisp.dhis.client.sdk.core.program.ProgramTable.ProgramColumns;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeValueTable;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeValueTable.TrackedEntityAttributeValueColumns;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueTable;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueTable.TrackedEntityDataValueColumns;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInstanceTable;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInstanceTable.TrackedEntityInstanceColumns;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityTable;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityTable.TrackedEntityColumns;
 import org.hisp.dhis.client.sdk.core.user.UserTable;
@@ -83,6 +89,15 @@ public class DbContentProvider extends ContentProvider {
     private static final int USERS = 700;
     private static final int USER_ID = 701;
 
+    private static final int ENROLLMENTS = 800;
+    private static final int ENROLLMENT_ID = 801;
+
+    private static final int TRACKED_ENTITY_ATTRIBUTE_VALUES = 900;
+    private static final int TRACKED_ENTITY_ATTRIBUTE_VALUE_ID = 901;
+
+    private static final int TRACKED_ENTITY_INSTANCES = 1000;
+    private static final int TRACKED_ENTITY_INSTANCE_ID = 1001;
+
     private static final UriMatcher URI_MATCHER = buildMatcher();
 
     private DbHelper mDbHelper;
@@ -110,6 +125,15 @@ public class DbContentProvider extends ContentProvider {
 
         matcher.addURI(DbContract.AUTHORITY, UserTable.USERS, USERS);
         matcher.addURI(DbContract.AUTHORITY, UserTable.USER_ID, USER_ID);
+
+        matcher.addURI(DbContract.AUTHORITY, EnrollmentTable.ENROLLMENTS, ENROLLMENTS);
+        matcher.addURI(DbContract.AUTHORITY, EnrollmentTable.ENROLLMENT_ID, ENROLLMENT_ID);
+
+        matcher.addURI(DbContract.AUTHORITY, TrackedEntityAttributeValueTable.TRACKED_ENTITY_ATTRIBUTE_VALUES, TRACKED_ENTITY_ATTRIBUTE_VALUES);
+        matcher.addURI(DbContract.AUTHORITY, TrackedEntityAttributeValueTable.TRACKED_ENTITY_ATTRIBUTE_VALUE_ID, TRACKED_ENTITY_ATTRIBUTE_VALUE_ID);
+
+        matcher.addURI(DbContract.AUTHORITY, TrackedEntityInstanceTable.TRACKED_ENTITY_INSTANCES, TRACKED_ENTITY_INSTANCES);
+        matcher.addURI(DbContract.AUTHORITY, TrackedEntityInstanceTable.TRACKED_ENTITY_INSTANCE_ID, TRACKED_ENTITY_INSTANCE_ID);
 
         return matcher;
     }
@@ -151,6 +175,18 @@ public class DbContentProvider extends ContentProvider {
                 return UserTable.CONTENT_TYPE;
             case USER_ID:
                 return UserTable.CONTENT_ITEM_TYPE;
+            case ENROLLMENTS:
+                return EnrollmentTable.CONTENT_TYPE;
+            case ENROLLMENT_ID:
+                return EnrollmentTable.CONTENT_ITEM_TYPE;
+            case TRACKED_ENTITY_ATTRIBUTE_VALUES:
+                return TrackedEntityAttributeValueTable.CONTENT_TYPE;
+            case TRACKED_ENTITY_ATTRIBUTE_VALUE_ID:
+                return TrackedEntityAttributeValueTable.CONTENT_ITEM_TYPE;
+            case TRACKED_ENTITY_INSTANCES:
+                return TrackedEntityInstanceTable.CONTENT_TYPE;
+            case TRACKED_ENTITY_INSTANCE_ID:
+                return TrackedEntityInstanceTable.CONTENT_ITEM_TYPE;
             default:
                 throw new IllegalArgumentException("No corresponding Uri type was found");
         }
@@ -223,6 +259,32 @@ public class DbContentProvider extends ContentProvider {
                 return queryId(uri, UserColumns.TABLE_NAME,
                         UserColumns.COLUMN_ID, projection, selection, selectionArgs, sortOrder, id);
             }
+            case ENROLLMENTS: {
+                return query(uri, EnrollmentColumns.TABLE_NAME, projection,
+                        selection, selectionArgs, sortOrder);
+            }
+            case ENROLLMENT_ID: {
+                String id = String.valueOf(parseId(uri));
+                return queryId(uri, EnrollmentColumns.TABLE_NAME,
+                        EnrollmentColumns.COLUMN_ID, projection, selection, selectionArgs, sortOrder, id);
+            }
+            case TRACKED_ENTITY_ATTRIBUTE_VALUES: {
+                return query(uri, TrackedEntityAttributeValueColumns.TABLE_NAME, projection,
+                        selection, selectionArgs, sortOrder);
+            }
+            case TRACKED_ENTITY_ATTRIBUTE_VALUE_ID: {
+                String id = String.valueOf(parseId(uri));
+                return queryId(uri, TrackedEntityAttributeValueColumns.TABLE_NAME,
+                        TrackedEntityAttributeValueColumns.COLUMN_ID, projection, selection, selectionArgs, sortOrder, id);
+            }
+            case TRACKED_ENTITY_INSTANCES: {
+                return query(uri, TrackedEntityInstanceColumns.TABLE_NAME, projection, selection, selectionArgs, sortOrder);
+            }
+            case TRACKED_ENTITY_INSTANCE_ID: {
+                String id = String.valueOf(parseId(uri));
+                return queryId(uri, TrackedEntityInstanceColumns.TABLE_NAME, TrackedEntityInstanceColumns.COLUMN_ID,
+                        projection, selection, selectionArgs, sortOrder, id);
+            }
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
@@ -281,6 +343,15 @@ public class DbContentProvider extends ContentProvider {
             }
             case USERS: {
                 return insert(UserColumns.TABLE_NAME, values, uri);
+            }
+            case ENROLLMENTS: {
+                return insert(EnrollmentColumns.TABLE_NAME, values, uri);
+            }
+            case TRACKED_ENTITY_ATTRIBUTE_VALUES: {
+                return insert(TrackedEntityAttributeValueColumns.TABLE_NAME, values, uri);
+            }
+            case TRACKED_ENTITY_INSTANCES: {
+                return insert(TrackedEntityInstanceColumns.TABLE_NAME, values, uri);
             }
             default: {
                 throw new IllegalArgumentException("Unsupported URI for insertion: " + uri);
@@ -346,6 +417,27 @@ public class DbContentProvider extends ContentProvider {
             case USER_ID: {
                 return deleteId(uri, UserColumns.TABLE_NAME,
                         UserColumns.COLUMN_ID, selection, selectionArgs);
+            }
+            case ENROLLMENTS: {
+                return delete(EnrollmentColumns.TABLE_NAME, selection, selectionArgs);
+            }
+            case ENROLLMENT_ID: {
+                return deleteId(uri, EnrollmentColumns.TABLE_NAME,
+                        EnrollmentColumns.COLUMN_ID, selection, selectionArgs);
+            }
+            case TRACKED_ENTITY_ATTRIBUTE_VALUES: {
+                return delete(TrackedEntityAttributeValueColumns.TABLE_NAME, selection, selectionArgs);
+            }
+            case TRACKED_ENTITY_ATTRIBUTE_VALUE_ID: {
+                return deleteId(uri, TrackedEntityAttributeValueColumns.TABLE_NAME,
+                        TrackedEntityAttributeValueColumns.COLUMN_ID, selection, selectionArgs);
+            }
+            case TRACKED_ENTITY_INSTANCES: {
+                return delete(TrackedEntityInstanceColumns.TABLE_NAME, selection, selectionArgs);
+            }
+            case TRACKED_ENTITY_INSTANCE_ID: {
+                return deleteId(uri, TrackedEntityInstanceColumns.TABLE_NAME,
+                        TrackedEntityInstanceColumns.COLUMN_ID, selection, selectionArgs);
             }
             default: {
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
@@ -430,6 +522,29 @@ public class DbContentProvider extends ContentProvider {
             case USER_ID: {
                 return updateId(uri, UserColumns.TABLE_NAME,
                         UserColumns.COLUMN_ID, selection, selectionArgs, values);
+            }
+            case ENROLLMENTS: {
+                return update(EnrollmentColumns.TABLE_NAME,
+                        selection, selectionArgs, values);
+            }
+            case ENROLLMENT_ID: {
+                return updateId(uri, EnrollmentColumns.TABLE_NAME,
+                        EnrollmentColumns.COLUMN_ID, selection, selectionArgs, values);
+            }
+            case TRACKED_ENTITY_ATTRIBUTE_VALUES: {
+                return update(TrackedEntityAttributeValueColumns.TABLE_NAME,
+                        selection, selectionArgs, values);
+            }
+            case TRACKED_ENTITY_ATTRIBUTE_VALUE_ID: {
+                return updateId(uri, TrackedEntityAttributeValueColumns.TABLE_NAME,
+                        TrackedEntityAttributeValueColumns.COLUMN_ID, selection, selectionArgs, values);
+            }
+            case TRACKED_ENTITY_INSTANCES: {
+                return update(TrackedEntityInstanceColumns.TABLE_NAME, selection, selectionArgs, values);
+            }
+            case TRACKED_ENTITY_INSTANCE_ID: {
+                return updateId(uri, TrackedEntityInstanceColumns.TABLE_NAME,
+                        TrackedEntityInstanceColumns.COLUMN_ID, selection, selectionArgs, values);
             }
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);

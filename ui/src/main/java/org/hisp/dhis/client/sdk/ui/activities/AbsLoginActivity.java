@@ -50,6 +50,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 
+import org.hisp.dhis.client.sdk.ui.BuildConfig;
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.views.AbsTextWatcher;
 
@@ -170,6 +171,7 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         serverUrl.addTextChangedListener(watcher);
         username.addTextChangedListener(watcher);
         password.addTextChangedListener(watcher);
+
         logoutButton.setVisibility(View.GONE);
 
         if (getIntent().getExtras() != null) {

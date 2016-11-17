@@ -50,6 +50,7 @@ import org.hisp.dhis.client.sdk.core.program.ProgramInteractor;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeValueInteractor;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueInteractor;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityFactory;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInstanceInteractor;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInteractor;
 import org.hisp.dhis.client.sdk.core.user.UserFactory;
 import org.hisp.dhis.client.sdk.core.user.UserInteractor;
@@ -86,6 +87,7 @@ public final class D2 {
     private final OptionSetInteractor optionSetInteractor;
     private final TrackedEntityInteractor trackedEntityInteractor;
     private final OrganisationUnitInteractor organisationUnitInteractor;
+    private final TrackedEntityInstanceInteractor trackedEntityInstanceInteractor;
     private final TrackedEntityDataValueInteractor trackedEntityDataValueInteractor;
     private final TrackedEntityAttributeValueInteractor trackedEntityAttributeValueInteractor;
     private final EnrollmentInteractor enrollmentInteractor;
@@ -102,6 +104,7 @@ public final class D2 {
        ProgramInteractor programInteractor, OptionSetInteractor optionSetInteractor,
        TrackedEntityInteractor trackedEntityInteractor, EventInteractor eventInteractor,
        OrganisationUnitInteractor organisationUnitInteractor,
+       TrackedEntityInstanceInteractor trackedEntityInstanceInteractor,
        TrackedEntityDataValueInteractor trackedEntityDataValueInteractor,
        TrackedEntityAttributeValueInteractor trackedEntityAttributeValueInteractor,
        EnrollmentInteractor enrollmentInteractor) {
@@ -124,6 +127,7 @@ public final class D2 {
         this.trackedEntityInteractor = trackedEntityInteractor;
         this.eventInteractor = eventInteractor;
         this.organisationUnitInteractor = organisationUnitInteractor;
+        this.trackedEntityInstanceInteractor = trackedEntityInstanceInteractor;
         this.trackedEntityDataValueInteractor = trackedEntityDataValueInteractor;
         this.trackedEntityAttributeValueInteractor = trackedEntityAttributeValueInteractor;
         this.enrollmentInteractor = enrollmentInteractor;
@@ -191,6 +195,10 @@ public final class D2 {
 
     public TrackedEntityDataValueInteractor trackedEntityDataValues() {
         return trackedEntityDataValueInteractor;
+    }
+
+    public TrackedEntityInstanceInteractor trackedEntityInstances() {
+        return trackedEntityInstanceInteractor;
     }
 
     public EnrollmentInteractor enrollments() {
@@ -290,11 +298,13 @@ public final class D2 {
                     TrackedEntityFactory.createTrackedEntityAttributeValueInteractor(contentResolver) : null;
             EnrollmentInteractor enrollmentInteractor = retrofit != null ?
                     EnrollmentFactory.create(retrofit, contentResolver) : null;
+            TrackedEntityInstanceInteractor trackedEntityInstanceInteractor = retrofit != null ?
+                    TrackedEntityFactory.createTrackedEntityInstanceInteractor(retrofit, contentResolver) : null;
 
             return new D2(application, contentResolver, userPreferences, serverUrlPreferences,
                     objectMapper, okHttpClient, retrofit, userInteractor, programInteractor,
                     optionSetInteractor, trackedEntityInteractor, eventInteractor,
-                    organisationUnitInteractor, dataValueInteractor, trackedEntityAttributeValueInteractor, enrollmentInteractor);
+                    organisationUnitInteractor, trackedEntityInstanceInteractor, dataValueInteractor, trackedEntityAttributeValueInteractor, enrollmentInteractor);
         }
     }
 }

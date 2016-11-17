@@ -42,8 +42,8 @@ class TrackedEntityAttributeValueMapper extends AbsMapper<TrackedEntityAttribute
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(TrackedEntityAttributeValueColumns.COLUMN_ID, trackedEntityAttributeValue.id());
-        contentValues.put(TrackedEntityAttributeValueColumns.COLUMN_TRACKED_ENTITY_ATTRIBUTE, trackedEntityAttributeValue.trackedEntityAttribute());
-        contentValues.put(TrackedEntityAttributeValueColumns.COLUMN_TRACKED_ENTITY_INSTANCE, trackedEntityAttributeValue.trackedEntityInstance());
+        contentValues.put(TrackedEntityAttributeValueColumns.COLUMN_TRACKED_ENTITY_ATTRIBUTE, trackedEntityAttributeValue.trackedEntityAttributeUid());
+        contentValues.put(TrackedEntityAttributeValueColumns.COLUMN_TRACKED_ENTITY_INSTANCE, trackedEntityAttributeValue.trackedEntityInstanceUid());
         contentValues.put(TrackedEntityAttributeValueColumns.COLUMN_VALUE, trackedEntityAttributeValue.value());
         contentValues.put(TrackedEntityAttributeValueColumns.COLUMN_STATE, trackedEntityAttributeValue.state().toString());
 
@@ -54,8 +54,8 @@ class TrackedEntityAttributeValueMapper extends AbsMapper<TrackedEntityAttribute
     public TrackedEntityAttributeValue toModel(Cursor cursor) {
         TrackedEntityAttributeValue trackedEntityAttributeValue = TrackedEntityAttributeValue.builder()
                 .id(getLong(cursor, TrackedEntityAttributeValueColumns.COLUMN_ID))
-                .trackedEntityAttribute(getString(cursor, TrackedEntityAttributeValueColumns.COLUMN_TRACKED_ENTITY_ATTRIBUTE))
-                .trackedEntityInstance(getString(cursor, TrackedEntityAttributeValueColumns.COLUMN_TRACKED_ENTITY_INSTANCE))
+                .trackedEntityAttributeUid(getString(cursor, TrackedEntityAttributeValueColumns.COLUMN_TRACKED_ENTITY_ATTRIBUTE))
+                .trackedEntityInstanceUid(getString(cursor, TrackedEntityAttributeValueColumns.COLUMN_TRACKED_ENTITY_INSTANCE))
                 .value(getString(cursor, TrackedEntityAttributeValueColumns.COLUMN_VALUE))
                 .state(State.valueOf(getString(cursor, TrackedEntityAttributeValueColumns.COLUMN_STATE)))
                 .build();

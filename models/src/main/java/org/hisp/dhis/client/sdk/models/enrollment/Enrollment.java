@@ -33,6 +33,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseDataModel;
+import org.hisp.dhis.client.sdk.models.common.Coordinates;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttributeValue;
 
 import java.util.Collections;
@@ -55,8 +56,8 @@ public abstract class Enrollment extends BaseDataModel {
     private static final String JSON_PROPERTY_DATE_OF_INCIDENT = "incidentDate";
     private static final String JSON_PROPERTY_FOLLOW_UP = "followup";
     private static final String JSON_PROPERTY_ENROLLMENT_STATUS = "status";
-    private static final String JSON_PROPERTY_TRACKED_ENTITY_ATTRIBUTE_VALUES = "attributes";
     private static final String JSON_PROPERTY_TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+    private static final String JSON_PROPERTY_COORDINATE = "coordinate";
 
     public static final Comparator<Enrollment> DESCENDING_ENROLLMENT_DATE_COMPARATOR = new DescendingEnrollmentDateComparator();
 
@@ -96,20 +97,18 @@ public abstract class Enrollment extends BaseDataModel {
     public abstract EnrollmentStatus enrollmentStatus();
 
     @Nullable
+    @JsonProperty(JSON_PROPERTY_COORDINATE)
+    public abstract Coordinates coordinates();
+
+    @Nullable
     @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE)
     public abstract String trackedEntityInstance();
 
-    @Nullable
-    @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_ATTRIBUTE_VALUES)
-    public abstract List<TrackedEntityAttributeValue> trackedEntityAttributeValues();
+    public abstract Builder toBuilder();
 
     @Override
     public boolean isValid() {
-        if (created() == null || lastUpdated() == null) {
-            return false;
-        }
-
-        if (trackedEntityAttributeValues() == null || trackedEntityAttributeValues().isEmpty()) {
+        if (uid() == null || created() == null ) {
             return false;
         }
 
@@ -150,20 +149,17 @@ public abstract class Enrollment extends BaseDataModel {
         @JsonProperty(JSON_PROPERTY_ENROLLMENT_STATUS)
         public abstract Builder enrollmentStatus(@Nullable EnrollmentStatus enrollmentStatus);
 
+        @JsonProperty(JSON_PROPERTY_COORDINATE)
+        public abstract Builder coordinates(@Nullable Coordinates coordinates);
+
         @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE)
         public abstract Builder trackedEntityInstance(@Nullable String trackedEntityInstance);
 
-        @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_ATTRIBUTE_VALUES)
-        public abstract Builder trackedEntityAttributeValues(@Nullable List<TrackedEntityAttributeValue> trackedEntityAttributeValues);
 
         abstract Enrollment autoBuild();
 
-        abstract List<TrackedEntityAttributeValue> trackedEntityAttributeValues();
 
         public Enrollment build() {
-            if (trackedEntityAttributeValues() != null) {
-                trackedEntityAttributeValues(Collections.unmodifiableList(trackedEntityAttributeValues()));
-            }
             return autoBuild();
         }
     }

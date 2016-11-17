@@ -32,11 +32,14 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentTable;
 import org.hisp.dhis.client.sdk.core.event.EventTable;
 import org.hisp.dhis.client.sdk.core.option.OptionSetTable;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitTable;
 import org.hisp.dhis.client.sdk.core.program.ProgramTable;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeValueTable;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueTable;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInstanceTable;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityTable;
 import org.hisp.dhis.client.sdk.core.user.UserTable;
 
@@ -57,7 +60,9 @@ public class DbHelper extends SQLiteOpenHelper {
         database.execSQL(EventTable.CREATE_TABLE_EVENTS);
         database.execSQL(TrackedEntityDataValueTable.CREATE_TABLE_TRACKED_ENTITY_DATA_VALUES);
         database.execSQL(OrganisationUnitTable.CREATE_TABLE_ORGANISATION_UNITS);
-
+        database.execSQL(EnrollmentTable.CREATE_TABLE_ENROLLMENTS);
+        database.execSQL(TrackedEntityAttributeValueTable.CREATE_TABLE_TRACKED_ENTITY_ATTRIBUTE_VALUES);
+        database.execSQL(TrackedEntityInstanceTable.CREATE_TABLE_TRACKED_ENTITY_INSTANCES);
     }
 
     @Override
@@ -69,5 +74,8 @@ public class DbHelper extends SQLiteOpenHelper {
         database.execSQL(EventTable.DROP_TABLE_EVENTS);
         database.execSQL(TrackedEntityDataValueTable.DROP_TABLE_TRACKED_ENTITY_DATA_VALUES);
         database.execSQL(OrganisationUnitTable.DROP_TABLE_ORGANISATION_UNITS);
+        database.execSQL(EnrollmentTable.DROP_TABLE_ENROLLMENTS);
+        database.execSQL(TrackedEntityAttributeValueTable.DROP_TABLE_TRACKED_ENTITY_ATTRIBUTE_VALUES);
+        database.execSQL(TrackedEntityInstanceTable.DROP_TABLE_TRACKED_ENTITY_INSTANCES);
     }
 }

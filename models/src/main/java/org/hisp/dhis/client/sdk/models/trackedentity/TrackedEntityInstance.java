@@ -64,9 +64,11 @@ public abstract class TrackedEntityInstance extends BaseDataModel {
     @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
     public abstract Date lastUpdated();
 
+    @Nullable
     @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
     public abstract String organisationUnit();
 
+    @Nullable
     @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES)
     public abstract List<TrackedEntityAttributeValue> trackedEntityAttributeValues();
 
@@ -74,13 +76,11 @@ public abstract class TrackedEntityInstance extends BaseDataModel {
     @JsonProperty(JSON_PROPERTY_RELATIONSHIPS)
     public abstract List<Relationship> relationships();
 
+    public abstract Builder toBuilder();
+
     @Override
     public boolean isValid() {
-        if (created() == null || lastUpdated() == null) {
-            return false;
-        }
-
-        if (trackedEntityAttributeValues() == null || trackedEntityAttributeValues().isEmpty()) {
+        if (uid() == null || created() == null) {
             return false;
         }
 
@@ -103,10 +103,10 @@ public abstract class TrackedEntityInstance extends BaseDataModel {
         public abstract Builder lastUpdated(@Nullable Date lastUpdated);
 
         @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
-        public abstract Builder organisationUnit(String organisationUnit);
+        public abstract Builder organisationUnit(@Nullable String organisationUnit);
 
         @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES)
-        public abstract Builder trackedEntityAttributeValues(List<TrackedEntityAttributeValue> trackedEntityAttributeValues);
+        public abstract Builder trackedEntityAttributeValues(@Nullable List<TrackedEntityAttributeValue> trackedEntityAttributeValues);
 
         @JsonProperty(JSON_PROPERTY_RELATIONSHIPS)
         public abstract Builder relationships(@Nullable List<Relationship> relationships);

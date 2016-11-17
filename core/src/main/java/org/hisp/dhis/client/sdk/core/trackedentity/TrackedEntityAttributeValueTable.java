@@ -5,7 +5,6 @@ import android.net.Uri;
 import org.hisp.dhis.client.sdk.core.commons.database.DbContract;
 import org.hisp.dhis.client.sdk.core.commons.database.DbUtils;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
 public interface TrackedEntityAttributeValueTable {
     interface TrackedEntityAttributeValueColumns extends DbContract.IdColumn, DbContract.StateColumn {

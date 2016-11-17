@@ -34,7 +34,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.client.sdk.models.common.BaseDataModel;
-import org.hisp.dhis.client.sdk.models.common.BaseModel;
+
+import javax.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_TrackedEntityAttributeValue.Builder.class)
@@ -42,12 +43,15 @@ public abstract class TrackedEntityAttributeValue extends BaseDataModel {
     private static final String JSON_PROPERTY_ATTRIBUTE = "attribute";
     private static final String JSON_PROPERTY_VALUE = "value";
 
+    @Nullable
     @JsonIgnore
-    public abstract TrackedEntityInstance trackedEntityInstance();
+    public abstract String trackedEntityInstanceUid();
 
+    @Nullable
     @JsonProperty(JSON_PROPERTY_ATTRIBUTE)
-    public abstract String trackedEntityAttribute();
+    public abstract String trackedEntityAttributeUid();
 
+    @Nullable
     @JsonProperty(JSON_PROPERTY_VALUE)
     public abstract String value();
 
@@ -59,21 +63,23 @@ public abstract class TrackedEntityAttributeValue extends BaseDataModel {
         return true;
     }
 
+    public abstract Builder toBuilder();
+
     public static Builder builder() {
         return new AutoValue_TrackedEntityAttributeValue.Builder();
     }
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
+    public static abstract class Builder extends BaseDataModel.Builder<Builder> {
 
         @JsonIgnore
-        public abstract Builder trackedEntityInstance(TrackedEntityInstance trackedEntityInstance);
+        public abstract Builder trackedEntityInstanceUid(@Nullable String trackedEntityInstanceUid);
 
         @JsonProperty(JSON_PROPERTY_ATTRIBUTE)
-        public abstract Builder trackedEntityAttribute(String trackedEntityAttribute);
+        public abstract Builder trackedEntityAttributeUid(@Nullable String trackedEntityAttributeUid);
 
         @JsonProperty(JSON_PROPERTY_VALUE)
-        public abstract Builder value(String value);
+        public abstract Builder value(@Nullable String value);
 
         public abstract TrackedEntityAttributeValue build();
     }

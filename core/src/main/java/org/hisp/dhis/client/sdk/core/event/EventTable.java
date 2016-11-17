@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import org.hisp.dhis.client.sdk.core.commons.database.DbContract;
 import org.hisp.dhis.client.sdk.core.commons.database.DbUtils;
+import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentTable.EnrollmentColumns;
 import org.hisp.dhis.client.sdk.core.program.ProgramTable.ProgramColumns;
 import org.hisp.dhis.client.sdk.models.event.Event;
 
@@ -14,6 +15,7 @@ public interface EventTable {
         String COLUMN_PROGRAM = "program";
         String COLUMN_PROGRAM_STAGE = "programStage";
         String COLUMN_ORGANISATION_UNIT = "organisationUnit";
+        String COLUMN_ENROLLMENT = "enrollmentUid";
         String COLUMN_EVENT_STATUS = "eventStatus";
         String COLUMN_EVENT_DATE = "eventDate";
         String COLUMN_DUE_DATE = "dueDate";
@@ -29,6 +31,7 @@ public interface EventTable {
             EventColumns.COLUMN_EVENT_STATUS + " TEXT NOT NULL," +
             EventColumns.COLUMN_PROGRAM_STAGE + " TEXT NOT NULL," +
             EventColumns.COLUMN_ORGANISATION_UNIT + " TEXT NOT NULL," +
+            EventColumns.COLUMN_ENROLLMENT + " TEXT," +
             EventColumns.COLUMN_EVENT_DATE + " TEXT," +
             EventColumns.COLUMN_DUE_DATE + " TEXT," +
             EventColumns.COLUMN_COMPLETED_DATE + " TEXT," +
@@ -36,8 +39,11 @@ public interface EventTable {
             EventColumns.COLUMN_LATITUDE + " REAL," +
             EventColumns.COLUMN_PROGRAM + " TEXT," +
             EventColumns.COLUMN_STATE + " TEXT," +
-            "FOREIGN KEY " + "(" + EventColumns.COLUMN_PROGRAM + ")" +
+            "FOREIGN KEY " + "(" +
+            EventColumns.COLUMN_PROGRAM + ")" +
             "REFERENCES " + ProgramColumns.TABLE_NAME + "(" + ProgramColumns.COLUMN_UID + ")" +
+            " FOREIGN KEY " + "(" + EventColumns.COLUMN_ENROLLMENT + ")" +
+            "REFERENCES " + EnrollmentColumns.TABLE_NAME + "(" + EnrollmentColumns.COLUMN_UID + ")" +
             " ON DELETE CASCADE )";
 
     String DROP_TABLE_EVENTS = "DROP TABLE IF EXISTS " +

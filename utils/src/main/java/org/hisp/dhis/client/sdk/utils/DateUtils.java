@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
@@ -46,5 +47,12 @@ public class DateUtils {
             result.put(unit, diff);
         }
         return result;
+    }
+
+    public static Date plusDays(Date date, int plusDays) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_MONTH, plusDays);
+        return date;
     }
 }

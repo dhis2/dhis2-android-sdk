@@ -60,6 +60,7 @@ public abstract class Event extends BaseDataModel {
     private static final String JSON_PROPERTY_COMPLETE_DATE = "completedDate";
     private static final String JSON_PROPERTY_DUE_DATE = "dueDate";
     private static final String JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES = "trackedEntityDataValues";
+    private static final String JSON_PROPERTY_TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
 
     public static final Comparator<Event> DESCENDING_EVENT_DATE_COMPARATOR = new DescendingEventDateComparator();
     public static final Comparator<Event> ASCENDING_DATE_COMPARATOR = new AscendingEventDateComparator();
@@ -81,10 +82,12 @@ public abstract class Event extends BaseDataModel {
     @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
     public abstract String organisationUnit();
 
+    // Nullable properties
+
+    @Nullable
     @JsonProperty(JSON_PROPERTY_EVENT_DATE)
     public abstract Date eventDate();
 
-    // Nullable properties
     @Nullable
     @JsonProperty(JSON_PROPERTY_ENROLLMENT_UID)
     public abstract String enrollmentUid();
@@ -112,6 +115,10 @@ public abstract class Event extends BaseDataModel {
     @Nullable
     @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES)
     public abstract List<TrackedEntityDataValue> trackedEntityDataValues();
+
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE)
+    public abstract String trackedEntityInstance();
 
     public abstract Builder toBuilder();
 
@@ -160,7 +167,7 @@ public abstract class Event extends BaseDataModel {
         public abstract Builder organisationUnit(String organisationUnit);
 
         @JsonProperty(JSON_PROPERTY_EVENT_DATE)
-        public abstract Builder eventDate(Date eventDate);
+        public abstract Builder eventDate(@Nullable Date eventDate);
 
         @JsonProperty(JSON_PROPERTY_COMPLETE_DATE)
         public abstract Builder completedDate(@Nullable Date completedDate);
@@ -170,6 +177,9 @@ public abstract class Event extends BaseDataModel {
 
         @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES)
         public abstract Builder trackedEntityDataValues(@Nullable List<TrackedEntityDataValue> trackedEntityDataValues);
+
+        @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE)
+        public abstract Builder trackedEntityInstance(@Nullable String trackedEntityInstance);
 
         abstract List<TrackedEntityDataValue> trackedEntityDataValues();
 

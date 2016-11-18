@@ -6,6 +6,7 @@ import org.hisp.dhis.client.sdk.core.commons.database.DbContract;
 import org.hisp.dhis.client.sdk.core.commons.database.DbUtils;
 import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentTable.EnrollmentColumns;
 import org.hisp.dhis.client.sdk.core.program.ProgramTable.ProgramColumns;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInstanceTable.TrackedEntityInstanceColumns;
 import org.hisp.dhis.client.sdk.models.event.Event;
 
 public interface EventTable {
@@ -19,6 +20,7 @@ public interface EventTable {
         String COLUMN_EVENT_STATUS = "eventStatus";
         String COLUMN_EVENT_DATE = "eventDate";
         String COLUMN_DUE_DATE = "dueDate";
+        String COLUMN_TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
         String COLUMN_COMPLETED_DATE = "completedDate";
     }
 
@@ -38,10 +40,14 @@ public interface EventTable {
             EventColumns.COLUMN_LONGITUDE + " REAL," +
             EventColumns.COLUMN_LATITUDE + " REAL," +
             EventColumns.COLUMN_PROGRAM + " TEXT," +
+            EventColumns.COLUMN_TRACKED_ENTITY_INSTANCE + " TEXT," +
             EventColumns.COLUMN_STATE + " TEXT," +
             "FOREIGN KEY " + "(" +
             EventColumns.COLUMN_PROGRAM + ")" +
             "REFERENCES " + ProgramColumns.TABLE_NAME + "(" + ProgramColumns.COLUMN_UID + ")" +
+            "FOREIGN KEY " + "(" +
+            EventColumns.COLUMN_TRACKED_ENTITY_INSTANCE + ")" +
+            "REFERENCES " + TrackedEntityInstanceColumns.TABLE_NAME + "(" + TrackedEntityInstanceColumns.COLUMN_UID + ")" +
             " FOREIGN KEY " + "(" + EventColumns.COLUMN_ENROLLMENT + ")" +
             "REFERENCES " + EnrollmentColumns.TABLE_NAME + "(" + EnrollmentColumns.COLUMN_UID + ")" +
             " ON DELETE CASCADE )";
@@ -72,6 +78,7 @@ public interface EventTable {
             EventColumns.COLUMN_LONGITUDE,
             EventColumns.COLUMN_LATITUDE,
             EventColumns.COLUMN_PROGRAM,
+            EventColumns.COLUMN_TRACKED_ENTITY_INSTANCE,
             EventColumns.COLUMN_STATE
     };
 }

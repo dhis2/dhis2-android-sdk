@@ -62,4 +62,30 @@
         <item name="colorAccent">@color/color_accent_default</item>
     </style>
 
+    <style name="SelectableBackgroundBorderless">
+        <item name="android:background">?android:selectableItemBackground</item>
+    </style>
+
+    <!-- Two line list as per https://material.google.com/components/lists.html#lists-specs -->
+    <style name="TwoLineListItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">72dp</item>
+        <item name="android:background">?android:selectableItemBackground</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <!-- Dense two line list as per https://material.google.com/components/lists.html#lists-specs -->
+    <style name="DenseTwoLineListItem" parent="TwoLineListItem">
+        <item name="android:layout_height">60dp</item>
+    </style>
+
+    <style name="ListItemText">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TransparentIconButton">
+        <item name="android:background">?android:selectableItemBackground</item>
+        <item name="android:padding">12dp</item>
+    </style>
+
 </resources>

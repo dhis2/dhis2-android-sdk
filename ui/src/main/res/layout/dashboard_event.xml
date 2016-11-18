@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout style="@style/DenseTwoLineListItem"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:clickable="true">
+
+    <FrameLayout
+        android:id="@+id/status_icon_container"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="center_vertical"
+        android:background="?attr/selectableItemBackground"
+        android:paddingLeft="16dp">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <org.hisp.dhis.client.sdk.ui.views.CircleView
+            android:id="@+id/circleview_status_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            app:circle_radius="22dp"
+            app:fill_color="@color/color_divider"
+            app:stroke_color="@android:color/transparent"
+            app:stroke_width="0dp"/>
+
+        <ImageView
+            android:id="@+id/status_icon"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/stub_description"
+            />
+
+        <FrameLayout
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="right|top"
+            android:id="@+id/status_lock_container"
+            android:visibility="gone"
+            >
+
+            <org.hisp.dhis.client.sdk.ui.views.CircleView
+                android:id="@+id/circleview_status_lock_background"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                app:circle_radius="8dp"
+                app:fill_color="@android:color/white"
+                app:stroke_color="@android:color/transparent"
+                app:stroke_width="0dp"/>
+
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:cropToPadding="false"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_lock_gray"
+                />
+        </FrameLayout>
+
+    </FrameLayout>
+    <LinearLayout
+        android:id="@+id/event_discription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:orientation="vertical"
+        android:layout_toRightOf="@id/status_icon_container"
+        android:layout_marginLeft="72dp"
+        android:paddingLeft="16dp">
+
+        <TextView
+            android:id="@+id/event_name"
+            style="@style/ListItemText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="@string/font_name_regular"
+            android:maxLines="2"
+            android:paddingRight="8dp"
+            android:text="Event 1"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/date_text"
+            style="@style/ListItemText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@string/font_name_regular"
+            android:paddingRight="16dp"
+            android:text="2016-09-10"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/sync_area"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/refresh_button"
+            style="@style/TransparentIconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+            android:src="@drawable/ic_refresh_gray"
+            android:visibility="gone"
+            tools:visibility="visible"
+
+
+        <ImageButton
+            android:id="@+id/overflow_button"
+            style="@style/TransparentIconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_more_vert_gray"
+            android:layout_marginRight="8dp"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+    </LinearLayout>
+</RelativeLayout>

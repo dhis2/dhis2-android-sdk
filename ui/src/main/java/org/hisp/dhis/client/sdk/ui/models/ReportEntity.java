@@ -66,7 +66,7 @@ public class ReportEntity implements Parcelable {
 
         return dataElementMap.get(uid);
     }
-
+    //TODO: Refactor this to SyncStatus of LocalStatus for better clarity. (Vlad)
     public enum Status {
         SENT, TO_UPDATE, TO_POST, ERROR
     }

@@ -1,0 +1,68 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/header_bar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:animateLayoutChanges="true"
+        android:background="?android:selectableItemBackground">
+
+        <ImageButton
+            android:id="@+id/expand_collapse_button"
+            style="@style/SelectableBackgroundBorderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
+            android:alpha="0.54"
+            android:foregroundGravity="center"
+            android:src="@drawable/ic_expand" />
+
+        <ImageButton
+            android:id="@+id/action_button"
+            style="@style/SelectableBackgroundBorderless"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/expand_collapse_button"
+            android:layout_toStartOf="@id/expand_collapse_button"
+            android:alpha="0.54"
+            android:src="@drawable/ic_add_black" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="24dp"
+            android:layout_toLeftOf="@+id/action_button"
+            android:layout_toStartOf="@+id/action_button"
+            android:alpha="0.87"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            tools:text="Expansion panel title" />
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:alpha="0.12"
+        android:background="@android:color/black" />
+</LinearLayout>

@@ -72,4 +72,7 @@ dependencies {
 
     // Test
     testCompile "junit:junit:${libs.jUnitVersion}"
+
+    // Expansion panels from this library:
+    compile 'com.bignerdranch.android:expandablerecyclerview:3.0.0-RC1'
 }

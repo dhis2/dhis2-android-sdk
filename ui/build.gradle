@@ -48,6 +48,10 @@ android {
         warningsAsErrors true
         abortOnError true // Fail early.
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {

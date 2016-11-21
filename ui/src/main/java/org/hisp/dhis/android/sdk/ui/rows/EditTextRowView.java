@@ -34,6 +34,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Editable;
 import android.text.InputType;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +43,7 @@ import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.ui.R;
 import org.hisp.dhis.android.sdk.ui.models.FormEntity;
-import org.hisp.dhis.android.sdk.ui.models.FormEntityEditText;
+import org.hisp.dhis.android.sdk.ui.models.edittext.FormEntityEditText;
 import org.hisp.dhis.android.sdk.ui.views.AbsTextWatcher;
 
 import static android.text.TextUtils.isEmpty;
@@ -66,14 +67,13 @@ public final class EditTextRowView implements RowView {
     }
 
     private static class EditTextRowViewHolder extends RecyclerView.ViewHolder {
-        /* number of lines for TEXT */
-        private static final int SHORT_TEXT_LINE_COUNT = 1;
-
-        /* number of lines for LONG_TEXT */
-        private static final int LONG_TEXT_LINE_COUNT = 3;
 
         /* in order to improve performance, we pre-fetch
-        all prompts from resources */
+        all hints from resources */
+                /* in order to improve performance, we pre-fetch
+        all hints from resources */
+        SparseArray<String> hintCache;
+
         private final String enterText;
         private final String enterLongText;
         private final String enterNumber;
@@ -98,9 +98,12 @@ public final class EditTextRowView implements RowView {
 
             Context context = itemView.getContext();
 
+            hintCache = new SparseArray<>();
+            hintCache.append(R.string.enter_text, context.getString(R.string.enter_text));
+            hintCache.append(R.string.enter_long_text, context.getString(R.string.enter_long_text));
+            hintCache.append(R.string.enter_number, context.getString(R.string.enter_number));
             // fetching hint strings
-            enterText = context.getString(R.string.enter_text);
-            enterLongText = context.getString(R.string.enter_long_text);
+
             enterNumber = context.getString(R.string.enter_number);
             enterInteger = context.getString(R.string.enter_integer);
             enterPositiveInteger = context.getString(R.string.enter_positive_integer);
@@ -133,6 +136,12 @@ public final class EditTextRowView implements RowView {
         }
 
         private boolean configureView(FormEntityEditText dataEntityText) {
+
+            String hint = isEmpty(dataEntityText.getHint()) ?
+                    enterText : dataEntityText.getHint();
+
+            return configure(hint, dataEntityText.getAndroidInputType(), dataEntityText.getMaxLines());
+
             switch (dataEntityText.getInputType()) {
                 case TEXT: {
                     String hint = isEmpty(dataEntityText.getHint()) ?

@@ -37,10 +37,10 @@ import org.hisp.dhis.android.sdk.ui.models.FormEntityCharSequence;
 public abstract class FormEntityEditText extends FormEntityCharSequence {
 
     /* number of lines for TEXT */
-    static final int SHORT_TEXT_LINE_COUNT = 1;
+    public static final int SHORT_TEXT_LINE_COUNT = 1;
 
     /* number of lines for LONG_TEXT */
-    static final int LONG_TEXT_LINE_COUNT = 3;
+    public static final int LONG_TEXT_LINE_COUNT = 3;
 
     private final String hint;
     private boolean isLocked;

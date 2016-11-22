@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.ui.models.edittext;
 
-import android.support.annotation.NonNull;
+import android.text.InputType;
 
 import org.hisp.dhis.android.sdk.ui.R;
 
@@ -46,17 +46,15 @@ public class FormEntityNumberEditText extends FormEntityEditText {
         super(id, label, tag);
     }
 
-    @NonNull
     @Override
     public int getHintResourceId() {
         return R.string.enter_number;
     }
 
-    @NonNull
     @Override
     public int getAndroidInputType() {
-        return android.text.InputType.TYPE_CLASS_NUMBER |
-                android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL |
-                android.text.InputType.TYPE_NUMBER_FLAG_SIGNED;
+        return InputType.TYPE_CLASS_NUMBER |
+                InputType.TYPE_NUMBER_FLAG_DECIMAL |
+                InputType.TYPE_NUMBER_FLAG_SIGNED;
     }
 }

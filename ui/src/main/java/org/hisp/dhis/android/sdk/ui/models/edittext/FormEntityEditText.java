@@ -31,6 +31,7 @@ package org.hisp.dhis.android.sdk.ui.models.edittext;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.text.InputType;
 
 import org.hisp.dhis.android.sdk.ui.models.FormEntityCharSequence;
 
@@ -77,12 +78,10 @@ public abstract class FormEntityEditText extends FormEntityCharSequence {
         isLocked = locked;
     }
 
-    @NonNull
     public int getAndroidInputType() {
-        return android.text.InputType.TYPE_CLASS_TEXT;
+        return InputType.TYPE_CLASS_TEXT;
     }
 
-    @NonNull
     public int getMaxLines() {
         return SHORT_TEXT_LINE_COUNT;
     }
@@ -90,7 +89,6 @@ public abstract class FormEntityEditText extends FormEntityCharSequence {
     /**
      * This is used for precaching hint texts in the ViewHolder in case one is not provided
      */
-    @NonNull
     @StringRes
     public abstract int getHintResourceId();
 

@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.sdk.ui.models.edittext;
 
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.sdk.ui.R;
 
 public class FormEntityShortEditText extends FormEntityEditText {
@@ -46,7 +44,6 @@ public class FormEntityShortEditText extends FormEntityEditText {
         super(id, label, tag);
     }
 
-    @NonNull
     @Override
     public int getHintResourceId() {
         return R.string.enter_text;

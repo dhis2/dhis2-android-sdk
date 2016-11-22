@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.sdk.ui.models.edittext;
 
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.sdk.ui.R;
 
 public class FormEntityIntegerPositiveEditText extends FormEntityIntegerEditText {
@@ -46,7 +44,6 @@ public class FormEntityIntegerPositiveEditText extends FormEntityIntegerEditText
         super(id, label, tag);
     }
 
-    @NonNull
     @Override
     public int getHintResourceId() {
         return R.string.enter_positive_integer;

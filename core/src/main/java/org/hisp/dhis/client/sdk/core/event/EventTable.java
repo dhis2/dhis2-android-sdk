@@ -72,6 +72,7 @@ public interface EventTable {
             EventColumns.COLUMN_EVENT_STATUS,
             EventColumns.COLUMN_PROGRAM_STAGE,
             EventColumns.COLUMN_ORGANISATION_UNIT,
+            EventColumns.COLUMN_ENROLLMENT,
             EventColumns.COLUMN_EVENT_DATE,
             EventColumns.COLUMN_DUE_DATE,
             EventColumns.COLUMN_COMPLETED_DATE,

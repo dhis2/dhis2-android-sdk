@@ -83,6 +83,8 @@ class EventMapper extends AbsMapper<Event> {
         contentValues.put(EventColumns.COLUMN_DUE_DATE, event.dueDate() != null ? BaseIdentifiableObject.DATE_FORMAT.format(event.dueDate()) : null);
         contentValues.put(EventColumns.COLUMN_EVENT_STATUS, event.status().toString());
         contentValues.put(EventColumns.COLUMN_ORGANISATION_UNIT, event.organisationUnit());
+        contentValues.put(EventColumns.COLUMN_TRACKED_ENTITY_INSTANCE, event.trackedEntityInstance());
+        contentValues.put(EventColumns.COLUMN_ENROLLMENT, event.enrollmentUid());
         contentValues.put(EventColumns.COLUMN_PROGRAM, event.program());
         contentValues.put(EventColumns.COLUMN_PROGRAM_STAGE, event.programStage());
         contentValues.put(EventColumns.COLUMN_LATITUDE, event.coordinates() != null ? event.coordinates().latitude() : null);

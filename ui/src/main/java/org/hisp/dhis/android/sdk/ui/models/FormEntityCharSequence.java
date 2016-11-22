@@ -80,4 +80,8 @@ public abstract class FormEntityCharSequence extends FormEntity {
             }
         }
     }
+
+    public void setValue(@Nullable CharSequence value) {
+        setValue(value, false);
+    }
 }

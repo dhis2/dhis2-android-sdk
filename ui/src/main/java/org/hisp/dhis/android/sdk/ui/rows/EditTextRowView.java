@@ -69,7 +69,7 @@ public final class EditTextRowView implements RowView {
 
         /* in order to improve performance, we pre-fetch
         all hints from resources */
-        SparseArray<String> hintCache;
+        final SparseArray<String> hintCache;
 
         public final TextView textViewLabel;
         public final TextInputLayout textInputLayout;

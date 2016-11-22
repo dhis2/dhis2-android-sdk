@@ -72,6 +72,7 @@ public class EditTextRowViewTest {
     private TextView textViewLabel;
     @Mock
     private Context context;
+
     private RecyclerView.ViewHolder viewHolder;
 
     @SuppressLint("InflateParams")
@@ -99,7 +100,7 @@ public class EditTextRowViewTest {
     public void onBindViewHolder_setValueAndLabel() throws Exception {
         FormEntityEditText formEntity = new FormEntityShortEditText(id, label);
         String value = "test_value";
-        formEntity.setValue(value, false);
+        formEntity.setValue(value);
 
         editTextRowView.onBindViewHolder(viewHolder, formEntity);
         verify(textViewLabel).setText(label);
@@ -123,7 +124,6 @@ public class EditTextRowViewTest {
         verify(editText).setInputType(InputType.TYPE_CLASS_TEXT);
         verify(editText).setMaxLines(LONG_TEXT_LINE_COUNT);
     }
-
 
     @Test
     public void onBindViewHolder_configureNumberEditText() throws Exception {

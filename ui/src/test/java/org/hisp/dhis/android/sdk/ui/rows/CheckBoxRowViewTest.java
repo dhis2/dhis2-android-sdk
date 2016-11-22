@@ -85,7 +85,7 @@ public class CheckBoxRowViewTest {
 
         String label = "test_label";
         FormEntityCheckBox formEntityCheckBox = new FormEntityCheckBox("test_id", label);
-        formEntityCheckBox.setValue(TRUE, false); // value set to true
+        formEntityCheckBox.setValue(TRUE); // value set to true
 
         checkBoxRowView.onBindViewHolder(viewHolder, formEntityCheckBox);
 
@@ -99,7 +99,7 @@ public class CheckBoxRowViewTest {
         String updatedLabel = "updated_test_label"; // new label
 
         FormEntityCheckBox formEntityCheckBox = new FormEntityCheckBox("test_id", updatedLabel);
-        formEntityCheckBox.setValue(EMPTY_FIELD, false); // value set to false
+        formEntityCheckBox.setValue(EMPTY_FIELD); // value set to EMPTY_FIELD (false)
 
         checkBoxRowView.onBindViewHolder(viewHolder, formEntityCheckBox);
 

@@ -34,11 +34,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
@@ -56,7 +55,6 @@ public class RadioButtonsRow extends Row {
         if (!DataEntryRowTypes.GENDER.equals(type) && !DataEntryRowTypes.BOOLEAN.equals(type)) {
             throw new IllegalArgumentException("Unsupported row type");
         }
-
         mLabel = label;
         mMandatory = mandatory;
         mValue = baseValue;
@@ -64,8 +62,6 @@ public class RadioButtonsRow extends Row {
         mWarning = warning;
 
         checkNeedsForDescriptionButton();
-
-
     }
 
     @Override
@@ -89,30 +85,24 @@ public class RadioButtonsRow extends Row {
                     root.findViewById(R.id.first_radio_button);
             CompoundButton secondButton = (CompoundButton)
                     root.findViewById(R.id.second_radio_button);
-            CompoundButton thirdButton = (CompoundButton)
-                    root.findViewById(R.id.third_radio_button);
+            RadioGroup radioGroup = (RadioGroup) root.findViewById(R.id.radio_group_row_radio_buttons);
 //            detailedInfoButton =
 //                    root.findViewById(R.id.detailed_info_button_layout);
-
 
 
             if (DataEntryRowTypes.BOOLEAN.equals(mRowType)) {
                 firstButton.setText(R.string.yes);
                 secondButton.setText(R.string.no);
-                thirdButton.setText(R.string.none);
             } else if (DataEntryRowTypes.GENDER.equals(mRowType)) {
                 firstButton.setText(R.string.gender_male);
                 secondButton.setText(R.string.gender_female);
-                thirdButton.setText(R.string.gender_other);
             }
 
-            CheckedChangeListener listener = new CheckedChangeListener();
+            OnCheckedChangeListener onCheckedChangeListener = new OnCheckedChangeListener();
             holder = new BooleanRowHolder(mRowType, label, mandatoryIndicator, warningLabel, errorLabel, firstButton,
-                    secondButton, thirdButton, listener);
+                    secondButton, radioGroup, onCheckedChangeListener);
 
-            holder.firstButton.setOnCheckedChangeListener(listener);
-            holder.secondButton.setOnCheckedChangeListener(listener);
-            holder.thirdButton.setOnCheckedChangeListener(listener);
+            holder.radioGroup.setOnCheckedChangeListener(onCheckedChangeListener);
 
             root.setTag(holder);
             view = root;
@@ -121,11 +111,9 @@ public class RadioButtonsRow extends Row {
         if(!isEditable()) {
             holder.firstButton.setEnabled(false);
             holder.secondButton.setEnabled(false);
-            holder.thirdButton.setEnabled(false);
         } else {
             holder.firstButton.setEnabled(true);
             holder.secondButton.setEnabled(true);
-            holder.thirdButton.setEnabled(true);
         }
 
 //        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
@@ -174,13 +162,13 @@ public class RadioButtonsRow extends Row {
         final TextView errorLabel;
         final CompoundButton firstButton;
         final CompoundButton secondButton;
-        final CompoundButton thirdButton;
+        final RadioGroup radioGroup;
 //        final View detailedInfoButton;
-        final CheckedChangeListener listener;
+        final OnCheckedChangeListener radioGroupCheckedChangeListener;
         final DataEntryRowTypes type;
 
         public BooleanRowHolder(DataEntryRowTypes type, TextView textLabel, TextView mandatoryIndicator, TextView warningLabel, TextView errorLabel, CompoundButton firstButton,
-                                CompoundButton secondButton, CompoundButton thirdButton, CheckedChangeListener listener) {
+                                CompoundButton secondButton, RadioGroup radioGroup, OnCheckedChangeListener radioGroupCheckedChangeListener) {
             this.type = type;
             this.textLabel = textLabel;
             this.mandatoryIndicator = mandatoryIndicator;
@@ -188,16 +176,14 @@ public class RadioButtonsRow extends Row {
             this.errorLabel = errorLabel;
             this.firstButton = firstButton;
             this.secondButton = secondButton;
-            this.thirdButton = thirdButton;
-//            this.detailedInfoButton = detailedInfoButton;
-            this.listener = listener;
+            this.radioGroup = radioGroup;
+            this.radioGroupCheckedChangeListener = radioGroupCheckedChangeListener;
         }
 
         public void updateViews(String label, BaseValue baseValue) {
             textLabel.setText(label);
 
-            listener.setType(type);
-            listener.setBaseValue(baseValue);
+            radioGroupCheckedChangeListener.setBaseValue(baseValue);
 
             String value = baseValue.getValue();
             if (DataEntryRowTypes.BOOLEAN.equals(type)) {
@@ -205,85 +191,45 @@ public class RadioButtonsRow extends Row {
                     firstButton.setChecked(true);
                 } else if (FALSE.equalsIgnoreCase(value)) {
                     secondButton.setChecked(true);
-                } else if (EMPTY_FIELD.equalsIgnoreCase(value)) {
-                    thirdButton.setChecked(true);
                 }
             } else if (DataEntryRowTypes.GENDER.equals(type)) {
                 if (MALE.equalsIgnoreCase(value)) {
                     firstButton.setChecked(true);
                 } else if (FEMALE.equalsIgnoreCase(value)) {
                     secondButton.setChecked(true);
-                } else if (OTHER.equalsIgnoreCase(value)) {
-                    thirdButton.setChecked(true);
                 }
             }
         }
     }
 
-    private static class CheckedChangeListener implements OnCheckedChangeListener {
-        private BaseValue value;
-        private DataEntryRowTypes type;
+    private static class OnCheckedChangeListener implements RadioGroup.OnCheckedChangeListener {
 
-        public void setBaseValue(BaseValue baseValue) {
-            this.value = baseValue;
+        BaseValue baseValue;
+
+        public BaseValue getBaseValue() {
+            return baseValue;
         }
 
-        public void setType(DataEntryRowTypes type) {
-            this.type = type;
+        public void setBaseValue(BaseValue baseValue) {
+            this.baseValue = baseValue;
         }
 
         @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            // if one of buttons in group is unchecked, another one has to be checked
-            // So we are not interested in events where button is being unchecked
-            if (!isChecked) {
-                return;
-            }
-            String newValue = "";
-            if (DataEntryRowTypes.BOOLEAN.equals(type)) {
-                if (buttonView.getId() == R.id.first_radio_button) {
-                    newValue = TRUE;
-                } else if (buttonView.getId() == R.id.second_radio_button) {
-                    newValue = FALSE;
-                } else if (buttonView.getId() == R.id.third_radio_button) {
-                    newValue = EMPTY_FIELD;
-                }
-            }
-            if (DataEntryRowTypes.GENDER.equals(type)) {
-                if(buttonView.getId() == R.id.first_radio_button) {
-                    newValue = MALE;
-                } else if (buttonView.getId() == R.id.second_radio_button) {
-                    newValue = FEMALE;
-                } else if (buttonView.getId() == R.id.third_radio_button ) {
-                    newValue = OTHER;
-                }
-            }
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            String newValue;
 
-            if(!newValue.toString().equals(value.getValue()))
-            {
-                value.setValue(newValue);
-                Dhis2Application.getEventBus().post(new RowValueChangedEvent(value, type.toString()));
+            if (checkedId == org.hisp.dhis.android.sdk.R.id.first_radio_button) {
+                newValue = TRUE;
+            } else if (checkedId == org.hisp.dhis.android.sdk.R.id.second_radio_button) {
+                newValue = FALSE;
+            } else {
+                newValue = EMPTY_FIELD;
             }
-
-            if (DataEntryRowTypes.BOOLEAN.equals(type)) {
-                if(buttonView.getId() == R.id.first_radio_button) {
-                    value.setValue(TRUE);
-                } else if (buttonView.getId() == R.id.second_radio_button ) {
-                    value.setValue(FALSE);
-                } else if (buttonView.getId() == R.id.third_radio_button ) {
-                    value.setValue(EMPTY_FIELD);
-                }
+            if(!newValue.equals(baseValue.getValue())) {
+                baseValue.setValue(newValue);
+                Dhis2Application.getEventBus().post(new RowValueChangedEvent(baseValue, DataEntryRowTypes.BOOLEAN.toString()));
             }
-
-            if (DataEntryRowTypes.GENDER.equals(type)) {
-                if(buttonView.getId() == R.id.first_radio_button) {
-                    value.setValue(MALE);
-                } else if (buttonView.getId() == R.id.second_radio_button) {
-                    value.setValue(FEMALE);
-                } else if (buttonView.getId() == R.id.third_radio_button ) {
-                    value.setValue(OTHER);
-                }
-            }
+            this.baseValue.setValue(baseValue.getValue());
         }
     }
 }

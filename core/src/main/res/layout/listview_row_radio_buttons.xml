@@ -47,6 +47,7 @@
         <include layout="@layout/listview_row_text_view_label"/>
 
         <RadioGroup
+            android:id="@+id/radio_group_row_radio_buttons"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="6dp"
@@ -62,13 +63,6 @@
 
             <org.hisp.dhis.android.sdk.ui.views.FontRadioButton
                 android:id="@+id/second_radio_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/medium_text_size"
-                app:font="@string/regular_font_name"/>
-
-            <org.hisp.dhis.android.sdk.ui.views.FontRadioButton
-                android:id="@+id/third_radio_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/medium_text_size"

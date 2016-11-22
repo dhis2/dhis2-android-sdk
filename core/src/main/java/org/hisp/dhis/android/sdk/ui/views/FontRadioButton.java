@@ -33,13 +33,15 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.util.AttributeSet;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.utils.TypefaceManager;
 
-public class FontRadioButton extends RadioButton {
+public class FontRadioButton extends AppCompatRadioButton {
     public FontRadioButton(Context context) {
         super(context);
     }
@@ -69,6 +71,17 @@ public class FontRadioButton extends RadioButton {
                 setPaintFlags(getPaintFlags() | Paint.SUBPIXEL_TEXT_FLAG);
                 setTypeface(typeface);
             }
+        }
+    }
+
+    @Override
+    public void toggle() {
+        if (isChecked()) {
+            if (getParent() instanceof RadioGroup) {
+                ((RadioGroup) getParent()).clearCheck();
+            }
+        } else {
+            setChecked(true);
         }
     }
 }

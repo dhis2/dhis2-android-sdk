@@ -83,6 +83,10 @@ import org.hisp.dhis.android.sdk.utils.services.ProgramIndicatorService;
 import org.hisp.dhis.android.sdk.utils.services.VariableService;
 import org.joda.time.DateTime;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -301,11 +305,11 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
             if (form.getEvent() == null) {
                 // form is null - show error message and disable editing
-                showErrorAndDisableEditing();
+                showErrorAndDisableEditing("No event present");
             } else {
                 OrganisationUnit eventOrganisationUnit = MetaDataController.getOrganisationUnit(form.getEvent().getOrganisationUnitId());
                 if (eventOrganisationUnit == null) {
-                    showErrorAndDisableEditing();
+                    showErrorAndDisableEditing("Missing Organisation Unit");
                 } else if (!OrganisationUnit.TYPE.ASSIGNED.equals(eventOrganisationUnit.getType())) { // if user is not assigned to the event's OrgUnit. Disable data entry screen
                     setEditableDataEntryRows(form, false, false);
                 }
@@ -313,12 +317,13 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                     setEditableDataEntryRows(form, false, true);
                 }
             }
+
             initiateEvaluateProgramRules();
         }
     }
 
-    private void showErrorAndDisableEditing() {
-        Toast.makeText(getContext(), "Error with form. Please retry.", Toast.LENGTH_LONG).show();
+    private void showErrorAndDisableEditing(String extraInfo) {
+        Toast.makeText(getContext(), "Error with form: " + extraInfo +". Please retry.", Toast.LENGTH_LONG).show();
         setEditableDataEntryRows(form, false, false);
     }
 

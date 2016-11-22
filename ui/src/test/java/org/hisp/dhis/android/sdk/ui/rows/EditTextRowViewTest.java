@@ -32,14 +32,19 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableStringBuilder;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.ui.R;
 import org.hisp.dhis.android.sdk.ui.models.edittext.FormEntityEditText;
+import org.hisp.dhis.android.sdk.ui.models.edittext.FormEntityIntegerEditText;
+import org.hisp.dhis.android.sdk.ui.models.edittext.FormEntityIntegerNegativeEditText;
+import org.hisp.dhis.android.sdk.ui.models.edittext.FormEntityIntegerPositiveEditText;
+import org.hisp.dhis.android.sdk.ui.models.edittext.FormEntityIntegerZeroOrPositiveEditText;
 import org.hisp.dhis.android.sdk.ui.models.edittext.FormEntityLongEditText;
+import org.hisp.dhis.android.sdk.ui.models.edittext.FormEntityNumberEditText;
 import org.hisp.dhis.android.sdk.ui.models.edittext.FormEntityShortEditText;
 import org.hisp.dhis.android.sdk.ui.views.FontTextInputEditText;
 import org.junit.Before;
@@ -55,20 +60,18 @@ import static org.mockito.Mockito.when;
 
 public class EditTextRowViewTest {
 
-    private EditTextRowView editTextRowView;
+    private final String id = "test_id";
+    private final String label = "test_label";
 
+    private EditTextRowView editTextRowView;
     @Mock
     private TextInputLayout textInputLayout;
-
     @Mock
     private FontTextInputEditText editText;
-
     @Mock
     private TextView textViewLabel;
-
     @Mock
     private Context context;
-
     private RecyclerView.ViewHolder viewHolder;
 
     @SuppressLint("InflateParams")
@@ -89,46 +92,87 @@ public class EditTextRowViewTest {
         when(itemView.findViewById(R.id.textview_row_label)).thenReturn(textViewLabel);
         when(itemView.getContext()).thenReturn(context);
 
-        when(context.getString(R.string.enter_text)).thenReturn("hint text");
-
         viewHolder = editTextRowView.onCreateViewHolder(inflater, null);
     }
 
     @Test
-    public void onBindViewHolder_valuesAreSet() throws Exception {
-
-        String label = "test_label";
+    public void onBindViewHolder_setValueAndLabel() throws Exception {
+        FormEntityEditText formEntity = new FormEntityShortEditText(id, label);
         String value = "test_value";
-        FormEntityEditText formEntity = new FormEntityShortEditText("test_id", label);
         formEntity.setValue(value, false);
-        when(editText.getText()).thenReturn(new SpannableStringBuilder(value));
 
         editTextRowView.onBindViewHolder(viewHolder, formEntity);
-
         verify(textViewLabel).setText(label);
         verify(editText).setText(value);
-        verify(editText).setInputType(android.text.InputType.TYPE_CLASS_TEXT);
-        verify(editText).setMaxLines(SHORT_TEXT_LINE_COUNT);
-
-        formEntity = new FormEntityLongEditText("test_id", label);
-        editTextRowView.onBindViewHolder(viewHolder, formEntity);
     }
 
     @Test
-    public void onBindViewHolder_viewIsUpdated() throws Exception {
-
-        String label = "updated_test_label";
-        String value = "updated_test_value";
-        FormEntityEditText formEntity = new FormEntityLongEditText("test_id", label);
-        formEntity.setValue(value, false);
-        when(editText.getText()).thenReturn(new SpannableStringBuilder(value));
-
+    public void onBindViewHolder_configureShortEditText() throws Exception {
+        FormEntityEditText formEntity = new FormEntityShortEditText(id, label);
         editTextRowView.onBindViewHolder(viewHolder, formEntity);
 
-        verify(textViewLabel).setText(label);
-        verify(editText).setText(value);
-        verify(editText).setInputType(formEntity.getAndroidInputType());
-        verify(editText).setMaxLines(LONG_TEXT_LINE_COUNT); // FormEntity is now a FormEntityLongEditText
+        verify(editText).setInputType(InputType.TYPE_CLASS_TEXT);
+        verify(editText).setMaxLines(SHORT_TEXT_LINE_COUNT);
     }
 
+    @Test
+    public void onBindViewHolder_configureLongEditText() throws Exception {
+        FormEntityEditText formEntity = new FormEntityLongEditText(id, label);
+        editTextRowView.onBindViewHolder(viewHolder, formEntity);
+
+        verify(editText).setInputType(InputType.TYPE_CLASS_TEXT);
+        verify(editText).setMaxLines(LONG_TEXT_LINE_COUNT);
+    }
+
+
+    @Test
+    public void onBindViewHolder_configureNumberEditText() throws Exception {
+        FormEntityEditText formEntity = new FormEntityNumberEditText(id, label);
+        editTextRowView.onBindViewHolder(viewHolder, formEntity);
+
+        verify(editText).setInputType(InputType.TYPE_CLASS_NUMBER |
+                InputType.TYPE_NUMBER_FLAG_DECIMAL |
+                InputType.TYPE_NUMBER_FLAG_SIGNED);
+        verify(editText).setMaxLines(SHORT_TEXT_LINE_COUNT);
+    }
+
+    @Test
+    public void onBindViewHolder_configureIntegerEditText() throws Exception {
+        FormEntityEditText formEntity = new FormEntityIntegerEditText(id, label);
+        editTextRowView.onBindViewHolder(viewHolder, formEntity);
+
+        verify(editText).setInputType(InputType.TYPE_CLASS_NUMBER |
+                InputType.TYPE_NUMBER_FLAG_SIGNED);
+        verify(editText).setMaxLines(SHORT_TEXT_LINE_COUNT);
+    }
+
+    @Test
+    public void onBindViewHolder_configureIntegerPositiveEditText() throws Exception {
+        FormEntityEditText formEntity = new FormEntityIntegerPositiveEditText(id, label);
+        editTextRowView.onBindViewHolder(viewHolder, formEntity);
+
+        verify(editText).setInputType(InputType.TYPE_CLASS_NUMBER |
+                InputType.TYPE_NUMBER_FLAG_SIGNED);
+        verify(editText).setMaxLines(SHORT_TEXT_LINE_COUNT);
+    }
+
+    @Test
+    public void onBindViewHolder_configureIntegerNegativeEditText() throws Exception {
+        FormEntityEditText formEntity = new FormEntityIntegerNegativeEditText(id, label);
+        editTextRowView.onBindViewHolder(viewHolder, formEntity);
+
+        verify(editText).setInputType(InputType.TYPE_CLASS_NUMBER |
+                InputType.TYPE_NUMBER_FLAG_SIGNED);
+        verify(editText).setMaxLines(SHORT_TEXT_LINE_COUNT);
+    }
+
+    @Test
+    public void onBindViewHolder_configureIntegerZeroOrPositiveEditText() throws Exception {
+        FormEntityEditText formEntity = new FormEntityIntegerZeroOrPositiveEditText(id, label);
+        editTextRowView.onBindViewHolder(viewHolder, formEntity);
+
+        verify(editText).setInputType(InputType.TYPE_CLASS_NUMBER |
+                InputType.TYPE_NUMBER_FLAG_SIGNED);
+        verify(editText).setMaxLines(SHORT_TEXT_LINE_COUNT);
+    }
 }

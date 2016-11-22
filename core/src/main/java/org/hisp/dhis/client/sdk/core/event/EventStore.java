@@ -37,5 +37,8 @@ import java.util.List;
 public interface EventStore extends DataStore<Event> {
     List<Event> query(String organisationUnit, String program);
     List<Event> queryEventsForEnrollment(String enrollmentUid);
+    List<Event> queryEventsForEnrollmentAndProgramStage(String enrollmentUid, String programStageUid);
     Event query(String uid);
+
+
 }

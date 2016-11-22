@@ -48,6 +48,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.okhttp.HttpUrl;
 import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis.android.sdk.R;
@@ -56,7 +57,9 @@ import org.hisp.dhis.android.sdk.controllers.DhisService;
 import org.hisp.dhis.android.sdk.controllers.PeriodicSynchronizerController;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.events.UiEvent;
+import org.hisp.dhis.android.sdk.network.Session;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis.android.sdk.persistence.preferences.AppPreferences;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 
 /**
@@ -150,6 +153,15 @@ public class SettingsFragment extends Fragment
                                             }
                                         });
                             } else {
+                                Session session = DhisController.getInstance().getSession();
+                                if(session != null) {
+                                    HttpUrl httpUrl = session.getServerUrl();
+                                    if(httpUrl != null) {
+                                        String serverUrlString = httpUrl.toString();
+                                        AppPreferences appPreferences = new AppPreferences(getActivity().getApplicationContext());
+                                        appPreferences.putServerUrl(serverUrlString);
+                                    }
+                                }
                                 DhisService.logOutUser(getActivity());
 
                                 int apiVersion = Build.VERSION.SDK_INT;

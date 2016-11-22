@@ -65,6 +65,7 @@ public class LoginActivity extends Activity implements OnClickListener {
      *
      */
     private final static String CLASS_TAG = "LoginActivity";
+    public static final String KEY_SAVED_SERVER_URL = "KEY:SERVER_URL";
 
     private EditText usernameEditText;
     private EditText passwordEditText;
@@ -118,7 +119,10 @@ public class LoginActivity extends Activity implements OnClickListener {
         }
 
         if (server == null) {
-            server = "https://";
+            server = mPrefs.getServerUrl();
+            if(server == null) {
+                server = "https://";
+            }
         }
 
         if (username == null) {
@@ -160,6 +164,8 @@ public class LoginActivity extends Activity implements OnClickListener {
         if (username.charAt(username.length() - 1) == ' ') {
             username = username.substring(0, username.length() - 1);
         }
+
+        mPrefs.putServerUrl(serverURL);
 
         login(serverURL, username, password);
     }

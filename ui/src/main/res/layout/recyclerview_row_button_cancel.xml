@@ -28,15 +28,12 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
-    <dimen name="circle_stroke_width">6dp</dimen>
-    <dimen name="progressbar_stroke_width">10dp</dimen>
-
-    <dimen name="keyline_default">16dp</dimen>
-
-    <!-- Text -->
-    <dimen name="text_size_medium">14sp</dimen>
-    <dimen name="text_size_large">17sp</dimen>
-
-    <integer name="activity_anim_duration">300</integer>
-</resources>
+<ImageButton xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/button_clear"
+    android:layout_width="64dp"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:adjustViewBounds="true"
+    android:background="@drawable/button_background_light"
+    android:contentDescription="@string/stub_description"
+    android:src="@drawable/ic_cancel_grey" />

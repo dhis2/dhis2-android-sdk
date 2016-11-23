@@ -47,8 +47,14 @@
     </style>
 
     <style name="AppTheme.PrimaryColorBackground" parent="AppTheme.Base">
-        <!-- General properties -->
         <item name="android:windowBackground">@color/color_primary_default</item>
+    </style>
+
+    <!-- This theme is used to avoid overdraw in cases where the root element of a layout file has a
+     background set from both the theme and the layout. Do not use this theme for Activity
+     layout files, as a black background will appear when content view is loading. -->
+    <style name="AppTheme.NoWindowBackground" parent="AppTheme.Base">
+        <item name="android:windowBackground">@null</item>
     </style>
 
     <style name="AppTheme.SelectableItemBackground" parent="AppTheme.Base">

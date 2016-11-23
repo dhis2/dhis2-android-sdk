@@ -38,6 +38,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.ui.R;
+import org.hisp.dhis.android.sdk.ui.common.FontTextInputEditText;
+import org.hisp.dhis.android.sdk.ui.forms.text.EditTextRowView;
 import org.hisp.dhis.android.sdk.ui.forms.text.FormEntityEditText;
 import org.hisp.dhis.android.sdk.ui.forms.text.FormEntityIntegerEditText;
 import org.hisp.dhis.android.sdk.ui.forms.text.FormEntityIntegerNegativeEditText;
@@ -46,7 +48,6 @@ import org.hisp.dhis.android.sdk.ui.forms.text.FormEntityIntegerZeroOrPositiveEd
 import org.hisp.dhis.android.sdk.ui.forms.text.FormEntityLongEditText;
 import org.hisp.dhis.android.sdk.ui.forms.text.FormEntityNumberEditText;
 import org.hisp.dhis.android.sdk.ui.forms.text.FormEntityShortEditText;
-import org.hisp.dhis.android.sdk.ui.common.FontTextInputEditText;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

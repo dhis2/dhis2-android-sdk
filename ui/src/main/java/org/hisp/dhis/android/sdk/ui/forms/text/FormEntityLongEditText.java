@@ -26,26 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.ui.models.edittext;
+package org.hisp.dhis.android.sdk.ui.forms.text;
 
 import org.hisp.dhis.android.sdk.ui.R;
 
-public class FormEntityShortEditText extends FormEntityEditText {
+public class FormEntityLongEditText extends FormEntityEditText {
 
-    public FormEntityShortEditText(String id, String label, String hint, Object tag) {
+    public FormEntityLongEditText(String id, String label, String hint, Object tag) {
         super(id, label, hint, tag);
     }
 
-    public FormEntityShortEditText(String id, String label) {
+    public FormEntityLongEditText(String id, String label) {
         super(id, label);
     }
 
-    public FormEntityShortEditText(String id, String label, Object tag) {
+    public FormEntityLongEditText(String id, String label, Object tag) {
         super(id, label, tag);
     }
 
     @Override
     public int getHintResourceId() {
-        return R.string.enter_text;
+        return R.string.enter_long_text;
+    }
+
+    @Override
+    public int getMaxLines() {
+        return LONG_TEXT_LINE_COUNT;
     }
 }

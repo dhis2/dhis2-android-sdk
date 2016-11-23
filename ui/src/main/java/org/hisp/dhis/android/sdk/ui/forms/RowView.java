@@ -26,31 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.ui.models.edittext;
+package org.hisp.dhis.android.sdk.ui.forms;
 
-import org.hisp.dhis.android.sdk.ui.R;
+import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
-public class FormEntityLongEditText extends FormEntityEditText {
+public interface RowView {
 
-    public FormEntityLongEditText(String id, String label, String hint, Object tag) {
-        super(id, label, hint, tag);
-    }
+    ViewHolder onCreateViewHolder(LayoutInflater inflater, ViewGroup parent);
 
-    public FormEntityLongEditText(String id, String label) {
-        super(id, label);
-    }
-
-    public FormEntityLongEditText(String id, String label, Object tag) {
-        super(id, label, tag);
-    }
-
-    @Override
-    public int getHintResourceId() {
-        return R.string.enter_long_text;
-    }
-
-    @Override
-    public int getMaxLines() {
-        return LONG_TEXT_LINE_COUNT;
-    }
+    void onBindViewHolder(ViewHolder viewHolder, FormEntity formEntity);
 }

@@ -26,62 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.ui.models;
+package org.hisp.dhis.android.sdk.ui.forms.text;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.sdk.ui.R;
 
-public abstract class FormEntityCharSequence extends FormEntity {
-    private static final String EMPTY_STRING = "";
+public class FormEntityIntegerZeroOrPositiveEditText extends FormEntityIntegerEditText {
 
-    @Nullable
-    private OnFormEntityChangeListener onFormEntityChangeListener;
-
-    @NonNull
-    private CharSequence value;
-
-    public FormEntityCharSequence(String id, String label) {
-        this(id, label, null);
+    public FormEntityIntegerZeroOrPositiveEditText(String id, String label, String hint, Object tag) {
+        super(id, label, hint, tag);
     }
 
-    public FormEntityCharSequence(String id, String label, Object tag) {
+    public FormEntityIntegerZeroOrPositiveEditText(String id, String label) {
+        super(id, label);
+    }
+
+    public FormEntityIntegerZeroOrPositiveEditText(String id, String label, Object tag) {
         super(id, label, tag);
-
-        this.value = EMPTY_STRING;
     }
 
-    @Nullable
-    public OnFormEntityChangeListener getOnFormEntityChangeListener() {
-        return onFormEntityChangeListener;
-    }
-
-    public void setOnFormEntityChangeListener(@Nullable OnFormEntityChangeListener listener) {
-        this.onFormEntityChangeListener = listener;
-    }
-
-    @NonNull
-    public CharSequence getValue() {
-        return value;
-    }
-
-    public void setValue(@Nullable CharSequence value, boolean notifyListeners) {
-        CharSequence newValue = value;
-
-        // we need to make sure that we never nullify value
-        if (newValue == null) {
-            newValue = EMPTY_STRING;
-        }
-
-        if (!this.value.equals(newValue)) {
-            this.value = newValue;
-
-            if (onFormEntityChangeListener != null && notifyListeners) {
-                this.onFormEntityChangeListener.onFormEntityChanged(this);
-            }
-        }
-    }
-
-    public void setValue(@Nullable CharSequence value) {
-        setValue(value, false);
+    @Override
+    public int getHintResourceId() {
+        return R.string.enter_positive_integer_or_zero;
     }
 }

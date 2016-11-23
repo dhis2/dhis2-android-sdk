@@ -26,34 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.ui.models.edittext;
+package org.hisp.dhis.android.sdk.ui.forms;
 
-import android.text.InputType;
-
-import org.hisp.dhis.android.sdk.ui.R;
-
-public class FormEntityIntegerEditText extends FormEntityEditText {
-
-    public FormEntityIntegerEditText(String id, String label, String hint, Object tag) {
-        super(id, label, hint, tag);
-    }
-
-    public FormEntityIntegerEditText(String id, String label) {
-        super(id, label);
-    }
-
-    public FormEntityIntegerEditText(String id, String label, Object tag) {
-        super(id, label, tag);
-    }
-
-    @Override
-    public int getHintResourceId() {
-        return R.string.enter_integer;
-    }
-
-    @Override
-    public int getAndroidInputType() {
-        return InputType.TYPE_CLASS_NUMBER |
-                InputType.TYPE_NUMBER_FLAG_SIGNED;
-    }
+public interface OnFormEntityChangeListener {
+    void onFormEntityChanged(FormEntity formEntity);
 }

@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.ui.models.edittext;
+package org.hisp.dhis.android.sdk.ui.forms.text;
 
 import org.hisp.dhis.android.sdk.ui.R;
 

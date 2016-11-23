@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.ui.views;
+package org.hisp.dhis.android.sdk.ui.common;
 
 import android.content.Context;
 import android.content.res.TypedArray;

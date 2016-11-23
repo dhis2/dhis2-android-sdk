@@ -26,26 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.ui.models.edittext;
+package org.hisp.dhis.android.sdk.ui.forms.text;
+
+import android.text.InputType;
 
 import org.hisp.dhis.android.sdk.ui.R;
 
-public class FormEntityIntegerPositiveEditText extends FormEntityIntegerEditText {
+public class FormEntityNumberEditText extends FormEntityEditText {
 
-    public FormEntityIntegerPositiveEditText(String id, String label, String hint, Object tag) {
+    public FormEntityNumberEditText(String id, String label, String hint, Object tag) {
         super(id, label, hint, tag);
     }
 
-    public FormEntityIntegerPositiveEditText(String id, String label) {
+    public FormEntityNumberEditText(String id, String label) {
         super(id, label);
     }
 
-    public FormEntityIntegerPositiveEditText(String id, String label, Object tag) {
+    public FormEntityNumberEditText(String id, String label, Object tag) {
         super(id, label, tag);
     }
 
     @Override
     public int getHintResourceId() {
-        return R.string.enter_positive_integer;
+        return R.string.enter_number;
+    }
+
+    @Override
+    public int getAndroidInputType() {
+        return InputType.TYPE_CLASS_NUMBER |
+                InputType.TYPE_NUMBER_FLAG_DECIMAL |
+                InputType.TYPE_NUMBER_FLAG_SIGNED;
     }
 }

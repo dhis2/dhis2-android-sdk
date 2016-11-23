@@ -26,26 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.ui.models.edittext;
+package org.hisp.dhis.android.sdk.ui.forms.checkbox;
 
-import org.hisp.dhis.android.sdk.ui.R;
+import android.support.annotation.NonNull;
 
-public class FormEntityIntegerZeroOrPositiveEditText extends FormEntityIntegerEditText {
+import org.hisp.dhis.android.sdk.ui.forms.text.FormEntityCharSequence;
 
-    public FormEntityIntegerZeroOrPositiveEditText(String id, String label, String hint, Object tag) {
-        super(id, label, hint, tag);
+public class FormEntityCheckBox extends FormEntityCharSequence {
+
+    public FormEntityCheckBox(String id, String label) {
+        this(id, label, null);
     }
 
-    public FormEntityIntegerZeroOrPositiveEditText(String id, String label) {
-        super(id, label);
-    }
-
-    public FormEntityIntegerZeroOrPositiveEditText(String id, String label, Object tag) {
+    public FormEntityCheckBox(String id, String label, Object tag) {
         super(id, label, tag);
     }
 
+    @NonNull
     @Override
-    public int getHintResourceId() {
-        return R.string.enter_positive_integer_or_zero;
+    public Type getType() {
+        return Type.CHECKBOX;
     }
 }

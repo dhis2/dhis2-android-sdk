@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.ui.rows;
+package org.hisp.dhis.android.sdk.ui.forms.text;
 
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
@@ -41,9 +41,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.ui.R;
-import org.hisp.dhis.android.sdk.ui.models.FormEntity;
-import org.hisp.dhis.android.sdk.ui.models.edittext.FormEntityEditText;
-import org.hisp.dhis.android.sdk.ui.views.AbsTextWatcher;
+import org.hisp.dhis.android.sdk.ui.forms.FormEntity;
+import org.hisp.dhis.android.sdk.ui.forms.RowView;
+import org.hisp.dhis.android.sdk.ui.common.AbsTextWatcher;
 
 import static android.text.TextUtils.isEmpty;
 

@@ -33,7 +33,7 @@
 
     <application android:theme="@style/AppTheme.Base">
         <activity
-            android:name=".activities.DefaultLoginActivity"
+            android:name=".login.DefaultLoginActivity"
             android:theme="@style/AppTheme.PrimaryColorBackground" />
     </application>
 </manifest>

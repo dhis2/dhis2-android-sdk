@@ -26,8 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.ui.models;
+package org.hisp.dhis.android.sdk.ui.forms.text;
 
-public interface OnFormEntityChangeListener {
-    void onFormEntityChanged(FormEntity formEntity);
+import org.hisp.dhis.android.sdk.ui.R;
+
+public class FormEntityShortEditText extends FormEntityEditText {
+
+    public FormEntityShortEditText(String id, String label, String hint, Object tag) {
+        super(id, label, hint, tag);
+    }
+
+    public FormEntityShortEditText(String id, String label) {
+        super(id, label);
+    }
+
+    public FormEntityShortEditText(String id, String label, Object tag) {
+        super(id, label, tag);
+    }
+
+    @Override
+    public int getHintResourceId() {
+        return R.string.enter_text;
+    }
 }

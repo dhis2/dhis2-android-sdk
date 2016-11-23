@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.ui.activities;
+package org.hisp.dhis.android.sdk.ui.login;
 
 import android.animation.LayoutTransition;
 import android.animation.LayoutTransition.TransitionListener;
@@ -52,7 +52,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 
 import org.hisp.dhis.android.sdk.ui.R;
-import org.hisp.dhis.android.sdk.ui.views.AbsTextWatcher;
+import org.hisp.dhis.android.sdk.ui.common.AbsTextWatcher;
 
 import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;

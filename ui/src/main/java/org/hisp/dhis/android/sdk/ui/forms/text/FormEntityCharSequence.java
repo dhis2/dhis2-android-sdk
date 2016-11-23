@@ -26,23 +26,65 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.ui.models;
+package org.hisp.dhis.android.sdk.ui.forms.text;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-public class FormEntityCheckBox extends FormEntityCharSequence {
+import org.hisp.dhis.android.sdk.ui.forms.OnFormEntityChangeListener;
+import org.hisp.dhis.android.sdk.ui.forms.FormEntity;
 
-    public FormEntityCheckBox(String id, String label) {
+public abstract class FormEntityCharSequence extends FormEntity {
+    private static final String EMPTY_STRING = "";
+
+    @Nullable
+    private OnFormEntityChangeListener onFormEntityChangeListener;
+
+    @NonNull
+    private CharSequence value;
+
+    public FormEntityCharSequence(String id, String label) {
         this(id, label, null);
     }
 
-    public FormEntityCheckBox(String id, String label, Object tag) {
+    public FormEntityCharSequence(String id, String label, Object tag) {
         super(id, label, tag);
+
+        this.value = EMPTY_STRING;
+    }
+
+    @Nullable
+    public OnFormEntityChangeListener getOnFormEntityChangeListener() {
+        return onFormEntityChangeListener;
+    }
+
+    public void setOnFormEntityChangeListener(@Nullable OnFormEntityChangeListener listener) {
+        this.onFormEntityChangeListener = listener;
     }
 
     @NonNull
-    @Override
-    public Type getType() {
-        return Type.CHECKBOX;
+    public CharSequence getValue() {
+        return value;
+    }
+
+    public void setValue(@Nullable CharSequence value, boolean notifyListeners) {
+        CharSequence newValue = value;
+
+        // we need to make sure that we never nullify value
+        if (newValue == null) {
+            newValue = EMPTY_STRING;
+        }
+
+        if (!this.value.equals(newValue)) {
+            this.value = newValue;
+
+            if (onFormEntityChangeListener != null && notifyListeners) {
+                this.onFormEntityChangeListener.onFormEntityChanged(this);
+            }
+        }
+    }
+
+    public void setValue(@Nullable CharSequence value) {
+        setValue(value, false);
     }
 }

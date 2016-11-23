@@ -26,25 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.ui.views;
+package org.hisp.dhis.android.sdk.ui.forms.text;
 
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.text.InputType;
 
-public abstract class AbsTextWatcher implements TextWatcher {
+import org.hisp.dhis.android.sdk.ui.R;
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        // default implementation
+public class FormEntityIntegerEditText extends FormEntityEditText {
+
+    public FormEntityIntegerEditText(String id, String label, String hint, Object tag) {
+        super(id, label, hint, tag);
+    }
+
+    public FormEntityIntegerEditText(String id, String label) {
+        super(id, label);
+    }
+
+    public FormEntityIntegerEditText(String id, String label, Object tag) {
+        super(id, label, tag);
     }
 
     @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-        // default implementation
+    public int getHintResourceId() {
+        return R.string.enter_integer;
     }
 
     @Override
-    public void afterTextChanged(Editable s) {
-        // default implementation
+    public int getAndroidInputType() {
+        return InputType.TYPE_CLASS_NUMBER |
+                InputType.TYPE_NUMBER_FLAG_SIGNED;
     }
 }

@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.ui.models;
+package org.hisp.dhis.android.sdk.ui.forms;
 
 import android.support.annotation.NonNull;
 

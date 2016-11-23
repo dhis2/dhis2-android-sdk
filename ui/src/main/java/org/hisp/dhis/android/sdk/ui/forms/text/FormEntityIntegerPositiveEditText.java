@@ -26,17 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.ui.rows;
+package org.hisp.dhis.android.sdk.ui.forms.text;
 
-import android.support.v7.widget.RecyclerView.ViewHolder;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
+import org.hisp.dhis.android.sdk.ui.R;
 
-import org.hisp.dhis.android.sdk.ui.models.FormEntity;
+public class FormEntityIntegerPositiveEditText extends FormEntityIntegerEditText {
 
-public interface RowView {
+    public FormEntityIntegerPositiveEditText(String id, String label, String hint, Object tag) {
+        super(id, label, hint, tag);
+    }
 
-    ViewHolder onCreateViewHolder(LayoutInflater inflater, ViewGroup parent);
+    public FormEntityIntegerPositiveEditText(String id, String label) {
+        super(id, label);
+    }
 
-    void onBindViewHolder(ViewHolder viewHolder, FormEntity formEntity);
+    public FormEntityIntegerPositiveEditText(String id, String label, Object tag) {
+        super(id, label, tag);
+    }
+
+    @Override
+    public int getHintResourceId() {
+        return R.string.enter_positive_integer;
+    }
 }

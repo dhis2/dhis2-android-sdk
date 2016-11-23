@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.ui.rows;
+package org.hisp.dhis.android.sdk.ui.forms.checkbox;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -37,8 +37,8 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.ui.R;
-import org.hisp.dhis.android.sdk.ui.models.FormEntity;
-import org.hisp.dhis.android.sdk.ui.models.FormEntityCheckBox;
+import org.hisp.dhis.android.sdk.ui.forms.RowView;
+import org.hisp.dhis.android.sdk.ui.forms.FormEntity;
 
 public class CheckBoxRowView implements RowView {
     private static final String TRUE = "true";

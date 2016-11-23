@@ -36,7 +36,8 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.ui.R;
-import org.hisp.dhis.android.sdk.ui.models.FormEntityCheckBox;
+import org.hisp.dhis.android.sdk.ui.forms.checkbox.CheckBoxRowView;
+import org.hisp.dhis.android.sdk.ui.forms.checkbox.FormEntityCheckBox;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

@@ -93,7 +93,7 @@ public abstract class AbsHomeActivity extends BaseActivity
         SettingPreferences.init(getApplicationContext());
         setContentView(R.layout.activity_home);
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.container_layout);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.addDrawerListener(this);
 
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
@@ -213,7 +213,7 @@ public abstract class AbsHomeActivity extends BaseActivity
     protected void attachFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.container_layout, fragment)
+                .replace(R.id.content_frame, fragment)
                 .commit();
     }
 

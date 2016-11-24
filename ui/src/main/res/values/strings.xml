@@ -199,4 +199,9 @@
     <string name="libraries_header">Libraries used:</string>
     <string name="logged_in_as">Logged in as:</string>
     <string name="logged_in_at">At server:</string>
+
+    <!-- misc -->
+    <string name="lock">Lock</string>
+    <string name="synchronise">Synchronise</string>
+    <string name="more">See more</string>
 </resources>

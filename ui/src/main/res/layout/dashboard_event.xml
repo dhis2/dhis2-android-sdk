@@ -11,9 +11,9 @@
         android:layout_height="72dp"
         android:layout_gravity="center_vertical"
         android:background="?attr/selectableItemBackground"
-        android:paddingLeft="16dp">
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:paddingLeft="16dp"
+        android:paddingStart="16dp"
+        android:paddingRight="16dp">
 
         <org.hisp.dhis.client.sdk.ui.views.CircleView
             android:id="@+id/circleview_status_background"
@@ -36,7 +36,7 @@
         <FrameLayout
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:layout_gravity="right|top"
+            android:layout_gravity="end|top"
             android:id="@+id/status_lock_container"
             android:visibility="gone"
             >
@@ -57,7 +57,7 @@
                 android:cropToPadding="false"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_lock_gray"
-                />
+                android:contentDescription="@string/lock" />
         </FrameLayout>
 
     </FrameLayout>
@@ -65,34 +65,41 @@
         android:id="@+id/event_discription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:orientation="vertical"
+        android:layout_toEndOf="@id/status_icon_container"
         android:layout_toRightOf="@id/status_icon_container"
         android:layout_marginLeft="72dp"
-        android:paddingLeft="16dp">
+        android:layout_marginStart="72dp"
+        android:paddingLeft="16dp"
+        android:paddingStart="16dp"
+        android:paddingRight="16dp">
 
-        <TextView
+        <org.hisp.dhis.client.sdk.ui.views.FontTextView
             android:id="@+id/event_name"
             style="@style/ListItemText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:fontFamily="@string/font_name_regular"
+            app:font="@string/font_name_regular"
             android:maxLines="2"
             android:paddingRight="8dp"
-            android:text="Event 1"
+            android:paddingLeft="8dp"
+            android:paddingEnd="8dp"
             android:textColor="@android:color/black"
             android:textSize="16sp"/>
 
-        <TextView
+        <org.hisp.dhis.client.sdk.ui.views.FontTextView
             android:id="@+id/date_text"
             style="@style/ListItemText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@string/font_name_regular"
+            app:font="@string/font_name_regular"
+            android:paddingEnd="16dp"
             android:paddingRight="16dp"
-            android:text="2016-09-10"
+            android:paddingLeft="16dp"
             android:textSize="16sp"/>
     </LinearLayout>
 
@@ -101,6 +108,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerInParent="true"
         android:orientation="horizontal">
 
@@ -108,10 +116,12 @@
             android:id="@+id/refresh_button"
             style="@style/TransparentIconButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
             android:src="@drawable/ic_refresh_gray"
+            android:layout_gravity="center"
             android:visibility="gone"
             tools:visibility="visible"
+            android:contentDescription="@string/synchronise" />
 
 
         <ImageButton
@@ -120,9 +130,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_more_vert_gray"
-            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_gravity="center"
             android:visibility="gone"
-            tools:visibility="visible"/>
+            tools:visibility="visible"
+            android:layout_marginRight="8dp"
+            android:contentDescription="@string/more" />
     </LinearLayout>
 
 </RelativeLayout>

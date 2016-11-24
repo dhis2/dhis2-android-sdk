@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.ui.rows;
+package org.hisp.dhis.android.sdk.ui.forms.checkbox;
 
 import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView;

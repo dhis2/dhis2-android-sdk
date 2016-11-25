@@ -80,7 +80,7 @@ public class ReportEntityFilter implements Comparable<ReportEntityFilter> {
             return this.dataElementLabel.compareTo(another.dataElementLabel);
         }
         if (this.show) return -1;
-        if (another.show) return 1;
+        if (another.show()) return 1;
         return 0;
     }
 }

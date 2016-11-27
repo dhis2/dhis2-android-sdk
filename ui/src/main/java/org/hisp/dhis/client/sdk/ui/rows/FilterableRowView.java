@@ -1,15 +1,21 @@
 package org.hisp.dhis.client.sdk.ui.rows;
 
 
+import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.android.flexbox.FlexboxLayout;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.adapters.OnPickerItemClickListener;
@@ -18,6 +24,7 @@ import org.hisp.dhis.client.sdk.ui.models.FormEntity;
 import org.hisp.dhis.client.sdk.ui.models.FormEntityFilter;
 import org.hisp.dhis.client.sdk.ui.models.Picker;
 
+import static android.view.View.GONE;
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class FilterableRowView implements RowView {
@@ -25,6 +32,10 @@ public class FilterableRowView implements RowView {
 
     public FilterableRowView(FragmentManager fragmentManager) {
         this.fragmentManager = isNull(fragmentManager, "fragmentManager must not be null");
+    }
+
+    public RecyclerView.ViewHolder onCreateViewHolder(View view) {
+        return new FilterViewHolder(view);
     }
 
     @Override
@@ -49,6 +60,7 @@ public class FilterableRowView implements RowView {
 
         private final OnClickListener onClickListener;
         private final OnItemClickListener onItemClickListener;
+        private final FlexboxLayout flexboxLayout;
 
         public FilterViewHolder(View itemView) {
             super(itemView);
@@ -61,6 +73,8 @@ public class FilterableRowView implements RowView {
                     .findViewById(R.id.button_dropdown);
             clearButton = (ImageButton) itemView
                     .findViewById(R.id.button_clear);
+            flexboxLayout = (FlexboxLayout) itemView
+                    .findViewById(R.id.recyclerview_row_filter_flexbox);
 
             onClickListener = new OnClickListener();
             onItemClickListener = new OnItemClickListener(filterEditText);
@@ -84,7 +98,18 @@ public class FilterableRowView implements RowView {
                 filterEditTextValue = picker.getSelectedChild().getName();
             }
 
+            if (picker != null && picker.getChildren().size() < 6) {
+                filterEditText.setVisibility(GONE);
+                flexboxLayout.setVisibility(View.VISIBLE);
+                drawFlexBoxLayout(flexboxLayout, picker);
+            } else {
+                filterEditText.setVisibility(View.VISIBLE);
+                flexboxLayout.setVisibility(GONE);
+                flexboxLayout.removeAllViews();
+            }
+
             filterEditText.setText(filterEditTextValue);
+
 
             // after configuration change, callback
             // in dialog fragment can be lost
@@ -141,6 +166,8 @@ public class FilterableRowView implements RowView {
                         // using this hack in order to trigger listener in formEntityFilter
                         formEntityFilter.setPicker(formEntityFilter.getPicker());
                     }
+
+                    drawFlexBoxLayout(flexboxLayout, formEntityFilter.getPicker());
                 }
             }
 
@@ -178,8 +205,58 @@ public class FilterableRowView implements RowView {
                 }
 
                 // setting value to edittext
-                formEditText.setText(selectedPicker.getName());
+                if (formEditText.getVisibility() != GONE) {
+                    formEditText.setText(selectedPicker.getName());
+                } else {
+                    drawFlexBoxLayout(flexboxLayout, selectedPicker.getParent());
+                }
             }
+        }
+    }
+
+    private void drawFlexBoxLayout(final FlexboxLayout flexboxLayout, final Picker picker) {
+        flexboxLayout.removeAllViews();
+        final Context context = flexboxLayout.getContext();
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        for (final Picker picker1 : picker.getChildren()) {
+            final View filterQuickSelection = layoutInflater.inflate(R.layout.filter_quick_selection, flexboxLayout, false);
+            ((TextView) filterQuickSelection.findViewById(R.id.name)).setText(picker1.getName());
+            final ImageView checkbox = (ImageView) filterQuickSelection.findViewById(R.id.checkbox);
+
+            final GradientDrawable background = (GradientDrawable) filterQuickSelection.getBackground();
+
+            if (picker.getSelectedChild() != null && picker.getSelectedChild().equals(picker1)) {
+                filterQuickSelection.setTag(R.id.is_selected, true);
+                checkbox.setImageResource(R.drawable.ic_quick_selection_selected);
+                background.setColor(ContextCompat.getColor(context, R.color.color_accent_default));
+            } else {
+                filterQuickSelection.setTag(R.id.is_selected, false);
+                checkbox.setImageResource(R.drawable.ic_quick_selection_unselected);
+                background.setColor(ContextCompat.getColor(context, R.color.color_gray_icon));
+            }
+
+            filterQuickSelection.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if ((Boolean) filterQuickSelection.getTag(R.id.is_selected)) {
+                        filterQuickSelection.setTag(R.id.is_selected, false);
+                        checkbox.setImageResource(R.drawable.ic_quick_selection_unselected);
+                        background.setColor(ContextCompat.getColor(context, R.color.color_gray_icon));
+                    } else {
+                        for (int i = 0; i < flexboxLayout.getChildCount(); i++) {
+                            View unselectedView = flexboxLayout.getChildAt(i);
+                            unselectedView.setTag(R.id.is_selected, false);
+                            ((ImageView) unselectedView.findViewById(R.id.checkbox)).setImageResource(R.drawable.ic_quick_selection_unselected);
+                            ((GradientDrawable) unselectedView.getBackground()).setColor(ContextCompat.getColor(context, R.color.color_gray_icon));
+                        }
+                        picker.setSelectedChild(picker1);
+                        filterQuickSelection.setTag(R.id.is_selected, true);
+                        checkbox.setImageResource(R.drawable.ic_quick_selection_selected);
+                        background.setColor(ContextCompat.getColor(context, R.color.color_accent_default));
+                    }
+                }
+            });
+            flexboxLayout.addView(filterQuickSelection);
         }
     }
 }

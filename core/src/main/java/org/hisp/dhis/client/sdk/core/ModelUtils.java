@@ -2,9 +2,12 @@ package org.hisp.dhis.client.sdk.core;
 
 import org.hisp.dhis.client.sdk.models.common.IdentifiableObject;
 import org.hisp.dhis.client.sdk.models.event.Event;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ModelUtils {
@@ -40,5 +43,34 @@ public class ModelUtils {
             }
         }
         return map;
+    }
+
+    /**
+     * @param trackedEntityAttributeValues
+     * @return map of trackedEntityAttribute uid and trackedEntityAttributeValue
+     */
+    public static Map<String, TrackedEntityAttributeValue> toAttributeAttributeValueMap(List<TrackedEntityAttributeValue> trackedEntityAttributeValues) {
+        Map<String, TrackedEntityAttributeValue> attributeValueMap = new HashMap<>();
+
+        if (trackedEntityAttributeValues != null && !trackedEntityAttributeValues.isEmpty()) {
+            for (TrackedEntityAttributeValue trackedEntityAttributeValue : trackedEntityAttributeValues) {
+                attributeValueMap.put(trackedEntityAttributeValue.trackedEntityAttributeUid(), trackedEntityAttributeValue);
+            }
+        }
+        return attributeValueMap;
+    }
+
+    /**
+     * @param trackedEntityDataValues
+     * @return map of dataElement uid and trackedEntityDataValue
+     */
+    public static Map<String, TrackedEntityDataValue> toDataElementDataValueMap(List<TrackedEntityDataValue> trackedEntityDataValues) {
+        Map<String, TrackedEntityDataValue> dataValueMap = new HashMap<>();
+        if (trackedEntityDataValues != null && trackedEntityDataValues.isEmpty()) {
+            for (TrackedEntityDataValue dataValue : trackedEntityDataValues) {
+                dataValueMap.put(dataValue.dataElement(), dataValue);
+            }
+        }
+        return dataValueMap;
     }
 }

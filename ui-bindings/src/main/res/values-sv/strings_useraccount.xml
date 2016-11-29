@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="first_name">Förnamn</string>
+  <string name="surname">Efternamn</string>
+  <string name="gender">Kön</string>
+  <string name="gender_male">Man</string>
+  <string name="gender_female">Kvinna</string>
+  <string name="gender_other">Andra</string>
+  <string name="birthday">Födelsedag</string>
+  <string name="introduction">Introduktion</string>
+  <string name="education">Utbildning</string>
+  <string name="employer">Arbetsgivare</string>
+  <string name="interests">Intressen</string>
+  <string name="job_title">Jobbtitel</string>
+  <string name="languages">Språk</string>
+  <string name="email">E-post</string>
+  <string name="phone_number">Telefonnummer</string>
+</resources>

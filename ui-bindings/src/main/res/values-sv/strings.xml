@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="title_error">Fel</string>
+  <string name="title_error_unexpected">Oväntat fel</string>
+  <string name="error_not_found">Servern hittades inte.</string>
+  <string name="error_unauthorized">Fel användarnamn eller lösenord.</string>
+  <string name="warning_logout_body">Du kommer att loggas ut och alla filer som har sparats på enheten för visning offline kommer att raderas.</string>
+  <string name="warning_logout_header">Är du säker?</string>
+  <string name="warning_logout_confirm">Logga ut</string>
+  <string name="warning_logout_dismiss">stäng</string>
+  <string name="sync_complete_notification_title">Synkroniseringen är klar</string>
+  <string name="sync_complete_notification_content">Din DHIS2 data har synkroniserats</string>
+  <string name="sync_failed_notification_title">Synkroniseringen misslyckades</string>
+  <string name="sync_failed_notification_content">Din DHIS2 data har inte synkroniseras</string>
+  <string name="sync_in_progress_notification_title">Synkronisering genomförs</string>
+  <string name="sync_in_progress_notification_content">Din DHIS2 data synkroniseras</string>
+</resources>

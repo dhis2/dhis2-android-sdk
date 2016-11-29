@@ -8,8 +8,6 @@
   <string name="warning_logout_header">Tem a certeza?</string>
   <string name="warning_logout_confirm">Desconectar</string>
   <string name="warning_logout_dismiss">fechar</string>
-  <string name="authority">DEFAULT_AUTHORITY</string>
-  <string name="account_type">DEFAULT_ACCOUNT_TYPE</string>
   <string name="sync_complete_notification_title">Sincronização concluída</string>
   <string name="sync_complete_notification_content">Os dados DHIS2 foram sincronizados</string>
   <string name="sync_failed_notification_title">Falha na sincronização</string>

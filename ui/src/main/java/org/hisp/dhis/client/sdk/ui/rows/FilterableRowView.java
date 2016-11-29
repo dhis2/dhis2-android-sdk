@@ -1,21 +1,42 @@
+/*
+ * Copyright (c) 2016, University of Oslo
+ *
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.hisp.dhis.client.sdk.ui.rows;
 
-
-import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.google.android.flexbox.FlexboxLayout;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.adapters.OnPickerItemClickListener;
@@ -23,6 +44,7 @@ import org.hisp.dhis.client.sdk.ui.fragments.FilterableDialogFragment;
 import org.hisp.dhis.client.sdk.ui.models.FormEntity;
 import org.hisp.dhis.client.sdk.ui.models.FormEntityFilter;
 import org.hisp.dhis.client.sdk.ui.models.Picker;
+import org.hisp.dhis.client.sdk.ui.views.QuickSelectionContainer;
 
 import static android.view.View.GONE;
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
@@ -60,7 +82,7 @@ public class FilterableRowView implements RowView {
 
         private final OnClickListener onClickListener;
         private final OnItemClickListener onItemClickListener;
-        private final FlexboxLayout flexboxLayout;
+        private final QuickSelectionContainer quickSelectionContainer;
 
         public FilterViewHolder(View itemView) {
             super(itemView);
@@ -73,8 +95,8 @@ public class FilterableRowView implements RowView {
                     .findViewById(R.id.button_dropdown);
             clearButton = (ImageButton) itemView
                     .findViewById(R.id.button_clear);
-            flexboxLayout = (FlexboxLayout) itemView
-                    .findViewById(R.id.recyclerview_row_filter_flexbox);
+            quickSelectionContainer = (QuickSelectionContainer) itemView
+                    .findViewById(R.id.recyclerview_row_filter_quick_selection_container);
 
             onClickListener = new OnClickListener();
             onItemClickListener = new OnItemClickListener(filterEditText);
@@ -100,16 +122,13 @@ public class FilterableRowView implements RowView {
 
             if (picker != null && picker.getChildren().size() < 6) {
                 filterEditText.setVisibility(GONE);
-                flexboxLayout.setVisibility(View.VISIBLE);
-                drawFlexBoxLayout(flexboxLayout, picker);
+                quickSelectionContainer.setFormEntityFilter(formEntityFilter);
             } else {
                 filterEditText.setVisibility(View.VISIBLE);
-                flexboxLayout.setVisibility(GONE);
-                flexboxLayout.removeAllViews();
+                quickSelectionContainer.hide();
             }
 
             filterEditText.setText(filterEditTextValue);
-
 
             // after configuration change, callback
             // in dialog fragment can be lost
@@ -167,7 +186,7 @@ public class FilterableRowView implements RowView {
                         formEntityFilter.setPicker(formEntityFilter.getPicker());
                     }
 
-                    drawFlexBoxLayout(flexboxLayout, formEntityFilter.getPicker());
+                    quickSelectionContainer.refresh();
                 }
             }
 
@@ -208,55 +227,9 @@ public class FilterableRowView implements RowView {
                 if (formEditText.getVisibility() != GONE) {
                     formEditText.setText(selectedPicker.getName());
                 } else {
-                    drawFlexBoxLayout(flexboxLayout, selectedPicker.getParent());
+                    quickSelectionContainer.refresh();
                 }
             }
-        }
-    }
-
-    private void drawFlexBoxLayout(final FlexboxLayout flexboxLayout, final Picker picker) {
-        flexboxLayout.removeAllViews();
-        final Context context = flexboxLayout.getContext();
-        LayoutInflater layoutInflater = LayoutInflater.from(context);
-        for (final Picker picker1 : picker.getChildren()) {
-            final View filterQuickSelection = layoutInflater.inflate(R.layout.filter_quick_selection, flexboxLayout, false);
-            ((TextView) filterQuickSelection.findViewById(R.id.name)).setText(picker1.getName());
-            final ImageView checkbox = (ImageView) filterQuickSelection.findViewById(R.id.checkbox);
-
-            final GradientDrawable background = (GradientDrawable) filterQuickSelection.getBackground();
-
-            if (picker.getSelectedChild() != null && picker.getSelectedChild().equals(picker1)) {
-                filterQuickSelection.setTag(R.id.is_selected, true);
-                checkbox.setImageResource(R.drawable.ic_quick_selection_selected);
-                background.setColor(ContextCompat.getColor(context, R.color.color_accent_default));
-            } else {
-                filterQuickSelection.setTag(R.id.is_selected, false);
-                checkbox.setImageResource(R.drawable.ic_quick_selection_unselected);
-                background.setColor(ContextCompat.getColor(context, R.color.color_gray_icon));
-            }
-
-            filterQuickSelection.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if ((Boolean) filterQuickSelection.getTag(R.id.is_selected)) {
-                        filterQuickSelection.setTag(R.id.is_selected, false);
-                        checkbox.setImageResource(R.drawable.ic_quick_selection_unselected);
-                        background.setColor(ContextCompat.getColor(context, R.color.color_gray_icon));
-                    } else {
-                        for (int i = 0; i < flexboxLayout.getChildCount(); i++) {
-                            View unselectedView = flexboxLayout.getChildAt(i);
-                            unselectedView.setTag(R.id.is_selected, false);
-                            ((ImageView) unselectedView.findViewById(R.id.checkbox)).setImageResource(R.drawable.ic_quick_selection_unselected);
-                            ((GradientDrawable) unselectedView.getBackground()).setColor(ContextCompat.getColor(context, R.color.color_gray_icon));
-                        }
-                        picker.setSelectedChild(picker1);
-                        filterQuickSelection.setTag(R.id.is_selected, true);
-                        checkbox.setImageResource(R.drawable.ic_quick_selection_selected);
-                        background.setColor(ContextCompat.getColor(context, R.color.color_accent_default));
-                    }
-                }
-            });
-            flexboxLayout.addView(filterQuickSelection);
         }
     }
 }

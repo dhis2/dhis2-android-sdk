@@ -58,16 +58,16 @@
             android:textSize="@dimen/text_size_large"
             app:font="@string/font_name_regular" />
 
-        <com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <org.hisp.dhis.client.sdk.ui.views.QuickSelectionContainer xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/recyclerview_row_filter_flexbox"
+            android:id="@+id/recyclerview_row_filter_quick_selection_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="20dp"
             android:visibility="gone"
-            app:alignContent="stretch"
-            app:alignItems="stretch"
-            app:flexWrap="wrap" />
+            app:dividerDrawable="@drawable/quick_selection_divider"
+            app:flexWrap="wrap"
+            app:showDivider="beginning|middle|end" />
 
     </LinearLayout>
 

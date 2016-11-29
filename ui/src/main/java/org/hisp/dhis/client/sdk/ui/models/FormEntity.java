@@ -8,6 +8,7 @@ public abstract class FormEntity {
     private final String id;
     private final String label;
     private final Object tag;
+    private boolean locked = false;  //default is false
 
     public FormEntity(String id, String label){
         this(id, label, null);
@@ -29,6 +30,14 @@ public abstract class FormEntity {
 
     public Object getTag() {
         return tag;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 
     @NonNull

@@ -66,7 +66,7 @@ public class ModelUtils {
      */
     public static Map<String, TrackedEntityDataValue> toDataElementDataValueMap(List<TrackedEntityDataValue> trackedEntityDataValues) {
         Map<String, TrackedEntityDataValue> dataValueMap = new HashMap<>();
-        if (trackedEntityDataValues != null && trackedEntityDataValues.isEmpty()) {
+        if (trackedEntityDataValues != null && !trackedEntityDataValues.isEmpty()) {
             for (TrackedEntityDataValue dataValue : trackedEntityDataValues) {
                 dataValueMap.put(dataValue.dataElement(), dataValue);
             }

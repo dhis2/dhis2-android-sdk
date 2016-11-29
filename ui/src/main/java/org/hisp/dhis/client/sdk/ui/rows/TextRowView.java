@@ -10,9 +10,9 @@ import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.models.FormEntity;
 import org.hisp.dhis.client.sdk.ui.models.FormEntityText;
 
-public class TextRowView implements RowView {
+class TextRowView implements RowView {
 
-    public TextRowView() {
+    TextRowView() {
         // explicit empty constructor
     }
 
@@ -32,7 +32,7 @@ public class TextRowView implements RowView {
         final TextView textViewLabel;
         final TextView textViewValue;
 
-        public TextViewHolder(View itemView) {
+        TextViewHolder(View itemView) {
             super(itemView);
 
             textViewLabel = (TextView) itemView.findViewById(R.id.textview_row_label);
@@ -42,6 +42,15 @@ public class TextRowView implements RowView {
         public void update(FormEntityText entityText) {
             textViewLabel.setText(entityText.getLabel());
             textViewValue.setText(entityText.getValue());
+
+            if(entityText.isLocked()) {
+                textViewValue.setEnabled(false);
+                textViewValue.setClickable(false);
+            }
+            else {
+                textViewValue.setEnabled(true);
+                textViewValue.setClickable(true);
+            }
         }
     }
 }

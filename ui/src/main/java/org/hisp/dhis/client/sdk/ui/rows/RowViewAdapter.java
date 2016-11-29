@@ -236,7 +236,11 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
             FormEntityAction entityAction = actionMap.get(formEntity.getId());
             FormEntityEditText formEntityEditText = (FormEntityEditText) formEntity;
 
-            if (entityAction == null ||
+            //TODO: Review this solution and see if it blocks assign rules
+            if(entityAction == null || entityAction.getActionType() == null) {
+                // if entity action is null and it doesn't have any actionType it means it didn't arrive from ruleEngine thus we do nothing
+            }
+            else if (entityAction == null ||
                     !FormEntityActionType.ASSIGN.equals(entityAction.getActionType())) {
                 // if the field previously was
                 // locked, we need to unlock it

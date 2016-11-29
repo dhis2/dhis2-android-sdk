@@ -8,7 +8,6 @@ import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 public class FormEntityEditText extends FormEntityCharSequence {
     private final String hint;
     private final InputType inputType;
-    private boolean isLocked;
 
     public FormEntityEditText(String id, String label, String hint, InputType inputType, Object tag) {
         super(id, label, tag);
@@ -38,14 +37,6 @@ public class FormEntityEditText extends FormEntityCharSequence {
     @NonNull
     public InputType getInputType() {
         return inputType;
-    }
-
-    public boolean isLocked() {
-        return isLocked;
-    }
-
-    public void setLocked(boolean locked) {
-        isLocked = locked;
     }
 
     public enum InputType {

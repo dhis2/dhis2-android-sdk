@@ -61,11 +61,11 @@ public class CheckBoxRowView implements RowView {
     }
 
     private static class CheckBoxRowViewHolder extends RecyclerView.ViewHolder {
-        public final CheckBox checkBox;
-        public final TextView textViewLabel;
-        public final OnCheckBoxListener onCheckBoxListener;
+        final CheckBox checkBox;
+        final TextView textViewLabel;
+        final OnCheckBoxListener onCheckBoxListener;
 
-        public CheckBoxRowViewHolder(View itemView) {
+        CheckBoxRowViewHolder(View itemView) {
             super(itemView);
 
             checkBox = (CheckBox) itemView.findViewById(R.id.checkbox_row_checkbox);
@@ -87,13 +87,22 @@ public class CheckBoxRowView implements RowView {
             } else if (TRUE.equals(dataEntity.getValue())) {
                 checkBox.setChecked(true);
             }
+
+            if(dataEntity.isLocked()) {
+                checkBox.setClickable(false);
+                checkBox.setEnabled(false);
+            }
+            else {
+                checkBox.setClickable(true);
+                checkBox.setEnabled(true);
+            }
         }
     }
 
     private static class OnRowClickListener implements View.OnClickListener {
         private final CheckBox checkBox;
 
-        public OnRowClickListener(CheckBox checkBox) {
+        OnRowClickListener(CheckBox checkBox) {
             this.checkBox = checkBox;
         }
 
@@ -106,7 +115,7 @@ public class CheckBoxRowView implements RowView {
     private static class OnCheckBoxListener implements CompoundButton.OnCheckedChangeListener {
         private FormEntityCheckBox dataEntity;
 
-        public void setDataEntity(FormEntityCheckBox dataEntity) {
+        void setDataEntity(FormEntityCheckBox dataEntity) {
             this.dataEntity = dataEntity;
         }
 

@@ -60,7 +60,7 @@ public class DatePickerRowView implements RowView {
     // we need fragment manager to display DatePickerDialogFragment
     private final FragmentManager fragmentManager;
 
-    public DatePickerRowView(FragmentManager fragmentManager) {
+    DatePickerRowView(FragmentManager fragmentManager) {
         this.fragmentManager = isNull(fragmentManager, "fragmentManager must not be null");
     }
 
@@ -77,18 +77,18 @@ public class DatePickerRowView implements RowView {
     }
 
     private static class DatePickerRowViewHolder extends RecyclerView.ViewHolder {
-        public final TextView textViewLabel;
-        public final EditText editText;
+        final TextView textViewLabel;
+        final EditText editText;
 
-        public final RaisedButton datePickerButtonNow;
-        public final RaisedButton datePickerButton;
-        public final ImageButton clearButton;
+        final RaisedButton datePickerButtonNow;
+        final RaisedButton datePickerButton;
+        final ImageButton clearButton;
 
-        public final OnValueChangedListener onValueChangedListener;
-        public final OnDateSetListener onDateSetListener;
-        public final OnButtonClickListener onButtonClickListener;
+        final OnValueChangedListener onValueChangedListener;
+        final OnDateSetListener onDateSetListener;
+        final OnButtonClickListener onButtonClickListener;
 
-        public DatePickerRowViewHolder(View itemView, FragmentManager fragmentManager) {
+        DatePickerRowViewHolder(View itemView, FragmentManager fragmentManager) {
             super(itemView);
 
             // TextViews
@@ -123,13 +123,42 @@ public class DatePickerRowView implements RowView {
             onValueChangedListener.setDataEntity(formEntity);
             textViewLabel.setText(formEntity.getLabel());
             editText.setText(formEntity.getValue());
+
+            if(formEntity.isLocked()) {
+                editText.setEnabled(false);
+                editText.setClickable(false);
+                editText.setLongClickable(false);
+
+                datePickerButton.setClickable(false);
+                datePickerButton.setEnabled(false);
+
+                datePickerButtonNow.setClickable(false);
+                datePickerButtonNow.setEnabled(false);
+
+                clearButton.setClickable(false);
+                clearButton.setEnabled(false);
+            }
+            else {
+                editText.setEnabled(true);
+                editText.setClickable(true);
+                editText.setLongClickable(true);
+
+                datePickerButton.setClickable(true);
+                datePickerButton.setEnabled(true);
+
+                datePickerButtonNow.setClickable(true);
+                datePickerButtonNow.setEnabled(true);
+
+                clearButton.setEnabled(true);
+                clearButton.setClickable(true);
+            }
         }
     }
 
     private static class OnValueChangedListener extends AbsTextWatcher {
         private FormEntityDate dataEntity;
 
-        public void setDataEntity(FormEntityDate dataEntity) {
+        void setDataEntity(FormEntityDate dataEntity) {
             this.dataEntity = dataEntity;
         }
 
@@ -149,8 +178,8 @@ public class DatePickerRowView implements RowView {
         private final FragmentManager fragmentManager;
         private final OnDateSetListener onDateSetListener;
 
-        public OnButtonClickListener(EditText editText, FragmentManager fragmentManager,
-                                     OnDateSetListener onDateSetListener) {
+        OnButtonClickListener(EditText editText, FragmentManager fragmentManager,
+                              OnDateSetListener onDateSetListener) {
             this.editText = editText;
             this.calendar = Calendar.getInstance();
             this.fragmentManager = fragmentManager;
@@ -178,7 +207,7 @@ public class DatePickerRowView implements RowView {
     private static class OnDateSetListener implements DatePickerDialog.OnDateSetListener {
         private final EditText editText;
 
-        public OnDateSetListener(EditText editText) {
+        OnDateSetListener(EditText editText) {
             this.editText = editText;
         }
 

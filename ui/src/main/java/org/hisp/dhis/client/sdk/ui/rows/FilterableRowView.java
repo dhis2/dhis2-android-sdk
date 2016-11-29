@@ -86,6 +86,21 @@ public class FilterableRowView implements RowView {
 
             filterEditText.setText(filterEditTextValue);
 
+            if(formEntityFilter.isLocked()) {
+                filterEditText.setEnabled(false);
+                clearButton.setEnabled(false);
+                clearButton.setClickable(false);
+                buttonDropDown.setEnabled(false);
+                buttonDropDown.setClickable(false);
+            }
+            else {
+                filterEditText.setEnabled(true);
+                clearButton.setEnabled(true);
+                clearButton.setClickable(true);
+                buttonDropDown.setEnabled(true);
+                buttonDropDown.setClickable(true);
+            }
+
             // after configuration change, callback
             // in dialog fragment can be lost
             attachListenerToExistingFragment(picker);

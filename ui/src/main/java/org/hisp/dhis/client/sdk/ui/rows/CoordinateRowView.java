@@ -44,6 +44,7 @@ import org.hisp.dhis.client.sdk.ui.models.FormEntityCoordinate;
 import org.hisp.dhis.client.sdk.ui.views.AbsTextWatcher;
 
 import static android.text.TextUtils.isEmpty;
+import static android.text.TextUtils.split;
 
 public class CoordinateRowView implements RowView {
     private OnCoordinatesCaptured onCoordinatesCaptured;
@@ -64,25 +65,25 @@ public class CoordinateRowView implements RowView {
         ((CoordinateRowViewHolder) viewHolder).update(coordinateDataEntity);
     }
 
-    public interface OnCoordinatesCaptured {
+    interface OnCoordinatesCaptured {
         void onLatitudeChangeListener(double latitude);
 
         void onLongitudeChangeListener(double longitude);
     }
 
     private static class CoordinateRowViewHolder extends RecyclerView.ViewHolder {
-        public final TextView textViewLabel;
-        public final TextInputLayout latitudeTextInputLayout;
-        public final TextInputLayout longitudeTextInputLayout;
-        public final EditText latitudeEditText;
-        public final EditText longitudeEditText;
-        public final ImageButton captureCoordinateButton;
+        final TextView textViewLabel;
+        final TextInputLayout latitudeTextInputLayout;
+        final TextInputLayout longitudeTextInputLayout;
+        final EditText latitudeEditText;
+        final EditText longitudeEditText;
+        final ImageButton captureCoordinateButton;
 
-        public final OnCaptureCoordinatesListener onCaptureCoordinatesListener;
-        public final OnFocusChangeListener onFocusChangeListener;
-        public final OnValueChangedListener onValueChangedListener;
+        final OnCaptureCoordinatesListener onCaptureCoordinatesListener;
+        final OnFocusChangeListener onFocusChangeListener;
+        final OnValueChangedListener onValueChangedListener;
 
-        public CoordinateRowViewHolder(View itemView, OnCoordinatesCaptured onCoordinatesCaptured) {
+        CoordinateRowViewHolder(View itemView, OnCoordinatesCaptured onCoordinatesCaptured) {
             super(itemView);
 
             textViewLabel = (TextView) itemView
@@ -130,6 +131,23 @@ public class CoordinateRowView implements RowView {
 
             latitudeTextInputLayout.setHint(onFocusChangeListener.getHint());
             longitudeTextInputLayout.setHint(onFocusChangeListener.getHint());
+
+            if(entity.isLocked()) {
+                latitudeEditText.setClickable(false);
+                latitudeEditText.setEnabled(false);
+                longitudeEditText.setClickable(false);
+                longitudeEditText.setEnabled(false);
+                captureCoordinateButton.setClickable(false);
+                captureCoordinateButton.setEnabled(false);
+            }
+            else {
+                latitudeEditText.setClickable(true);
+                latitudeEditText.setEnabled(true);
+                longitudeEditText.setClickable(true);
+                longitudeEditText.setEnabled(true);
+                captureCoordinateButton.setClickable(true);
+                captureCoordinateButton.setEnabled(true);
+            }
         }
     }
 
@@ -154,7 +172,7 @@ public class CoordinateRowView implements RowView {
         private final EditText editText;
         private final CharSequence hint;
 
-        public OnFocusChangeListener(TextInputLayout inputLayout, EditText editText) {
+        OnFocusChangeListener(TextInputLayout inputLayout, EditText editText) {
             this.textInputLayout = inputLayout;
             this.editText = editText;
             this.hint = textInputLayout.getHint();
@@ -181,7 +199,7 @@ public class CoordinateRowView implements RowView {
         private final EditText longitudeEditText;
         private final OnCoordinatesCaptured onCoordinatesCaptured;
 
-        public OnCaptureCoordinatesListener(OnCoordinatesCaptured onCoordinatesCaptured, EditText
+        OnCaptureCoordinatesListener(OnCoordinatesCaptured onCoordinatesCaptured, EditText
                 latitudeEditText, EditText longitudeEditText) {
             this.onCoordinatesCaptured = onCoordinatesCaptured;
             this.latitudeEditText = latitudeEditText;

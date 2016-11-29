@@ -33,7 +33,10 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
+import android.text.Spanned;
+import android.text.method.KeyListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,9 +50,9 @@ import org.hisp.dhis.client.sdk.ui.views.AbsTextWatcher;
 
 import static android.text.TextUtils.isEmpty;
 
-public final class EditTextRowView implements RowView {
+final class EditTextRowView implements RowView {
 
-    public EditTextRowView() {
+    EditTextRowView() {
         // explicit empty constructor
     }
 
@@ -79,18 +82,18 @@ public final class EditTextRowView implements RowView {
         private final String enterPositiveOrZeroInteger;
         private final String enterNegativeInteger;
 
-        public final TextView textViewLabel;
-        public final TextInputLayout textInputLayout;
-        public final EditText editText;
+        final TextView textViewLabel;
+        final TextInputLayout textInputLayout;
+        final EditText editText;
 
         /* we use OnFocusChangeListener in order to hide
         hint from user when row is not focused */
-        public final OnFocusChangeListener onFocusChangeListener;
+        final OnFocusChangeListener onFocusChangeListener;
 
         /* callback which is triggered on value changes */
-        public final OnValueChangedListener onValueChangedListener;
+        final OnValueChangedListener onValueChangedListener;
 
-        public EditTextRowViewHolder(View itemView) {
+        EditTextRowViewHolder(View itemView) {
             super(itemView);
 
             Context context = itemView.getContext();
@@ -127,6 +130,18 @@ public final class EditTextRowView implements RowView {
 
             // configure edittext according to entity
             configureView(entity);
+
+
+            if(entity.isLocked()) {
+                textInputLayout.setHintEnabled(false);
+                editText.setEnabled(false);
+                editText.setClickable(false);
+            }
+            else {
+                editText.setEnabled(true);
+                editText.setClickable(true);
+                textInputLayout.setHintEnabled(true);
+            }
         }
 
         private boolean configureView(FormEntityEditText dataEntityText) {
@@ -198,7 +213,7 @@ public final class EditTextRowView implements RowView {
     private static class OnValueChangedListener extends AbsTextWatcher {
         private FormEntityEditText dataEntity;
 
-        public void setDataEntity(FormEntityEditText dataEntity) {
+        void setDataEntity(FormEntityEditText dataEntity) {
             this.dataEntity = dataEntity;
         }
 
@@ -215,7 +230,7 @@ public final class EditTextRowView implements RowView {
         private final EditText editText;
         private CharSequence hint;
 
-        public OnFocusChangeListener(TextInputLayout inputLayout, EditText editText) {
+        OnFocusChangeListener(TextInputLayout inputLayout, EditText editText) {
             this.textInputLayout = inputLayout;
             this.editText = editText;
         }
@@ -233,6 +248,14 @@ public final class EditTextRowView implements RowView {
                     textInputLayout.setHint(null);
                 }
             }
+        }
+    }
+
+    private static class NoInputFilter implements InputFilter {
+
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            return source.length() < 1 ? dest.subSequence(dstart, dend) : "";
         }
     }
 }

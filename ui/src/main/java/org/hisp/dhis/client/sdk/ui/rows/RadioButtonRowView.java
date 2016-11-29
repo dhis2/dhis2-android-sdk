@@ -94,6 +94,27 @@ public class RadioButtonRowView implements RowView {
             } else {
                 radioGroup.clearCheck();
             }
+
+            if(dataEntity.isLocked()) {
+                radioGroup.setEnabled(false);
+                radioGroup.setClickable(false);
+
+                firstRadioButton.setEnabled(false);
+                firstRadioButton.setClickable(false);
+
+                secondRadioButton.setEnabled(false);
+                secondRadioButton.setClickable(false);
+            }
+            else {
+                radioGroup.setEnabled(true);
+                radioGroup.setClickable(true);
+
+                firstRadioButton.setEnabled(true);
+                firstRadioButton.setClickable(true);
+
+                secondRadioButton.setEnabled(true);
+                secondRadioButton.setClickable(true);
+            }
         }
     }
 

@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="title_error">Error</string>
+  <string name="title_error_unexpected">Erro inesperado</string>
+  <string name="error_not_found">Servidor não encontrado</string>
+  <string name="error_unauthorized">Nome de usuário ou senha incorretos.</string>
+  <string name="warning_logout_body">Você será desconectado e todos os arquivos que foram salvos neste dispositivo para visualização offline serão excluídos.</string>
+  <string name="warning_logout_header">Tem a certeza?</string>
+  <string name="warning_logout_confirm">Desconectar</string>
+  <string name="warning_logout_dismiss">fechar</string>
+  <string name="authority">DEFAULT_AUTHORITY</string>
+  <string name="account_type">DEFAULT_ACCOUNT_TYPE</string>
+  <string name="sync_complete_notification_title">Sincronização concluída</string>
+  <string name="sync_complete_notification_content">Os dados DHIS2 foram sincronizados</string>
+  <string name="sync_failed_notification_title">Falha na sincronização</string>
+  <string name="sync_failed_notification_content">Os dados DHIS2 não foram sincronizados</string>
+  <string name="sync_in_progress_notification_title">Sincronização</string>
+  <string name="sync_in_progress_notification_content">Os dados DHIS2 estão sincronizando</string>
+</resources>

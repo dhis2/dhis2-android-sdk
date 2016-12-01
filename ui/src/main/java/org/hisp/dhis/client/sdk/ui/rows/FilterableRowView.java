@@ -44,6 +44,7 @@ import org.hisp.dhis.client.sdk.ui.fragments.FilterableDialogFragment;
 import org.hisp.dhis.client.sdk.ui.models.FormEntity;
 import org.hisp.dhis.client.sdk.ui.models.FormEntityFilter;
 import org.hisp.dhis.client.sdk.ui.models.Picker;
+import org.hisp.dhis.client.sdk.ui.utils.FormUtils;
 import org.hisp.dhis.client.sdk.ui.views.QuickSelectionContainer;
 
 import static android.view.View.GONE;
@@ -72,7 +73,7 @@ public class FilterableRowView implements RowView {
         ((FilterViewHolder) viewHolder).update(formEntityFilter);
     }
 
-    private class FilterViewHolder extends RecyclerView.ViewHolder {
+    public class FilterViewHolder extends RecyclerView.ViewHolder {
         private static final String EMPTY_STRING = "";
 
         private final TextView textViewLabel;
@@ -110,7 +111,7 @@ public class FilterableRowView implements RowView {
             onClickListener.setFormEntityFilter(formEntityFilter);
             onItemClickListener.setFormEntityFilter(formEntityFilter);
 
-            textViewLabel.setText(formEntityFilter.getLabel());
+            textViewLabel.setText(FormUtils.getFormEntityLabel(formEntityFilter));
 
             // set the value to edittext
             String filterEditTextValue = EMPTY_STRING;
@@ -130,14 +131,13 @@ public class FilterableRowView implements RowView {
 
             filterEditText.setText(filterEditTextValue);
 
-            if(formEntityFilter.isLocked()) {
+            if (formEntityFilter.isLocked()) {
                 filterEditText.setEnabled(false);
                 clearButton.setEnabled(false);
                 clearButton.setClickable(false);
                 buttonDropDown.setEnabled(false);
                 buttonDropDown.setClickable(false);
-            }
-            else {
+            } else {
                 filterEditText.setEnabled(true);
                 clearButton.setEnabled(true);
                 clearButton.setClickable(true);
@@ -206,7 +206,7 @@ public class FilterableRowView implements RowView {
             }
 
             private void showFilterableDialogFragment() {
-                if (formEntityFilter.getPicker() != null) {
+                if (formEntityFilter != null && formEntityFilter.getPicker() != null) {
                     FilterableDialogFragment dialogFragment = FilterableDialogFragment
                             .newInstance(formEntityFilter.getPicker());
                     dialogFragment.setOnPickerItemClickListener(onItemClickListener);

@@ -39,6 +39,7 @@ import android.widget.TextView;
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.models.FormEntity;
 import org.hisp.dhis.client.sdk.ui.models.FormEntityCheckBox;
+import org.hisp.dhis.client.sdk.ui.utils.FormUtils;
 
 public class CheckBoxRowView implements RowView {
     private static final String TRUE = "true";
@@ -79,7 +80,7 @@ public class CheckBoxRowView implements RowView {
         }
 
         public void update(FormEntityCheckBox dataEntity) {
-            textViewLabel.setText(dataEntity.getLabel());
+            textViewLabel.setText(FormUtils.getFormEntityLabel(dataEntity));
             onCheckBoxListener.setDataEntity(dataEntity);
 
             if (EMPTY_FIELD.equals(dataEntity.getValue())) {
@@ -88,11 +89,10 @@ public class CheckBoxRowView implements RowView {
                 checkBox.setChecked(true);
             }
 
-            if(dataEntity.isLocked()) {
+            if (dataEntity.isLocked()) {
                 checkBox.setClickable(false);
                 checkBox.setEnabled(false);
-            }
-            else {
+            } else {
                 checkBox.setClickable(true);
                 checkBox.setEnabled(true);
             }

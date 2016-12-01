@@ -36,7 +36,6 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
-import android.text.method.KeyListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +45,7 @@ import android.widget.TextView;
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.models.FormEntity;
 import org.hisp.dhis.client.sdk.ui.models.FormEntityEditText;
+import org.hisp.dhis.client.sdk.ui.utils.FormUtils;
 import org.hisp.dhis.client.sdk.ui.views.AbsTextWatcher;
 
 import static android.text.TextUtils.isEmpty;
@@ -124,7 +124,7 @@ final class EditTextRowView implements RowView {
         public void update(FormEntityEditText entity) {
             // update callbacks with current entities
             onValueChangedListener.setDataEntity(entity);
-            textViewLabel.setText(entity.getLabel());
+            textViewLabel.setText(FormUtils.getFormEntityLabel(entity));
             editText.setText(entity.getValue());
             editText.setEnabled(!entity.isLocked());
 
@@ -132,12 +132,11 @@ final class EditTextRowView implements RowView {
             configureView(entity);
 
 
-            if(entity.isLocked()) {
+            if (entity.isLocked()) {
                 textInputLayout.setHintEnabled(false);
                 editText.setEnabled(false);
                 editText.setClickable(false);
-            }
-            else {
+            } else {
                 editText.setEnabled(true);
                 editText.setClickable(true);
                 textInputLayout.setHintEnabled(true);

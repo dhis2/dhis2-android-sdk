@@ -44,6 +44,7 @@ import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.fragments.DatePickerDialogFragment;
 import org.hisp.dhis.client.sdk.ui.models.FormEntity;
 import org.hisp.dhis.client.sdk.ui.models.FormEntityDate;
+import org.hisp.dhis.client.sdk.ui.utils.FormUtils;
 import org.hisp.dhis.client.sdk.ui.views.AbsTextWatcher;
 import org.hisp.dhis.client.sdk.ui.views.RaisedButton;
 
@@ -121,10 +122,10 @@ public class DatePickerRowView implements RowView {
         public void update(FormEntityDate formEntity) {
             // update callbacks with current entities
             onValueChangedListener.setDataEntity(formEntity);
-            textViewLabel.setText(formEntity.getLabel());
+            textViewLabel.setText(FormUtils.getFormEntityLabel(formEntity));
             editText.setText(formEntity.getValue());
 
-            if(formEntity.isLocked()) {
+            if (formEntity.isLocked()) {
                 editText.setEnabled(false);
                 editText.setClickable(false);
                 editText.setLongClickable(false);
@@ -137,8 +138,7 @@ public class DatePickerRowView implements RowView {
 
                 clearButton.setClickable(false);
                 clearButton.setEnabled(false);
-            }
-            else {
+            } else {
                 editText.setEnabled(true);
                 editText.setClickable(true);
                 editText.setLongClickable(true);

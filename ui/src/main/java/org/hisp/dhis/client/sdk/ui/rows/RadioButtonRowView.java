@@ -39,6 +39,7 @@ import android.widget.TextView;
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.models.FormEntity;
 import org.hisp.dhis.client.sdk.ui.models.FormEntityRadioButtons;
+import org.hisp.dhis.client.sdk.ui.utils.FormUtils;
 
 public class RadioButtonRowView implements RowView {
     private static final String EMPTY_FIELD = "";
@@ -85,7 +86,7 @@ public class RadioButtonRowView implements RowView {
 
         public void update(FormEntityRadioButtons dataEntity) {
             onCheckedChangedListener.setDataEntity(dataEntity);
-            labelTextView.setText(dataEntity.getLabel());
+            labelTextView.setText(FormUtils.getFormEntityLabel(dataEntity));
 
             if (TRUE.equals(dataEntity.getValue())) {
                 firstRadioButton.setChecked(true);
@@ -95,7 +96,7 @@ public class RadioButtonRowView implements RowView {
                 radioGroup.clearCheck();
             }
 
-            if(dataEntity.isLocked()) {
+            if (dataEntity.isLocked()) {
                 radioGroup.setEnabled(false);
                 radioGroup.setClickable(false);
 
@@ -104,8 +105,7 @@ public class RadioButtonRowView implements RowView {
 
                 secondRadioButton.setEnabled(false);
                 secondRadioButton.setClickable(false);
-            }
-            else {
+            } else {
                 radioGroup.setEnabled(true);
                 radioGroup.setClickable(true);
 

@@ -9,6 +9,7 @@ import android.widget.TextView;
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.models.FormEntity;
 import org.hisp.dhis.client.sdk.ui.models.FormEntityText;
+import org.hisp.dhis.client.sdk.ui.utils.FormUtils;
 
 class TextRowView implements RowView {
 
@@ -40,14 +41,14 @@ class TextRowView implements RowView {
         }
 
         public void update(FormEntityText entityText) {
-            textViewLabel.setText(entityText.getLabel());
+
+            textViewLabel.setText(FormUtils.getFormEntityLabel(entityText));
             textViewValue.setText(entityText.getValue());
 
-            if(entityText.isLocked()) {
+            if (entityText.isLocked()) {
                 textViewValue.setEnabled(false);
                 textViewValue.setClickable(false);
-            }
-            else {
+            } else {
                 textViewValue.setEnabled(true);
                 textViewValue.setClickable(true);
             }

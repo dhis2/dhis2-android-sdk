@@ -53,7 +53,7 @@ public abstract class FormEntity {
     }
 
     public void setMandatory(Boolean mandatory) {
-        if (mandatory = null) {
+        if (mandatory == null) {
             mandatory = false;
         }
         this.mandatory = mandatory;

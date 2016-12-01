@@ -40,6 +40,7 @@ import org.hisp.dhis.client.sdk.ui.models.Picker;
 public class QuickSelectionContainer extends FlexboxLayout implements View.OnClickListener {
 
     private FormEntityFilter formEntityFilter;
+    private boolean locked;
 
     public QuickSelectionContainer(Context context) {
         super(context);
@@ -134,6 +135,13 @@ public class QuickSelectionContainer extends FlexboxLayout implements View.OnCli
      * */
     @Override
     public void onClick(View view) {
+
+        if (formEntityFilter.isLocked()) {
+            return;
+        }
+
+        // TODO: animate view to selected state (and do not use selectable item background)
+        // TODO: see https://jira.dhis2.org/browse/ANDRODHIS2-5
         QuickSelectionItemView quickSelectionItemView = (QuickSelectionItemView) view;
 
         if (quickSelectionItemView.isSelected()) {
@@ -147,5 +155,13 @@ public class QuickSelectionContainer extends FlexboxLayout implements View.OnCli
 
         // using this hack in order to trigger listener in formEntityFilter
         formEntityFilter.setPicker(formEntityFilter.getPicker());
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+
+    public boolean isLocked() {
+        return locked;
     }
 }

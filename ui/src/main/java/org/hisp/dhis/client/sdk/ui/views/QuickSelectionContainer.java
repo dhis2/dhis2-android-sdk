@@ -119,6 +119,13 @@ public class QuickSelectionContainer extends FlexboxLayout implements View.OnCli
         }
     }
 
+    public Picker getSelection() {
+        if (formEntityFilter.getPicker() == null) {
+            return null;
+        }
+        return formEntityFilter.getPicker().getSelectedChild();
+    }
+
     private void deselectAllItems() {
         for (int i = 0; i < getChildCount(); i++) {
             QuickSelectionItemView unselectedView = (QuickSelectionItemView) getChildAt(i);

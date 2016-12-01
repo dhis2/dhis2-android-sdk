@@ -8,9 +8,10 @@ public abstract class FormEntity {
     private final String id;
     private final String label;
     private final Object tag;
+    private boolean mandatory;
     private boolean locked = false;  //default is false
 
-    public FormEntity(String id, String label){
+    public FormEntity(String id, String label) {
         this(id, label, null);
     }
 
@@ -45,5 +46,16 @@ public abstract class FormEntity {
 
     public enum Type {
         EDITTEXT, CHECKBOX, COORDINATES, RADIO_BUTTONS, DATE, FILTER, TEXT, EXPANSION_PANEL
+    }
+
+    public boolean isMandatory() {
+        return mandatory;
+    }
+
+    public void setMandatory(Boolean mandatory) {
+        if (mandatory = null) {
+            mandatory = false;
+        }
+        this.mandatory = mandatory;
     }
 }

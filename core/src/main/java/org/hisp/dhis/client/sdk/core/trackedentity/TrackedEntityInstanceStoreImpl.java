@@ -42,6 +42,13 @@ public class TrackedEntityInstanceStoreImpl extends AbsDataStore<TrackedEntityIn
 
         Cursor cursor = contentResolver.query(mapper.getContentUri(),
                 mapper.getProjection(), selection, selectionArgs, null);
+        if (noTrackedEntityIsFound(cursor)) {
+            return null;
+        }
         return toModel(cursor);
+    }
+
+    private boolean noTrackedEntityIsFound(Cursor cursor) {
+        return cursor.getCount() == 0;
     }
 }

@@ -50,8 +50,8 @@ import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.SettingPreferences;
-import org.hisp.dhis.client.sdk.ui.fragments.HelpFragment;
 import org.hisp.dhis.client.sdk.ui.fragments.AbsInformationFragment;
+import org.hisp.dhis.client.sdk.ui.fragments.HelpFragment;
 import org.hisp.dhis.client.sdk.ui.fragments.WrapperFragment;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;

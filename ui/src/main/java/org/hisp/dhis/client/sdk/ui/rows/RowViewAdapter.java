@@ -237,10 +237,9 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
             FormEntityEditText formEntityEditText = (FormEntityEditText) formEntity;
 
             //TODO: Review this solution and see if it blocks assign rules
-            if(entityAction == null || entityAction.getActionType() == null) {
+            if (entityAction == null || entityAction.getActionType() == null) {
                 // if entity action is null and it doesn't have any actionType it means it didn't arrive from ruleEngine thus we do nothing
-            }
-            else if (entityAction == null ||
+            } else if (entityAction == null ||
                     !FormEntityActionType.ASSIGN.equals(entityAction.getActionType())) {
                 // if the field previously was
                 // locked, we need to unlock it
@@ -297,5 +296,14 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
         }
 
         return formEntityActionMap;
+    }
+
+    public void toggleLockState() {
+        if (modifiedDataEntities != null) {
+            for (FormEntity modifiedDataEntity : modifiedDataEntities) {
+                modifiedDataEntity.setLocked(!modifiedDataEntity.isLocked());
+            }
+            notifyDataSetChanged();
+        }
     }
 }

@@ -20,6 +20,11 @@ public class FormEntityCoordinate extends FormEntity {
         return Type.COORDINATES;
     }
 
+    @Override
+    public CharSequence getValue() {
+        return String.format("%s, %s", latitude, longitude);
+    }
+
     public double getLatitude() {
         return latitude;
     }

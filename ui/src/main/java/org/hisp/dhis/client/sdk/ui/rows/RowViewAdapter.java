@@ -41,6 +41,12 @@ import org.hisp.dhis.client.sdk.ui.models.FormEntityCharSequence;
 import org.hisp.dhis.client.sdk.ui.models.FormEntityEditText;
 import org.hisp.dhis.client.sdk.ui.models.FormEntityFilter;
 import org.hisp.dhis.client.sdk.ui.models.Picker;
+import org.hisp.dhis.client.sdk.ui.rows.checkboxrowview.CheckBoxRowView;
+import org.hisp.dhis.client.sdk.ui.rows.coordinaterowview.CoordinateRowView;
+import org.hisp.dhis.client.sdk.ui.rows.datepickerrowview.DatePickerRowView;
+import org.hisp.dhis.client.sdk.ui.rows.edittextrowview.EditTextRowView;
+import org.hisp.dhis.client.sdk.ui.rows.filterablerowview.FilterableRowView;
+import org.hisp.dhis.client.sdk.ui.rows.radiobuttonrowview.RadioButtonRowView;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -58,4 +58,9 @@ public abstract class FormEntity {
         }
         this.mandatory = mandatory;
     }
+
+    /**
+     * Returns a textual representation of the value
+     */
+    public abstract CharSequence getValue();
 }

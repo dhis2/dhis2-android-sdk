@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 public class FormEntityFilter extends FormEntity {
 
+    private static final CharSequence EMPTY_STRING = "";
     @Nullable
     private Picker picker;
 
@@ -23,6 +24,14 @@ public class FormEntityFilter extends FormEntity {
     @Override
     public Type getType() {
         return Type.FILTER;
+    }
+
+    @Override
+    public CharSequence getValue() {
+        if (getPicker() == null || picker.getSelectedChild() == null || picker.getSelectedChild().getName() == null) {
+            return EMPTY_STRING;
+        }
+        return picker.getSelectedChild().getName();
     }
 
     @Nullable

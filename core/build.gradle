@@ -40,7 +40,7 @@ android {
         targetSdkVersion configuration.targetSdkVersion
         versionCode configuration.versionCode
         versionName configuration.versionName
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        // testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     packagingOptions {
@@ -94,7 +94,7 @@ dependencies {
     testCompile "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
 
     // Android test dependencies
-    // androidTestCompile "org.mockito:mockito-core:${libraries.mockito}"
+    androidTestCompile "org.mockito:mockito-core:${libraries.mockito}"
     androidTestCompile "com.android.support.test:runner:${libraries.testrunner}"
     androidTestCompile("com.google.truth:truth:${libraries.truth}") {
         exclude group: 'junit' // Android has JUnit built in.

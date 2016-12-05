@@ -27,8 +27,10 @@ public interface TrackedEntityDataValueTable {
             TrackedEntityDataValueColumns.COLUMN_STATE + " TEXT," +
             " FOREIGN KEY " + "(" +
             TrackedEntityDataValueColumns.COLUMN_EVENT + ")" +
-            "REFERENCES " + EventColumns.TABLE_NAME + "(" + EventColumns.COLUMN_UID + ")" +
-            ")";
+            "REFERENCES " + EventColumns.TABLE_NAME + "(" + EventColumns.COLUMN_UID + ") " +
+            "UNIQUE (" + TrackedEntityDataValueColumns.COLUMN_EVENT + ", " + TrackedEntityDataValueColumns.COLUMN_DATA_ELEMENT + " )" +
+            " ON CONFLICT REPLACE " +
+            ");";
 
     String DROP_TABLE_TRACKED_ENTITY_DATA_VALUES = "DROP TABLE IF EXISTS " +
             TrackedEntityDataValueColumns.TABLE_NAME;

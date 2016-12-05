@@ -52,14 +52,13 @@ class TrackedEntityAttributeValueMapper extends AbsMapper<TrackedEntityAttribute
 
     @Override
     public TrackedEntityAttributeValue toModel(Cursor cursor) {
-        TrackedEntityAttributeValue trackedEntityAttributeValue = TrackedEntityAttributeValue.builder()
+
+        return TrackedEntityAttributeValue.builder()
                 .id(getLong(cursor, TrackedEntityAttributeValueColumns.COLUMN_ID))
                 .trackedEntityAttributeUid(getString(cursor, TrackedEntityAttributeValueColumns.COLUMN_TRACKED_ENTITY_ATTRIBUTE))
                 .trackedEntityInstanceUid(getString(cursor, TrackedEntityAttributeValueColumns.COLUMN_TRACKED_ENTITY_INSTANCE))
                 .value(getString(cursor, TrackedEntityAttributeValueColumns.COLUMN_VALUE))
                 .state(State.valueOf(getString(cursor, TrackedEntityAttributeValueColumns.COLUMN_STATE)))
                 .build();
-
-        return trackedEntityAttributeValue;
     }
 }

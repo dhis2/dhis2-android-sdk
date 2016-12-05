@@ -54,7 +54,7 @@ class TrackedEntityDataValueMapper extends AbsMapper<TrackedEntityDataValue> {
 
     @Override
     public TrackedEntityDataValue toModel(Cursor cursor) {
-        TrackedEntityDataValue trackedEntityDataValue = TrackedEntityDataValue.builder()
+        return TrackedEntityDataValue.builder()
                 .id(getLong(cursor, TrackedEntityDataValueColumns.COLUMN_ID))
                 .dataElement(getString(cursor, TrackedEntityDataValueColumns.COLUMN_DATA_ELEMENT))
                 .event(getString(cursor, TrackedEntityDataValueColumns.COLUMN_EVENT))
@@ -62,7 +62,5 @@ class TrackedEntityDataValueMapper extends AbsMapper<TrackedEntityDataValue> {
                 .value(getString(cursor, TrackedEntityDataValueColumns.COLUMN_VALUE))
                 .state(State.valueOf(getString(cursor, TrackedEntityDataValueColumns.COLUMN_STATE)))
                 .build();
-
-        return trackedEntityDataValue;
     }
 }

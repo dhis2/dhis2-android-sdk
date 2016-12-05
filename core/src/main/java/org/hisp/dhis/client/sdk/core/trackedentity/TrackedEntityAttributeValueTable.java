@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import org.hisp.dhis.client.sdk.core.commons.database.DbContract;
 import org.hisp.dhis.client.sdk.core.commons.database.DbUtils;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityInstanceTable.TrackedEntityInstanceColumns;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttributeValue;
 
 public interface TrackedEntityAttributeValueTable {
@@ -21,7 +22,13 @@ public interface TrackedEntityAttributeValueTable {
             TrackedEntityAttributeValueColumns.COLUMN_TRACKED_ENTITY_ATTRIBUTE + " TEXT NOT NULL," +
             TrackedEntityAttributeValueColumns.COLUMN_TRACKED_ENTITY_INSTANCE + " TEXT NOT NULL," +
             TrackedEntityAttributeValueColumns.COLUMN_VALUE + " TEXT," +
-            TrackedEntityAttributeValueColumns.COLUMN_STATE + " TEXT" + ")";
+            TrackedEntityAttributeValueColumns.COLUMN_STATE + " TEXT," +
+            "FOREIGN KEY " + "(" +
+            TrackedEntityAttributeValueColumns.COLUMN_TRACKED_ENTITY_INSTANCE + ")" +
+            "REFERENCES " + TrackedEntityInstanceColumns.TABLE_NAME + "(" + TrackedEntityInstanceColumns.COLUMN_UID + ") " +
+            "UNIQUE (" + TrackedEntityAttributeValueColumns.COLUMN_TRACKED_ENTITY_INSTANCE + ", " + TrackedEntityAttributeValueColumns.COLUMN_TRACKED_ENTITY_ATTRIBUTE + ")" +
+            " ON CONFLICT REPLACE " +
+            ");";
 
     String DROP_TABLE_TRACKED_ENTITY_ATTRIBUTE_VALUES = "DROP TABLE IF EXISTS " +
             TrackedEntityAttributeValueColumns.TABLE_NAME;

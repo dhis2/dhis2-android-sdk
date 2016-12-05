@@ -15,7 +15,7 @@ import org.hisp.dhis.client.sdk.ui.models.FormEntityEditText;
 import org.hisp.dhis.client.sdk.ui.models.FormEntityEditText.InputType;
 import org.hisp.dhis.client.sdk.ui.models.FormEntityFilter;
 import org.hisp.dhis.client.sdk.ui.models.Picker;
-import org.hisp.dhis.client.sdk.ui.rows.DatePickerRowView;
+import org.hisp.dhis.client.sdk.ui.rows.datepickerrowview.DatePickerRowView;
 import org.hisp.dhis.client.sdk.utils.LocaleUtils;
 import org.hisp.dhis.client.sdk.utils.Logger;
 

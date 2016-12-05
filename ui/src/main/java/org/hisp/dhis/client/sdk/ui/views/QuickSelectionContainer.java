@@ -76,7 +76,7 @@ public class QuickSelectionContainer extends FlexboxLayout implements View.OnCli
 
     private void drawQuickSelectionItems() {
 
-        if (formEntityFilter.getPicker() == null) {
+        if (formEntityFilter == null || formEntityFilter.getPicker() == null) {
             hide();
             return;
         }

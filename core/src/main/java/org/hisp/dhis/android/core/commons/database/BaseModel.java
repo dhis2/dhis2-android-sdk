@@ -26,17 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.models.common;
+package org.hisp.dhis.android.core.commons.database;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import android.support.annotation.Nullable;
 
-import javax.annotation.Nullable;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 
 public abstract class BaseModel implements Model {
 
     @Override
     @Nullable
-    @JsonIgnore
+    @ColumnName(BaseModelContract.Columns.ID)
     public abstract Long id();
 
     protected static abstract class Builder<T extends Builder> {

@@ -33,7 +33,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.models.common.Model;
+import org.hisp.dhis.android.core.commons.database.Model;
 
 import java.util.List;
 import java.util.concurrent.Executor;

@@ -26,46 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.commons;
+package org.hisp.dhis.android.core.commons.database;
 
-import android.content.ContentResolver;
-import android.database.Cursor;
-import android.net.Uri;
-
-import com.squareup.sqlbrite.BriteContentResolver;
-
-import org.hisp.dhis.android.core.commons.database.Model;
-
-import java.util.List;
-import java.util.concurrent.Executor;
-
-final class TypeResolverImpl<T extends Model> implements TypeResolver<T> {
-    private final Executor executor;
-    private final BriteContentResolver briteContentResolver;
-    private final ContentResolver contentResolver;
-    private final Mapper<T> contentMapper;
-    private final Uri contentUri;
-    private final Query query;
-
-    TypeResolverImpl(Executor executor, BriteContentResolver briteContentResolver,
-            ContentResolver contentResolver, Mapper<T> contentMapper, Uri contentUri, Query query) {
-        this.executor = executor;
-        this.briteContentResolver = briteContentResolver;
-        this.contentResolver = contentResolver;
-        this.contentMapper = contentMapper;
-        this.contentUri = contentUri;
-        this.query = query;
-    }
-
-    @Override
-    public ReadQueryResolver<Cursor> cursor() {
-        return new CursorQueryResolver(executor, briteContentResolver,
-                contentResolver, contentUri, query);
-    }
-
-    @Override
-    public ReadQueryResolver<List<T>> list() {
-        return new ListQueryResolver<>(executor, briteContentResolver,
-                contentResolver, contentMapper, contentUri, query);
-    }
+public interface DataModel {
+    State state();
 }

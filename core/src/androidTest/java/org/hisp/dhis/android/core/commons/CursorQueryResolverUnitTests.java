@@ -30,14 +30,13 @@ package org.hisp.dhis.android.core.commons;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.test.ProviderTestCase2;
 
 import com.squareup.sqlbrite.BriteContentResolver;
 import com.squareup.sqlbrite.SqlBrite;
 
 import java.util.concurrent.Executor;
-
-import javax.annotation.Nonnull;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.disposables.Disposables;
@@ -66,7 +65,7 @@ public class CursorQueryResolverUnitTests extends ProviderTestCase2<FakeContentP
         /* for testing purposes */
         Executor executor = new Executor() {
             @Override
-            public void execute(@Nonnull Runnable runnable) {
+            public void execute(@NonNull Runnable runnable) {
                 runnable.run();
             }
         };

@@ -26,59 +26,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.models.common;
+package org.hisp.dhis.android.core.commons.database;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import android.support.annotation.Nullable;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
+
+import org.hisp.dhis.android.models.common.IdentifiableObject;
+
 import java.util.Date;
-import java.util.Locale;
 
-import javax.annotation.Nullable;
-
-public abstract class BaseIdentifiableObject implements IdentifiableObject {
-    /* date format which should be used for all Date instances
-    within models which extend BaseIdentifiableObject */
-    public static final DateFormat DATE_FORMAT =
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.US);
-
+public abstract class BaseIdentifiableObjectModel extends BaseModel implements IdentifiableObject {
     private static final int UID_LENGTH = 11;
 
-    private static final String JSON_PROPERTY_UID = "id";
-    private static final String JSON_PROPERTY_CODE = "code";
-    private static final String JSON_PROPERTY_NAME = "name";
-    private static final String JSON_PROPERTY_DISPLAY_NAME = "displayName";
-    private static final String JSON_PROPERTY_CREATED = "created";
-    private static final String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
-
     @Override
-    @JsonProperty(JSON_PROPERTY_UID)
+    @ColumnName(BaseIdentifiableObjectContract.Columns.UID)
     public abstract String uid();
 
     @Override
     @Nullable
-    @JsonProperty(JSON_PROPERTY_CODE)
+    @ColumnName(BaseIdentifiableObjectContract.Columns.CODE)
     public abstract String code();
 
     @Override
     @Nullable
-    @JsonProperty(JSON_PROPERTY_NAME)
+    @ColumnName(BaseIdentifiableObjectContract.Columns.NAME)
     public abstract String name();
 
     @Override
     @Nullable
-    @JsonProperty(JSON_PROPERTY_DISPLAY_NAME)
+    @ColumnName(BaseIdentifiableObjectContract.Columns.DISPLAY_NAME)
     public abstract String displayName();
 
     @Override
     @Nullable
-    @JsonProperty(JSON_PROPERTY_CREATED)
+    @ColumnName(BaseIdentifiableObjectContract.Columns.CREATED)
+    @ColumnAdapter(DateColumnAdapter.class)
     public abstract Date created();
 
     @Override
     @Nullable
-    @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
+    @ColumnName(BaseIdentifiableObjectContract.Columns.LAST_UPDATED)
+    @ColumnAdapter(DateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Override
@@ -96,24 +86,17 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject {
         return true;
     }
 
-    protected static abstract class Builder<T extends Builder> {
-
-        @JsonProperty(JSON_PROPERTY_UID)
+    protected static abstract class Builder<T extends Builder> extends BaseModel.Builder<T> {
         public abstract T uid(String uid);
 
-        @JsonProperty(JSON_PROPERTY_CODE)
         public abstract T code(@Nullable String code);
 
-        @JsonProperty(JSON_PROPERTY_NAME)
         public abstract T name(@Nullable String name);
 
-        @JsonProperty(JSON_PROPERTY_DISPLAY_NAME)
         public abstract T displayName(@Nullable String displayName);
 
-        @JsonProperty(JSON_PROPERTY_CREATED)
         public abstract T created(@Nullable Date created);
 
-        @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
         public abstract T lastUpdated(@Nullable Date lastUpdated);
     }
 }

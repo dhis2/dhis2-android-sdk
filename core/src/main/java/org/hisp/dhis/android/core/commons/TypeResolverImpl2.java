@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.commons;
 import android.database.Cursor;
 import android.net.Uri;
 
-import org.hisp.dhis.android.models.common.Model;
+import org.hisp.dhis.android.core.commons.database.Model;
 
 import java.util.List;
 import java.util.concurrent.Executor;

@@ -26,46 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.commons;
+package org.hisp.dhis.android.core.commons.database;
 
-import android.content.ContentResolver;
-import android.database.Cursor;
-import android.net.Uri;
+import android.support.annotation.Nullable;
 
-import com.squareup.sqlbrite.BriteContentResolver;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 
-import org.hisp.dhis.android.core.commons.database.Model;
+import org.hisp.dhis.android.models.common.NameableObject;
 
-import java.util.List;
-import java.util.concurrent.Executor;
+public abstract class BaseNameableObjectModel extends BaseIdentifiableObjectModel implements NameableObject {
 
-final class TypeResolverImpl<T extends Model> implements TypeResolver<T> {
-    private final Executor executor;
-    private final BriteContentResolver briteContentResolver;
-    private final ContentResolver contentResolver;
-    private final Mapper<T> contentMapper;
-    private final Uri contentUri;
-    private final Query query;
-
-    TypeResolverImpl(Executor executor, BriteContentResolver briteContentResolver,
-            ContentResolver contentResolver, Mapper<T> contentMapper, Uri contentUri, Query query) {
-        this.executor = executor;
-        this.briteContentResolver = briteContentResolver;
-        this.contentResolver = contentResolver;
-        this.contentMapper = contentMapper;
-        this.contentUri = contentUri;
-        this.query = query;
-    }
-
+    @Nullable
     @Override
-    public ReadQueryResolver<Cursor> cursor() {
-        return new CursorQueryResolver(executor, briteContentResolver,
-                contentResolver, contentUri, query);
-    }
+    @ColumnName(BaseNameableObjectContract.Columns.SHORT_NAME)
+    public abstract String shortName();
 
+    @Nullable
     @Override
-    public ReadQueryResolver<List<T>> list() {
-        return new ListQueryResolver<>(executor, briteContentResolver,
-                contentResolver, contentMapper, contentUri, query);
+    @ColumnName(BaseNameableObjectContract.Columns.DISPLAY_SHORT_NAME)
+    public abstract String displayShortName();
+
+    @Nullable
+    @Override
+    @ColumnName(BaseNameableObjectContract.Columns.DESCRIPTION)
+    public abstract String description();
+
+    @Nullable
+    @Override
+    @ColumnName(BaseNameableObjectContract.Columns.DISPLAY_DESCRIPTION)
+    public abstract String displayDescription();
+
+    protected static abstract class Builder<T extends Builder> extends BaseIdentifiableObjectModel.Builder<T> {
+        public abstract T shortName(@Nullable String shortName);
+
+        public abstract T displayShortName(@Nullable String displayShortName);
+
+        public abstract T description(@Nullable String description);
+
+        public abstract T displayDescription(@Nullable String displayDescription);
     }
 }

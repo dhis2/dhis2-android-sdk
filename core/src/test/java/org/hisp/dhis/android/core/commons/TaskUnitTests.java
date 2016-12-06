@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.commons;
 
+import android.support.annotation.NonNull;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,8 +37,6 @@ import org.junit.runners.JUnit4;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
-
-import javax.annotation.Nonnull;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -53,7 +53,7 @@ public class TaskUnitTests {
         /* for testing purposes */
         currentThreadExecutor = new Executor() {
             @Override
-            public void execute(@Nonnull Runnable runnable) {
+            public void execute(@NonNull Runnable runnable) {
                 runnable.run();
             }
         };

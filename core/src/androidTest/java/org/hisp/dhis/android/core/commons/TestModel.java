@@ -2,7 +2,7 @@ package org.hisp.dhis.android.core.commons;
 
 import android.content.ContentValues;
 
-import org.hisp.dhis.android.models.common.Model;
+import org.hisp.dhis.android.core.commons.database.Model;
 
 final class TestModel implements Model {
     static final String ID = "test_id";

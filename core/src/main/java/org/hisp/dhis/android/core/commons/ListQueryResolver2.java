@@ -32,7 +32,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.models.common.Model;
+import org.hisp.dhis.android.core.commons.database.Model;
 
 import java.util.ArrayList;
 import java.util.List;

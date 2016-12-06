@@ -36,7 +36,7 @@ import android.support.annotation.NonNull;
 import com.squareup.sqlbrite.BriteContentResolver;
 import com.squareup.sqlbrite.SqlBrite;
 
-import org.hisp.dhis.android.models.common.Model;
+import org.hisp.dhis.android.core.commons.database.Model;
 
 import java.util.ArrayList;
 import java.util.List;

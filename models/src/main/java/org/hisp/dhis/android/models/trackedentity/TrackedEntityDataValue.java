@@ -33,7 +33,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.models.common.BaseModel;
+import org.hisp.dhis.android.models.common.Validatable;
 
 import java.util.Date;
 
@@ -42,7 +42,7 @@ import javax.annotation.Nullable;
 //TODO: Tests
 @AutoValue
 @JsonDeserialize(builder = AutoValue_TrackedEntityDataValue.Builder.class)
-public abstract class TrackedEntityDataValue extends BaseModel {
+public abstract class TrackedEntityDataValue implements Validatable {
     private final static String JSON_PROPERTY_DATA_ELEMENT = "dataElement";
     private final static String JSON_PROPERTY_STORED_BY = "storedBy";
     private final static String JSON_PROPERTY_VALUE = "value";
@@ -104,7 +104,7 @@ public abstract class TrackedEntityDataValue extends BaseModel {
     }
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
+    public static abstract class Builder {
 
         @JsonProperty(JSON_PROPERTY_CREATED)
         public abstract Builder created(@Nullable Date created);

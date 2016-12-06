@@ -30,7 +30,7 @@ package org.hisp.dhis.android.models.common;
 
 import java.util.Date;
 
-public interface IdentifiableObject extends Model {
+public interface IdentifiableObject extends Validatable {
     String uid();
 
     String code();

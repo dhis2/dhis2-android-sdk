@@ -26,21 +26,48 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.models.common;
+package org.hisp.dhis.android.core.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.annotation.Nullable;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import com.gabrielittner.auto.value.cursor.ColumnName;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.commons.database.BaseIdentifiableObjectModel;
 
 // TODO: Tests
-public abstract class BaseDataModel extends BaseModel implements DataModel {
+@AutoValue
+public abstract class UserCredentialsModel extends BaseIdentifiableObjectModel {
 
-    @Override
     @Nullable
-    @JsonIgnore
-    public abstract State state();
+    @ColumnName(UserCredentialsContract.Columns.USERNAME)
+    public abstract String username();
 
-    protected static abstract class Builder<T extends Builder> extends BaseModel.Builder<T> {
-        public abstract T state(State state);
+    @Nullable
+    @ColumnName(UserCredentialsContract.Columns.USER)
+    public abstract String user();
+
+    @NonNull
+    public abstract ContentValues toContentValues();
+
+    public static UserCredentialsModel create(Cursor cursor) {
+        return AutoValue_UserCredentialsModel.createFromCursor(cursor);
+    }
+
+    public static Builder builder() {
+        return new $$AutoValue_UserCredentialsModel.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {
+        public abstract Builder username(@Nullable String username);
+
+        public abstract Builder user(@Nullable String user);
+
+        public abstract UserCredentialsModel build();
     }
 }

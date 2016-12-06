@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.models.common;
+package org.hisp.dhis.android.core.commons.database;
 
 public enum State {
     TO_POST, TO_UPDATE, TO_DELETE, ERROR, SYNCED

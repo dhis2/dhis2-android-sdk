@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.commons;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import org.hisp.dhis.android.models.common.Model;
+import org.hisp.dhis.android.core.commons.database.Model;
 
 public interface Mapper<T extends Model> {
     ContentValues toContentValues(T model);

@@ -36,7 +36,7 @@ import android.support.annotation.Nullable;
 
 import com.squareup.sqlbrite.BriteContentResolver;
 
-import org.hisp.dhis.android.models.common.Model;
+import org.hisp.dhis.android.core.commons.database.Model;
 
 import java.util.List;
 import java.util.concurrent.Executor;

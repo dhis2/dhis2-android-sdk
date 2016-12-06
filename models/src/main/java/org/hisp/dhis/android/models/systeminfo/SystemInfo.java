@@ -39,7 +39,6 @@ import javax.annotation.Nullable;
 @AutoValue
 @JsonDeserialize(builder = AutoValue_SystemInfo.Builder.class)
 public abstract class SystemInfo {
-
     private static final String JSON_PROPERTY_SERVER_DATE_TIME = "serverDate";
     private static final String JSON_PROPERTY_DATE_FORMAT = "dateFormat";
 

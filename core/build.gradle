@@ -83,9 +83,14 @@ dependencies {
     // Square
     compile "com.squareup.sqlbrite:sqlbrite:${libraries.sqlbrite}"
 
-    // Using javax annotations in conjunction with auto-value in order
-    // to have optional values in models
-    provided "com.google.code.findbugs:jsr305:${libraries.javaxannotations}"
+    // Google's auto-value. Annotations are used only during compilation time, as well as
+    // annotation processor which hoops up into compilation process
+    provided "com.google.auto.value:auto-value:${libraries.autovalue}"
+    annotationProcessor "com.google.auto.value:auto-value:${libraries.autovalue}"
+
+    // Extension which generates mappers for work with cursor and content values
+    provided "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"
+    annotationProcessor "com.gabrielittner.auto.value:auto-value-cursor:${libraries.autovaluecursor}"
 
     // Java test dependencies
     testCompile "junit:junit:${libraries.junit}"

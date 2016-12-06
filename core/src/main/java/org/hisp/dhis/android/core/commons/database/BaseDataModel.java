@@ -26,8 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.models.common;
+package org.hisp.dhis.android.core.commons.database;
 
-public interface Model extends Validatable {
-    Long id();
+import android.support.annotation.Nullable;
+
+// TODO: Tests
+public abstract class BaseDataModel implements DataModel {
+
+    @Override
+    @Nullable
+    public abstract State state();
+
+    protected static abstract class Builder<T extends Builder> {
+        public abstract T state(State state);
+    }
 }

@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.commons;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import org.junit.After;
 import org.junit.Before;
@@ -41,8 +42,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.concurrent.Executor;
-
-import javax.annotation.Nonnull;
 
 import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
@@ -81,7 +80,7 @@ public class CursorQueryResolverTests {
         /* for testing purposes */
         Executor executor = new Executor() {
             @Override
-            public void execute(@Nonnull Runnable runnable) {
+            public void execute(@NonNull Runnable runnable) {
                 runnable.run();
             }
         };

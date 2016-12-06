@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_primary_default"
+    android:layout_gravity="center_vertical"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/layout_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:padding="8dp">
+
+        <FrameLayout
+            android:id="@+id/layout_dhis_logo"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_centerHorizontal="true">
+
+            <org.hisp.dhis.client.sdk.ui.views.CircleView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:circle_radius="50dp"
+                app:stroke_color="@android:color/white"
+                app:stroke_width="@dimen/circle_stroke_width" />
+
+            <fr.castorflex.android.circularprogressbar.CircularProgressBar
+                android:id="@+id/progress_bar_circular"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:indeterminate="true" />
+
+            <org.hisp.dhis.client.sdk.ui.views.FontTextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/two"
+                android:textColor="@android:color/white"
+                android:textSize="74sp"
+                app:font="@string/font_name_regular" />
+
+        </FrameLayout>
+
+        <org.hisp.dhis.client.sdk.ui.views.FontTextView
+            android:id="@+id/font_text_view_progress_message"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="26sp"
+            android:layout_below="@id/layout_dhis_logo"
+            app:font="@string/font_name_regular" />
+    </RelativeLayout>
+
+</LinearLayout>

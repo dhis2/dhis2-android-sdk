@@ -26,71 +26,78 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.commons;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
-import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.commons.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.commons.DateColumnAdapter;
+import org.hisp.dhis.android.models.common.IdentifiableObject;
 
 import java.util.Date;
 
-// TODO: Tests
-@AutoValue
-public abstract class OrganisationUnitModel extends BaseNameableObjectModel {
+public abstract class BaseIdentifiableObjectModel extends BaseModel implements IdentifiableObject {
+    private static final int UID_LENGTH = 11;
 
-    public static OrganisationUnitModel create(Cursor cursor) {
-        return AutoValue_OrganisationUnitModel.createFromCursor(cursor);
+    @Override
+    @Nullable
+    @ColumnName(BaseIdentifiableObjectContract.Columns.UID)
+    public abstract String uid();
+
+    @Override
+    @Nullable
+    @ColumnName(BaseIdentifiableObjectContract.Columns.CODE)
+    public abstract String code();
+
+    @Override
+    @Nullable
+    @ColumnName(BaseIdentifiableObjectContract.Columns.NAME)
+    public abstract String name();
+
+    @Override
+    @Nullable
+    @ColumnName(BaseIdentifiableObjectContract.Columns.DISPLAY_NAME)
+    public abstract String displayName();
+
+    @Override
+    @Nullable
+    @ColumnName(BaseIdentifiableObjectContract.Columns.CREATED)
+    @ColumnAdapter(DateColumnAdapter.class)
+    public abstract Date created();
+
+    @Override
+    @Nullable
+    @ColumnName(BaseIdentifiableObjectContract.Columns.LAST_UPDATED)
+    @ColumnAdapter(DateColumnAdapter.class)
+    public abstract Date lastUpdated();
+
+    @Override
+    public boolean isValid() {
+        // check if properties are null or not
+        if (created() == null || lastUpdated() == null) {
+            return false;
+        }
+
+        // check uid length which must be 11 characters long
+        if (uid().length() != UID_LENGTH) {
+            return false;
+        }
+
+        return true;
     }
 
-    public static Builder builder() {
-        return new $$AutoValue_OrganisationUnitModel.Builder();
-    }
+    protected static abstract class Builder<T extends Builder> extends BaseModel.Builder<T> {
+        public abstract T uid(String uid);
 
-    @Nullable
-    @ColumnName(OrganisationUnitContract.Columns.PARENT)
-    public abstract String parent();
+        public abstract T code(@Nullable String code);
 
-    @Nullable
-    @ColumnName(OrganisationUnitContract.Columns.PATH)
-    public abstract String path();
+        public abstract T name(@Nullable String name);
 
-    @Nullable
-    @ColumnName(OrganisationUnitContract.Columns.OPENING_DATE)
-    @ColumnAdapter(DateColumnAdapter.class)
-    public abstract Date openingDate();
+        public abstract T displayName(@Nullable String displayName);
 
-    @Nullable
-    @ColumnName(OrganisationUnitContract.Columns.CLOSED_DATE)
-    @ColumnAdapter(DateColumnAdapter.class)
-    public abstract Date closedDate();
+        public abstract T created(@Nullable Date created);
 
-    @Nullable
-    @ColumnName(OrganisationUnitContract.Columns.LEVEL)
-    public abstract Integer level();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
-
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {
-        public abstract Builder parent(@Nullable String parent);
-
-        public abstract Builder path(@Nullable String path);
-
-        public abstract Builder openingDate(@Nullable Date openingDate);
-
-        public abstract Builder closedDate(@Nullable Date closedDate);
-
-        public abstract Builder level(@Nullable Integer level);
-
-        public abstract OrganisationUnitModel build();
+        public abstract T lastUpdated(@Nullable Date lastUpdated);
     }
 }

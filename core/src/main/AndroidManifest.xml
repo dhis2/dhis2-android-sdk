@@ -26,4 +26,13 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<manifest package="org.hisp.dhis.android"/>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="org.hisp.dhis.android">
+
+    <application>
+        <provider
+            android:name="org.hisp.dhis.android.core.database.DbContentProvider"
+            android:authorities="org.hisp.dhis.android.core"
+            android:exported="false"/>
+    </application>
+</manifest>

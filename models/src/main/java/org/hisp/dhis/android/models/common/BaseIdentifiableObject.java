@@ -37,6 +37,9 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
+// ToDo: replace builders with factory methods (in order to
+// ToDo: reduce method count of the library)
+// ToDo: consider removing Validatable interface
 public abstract class BaseIdentifiableObject implements IdentifiableObject {
     /* date format which should be used for all Date instances
     within models which extend BaseIdentifiableObject */

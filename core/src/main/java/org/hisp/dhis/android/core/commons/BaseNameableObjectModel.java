@@ -26,48 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.commons;
 
-
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
-import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.commons.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.models.common.NameableObject;
 
-// TODO: Tests
-@AutoValue
-public abstract class UserCredentialsModel extends BaseIdentifiableObjectModel {
+public abstract class BaseNameableObjectModel extends BaseIdentifiableObjectModel implements NameableObject {
 
     @Nullable
-    @ColumnName(UserCredentialsContract.Columns.USERNAME)
-    public abstract String username();
+    @Override
+    @ColumnName(BaseNameableObjectContract.Columns.SHORT_NAME)
+    public abstract String shortName();
 
     @Nullable
-    @ColumnName(UserCredentialsContract.Columns.USER)
-    public abstract String user();
+    @Override
+    @ColumnName(BaseNameableObjectContract.Columns.DISPLAY_SHORT_NAME)
+    public abstract String displayShortName();
 
-    @NonNull
-    public abstract ContentValues toContentValues();
+    @Nullable
+    @Override
+    @ColumnName(BaseNameableObjectContract.Columns.DESCRIPTION)
+    public abstract String description();
 
-    public static UserCredentialsModel create(Cursor cursor) {
-        return AutoValue_UserCredentialsModel.createFromCursor(cursor);
-    }
+    @Nullable
+    @Override
+    @ColumnName(BaseNameableObjectContract.Columns.DISPLAY_DESCRIPTION)
+    public abstract String displayDescription();
 
-    public static Builder builder() {
-        return new $$AutoValue_UserCredentialsModel.Builder();
-    }
+    protected static abstract class Builder<T extends Builder> extends BaseIdentifiableObjectModel.Builder<T> {
+        public abstract T shortName(@Nullable String shortName);
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {
-        public abstract Builder username(@Nullable String username);
+        public abstract T displayShortName(@Nullable String displayShortName);
 
-        public abstract Builder user(@Nullable String user);
+        public abstract T description(@Nullable String description);
 
-        public abstract UserCredentialsModel build();
+        public abstract T displayDescription(@Nullable String displayDescription);
     }
 }

@@ -26,66 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-buildscript {
-    repositories {
-        jcenter()
+package org.hisp.dhis.android.core.commons;
 
-        // gradle plugin repository
-        // (required for java apt plugin)
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
+import android.support.annotation.Nullable;
+
+// TODO: Tests
+public abstract class BaseDataModel implements DataModel {
+
+    @Override
+    @Nullable
+    public abstract State state();
+
+    protected static abstract class Builder<T extends Builder> {
+        public abstract T state(State state);
     }
-    dependencies {
-        // android gradle plugin
-        classpath 'com.android.tools.build:gradle:2.2.3'
-
-        // annotation processing plugin for java modules.
-        // Please, see: https://github.com/tbroyer/gradle-apt-plugin
-        classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
-
-        // method count plugin
-        classpath "com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.6.1"
-    }
-}
-
-allprojects {
-    repositories {
-        jcenter()
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
-
-ext {
-    configuration = [
-            buildToolsVersion: "24.0.2",
-            minSdkVersion    : 15,
-            targetSdkVersion : 24,
-            versionCode      : 1,
-            versionName      : "0.1"
-    ]
-
-    libraries = [
-            // android
-            support         : "25.0.1",
-            progressbar     : "1.2.0",
-
-            // java
-            jackson         : "2.8.4",
-            autovalue       : "1.3",
-            autovaluecursor : "1.0.1",
-            javaxannotations: "3.0.1",
-
-            // test dependencies
-            junit           : "4.12",
-            assertj         : "3.5.2",
-            espresso        : "2.2.2",
-            mockito         : "1.10.19",
-            truth           : "0.30",
-            testrunner      : "0.5",
-            equalsverifier  : "2.1.6"
-    ]
 }

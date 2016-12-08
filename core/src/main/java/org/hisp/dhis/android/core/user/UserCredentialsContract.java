@@ -1,25 +1,30 @@
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.commons.database.BaseIdentifiableObjectContract;
+import android.content.ContentUris;
+import android.net.Uri;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.commons.BaseIdentifiableObjectContract;
+import org.hisp.dhis.android.core.database.DbContract;
+import org.hisp.dhis.android.core.database.DbUtils;
 
 public final class UserCredentialsContract {
-    public static final String USER_CREDENTIALS = "UserCredentials";
+    // ContentProvider related properties
+    public static final String USER_CREDENTIALS = "userCredentials";
+    public static final String USER_CREDENTIALS_ID = USER_CREDENTIALS + "/#";
 
-    public static final String CREATE_TABLE = "CREATE TABLE " + USER_CREDENTIALS + " (" +
-            Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            Columns.UID + " TEXT," +
-            Columns.CODE + " TEXT," +
-            Columns.NAME + " TEXT," +
-            Columns.DISPLAY_NAME + " TEXT," +
-            Columns.CREATED + " TEXT," +
-            Columns.LAST_UPDATED + " TEXT," +
-            Columns.USERNAME + " TEXT," +
-            Columns.USER + " TEXT NOT NULL UNIQUE," +
-            "FOREIGN KEY (" + Columns.USER + ") REFERENCES " + UserContract.USER +
-            " (" + UserContract.Columns.UID + ") ON DELETE CASCADE" +
-            ");";
+    public static final String CONTENT_TYPE_DIR = DbUtils.directoryType(USER_CREDENTIALS);
+    public static final String CONTENT_TYPE_ITEM = DbUtils.itemType(USER_CREDENTIALS);
 
-    public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + USER_CREDENTIALS;
+    @NonNull
+    public static Uri userCredentials() {
+        return Uri.withAppendedPath(DbContract.AUTHORITY_URI, USER_CREDENTIALS);
+    }
+
+    @NonNull
+    public static Uri userCredentials(long id) {
+        return ContentUris.withAppendedId(userCredentials(), id);
+    }
 
     public interface Columns extends BaseIdentifiableObjectContract.Columns {
         String USERNAME = "username";

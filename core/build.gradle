@@ -40,7 +40,7 @@ android {
         targetSdkVersion configuration.targetSdkVersion
         versionCode configuration.versionCode
         versionName configuration.versionName
-        // testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     packagingOptions {
@@ -76,12 +76,8 @@ dependencies {
     // Client models
     compile project(":models")
 
-    // ReactiveX
-    compile "io.reactivex.rxjava2:rxjava:${libraries.rxjava}"
-    compile "com.github.akarnokd:rxjava2-interop:${libraries.rxjavacompat}"
-
-    // Square
-    compile "com.squareup.sqlbrite:sqlbrite:${libraries.sqlbrite}"
+    // Support libraries
+    compile "com.android.support:support-annotations:${libraries.support}"
 
     // Google's auto-value. Annotations are used only during compilation time, as well as
     // annotation processor which hoops up into compilation process
@@ -89,7 +85,7 @@ dependencies {
     annotationProcessor "com.google.auto.value:auto-value:${libraries.autovalue}"
 
     // Extension which generates mappers for work with cursor and content values
-    provided "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"
+    compile "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"
     annotationProcessor "com.gabrielittner.auto.value:auto-value-cursor:${libraries.autovaluecursor}"
 
     // Java test dependencies

@@ -35,5 +35,6 @@ import java.util.List;
 
 public interface EnrollmentStore extends DataStore<Enrollment> {
     List<Enrollment> query(String organisationUnit, String program);
+    List<Enrollment> queryByTrackedEntityInstance(String trackedEntityInstanceUid);
     Enrollment query(String uid);
 }

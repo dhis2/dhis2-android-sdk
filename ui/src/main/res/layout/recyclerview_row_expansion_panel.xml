@@ -26,17 +26,6 @@
             android:foregroundGravity="center"
             android:src="@drawable/ic_expand" />
 
-        <ImageButton
-            android:id="@+id/action_button"
-            style="@style/SelectableBackgroundBorderless"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/expand_collapse_button"
-            android:layout_toStartOf="@id/expand_collapse_button"
-            android:alpha="0.54"
-            android:src="@drawable/ic_add_black" />
-
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
@@ -48,8 +37,6 @@
             android:layout_marginLeft="24dp"
             android:layout_marginRight="16dp"
             android:layout_marginStart="24dp"
-            android:layout_toLeftOf="@+id/action_button"
-            android:layout_toStartOf="@+id/action_button"
             android:alpha="0.87"
             android:ellipsize="end"
             android:maxLines="2"

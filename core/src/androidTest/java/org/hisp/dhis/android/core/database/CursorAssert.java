@@ -1,15 +1,16 @@
 package org.hisp.dhis.android.core.database;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import static com.google.common.truth.Truth.assertThat;
 
-final class CursorAssert {
+public final class CursorAssert {
     private final Cursor cursor;
     private int row;
 
-    static CursorAssert assertThatCursor(Cursor cursor) {
+    public static CursorAssert assertThatCursor(Cursor cursor) {
         return new CursorAssert(cursor);
     }
 
@@ -21,7 +22,7 @@ final class CursorAssert {
     }
 
     @NonNull
-    CursorAssert hasRow(@NonNull Object... values) {
+    public CursorAssert hasRow(@NonNull Object... values) {
         assertThat(cursor.moveToNext()).named("row " + (row + 1) + " exists").isTrue();
         row = row + 1;
 
@@ -29,13 +30,29 @@ final class CursorAssert {
         for (int index = 0; index < values.length; index++) {
             assertThat(cursor.getString(index))
                     .named("row " + row + " column '" + cursor.getColumnName(index) + "'")
-                    .isEqualTo(String.valueOf(values[index]));
+                    .isEqualTo(values[index] == null ? values[index] : String.valueOf(values[index]));
         }
 
         return this;
     }
 
-    void isExhausted() {
+    @NonNull
+    public CursorAssert hasRow(@NonNull String[] projection, @NonNull ContentValues contentValues) {
+        assertThat(projection.length)
+                .named("Projection size does not match size of content values")
+                .isEqualTo(contentValues.size());
+
+        Object[] values = new Object[projection.length];
+        for (int index = 0; index < projection.length; index++) {
+            values[index] = contentValues.get(projection[index]);
+        }
+
+        hasRow(values);
+
+        return this;
+    }
+
+    public void isExhausted() {
         if (cursor.moveToNext()) {
             StringBuilder data = new StringBuilder();
             for (int i = 0; i < cursor.getColumnCount(); i++) {

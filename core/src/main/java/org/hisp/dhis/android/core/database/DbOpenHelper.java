@@ -73,7 +73,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             OrganisationUnitContract.Columns.OPENING_DATE + " TEXT," +
             OrganisationUnitContract.Columns.CLOSED_DATE + " TEXT," +
             OrganisationUnitContract.Columns.LEVEL + " INTEGER," +
-            OrganisationUnitContract.Columns.PARENT + " TEXT NOT NULL," +
+            OrganisationUnitContract.Columns.PARENT + " TEXT," +
             "FOREIGN KEY (" + OrganisationUnitContract.Columns.PARENT + ") REFERENCES " +
             Tables.ORGANISATION_UNIT + " (" + OrganisationUnitContract.Columns.UID + ") ON DELETE CASCADE" +
             ");";

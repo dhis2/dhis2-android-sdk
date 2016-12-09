@@ -196,6 +196,15 @@ public final class DbContentProvider extends ContentProvider {
                 updated = update(parseId(uri), DbOpenHelper.Tables.USER, values, selection, args);
                 break;
             }
+            case USER_CREDENTIALS: {
+                updated = update(DbOpenHelper.Tables.USER_CREDENTIALS, values, selection, args);
+                break;
+            }
+            case USER_CREDENTIALS_ID: {
+                updated = update(parseId(uri), DbOpenHelper.Tables.USER_CREDENTIALS,
+                        values, selection, args);
+                break;
+            }
             case ORGANISATION_UNITS: {
                 updated = update(DbOpenHelper.Tables.ORGANISATION_UNIT,
                         values, selection, args);

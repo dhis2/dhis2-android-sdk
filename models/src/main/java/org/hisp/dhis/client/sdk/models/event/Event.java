@@ -203,7 +203,7 @@ public abstract class Event extends BaseDataModel {
 
         @Override
         public int compare(Event first, Event second) {
-            if (first != null && second != null && first.eventDate() != null) {
+            if (first != null && second != null && first.eventDate() != null && second.eventDate() != null) {
                 return first.eventDate().compareTo(second.eventDate());
             }
 

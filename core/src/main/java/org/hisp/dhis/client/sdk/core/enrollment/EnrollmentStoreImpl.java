@@ -62,6 +62,16 @@ class EnrollmentStoreImpl extends AbsDataStore<Enrollment> implements Enrollment
     }
 
     @Override
+    public List<Enrollment> queryByTrackedEntityInstance(String trackedEntityInstanceUid) {
+        isNull(trackedEntityInstanceUid, "trackedEntityInstanceUid must not be null!");
+        final String selection = EnrollmentColumns.COLUMN_TRACKED_ENTITY_INSTANCE + " = ?";
+        final String[] selectionArgs = new String[] {trackedEntityInstanceUid};
+        Cursor cursor = contentResolver.query(mapper.getContentUri(), mapper.getProjection(),
+                selection, selectionArgs, null);
+        return toModels(cursor);
+    }
+
+    @Override
     public Enrollment query(String uid) {
         isNull(uid, "Uid must not be null");
 

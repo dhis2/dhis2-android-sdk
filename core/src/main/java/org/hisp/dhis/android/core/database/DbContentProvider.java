@@ -17,11 +17,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
-import org.hisp.dhis.android.core.commons.BaseIdentifiableObjectContract;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
 import org.hisp.dhis.android.core.user.UserContract;
 import org.hisp.dhis.android.core.user.UserCredentialsContract;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitContract;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkContract;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -38,8 +37,12 @@ public final class DbContentProvider extends ContentProvider {
     private static final int USER_CREDENTIALS = 30;
     private static final int USER_CREDENTIALS_ID = 31;
 
+    private static final int USER_ORGANISATION_UNIT_LINKS = 40;
+    private static final int USER_ORGANISATION_UNIT_LINKS_ID = 41;
+
     private static final int ORGANISATION_UNITS = 20;
     private static final int ORGANISATION_UNITS_ID = 21;
+    private static final int ORGANISATION_UNITS_ID_USERS = 22;
 
     private UriMatcher uriMatcher;
 
@@ -71,11 +74,19 @@ public final class DbContentProvider extends ContentProvider {
         uriMatcher.addURI(DbContract.AUTHORITY, UserCredentialsContract.USER_CREDENTIALS_ID,
                 USER_CREDENTIALS_ID);
 
+        // userOrganisationUnits
+        uriMatcher.addURI(DbContract.AUTHORITY, UserOrganisationUnitLinkContract.USER_ORGANISATION_UNIT_LINKS,
+                USER_ORGANISATION_UNIT_LINKS);
+        uriMatcher.addURI(DbContract.AUTHORITY, UserOrganisationUnitLinkContract.USER_ORGANISATION_UNIT_LINKS_ID,
+                USER_ORGANISATION_UNIT_LINKS_ID);
+
         // organisation units resource
         uriMatcher.addURI(DbContract.AUTHORITY, OrganisationUnitContract.ORGANISATION_UNITS,
                 ORGANISATION_UNITS);
         uriMatcher.addURI(DbContract.AUTHORITY, OrganisationUnitContract.ORGANISATION_UNITS_ID,
                 ORGANISATION_UNITS_ID);
+        uriMatcher.addURI(DbContract.AUTHORITY, OrganisationUnitContract.ORGANISATION_UNITS_ID_USERS,
+                ORGANISATION_UNITS_ID_USERS);
         return true;
     }
 
@@ -98,11 +109,20 @@ public final class DbContentProvider extends ContentProvider {
             case USER_CREDENTIALS_ID: {
                 return UserCredentialsContract.CONTENT_TYPE_ITEM;
             }
+            case USER_ORGANISATION_UNIT_LINKS: {
+                return UserOrganisationUnitLinkContract.CONTENT_TYPE_DIR;
+            }
+            case USER_ORGANISATION_UNIT_LINKS_ID: {
+                return UserOrganisationUnitLinkContract.CONTENT_TYPE_ITEM;
+            }
             case ORGANISATION_UNITS: {
                 return OrganisationUnitContract.CONTENT_TYPE_DIR;
             }
             case ORGANISATION_UNITS_ID: {
                 return OrganisationUnitContract.CONTENT_TYPE_ITEM;
+            }
+            case ORGANISATION_UNITS_ID_USERS: {
+                return UserContract.CONTENT_TYPE_DIR;
             }
             default: {
                 throw new IllegalArgumentException("unknown URI: " + uri);
@@ -129,11 +149,33 @@ public final class DbContentProvider extends ContentProvider {
             }
             case USERS_ID_ORGANISATION_UNITS: {
                 final String organisationUnitJoin = DbOpenHelper.Tables.ORGANISATION_UNIT +
-                        "  LEFT OUTER JOIN " + DbOpenHelper.Tables.USER_ORGANISATION_UNIT + " ON " + DbOpenHelper.Tables.ORGANISATION_UNIT + "." +
+                        " LEFT OUTER JOIN " + DbOpenHelper.Tables.USER_ORGANISATION_UNIT + " ON " + DbOpenHelper.Tables.ORGANISATION_UNIT + "." +
                         OrganisationUnitContract.Columns.UID + " = " + DbOpenHelper.Tables.USER_ORGANISATION_UNIT +
-                        "." + UserOrganisationUnitContract.Columns.ORGANISATION_UNIT;
-                cursor = queryByUid(parseUid(uri), organisationUnitJoin, projection, selection,
-                        selectionArgs, sortOrder);
+                        "." + UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT;
+                final String uidColumn = DbOpenHelper.Tables.USER_ORGANISATION_UNIT + "." +
+                        UserOrganisationUnitLinkContract.Columns.USER;
+                cursor = queryByUid(parseUid(uri), uidColumn, organisationUnitJoin, projection,
+                        selection, selectionArgs, sortOrder);
+                break;
+            }
+            case USER_ORGANISATION_UNIT_LINKS: {
+                cursor = query(DbOpenHelper.Tables.USER_ORGANISATION_UNIT, projection,
+                        selection, selectionArgs, sortOrder);
+                break;
+            }
+            case USER_ORGANISATION_UNIT_LINKS_ID: {
+                cursor = queryById(parseId(uri), DbOpenHelper.Tables.USER_ORGANISATION_UNIT, projection,
+                        selection, selectionArgs, sortOrder);
+                break;
+            }
+            case USER_CREDENTIALS: {
+                cursor = query(DbOpenHelper.Tables.USER_CREDENTIALS, projection,
+                        selection, selectionArgs, sortOrder);
+                break;
+            }
+            case USER_CREDENTIALS_ID: {
+                cursor = queryById(parseId(uri), DbOpenHelper.Tables.USER_CREDENTIALS, projection,
+                        selection, selectionArgs, sortOrder);
                 break;
             }
             case ORGANISATION_UNITS: {
@@ -144,6 +186,17 @@ public final class DbContentProvider extends ContentProvider {
             case ORGANISATION_UNITS_ID: {
                 cursor = queryById(parseId(uri), DbOpenHelper.Tables.ORGANISATION_UNIT,
                         projection, selection, selectionArgs, sortOrder);
+                break;
+            }
+            case ORGANISATION_UNITS_ID_USERS: {
+                final String userJoin = DbOpenHelper.Tables.USER +
+                        " LEFT OUTER JOIN " + DbOpenHelper.Tables.USER_ORGANISATION_UNIT + " ON " + DbOpenHelper.Tables.USER + "." +
+                        UserContract.Columns.UID + " = " + DbOpenHelper.Tables.USER_ORGANISATION_UNIT +
+                        "." + UserOrganisationUnitLinkContract.Columns.USER;
+                final String uidColumn = DbOpenHelper.Tables.USER_ORGANISATION_UNIT + "." +
+                        UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT;
+                cursor = queryByUid(parseUid(uri), uidColumn, userJoin, projection,
+                        selection, selectionArgs, sortOrder);
                 break;
             }
             default: {
@@ -166,6 +219,10 @@ public final class DbContentProvider extends ContentProvider {
             }
             case USER_CREDENTIALS: {
                 itemId = insert(DbOpenHelper.Tables.USER_CREDENTIALS, values);
+                break;
+            }
+            case USER_ORGANISATION_UNIT_LINKS: {
+                itemId = insert(DbOpenHelper.Tables.USER_ORGANISATION_UNIT, values);
                 break;
             }
             case ORGANISATION_UNITS: {
@@ -238,6 +295,22 @@ public final class DbContentProvider extends ContentProvider {
                 deleted = delete(parseId(uri), DbOpenHelper.Tables.USER, selection, selectionArgs);
                 break;
             }
+            case USER_CREDENTIALS: {
+                deleted = delete(DbOpenHelper.Tables.USER_CREDENTIALS, selection, selectionArgs);
+                break;
+            }
+            case USER_CREDENTIALS_ID: {
+                deleted = delete(parseId(uri), DbOpenHelper.Tables.USER_CREDENTIALS, selection, selectionArgs);
+                break;
+            }
+            case USER_ORGANISATION_UNIT_LINKS: {
+                deleted = delete(DbOpenHelper.Tables.USER_ORGANISATION_UNIT, selection, selectionArgs);
+                break;
+            }
+            case USER_ORGANISATION_UNIT_LINKS_ID: {
+                deleted = delete(parseId(uri), DbOpenHelper.Tables.USER_ORGANISATION_UNIT, selection, selectionArgs);
+                break;
+            }
             case ORGANISATION_UNITS: {
                 deleted = delete(DbOpenHelper.Tables.ORGANISATION_UNIT,
                         selection, selectionArgs);
@@ -301,12 +374,11 @@ public final class DbContentProvider extends ContentProvider {
     }
 
     @NonNull
-    private Cursor queryByUid(String uid, @NonNull String table, String[] projection, String selection,
-            String selectionArgs[], String sortOrder) {
+    private Cursor queryByUid(@NonNull String uid, @NonNull String uidColumn, @NonNull String table,
+            String[] projection, String selection, String selectionArgs[], String sortOrder) {
         SQLiteQueryBuilder query = new SQLiteQueryBuilder();
         query.setTables(table);
-        query.appendWhere(String.format(Locale.US, "%s = %s",
-                BaseIdentifiableObjectContract.Columns.UID, uid));
+        query.appendWhere(String.format(Locale.US, "%s = \"%s\"", uidColumn, uid));
 
         SQLiteDatabase sqLiteDatabase = databaseOpenHelper.getReadableDatabase();
         return query.query(sqLiteDatabase, projection, selection,
@@ -315,7 +387,10 @@ public final class DbContentProvider extends ContentProvider {
 
     private long insert(@NonNull String table, ContentValues values) {
         SQLiteDatabase sqLiteDatabase = databaseOpenHelper.getWritableDatabase();
-        return sqLiteDatabase.insertWithOnConflict(table, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+
+        // following 'fail fast, fail early' philosophy.
+        // if something goes wrong, throw an exception instead keeping silence
+        return sqLiteDatabase.insertOrThrow(table, null, values);
     }
 
     private int update(@NonNull String table, ContentValues values,

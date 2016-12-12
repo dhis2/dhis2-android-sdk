@@ -9,7 +9,7 @@ import nl.jqno.equalsverifier.Warning;
 
 // ToDo: consider testing .isValid() as well.
 @RunWith(JUnit4.class)
-public class UserCredentialsUnitTests {
+public class UserCredentialsModelUnitTests {
 
     @Test
     public void equals_shouldConformToContract() {

@@ -13,7 +13,7 @@ public final class UserContract {
     // ContentProvider related properties
     public static final String USERS = "users";
     public static final String USERS_ID = USERS + "/#";
-    public static final String USERS_ID_ORGANISATION_UNITS = USERS_ID + "/" +
+    public static final String USERS_ID_ORGANISATION_UNITS = USERS + "/*/" +
             OrganisationUnitContract.ORGANISATION_UNITS;
 
     public static final String CONTENT_TYPE_DIR = DbUtils.directoryType(USERS);
@@ -27,6 +27,12 @@ public final class UserContract {
     @NonNull
     public static Uri users(long id) {
         return ContentUris.withAppendedId(users(), id);
+    }
+
+    @NonNull
+    public static Uri organisationUnits(@NonNull String userUid) {
+        return users().buildUpon().appendPath(userUid)
+                .appendPath(OrganisationUnitContract.ORGANISATION_UNITS).build();
     }
 
     public interface Columns extends BaseIdentifiableObjectContract.Columns {

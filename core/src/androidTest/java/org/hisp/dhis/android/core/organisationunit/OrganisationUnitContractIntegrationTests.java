@@ -3,16 +3,22 @@ package org.hisp.dhis.android.core.organisationunit;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.net.Uri;
 
 import org.hisp.dhis.android.core.database.AbsProviderTestCase;
 import org.hisp.dhis.android.core.database.DbOpenHelper;
+import org.hisp.dhis.android.core.database.DbTestUtils;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract.Columns;
+import org.hisp.dhis.android.core.user.UserContract;
+import org.hisp.dhis.android.core.user.UserContractIntegrationTests;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkContractIntegrationTests;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.database.CursorAssert.assertThatCursor;
 
-public class OrganisationUnitsContractIntegrationTests extends AbsProviderTestCase {
+public class OrganisationUnitContractIntegrationTests extends AbsProviderTestCase {
+    // using table as a prefix in order to avoid ambiguity in queries against joined tables
     public static final String[] ORGANISATION_UNIT_PROJECTION = {
             Columns.ID,
             Columns.UID,
@@ -32,10 +38,10 @@ public class OrganisationUnitsContractIntegrationTests extends AbsProviderTestCa
             Columns.LEVEL
     };
 
-    public static ContentValues create() {
+    public static ContentValues create(long id, String uid) {
         ContentValues organisationUnit = new ContentValues();
-        organisationUnit.put(Columns.ID, 1L);
-        organisationUnit.put(Columns.UID, "test_uid");
+        organisationUnit.put(Columns.ID, id);
+        organisationUnit.put(Columns.UID, uid);
         organisationUnit.put(Columns.CODE, "test_code");
         organisationUnit.put(Columns.NAME, "test_name");
         organisationUnit.put(Columns.DISPLAY_NAME, "test_display_name");
@@ -63,7 +69,7 @@ public class OrganisationUnitsContractIntegrationTests extends AbsProviderTestCa
         super.setUp();
 
         // test data
-        organisationUnit = create();
+        organisationUnit = create(1L, "test_uid");
     }
 
     public void testGetType_shouldReturnCorrectMimeTypes() {
@@ -71,6 +77,8 @@ public class OrganisationUnitsContractIntegrationTests extends AbsProviderTestCa
                 .isEqualTo(OrganisationUnitContract.CONTENT_TYPE_DIR);
         assertThat(getProvider().getType(OrganisationUnitContract.organisationUnits(1L)))
                 .isEqualTo(OrganisationUnitContract.CONTENT_TYPE_ITEM);
+        assertThat(getProvider().getType(OrganisationUnitContract.users("test_uid")))
+                .isEqualTo(UserContract.CONTENT_TYPE_DIR);
     }
 
     public void testInsert_shouldPersistRow() {
@@ -84,13 +92,19 @@ public class OrganisationUnitsContractIntegrationTests extends AbsProviderTestCa
         assertThatCursor(cursor).hasRow(ORGANISATION_UNIT_PROJECTION, organisationUnit).isExhausted();
     }
 
-    public void testInsert_shouldNotThrowExceptionOnExistingId() {
-        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
-        getProvider().insert(OrganisationUnitContract.organisationUnits(), organisationUnit);
+    public void testInsert_shouldThrowExceptionOnExistingId() {
+        try {
+            database().insertOrThrow(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
+            getProvider().insert(OrganisationUnitContract.organisationUnits(), organisationUnit);
+
+            fail("SQLiteConstraintException was expected, but nothing was thrown");
+        } catch (SQLiteConstraintException constraintException) {
+            assertThat(constraintException).isNotNull();
+        }
     }
 
     public void testUpdate_shouldUpdateRow() {
-        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
+        database().insertOrThrow(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
 
         organisationUnit.put(Columns.DESCRIPTION, "another_description");
         int updatedCount = getProvider().update(OrganisationUnitContract.organisationUnits(1L),
@@ -104,7 +118,7 @@ public class OrganisationUnitsContractIntegrationTests extends AbsProviderTestCa
     }
 
     public void testUpdateByUriWithId_shouldUpdateRow() {
-        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
+        database().insertOrThrow(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
 
         organisationUnit.put(Columns.DESCRIPTION, "another_description");
         int updatedItemsCount = getProvider().update(OrganisationUnitContract.organisationUnits(1L),
@@ -119,7 +133,7 @@ public class OrganisationUnitsContractIntegrationTests extends AbsProviderTestCa
     }
 
     public void testDelete_shouldDeleteRow() {
-        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
+        database().insertOrThrow(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
 
         int deletedCount = getProvider().delete(OrganisationUnitContract.organisationUnits(),
                 Columns.ID + " = ?", new String[]{String.valueOf(1L)});
@@ -150,10 +164,10 @@ public class OrganisationUnitsContractIntegrationTests extends AbsProviderTestCa
         organisationUnitGrandChild.put(Columns.UID, "test_uid_grand_child");
         organisationUnitGrandChild.put(Columns.PARENT, "test_uid_child_two");
 
-        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitRoot);
-        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitChildOne);
-        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitChildTwo);
-        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitGrandChild);
+        database().insertOrThrow(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitRoot);
+        database().insertOrThrow(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitChildOne);
+        database().insertOrThrow(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitChildTwo);
+        database().insertOrThrow(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitGrandChild);
 
         // removing root node should trigger removal of all children
         int deleteCount = getProvider().delete(
@@ -167,7 +181,7 @@ public class OrganisationUnitsContractIntegrationTests extends AbsProviderTestCa
     }
 
     public void testDeleteByUriWithId_shouldDeleteRow() {
-        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
+        database().insertOrThrow(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
 
         int deletedCount = getProvider().delete(
                 OrganisationUnitContract.organisationUnits(1L), null, null);
@@ -189,14 +203,37 @@ public class OrganisationUnitsContractIntegrationTests extends AbsProviderTestCa
         organisationUnitTwo.put(Columns.ID, 2L);
         organisationUnitTwo.put(Columns.UID, "test_uid_two");
 
-        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitOne);
-        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitTwo);
+        database().insertOrThrow(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitOne);
+        database().insertOrThrow(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitTwo);
 
         Cursor cursor = getProvider().query(OrganisationUnitContract.organisationUnits(),
                 ORGANISATION_UNIT_PROJECTION, null, null, null);
         assertThatCursor(cursor)
                 .hasRow(ORGANISATION_UNIT_PROJECTION, organisationUnitOne)
                 .hasRow(ORGANISATION_UNIT_PROJECTION, organisationUnitTwo)
+                .isExhausted();
+    }
+
+    public void testQueryUsers_shouldReturnRows() {
+        // first we need to insert user and organisation units
+        ContentValues user = UserContractIntegrationTests.create(1L, "test_user_uid");
+        ContentValues organisationUnit = OrganisationUnitContractIntegrationTests.create(1L, "test_organisation_unit_uid");
+
+        database().insert(DbOpenHelper.Tables.USER, null, user);
+        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
+
+        ContentValues userOrgUnitLink = UserOrganisationUnitLinkContractIntegrationTests
+                .create(2L, "test_user_uid", "test_organisation_unit_uid");
+        database().insertOrThrow(DbOpenHelper.Tables.USER_ORGANISATION_UNIT, null, userOrgUnitLink);
+
+        // we need to pass projection where each column is prefixed with
+        // table name in order to avoid ambiguity
+        String[] projection = DbTestUtils.unambiguousProjection(DbOpenHelper.Tables.USER,
+                UserContractIntegrationTests.USER_PROJECTION);
+        Cursor cursor = getProvider().query(OrganisationUnitContract.users("test_organisation_unit_uid"),
+                projection, null, null, null);
+        assertThatCursor(cursor)
+                .hasRow(UserContractIntegrationTests.USER_PROJECTION, user)
                 .isExhausted();
     }
 }

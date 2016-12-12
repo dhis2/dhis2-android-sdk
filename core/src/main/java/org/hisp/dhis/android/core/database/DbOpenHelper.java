@@ -3,15 +3,19 @@ package org.hisp.dhis.android.core.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
 import org.hisp.dhis.android.core.user.UserContract;
 import org.hisp.dhis.android.core.user.UserCredentialsContract;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitContract;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkContract;
 
 public final class DbOpenHelper extends SQLiteOpenHelper {
-    private static final String NAME = "dhis.db";
-    private static final int VERSION = 1;
+    @VisibleForTesting
+    static final String NAME = "dhis.db";
+
+    @VisibleForTesting
+    static final int VERSION = 1;
 
     public interface Tables {
         String USER = "User";
@@ -45,7 +49,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_USER_CREDENTIALS_TABLE = "CREATE TABLE " + Tables.USER_CREDENTIALS + " (" +
             UserCredentialsContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            UserCredentialsContract.Columns.UID + " TEXT," +
+            UserCredentialsContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
             UserCredentialsContract.Columns.CODE + " TEXT," +
             UserCredentialsContract.Columns.NAME + " TEXT," +
             UserCredentialsContract.Columns.DISPLAY_NAME + " TEXT," +
@@ -79,13 +83,14 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ");";
 
     private static final String CREATE_USER_ORGANISATION_UNIT_TABLE = "CREATE TABLE " + Tables.USER_ORGANISATION_UNIT + " (" +
-            UserOrganisationUnitContract.Columns.USER + " TEXT NOT NULL," +
-            UserOrganisationUnitContract.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
-            "FOREIGN KEY (" + UserOrganisationUnitContract.Columns.USER + ") REFERENCES " + Tables.USER +
+            UserOrganisationUnitLinkContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            UserOrganisationUnitLinkContract.Columns.USER + " TEXT NOT NULL," +
+            UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
+            "FOREIGN KEY (" + UserOrganisationUnitLinkContract.Columns.USER + ") REFERENCES " + Tables.USER +
             " (" + UserContract.Columns.UID + ") ON DELETE CASCADE," +
-            "FOREIGN KEY (" + UserOrganisationUnitContract.Columns.ORGANISATION_UNIT + ") REFERENCES " + Tables.ORGANISATION_UNIT +
+            "FOREIGN KEY (" + UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT + ") REFERENCES " + Tables.ORGANISATION_UNIT +
             " (" + OrganisationUnitContract.Columns.UID + ") ON DELETE CASCADE," +
-            "PRIMARY KEY (" + UserOrganisationUnitContract.Columns.USER + ", " + UserOrganisationUnitContract.Columns.ORGANISATION_UNIT + ")" +
+            "UNIQUE (" + UserOrganisationUnitLinkContract.Columns.USER + ", " + UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT + ")" +
             ");";
 
     public DbOpenHelper(Context context) {

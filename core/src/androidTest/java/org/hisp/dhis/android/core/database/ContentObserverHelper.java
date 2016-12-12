@@ -25,8 +25,5 @@ public class ContentObserverHelper extends ContentObserver {
 
     public int notifications() {
         return notificationsReceived;
-//        assertThat(notificationsReceived)
-//                .named("Expected %d, but received %d", count, notificationsReceived)
-//                .isEqualTo(count);
     }
 }

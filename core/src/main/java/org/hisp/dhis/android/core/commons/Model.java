@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.commons;
 
-import org.hisp.dhis.android.models.common.Validatable;
-
-public interface Model extends Validatable {
+public interface Model {
     Long id();
 }

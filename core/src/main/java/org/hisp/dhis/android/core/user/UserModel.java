@@ -100,10 +100,12 @@ public abstract class UserModel extends BaseIdentifiableObjectModel {
     @NonNull
     public abstract ContentValues toContentValues();
 
+    @NonNull
     public static Builder builder() {
         return new $$AutoValue_UserModel.Builder();
     }
 
+    @NonNull
     public static UserModel create(Cursor cursor) {
         return AutoValue_UserModel.createFromCursor(cursor);
     }

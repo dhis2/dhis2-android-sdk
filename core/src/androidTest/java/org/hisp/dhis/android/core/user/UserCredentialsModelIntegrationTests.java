@@ -15,7 +15,7 @@ import java.util.Date;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class UserCredentialsIntegrationTests {
+public class UserCredentialsModelIntegrationTests {
     private static final long ID = 11L;
     private static final String UID = "test_uid";
     private static final String CODE = "test_code";

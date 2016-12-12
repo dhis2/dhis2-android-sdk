@@ -3,10 +3,14 @@ package org.hisp.dhis.android.core.user;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.net.Uri;
 
 import org.hisp.dhis.android.core.database.AbsProviderTestCase;
 import org.hisp.dhis.android.core.database.DbOpenHelper;
+import org.hisp.dhis.android.core.database.DbTestUtils;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContractIntegrationTests;
 import org.hisp.dhis.android.core.user.UserContract.Columns;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -36,10 +40,10 @@ public final class UserContractIntegrationTests extends AbsProviderTestCase {
             Columns.NATIONALITY
     };
 
-    public static ContentValues create() {
+    public static ContentValues create(long id, String uid) {
         ContentValues user = new ContentValues();
-        user.put(Columns.ID, 1L);
-        user.put(Columns.UID, "test_uid");
+        user.put(Columns.ID, id);
+        user.put(Columns.UID, uid);
         user.put(Columns.CODE, "test_code");
         user.put(Columns.NAME, "test_name");
         user.put(Columns.DISPLAY_NAME, "test_display_name");
@@ -67,7 +71,7 @@ public final class UserContractIntegrationTests extends AbsProviderTestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        user = create();
+        user = create(1L, "test_uid");
     }
 
     public void testGetTypeOnShouldReturnCorrectMimeTypes() {
@@ -75,6 +79,8 @@ public final class UserContractIntegrationTests extends AbsProviderTestCase {
                 .isEqualTo(UserContract.CONTENT_TYPE_DIR);
         assertThat(getProvider().getType(UserContract.users(1L)))
                 .isEqualTo(UserContract.CONTENT_TYPE_ITEM);
+        assertThat(getProvider().getType(UserContract.organisationUnits("test_uid")))
+                .isEqualTo(OrganisationUnitContract.CONTENT_TYPE_DIR);
     }
 
     public void testInsert_shouldPersistRow() {
@@ -86,13 +92,19 @@ public final class UserContractIntegrationTests extends AbsProviderTestCase {
         assertThatCursor(cursor).hasRow(USER_PROJECTION, user).isExhausted();
     }
 
-    public void testInsert_shouldNotThrowOnExistingId() {
-        database().insert(DbOpenHelper.Tables.USER, null, user);
-        getProvider().insert(UserContract.users(), user);
+    public void testInsert_shouldThrowExceptionOnExistingId() {
+        try {
+            database().insertOrThrow(DbOpenHelper.Tables.USER, null, user);
+            getProvider().insert(UserContract.users(), user);
+
+            fail("SQLiteConstraintException was expected, but nothing was thrown");
+        } catch (SQLiteConstraintException constraintException) {
+            assertThat(constraintException).isNotNull();
+        }
     }
 
     public void testUpdate_shouldUpdateRow() {
-        database().insert(DbOpenHelper.Tables.USER, null, user);
+        database().insertOrThrow(DbOpenHelper.Tables.USER, null, user);
 
         user.put(Columns.FIRST_NAME, "test_name_another");
         int updatedCount = getProvider().update(UserContract.users(), user,
@@ -106,7 +118,7 @@ public final class UserContractIntegrationTests extends AbsProviderTestCase {
     }
 
     public void testUpdateByUriWithId_shouldUpdateRow() {
-        database().insert(DbOpenHelper.Tables.USER, null, user);
+        database().insertOrThrow(DbOpenHelper.Tables.USER, null, user);
 
         user.put(Columns.FIRST_NAME, "test_name_another");
         int updatedCount = getProvider().update(UserContract.users(1L), user, null, null);
@@ -119,7 +131,7 @@ public final class UserContractIntegrationTests extends AbsProviderTestCase {
     }
 
     public void testDeleteByUriWithId_shouldDeleteRow() {
-        database().insert(DbOpenHelper.Tables.USER, null, user);
+        database().insertOrThrow(DbOpenHelper.Tables.USER, null, user);
 
         int deletedCount = getProvider().delete(UserContract.users(1L), null, null);
 
@@ -130,7 +142,7 @@ public final class UserContractIntegrationTests extends AbsProviderTestCase {
     }
 
     public void testDelete_shouldDeleteRow() {
-        database().insert(DbOpenHelper.Tables.USER, null, user);
+        database().insertOrThrow(DbOpenHelper.Tables.USER, null, user);
 
         int deletedCount = getProvider().delete(UserContract.users(), Columns.ID + " = ?",
                 new String[]{String.valueOf(1L)});
@@ -151,8 +163,8 @@ public final class UserContractIntegrationTests extends AbsProviderTestCase {
         userTwo.put(Columns.ID, 2L);
         userTwo.put(Columns.UID, "test_uid_two");
 
-        database().insert(DbOpenHelper.Tables.USER, null, userOne);
-        database().insert(DbOpenHelper.Tables.USER, null, userTwo);
+        database().insertOrThrow(DbOpenHelper.Tables.USER, null, userOne);
+        database().insertOrThrow(DbOpenHelper.Tables.USER, null, userTwo);
 
         Cursor cursor = getProvider().query(UserContract.users(),
                 USER_PROJECTION, null, null, null);
@@ -172,11 +184,34 @@ public final class UserContractIntegrationTests extends AbsProviderTestCase {
         userTwo.put(Columns.ID, 2L);
         userTwo.put(Columns.UID, "test_uid_two");
 
-        database().insert(DbOpenHelper.Tables.USER, null, userOne);
-        database().insert(DbOpenHelper.Tables.USER, null, userTwo);
+        database().insertOrThrow(DbOpenHelper.Tables.USER, null, userOne);
+        database().insertOrThrow(DbOpenHelper.Tables.USER, null, userTwo);
 
         Cursor cursor = getProvider().query(UserContract.users(2L),
                 USER_PROJECTION, null, null, null);
         assertThatCursor(cursor).hasRow(USER_PROJECTION, userTwo).isExhausted();
+    }
+
+    public void testQueryOrganisationUnits_shouldReturnRows() {
+        // first we need to insert user and organisation units
+        ContentValues user = UserContractIntegrationTests.create(1L, "test_user_uid");
+        ContentValues organisationUnit = OrganisationUnitContractIntegrationTests.create(1L, "test_organisation_unit_uid");
+
+        database().insert(DbOpenHelper.Tables.USER, null, user);
+        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
+
+        ContentValues userOrgUnitLink = UserOrganisationUnitLinkContractIntegrationTests
+                .create(2L, "test_user_uid", "test_organisation_unit_uid");
+        database().insertOrThrow(DbOpenHelper.Tables.USER_ORGANISATION_UNIT, null, userOrgUnitLink);
+
+        // we need to pass projection where each column is prefixed with
+        // table name in order to avoid ambiguity
+        String[] projection = DbTestUtils.unambiguousProjection(DbOpenHelper.Tables.ORGANISATION_UNIT,
+                OrganisationUnitContractIntegrationTests.ORGANISATION_UNIT_PROJECTION);
+        Cursor cursor = getProvider().query(UserContract.organisationUnits("test_user_uid"),
+                projection, null, null, null);
+        assertThatCursor(cursor)
+                .hasRow(OrganisationUnitContractIntegrationTests.ORGANISATION_UNIT_PROJECTION, organisationUnit)
+                .isExhausted();
     }
 }

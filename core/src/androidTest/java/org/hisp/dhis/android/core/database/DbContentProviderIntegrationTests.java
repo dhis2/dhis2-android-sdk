@@ -5,9 +5,9 @@ import android.net.Uri;
 
 import static com.google.common.truth.Truth.assertThat;
 
-// ToDo: tests for notifications emitted by insert / update methods in cp
-// ToDo: tests for schema migration (requires some research to be done)
-public class ContentProviderIntegrationTests extends AbsProviderTestCase {
+// ToDo: tests for notifications emitted by insert / update methods in cp:
+//       Might be challenging because of MockContentResolver which does not propagate updates to observers
+public class DbContentProviderIntegrationTests extends AbsProviderTestCase {
     private static final String TEST_RESOURCE = "test_resource";
 
     public void testInsertOnUnknownUri_shouldThrowException() {

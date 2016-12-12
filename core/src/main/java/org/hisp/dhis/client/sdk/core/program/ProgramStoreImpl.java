@@ -38,6 +38,8 @@ import org.hisp.dhis.client.sdk.core.program.ProgramTable.ProgramColumns;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramType;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 class ProgramStoreImpl extends AbsIdentifiableObjectStore<Program> implements ProgramStore {

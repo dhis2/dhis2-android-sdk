@@ -48,6 +48,22 @@ public class TrackedEntityInstanceStoreImpl extends AbsDataStore<TrackedEntityIn
         return toModel(cursor);
     }
 
+    @Override
+    public List<TrackedEntityInstance> queryByTrackedEntityUid(String trackedEntityUid) {
+        isNull(trackedEntityUid, "Tracked entity uid must not be null");
+
+        final String selection = TrackedEntityInstanceColumns.COLUMN_TRACKED_ENTITY + " = ?";
+        final String[] selectionArgs = new String[]{
+                trackedEntityUid
+        };
+        Cursor cursor = contentResolver.query(mapper.getContentUri(),
+                mapper.getProjection(), selection, selectionArgs, null);
+        if (noTrackedEntityIsFound(cursor)) {
+            return null;
+        }
+        return toModels(cursor);
+    }
+
     private boolean noTrackedEntityIsFound(Cursor cursor) {
         return cursor.getCount() == 0;
     }

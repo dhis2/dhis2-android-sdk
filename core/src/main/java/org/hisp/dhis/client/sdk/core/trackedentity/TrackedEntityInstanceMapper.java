@@ -48,6 +48,7 @@ public class TrackedEntityInstanceMapper extends AbsMapper<TrackedEntityInstance
         contentValues.put(TrackedEntityInstanceColumns.COLUMN_CREATED, BaseIdentifiableObject.DATE_FORMAT.format(trackedEntityInstance.created()));
         contentValues.put(TrackedEntityInstanceColumns.COLUMN_LAST_UPDATED, trackedEntityInstance.lastUpdated() != null ? BaseIdentifiableObject.DATE_FORMAT.format(trackedEntityInstance.lastUpdated()) : null);
         contentValues.put(TrackedEntityInstanceColumns.COLUMN_ORGANISATION_UNIT, trackedEntityInstance.organisationUnit());
+        contentValues.put(TrackedEntityInstanceColumns.COLUMN_TRACKED_ENTITY, trackedEntityInstance.trackedEntityUid());
         contentValues.put(TrackedEntityInstanceColumns.COLUMN_STATE, trackedEntityInstance.state().toString());
 
         return contentValues;
@@ -63,6 +64,7 @@ public class TrackedEntityInstanceMapper extends AbsMapper<TrackedEntityInstance
                     .uid(getString(cursor, TrackedEntityInstanceColumns.COLUMN_UID))
                     .organisationUnit(getString(cursor, TrackedEntityInstanceColumns.COLUMN_ORGANISATION_UNIT))
                     .state(State.valueOf(getString(cursor, TrackedEntityInstanceColumns.COLUMN_STATE)))
+                    .trackedEntityUid(getString(cursor, TrackedEntityInstanceColumns.COLUMN_TRACKED_ENTITY))
                     .created(BaseIdentifiableObject.DATE_FORMAT
                             .parse(getString(cursor, TrackedEntityInstanceColumns.COLUMN_CREATED)))
                     .lastUpdated(getString(cursor, TrackedEntityInstanceColumns.COLUMN_LAST_UPDATED) != null ? BaseIdentifiableObject.DATE_FORMAT

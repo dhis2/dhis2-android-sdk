@@ -49,6 +49,7 @@ public abstract class TrackedEntityInstance extends BaseDataModel {
     private static final String JSON_PROPERTY_CREATED = "created";
     private static final String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
     private static final String JSON_PROPERTY_ORGANISATION_UNIT = "orgUnit";
+    private static final String JSON_PROPERTY_TRACKED_ENTITY = "trackedEntity";
     private static final String JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES = "trackedEntityDataValues";
     private static final String JSON_PROPERTY_RELATIONSHIPS = "relationships";
 
@@ -67,6 +68,10 @@ public abstract class TrackedEntityInstance extends BaseDataModel {
     @Nullable
     @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
     public abstract String organisationUnit();
+
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY)
+    public abstract String trackedEntityUid();
 
     @Nullable
     @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES)
@@ -104,6 +109,9 @@ public abstract class TrackedEntityInstance extends BaseDataModel {
 
         @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
         public abstract Builder organisationUnit(@Nullable String organisationUnit);
+
+        @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY)
+        public abstract Builder trackedEntityUid(@Nullable String trackedEntityUid);
 
         @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES)
         public abstract Builder trackedEntityAttributeValues(@Nullable List<TrackedEntityAttributeValue> trackedEntityAttributeValues);

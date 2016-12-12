@@ -11,6 +11,7 @@ public interface ProgramTable {
         String TABLE_NAME = "programs";
         String COLUMN_PROGRAM_TYPE = "programType";
         String COLUMN_DISPLAY_FRONT_PAGE_LIST = "displayFrontPageList";
+//        String COLUMN_TRACKED_ENTITY = "trackedEntity";
     }
 
     Uri CONTENT_URI = DbContract.BASE_CONTENT_URI.buildUpon()
@@ -54,8 +55,8 @@ public interface ProgramTable {
             ProgramColumns.COLUMN_DISPLAY_SHORT_NAME + " TEXT," +
             ProgramColumns.COLUMN_DESCRIPTION + " TEXT," +
             ProgramColumns.COLUMN_DISPLAY_DESCRIPTION + " TEXT," +
-            ProgramColumns.COLUMN_PROGRAM_TYPE + " TEXT NOT NULL," +
             ProgramColumns.COLUMN_DISPLAY_FRONT_PAGE_LIST + " INTEGER NOT NULL," +
+            ProgramColumns.COLUMN_PROGRAM_TYPE + " TEXT NOT NULL," +
             ProgramColumns.COLUMN_BODY + " TEXT NOT NULL )";
 
     String DROP_TABLE_PROGRAMS = "DROP TABLE IF EXISTS " +

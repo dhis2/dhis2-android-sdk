@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:padding="@dimen/keyline_default">
+
+    <FrameLayout
+        android:id="@+id/status_icon_container"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_gravity="center"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:background="?attr/selectableItemBackground">
+        <ImageView
+            android:id="@+id/content_entity_image_view"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/stub_description" />
+        </FrameLayout>
+
+
+    <org.hisp.dhis.client.sdk.ui.views.FontTextView
+        android:id="@+id/content_entity_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_toEndOf="@id/status_icon_container"
+        android:layout_toRightOf="@id/status_icon_container"
+        app:font="@string/font_name_condensed" />
+
+</RelativeLayout>

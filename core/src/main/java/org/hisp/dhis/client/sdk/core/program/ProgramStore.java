@@ -31,6 +31,7 @@ package org.hisp.dhis.client.sdk.core.program;
 import org.hisp.dhis.client.sdk.core.commons.database.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramType;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 
 import java.util.List;
 
@@ -39,4 +40,5 @@ public interface ProgramStore extends IdentifiableObjectStore<Program> {
     List<Program> query(ProgramType programType);
 
     List<Program> query(boolean displayFrontPageList);
+
 }

@@ -14,6 +14,8 @@ public class ReportEntity implements Parcelable {
 
     private final Map<String, String> dataElementMap;
 
+    public static final String NONE_VALUE = "none";
+
     public ReportEntity(String id, Status status, Map<String, String> dataElementMap) {
         this.id = isNull(id, "id must not be null");
         this.status = isNull(status, "status must not be null");
@@ -61,13 +63,14 @@ public class ReportEntity implements Parcelable {
     public String getValueForDataElement(String uid) {
 
         if (!dataElementMap.containsKey(uid)) {
-            return "none";
+            return NONE_VALUE;
         }
 
         return dataElementMap.get(uid);
     }
-    //TODO: Refactor this to SyncStatus of LocalStatus for better clarity. (Vlad)
+
     public enum Status {
         SENT, TO_UPDATE, TO_POST, ERROR
     }
+
 }

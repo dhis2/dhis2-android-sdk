@@ -8,4 +8,6 @@ import java.util.List;
 public interface TrackedEntityInstanceStore extends DataStore<TrackedEntityInstance> {
     List<TrackedEntityInstance> query(String organisationUnitUid);
     TrackedEntityInstance queryByUid(String trackedEntityInstanceUid);
+
+    List<TrackedEntityInstance> queryByTrackedEntityUid(String trackedEntityUid);
 }

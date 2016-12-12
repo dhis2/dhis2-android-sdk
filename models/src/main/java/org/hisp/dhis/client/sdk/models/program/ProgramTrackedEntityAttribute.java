@@ -36,11 +36,14 @@ import org.hisp.dhis.client.sdk.models.common.BaseNameableObject;
 import org.hisp.dhis.client.sdk.models.common.ValueType;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
+import java.util.Comparator;
+
 import javax.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ProgramTrackedEntityAttribute.Builder.class)
 public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
+    public static final Comparator<ProgramTrackedEntityAttribute> DESCENDING_SORT_ORDER_COMPARATOR = new DescendingSortOrderComparator();
     private static final String JSON_PROPERTY_MANDATORY = "mandatory";
     private static final String JSON_PROPERTY_TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
     private static final String JSON_PROPERTY_VALUE_TYPE = "valueType";
@@ -95,5 +98,17 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
 
 
         abstract ProgramTrackedEntityAttribute build();
+    }
+
+    private static class DescendingSortOrderComparator implements Comparator<ProgramTrackedEntityAttribute> {
+
+        @Override
+        public int compare(ProgramTrackedEntityAttribute first, ProgramTrackedEntityAttribute second) {
+            if (first != null && second != null && first.sortOrder() != null) {
+                return first.sortOrder().compareTo(second.sortOrder());
+            }
+
+            return 0;
+        }
     }
 }

@@ -18,10 +18,6 @@ import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.models.ReportEntity;
 import org.hisp.dhis.client.sdk.ui.views.CircleView;
 
-import static org.hisp.dhis.client.sdk.ui.models.ReportEntity.Status.SENT;
-import static org.hisp.dhis.client.sdk.ui.models.ReportEntity.Status.TO_POST;
-import static org.hisp.dhis.client.sdk.ui.models.ReportEntity.Status.TO_UPDATE;
-
 public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
 
     // Event map keys:

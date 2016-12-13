@@ -312,4 +312,11 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
             notifyDataSetChanged();
         }
     }
+
+    public List<FormEntity> getItems() {
+        if (modifiedDataEntities == null || modifiedDataEntities.isEmpty()) {
+            return originalDataEntities;
+        }
+        return modifiedDataEntities;
+    }
 }

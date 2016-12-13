@@ -98,6 +98,10 @@ public abstract class Enrollment {
     @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_ATTRIBUTE_VALUES)
     public abstract List<TrackedEntityAttributeValue> trackedEntityAttributeValues();
 
+    public static Builder builder() {
+        return new AutoValue_Enrollment.Builder();
+    }
+
     @AutoValue.Builder
     public static abstract class Builder {
 

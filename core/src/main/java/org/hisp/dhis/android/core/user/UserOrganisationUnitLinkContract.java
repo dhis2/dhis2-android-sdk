@@ -4,7 +4,7 @@ import android.content.ContentUris;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.commons.BaseModelContract;
+import org.hisp.dhis.android.core.common.BaseModelContract;
 import org.hisp.dhis.android.core.data.database.DbContract;
 import org.hisp.dhis.android.core.data.database.DbUtils;
 

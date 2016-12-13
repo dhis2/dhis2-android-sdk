@@ -26,8 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.commons;
+package org.hisp.dhis.android.core.common;
 
-public enum State {
-    TO_POST, TO_UPDATE, TO_DELETE, ERROR, SYNCED
+import android.support.annotation.Nullable;
+
+import com.gabrielittner.auto.value.cursor.ColumnName;
+
+import org.hisp.dhis.android.models.common.NameableObject;
+
+public abstract class BaseNameableObjectModel extends BaseIdentifiableObjectModel implements NameableObject {
+
+    @Nullable
+    @Override
+    @ColumnName(BaseNameableObjectContract.Columns.SHORT_NAME)
+    public abstract String shortName();
+
+    @Nullable
+    @Override
+    @ColumnName(BaseNameableObjectContract.Columns.DISPLAY_SHORT_NAME)
+    public abstract String displayShortName();
+
+    @Nullable
+    @Override
+    @ColumnName(BaseNameableObjectContract.Columns.DESCRIPTION)
+    public abstract String description();
+
+    @Nullable
+    @Override
+    @ColumnName(BaseNameableObjectContract.Columns.DISPLAY_DESCRIPTION)
+    public abstract String displayDescription();
+
+    protected static abstract class Builder<T extends Builder> extends BaseIdentifiableObjectModel.Builder<T> {
+        public abstract T shortName(@Nullable String shortName);
+
+        public abstract T displayShortName(@Nullable String displayShortName);
+
+        public abstract T description(@Nullable String description);
+
+        public abstract T displayDescription(@Nullable String displayDescription);
+    }
 }

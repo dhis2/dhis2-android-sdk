@@ -33,10 +33,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.annotation.Nullable;
 
 public abstract class BaseNameableObject extends BaseIdentifiableObject implements NameableObject {
-    private static final String JSON_PROPERTY_SHORT_NAME = "shortName";
-    private static final String JSON_PROPERTY_DISPLAY_SHORT_NAME = "displayShortName";
-    private static final String JSON_PROPERTY_DESCRIPTION = "description";
-    private static final String JSON_PROPERTY_DISPLAY_DESCRIPTION = "displayDescription";
+    protected static final String JSON_PROPERTY_SHORT_NAME = "shortName";
+    protected static final String JSON_PROPERTY_DISPLAY_SHORT_NAME = "displayShortName";
+    protected static final String JSON_PROPERTY_DESCRIPTION = "description";
+    protected static final String JSON_PROPERTY_DISPLAY_DESCRIPTION = "displayDescription";
 
     @Override
     @Nullable

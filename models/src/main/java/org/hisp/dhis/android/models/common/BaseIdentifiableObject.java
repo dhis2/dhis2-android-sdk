@@ -48,12 +48,12 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject {
 
     public static final int UID_LENGTH = 11;
 
-    public static final String JSON_PROPERTY_UID = "id";
-    public static final String JSON_PROPERTY_CODE = "code";
-    public static final String JSON_PROPERTY_NAME = "name";
-    public static final String JSON_PROPERTY_DISPLAY_NAME = "displayName";
-    public static final String JSON_PROPERTY_CREATED = "created";
-    public static final String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
+    protected static final String JSON_PROPERTY_UID = "id";
+    protected static final String JSON_PROPERTY_CODE = "code";
+    protected static final String JSON_PROPERTY_NAME = "name";
+    protected static final String JSON_PROPERTY_DISPLAY_NAME = "displayName";
+    protected static final String JSON_PROPERTY_CREATED = "created";
+    protected static final String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
 
     @Override
     @JsonProperty(JSON_PROPERTY_UID)

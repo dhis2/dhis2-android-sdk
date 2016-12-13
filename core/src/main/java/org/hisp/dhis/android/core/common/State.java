@@ -26,8 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.commons;
+package org.hisp.dhis.android.core.common;
 
-public interface DataModel {
-    State state();
+public enum State {
+    TO_POST, TO_UPDATE, TO_DELETE, ERROR, SYNCED
 }

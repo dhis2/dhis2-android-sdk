@@ -26,18 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.commons;
+package org.hisp.dhis.android.core.common;
 
 import android.support.annotation.Nullable;
 
-// TODO: Tests
-public abstract class BaseDataModel implements DataModel {
+import com.gabrielittner.auto.value.cursor.ColumnName;
+
+public abstract class BaseModel implements Model {
 
     @Override
     @Nullable
-    public abstract State state();
+    @ColumnName(BaseModelContract.Columns.ID)
+    public abstract Long id();
 
     protected static abstract class Builder<T extends Builder> {
-        public abstract T state(State state);
+        public abstract T id(Long id);
     }
 }

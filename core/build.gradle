@@ -100,8 +100,9 @@ dependencies {
     testCompile "junit:junit:${libraries.junit}"
     testCompile "org.mockito:mockito-core:${libraries.mockito}"
     testCompile "org.assertj:assertj-core:${libraries.assertj}"
-    testCompile "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
     testCompile "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
+    testCompile "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
+    testCompile "com.squareup.retrofit2:retrofit-mock:${libraries.retrofit}"
 
     // Android test dependencies
     androidTestCompile "org.mockito:mockito-core:${libraries.mockito}"

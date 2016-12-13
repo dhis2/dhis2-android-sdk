@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.commons;
+package org.hisp.dhis.android.core.common;
 
 public final class BaseNameableObjectContract {
     public interface Columns extends BaseIdentifiableObjectContract.Columns {

@@ -33,6 +33,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.models.common.BaseNameableObject;
+import org.hisp.dhis.android.models.common.Field;
 import org.hisp.dhis.android.models.program.Program;
 
 import java.util.Collections;
@@ -51,6 +52,23 @@ public abstract class OrganisationUnit extends BaseNameableObject {
     private static final String JSON_PROPERTY_CLOSED_DATE = "closedDate";
     private static final String JSON_PROPERTY_LEVEL = "level";
     private static final String JSON_PROPERTY_PROGRAMS = "programs";
+
+    public static final Field<OrganisationUnit, String> UID = Field.create(JSON_PROPERTY_UID);
+    public static final Field<OrganisationUnit, String> CODE = Field.create(JSON_PROPERTY_CODE);
+    public static final Field<OrganisationUnit, String> NAME = Field.create(JSON_PROPERTY_NAME);
+    public static final Field<OrganisationUnit, String> DISPLAY_NAME = Field.create(JSON_PROPERTY_DISPLAY_NAME);
+    public static final Field<OrganisationUnit, String> CREATED = Field.create(JSON_PROPERTY_CREATED);
+    public static final Field<OrganisationUnit, String> LAST_UPDATED = Field.create(JSON_PROPERTY_LAST_UPDATED);
+    public static final Field<OrganisationUnit, String> SHORT_NAME = Field.create(JSON_PROPERTY_SHORT_NAME);
+    public static final Field<OrganisationUnit, String> DISPLAY_SHORT_NAME = Field.create(JSON_PROPERTY_DISPLAY_SHORT_NAME);
+    public static final Field<OrganisationUnit, String> DESCRIPTION = Field.create(JSON_PROPERTY_DESCRIPTION);
+    public static final Field<OrganisationUnit, String> DISPLAY_DESCRIPTION = Field.create(JSON_PROPERTY_DISPLAY_DESCRIPTION);
+    public static final Field<OrganisationUnit, String> PATH = Field.create(JSON_PROPERTY_PATH);
+    public static final Field<OrganisationUnit, String> OPENING_DATE = Field.create(JSON_PROPERTY_OPENING_DATE);
+    public static final Field<OrganisationUnit, String> CLOSED_DATE = Field.create(JSON_PROPERTY_CLOSED_DATE);
+    public static final Field<OrganisationUnit, String> LEVEL = Field.create(JSON_PROPERTY_LEVEL);
+    public static final Field<OrganisationUnit, ?> PARENT = Field.create(JSON_PROPERTY_PARENT);
+    public static final Field<Program, String> PROGRAMS = Field.create(JSON_PROPERTY_PROGRAMS);
 
     @Nullable
     @JsonProperty(JSON_PROPERTY_PARENT)

@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.commons;
+package org.hisp.dhis.android.core.common;
 
 import android.provider.BaseColumns;
 

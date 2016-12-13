@@ -26,48 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.common;
 
-
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnName;
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-
 // TODO: Tests
-@AutoValue
-public abstract class UserCredentialsModel extends BaseIdentifiableObjectModel {
+public abstract class BaseDataModel implements DataModel {
 
+    @Override
     @Nullable
-    @ColumnName(UserCredentialsContract.Columns.USERNAME)
-    public abstract String username();
+    public abstract State state();
 
-    @Nullable
-    @ColumnName(UserCredentialsContract.Columns.USER)
-    public abstract String user();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
-
-    public static UserCredentialsModel create(Cursor cursor) {
-        return AutoValue_UserCredentialsModel.createFromCursor(cursor);
-    }
-
-    public static Builder builder() {
-        return new $$AutoValue_UserCredentialsModel.Builder();
-    }
-
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {
-        public abstract Builder username(@Nullable String username);
-
-        public abstract Builder user(@Nullable String user);
-
-        public abstract UserCredentialsModel build();
+    protected static abstract class Builder<T extends Builder> {
+        public abstract T state(State state);
     }
 }

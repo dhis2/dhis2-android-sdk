@@ -26,20 +26,63 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.commons;
+package org.hisp.dhis.android.core.common;
 
 import android.support.annotation.Nullable;
 
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
-public abstract class BaseModel implements Model {
+import org.hisp.dhis.android.core.data.database.DateColumnAdapter;
+import org.hisp.dhis.android.models.common.IdentifiableObject;
+
+import java.util.Date;
+
+public abstract class BaseIdentifiableObjectModel extends BaseModel implements IdentifiableObject {
 
     @Override
     @Nullable
-    @ColumnName(BaseModelContract.Columns.ID)
-    public abstract Long id();
+    @ColumnName(BaseIdentifiableObjectContract.Columns.UID)
+    public abstract String uid();
 
-    protected static abstract class Builder<T extends Builder> {
-        public abstract T id(Long id);
+    @Override
+    @Nullable
+    @ColumnName(BaseIdentifiableObjectContract.Columns.CODE)
+    public abstract String code();
+
+    @Override
+    @Nullable
+    @ColumnName(BaseIdentifiableObjectContract.Columns.NAME)
+    public abstract String name();
+
+    @Override
+    @Nullable
+    @ColumnName(BaseIdentifiableObjectContract.Columns.DISPLAY_NAME)
+    public abstract String displayName();
+
+    @Override
+    @Nullable
+    @ColumnName(BaseIdentifiableObjectContract.Columns.CREATED)
+    @ColumnAdapter(DateColumnAdapter.class)
+    public abstract Date created();
+
+    @Override
+    @Nullable
+    @ColumnName(BaseIdentifiableObjectContract.Columns.LAST_UPDATED)
+    @ColumnAdapter(DateColumnAdapter.class)
+    public abstract Date lastUpdated();
+
+    protected static abstract class Builder<T extends Builder> extends BaseModel.Builder<T> {
+        public abstract T uid(String uid);
+
+        public abstract T code(@Nullable String code);
+
+        public abstract T name(@Nullable String name);
+
+        public abstract T displayName(@Nullable String displayName);
+
+        public abstract T created(@Nullable Date created);
+
+        public abstract T lastUpdated(@Nullable Date lastUpdated);
     }
 }

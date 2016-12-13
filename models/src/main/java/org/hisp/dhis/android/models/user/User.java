@@ -33,6 +33,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.models.common.Field;
+import org.hisp.dhis.android.models.common.NestedField;
 import org.hisp.dhis.android.models.organisationunit.OrganisationUnit;
 
 import java.util.Collections;
@@ -48,23 +50,47 @@ public abstract class User extends BaseIdentifiableObject {
     public static final String GENDER_FEMALE = "gender_female";
     public static final String GENDER_OTHER = "gender_other";
 
-    public static final String JSON_PROPERTY_BIRTHDAY = "birthday";
-    public static final String JSON_PROPERTY_EDUCATION = "education";
-    public static final String JSON_PROPERTY_GENDER = "gender";
-    public static final String JSON_PROPERTY_JOB_TITLE = "jobTitle";
-    public static final String JSON_PROPERTY_SURNAME = "surname";
-    public static final String JSON_PROPERTY_FIRST_NAME = "firstName";
-    public static final String JSON_PROPERTY_INTRODUCTION = "introduction";
-    public static final String JSON_PROPERTY_EMPLOYER = "employer";
-    public static final String JSON_PROPERTY_INTERESTS = "interests";
-    public static final String JSON_PROPERTY_LANGUAGES = "languages";
-    public static final String JSON_PROPERTY_EMAIL = "email";
-    public static final String JSON_PROPERTY_PHONE_NUMBER = "phoneNumber";
-    public static final String JSON_PROPERTY_NATIONALITY = "nationality";
-    public static final String JSON_PROPERTY_USER_CREDENTIALS = "userCredentials";
-    public static final String JSON_PROPERTY_ORGANISATION_UNITS = "organisationUnits";
-    public static final String JSON_PROPERTY_TEI_SEARCH_ORGANISATION_UNITS = "teiSearchOrganisationUnits";
-    public static final String JSON_PROPERTY_DATA_VIEW_ORGANISATION_UNITS = "dataViewOrganisationUnits";
+    private static final String JSON_PROPERTY_BIRTHDAY = "birthday";
+    private static final String JSON_PROPERTY_EDUCATION = "education";
+    private static final String JSON_PROPERTY_GENDER = "gender";
+    private static final String JSON_PROPERTY_JOB_TITLE = "jobTitle";
+    private static final String JSON_PROPERTY_SURNAME = "surname";
+    private static final String JSON_PROPERTY_FIRST_NAME = "firstName";
+    private static final String JSON_PROPERTY_INTRODUCTION = "introduction";
+    private static final String JSON_PROPERTY_EMPLOYER = "employer";
+    private static final String JSON_PROPERTY_INTERESTS = "interests";
+    private static final String JSON_PROPERTY_LANGUAGES = "languages";
+    private static final String JSON_PROPERTY_EMAIL = "email";
+    private static final String JSON_PROPERTY_PHONE_NUMBER = "phoneNumber";
+    private static final String JSON_PROPERTY_NATIONALITY = "nationality";
+    private static final String JSON_PROPERTY_USER_CREDENTIALS = "userCredentials";
+    private static final String JSON_PROPERTY_ORGANISATION_UNITS = "organisationUnits";
+    private static final String JSON_PROPERTY_TEI_SEARCH_ORGANISATION_UNITS = "teiSearchOrganisationUnits";
+    private static final String JSON_PROPERTY_DATA_VIEW_ORGANISATION_UNITS = "dataViewOrganisationUnits";
+
+    public static final Field<User, String> UID = Field.create(JSON_PROPERTY_UID);
+    public static final Field<User, String> CODE = Field.create(JSON_PROPERTY_CODE);
+    public static final Field<User, String> NAME = Field.create(JSON_PROPERTY_NAME);
+    public static final Field<User, String> DISPLAY_NAME = Field.create(JSON_PROPERTY_DISPLAY_NAME);
+    public static final Field<User, String> CREATED = Field.create(JSON_PROPERTY_CREATED);
+    public static final Field<User, String> LAST_UPDATED = Field.create(JSON_PROPERTY_LAST_UPDATED);
+    public static final Field<User, String> BIRTHDAY = Field.create("birthday");
+    public static final Field<User, String> EDUCATION = Field.create("education");
+    public static final Field<User, String> GENDER = Field.create("gender");
+    public static final Field<User, String> JOB_TITLE = Field.create("jobTitle");
+    public static final Field<User, String> SURNAME = Field.create("surname");
+    public static final Field<User, String> FIRST_NAME = Field.create("firstName");
+    public static final Field<User, String> INTRODUCTION = Field.create("introduction");
+    public static final Field<User, String> EMPLOYER = Field.create("employer");
+    public static final Field<User, String> INTERESTS = Field.create("interests");
+    public static final Field<User, String> LANGUAGES = Field.create("languages");
+    public static final Field<User, String> EMAIL = Field.create("email");
+    public static final Field<User, String> PHONE_NUMBER = Field.create("phoneNumber");
+    public static final Field<User, String> NATIONALITY = Field.create("nationality");
+    public static final Field<User, String> USER_CREDENTIALS = Field.create("userCredentials");
+    public static final NestedField<OrganisationUnit, ?> ORGANISATION_UNITS = NestedField.create("organisationUnits");
+    public static final NestedField<OrganisationUnit, String> TEI_SEARCH_ORGANISATION_UNITS = NestedField.create("teiSearchOrganisationUnits");
+    public static final NestedField<OrganisationUnit, String> DATA_VIEW_ORGANISATION_UNITS = NestedField.create("dataViewOrganisationUnits");
 
     @Nullable
     @JsonProperty(JSON_PROPERTY_BIRTHDAY)

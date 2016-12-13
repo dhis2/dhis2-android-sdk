@@ -1,8 +1,11 @@
 package org.hisp.dhis.client.sdk.ui.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-public class FormSection {
+public class FormSection implements Parcelable {
     private final String id;
     private final String label;
 
@@ -51,4 +54,27 @@ public class FormSection {
         result = 31 * result + label.hashCode();
         return result;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(getId());
+        dest.writeString(getLabel());
+    }
+
+    public static final Parcelable.Creator<FormSection> CREATOR
+            = new Parcelable.Creator<FormSection>() {
+
+        public FormSection createFromParcel(Parcel in) {
+            return new FormSection(in.readString(), in.readString());
+        }
+
+        public FormSection[] newArray(int size) {
+            return new FormSection[size];
+        }
+    };
 }

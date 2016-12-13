@@ -32,7 +32,6 @@ public class ExpansionPanelRowView implements RowView {
     private static class ExpansionPanelRowViewHolder extends RecyclerView.ViewHolder {
 
         public final TextView textViewLabel;
-        public final ImageButton actionButton;
         public final ImageButton expandCollapseButton;
 
         public ExpansionPanelRowViewHolder(View itemView) {
@@ -40,13 +39,6 @@ public class ExpansionPanelRowView implements RowView {
 
             textViewLabel = (TextView) itemView
                     .findViewById(R.id.title);
-            actionButton = (ImageButton) itemView.findViewById(R.id.action_button);
-            actionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(v.getContext(), textViewLabel.getText(), Toast.LENGTH_SHORT).show();
-                }
-            });
             expandCollapseButton = (ImageButton) itemView.findViewById(R.id.expand_collapse_button);
 
             View.OnClickListener expandCollapseClickListener = new View.OnClickListener() {

@@ -28,15 +28,12 @@
 
 package org.hisp.dhis.android.models.dataelement;
 
-import org.hisp.dhis.android.models.dataelement.CategoryOptionCombo;
 import org.junit.Test;
 
 import java.util.Date;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class CategoryOptionComboTests {
 
@@ -56,64 +53,5 @@ public class CategoryOptionComboTests {
     @Test(expected = IllegalStateException.class)
     public void build_shouldThrowOnNullUidField() {
         CategoryOptionCombo.builder().build();
-    }
-
-    @Test
-    public void isValid_shouldReturnFalseOnMalformedUid() {
-        // corner case: empty string
-        CategoryOptionCombo cocWithEmptyUid = CategoryOptionCombo
-                .builder().uid("").build();
-
-        // uid of 10 chars long
-        CategoryOptionCombo cocWithShortUid = CategoryOptionCombo
-                .builder().uid("a1b2c3d4e5").build();
-
-        // uid of 12 chars long
-        CategoryOptionCombo cocWithLongUid = CategoryOptionCombo
-                .builder().uid("a1b2c3d4e5ff").build();
-
-        assertThat(cocWithEmptyUid.isValid()).isFalse();
-        assertThat(cocWithShortUid.isValid()).isFalse();
-        assertThat(cocWithLongUid.isValid()).isFalse();
-    }
-
-    @Test
-    public void isValid_shouldReturnFalseOnNullCreatedField() {
-        CategoryOptionCombo categoryOptionCombo = CategoryOptionCombo.builder()
-                .uid("a1b2c3d4e5f")
-                .lastUpdated(new Date())
-                .build();
-
-        assertThat(categoryOptionCombo.isValid()).isFalse();
-    }
-
-    @Test
-    public void isValid_shouldReturnFalseOnNullLastUpdatedField() {
-        CategoryOptionCombo categoryOptionCombo = CategoryOptionCombo.builder()
-                .uid("a1b2c3d4e5f")
-                .created(new Date())
-                .build();
-
-        assertThat(categoryOptionCombo.isValid()).isFalse();
-    }
-
-    @Test
-    public void isValid_shouldReturnFalseOnNullCreatedAndLastUpdatedField() {
-        CategoryOptionCombo categoryOptionCombo = CategoryOptionCombo.builder()
-                .uid("a1b2c3d4e5f")
-                .build();
-
-        assertThat(categoryOptionCombo.isValid()).isFalse();
-    }
-
-    @Test
-    public void isValid_shouldReturnTrueOnValidObject() {
-        CategoryOptionCombo categoryOptionCombo = CategoryOptionCombo.builder()
-                .uid("a1b2c3d4e5f")
-                .created(new Date())
-                .lastUpdated(new Date())
-                .build();
-
-        assertThat(categoryOptionCombo.isValid()).isTrue();
     }
 }

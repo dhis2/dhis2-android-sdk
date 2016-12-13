@@ -6,13 +6,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.net.Uri;
 
-import org.hisp.dhis.android.core.database.AbsProviderTestCase;
-import org.hisp.dhis.android.core.database.DbOpenHelper;
+import org.hisp.dhis.android.core.data.database.AbsProviderTestCase;
+import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContractIntegrationTests;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.database.CursorAssert.assertThatCursor;
+import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 public class UserOrganisationUnitLinkContractIntegrationTests extends AbsProviderTestCase {
     public static String[] USER_ORGANISATION_UNIT_PROJECTION = {

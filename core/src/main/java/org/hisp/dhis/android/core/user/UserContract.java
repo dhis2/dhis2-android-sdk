@@ -5,8 +5,8 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.commons.BaseIdentifiableObjectContract;
-import org.hisp.dhis.android.core.database.DbContract;
-import org.hisp.dhis.android.core.database.DbUtils;
+import org.hisp.dhis.android.core.data.database.DbContract;
+import org.hisp.dhis.android.core.data.database.DbUtils;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
 
 public final class UserContract {

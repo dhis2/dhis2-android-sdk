@@ -5,8 +5,8 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.commons.BaseModelContract;
-import org.hisp.dhis.android.core.database.DbContract;
-import org.hisp.dhis.android.core.database.DbUtils;
+import org.hisp.dhis.android.core.data.database.DbContract;
+import org.hisp.dhis.android.core.data.database.DbUtils;
 
 public final class UserOrganisationUnitLinkContract {
     public static final String USER_ORGANISATION_UNIT_LINKS = "userOrganisationUnits";

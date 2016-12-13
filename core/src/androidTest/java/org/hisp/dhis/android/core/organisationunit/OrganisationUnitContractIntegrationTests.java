@@ -6,16 +6,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.net.Uri;
 
-import org.hisp.dhis.android.core.database.AbsProviderTestCase;
-import org.hisp.dhis.android.core.database.DbOpenHelper;
-import org.hisp.dhis.android.core.database.DbTestUtils;
+import org.hisp.dhis.android.core.data.database.AbsProviderTestCase;
+import org.hisp.dhis.android.core.data.database.DbOpenHelper;
+import org.hisp.dhis.android.core.data.database.DbTestUtils;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract.Columns;
 import org.hisp.dhis.android.core.user.UserContract;
 import org.hisp.dhis.android.core.user.UserContractIntegrationTests;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkContractIntegrationTests;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.database.CursorAssert.assertThatCursor;
+import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 public class OrganisationUnitContractIntegrationTests extends AbsProviderTestCase {
     // using table as a prefix in order to avoid ambiguity in queries against joined tables

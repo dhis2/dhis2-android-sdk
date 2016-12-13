@@ -32,13 +32,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.models.common.Validatable;
 import org.hisp.dhis.android.models.trackedentity.TrackedEntityInstance;
 
 // TODO: Tests
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Relationship.Builder.class)
-public abstract class Relationship implements Validatable {
+public abstract class Relationship {
     private static final String JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_A = "trackedEntityInstanceA";
     private static final String JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_B = "trackedEntityInstanceB";
     private static final String JSON_PROPERTY_RELATIONSHIP_TYPE = "relationshipType";
@@ -54,16 +53,6 @@ public abstract class Relationship implements Validatable {
 
     public static Builder builder() {
         return new AutoValue_Relationship.Builder();
-    }
-
-    @Override
-    public boolean isValid() {
-        if (relationshipType() == null || trackedEntityInstanceA() == null ||
-                trackedEntityInstanceB() == null) {
-            return false;
-        }
-
-        return true;
     }
 
     @AutoValue.Builder

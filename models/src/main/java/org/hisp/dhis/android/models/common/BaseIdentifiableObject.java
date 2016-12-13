@@ -46,14 +46,14 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject {
     public static final DateFormat DATE_FORMAT =
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.US);
 
-    private static final int UID_LENGTH = 11;
+    public static final int UID_LENGTH = 11;
 
-    private static final String JSON_PROPERTY_UID = "id";
-    private static final String JSON_PROPERTY_CODE = "code";
-    private static final String JSON_PROPERTY_NAME = "name";
-    private static final String JSON_PROPERTY_DISPLAY_NAME = "displayName";
-    private static final String JSON_PROPERTY_CREATED = "created";
-    private static final String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
+    public static final String JSON_PROPERTY_UID = "id";
+    public static final String JSON_PROPERTY_CODE = "code";
+    public static final String JSON_PROPERTY_NAME = "name";
+    public static final String JSON_PROPERTY_DISPLAY_NAME = "displayName";
+    public static final String JSON_PROPERTY_CREATED = "created";
+    public static final String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
 
     @Override
     @JsonProperty(JSON_PROPERTY_UID)
@@ -83,21 +83,6 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject {
     @Nullable
     @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
     public abstract Date lastUpdated();
-
-    @Override
-    public boolean isValid() {
-        // check if properties are null or not
-        if (created() == null || lastUpdated() == null) {
-            return false;
-        }
-
-        // check uid length which must be 11 characters long
-        if (uid().length() != UID_LENGTH) {
-            return false;
-        }
-
-        return true;
-    }
 
     protected static abstract class Builder<T extends Builder> {
 

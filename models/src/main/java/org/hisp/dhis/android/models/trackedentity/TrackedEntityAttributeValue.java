@@ -33,13 +33,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.models.common.Validatable;
-
 import javax.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_TrackedEntityAttributeValue.Builder.class)
-public abstract class TrackedEntityAttributeValue implements Validatable {
+public abstract class TrackedEntityAttributeValue {
     private static final String JSON_PROPERTY_ATTRIBUTE = "attribute";
     private static final String JSON_PROPERTY_VALUE = "value";
 
@@ -52,14 +50,6 @@ public abstract class TrackedEntityAttributeValue implements Validatable {
 
     @JsonProperty(JSON_PROPERTY_VALUE)
     public abstract String value();
-
-    @Override
-    public boolean isValid() {
-        // since all properties are mandatory, auto-value will prevent instantiation
-        // of malformed TrackedEntityDataValues. Hence, there is no need to perform soft
-        // validation, since TrackedEntityDataValues always should be valid
-        return true;
-    }
 
     public static Builder builder() {
         return new AutoValue_TrackedEntityAttributeValue.Builder();

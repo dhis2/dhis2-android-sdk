@@ -1,8 +1,11 @@
-package org.hisp.dhis.android.core.database;
+package org.hisp.dhis.android.core.data.database;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.support.test.InstrumentationRegistry;
 import android.test.ProviderTestCase2;
+
+import org.hisp.dhis.android.core.data.database.DbContentProvider;
+import org.hisp.dhis.android.core.data.database.DbContract;
 
 public abstract class AbsProviderTestCase extends ProviderTestCase2<DbContentProvider> {
     private SQLiteDatabase writableDatabase;

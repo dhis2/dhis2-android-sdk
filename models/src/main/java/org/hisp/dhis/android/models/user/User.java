@@ -48,23 +48,23 @@ public abstract class User extends BaseIdentifiableObject {
     public static final String GENDER_FEMALE = "gender_female";
     public static final String GENDER_OTHER = "gender_other";
 
-    private static final String JSON_PROPERTY_BIRTHDAY = "birthday";
-    private static final String JSON_PROPERTY_EDUCATION = "education";
-    private static final String JSON_PROPERTY_GENDER = "gender";
-    private static final String JSON_PROPERTY_JOB_TITLE = "jobTitle";
-    private static final String JSON_PROPERTY_SURNAME = "surname";
-    private static final String JSON_PROPERTY_FIRST_NAME = "firstName";
-    private static final String JSON_PROPERTY_INTRODUCTION = "introduction";
-    private static final String JSON_PROPERTY_EMPLOYER = "employer";
-    private static final String JSON_PROPERTY_INTERESTS = "interests";
-    private static final String JSON_PROPERTY_LANGUAGES = "languages";
-    private static final String JSON_PROPERTY_EMAIL = "email";
-    private static final String JSON_PROPERTY_PHONE_NUMBER = "phoneNumber";
-    private static final String JSON_PROPERTY_NATIONALITY = "nationality";
-    private static final String JSON_PROPERTY_USER_CREDENTIALS = "userCredentials";
-    private static final String JSON_PROPERTY_ORGANISATION_UNITS = "organisationUnits";
-    private static final String JSON_PROPERTY_TEI_SEARCH_ORGANISATION_UNITS = "teiSearchOrganisationUnits";
-    private static final String JSON_PROPERTY_DATA_VIEW_ORGANISATION_UNITS = "dataViewOrganisationUnits";
+    public static final String JSON_PROPERTY_BIRTHDAY = "birthday";
+    public static final String JSON_PROPERTY_EDUCATION = "education";
+    public static final String JSON_PROPERTY_GENDER = "gender";
+    public static final String JSON_PROPERTY_JOB_TITLE = "jobTitle";
+    public static final String JSON_PROPERTY_SURNAME = "surname";
+    public static final String JSON_PROPERTY_FIRST_NAME = "firstName";
+    public static final String JSON_PROPERTY_INTRODUCTION = "introduction";
+    public static final String JSON_PROPERTY_EMPLOYER = "employer";
+    public static final String JSON_PROPERTY_INTERESTS = "interests";
+    public static final String JSON_PROPERTY_LANGUAGES = "languages";
+    public static final String JSON_PROPERTY_EMAIL = "email";
+    public static final String JSON_PROPERTY_PHONE_NUMBER = "phoneNumber";
+    public static final String JSON_PROPERTY_NATIONALITY = "nationality";
+    public static final String JSON_PROPERTY_USER_CREDENTIALS = "userCredentials";
+    public static final String JSON_PROPERTY_ORGANISATION_UNITS = "organisationUnits";
+    public static final String JSON_PROPERTY_TEI_SEARCH_ORGANISATION_UNITS = "teiSearchOrganisationUnits";
+    public static final String JSON_PROPERTY_DATA_VIEW_ORGANISATION_UNITS = "dataViewOrganisationUnits";
 
     @Nullable
     @JsonProperty(JSON_PROPERTY_BIRTHDAY)
@@ -132,14 +132,6 @@ public abstract class User extends BaseIdentifiableObject {
     @Nullable
     @JsonProperty(JSON_PROPERTY_DATA_VIEW_ORGANISATION_UNITS)
     public abstract List<OrganisationUnit> dataViewOrganisationUnits();
-
-    @Override
-    public boolean isValid() {
-        if (userCredentials() == null) {
-            return false;
-        }
-        return super.isValid();
-    }
 
     public static Builder builder() {
         return new AutoValue_User.Builder();

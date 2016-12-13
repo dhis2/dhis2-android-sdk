@@ -51,15 +51,6 @@ public abstract class RelationshipType extends BaseIdentifiableObject {
     @JsonProperty(JSON_PROPERTY_A_TO_B)
     public abstract String aIsToB();
 
-    @Override
-    public boolean isValid() {
-        if (bIsToA() == null || aIsToB() == null) {
-            return false;
-        }
-
-        return super.isValid();
-    }
-
     public static Builder builder() {
         return new AutoValue_RelationshipType.Builder();
     }

@@ -33,12 +33,12 @@ import android.support.annotation.Nullable;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
+import org.hisp.dhis.android.core.data.database.DateColumnAdapter;
 import org.hisp.dhis.android.models.common.IdentifiableObject;
 
 import java.util.Date;
 
 public abstract class BaseIdentifiableObjectModel extends BaseModel implements IdentifiableObject {
-    private static final int UID_LENGTH = 11;
 
     @Override
     @Nullable
@@ -71,21 +71,6 @@ public abstract class BaseIdentifiableObjectModel extends BaseModel implements I
     @ColumnName(BaseIdentifiableObjectContract.Columns.LAST_UPDATED)
     @ColumnAdapter(DateColumnAdapter.class)
     public abstract Date lastUpdated();
-
-    @Override
-    public boolean isValid() {
-        // check if properties are null or not
-        if (created() == null || lastUpdated() == null) {
-            return false;
-        }
-
-        // check uid length which must be 11 characters long
-        if (uid().length() != UID_LENGTH) {
-            return false;
-        }
-
-        return true;
-    }
 
     protected static abstract class Builder<T extends Builder> extends BaseModel.Builder<T> {
         public abstract T uid(String uid);

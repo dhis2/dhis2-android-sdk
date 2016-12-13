@@ -53,8 +53,11 @@ android {
     }
 
     lintOptions {
-        warningsAsErrors true
-        abortOnError true // Fail early.
+        // casting 'InvalidPackage' error to warning
+        warning 'InvalidPackage'
+
+        // Fail early.
+        abortOnError true
     }
 }
 
@@ -84,6 +87,11 @@ dependencies {
     provided "com.google.auto.value:auto-value:${libraries.autovalue}"
     annotationProcessor "com.google.auto.value:auto-value:${libraries.autovalue}"
 
+    // Square libraries
+    compile "com.squareup.okhttp3:okhttp:${libraries.okhttp}"
+    compile "com.squareup.retrofit2:retrofit:${libraries.retrofit}"
+    compile "com.squareup.retrofit2:converter-jackson:${libraries.retrofit}"
+
     // Extension which generates mappers for work with cursor and content values
     compile "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"
     annotationProcessor "com.gabrielittner.auto.value:auto-value-cursor:${libraries.autovaluecursor}"
@@ -92,6 +100,7 @@ dependencies {
     testCompile "junit:junit:${libraries.junit}"
     testCompile "org.mockito:mockito-core:${libraries.mockito}"
     testCompile "org.assertj:assertj-core:${libraries.assertj}"
+    testCompile "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
     testCompile "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
 
     // Android test dependencies

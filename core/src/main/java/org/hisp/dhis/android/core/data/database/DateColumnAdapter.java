@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.commons;
+package org.hisp.dhis.android.core.data.database;
 
 import android.content.ContentValues;
 import android.database.Cursor;

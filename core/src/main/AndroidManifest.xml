@@ -31,7 +31,7 @@
 
     <application>
         <provider
-            android:name="org.hisp.dhis.android.core.database.DbContentProvider"
+            android:name="org.hisp.dhis.android.core.data.database.DbContentProvider"
             android:authorities="org.hisp.dhis.android.core"
             android:exported="false"/>
     </application>

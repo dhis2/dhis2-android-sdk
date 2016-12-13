@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.database;
+package org.hisp.dhis.android.core.data.database;
 
 import android.database.ContentObserver;
 import android.net.Uri;

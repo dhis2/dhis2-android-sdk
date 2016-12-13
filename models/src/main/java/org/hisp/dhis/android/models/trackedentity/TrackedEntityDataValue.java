@@ -33,8 +33,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.models.common.Validatable;
-
 import java.util.Date;
 
 import javax.annotation.Nullable;
@@ -42,13 +40,13 @@ import javax.annotation.Nullable;
 //TODO: Tests
 @AutoValue
 @JsonDeserialize(builder = AutoValue_TrackedEntityDataValue.Builder.class)
-public abstract class TrackedEntityDataValue implements Validatable {
-    private final static String JSON_PROPERTY_DATA_ELEMENT = "dataElement";
-    private final static String JSON_PROPERTY_STORED_BY = "storedBy";
-    private final static String JSON_PROPERTY_VALUE = "value";
-    private static final String JSON_PROPERTY_CREATED = "created";
-    private static final String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
-    public static final String JSON_PROPERTY_PROVIDED_ELSEWHERE = "providedElsewhere";
+public abstract class TrackedEntityDataValue {
+    public final static String JSON_PROPERTY_DATA_ELEMENT = "dataElement";
+    public final static String JSON_PROPERTY_STORED_BY = "storedBy";
+    public final static String JSON_PROPERTY_VALUE = "value";
+    public final static String JSON_PROPERTY_CREATED = "created";
+    public final static String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
+    public final static String JSON_PROPERTY_PROVIDED_ELSEWHERE = "providedElsewhere";
 
     @Nullable
     @JsonIgnore
@@ -80,27 +78,6 @@ public abstract class TrackedEntityDataValue implements Validatable {
 
     public static Builder builder() {
         return new AutoValue_TrackedEntityDataValue.Builder();
-    }
-
-    @Override
-    public boolean isValid() {
-        if (event() == null) {
-            return false;
-        }
-
-        if (dataElement() == null) {
-            return false;
-        }
-
-        if (storedBy() == null) {
-            return false;
-        }
-
-        if (value() == null) {
-            return false;
-        }
-
-        return true;
     }
 
     @AutoValue.Builder

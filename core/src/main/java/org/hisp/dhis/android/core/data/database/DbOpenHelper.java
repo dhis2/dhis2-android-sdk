@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.database;
+package org.hisp.dhis.android.core.data.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

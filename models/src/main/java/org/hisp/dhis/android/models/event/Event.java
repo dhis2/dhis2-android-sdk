@@ -33,7 +33,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.models.common.Coordinates;
-import org.hisp.dhis.android.models.common.Validatable;
 import org.hisp.dhis.android.models.trackedentity.TrackedEntityDataValue;
 
 import java.util.Collections;
@@ -45,7 +44,7 @@ import javax.annotation.Nullable;
 // TODO: Tests
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Event.Builder.class)
-public abstract class Event implements Validatable {
+public abstract class Event {
     private static final String JSON_PROPERTY_EVENT_UID = "event";
     private static final String JSON_PROPERTY_ENROLLMENT_UID = "enrollment";
     private static final String JSON_PROPERTY_CREATED = "created";
@@ -108,19 +107,6 @@ public abstract class Event implements Validatable {
     @Nullable
     @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES)
     public abstract List<TrackedEntityDataValue> trackedEntityDataValues();
-
-    @Override
-    public boolean isValid() {
-        if (created() == null || lastUpdated() == null) {
-            return false;
-        }
-
-        if (trackedEntityDataValues() == null || trackedEntityDataValues().isEmpty()) {
-            return false;
-        }
-
-        return true;
-    }
 
     public static Builder builder() {
         return new AutoValue_Event.Builder();

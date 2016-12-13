@@ -99,7 +99,6 @@ public abstract class SelectProgramFragment extends BaseFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        SynchronisationStateHandler.getInstance().setListener(this);
     }
 
     @Override
@@ -209,11 +208,13 @@ public abstract class SelectProgramFragment extends BaseFragment
     public void onPause() {
         super.onPause();
         Dhis2Application.getEventBus().unregister(this);
+        SynchronisationStateHandler.getInstance().removeListener();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        SynchronisationStateHandler.getInstance().setListener(this);
         setRefreshing(SynchronisationStateHandler.getInstance().getState());
         Dhis2Application.getEventBus().register(this);
     }

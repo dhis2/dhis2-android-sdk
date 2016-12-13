@@ -24,6 +24,10 @@ public class SynchronisationStateHandler {
         mListener = listener;
     }
 
+    public void removeListener() {
+        mListener = null;
+    }
+
     public void changeState(boolean state) {
         if(mListener != null) {
             mState = state;

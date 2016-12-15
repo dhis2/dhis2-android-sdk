@@ -1,6 +1,6 @@
-package org.hisp.dhis.android.models.enrollment;
+package org.hisp.dhis.android.models.event;
 
-import org.hisp.dhis.android.models.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.models.trackedentity.TrackedEntityDataValue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,16 +9,13 @@ import java.util.Arrays;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
-public class EnrollmentTests {
+public class EventTests {
 
-    private static Enrollment.Builder VALID_BUILDER;
+    private static Event.Builder VALID_BUILDER;
 
-    @Before public void setUp() {
-        VALID_BUILDER = createValidBuilder();
-    }
-
-    private Enrollment.Builder createValidBuilder() {
-        return Enrollment.builder()
+    @Before
+    public void setValidBuilder() {
+        VALID_BUILDER = Event.builder()
                 .uid("a1b2c3d4e5f");
     }
 
@@ -29,7 +26,7 @@ public class EnrollmentTests {
     //**************************************************************************************
 
     @Test(expected = IllegalStateException.class)
-    public void build_shouldThrowOnNullUidField() {
+    public void build_throwOnNullUidField() {
         VALID_BUILDER.uid(null).build();
     }
 
@@ -53,13 +50,13 @@ public class EnrollmentTests {
     //**************************************************************************************
 
     @Test(expected = UnsupportedOperationException.class)
-    public void trackedEntityAttributeValues_shouldThrowOnCollectionMutations() {
-        Enrollment enrollment = VALID_BUILDER
-                .trackedEntityAttributeValues(Arrays.asList(
-                        TrackedEntityAttributeValue.builder().build(),
-                        TrackedEntityAttributeValue.builder().build()))
-                .build();
+    public void trackedEntityDataValues_shouldThrowOnCollectionMutations() {
+        Event event = VALID_BUILDER
+                .trackedEntityDataValues(Arrays.asList(
+                        TrackedEntityDataValue.builder().build(),
+                        TrackedEntityDataValue.builder().build()
+                )).build();
 
-        enrollment.trackedEntityAttributeValues().add(TrackedEntityAttributeValue.builder().build());
+        event.trackedEntityDataValues().add(TrackedEntityDataValue.builder().build());
     }
 }

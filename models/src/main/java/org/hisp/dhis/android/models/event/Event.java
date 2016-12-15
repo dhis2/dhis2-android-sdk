@@ -64,22 +64,27 @@ public abstract class Event {
     @JsonProperty(JSON_PROPERTY_EVENT_UID)
     public abstract String uid();
 
+    // Nullable properties
+    @Nullable
     @JsonProperty(JSON_PROPERTY_STATUS)
     public abstract EventStatus status();
 
+    @Nullable
     @JsonProperty(JSON_PROPERTY_PROGRAM)
     public abstract String program();
 
+    @Nullable
     @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE)
     public abstract String programStage();
 
+    @Nullable
     @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
     public abstract String organisationUnit();
 
+    @Nullable
     @JsonProperty(JSON_PROPERTY_EVENT_DATE)
     public abstract Date eventDate();
 
-    // Nullable properties
     @Nullable
     @JsonProperty(JSON_PROPERTY_ENROLLMENT_UID)
     public abstract String enrollmentUid();

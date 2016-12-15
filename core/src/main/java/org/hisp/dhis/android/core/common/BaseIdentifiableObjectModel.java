@@ -33,7 +33,7 @@ import android.support.annotation.Nullable;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
-import org.hisp.dhis.android.core.data.database.DateColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.models.common.IdentifiableObject;
 
 import java.util.Date;
@@ -63,13 +63,13 @@ public abstract class BaseIdentifiableObjectModel extends BaseModel implements I
     @Override
     @Nullable
     @ColumnName(BaseIdentifiableObjectContract.Columns.CREATED)
-    @ColumnAdapter(DateColumnAdapter.class)
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Override
     @Nullable
     @ColumnName(BaseIdentifiableObjectContract.Columns.LAST_UPDATED)
-    @ColumnAdapter(DateColumnAdapter.class)
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     protected static abstract class Builder<T extends Builder> extends BaseModel.Builder<T> {

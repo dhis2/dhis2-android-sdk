@@ -48,7 +48,7 @@ public class FieldTests {
         Field<String, String> fieldOne = Field.create("fieldOne");
         Field<String, String> fieldTwo = Field.create("fieldTwo");
 
-        NestedField<String, ?> nestedField = NestedField.create("test_nested_field");
+        NestedField<String, String> nestedField = NestedField.create("test_nested_field");
         NestedField<String, ?> nestedFieldWithChildren = nestedField.with(fieldOne, fieldTwo);
 
         assertThat(nestedField.children()).isEmpty();
@@ -62,7 +62,7 @@ public class FieldTests {
     public void nestedFieldChildren_shouldBeImmutable() {
         Field<String, String> fieldOne = Field.create("test_field_one");
 
-        NestedField<String, ?> nestedField = NestedField.create("test_nested_field");
+        NestedField<String, String> nestedField = NestedField.create("test_nested_field");
         NestedField<String, ?> nestedFieldWithChildren = nestedField.with(fieldOne);
 
         nestedFieldWithChildren.children().remove(0);

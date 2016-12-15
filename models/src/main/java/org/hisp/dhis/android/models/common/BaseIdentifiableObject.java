@@ -48,60 +48,60 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject {
 
     public static final int UID_LENGTH = 11;
 
-    protected static final String JSON_PROPERTY_UID = "id";
-    protected static final String JSON_PROPERTY_CODE = "code";
-    protected static final String JSON_PROPERTY_NAME = "name";
-    protected static final String JSON_PROPERTY_DISPLAY_NAME = "displayName";
-    protected static final String JSON_PROPERTY_CREATED = "created";
-    protected static final String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
+    protected static final String UID = "id";
+    protected static final String CODE = "code";
+    protected static final String NAME = "name";
+    protected static final String DISPLAY_NAME = "displayName";
+    protected static final String CREATED = "created";
+    protected static final String LAST_UPDATED = "lastUpdated";
 
     @Override
-    @JsonProperty(JSON_PROPERTY_UID)
+    @JsonProperty(UID)
     public abstract String uid();
 
     @Override
     @Nullable
-    @JsonProperty(JSON_PROPERTY_CODE)
+    @JsonProperty(CODE)
     public abstract String code();
 
     @Override
     @Nullable
-    @JsonProperty(JSON_PROPERTY_NAME)
+    @JsonProperty(NAME)
     public abstract String name();
 
     @Override
     @Nullable
-    @JsonProperty(JSON_PROPERTY_DISPLAY_NAME)
+    @JsonProperty(DISPLAY_NAME)
     public abstract String displayName();
 
     @Override
     @Nullable
-    @JsonProperty(JSON_PROPERTY_CREATED)
+    @JsonProperty(CREATED)
     public abstract Date created();
 
     @Override
     @Nullable
-    @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
+    @JsonProperty(LAST_UPDATED)
     public abstract Date lastUpdated();
 
     protected static abstract class Builder<T extends Builder> {
 
-        @JsonProperty(JSON_PROPERTY_UID)
+        @JsonProperty(UID)
         public abstract T uid(String uid);
 
-        @JsonProperty(JSON_PROPERTY_CODE)
+        @JsonProperty(CODE)
         public abstract T code(@Nullable String code);
 
-        @JsonProperty(JSON_PROPERTY_NAME)
+        @JsonProperty(NAME)
         public abstract T name(@Nullable String name);
 
-        @JsonProperty(JSON_PROPERTY_DISPLAY_NAME)
+        @JsonProperty(DISPLAY_NAME)
         public abstract T displayName(@Nullable String displayName);
 
-        @JsonProperty(JSON_PROPERTY_CREATED)
+        @JsonProperty(CREATED)
         public abstract T created(@Nullable Date created);
 
-        @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
+        @JsonProperty(LAST_UPDATED)
         public abstract T lastUpdated(@Nullable Date lastUpdated);
     }
 }

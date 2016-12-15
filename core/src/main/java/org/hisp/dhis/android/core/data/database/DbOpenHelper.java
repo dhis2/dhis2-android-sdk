@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
+import org.hisp.dhis.android.core.user.AuthenticatedUserContract;
 import org.hisp.dhis.android.core.user.UserContract;
 import org.hisp.dhis.android.core.user.UserCredentialsContract;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkContract;
@@ -22,6 +23,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String USER_CREDENTIALS = "UserCredentials";
         String ORGANISATION_UNIT = "OrganisationUnit";
         String USER_ORGANISATION_UNIT = "UserOrganisationUnit";
+        String AUTHENTICATED_USER = "AuthenticatedUser";
     }
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + Tables.USER + " (" +
@@ -93,16 +95,29 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             "UNIQUE (" + UserOrganisationUnitLinkContract.Columns.USER + ", " + UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT + ")" +
             ");";
 
+    private static final String CREATE_AUTHENTICATED_USER_TABLE = "CREATE TABLE " + Tables.AUTHENTICATED_USER + " (" +
+            AuthenticatedUserContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            AuthenticatedUserContract.Columns.USER + " TEXT NOT NULL UNIQUE," +
+            AuthenticatedUserContract.Columns.CREDENTIALS + " TEXT NOT NULL," +
+            "FOREIGN KEY (" + AuthenticatedUserContract.Columns.USER + ") REFERENCES " + Tables.USER +
+            " (" + UserContract.Columns.UID + ") ON DELETE CASCADE" +
+            ");";
+
+    public static void create(SQLiteDatabase db) {
+        db.execSQL(CREATE_USER_TABLE);
+        db.execSQL(CREATE_USER_CREDENTIALS_TABLE);
+        db.execSQL(CREATE_ORGANISATION_UNITS_TABLE);
+        db.execSQL(CREATE_USER_ORGANISATION_UNIT_TABLE);
+        db.execSQL(CREATE_AUTHENTICATED_USER_TABLE);
+    }
+
     public DbOpenHelper(Context context) {
         super(context, NAME, null, VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_USER_TABLE);
-        db.execSQL(CREATE_USER_CREDENTIALS_TABLE);
-        db.execSQL(CREATE_ORGANISATION_UNITS_TABLE);
-        db.execSQL(CREATE_USER_ORGANISATION_UNIT_TABLE);
+        create(db);
     }
 
     @Override

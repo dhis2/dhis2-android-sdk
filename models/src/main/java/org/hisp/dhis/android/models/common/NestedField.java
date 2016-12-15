@@ -10,14 +10,14 @@ import javax.annotation.Nonnull;
 
 @AutoValue
 public abstract class NestedField<Parent, Child> implements Property<Parent, Child> {
-    public abstract List<Property<Parent, ?>> children();
+    public abstract List<Property<Child, ?>> children();
 
     public static <T, K> NestedField<T, K> create(@Nonnull String name) {
-        return new AutoValue_NestedField<>(name, Collections.<Property<T, ?>>emptyList());
+        return new AutoValue_NestedField<>(name, Collections.<Property<K, ?>>emptyList());
     }
 
     @SafeVarargs
-    public final NestedField<Parent, ?> with(Property<Parent, ?>... properties) {
+    public final NestedField<Parent, ?> with(Property<Child, ?>... properties) {
         if (properties != null) {
             return new AutoValue_NestedField<>(name(), Arrays.asList(properties));
         }

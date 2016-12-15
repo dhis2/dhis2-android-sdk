@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.models.user;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.models.common.BaseIdentifiableObject;
@@ -37,211 +37,231 @@ import org.hisp.dhis.android.models.common.Field;
 import org.hisp.dhis.android.models.common.NestedField;
 import org.hisp.dhis.android.models.organisationunit.OrganisationUnit;
 
-import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
 // TODO: Tests
 @AutoValue
-@JsonDeserialize(builder = AutoValue_User.Builder.class)
+// @JsonDeserialize(builder = AutoValue_User.Builder.class)
 public abstract class User extends BaseIdentifiableObject {
     public static final String GENDER_MALE = "gender_male";
     public static final String GENDER_FEMALE = "gender_female";
     public static final String GENDER_OTHER = "gender_other";
 
-    private static final String JSON_PROPERTY_BIRTHDAY = "birthday";
-    private static final String JSON_PROPERTY_EDUCATION = "education";
-    private static final String JSON_PROPERTY_GENDER = "gender";
-    private static final String JSON_PROPERTY_JOB_TITLE = "jobTitle";
-    private static final String JSON_PROPERTY_SURNAME = "surname";
-    private static final String JSON_PROPERTY_FIRST_NAME = "firstName";
-    private static final String JSON_PROPERTY_INTRODUCTION = "introduction";
-    private static final String JSON_PROPERTY_EMPLOYER = "employer";
-    private static final String JSON_PROPERTY_INTERESTS = "interests";
-    private static final String JSON_PROPERTY_LANGUAGES = "languages";
-    private static final String JSON_PROPERTY_EMAIL = "email";
-    private static final String JSON_PROPERTY_PHONE_NUMBER = "phoneNumber";
-    private static final String JSON_PROPERTY_NATIONALITY = "nationality";
-    private static final String JSON_PROPERTY_USER_CREDENTIALS = "userCredentials";
-    private static final String JSON_PROPERTY_ORGANISATION_UNITS = "organisationUnits";
-    private static final String JSON_PROPERTY_TEI_SEARCH_ORGANISATION_UNITS = "teiSearchOrganisationUnits";
-    private static final String JSON_PROPERTY_DATA_VIEW_ORGANISATION_UNITS = "dataViewOrganisationUnits";
+    private static final String BIRTHDAY = "birthday";
+    private static final String EDUCATION = "education";
+    private static final String GENDER = "gender";
+    private static final String JOB_TITLE = "jobTitle";
+    private static final String SURNAME = "surname";
+    private static final String FIRST_NAME = "firstName";
+    private static final String INTRODUCTION = "introduction";
+    private static final String EMPLOYER = "employer";
+    private static final String INTERESTS = "interests";
+    private static final String LANGUAGES = "languages";
+    private static final String EMAIL = "email";
+    private static final String PHONE_NUMBER = "phoneNumber";
+    private static final String NATIONALITY = "nationality";
+    private static final String USER_CREDENTIALS = "userCredentials";
+    private static final String ORGANISATION_UNITS = "organisationUnits";
+    private static final String TEI_SEARCH_ORGANISATION_UNITS = "teiSearchOrganisationUnits";
+    private static final String DATA_VIEW_ORGANISATION_UNITS = "dataViewOrganisationUnits";
 
-    public static final Field<User, String> UID = Field.create(JSON_PROPERTY_UID);
-    public static final Field<User, String> CODE = Field.create(JSON_PROPERTY_CODE);
-    public static final Field<User, String> NAME = Field.create(JSON_PROPERTY_NAME);
-    public static final Field<User, String> DISPLAY_NAME = Field.create(JSON_PROPERTY_DISPLAY_NAME);
-    public static final Field<User, String> CREATED = Field.create(JSON_PROPERTY_CREATED);
-    public static final Field<User, String> LAST_UPDATED = Field.create(JSON_PROPERTY_LAST_UPDATED);
-    public static final Field<User, String> BIRTHDAY = Field.create("birthday");
-    public static final Field<User, String> EDUCATION = Field.create("education");
-    public static final Field<User, String> GENDER = Field.create("gender");
-    public static final Field<User, String> JOB_TITLE = Field.create("jobTitle");
-    public static final Field<User, String> SURNAME = Field.create("surname");
-    public static final Field<User, String> FIRST_NAME = Field.create("firstName");
-    public static final Field<User, String> INTRODUCTION = Field.create("introduction");
-    public static final Field<User, String> EMPLOYER = Field.create("employer");
-    public static final Field<User, String> INTERESTS = Field.create("interests");
-    public static final Field<User, String> LANGUAGES = Field.create("languages");
-    public static final Field<User, String> EMAIL = Field.create("email");
-    public static final Field<User, String> PHONE_NUMBER = Field.create("phoneNumber");
-    public static final Field<User, String> NATIONALITY = Field.create("nationality");
-    public static final Field<User, String> USER_CREDENTIALS = Field.create("userCredentials");
-    public static final NestedField<OrganisationUnit, ?> ORGANISATION_UNITS = NestedField.create("organisationUnits");
-    public static final NestedField<OrganisationUnit, String> TEI_SEARCH_ORGANISATION_UNITS = NestedField.create("teiSearchOrganisationUnits");
-    public static final NestedField<OrganisationUnit, String> DATA_VIEW_ORGANISATION_UNITS = NestedField.create("dataViewOrganisationUnits");
+    public static final Field<User, String> uid = Field.create(UID);
+    public static final Field<User, String> code = Field.create(CODE);
+    public static final Field<User, String> name = Field.create(NAME);
+    public static final Field<User, String> displayName = Field.create(DISPLAY_NAME);
+    public static final Field<User, String> created = Field.create(CREATED);
+    public static final Field<User, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<User, String> birthday = Field.create(BIRTHDAY);
+    public static final Field<User, String> education = Field.create(EDUCATION);
+    public static final Field<User, String> gender = Field.create(GENDER);
+    public static final Field<User, String> jobTitle = Field.create(JOB_TITLE);
+    public static final Field<User, String> surname = Field.create(SURNAME);
+    public static final Field<User, String> firstName = Field.create(FIRST_NAME);
+    public static final Field<User, String> introduction = Field.create(INTRODUCTION);
+    public static final Field<User, String> employer = Field.create(EMPLOYER);
+    public static final Field<User, String> interests = Field.create(INTERESTS);
+    public static final Field<User, String> languages = Field.create(LANGUAGES);
+    public static final Field<User, String> email = Field.create(EMAIL);
+    public static final Field<User, String> phoneNumber = Field.create(PHONE_NUMBER);
+    public static final Field<User, String> nationality = Field.create(NATIONALITY);
+    public static final NestedField<User, UserCredentials> userCredentials = NestedField.create(USER_CREDENTIALS);
+    public static final NestedField<User, OrganisationUnit> organisationUnits = NestedField.create(ORGANISATION_UNITS);
+    public static final NestedField<User, OrganisationUnit> teiSearchOrganisationUnits = NestedField.create(TEI_SEARCH_ORGANISATION_UNITS);
+    public static final NestedField<User, OrganisationUnit> dataViewOrganisationUnits = NestedField.create(DATA_VIEW_ORGANISATION_UNITS);
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_BIRTHDAY)
+    @JsonProperty(BIRTHDAY)
     public abstract String birthday();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_EDUCATION)
+    @JsonProperty(EDUCATION)
     public abstract String education();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_GENDER)
+    @JsonProperty(GENDER)
     public abstract String gender();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_JOB_TITLE)
+    @JsonProperty(JOB_TITLE)
     public abstract String jobTitle();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_SURNAME)
+    @JsonProperty(SURNAME)
     public abstract String surname();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_FIRST_NAME)
+    @JsonProperty(FIRST_NAME)
     public abstract String firstName();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_INTRODUCTION)
+    @JsonProperty(INTRODUCTION)
     public abstract String introduction();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_EMPLOYER)
+    @JsonProperty(EMPLOYER)
     public abstract String employer();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_INTERESTS)
+    @JsonProperty(INTERESTS)
     public abstract String interests();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_LANGUAGES)
+    @JsonProperty(LANGUAGES)
     public abstract String languages();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_EMAIL)
+    @JsonProperty(EMAIL)
     public abstract String email();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_PHONE_NUMBER)
+    @JsonProperty(PHONE_NUMBER)
     public abstract String phoneNumber();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_NATIONALITY)
+    @JsonProperty(NATIONALITY)
     public abstract String nationality();
 
-    @JsonProperty(JSON_PROPERTY_USER_CREDENTIALS)
+    @JsonProperty(USER_CREDENTIALS)
     public abstract UserCredentials userCredentials();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_ORGANISATION_UNITS)
+    @JsonProperty(ORGANISATION_UNITS)
     public abstract List<OrganisationUnit> organisationUnits();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_TEI_SEARCH_ORGANISATION_UNITS)
+    @JsonProperty(TEI_SEARCH_ORGANISATION_UNITS)
     public abstract List<OrganisationUnit> teiSearchOrganisationUnits();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_DATA_VIEW_ORGANISATION_UNITS)
+    @JsonProperty(DATA_VIEW_ORGANISATION_UNITS)
     public abstract List<OrganisationUnit> dataViewOrganisationUnits();
 
-    public static Builder builder() {
-        return new AutoValue_User.Builder();
+    @JsonCreator
+    public static User create(
+            @JsonProperty(UID) String uid,
+            @JsonProperty(CODE) String code,
+            @JsonProperty(NAME) String name,
+            @JsonProperty(DISPLAY_NAME) String displayName,
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(BIRTHDAY) String birthday,
+            @JsonProperty(EDUCATION) String education,
+            @JsonProperty(GENDER) String gender,
+            @JsonProperty(JOB_TITLE) String jobTitle,
+            @JsonProperty(SURNAME) String surname,
+            @JsonProperty(FIRST_NAME) String firstName,
+            @JsonProperty(INTRODUCTION) String introduction,
+            @JsonProperty(EMPLOYER) String employer,
+            @JsonProperty(INTERESTS) String interests,
+            @JsonProperty(LANGUAGES) String languages,
+            @JsonProperty(EMAIL) String email,
+            @JsonProperty(PHONE_NUMBER) String phoneNumber,
+            @JsonProperty(NATIONALITY) String nationality,
+            @JsonProperty(USER_CREDENTIALS) UserCredentials userCredentials,
+            @JsonProperty(ORGANISATION_UNITS) List<OrganisationUnit> orgUnits,
+            @JsonProperty(TEI_SEARCH_ORGANISATION_UNITS) List<OrganisationUnit> searchOrgUnits,
+            @JsonProperty(DATA_VIEW_ORGANISATION_UNITS) List<OrganisationUnit> dataViewOrgUnits) {
+        // ToDo: change from jackson to gson and implement autovalue-gson extension
+        // ToDo: remove builders and use constructor with create methods
+        // return new AutoValue_User();
+        return new AutoValue_User(
+                uid, code, name, displayName, created, lastUpdated, birthday, education, gender,
+                jobTitle, surname, firstName, introduction, employer, interests, languages, email,
+                phoneNumber, nationality, userCredentials, orgUnits, searchOrgUnits, dataViewOrgUnits
+        );
     }
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+//    public static Builder builder() {
+//        return new AutoValue_User.Builder();
+//    }
 
-        @JsonProperty(JSON_PROPERTY_BIRTHDAY)
-        public abstract Builder birthday(@Nullable String birthday);
-
-        @JsonProperty(JSON_PROPERTY_EDUCATION)
-        public abstract Builder education(@Nullable String education);
-
-        @JsonProperty(JSON_PROPERTY_GENDER)
-        public abstract Builder gender(@Nullable String gender);
-
-        @JsonProperty(JSON_PROPERTY_JOB_TITLE)
-        public abstract Builder jobTitle(@Nullable String jobTitle);
-
-        @JsonProperty(JSON_PROPERTY_SURNAME)
-        public abstract Builder surname(@Nullable String surName);
-
-        @JsonProperty(JSON_PROPERTY_FIRST_NAME)
-        public abstract Builder firstName(@Nullable String firstName);
-
-        @JsonProperty(JSON_PROPERTY_INTRODUCTION)
-        public abstract Builder introduction(@Nullable String introduction);
-
-        @JsonProperty(JSON_PROPERTY_EMPLOYER)
-        public abstract Builder employer(@Nullable String employer);
-
-        @JsonProperty(JSON_PROPERTY_INTERESTS)
-        public abstract Builder interests(@Nullable String interests);
-
-        @JsonProperty(JSON_PROPERTY_LANGUAGES)
-        public abstract Builder languages(@Nullable String languages);
-
-        @JsonProperty(JSON_PROPERTY_EMAIL)
-        public abstract Builder email(@Nullable String email);
-
-        @JsonProperty(JSON_PROPERTY_PHONE_NUMBER)
-        public abstract Builder phoneNumber(@Nullable String phoneNumber);
-
-        @JsonProperty(JSON_PROPERTY_NATIONALITY)
-        public abstract Builder nationality(@Nullable String nationality);
-
-        @JsonProperty(JSON_PROPERTY_USER_CREDENTIALS)
-        public abstract Builder userCredentials(UserCredentials userCredentials);
-
-        @JsonProperty(JSON_PROPERTY_ORGANISATION_UNITS)
-        public abstract Builder organisationUnits(@Nullable List<OrganisationUnit> organisationUnits);
-
-        @JsonProperty(JSON_PROPERTY_TEI_SEARCH_ORGANISATION_UNITS)
-        public abstract Builder teiSearchOrganisationUnits(@Nullable List<OrganisationUnit> organisationUnits);
-
-        @JsonProperty(JSON_PROPERTY_DATA_VIEW_ORGANISATION_UNITS)
-        public abstract Builder dataViewOrganisationUnits(@Nullable List<OrganisationUnit> organisationUnits);
-
-        // internal, not exposed
-        abstract List<OrganisationUnit> organisationUnits();
-
-        abstract List<OrganisationUnit> teiSearchOrganisationUnits();
-
-        abstract List<OrganisationUnit> dataViewOrganisationUnits();
-
-        abstract UserCredentials userCredentials();
-
-        abstract User autoBuild();
-
-        public User build() {
-            if (organisationUnits() != null) {
-                organisationUnits(Collections.unmodifiableList(organisationUnits()));
-            }
-
-            if (teiSearchOrganisationUnits() != null) {
-                teiSearchOrganisationUnits(Collections.unmodifiableList(teiSearchOrganisationUnits()));
-            }
-
-            if (dataViewOrganisationUnits() != null) {
-                dataViewOrganisationUnits(Collections.unmodifiableList(dataViewOrganisationUnits()));
-            }
-
-            return autoBuild();
-        }
-    }
+//    @AutoValue.Builder
+//    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+//        public abstract Builder birthday(@Nullable String birthday);
+//
+//        public abstract Builder education(@Nullable String education);
+//
+//        public abstract Builder gender(@Nullable String gender);
+//
+//        public abstract Builder jobTitle(@Nullable String jobTitle);
+//
+//        public abstract Builder surname(@Nullable String surName);
+//
+//        public abstract Builder firstName(@Nullable String firstName);
+//
+//        public abstract Builder introduction(@Nullable String introduction);
+//
+//        public abstract Builder employer(@Nullable String employer);
+//
+//        public abstract Builder interests(@Nullable String interests);
+//
+//        public abstract Builder languages(@Nullable String languages);
+//
+//        public abstract Builder email(@Nullable String email);
+//
+//        public abstract Builder phoneNumber(@Nullable String phoneNumber);
+//
+//        public abstract Builder nationality(@Nullable String nationality);
+//
+//        public abstract Builder userCredentials(UserCredentials userCredentials);
+//
+//        public abstract Builder organisationUnits(@Nullable List<OrganisationUnit> orgUnits);
+//
+//        public abstract Builder teiSearchOrganisationUnits(@Nullable List<OrganisationUnit> orgUnits);
+//
+//        public abstract Builder dataViewOrganisationUnits(@Nullable List<OrganisationUnit> orgUnits);
+//
+//        // internal, not exposed
+//        abstract List<OrganisationUnit> organisationUnits();
+//
+//        abstract List<OrganisationUnit> teiSearchOrganisationUnits();
+//
+//        abstract List<OrganisationUnit> dataViewOrganisationUnits();
+//
+//        abstract UserCredentials userCredentials();
+//
+//        abstract User autoBuild();
+//
+//        public User build() {
+//            if (organisationUnits() != null) {
+//                organisationUnits(Collections.unmodifiableList(
+//                        organisationUnits()));
+//            }
+//
+//            if (teiSearchOrganisationUnits() != null) {
+//                teiSearchOrganisationUnits(Collections.unmodifiableList(
+//                        teiSearchOrganisationUnits()));
+//            }
+//
+//            if (dataViewOrganisationUnits() != null) {
+//                dataViewOrganisationUnits(Collections.unmodifiableList(
+//                        dataViewOrganisationUnits()));
+//            }
+//
+//            return autoBuild();
+//        }
+//    }
 }

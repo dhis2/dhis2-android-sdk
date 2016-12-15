@@ -32,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.models.common.BaseNameableObject;
 import org.hisp.dhis.android.models.common.Field;
 import org.hisp.dhis.android.models.program.Program;
@@ -53,12 +54,12 @@ public abstract class OrganisationUnit extends BaseNameableObject {
     private static final String JSON_PROPERTY_LEVEL = "level";
     private static final String JSON_PROPERTY_PROGRAMS = "programs";
 
-    public static final Field<OrganisationUnit, String> UID = Field.create(JSON_PROPERTY_UID);
-    public static final Field<OrganisationUnit, String> CODE = Field.create(JSON_PROPERTY_CODE);
-    public static final Field<OrganisationUnit, String> NAME = Field.create(JSON_PROPERTY_NAME);
-    public static final Field<OrganisationUnit, String> DISPLAY_NAME = Field.create(JSON_PROPERTY_DISPLAY_NAME);
-    public static final Field<OrganisationUnit, String> CREATED = Field.create(JSON_PROPERTY_CREATED);
-    public static final Field<OrganisationUnit, String> LAST_UPDATED = Field.create(JSON_PROPERTY_LAST_UPDATED);
+    public static final Field<OrganisationUnit, String> UID = Field.create(BaseIdentifiableObject.UID);
+    public static final Field<OrganisationUnit, String> CODE = Field.create(BaseIdentifiableObject.CODE);
+    public static final Field<OrganisationUnit, String> NAME = Field.create(BaseIdentifiableObject.NAME);
+    public static final Field<OrganisationUnit, String> DISPLAY_NAME = Field.create(BaseIdentifiableObject.DISPLAY_NAME);
+    public static final Field<OrganisationUnit, String> CREATED = Field.create(BaseIdentifiableObject.CREATED);
+    public static final Field<OrganisationUnit, String> LAST_UPDATED = Field.create(BaseIdentifiableObject.LAST_UPDATED);
     public static final Field<OrganisationUnit, String> SHORT_NAME = Field.create(JSON_PROPERTY_SHORT_NAME);
     public static final Field<OrganisationUnit, String> DISPLAY_SHORT_NAME = Field.create(JSON_PROPERTY_DISPLAY_SHORT_NAME);
     public static final Field<OrganisationUnit, String> DESCRIPTION = Field.create(JSON_PROPERTY_DESCRIPTION);

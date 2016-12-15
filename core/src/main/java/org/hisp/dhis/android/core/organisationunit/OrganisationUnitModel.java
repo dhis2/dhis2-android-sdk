@@ -38,7 +38,7 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.data.database.DateColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
 
@@ -64,12 +64,12 @@ public abstract class OrganisationUnitModel extends BaseNameableObjectModel {
 
     @Nullable
     @ColumnName(OrganisationUnitContract.Columns.OPENING_DATE)
-    @ColumnAdapter(DateColumnAdapter.class)
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date openingDate();
 
     @Nullable
     @ColumnName(OrganisationUnitContract.Columns.CLOSED_DATE)
-    @ColumnAdapter(DateColumnAdapter.class)
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date closedDate();
 
     @Nullable

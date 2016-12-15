@@ -10,7 +10,7 @@ import org.hisp.dhis.android.models.common.BaseIdentifiableObject;
 import java.text.ParseException;
 import java.util.Date;
 
-public final class DateColumnAdapter implements ColumnTypeAdapter<Date> {
+public final class DbDateColumnAdapter implements ColumnTypeAdapter<Date> {
 
     @Override
     public Date fromCursor(Cursor cursor, String columnName) {

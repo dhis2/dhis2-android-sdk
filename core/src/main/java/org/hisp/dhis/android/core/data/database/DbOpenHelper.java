@@ -88,11 +88,14 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             UserOrganisationUnitLinkContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             UserOrganisationUnitLinkContract.Columns.USER + " TEXT NOT NULL," +
             UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
+            UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT_SCOPE + " TEXT NOT NULL," +
             "FOREIGN KEY (" + UserOrganisationUnitLinkContract.Columns.USER + ") REFERENCES " + Tables.USER +
             " (" + UserContract.Columns.UID + ") ON DELETE CASCADE," +
             "FOREIGN KEY (" + UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT + ") REFERENCES " + Tables.ORGANISATION_UNIT +
             " (" + OrganisationUnitContract.Columns.UID + ") ON DELETE CASCADE," +
-            "UNIQUE (" + UserOrganisationUnitLinkContract.Columns.USER + ", " + UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT + ")" +
+            "UNIQUE (" + UserOrganisationUnitLinkContract.Columns.USER + ", " +
+            UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT + ", " +
+            UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT_SCOPE + ")" +
             ");";
 
     private static final String CREATE_AUTHENTICATED_USER_TABLE = "CREATE TABLE " + Tables.AUTHENTICATED_USER + " (" +

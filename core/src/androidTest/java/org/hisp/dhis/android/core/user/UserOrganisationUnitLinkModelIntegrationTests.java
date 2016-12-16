@@ -17,15 +17,16 @@ public class UserOrganisationUnitLinkModelIntegrationTests {
     private static final long ID = 2L;
     private static final String USER = "test_user_uid";
     private static final String ORGANISATION_UNIT = "test_organisation_unit_uid";
+    private static final String ORGANISATION_UNIT_SCOPE = "test_organisation_unit_scope";
 
     @Test
     public void create_shouldConvertToModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                Columns.ID, Columns.USER, Columns.ORGANISATION_UNIT,
+                Columns.ID, Columns.USER, Columns.ORGANISATION_UNIT, Columns.ORGANISATION_UNIT_SCOPE
         });
 
         matrixCursor.addRow(new Object[]{
-                ID, USER, ORGANISATION_UNIT
+                ID, USER, ORGANISATION_UNIT, ORGANISATION_UNIT_SCOPE
         });
 
         // move cursor to first item before reading
@@ -46,6 +47,7 @@ public class UserOrganisationUnitLinkModelIntegrationTests {
                         .id(ID)
                         .user(USER)
                         .organisationUnit(ORGANISATION_UNIT)
+                        .organisationUnitScope(ORGANISATION_UNIT_SCOPE)
                         .build();
 
         ContentValues contentValues = userOrganisationUnitLinkModel.toContentValues();
@@ -53,5 +55,6 @@ public class UserOrganisationUnitLinkModelIntegrationTests {
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
         assertThat(contentValues.getAsString(Columns.USER)).isEqualTo(USER);
         assertThat(contentValues.getAsString(Columns.ORGANISATION_UNIT)).isEqualTo(ORGANISATION_UNIT);
+        assertThat(contentValues.getAsString(Columns.ORGANISATION_UNIT_SCOPE)).isEqualTo(ORGANISATION_UNIT_SCOPE);
     }
 }

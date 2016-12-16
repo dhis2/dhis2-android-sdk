@@ -223,7 +223,7 @@ public class OrganisationUnitContractIntegrationTests extends AbsProviderTestCas
         database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
 
         ContentValues userOrgUnitLink = UserOrganisationUnitLinkContractIntegrationTests
-                .create(2L, "test_user_uid", "test_organisation_unit_uid");
+                .create(2L, "test_user_uid", "test_organisation_unit_uid", "test_org_unit_scope");
         database().insertOrThrow(DbOpenHelper.Tables.USER_ORGANISATION_UNIT, null, userOrgUnitLink);
 
         // we need to pass projection where each column is prefixed with

@@ -18,14 +18,16 @@ public class UserOrganisationUnitLinkContractIntegrationTests extends AbsProvide
     public static String[] USER_ORGANISATION_UNIT_PROJECTION = {
             UserOrganisationUnitLinkContract.Columns.ID,
             UserOrganisationUnitLinkContract.Columns.USER,
-            UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT
+            UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT,
+            UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT_SCOPE,
     };
 
-    public static ContentValues create(long id, String user, String organisationUnit) {
+    public static ContentValues create(long id, String user, String organisationUnit, String orgUnitScope) {
         ContentValues userOrganisationUnitLink = new ContentValues();
         userOrganisationUnitLink.put(UserOrganisationUnitLinkContract.Columns.ID, id);
         userOrganisationUnitLink.put(UserOrganisationUnitLinkContract.Columns.USER, user);
         userOrganisationUnitLink.put(UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT, organisationUnit);
+        userOrganisationUnitLink.put(UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT_SCOPE, orgUnitScope);
         return userOrganisationUnitLink;
     }
 
@@ -43,7 +45,7 @@ public class UserOrganisationUnitLinkContractIntegrationTests extends AbsProvide
         database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null,
                 OrganisationUnitContractIntegrationTests.create(1L, "test_organisation_unit_uid"));
 
-        ContentValues userOrgUnitLink = create(2L, "test_user_uid", "test_organisation_unit_uid");
+        ContentValues userOrgUnitLink = create(2L, "test_user_uid", "test_organisation_unit_uid", "test_org_unit_scope");
         Uri itemUri = getProvider().insert(UserOrganisationUnitLinkContract
                 .userOrganisationUnits(), userOrgUnitLink);
 
@@ -58,7 +60,7 @@ public class UserOrganisationUnitLinkContractIntegrationTests extends AbsProvide
     public void testInsert_shouldThrowOnExistingId() {
         try {
             // we need to insert row into parent table first
-            ContentValues userOrgUnitLink = create(2L, "test_user_uid", "test_organisation_unit_uid");
+            ContentValues userOrgUnitLink = create(2L, "test_user_uid", "test_organisation_unit_uid", "test_org_unit_scope");
             database().insertOrThrow(DbOpenHelper.Tables.USER_ORGANISATION_UNIT, null, userOrgUnitLink);
 
             getProvider().insert(UserOrganisationUnitLinkContract
@@ -77,7 +79,7 @@ public class UserOrganisationUnitLinkContractIntegrationTests extends AbsProvide
         database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null,
                 OrganisationUnitContractIntegrationTests.create(1L, "test_organisation_unit_uid"));
 
-        ContentValues userOrgUnitLink = create(2L, "test_user_uid", "test_organisation_unit_uid");
+        ContentValues userOrgUnitLink = create(2L, "test_user_uid", "test_organisation_unit_uid", "test_org_unit_scope");
         database().insertOrThrow(DbOpenHelper.Tables.USER_ORGANISATION_UNIT, null, userOrgUnitLink);
 
         int deletedCount = getProvider().delete(UserOrganisationUnitLinkContract.userOrganisationUnits(),
@@ -96,7 +98,7 @@ public class UserOrganisationUnitLinkContractIntegrationTests extends AbsProvide
         database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null,
                 OrganisationUnitContractIntegrationTests.create(1L, "test_organisation_unit_uid"));
 
-        ContentValues userOrgUnitLink = create(2L, "test_user_uid", "test_organisation_unit_uid");
+        ContentValues userOrgUnitLink = create(2L, "test_user_uid", "test_organisation_unit_uid", "test_org_unit_scope");
         database().insertOrThrow(DbOpenHelper.Tables.USER_ORGANISATION_UNIT, null, userOrgUnitLink);
 
         int deletedCount = getProvider().delete(UserOrganisationUnitLinkContract
@@ -115,7 +117,7 @@ public class UserOrganisationUnitLinkContractIntegrationTests extends AbsProvide
         database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null,
                 OrganisationUnitContractIntegrationTests.create(1L, "test_organisation_unit_uid"));
 
-        ContentValues userOrgUnitLink = create(2L, "test_user_uid", "test_organisation_unit_uid");
+        ContentValues userOrgUnitLink = create(2L, "test_user_uid", "test_organisation_unit_uid", "test_org_unit_scope");
         database().insertOrThrow(DbOpenHelper.Tables.USER_ORGANISATION_UNIT, null, userOrgUnitLink);
 
         // remove organisation unit which is referenced by link row
@@ -134,7 +136,7 @@ public class UserOrganisationUnitLinkContractIntegrationTests extends AbsProvide
         database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null,
                 OrganisationUnitContractIntegrationTests.create(1L, "test_organisation_unit_uid"));
 
-        ContentValues userOrgUnitLink = create(2L, "test_user_uid", "test_organisation_unit_uid");
+        ContentValues userOrgUnitLink = create(2L, "test_user_uid", "test_organisation_unit_uid", "test_org_unit_scope");
         database().insertOrThrow(DbOpenHelper.Tables.USER_ORGANISATION_UNIT, null, userOrgUnitLink);
 
         // remove organisation unit which is referenced by link row
@@ -153,7 +155,7 @@ public class UserOrganisationUnitLinkContractIntegrationTests extends AbsProvide
         database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null,
                 OrganisationUnitContractIntegrationTests.create(1L, "test_organisation_unit_uid"));
 
-        ContentValues userOrgUnitLink = create(2L, "test_user_uid", "test_organisation_unit_uid");
+        ContentValues userOrgUnitLink = create(2L, "test_user_uid", "test_organisation_unit_uid", "test_org_unit_scope");
         database().insertOrThrow(DbOpenHelper.Tables.USER_ORGANISATION_UNIT, null, userOrgUnitLink);
 
         Cursor cursor = getProvider().query(UserOrganisationUnitLinkContract.userOrganisationUnits(),
@@ -170,7 +172,7 @@ public class UserOrganisationUnitLinkContractIntegrationTests extends AbsProvide
         database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null,
                 OrganisationUnitContractIntegrationTests.create(1L, "test_organisation_unit_uid"));
 
-        ContentValues userOrgUnitLink = create(2L, "test_user_uid", "test_organisation_unit_uid");
+        ContentValues userOrgUnitLink = create(2L, "test_user_uid", "test_organisation_unit_uid", "test_org_unit_scope");
         database().insertOrThrow(DbOpenHelper.Tables.USER_ORGANISATION_UNIT, null, userOrgUnitLink);
 
         Cursor cursor = getProvider().query(UserOrganisationUnitLinkContract.userOrganisationUnits(2L),

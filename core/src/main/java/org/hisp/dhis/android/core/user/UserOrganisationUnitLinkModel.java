@@ -12,6 +12,7 @@ import org.hisp.dhis.android.core.common.BaseModel;
 
 @AutoValue
 public abstract class UserOrganisationUnitLinkModel extends BaseModel {
+    public static final String ORG_UNIT_SCOPE = "dataCapture";
 
     @Nullable
     @ColumnName(UserOrganisationUnitLinkContract.Columns.USER)
@@ -20,6 +21,10 @@ public abstract class UserOrganisationUnitLinkModel extends BaseModel {
     @Nullable
     @ColumnName(UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT)
     public abstract String organisationUnit();
+
+    @Nullable
+    @ColumnName(UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT_SCOPE)
+    public abstract String organisationUnitScope();
 
     @NonNull
     public abstract ContentValues toContentValues();
@@ -39,6 +44,8 @@ public abstract class UserOrganisationUnitLinkModel extends BaseModel {
         public abstract Builder user(@Nullable String user);
 
         public abstract Builder organisationUnit(@Nullable String organisationUnit);
+
+        public abstract Builder organisationUnitScope(@Nullable String organisationUnitScope);
 
         public abstract UserOrganisationUnitLinkModel build();
     }

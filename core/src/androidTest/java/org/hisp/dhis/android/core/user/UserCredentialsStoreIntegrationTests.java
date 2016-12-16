@@ -41,7 +41,7 @@ public class UserCredentialsStoreIntegrationTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void save_shouldPersistRowInDatabase() {
+    public void insert_shouldPersistRowInDatabase() {
         Date date = new Date();
 
         // inserting authenticated user model item

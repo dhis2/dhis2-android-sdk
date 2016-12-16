@@ -28,7 +28,7 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void save_shouldPersistRowInDatabase() {
+    public void insert_shouldPersistRowInDatabase() {
         // inserting authenticated user model item
         long rowId = authenticatedUserStore.insert("test_user_uid", "test_user_credentials");
 

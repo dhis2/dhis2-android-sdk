@@ -50,7 +50,7 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void save_shouldPersistRowInDatabase() {
+    public void insert_shouldPersistRowInDatabase() {
         Date date = new Date();
 
         long rowId = userStore.insert(

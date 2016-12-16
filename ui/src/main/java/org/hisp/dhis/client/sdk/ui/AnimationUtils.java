@@ -12,6 +12,9 @@ public class AnimationUtils {
     }
 
     public static void playFabShrinkPopAnimation(FloatingActionButton floatingActionButton) {
+        if (floatingActionButton == null) {
+            return;
+        }
         if (!floatingActionButton.isShown()) {
             floatingActionButton.setVisibility(View.VISIBLE);
             ObjectAnimator scaleX = ObjectAnimator.ofFloat(floatingActionButton, "scaleX", 0, 1);

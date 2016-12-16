@@ -45,6 +45,7 @@ import java.util.Date;
 // TODO: Tests
 @AutoValue
 public abstract class OrganisationUnitModel extends BaseNameableObjectModel {
+    public static final String ORG_UNIT_SCOPE_DATA_CAPTURE = "dataCapture";
 
     public static OrganisationUnitModel create(Cursor cursor) {
         return AutoValue_OrganisationUnitModel.createFromCursor(cursor);

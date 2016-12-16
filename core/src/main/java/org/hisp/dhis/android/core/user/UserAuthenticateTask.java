@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.Callback;
 import org.hisp.dhis.android.core.common.Task;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.models.user.User;
 import org.hisp.dhis.android.models.user.UserCredentials;
@@ -18,6 +20,7 @@ import static okhttp3.Credentials.basic;
 import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
 
 // ToDo: ask about API changes
+// ToDo: Consider changing strategy for work with @Nullable fields
 public final class UserAuthenticateTask implements Task<Long> {
     private final Executor executor;
     private final SQLiteDatabase database;
@@ -26,7 +29,9 @@ public final class UserAuthenticateTask implements Task<Long> {
     // stores
     private final UserStore userStore;
     private final UserCredentialsStore userCredentialsStore;
+    private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final AuthenticatedUserStore authenticatedUserStore;
+    private final OrganisationUnitStore organisationUnitStore;
 
     // username and password of candidate
     private final String username;
@@ -42,7 +47,9 @@ public final class UserAuthenticateTask implements Task<Long> {
             @NonNull UserService userService,
             @NonNull UserStore userStore,
             @NonNull UserCredentialsStore userCredentialsStore,
+            @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             @NonNull AuthenticatedUserStore authenticatedUserStore,
+            @NonNull OrganisationUnitStore organisationUnitStore,
             @NonNull String username,
             @NonNull String password) {
         this.executor = executor;
@@ -50,7 +57,9 @@ public final class UserAuthenticateTask implements Task<Long> {
 
         this.userStore = userStore;
         this.userCredentialsStore = userCredentialsStore;
+        this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.authenticatedUserStore = authenticatedUserStore;
+        this.organisationUnitStore = organisationUnitStore;
 
         // credentials
         this.username = username;
@@ -175,12 +184,46 @@ public final class UserAuthenticateTask implements Task<Long> {
             // insert user as authenticated entity
             authenticatedUserStore.insert(user.uid(), base64(username, password));
 
+            for (OrganisationUnit organisationUnit : user.organisationUnits()) {
+                organisationUnitStore.insert(
+                        organisationUnit.uid(),
+                        organisationUnit.code(),
+                        organisationUnit.name(),
+                        organisationUnit.displayName(),
+                        organisationUnit.created(),
+                        organisationUnit.lastUpdated(),
+                        organisationUnit.shortName(),
+                        organisationUnit.displayShortName(),
+                        organisationUnit.description(),
+                        organisationUnit.displayDescription(),
+                        organisationUnit.path(),
+                        organisationUnit.openingDate(),
+                        organisationUnit.closedDate(),
+                        organisationUnit.parent() != null ? organisationUnit.parent().uid() : null,
+                        organisationUnit.level()
+                );
+
+                // insert link between user and organisation unit
+                userOrganisationUnitLinkStore.insert(
+                        user.uid(),
+                        organisationUnit.uid(),
+                        OrganisationUnitModel.ORG_UNIT_SCOPE_DATA_CAPTURE
+                );
+            }
+
             database.setTransactionSuccessful();
         } finally {
             database.endTransaction();
-        }
 
-        database.close();
+            // closing all storesø
+            userStore.close();
+            userCredentialsStore.close();
+            userOrganisationUnitLinkStore.close();
+            authenticatedUserStore.close();
+            organisationUnitStore.close();
+
+            database.close();
+        }
 
         return userId;
     }

@@ -12,7 +12,6 @@ import org.hisp.dhis.android.core.common.BaseModel;
 
 @AutoValue
 public abstract class UserOrganisationUnitLinkModel extends BaseModel {
-    public static final String ORG_UNIT_SCOPE = "dataCapture";
 
     @Nullable
     @ColumnName(UserOrganisationUnitLinkContract.Columns.USER)

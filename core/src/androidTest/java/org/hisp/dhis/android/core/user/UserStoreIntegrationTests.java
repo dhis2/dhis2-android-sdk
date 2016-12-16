@@ -1,6 +1,5 @@
 package org.hisp.dhis.android.core.user;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -43,6 +42,7 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
     private UserStore userStore;
 
     @Before
+    @Override
     public void setUp() {
         super.setUp();
 

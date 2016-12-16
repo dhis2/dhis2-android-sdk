@@ -18,6 +18,7 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
     private AuthenticatedUserStore authenticatedUserStore;
 
     @Before
+    @Override
     public void setUp() {
         super.setUp();
         authenticatedUserStore = new AuthenticatedUserStoreImpl(database());

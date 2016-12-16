@@ -60,6 +60,10 @@ public abstract class OptionSet extends BaseIdentifiableObject {
     @JsonProperty(JSON_PROPERTY_VALUE_TYPE)
     public abstract ValueType valueType();
 
+    public static Builder builder() {
+        return new AutoValue_OptionSet.Builder();
+    }
+
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
 

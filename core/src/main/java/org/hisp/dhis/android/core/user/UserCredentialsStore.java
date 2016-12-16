@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import java.util.Date;
 
 public interface UserCredentialsStore {
-    long save(
+    long insert(
             @NonNull String uid,
             @NonNull String code,
             @NonNull String name,

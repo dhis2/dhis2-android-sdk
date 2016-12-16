@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.core.user;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -52,7 +53,7 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
     public void save_shouldPersistRowInDatabase() {
         Date date = new Date();
 
-        long rowId = userStore.save(
+        long rowId = userStore.insert(
                 "test_user_uid",
                 "test_user_code",
                 "test_user_name",
@@ -73,8 +74,8 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
                 "test_user_nationality"
         );
 
-        Cursor cursor = database().query(DbOpenHelper.Tables.USER, USER_PROJECTION,
-                null, null, null, null, null);
+        Cursor cursor = database().query(DbOpenHelper.Tables.USER,
+                USER_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor)
@@ -101,6 +102,48 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
                 )
                 .isExhausted();
     }
+
+    // ToDo: consider introducing conflict resolution strategy
+//    @Test
+//    public void save_shouldNotTriggerOtherTablesOnDuplicate() {
+//        // inserting user
+//        ContentValues user = UserContractIntegrationTests.create(1L, "test_user_uid");
+//        database().insert(DbOpenHelper.Tables.USER, null, user);
+//
+//        // inserting user credentials
+//        ContentValues userCredentials = UserCredentialsContractIntegrationTests.create(
+//                1L, "test_user_credentials", "test_user_uid");
+//        database().insert(DbOpenHelper.Tables.USER_CREDENTIALS, null, userCredentials);
+//
+//        // try to insert duplicate into user table through store
+//        Date date = new Date();
+//        long rowId = userStore.insert(
+//                "test_user_uid",
+//                "test_user_code",
+//                "test_user_name",
+//                "test_user_display_name",
+//                date, date,
+//                "test_user_birthday",
+//                "test_user_education",
+//                "test_user_gender",
+//                "test_user_job_title",
+//                "test_user_surname",
+//                "test_user_first_name",
+//                "test_user_introduction",
+//                "test_user_employer",
+//                "test_user_interests",
+//                "test_user_languages",
+//                "test_user_email",
+//                "test_user_phone_number",
+//                "test_user_nationality"
+//        );
+//
+//        System.out.println("RowId: " + rowId);
+//
+//        assertThatCursor(database().query(DbOpenHelper.Tables.USER_CREDENTIALS, UserCredentialsContractIntegrationTests.USER_CREDENTIALS_PROJECTION, null, null, null, null, null))
+//                .hasRow(UserCredentialsContractIntegrationTests.USER_CREDENTIALS_PROJECTION, userCredentials)
+//                .isExhausted();
+//    }
 
     @Test
     public void close_shouldNotCloseDatabase() {

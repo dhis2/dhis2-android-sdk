@@ -45,7 +45,7 @@ public class UserCredentialsStoreIntegrationTests extends AbsStoreTestCase {
         Date date = new Date();
 
         // inserting authenticated user model item
-        long rowId = userCredentialsStore.save(
+        long rowId = userCredentialsStore.insert(
                 "test_user_credentials_uid",
                 "test_user_credentials_code",
                 "test_user_credentials_name",

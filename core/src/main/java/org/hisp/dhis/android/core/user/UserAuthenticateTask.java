@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.core.user;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.Callback;
@@ -19,6 +20,7 @@ import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
 // ToDo: ask about API changes
 public final class UserAuthenticateTask implements Task<Long> {
     private final Executor executor;
+    private final SQLiteDatabase database;
     private final UserService userService;
 
     // stores
@@ -53,6 +55,8 @@ public final class UserAuthenticateTask implements Task<Long> {
         // credentials
         this.username = username;
         this.password = password;
+
+        this.database = SQLiteDatabase.create(null);
     }
 
     @Override
@@ -72,9 +76,6 @@ public final class UserAuthenticateTask implements Task<Long> {
             if (response.isSuccessful()) {
                 saveUser(response.body());
             }
-
-            // release resources
-
         } catch (IOException ioException) {
             // wrapping and re-throwing exception
             throw new RuntimeException(ioException);
@@ -108,7 +109,6 @@ public final class UserAuthenticateTask implements Task<Long> {
                         saveUser(response.body());
                     }
 
-                    // ToDo: clean-up resources
                     callback.onSuccess(UserAuthenticateTask.this, null);
                 } catch (Throwable throwable) {
                     callback.onFailure(UserAuthenticateTask.this, throwable);
@@ -147,31 +147,41 @@ public final class UserAuthenticateTask implements Task<Long> {
         ).execute();
     }
 
+    // ToDo: clean-up resources (close statements and database)
     private long saveUser(User user) {
-        UserCredentials userCredentials = user.userCredentials();
+        database.beginTransaction();
 
-        // ToDo: open transaction
+        long userId;
 
-        // save user model into user table
-        userStore.save(
-                user.uid(), user.code(), user.name(), user.displayName(),
-                user.created(), user.lastUpdated(), user.birthday(), user.education(),
-                user.gender(), user.jobTitle(), user.surname(), user.firstName(),
-                user.introduction(), user.employer(), user.interests(), user.languages(),
-                user.email(), user.phoneNumber(), user.nationality()
-        );
+        // enclosing transaction in try-finally block in
+        // order to make sure that database won't be leaked
+        try {
+            // insert user model into user table
+            userId = userStore.insert(
+                    user.uid(), user.code(), user.name(), user.displayName(),
+                    user.created(), user.lastUpdated(), user.birthday(), user.education(),
+                    user.gender(), user.jobTitle(), user.surname(), user.firstName(),
+                    user.introduction(), user.employer(), user.interests(), user.languages(),
+                    user.email(), user.phoneNumber(), user.nationality()
+            );
 
-        // save user credentials
-        userCredentialsStore.save(
-                userCredentials.uid(), userCredentials.code(), user.name(), user.displayName(),
-                user.created(), user.lastUpdated(), userCredentials.username(), user.uid()
-        );
+            // insert user credentials
+            UserCredentials userCredentials = user.userCredentials();
+            userCredentialsStore.insert(
+                    userCredentials.uid(), userCredentials.code(), user.name(), user.displayName(),
+                    user.created(), user.lastUpdated(), userCredentials.username(), user.uid()
+            );
 
-        // save user as authenticated entity
-        authenticatedUserStore.save(user.uid(), base64(username, password));
+            // insert user as authenticated entity
+            authenticatedUserStore.insert(user.uid(), base64(username, password));
 
-        // ToDo: close transaction
+            database.setTransactionSuccessful();
+        } finally {
+            database.endTransaction();
+        }
 
-        return 1;
+        database.close();
+
+        return userId;
     }
 }

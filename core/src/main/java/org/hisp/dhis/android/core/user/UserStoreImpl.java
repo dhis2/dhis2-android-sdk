@@ -40,7 +40,7 @@ public class UserStoreImpl implements UserStore {
     }
 
     @Override
-    public long save(
+    public long insert(
             @NonNull String uid, @NonNull String code, @NonNull String name,
             @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
             @NonNull String birthday, @NonNull String education, @NonNull String gender,

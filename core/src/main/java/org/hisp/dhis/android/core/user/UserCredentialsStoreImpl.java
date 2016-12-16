@@ -29,7 +29,7 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
     }
 
     @Override
-    public long save(
+    public long insert(
             @NonNull String uid, @NonNull String code, @NonNull String name,
             @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
             @NonNull String username, @NonNull String user) {

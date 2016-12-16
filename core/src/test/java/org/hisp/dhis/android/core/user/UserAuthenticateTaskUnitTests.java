@@ -17,8 +17,6 @@ import java.util.concurrent.Executor;
 
 import retrofit2.Call;
 
-import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
-
 @RunWith(JUnit4.class)
 public class UserAuthenticateTaskUnitTests {
 
@@ -54,10 +52,10 @@ public class UserAuthenticateTaskUnitTests {
             }
         };
 
-        userAuthenticateTask = new UserAuthenticateTask(synchronousExecutor,
-                userService, userStore, userCredentialsStore, authenticatedUserStore,
-                "test_user_name", "test_user_password");
-        userCredentials = base64("test_user_name", "test_user_password");
+//        userAuthenticateTask = new UserAuthenticateTask(synchronousExecutor,
+//                userService, userStore, userCredentialsStore, authenticatedUserStore,
+//                "test_user_name", "test_user_password");
+//        userCredentials = base64("test_user_name", "test_user_password");
     }
 
     @Test
@@ -68,7 +66,7 @@ public class UserAuthenticateTaskUnitTests {
         // when(userCall.execute().body()).thenReturn(user);
         // when(userService.authenticate("Basic " + userCredentials, User.uid)).thenReturn(userCall);
         // when(userService.authenticate(any(String.class), any(Property.class))).thenReturn(userCall);
-        // when(authenticatedUserStore.save("test_user_uid", userCredentials)).thenReturn(1L);
+        // when(authenticatedUserStore.insert("test_user_uid", userCredentials)).thenReturn(1L);
 
         // Long userId = userAuthenticateTask.execute();
         // assertThat(userId).isEqualTo(1L);

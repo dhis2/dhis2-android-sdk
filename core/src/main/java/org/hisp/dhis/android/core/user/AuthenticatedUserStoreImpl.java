@@ -29,7 +29,7 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
     }
 
     @Override
-    public long save(@NonNull String userUid, @NonNull String credentials) {
+    public long insert(@NonNull String userUid, @NonNull String credentials) {
         insertRowStatement.clearBindings();
         insertRowStatement.bindString(1, userUid);
         insertRowStatement.bindString(2, credentials);

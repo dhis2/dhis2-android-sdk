@@ -150,9 +150,9 @@ public final class UserAuthenticateTask implements Task<Long> {
 
                 // ToDo: adapt userCredentials
                 User.userCredentials.with(),
-                User.organisationUnits.with(OrganisationUnit.UID),
-                User.teiSearchOrganisationUnits.with(OrganisationUnit.UID),
-                User.dataViewOrganisationUnits.with(OrganisationUnit.UID)
+                User.organisationUnits.with(OrganisationUnit.uid),
+                User.teiSearchOrganisationUnits.with(OrganisationUnit.uid),
+                User.dataViewOrganisationUnits.with(OrganisationUnit.uid)
         ).execute();
     }
 

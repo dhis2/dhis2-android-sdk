@@ -37,6 +37,7 @@ import org.hisp.dhis.android.models.common.Field;
 import org.hisp.dhis.android.models.common.NestedField;
 import org.hisp.dhis.android.models.organisationunit.OrganisationUnit;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -186,11 +187,16 @@ public abstract class User extends BaseIdentifiableObject {
             @JsonProperty(DATA_VIEW_ORGANISATION_UNITS) List<OrganisationUnit> dataViewOrgUnits) {
         // ToDo: change from jackson to gson and implement autovalue-gson extension
         // ToDo: remove builders and use constructor with create methods
-        // return new AutoValue_User();
+
         return new AutoValue_User(
                 uid, code, name, displayName, created, lastUpdated, birthday, education, gender,
                 jobTitle, surname, firstName, introduction, employer, interests, languages, email,
-                phoneNumber, nationality, userCredentials, orgUnits, searchOrgUnits, dataViewOrgUnits
+                phoneNumber, nationality, userCredentials,
+
+                // guarding collections from modification
+                orgUnits != null ? Collections.unmodifiableList(orgUnits) : null,
+                searchOrgUnits != null ? Collections.unmodifiableList(searchOrgUnits) : null,
+                dataViewOrgUnits != null ? Collections.unmodifiableList(dataViewOrgUnits) : null
         );
     }
 

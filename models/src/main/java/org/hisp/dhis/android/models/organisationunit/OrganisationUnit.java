@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.models.organisationunit;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.models.common.BaseIdentifiableObject;
@@ -45,90 +45,113 @@ import javax.annotation.Nullable;
 
 // TODO: Tests
 @AutoValue
-@JsonDeserialize(builder = AutoValue_OrganisationUnit.Builder.class)
 public abstract class OrganisationUnit extends BaseNameableObject {
-    private static final String JSON_PROPERTY_PARENT = "parent";
-    private static final String JSON_PROPERTY_PATH = "path";
-    private static final String JSON_PROPERTY_OPENING_DATE = "openingDate";
-    private static final String JSON_PROPERTY_CLOSED_DATE = "closedDate";
-    private static final String JSON_PROPERTY_LEVEL = "level";
-    private static final String JSON_PROPERTY_PROGRAMS = "programs";
+    private static final String PARENT = "parent";
+    private static final String PATH = "path";
+    private static final String OPENING_DATE = "openingDate";
+    private static final String CLOSED_DATE = "closedDate";
+    private static final String LEVEL = "level";
+    private static final String PROGRAMS = "programs";
 
-    public static final Field<OrganisationUnit, String> UID = Field.create(BaseIdentifiableObject.UID);
-    public static final Field<OrganisationUnit, String> CODE = Field.create(BaseIdentifiableObject.CODE);
-    public static final Field<OrganisationUnit, String> NAME = Field.create(BaseIdentifiableObject.NAME);
-    public static final Field<OrganisationUnit, String> DISPLAY_NAME = Field.create(BaseIdentifiableObject.DISPLAY_NAME);
-    public static final Field<OrganisationUnit, String> CREATED = Field.create(BaseIdentifiableObject.CREATED);
-    public static final Field<OrganisationUnit, String> LAST_UPDATED = Field.create(BaseIdentifiableObject.LAST_UPDATED);
-    public static final Field<OrganisationUnit, String> SHORT_NAME = Field.create(JSON_PROPERTY_SHORT_NAME);
-    public static final Field<OrganisationUnit, String> DISPLAY_SHORT_NAME = Field.create(JSON_PROPERTY_DISPLAY_SHORT_NAME);
-    public static final Field<OrganisationUnit, String> DESCRIPTION = Field.create(JSON_PROPERTY_DESCRIPTION);
-    public static final Field<OrganisationUnit, String> DISPLAY_DESCRIPTION = Field.create(JSON_PROPERTY_DISPLAY_DESCRIPTION);
-    public static final Field<OrganisationUnit, String> PATH = Field.create(JSON_PROPERTY_PATH);
-    public static final Field<OrganisationUnit, String> OPENING_DATE = Field.create(JSON_PROPERTY_OPENING_DATE);
-    public static final Field<OrganisationUnit, String> CLOSED_DATE = Field.create(JSON_PROPERTY_CLOSED_DATE);
-    public static final Field<OrganisationUnit, String> LEVEL = Field.create(JSON_PROPERTY_LEVEL);
-    public static final Field<OrganisationUnit, ?> PARENT = Field.create(JSON_PROPERTY_PARENT);
-    public static final Field<Program, String> PROGRAMS = Field.create(JSON_PROPERTY_PROGRAMS);
+    public static final Field<OrganisationUnit, String> uid = Field.create(BaseIdentifiableObject.UID);
+    public static final Field<OrganisationUnit, String> code = Field.create(BaseIdentifiableObject.CODE);
+    public static final Field<OrganisationUnit, String> name = Field.create(BaseIdentifiableObject.NAME);
+    public static final Field<OrganisationUnit, String> displayName = Field.create(BaseIdentifiableObject.DISPLAY_NAME);
+    public static final Field<OrganisationUnit, String> created = Field.create(BaseIdentifiableObject.CREATED);
+    public static final Field<OrganisationUnit, String> lastUpdated = Field.create(BaseIdentifiableObject.LAST_UPDATED);
+    public static final Field<OrganisationUnit, String> shortName = Field.create(SHORT_NAME);
+    public static final Field<OrganisationUnit, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
+    public static final Field<OrganisationUnit, String> description = Field.create(DESCRIPTION);
+    public static final Field<OrganisationUnit, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
+    public static final Field<OrganisationUnit, String> path = Field.create(PATH);
+    public static final Field<OrganisationUnit, String> openingDate = Field.create(OPENING_DATE);
+    public static final Field<OrganisationUnit, String> closedDate = Field.create(CLOSED_DATE);
+    public static final Field<OrganisationUnit, String> level = Field.create(LEVEL);
+    public static final Field<OrganisationUnit, OrganisationUnit> parent = Field.create(PARENT);
+    public static final Field<OrganisationUnit, Program> programs = Field.create(PROGRAMS);
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_PARENT)
+    @JsonProperty(PARENT)
     public abstract OrganisationUnit parent();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_PATH)
+    @JsonProperty(PATH)
     public abstract String path();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_OPENING_DATE)
+    @JsonProperty(OPENING_DATE)
     public abstract Date openingDate();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_CLOSED_DATE)
+    @JsonProperty(CLOSED_DATE)
     public abstract Date closedDate();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_LEVEL)
+    @JsonProperty(LEVEL)
     public abstract Integer level();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_PROGRAMS)
+    @JsonProperty(PROGRAMS)
     public abstract List<Program> programs();
 
-    public static Builder builder() {
-        return new AutoValue_OrganisationUnit.Builder();
+    @JsonCreator
+    public static OrganisationUnit create(
+            @JsonProperty(UID) String uid,
+            @JsonProperty(CODE) String code,
+            @JsonProperty(NAME) String name,
+            @JsonProperty(DISPLAY_NAME) String displayName,
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(SHORT_NAME) String shortName,
+            @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
+            @JsonProperty(DESCRIPTION) String description,
+            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
+            @JsonProperty(PARENT) OrganisationUnit parent,
+            @JsonProperty(PATH) String path,
+            @JsonProperty(OPENING_DATE) Date openingDate,
+            @JsonProperty(CLOSED_DATE) Date closedDate,
+            @JsonProperty(LEVEL) Integer level,
+            @JsonProperty(PROGRAMS) List<Program> programs) {
+        return new AutoValue_OrganisationUnit(uid, code, name, displayName, created, lastUpdated,
+                shortName, displayShortName, description, displayDescription, parent, path, openingDate,
+                closedDate, level, programs != null ? Collections.unmodifiableList(programs) : null);
     }
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
-        @JsonProperty(JSON_PROPERTY_PARENT)
-        public abstract Builder parent(@Nullable OrganisationUnit parent);
 
-        @JsonProperty(JSON_PROPERTY_PATH)
-        public abstract Builder path(@Nullable String path);
-
-        @JsonProperty(JSON_PROPERTY_OPENING_DATE)
-        public abstract Builder openingDate(@Nullable Date openingDate);
-
-        @JsonProperty(JSON_PROPERTY_CLOSED_DATE)
-        public abstract Builder closedDate(@Nullable Date closedDate);
-
-        @JsonProperty(JSON_PROPERTY_LEVEL)
-        public abstract Builder level(@Nullable Integer level);
-
-        @JsonProperty(JSON_PROPERTY_PROGRAMS)
-        public abstract Builder programs(@Nullable List<Program> programs);
-
-        abstract List<Program> programs();
-
-        abstract OrganisationUnit autoBuild();
-
-        public OrganisationUnit build() {
-            if (programs() != null) {
-                programs(Collections.unmodifiableList(programs()));
-            }
-
-            return autoBuild();
-        }
-    }
+//    public static Builder builder() {
+//        return new AutoValue_OrganisationUnit.Builder();
+//    }
+//
+//    @AutoValue.Builder
+//    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+//        @JsonProperty(PARENT)
+//        public abstract Builder parent(@Nullable OrganisationUnit parent);
+//
+//        @JsonProperty(PATH)
+//        public abstract Builder path(@Nullable String path);
+//
+//        @JsonProperty(OPENING_DATE)
+//        public abstract Builder openingDate(@Nullable Date openingDate);
+//
+//        @JsonProperty(CLOSED_DATE)
+//        public abstract Builder closedDate(@Nullable Date closedDate);
+//
+//        @JsonProperty(LEVEL)
+//        public abstract Builder level(@Nullable Integer level);
+//
+//        @JsonProperty(PROGRAMS)
+//        public abstract Builder programs(@Nullable List<Program> programs);
+//
+//        abstract List<Program> programs();
+//
+//        abstract OrganisationUnit autoBuild();
+//
+//        public OrganisationUnit build() {
+//            if (programs() != null) {
+//                programs(Collections.unmodifiableList(programs()));
+//            }
+//
+//            return autoBuild();
+//        }
+//    }
 }

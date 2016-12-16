@@ -29,56 +29,80 @@
 package org.hisp.dhis.android.models.user;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.models.common.Field;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
 // TODO: Tests
 @AutoValue
-@JsonDeserialize(builder = AutoValue_UserCredentials.Builder.class)
 public abstract class UserCredentials extends BaseIdentifiableObject {
-    private static final String JSON_PROPERTY_USER_ROLES = "userRoles";
-    private static final String JSON_PROPERTY_USERNAME = "username";
+    private static final String USER_ROLES = "userRoles";
+    private static final String USERNAME = "username";
+
+    public static final Field<UserCredentials, String> uid = Field.create(UID);
+    public static final Field<UserCredentials, String> code = Field.create(CODE);
+    public static final Field<UserCredentials, String> name = Field.create(NAME);
+    public static final Field<UserCredentials, String> displayName = Field.create(DISPLAY_NAME);
+    public static final Field<UserCredentials, String> created = Field.create(CREATED);
+    public static final Field<UserCredentials, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<UserCredentials, String> username = Field.create(USERNAME);
+    public static final Field<UserCredentials, UserRole> userRoles = Field.create(USER_ROLES);
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_USERNAME)
+    @JsonProperty(USERNAME)
     public abstract String username();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_USER_ROLES)
+    @JsonProperty(USER_ROLES)
     public abstract List<UserRole> userRoles();
 
-    public static Builder builder() {
-        return new AutoValue_UserCredentials.Builder();
+    @JsonCreator
+    public static UserCredentials create(
+            @JsonProperty(UID) String uid,
+            @JsonProperty(CODE) String code,
+            @JsonProperty(NAME) String name,
+            @JsonProperty(DISPLAY_NAME) String displayName,
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(USERNAME) String username,
+            @JsonProperty(USER_ROLES) List<UserRole> userRoles) {
+        return new AutoValue_UserCredentials(uid, code, name, displayName, created, lastUpdated, username,
+                userRoles != null ? Collections.unmodifiableList(userRoles) : null
+        );
     }
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
-
-        @JsonProperty(JSON_PROPERTY_USER_ROLES)
-        public abstract Builder userRoles(@Nullable List<UserRole> userRoles);
-
-        @JsonProperty(JSON_PROPERTY_USERNAME)
-        public abstract Builder username(@Nullable String username);
-
-        // internal, not exposed
-        abstract List<UserRole> userRoles();
-
-        abstract UserCredentials autoBuild();
-
-        public UserCredentials build() {
-            if (userRoles() != null) {
-                userRoles(Collections.unmodifiableList(userRoles()));
-            }
-
-            return autoBuild();
-        }
-    }
+//    public static Builder builder() {
+//        return new AutoValue_UserCredentials.Builder();
+//    }
+//    @AutoValue.Builder
+//    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+//
+//        @JsonProperty(USER_ROLES)
+//        public abstract Builder userRoles(@Nullable List<UserRole> userRoles);
+//
+//        @JsonProperty(USERNAME)
+//        public abstract Builder username(@Nullable String username);
+//
+//        // internal, not exposed
+//        abstract List<UserRole> userRoles();
+//
+//        abstract UserCredentials autoBuild();
+//
+//        public UserCredentials build() {
+//            if (userRoles() != null) {
+//                userRoles(Collections.unmodifiableList(userRoles()));
+//            }
+//
+//            return autoBuild();
+//        }
+//    }
 }

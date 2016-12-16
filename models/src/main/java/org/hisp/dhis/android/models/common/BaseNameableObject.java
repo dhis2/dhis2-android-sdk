@@ -33,43 +33,43 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.annotation.Nullable;
 
 public abstract class BaseNameableObject extends BaseIdentifiableObject implements NameableObject {
-    protected static final String JSON_PROPERTY_SHORT_NAME = "shortName";
-    protected static final String JSON_PROPERTY_DISPLAY_SHORT_NAME = "displayShortName";
-    protected static final String JSON_PROPERTY_DESCRIPTION = "description";
-    protected static final String JSON_PROPERTY_DISPLAY_DESCRIPTION = "displayDescription";
+    protected static final String SHORT_NAME = "shortName";
+    protected static final String DISPLAY_SHORT_NAME = "displayShortName";
+    protected static final String DESCRIPTION = "description";
+    protected static final String DISPLAY_DESCRIPTION = "displayDescription";
 
-    @Override
     @Nullable
-    @JsonProperty(JSON_PROPERTY_SHORT_NAME)
+    @JsonProperty(SHORT_NAME)
+    @Override
     public abstract String shortName();
 
-    @Override
     @Nullable
-    @JsonProperty(JSON_PROPERTY_DISPLAY_SHORT_NAME)
+    @JsonProperty(DISPLAY_SHORT_NAME)
+    @Override
     public abstract String displayShortName();
 
-    @Override
     @Nullable
-    @JsonProperty(JSON_PROPERTY_DESCRIPTION)
+    @JsonProperty(DESCRIPTION)
+    @Override
     public abstract String description();
 
-    @Override
     @Nullable
-    @JsonProperty(JSON_PROPERTY_DISPLAY_DESCRIPTION)
+    @JsonProperty(DISPLAY_DESCRIPTION)
+    @Override
     public abstract String displayDescription();
 
     protected static abstract class Builder<T extends Builder> extends BaseIdentifiableObject.Builder<T> {
 
-        @JsonProperty(JSON_PROPERTY_SHORT_NAME)
+        @JsonProperty(SHORT_NAME)
         public abstract T shortName(@Nullable String shortName);
 
-        @JsonProperty(JSON_PROPERTY_DISPLAY_SHORT_NAME)
+        @JsonProperty(DISPLAY_SHORT_NAME)
         public abstract T displayShortName(@Nullable String displayShortName);
 
-        @JsonProperty(JSON_PROPERTY_DESCRIPTION)
+        @JsonProperty(DESCRIPTION)
         public abstract T description(@Nullable String description);
 
-        @JsonProperty(JSON_PROPERTY_DISPLAY_DESCRIPTION)
+        @JsonProperty(DISPLAY_DESCRIPTION)
         public abstract T displayDescription(@Nullable String displayDescription);
     }
 }

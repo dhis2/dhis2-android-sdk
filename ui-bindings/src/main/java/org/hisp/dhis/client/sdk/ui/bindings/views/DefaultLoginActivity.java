@@ -116,13 +116,16 @@ public class DefaultLoginActivity extends AbsLoginActivity implements LoginView 
         }
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         getServerUrl().setError(message);
+        getServerUrl().requestFocus();
     }
 
     @Override
     public void showInvalidCredentialsError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-        getUsername().setError(message);
         getPassword().setError(message);
+        getPassword().requestFocus();
+        getUsername().setError(message);
+        getUsername().requestFocus();
     }
 
     @Override

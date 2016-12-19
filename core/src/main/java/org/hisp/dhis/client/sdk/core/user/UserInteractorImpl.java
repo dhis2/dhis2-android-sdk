@@ -73,6 +73,8 @@ class UserInteractorImpl implements UserInteractor {
 
     @Override
     public Object logOut() {
+        userPreferences.invalidateUser();
+        //todo delete all data
         return null;
     }
 

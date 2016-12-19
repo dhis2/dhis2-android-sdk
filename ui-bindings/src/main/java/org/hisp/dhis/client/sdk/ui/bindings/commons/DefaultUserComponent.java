@@ -49,7 +49,7 @@ public final class DefaultUserComponent implements UserComponent {
 
         if (sdkInstance.me() != null) {
             this.homePresenter = new HomePresenterImpl(sdkInstance.me(), syncDateWrapper, appComponent.logger());
-            this.profilePresenter = new ProfilePresenterImpl(sdkInstance.me(), syncDateWrapper, null, null, null);
+            this.profilePresenter = new ProfilePresenterImpl(sdkInstance.me(), syncDateWrapper, null, new DefaultNotificationHandlerImpl(appComponent.context()), null);
             this.settingsPresenter = new SettingsPresenterImpl(appPreferences, null);
         } else {
             this.homePresenter = null;

@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.IOException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -33,7 +34,7 @@ public class UserCredentialsStoreIntegrationTests extends AbsStoreTestCase {
 
     @Before
     @Override
-    public void setUp() {
+    public void setUp() throws IOException {
         super.setUp();
 
         userCredentialsStore = new UserCredentialsStoreImpl(database());

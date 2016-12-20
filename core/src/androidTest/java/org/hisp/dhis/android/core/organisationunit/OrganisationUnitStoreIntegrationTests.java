@@ -8,6 +8,7 @@ import org.hisp.dhis.android.models.common.BaseIdentifiableObject;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -36,7 +37,7 @@ public class OrganisationUnitStoreIntegrationTests extends AbsStoreTestCase {
 
     @Before
     @Override
-    public void setUp() {
+    public void setUp() throws IOException {
         super.setUp();
 
         organisationUnitStore = new OrganisationUnitStoreImpl(database());

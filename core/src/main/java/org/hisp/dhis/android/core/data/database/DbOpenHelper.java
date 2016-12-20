@@ -80,10 +80,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             OrganisationUnitContract.Columns.OPENING_DATE + " TEXT," +
             OrganisationUnitContract.Columns.CLOSED_DATE + " TEXT," +
             OrganisationUnitContract.Columns.LEVEL + " INTEGER," +
-            OrganisationUnitContract.Columns.PARENT + " TEXT," +
-            "FOREIGN KEY (" + OrganisationUnitContract.Columns.PARENT + ") REFERENCES " +
-            Tables.ORGANISATION_UNIT + " (" + OrganisationUnitContract.Columns.UID + ") ON DELETE CASCADE" +
-            ");";
+            OrganisationUnitContract.Columns.PARENT + " TEXT" + ");";
 
     private static final String CREATE_USER_ORGANISATION_UNIT_TABLE = "CREATE TABLE " + Tables.USER_ORGANISATION_UNIT + " (" +
             UserOrganisationUnitLinkContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +

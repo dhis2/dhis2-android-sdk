@@ -144,42 +144,6 @@ public class OrganisationUnitContractIntegrationTests extends AbsProviderTestCas
         assertThatCursor(cursor).isExhausted();
     }
 
-    public void testDelete_shouldDeleteSubtree() {
-        ContentValues organisationUnitRoot = new ContentValues(organisationUnit);
-        ContentValues organisationUnitChildOne = new ContentValues(organisationUnit);
-        ContentValues organisationUnitChildTwo = new ContentValues(organisationUnit);
-        ContentValues organisationUnitGrandChild = new ContentValues(organisationUnit);
-
-        organisationUnitRoot.put(Columns.UID, "test_uid_root");
-
-        organisationUnitChildOne.put(Columns.ID, 2L);
-        organisationUnitChildOne.put(Columns.UID, "test_uid_child_one");
-        organisationUnitChildOne.put(Columns.PARENT, "test_uid_root");
-
-        organisationUnitChildTwo.put(Columns.ID, 3L);
-        organisationUnitChildTwo.put(Columns.UID, "test_uid_child_two");
-        organisationUnitChildTwo.put(Columns.PARENT, "test_uid_root");
-
-        organisationUnitGrandChild.put(Columns.ID, 4L);
-        organisationUnitGrandChild.put(Columns.UID, "test_uid_grand_child");
-        organisationUnitGrandChild.put(Columns.PARENT, "test_uid_child_two");
-
-        database().insertOrThrow(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitRoot);
-        database().insertOrThrow(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitChildOne);
-        database().insertOrThrow(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitChildTwo);
-        database().insertOrThrow(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitGrandChild);
-
-        // removing root node should trigger removal of all children
-        int deleteCount = getProvider().delete(
-                OrganisationUnitContract.organisationUnits(1L), null, null);
-
-        assertThat(deleteCount).isEqualTo(1);
-
-        Cursor cursor = database().query(DbOpenHelper.Tables.ORGANISATION_UNIT,
-                ORGANISATION_UNIT_PROJECTION, null, null, null, null, null);
-        assertThatCursor(cursor).isExhausted();
-    }
-
     public void testDeleteByUriWithId_shouldDeleteRow() {
         database().insertOrThrow(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
 

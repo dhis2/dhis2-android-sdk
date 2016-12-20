@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.IOException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -19,7 +20,6 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 public class UserStoreIntegrationTests extends AbsStoreTestCase {
     public static final String[] USER_PROJECTION = {
             UserContract.Columns.UID,
-            UserContract.Columns.CODE,
             UserContract.Columns.NAME,
             UserContract.Columns.DISPLAY_NAME,
             UserContract.Columns.CREATED,
@@ -43,7 +43,7 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
 
     @Before
     @Override
-    public void setUp() {
+    public void setUp() throws IOException {
         super.setUp();
 
         userStore = new UserStoreImpl(database());
@@ -55,7 +55,6 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
 
         long rowId = userStore.insert(
                 "test_user_uid",
-                "test_user_code",
                 "test_user_name",
                 "test_user_display_name",
                 date, date,
@@ -81,7 +80,6 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
         assertThatCursor(cursor)
                 .hasRow(
                         "test_user_uid",
-                        "test_user_code",
                         "test_user_name",
                         "test_user_display_name",
                         BaseIdentifiableObject.DATE_FORMAT.format(date),

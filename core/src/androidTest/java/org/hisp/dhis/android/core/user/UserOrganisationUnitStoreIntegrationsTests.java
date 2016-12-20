@@ -9,6 +9,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContractInteg
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
@@ -23,7 +25,7 @@ public class UserOrganisationUnitStoreIntegrationsTests extends AbsStoreTestCase
 
     @Before
     @Override
-    public void setUp() {
+    public void setUp() throws IOException {
         super.setUp();
 
         organisationUnitLinkStore = new UserOrganisationUnitLinkStoreImpl(database());

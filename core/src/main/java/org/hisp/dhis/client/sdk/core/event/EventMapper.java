@@ -102,6 +102,7 @@ class EventMapper extends AbsMapper<Event> {
             event = Event.builder()
                     .id(getLong(cursor, EventColumns.COLUMN_ID))
                     .uid(getString(cursor, EventColumns.COLUMN_UID))
+                    .enrollmentUid(getString(cursor, EventColumns.COLUMN_ENROLLMENT))
                     .status(EventStatus.valueOf(getString(cursor, EventColumns.COLUMN_EVENT_STATUS)))
                     .organisationUnit(getString(cursor, EventColumns.COLUMN_ORGANISATION_UNIT))
                     .program(getString(cursor, EventColumns.COLUMN_PROGRAM))

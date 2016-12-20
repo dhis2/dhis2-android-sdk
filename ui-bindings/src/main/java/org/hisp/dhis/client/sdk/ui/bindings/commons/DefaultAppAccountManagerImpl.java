@@ -47,108 +47,6 @@ public class DefaultAppAccountManagerImpl implements DefaultAppAccountManager {
         init();
     }
 
-    private void init() {
-        if (!appPreferences.getBackgroundSyncState() || !userIsSignedIn()) {
-            logger.i(TAG, "No syncing performed: Synchronizing is turned off or user is not signed in. ");
-            return;
-        }
-
-        initPeriodicSync();
-
-    }
-
-    private boolean userIsSignedIn() {
-        return currentUserInteractor != null && currentUserInteractor.isLoggedIn();
-    }
-
-    private Account fetchOrCreateAccount() {
-        String accountName = getUsername();
-
-        Account fetchedAccount = fetchAccount(accountName);
-        if (fetchedAccount == null) {
-            fetchedAccount = createAccount(accountName);
-        }
-
-        return fetchedAccount;
-    }
-
-    private String getUsername() {
-        return currentUserInteractor.username();
-    }
-
-    private Account fetchAccount(String accountName) {
-
-        if (ActivityCompat.checkSelfPermission(appContext, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            throw new RuntimeException("Permissions not granted");
-        }
-        Account accounts[] = ((AccountManager) appContext
-                .getSystemService(Context.ACCOUNT_SERVICE))
-                .getAccountsByType(accountType);
-
-        for (Account existingAccount : accounts) {
-            if (existingAccount.name.equals(accountName)) {
-                return existingAccount;
-            }
-        }
-
-        // no account with this name exists
-        return null;
-    }
-
-    private Account createAccount(String accountName) {
-        if (StringUtils.isEmpty(accountName) || StringUtils.isEmpty(accountType)) {
-            Log.i(TAG, "Unable to create account. Account name or account type is invalid");
-            return null;
-        }
-
-        Account account = new Account(accountName, accountType);
-        AccountManager accountManager =
-                (AccountManager) appContext.getSystemService(Context.ACCOUNT_SERVICE);
-
-        Boolean accountAddedSuccessfully = accountManager.addAccountExplicitly(account, null, null);
-        if (accountAddedSuccessfully) {
-            return account;
-        } else {
-            return null;
-        }
-    }
-
-    private void initPeriodicSync() {
-        if (errorWithAccount()) {
-            Log.i(TAG, "Unable to init periodic sync. Account, Authority or Account Type is invalid");
-            return;
-        }
-
-        if (appPreferences.getBackgroundSyncState()) {
-            Account account = fetchOrCreateAccount();
-            ContentResolver.setIsSyncable(account, authority, 1);
-            ContentResolver.setSyncAutomatically(account, authority, true);
-            long minutes = (long) appPreferences.getBackgroundSyncFrequency();
-            long seconds = minutes * 60;
-            ContentResolver.addPeriodicSync(
-                    account,
-                    authority,
-                    Bundle.EMPTY,
-                    seconds);
-        }
-    }
-
-    private boolean errorWithAccount() {
-        return StringUtils.isEmpty(authority) || StringUtils.isEmpty(accountType) ||
-                (!accountExists() && createAccount(getUsername()) == null);
-    }
-
-    private boolean accountExists() {
-        return currentUserInteractor != null && fetchAccount(getUsername()) != null;
-    }
-
     public void setPeriodicSync(int minutes) {
         if (errorWithAccount()) {
             Log.i(TAG, "Unable to set periodic sync.  Account, Authority or Account Type is invalid");
@@ -183,7 +81,6 @@ public class DefaultAppAccountManagerImpl implements DefaultAppAccountManager {
         ContentResolver.requestSync(account, authority, settingsBundle);
     }
 
-
     public void removeAccount() {
         if (userIsSignedIn() && accountExists()) {
             Account account = fetchAccount(getUsername());
@@ -207,9 +104,7 @@ public class DefaultAppAccountManagerImpl implements DefaultAppAccountManager {
                     }
                     // TODO remove magic callback implementation - OK
                 }, null);
-
             }
-
         }
     }
 
@@ -221,5 +116,112 @@ public class DefaultAppAccountManagerImpl implements DefaultAppAccountManager {
 
         Account account = fetchAccount(getUsername());
         ContentResolver.removePeriodicSync(account, authority, Bundle.EMPTY);
+    }
+
+    private void init() {
+        if (!appPreferences.getBackgroundSyncState() || !userIsSignedIn()) {
+            logger.i(TAG, "No syncing performed: Synchronizing is turned off or user is not signed in. ");
+            return;
+        }
+
+        initPeriodicSync();
+    }
+
+    private Account fetchOrCreateAccount() {
+        String accountName = getUsername();
+
+        Account fetchedAccount = fetchAccount(accountName);
+        if (fetchedAccount == null) {
+            fetchedAccount = createAccount(accountName);
+        }
+
+        return fetchedAccount;
+    }
+
+    private String getUsername() {
+        return currentUserInteractor.username();
+    }
+
+    private Account fetchAccount(String accountName) {
+
+        if (ActivityCompat.checkSelfPermission(appContext, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            //ActivityCompat.requestPermissions((Activity) appContext,
+            //      new String[]{Manifest.permission.GET_ACCOUNTS},
+            //    PackageManager.PERMISSION_GRANTED);
+
+            //throw new RuntimeException("Permissions not granted");
+            return null;
+        }
+        Account accounts[] = ((AccountManager) appContext
+                .getSystemService(Context.ACCOUNT_SERVICE))
+                .getAccountsByType(accountType);
+
+        for (Account existingAccount : accounts) {
+            if (existingAccount.name.equals(accountName)) {
+                return existingAccount;
+            }
+        }
+        // no account with this name exists
+        return null;
+    }
+
+    private Account createAccount(String accountName) {
+        if (StringUtils.isEmpty(accountName) || StringUtils.isEmpty(accountType)) {
+            Log.i(TAG, "Unable to create account. Account name or account type is invalid");
+            return null;
+        }
+
+        Account account = new Account(accountName, accountType);
+        AccountManager accountManager =
+                (AccountManager) appContext.getSystemService(Context.ACCOUNT_SERVICE);
+
+        Boolean accountAddedSuccessfully = accountManager.addAccountExplicitly(account, null, null);
+        if (accountAddedSuccessfully) {
+            return account;
+        } else {
+            return null;
+        }
+    }
+
+    private void initPeriodicSync() {
+        if (errorWithAccount()) {
+            Log.i(TAG, "Unable to init periodic sync. Account, Authority or Account Type is invalid");
+            return;
+        }
+
+        if (appPreferences.getBackgroundSyncState()) {
+            Account account = fetchOrCreateAccount();
+            if (account != null) {
+                ContentResolver.setIsSyncable(account, authority, 1);
+                ContentResolver.setSyncAutomatically(account, authority, true);
+                long minutes = (long) appPreferences.getBackgroundSyncFrequency();
+                long seconds = minutes * 60;
+                ContentResolver.addPeriodicSync(
+                        account,
+                        authority,
+                        Bundle.EMPTY,
+                        seconds);
+            }
+        }
+    }
+
+    private boolean errorWithAccount() {
+        return StringUtils.isEmpty(authority) || StringUtils.isEmpty(accountType) ||
+                (!accountExists() && createAccount(getUsername()) == null);
+    }
+
+    private boolean accountExists() {
+        return currentUserInteractor != null && fetchAccount(getUsername()) != null;
+    }
+
+    private boolean userIsSignedIn() {
+        return currentUserInteractor != null && currentUserInteractor.isLoggedIn();
     }
 }

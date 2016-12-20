@@ -4,7 +4,6 @@ import android.view.View;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bignerdranch.expandablerecyclerview.ParentViewHolder;
 
@@ -18,13 +17,11 @@ public class ExpansionPanelViewHolder extends ParentViewHolder {
 
     private final ImageButton expandCollapseButton;
     private final TextView title;
-    private final ImageButton actionButton;
     private final View divider;
 
     public ExpansionPanelViewHolder(View itemView) {
         super(itemView);
         title = (TextView) itemView.findViewById(R.id.title);
-        actionButton = (ImageButton) itemView.findViewById(R.id.action_button);
         expandCollapseButton = (ImageButton) itemView.findViewById(R.id.expand_collapse_button);
         divider = itemView.findViewById(R.id.divider);
 
@@ -41,30 +38,18 @@ public class ExpansionPanelViewHolder extends ParentViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                actionButton.performClick();
+                if (isExpanded()) {
+                    collapseView();
+                } else {
+                    expandView();
+                }
             }
         });
-        actionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(view.getContext(), "Do action", Toast.LENGTH_SHORT).show();
-            }
-        });
+
     }
 
     public void bind(ExpansionPanel expansionPanel) {
         title.setText(expansionPanel.getLabel());
-
-        switch (expansionPanel.getType()) {
-            case ACTION_ADD:
-                actionButton.setImageResource(R.drawable.ic_add_black);
-                break;
-            case ACTION_EDIT:
-                actionButton.setImageResource(R.drawable.ic_edit_black);
-                break;
-            case ACTION_NONE:
-                actionButton.setVisibility(View.GONE);
-        }
     }
 
     @Override

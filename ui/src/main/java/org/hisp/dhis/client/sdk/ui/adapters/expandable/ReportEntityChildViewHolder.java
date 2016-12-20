@@ -25,8 +25,9 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
     public static final String EVENT_STATUS = "status";
     public static final String EVENT_DATE_LABEL = "Event date";
     public static final String STATUS_LABEL = "SyncStatus";
-    public static final String ORG_UNIT = "OrgUnit";
+    public static final String SUB_LABEL = "subLabel";
     public static final String EVENT_LOCKED = "eventLocked";
+    public static final String TEXT_LABEL = "textLabel";
 
     View itemView;
 
@@ -34,7 +35,7 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
     final CircleView statusBackground;
     final FrameLayout statusLockLayout;
     final TextView label;
-    final TextView date;
+    final TextView subLabel;
     final ImageButton syncButton;
     final ImageButton overflowButton;
 
@@ -64,7 +65,7 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
         syncButton = (ImageButton) itemView.findViewById(R.id.refresh_button);
         overflowButton = (ImageButton) itemView.findViewById(R.id.overflow_button);
         label = (TextView) itemView.findViewById(R.id.event_name);
-        date = (TextView) itemView.findViewById(R.id.date_text);
+        subLabel = (TextView) itemView.findViewById(R.id.date_text);
 
         drawableActive = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_event_note_white);
 
@@ -91,12 +92,12 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
             itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), android.R.color.white));
         }
 
-        label.setText(reportEntity.getId());
+        label.setText(reportEntity.getValueForDataElement(TEXT_LABEL));
 
         //Map<String, String> dataElementToValueMap =
         //dataElementToValueMap.put(Event.EVENT_STATUS, event.getSyncStatus().toString());
 
-        date.setText(reportEntity.getValueForDataElement(EVENT_DATE_KEY));
+        subLabel.setText(reportEntity.getValueForDataElement(SUB_LABEL));
 
         //Display the EventSyncStatus:
         switch (reportEntity.getStatus()) {
@@ -153,11 +154,10 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
                 statusIcon.setImageDrawable(drawableActive);
                 break;
             case "COMPLETED":
-
                 statusBackground.setFillColor(colorGray);
                 statusIcon.setImageDrawable(drawableCompleted);
                 break;
-            case "SCHEDULED":
+            case "SCHEDULE":
                 statusBackground.setFillColor(colorGreen);
                 statusIcon.setImageDrawable(drawableSchedule);
                 break;
@@ -189,7 +189,7 @@ public class ReportEntityChildViewHolder<C> extends ChildViewHolder<C> {
             }
         });
 
-        //label.setText(reportEntity.getValueForDataElement(ORG_UNIT));
+        //label.setText(reportEntity.getValueForDataElement(SUB_LABEL));
 
     }
 

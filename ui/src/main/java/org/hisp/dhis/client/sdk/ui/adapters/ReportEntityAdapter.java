@@ -199,14 +199,14 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
             } else {
                 int filterShowCount = 0;
                 int i = 0;
-                while (filterShowCount < reportEntityFilters.size()) {
+                while (i < reportEntityFilters.size()) {
                     ReportEntityFilter filter = reportEntityFilters.get(filterShowCount);
                     View dataElementLabelView = getDataElementLabelContainerChild(filterShowCount);
 
                     if (filter.show()) {
                         String value = reportEntity.getValueForDataElement(filter.getDataElementId());
-                        if (hideLabelsWithoutValues && !ReportEntity.NONE_VALUE.equals(value)) {
-                            filterShowCount ++;
+                        if (!hideLabelsWithoutValues || (hideLabelsWithoutValues && !ReportEntity.NONE_VALUE.equals(value))) {
+                            filterShowCount++;
                             String dataElementString = String.format("%s: %s", filter.getDataElementLabel(), value);
                             SpannableString text = new SpannableString(dataElementString);
                             text.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
@@ -222,7 +222,6 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                     } else {
                         dataElementLabelView.setVisibility(View.GONE);//hide it:
                     }
-                    filterShowCount++;
                     i++;
                 }
                 trimElementLabelViews(filterShowCount);

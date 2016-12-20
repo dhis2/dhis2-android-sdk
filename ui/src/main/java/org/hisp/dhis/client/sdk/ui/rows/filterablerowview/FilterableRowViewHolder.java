@@ -18,7 +18,7 @@ import org.hisp.dhis.client.sdk.ui.views.QuickSelectionContainer;
 
 import static android.view.View.GONE;
 
-final class FilterableRowViewHolder extends RecyclerView.ViewHolder {
+public final class FilterableRowViewHolder extends RecyclerView.ViewHolder {
     static final String EMPTY_STRING = "";
 
     private final TextView textViewLabel;

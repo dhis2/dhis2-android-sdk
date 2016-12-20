@@ -63,6 +63,20 @@ class EventStoreImpl extends AbsDataStore<Event> implements EventStore {
     }
 
     @Override
+    public List<Event> queryByProgram(String program) {
+        isNull(program, "enrollment uid must not be null");
+
+        final String selection = EventColumns.COLUMN_PROGRAM + " = ?";
+        final String[] selectionArgs = new String[]{
+                program
+        };
+
+        Cursor cursor = contentResolver.query(mapper.getContentUri(),
+                mapper.getProjection(), selection, selectionArgs, null);
+        return toModels(cursor);
+    }
+
+    @Override
     public List<Event> queryEventsForEnrollment(String enrollmentUid) {
         isNull(enrollmentUid, "enrollment uid must not be null");
 

@@ -45,9 +45,11 @@ public abstract class TrackedEntityAttributeValue {
     @Nullable
     public abstract TrackedEntityInstance trackedEntityInstance();
 
+    @Nullable
     @JsonProperty(JSON_PROPERTY_ATTRIBUTE)
     public abstract String trackedEntityAttribute();
 
+    @Nullable
     @JsonProperty(JSON_PROPERTY_VALUE)
     public abstract String value();
 

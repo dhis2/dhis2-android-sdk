@@ -106,7 +106,7 @@ public class UserAuthenticateCallUnitTests {
         when(userCredentials.uid()).thenReturn("test_user_credentials_uid");
         when(userCredentials.code()).thenReturn("test_user_credentials_code");
         when(userCredentials.name()).thenReturn("test_user_credentials_name");
-        when(userCredentials.displayName()).thenReturn("test_user_credentials_displøay_name");
+        when(userCredentials.displayName()).thenReturn("test_user_credentials_display_name");
         when(userCredentials.created()).thenReturn(created);
         when(userCredentials.lastUpdated()).thenReturn(lastUpdated);
         when(userCredentials.username()).thenReturn("test_user_credentials_username");
@@ -209,7 +209,7 @@ public class UserAuthenticateCallUnitTests {
         try {
             userAuthenticateCall.call();
 
-            fail("Expected exception was not thrown");
+           fail("Expected exception was not thrown");
         } catch (Exception exception) {
             // ensure that transaction is not created
             verify(database, never()).beginTransaction();

@@ -10,18 +10,19 @@ import java.util.List;
 
 import retrofit2.Converter;
 
-class FieldsConverter implements Converter<List<Property>, String> {
-    FieldsConverter() {
+class FilterConverter implements Converter<Filter, String> {
+    FilterConverter() {
         // explicit empty constructor
     }
 
     @Override
-    public String convert(List<Property> properties) throws IOException {
+    @SuppressWarnings("unchecked")
+    public String convert(Filter filter) throws IOException {
         StringBuilder builder = new StringBuilder();
 
         // recursive function which processes
         // properties and builds query string
-        append(builder, properties);
+        append(builder, (List<Property>) filter.fields());
 
         return builder.toString();
     }

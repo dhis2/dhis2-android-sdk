@@ -35,6 +35,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.models.common.BaseNameableObject;
 import org.hisp.dhis.android.models.common.Field;
+import org.hisp.dhis.android.models.common.NestedField;
 import org.hisp.dhis.android.models.program.Program;
 
 import java.util.Collections;
@@ -67,8 +68,8 @@ public abstract class OrganisationUnit extends BaseNameableObject {
     public static final Field<OrganisationUnit, String> openingDate = Field.create(OPENING_DATE);
     public static final Field<OrganisationUnit, String> closedDate = Field.create(CLOSED_DATE);
     public static final Field<OrganisationUnit, String> level = Field.create(LEVEL);
-    public static final Field<OrganisationUnit, OrganisationUnit> parent = Field.create(PARENT);
-    public static final Field<OrganisationUnit, Program> programs = Field.create(PROGRAMS);
+    public static final NestedField<OrganisationUnit, OrganisationUnit> parent = NestedField.create(PARENT);
+    public static final NestedField<OrganisationUnit, Program> programs = NestedField.create(PROGRAMS);
 
     @Nullable
     @JsonProperty(PARENT)

@@ -6,12 +6,12 @@ import java.lang.reflect.Type;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
 
-public class FieldsConverterFactory extends Converter.Factory {
-    public static FieldsConverterFactory create() {
-        return new FieldsConverterFactory();
+public class FilterConverterFactory extends Converter.Factory {
+    public static FilterConverterFactory create() {
+        return new FilterConverterFactory();
     }
 
-    private FieldsConverterFactory() {
+    private FilterConverterFactory() {
         // private constructor
     }
 
@@ -20,7 +20,7 @@ public class FieldsConverterFactory extends Converter.Factory {
             Annotation[] annotations, Retrofit retrofit) {
         for (Annotation annotation : annotations) {
             if (annotation instanceof Fields) {
-                return new FieldsConverter();
+                return new FilterConverter();
             }
         }
 

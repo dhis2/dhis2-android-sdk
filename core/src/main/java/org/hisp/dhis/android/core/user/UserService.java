@@ -1,7 +1,7 @@
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.models.common.Property;
 import org.hisp.dhis.android.models.user.User;
 
 import retrofit2.Call;
@@ -13,5 +13,5 @@ public interface UserService {
 
     @GET("me")
     Call<User> authenticate(@Header("Authorization") String credentials,
-            @Query("fields") @Fields Property<User, ?>... properties);
+            @Query("fields") @Fields Filter<User> filter);
 }

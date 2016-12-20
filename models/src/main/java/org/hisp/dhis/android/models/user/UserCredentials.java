@@ -35,6 +35,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.models.common.Field;
+import org.hisp.dhis.android.models.common.NestedField;
 
 import java.util.Collections;
 import java.util.Date;
@@ -55,7 +56,7 @@ public abstract class UserCredentials extends BaseIdentifiableObject {
     public static final Field<UserCredentials, String> created = Field.create(CREATED);
     public static final Field<UserCredentials, String> lastUpdated = Field.create(LAST_UPDATED);
     public static final Field<UserCredentials, String> username = Field.create(USERNAME);
-    public static final Field<UserCredentials, UserRole> userRoles = Field.create(USER_ROLES);
+    public static final NestedField<UserCredentials, UserRole> userRoles = NestedField.create(USER_ROLES);
 
     @Nullable
     @JsonProperty(USERNAME)

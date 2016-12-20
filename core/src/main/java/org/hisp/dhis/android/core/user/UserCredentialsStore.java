@@ -12,8 +12,8 @@ public interface UserCredentialsStore {
             @NonNull String displayName,
             @NonNull Date created,
             @NonNull Date lastUpdated,
-            @NonNull String user,
-            @NonNull String username);
+            @NonNull String username,
+            @NonNull String user);
 
     void close();
 }

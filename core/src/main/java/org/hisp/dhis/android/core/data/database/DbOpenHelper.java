@@ -12,6 +12,7 @@ import org.hisp.dhis.android.core.user.UserCredentialsContract;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkContract;
 
 public final class DbOpenHelper extends SQLiteOpenHelper {
+
     @VisibleForTesting
     static final String NAME = "dhis.db";
 
@@ -106,12 +107,22 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             " (" + UserContract.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
-    public static void create(SQLiteDatabase db) {
-        db.execSQL(CREATE_USER_TABLE);
-        db.execSQL(CREATE_USER_CREDENTIALS_TABLE);
-        db.execSQL(CREATE_ORGANISATION_UNITS_TABLE);
-        db.execSQL(CREATE_USER_ORGANISATION_UNIT_TABLE);
-        db.execSQL(CREATE_AUTHENTICATED_USER_TABLE);
+    /**
+     * This method should be used only for testing purposes
+     */
+    // ToDo: Revise usage of this method
+    @VisibleForTesting
+    static SQLiteDatabase create() {
+        return create(SQLiteDatabase.create(null));
+    }
+
+    private static SQLiteDatabase create(SQLiteDatabase database) {
+        database.execSQL(CREATE_USER_TABLE);
+        database.execSQL(CREATE_USER_CREDENTIALS_TABLE);
+        database.execSQL(CREATE_ORGANISATION_UNITS_TABLE);
+        database.execSQL(CREATE_USER_ORGANISATION_UNIT_TABLE);
+        database.execSQL(CREATE_AUTHENTICATED_USER_TABLE);
+        return database;
     }
 
     public DbOpenHelper(Context context) {

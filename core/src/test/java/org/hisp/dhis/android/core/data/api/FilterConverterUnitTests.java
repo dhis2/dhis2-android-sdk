@@ -2,7 +2,6 @@ package org.hisp.dhis.android.core.data.api;
 
 import org.hisp.dhis.android.models.common.Field;
 import org.hisp.dhis.android.models.common.NestedField;
-import org.hisp.dhis.android.models.common.Property;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,25 +9,23 @@ import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.List;
 
 import retrofit2.Converter;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(JUnit4.class)
-public class FieldsConverterUnitTests {
-    private Converter<List<Property>, String> fieldsConverter;
+public class FilterConverterUnitTests {
+    private Converter<Filter, String> fieldsConverter;
 
     @Before
     public void setUp() {
-        fieldsConverter = new FieldsConverter();
+        fieldsConverter = new FilterConverter();
     }
 
     @Test
     public void converterFactory_shouldReturnConverterOnSpecificAnnotation() {
-        Converter.Factory converterFactory = FieldsConverterFactory.create();
+        Converter.Factory converterFactory = FilterConverterFactory.create();
 
         Converter<?, String> converter = converterFactory
                 .stringConverter(null, new Annotation[]{new Fields() {
@@ -38,21 +35,22 @@ public class FieldsConverterUnitTests {
                     }
                 }}, null);
 
-        assertThat(converter).isInstanceOf(FieldsConverter.class);
+        assertThat(converter).isInstanceOf(FilterConverter.class);
     }
 
     @Test
     public void converter_shouldRespectFields() throws IOException {
         String queryStringOne = fieldsConverter.convert(
-                Arrays.asList((Property) Field.create("")));
+                Filter.builder().fields(Field.create("")).build());
         String queryStringTwo = fieldsConverter.convert(
-                Arrays.asList((Property) Field.create("*")));
+                Filter.builder().fields(Field.create("*")).build());
         String queryStringThree = fieldsConverter.convert(
-                Arrays.asList(
-                        (Property) Field.create("name"),
-                        (Property) Field.create("displayName"),
-                        (Property) Field.create("created"),
-                        (Property) Field.create("lastUpdated")));
+                Filter.builder().fields(
+                        Field.create("name"),
+                        Field.create("displayName"),
+                        Field.create("created"),
+                        Field.create("lastUpdated")
+                ).build());
 
         assertThat(queryStringOne).isEqualTo("");
         assertThat(queryStringTwo).isEqualTo("*");
@@ -68,9 +66,13 @@ public class FieldsConverterUnitTests {
         NestedField programsWithChildren = programs.with(id, displayName);
 
         String queryStringOne = fieldsConverter.convert(
-                Arrays.asList(id, displayName, programs));
+                Filter.builder().fields(
+                        id, displayName, programs
+                ).build());
         String queryStringTwo = fieldsConverter.convert(
-                Arrays.asList(id, displayName, programsWithChildren));
+                Filter.builder().fields(
+                        id, displayName, programsWithChildren
+                ).build());
 
         assertThat(queryStringOne).isEqualTo("id,displayName,programs");
         assertThat(queryStringTwo).isEqualTo("id,displayName,programs[id,displayName]");

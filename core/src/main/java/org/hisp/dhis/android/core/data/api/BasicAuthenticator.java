@@ -24,9 +24,14 @@ final class BasicAuthenticator implements Authenticator {
 
     @Override
     public Response intercept(Chain chain) throws IOException {
+        String authorizationHeader = chain.request().header(AUTHORIZATION);
+        if (authorizationHeader != null) {
+            // authorization header has already been set
+            return chain.proceed(chain.request());
+        }
+
         List<AuthenticatedUserModel> authenticatedUsers =
                 authenticatedUserStore.query();
-
         if (authenticatedUsers.isEmpty()) {
             // proceed request if we do not
             // have any users authenticated

@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.core.user;
 
+import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -14,6 +15,15 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
             "VALUES (?, ?, ?);";
 
     private final SQLiteStatement sqLiteStatement;
+
+    public static ContentValues create(long id, String user, String organisationUnit, String orgUnitScope) {
+        ContentValues userOrganisationUnitLink = new ContentValues();
+        userOrganisationUnitLink.put(UserOrganisationUnitLinkContract.Columns.ID, id);
+        userOrganisationUnitLink.put(UserOrganisationUnitLinkContract.Columns.USER, user);
+        userOrganisationUnitLink.put(UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT, organisationUnit);
+        userOrganisationUnitLink.put(UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT_SCOPE, orgUnitScope);
+        return userOrganisationUnitLink;
+    }
 
     public UserOrganisationUnitLinkStoreImpl(SQLiteDatabase sqLiteDatabase) {
         this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);

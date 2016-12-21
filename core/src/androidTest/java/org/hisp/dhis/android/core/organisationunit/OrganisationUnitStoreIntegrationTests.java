@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.core.organisationunit;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -34,6 +35,30 @@ public class OrganisationUnitStoreIntegrationTests extends AbsStoreTestCase {
     };
 
     private OrganisationUnitStore organisationUnitStore;
+
+    public static ContentValues create(long id, String uid) {
+        ContentValues organisationUnit = new ContentValues();
+        organisationUnit.put(OrganisationUnitContract.Columns.ID, id);
+        organisationUnit.put(OrganisationUnitContract.Columns.UID, uid);
+        organisationUnit.put(OrganisationUnitContract.Columns.CODE, "test_code");
+        organisationUnit.put(OrganisationUnitContract.Columns.NAME, "test_name");
+        organisationUnit.put(OrganisationUnitContract.Columns.DISPLAY_NAME, "test_display_name");
+        organisationUnit.put(OrganisationUnitContract.Columns.CREATED, "test_created");
+        organisationUnit.put(OrganisationUnitContract.Columns.LAST_UPDATED, "test_last_updated");
+        organisationUnit.put(OrganisationUnitContract.Columns.SHORT_NAME, "test_short_name");
+        organisationUnit.put(OrganisationUnitContract.Columns.DISPLAY_SHORT_NAME, "test_display_short_name");
+        organisationUnit.put(OrganisationUnitContract.Columns.DESCRIPTION, "test_description");
+        organisationUnit.put(OrganisationUnitContract.Columns.DISPLAY_DESCRIPTION, "test_display_description");
+        organisationUnit.put(OrganisationUnitContract.Columns.PATH, "test_path");
+        organisationUnit.put(OrganisationUnitContract.Columns.OPENING_DATE, "test_opening_date");
+        organisationUnit.put(OrganisationUnitContract.Columns.CLOSED_DATE, "test_closed_date");
+        organisationUnit.put(OrganisationUnitContract.Columns.LEVEL, "test_level");
+
+        // foreign keys
+        organisationUnit.putNull(OrganisationUnitContract.Columns.PARENT);
+
+        return organisationUnit;
+    }
 
     @Before
     @Override

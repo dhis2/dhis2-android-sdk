@@ -31,10 +31,4 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
-    <application>
-        <provider
-            android:name="org.hisp.dhis.android.core.data.database.DbContentProvider"
-            android:authorities="org.hisp.dhis.android.core"
-            android:exported="false"/>
-    </application>
 </manifest>

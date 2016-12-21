@@ -26,7 +26,7 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
         authenticatedUserStore = new AuthenticatedUserStoreImpl(database());
 
         // row which will be referenced
-        ContentValues userRow = UserContractIntegrationTests.create(1L, "test_user_uid");
+        ContentValues userRow = UserStoreIntegrationTests.create(1L, "test_user_uid");
         database().insert(DbOpenHelper.Tables.USER, null, userRow);
     }
 

@@ -1,40 +1,8 @@
 package org.hisp.dhis.android.core.user;
 
-import android.content.ContentUris;
-import android.net.Uri;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectContract;
-import org.hisp.dhis.android.core.data.database.DbContract;
-import org.hisp.dhis.android.core.data.database.DbUtils;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
 
 public final class UserContract {
-    // ContentProvider related properties
-    public static final String USERS = "users";
-    public static final String USERS_ID = USERS + "/#";
-    public static final String USERS_ID_ORGANISATION_UNITS = USERS + "/*/" +
-            OrganisationUnitContract.ORGANISATION_UNITS;
-
-    public static final String CONTENT_TYPE_DIR = DbUtils.directoryType(USERS);
-    public static final String CONTENT_TYPE_ITEM = DbUtils.itemType(USERS);
-
-    @NonNull
-    public static Uri users() {
-        return Uri.withAppendedPath(DbContract.AUTHORITY_URI, USERS);
-    }
-
-    @NonNull
-    public static Uri users(long id) {
-        return ContentUris.withAppendedId(users(), id);
-    }
-
-    @NonNull
-    public static Uri organisationUnits(@NonNull String userUid) {
-        return users().buildUpon().appendPath(userUid)
-                .appendPath(OrganisationUnitContract.ORGANISATION_UNITS).build();
-    }
-
     public interface Columns extends BaseIdentifiableObjectContract.Columns {
         String BIRTHDAY = "birthday";
         String EDUCATION = "education";

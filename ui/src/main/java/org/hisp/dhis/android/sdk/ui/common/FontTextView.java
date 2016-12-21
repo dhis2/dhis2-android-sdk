@@ -39,7 +39,7 @@ import android.util.AttributeSet;
 import org.hisp.dhis.android.sdk.ui.R;
 import org.hisp.dhis.android.sdk.ui.util.TypefaceManager;
 
-import static org.hisp.dhis.android.sdk.utils.Preconditions.isNull;
+import static org.hisp.dhis.android.sdk.ui.util.Preconditions.isNull;
 
 public class FontTextView extends AppCompatTextView {
 

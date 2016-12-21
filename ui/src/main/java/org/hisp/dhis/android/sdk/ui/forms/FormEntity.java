@@ -30,7 +30,7 @@ package org.hisp.dhis.android.sdk.ui.forms;
 
 import android.support.annotation.NonNull;
 
-import static org.hisp.dhis.android.sdk.utils.Preconditions.isNull;
+import static org.hisp.dhis.android.sdk.ui.util.Preconditions.isNull;
 
 public abstract class FormEntity {
     private final String id;

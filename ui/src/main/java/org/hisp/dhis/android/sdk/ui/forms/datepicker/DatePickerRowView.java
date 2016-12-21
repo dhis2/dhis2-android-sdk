@@ -41,16 +41,16 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.ui.R;
-import org.hisp.dhis.android.sdk.ui.forms.FormEntity;
-import org.hisp.dhis.android.sdk.ui.common.RaisedButton;
-import org.hisp.dhis.android.sdk.ui.forms.RowView;
 import org.hisp.dhis.android.sdk.ui.common.AbsTextWatcher;
+import org.hisp.dhis.android.sdk.ui.common.RaisedButton;
+import org.hisp.dhis.android.sdk.ui.forms.FormEntity;
+import org.hisp.dhis.android.sdk.ui.forms.RowView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import static org.hisp.dhis.android.sdk.utils.Preconditions.isNull;
+import static org.hisp.dhis.android.sdk.ui.util.Preconditions.isNull;
 
 
 public class DatePickerRowView implements RowView {
@@ -149,7 +149,7 @@ public class DatePickerRowView implements RowView {
         private final OnDateSetListener onDateSetListener;
 
         public OnButtonClickListener(EditText editText, FragmentManager fragmentManager,
-                                     OnDateSetListener onDateSetListener) {
+                OnDateSetListener onDateSetListener) {
             this.editText = editText;
             this.calendar = Calendar.getInstance();
             this.fragmentManager = fragmentManager;

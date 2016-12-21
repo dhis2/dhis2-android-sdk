@@ -58,8 +58,7 @@ import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
 
 import static android.text.TextUtils.isEmpty;
-import static org.hisp.dhis.android.sdk.utils.Preconditions.isNull;
-
+import static org.hisp.dhis.android.sdk.ui.util.Preconditions.isNull;
 
 public class DefaultLoginActivity extends AppCompatActivity {
     private static final String ARG_LOGIN_ACTIVITY_LAUNCH_MODE = "arg:launchMode";
@@ -113,7 +112,7 @@ public class DefaultLoginActivity extends AppCompatActivity {
      * @param serverUrl       ServerUrl which will be set to serverUrl address and locked
      */
     public static void navigateTo(Activity currentActivity, Class<? extends Activity> target,
-                                  String serverUrl, String username) {
+            String serverUrl, String username) {
         isNull(currentActivity, "Activity must not be null");
         isNull(target, "Target activity class must not be null");
         isNull(serverUrl, "ServerUrl must not be null");
@@ -393,7 +392,7 @@ public class DefaultLoginActivity extends AppCompatActivity {
         private final boolean showProgress;
 
         public OnPostAnimationRunnable(OnAnimationFinishListener listener,
-                                       DefaultLoginActivity loginActivity, boolean showProgress) {
+                DefaultLoginActivity loginActivity, boolean showProgress) {
             this.listener = listener;
             this.loginActivity = loginActivity;
             this.showProgress = showProgress;

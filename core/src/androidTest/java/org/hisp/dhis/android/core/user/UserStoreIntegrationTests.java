@@ -5,7 +5,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
-import org.hisp.dhis.android.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -32,8 +32,6 @@ import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
-import org.hisp.dhis.android.models.common.NameableObject;
-
 public abstract class BaseNameableObjectModel extends BaseIdentifiableObjectModel implements NameableObject {
 
     @Nullable

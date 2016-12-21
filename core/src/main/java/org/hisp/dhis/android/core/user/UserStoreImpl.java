@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.user.UserContract.Columns;
-import org.hisp.dhis.android.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 
 import java.util.Date;
 

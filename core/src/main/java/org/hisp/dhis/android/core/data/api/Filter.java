@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.models.common.Property;
+import org.hisp.dhis.android.core.common.Property;
 
 import java.util.ArrayList;
 import java.util.Arrays;

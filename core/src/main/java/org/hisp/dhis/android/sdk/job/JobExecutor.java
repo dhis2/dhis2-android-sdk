@@ -66,7 +66,7 @@ public final class JobExecutor {
     }
 
     private static <T> void run(AsyncTask<Void, Void, T> task) {
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        task.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
     }
 
     public static <T> Job enqueueJob(Job<T> job) {

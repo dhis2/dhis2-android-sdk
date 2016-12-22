@@ -55,9 +55,8 @@ android {
 }
 
 dependencies {
-
     // Local
-    compile project(":utils")
+    // compile project(":utils")
 
     // Google
     compile "com.android.support:preference-v7:${libraries.support}"

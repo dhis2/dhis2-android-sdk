@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.user.UserCredentialsContract.Columns;
-import org.hisp.dhis.android.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 
 import java.util.Date;
 

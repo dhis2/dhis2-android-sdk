@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.data.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.option.OptionSetContract;
@@ -14,8 +15,8 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkContract;
 
 public final class DbOpenHelper extends SQLiteOpenHelper {
 
-    @VisibleForTesting
-    static final String NAME = "dhis.db";
+    // @VisibleForTesting
+    // static final String NAME = "dhis.db";
 
     @VisibleForTesting
     static final int VERSION = 1;
@@ -83,10 +84,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             OrganisationUnitContract.Columns.OPENING_DATE + " TEXT," +
             OrganisationUnitContract.Columns.CLOSED_DATE + " TEXT," +
             OrganisationUnitContract.Columns.LEVEL + " INTEGER," +
-            OrganisationUnitContract.Columns.PARENT + " TEXT," +
-            "FOREIGN KEY (" + OrganisationUnitContract.Columns.PARENT + ") REFERENCES " +
-            Tables.ORGANISATION_UNIT + " (" + OrganisationUnitContract.Columns.UID + ") ON DELETE CASCADE" +
-            ");";
+            OrganisationUnitContract.Columns.PARENT + " TEXT" + ");";
 
     private static final String CREATE_USER_ORGANISATION_UNIT_TABLE = "CREATE TABLE " + Tables.USER_ORGANISATION_UNIT + " (" +
             UserOrganisationUnitLinkContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -110,7 +108,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             " (" + UserContract.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
-    private static final String CREATE_OPTION_SET_TABLE = Tables.OPTION_SET + " (" +
+    private static final String CREATE_OPTION_SET_TABLE = "CREATE TABLE " + Tables.OPTION_SET + " (" +
             OptionSetContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             OptionSetContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
             OptionSetContract.Columns.CODE + " TEXT," +
@@ -141,8 +139,8 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         return database;
     }
 
-    public DbOpenHelper(Context context) {
-        super(context, NAME, null, VERSION);
+    public DbOpenHelper(@NonNull Context context, @NonNull String databaseName) {
+        super(context, databaseName, null, VERSION);
     }
 
     @Override

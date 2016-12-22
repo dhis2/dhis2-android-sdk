@@ -5,11 +5,9 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
-import org.hisp.dhis.android.models.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.models.user.User;
-import org.hisp.dhis.android.models.user.UserCredentials;
 
 import java.io.IOException;
 
@@ -20,7 +18,6 @@ import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
 
 // ToDo: ask about API changes
 // ToDo: performance tests? Try to feed in a user instance with thousands organisation units
-// ToDo: separate out ContentProvider implementation (split up contracts)
 public final class UserAuthenticateCall implements Call<Response<User>> {
     // retrofit service
     private final UserService userService;
@@ -131,8 +128,8 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         try {
             // insert user model into user table
             userId = userStore.insert(
-                    user.uid(), user.code(), user.name(), user.displayName(),
-                    user.created(), user.lastUpdated(), user.birthday(), user.education(),
+                    user.uid(), user.name(), user.displayName(), user.created(),
+                    user.lastUpdated(), user.birthday(), user.education(),
                     user.gender(), user.jobTitle(), user.surname(), user.firstName(),
                     user.introduction(), user.employer(), user.interests(), user.languages(),
                     user.email(), user.phoneNumber(), user.nationality()

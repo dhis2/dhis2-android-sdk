@@ -1,8 +1,6 @@
 package org.hisp.dhis.android.core.data.api;
 
-import org.hisp.dhis.android.models.common.Field;
-import org.hisp.dhis.android.models.common.NestedField;
-import org.hisp.dhis.android.models.common.Property;
+import org.hisp.dhis.android.core.common.Property;
 
 import java.io.IOException;
 import java.util.Iterator;

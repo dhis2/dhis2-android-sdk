@@ -1,7 +1,5 @@
 package org.hisp.dhis.android.core.data.api;
 
-import org.hisp.dhis.android.models.common.Field;
-import org.hisp.dhis.android.models.common.NestedField;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

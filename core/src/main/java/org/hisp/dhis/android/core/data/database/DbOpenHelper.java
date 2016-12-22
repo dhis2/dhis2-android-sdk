@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.VisibleForTesting;
 
+import org.hisp.dhis.android.core.option.OptionSetContract;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
 import org.hisp.dhis.android.core.user.AuthenticatedUserContract;
 import org.hisp.dhis.android.core.user.UserContract;
@@ -25,6 +26,8 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String ORGANISATION_UNIT = "OrganisationUnit";
         String USER_ORGANISATION_UNIT = "UserOrganisationUnit";
         String AUTHENTICATED_USER = "AuthenticatedUser";
+        String OPTION_SET = "OptionSet";
+        String OPTION = "Option";
     }
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + Tables.USER + " (" +
@@ -107,6 +110,18 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             " (" + UserContract.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
+    private static final String CREATE_OPTION_SET_TABLE = Tables.OPTION_SET + " (" +
+            OptionSetContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            OptionSetContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            OptionSetContract.Columns.CODE + " TEXT," +
+            OptionSetContract.Columns.NAME + " TEXT," +
+            OptionSetContract.Columns.DISPLAY_NAME + " TEXT," +
+            OptionSetContract.Columns.CREATED + " TEXT," +
+            OptionSetContract.Columns.LAST_UPDATED + " TEXT," +
+            OptionSetContract.Columns.VERSION + " INTEGER," +
+            OptionSetContract.Columns.VALUE_TYPE + " TEXT" +
+            ");";
+
     /**
      * This method should be used only for testing purposes
      */
@@ -122,6 +137,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_ORGANISATION_UNITS_TABLE);
         database.execSQL(CREATE_USER_ORGANISATION_UNIT_TABLE);
         database.execSQL(CREATE_AUTHENTICATED_USER_TABLE);
+        database.execSQL(CREATE_OPTION_SET_TABLE);
         return database;
     }
 

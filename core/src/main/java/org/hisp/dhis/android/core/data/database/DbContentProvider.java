@@ -17,6 +17,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
+import org.hisp.dhis.android.core.option.OptionContract;
+import org.hisp.dhis.android.core.option.OptionSetContract;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
 import org.hisp.dhis.android.core.user.UserContract;
 import org.hisp.dhis.android.core.user.UserCredentialsContract;
@@ -43,6 +45,12 @@ public final class DbContentProvider extends ContentProvider {
     private static final int ORGANISATION_UNITS = 20;
     private static final int ORGANISATION_UNITS_ID = 21;
     private static final int ORGANISATION_UNITS_ID_USERS = 22;
+
+    private static final int OPTION_SETS = 50;
+    private static final int OPTION_SETS_ID = 51;
+
+    private static final int OPTIONS = 60;
+    private static final int OPTIONS_ID = 61;
 
     private UriMatcher uriMatcher;
 
@@ -87,6 +95,17 @@ public final class DbContentProvider extends ContentProvider {
                 ORGANISATION_UNITS_ID);
         uriMatcher.addURI(DbContract.AUTHORITY, OrganisationUnitContract.ORGANISATION_UNITS_ID_USERS,
                 ORGANISATION_UNITS_ID_USERS);
+
+        // option sets
+        uriMatcher.addURI(DbContract.AUTHORITY, OptionSetContract.OPTION_SETS,
+                OPTION_SETS);
+        uriMatcher.addURI(DbContract.AUTHORITY, OptionSetContract.OPTION_SETS_ID,
+                OPTION_SETS_ID);
+
+        // options
+        uriMatcher.addURI(DbContract.AUTHORITY, OptionContract.OPTIONS, OPTIONS);
+        uriMatcher.addURI(DbContract.AUTHORITY, OptionContract.OPTIONS_ID, OPTIONS_ID);
+
         return true;
     }
 
@@ -133,7 +152,7 @@ public final class DbContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection,
-            String[] selectionArgs, String sortOrder) {
+                        String[] selectionArgs, String sortOrder) {
 
         Cursor cursor;
         switch (uriMatcher.match(uri)) {
@@ -355,7 +374,7 @@ public final class DbContentProvider extends ContentProvider {
 
     @NonNull
     private Cursor query(@NonNull String table, String[] projection, String selection,
-            String selectionArgs[], String sortOrder) {
+                         String selectionArgs[], String sortOrder) {
         SQLiteDatabase sqLiteDatabase = databaseOpenHelper.getReadableDatabase();
         return sqLiteDatabase.query(table, projection, selection,
                 selectionArgs, null, null, sortOrder);
@@ -363,7 +382,7 @@ public final class DbContentProvider extends ContentProvider {
 
     @NonNull
     private Cursor queryById(long id, @NonNull String table, String[] projection, String selection,
-            String selectionArgs[], String sortOrder) {
+                             String selectionArgs[], String sortOrder) {
         SQLiteQueryBuilder query = new SQLiteQueryBuilder();
         query.setTables(table);
         query.appendWhere(String.format(Locale.US, "%s = %d", BaseColumns._ID, id));
@@ -375,7 +394,7 @@ public final class DbContentProvider extends ContentProvider {
 
     @NonNull
     private Cursor queryByUid(@NonNull String uid, @NonNull String uidColumn, @NonNull String table,
-            String[] projection, String selection, String selectionArgs[], String sortOrder) {
+                              String[] projection, String selection, String selectionArgs[], String sortOrder) {
         SQLiteQueryBuilder query = new SQLiteQueryBuilder();
         query.setTables(table);
         query.appendWhere(String.format(Locale.US, "%s = \"%s\"", uidColumn, uid));
@@ -394,13 +413,13 @@ public final class DbContentProvider extends ContentProvider {
     }
 
     private int update(@NonNull String table, ContentValues values,
-            String selection, String[] selectionArgs) {
+                       String selection, String[] selectionArgs) {
         SQLiteDatabase sqLiteDatabase = databaseOpenHelper.getWritableDatabase();
         return sqLiteDatabase.update(table, values, selection, selectionArgs);
     }
 
     private int update(long id, @NonNull String table, ContentValues values,
-            String selection, String[] selectionArgs) {
+                       String selection, String[] selectionArgs) {
         SQLiteDatabase sqLiteDatabase = databaseOpenHelper.getWritableDatabase();
         String where = String.format(Locale.US, "%s = %d", BaseColumns._ID, id);
         if (!isEmpty(selection)) {

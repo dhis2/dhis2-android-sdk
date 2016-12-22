@@ -59,7 +59,8 @@ public class OptionSetStoreIntegrationTest extends AbsStoreTestCase {
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(
                 UID, CODE, NAME,
-                DISPLAY_NAME, date, date,
+                DISPLAY_NAME, BaseIdentifiableObject.DATE_FORMAT.format(date),
+                BaseIdentifiableObject.DATE_FORMAT.format(date),
                 VERSION, VALUE_TYPE).isExhausted();
     }
 

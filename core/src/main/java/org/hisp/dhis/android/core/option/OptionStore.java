@@ -7,7 +7,8 @@ import java.util.Date;
 public interface OptionStore {
     long insert(
             @NonNull String uid, @NonNull String code, @NonNull String name,
-            @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated
+            @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+            @NonNull String optionSet
     );
 
     void close();

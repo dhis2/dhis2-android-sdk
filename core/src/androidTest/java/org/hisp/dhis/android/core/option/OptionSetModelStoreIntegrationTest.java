@@ -17,9 +17,8 @@ import java.util.Date;
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
-public class OptionSetStoreIntegrationTest extends AbsStoreTestCase {
+public class OptionSetModelStoreIntegrationTest extends AbsStoreTestCase {
 
-    private static final long ID = 11L;
     private static final String UID = "test_uid";
     private static final String CODE = "test_code";
     private static final String NAME = "test_name";
@@ -59,7 +58,8 @@ public class OptionSetStoreIntegrationTest extends AbsStoreTestCase {
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(
                 UID, CODE, NAME,
-                DISPLAY_NAME, date, date,
+                DISPLAY_NAME, BaseIdentifiableObject.DATE_FORMAT.format(date),
+                BaseIdentifiableObject.DATE_FORMAT.format(date),
                 VERSION, VALUE_TYPE).isExhausted();
     }
 

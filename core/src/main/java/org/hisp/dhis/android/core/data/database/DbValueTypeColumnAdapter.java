@@ -7,7 +7,6 @@ import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
 import org.hisp.dhis.android.core.common.ValueType;
 
-
 public class DbValueTypeColumnAdapter implements ColumnTypeAdapter<ValueType> {
 
     @Override

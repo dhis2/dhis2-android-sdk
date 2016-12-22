@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-import org.hisp.dhis.android.core.option.OptionSetContract.Columns;
+import org.hisp.dhis.android.core.option.OptionContract.Columns;
 
 import java.util.Date;
 
@@ -18,8 +18,9 @@ public class OptionStoreImpl implements OptionStore {
             Columns.NAME + ", " +
             Columns.DISPLAY_NAME + ", " +
             Columns.CREATED + ", " +
-            Columns.LAST_UPDATED + ") " +
-            "VALUES (?, ?, ?, ?, ?, ?);";
+            Columns.LAST_UPDATED + ", " +
+            Columns.OPTION_SET + ")" +
+            "VALUES (?, ?, ?, ?, ?, ?, ?);";
 
     private final SQLiteStatement sqLiteStatement;
 
@@ -33,7 +34,8 @@ public class OptionStoreImpl implements OptionStore {
                        @NonNull String name,
                        @NonNull String displayName,
                        @NonNull Date created,
-                       @NonNull Date lastUpdated) {
+                       @NonNull Date lastUpdated,
+                       @NonNull String optionSet) {
         sqLiteStatement.clearBindings();
 
         sqLiteStatement.bindString(1, uid);
@@ -42,6 +44,7 @@ public class OptionStoreImpl implements OptionStore {
         sqLiteStatement.bindString(4, displayName);
         sqLiteStatement.bindString(5, BaseIdentifiableObject.DATE_FORMAT.format(created));
         sqLiteStatement.bindString(6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
+        sqLiteStatement.bindString(7, optionSet);
 
         return sqLiteStatement.executeInsert();
     }

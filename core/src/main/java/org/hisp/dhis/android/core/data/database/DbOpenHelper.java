@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
+import org.hisp.dhis.android.core.option.OptionContract;
 import org.hisp.dhis.android.core.option.OptionSetContract;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
 import org.hisp.dhis.android.core.user.AuthenticatedUserContract;
@@ -120,6 +121,19 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             OptionSetContract.Columns.VALUE_TYPE + " TEXT" +
             ");";
 
+    private static final String CREATE_OPTION_TABLE = "CREATE TABLE " + Tables.OPTION + " (" +
+            OptionContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            OptionContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            OptionContract.Columns.CODE + " TEXT," +
+            OptionContract.Columns.NAME + " TEXT," +
+            OptionContract.Columns.DISPLAY_NAME + " TEXT," +
+            OptionContract.Columns.CREATED + " TEXT," +
+            OptionContract.Columns.LAST_UPDATED + " TEXT," +
+            OptionContract.Columns.OPTION_SET + " TEXT NOT NULL UNIQUE," +
+            "FOREIGN KEY (" + OptionContract.Columns.OPTION_SET + ") REFERENCES " + Tables.OPTION_SET +
+            " (" + OptionSetContract.Columns.UID + ") ON DELETE CASCADE" +
+            ");";
+
     /**
      * This method should be used only for testing purposes
      */
@@ -136,6 +150,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_USER_ORGANISATION_UNIT_TABLE);
         database.execSQL(CREATE_AUTHENTICATED_USER_TABLE);
         database.execSQL(CREATE_OPTION_SET_TABLE);
+        database.execSQL(CREATE_OPTION_TABLE);
         return database;
     }
 

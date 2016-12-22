@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.IOException;
+
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
@@ -19,12 +21,12 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
 
     @Before
     @Override
-    public void setUp() {
+    public void setUp() throws IOException {
         super.setUp();
         authenticatedUserStore = new AuthenticatedUserStoreImpl(database());
 
         // row which will be referenced
-        ContentValues userRow = UserContractIntegrationTests.create(1L, "test_user_uid");
+        ContentValues userRow = UserStoreIntegrationTests.create(1L, "test_user_uid");
         database().insert(DbOpenHelper.Tables.USER, null, userRow);
     }
 

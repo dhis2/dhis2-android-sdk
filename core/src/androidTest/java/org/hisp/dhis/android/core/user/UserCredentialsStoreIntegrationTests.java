@@ -4,13 +4,14 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
-import org.hisp.dhis.android.models.common.BaseIdentifiableObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.IOException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -31,15 +32,29 @@ public class UserCredentialsStoreIntegrationTests extends AbsStoreTestCase {
 
     private UserCredentialsStore userCredentialsStore;
 
+    public static ContentValues create(long id, String uid, String user) {
+        ContentValues userCredentials = new ContentValues();
+        userCredentials.put(UserCredentialsContract.Columns.ID, id);
+        userCredentials.put(UserCredentialsContract.Columns.UID, uid);
+        userCredentials.put(UserCredentialsContract.Columns.CODE, "test_code");
+        userCredentials.put(UserCredentialsContract.Columns.NAME, "test_name");
+        userCredentials.put(UserCredentialsContract.Columns.DISPLAY_NAME, "test_display_name");
+        userCredentials.put(UserCredentialsContract.Columns.CREATED, "test_created");
+        userCredentials.put(UserCredentialsContract.Columns.LAST_UPDATED, "test_lastUpdated");
+        userCredentials.put(UserCredentialsContract.Columns.USERNAME, "test_username");
+        userCredentials.put(UserCredentialsContract.Columns.USER, user);
+        return userCredentials;
+    }
+
     @Before
     @Override
-    public void setUp() {
+    public void setUp() throws IOException {
         super.setUp();
 
         userCredentialsStore = new UserCredentialsStoreImpl(database());
 
         // row which will be referenced
-        ContentValues userRow = UserContractIntegrationTests.create(1L, "test_user_uid");
+        ContentValues userRow = UserStoreIntegrationTests.create(1L, "test_user_uid");
         database().insert(DbOpenHelper.Tables.USER, null, userRow);
     }
 

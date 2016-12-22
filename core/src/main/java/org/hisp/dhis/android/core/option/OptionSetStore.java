@@ -2,7 +2,7 @@ package org.hisp.dhis.android.core.option;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.models.common.ValueType;
+import org.hisp.dhis.android.core.common.ValueType;
 
 import java.util.Date;
 

@@ -4,9 +4,9 @@ import android.content.ContentValues;
 import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.option.OptionSetContract.Columns;
-import org.hisp.dhis.android.models.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.models.common.ValueType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

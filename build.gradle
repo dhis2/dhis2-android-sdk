@@ -29,12 +29,6 @@
 buildscript {
     repositories {
         jcenter()
-
-        // gradle plugin repository
-        // (required for java apt plugin)
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
     }
     dependencies {
         // android gradle plugin
@@ -42,7 +36,7 @@ buildscript {
 
         // annotation processing plugin for java modules.
         // Please, see: https://github.com/tbroyer/gradle-apt-plugin
-        classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
+        // classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
 
         // method count plugin
         classpath "com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.6.1"

@@ -77,7 +77,7 @@ if (withDexCount) {
 
 dependencies {
     // Client models
-    compile project(":models")
+    // compile project(":models")
 
     // Support libraries
     compile "com.android.support:support-annotations:${libraries.support}"
@@ -86,6 +86,9 @@ dependencies {
     // annotation processor which hoops up into compilation process
     provided "com.google.auto.value:auto-value:${libraries.autovalue}"
     annotationProcessor "com.google.auto.value:auto-value:${libraries.autovalue}"
+
+    // Jackson
+    compile "com.fasterxml.jackson.core:jackson-databind:${libraries.jackson}"
 
     // Square libraries
     compile "com.squareup.okhttp3:okhttp:${libraries.okhttp}"
@@ -102,10 +105,10 @@ dependencies {
     testCompile "org.assertj:assertj-core:${libraries.assertj}"
     testCompile "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
     testCompile "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
-    testCompile "com.squareup.retrofit2:retrofit-mock:${libraries.retrofit}"
 
     // Android test dependencies
     androidTestCompile "org.mockito:mockito-core:${libraries.mockito}"
+    androidTestCompile "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
     androidTestCompile "com.android.support.test:runner:${libraries.testrunner}"
     androidTestCompile("com.google.truth:truth:${libraries.truth}") {
         exclude group: 'junit' // Android has JUnit built in.

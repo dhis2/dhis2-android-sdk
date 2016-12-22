@@ -2,14 +2,15 @@ package org.hisp.dhis.android.core.option;
 
 import android.database.Cursor;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.option.OptionSetContract.Columns;
-import org.hisp.dhis.android.models.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.models.common.ValueType;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -39,7 +40,7 @@ public class OptionSetStoreIntegrationTest extends AbsStoreTestCase {
 
     @Before
     @Override
-    public void setUp() {
+    public void setUp() throws IOException {
         super.setUp();
         this.optionSetStore = new OptionSetStoreImpl(database());
     }

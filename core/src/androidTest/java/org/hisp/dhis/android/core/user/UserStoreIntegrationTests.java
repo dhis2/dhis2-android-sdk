@@ -1,15 +1,17 @@
 package org.hisp.dhis.android.core.user;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
-import org.hisp.dhis.android.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.IOException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -19,7 +21,6 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 public class UserStoreIntegrationTests extends AbsStoreTestCase {
     public static final String[] USER_PROJECTION = {
             UserContract.Columns.UID,
-            UserContract.Columns.CODE,
             UserContract.Columns.NAME,
             UserContract.Columns.DISPLAY_NAME,
             UserContract.Columns.CREATED,
@@ -41,9 +42,34 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
 
     private UserStore userStore;
 
+    public static ContentValues create(long id, String uid) {
+        ContentValues user = new ContentValues();
+        user.put(UserContract.Columns.ID, id);
+        user.put(UserContract.Columns.UID, uid);
+        user.put(UserContract.Columns.CODE, "test_code");
+        user.put(UserContract.Columns.NAME, "test_name");
+        user.put(UserContract.Columns.DISPLAY_NAME, "test_display_name");
+        user.put(UserContract.Columns.CREATED, "test_created");
+        user.put(UserContract.Columns.LAST_UPDATED, "test_last_updated");
+        user.put(UserContract.Columns.BIRTHDAY, "test_birthday");
+        user.put(UserContract.Columns.EDUCATION, "test_education");
+        user.put(UserContract.Columns.GENDER, "test_gender");
+        user.put(UserContract.Columns.JOB_TITLE, "test_job_title");
+        user.put(UserContract.Columns.SURNAME, "test_surname");
+        user.put(UserContract.Columns.FIRST_NAME, "test_first_name");
+        user.put(UserContract.Columns.INTRODUCTION, "test_introduction");
+        user.put(UserContract.Columns.EMPLOYER, "test_employer");
+        user.put(UserContract.Columns.INTERESTS, "test_interests");
+        user.put(UserContract.Columns.LANGUAGES, "test_languages");
+        user.put(UserContract.Columns.EMAIL, "test_email");
+        user.put(UserContract.Columns.PHONE_NUMBER, "test_phone_number");
+        user.put(UserContract.Columns.NATIONALITY, "test_nationality");
+        return user;
+    }
+
     @Before
     @Override
-    public void setUp() {
+    public void setUp() throws IOException {
         super.setUp();
 
         userStore = new UserStoreImpl(database());
@@ -55,7 +81,6 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
 
         long rowId = userStore.insert(
                 "test_user_uid",
-                "test_user_code",
                 "test_user_name",
                 "test_user_display_name",
                 date, date,
@@ -81,7 +106,6 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
         assertThatCursor(cursor)
                 .hasRow(
                         "test_user_uid",
-                        "test_user_code",
                         "test_user_name",
                         "test_user_display_name",
                         BaseIdentifiableObject.DATE_FORMAT.format(date),
@@ -107,11 +131,11 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
 //    @Test
 //    public void save_shouldNotTriggerOtherTablesOnDuplicate() {
 //        // inserting user
-//        ContentValues user = UserContractIntegrationTests.create(1L, "test_user_uid");
+//        ContentValues user = UserContractIntegrationTests.authenticator(1L, "test_user_uid");
 //        database().insert(DbOpenHelper.Tables.USER, null, user);
 //
 //        // inserting user credentials
-//        ContentValues userCredentials = UserCredentialsContractIntegrationTests.create(
+//        ContentValues userCredentials = UserCredentialsContractIntegrationTests.authenticator(
 //                1L, "test_user_credentials", "test_user_uid");
 //        database().insert(DbOpenHelper.Tables.USER_CREDENTIALS, null, userCredentials);
 //

@@ -131,11 +131,11 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
 //    @Test
 //    public void save_shouldNotTriggerOtherTablesOnDuplicate() {
 //        // inserting user
-//        ContentValues user = UserContractIntegrationTests.create(1L, "test_user_uid");
+//        ContentValues user = UserContractIntegrationTests.authenticator(1L, "test_user_uid");
 //        database().insert(DbOpenHelper.Tables.USER, null, user);
 //
 //        // inserting user credentials
-//        ContentValues userCredentials = UserCredentialsContractIntegrationTests.create(
+//        ContentValues userCredentials = UserCredentialsContractIntegrationTests.authenticator(
 //                1L, "test_user_credentials", "test_user_uid");
 //        database().insert(DbOpenHelper.Tables.USER_CREDENTIALS, null, userCredentials);
 //

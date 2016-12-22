@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.data.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
@@ -13,8 +14,8 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkContract;
 
 public final class DbOpenHelper extends SQLiteOpenHelper {
 
-    @VisibleForTesting
-    static final String NAME = "dhis.db";
+    // @VisibleForTesting
+    // static final String NAME = "dhis.db";
 
     @VisibleForTesting
     static final int VERSION = 1;
@@ -122,8 +123,8 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         return database;
     }
 
-    public DbOpenHelper(Context context) {
-        super(context, NAME, null, VERSION);
+    public DbOpenHelper(@NonNull Context context, @NonNull String databaseName) {
+        super(context, databaseName, null, VERSION);
     }
 
     @Override

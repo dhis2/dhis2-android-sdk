@@ -9,10 +9,15 @@ import android.support.annotation.VisibleForTesting;
 import org.hisp.dhis.android.core.option.OptionContract;
 import org.hisp.dhis.android.core.option.OptionSetContract;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
+import org.hisp.dhis.android.core.organisationunit.ProgramContract;
 import org.hisp.dhis.android.core.user.AuthenticatedUserContract;
 import org.hisp.dhis.android.core.user.UserContract;
 import org.hisp.dhis.android.core.user.UserCredentialsContract;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkContract;
+
+import static android.R.attr.version;
+import static android.os.FileObserver.CREATE;
+import static org.hisp.dhis.android.core.organisationunit.OrganisationUnit.displayDescription;
 
 public final class DbOpenHelper extends SQLiteOpenHelper {
 
@@ -30,6 +35,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String AUTHENTICATED_USER = "AuthenticatedUser";
         String OPTION_SET = "OptionSet";
         String OPTION = "Option";
+        String PROGRAM = "Program";
     }
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + Tables.USER + " (" +
@@ -134,6 +140,38 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             " (" + OptionSetContract.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
+    private static final String CREATE_PROGRAM_TABLE = "CREATE TABLE "+  Tables.PROGRAM + " ("+
+            ProgramContract.Columns.ID +  " INTEGER PRIMARY KEY,"+
+            ProgramContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ProgramContract.Columns.CODE + " TEXT," +
+            ProgramContract.Columns.NAME + " TEXT," +
+            ProgramContract.Columns.DISPLAY_NAME + " TEXT," +
+            ProgramContract.Columns.CREATED + " TEXT," +
+            ProgramContract.Columns.LAST_UPDATED + " TEXT," +
+            ProgramContract.Columns.SHORT_NAME + " TEXT," +
+            ProgramContract.Columns.DISPLAY_SHORT_NAME + " TEXT," +
+            ProgramContract.Columns.DESCRIPTION + " TEXT," +
+            ProgramContract.Columns.DISPLAY_DESCRIPTION + " TEXT," +
+            ProgramContract.Columns.VERSION + " INTEGER," +
+            ProgramContract.Columns.ONLY_ENROLL_ONCE + " INTEGER," +
+            ProgramContract.Columns.ENROLLMENT_DATE_LABEL + " TEXT," +
+            ProgramContract.Columns.DISPLAY_INCIDENT_DATE + " INTEGER," +
+            ProgramContract.Columns.INCIDENT_DATE_LABEL + " TEXT," +
+            ProgramContract.Columns.REGISTRATION + " INTEGER," +
+            ProgramContract.Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE + " INTEGER," +
+            ProgramContract.Columns.DATA_ENTRY_METHOD + " INTEGER," +
+            ProgramContract.Columns.IGNORE_OVERDUE_EVENTS + " INTEGER," +
+            ProgramContract.Columns.RELATIONSHIP_FROM_A + " INTEGER," +
+            ProgramContract.Columns.SELECT_INCIDENT_DATES_IN_FUTURE + " INTEGER," +
+            ProgramContract.Columns.CAPTURE_COORDINATES + " INTEGER," +
+            ProgramContract.Columns.USE_FIRST_STAGE_DURING_REGISTRATION + " INTEGER," +
+            ProgramContract.Columns.DISPLAY_FRONT_PAGE_LIST + " INTEGER," +
+            ProgramContract.Columns.PROGRAM_TYPE + " TEXT," +
+            ProgramContract.Columns.RELATIONSHIP_TYPE + " TEXT," +
+            ProgramContract.Columns.RELATIONSHIP_TEXT + " TEXT," +
+            ProgramContract.Columns.RELATED_PROGRAM + " TEXT" +
+        ");";
+    
     /**
      * This method should be used only for testing purposes
      */

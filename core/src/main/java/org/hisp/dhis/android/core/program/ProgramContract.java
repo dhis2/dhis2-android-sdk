@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectContract;
 

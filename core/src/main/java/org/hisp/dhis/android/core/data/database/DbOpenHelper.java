@@ -9,15 +9,11 @@ import android.support.annotation.VisibleForTesting;
 import org.hisp.dhis.android.core.option.OptionContract;
 import org.hisp.dhis.android.core.option.OptionSetContract;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
-import org.hisp.dhis.android.core.organisationunit.ProgramContract;
+import org.hisp.dhis.android.core.program.ProgramContract;
 import org.hisp.dhis.android.core.user.AuthenticatedUserContract;
 import org.hisp.dhis.android.core.user.UserContract;
 import org.hisp.dhis.android.core.user.UserCredentialsContract;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkContract;
-
-import static android.R.attr.version;
-import static android.os.FileObserver.CREATE;
-import static org.hisp.dhis.android.core.organisationunit.OrganisationUnit.displayDescription;
 
 public final class DbOpenHelper extends SQLiteOpenHelper {
 

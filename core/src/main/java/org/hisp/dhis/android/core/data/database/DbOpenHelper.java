@@ -136,8 +136,8 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             " (" + OptionSetContract.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
-    private static final String CREATE_PROGRAM_TABLE = "CREATE TABLE "+  Tables.PROGRAM + " ("+
-            ProgramContract.Columns.ID +  " INTEGER PRIMARY KEY,"+
+    private static final String CREATE_PROGRAM_TABLE = "CREATE TABLE " + Tables.PROGRAM + " (" +
+            ProgramContract.Columns.ID + " INTEGER PRIMARY KEY," +
             ProgramContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
             ProgramContract.Columns.CODE + " TEXT," +
             ProgramContract.Columns.NAME + " TEXT," +
@@ -166,8 +166,8 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ProgramContract.Columns.RELATIONSHIP_TYPE + " TEXT," +
             ProgramContract.Columns.RELATIONSHIP_TEXT + " TEXT," +
             ProgramContract.Columns.RELATED_PROGRAM + " TEXT" +
-        ");";
-    
+            ");";
+
     /**
      * This method should be used only for testing purposes
      */
@@ -185,6 +185,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_AUTHENTICATED_USER_TABLE);
         database.execSQL(CREATE_OPTION_SET_TABLE);
         database.execSQL(CREATE_OPTION_TABLE);
+        database.execSQL(CREATE_PROGRAM_TABLE);
         return database;
     }
 

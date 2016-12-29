@@ -4,7 +4,6 @@ import org.hisp.dhis.android.core.common.BaseNameableObjectContract;
 
 public class ProgramContract {
     public interface Columns extends BaseNameableObjectContract.Columns {
-
         String VERSION = "version";
         String ONLY_ENROLL_ONCE = "onlyEnrollOnce";
         String ENROLLMENT_DATE_LABEL = "enrollmentDateLabel";

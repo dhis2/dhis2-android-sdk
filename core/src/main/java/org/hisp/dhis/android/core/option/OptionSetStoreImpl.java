@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.option;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ValueType;
@@ -32,7 +33,7 @@ public class OptionSetStoreImpl implements OptionSetStore {
 
     @Override
     public long insert(@NonNull String uid,
-                       @NonNull String code,
+                       @Nullable String code,
                        @NonNull String name,
                        @NonNull String displayName,
                        @NonNull Date created,
@@ -42,7 +43,13 @@ public class OptionSetStoreImpl implements OptionSetStore {
         sqLiteStatement.clearBindings();
 
         sqLiteStatement.bindString(1, uid);
-        sqLiteStatement.bindString(2, code);
+
+        if (code != null) {
+            sqLiteStatement.bindString(2, code);
+        } else {
+            sqLiteStatement.bindNull(2);
+        }
+
         sqLiteStatement.bindString(3, name);
         sqLiteStatement.bindString(4, displayName);
         sqLiteStatement.bindString(5, BaseIdentifiableObject.DATE_FORMAT.format(created));

@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import java.util.Collections;
 import java.util.List;
 
+
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Program.Builder.class)
 public abstract class Program extends BaseNameableObject {

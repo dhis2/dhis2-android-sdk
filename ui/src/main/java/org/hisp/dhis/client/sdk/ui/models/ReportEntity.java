@@ -10,11 +10,19 @@ import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class ReportEntity implements Parcelable {
     private final String id;
+    private String programStageUid;
     private final Status status;
 
     private final Map<String, String> dataElementMap;
 
     public static final String NONE_VALUE = "none";
+
+    public ReportEntity(String id, String programStageUid, Status status, Map<String, String> dataElementMap) {
+        this.id = isNull(id, "id must not be null");
+        this.programStageUid = programStageUid;
+        this.status = isNull(status, "status must not be null");
+        this.dataElementMap = dataElementMap;
+    }
 
     public ReportEntity(String id, Status status, Map<String, String> dataElementMap) {
         this.id = isNull(id, "id must not be null");
@@ -38,6 +46,7 @@ public class ReportEntity implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
+        dest.writeString(programStageUid);
         dest.writeString(status.name());
         dest.writeMap(dataElementMap);
     }
@@ -55,6 +64,7 @@ public class ReportEntity implements Parcelable {
 
     private ReportEntity(Parcel in) {
         id = in.readString();
+        programStageUid = in.readString();
         status = Status.valueOf(in.readString());
         dataElementMap = new HashMap<>();
         in.readMap(dataElementMap, null);
@@ -73,4 +83,7 @@ public class ReportEntity implements Parcelable {
         SENT, TO_UPDATE, TO_POST, ERROR
     }
 
+    public String getProgramStageUid() {
+        return programStageUid;
+    }
 }

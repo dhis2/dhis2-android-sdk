@@ -137,7 +137,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ");";
 
     private static final String CREATE_PROGRAM_TABLE = "CREATE TABLE " + Tables.PROGRAM + " (" +
-            ProgramContract.Columns.ID + " INTEGER PRIMARY KEY," +
+            ProgramContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             ProgramContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
             ProgramContract.Columns.CODE + " TEXT," +
             ProgramContract.Columns.NAME + " TEXT," +

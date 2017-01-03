@@ -1,13 +1,14 @@
 package org.hisp.dhis.android.core.program;
 
+import android.content.ContentValues;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
 
 @AutoValue
 public abstract class ProgramModel extends BaseNameableObjectModel {
@@ -16,10 +17,12 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
         return AutoValue_ProgramModel.createFromCursor(cursor);
     }
 
-    //TODO: figure out how this is generated from the docs:
     public static Builder builder() {
-        return new AutoValue_ProgramModel.Builder();
+        return new $AutoValue_ProgramModel.Builder();
     }
+
+    @NonNull
+    public abstract ContentValues toContentValues();
 
     @Nullable
     @ColumnName(ProgramContract.Columns.VERSION)
@@ -78,21 +81,21 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
     public abstract Boolean displayFrontPageList();
 
     //TODO: Write ColumnAdapters for these:
-    @Nullable
-    @ColumnName(ProgramContract.Columns.PROGRAM_TYPE)
-    public abstract ProgramType programType();
-
-    @Nullable
-    @ColumnName(ProgramContract.Columns.RELATIONSHIP_TYPE)
-    public abstract RelationshipType relationshipType();
-
-    @Nullable
-    @ColumnName(ProgramContract.Columns.RELATIONSHIP_TEXT)
-    public abstract String relationshipText();
-
-    @Nullable
-    @ColumnName(ProgramContract.Columns.RELATED_PROGRAM)
-    public abstract Program relatedProgram();
+//    @Nullable
+//    @ColumnName(ProgramContract.Columns.PROGRAM_TYPE)
+//    public abstract ProgramType programType();
+//
+//    @Nullable
+//    @ColumnName(ProgramContract.Columns.RELATIONSHIP_TYPE)
+//    public abstract RelationshipType relationshipType();
+//
+//    @Nullable
+//    @ColumnName(ProgramContract.Columns.RELATIONSHIP_TEXT)
+//    public abstract String relationshipText();
+//
+//    @Nullable
+//    @ColumnName(ProgramContract.Columns.RELATED_PROGRAM)
+//    public abstract Program relatedProgram();
 
 //TODO: Add these to the model/sql/... later:
 //
@@ -127,44 +130,42 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObjectModel.Builder<ProgramModel.Builder> {
 
-        public abstract ProgramModel.Builder version(@Nullable Integer version);
+        public abstract Builder version(@Nullable Integer version);
 
-        public abstract ProgramModel.Builder onlyEnrollOnce(@Nullable Boolean onlyEnrollOnce);
+        public abstract Builder onlyEnrollOnce(@Nullable Boolean onlyEnrollOnce);
 
-        public abstract ProgramModel.Builder enrollmentDateLabel(@Nullable String enrollmentDateLabel);
+        public abstract Builder enrollmentDateLabel(@Nullable String enrollmentDateLabel);
 
-        public abstract ProgramModel.Builder displayIncidentDate(@Nullable Boolean displayIncidentDate);
+        public abstract Builder displayIncidentDate(@Nullable Boolean displayIncidentDate);
 
-        public abstract ProgramModel.Builder incidentDateLabel(@Nullable String incidentDateLabel);
+        public abstract Builder incidentDateLabel(@Nullable String incidentDateLabel);
 
-        public abstract ProgramModel.Builder registration(@Nullable Boolean registration);
+        public abstract Builder registration(@Nullable Boolean registration);
 
-        public abstract ProgramModel.Builder selectEnrollmentDatesInFuture(
-                @Nullable Boolean selectEnrollmentDatesInFuture);
+        public abstract Builder selectEnrollmentDatesInFuture(@Nullable Boolean selectEnrollmentDatesInFuture);
 
-        public abstract ProgramModel.Builder dataEntryMethod(@Nullable Boolean dataEntryMethod);
+        public abstract Builder dataEntryMethod(@Nullable Boolean dataEntryMethod);
 
-        public abstract ProgramModel.Builder ignoreOverdueEvents(@Nullable Boolean ignoreOverdueEvents);
+        public abstract Builder ignoreOverdueEvents(@Nullable Boolean ignoreOverdueEvents);
 
-        public abstract ProgramModel.Builder relationshipFromA(@Nullable Boolean relationshipFromA);
+        public abstract Builder relationshipFromA(@Nullable Boolean relationshipFromA);
 
-        public abstract ProgramModel.Builder selectIncidentDatesInFuture(
-                @Nullable Boolean selectIncidentDatesInFuture);
+        public abstract Builder selectIncidentDatesInFuture(@Nullable Boolean selectIncidentDatesInFuture);
 
-        public abstract ProgramModel.Builder captureCoordinates(@Nullable Boolean captureCoordinates);
+        public abstract Builder captureCoordinates(@Nullable Boolean captureCoordinates);
 
-        public abstract ProgramModel.Builder useFirstStageDuringRegistration(
-                @Nullable Boolean useFirstStageDuringRegistration);
+        public abstract Builder useFirstStageDuringRegistration(@Nullable Boolean useFirstStageDuringRegistration);
 
-        public abstract ProgramModel.Builder displayFrontPageList(@Nullable Boolean displayInFrontPageList);
+        public abstract Builder displayFrontPageList(@Nullable Boolean displayInFrontPageList);
 
-        public abstract ProgramModel.Builder programType(@Nullable ProgramType programType);
-
-        public abstract ProgramModel.Builder relationshipType(@Nullable RelationshipType relationshipType);
-
-        public abstract ProgramModel.Builder relationshipText(@Nullable String relationshipText);
-
-        public abstract ProgramModel.Builder relatedProgram(@Nullable Program relatedProgram);
+        //TODO: add these types:
+//        public abstract Builder programType(@Nullable ProgramType programType);
+//
+//        public abstract Builder relationshipType(@Nullable RelationshipType relationshipType);
+//
+//        public abstract Builder relationshipText(@Nullable String relationshipText);
+//
+//        public abstract Builder relatedProgram(@Nullable Program relatedProgram);
 
 //        public abstract ProgramModel.Builder programTrackedEntityAttributes(
 //                @Nullable List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes);

@@ -131,7 +131,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             OptionContract.Columns.DISPLAY_NAME + " TEXT," +
             OptionContract.Columns.CREATED + " TEXT," +
             OptionContract.Columns.LAST_UPDATED + " TEXT," +
-            OptionContract.Columns.OPTION_SET + " TEXT NOT NULL UNIQUE," +
+            OptionContract.Columns.OPTION_SET + " TEXT NOT NULL," +
             "FOREIGN KEY (" + OptionContract.Columns.OPTION_SET + ") REFERENCES " + Tables.OPTION_SET +
             " (" + OptionSetContract.Columns.UID + ") ON DELETE CASCADE" +
             ");";

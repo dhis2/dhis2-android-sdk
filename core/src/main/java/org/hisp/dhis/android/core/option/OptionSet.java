@@ -30,62 +30,65 @@ package org.hisp.dhis.android.core.option;
 
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.NestedField;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 // TODO: Tests
 @AutoValue
-@JsonDeserialize(builder = AutoValue_OptionSet.Builder.class)
 public abstract class OptionSet extends BaseIdentifiableObject {
-    private static final String JSON_PROPERTY_VERSION = "version";
-    private static final String JSON_PROPERTY_VALUE_TYPE = "valueType";
-    private static final String JSON_PROPERTY_OPTIONS = "options";
+    private static final String VERSION = "version";
+    private static final String VALUE_TYPE = "valueType";
+    private static final String OPTIONS = "options";
+
+    public static final Field<OptionSet, String> uid = Field.create(UID);
+    public static final Field<OptionSet, String> code = Field.create(CODE);
+    public static final Field<OptionSet, String> name = Field.create(NAME);
+    public static final Field<OptionSet, String> displayName = Field.create(DISPLAY_NAME);
+    public static final Field<OptionSet, String> created = Field.create(CREATED);
+    public static final Field<OptionSet, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<OptionSet, String> version = Field.create(VERSION);
+    public static final Field<OptionSet, String> value_type = Field.create(VALUE_TYPE);
+    public static final NestedField<OptionSet, Option> options = NestedField.create(OPTIONS);
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_VERSION)
+    @JsonProperty(VERSION)
     public abstract Integer version();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_OPTIONS)
-    public abstract List<Option> options();
-
-    @Nullable
-    @JsonProperty(JSON_PROPERTY_VALUE_TYPE)
+    @JsonProperty(VALUE_TYPE)
     public abstract ValueType valueType();
 
-    public static Builder builder() {
-        return new AutoValue_OptionSet.Builder();
-    }
+    @Nullable
+    @JsonProperty(OPTIONS)
+    public abstract List<Option> options();
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
-        @JsonProperty(JSON_PROPERTY_VERSION)
-        public abstract Builder version(@Nullable Integer version);
+    @JsonCreator
+    public static OptionSet create(
+            @JsonProperty(UID) String uid,
+            @JsonProperty(CODE) String code,
+            @JsonProperty(NAME) String name,
+            @JsonProperty(DISPLAY_NAME) String displayName,
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(VERSION) Integer version,
+            @JsonProperty(VALUE_TYPE) ValueType valueType,
+            @JsonProperty(OPTIONS) List<Option> options) {
+        return new AutoValue_OptionSet(uid, code, name, displayName, created,
+                lastUpdated, version, valueType,
 
-        @JsonProperty(JSON_PROPERTY_OPTIONS)
-        public abstract Builder options(@Nullable List<Option> options);
-
-        @JsonProperty(JSON_PROPERTY_VALUE_TYPE)
-        public abstract Builder valueType(@Nullable ValueType valueType);
-
-        abstract List<Option> options();
-
-        abstract OptionSet autoBuild();
-
-        public OptionSet build() {
-            if (options() != null) {
-                options(Collections.unmodifiableList(options()));
-            }
-
-            return autoBuild();
-        }
+                // guarding collections from modification
+                options != null ? Collections.unmodifiableList(options) : null
+        );
     }
 }

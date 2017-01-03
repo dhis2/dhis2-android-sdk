@@ -32,12 +32,19 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.data.api.Field;
 
 // TODO: Tests
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Option.Builder.class)
 public abstract class Option extends BaseIdentifiableObject {
-    // no fields
+
+    public static final Field<Option, String> uid = Field.create(UID);
+    public static final Field<Option, String> code = Field.create(CODE);
+    public static final Field<Option, String> name = Field.create(NAME);
+    public static final Field<Option, String> displayName = Field.create(DISPLAY_NAME);
+    public static final Field<Option, String> created = Field.create(CREATED);
+    public static final Field<Option, String> lastUpdated = Field.create(LAST_UPDATED);
 
     public static Builder builder() {
         return new AutoValue_Option.Builder();

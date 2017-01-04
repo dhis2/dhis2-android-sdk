@@ -5,8 +5,6 @@ import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.option.OptionModel;
 import org.hisp.dhis.android.core.program.ProgramContract.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,11 +49,11 @@ public class ProgramModelIntegrationTest {
     private static final Integer DISPLAY_FRONT_PAGE_LIST = 1;
 
     //TODO : TEST custom Types:
-//    private static final ProgramType  PROGRAM_TYPE  = new RelationshipType();
-//    private static final RelationshipType RELATIONSHIP_TYPE  = ;
-//    private static final String RELATIONSHIP_TEXT  = "test relationship";
-//    private static final Program RELATED_PROGRAM = ;
-//
+    private static final ProgramType PROGRAM_TYPE = ProgramType.WITH_REGISTRATION;
+    private static final String RELATIONSHIP_TYPE = "relationshipUid";
+    private static final String RELATIONSHIP_TEXT = "test relationship";
+    private static final String RELATED_PROGRAM = "ProgramUid";
+
     @Test
     public void create_shouldConvertToModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
@@ -83,7 +81,11 @@ public class ProgramModelIntegrationTest {
                 Columns.SELECT_INCIDENT_DATES_IN_FUTURE,
                 Columns.CAPTURE_COORDINATES,
                 Columns.USE_FIRST_STAGE_DURING_REGISTRATION,
-                Columns.DISPLAY_FRONT_PAGE_LIST
+                Columns.DISPLAY_FRONT_PAGE_LIST,
+                Columns.PROGRAM_TYPE,
+                Columns.RELATIONSHIP_TYPE,
+                Columns.RELATIONSHIP_TEXT,
+                Columns.RELATED_PROGRAM
         });
 
         matrixCursor.addRow(new Object[]{
@@ -105,7 +107,11 @@ public class ProgramModelIntegrationTest {
                 SELECT_INCIDENT_DATES_IN_FUTURE,
                 CAPTURE_COORDINATES,
                 USE_FIRST_STAGE_DURING_REGISTRATION,
-                DISPLAY_FRONT_PAGE_LIST
+                DISPLAY_FRONT_PAGE_LIST,
+                PROGRAM_TYPE,
+                RELATIONSHIP_TYPE,
+                RELATIONSHIP_TEXT,
+                RELATED_PROGRAM
         });
 
         // move cursor to first item before reading
@@ -139,8 +145,11 @@ public class ProgramModelIntegrationTest {
         assertThat(program.captureCoordinates()).isEqualTo(toBoolean(CAPTURE_COORDINATES));
         assertThat(program.useFirstStageDuringRegistration()).isEqualTo(toBoolean(USE_FIRST_STAGE_DURING_REGISTRATION));
         assertThat(program.displayFrontPageList()).isEqualTo(toBoolean(DISPLAY_FRONT_PAGE_LIST));
+        assertThat(program.programType()).isEqualTo(PROGRAM_TYPE);
+        assertThat(program.relationshipType()).isEqualTo(RELATIONSHIP_TYPE);
+        assertThat(program.relationshipText()).isEqualTo(RELATIONSHIP_TEXT);
+        assertThat(program.relatedProgram()).isEqualTo(RELATED_PROGRAM);
     }
-
 
     @Test
     public void toContentValues_shouldConvertToContentValues() throws ParseException {
@@ -171,6 +180,10 @@ public class ProgramModelIntegrationTest {
                 .captureCoordinates(toBoolean(CAPTURE_COORDINATES))
                 .useFirstStageDuringRegistration(toBoolean(USE_FIRST_STAGE_DURING_REGISTRATION))
                 .displayFrontPageList(toBoolean(DISPLAY_FRONT_PAGE_LIST))
+                .programType(PROGRAM_TYPE)
+                .relationshipType(RELATIONSHIP_TYPE)
+                .relationshipText(RELATIONSHIP_TEXT)
+                .relatedProgram(RELATED_PROGRAM)
                 .build();
 
         ContentValues contentValues = program.toContentValues();
@@ -197,12 +210,14 @@ public class ProgramModelIntegrationTest {
         assertThat(contentValues.getAsBoolean(Columns.CAPTURE_COORDINATES)).isEqualTo(toBoolean(CAPTURE_COORDINATES));
         assertThat(contentValues.getAsBoolean(Columns.USE_FIRST_STAGE_DURING_REGISTRATION)).isEqualTo(toBoolean(USE_FIRST_STAGE_DURING_REGISTRATION));
         assertThat(contentValues.getAsBoolean(Columns.DISPLAY_FRONT_PAGE_LIST)).isEqualTo(toBoolean(DISPLAY_FRONT_PAGE_LIST));
-
+        assertThat(contentValues.getAsString(Columns.PROGRAM_TYPE)).isEqualTo(PROGRAM_TYPE.toString());
+        assertThat(contentValues.getAsString(Columns.RELATIONSHIP_TYPE)).isEqualTo(RELATIONSHIP_TYPE);
+        assertThat(contentValues.getAsString(Columns.RELATIONSHIP_TEXT)).isEqualTo(RELATIONSHIP_TEXT);
+        assertThat(contentValues.getAsString(Columns.RELATED_PROGRAM)).isEqualTo(RELATED_PROGRAM);
     }
 
     /* A helper method to convert an integer to Boolean.*/
     private Boolean toBoolean(Integer i) {
         return i != 0;
     }
-
 }

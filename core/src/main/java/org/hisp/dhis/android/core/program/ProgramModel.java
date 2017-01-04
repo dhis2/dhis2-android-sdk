@@ -5,10 +5,12 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.data.database.DbProgramTypeColumnAdapter;
 
 @AutoValue
 public abstract class ProgramModel extends BaseNameableObjectModel {
@@ -80,22 +82,22 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
     @ColumnName(ProgramContract.Columns.DISPLAY_FRONT_PAGE_LIST)
     public abstract Boolean displayFrontPageList();
 
-    //TODO: Write ColumnAdapters for these:
-//    @Nullable
-//    @ColumnName(ProgramContract.Columns.PROGRAM_TYPE)
-//    public abstract ProgramType programType();
-//
-//    @Nullable
-//    @ColumnName(ProgramContract.Columns.RELATIONSHIP_TYPE)
-//    public abstract RelationshipType relationshipType();
-//
-//    @Nullable
-//    @ColumnName(ProgramContract.Columns.RELATIONSHIP_TEXT)
-//    public abstract String relationshipText();
-//
-//    @Nullable
-//    @ColumnName(ProgramContract.Columns.RELATED_PROGRAM)
-//    public abstract Program relatedProgram();
+    @Nullable
+    @ColumnName(ProgramContract.Columns.PROGRAM_TYPE)
+    @ColumnAdapter(DbProgramTypeColumnAdapter.class)
+    public abstract ProgramType programType();
+
+    @Nullable
+    @ColumnName(ProgramContract.Columns.RELATIONSHIP_TYPE)
+    public abstract String relationshipType();
+
+    @Nullable
+    @ColumnName(ProgramContract.Columns.RELATIONSHIP_TEXT)
+    public abstract String relationshipText();
+
+    @Nullable
+    @ColumnName(ProgramContract.Columns.RELATED_PROGRAM)
+    public abstract String relatedProgram();
 
 //TODO: Add these to the model/sql/... later:
 //
@@ -158,14 +160,13 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
 
         public abstract Builder displayFrontPageList(@Nullable Boolean displayInFrontPageList);
 
-        //TODO: add these types:
-//        public abstract Builder programType(@Nullable ProgramType programType);
-//
-//        public abstract Builder relationshipType(@Nullable RelationshipType relationshipType);
-//
-//        public abstract Builder relationshipText(@Nullable String relationshipText);
-//
-//        public abstract Builder relatedProgram(@Nullable Program relatedProgram);
+        public abstract Builder programType(@Nullable ProgramType programType);
+
+        public abstract Builder relationshipType(@Nullable String relationshipType);
+
+        public abstract Builder relationshipText(@Nullable String relationshipText);
+
+        public abstract Builder relatedProgram(@Nullable String relatedProgram);
 
 //        public abstract ProgramModel.Builder programTrackedEntityAttributes(
 //                @Nullable List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes);

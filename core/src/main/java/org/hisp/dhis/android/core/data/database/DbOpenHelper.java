@@ -10,6 +10,7 @@ import org.hisp.dhis.android.core.option.OptionContract;
 import org.hisp.dhis.android.core.option.OptionSetContract;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
 import org.hisp.dhis.android.core.program.ProgramContract;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityContract;
 import org.hisp.dhis.android.core.user.AuthenticatedUserContract;
 import org.hisp.dhis.android.core.user.UserContract;
 import org.hisp.dhis.android.core.user.UserCredentialsContract;
@@ -32,6 +33,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String OPTION_SET = "OptionSet";
         String OPTION = "Option";
         String PROGRAM = "Program";
+        String TRACKED_ENTITY = "TrackedEntity";
     }
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + Tables.USER + " (" +
@@ -168,6 +170,20 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ProgramContract.Columns.RELATED_PROGRAM + " TEXT" +
             ");";
 
+    private static final String CREATE_TRACKED_ENTITY_TABLE = "CREATE TABLE " + Tables.TRACKED_ENTITY + " (" +
+            TrackedEntityContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            TrackedEntityContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            TrackedEntityContract.Columns.CODE + " TEXT," +
+            TrackedEntityContract.Columns.NAME + " TEXT," +
+            TrackedEntityContract.Columns.DISPLAY_NAME + " TEXT," +
+            TrackedEntityContract.Columns.CREATED + " TEXT," +
+            TrackedEntityContract.Columns.LAST_UPDATED + " TEXT," +
+            TrackedEntityContract.Columns.SHORT_NAME + " TEXT," +
+            TrackedEntityContract.Columns.DISPLAY_SHORT_NAME + " TEXT," +
+            TrackedEntityContract.Columns.DESCRIPTION + " TEXT," +
+            TrackedEntityContract.Columns.DISPLAY_DESCRIPTION + " TEXT" +
+            ");";
+
     /**
      * This method should be used only for testing purposes
      */
@@ -186,6 +202,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_OPTION_SET_TABLE);
         database.execSQL(CREATE_OPTION_TABLE);
         database.execSQL(CREATE_PROGRAM_TABLE);
+        database.execSQL(CREATE_TRACKED_ENTITY_TABLE);
         return database;
     }
 

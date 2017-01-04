@@ -216,7 +216,7 @@ public class ProgramModelIntegrationTest {
         assertThat(contentValues.getAsString(Columns.RELATED_PROGRAM)).isEqualTo(RELATED_PROGRAM);
     }
 
-    /* A helper method to convert an integer to Boolean.*/
+    /* A helper method to convert an integer to Boolean. 0 -> false, != 0 -> true*/
     private Boolean toBoolean(Integer i) {
         return i != 0;
     }

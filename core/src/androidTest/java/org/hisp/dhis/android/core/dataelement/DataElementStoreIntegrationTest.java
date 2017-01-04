@@ -198,15 +198,15 @@ public class DataElementStoreIntegrationTest extends AbsStoreTestCase {
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistDataElementWithInvalidForeignKey() throws ParseException {
-        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
+        Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
         String fakeOptionSetUid = "fake_option_set_uid";
         long rowId = dataElementStore.insert(
                 UID,
                 CODE,
                 NAME,
                 DISPLAY_NAME,
-                date,
-                date,
+                timeStamp,
+                timeStamp,
                 SHORT_NAME,
                 DISPLAY_SHORT_NAME,
                 DESCRIPTION,

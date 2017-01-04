@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
+import org.hisp.dhis.android.core.dataelement.DataElementContract;
 import org.hisp.dhis.android.core.option.OptionContract;
 import org.hisp.dhis.android.core.option.OptionSetContract;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
@@ -32,6 +33,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String OPTION_SET = "OptionSet";
         String OPTION = "Option";
         String PROGRAM = "Program";
+        String DATA_ELEMENT = "DataElement";
     }
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + Tables.USER + " (" +
@@ -171,6 +173,32 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ProgramContract.Columns.RELATED_PROGRAM + " TEXT" +
             ");";
 
+    private static final String CREATE_DATA_ELEMENT_TABLE = "CREATE TABLE " + Tables.DATA_ELEMENT + " (" +
+            DataElementContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            DataElementContract.Columns.UID + " TEXT NOT NULL," +
+            DataElementContract.Columns.CODE + " TEXT," +
+            DataElementContract.Columns.NAME + " TEXT," +
+            DataElementContract.Columns.DISPLAY_NAME + " TEXT," +
+            DataElementContract.Columns.CREATED + " TEXT," +
+            DataElementContract.Columns.LAST_UPDATED + " TEXT," +
+            DataElementContract.Columns.SHORT_NAME + " TEXT," +
+            DataElementContract.Columns.DISPLAY_SHORT_NAME + " TEXT," +
+            DataElementContract.Columns.DESCRIPTION + " TEXT," +
+            DataElementContract.Columns.DISPLAY_DESCRIPTION + " TEXT," +
+            DataElementContract.Columns.VALUE_TYPE + " TEXT," +
+            DataElementContract.Columns.ZERO_IS_SIGNIFICANT + " INTEGER," +
+            DataElementContract.Columns.AGGREGATION_OPERATOR + " TEXT," +
+            DataElementContract.Columns.FORM_NAME + " TEXT," +
+            DataElementContract.Columns.NUMBER_TYPE + " TEXT," +
+            DataElementContract.Columns.DOMAIN_TYPE + " TEXT," +
+            DataElementContract.Columns.DIMENSION + " TEXT," +
+            DataElementContract.Columns.DISPLAY_FORM_NAME + " TEXT," +
+            DataElementContract.Columns.OPTION_SET + " TEXT," +
+            " FOREIGN KEY ( " + DataElementContract.Columns.OPTION_SET + ")" +
+            " REFERENCES " + Tables.OPTION_SET + " (" + OptionSetContract.Columns.UID + ")" +
+            ");";
+
+
     /**
      * This method should be used only for testing purposes
      */
@@ -189,6 +217,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_OPTION_SET_TABLE);
         database.execSQL(CREATE_OPTION_TABLE);
         database.execSQL(CREATE_PROGRAM_TABLE);
+        database.execSQL(CREATE_DATA_ELEMENT_TABLE);
         return database;
     }
 

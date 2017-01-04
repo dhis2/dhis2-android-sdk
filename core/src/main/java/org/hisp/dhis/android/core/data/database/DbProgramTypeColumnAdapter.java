@@ -7,8 +7,6 @@ import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
 import org.hisp.dhis.android.core.program.ProgramType;
 
-import static android.R.attr.valueType;
-
 //TODO: Write unit-test's for this adapter:
 public class DbProgramTypeColumnAdapter implements ColumnTypeAdapter<ProgramType> {
 
@@ -22,7 +20,7 @@ public class DbProgramTypeColumnAdapter implements ColumnTypeAdapter<ProgramType
             try {
                 programType = ProgramType.valueOf(source);
             } catch (IllegalArgumentException exception) {
-                throw new RuntimeException("Unknown value type", exception);
+                throw new RuntimeException("Unknown program type", exception);
             }
         }
         return programType;
@@ -31,7 +29,7 @@ public class DbProgramTypeColumnAdapter implements ColumnTypeAdapter<ProgramType
     @Override
     public void toContentValues(ContentValues values, String columnName, ProgramType value) {
         if (value != null) {
-            values.put(columnName, valueType);
+            values.put(columnName, value.name());
         }
     }
 }

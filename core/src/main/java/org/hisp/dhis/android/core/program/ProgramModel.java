@@ -18,7 +18,7 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
     }
 
     public static Builder builder() {
-        return new $AutoValue_ProgramModel.Builder();
+        return new $$AutoValue_ProgramModel.Builder();
     }
 
     @NonNull
@@ -128,7 +128,7 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
 //    public abstract List<ProgramRuleVariable> programRuleVariables();
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseNameableObjectModel.Builder<ProgramModel.Builder> {
+    public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {
 
         public abstract Builder version(@Nullable Integer version);
 

@@ -82,8 +82,10 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
     }
 
     public void onRestoreInstanceState(Bundle bundle) {
-        reportEntities = bundle.getParcelableArrayList(REPORT_ENTITY_LIST_KEY);
-        notifyDataSetChanged();
+        if (bundle != null && bundle.containsKey(REPORT_ENTITY_LIST_KEY)) {
+            reportEntities = bundle.getParcelableArrayList(REPORT_ENTITY_LIST_KEY);
+            notifyDataSetChanged();
+        }
     }
 
     public void notifyFiltersChanged(List<ReportEntityFilter> filters) {
@@ -215,8 +217,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                             ((FontTextView) dataElementLabelView).setText(text, TextView.BufferType.SPANNABLE);
                             dataElementLabelView.setVisibility(View.VISIBLE);
-                        }
-                        else {
+                        } else {
                             dataElementLabelView.setVisibility(View.GONE);
                         }
                     } else {

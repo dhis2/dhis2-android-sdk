@@ -39,7 +39,7 @@ public class DataElementModelIntegrationTest {
     // timestamp
     private static final String DATE = "2014-03-20T13:37:00.007";
 
-    public static ContentValues create(long id, String uid) {
+    public static ContentValues createWithOptionSet(long id, String uid, String optionSetId) {
         ContentValues dataElement = new ContentValues();
         dataElement.put(Columns.ID, id);
         dataElement.put(Columns.UID, uid);
@@ -60,7 +60,34 @@ public class DataElementModelIntegrationTest {
         dataElement.put(Columns.DOMAIN_TYPE, DOMAIN_TYPE);
         dataElement.put(Columns.DIMENSION, DIMENSION);
         dataElement.put(Columns.DISPLAY_FORM_NAME, DISPLAY_FORM_NAME);
-        dataElement.put(Columns.OPTION_SET, OPTION_SET);
+        dataElement.put(Columns.OPTION_SET, optionSetId);
+
+        return dataElement;
+    }
+
+    public static ContentValues createWithoutOptionSet(long id, String uid) {
+        ContentValues dataElement = new ContentValues();
+        dataElement.put(Columns.ID, id);
+        dataElement.put(Columns.UID, uid);
+        dataElement.put(Columns.CODE, CODE);
+        dataElement.put(Columns.NAME, NAME);
+        dataElement.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
+        dataElement.put(Columns.CREATED, DATE);
+        dataElement.put(Columns.LAST_UPDATED, DATE);
+        dataElement.put(Columns.SHORT_NAME, SHORT_NAME);
+        dataElement.put(Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
+        dataElement.put(Columns.DESCRIPTION, DESCRIPTION);
+        dataElement.put(Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
+        dataElement.put(Columns.VALUE_TYPE, VALUE_TYPE.name());
+        dataElement.put(Columns.ZERO_IS_SIGNIFICANT, ZERO_IS_SIGNIFICANT);
+        dataElement.put(Columns.AGGREGATION_OPERATOR, AGGREGATION_OPERATOR);
+        dataElement.put(Columns.FORM_NAME, FORM_NAME);
+        dataElement.put(Columns.NUMBER_TYPE, NUMBER_TYPE);
+        dataElement.put(Columns.DOMAIN_TYPE, DOMAIN_TYPE);
+        dataElement.put(Columns.DIMENSION, DIMENSION);
+        dataElement.put(Columns.DISPLAY_FORM_NAME, DISPLAY_FORM_NAME);
+        dataElement.putNull(Columns.OPTION_SET);
+
         return dataElement;
     }
 

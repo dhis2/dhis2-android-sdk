@@ -28,23 +28,45 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.data.api.Field;
+
+import java.util.Date;
 
 // TODO: Tests
 @AutoValue
-@JsonDeserialize(builder = AutoValue_TrackedEntity.Builder.class)
 public abstract class TrackedEntity extends BaseNameableObject {
-    // no fields
 
-    public static Builder builder() {
-        return new AutoValue_TrackedEntity.Builder();
-    }
+    public static final Field<TrackedEntity, String> uid = Field.create(UID);
+    public static final Field<TrackedEntity, String> code = Field.create(CODE);
+    public static final Field<TrackedEntity, String> name = Field.create(NAME);
+    public static final Field<TrackedEntity, String> displayName = Field.create(DISPLAY_NAME);
+    public static final Field<TrackedEntity, String> created = Field.create(CREATED);
+    public static final Field<TrackedEntity, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<TrackedEntity, String> shortName = Field.create(SHORT_NAME);
+    public static final Field<TrackedEntity, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
+    public static final Field<TrackedEntity, String> description = Field.create(DESCRIPTION);
+    public static final Field<TrackedEntity, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
-        public abstract TrackedEntity build();
+    @JsonCreator
+    public static TrackedEntity create(
+            @JsonProperty(UID) String uid,
+            @JsonProperty(CODE) String code,
+            @JsonProperty(NAME) String name,
+            @JsonProperty(DISPLAY_NAME) String displayName,
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(SHORT_NAME) String shortName,
+            @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
+            @JsonProperty(DESCRIPTION) String description,
+            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription) {
+
+        return new AutoValue_TrackedEntity(
+                uid, code, name, displayName, created, lastUpdated,
+                shortName, displayShortName, description, displayDescription);
     }
 }

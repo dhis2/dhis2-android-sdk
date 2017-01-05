@@ -21,6 +21,7 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 public class UserStoreIntegrationTests extends AbsStoreTestCase {
     public static final String[] USER_PROJECTION = {
             UserContract.Columns.UID,
+            UserContract.Columns.CODE,
             UserContract.Columns.NAME,
             UserContract.Columns.DISPLAY_NAME,
             UserContract.Columns.CREATED,

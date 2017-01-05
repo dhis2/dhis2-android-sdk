@@ -6,14 +6,12 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
 
 import java.util.Date;
 
 public class ProgramStoreImpl implements ProgramStore {
 
     private static final String INSERT_STATEMENT = "CREATE TABLE " + Tables.PROGRAM + " (" +
-            ProgramContract.Columns.ID + ", " +
             ProgramContract.Columns.UID + ", " +
             ProgramContract.Columns.CODE + ", " +
             ProgramContract.Columns.NAME + ", " +
@@ -42,7 +40,7 @@ public class ProgramStoreImpl implements ProgramStore {
             ProgramContract.Columns.RELATIONSHIP_TYPE + ", " +
             ProgramContract.Columns.RELATIONSHIP_TEXT + ", " +
             ProgramContract.Columns.RELATED_PROGRAM + ") " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private final SQLiteStatement sqLiteStatement;
 
@@ -77,9 +75,9 @@ public class ProgramStoreImpl implements ProgramStore {
             @NonNull Boolean useFirstStageDuringRegistration,
             @NonNull Boolean displayInFrontPageList,
             @NonNull ProgramType programType,
-            @NonNull RelationshipType relationshipType,
+            @NonNull String relationshipType,
             @NonNull String relationshipText,
-            Program relatedProgram) {
+            String relatedProgram) {
 
         sqLiteStatement.clearBindings();
 
@@ -107,9 +105,9 @@ public class ProgramStoreImpl implements ProgramStore {
         sqLiteStatement.bindLong(22, boolToInt(useFirstStageDuringRegistration));
         sqLiteStatement.bindLong(23, boolToInt(displayInFrontPageList));
         sqLiteStatement.bindString(24, programType.name());
-        sqLiteStatement.bindString(25, relationshipType.uid()); //TODO: store the relationship in it's table.
+        sqLiteStatement.bindString(25, relationshipType);
         sqLiteStatement.bindString(26, relationshipText);
-        sqLiteStatement.bindString(27, relatedProgram.uid());
+        sqLiteStatement.bindString(27, relatedProgram);
 
         return sqLiteStatement.executeInsert();
     }

@@ -33,10 +33,10 @@ public interface ProgramStore {
             @NonNull Boolean useFirstStageDuringRegistration,
             @NonNull Boolean displayInFrontPageList,
             @NonNull ProgramType programType,
-            @NonNull RelationshipType relationshipType,
+            @NonNull String relationshipType,
             @NonNull String relationshipText,
 //            @NonNull List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes,
-            Program relatedProgram
+            String relatedProgram
             /*          CategoryCombo categoryCombo,
             @NonNull List<ProgramIndicator> programIndicators,
             @NonNull List<ProgramStage> programStages,

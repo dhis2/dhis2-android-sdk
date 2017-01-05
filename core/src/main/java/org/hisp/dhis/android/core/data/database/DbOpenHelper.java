@@ -167,9 +167,6 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ProgramContract.Columns.PROGRAM_TYPE + " TEXT," +
             ProgramContract.Columns.RELATIONSHIP_TYPE + " TEXT," +
             ProgramContract.Columns.RELATIONSHIP_TEXT + " TEXT," +
-            //TODO: evaluate if foreign key is to be used for related program
-            /*"FOREIGN KEY (" + ProgramContract.Columns.RELATED_PROGRAM + ") REFERENCES " + Tables.PROGRAM +
-            " (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +*/
             ProgramContract.Columns.RELATED_PROGRAM + " TEXT" +
             ");";
 
@@ -197,7 +194,6 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             " FOREIGN KEY ( " + DataElementContract.Columns.OPTION_SET + ")" +
             " REFERENCES " + Tables.OPTION_SET + " (" + OptionSetContract.Columns.UID + ")" +
             ");";
-
 
     /**
      * This method should be used only for testing purposes

@@ -26,7 +26,7 @@ public interface ProgramStore {
             @Nullable Boolean selectEnrollmentDatesInFuture,
             @Nullable Boolean dataEntryMethod,
             @Nullable Boolean ignoreOverdueEvents,
-            @NonNull Boolean relationshipFromA,
+            @Nullable Boolean relationshipFromA,
             @Nullable Boolean selectIncidentDatesInFuture,
             @Nullable Boolean captureCoordinates,
             @Nullable Boolean useFirstStageDuringRegistration,

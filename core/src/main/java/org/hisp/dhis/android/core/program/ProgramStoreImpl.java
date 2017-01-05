@@ -5,7 +5,6 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 
 import java.util.Date;
@@ -14,7 +13,7 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class ProgramStoreImpl implements ProgramStore {
 
-    private static final String INSERT_STATEMENT = "CREATE TABLE " + Tables.PROGRAM + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.PROGRAM + " (" +
             ProgramContract.Columns.UID + ", " +
             ProgramContract.Columns.CODE + ", " +
             ProgramContract.Columns.NAME + ", " +
@@ -43,7 +42,10 @@ public class ProgramStoreImpl implements ProgramStore {
             ProgramContract.Columns.RELATIONSHIP_TYPE + ", " +
             ProgramContract.Columns.RELATIONSHIP_TEXT + ", " +
             ProgramContract.Columns.RELATED_PROGRAM + ") " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            "VALUES (" +
+            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
+            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
+            "?, ?, ?, ?, ?, ?, ?, ?);";
 
     private final SQLiteStatement sqLiteStatement;
 
@@ -72,7 +74,7 @@ public class ProgramStoreImpl implements ProgramStore {
             @Nullable Boolean selectEnrollmentDatesInFuture,
             @Nullable Boolean dataEntryMethod,
             @Nullable Boolean ignoreOverdueEvents,
-            @NonNull Boolean relationshipFromA,
+            @Nullable Boolean relationshipFromA,
             @Nullable Boolean selectIncidentDatesInFuture,
             @Nullable Boolean captureCoordinates,
             @Nullable Boolean useFirstStageDuringRegistration,
@@ -89,29 +91,30 @@ public class ProgramStoreImpl implements ProgramStore {
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);
         sqLiteBind(sqLiteStatement, 4, displayName);
-        sqLiteBind(sqLiteStatement, 5, BaseIdentifiableObject.DATE_FORMAT.format(created));
-        sqLiteBind(sqLiteStatement, 6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
+        sqLiteBind(sqLiteStatement, 5, created);
+        sqLiteBind(sqLiteStatement, 6, lastUpdated);
         sqLiteBind(sqLiteStatement, 7, shortName);
         sqLiteBind(sqLiteStatement, 8, displayShortName);
-        sqLiteBind(sqLiteStatement, 9, displayDescription);
-        sqLiteBind(sqLiteStatement, 10, version);
-        sqLiteBind(sqLiteStatement, 11, onlyEnrollOnce);
-        sqLiteBind(sqLiteStatement, 12, enrollmentDateLabel);
-        sqLiteBind(sqLiteStatement, 13, displayIncidentDate);
-        sqLiteBind(sqLiteStatement, 14, incidentDateLabel);
-        sqLiteBind(sqLiteStatement, 15, registration);
-        sqLiteBind(sqLiteStatement, 16, selectEnrollmentDatesInFuture);
-        sqLiteBind(sqLiteStatement, 17, dataEntryMethod);
-        sqLiteBind(sqLiteStatement, 18, ignoreOverdueEvents);
-        sqLiteBind(sqLiteStatement, 19, relationshipFromA);
-        sqLiteBind(sqLiteStatement, 20, selectIncidentDatesInFuture);
-        sqLiteBind(sqLiteStatement, 21, captureCoordinates);
-        sqLiteBind(sqLiteStatement, 22, useFirstStageDuringRegistration);
-        sqLiteBind(sqLiteStatement, 23, displayInFrontPageList);
-        sqLiteBind(sqLiteStatement, 24, programType.name());
-        sqLiteBind(sqLiteStatement, 25, relationshipType);
-        sqLiteBind(sqLiteStatement, 26, relationshipText);
-        sqLiteBind(sqLiteStatement, 27, relatedProgram);
+        sqLiteBind(sqLiteStatement, 9, description);
+        sqLiteBind(sqLiteStatement, 10, displayDescription);
+        sqLiteBind(sqLiteStatement, 11, version);
+        sqLiteBind(sqLiteStatement, 12, onlyEnrollOnce);
+        sqLiteBind(sqLiteStatement, 13, enrollmentDateLabel);
+        sqLiteBind(sqLiteStatement, 14, displayIncidentDate);
+        sqLiteBind(sqLiteStatement, 15, incidentDateLabel);
+        sqLiteBind(sqLiteStatement, 16, registration);
+        sqLiteBind(sqLiteStatement, 17, selectEnrollmentDatesInFuture);
+        sqLiteBind(sqLiteStatement, 18, dataEntryMethod);
+        sqLiteBind(sqLiteStatement, 19, ignoreOverdueEvents);
+        sqLiteBind(sqLiteStatement, 20, relationshipFromA);
+        sqLiteBind(sqLiteStatement, 21, selectIncidentDatesInFuture);
+        sqLiteBind(sqLiteStatement, 22, captureCoordinates);
+        sqLiteBind(sqLiteStatement, 23, useFirstStageDuringRegistration);
+        sqLiteBind(sqLiteStatement, 24, displayInFrontPageList);
+        sqLiteBind(sqLiteStatement, 25, programType.name());
+        sqLiteBind(sqLiteStatement, 26, relationshipType);
+        sqLiteBind(sqLiteStatement, 27, relationshipText);
+        sqLiteBind(sqLiteStatement, 28, relatedProgram);
 
         return sqLiteStatement.executeInsert();
     }

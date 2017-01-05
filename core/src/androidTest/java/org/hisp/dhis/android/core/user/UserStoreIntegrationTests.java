@@ -4,9 +4,9 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +21,7 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 public class UserStoreIntegrationTests extends AbsStoreTestCase {
     public static final String[] USER_PROJECTION = {
             UserContract.Columns.UID,
+            UserContract.Columns.CODE,
             UserContract.Columns.NAME,
             UserContract.Columns.DISPLAY_NAME,
             UserContract.Columns.CREATED,
@@ -81,6 +82,7 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
 
         long rowId = userStore.insert(
                 "test_user_uid",
+                "test_user_code",
                 "test_user_name",
                 "test_user_display_name",
                 date, date,
@@ -106,6 +108,7 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
         assertThatCursor(cursor)
                 .hasRow(
                         "test_user_uid",
+                        "test_user_code",
                         "test_user_name",
                         "test_user_display_name",
                         BaseIdentifiableObject.DATE_FORMAT.format(date),

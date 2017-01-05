@@ -82,35 +82,35 @@ public class ProgramStoreImpl implements ProgramStore {
     ) {
 
         sqLiteStatement.clearBindings();
+        int i = 1;
 
-        //TODO: Handle nulls:
-        sqLiteStatement.bindString(1, uid);
-        sqLiteStatement.bindString(2, code);
-        sqLiteStatement.bindString(3, name);
-        sqLiteStatement.bindString(4, displayName);
-        sqLiteStatement.bindString(5, BaseIdentifiableObject.DATE_FORMAT.format(created));
-        sqLiteStatement.bindString(6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
-        sqLiteStatement.bindString(7, shortName);
-        sqLiteStatement.bindString(8, displayShortName);
-        sqLiteStatement.bindString(9, displayDescription);
-        sqLiteStatement.bindLong(10, version);
-        sqLiteStatement.bindString(11, onlyEnrollOnce.toString());
-        sqLiteStatement.bindString(12, enrollmentDateLabel);
-        sqLiteStatement.bindLong(13, boolToInt(displayIncidentDate));
-        sqLiteStatement.bindString(14, incidentDateLabel);
-        sqLiteStatement.bindLong(15, boolToInt(registration));
-        sqLiteStatement.bindLong(16, boolToInt(selectEnrollmentDatesInFuture));
-        sqLiteStatement.bindLong(17, boolToInt(dataEntryMethod));
-        sqLiteStatement.bindLong(18, boolToInt(ignoreOverdueEvents));
-        sqLiteStatement.bindLong(19, boolToInt(relationshipFromA));
-        sqLiteStatement.bindLong(20, boolToInt(selectIncidentDatesInFuture));
-        sqLiteStatement.bindLong(21, boolToInt(captureCoordinates));
-        sqLiteStatement.bindLong(22, boolToInt(useFirstStageDuringRegistration));
-        sqLiteStatement.bindLong(23, boolToInt(displayInFrontPageList));
-        sqLiteStatement.bindString(24, programType.name());
-        sqLiteStatement.bindString(25, relationshipType);
-        sqLiteStatement.bindString(26, relationshipText);
-        sqLiteStatement.bindString(27, relatedProgram);
+        sqLiteBind(i++, uid);
+        sqLiteBind(i++, code);
+        sqLiteBind(i++, name);
+        sqLiteBind(i++, displayName);
+        sqLiteBind(i++, BaseIdentifiableObject.DATE_FORMAT.format(created));
+        sqLiteBind(i++, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
+        sqLiteBind(i++, shortName);
+        sqLiteBind(i++, displayShortName);
+        sqLiteBind(i++, displayDescription);
+        sqLiteBind(i++, version);
+        sqLiteBind(i++, onlyEnrollOnce.toString());
+        sqLiteBind(i++, enrollmentDateLabel);
+        sqLiteBind(i++, displayIncidentDate);
+        sqLiteBind(i++, incidentDateLabel);
+        sqLiteBind(i++, registration);
+        sqLiteBind(i++, selectEnrollmentDatesInFuture);
+        sqLiteBind(i++, dataEntryMethod);
+        sqLiteBind(i++, ignoreOverdueEvents);
+        sqLiteBind(i++, relationshipFromA);
+        sqLiteBind(i++, selectIncidentDatesInFuture);
+        sqLiteBind(i++, captureCoordinates);
+        sqLiteBind(i++, useFirstStageDuringRegistration);
+        sqLiteBind(i++, displayInFrontPageList);
+        sqLiteBind(i++, programType.name());
+        sqLiteBind(i++, relationshipType);
+        sqLiteBind(i++, relationshipText);
+        sqLiteBind(i++, relatedProgram);
 
         return sqLiteStatement.executeInsert();
     }
@@ -120,8 +120,51 @@ public class ProgramStoreImpl implements ProgramStore {
         sqLiteStatement.close();
     }
 
-    private int boolToInt(Boolean value) {
-        if (value) return 1;
-        return 0;
+    /*----------------Helper functions---------------------------------------*/
+
+    /**
+     * Handle if String argument is null and bind it using .bindNull() if so.
+     * A helper function to abstract/clean up boilerplate if/else bloat..
+     *
+     * @param index
+     * @param arg
+     */
+    private void sqLiteBind(int index, String arg) {
+        if (arg == null) {
+            sqLiteStatement.bindNull(index);
+        } else {
+            sqLiteStatement.bindString(index, arg);
+        }
+    }
+
+    /**
+     * Handle if Bool argument is null and bind it using .bindNull() if so.
+     * A helper function to abstract/clean up boilerplate if/else bloat...
+     * Also convet the Boolean to Long...
+     *
+     * @param index
+     * @param arg
+     */
+    private void sqLiteBind(int index, Boolean arg) {
+        if (arg == null) {
+            sqLiteStatement.bindNull(index);
+        } else {
+            sqLiteStatement.bindLong(index, arg ? 1 : 0);
+        }
+    }
+
+    /**
+     * Handle if Integer argument is null and bind it using .bindNull() if so.
+     * A helper function to abstract/clean up boilerplate if/else bloat..
+     *
+     * @param index
+     * @param arg
+     */
+    private void sqLiteBind(int index, Integer arg) {
+        if (arg == null) {
+            sqLiteStatement.bindNull(index);
+        } else {
+            sqLiteStatement.bindLong(index, arg);
+        }
     }
 }

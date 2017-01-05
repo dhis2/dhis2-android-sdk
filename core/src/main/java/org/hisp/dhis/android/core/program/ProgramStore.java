@@ -5,8 +5,6 @@ import android.support.annotation.Nullable;
 
 import java.util.Date;
 
-import static android.os.Build.VERSION_CODES.N;
-
 public interface ProgramStore {
     long insert(
             @NonNull String uid,

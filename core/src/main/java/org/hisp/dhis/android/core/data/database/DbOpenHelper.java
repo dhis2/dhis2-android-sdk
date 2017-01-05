@@ -6,10 +6,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
+import org.hisp.dhis.android.core.dataelement.DataElementContract;
 import org.hisp.dhis.android.core.option.OptionContract;
 import org.hisp.dhis.android.core.option.OptionSetContract;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
 import org.hisp.dhis.android.core.program.ProgramContract;
+import org.hisp.dhis.android.core.program.ProgramStageDataElementContract;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityContract;
 import org.hisp.dhis.android.core.user.AuthenticatedUserContract;
 import org.hisp.dhis.android.core.user.UserContract;
@@ -34,6 +36,8 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String OPTION = "Option";
         String PROGRAM = "Program";
         String TRACKED_ENTITY = "TrackedEntity";
+        String DATA_ELEMENT = "DataElement";
+        String PROGRAM_STAGE_DATA_ELEMENT = "ProgramStageDataElement";
     }
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + Tables.USER + " (" +
@@ -184,6 +188,51 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             TrackedEntityContract.Columns.DISPLAY_DESCRIPTION + " TEXT" +
             ");";
 
+    private static final String CREATE_DATA_ELEMENT_TABLE = "CREATE TABLE " + Tables.DATA_ELEMENT + " (" +
+            DataElementContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            DataElementContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            DataElementContract.Columns.CODE + " TEXT," +
+            DataElementContract.Columns.NAME + " TEXT," +
+            DataElementContract.Columns.DISPLAY_NAME + " TEXT," +
+            DataElementContract.Columns.CREATED + " TEXT," +
+            DataElementContract.Columns.LAST_UPDATED + " TEXT," +
+            DataElementContract.Columns.SHORT_NAME + " TEXT," +
+            DataElementContract.Columns.DISPLAY_SHORT_NAME + " TEXT," +
+            DataElementContract.Columns.DESCRIPTION + " TEXT," +
+            DataElementContract.Columns.DISPLAY_DESCRIPTION + " TEXT," +
+            DataElementContract.Columns.VALUE_TYPE + " TEXT," +
+            DataElementContract.Columns.ZERO_IS_SIGNIFICANT + " INTEGER," +
+            DataElementContract.Columns.AGGREGATION_OPERATOR + " TEXT," +
+            DataElementContract.Columns.FORM_NAME + " TEXT," +
+            DataElementContract.Columns.NUMBER_TYPE + " TEXT," +
+            DataElementContract.Columns.DOMAIN_TYPE + " TEXT," +
+            DataElementContract.Columns.DIMENSION + " TEXT," +
+            DataElementContract.Columns.DISPLAY_FORM_NAME + " TEXT," +
+            DataElementContract.Columns.OPTION_SET + " TEXT," +
+            " FOREIGN KEY ( " + DataElementContract.Columns.OPTION_SET + ")" +
+            " REFERENCES " + Tables.OPTION_SET + " (" + OptionSetContract.Columns.UID + ")" +
+            ");";
+
+    private static final String CREATE_PROGRAM_STAGE_DATA_ELEMENT_TABLE = "CREATE TABLE " +
+            Tables.PROGRAM_STAGE_DATA_ELEMENT + " (" +
+            ProgramStageDataElementContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramStageDataElementContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ProgramStageDataElementContract.Columns.CODE + " TEXT," +
+            ProgramStageDataElementContract.Columns.NAME + " TEXT," +
+            ProgramStageDataElementContract.Columns.DISPLAY_NAME + " TEXT," +
+            ProgramStageDataElementContract.Columns.CREATED + " TEXT," +
+            ProgramStageDataElementContract.Columns.LAST_UPDATED + " TEXT," +
+            ProgramStageDataElementContract.Columns.DISPLAY_IN_REPORTS + " INTEGER NOT NULL," +
+            ProgramStageDataElementContract.Columns.COMPULSORY + " INTEGER NOT NULL," +
+            ProgramStageDataElementContract.Columns.ALLOW_PROVIDED_ELSEWHERE + " INTEGER NOT NULL," +
+            ProgramStageDataElementContract.Columns.SORT_ORDER + " INTEGER," +
+            ProgramStageDataElementContract.Columns.ALLOW_FUTURE_DATE + " INTEGER NOT NULL," +
+            ProgramStageDataElementContract.Columns.DATA_ELEMENT + " TEXT NOT NULL," +
+            " FOREIGN KEY (" + ProgramStageDataElementContract.Columns.DATA_ELEMENT + ")" +
+            "REFERENCES " + Tables.DATA_ELEMENT + " (" + DataElementContract.Columns.UID + ")" +
+            "ON DELETE CASCADE" +
+            ");";
+
     /**
      * This method should be used only for testing purposes
      */
@@ -203,6 +252,8 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_OPTION_TABLE);
         database.execSQL(CREATE_PROGRAM_TABLE);
         database.execSQL(CREATE_TRACKED_ENTITY_TABLE);
+        database.execSQL(CREATE_DATA_ELEMENT_TABLE);
+        database.execSQL(CREATE_PROGRAM_STAGE_DATA_ELEMENT_TABLE);
         return database;
     }
 

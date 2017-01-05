@@ -21,6 +21,7 @@ public class OptionModelIntegrationTest {
     private static final String CODE = "test_code";
     private static final String NAME = "test_name";
     private static final String DISPLAY_NAME = "test_display_name";
+    private static final String OPTION_SET = "test_option_set";
 
     // timestamp
     private static final String DATE = "2014-03-20T13:37:00.007";
@@ -34,11 +35,12 @@ public class OptionModelIntegrationTest {
                 Columns.NAME,
                 Columns.DISPLAY_NAME,
                 Columns.CREATED,
-                Columns.LAST_UPDATED
+                Columns.LAST_UPDATED,
+                Columns.OPTION_SET
         });
 
         matrixCursor.addRow(new Object[]{
-                ID, UID, CODE, NAME, DISPLAY_NAME, DATE, DATE
+                ID, UID, CODE, NAME, DISPLAY_NAME, DATE, DATE, OPTION_SET
         });
 
         // move cursor to first item before reading
@@ -54,6 +56,7 @@ public class OptionModelIntegrationTest {
         assertThat(option.displayName()).isEqualTo(DISPLAY_NAME);
         assertThat(option.created()).isEqualTo(timeStamp);
         assertThat(option.lastUpdated()).isEqualTo(timeStamp);
+        assertThat(option.optionSet()).isEqualTo(OPTION_SET);
     }
 
     @Test
@@ -68,6 +71,7 @@ public class OptionModelIntegrationTest {
                 .displayName(DISPLAY_NAME)
                 .created(timeStamp)
                 .lastUpdated(timeStamp)
+                .optionSet(OPTION_SET)
                 .build();
 
         ContentValues contentValues = option.toContentValues();
@@ -77,6 +81,7 @@ public class OptionModelIntegrationTest {
         assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
         assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(DATE);
         assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(Columns.OPTION_SET)).isEqualTo(OPTION_SET);
     }
 
 }

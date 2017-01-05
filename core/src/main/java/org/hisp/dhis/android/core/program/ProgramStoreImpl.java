@@ -94,7 +94,7 @@ public class ProgramStoreImpl implements ProgramStore {
         sqLiteBind(i++, displayShortName);
         sqLiteBind(i++, displayDescription);
         sqLiteBind(i++, version);
-        sqLiteBind(i++, onlyEnrollOnce.toString());
+        sqLiteBind(i++, onlyEnrollOnce);
         sqLiteBind(i++, enrollmentDateLabel);
         sqLiteBind(i++, displayIncidentDate);
         sqLiteBind(i++, incidentDateLabel);
@@ -138,7 +138,7 @@ public class ProgramStoreImpl implements ProgramStore {
     }
 
     /**
-     * Handle if Bool argument is null and bind it using .bindNull() if so.
+     * Handle if Boolean argument is null and bind it using .bindNull() if so.
      * A helper function to abstract/clean up boilerplate if/else bloat...
      * Also convet the Boolean to Long...
      *

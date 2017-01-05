@@ -28,15 +28,17 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.data.api.Field;
 
+import java.util.Date;
+
 // TODO: Tests
 @AutoValue
-@JsonDeserialize(builder = AutoValue_TrackedEntity.Builder.class)
 public abstract class TrackedEntity extends BaseNameableObject {
 
     public static final Field<TrackedEntity, String> uid = Field.create(UID);
@@ -50,12 +52,21 @@ public abstract class TrackedEntity extends BaseNameableObject {
     public static final Field<TrackedEntity, String> description = Field.create(DESCRIPTION);
     public static final Field<TrackedEntity, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
 
-    public static Builder builder() {
-        return new AutoValue_TrackedEntity.Builder();
-    }
+    @JsonCreator
+    public static TrackedEntity create(
+            @JsonProperty(UID) String uid,
+            @JsonProperty(CODE) String code,
+            @JsonProperty(NAME) String name,
+            @JsonProperty(DISPLAY_NAME) String displayName,
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(SHORT_NAME) String shortName,
+            @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
+            @JsonProperty(DESCRIPTION) String description,
+            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription) {
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
-        public abstract TrackedEntity build();
+        return new AutoValue_TrackedEntity(
+                uid, code, name, displayName, created, lastUpdated,
+                shortName, displayShortName, description, displayDescription);
     }
 }

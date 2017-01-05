@@ -7,7 +7,7 @@ import java.util.Date;
 
 public interface UserStore {
     long insert(
-            @NonNull String uid, @NonNull String name, @NonNull String displayName,
+            @NonNull String uid, @Nullable String code, @NonNull String name, @NonNull String displayName,
             @NonNull Date created, @NonNull Date lastUpdated,
             @Nullable String birthday, @Nullable String education, @Nullable String gender,
             @Nullable String jobTitle, @Nullable String surname, @Nullable String firstName,

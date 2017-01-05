@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
@@ -39,6 +40,14 @@ import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 public abstract class TrackedEntityModel extends BaseNameableObjectModel {
 
     // no fields
+
+    @NonNull
+    public abstract ContentValues toContentValues();
+
+    @NonNull
+    public static Builder builder() {
+        return new $$AutoValue_TrackedEntityModel.Builder();
+    }
 
     @NonNull
     public static TrackedEntityModel create(Cursor cursor) {

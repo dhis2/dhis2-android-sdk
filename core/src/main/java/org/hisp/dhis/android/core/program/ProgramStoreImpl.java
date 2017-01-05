@@ -82,35 +82,34 @@ public class ProgramStoreImpl implements ProgramStore {
     ) {
 
         sqLiteStatement.clearBindings();
-        int i = 1;
 
-        sqLiteBind(i++, uid);
-        sqLiteBind(i++, code);
-        sqLiteBind(i++, name);
-        sqLiteBind(i++, displayName);
-        sqLiteBind(i++, BaseIdentifiableObject.DATE_FORMAT.format(created));
-        sqLiteBind(i++, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
-        sqLiteBind(i++, shortName);
-        sqLiteBind(i++, displayShortName);
-        sqLiteBind(i++, displayDescription);
-        sqLiteBind(i++, version);
-        sqLiteBind(i++, onlyEnrollOnce);
-        sqLiteBind(i++, enrollmentDateLabel);
-        sqLiteBind(i++, displayIncidentDate);
-        sqLiteBind(i++, incidentDateLabel);
-        sqLiteBind(i++, registration);
-        sqLiteBind(i++, selectEnrollmentDatesInFuture);
-        sqLiteBind(i++, dataEntryMethod);
-        sqLiteBind(i++, ignoreOverdueEvents);
-        sqLiteBind(i++, relationshipFromA);
-        sqLiteBind(i++, selectIncidentDatesInFuture);
-        sqLiteBind(i++, captureCoordinates);
-        sqLiteBind(i++, useFirstStageDuringRegistration);
-        sqLiteBind(i++, displayInFrontPageList);
-        sqLiteBind(i++, programType.name());
-        sqLiteBind(i++, relationshipType);
-        sqLiteBind(i++, relationshipText);
-        sqLiteBind(i++, relatedProgram);
+        sqLiteBind(1, uid);
+        sqLiteBind(2, code);
+        sqLiteBind(3, name);
+        sqLiteBind(4, displayName);
+        sqLiteBind(5, BaseIdentifiableObject.DATE_FORMAT.format(created));
+        sqLiteBind(6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
+        sqLiteBind(7, shortName);
+        sqLiteBind(8, displayShortName);
+        sqLiteBind(9, displayDescription);
+        sqLiteBind(10, version);
+        sqLiteBind(11, onlyEnrollOnce);
+        sqLiteBind(12, enrollmentDateLabel);
+        sqLiteBind(13, displayIncidentDate);
+        sqLiteBind(14, incidentDateLabel);
+        sqLiteBind(15, registration);
+        sqLiteBind(16, selectEnrollmentDatesInFuture);
+        sqLiteBind(17, dataEntryMethod);
+        sqLiteBind(18, ignoreOverdueEvents);
+        sqLiteBind(19, relationshipFromA);
+        sqLiteBind(20, selectIncidentDatesInFuture);
+        sqLiteBind(21, captureCoordinates);
+        sqLiteBind(22, useFirstStageDuringRegistration);
+        sqLiteBind(23, displayInFrontPageList);
+        sqLiteBind(24, programType.name());
+        sqLiteBind(25, relationshipType);
+        sqLiteBind(26, relationshipText);
+        sqLiteBind(27, relatedProgram);
 
         return sqLiteStatement.executeInsert();
     }

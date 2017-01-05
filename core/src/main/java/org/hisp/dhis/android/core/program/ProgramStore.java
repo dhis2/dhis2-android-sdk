@@ -1,47 +1,49 @@
 package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.NonNull;
-
-import org.hisp.dhis.android.core.relationship.RelationshipType;
+import android.support.annotation.Nullable;
 
 import java.util.Date;
+
+import static android.os.Build.VERSION_CODES.N;
 
 public interface ProgramStore {
     long insert(
             @NonNull String uid,
-            @NonNull String code,
+            @Nullable String code,
             @NonNull String name,
-            @NonNull String displayName,
-            @NonNull Date created,
-            @NonNull Date lastUpdated,
-            @NonNull String shortName,
-            @NonNull String displayShortName,
-            @NonNull String description,
-            @NonNull String displayDescription,
-            @NonNull Integer version,
-            @NonNull Boolean onlyEnrollOnce,
-            @NonNull String enrollmentDateLabel,
-            @NonNull Boolean displayIncidentDate,
-            @NonNull String incidentDateLabel,
-            @NonNull Boolean registration,
-            @NonNull Boolean selectEnrollmentDatesInFuture,
-            @NonNull Boolean dataEntryMethod,
-            @NonNull Boolean ignoreOverdueEvents,
+            @Nullable String displayName,
+            @Nullable Date created,
+            @Nullable Date lastUpdated,
+            @Nullable String shortName,
+            @Nullable String displayShortName,
+            @Nullable String description,
+            @Nullable String displayDescription,
+            @Nullable Integer version,
+            @Nullable Boolean onlyEnrollOnce,
+            @Nullable String enrollmentDateLabel,
+            @Nullable Boolean displayIncidentDate,
+            @Nullable String incidentDateLabel,
+            @Nullable Boolean registration,
+            @Nullable Boolean selectEnrollmentDatesInFuture,
+            @Nullable Boolean dataEntryMethod,
+            @Nullable Boolean ignoreOverdueEvents,
             @NonNull Boolean relationshipFromA,
-            @NonNull Boolean selectIncidentDatesInFuture,
-            @NonNull Boolean captureCoordinates,
-            @NonNull Boolean useFirstStageDuringRegistration,
-            @NonNull Boolean displayInFrontPageList,
+            @Nullable Boolean selectIncidentDatesInFuture,
+            @Nullable Boolean captureCoordinates,
+            @Nullable Boolean useFirstStageDuringRegistration,
+            @Nullable Boolean displayInFrontPageList,
             @NonNull ProgramType programType,
-            @NonNull String relationshipType,
-            @NonNull String relationshipText,
+            @Nullable String relationshipType,
+            @Nullable String relationshipText,
 //            @NonNull List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes,
-            String relatedProgram
-            /*          CategoryCombo categoryCombo,
-            @NonNull List<ProgramIndicator> programIndicators,
-            @NonNull List<ProgramStage> programStages,
-            List<ProgramRule> programRules,
-            List<ProgramRuleVariable> programRuleVariables */
+            @Nullable String relatedProgram
+            /*
+            @NonNull CategoryCombo categoryCombo,
+            @Nullable List<ProgramIndicator> programIndicators,
+            @Nullable List<ProgramStage> programStages,
+            @Nullable List<ProgramRule> programRules,
+            @Nullable List<ProgramRuleVariable> programRuleVariables */
     );
 
     void close();

@@ -12,6 +12,7 @@ import org.hisp.dhis.android.core.option.OptionSetContract;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
 import org.hisp.dhis.android.core.program.ProgramContract;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementContract;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeContract;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityContract;
 import org.hisp.dhis.android.core.user.AuthenticatedUserContract;
 import org.hisp.dhis.android.core.user.UserContract;
@@ -38,6 +39,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String TRACKED_ENTITY = "TrackedEntity";
         String DATA_ELEMENT = "DataElement";
         String PROGRAM_STAGE_DATA_ELEMENT = "ProgramStageDataElement";
+        String RELATIONSHIP_TYPE = "RelationshipType";
     }
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + Tables.USER + " (" +
@@ -233,6 +235,19 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             "ON DELETE CASCADE" +
             ");";
 
+    private static final String CREATE_RELATIONSHIP_TYPE_TABLE = "CREATE TABLE " +
+            Tables.RELATIONSHIP_TYPE + "( " +
+            RelationshipTypeContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            RelationshipTypeContract.Columns.UID + " TEXT NOT NULL UNIQUE, " +
+            RelationshipTypeContract.Columns.CODE + " TEXT, " +
+            RelationshipTypeContract.Columns.NAME + " TEXT, " +
+            RelationshipTypeContract.Columns.DISPLAY_NAME + " TEXT, " +
+            RelationshipTypeContract.Columns.CREATED + " TEXT, " +
+            RelationshipTypeContract.Columns.LAST_UPDATED + " TEXT, " +
+            RelationshipTypeContract.Columns.B_IS_TO_A + " TEXT, " +
+            RelationshipTypeContract.Columns.A_IS_TO_B + " TEXT " +
+            ");";
+
     /**
      * This method should be used only for testing purposes
      */
@@ -254,6 +269,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_TRACKED_ENTITY_TABLE);
         database.execSQL(CREATE_DATA_ELEMENT_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_DATA_ELEMENT_TABLE);
+        database.execSQL(CREATE_RELATIONSHIP_TYPE_TABLE);
         return database;
     }
 

@@ -22,6 +22,7 @@ import java.util.Date;
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
+//TODO: Add test when persisting with programStageSection foreign key
 @RunWith(AndroidJUnit4.class)
 public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCase {
     private static final long ID = 11L;
@@ -37,6 +38,7 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
     private static final Integer SORT_ORDER = 7;
     private static final Boolean ALLOW_FUTURE_DATE = Boolean.TRUE;
     private static final String DATA_ELEMENT = "test_dataElement";
+    private static final String PROGRAM_STAGE_SECTION = "test_program_stage_section";
 
     // timestamp
     private static final String DATE = "2017-01-04T17:04:00.000";
@@ -57,7 +59,8 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
             Columns.ALLOW_PROVIDED_ELSEWHERE,
             Columns.SORT_ORDER,
             Columns.ALLOW_FUTURE_DATE,
-            Columns.DATA_ELEMENT
+            Columns.DATA_ELEMENT,
+            Columns.PROGRAM_STAGE_SECTION
     };
 
     private ProgramStageDataElementStore programStageDataElementStore;
@@ -89,7 +92,8 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
                 ALLOW_PROVIDED_ELSEWHERE,
                 SORT_ORDER,
                 ALLOW_FUTURE_DATE,
-                DATA_ELEMENT
+                DATA_ELEMENT,
+                null
         );
 
         Cursor cursor = database().query(Tables.PROGRAM_STAGE_DATA_ELEMENT, PROGRAM_STAGE_DATA_ELEMENT_PROJECTION,
@@ -112,7 +116,8 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
                 0, // ALLOW_PROVIDED_ELSEWHERE = Boolean.FALSE
                 SORT_ORDER,
                 1, // ALLOW_FUTURE_DATE = Boolean.TRUE
-                DATA_ELEMENT
+                DATA_ELEMENT,
+                null
         ).isExhausted();
     }
 
@@ -139,7 +144,8 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
                 ALLOW_PROVIDED_ELSEWHERE,
                 SORT_ORDER,
                 ALLOW_FUTURE_DATE,
-                DATA_ELEMENT
+                DATA_ELEMENT,
+                null
         );
 
         Cursor cursor = database().query(Tables.PROGRAM_STAGE_DATA_ELEMENT, PROGRAM_STAGE_DATA_ELEMENT_PROJECTION,
@@ -162,7 +168,8 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
                 0, // ALLOW_PROVIDED_ELSEWHERE = Boolean.FALSE
                 SORT_ORDER,
                 1, // ALLOW_FUTURE_DATE = Boolean.TRUE
-                DATA_ELEMENT
+                DATA_ELEMENT,
+                null
         ).isExhausted();
     }
 
@@ -182,7 +189,8 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
                 ALLOW_PROVIDED_ELSEWHERE,
                 SORT_ORDER,
                 ALLOW_FUTURE_DATE,
-                fakeDataElementId
+                fakeDataElementId,
+                null
         );
 
         assertThat(rowId).isEqualTo(-1);

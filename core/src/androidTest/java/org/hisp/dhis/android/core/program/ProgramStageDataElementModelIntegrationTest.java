@@ -14,8 +14,6 @@ import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
 
-;
-
 @RunWith(AndroidJUnit4.class)
 public class ProgramStageDataElementModelIntegrationTest {
     private static final long ID = 3L;
@@ -29,6 +27,7 @@ public class ProgramStageDataElementModelIntegrationTest {
     private static final Integer SORT_ORDER = 7;
     private static final Integer ALLOW_FUTURE_DATE = 1;
     private static final String DATA_ELEMENT = "test_dataElement";
+    private static final String PROGRAM_STAGE_SECTION = "test_program_stage_section";
 
     // timestamp
     private static final String DATE = "2017-01-04T16:40:02.007";
@@ -48,6 +47,7 @@ public class ProgramStageDataElementModelIntegrationTest {
         programStageDataElement.put(Columns.SORT_ORDER, SORT_ORDER);
         programStageDataElement.put(Columns.ALLOW_FUTURE_DATE, ALLOW_FUTURE_DATE);
         programStageDataElement.put(Columns.DATA_ELEMENT, DATA_ELEMENT);
+        programStageDataElement.put(Columns.PROGRAM_STAGE_SECTION, PROGRAM_STAGE_SECTION);
 
         return programStageDataElement;
     }
@@ -67,13 +67,14 @@ public class ProgramStageDataElementModelIntegrationTest {
                 Columns.ALLOW_PROVIDED_ELSEWHERE,
                 Columns.SORT_ORDER,
                 Columns.ALLOW_FUTURE_DATE,
-                Columns.DATA_ELEMENT
+                Columns.DATA_ELEMENT,
+                Columns.PROGRAM_STAGE_SECTION
         });
 
         matrixCursor.addRow(new Object[]{
                 ID, UID, CODE, NAME, DISPLAY_NAME, DATE, DATE,
                 DISPLAY_IN_REPORTS, COMPULSORY, ALLOW_PROVIDED_ELSEWHERE,
-                SORT_ORDER, ALLOW_FUTURE_DATE, DATA_ELEMENT
+                SORT_ORDER, ALLOW_FUTURE_DATE, DATA_ELEMENT, PROGRAM_STAGE_SECTION
         });
 
         // move cursor to first item before reading
@@ -95,6 +96,7 @@ public class ProgramStageDataElementModelIntegrationTest {
         assertThat(programStageDataElement.sortOrder()).isEqualTo(SORT_ORDER);
         assertThat(programStageDataElement.allowFutureDate()).isTrue();
         assertThat(programStageDataElement.dataElement()).isEqualTo(DATA_ELEMENT);
+        assertThat(programStageDataElement.programStageSection()).isEqualTo(PROGRAM_STAGE_SECTION);
     }
 
     @Test
@@ -115,6 +117,7 @@ public class ProgramStageDataElementModelIntegrationTest {
                 .sortOrder(SORT_ORDER)
                 .allowFutureDate(ALLOW_FUTURE_DATE != 0 ? Boolean.TRUE : Boolean.FALSE)
                 .dataElement(DATA_ELEMENT)
+                .programStageSection(PROGRAM_STAGE_SECTION)
                 .build();
 
         ContentValues contentValues = programStageDataElementModel.toContentValues();
@@ -132,6 +135,7 @@ public class ProgramStageDataElementModelIntegrationTest {
         assertThat(contentValues.getAsInteger(Columns.SORT_ORDER)).isEqualTo(SORT_ORDER);
         assertThat(contentValues.getAsBoolean(Columns.ALLOW_FUTURE_DATE)).isTrue();
         assertThat(contentValues.getAsString(Columns.DATA_ELEMENT)).isEqualTo(DATA_ELEMENT);
+        assertThat(contentValues.getAsString(Columns.PROGRAM_STAGE_SECTION)).isEqualTo(PROGRAM_STAGE_SECTION);
     }
 
 }

@@ -12,6 +12,7 @@ import org.hisp.dhis.android.core.option.OptionSetContract;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
 import org.hisp.dhis.android.core.program.ProgramContract;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementContract;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityContract;
 import org.hisp.dhis.android.core.user.AuthenticatedUserContract;
 import org.hisp.dhis.android.core.user.UserContract;
@@ -38,6 +39,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String TRACKED_ENTITY = "TrackedEntity";
         String DATA_ELEMENT = "DataElement";
         String PROGRAM_STAGE_DATA_ELEMENT = "ProgramStageDataElement";
+        String TRACKED_ENTITY_ATTRIBUTE = "TrackedEntityAttribute";
     }
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + Tables.USER + " (" +
@@ -233,6 +235,35 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             "ON DELETE CASCADE" +
             ");";
 
+    private static final String CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE = "CREATE TABLE " + Tables.TRACKED_ENTITY_ATTRIBUTE + " (" +
+            TrackedEntityAttributeContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            TrackedEntityAttributeContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            TrackedEntityAttributeContract.Columns.CODE + " TEXT," +
+            TrackedEntityAttributeContract.Columns.NAME + " TEXT," +
+            TrackedEntityAttributeContract.Columns.DISPLAY_NAME + " TEXT," +
+            TrackedEntityAttributeContract.Columns.CREATED + " TEXT," +
+            TrackedEntityAttributeContract.Columns.LAST_UPDATED + " TEXT," +
+            TrackedEntityAttributeContract.Columns.SHORT_NAME + " TEXT," +
+            TrackedEntityAttributeContract.Columns.DISPLAY_SHORT_NAME + " TEXT," +
+            TrackedEntityAttributeContract.Columns.DESCRIPTION + " TEXT," +
+            TrackedEntityAttributeContract.Columns.DISPLAY_DESCRIPTION + " TEXT," +
+            TrackedEntityAttributeContract.Columns.PATTERN + " TEXT," +
+            TrackedEntityAttributeContract.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM + " INTEGER," +
+            TrackedEntityAttributeContract.Columns.OPTION_SET + " TEXT," +
+            TrackedEntityAttributeContract.Columns.VALUE_TYPE + " TEXT," +
+            TrackedEntityAttributeContract.Columns.EXPRESSION + " TEXT," +
+            TrackedEntityAttributeContract.Columns.SEARCH_SCOPE + " TEXT," +
+            TrackedEntityAttributeContract.Columns.PROGRAM_SCOPE + " INTEGER," +
+            TrackedEntityAttributeContract.Columns.DISPLAY_IN_LIST_NO_PROGRAM + " INTEGER," +
+            TrackedEntityAttributeContract.Columns.GENERATED + " INTEGER," +
+            TrackedEntityAttributeContract.Columns.DISPLAY_ON_VISIT_SCHEDULE + " INTEGER," +
+            TrackedEntityAttributeContract.Columns.ORG_UNIT_SCOPE + " INTEGER," +
+            TrackedEntityAttributeContract.Columns.UNIQUE + " INTEGER," +
+            TrackedEntityAttributeContract.Columns.INHERIT + " INTEGER," +
+            " FOREIGN KEY (" + TrackedEntityAttributeContract.Columns.OPTION_SET + ")" +
+            " REFERENCES " + Tables.OPTION_SET + " (" + OptionSetContract.Columns.UID + ")" +
+            ");";
+
     /**
      * This method should be used only for testing purposes
      */
@@ -254,6 +285,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_TRACKED_ENTITY_TABLE);
         database.execSQL(CREATE_DATA_ELEMENT_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_DATA_ELEMENT_TABLE);
+        database.execSQL(CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE);
         return database;
     }
 

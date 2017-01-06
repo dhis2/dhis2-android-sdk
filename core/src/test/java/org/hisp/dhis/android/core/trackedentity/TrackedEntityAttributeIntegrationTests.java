@@ -106,7 +106,7 @@ public class TrackedEntityAttributeIntegrationTests {
         assertThat(trackedEntityAttribute.displayOnVisitSchedule()).isFalse();
         assertThat(trackedEntityAttribute.generated()).isFalse();
         assertThat(trackedEntityAttribute.inherit()).isFalse();
-        assertThat(trackedEntityAttribute.orgunitScope()).isFalse();
+        assertThat(trackedEntityAttribute.orgUnitScope()).isFalse();
         assertThat(trackedEntityAttribute.searchScope()).isEqualTo(TrackedEntityAttributeSearchScope.SEARCH_ORG_UNITS);
         assertThat(trackedEntityAttribute.programScope()).isFalse();
         assertThat(trackedEntityAttribute.unique()).isFalse();

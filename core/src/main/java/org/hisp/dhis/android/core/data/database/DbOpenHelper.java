@@ -11,7 +11,9 @@ import org.hisp.dhis.android.core.option.OptionContract;
 import org.hisp.dhis.android.core.option.OptionSetContract;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
 import org.hisp.dhis.android.core.program.ProgramContract;
+import org.hisp.dhis.android.core.program.ProgramStageContract;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementContract;
+import org.hisp.dhis.android.core.program.ProgramStageSectionContract;
 import org.hisp.dhis.android.core.user.AuthenticatedUserContract;
 import org.hisp.dhis.android.core.user.UserContract;
 import org.hisp.dhis.android.core.user.UserCredentialsContract;
@@ -36,6 +38,8 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String PROGRAM = "Program";
         String DATA_ELEMENT = "DataElement";
         String PROGRAM_STAGE_DATA_ELEMENT = "ProgramStageDataElement";
+        String PROGRAM_STAGE_SECTION = "ProgramStageSection";
+        String PROGRAM_STAGE = "ProgramStage";
     }
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + Tables.USER + " (" +
@@ -212,9 +216,58 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ProgramStageDataElementContract.Columns.SORT_ORDER + " INTEGER," +
             ProgramStageDataElementContract.Columns.ALLOW_FUTURE_DATE + " INTEGER NOT NULL," +
             ProgramStageDataElementContract.Columns.DATA_ELEMENT + " TEXT NOT NULL," +
+            ProgramStageDataElementContract.Columns.PROGRAM_STAGE_SECTION + " TEXT," +
             " FOREIGN KEY (" + ProgramStageDataElementContract.Columns.DATA_ELEMENT + ")" +
             "REFERENCES " + Tables.DATA_ELEMENT + " (" + DataElementContract.Columns.UID + ")" +
+            "ON DELETE CASCADE," +
+            "FOREIGN KEY (" + ProgramStageDataElementContract.Columns.PROGRAM_STAGE_SECTION + ")" +
+            "REFERENCES " + Tables.PROGRAM_STAGE_SECTION + " (" + ProgramStageSectionContract.Columns.UID + ")" +
             "ON DELETE CASCADE" +
+            ");";
+
+    private static final String CREATE_PROGRAM_STAGE_SECTION_TABLE = "CREATE TABLE " +
+            Tables.PROGRAM_STAGE_SECTION + " (" +
+            ProgramStageSectionContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramStageSectionContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ProgramStageSectionContract.Columns.CODE + " TEXT," +
+            ProgramStageSectionContract.Columns.NAME + " TEXT," +
+            ProgramStageSectionContract.Columns.DISPLAY_NAME + " TEXT," +
+            ProgramStageSectionContract.Columns.CREATED + " TEXT," +
+            ProgramStageSectionContract.Columns.LAST_UPDATED + " TEXT," +
+            ProgramStageSectionContract.Columns.SORT_ORDER + " INTEGER," +
+            ProgramStageSectionContract.Columns.PROGRAM_STAGE + " TEXT NOT NULL," +
+            " FOREIGN KEY ( " + ProgramStageSectionContract.Columns.PROGRAM_STAGE + ")" +
+            " REFERENCES " + Tables.PROGRAM_STAGE + " (" + ProgramStageContract.Columns.UID + ")" +
+            ");";
+
+    private static final String CREATE_PROGRAM_STAGE_TABLE = "CREATE TABLE " +
+            Tables.PROGRAM_STAGE + " (" +
+            ProgramStageContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramStageContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ProgramStageContract.Columns.CODE + " TEXT," +
+            ProgramStageContract.Columns.NAME + " TEXT," +
+            ProgramStageContract.Columns.DISPLAY_NAME + " TEXT," +
+            ProgramStageContract.Columns.CREATED + " TEXT," +
+            ProgramStageContract.Columns.LAST_UPDATED + " TEXT," +
+            ProgramStageContract.Columns.EXECUTION_DATE_LABEL + " TEXT," +
+            ProgramStageContract.Columns.ALLOW_GENERATE_NEXT_VISIT + " INTEGER," +
+            ProgramStageContract.Columns.VALID_COMPLETE_ONLY + " INTEGER," +
+            ProgramStageContract.Columns.REPORT_DATE_TO_USE + " TEXT," +
+            ProgramStageContract.Columns.OPEN_AFTER_ENROLLMENT + " INTEGER," +
+            ProgramStageContract.Columns.REPEATABLE + " INTEGER," +
+            ProgramStageContract.Columns.CAPTURE_COORDINATES + " INTEGER," +
+            ProgramStageContract.Columns.FORM_TYPE + " TEXT," +
+            ProgramStageContract.Columns.DISPLAY_GENERATE_EVENT_BOX + " INTEGER," +
+            ProgramStageContract.Columns.GENERATED_BY_ENROLMENT_DATE + " INTEGER," +
+            ProgramStageContract.Columns.AUTO_GENERATE_EVENT + " INTEGER," +
+            ProgramStageContract.Columns.SORT_ORDER + " INTEGER," +
+            ProgramStageContract.Columns.HIDE_DUE_DATE + " INTEGER," +
+            ProgramStageContract.Columns.BLOCK_ENTRY_FORM + " INTEGER," +
+            ProgramStageContract.Columns.MIN_DAYS_FROM_START + " INTEGER," +
+            ProgramStageContract.Columns.STANDARD_INTERVAL + " INTEGER," +
+            ProgramStageContract.Columns.PROGRAM + " TEXT NOT NULL," +
+            " FOREIGN KEY ( " + ProgramStageContract.Columns.PROGRAM + ")" +
+            " REFERENCES " + Tables.PROGRAM + " (" + ProgramContract.Columns.UID + ")" +
             ");";
 
 
@@ -238,6 +291,8 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_PROGRAM_TABLE);
         database.execSQL(CREATE_DATA_ELEMENT_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_DATA_ELEMENT_TABLE);
+        database.execSQL(CREATE_PROGRAM_STAGE_SECTION_TABLE);
+        database.execSQL(CREATE_PROGRAM_STAGE_TABLE);
         return database;
     }
 

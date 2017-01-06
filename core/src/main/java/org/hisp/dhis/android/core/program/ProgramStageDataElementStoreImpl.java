@@ -13,7 +13,7 @@ import java.util.Date;
 
 public class ProgramStageDataElementStoreImpl implements ProgramStageDataElementStore {
 
-    public static final String INSERT_STATEMENT = "INSERT INTO " + Tables.PROGRAM_STAGE_DATA_ELEMENT + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.PROGRAM_STAGE_DATA_ELEMENT + " (" +
             Columns.UID + ", " +
             Columns.CODE + ", " +
             Columns.NAME + ", " +
@@ -25,8 +25,9 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
             Columns.ALLOW_PROVIDED_ELSEWHERE + ", " +
             Columns.SORT_ORDER + ", " +
             Columns.ALLOW_FUTURE_DATE + ", " +
-            Columns.DATA_ELEMENT + ") " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            Columns.DATA_ELEMENT + ", " +
+            Columns.PROGRAM_STAGE_SECTION + ") " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private final SQLiteStatement sqLiteStatement;
 
@@ -40,7 +41,7 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
                        @NonNull Date lastUpdated, @NonNull Boolean displayInReports,
                        @NonNull Boolean compulsory, @NonNull Boolean allowProvidedElsewhere,
                        @Nullable Integer sortOrder, @NonNull Boolean allowFutureDate,
-                       @NonNull String dataElement) {
+                       @NonNull String dataElement, @Nullable String programStageSection) {
         sqLiteStatement.clearBindings();
 
         sqLiteStatement.bindString(1, uid);
@@ -77,7 +78,13 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
         }
 
         sqLiteStatement.bindLong(11, allowFutureDate ? 1 : 0);
-        sqLiteStatement.bindString(12 , dataElement);
+        sqLiteStatement.bindString(12, dataElement);
+
+        if (programStageSection == null) {
+            sqLiteStatement.bindNull(13);
+        } else {
+            sqLiteStatement.bindString(13, programStageSection);
+        }
 
 
         return sqLiteStatement.executeInsert();

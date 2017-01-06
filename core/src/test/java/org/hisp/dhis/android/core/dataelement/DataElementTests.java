@@ -8,15 +8,15 @@ import nl.jqno.equalsverifier.Warning;
 
 public class DataElementTests {
 
-    private static DataElement.Builder VALID_BUILDER;
+    private static DataElementModel.Builder VALID_BUILDER;
 
     @Before
     public void setUp() {
         VALID_BUILDER = createValidBuilder();
     }
 
-    private DataElement.Builder createValidBuilder() {
-        return DataElement.builder()
+    private DataElementModel.Builder createValidBuilder() {
+        return DataElementModel.builder()
                 .uid("a1b2c3d4e5f")
                 .created(new java.util.Date())
                 .lastUpdated(new java.util.Date());
@@ -25,11 +25,11 @@ public class DataElementTests {
     //**************************************************************************************
     //
     // BASE IDENTIFIABLE OBJECT TESTS
+    // THIS SHOULD BE LEGAL SINCE PROJECTION CAN BE SPECIFIED WITHOUT UID
     //
     //**************************************************************************************
 
-    @Test(expected = IllegalStateException.class)
-    public void build_shouldThrowOnNullUidField() {
+    public void build_withNullUidField() {
         VALID_BUILDER.uid(null).build();
     }
 

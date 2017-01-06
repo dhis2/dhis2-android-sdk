@@ -30,63 +30,68 @@ package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.NestedField;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramStageSection.Builder.class)
 public abstract class ProgramStageSection extends BaseIdentifiableObject {
-    private static final String JSON_PROPERTY_PROGRAM_INDICATORS = "programIndicators";
-    private static final String JSON_PROPERTY_PROGRAM_STAGE_DATA_ELEMENTS = "programStageDataElements";
-    private static final String JSON_PROPERTY_SORT_ORDER = "sortOrder";
+    private static final String SORT_ORDER = "sortOrder";
+    private static final String PROGRAM_INDICATORS = "programIndicators";
+    private static final String PROGRAM_STAGE_DATA_ELEMENTS = "programStageDataElements";
+
+    public static final Field<ProgramStageSection, String> uid = Field.create(UID);
+    public static final Field<ProgramStageSection, String> code = Field.create(CODE);
+    public static final Field<ProgramStageSection, String> name = Field.create(NAME);
+    public static final Field<ProgramStageSection, String> displayName = Field.create(DISPLAY_NAME);
+    public static final Field<ProgramStageSection, String> created = Field.create(CREATED);
+    public static final Field<ProgramStageSection, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<ProgramStageSection, Integer> sortOrder = Field.create(SORT_ORDER);
+
+    public static final NestedField<ProgramStageSection, ProgramIndicator> programIndicators =
+            NestedField.create(PROGRAM_INDICATORS);
+
+    public static final NestedField<ProgramStageSection, ProgramStageDataElement> programStageDataElements =
+            NestedField.create(PROGRAM_STAGE_DATA_ELEMENTS);
+
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_PROGRAM_INDICATORS)
+    @JsonProperty(SORT_ORDER)
+    public abstract Integer sortOrder();
+
+    @Nullable
+    @JsonProperty(PROGRAM_INDICATORS)
     public abstract List<ProgramIndicator> programIndicators();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE_DATA_ELEMENTS)
+    @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS)
     public abstract List<ProgramStageDataElement> programStageDataElements();
 
-    @Nullable
-    @JsonProperty(JSON_PROPERTY_SORT_ORDER)
-    public abstract Integer sortOrder();
+    @JsonCreator
+    public static ProgramStageSection create(
+            @JsonProperty(UID) String uid,
+            @JsonProperty(CODE) String code,
+            @JsonProperty(NAME) String name,
+            @JsonProperty(DISPLAY_NAME) String displayName,
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(SORT_ORDER) Integer sortOrder,
+            @JsonProperty(PROGRAM_INDICATORS) List<ProgramIndicator> programIndicators,
+            @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS) List<ProgramStageDataElement> programStageDataElements) {
+        return new AutoValue_ProgramStageSection(
+                uid, code, name, displayName, created, lastUpdated, sortOrder,
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+                // Guarding collections from modification
+                programIndicators != null ? Collections.unmodifiableList(programIndicators) : null,
 
-        @JsonProperty(JSON_PROPERTY_PROGRAM_INDICATORS)
-        public abstract Builder programIndicators(@Nullable List<ProgramIndicator> programIndicators);
-
-        @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE_DATA_ELEMENTS)
-        public abstract Builder programStageDataElements(
-                @Nullable List<ProgramStageDataElement> programStageDataElements);
-
-        @JsonProperty(JSON_PROPERTY_SORT_ORDER)
-        public abstract Builder sortOrder(@Nullable Integer sortOrder);
-
-        abstract List<ProgramIndicator> programIndicators();
-
-        abstract List<ProgramStageDataElement> programStageDataElements();
-
-        abstract ProgramStageSection autoBuild();
-
-        public ProgramStageSection build() {
-            if (programIndicators() != null) {
-                programIndicators(Collections.unmodifiableList(programIndicators()));
-            }
-
-            if (programStageDataElements() != null) {
-                programStageDataElements(Collections.unmodifiableList(programStageDataElements()));
-            }
-
-            return autoBuild();
-        }
+                programStageDataElements != null ? Collections.unmodifiableList(programStageDataElements) : null);
     }
 }

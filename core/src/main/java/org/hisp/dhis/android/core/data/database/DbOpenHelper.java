@@ -14,6 +14,7 @@ import org.hisp.dhis.android.core.program.ProgramContract;
 import org.hisp.dhis.android.core.program.ProgramStageContract;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementContract;
 import org.hisp.dhis.android.core.program.ProgramStageSectionContract;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeContract;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityContract;
 import org.hisp.dhis.android.core.user.AuthenticatedUserContract;
@@ -42,6 +43,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String TRACKED_ENTITY = "TrackedEntity";
         String DATA_ELEMENT = "DataElement";
         String PROGRAM_STAGE_DATA_ELEMENT = "ProgramStageDataElement";
+        String RELATIONSHIP_TYPE = "RelationshipType";
         String PROGRAM_STAGE_SECTION = "ProgramStageSection";
         String PROGRAM_STAGE = "ProgramStage";
         String TRACKED_ENTITY_ATTRIBUTE = "TrackedEntityAttribute";
@@ -244,6 +246,19 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             "ON DELETE CASCADE" +
             ");";
 
+    private static final String CREATE_RELATIONSHIP_TYPE_TABLE = "CREATE TABLE " +
+            Tables.RELATIONSHIP_TYPE + "( " +
+            RelationshipTypeContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            RelationshipTypeContract.Columns.UID + " TEXT NOT NULL UNIQUE, " +
+            RelationshipTypeContract.Columns.CODE + " TEXT, " +
+            RelationshipTypeContract.Columns.NAME + " TEXT, " +
+            RelationshipTypeContract.Columns.DISPLAY_NAME + " TEXT, " +
+            RelationshipTypeContract.Columns.CREATED + " TEXT, " +
+            RelationshipTypeContract.Columns.LAST_UPDATED + " TEXT, " +
+            RelationshipTypeContract.Columns.B_IS_TO_A + " TEXT, " +
+            RelationshipTypeContract.Columns.A_IS_TO_B + " TEXT " +
+            ");";
+
     private static final String CREATE_PROGRAM_STAGE_SECTION_TABLE = "CREATE TABLE " +
             Tables.PROGRAM_STAGE_SECTION + " (" +
             ProgramStageSectionContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -289,6 +304,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             " REFERENCES " + Tables.PROGRAM + " (" + ProgramContract.Columns.UID + ")" +
             ");";
 
+    <<<<<<<HEAD
     private static final String CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE = "CREATE TABLE " + Tables.TRACKED_ENTITY_ATTRIBUTE + " (" +
             TrackedEntityAttributeContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             TrackedEntityAttributeContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
@@ -340,6 +356,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_TRACKED_ENTITY_TABLE);
         database.execSQL(CREATE_DATA_ELEMENT_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_DATA_ELEMENT_TABLE);
+        database.execSQL(CREATE_RELATIONSHIP_TYPE_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_SECTION_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_TABLE);
         database.execSQL(CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE);

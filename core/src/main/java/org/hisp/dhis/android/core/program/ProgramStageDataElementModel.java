@@ -38,6 +38,10 @@ public abstract class ProgramStageDataElementModel extends BaseIdentifiableObjec
     @ColumnName(Columns.DATA_ELEMENT)
     public abstract String dataElement();
 
+    @Nullable
+    @ColumnName(Columns.PROGRAM_STAGE_SECTION)
+    public abstract String programStageSection();
+
     public static ProgramStageDataElementModel create(Cursor cursor) {
         return AutoValue_ProgramStageDataElementModel.createFromCursor(cursor);
     }
@@ -63,6 +67,8 @@ public abstract class ProgramStageDataElementModel extends BaseIdentifiableObjec
         public abstract Builder allowFutureDate(@Nullable Boolean allowFutureDate);
 
         public abstract Builder dataElement(@Nullable String dataElement);
+
+        public abstract Builder programStageSection(@Nullable String programStageSection);
 
         public abstract ProgramStageDataElementModel build();
     }

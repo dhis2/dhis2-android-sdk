@@ -10,5 +10,6 @@ public class ProgramStageDataElementContract {
         String SORT_ORDER = "sortOrder";
         String ALLOW_FUTURE_DATE = "allowFutureDate";
         String DATA_ELEMENT = "dataElement";
+        String PROGRAM_STAGE_SECTION = "programStageSection";
     }
 }

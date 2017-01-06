@@ -4,9 +4,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -207,7 +207,7 @@ public class UserAuthenticateCallUnitTests {
         try {
             userAuthenticateCall.call();
 
-           fail("Expected exception was not thrown");
+            fail("Expected exception was not thrown");
         } catch (Exception exception) {
             // ensure that transaction is not created
             verify(database, never()).beginTransaction();
@@ -216,7 +216,7 @@ public class UserAuthenticateCallUnitTests {
 
             // stores must not be invoked
             verify(authenticatedUserStore, never()).insert(anyString(), anyString());
-            verify(userStore, never()).insert(anyString(), anyString(), anyString(),
+            verify(userStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
                     any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
                     anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
                     anyString(), anyString(), anyString(), anyString());
@@ -248,7 +248,7 @@ public class UserAuthenticateCallUnitTests {
 
         // stores must not be invoked
         verify(authenticatedUserStore, never()).insert(anyString(), anyString());
-        verify(userStore, never()).insert(anyString(), anyString(), anyString(),
+        verify(userStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), anyString());
@@ -277,7 +277,7 @@ public class UserAuthenticateCallUnitTests {
                 "test_user_uid", base64("test_user_name", "test_user_password"));
 
         verify(userStore, times(1)).insert(
-                "test_user_uid", "test_user_name", "test_user_display_name",
+                "test_user_uid", "test_user_code", "test_user_name", "test_user_display_name",
                 created, lastUpdated, "test_user_birthday", "test_user_education",
                 "test_user_gender", "test_user_job_title", "test_user_surname",
                 "test_user_first_name", "test_user_introduction", "test_user_employer",
@@ -331,7 +331,7 @@ public class UserAuthenticateCallUnitTests {
 
         // stores must not be invoked
         verify(authenticatedUserStore, times(1)).insert(anyString(), anyString());
-        verify(userStore, times(1)).insert(anyString(), anyString(), anyString(),
+        verify(userStore, times(1)).insert(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), anyString());

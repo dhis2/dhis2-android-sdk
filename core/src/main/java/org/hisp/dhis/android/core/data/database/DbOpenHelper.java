@@ -14,6 +14,7 @@ import org.hisp.dhis.android.core.program.ProgramContract;
 import org.hisp.dhis.android.core.program.ProgramStageContract;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementContract;
 import org.hisp.dhis.android.core.program.ProgramStageSectionContract;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityContract;
 import org.hisp.dhis.android.core.user.AuthenticatedUserContract;
 import org.hisp.dhis.android.core.user.UserContract;
 import org.hisp.dhis.android.core.user.UserCredentialsContract;
@@ -36,6 +37,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String OPTION_SET = "OptionSet";
         String OPTION = "Option";
         String PROGRAM = "Program";
+        String TRACKED_ENTITY = "TrackedEntity";
         String DATA_ELEMENT = "DataElement";
         String PROGRAM_STAGE_DATA_ELEMENT = "ProgramStageDataElement";
         String PROGRAM_STAGE_SECTION = "ProgramStageSection";
@@ -176,6 +178,20 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ProgramContract.Columns.RELATED_PROGRAM + " TEXT" +
             ");";
 
+    private static final String CREATE_TRACKED_ENTITY_TABLE = "CREATE TABLE " + Tables.TRACKED_ENTITY + " (" +
+            TrackedEntityContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            TrackedEntityContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            TrackedEntityContract.Columns.CODE + " TEXT," +
+            TrackedEntityContract.Columns.NAME + " TEXT," +
+            TrackedEntityContract.Columns.DISPLAY_NAME + " TEXT," +
+            TrackedEntityContract.Columns.CREATED + " TEXT," +
+            TrackedEntityContract.Columns.LAST_UPDATED + " TEXT," +
+            TrackedEntityContract.Columns.SHORT_NAME + " TEXT," +
+            TrackedEntityContract.Columns.DISPLAY_SHORT_NAME + " TEXT," +
+            TrackedEntityContract.Columns.DESCRIPTION + " TEXT," +
+            TrackedEntityContract.Columns.DISPLAY_DESCRIPTION + " TEXT" +
+            ");";
+
     private static final String CREATE_DATA_ELEMENT_TABLE = "CREATE TABLE " + Tables.DATA_ELEMENT + " (" +
             DataElementContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             DataElementContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
@@ -289,6 +305,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_OPTION_SET_TABLE);
         database.execSQL(CREATE_OPTION_TABLE);
         database.execSQL(CREATE_PROGRAM_TABLE);
+        database.execSQL(CREATE_TRACKED_ENTITY_TABLE);
         database.execSQL(CREATE_DATA_ELEMENT_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_DATA_ELEMENT_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_SECTION_TABLE);

@@ -48,11 +48,53 @@ public class ProgramModelIntegrationTest {
     private static final Integer USE_FIRST_STAGE_DURING_REGISTRATION = 1;
     private static final Integer DISPLAY_FRONT_PAGE_LIST = 1;
 
-    //TODO : TEST custom Types:
     private static final ProgramType PROGRAM_TYPE = ProgramType.WITH_REGISTRATION;
     private static final String RELATIONSHIP_TYPE = "relationshipUid";
     private static final String RELATIONSHIP_TEXT = "test relationship";
     private static final String RELATED_PROGRAM = "ProgramUid";
+
+    /**
+     * A method to create ContentValues for a Program.
+     * To be used by other tests.
+     *
+     * @param id
+     * @param uid
+     * @return
+     */
+    public static ContentValues create(long id, String uid) {
+        ContentValues program = new ContentValues();
+        program.put(Columns.ID, id);
+        program.put(Columns.UID, uid);
+        program.put(Columns.CODE, CODE);
+        program.put(Columns.NAME, NAME);
+        program.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
+        program.put(Columns.CREATED, DATE);
+        program.put(Columns.LAST_UPDATED, DATE);
+        program.put(Columns.SHORT_NAME, SHORT_NAME);
+        program.put(Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
+        program.put(Columns.DESCRIPTION, DESCRIPTION);
+        program.put(Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
+        program.put(Columns.VERSION, VERSION);
+        program.put(Columns.ONLY_ENROLL_ONCE, ONLY_ENROLL_ONCE);
+        program.put(Columns.ENROLLMENT_DATE_LABEL, ENROLLMENT_DATE_LABEL);
+        program.put(Columns.DISPLAY_INCIDENT_DATE, DISPLAY_INCIDENT_DATE);
+        program.put(Columns.INCIDENT_DATE_LABEL, INCIDENT_DATE_LABEL);
+        program.put(Columns.REGISTRATION, REGISTRATION);
+        program.put(Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE, SELECT_ENROLLMENT_DATES_IN_FUTURE);
+        program.put(Columns.DATA_ENTRY_METHOD, DATA_ENTRY_METHOD);
+        program.put(Columns.IGNORE_OVERDUE_EVENTS, IGNORE_OVERDUE_EVENTS);
+        program.put(Columns.RELATIONSHIP_FROM_A, RELATIONSHIP_FROM_A);
+        program.put(Columns.SELECT_INCIDENT_DATES_IN_FUTURE, SELECT_INCIDENT_DATES_IN_FUTURE);
+        program.put(Columns.CAPTURE_COORDINATES, CAPTURE_COORDINATES);
+        program.put(Columns.USE_FIRST_STAGE_DURING_REGISTRATION, USE_FIRST_STAGE_DURING_REGISTRATION);
+        program.put(Columns.DISPLAY_FRONT_PAGE_LIST, DISPLAY_FRONT_PAGE_LIST);
+        program.put(Columns.PROGRAM_TYPE, PROGRAM_TYPE.name());
+        program.put(Columns.RELATIONSHIP_TYPE, RELATIONSHIP_TYPE);
+        program.put(Columns.RELATIONSHIP_TEXT, RELATIONSHIP_TEXT);
+        program.put(Columns.RELATED_PROGRAM, RELATED_PROGRAM);
+
+        return program;
+    }
 
     @Test
     public void create_shouldConvertToModel() throws ParseException {
@@ -216,7 +258,7 @@ public class ProgramModelIntegrationTest {
         assertThat(contentValues.getAsString(Columns.RELATED_PROGRAM)).isEqualTo(RELATED_PROGRAM);
     }
 
-    /* A helper method to convert an integer to Boolean.*/
+    /* A helper method to convert an integer to Boolean. 0 -> false, != 0 -> true*/
     private Boolean toBoolean(Integer i) {
         return i != 0;
     }

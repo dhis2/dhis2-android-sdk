@@ -1,31 +1,48 @@
 package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.NonNull;
-
-import org.hisp.dhis.android.core.dataelement.CategoryCombo;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
+import android.support.annotation.Nullable;
 
 import java.util.Date;
-import java.util.List;
 
 public interface ProgramStore {
     long insert(
-            @NonNull String uid, @NonNull String code, @NonNull String name,
-            @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-            @NonNull String shortName, @NonNull String displayShortName, @NonNull String displayDescription,
-            @NonNull Integer version, @NonNull Boolean onlyEnrollOnce, @NonNull String enrollmentDateLabel,
-            @NonNull Boolean displayIncidentDate, @NonNull String incidentDateLabel, @NonNull Boolean registration,
-            @NonNull Boolean selectEnrollmentDatesInFuture, @NonNull Boolean dataEntryMethod,
-            @NonNull Boolean ignoreOverdueEvents, @NonNull Boolean relationshipFromA, @NonNull Boolean selectIncidentDatesInFuture,
-            @NonNull Boolean captureCoordinates, @NonNull Boolean useFirstStageDuringRegistration, @NonNull Boolean displayInFrontPageList,
-            @NonNull ProgramType programType, @NonNull RelationshipType relationshipType,
-            @NonNull String relationshipText,
-            @NonNull List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes,
-            Program relatedProgram, TrackedEntity trackedEntity, CategoryCombo categoryCombo,
-            @NonNull List<ProgramIndicator> programIndicators, @NonNull List<ProgramStage> programStages,
-            List<ProgramRule> programRules, List<ProgramRuleVariable> programRuleVariables
-            );
+            @NonNull String uid,
+            @Nullable String code,
+            @NonNull String name,
+            @Nullable String displayName,
+            @Nullable Date created,
+            @Nullable Date lastUpdated,
+            @Nullable String shortName,
+            @Nullable String displayShortName,
+            @Nullable String description,
+            @Nullable String displayDescription,
+            @Nullable Integer version,
+            @Nullable Boolean onlyEnrollOnce,
+            @Nullable String enrollmentDateLabel,
+            @Nullable Boolean displayIncidentDate,
+            @Nullable String incidentDateLabel,
+            @Nullable Boolean registration,
+            @Nullable Boolean selectEnrollmentDatesInFuture,
+            @Nullable Boolean dataEntryMethod,
+            @Nullable Boolean ignoreOverdueEvents,
+            @Nullable Boolean relationshipFromA,
+            @Nullable Boolean selectIncidentDatesInFuture,
+            @Nullable Boolean captureCoordinates,
+            @Nullable Boolean useFirstStageDuringRegistration,
+            @Nullable Boolean displayInFrontPageList,
+            @NonNull ProgramType programType,
+            @Nullable String relationshipType,
+            @Nullable String relationshipText,
+//            @NonNull List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes,
+            @Nullable String relatedProgram
+            /*
+            @NonNull CategoryCombo categoryCombo,
+            @Nullable List<ProgramIndicator> programIndicators,
+            @Nullable List<ProgramStage> programStages,
+            @Nullable List<ProgramRule> programRules,
+            @Nullable List<ProgramRuleVariable> programRuleVariables */
+    );
 
     void close();
 }

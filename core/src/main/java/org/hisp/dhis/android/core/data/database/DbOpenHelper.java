@@ -262,6 +262,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             TrackedEntityAttributeContract.Columns.INHERIT + " INTEGER," +
             " FOREIGN KEY (" + TrackedEntityAttributeContract.Columns.OPTION_SET + ")" +
             " REFERENCES " + Tables.OPTION_SET + " (" + OptionSetContract.Columns.UID + ")" +
+            "ON DELETE CASCADE" +
             ");";
 
     /**

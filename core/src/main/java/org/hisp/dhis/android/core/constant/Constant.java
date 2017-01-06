@@ -30,30 +30,41 @@ package org.hisp.dhis.android.core.constant;
 
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.data.api.Field;
 
+import java.util.Date;
+
+// TODO: Tests
 @AutoValue
-@JsonDeserialize(builder = AutoValue_Constant.Builder.class)
 public abstract class Constant extends BaseIdentifiableObject {
-    private static final String JSON_PROPERTY_VALUE = "value";
+    private static final String VALUE = "value";
+
+    public static final Field<Constant, String> uid = Field.create(UID);
+    public static final Field<Constant, String> code = Field.create(CODE);
+    public static final Field<Constant, String> name = Field.create(NAME);
+    public static final Field<Constant, String> displayName = Field.create(DISPLAY_NAME);
+    public static final Field<Constant, String> created = Field.create(CREATED);
+    public static final Field<Constant, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<Constant, String> value = Field.create(VALUE);
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_VALUE)
+    @JsonProperty(VALUE)
     public abstract Double value();
 
-    public static Builder builder() {
-        return new AutoValue_Constant.Builder();
-    }
-
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        @JsonProperty(JSON_PROPERTY_VALUE)
-        public abstract Builder value(Double value);
-
-        public abstract Constant build();
+    @JsonCreator
+    public static Constant create(
+            @JsonProperty(UID) String uid,
+            @JsonProperty(CODE) String code,
+            @JsonProperty(NAME) String name,
+            @JsonProperty(DISPLAY_NAME) String displayName,
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(VALUE) Double value) {
+        return new AutoValue_Constant(uid, code, name, displayName, created, lastUpdated, value);
     }
 }

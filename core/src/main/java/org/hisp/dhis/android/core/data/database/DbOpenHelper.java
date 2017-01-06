@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
+import org.hisp.dhis.android.core.constant.ConstantContract;
 import org.hisp.dhis.android.core.dataelement.DataElementContract;
 import org.hisp.dhis.android.core.option.OptionContract;
 import org.hisp.dhis.android.core.option.OptionSetContract;
@@ -47,6 +48,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String PROGRAM_STAGE_SECTION = "ProgramStageSection";
         String PROGRAM_STAGE = "ProgramStage";
         String TRACKED_ENTITY_ATTRIBUTE = "TrackedEntityAttribute";
+        String CONSTANT = "Constant";
     }
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + Tables.USER + " (" +
@@ -333,6 +335,17 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             " REFERENCES " + Tables.OPTION_SET + " (" + OptionSetContract.Columns.UID + ")" +
             ");";
 
+    private static final String CREATE_CONSTANT_TABLE ="CREATE TABLE " + Tables.CONSTANT + " (" +
+            ConstantContract.Columns.ID + "INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ConstantContract.Columns.UID + "TEXT NOT NULL UNIQUE," +
+            ConstantContract.Columns.CODE + "TEXT," +
+            ConstantContract.Columns.NAME + "TEXT," +
+            ConstantContract.Columns.DISPLAY_NAME + "TEXT," +
+            ConstantContract.Columns.CREATED + "TEXT," +
+            ConstantContract.Columns.LAST_UPDATED + "TEXT," +
+            ConstantContract.Columns.VALUE + "REAL" +
+            ");";
+
     /**
      * This method should be used only for testing purposes
      */
@@ -359,6 +372,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_PROGRAM_STAGE_SECTION_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_TABLE);
         database.execSQL(CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE);
+        database.execSQL(CREATE_CONSTANT_TABLE);
         return database;
     }
 

@@ -21,9 +21,6 @@ import org.hisp.dhis.android.core.user.UserContract;
 import org.hisp.dhis.android.core.user.UserCredentialsContract;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkContract;
 
-<<<<<<<HEAD
-        =======
-        >>>>>>>075a7d4d5cdb86a7e593ef9b47107c1371e34715
 
 public final class DbOpenHelper extends SQLiteOpenHelper {
 
@@ -45,13 +42,9 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String TRACKED_ENTITY = "TrackedEntity";
         String DATA_ELEMENT = "DataElement";
         String PROGRAM_STAGE_DATA_ELEMENT = "ProgramStageDataElement";
-        <<<<<<
-        <HEAD
-                String RELATIONSHIP_TYPE = "RelationshipType";
-        =======
+        String RELATIONSHIP_TYPE = "RelationshipType";
         String PROGRAM_STAGE_SECTION = "ProgramStageSection";
         String PROGRAM_STAGE = "ProgramStage";
-        >>>>>>>075a7d4d5cdb86a7e593ef9b47107c1371e34715
     }
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + Tables.USER + " (" +

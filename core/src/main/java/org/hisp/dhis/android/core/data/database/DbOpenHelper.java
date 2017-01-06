@@ -303,8 +303,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             " FOREIGN KEY ( " + ProgramStageContract.Columns.PROGRAM + ")" +
             " REFERENCES " + Tables.PROGRAM + " (" + ProgramContract.Columns.UID + ")" +
             ");";
-
-    <<<<<<<HEAD
+    
     private static final String CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE = "CREATE TABLE " + Tables.TRACKED_ENTITY_ATTRIBUTE + " (" +
             TrackedEntityAttributeContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             TrackedEntityAttributeContract.Columns.UID + " TEXT NOT NULL UNIQUE," +

@@ -28,16 +28,22 @@
 
 package org.hisp.dhis.android.core.option;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import android.support.annotation.Nullable;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.NestedField;
+
+import java.util.Date;
 
 // TODO: Tests
 @AutoValue
-@JsonDeserialize(builder = AutoValue_Option.Builder.class)
 public abstract class Option extends BaseIdentifiableObject {
+    private static final String OPTION_SET = "optionSet";
 
     public static final Field<Option, String> uid = Field.create(UID);
     public static final Field<Option, String> code = Field.create(CODE);
@@ -45,13 +51,22 @@ public abstract class Option extends BaseIdentifiableObject {
     public static final Field<Option, String> displayName = Field.create(DISPLAY_NAME);
     public static final Field<Option, String> created = Field.create(CREATED);
     public static final Field<Option, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final NestedField<Option, OptionSet> optionSet = NestedField.create(OPTION_SET);
 
-    public static Builder builder() {
-        return new AutoValue_Option.Builder();
+    @Nullable
+    @JsonProperty(OPTION_SET)
+    public abstract OptionSet optionSet();
+
+    @JsonCreator
+    public static Option create(
+            @JsonProperty(UID) String uid,
+            @JsonProperty(CODE) String code,
+            @JsonProperty(NAME) String name,
+            @JsonProperty(DISPLAY_NAME) String displayName,
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(OPTION_SET) OptionSet optionSet) {
+        return new AutoValue_Option(uid, code, name, displayName, created, lastUpdated, optionSet);
     }
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Option build();
-    }
 }

@@ -30,98 +30,115 @@ package org.hisp.dhis.android.core.dataelement;
 
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.option.OptionSet;
+
+import java.util.Date;
 
 // TODO: Unit tests
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DataElement.Builder.class)
 public abstract class DataElement extends BaseNameableObject {
-    private final static String JSON_PROPERTY_VALUE_TYPE = "valueType";
-    private final static String JSON_PROPERTY_ZERO_IS_SIGNIFICANT = "zeroIsSignificant";
-    private final static String JSON_PROPERTY_AGGREGATION_OPERATOR = "aggregationOperator";
-    private final static String JSON_PROPERTY_FORM_NAME = "formName";
-    private final static String JSON_PROPERTY_NUMBER_TYPE = "numberType";
-    private final static String JSON_PROPERTY_DOMAIN_TYPE = "domainType";
-    private final static String JSON_PROPERTY_DIMENSION = "dimension";
-    private final static String JSON_PROPERTY_DISPLAY_FORM_NAME = "displayFormName";
-    private final static String JSON_PROPERTY_OPTION_SET = "optionSet";
+    private final static String VALUE_TYPE = "valueType";
+    private final static String ZERO_IS_SIGNIFICANT = "zeroIsSignificant";
+    private final static String AGGREGATION_OPERATOR = "aggregationOperator";
+    private final static String FORM_NAME = "formName";
+    private final static String NUMBER_TYPE = "numberType";
+    private final static String DOMAIN_TYPE = "domainType";
+    private final static String DIMENSION = "dimension";
+    private final static String DISPLAY_FORM_NAME = "displayFormName";
+    private final static String OPTION_SET = "optionSet";
+
+    public static final Field<DataElement, String> uid = Field.create(UID);
+    public static final Field<DataElement, String> code = Field.create(CODE);
+    public static final Field<DataElement, String> name = Field.create(NAME);
+    public static final Field<DataElement, String> displayName = Field.create(DISPLAY_NAME);
+    public static final Field<DataElement, String> created = Field.create(CREATED);
+    public static final Field<DataElement, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<DataElement, String> shortName = Field.create(SHORT_NAME);
+    public static final Field<DataElement, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
+    public static final Field<DataElement, String> description = Field.create(DESCRIPTION);
+    public static final Field<DataElement, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
+
+    public static final Field<DataElement, ValueType> valueType = Field.create(VALUE_TYPE);
+    public static final Field<DataElement, Boolean> zeroIsSignificant = Field.create(ZERO_IS_SIGNIFICANT);
+    public static final Field<DataElement, String> aggregationOperator = Field.create(AGGREGATION_OPERATOR);
+    public static final Field<DataElement, String> formName = Field.create(FORM_NAME);
+    public static final Field<DataElement, String> numberType = Field.create(NUMBER_TYPE);
+    public static final Field<DataElement, String> domainType = Field.create(DOMAIN_TYPE);
+    public static final Field<DataElement, String> dimension = Field.create(DIMENSION);
+    public static final Field<DataElement, String> displayFormName = Field.create(DISPLAY_FORM_NAME);
+    public static final NestedField<DataElement, OptionSet> optionSet = NestedField.create(OPTION_SET);
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_VALUE_TYPE)
+    @JsonProperty(VALUE_TYPE)
     public abstract ValueType valueType();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_ZERO_IS_SIGNIFICANT)
+    @JsonProperty(ZERO_IS_SIGNIFICANT)
     public abstract Boolean zeroIsSignificant();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_AGGREGATION_OPERATOR)
+    @JsonProperty(AGGREGATION_OPERATOR)
     public abstract String aggregationOperator();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_FORM_NAME)
+    @JsonProperty(FORM_NAME)
     public abstract String formName();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_NUMBER_TYPE)
+    @JsonProperty(NUMBER_TYPE)
     public abstract String numberType();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_DOMAIN_TYPE)
+    @JsonProperty(DOMAIN_TYPE)
     public abstract String domainType();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_DIMENSION)
+    @JsonProperty(DIMENSION)
     public abstract String dimension();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_DISPLAY_FORM_NAME)
+    @JsonProperty(DISPLAY_FORM_NAME)
     public abstract String displayFormName();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_OPTION_SET)
+    @JsonProperty(OPTION_SET)
     public abstract OptionSet optionSet();
 
-    public static Builder builder() {
-        return new AutoValue_DataElement.Builder();
-    }
+    @JsonCreator
+    public static DataElement create(
+            @JsonProperty(UID) String uid,
+            @JsonProperty(CODE) String code,
+            @JsonProperty(NAME) String name,
+            @JsonProperty(DISPLAY_NAME) String displayName,
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(SHORT_NAME) String shortName,
+            @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
+            @JsonProperty(DESCRIPTION) String description,
+            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
+            @JsonProperty(VALUE_TYPE) ValueType valueType,
+            @JsonProperty(ZERO_IS_SIGNIFICANT) Boolean zeroIsSignificant,
+            @JsonProperty(AGGREGATION_OPERATOR) String aggregationOperator,
+            @JsonProperty(FORM_NAME) String formName,
+            @JsonProperty(NUMBER_TYPE) String numberType,
+            @JsonProperty(DOMAIN_TYPE) String domainType,
+            @JsonProperty(DIMENSION) String dimension,
+            @JsonProperty(DISPLAY_FORM_NAME) String displayFormName,
+            @JsonProperty(OPTION_SET) OptionSet optionSet) {
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+        return new AutoValue_DataElement(uid, code, name,
+                displayName, created, lastUpdated,
+                shortName, displayShortName, description, displayDescription, valueType,
+                zeroIsSignificant, aggregationOperator, formName, numberType,
+                domainType, dimension, displayFormName, optionSet);
 
-        @JsonProperty(JSON_PROPERTY_VALUE_TYPE)
-        public abstract Builder valueType(@Nullable ValueType valueType);
-
-        @JsonProperty(JSON_PROPERTY_ZERO_IS_SIGNIFICANT)
-        public abstract Builder zeroIsSignificant(@Nullable Boolean zeroIsSignificant);
-
-        @JsonProperty(JSON_PROPERTY_AGGREGATION_OPERATOR)
-        public abstract Builder aggregationOperator(@Nullable String aggregationOperator);
-
-        @JsonProperty(JSON_PROPERTY_FORM_NAME)
-        public abstract Builder formName(@Nullable String formName);
-
-        @JsonProperty(JSON_PROPERTY_NUMBER_TYPE)
-        public abstract Builder numberType(@Nullable String numberType);
-
-        @JsonProperty(JSON_PROPERTY_DOMAIN_TYPE)
-        public abstract Builder domainType(@Nullable String domainType);
-
-        @JsonProperty(JSON_PROPERTY_DIMENSION)
-        public abstract Builder dimension(@Nullable String dimension);
-
-        @JsonProperty(JSON_PROPERTY_DISPLAY_FORM_NAME)
-        public abstract Builder displayFormName(@Nullable String displayFormName);
-
-        @JsonProperty(JSON_PROPERTY_OPTION_SET)
-        public abstract Builder optionSet(@Nullable OptionSet optionSet);
-
-        public abstract DataElement build();
     }
 }

@@ -7,6 +7,8 @@ import org.junit.Before;
 
 import java.io.IOException;
 
+import static com.google.common.truth.Truth.assertThat;
+
 public abstract class AbsStoreTestCase {
     private SQLiteDatabase sqLiteDatabase;
 
@@ -18,6 +20,7 @@ public abstract class AbsStoreTestCase {
 
     @After
     public void tearDown() throws IOException {
+        assertThat(sqLiteDatabase).isNotNull();
         sqLiteDatabase.close();
     }
 

@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
+import org.hisp.dhis.android.core.constant.ConstantContract;
 import org.hisp.dhis.android.core.dataelement.DataElementContract;
 import org.hisp.dhis.android.core.option.OptionContract;
 import org.hisp.dhis.android.core.option.OptionSetContract;
@@ -16,6 +17,7 @@ import org.hisp.dhis.android.core.program.ProgramStageDataElementContract;
 import org.hisp.dhis.android.core.program.ProgramStageSectionContract;
 import org.hisp.dhis.android.core.relationship.RelationshipContract;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeContract;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityContract;
 import org.hisp.dhis.android.core.user.AuthenticatedUserContract;
 import org.hisp.dhis.android.core.user.UserContract;
@@ -46,6 +48,8 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String PROGRAM_STAGE = "ProgramStage";
         String RELATIONSHIP_TABLE = "Relationship";
         String RELATIONSHIP_TYPE = "RelationshipType";
+        String TRACKED_ENTITY_ATTRIBUTE = "TrackedEntityAttribute";
+        String CONSTANT = "Constant";
     }
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + Tables.USER + " (" +
@@ -313,12 +317,53 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             " FOREIGN KEY ( " + ProgramStageContract.Columns.PROGRAM + ")" +
             " REFERENCES " + Tables.PROGRAM + " (" + ProgramContract.Columns.UID + ")" +
             ");";
+    
+    private static final String CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE = "CREATE TABLE " + Tables.TRACKED_ENTITY_ATTRIBUTE + " (" +
+            TrackedEntityAttributeContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            TrackedEntityAttributeContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            TrackedEntityAttributeContract.Columns.CODE + " TEXT," +
+            TrackedEntityAttributeContract.Columns.NAME + " TEXT," +
+            TrackedEntityAttributeContract.Columns.DISPLAY_NAME + " TEXT," +
+            TrackedEntityAttributeContract.Columns.CREATED + " TEXT," +
+            TrackedEntityAttributeContract.Columns.LAST_UPDATED + " TEXT," +
+            TrackedEntityAttributeContract.Columns.SHORT_NAME + " TEXT," +
+            TrackedEntityAttributeContract.Columns.DISPLAY_SHORT_NAME + " TEXT," +
+            TrackedEntityAttributeContract.Columns.DESCRIPTION + " TEXT," +
+            TrackedEntityAttributeContract.Columns.DISPLAY_DESCRIPTION + " TEXT," +
+            TrackedEntityAttributeContract.Columns.PATTERN + " TEXT," +
+            TrackedEntityAttributeContract.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM + " INTEGER," +
+            TrackedEntityAttributeContract.Columns.OPTION_SET + " TEXT," +
+            TrackedEntityAttributeContract.Columns.VALUE_TYPE + " TEXT," +
+            TrackedEntityAttributeContract.Columns.EXPRESSION + " TEXT," +
+            TrackedEntityAttributeContract.Columns.SEARCH_SCOPE + " TEXT," +
+            TrackedEntityAttributeContract.Columns.PROGRAM_SCOPE + " INTEGER," +
+            TrackedEntityAttributeContract.Columns.DISPLAY_IN_LIST_NO_PROGRAM + " INTEGER," +
+            TrackedEntityAttributeContract.Columns.GENERATED + " INTEGER," +
+            TrackedEntityAttributeContract.Columns.DISPLAY_ON_VISIT_SCHEDULE + " INTEGER," +
+            TrackedEntityAttributeContract.Columns.ORG_UNIT_SCOPE + " INTEGER," +
+            TrackedEntityAttributeContract.Columns.UNIQUE + " INTEGER," +
+            TrackedEntityAttributeContract.Columns.INHERIT + " INTEGER," +
+            " FOREIGN KEY (" + TrackedEntityAttributeContract.Columns.OPTION_SET + ")" +
+            " REFERENCES " + Tables.OPTION_SET + " (" + OptionSetContract.Columns.UID + ")" +
+            ");";
+
+    private static final String CREATE_CONSTANT_TABLE ="CREATE TABLE " + Tables.CONSTANT + " (" +
+            ConstantContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ConstantContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ConstantContract.Columns.CODE + " TEXT," +
+            ConstantContract.Columns.NAME + " TEXT," +
+            ConstantContract.Columns.DISPLAY_NAME + " TEXT," +
+            ConstantContract.Columns.CREATED + " TEXT," +
+            ConstantContract.Columns.LAST_UPDATED + " TEXT," +
+            ConstantContract.Columns.VALUE + " REAL" +
+            ");";
 
     /**
      * This method should be used only for testing purposes
      */
     // ToDo: Revise usage of this method
     @VisibleForTesting
+
     static SQLiteDatabase create() {
         return create(SQLiteDatabase.create(null));
     }
@@ -339,7 +384,8 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_RELATIONSHIP_TYPE_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_SECTION_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_TABLE);
-
+        database.execSQL(CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE);
+        database.execSQL(CREATE_CONSTANT_TABLE);
         return database;
     }
 

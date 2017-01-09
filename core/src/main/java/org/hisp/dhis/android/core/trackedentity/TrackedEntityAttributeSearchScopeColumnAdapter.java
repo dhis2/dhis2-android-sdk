@@ -26,27 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.constant;
+package org.hisp.dhis.android.core.trackedentity;
 
-public class ConstantTests {
+import android.content.ContentValues;
+import android.database.Cursor;
 
-    // TODO: Unit tests for Constants API model client model
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-//    @Test
-//    public void equals_shouldConformToContract() {
-//        Constant validConstant = Constant.builder()
-//                .uid("a1b2c3d4e5f")
-//                .created(new Date())
-//                .lastUpdated(new Date())
-//                .build();
-//
-//        EqualsVerifier.forClass(validConstant.getClass())
-//                .suppress(Warning.NULL_FIELDS)
-//                .verify();
-//    }
-//
-//    @Test(expected = IllegalStateException.class)
-//    public void build_shouldThrowOnNullUidField() {
-//        Constant.builder().build();
-//    }
+public class TrackedEntityAttributeSearchScopeColumnAdapter implements ColumnTypeAdapter<TrackedEntityAttributeSearchScope> {
+
+    @Override
+    public TrackedEntityAttributeSearchScope fromCursor(Cursor cursor, String columnName) {
+
+        int columnIndex = cursor.getColumnIndex(columnName);
+        String sourceValue = cursor.getString(columnIndex);
+
+        TrackedEntityAttributeSearchScope trackedEntityAttributeSearchScope = null;
+        if (sourceValue != null) {
+            try {
+                trackedEntityAttributeSearchScope = TrackedEntityAttributeSearchScope.valueOf(sourceValue);
+            } catch (Exception exception) {
+                throw new RuntimeException("Unknown TrackedEntityAttributeSearchScope type", exception);
+            }
+        }
+
+
+        return trackedEntityAttributeSearchScope;
+    }
+
+    @Override
+    public void toContentValues(ContentValues contentValues, String columnName, TrackedEntityAttributeSearchScope trackedEntityAttributeSearchScope) {
+        if (trackedEntityAttributeSearchScope != null) {
+            contentValues.put(columnName, trackedEntityAttributeSearchScope.name());
+        }
+    }
 }

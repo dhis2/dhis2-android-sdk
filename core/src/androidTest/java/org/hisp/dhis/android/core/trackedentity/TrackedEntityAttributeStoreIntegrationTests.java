@@ -239,6 +239,8 @@ public class TrackedEntityAttributeStoreIntegrationTests extends AbsStoreTestCas
         );
     }
 
+    // ToDo: test cascade deletion: on option set referenced with foreign key delete -> TEA delete
+
     // ToDo: consider introducing conflict resolution strategy
 
     @Test

@@ -37,6 +37,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.option.OptionSet;
 
 import java.util.Date;
@@ -71,7 +72,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
     public static final Field<TrackedEntityAttribute, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
     public static final Field<TrackedEntityAttribute, String> pattern = Field.create(PATTERN);
     public static final Field<TrackedEntityAttribute, String> sortOrderInListNoProgram = Field.create(SORT_ORDER_IN_LIST_NO_PROGRAM);
-    public static final Field<TrackedEntityAttribute, OptionSet> optionSet = Field.create(OPTION_SET);
+    public static final NestedField<TrackedEntityAttribute, OptionSet> optionSet = NestedField.create(OPTION_SET);
     public static final Field<TrackedEntityAttribute, ValueType> valueType = Field.create(VALUE_TYPE);
     public static final Field<TrackedEntityAttribute, String> expression = Field.create(EXPRESSION);
     public static final Field<TrackedEntityAttribute, TrackedEntityAttributeSearchScope> searchScope = Field.create(SEARCH_SCOPE);

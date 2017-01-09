@@ -45,7 +45,7 @@ import java.util.Date;
 @AutoValue
 public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
     private static final String MANDATORY = "mandatory";
-    private static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute"; // todo: using name (=attribute) or FieldName from schemas
+    private static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
     private static final String VALUE_TYPE = "valueType";
     private static final String ALLOW_FUTURE_DATE = "allowFutureDate";
     private static final String DISPLAY_IN_LIST = "displayInList";

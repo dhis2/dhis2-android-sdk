@@ -15,6 +15,7 @@ import org.hisp.dhis.android.core.program.ProgramContract;
 import org.hisp.dhis.android.core.program.ProgramStageContract;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementContract;
 import org.hisp.dhis.android.core.program.ProgramStageSectionContract;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeContract;
 import org.hisp.dhis.android.core.relationship.RelationshipContract;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeContract;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract;
@@ -49,6 +50,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String RELATIONSHIP_TABLE = "Relationship";
         String RELATIONSHIP_TYPE = "RelationshipType";
         String TRACKED_ENTITY_ATTRIBUTE = "TrackedEntityAttribute";
+        String PROGRAM_TRACKED_ENTITY_ATTRIBUTE = "ProgramTrackedEntityAttribute";
         String CONSTANT = "Constant";
     }
 
@@ -317,8 +319,9 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             " FOREIGN KEY ( " + ProgramStageContract.Columns.PROGRAM + ")" +
             " REFERENCES " + Tables.PROGRAM + " (" + ProgramContract.Columns.UID + ")" +
             ");";
-    
-    private static final String CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE = "CREATE TABLE " + Tables.TRACKED_ENTITY_ATTRIBUTE + " (" +
+
+    private static final String CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE = "CREATE TABLE " +
+            Tables.TRACKED_ENTITY_ATTRIBUTE + " (" +
             TrackedEntityAttributeContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             TrackedEntityAttributeContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
             TrackedEntityAttributeContract.Columns.CODE + " TEXT," +
@@ -345,9 +348,33 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             TrackedEntityAttributeContract.Columns.INHERIT + " INTEGER," +
             " FOREIGN KEY (" + TrackedEntityAttributeContract.Columns.OPTION_SET + ")" +
             " REFERENCES " + Tables.OPTION_SET + " (" + OptionSetContract.Columns.UID + ")" +
+            "ON DELETE CASCADE" +
             ");";
 
-    private static final String CREATE_CONSTANT_TABLE ="CREATE TABLE " + Tables.CONSTANT + " (" +
+    private static final String CREATE_PROGRAM_TRACKED_ENTITY_ATTRIBUTE_TABLE = "CREATE TABLE " +
+            Tables.PROGRAM_TRACKED_ENTITY_ATTRIBUTE + " (" +
+            ProgramTrackedEntityAttributeContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramTrackedEntityAttributeContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ProgramTrackedEntityAttributeContract.Columns.CODE + " TEXT," +
+            ProgramTrackedEntityAttributeContract.Columns.NAME + " TEXT," +
+            ProgramTrackedEntityAttributeContract.Columns.DISPLAY_NAME + " TEXT," +
+            ProgramTrackedEntityAttributeContract.Columns.CREATED + " TEXT," +
+            ProgramTrackedEntityAttributeContract.Columns.LAST_UPDATED + " TEXT," +
+            ProgramTrackedEntityAttributeContract.Columns.SHORT_NAME + " TEXT," +
+            ProgramTrackedEntityAttributeContract.Columns.DISPLAY_SHORT_NAME + " TEXT," +
+            ProgramTrackedEntityAttributeContract.Columns.DESCRIPTION + " TEXT," +
+            ProgramTrackedEntityAttributeContract.Columns.DISPLAY_DESCRIPTION + " TEXT," +
+            ProgramTrackedEntityAttributeContract.Columns.MANDATORY + " INTEGER," +
+            ProgramTrackedEntityAttributeContract.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT," +
+            ProgramTrackedEntityAttributeContract.Columns.VALUE_TYPE + " TEXT," +
+            ProgramTrackedEntityAttributeContract.Columns.ALLOW_FUTURE_DATES + " INTEGER," +
+            ProgramTrackedEntityAttributeContract.Columns.DISPLAY_IN_LIST + " INTEGER," +
+            " FOREIGN KEY (" + ProgramTrackedEntityAttributeContract.Columns.TRACKED_ENTITY_ATTRIBUTE + ")" +
+            " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE + " (" + TrackedEntityAttributeContract.Columns.UID + ")" +
+            "ON DELETE CASCADE" +
+            ");";
+
+    private static final String CREATE_CONSTANT_TABLE = "CREATE TABLE " + Tables.CONSTANT + " (" +
             ConstantContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             ConstantContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
             ConstantContract.Columns.CODE + " TEXT," +
@@ -385,6 +412,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_PROGRAM_STAGE_SECTION_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_TABLE);
         database.execSQL(CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE);
+        database.execSQL(CREATE_PROGRAM_TRACKED_ENTITY_ATTRIBUTE_TABLE);
         database.execSQL(CREATE_CONSTANT_TABLE);
         return database;
     }

@@ -5,6 +5,7 @@ import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeContract.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -28,6 +29,31 @@ public class RelationshipTypeModelIntegrationTests {
     //RelationshipTypeModel attributes:
     private static final String A_IS_TO_B = "cat of";
     private static final String B_IS_TO_A = "owner of";
+
+    /**
+     * A method to create ContentValues from a RelationshipType.
+     * To be used by other tests that have RelationshipType as foreign key.
+     *
+     * @param id
+     * @param uid
+     * @return
+     */
+    public static ContentValues create(long id, String uid) {
+
+        ContentValues relationshipType = new ContentValues();
+
+        relationshipType.put(Columns.ID, id);
+        relationshipType.put(Columns.UID, uid);
+        relationshipType.put(Columns.CODE, CODE);
+        relationshipType.put(Columns.NAME, NAME);
+        relationshipType.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
+        relationshipType.put(Columns.CREATED, DATE);
+        relationshipType.put(Columns.LAST_UPDATED, DATE);
+        relationshipType.put(Columns.A_IS_TO_B, A_IS_TO_B);
+        relationshipType.put(Columns.B_IS_TO_A, B_IS_TO_A);
+
+        return relationshipType;
+    }
 
     @Test
     public void create_shouldConvertToModel() throws ParseException {

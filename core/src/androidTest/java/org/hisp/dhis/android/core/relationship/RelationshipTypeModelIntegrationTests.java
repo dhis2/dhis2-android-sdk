@@ -5,7 +5,6 @@ import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.program.ProgramContract;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -64,7 +63,7 @@ public class RelationshipTypeModelIntegrationTests {
     }
 
     @Test
-    public void toCOntentValues_shouldConvertToContentValues() throws ParseException {
+    public void toContentValues_shouldConvertToContentValues() throws ParseException {
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
         RelationshipTypeModel relationshipTypeModel = RelationshipTypeModel.builder()
@@ -80,7 +79,7 @@ public class RelationshipTypeModelIntegrationTests {
                 .build();
 
         ContentValues contentValues = relationshipTypeModel.toContentValues();
-        assertThat(contentValues.getAsLong(ProgramContract.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsLong(RelationshipTypeContract.Columns.ID)).isEqualTo(ID);
         assertThat(contentValues.getAsString(RelationshipTypeContract.Columns.UID)).isEqualTo(UID);
         assertThat(contentValues.getAsString(RelationshipTypeContract.Columns.NAME)).isEqualTo(NAME);
         assertThat(contentValues.getAsString(RelationshipTypeContract.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);

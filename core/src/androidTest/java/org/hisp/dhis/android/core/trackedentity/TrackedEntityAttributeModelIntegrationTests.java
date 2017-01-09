@@ -57,7 +57,7 @@ public class TrackedEntityAttributeModelIntegrationTests {
     private static final String DISPLAY_DESCRIPTION = "test_display_description";
     private static final String PATTERN = "test_pattern";
     private static final Integer SORT_ORDER_IN_LIST_NO_PROGRAM = 1;
-    private static final String OPTION_SET = "test_option_set";
+    private static final String OPTION_SET = "test_option_set_uid";
     private static final ValueType VALUE_TYPE = ValueType.BOOLEAN;
     private static final String EXPRESSION = "test_expression";
     private static final TrackedEntityAttributeSearchScope SEARCH_SCOPE = TrackedEntityAttributeSearchScope.SEARCH_ORG_UNITS;
@@ -71,6 +71,36 @@ public class TrackedEntityAttributeModelIntegrationTests {
 
     // used for timestamps
     private static final String DATE = "2011-12-24T12:24:25.203";
+
+    public static ContentValues create(long id, String uid) throws ParseException {
+        TrackedEntityAttributeModel trackedEntityAttributeModel = TrackedEntityAttributeModel.builder()
+                .id(id)
+                .uid(uid)
+                .code(CODE)
+                .name(NAME)
+                .displayName(DISPLAY_NAME)
+                .created(BaseIdentifiableObject.DATE_FORMAT.parse(DATE))
+                .lastUpdated(BaseIdentifiableObject.DATE_FORMAT.parse(DATE))
+                .shortName(SHORT_NAME)
+                .displayShortName(DISPLAY_SHORT_NAME)
+                .description(DESCRIPTION)
+                .displayDescription(DISPLAY_DESCRIPTION)
+                .pattern(PATTERN)
+                .sortOrderInListNoProgram(SORT_ORDER_IN_LIST_NO_PROGRAM)
+                .optionSet(OPTION_SET)
+                .valueType(VALUE_TYPE)
+                .expression(EXPRESSION)
+                .searchScope(SEARCH_SCOPE)
+                .programScope(getBooleanFromInteger(PROGRAM_SCOPE))
+                .displayInListNoProgram(getBooleanFromInteger(DISPLAY_IN_LIST_NO_PROGRAM))
+                .generated(getBooleanFromInteger(GENERATED))
+                .displayOnVisitSchedule(getBooleanFromInteger(DISPLAY_ON_VISIT_SCHEDULE))
+                .orgUnitScope(getBooleanFromInteger(ORG_UNIT_SCOPE))
+                .unique(getBooleanFromInteger(UNIQUE))
+                .inherit(getBooleanFromInteger(INHERIT))
+                .build();
+        return trackedEntityAttributeModel.toContentValues();
+    }
 
     @Test
     public void create_shouldConvertToModel() throws ParseException {
@@ -145,7 +175,7 @@ public class TrackedEntityAttributeModelIntegrationTests {
     }
 
     @NonNull
-    private boolean getBooleanFromInteger(Integer integer) {
+    private static boolean getBooleanFromInteger(Integer integer) {
         if (integer == 1) {
             return true;
         }
@@ -155,36 +185,8 @@ public class TrackedEntityAttributeModelIntegrationTests {
 
     @Test
     public void toContentValues_shouldConvertToContentValues() throws ParseException {
-        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
-        TrackedEntityAttributeModel trackedEntityAttributeModel = TrackedEntityAttributeModel.builder()
-                .id(ID)
-                .uid(UID)
-                .code(CODE)
-                .name(NAME)
-                .displayName(DISPLAY_NAME)
-                .created(date)
-                .lastUpdated(date)
-                .shortName(SHORT_NAME)
-                .displayShortName(DISPLAY_SHORT_NAME)
-                .description(DESCRIPTION)
-                .displayDescription(DISPLAY_DESCRIPTION)
-                .pattern(PATTERN)
-                .sortOrderInListNoProgram(SORT_ORDER_IN_LIST_NO_PROGRAM)
-                .optionSet(OPTION_SET)
-                .valueType(VALUE_TYPE)
-                .expression(EXPRESSION)
-                .searchScope(SEARCH_SCOPE)
-                .programScope(getBooleanFromInteger(PROGRAM_SCOPE))
-                .displayInListNoProgram(getBooleanFromInteger(DISPLAY_IN_LIST_NO_PROGRAM))
-                .generated(getBooleanFromInteger(GENERATED))
-                .displayOnVisitSchedule(getBooleanFromInteger(DISPLAY_ON_VISIT_SCHEDULE))
-                .orgUnitScope(getBooleanFromInteger(ORG_UNIT_SCOPE))
-                .unique(getBooleanFromInteger(UNIQUE))
-                .inherit(getBooleanFromInteger(INHERIT))
-                .build();
-
-        ContentValues contentValues = trackedEntityAttributeModel.toContentValues();
+        ContentValues contentValues = create(ID, UID);
 
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
         assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);

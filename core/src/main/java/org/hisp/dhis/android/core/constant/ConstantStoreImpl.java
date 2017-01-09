@@ -36,37 +36,42 @@ public class ConstantStoreImpl implements ConstantStore {
         insertStatement.clearBindings();
 
 
-        if (uid != null)
+        if (uid != null) {
             insertStatement.bindString(1, uid);
-        else
+        } else {
             insertStatement.bindNull(1);
+        }
 
 
-        if (code != null)
+        if (code != null) {
             insertStatement.bindString(2, code);
-        else
+        } else {
             insertStatement.bindNull(2);
+        }
 
 
         insertStatement.bindString(3, name);
 
 
-        if (displayName != null)
+        if (displayName != null) {
             insertStatement.bindString(4, displayName);
-        else
+        } else {
             insertStatement.bindNull(4);
+        }
 
 
-        if (created != null)
+        if (created != null) {
             insertStatement.bindString(5, BaseIdentifiableObject.DATE_FORMAT.format(created));
-        else
+        } else {
             insertStatement.bindNull(5);
+        }
 
 
-        if (lastUpdated != null)
+        if (lastUpdated != null) {
             insertStatement.bindString(6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
-        else
+        } else {
             insertStatement.bindNull(6);
+        }
 
 
         insertStatement.bindDouble(7, value);

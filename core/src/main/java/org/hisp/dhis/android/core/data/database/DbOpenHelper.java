@@ -336,14 +336,14 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ");";
 
     private static final String CREATE_CONSTANT_TABLE ="CREATE TABLE " + Tables.CONSTANT + " (" +
-            ConstantContract.Columns.ID + "INTEGER PRIMARY KEY AUTOINCREMENT," +
-            ConstantContract.Columns.UID + "TEXT NOT NULL UNIQUE," +
-            ConstantContract.Columns.CODE + "TEXT," +
-            ConstantContract.Columns.NAME + "TEXT," +
-            ConstantContract.Columns.DISPLAY_NAME + "TEXT," +
-            ConstantContract.Columns.CREATED + "TEXT," +
-            ConstantContract.Columns.LAST_UPDATED + "TEXT," +
-            ConstantContract.Columns.VALUE + "REAL" +
+            ConstantContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ConstantContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ConstantContract.Columns.CODE + " TEXT," +
+            ConstantContract.Columns.NAME + " TEXT," +
+            ConstantContract.Columns.DISPLAY_NAME + " TEXT," +
+            ConstantContract.Columns.CREATED + " TEXT," +
+            ConstantContract.Columns.LAST_UPDATED + " TEXT," +
+            ConstantContract.Columns.VALUE + " REAL" +
             ");";
 
     /**

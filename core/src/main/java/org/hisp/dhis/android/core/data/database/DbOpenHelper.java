@@ -235,7 +235,8 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             "ON DELETE CASCADE" +
             ");";
 
-    private static final String CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE = "CREATE TABLE " + Tables.TRACKED_ENTITY_ATTRIBUTE + " (" +
+    private static final String CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE = "CREATE TABLE " +
+            Tables.TRACKED_ENTITY_ATTRIBUTE + " (" +
             TrackedEntityAttributeContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             TrackedEntityAttributeContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
             TrackedEntityAttributeContract.Columns.CODE + " TEXT," +

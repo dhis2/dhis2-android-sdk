@@ -25,7 +25,7 @@ public class RelationshipTypeModelIntegrationTests {
     // timestamp
     private static final String DATE = "2014-03-20T13:37:00.007";
 
-    //RelationshipModel attributes:
+    //RelationshipTypeModel attributes:
     private static final String A_IS_TO_B = "cat of";
     private static final String B_IS_TO_A = "owner of";
 

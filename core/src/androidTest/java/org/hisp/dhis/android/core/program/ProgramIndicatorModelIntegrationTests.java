@@ -54,7 +54,7 @@ public class ProgramIndicatorModelIntegrationTests {
     private static final String DESCRIPTION = "test_description";
     private static final String DISPLAY_DESCRIPTION = "test_display_description";
     private static final Boolean DISPLAY_IN_FORM = true;
-    private static final String EXPRESSSION = "test_expression";
+    private static final String EXPRESSION = "test_expression";
     private static final String DIMENSION_ITEM = "test_dimension_item";
     private static final String FILTER = "test_filter";
     private static final Integer DECIMALS = 3;
@@ -86,7 +86,7 @@ public class ProgramIndicatorModelIntegrationTests {
         matrixCursor.addRow(new Object[]{
                 ID, UID, CODE, NAME, DISPLAY_NAME, DATE, DATE,
                 SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION,
-                getIntegerFromBoolean(DISPLAY_IN_FORM), EXPRESSSION,
+                getIntegerFromBoolean(DISPLAY_IN_FORM), EXPRESSION,
                 DIMENSION_ITEM, FILTER, DECIMALS
         });
 
@@ -109,7 +109,7 @@ public class ProgramIndicatorModelIntegrationTests {
         assertThat(programIndicatorModel.description()).isEqualTo(DESCRIPTION);
         assertThat(programIndicatorModel.displayDescription()).isEqualTo(DISPLAY_DESCRIPTION);
         assertThat(programIndicatorModel.displayInForm()).isEqualTo(DISPLAY_IN_FORM);
-        assertThat(programIndicatorModel.expression()).isEqualTo(EXPRESSSION);
+        assertThat(programIndicatorModel.expression()).isEqualTo(EXPRESSION);
         assertThat(programIndicatorModel.dimensionItem()).isEqualTo(DIMENSION_ITEM);
         assertThat(programIndicatorModel.filter()).isEqualTo(FILTER);
         assertThat(programIndicatorModel.decimals()).isEqualTo(DECIMALS);
@@ -134,7 +134,7 @@ public class ProgramIndicatorModelIntegrationTests {
                 .description(DESCRIPTION)
                 .displayDescription(DISPLAY_DESCRIPTION)
                 .displayInForm(DISPLAY_IN_FORM)
-                .expression(EXPRESSSION)
+                .expression(EXPRESSION)
                 .dimensionItem(DIMENSION_ITEM)
                 .filter(FILTER)
                 .decimals(DECIMALS)
@@ -154,7 +154,7 @@ public class ProgramIndicatorModelIntegrationTests {
         assertThat(contentValues.getAsString(ProgramIndicatorContract.Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
         assertThat(contentValues.getAsString(ProgramIndicatorContract.Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
         assertThat(contentValues.getAsBoolean(ProgramIndicatorContract.Columns.DISPLAY_IN_FORM)).isEqualTo(DISPLAY_IN_FORM);
-        assertThat(contentValues.getAsString(ProgramIndicatorContract.Columns.EXPRESSION)).isEqualTo(EXPRESSSION);
+        assertThat(contentValues.getAsString(ProgramIndicatorContract.Columns.EXPRESSION)).isEqualTo(EXPRESSION);
         assertThat(contentValues.getAsString(ProgramIndicatorContract.Columns.DIMENSION_ITEM)).isEqualTo(DIMENSION_ITEM);
         assertThat(contentValues.getAsString(ProgramIndicatorContract.Columns.FILTER)).isEqualTo(FILTER);
         assertThat(contentValues.getAsInteger(ProgramIndicatorContract.Columns.DECIMALS)).isEqualTo(DECIMALS);

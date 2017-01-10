@@ -7,7 +7,11 @@ import java.util.Date;
 
 public interface ConstantStore {
 
-    long insert(@Nullable String uid, @Nullable String code, @NonNull String name, @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated, @NonNull Double value);
+    long insert(
+            @Nullable String uid, @Nullable String code, @NonNull String name,
+            @Nullable String displayName, @Nullable Date created,
+            @Nullable Date lastUpdated, @NonNull Double value
+    );
 
     void close();
 }

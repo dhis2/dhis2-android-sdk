@@ -31,7 +31,7 @@ public class RelationshipTypeModelIntegrationTests {
     private static final String B_IS_TO_A = "owner of";
 
     /**
-     * A method to create ContentValues from a RelationshipType.
+     * A method to createTrackedEntityAttribute ContentValues from a RelationshipType.
      * To be used by other tests that have RelationshipType as foreign key.
      *
      * @param id

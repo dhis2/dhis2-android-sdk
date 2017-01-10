@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 
+import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+
 public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLinkStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + DbOpenHelper.Tables.USER_ORGANISATION_UNIT + " (" +
             UserOrganisationUnitLinkContract.Columns.USER + ", " +
@@ -32,11 +34,12 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
     @Override
     public long insert(@NonNull String user, @NonNull String organisationUnit,
             @NonNull String organisationUnitScope) {
+
         sqLiteStatement.clearBindings();
 
-        sqLiteStatement.bindString(1, user);
-        sqLiteStatement.bindString(2, organisationUnit);
-        sqLiteStatement.bindString(3, organisationUnitScope);
+        sqLiteBind(sqLiteStatement, 1, user);
+        sqLiteBind(sqLiteStatement, 2, organisationUnit);
+        sqLiteBind(sqLiteStatement, 3, organisationUnitScope);
 
         return sqLiteStatement.executeInsert();
     }

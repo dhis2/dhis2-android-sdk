@@ -11,6 +11,8 @@ import org.hisp.dhis.android.core.program.ProgramRuleVariableContract.Columns;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+
 public class ProgramRuleVariableModelStoreImpl implements ProgramRuleVariableModelStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.PROGRAM_RULE_VARIABLE + " (" +
@@ -43,49 +45,18 @@ public class ProgramRuleVariableModelStoreImpl implements ProgramRuleVariableMod
                        @Nullable ProgramRuleVariableSourceType programRuleVariableSourceType) {
         sqLiteStatement.clearBindings();
 
-        sqLiteStatement.bindString(1, uid);
-
-        if (code == null) {
-            sqLiteStatement.bindNull(2);
-        } else {
-            sqLiteStatement.bindString(2, code);
-        }
-        sqLiteStatement.bindString(3, name);
-        sqLiteStatement.bindString(4, displayName);
-        sqLiteStatement.bindString(5, BaseIdentifiableObject.DATE_FORMAT.format(created));
-        sqLiteStatement.bindString(6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
-
-        if (useCodeForOptionSet == null) {
-            sqLiteStatement.bindNull(7);
-        } else {
-            sqLiteStatement.bindLong(7, useCodeForOptionSet ? 1 : 0);
-        }
-
-        sqLiteStatement.bindString(8, program);
-
-        if (programStage == null) {
-            sqLiteStatement.bindNull(9);
-        } else {
-            sqLiteStatement.bindString(9, programStage);
-        }
-
-        if (dataElement == null) {
-            sqLiteStatement.bindNull(10);
-        } else {
-            sqLiteStatement.bindString(10, dataElement);
-        }
-
-        if (trackedEntityAttribute == null) {
-            sqLiteStatement.bindNull(11);
-        } else {
-            sqLiteStatement.bindString(11, trackedEntityAttribute);
-        }
-
-        if (programRuleVariableSourceType == null) {
-            sqLiteStatement.bindNull(12);
-        } else {
-            sqLiteStatement.bindString(12, programRuleVariableSourceType.name());
-        }
+        sqLiteBind(sqLiteStatement, 1, uid);
+        sqLiteBind(sqLiteStatement, 2, code);
+        sqLiteBind(sqLiteStatement, 3, name);
+        sqLiteBind(sqLiteStatement, 4, displayName);
+        sqLiteBind(sqLiteStatement, 5, BaseIdentifiableObject.DATE_FORMAT.format(created));
+        sqLiteBind(sqLiteStatement, 6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
+        sqLiteBind(sqLiteStatement, 7, useCodeForOptionSet);
+        sqLiteBind(sqLiteStatement, 8, program);
+        sqLiteBind(sqLiteStatement, 9, programStage);
+        sqLiteBind(sqLiteStatement, 10, dataElement);
+        sqLiteBind(sqLiteStatement, 11, trackedEntityAttribute);
+        sqLiteBind(sqLiteStatement, 12, programRuleVariableSourceType.name());
 
         return sqLiteStatement.executeInsert();
     }

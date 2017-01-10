@@ -11,6 +11,8 @@ import org.hisp.dhis.android.core.program.ProgramStageDataElementContract.Column
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+
 public class ProgramStageDataElementStoreImpl implements ProgramStageDataElementStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.PROGRAM_STAGE_DATA_ELEMENT + " (" +
@@ -44,48 +46,19 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
                        @NonNull String dataElement, @Nullable String programStageSection) {
         sqLiteStatement.clearBindings();
 
-        sqLiteStatement.bindString(1, uid);
-
-        if (code == null) {
-            sqLiteStatement.bindNull(2);
-        } else {
-            sqLiteStatement.bindString(2, code);
-        }
-
-        if (name == null) {
-            sqLiteStatement.bindNull(3);
-        } else {
-            sqLiteStatement.bindString(3, name);
-        }
-
-        if (displayName == null) {
-            sqLiteStatement.bindNull(4);
-        } else {
-            sqLiteStatement.bindString(4, displayName);
-        }
-
-        sqLiteStatement.bindString(5, BaseIdentifiableObject.DATE_FORMAT.format(created));
-        sqLiteStatement.bindString(6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
-
-        sqLiteStatement.bindLong(7, displayInReports ? 1 : 0);
-        sqLiteStatement.bindLong(8, compulsory ? 1 : 0);
-        sqLiteStatement.bindLong(9, allowProvidedElsewhere ? 1 : 0);
-
-        if (sortOrder == null) {
-            sqLiteStatement.bindNull(10);
-        } else {
-            sqLiteStatement.bindLong(10, sortOrder);
-        }
-
-        sqLiteStatement.bindLong(11, allowFutureDate ? 1 : 0);
-        sqLiteStatement.bindString(12, dataElement);
-
-        if (programStageSection == null) {
-            sqLiteStatement.bindNull(13);
-        } else {
-            sqLiteStatement.bindString(13, programStageSection);
-        }
-
+        sqLiteBind(sqLiteStatement, 1, uid);
+        sqLiteBind(sqLiteStatement, 2, code);
+        sqLiteBind(sqLiteStatement, 3, name);
+        sqLiteBind(sqLiteStatement, 4, displayName);
+        sqLiteBind(sqLiteStatement, 5, BaseIdentifiableObject.DATE_FORMAT.format(created));
+        sqLiteBind(sqLiteStatement, 6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
+        sqLiteBind(sqLiteStatement, 7, displayInReports);
+        sqLiteBind(sqLiteStatement, 8, compulsory);
+        sqLiteBind(sqLiteStatement, 9, allowProvidedElsewhere);
+        sqLiteBind(sqLiteStatement, 10, sortOrder);
+        sqLiteBind(sqLiteStatement, 11, allowFutureDate);
+        sqLiteBind(sqLiteStatement, 12, dataElement);
+        sqLiteBind(sqLiteStatement, 13, programStageSection);
 
         return sqLiteStatement.executeInsert();
     }

@@ -11,6 +11,8 @@ import org.hisp.dhis.android.core.program.ProgramStageSectionContract.Columns;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+
 public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.PROGRAM_STAGE_SECTION + " (" +
@@ -37,31 +39,14 @@ public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
                        @Nullable Integer sortOrder, @Nullable String programStage) {
         sqLiteStatement.clearBindings();
 
-        sqLiteStatement.bindString(1, uid);
-
-        if (code == null) {
-            sqLiteStatement.bindNull(2);
-        } else {
-            sqLiteStatement.bindString(2, code);
-        }
-
-        sqLiteStatement.bindString(3, name);
-        sqLiteStatement.bindString(4, displayName);
-        sqLiteStatement.bindString(5, BaseIdentifiableObject.DATE_FORMAT.format(created));
-        sqLiteStatement.bindString(6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
-
-
-        if (sortOrder == null) {
-            sqLiteStatement.bindNull(7);
-        } else {
-            sqLiteStatement.bindLong(7, sortOrder);
-        }
-
-        if (programStage == null) {
-            sqLiteStatement.bindNull(8);
-        } else {
-            sqLiteStatement.bindString(8, programStage);
-        }
+        sqLiteBind(sqLiteStatement, 1, uid);
+        sqLiteBind(sqLiteStatement, 2, code);
+        sqLiteBind(sqLiteStatement, 3, name);
+        sqLiteBind(sqLiteStatement, 4, displayName);
+        sqLiteBind(sqLiteStatement, 5, BaseIdentifiableObject.DATE_FORMAT.format(created));
+        sqLiteBind(sqLiteStatement, 6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
+        sqLiteBind(sqLiteStatement, 7, sortOrder);
+        sqLiteBind(sqLiteStatement, 8, programStage);
 
         return sqLiteStatement.executeInsert();
     }

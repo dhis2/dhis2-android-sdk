@@ -12,6 +12,8 @@ import org.hisp.dhis.android.core.option.OptionSetContract.Columns;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+
 public class OptionSetStoreImpl implements OptionSetStore {
 
     public static final String INSERT_STATEMENT = "INSERT INTO " + Tables.OPTION_SET + " (" +
@@ -42,20 +44,14 @@ public class OptionSetStoreImpl implements OptionSetStore {
                        @NonNull ValueType valueType) {
         sqLiteStatement.clearBindings();
 
-        sqLiteStatement.bindString(1, uid);
-
-        if (code != null) {
-            sqLiteStatement.bindString(2, code);
-        } else {
-            sqLiteStatement.bindNull(2);
-        }
-
-        sqLiteStatement.bindString(3, name);
-        sqLiteStatement.bindString(4, displayName);
-        sqLiteStatement.bindString(5, BaseIdentifiableObject.DATE_FORMAT.format(created));
-        sqLiteStatement.bindString(6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
-        sqLiteStatement.bindLong(7, version);
-        sqLiteStatement.bindString(8, valueType.name());
+        sqLiteBind(sqLiteStatement, 1, uid);
+        sqLiteBind(sqLiteStatement, 2, code);
+        sqLiteBind(sqLiteStatement, 3, name);
+        sqLiteBind(sqLiteStatement, 4, displayName);
+        sqLiteBind(sqLiteStatement, 5, BaseIdentifiableObject.DATE_FORMAT.format(created));
+        sqLiteBind(sqLiteStatement, 6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
+        sqLiteBind(sqLiteStatement, 7, version);
+        sqLiteBind(sqLiteStatement, 8, valueType.name());
 
         return sqLiteStatement.executeInsert();
     }

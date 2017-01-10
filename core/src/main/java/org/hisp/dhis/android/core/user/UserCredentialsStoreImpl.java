@@ -41,8 +41,8 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
         sqLiteBind(insertStatement, 2, code);
         sqLiteBind(insertStatement, 3, name);
         sqLiteBind(insertStatement, 4, displayName);
-        sqLiteBind(insertStatement, 5, BaseIdentifiableObject.DATE_FORMAT.format(created));
-        sqLiteBind(insertStatement, 6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
+        sqLiteBind(insertStatement, 5, created);
+        sqLiteBind(insertStatement, 6, lastUpdated);
         sqLiteBind(insertStatement, 7, username);
         sqLiteBind(insertStatement, 8, user);
 

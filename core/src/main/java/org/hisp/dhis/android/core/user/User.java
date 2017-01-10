@@ -39,9 +39,10 @@ import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 
 // TODO: Tests
 @AutoValue
@@ -192,11 +193,9 @@ public abstract class User extends BaseIdentifiableObject {
                 uid, code, name, displayName, created, lastUpdated, birthday, education, gender,
                 jobTitle, surname, firstName, introduction, employer, interests, languages, email,
                 phoneNumber, nationality, userCredentials,
-
-                // guarding collections from modification
-                orgUnits != null ? Collections.unmodifiableList(orgUnits) : null,
-                searchOrgUnits != null ? Collections.unmodifiableList(searchOrgUnits) : null,
-                dataViewOrgUnits != null ? Collections.unmodifiableList(dataViewOrgUnits) : null
+                safeUnmodifiableList(orgUnits),
+                safeUnmodifiableList(searchOrgUnits),
+                safeUnmodifiableList(dataViewOrgUnits)
         );
     }
 
@@ -253,17 +252,17 @@ public abstract class User extends BaseIdentifiableObject {
 //
 //        public User build() {
 //            if (organisationUnits() != null) {
-//                organisationUnits(Collections.unmodifiableList(
+//                organisationUnits(Collections.safeUnmodifiableList(
 //                        organisationUnits()));
 //            }
 //
 //            if (teiSearchOrganisationUnits() != null) {
-//                teiSearchOrganisationUnits(Collections.unmodifiableList(
+//                teiSearchOrganisationUnits(Collections.safeUnmodifiableList(
 //                        teiSearchOrganisationUnits()));
 //            }
 //
 //            if (dataViewOrganisationUnits() != null) {
-//                dataViewOrganisationUnits(Collections.unmodifiableList(
+//                dataViewOrganisationUnits(Collections.safeUnmodifiableList(
 //                        dataViewOrganisationUnits()));
 //            }
 //

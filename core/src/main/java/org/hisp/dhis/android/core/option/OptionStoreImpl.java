@@ -10,6 +10,8 @@ import org.hisp.dhis.android.core.option.OptionContract.Columns;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+
 public class OptionStoreImpl implements OptionStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.OPTION + " (" +
@@ -38,13 +40,13 @@ public class OptionStoreImpl implements OptionStore {
                        @NonNull String optionSet) {
         sqLiteStatement.clearBindings();
 
-        sqLiteStatement.bindString(1, uid);
-        sqLiteStatement.bindString(2, code);
-        sqLiteStatement.bindString(3, name);
-        sqLiteStatement.bindString(4, displayName);
-        sqLiteStatement.bindString(5, BaseIdentifiableObject.DATE_FORMAT.format(created));
-        sqLiteStatement.bindString(6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
-        sqLiteStatement.bindString(7, optionSet);
+        sqLiteBind(sqLiteStatement, 1, uid);
+        sqLiteBind(sqLiteStatement, 2, code);
+        sqLiteBind(sqLiteStatement, 3, name);
+        sqLiteBind(sqLiteStatement, 4, displayName);
+        sqLiteBind(sqLiteStatement, 5, created);
+        sqLiteBind(sqLiteStatement, 6, lastUpdated);
+        sqLiteBind(sqLiteStatement, 7, optionSet);
 
         return sqLiteStatement.executeInsert();
     }

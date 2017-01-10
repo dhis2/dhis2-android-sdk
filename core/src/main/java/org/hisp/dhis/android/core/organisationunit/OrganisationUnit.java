@@ -40,9 +40,10 @@ import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.program.Program;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 
 // TODO: Tests
 @AutoValue
@@ -113,11 +114,11 @@ public abstract class OrganisationUnit extends BaseNameableObject {
             @JsonProperty(CLOSED_DATE) Date closedDate,
             @JsonProperty(LEVEL) Integer level,
             @JsonProperty(PROGRAMS) List<Program> programs) {
+
         return new AutoValue_OrganisationUnit(uid, code, name, displayName, created, lastUpdated,
                 shortName, displayShortName, description, displayDescription, parent, path, openingDate,
-                closedDate, level, programs != null ? Collections.unmodifiableList(programs) : null);
+                closedDate, level, safeUnmodifiableList(programs));
     }
-
 
 //    public static Builder builder() {
 //        return new AutoValue_OrganisationUnit.Builder();
@@ -149,7 +150,7 @@ public abstract class OrganisationUnit extends BaseNameableObject {
 //
 //        public OrganisationUnit build() {
 //            if (programs() != null) {
-//                programs(Collections.unmodifiableList(programs()));
+//                programs(Collections.safeUnmodifiableList(programs()));
 //            }
 //
 //            return autoBuild();

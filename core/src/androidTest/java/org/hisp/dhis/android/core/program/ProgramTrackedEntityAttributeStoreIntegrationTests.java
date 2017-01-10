@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.program;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
-import android.support.annotation.NonNull;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -39,7 +38,6 @@ import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.option.OptionSetModelIntegrationTest;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModelIntegrationTests;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,8 +47,8 @@ import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
-
 
 @RunWith(AndroidJUnit4.class)
 public class ProgramTrackedEntityAttributeStoreIntegrationTests extends AbsStoreTestCase {
@@ -108,12 +106,10 @@ public class ProgramTrackedEntityAttributeStoreIntegrationTests extends AbsStore
                 OptionSetModelIntegrationTest.create(99L, "test_option_set_uid");
         database().insert(DbOpenHelper.Tables.OPTION_SET, null, optionSet);
 
-
         // insert test TrackedEntityAttribute to comply with foreign key constraint of ProgramTrackedEntityAttribute
         ContentValues trackedEntityAttribute =
-                TrackedEntityAttributeModelIntegrationTests.create(TRACKED_ENTITY_ATTRIBUTE_ID, TRACKED_ENTITY_ATTRIBUTE);
+                CreateUtils.createTrackedEntityAttributeWithoutOptionSet(TRACKED_ENTITY_ATTRIBUTE_ID, TRACKED_ENTITY_ATTRIBUTE);
         database().insert(DbOpenHelper.Tables.TRACKED_ENTITY_ATTRIBUTE, null, trackedEntityAttribute);
-
 
         long rowId = programTrackedEntityAttributeStore.insert(
                 UID,
@@ -149,11 +145,11 @@ public class ProgramTrackedEntityAttributeStoreIntegrationTests extends AbsStore
                         DISPLAY_SHORT_NAME,
                         DESCRIPTION,
                         DISPLAY_DESCRIPTION,
-                        getIntegerFromBoolean(MANDATORY),
+                        toInteger(MANDATORY),
                         TRACKED_ENTITY_ATTRIBUTE,
                         VALUE_TYPE,
-                        getIntegerFromBoolean(ALLOW_FUTURE_DATES),
-                        getIntegerFromBoolean(DISPLAY_IN_LIST))
+                        toInteger(ALLOW_FUTURE_DATES),
+                        toInteger(DISPLAY_IN_LIST))
                 .isExhausted();
     }
 
@@ -188,14 +184,4 @@ public class ProgramTrackedEntityAttributeStoreIntegrationTests extends AbsStore
 
         assertThat(database().isOpen()).isTrue();
     }
-
-    @NonNull
-    private Integer getIntegerFromBoolean(Boolean bool) {
-        if (bool) {
-            return 1;
-        }
-
-        return 0;
-    }
-
 }

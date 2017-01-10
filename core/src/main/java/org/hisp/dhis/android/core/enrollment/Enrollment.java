@@ -36,9 +36,10 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Enrollment.Builder.class)
@@ -143,9 +144,7 @@ public abstract class Enrollment {
         abstract List<TrackedEntityAttributeValue> trackedEntityAttributeValues();
 
         public Enrollment build() {
-            if (trackedEntityAttributeValues() != null) {
-                trackedEntityAttributeValues(Collections.unmodifiableList(trackedEntityAttributeValues()));
-            }
+            trackedEntityAttributeValues(safeUnmodifiableList(trackedEntityAttributeValues()));
             return autoBuild();
         }
     }

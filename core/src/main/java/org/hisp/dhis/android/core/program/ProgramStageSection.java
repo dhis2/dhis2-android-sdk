@@ -38,9 +38,10 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 
 @AutoValue
 public abstract class ProgramStageSection extends BaseIdentifiableObject {
@@ -61,7 +62,6 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject {
 
     public static final NestedField<ProgramStageSection, ProgramStageDataElement> programStageDataElements =
             NestedField.create(PROGRAM_STAGE_DATA_ELEMENTS);
-
 
     @Nullable
     @JsonProperty(SORT_ORDER)
@@ -86,12 +86,11 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject {
             @JsonProperty(SORT_ORDER) Integer sortOrder,
             @JsonProperty(PROGRAM_INDICATORS) List<ProgramIndicator> programIndicators,
             @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS) List<ProgramStageDataElement> programStageDataElements) {
+
         return new AutoValue_ProgramStageSection(
                 uid, code, name, displayName, created, lastUpdated, sortOrder,
-
-                // Guarding collections from modification
-                programIndicators != null ? Collections.unmodifiableList(programIndicators) : null,
-
-                programStageDataElements != null ? Collections.unmodifiableList(programStageDataElements) : null);
+                safeUnmodifiableList(programIndicators),
+                safeUnmodifiableList(programStageDataElements)
+        );
     }
 }

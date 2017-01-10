@@ -11,6 +11,8 @@ import org.hisp.dhis.android.core.user.AuthenticatedUserContract.Columns;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+
 public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
     private static final String[] PROJECTION = new String[]{
             Columns.ID, Columns.USER, Columns.CREDENTIALS
@@ -31,8 +33,8 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
     @Override
     public long insert(@NonNull String userUid, @NonNull String credentials) {
         insertRowStatement.clearBindings();
-        insertRowStatement.bindString(1, userUid);
-        insertRowStatement.bindString(2, credentials);
+        sqLiteBind(insertRowStatement, 1, userUid);
+        sqLiteBind(insertRowStatement, 2, credentials);
         return insertRowStatement.executeInsert();
     }
 

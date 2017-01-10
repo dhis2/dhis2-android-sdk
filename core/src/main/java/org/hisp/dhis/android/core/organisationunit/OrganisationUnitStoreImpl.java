@@ -5,11 +5,13 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract.Columns;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 
 import java.util.Date;
+
+import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.ORGANISATION_UNIT + " (" +
@@ -55,66 +57,21 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
             @Nullable Integer level) {
         sqLiteStatement.clearBindings();
 
-        sqLiteStatement.bindString(1, uid);
-        sqLiteStatement.bindString(2, code);
-        sqLiteStatement.bindString(3, name);
-        sqLiteStatement.bindString(4, displayName);
-        sqLiteStatement.bindString(5, BaseIdentifiableObject.DATE_FORMAT.format(created));
-        sqLiteStatement.bindString(6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
-
-        if (shortName != null) {
-            sqLiteStatement.bindString(7, shortName);
-        } else {
-            sqLiteStatement.bindNull(7);
-        }
-
-        if (displayShortName != null) {
-            sqLiteStatement.bindString(8, displayShortName);
-        } else {
-            sqLiteStatement.bindNull(8);
-        }
-
-        if (description != null) {
-            sqLiteStatement.bindString(9, description);
-        } else {
-            sqLiteStatement.bindNull(9);
-        }
-
-        if (displayDescription != null) {
-            sqLiteStatement.bindString(10, displayDescription);
-        } else {
-            sqLiteStatement.bindNull(10);
-        }
-
-        if (path != null) {
-            sqLiteStatement.bindString(11, path);
-        } else {
-            sqLiteStatement.bindNull(11);
-        }
-
-        if (openingDate != null) {
-            sqLiteStatement.bindString(12, BaseIdentifiableObject.DATE_FORMAT.format(openingDate));
-        } else {
-            sqLiteStatement.bindNull(12);
-        }
-
-        if (closedDate != null) {
-            sqLiteStatement.bindString(13, BaseIdentifiableObject.DATE_FORMAT.format(closedDate));
-        } else {
-            sqLiteStatement.bindNull(13);
-        }
-
-        if (level != null) {
-            sqLiteStatement.bindLong(14, level);
-        } else {
-            sqLiteStatement.bindNull(14);
-        }
-
-        if (parent != null) {
-            sqLiteStatement.bindString(15, parent);
-        } else {
-            sqLiteStatement.bindNull(15);
-        }
+        sqLiteBind(sqLiteStatement, 1, uid);
+        sqLiteBind(sqLiteStatement, 2, code);
+        sqLiteBind(sqLiteStatement, 3, name);
+        sqLiteBind(sqLiteStatement, 4, displayName);
+        sqLiteBind(sqLiteStatement, 5,created);
+        sqLiteBind(sqLiteStatement, 6,lastUpdated);
+        sqLiteBind(sqLiteStatement, 7, shortName);
+        sqLiteBind(sqLiteStatement, 8, displayShortName);
+        sqLiteBind(sqLiteStatement, 9, description);
+        sqLiteBind(sqLiteStatement, 10, displayDescription);
+        sqLiteBind(sqLiteStatement, 11, path);
+        sqLiteBind(sqLiteStatement, 12,openingDate);
+        sqLiteBind(sqLiteStatement, 13,closedDate);
+        sqLiteBind(sqLiteStatement, 14, level);
+        sqLiteBind(sqLiteStatement, 15, parent);
 
         return sqLiteStatement.executeInsert();
     }

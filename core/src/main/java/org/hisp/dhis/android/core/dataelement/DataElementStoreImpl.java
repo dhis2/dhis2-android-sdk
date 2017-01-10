@@ -12,6 +12,8 @@ import org.hisp.dhis.android.core.dataelement.DataElementContract.Columns;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+
 public class DataElementStoreImpl implements DataElementStore {
 
     public static final String INSERT_STATEMENT = "INSERT INTO " + Tables.DATA_ELEMENT + " (" +
@@ -54,93 +56,25 @@ public class DataElementStoreImpl implements DataElementStore {
                        @Nullable String displayFormName, @Nullable String optionSet) {
         sqLiteStatement.clearBindings();
 
-        sqLiteStatement.bindString(1, uid);
-        if (code == null) {
-            sqLiteStatement.bindNull(2);
-
-        } else {
-            sqLiteStatement.bindString(2, code);
-        }
-
-        sqLiteStatement.bindString(3, name);
-        sqLiteStatement.bindString(4, displayName);
-        sqLiteStatement.bindString(5, BaseIdentifiableObject.DATE_FORMAT.format(created));
-        sqLiteStatement.bindString(6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
-
-        if (shortName == null) {
-            sqLiteStatement.bindNull(7);
-        } else {
-            sqLiteStatement.bindString(7, shortName);
-        }
-
-        if (displayShortName == null) {
-            sqLiteStatement.bindNull(8);
-        } else {
-            sqLiteStatement.bindString(8, displayShortName);
-        }
-
-        if (description == null) {
-            sqLiteStatement.bindNull(9);
-        } else {
-            sqLiteStatement.bindString(9, description);
-        }
-
-        if (displayDescription == null) {
-            sqLiteStatement.bindNull(10);
-        } else {
-            sqLiteStatement.bindString(10, displayDescription);
-        }
-
-        sqLiteStatement.bindString(11, valueType.name());
-
-        if (zeroIsSignificant == null) {
-            sqLiteStatement.bindNull(12);
-        } else {
-            sqLiteStatement.bindLong(12, zeroIsSignificant ? 1 : 0);
-        }
-
-        if (aggregationOperator == null) {
-            sqLiteStatement.bindNull(13);
-        } else {
-            sqLiteStatement.bindString(13, aggregationOperator);
-        }
-
-        if (formName == null) {
-            sqLiteStatement.bindNull(14);
-        } else {
-            sqLiteStatement.bindString(14, formName);
-        }
-
-        if (numberType == null) {
-            sqLiteStatement.bindNull(15);
-        } else {
-            sqLiteStatement.bindString(15, numberType);
-        }
-
-        if (domainType == null) {
-            sqLiteStatement.bindNull(16);
-        } else {
-            sqLiteStatement.bindString(16, domainType);
-        }
-
-        if (dimension == null) {
-            sqLiteStatement.bindNull(17);
-        } else {
-            sqLiteStatement.bindString(17, dimension);
-        }
-
-        if (displayFormName == null) {
-            sqLiteStatement.bindNull(18);
-        } else {
-            sqLiteStatement.bindString(18, displayFormName);
-        }
-
-        if (optionSet == null) {
-            sqLiteStatement.bindNull(19);
-        } else {
-            sqLiteStatement.bindString(19, optionSet);
-        }
-
+        sqLiteBind(sqLiteStatement, 1, uid);
+        sqLiteBind(sqLiteStatement, 2, code);
+        sqLiteBind(sqLiteStatement, 3, name);
+        sqLiteBind(sqLiteStatement, 4, displayName);
+        sqLiteBind(sqLiteStatement, 5, created);
+        sqLiteBind(sqLiteStatement, 6, lastUpdated);
+        sqLiteBind(sqLiteStatement, 7, shortName);
+        sqLiteBind(sqLiteStatement, 8, displayShortName);
+        sqLiteBind(sqLiteStatement, 9, description);
+        sqLiteBind(sqLiteStatement, 10, displayDescription);
+        sqLiteBind(sqLiteStatement, 11, valueType.name());
+        sqLiteBind(sqLiteStatement, 12, zeroIsSignificant);
+        sqLiteBind(sqLiteStatement, 13, aggregationOperator);
+        sqLiteBind(sqLiteStatement, 14, formName);
+        sqLiteBind(sqLiteStatement, 15, numberType);
+        sqLiteBind(sqLiteStatement, 16, domainType);
+        sqLiteBind(sqLiteStatement, 17, dimension);
+        sqLiteBind(sqLiteStatement, 18, displayFormName);
+        sqLiteBind(sqLiteStatement, 19, optionSet);
 
         return sqLiteStatement.executeInsert();
     }

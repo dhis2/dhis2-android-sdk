@@ -37,9 +37,10 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.FormType;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 
 @AutoValue
 public abstract class ProgramStage extends BaseIdentifiableObject {
@@ -159,17 +160,34 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
             @JsonProperty(MIN_DAYS_FROM_START) Integer minDaysFromStart,
             @JsonProperty(STANDARD_INTERVAL) Integer standardInterval,
             @JsonProperty(PROGRAM_STAGE_SECTIONS) List<ProgramStageSection> programStageSections,
-            @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS) List<ProgramStageDataElement> programStageDataElements) {
-        return new AutoValue_ProgramStage(uid, code, name, displayName, created, lastUpdated,
-                executionDateLabel, allowGenerateNextVisit, validCompleteOnly,
-                reportDateToUse, openAfterEnrollment, repeatable, captureCoordinates,
-                formType, displayGenerateEventBox, generatedByEnrollmentDate, autoGenerateEvent,
-                sortOrder, hideDueDate, blockEntryForm, minDaysFromStart, standardInterval,
+            @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS) List<ProgramStageDataElement> programStageDataElements
+    ) {
 
-                // Guarding collections from modification
-                programStageSections != null ? Collections.unmodifiableList(programStageSections) : null,
-
-                programStageDataElements != null ? Collections.unmodifiableList(programStageDataElements) : null
+        return new AutoValue_ProgramStage(
+                uid,
+                code,
+                name,
+                displayName,
+                created,
+                lastUpdated,
+                executionDateLabel,
+                allowGenerateNextVisit,
+                validCompleteOnly,
+                reportDateToUse,
+                openAfterEnrollment,
+                repeatable,
+                captureCoordinates,
+                formType,
+                displayGenerateEventBox,
+                generatedByEnrollmentDate,
+                autoGenerateEvent,
+                sortOrder,
+                hideDueDate,
+                blockEntryForm,
+                minDaysFromStart,
+                standardInterval,
+                safeUnmodifiableList(programStageSections),
+                safeUnmodifiableList(programStageDataElements)
         );
     }
 }

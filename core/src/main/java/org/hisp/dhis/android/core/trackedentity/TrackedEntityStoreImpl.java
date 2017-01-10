@@ -38,6 +38,8 @@ import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+
 public class TrackedEntityStoreImpl implements TrackedEntityStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + DbOpenHelper.Tables.TRACKED_ENTITY + " (" +
             TrackedEntityContract.Columns.UID + ", " +
@@ -67,41 +69,16 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
 
         insertRowStatement.clearBindings();
 
-        insertRowStatement.bindString(1, uid);
-
-        if (code != null) {
-            insertRowStatement.bindString(2, code);
-        } else {
-            insertRowStatement.bindNull(2);
-        }
-        insertRowStatement.bindString(3, name);
-        insertRowStatement.bindString(4, displayName);
-        insertRowStatement.bindString(5, BaseIdentifiableObject.DATE_FORMAT.format(created));
-        insertRowStatement.bindString(6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
-
-        if (shortName != null) {
-            insertRowStatement.bindString(7, shortName);
-        } else {
-            insertRowStatement.bindNull(7);
-        }
-
-        if (displayShortName != null) {
-            insertRowStatement.bindString(8, displayShortName);
-        } else {
-            insertRowStatement.bindNull(8);
-        }
-
-        if (description != null) {
-            insertRowStatement.bindString(9, description);
-        } else {
-            insertRowStatement.bindNull(9);
-        }
-
-        if (displayDescription != null) {
-            insertRowStatement.bindString(10, displayDescription);
-        } else {
-            insertRowStatement.bindNull(10);
-        }
+        sqLiteBind(insertRowStatement, 1, uid);
+        sqLiteBind(insertRowStatement, 2, code);
+        sqLiteBind(insertRowStatement, 3, name);
+        sqLiteBind(insertRowStatement, 4, displayName);
+        sqLiteBind(insertRowStatement, 5, BaseIdentifiableObject.DATE_FORMAT.format(created));
+        sqLiteBind(insertRowStatement, 6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
+        sqLiteBind(insertRowStatement, 7, shortName);
+        sqLiteBind(insertRowStatement, 8, displayShortName);
+        sqLiteBind(insertRowStatement, 9, description);
+        sqLiteBind(insertRowStatement, 10, displayDescription);
 
         return insertRowStatement.executeInsert();
     }

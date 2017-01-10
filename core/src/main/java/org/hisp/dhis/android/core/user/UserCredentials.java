@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.user;
 
-
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -39,9 +38,10 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 
 // TODO: Tests
 @AutoValue
@@ -77,7 +77,7 @@ public abstract class UserCredentials extends BaseIdentifiableObject {
             @JsonProperty(USERNAME) String username,
             @JsonProperty(USER_ROLES) List<UserRole> userRoles) {
         return new AutoValue_UserCredentials(uid, code, name, displayName, created, lastUpdated, username,
-                userRoles != null ? Collections.unmodifiableList(userRoles) : null
+                safeUnmodifiableList(userRoles)
         );
     }
 
@@ -100,7 +100,7 @@ public abstract class UserCredentials extends BaseIdentifiableObject {
 //
 //        public UserCredentials build() {
 //            if (userRoles() != null) {
-//                userRoles(Collections.unmodifiableList(userRoles()));
+//                userRoles(Collections.safeUnmodifiableList(userRoles()));
 //            }
 //
 //            return autoBuild();

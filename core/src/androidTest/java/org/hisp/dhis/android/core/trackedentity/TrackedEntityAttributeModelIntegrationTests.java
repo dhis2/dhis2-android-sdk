@@ -35,6 +35,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.program.CreateUtils;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,36 +72,6 @@ public class TrackedEntityAttributeModelIntegrationTests {
 
     // used for timestamps
     private static final String DATE = "2011-12-24T12:24:25.203";
-
-    public static ContentValues create(long id, String uid) throws ParseException {
-        TrackedEntityAttributeModel trackedEntityAttributeModel = TrackedEntityAttributeModel.builder()
-                .id(id)
-                .uid(uid)
-                .code(CODE)
-                .name(NAME)
-                .displayName(DISPLAY_NAME)
-                .created(BaseIdentifiableObject.DATE_FORMAT.parse(DATE))
-                .lastUpdated(BaseIdentifiableObject.DATE_FORMAT.parse(DATE))
-                .shortName(SHORT_NAME)
-                .displayShortName(DISPLAY_SHORT_NAME)
-                .description(DESCRIPTION)
-                .displayDescription(DISPLAY_DESCRIPTION)
-                .pattern(PATTERN)
-                .sortOrderInListNoProgram(SORT_ORDER_IN_LIST_NO_PROGRAM)
-                .optionSet(OPTION_SET)
-                .valueType(VALUE_TYPE)
-                .expression(EXPRESSION)
-                .searchScope(SEARCH_SCOPE)
-                .programScope(getBooleanFromInteger(PROGRAM_SCOPE))
-                .displayInListNoProgram(getBooleanFromInteger(DISPLAY_IN_LIST_NO_PROGRAM))
-                .generated(getBooleanFromInteger(GENERATED))
-                .displayOnVisitSchedule(getBooleanFromInteger(DISPLAY_ON_VISIT_SCHEDULE))
-                .orgUnitScope(getBooleanFromInteger(ORG_UNIT_SCOPE))
-                .unique(getBooleanFromInteger(UNIQUE))
-                .inherit(getBooleanFromInteger(INHERIT))
-                .build();
-        return trackedEntityAttributeModel.toContentValues();
-    }
 
     @Test
     public void create_shouldConvertToModel() throws ParseException {
@@ -175,7 +146,7 @@ public class TrackedEntityAttributeModelIntegrationTests {
     }
 
     @NonNull
-    private static boolean getBooleanFromInteger(Integer integer) {
+    public static boolean getBooleanFromInteger(Integer integer) {
         if (integer == 1) {
             return true;
         }
@@ -186,7 +157,7 @@ public class TrackedEntityAttributeModelIntegrationTests {
     @Test
     public void toContentValues_shouldConvertToContentValues() throws ParseException {
 
-        ContentValues contentValues = create(ID, UID);
+        ContentValues contentValues = CreateUtils.createTrackedEntityAttributeWithOptionSet(ID, UID, OPTION_SET);
 
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
         assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);

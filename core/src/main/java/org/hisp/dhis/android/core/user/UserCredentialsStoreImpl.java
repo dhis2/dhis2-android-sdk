@@ -10,6 +10,8 @@ import org.hisp.dhis.android.core.user.UserCredentialsContract.Columns;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+
 public class UserCredentialsStoreImpl implements UserCredentialsStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.USER_CREDENTIALS + " (" +
             Columns.UID + ", " +
@@ -35,14 +37,14 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
             @NonNull String username, @NonNull String user) {
         insertStatement.clearBindings();
 
-        insertStatement.bindString(1, uid);
-        insertStatement.bindString(2, code);
-        insertStatement.bindString(3, name);
-        insertStatement.bindString(4, displayName);
-        insertStatement.bindString(5, BaseIdentifiableObject.DATE_FORMAT.format(created));
-        insertStatement.bindString(6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
-        insertStatement.bindString(7, username);
-        insertStatement.bindString(8, user);
+        sqLiteBind(insertStatement, 1, uid);
+        sqLiteBind(insertStatement, 2, code);
+        sqLiteBind(insertStatement, 3, name);
+        sqLiteBind(insertStatement, 4, displayName);
+        sqLiteBind(insertStatement, 5, created);
+        sqLiteBind(insertStatement, 6, lastUpdated);
+        sqLiteBind(insertStatement, 7, username);
+        sqLiteBind(insertStatement, 8, user);
 
         return insertStatement.executeInsert();
     }

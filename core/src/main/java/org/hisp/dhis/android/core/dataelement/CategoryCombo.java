@@ -36,8 +36,9 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 
-import java.util.Collections;
 import java.util.List;
+
+import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 
 // TODO: Unit tests
 @AutoValue
@@ -73,10 +74,7 @@ public abstract class CategoryCombo extends BaseIdentifiableObject {
         abstract CategoryCombo autoBuild();
 
         public CategoryCombo build() {
-            if (categories() != null) {
-                categories(Collections.unmodifiableList(categories()));
-            }
-
+            categories(safeUnmodifiableList(categories()));
             return autoBuild();
         }
     }

@@ -11,6 +11,8 @@ import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+
 public class ConstantStoreImpl implements ConstantStore {
 
     public static final String INSERT_STATEMENT = "INSERT INTO " + Tables.CONSTANT + " (" +
@@ -35,46 +37,13 @@ public class ConstantStoreImpl implements ConstantStore {
     public long insert(@Nullable String uid, @Nullable String code, @NonNull String name, @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated, @NonNull Double value) {
         insertStatement.clearBindings();
 
-
-        if (uid != null) {
-            insertStatement.bindString(1, uid);
-        } else {
-            insertStatement.bindNull(1);
-        }
-
-
-        if (code != null) {
-            insertStatement.bindString(2, code);
-        } else {
-            insertStatement.bindNull(2);
-        }
-
-
-        insertStatement.bindString(3, name);
-
-
-        if (displayName != null) {
-            insertStatement.bindString(4, displayName);
-        } else {
-            insertStatement.bindNull(4);
-        }
-
-
-        if (created != null) {
-            insertStatement.bindString(5, BaseIdentifiableObject.DATE_FORMAT.format(created));
-        } else {
-            insertStatement.bindNull(5);
-        }
-
-
-        if (lastUpdated != null) {
-            insertStatement.bindString(6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
-        } else {
-            insertStatement.bindNull(6);
-        }
-
-
-        insertStatement.bindDouble(7, value);
+        sqLiteBind(insertStatement, 1, uid);
+        sqLiteBind(insertStatement, 2, code);
+        sqLiteBind(insertStatement, 3, name);
+        sqLiteBind(insertStatement, 4, displayName);
+        sqLiteBind(insertStatement, 5, created);
+        sqLiteBind(insertStatement, 6, lastUpdated);
+        sqLiteBind(insertStatement, 7, value);
 
         return insertStatement.executeInsert();
     }

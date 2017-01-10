@@ -12,6 +12,7 @@ import org.hisp.dhis.android.core.option.OptionContract;
 import org.hisp.dhis.android.core.option.OptionSetContract;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
 import org.hisp.dhis.android.core.program.ProgramContract;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableContract;
 import org.hisp.dhis.android.core.program.ProgramStageContract;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementContract;
 import org.hisp.dhis.android.core.program.ProgramStageSectionContract;
@@ -47,6 +48,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String PROGRAM_STAGE_DATA_ELEMENT = "ProgramStageDataElement";
         String PROGRAM_STAGE_SECTION = "ProgramStageSection";
         String PROGRAM_STAGE = "ProgramStage";
+        String PROGRAM_RULE_VARIABLE = "ProgramRuleVariable";
         String RELATIONSHIP_TABLE = "Relationship";
         String RELATIONSHIP_TYPE = "RelationshipType";
         String TRACKED_ENTITY_ATTRIBUTE = "TrackedEntityAttribute";
@@ -320,6 +322,31 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             " REFERENCES " + Tables.PROGRAM + " (" + ProgramContract.Columns.UID + ")" +
             ");";
 
+    private static final String CREATE_PROGRAM_RULE_VARIABLE_TABLE = "CREATE TABLE " +
+            Tables.PROGRAM_RULE_VARIABLE + " (" +
+            ProgramRuleVariableContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramRuleVariableContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ProgramRuleVariableContract.Columns.CODE + " TEXT," +
+            ProgramRuleVariableContract.Columns.NAME + " TEXT," +
+            ProgramRuleVariableContract.Columns.DISPLAY_NAME + " TEXT," +
+            ProgramRuleVariableContract.Columns.CREATED + " TEXT," +
+            ProgramRuleVariableContract.Columns.LAST_UPDATED + " TEXT," +
+            ProgramRuleVariableContract.Columns.USE_CODE_FOR_OPTION_SET + " INTEGER," +
+            ProgramRuleVariableContract.Columns.PROGRAM + " TEXT NOT NULL," +
+            ProgramRuleVariableContract.Columns.PROGRAM_STAGE + " TEXT," +
+            ProgramRuleVariableContract.Columns.DATA_ELEMENT + " TEXT," +
+            ProgramRuleVariableContract.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT," +
+            ProgramRuleVariableContract.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE + " TEXT," +
+            " FOREIGN KEY (" + ProgramRuleVariableContract.Columns.PROGRAM + ")" +
+            " REFERENCES " + Tables.PROGRAM + " (" + ProgramContract.Columns.UID + ")," +
+            " FOREIGN KEY (" + ProgramRuleVariableContract.Columns.PROGRAM_STAGE + ")" +
+            " REFERENCES " + Tables.PROGRAM_STAGE + " (" + ProgramStageContract.Columns.UID + ")," +
+            " FOREIGN KEY (" + ProgramRuleVariableContract.Columns.TRACKED_ENTITY_ATTRIBUTE + ")" +
+            " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE + " (" + TrackedEntityAttributeContract.Columns.UID + ")," +
+            " FOREIGN KEY (" + ProgramRuleVariableContract.Columns.DATA_ELEMENT + ")" +
+            " REFERENCES " + Tables.DATA_ELEMENT + " (" + DataElementContract.Columns.UID + ")" +
+            ");";
+
     private static final String CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE = "CREATE TABLE " +
             Tables.TRACKED_ENTITY_ATTRIBUTE + " (" +
             TrackedEntityAttributeContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -385,6 +412,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ConstantContract.Columns.VALUE + " REAL" +
             ");";
 
+
     /**
      * This method should be used only for testing purposes
      */
@@ -411,6 +439,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_RELATIONSHIP_TYPE_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_SECTION_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_TABLE);
+        database.execSQL(CREATE_PROGRAM_RULE_VARIABLE_TABLE);
         database.execSQL(CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE);
         database.execSQL(CREATE_PROGRAM_TRACKED_ENTITY_ATTRIBUTE_TABLE);
         database.execSQL(CREATE_CONSTANT_TABLE);

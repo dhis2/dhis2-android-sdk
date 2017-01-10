@@ -11,6 +11,8 @@ import org.hisp.dhis.android.core.user.UserContract.Columns;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+
 public class UserStoreImpl implements UserStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + DbOpenHelper.Tables.USER + " (" +
             Columns.UID + ", " +
@@ -50,97 +52,28 @@ public class UserStoreImpl implements UserStore {
             @Nullable String introduction, @Nullable String employer, @Nullable String interests,
             @Nullable String languages, @Nullable String email, @Nullable String phoneNumber,
             @Nullable String nationality) {
+
         insertRowStatement.clearBindings();
 
-        insertRowStatement.bindString(1, uid);
-
-        if (code != null) {
-            insertRowStatement.bindString(2, code);
-        } else {
-            insertRowStatement.bindNull(2);
-        }
-        insertRowStatement.bindString(3, name);
-        insertRowStatement.bindString(4, displayName);
-        insertRowStatement.bindString(5, BaseIdentifiableObject.DATE_FORMAT.format(created));
-        insertRowStatement.bindString(6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
-
-        if (birthday != null) {
-            insertRowStatement.bindString(7, birthday);
-        } else {
-            insertRowStatement.bindNull(7);
-        }
-
-        if (education != null) {
-            insertRowStatement.bindString(8, education);
-        } else {
-            insertRowStatement.bindNull(8);
-        }
-
-        if (gender != null) {
-            insertRowStatement.bindString(9, gender);
-        } else {
-            insertRowStatement.bindNull(9);
-        }
-
-        if (jobTitle != null) {
-            insertRowStatement.bindString(10, jobTitle);
-        } else {
-            insertRowStatement.bindNull(10);
-        }
-
-        if (surname != null) {
-            insertRowStatement.bindString(11, surname);
-        } else {
-            insertRowStatement.bindNull(11);
-        }
-
-        if (firstName != null) {
-            insertRowStatement.bindString(12, firstName);
-        } else {
-            insertRowStatement.bindNull(12);
-        }
-
-        if (introduction != null) {
-            insertRowStatement.bindString(13, introduction);
-        } else {
-            insertRowStatement.bindNull(13);
-        }
-
-        if (employer != null) {
-            insertRowStatement.bindString(14, employer);
-        } else {
-            insertRowStatement.bindNull(14);
-        }
-
-        if (interests != null) {
-            insertRowStatement.bindString(15, interests);
-        } else {
-            insertRowStatement.bindNull(15);
-        }
-
-        if (languages != null) {
-            insertRowStatement.bindString(16, languages);
-        } else {
-            insertRowStatement.bindNull(16);
-        }
-
-        if (email != null) {
-            insertRowStatement.bindString(17, email);
-        } else {
-            insertRowStatement.bindNull(17);
-        }
-
-        if (phoneNumber != null) {
-            insertRowStatement.bindString(18, phoneNumber);
-        } else {
-            insertRowStatement.bindNull(18);
-        }
-
-        if (nationality != null) {
-            insertRowStatement.bindString(19, nationality);
-        } else {
-            insertRowStatement.bindNull(19);
-        }
+        sqLiteBind(insertRowStatement, 1, uid);
+        sqLiteBind(insertRowStatement, 2, code);
+        sqLiteBind(insertRowStatement, 3, name);
+        sqLiteBind(insertRowStatement, 4, displayName);
+        sqLiteBind(insertRowStatement, 5, created);
+        sqLiteBind(insertRowStatement, 6, lastUpdated);
+        sqLiteBind(insertRowStatement, 7, birthday);
+        sqLiteBind(insertRowStatement, 8, education);
+        sqLiteBind(insertRowStatement, 9, gender);
+        sqLiteBind(insertRowStatement, 10, jobTitle);
+        sqLiteBind(insertRowStatement, 11, surname);
+        sqLiteBind(insertRowStatement, 12, firstName);
+        sqLiteBind(insertRowStatement, 13, introduction);
+        sqLiteBind(insertRowStatement, 14, employer);
+        sqLiteBind(insertRowStatement, 15, interests);
+        sqLiteBind(insertRowStatement, 16, languages);
+        sqLiteBind(insertRowStatement, 17, email);
+        sqLiteBind(insertRowStatement, 18, phoneNumber);
+        sqLiteBind(insertRowStatement, 19, nationality);
 
         return insertRowStatement.executeInsert();
     }

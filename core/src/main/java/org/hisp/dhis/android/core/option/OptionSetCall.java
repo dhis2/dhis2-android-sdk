@@ -61,7 +61,7 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
         Filter<OptionSet> optionSetFilter = Filter.<OptionSet>builder().fields(OptionSet.uid,
                 OptionSet.code, OptionSet.name, OptionSet.displayName,
                 OptionSet.created, OptionSet.lastUpdated,
-                OptionSet.version, OptionSet.value_type,
+                OptionSet.version, OptionSet.valueType,
                 OptionSet.options.with(Option.uid, Option.code, Option.created,
                         Option.name, Option.displayName, Option.created,
                         Option.lastUpdated)).build();

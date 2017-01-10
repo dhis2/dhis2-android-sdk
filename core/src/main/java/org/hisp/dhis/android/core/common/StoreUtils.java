@@ -89,4 +89,20 @@ public class StoreUtils {
             sqLiteStatement.bindString(index, arg.toString());
         }
     }
+
+    /**
+     * Handle if Double argument is null and bind it using .bindNull() if so.
+     * A helper function to abstract/clean up boilerplate if/else bloat..
+     *
+     * @param sqLiteStatement
+     * @param index
+     * @param arg
+     */
+    public static void sqLiteBind(SQLiteStatement sqLiteStatement, int index, Double arg) {
+        if (arg == null) {
+            sqLiteStatement.bindNull(index);
+        } else {
+            sqLiteStatement.bindDouble(index, arg);
+        }
+    }
 }

@@ -12,6 +12,7 @@ import org.hisp.dhis.android.core.option.OptionContract;
 import org.hisp.dhis.android.core.option.OptionSetContract;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
 import org.hisp.dhis.android.core.program.ProgramContract;
+import org.hisp.dhis.android.core.program.ProgramIndicatorContract;
 import org.hisp.dhis.android.core.program.ProgramStageContract;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementContract;
 import org.hisp.dhis.android.core.program.ProgramStageSectionContract;
@@ -52,6 +53,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String TRACKED_ENTITY_ATTRIBUTE = "TrackedEntityAttribute";
         String PROGRAM_TRACKED_ENTITY_ATTRIBUTE = "ProgramTrackedEntityAttribute";
         String CONSTANT = "Constant";
+        String PROGRAM_INDICATOR = "ProgramIndicator";
     }
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + Tables.USER + " (" +
@@ -385,6 +387,25 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ConstantContract.Columns.VALUE + " REAL" +
             ");";
 
+    private static final String CREATE_PROGRAM_INDICATOR_TABLE = "CREATE TABLE " + Tables.PROGRAM_INDICATOR + " (" +
+            ProgramIndicatorContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramIndicatorContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ProgramIndicatorContract.Columns.CODE + " TEXT," +
+            ProgramIndicatorContract.Columns.NAME + " TEXT," +
+            ProgramIndicatorContract.Columns.DISPLAY_NAME + " TEXT," +
+            ProgramIndicatorContract.Columns.CREATED + " TEXT," +
+            ProgramIndicatorContract.Columns.LAST_UPDATED + " TEXT," +
+            ProgramIndicatorContract.Columns.SHORT_NAME + " TEXT," +
+            ProgramIndicatorContract.Columns.DISPLAY_SHORT_NAME + " TEXT," +
+            ProgramIndicatorContract.Columns.DESCRIPTION + " TEXT," +
+            ProgramIndicatorContract.Columns.DISPLAY_DESCRIPTION + " TEXT," +
+            ProgramIndicatorContract.Columns.DISPLAY_IN_FORM + " INTEGER," +
+            ProgramIndicatorContract.Columns.EXPRESSION + " TEXT," +
+            ProgramIndicatorContract.Columns.DIMENSION_ITEM + " TEXT," +
+            ProgramIndicatorContract.Columns.FILTER + " TEXT," +
+            ProgramIndicatorContract.Columns.DECIMALS + " INTEGER" +
+            ");";
+
     /**
      * This method should be used only for testing purposes
      */
@@ -414,6 +435,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE);
         database.execSQL(CREATE_PROGRAM_TRACKED_ENTITY_ATTRIBUTE_TABLE);
         database.execSQL(CREATE_CONSTANT_TABLE);
+        database.execSQL(CREATE_PROGRAM_INDICATOR_TABLE);
         return database;
     }
 

@@ -50,7 +50,7 @@ public class RelationshipStoreIntegrationTests extends AbsStoreTestCase {
         database().insert(Tables.RELATIONSHIP_TYPE, null, relationshipType);
 
         // The test itself:
-        Long rowId = relationshipStore.insert(
+        long rowId = relationshipStore.insert(
                 TRACKED_ENTITY_INSTANCE_A,
                 TRACKED_ENTITY_INSTANCE_B,
                 RELATIONSHIP_TYPE
@@ -79,7 +79,7 @@ public class RelationshipStoreIntegrationTests extends AbsStoreTestCase {
         );
         database().insert(Tables.RELATIONSHIP_TYPE, null, relationshipType);
 
-        Long rowId = relationshipStore.insert(null, null, RELATIONSHIP_TYPE);
+        long rowId = relationshipStore.insert(null, null, RELATIONSHIP_TYPE);
         Cursor cursor = database().query(Tables.RELATIONSHIP_TABLE, RELATIONSHIP_PROJECTION,
                 null, null, null, null, null, null);
 

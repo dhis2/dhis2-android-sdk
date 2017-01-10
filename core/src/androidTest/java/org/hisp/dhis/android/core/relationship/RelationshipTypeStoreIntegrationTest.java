@@ -56,7 +56,7 @@ public class RelationshipTypeStoreIntegrationTest extends AbsStoreTestCase {
 
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
-        Long rowId = relationshipTypeStore.insert(
+        long rowId = relationshipTypeStore.insert(
                 UID,
                 CODE,
                 NAME,
@@ -89,7 +89,7 @@ public class RelationshipTypeStoreIntegrationTest extends AbsStoreTestCase {
     public void insert_shouldPersistRelationshipTypeNullableInDatabase() throws ParseException {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
-        Long rowId = relationshipTypeStore.insert(
+        long rowId = relationshipTypeStore.insert(
                 UID,
                 null,
                 NAME,

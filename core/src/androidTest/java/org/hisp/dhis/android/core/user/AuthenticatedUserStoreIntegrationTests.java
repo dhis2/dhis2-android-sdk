@@ -17,6 +17,12 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
+    private static final String[] PROJECTION = {
+            AuthenticatedUserContract.Columns.ID,
+            AuthenticatedUserContract.Columns.USER,
+            AuthenticatedUserContract.Columns.CREDENTIALS,
+    };
+
     private AuthenticatedUserStore authenticatedUserStore;
 
     @Before
@@ -36,7 +42,7 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
         long rowId = authenticatedUserStore.insert("test_user_uid", "test_user_credentials");
 
         Cursor cursor = database().query(DbOpenHelper.Tables.AUTHENTICATED_USER,
-                null, null, null, null, null, null);
+                PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor)

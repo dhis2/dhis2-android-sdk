@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
+import org.hisp.dhis.android.core.configuration.ConfigurationContract;
 import org.hisp.dhis.android.core.constant.ConstantContract;
 import org.hisp.dhis.android.core.dataelement.DataElementContract;
 import org.hisp.dhis.android.core.option.OptionContract;
@@ -27,13 +28,11 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkContract;
 
 public final class DbOpenHelper extends SQLiteOpenHelper {
 
-    // @VisibleForTesting
-    // static final String NAME = "dhis.db";
-
     @VisibleForTesting
     static final int VERSION = 1;
 
     public interface Tables {
+        String CONFIGURATION = "Configuration";
         String USER = "User";
         String USER_CREDENTIALS = "UserCredentials";
         String ORGANISATION_UNIT = "OrganisationUnit";
@@ -53,6 +52,11 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String PROGRAM_TRACKED_ENTITY_ATTRIBUTE = "ProgramTrackedEntityAttribute";
         String CONSTANT = "Constant";
     }
+
+    private static final String CREATE_CONFIGURATION_TABLE = "CREATE TABLE " + Tables.CONFIGURATION + " (" +
+            ConfigurationContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ConfigurationContract.Columns.SERVER_URL + " TEXT NOT NULL UNIQUE" +
+            ");";
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + Tables.USER + " (" +
             UserContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -396,6 +400,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
     }
 
     private static SQLiteDatabase create(SQLiteDatabase database) {
+        database.execSQL(CREATE_CONFIGURATION_TABLE);
         database.execSQL(CREATE_USER_TABLE);
         database.execSQL(CREATE_USER_CREDENTIALS_TABLE);
         database.execSQL(CREATE_ORGANISATION_UNITS_TABLE);

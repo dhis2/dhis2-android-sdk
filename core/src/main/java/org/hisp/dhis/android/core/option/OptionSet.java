@@ -57,7 +57,7 @@ public abstract class OptionSet extends BaseIdentifiableObject {
     public static final Field<OptionSet, String> created = Field.create(CREATED);
     public static final Field<OptionSet, String> lastUpdated = Field.create(LAST_UPDATED);
     public static final Field<OptionSet, String> version = Field.create(VERSION);
-    public static final Field<OptionSet, String> value_type = Field.create(VALUE_TYPE);
+    public static final Field<OptionSet, String> valueType = Field.create(VALUE_TYPE);
     public static final NestedField<OptionSet, Option> options = NestedField.create(OPTIONS);
 
     @Nullable
@@ -84,6 +84,7 @@ public abstract class OptionSet extends BaseIdentifiableObject {
             @JsonProperty(VERSION) Integer version,
             @JsonProperty(VALUE_TYPE) ValueType valueType,
             @JsonProperty(OPTIONS) List<Option> options) {
+
         return new AutoValue_OptionSet(uid, code, name, displayName, created,
                 lastUpdated, version, valueType,
 

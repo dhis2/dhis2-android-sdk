@@ -16,6 +16,7 @@ import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
@@ -146,19 +147,19 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
                 DESCRIPTION,
                 DISPLAY_DESCRIPTION,
                 VERSION,
-                boolToInt(ONLY_ENROLL_ONCE),
+                toInteger(ONLY_ENROLL_ONCE),
                 ENROLLMENT_DATE_LABEL,
-                boolToInt(DISPLAY_INCIDENT_DATE),
+                toInteger(DISPLAY_INCIDENT_DATE),
                 INCIDENT_DATE_LABEL,
-                boolToInt(REGISTRATION),
-                boolToInt(SELECT_ENROLLMENT_DATES_IN_FUTURE),
-                boolToInt(DATA_ENTRY_METHOD),
-                boolToInt(IGNORE_OVERDUE_EVENTS),
-                boolToInt(RELATIONSHIP_FROM_A),
-                boolToInt(SELECT_INCIDENT_DATES_IN_FUTURE),
-                boolToInt(CAPTURE_COORDINATES),
-                boolToInt(USE_FIRST_STAGE_DURING_REGISTRATION),
-                boolToInt(DISPLAY_FRONT_PAGE_LIST),
+                toInteger(REGISTRATION),
+                toInteger(SELECT_ENROLLMENT_DATES_IN_FUTURE),
+                toInteger(DATA_ENTRY_METHOD),
+                toInteger(IGNORE_OVERDUE_EVENTS),
+                toInteger(RELATIONSHIP_FROM_A),
+                toInteger(SELECT_INCIDENT_DATES_IN_FUTURE),
+                toInteger(CAPTURE_COORDINATES),
+                toInteger(USE_FIRST_STAGE_DURING_REGISTRATION),
+                toInteger(DISPLAY_FRONT_PAGE_LIST),
                 PROGRAM_TYPE,
                 RELATIONSHIP_TYPE,
                 RELATIONSHIP_TEXT,
@@ -178,7 +179,7 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, null, NAME, null, null, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, null, boolToInt(RELATIONSHIP_FROM_A), null,
+                null, null, null, null, null, null, null, toInteger(RELATIONSHIP_FROM_A), null,
                 null, null, null, PROGRAM_TYPE, null, null, null).isExhausted();
     }
 
@@ -186,10 +187,5 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
     public void close_shouldNotCloseDatabase() {
         programStore.close();
         assertThat(database().isOpen()).isTrue();
-    }
-
-    private Integer boolToInt(Boolean bool) {
-        if (bool) return 1;
-        return 0;
     }
 }

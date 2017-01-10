@@ -13,6 +13,7 @@ import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.AndroidTestUtils.toBoolean;
 
 @RunWith(AndroidJUnit4.class)
 public class ProgramModelIntegrationTest {
@@ -256,10 +257,5 @@ public class ProgramModelIntegrationTest {
         assertThat(contentValues.getAsString(Columns.RELATIONSHIP_TYPE)).isEqualTo(RELATIONSHIP_TYPE);
         assertThat(contentValues.getAsString(Columns.RELATIONSHIP_TEXT)).isEqualTo(RELATIONSHIP_TEXT);
         assertThat(contentValues.getAsString(Columns.RELATED_PROGRAM)).isEqualTo(RELATED_PROGRAM);
-    }
-
-    /* A helper method to convert an integer to Boolean. 0 -> false, != 0 -> true*/
-    private Boolean toBoolean(Integer i) {
-        return i != 0;
     }
 }

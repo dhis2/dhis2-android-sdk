@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
-import android.support.annotation.NonNull;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -42,6 +41,7 @@ import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
 
 @RunWith(AndroidJUnit4.class)
 public class ProgramTrackedEntityAttributeModelIntegrationTests {
@@ -87,8 +87,8 @@ public class ProgramTrackedEntityAttributeModelIntegrationTests {
         matrixCursor.addRow(new Object[]{
                 ID, UID, CODE, NAME, DISPLAY_NAME, DATE, DATE,
                 SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION,
-                getIntegerFromBoolean(MANDATORY), TRACKED_ENTITY_ATTRIBUTE, VALUE_TYPE,
-                getIntegerFromBoolean(ALLOW_FUTURE_DATES), getIntegerFromBoolean(DISPLAY_IN_LIST)
+                toInteger(MANDATORY), TRACKED_ENTITY_ATTRIBUTE, VALUE_TYPE,
+                toInteger(ALLOW_FUTURE_DATES), toInteger(DISPLAY_IN_LIST)
         });
 
         // move cursor to first item before reading
@@ -116,22 +116,6 @@ public class ProgramTrackedEntityAttributeModelIntegrationTests {
         assertThat(trackedEntityAttributeModel.displayInList()).isEqualTo(DISPLAY_IN_LIST);
 
         matrixCursor.close();
-    }
-
-    private Integer getIntegerFromBoolean(Boolean bool) {
-        if (bool) {
-            return 1;
-        }
-        return 0;
-    }
-
-    @NonNull
-    private boolean getBooleanFromInteger(Integer integer) {
-        if (integer == 1) {
-            return true;
-        }
-
-        return false;
     }
 
     @Test
@@ -175,6 +159,5 @@ public class ProgramTrackedEntityAttributeModelIntegrationTests {
         assertThat(ValueType.valueOf(contentValues.getAsString(ProgramTrackedEntityAttributeContract.Columns.VALUE_TYPE))).isEqualTo(VALUE_TYPE);
         assertThat(contentValues.getAsBoolean(ProgramTrackedEntityAttributeContract.Columns.ALLOW_FUTURE_DATES)).isEqualTo(ALLOW_FUTURE_DATES);
         assertThat(contentValues.getAsBoolean(ProgramTrackedEntityAttributeContract.Columns.DISPLAY_IN_LIST)).isEqualTo(DISPLAY_IN_LIST);
-
     }
 }

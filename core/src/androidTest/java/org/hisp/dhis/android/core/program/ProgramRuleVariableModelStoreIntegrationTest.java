@@ -68,7 +68,7 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
     public void insert_shouldPersistProgramRuleVariableInDatabase() throws Exception {
         // inserting necessary foreign key
 
-        ContentValues program = ProgramModelIntegrationTest.create(ID, PROGRAM);
+        ContentValues program = CreateUtils.createProgram(ID, PROGRAM);
         database().insert(Tables.PROGRAM, null, program);
 
         ContentValues programStage = ProgramStageModelIntegrationTest.create(ID, PROGRAM_STAGE, PROGRAM);
@@ -76,6 +76,9 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
 
         ContentValues dataElement = DataElementModelIntegrationTest.createWithoutOptionSet(ID, DATA_ELEMENT);
         database().insert(Tables.DATA_ELEMENT, null, dataElement);
+
+        ContentValues trackedEntityAttribute = CreateUtils.createTrackedEntityAttributeWithoutOptionSet(ID, TRACKED_ENTITY_ATTRIBUTE);
+        database().insert(Tables.TRACKED_ENTITY_ATTRIBUTE, null, trackedEntityAttribute);
 
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
@@ -120,7 +123,7 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
 
     @Test
     public void insert_shouldPersistProgramRuleVariableInDatabaseWithProgramForeignKey() throws Exception {
-        ContentValues program = ProgramModelIntegrationTest.create(ID, PROGRAM);
+        ContentValues program = CreateUtils.createProgram(ID, PROGRAM);
         database().insert(Tables.PROGRAM, null, program);
 
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);

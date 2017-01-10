@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.option.OptionSetModelIntegrationTest;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModelIntegrationTests;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -111,7 +110,7 @@ public class ProgramTrackedEntityAttributeStoreIntegrationTests extends AbsStore
 
         // insert test TrackedEntityAttribute to comply with foreign key constraint of ProgramTrackedEntityAttribute
         ContentValues trackedEntityAttribute =
-                TrackedEntityAttributeModelIntegrationTests.create(TRACKED_ENTITY_ATTRIBUTE_ID, TRACKED_ENTITY_ATTRIBUTE);
+                CreateUtils.createTrackedEntityAttributeWithoutOptionSet(TRACKED_ENTITY_ATTRIBUTE_ID, TRACKED_ENTITY_ATTRIBUTE);
         database().insert(DbOpenHelper.Tables.TRACKED_ENTITY_ATTRIBUTE, null, trackedEntityAttribute);
 
 

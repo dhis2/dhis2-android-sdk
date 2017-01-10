@@ -34,23 +34,7 @@ public class ProgramRuleVariableModelIntegrationTest {
     // used for timestamps
     private static final String DATE = "2017-01-09T13:28:00.000";
 
-    public static ContentValues create(long id, String uid) {
-        ContentValues programRuleVariable = new ContentValues();
-        programRuleVariable.put(Columns.ID, id);
-        programRuleVariable.put(Columns.UID, uid);
-        programRuleVariable.put(Columns.CODE, CODE);
-        programRuleVariable.put(Columns.NAME, NAME);
-        programRuleVariable.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
-        programRuleVariable.put(Columns.CREATED, DATE);
-        programRuleVariable.put(Columns.LAST_UPDATED, DATE);
-        programRuleVariable.put(Columns.USE_CODE_FOR_OPTION_SET, USE_CODE_FOR_OPTION_SET);
-        programRuleVariable.put(Columns.PROGRAM, PROGRAM);
-        programRuleVariable.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
-        programRuleVariable.put(Columns.TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_ATTRIBUTE);
-        programRuleVariable.put(Columns.DATA_ELEMENT, DATA_ELEMENT);
-        programRuleVariable.put(Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE, PROGRAM_RULE_VARIABLE_SOURCE_TYPE.name());
-        return programRuleVariable;
-    }
+
 
     @Test
     public void create_shouldConvertToModel() throws ParseException {

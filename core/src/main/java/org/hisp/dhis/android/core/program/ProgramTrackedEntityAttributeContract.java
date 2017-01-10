@@ -26,27 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.constant;
+package org.hisp.dhis.android.core.program;
 
-public class ConstantTests {
+import org.hisp.dhis.android.core.common.BaseNameableObjectContract;
 
-    // TODO: Unit tests for Constants API model client model
+public class ProgramTrackedEntityAttributeContract {
 
-//    @Test
-//    public void equals_shouldConformToContract() {
-//        Constant validConstant = Constant.builder()
-//                .uid("a1b2c3d4e5f")
-//                .created(new Date())
-//                .lastUpdated(new Date())
-//                .build();
-//
-//        EqualsVerifier.forClass(validConstant.getClass())
-//                .suppress(Warning.NULL_FIELDS)
-//                .verify();
-//    }
-//
-//    @Test(expected = IllegalStateException.class)
-//    public void build_shouldThrowOnNullUidField() {
-//        Constant.builder().build();
-//    }
+    public interface Columns extends BaseNameableObjectContract.Columns {
+        String MANDATORY = "mandatory";
+        String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+        String VALUE_TYPE = "valueType";
+        String ALLOW_FUTURE_DATES = "allowFutureDate";
+        String DISPLAY_IN_LIST = "displayInList";
+    }
 }

@@ -26,45 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.constant;
+package org.hisp.dhis.android.core.trackedentity;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.common.ValueType;
 
 import java.util.Date;
 
-// TODO: Tests
-@AutoValue
-public abstract class Constant extends BaseIdentifiableObject {
-    private static final String VALUE = "value";
+public interface TrackedEntityAttributeStore {
+    long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
+                @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+                @Nullable String shortName, @Nullable String displayShortName,
+                @Nullable String description, @Nullable String displayDescription,
+                @Nullable String pattern, @Nullable String sortOrderInListNoProgram,
+                @Nullable String optionSet, @NonNull ValueType valueType, @Nullable String expression,
+                @Nullable TrackedEntityAttributeSearchScope searchScope, @Nullable Boolean programScope,
+                @Nullable Boolean displayInListNoProgram, @Nullable Boolean generated,
+                @Nullable Boolean displayOnVisitSchedule, @Nullable Boolean orgUnitScope,
+                @Nullable Boolean unique, @Nullable Boolean inherit);
 
-    public static final Field<Constant, String> uid = Field.create(UID);
-    public static final Field<Constant, String> code = Field.create(CODE);
-    public static final Field<Constant, String> name = Field.create(NAME);
-    public static final Field<Constant, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<Constant, String> created = Field.create(CREATED);
-    public static final Field<Constant, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<Constant, String> value = Field.create(VALUE);
-
-    @Nullable
-    @JsonProperty(VALUE)
-    public abstract Double value();
-
-    @JsonCreator
-    public static Constant create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(VALUE) Double value) {
-        return new AutoValue_Constant(uid, code, name, displayName, created, lastUpdated, value);
-    }
+    void close();
 }

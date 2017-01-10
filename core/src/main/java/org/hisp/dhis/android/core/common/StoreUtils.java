@@ -73,4 +73,20 @@ public class StoreUtils {
             sqLiteStatement.bindString(index, BaseIdentifiableObject.DATE_FORMAT.format(arg));
         }
     }
+
+    /**
+     * Handle if Enum argument is null and bind it using .bindNull() if so.
+     * A helper function to abstract/clean up boilerplate if/else bloat..
+     *
+     * @param sqLiteStatement
+     * @param index
+     * @param arg
+     */
+    public static void sqLiteBind(SQLiteStatement sqLiteStatement, int index, Enum arg) {
+        if (arg == null) {
+            sqLiteStatement.bindNull(index);
+        } else {
+            sqLiteStatement.bindString(index, arg.toString());
+        }
+    }
 }

@@ -26,27 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.constant;
+package org.hisp.dhis.android.core.trackedentity;
 
-public class ConstantTests {
+import org.hisp.dhis.android.core.common.BaseNameableObjectContract;
 
-    // TODO: Unit tests for Constants API model client model
+public class TrackedEntityAttributeContract {
 
-//    @Test
-//    public void equals_shouldConformToContract() {
-//        Constant validConstant = Constant.builder()
-//                .uid("a1b2c3d4e5f")
-//                .created(new Date())
-//                .lastUpdated(new Date())
-//                .build();
-//
-//        EqualsVerifier.forClass(validConstant.getClass())
-//                .suppress(Warning.NULL_FIELDS)
-//                .verify();
-//    }
-//
-//    @Test(expected = IllegalStateException.class)
-//    public void build_shouldThrowOnNullUidField() {
-//        Constant.builder().build();
-//    }
+    public interface Columns extends BaseNameableObjectContract.Columns {
+        String PATTERN = "pattern";
+        String SORT_ORDER_IN_LIST_NO_PROGRAM = "sortOrderInListNoProgram";
+        String OPTION_SET = "optionSet";
+        String VALUE_TYPE = "valueType";
+        String EXPRESSION = "expression";
+        String SEARCH_SCOPE = "searchScope";
+        String PROGRAM_SCOPE = "programScope";
+        String DISPLAY_IN_LIST_NO_PROGRAM = "displayInListNoProgram";
+        String GENERATED = "generated";
+        String DISPLAY_ON_VISIT_SCHEDULE = "displayOnVisitSchedule";
+        String ORG_UNIT_SCOPE = "orgunitScope";
+        String UNIQUE = "uniqueProperty";
+        String INHERIT = "inherit";
+    }
 }

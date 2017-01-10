@@ -4,9 +4,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.user.UserCredentialsContract.Columns;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 
 import java.util.Date;
 

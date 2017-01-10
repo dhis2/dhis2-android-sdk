@@ -5,7 +5,6 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.constant.ConstantContract.Columns;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 
@@ -34,7 +33,9 @@ public class ConstantStoreImpl implements ConstantStore {
     // TODO: Don't know if these should be @NonNull or @Nullable. They seem to differ in the other stores. For OptionSet they also differ between interface and implementation
 
     @Override
-    public long insert(@Nullable String uid, @Nullable String code, @NonNull String name, @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated, @NonNull Double value) {
+    public long insert(@Nullable String uid, @Nullable String code, @NonNull String name,
+            @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
+            @NonNull Double value) {
         insertStatement.clearBindings();
 
         sqLiteBind(insertStatement, 1, uid);

@@ -30,73 +30,83 @@ package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
+import java.util.Date;
+
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramStageDataElement.Builder.class)
 //TODO: ProgramStageDataElement is not a true BaseIdentifiableObject. It lacks name and displayName in API. Override those properties and return dataElement.getName() and dataElement.getDisplayName()
 public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
-    private static final String JSON_PROPERTY_DISPLAY_IN_REPORTS = "displayInReports";
-    private static final String JSON_PROPERTY_DATA_ELEMENT = "dataElement";
-    private static final String JSON_PROPERTY_COMPULSORY = "compulsory";
-    private static final String JSON_PROPERTY_ALLOW_PROVIDED_ELSEWHERE = "allowProvidedElsewhere";
-    private static final String JSON_PROPERTY_SORT_ORDER = "sortOrder";
-    private static final String JSON_PROPERTY_ALLOW_FUTURE_DATE = "allowFutureDate";
+    private static final String DISPLAY_IN_REPORTS = "displayInReports";
+    private static final String DATA_ELEMENT = "dataElement";
+    private static final String COMPULSORY = "compulsory";
+    private static final String ALLOW_PROVIDED_ELSEWHERE = "allowProvidedElsewhere";
+    private static final String SORT_ORDER = "sortOrder";
+    private static final String ALLOW_FUTURE_DATE = "allowFutureDate";
+
+    public static final Field<ProgramStageDataElement, String> uid = Field.create(UID);
+    public static final Field<ProgramStageDataElement, String> code = Field.create(CODE);
+    public static final Field<ProgramStageDataElement, String> name = Field.create(NAME);
+    public static final Field<ProgramStageDataElement, String> displayName = Field.create(DISPLAY_NAME);
+    public static final Field<ProgramStageDataElement, String> created = Field.create(CREATED);
+    public static final Field<ProgramStageDataElement, String> lastUpdated = Field.create(LAST_UPDATED);
+
+    public static final Field<ProgramStageDataElement, String> displayInReports = Field.create(DISPLAY_IN_REPORTS);
+    public static final Field<ProgramStageDataElement, Boolean> compulsory = Field.create(COMPULSORY);
+    public static final Field<ProgramStageDataElement, Boolean> allowProvidedElsewhere = Field.create(ALLOW_PROVIDED_ELSEWHERE);
+    public static final Field<ProgramStageDataElement, Integer> sortOrder = Field.create(SORT_ORDER);
+    public static final Field<ProgramStageDataElement, Boolean> allowFutureDate = Field.create(ALLOW_FUTURE_DATE);
+    public static final NestedField<ProgramStageDataElement, DataElement> dataElement = NestedField.create(DATA_ELEMENT);
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_DISPLAY_IN_REPORTS)
+    @JsonProperty(DISPLAY_IN_REPORTS)
     public abstract Boolean displayInReports();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_DATA_ELEMENT)
-    public abstract DataElement dataElement();
-
-    @Nullable
-    @JsonProperty(JSON_PROPERTY_COMPULSORY)
+    @JsonProperty(COMPULSORY)
     public abstract Boolean compulsory();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_ALLOW_PROVIDED_ELSEWHERE)
+    @JsonProperty(ALLOW_PROVIDED_ELSEWHERE)
     public abstract Boolean allowProvidedElsewhere();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_SORT_ORDER)
+    @JsonProperty(SORT_ORDER)
     public abstract Integer sortOrder();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_ALLOW_FUTURE_DATE)
+    @JsonProperty(ALLOW_FUTURE_DATE)
     public abstract Boolean allowFutureDate();
 
-    public static ProgramStageDataElement.Builder builder() {
-        return new AutoValue_ProgramStageDataElement.Builder();
+    @Nullable
+    @JsonProperty(DATA_ELEMENT)
+    public abstract DataElement dataElement();
+
+    @JsonCreator
+    public static ProgramStageDataElement create(
+            @JsonProperty(UID) String uid,
+            @JsonProperty(CODE) String code,
+            @JsonProperty(NAME) String name,
+            @JsonProperty(DISPLAY_NAME) String displayName,
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(DISPLAY_IN_REPORTS) Boolean displayInReports,
+            @JsonProperty(COMPULSORY) Boolean compulsory,
+            @JsonProperty(ALLOW_PROVIDED_ELSEWHERE) Boolean allowProvidedElsewhere,
+            @JsonProperty(SORT_ORDER) Integer sortOrder,
+            @JsonProperty(ALLOW_FUTURE_DATE) Boolean allowFutureDate,
+            @JsonProperty(DATA_ELEMENT) DataElement dataElement) {
+        return new AutoValue_ProgramStageDataElement(
+                uid, code, name, displayName, created,
+                lastUpdated, displayInReports, compulsory,
+                allowProvidedElsewhere, sortOrder, allowFutureDate, dataElement);
     }
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
-
-        @JsonProperty(JSON_PROPERTY_DISPLAY_IN_REPORTS)
-        public abstract Builder displayInReports(@Nullable Boolean displayInReports);
-
-        @JsonProperty(JSON_PROPERTY_DATA_ELEMENT)
-        public abstract Builder dataElement(@Nullable DataElement dataElement);
-
-        @JsonProperty(JSON_PROPERTY_COMPULSORY)
-        public abstract Builder compulsory(@Nullable Boolean compulsory);
-
-        @JsonProperty(JSON_PROPERTY_ALLOW_PROVIDED_ELSEWHERE)
-        public abstract Builder allowProvidedElsewhere(@Nullable Boolean allowProvidedElsewhere);
-
-        @JsonProperty(JSON_PROPERTY_SORT_ORDER)
-        public abstract Builder sortOrder(@Nullable Integer sortOrder);
-
-        @JsonProperty(JSON_PROPERTY_ALLOW_FUTURE_DATE)
-        public abstract Builder allowFutureDate(@Nullable Boolean allowFutureDate);
-
-        public abstract ProgramStageDataElement build();
-    }
 }

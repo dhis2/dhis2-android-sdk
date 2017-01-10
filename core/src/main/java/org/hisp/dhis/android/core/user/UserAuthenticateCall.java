@@ -128,7 +128,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         try {
             // insert user model into user table
             userId = userStore.insert(
-                    user.uid(), user.name(), user.displayName(), user.created(),
+                    user.uid(), user.code(), user.name(), user.displayName(), user.created(),
                     user.lastUpdated(), user.birthday(), user.education(),
                     user.gender(), user.jobTitle(), user.surname(), user.firstName(),
                     user.introduction(), user.employer(), user.interests(), user.languages(),

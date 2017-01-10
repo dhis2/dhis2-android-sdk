@@ -55,6 +55,7 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
             @Nullable Integer level) {
         sqLiteStatement.clearBindings();
 
+
         sqLiteStatement.bindString(1, uid);
         sqLiteStatement.bindString(2, code);
         sqLiteStatement.bindString(3, name);

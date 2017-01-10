@@ -199,24 +199,24 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
 
         public ProgramModel build() {
 //            if (programTrackedEntityAttributes() != null) {
-//                programTrackedEntityAttributes(Collections.unmodifiableList(
+//                programTrackedEntityAttributes(Collections.safeUnmodifiableList(
 //                        programTrackedEntityAttributes()));
 //            }
 //
 //            if (programIndicators() != null) {
-//                programIndicators(Collections.unmodifiableList(programIndicators()));
+//                programIndicators(Collections.safeUnmodifiableList(programIndicators()));
 //            }
 //
 //            if (programStages() != null) {
-//                programStages(Collections.unmodifiableList(programStages()));
+//                programStages(Collections.safeUnmodifiableList(programStages()));
 //            }
 //
 //            if (programRules() != null) {
-//                programRules(Collections.unmodifiableList(programRules()));
+//                programRules(Collections.safeUnmodifiableList(programRules()));
 //            }
 //
 //            if (programRuleVariables() != null) {
-//                programRuleVariables(Collections.unmodifiableList(programRuleVariables()));
+//                programRuleVariables(Collections.safeUnmodifiableList(programRuleVariables()));
 //            }
 
             return autoBuild();

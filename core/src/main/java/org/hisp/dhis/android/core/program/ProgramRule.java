@@ -36,8 +36,9 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 
-import java.util.Collections;
 import java.util.List;
+
+import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ProgramRule.Builder.class)
@@ -91,10 +92,7 @@ public abstract class ProgramRule extends BaseIdentifiableObject {
         abstract List<ProgramRuleAction> programRuleActions();
 
         public ProgramRule build() {
-            if (programRuleActions() != null) {
-                programRuleActions(Collections.unmodifiableList(programRuleActions()));
-            }
-
+            programRuleActions(safeUnmodifiableList(programRuleActions()));
             return autoBuild();
         }
     }

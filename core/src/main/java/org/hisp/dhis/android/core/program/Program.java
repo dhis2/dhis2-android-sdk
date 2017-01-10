@@ -45,7 +45,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import java.util.Date;
 import java.util.List;
 
-import static java.util.Collections.unmodifiableList;
+import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 
 @AutoValue
 public abstract class Program extends BaseNameableObject {
@@ -250,23 +250,6 @@ public abstract class Program extends BaseNameableObject {
             @JsonProperty(PROGRAM_RULES) List<ProgramRule> programRules,
             @JsonProperty(PROGRAM_RULE_VARIABLES) List<ProgramRuleVariable> programRuleVariables) {
 
-        /* Guard Lists against modifications : */
-        if (programTrackedEntityAttributes != null) {
-            programTrackedEntityAttributes = unmodifiableList(programTrackedEntityAttributes);
-        }
-        if (programIndicators != null) {
-            programIndicators = unmodifiableList(programIndicators);
-        }
-        if (programStages != null) {
-            programStages = unmodifiableList(programStages);
-        }
-        if (programRules != null) {
-            programRules = unmodifiableList(programRules);
-        }
-        if (programRuleVariables != null) {
-            programRuleVariables = unmodifiableList(programRuleVariables);
-        }
-
         return new AutoValue_Program(
                 uid,
                 code,
@@ -295,13 +278,13 @@ public abstract class Program extends BaseNameableObject {
                 programType,
                 relationshipType,
                 relationshipText,
-                programTrackedEntityAttributes,
+                safeUnmodifiableList(programTrackedEntityAttributes),
                 relatedProgram,
                 trackedEntity,
                 categoryCombo,
-                programIndicators,
-                programStages,
-                programRules,
-                programRuleVariables);
+                safeUnmodifiableList(programIndicators),
+                safeUnmodifiableList(programStages),
+                safeUnmodifiableList(programRules),
+                safeUnmodifiableList(programRuleVariables));
     }
 }

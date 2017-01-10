@@ -36,9 +36,10 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.relationship.Relationship;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 
 // TODO: Tests
 @AutoValue
@@ -101,11 +102,7 @@ public abstract class TrackedEntityInstance {
         abstract TrackedEntityInstance autoBuild();
 
         public TrackedEntityInstance build() {
-            if (trackedEntityAttributeValues() != null) {
-                trackedEntityAttributeValues(Collections.unmodifiableList(
-                        trackedEntityAttributeValues()));
-            }
-
+            trackedEntityAttributeValues(safeUnmodifiableList(trackedEntityAttributeValues()));
             return autoBuild();
         }
     }

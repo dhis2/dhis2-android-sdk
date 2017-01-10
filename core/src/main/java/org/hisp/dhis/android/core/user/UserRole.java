@@ -37,8 +37,9 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.program.Program;
 
-import java.util.Collections;
 import java.util.List;
+
+import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 
 // TODO: Tests
 @AutoValue
@@ -66,10 +67,7 @@ public abstract class UserRole extends BaseIdentifiableObject {
         abstract UserRole autoBuild();
 
         public UserRole build() {
-            if (programs() != null) {
-                programs(Collections.unmodifiableList(programs()));
-            }
-
+            programs(safeUnmodifiableList(programs()));
             return autoBuild();
         }
     }

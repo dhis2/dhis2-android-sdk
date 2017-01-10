@@ -102,11 +102,22 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
             @JsonProperty(ALLOW_PROVIDED_ELSEWHERE) Boolean allowProvidedElsewhere,
             @JsonProperty(SORT_ORDER) Integer sortOrder,
             @JsonProperty(ALLOW_FUTURE_DATE) Boolean allowFutureDate,
-            @JsonProperty(DATA_ELEMENT) DataElement dataElement) {
-        return new AutoValue_ProgramStageDataElement(
-                uid, code, name, displayName, created,
-                lastUpdated, displayInReports, compulsory,
-                allowProvidedElsewhere, sortOrder, allowFutureDate, dataElement);
-    }
+            @JsonProperty(DATA_ELEMENT) DataElement dataElement
+    ) {
 
+        return new AutoValue_ProgramStageDataElement(
+                uid,
+                code,
+                name,
+                displayName,
+                created,
+                lastUpdated,
+                displayInReports,
+                compulsory,
+                allowProvidedElsewhere,
+                sortOrder,
+                allowFutureDate,
+                dataElement
+        );
+    }
 }

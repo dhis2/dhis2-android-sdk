@@ -36,9 +36,10 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_CategoryOption.Builder.class)
@@ -82,10 +83,7 @@ public abstract class CategoryOption extends BaseNameableObject {
         abstract CategoryOption autoBuild();
 
         public CategoryOption build() {
-            if (categoryOptionCombos() != null) {
-                categoryOptionCombos(Collections.unmodifiableList(categoryOptionCombos()));
-            }
-
+            categoryOptionCombos(safeUnmodifiableList(categoryOptionCombos()));
             return autoBuild();
         }
     }

@@ -37,9 +37,10 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 
 // TODO: Tests
 @AutoValue
@@ -164,10 +165,7 @@ public abstract class Event {
         abstract Event autoBuild();
 
         public Event build() {
-            if (trackedEntityDataValues() != null) {
-                trackedEntityDataValues(Collections.unmodifiableList(trackedEntityDataValues()));
-            }
-
+            trackedEntityDataValues(safeUnmodifiableList(trackedEntityDataValues()));
             return autoBuild();
         }
     }

@@ -64,22 +64,22 @@ public class ProgramRuleActionModelIntegrationTests {
     @Test
     public void create_shouldConvertToModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                ProgramRuleActionContract.Columns.ID,
-                ProgramRuleActionContract.Columns.UID,
-                ProgramRuleActionContract.Columns.CODE,
-                ProgramRuleActionContract.Columns.NAME,
-                ProgramRuleActionContract.Columns.DISPLAY_NAME,
-                ProgramRuleActionContract.Columns.CREATED,
-                ProgramRuleActionContract.Columns.LAST_UPDATED,
-                ProgramRuleActionContract.Columns.DATA,
-                ProgramRuleActionContract.Columns.CONTENT,
-                ProgramRuleActionContract.Columns.LOCATION,
-                ProgramRuleActionContract.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                ProgramRuleActionContract.Columns.PROGRAM_INDICATOR,
-                ProgramRuleActionContract.Columns.PROGRAM_STAGE_SECTION,
-                ProgramRuleActionContract.Columns.PROGRAM_RULE_ACTION_TYPE,
-                ProgramRuleActionContract.Columns.PROGRAM_STAGE,
-                ProgramRuleActionContract.Columns.DATA_ELEMENT
+                ProgramRuleActionModel.Columns.ID,
+                ProgramRuleActionModel.Columns.UID,
+                ProgramRuleActionModel.Columns.CODE,
+                ProgramRuleActionModel.Columns.NAME,
+                ProgramRuleActionModel.Columns.DISPLAY_NAME,
+                ProgramRuleActionModel.Columns.CREATED,
+                ProgramRuleActionModel.Columns.LAST_UPDATED,
+                ProgramRuleActionModel.Columns.DATA,
+                ProgramRuleActionModel.Columns.CONTENT,
+                ProgramRuleActionModel.Columns.LOCATION,
+                ProgramRuleActionModel.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                ProgramRuleActionModel.Columns.PROGRAM_INDICATOR,
+                ProgramRuleActionModel.Columns.PROGRAM_STAGE_SECTION,
+                ProgramRuleActionModel.Columns.PROGRAM_RULE_ACTION_TYPE,
+                ProgramRuleActionModel.Columns.PROGRAM_STAGE,
+                ProgramRuleActionModel.Columns.DATA_ELEMENT
         });
 
         matrixCursor.addRow(new Object[]{
@@ -139,22 +139,22 @@ public class ProgramRuleActionModelIntegrationTests {
 
         ContentValues contentValues = programRuleActionModel.toContentValues();
 
-        assertThat(contentValues.getAsLong(ProgramRuleActionContract.Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(ProgramRuleActionContract.Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(ProgramRuleActionContract.Columns.CODE)).isEqualTo(CODE);
-        assertThat(contentValues.getAsString(ProgramRuleActionContract.Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(ProgramRuleActionContract.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(ProgramRuleActionContract.Columns.CREATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(ProgramRuleActionContract.Columns.LAST_UPDATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(ProgramRuleActionContract.Columns.DATA)).isEqualTo(DATA);
-        assertThat(contentValues.getAsString(ProgramRuleActionContract.Columns.CONTENT)).isEqualTo(CONTENT);
-        assertThat(contentValues.getAsString(ProgramRuleActionContract.Columns.LOCATION)).isEqualTo(LOCATION);
-        assertThat(contentValues.getAsString(ProgramRuleActionContract.Columns.TRACKED_ENTITY_ATTRIBUTE)).isEqualTo(TRACKED_ENTITY_ATTRIBUTE);
-        assertThat(contentValues.getAsString(ProgramRuleActionContract.Columns.PROGRAM_INDICATOR)).isEqualTo(PROGRAM_INDICATOR);
-        assertThat(contentValues.getAsString(ProgramRuleActionContract.Columns.PROGRAM_STAGE_SECTION)).isEqualTo(PROGRAM_STAGE_SECTION);
-        assertThat(contentValues.getAsString(ProgramRuleActionContract.Columns.PROGRAM_RULE_ACTION_TYPE)).isEqualTo(PROGRAM_RULE_ACTION_TYPE.name());
-        assertThat(contentValues.getAsString(ProgramRuleActionContract.Columns.PROGRAM_STAGE)).isEqualTo(PROGRAM_STAGE);
-        assertThat(contentValues.getAsString(ProgramRuleActionContract.Columns.DATA_ELEMENT)).isEqualTo(DATA_ELEMENT);
+        assertThat(contentValues.getAsLong(ProgramRuleActionModel.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(ProgramRuleActionModel.Columns.UID)).isEqualTo(UID);
+        assertThat(contentValues.getAsString(ProgramRuleActionModel.Columns.CODE)).isEqualTo(CODE);
+        assertThat(contentValues.getAsString(ProgramRuleActionModel.Columns.NAME)).isEqualTo(NAME);
+        assertThat(contentValues.getAsString(ProgramRuleActionModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
+        assertThat(contentValues.getAsString(ProgramRuleActionModel.Columns.CREATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(ProgramRuleActionModel.Columns.LAST_UPDATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(ProgramRuleActionModel.Columns.DATA)).isEqualTo(DATA);
+        assertThat(contentValues.getAsString(ProgramRuleActionModel.Columns.CONTENT)).isEqualTo(CONTENT);
+        assertThat(contentValues.getAsString(ProgramRuleActionModel.Columns.LOCATION)).isEqualTo(LOCATION);
+        assertThat(contentValues.getAsString(ProgramRuleActionModel.Columns.TRACKED_ENTITY_ATTRIBUTE)).isEqualTo(TRACKED_ENTITY_ATTRIBUTE);
+        assertThat(contentValues.getAsString(ProgramRuleActionModel.Columns.PROGRAM_INDICATOR)).isEqualTo(PROGRAM_INDICATOR);
+        assertThat(contentValues.getAsString(ProgramRuleActionModel.Columns.PROGRAM_STAGE_SECTION)).isEqualTo(PROGRAM_STAGE_SECTION);
+        assertThat(contentValues.getAsString(ProgramRuleActionModel.Columns.PROGRAM_RULE_ACTION_TYPE)).isEqualTo(PROGRAM_RULE_ACTION_TYPE.name());
+        assertThat(contentValues.getAsString(ProgramRuleActionModel.Columns.PROGRAM_STAGE)).isEqualTo(PROGRAM_STAGE);
+        assertThat(contentValues.getAsString(ProgramRuleActionModel.Columns.DATA_ELEMENT)).isEqualTo(DATA_ELEMENT);
 
     }
 }

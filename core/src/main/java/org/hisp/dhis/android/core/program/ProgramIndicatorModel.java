@@ -38,14 +38,22 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 
-import static org.hisp.dhis.android.core.program.ProgramIndicatorContract.Columns.DECIMALS;
-import static org.hisp.dhis.android.core.program.ProgramIndicatorContract.Columns.DIMENSION_ITEM;
-import static org.hisp.dhis.android.core.program.ProgramIndicatorContract.Columns.DISPLAY_IN_FORM;
-import static org.hisp.dhis.android.core.program.ProgramIndicatorContract.Columns.EXPRESSION;
-import static org.hisp.dhis.android.core.program.ProgramIndicatorContract.Columns.FILTER;
+import static org.hisp.dhis.android.core.program.ProgramIndicatorModel.Columns.DECIMALS;
+import static org.hisp.dhis.android.core.program.ProgramIndicatorModel.Columns.DIMENSION_ITEM;
+import static org.hisp.dhis.android.core.program.ProgramIndicatorModel.Columns.DISPLAY_IN_FORM;
+import static org.hisp.dhis.android.core.program.ProgramIndicatorModel.Columns.EXPRESSION;
+import static org.hisp.dhis.android.core.program.ProgramIndicatorModel.Columns.FILTER;
 
 @AutoValue
 public abstract class ProgramIndicatorModel extends BaseNameableObjectModel {
+
+    public interface Columns extends BaseNameableObjectModel.Columns {
+        String DISPLAY_IN_FORM = "displayInForm";
+        String EXPRESSION = "expression";
+        String DIMENSION_ITEM = "dimensionItem";
+        String FILTER = "filter";
+        String DECIMALS = "decimals";
+    }
 
     @NonNull
     public static ProgramIndicatorModel.Builder builder() {

@@ -39,19 +39,21 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 
-import static org.hisp.dhis.android.core.program.ProgramRuleActionContract.Columns.CONTENT;
-import static org.hisp.dhis.android.core.program.ProgramRuleActionContract.Columns.DATA;
-import static org.hisp.dhis.android.core.program.ProgramRuleActionContract.Columns.DATA_ELEMENT;
-import static org.hisp.dhis.android.core.program.ProgramRuleActionContract.Columns.LOCATION;
-import static org.hisp.dhis.android.core.program.ProgramRuleActionContract.Columns.PROGRAM_INDICATOR;
-import static org.hisp.dhis.android.core.program.ProgramRuleActionContract.Columns.PROGRAM_RULE;
-import static org.hisp.dhis.android.core.program.ProgramRuleActionContract.Columns.PROGRAM_RULE_ACTION_TYPE;
-import static org.hisp.dhis.android.core.program.ProgramRuleActionContract.Columns.PROGRAM_STAGE;
-import static org.hisp.dhis.android.core.program.ProgramRuleActionContract.Columns.PROGRAM_STAGE_SECTION;
-import static org.hisp.dhis.android.core.program.ProgramRuleActionContract.Columns.TRACKED_ENTITY_ATTRIBUTE;
-
 @AutoValue
 public abstract class ProgramRuleActionModel extends BaseIdentifiableObjectModel {
+
+    public interface Columns extends BaseIdentifiableObjectModel.Columns {
+        String DATA = "data";
+        String CONTENT = "content";
+        String LOCATION = "location";
+        String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+        String PROGRAM_INDICATOR = "programIndicator";
+        String PROGRAM_STAGE_SECTION = "programStageSection";
+        String PROGRAM_RULE_ACTION_TYPE = "programRuleActionType";
+        String PROGRAM_STAGE = "programStage";
+        String DATA_ELEMENT = "dataElement";
+        String PROGRAM_RULE = "programRule";
+    }
 
     @NonNull
     public static ProgramRuleActionModel.Builder builder() {
@@ -64,44 +66,44 @@ public abstract class ProgramRuleActionModel extends BaseIdentifiableObjectModel
     }
 
     @Nullable
-    @ColumnName(DATA)
+    @ColumnName(Columns.DATA)
     public abstract String data();
 
     @Nullable
-    @ColumnName(CONTENT)
+    @ColumnName(Columns.CONTENT)
     public abstract String content();
 
     @Nullable
-    @ColumnName(LOCATION)
+    @ColumnName(Columns.LOCATION)
     public abstract String location();
 
     @Nullable
-    @ColumnName(TRACKED_ENTITY_ATTRIBUTE)
+    @ColumnName(Columns.TRACKED_ENTITY_ATTRIBUTE)
     public abstract String trackedEntityAttribute();
 
     @Nullable
-    @ColumnName(PROGRAM_INDICATOR)
+    @ColumnName(Columns.PROGRAM_INDICATOR)
     public abstract String programIndicator();
 
     @Nullable
-    @ColumnName(PROGRAM_STAGE_SECTION)
+    @ColumnName(Columns.PROGRAM_STAGE_SECTION)
     public abstract String programStageSection();
 
     @NonNull
-    @ColumnName(PROGRAM_RULE_ACTION_TYPE)
+    @ColumnName(Columns.PROGRAM_RULE_ACTION_TYPE)
     @ColumnAdapter(ProgramRuleActionTypeColumnAdapter.class)
     public abstract ProgramRuleActionType programRuleActionType();
 
     @Nullable
-    @ColumnName(PROGRAM_STAGE)
+    @ColumnName(Columns.PROGRAM_STAGE)
     public abstract String programStage();
 
     @Nullable
-    @ColumnName(DATA_ELEMENT)
+    @ColumnName(Columns.DATA_ELEMENT)
     public abstract String dataElement();
 
     @Nullable
-    @ColumnName(PROGRAM_RULE)
+    @ColumnName(Columns.PROGRAM_RULE)
     public abstract String programRule();
 
     @NonNull

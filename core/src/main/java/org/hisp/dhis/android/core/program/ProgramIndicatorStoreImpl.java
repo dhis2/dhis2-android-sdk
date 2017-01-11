@@ -41,21 +41,21 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + DbOpenHelper.Tables.PROGRAM_INDICATOR + " (" +
-            ProgramIndicatorContract.Columns.UID + ", " +
-            ProgramIndicatorContract.Columns.CODE + ", " +
-            ProgramIndicatorContract.Columns.NAME + ", " +
-            ProgramIndicatorContract.Columns.DISPLAY_NAME + ", " +
-            ProgramIndicatorContract.Columns.CREATED + ", " +
-            ProgramIndicatorContract.Columns.LAST_UPDATED + ", " +
-            ProgramIndicatorContract.Columns.SHORT_NAME + ", " +
-            ProgramIndicatorContract.Columns.DISPLAY_SHORT_NAME + ", " +
-            ProgramIndicatorContract.Columns.DESCRIPTION + ", " +
-            ProgramIndicatorContract.Columns.DISPLAY_DESCRIPTION + ", " +
-            ProgramIndicatorContract.Columns.DISPLAY_IN_FORM + ", " +
-            ProgramIndicatorContract.Columns.EXPRESSION + ", " +
-            ProgramIndicatorContract.Columns.DIMENSION_ITEM + ", " +
-            ProgramIndicatorContract.Columns.FILTER + ", " +
-            ProgramIndicatorContract.Columns.DECIMALS +
+            ProgramIndicatorModel.Columns.UID + ", " +
+            ProgramIndicatorModel.Columns.CODE + ", " +
+            ProgramIndicatorModel.Columns.NAME + ", " +
+            ProgramIndicatorModel.Columns.DISPLAY_NAME + ", " +
+            ProgramIndicatorModel.Columns.CREATED + ", " +
+            ProgramIndicatorModel.Columns.LAST_UPDATED + ", " +
+            ProgramIndicatorModel.Columns.SHORT_NAME + ", " +
+            ProgramIndicatorModel.Columns.DISPLAY_SHORT_NAME + ", " +
+            ProgramIndicatorModel.Columns.DESCRIPTION + ", " +
+            ProgramIndicatorModel.Columns.DISPLAY_DESCRIPTION + ", " +
+            ProgramIndicatorModel.Columns.DISPLAY_IN_FORM + ", " +
+            ProgramIndicatorModel.Columns.EXPRESSION + ", " +
+            ProgramIndicatorModel.Columns.DIMENSION_ITEM + ", " +
+            ProgramIndicatorModel.Columns.FILTER + ", " +
+            ProgramIndicatorModel.Columns.DECIMALS +
             ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private final SQLiteStatement insertRowStatement;

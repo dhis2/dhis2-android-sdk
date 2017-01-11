@@ -10,7 +10,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.BaseModelContract;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
@@ -18,7 +17,7 @@ import java.util.Date;
 @AutoValue
 public abstract class SystemInfoModel extends BaseModel {
 
-    public interface Columns extends BaseModelContract.Columns {
+    public interface Columns extends BaseModel.Columns {
         String SERVER_DATE = "serverDate";
         String DATE_FORMAT = "dateFormat";
     }

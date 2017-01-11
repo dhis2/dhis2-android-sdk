@@ -19,6 +19,7 @@ import org.hisp.dhis.android.core.program.ProgramStageSectionContract;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeContract;
 import org.hisp.dhis.android.core.relationship.RelationshipContract;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeContract;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityContract;
 import org.hisp.dhis.android.core.user.AuthenticatedUserContract;
@@ -54,6 +55,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String TRACKED_ENTITY_ATTRIBUTE = "TrackedEntityAttribute";
         String PROGRAM_TRACKED_ENTITY_ATTRIBUTE = "ProgramTrackedEntityAttribute";
         String CONSTANT = "Constant";
+        String SYSTEM_INFO = "SystemInfo";
     }
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + Tables.USER + " (" +
@@ -413,6 +415,12 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ConstantContract.Columns.VALUE + " REAL" +
             ");";
 
+    private static final String CREATE_SYSTEM_INFO_TABLE = "CREATE TABLE " + Tables.SYSTEM_INFO + " (" +
+            SystemInfoModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            SystemInfoModel.Columns.SERVER_DATE + " TEXT," +
+            SystemInfoModel.Columns.DATE_FORMAT + " TEXT" +
+            ");";
+
     /**
      * This method should be used only for testing purposes
      */
@@ -443,6 +451,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE);
         database.execSQL(CREATE_PROGRAM_TRACKED_ENTITY_ATTRIBUTE_TABLE);
         database.execSQL(CREATE_CONSTANT_TABLE);
+        database.execSQL(CREATE_SYSTEM_INFO_TABLE);
         return database;
     }
 

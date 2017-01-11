@@ -30,45 +30,50 @@ package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.program.Program;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 
 // TODO: Tests
 @AutoValue
-@JsonDeserialize(builder = AutoValue_UserRole.Builder.class)
 public abstract class UserRole extends BaseIdentifiableObject {
-    private static final String JSON_PROPERTY_PROGRAMS = "programs";
+
+    private static final String PROGRAMS = "programs";
+
+    public static final Field<UserRole, String> uid = Field.create(UID);
+    public static final Field<UserRole, String> code = Field.create(CODE);
+    public static final Field<UserRole, String> name = Field.create(NAME);
+    public static final Field<UserRole, String> displayName = Field.create(DISPLAY_NAME);
+    public static final Field<UserRole, String> created = Field.create(CREATED);
+    public static final Field<UserRole, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final NestedField<UserRole, Program> programs = NestedField.create(PROGRAMS);
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_PROGRAMS)
+    @JsonProperty(PROGRAMS)
     public abstract List<Program> programs();
 
-    public static Builder builder() {
-        return new AutoValue_UserRole.Builder();
-    }
+    @JsonCreator
+    public static UserRole create(
+            @JsonProperty(UID) String uid,
+            @JsonProperty(CODE) String code,
+            @JsonProperty(NAME) String name,
+            @JsonProperty(DISPLAY_NAME) String displayName,
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(PROGRAMS) List<Program> programs) {
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
-
-        @JsonProperty(JSON_PROPERTY_PROGRAMS)
-        public abstract Builder programs(@Nullable List<Program> programs);
-
-        // internal, not exposed
-        abstract List<Program> programs();
-
-        abstract UserRole autoBuild();
-
-        public UserRole build() {
-            programs(safeUnmodifiableList(programs()));
-            return autoBuild();
-        }
+        return new AutoValue_UserRole(uid, code, name, displayName, created, lastUpdated,
+                safeUnmodifiableList(programs)
+        );
     }
 }

@@ -20,29 +20,29 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 @RunWith(AndroidJUnit4.class)
 public class UserCredentialsStoreIntegrationTests extends AbsStoreTestCase {
     private static final String[] PROJECTION = {
-            UserCredentialsContract.Columns.UID,
-            UserCredentialsContract.Columns.CODE,
-            UserCredentialsContract.Columns.NAME,
-            UserCredentialsContract.Columns.DISPLAY_NAME,
-            UserCredentialsContract.Columns.CREATED,
-            UserCredentialsContract.Columns.LAST_UPDATED,
-            UserCredentialsContract.Columns.USERNAME,
-            UserCredentialsContract.Columns.USER,
+            UserCredentialsModel.Columns.UID,
+            UserCredentialsModel.Columns.CODE,
+            UserCredentialsModel.Columns.NAME,
+            UserCredentialsModel.Columns.DISPLAY_NAME,
+            UserCredentialsModel.Columns.CREATED,
+            UserCredentialsModel.Columns.LAST_UPDATED,
+            UserCredentialsModel.Columns.USERNAME,
+            UserCredentialsModel.Columns.USER,
     };
 
     private UserCredentialsStore userCredentialsStore;
 
     public static ContentValues create(long id, String uid, String user) {
         ContentValues userCredentials = new ContentValues();
-        userCredentials.put(UserCredentialsContract.Columns.ID, id);
-        userCredentials.put(UserCredentialsContract.Columns.UID, uid);
-        userCredentials.put(UserCredentialsContract.Columns.CODE, "test_code");
-        userCredentials.put(UserCredentialsContract.Columns.NAME, "test_name");
-        userCredentials.put(UserCredentialsContract.Columns.DISPLAY_NAME, "test_display_name");
-        userCredentials.put(UserCredentialsContract.Columns.CREATED, "test_created");
-        userCredentials.put(UserCredentialsContract.Columns.LAST_UPDATED, "test_lastUpdated");
-        userCredentials.put(UserCredentialsContract.Columns.USERNAME, "test_username");
-        userCredentials.put(UserCredentialsContract.Columns.USER, user);
+        userCredentials.put(UserCredentialsModel.Columns.ID, id);
+        userCredentials.put(UserCredentialsModel.Columns.UID, uid);
+        userCredentials.put(UserCredentialsModel.Columns.CODE, "test_code");
+        userCredentials.put(UserCredentialsModel.Columns.NAME, "test_name");
+        userCredentials.put(UserCredentialsModel.Columns.DISPLAY_NAME, "test_display_name");
+        userCredentials.put(UserCredentialsModel.Columns.CREATED, "test_created");
+        userCredentials.put(UserCredentialsModel.Columns.LAST_UPDATED, "test_lastUpdated");
+        userCredentials.put(UserCredentialsModel.Columns.USERNAME, "test_username");
+        userCredentials.put(UserCredentialsModel.Columns.USER, user);
         return userCredentials;
     }
 

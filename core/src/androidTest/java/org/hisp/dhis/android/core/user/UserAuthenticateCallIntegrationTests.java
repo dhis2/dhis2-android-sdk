@@ -10,7 +10,6 @@ import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
@@ -38,71 +37,71 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 @RunWith(AndroidJUnit4.class)
 public class UserAuthenticateCallIntegrationTests extends AbsStoreTestCase {
     private static final String[] USER_PROJECTION = {
-            UserContract.Columns.ID,
-            UserContract.Columns.UID,
-            UserContract.Columns.CODE,
-            UserContract.Columns.NAME,
-            UserContract.Columns.DISPLAY_NAME,
-            UserContract.Columns.CREATED,
-            UserContract.Columns.LAST_UPDATED,
-            UserContract.Columns.BIRTHDAY,
-            UserContract.Columns.EDUCATION,
-            UserContract.Columns.GENDER,
-            UserContract.Columns.JOB_TITLE,
-            UserContract.Columns.SURNAME,
-            UserContract.Columns.FIRST_NAME,
-            UserContract.Columns.INTRODUCTION,
-            UserContract.Columns.EMPLOYER,
-            UserContract.Columns.INTERESTS,
-            UserContract.Columns.LANGUAGES,
-            UserContract.Columns.EMAIL,
-            UserContract.Columns.PHONE_NUMBER,
-            UserContract.Columns.NATIONALITY
+            UserModel.Columns.ID,
+            UserModel.Columns.UID,
+            UserModel.Columns.CODE,
+            UserModel.Columns.NAME,
+            UserModel.Columns.DISPLAY_NAME,
+            UserModel.Columns.CREATED,
+            UserModel.Columns.LAST_UPDATED,
+            UserModel.Columns.BIRTHDAY,
+            UserModel.Columns.EDUCATION,
+            UserModel.Columns.GENDER,
+            UserModel.Columns.JOB_TITLE,
+            UserModel.Columns.SURNAME,
+            UserModel.Columns.FIRST_NAME,
+            UserModel.Columns.INTRODUCTION,
+            UserModel.Columns.EMPLOYER,
+            UserModel.Columns.INTERESTS,
+            UserModel.Columns.LANGUAGES,
+            UserModel.Columns.EMAIL,
+            UserModel.Columns.PHONE_NUMBER,
+            UserModel.Columns.NATIONALITY
     };
 
     private static final String[] USER_CREDENTIALS_PROJECTION = {
-            UserCredentialsContract.Columns.ID,
-            UserCredentialsContract.Columns.UID,
-            UserCredentialsContract.Columns.CODE,
-            UserCredentialsContract.Columns.NAME,
-            UserCredentialsContract.Columns.DISPLAY_NAME,
-            UserCredentialsContract.Columns.CREATED,
-            UserCredentialsContract.Columns.LAST_UPDATED,
-            UserCredentialsContract.Columns.USERNAME,
-            UserCredentialsContract.Columns.USER,
+            UserCredentialsModel.Columns.ID,
+            UserCredentialsModel.Columns.UID,
+            UserCredentialsModel.Columns.CODE,
+            UserCredentialsModel.Columns.NAME,
+            UserCredentialsModel.Columns.DISPLAY_NAME,
+            UserCredentialsModel.Columns.CREATED,
+            UserCredentialsModel.Columns.LAST_UPDATED,
+            UserCredentialsModel.Columns.USERNAME,
+            UserCredentialsModel.Columns.USER,
     };
 
     // using table as a prefix in order to avoid ambiguity in queries against joined tables
     private static final String[] ORGANISATION_UNIT_PROJECTION = {
-            OrganisationUnitContract.Columns.ID,
-            OrganisationUnitContract.Columns.UID,
-            OrganisationUnitContract.Columns.CODE,
-            OrganisationUnitContract.Columns.NAME,
-            OrganisationUnitContract.Columns.DISPLAY_NAME,
-            OrganisationUnitContract.Columns.CREATED,
-            OrganisationUnitContract.Columns.LAST_UPDATED,
-            OrganisationUnitContract.Columns.SHORT_NAME,
-            OrganisationUnitContract.Columns.DISPLAY_SHORT_NAME,
-            OrganisationUnitContract.Columns.DESCRIPTION,
-            OrganisationUnitContract.Columns.DISPLAY_DESCRIPTION,
-            OrganisationUnitContract.Columns.PATH,
-            OrganisationUnitContract.Columns.OPENING_DATE,
-            OrganisationUnitContract.Columns.CLOSED_DATE,
-            OrganisationUnitContract.Columns.PARENT,
-            OrganisationUnitContract.Columns.LEVEL
+            OrganisationUnitModel.Columns.ID,
+            OrganisationUnitModel.Columns.UID,
+            OrganisationUnitModel.Columns.CODE,
+            OrganisationUnitModel.Columns.NAME,
+            OrganisationUnitModel.Columns.DISPLAY_NAME,
+            OrganisationUnitModel.Columns.CREATED,
+            OrganisationUnitModel.Columns.LAST_UPDATED,
+            OrganisationUnitModel.Columns.SHORT_NAME,
+            OrganisationUnitModel.Columns.DISPLAY_SHORT_NAME,
+            OrganisationUnitModel.Columns.DESCRIPTION,
+            OrganisationUnitModel.Columns.DISPLAY_DESCRIPTION,
+            OrganisationUnitModel.Columns.PATH,
+            OrganisationUnitModel.Columns.OPENING_DATE,
+            OrganisationUnitModel.Columns.CLOSED_DATE,
+            OrganisationUnitModel.Columns.PARENT,
+            OrganisationUnitModel.Columns.LEVEL
     };
 
     private static final String[] AUTHENTICATED_USERS_PROJECTION = {
-            AuthenticatedUserContract.Columns.ID,
-            AuthenticatedUserContract.Columns.USER,
-            AuthenticatedUserContract.Columns.CREDENTIALS
+            AuthenticatedUserModel.Columns.ID,
+            AuthenticatedUserModel.Columns.USER,
+            AuthenticatedUserModel.Columns.CREDENTIALS
     };
 
     private static String[] USER_ORGANISATION_UNIT_PROJECTION = {
-            UserOrganisationUnitLinkContract.Columns.ID,
-            UserOrganisationUnitLinkContract.Columns.USER,
-            UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT,
-            UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT_SCOPE,
+            UserOrganisationUnitLinkModel.Columns.ID,
+            UserOrganisationUnitLinkModel.Columns.USER,
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT,
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE,
     };
 
     private MockWebServer mockWebServer;

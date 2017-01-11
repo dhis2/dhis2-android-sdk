@@ -16,9 +16,9 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 public class UserOrganisationUnitStoreIntegrationsTests extends AbsStoreTestCase {
     private static final String[] USER_ORGANISATION_UNITS_PROJECTION = {
-            UserOrganisationUnitLinkContract.Columns.USER,
-            UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT,
-            UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT_SCOPE
+            UserOrganisationUnitLinkModel.Columns.USER,
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT,
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE
     };
 
     private UserOrganisationUnitLinkStore organisationUnitLinkStore;

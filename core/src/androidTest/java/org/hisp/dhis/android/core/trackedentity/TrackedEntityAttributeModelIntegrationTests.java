@@ -34,7 +34,6 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -75,30 +74,30 @@ public class TrackedEntityAttributeModelIntegrationTests {
     @Test
     public void create_shouldConvertToModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                Columns.ID,
-                Columns.UID,
-                Columns.CODE,
-                Columns.NAME,
-                Columns.DISPLAY_NAME,
-                Columns.CREATED,
-                Columns.LAST_UPDATED,
-                Columns.SHORT_NAME,
-                Columns.DISPLAY_SHORT_NAME,
-                Columns.DESCRIPTION,
-                Columns.DISPLAY_DESCRIPTION,
-                Columns.PATTERN,
-                Columns.SORT_ORDER_IN_LIST_NO_PROGRAM,
-                Columns.OPTION_SET,
-                Columns.VALUE_TYPE,
-                Columns.EXPRESSION,
-                Columns.SEARCH_SCOPE,
-                Columns.PROGRAM_SCOPE,
-                Columns.DISPLAY_IN_LIST_NO_PROGRAM,
-                Columns.GENERATED,
-                Columns.DISPLAY_ON_VISIT_SCHEDULE,
-                Columns.ORG_UNIT_SCOPE,
-                Columns.UNIQUE,
-                Columns.INHERIT
+                TrackedEntityAttributeModel.Columns.ID,
+                TrackedEntityAttributeModel.Columns.UID,
+                TrackedEntityAttributeModel.Columns.CODE,
+                TrackedEntityAttributeModel.Columns.NAME,
+                TrackedEntityAttributeModel.Columns.DISPLAY_NAME,
+                TrackedEntityAttributeModel.Columns.CREATED,
+                TrackedEntityAttributeModel.Columns.LAST_UPDATED,
+                TrackedEntityAttributeModel.Columns.SHORT_NAME,
+                TrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME,
+                TrackedEntityAttributeModel.Columns.DESCRIPTION,
+                TrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION,
+                TrackedEntityAttributeModel.Columns.PATTERN,
+                TrackedEntityAttributeModel.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM,
+                TrackedEntityAttributeModel.Columns.OPTION_SET,
+                TrackedEntityAttributeModel.Columns.VALUE_TYPE,
+                TrackedEntityAttributeModel.Columns.EXPRESSION,
+                TrackedEntityAttributeModel.Columns.SEARCH_SCOPE,
+                TrackedEntityAttributeModel.Columns.PROGRAM_SCOPE,
+                TrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST_NO_PROGRAM,
+                TrackedEntityAttributeModel.Columns.GENERATED,
+                TrackedEntityAttributeModel.Columns.DISPLAY_ON_VISIT_SCHEDULE,
+                TrackedEntityAttributeModel.Columns.ORG_UNIT_SCOPE,
+                TrackedEntityAttributeModel.Columns.UNIQUE,
+                TrackedEntityAttributeModel.Columns.INHERIT
         });
 
         matrixCursor.addRow(new Object[]{
@@ -150,29 +149,29 @@ public class TrackedEntityAttributeModelIntegrationTests {
         ContentValues contentValues =
                 CreateTrackedEntityAttributeUtils.createWithOptionSet(ID, UID, OPTION_SET);
 
-        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(Columns.CODE)).isEqualTo(CODE);
-        assertThat(contentValues.getAsString(Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.SHORT_NAME)).isEqualTo(SHORT_NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_SHORT_NAME)).isEqualTo(DISPLAY_SHORT_NAME);
-        assertThat(contentValues.getAsString(Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
-        assertThat(contentValues.getAsString(Columns.PATTERN)).isEqualTo(PATTERN);
-        assertThat(contentValues.getAsInteger(Columns.SORT_ORDER_IN_LIST_NO_PROGRAM)).isEqualTo(SORT_ORDER_IN_LIST_NO_PROGRAM);
-        assertThat(contentValues.getAsString(Columns.OPTION_SET)).isEqualTo(OPTION_SET);
-        assertThat(contentValues.getAsString(Columns.VALUE_TYPE)).isEqualTo(VALUE_TYPE.toString());
-        assertThat(contentValues.getAsString(Columns.EXPRESSION)).isEqualTo(EXPRESSION);
-        assertThat(contentValues.getAsString(Columns.SEARCH_SCOPE)).isEqualTo(SEARCH_SCOPE.toString());
-        assertThat(contentValues.getAsBoolean(Columns.PROGRAM_SCOPE)).isEqualTo(toBoolean(PROGRAM_SCOPE));
-        assertThat(contentValues.getAsBoolean(Columns.DISPLAY_IN_LIST_NO_PROGRAM)).isEqualTo(toBoolean(DISPLAY_IN_LIST_NO_PROGRAM));
-        assertThat(contentValues.getAsBoolean(Columns.GENERATED)).isEqualTo(toBoolean(GENERATED));
-        assertThat(contentValues.getAsBoolean(Columns.DISPLAY_ON_VISIT_SCHEDULE)).isEqualTo(toBoolean(DISPLAY_ON_VISIT_SCHEDULE));
-        assertThat(contentValues.getAsBoolean(Columns.ORG_UNIT_SCOPE)).isEqualTo(toBoolean(ORG_UNIT_SCOPE));
-        assertThat(contentValues.getAsBoolean(Columns.UNIQUE)).isEqualTo(toBoolean(UNIQUE));
-        assertThat(contentValues.getAsBoolean(Columns.INHERIT)).isEqualTo(toBoolean(INHERIT));
+        assertThat(contentValues.getAsLong(TrackedEntityAttributeModel.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(TrackedEntityAttributeModel.Columns.UID)).isEqualTo(UID);
+        assertThat(contentValues.getAsString(TrackedEntityAttributeModel.Columns.CODE)).isEqualTo(CODE);
+        assertThat(contentValues.getAsString(TrackedEntityAttributeModel.Columns.NAME)).isEqualTo(NAME);
+        assertThat(contentValues.getAsString(TrackedEntityAttributeModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
+        assertThat(contentValues.getAsString(TrackedEntityAttributeModel.Columns.CREATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(TrackedEntityAttributeModel.Columns.LAST_UPDATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(TrackedEntityAttributeModel.Columns.SHORT_NAME)).isEqualTo(SHORT_NAME);
+        assertThat(contentValues.getAsString(TrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME)).isEqualTo(DISPLAY_SHORT_NAME);
+        assertThat(contentValues.getAsString(TrackedEntityAttributeModel.Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
+        assertThat(contentValues.getAsString(TrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
+        assertThat(contentValues.getAsString(TrackedEntityAttributeModel.Columns.PATTERN)).isEqualTo(PATTERN);
+        assertThat(contentValues.getAsInteger(TrackedEntityAttributeModel.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM)).isEqualTo(SORT_ORDER_IN_LIST_NO_PROGRAM);
+        assertThat(contentValues.getAsString(TrackedEntityAttributeModel.Columns.OPTION_SET)).isEqualTo(OPTION_SET);
+        assertThat(contentValues.getAsString(TrackedEntityAttributeModel.Columns.VALUE_TYPE)).isEqualTo(VALUE_TYPE.toString());
+        assertThat(contentValues.getAsString(TrackedEntityAttributeModel.Columns.EXPRESSION)).isEqualTo(EXPRESSION);
+        assertThat(contentValues.getAsString(TrackedEntityAttributeModel.Columns.SEARCH_SCOPE)).isEqualTo(SEARCH_SCOPE.toString());
+        assertThat(contentValues.getAsBoolean(TrackedEntityAttributeModel.Columns.PROGRAM_SCOPE)).isEqualTo(toBoolean(PROGRAM_SCOPE));
+        assertThat(contentValues.getAsBoolean(TrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST_NO_PROGRAM)).isEqualTo(toBoolean(DISPLAY_IN_LIST_NO_PROGRAM));
+        assertThat(contentValues.getAsBoolean(TrackedEntityAttributeModel.Columns.GENERATED)).isEqualTo(toBoolean(GENERATED));
+        assertThat(contentValues.getAsBoolean(TrackedEntityAttributeModel.Columns.DISPLAY_ON_VISIT_SCHEDULE)).isEqualTo(toBoolean(DISPLAY_ON_VISIT_SCHEDULE));
+        assertThat(contentValues.getAsBoolean(TrackedEntityAttributeModel.Columns.ORG_UNIT_SCOPE)).isEqualTo(toBoolean(ORG_UNIT_SCOPE));
+        assertThat(contentValues.getAsBoolean(TrackedEntityAttributeModel.Columns.UNIQUE)).isEqualTo(toBoolean(UNIQUE));
+        assertThat(contentValues.getAsBoolean(TrackedEntityAttributeModel.Columns.INHERIT)).isEqualTo(toBoolean(INHERIT));
     }
 }

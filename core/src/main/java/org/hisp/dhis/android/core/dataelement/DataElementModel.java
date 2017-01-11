@@ -12,10 +12,21 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElementContract.Columns;
 
 @AutoValue
 public abstract class DataElementModel extends BaseNameableObjectModel {
+
+    public interface Columns extends BaseNameableObjectModel.Columns {
+        String VALUE_TYPE = "valueType";
+        String ZERO_IS_SIGNIFICANT = "zeroIsSignificant";
+        String AGGREGATION_OPERATOR = "aggregationOperator";
+        String FORM_NAME = "formName";
+        String NUMBER_TYPE = "numberType";
+        String DOMAIN_TYPE = "domainType";
+        String DIMENSION = "dimension";
+        String DISPLAY_FORM_NAME = "displayFormName";
+        String OPTION_SET = "optionSet";
+    }
 
     public static DataElementModel create(Cursor cursor) {
         return AutoValue_DataElementModel.createFromCursor(cursor);

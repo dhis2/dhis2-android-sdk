@@ -13,16 +13,22 @@ import org.hisp.dhis.android.core.common.BaseModel;
 @AutoValue
 public abstract class UserOrganisationUnitLinkModel extends BaseModel {
 
+    public interface Columns extends BaseModel.Columns {
+        String USER = "user";
+        String ORGANISATION_UNIT = "organisationUnit";
+        String ORGANISATION_UNIT_SCOPE = "organisationUnitScope";
+    }
+
     @Nullable
-    @ColumnName(UserOrganisationUnitLinkContract.Columns.USER)
+    @ColumnName(Columns.USER)
     public abstract String user();
 
     @Nullable
-    @ColumnName(UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT)
+    @ColumnName(Columns.ORGANISATION_UNIT)
     public abstract String organisationUnit();
 
     @Nullable
-    @ColumnName(UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT_SCOPE)
+    @ColumnName(Columns.ORGANISATION_UNIT_SCOPE)
     public abstract String organisationUnitScope();
 
     @NonNull

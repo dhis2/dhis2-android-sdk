@@ -13,8 +13,10 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 @AutoValue
 public abstract class RelationshipTypeModel extends BaseIdentifiableObjectModel {
 
-    private static final String JSON_PROPERTY_B_TO_A = "bIsToA";
-    private static final String JSON_PROPERTY_A_TO_B = "aIsToB";
+    public interface Columns extends BaseIdentifiableObjectModel.Columns {
+        String B_IS_TO_A = "bIsToA";
+        String A_IS_TO_B = "AIsToB";
+    }
 
     public static RelationshipTypeModel create(Cursor cursor) {
         return AutoValue_RelationshipTypeModel.createFromCursor(cursor);
@@ -28,11 +30,11 @@ public abstract class RelationshipTypeModel extends BaseIdentifiableObjectModel 
     public abstract ContentValues toContentValues();
 
     @Nullable
-    @ColumnName(RelationshipTypeContract.Columns.B_IS_TO_A)
+    @ColumnName(Columns.B_IS_TO_A)
     public abstract String bIsToA();
 
     @Nullable
-    @ColumnName(RelationshipTypeContract.Columns.A_IS_TO_B)
+    @ColumnName(Columns.A_IS_TO_B)
     public abstract String aIsToB();
 
     @AutoValue.Builder

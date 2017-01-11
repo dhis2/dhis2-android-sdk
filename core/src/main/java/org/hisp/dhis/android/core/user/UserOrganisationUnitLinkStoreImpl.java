@@ -11,19 +11,19 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLinkStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + DbOpenHelper.Tables.USER_ORGANISATION_UNIT + " (" +
-            UserOrganisationUnitLinkContract.Columns.USER + ", " +
-            UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT + ", " +
-            UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT_SCOPE + ") " +
+            UserOrganisationUnitLinkModel.Columns.USER + ", " +
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ", " +
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + ") " +
             "VALUES (?, ?, ?);";
 
     private final SQLiteStatement sqLiteStatement;
 
     public static ContentValues create(long id, String user, String organisationUnit, String orgUnitScope) {
         ContentValues userOrganisationUnitLink = new ContentValues();
-        userOrganisationUnitLink.put(UserOrganisationUnitLinkContract.Columns.ID, id);
-        userOrganisationUnitLink.put(UserOrganisationUnitLinkContract.Columns.USER, user);
-        userOrganisationUnitLink.put(UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT, organisationUnit);
-        userOrganisationUnitLink.put(UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT_SCOPE, orgUnitScope);
+        userOrganisationUnitLink.put(UserOrganisationUnitLinkModel.Columns.ID, id);
+        userOrganisationUnitLink.put(UserOrganisationUnitLinkModel.Columns.USER, user);
+        userOrganisationUnitLink.put(UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT, organisationUnit);
+        userOrganisationUnitLink.put(UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE, orgUnitScope);
         return userOrganisationUnitLink;
     }
 

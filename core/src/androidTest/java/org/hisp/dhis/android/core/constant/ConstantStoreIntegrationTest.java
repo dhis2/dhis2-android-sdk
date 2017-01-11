@@ -27,8 +27,8 @@ public class ConstantStoreIntegrationTest extends AbsStoreTestCase {
     private static final Double VALUE = 0.18;
 
     private static final String[] CONSTANT_PROJECTION = {
-            ConstantContract.Columns.UID, ConstantContract.Columns.CODE, ConstantContract.Columns.NAME, ConstantContract.Columns.DISPLAY_NAME,
-            ConstantContract.Columns.CREATED, ConstantContract.Columns.LAST_UPDATED, ConstantContract.Columns.VALUE
+            ConstantModel.Columns.UID, ConstantModel.Columns.CODE, ConstantModel.Columns.NAME, ConstantModel.Columns.DISPLAY_NAME,
+            ConstantModel.Columns.CREATED, ConstantModel.Columns.LAST_UPDATED, ConstantModel.Columns.VALUE
     };
 
     @Before

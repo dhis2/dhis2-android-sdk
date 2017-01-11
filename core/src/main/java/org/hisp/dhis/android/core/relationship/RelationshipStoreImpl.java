@@ -13,9 +13,9 @@ public class RelationshipStoreImpl implements RelationshipStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             DbOpenHelper.Tables.RELATIONSHIP_TABLE + " (" +
-            RelationshipContract.Columns.TRACKED_ENTITY_INSTANCE_A + ", " +
-            RelationshipContract.Columns.TRACKED_ENTITY_INSTANCE_B + ", " +
-            RelationshipContract.Columns.RELATIONSHIP_TYPE + ") " +
+            RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A + ", " +
+            RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B + ", " +
+            RelationshipModel.Columns.RELATIONSHIP_TYPE + ") " +
             "VALUES(?, ?, ?);";
 
     private final SQLiteStatement sqLiteStatement;

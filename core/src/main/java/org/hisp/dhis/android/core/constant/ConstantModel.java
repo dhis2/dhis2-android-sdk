@@ -14,6 +14,10 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 @AutoValue
 public abstract class ConstantModel extends BaseIdentifiableObjectModel {
 
+    public interface Columns extends BaseIdentifiableObjectModel.Columns {
+        String VALUE = "value";
+    }
+
     public static ConstantModel create(Cursor cursor) {
         return AutoValue_ConstantModel.createFromCursor(cursor);
     }
@@ -22,10 +26,10 @@ public abstract class ConstantModel extends BaseIdentifiableObjectModel {
         return new $$AutoValue_ConstantModel.Builder();
     }
 
-    @Nullable
-    @ColumnName(ConstantContract.Columns.VALUE)
-    public abstract Double value();
 
+    @Nullable
+    @ColumnName(Columns.VALUE)
+    public abstract Double value();
 
     @NonNull
     public abstract ContentValues toContentValues();

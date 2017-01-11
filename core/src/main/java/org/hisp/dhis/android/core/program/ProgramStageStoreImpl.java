@@ -8,35 +8,34 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-import org.hisp.dhis.android.core.program.ProgramStageContract.Columns;
 
 import java.util.Date;
 
 public class ProgramStageStoreImpl implements ProgramStageStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.PROGRAM_STAGE + " (" +
-            Columns.UID + ", " +
-            Columns.CODE + ", " +
-            Columns.NAME + ", " +
-            Columns.DISPLAY_NAME + ", " +
-            Columns.CREATED + ", " +
-            Columns.LAST_UPDATED + ", " +
-            Columns.EXECUTION_DATE_LABEL + ", " +
-            Columns.ALLOW_GENERATE_NEXT_VISIT + ", " +
-            Columns.VALID_COMPLETE_ONLY + ", " +
-            Columns.REPORT_DATE_TO_USE + ", " +
-            Columns.OPEN_AFTER_ENROLLMENT + ", " +
-            Columns.REPEATABLE + ", " +
-            Columns.CAPTURE_COORDINATES + ", " +
-            Columns.FORM_TYPE + ", " +
-            Columns.DISPLAY_GENERATE_EVENT_BOX + ", " +
-            Columns.GENERATED_BY_ENROLMENT_DATE + ", " +
-            Columns.AUTO_GENERATE_EVENT + ", " +
-            Columns.SORT_ORDER + ", " +
-            Columns.HIDE_DUE_DATE + ", " +
-            Columns.BLOCK_ENTRY_FORM + ", " +
-            Columns.MIN_DAYS_FROM_START + ", " +
-            Columns.STANDARD_INTERVAL + ", " +
-            Columns.PROGRAM + ") " +
+            ProgramStageModel.Columns.UID + ", " +
+            ProgramStageModel.Columns.CODE + ", " +
+            ProgramStageModel.Columns.NAME + ", " +
+            ProgramStageModel.Columns.DISPLAY_NAME + ", " +
+            ProgramStageModel.Columns.CREATED + ", " +
+            ProgramStageModel.Columns.LAST_UPDATED + ", " +
+            ProgramStageModel.Columns.EXECUTION_DATE_LABEL + ", " +
+            ProgramStageModel.Columns.ALLOW_GENERATE_NEXT_VISIT + ", " +
+            ProgramStageModel.Columns.VALID_COMPLETE_ONLY + ", " +
+            ProgramStageModel.Columns.REPORT_DATE_TO_USE + ", " +
+            ProgramStageModel.Columns.OPEN_AFTER_ENROLLMENT + ", " +
+            ProgramStageModel.Columns.REPEATABLE + ", " +
+            ProgramStageModel.Columns.CAPTURE_COORDINATES + ", " +
+            ProgramStageModel.Columns.FORM_TYPE + ", " +
+            ProgramStageModel.Columns.DISPLAY_GENERATE_EVENT_BOX + ", " +
+            ProgramStageModel.Columns.GENERATED_BY_ENROLMENT_DATE + ", " +
+            ProgramStageModel.Columns.AUTO_GENERATE_EVENT + ", " +
+            ProgramStageModel.Columns.SORT_ORDER + ", " +
+            ProgramStageModel.Columns.HIDE_DUE_DATE + ", " +
+            ProgramStageModel.Columns.BLOCK_ENTRY_FORM + ", " +
+            ProgramStageModel.Columns.MIN_DAYS_FROM_START + ", " +
+            ProgramStageModel.Columns.STANDARD_INTERVAL + ", " +
+            ProgramStageModel.Columns.PROGRAM + ") " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private final SQLiteStatement sqLiteStatement;

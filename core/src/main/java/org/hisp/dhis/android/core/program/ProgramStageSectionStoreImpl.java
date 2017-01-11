@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-import org.hisp.dhis.android.core.program.ProgramStageSectionContract.Columns;
 
 import java.util.Date;
 
@@ -15,14 +14,14 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.PROGRAM_STAGE_SECTION + " (" +
-            Columns.UID + ", " +
-            Columns.CODE + ", " +
-            Columns.NAME + ", " +
-            Columns.DISPLAY_NAME + ", " +
-            Columns.CREATED + ", " +
-            Columns.LAST_UPDATED + ", " +
-            Columns.SORT_ORDER + ", " +
-            Columns.PROGRAM_STAGE + ") " +
+            ProgramStageSectionModel.Columns.UID + ", " +
+            ProgramStageSectionModel.Columns.CODE + ", " +
+            ProgramStageSectionModel.Columns.NAME + ", " +
+            ProgramStageSectionModel.Columns.DISPLAY_NAME + ", " +
+            ProgramStageSectionModel.Columns.CREATED + ", " +
+            ProgramStageSectionModel.Columns.LAST_UPDATED + ", " +
+            ProgramStageSectionModel.Columns.SORT_ORDER + ", " +
+            ProgramStageSectionModel.Columns.PROGRAM_STAGE + ") " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 
     private final SQLiteStatement sqLiteStatement;

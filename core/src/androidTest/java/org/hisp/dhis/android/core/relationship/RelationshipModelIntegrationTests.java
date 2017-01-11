@@ -23,10 +23,10 @@ public class RelationshipModelIntegrationTests {
     @Test
     public void create_shouldConvertToModel() {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                RelationshipContract.Columns.ID,
-                RelationshipContract.Columns.TRACKED_ENTITY_INSTANCE_A,
-                RelationshipContract.Columns.TRACKED_ENTITY_INSTANCE_B,
-                RelationshipContract.Columns.RELATIONSHIP_TYPE
+                RelationshipModel.Columns.ID,
+                RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A,
+                RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B,
+                RelationshipModel.Columns.RELATIONSHIP_TYPE
         });
 
         matrixCursor.addRow(new Object[]{
@@ -53,9 +53,9 @@ public class RelationshipModelIntegrationTests {
 
         ContentValues contentValues = relationshipModel.toContentValues();
 
-        assertThat(contentValues.getAsLong(RelationshipContract.Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(RelationshipContract.Columns.TRACKED_ENTITY_INSTANCE_A)).isEqualTo(TRACKED_ENTITY_INSTANCE_A);
-        assertThat(contentValues.getAsString(RelationshipContract.Columns.TRACKED_ENTITY_INSTANCE_B)).isEqualTo(TRACKED_ENTITY_INSTANCE_B);
-        assertThat(contentValues.getAsString(RelationshipContract.Columns.RELATIONSHIP_TYPE)).isEqualTo(RELATIONSHIP_TYPE);
+        assertThat(contentValues.getAsLong(RelationshipModel.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A)).isEqualTo(TRACKED_ENTITY_INSTANCE_A);
+        assertThat(contentValues.getAsString(RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B)).isEqualTo(TRACKED_ENTITY_INSTANCE_B);
+        assertThat(contentValues.getAsString(RelationshipModel.Columns.RELATIONSHIP_TYPE)).isEqualTo(RELATIONSHIP_TYPE);
     }
 }

@@ -41,23 +41,25 @@ import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract.Columns.DISPLAY_IN_LIST_NO_PROGRAM;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract.Columns.DISPLAY_ON_VISIT_SCHEDULE;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract.Columns.EXPRESSION;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract.Columns.GENERATED;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract.Columns.INHERIT;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract.Columns.OPTION_SET;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract.Columns.ORG_UNIT_SCOPE;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract.Columns.PATTERN;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract.Columns.PROGRAM_SCOPE;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract.Columns.SEARCH_SCOPE;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract.Columns.UNIQUE;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract.Columns.VALUE_TYPE;
-
 // TODO: Tests
 @AutoValue
 public abstract class TrackedEntityAttributeModel extends BaseNameableObjectModel {
+
+    public interface Columns extends BaseNameableObjectModel.Columns {
+        String PATTERN = "pattern";
+        String SORT_ORDER_IN_LIST_NO_PROGRAM = "sortOrderInListNoProgram";
+        String OPTION_SET = "optionSet";
+        String VALUE_TYPE = "valueType";
+        String EXPRESSION = "expression";
+        String SEARCH_SCOPE = "searchScope";
+        String PROGRAM_SCOPE = "programScope";
+        String DISPLAY_IN_LIST_NO_PROGRAM = "displayInListNoProgram";
+        String GENERATED = "generated";
+        String DISPLAY_ON_VISIT_SCHEDULE = "displayOnVisitSchedule";
+        String ORG_UNIT_SCOPE = "orgunitScope";
+        String UNIQUE = "uniqueProperty";
+        String INHERIT = "inherit";
+    }
 
     @NonNull
     public static Builder builder() {
@@ -70,57 +72,57 @@ public abstract class TrackedEntityAttributeModel extends BaseNameableObjectMode
     }
 
     @Nullable
-    @ColumnName(PATTERN)
+    @ColumnName(Columns.PATTERN)
     public abstract String pattern();
 
     @Nullable
-    @ColumnName(SORT_ORDER_IN_LIST_NO_PROGRAM)
+    @ColumnName(Columns.SORT_ORDER_IN_LIST_NO_PROGRAM)
     public abstract Integer sortOrderInListNoProgram();
 
     @Nullable
-    @ColumnName(OPTION_SET)
+    @ColumnName(Columns.OPTION_SET)
     public abstract String optionSet();
 
     @Nullable
-    @ColumnName(VALUE_TYPE)
+    @ColumnName(Columns.VALUE_TYPE)
     @ColumnAdapter(DbValueTypeColumnAdapter.class)
     public abstract ValueType valueType();
 
     @Nullable
-    @ColumnName(EXPRESSION)
+    @ColumnName(Columns.EXPRESSION)
     public abstract String expression();
 
     @Nullable
-    @ColumnName(SEARCH_SCOPE)
+    @ColumnName(Columns.SEARCH_SCOPE)
     @ColumnAdapter(TrackedEntityAttributeSearchScopeColumnAdapter.class)
     public abstract TrackedEntityAttributeSearchScope searchScope();
 
     @Nullable
-    @ColumnName(PROGRAM_SCOPE)
+    @ColumnName(Columns.PROGRAM_SCOPE)
     public abstract Boolean programScope();
 
     @Nullable
-    @ColumnName(DISPLAY_IN_LIST_NO_PROGRAM)
+    @ColumnName(Columns.DISPLAY_IN_LIST_NO_PROGRAM)
     public abstract Boolean displayInListNoProgram();
 
     @Nullable
-    @ColumnName(GENERATED)
+    @ColumnName(Columns.GENERATED)
     public abstract Boolean generated();
 
     @Nullable
-    @ColumnName(DISPLAY_ON_VISIT_SCHEDULE)
+    @ColumnName(Columns.DISPLAY_ON_VISIT_SCHEDULE)
     public abstract Boolean displayOnVisitSchedule();
 
     @Nullable
-    @ColumnName(ORG_UNIT_SCOPE)
+    @ColumnName(Columns.ORG_UNIT_SCOPE)
     public abstract Boolean orgUnitScope();
 
     @Nullable
-    @ColumnName(UNIQUE)
+    @ColumnName(Columns.UNIQUE)
     public abstract Boolean unique();
 
     @Nullable
-    @ColumnName(INHERIT)
+    @ColumnName(Columns.INHERIT)
     public abstract Boolean inherit();
 
     @NonNull

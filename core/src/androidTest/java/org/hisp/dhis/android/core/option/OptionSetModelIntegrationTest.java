@@ -6,7 +6,6 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.option.OptionSetContract.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -30,28 +29,28 @@ public class OptionSetModelIntegrationTest {
 
     public static ContentValues create(long id, String uid) {
         ContentValues optionSet = new ContentValues();
-        optionSet.put(Columns.ID, id);
-        optionSet.put(Columns.UID, uid);
-        optionSet.put(Columns.CODE, CODE);
-        optionSet.put(Columns.NAME, NAME);
-        optionSet.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
-        optionSet.put(Columns.VERSION, VERSION);
-        optionSet.put(Columns.VALUE_TYPE, VALUE_TYPE.name());
+        optionSet.put(OptionSetModel.Columns.ID, id);
+        optionSet.put(OptionSetModel.Columns.UID, uid);
+        optionSet.put(OptionSetModel.Columns.CODE, CODE);
+        optionSet.put(OptionSetModel.Columns.NAME, NAME);
+        optionSet.put(OptionSetModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
+        optionSet.put(OptionSetModel.Columns.VERSION, VERSION);
+        optionSet.put(OptionSetModel.Columns.VALUE_TYPE, VALUE_TYPE.name());
         return optionSet;
     }
 
     @Test
     public void create_shouldConvertToModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                Columns.ID,
-                Columns.UID,
-                Columns.CODE,
-                Columns.NAME,
-                Columns.DISPLAY_NAME,
-                Columns.CREATED,
-                Columns.LAST_UPDATED,
-                Columns.VERSION,
-                Columns.VALUE_TYPE
+                OptionSetModel.Columns.ID,
+                OptionSetModel.Columns.UID,
+                OptionSetModel.Columns.CODE,
+                OptionSetModel.Columns.NAME,
+                OptionSetModel.Columns.DISPLAY_NAME,
+                OptionSetModel.Columns.CREATED,
+                OptionSetModel.Columns.LAST_UPDATED,
+                OptionSetModel.Columns.VERSION,
+                OptionSetModel.Columns.VALUE_TYPE
         });
 
         matrixCursor.addRow(new Object[]{
@@ -93,14 +92,14 @@ public class OptionSetModelIntegrationTest {
 
         ContentValues contentValues = optionSetModel.toContentValues();
 
-        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(Columns.CODE)).isEqualTo(CODE);
-        assertThat(contentValues.getAsString(Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsInteger(Columns.VERSION)).isEqualTo(VERSION);
-        assertThat(contentValues.get(Columns.VALUE_TYPE)).isEqualTo(VALUE_TYPE.name());
+        assertThat(contentValues.getAsLong(OptionSetModel.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(OptionSetModel.Columns.UID)).isEqualTo(UID);
+        assertThat(contentValues.getAsString(OptionSetModel.Columns.CODE)).isEqualTo(CODE);
+        assertThat(contentValues.getAsString(OptionSetModel.Columns.NAME)).isEqualTo(NAME);
+        assertThat(contentValues.getAsString(OptionSetModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
+        assertThat(contentValues.getAsString(OptionSetModel.Columns.CREATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(OptionSetModel.Columns.LAST_UPDATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsInteger(OptionSetModel.Columns.VERSION)).isEqualTo(VERSION);
+        assertThat(contentValues.get(OptionSetModel.Columns.VALUE_TYPE)).isEqualTo(VALUE_TYPE.name());
     }
 }

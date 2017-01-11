@@ -15,6 +15,28 @@ import org.hisp.dhis.android.core.data.database.DbProgramTypeColumnAdapter;
 @AutoValue
 public abstract class ProgramModel extends BaseNameableObjectModel {
 
+    public interface Columns extends BaseNameableObjectModel.Columns {
+        String VERSION = "version";
+        String ONLY_ENROLL_ONCE = "onlyEnrollOnce";
+        String ENROLLMENT_DATE_LABEL = "enrollmentDateLabel";
+        String DISPLAY_INCIDENT_DATE = "displayIncidentDate";
+        String INCIDENT_DATE_LABEL = "incidentDateLabel";
+        String REGISTRATION = "registration";
+        String SELECT_ENROLLMENT_DATES_IN_FUTURE = "selectEnrollmentDatesInFuture";
+        String DATA_ENTRY_METHOD = "dataEntryMethod";
+        String IGNORE_OVERDUE_EVENTS = "ignoreOverdueEvents";
+        String RELATIONSHIP_FROM_A = "relationshipFromA";
+        String SELECT_INCIDENT_DATES_IN_FUTURE = "selectIncidentDatesInFuture";
+        String CAPTURE_COORDINATES = "captureCoordinates";
+        String USE_FIRST_STAGE_DURING_REGISTRATION = "useFirstStageDuringRegistration";
+        String DISPLAY_FRONT_PAGE_LIST = "displayFrontPageList";
+        String PROGRAM_TYPE = "programType";
+        String RELATIONSHIP_TYPE = "relationshipType";
+        String RELATIONSHIP_TEXT = "relationshipText";
+        String RELATED_PROGRAM = "relatedProgram";
+        String TRACKED_ENTITY = "trackedEntity";
+    }
+
     public static ProgramModel create(Cursor cursor) {
         return AutoValue_ProgramModel.createFromCursor(cursor);
     }
@@ -27,85 +49,85 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
     public abstract ContentValues toContentValues();
 
     @Nullable
-    @ColumnName(ProgramContract.Columns.VERSION)
+    @ColumnName(Columns.VERSION)
     public abstract Integer version();
 
     @Nullable
-    @ColumnName(ProgramContract.Columns.ONLY_ENROLL_ONCE)
+    @ColumnName(Columns.ONLY_ENROLL_ONCE)
     public abstract Boolean onlyEnrollOnce();
 
     @Nullable
-    @ColumnName(ProgramContract.Columns.ENROLLMENT_DATE_LABEL)
+    @ColumnName(Columns.ENROLLMENT_DATE_LABEL)
     public abstract String enrollmentDateLabel();
 
     @Nullable
-    @ColumnName(ProgramContract.Columns.DISPLAY_INCIDENT_DATE)
+    @ColumnName(Columns.DISPLAY_INCIDENT_DATE)
     public abstract Boolean displayIncidentDate();
 
     @Nullable
-    @ColumnName(ProgramContract.Columns.INCIDENT_DATE_LABEL)
+    @ColumnName(Columns.INCIDENT_DATE_LABEL)
     public abstract String incidentDateLabel();
 
     @Nullable
-    @ColumnName(ProgramContract.Columns.REGISTRATION)
+    @ColumnName(Columns.REGISTRATION)
     public abstract Boolean registration();
 
     @Nullable
-    @ColumnName(ProgramContract.Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE)
+    @ColumnName(Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE)
     public abstract Boolean selectEnrollmentDatesInFuture();
 
     @Nullable
-    @ColumnName(ProgramContract.Columns.DATA_ENTRY_METHOD)
+    @ColumnName(Columns.DATA_ENTRY_METHOD)
     public abstract Boolean dataEntryMethod();
 
     @Nullable
-    @ColumnName(ProgramContract.Columns.IGNORE_OVERDUE_EVENTS)
+    @ColumnName(Columns.IGNORE_OVERDUE_EVENTS)
     public abstract Boolean ignoreOverdueEvents();
 
     @Nullable
-    @ColumnName(ProgramContract.Columns.RELATIONSHIP_FROM_A)
+    @ColumnName(Columns.RELATIONSHIP_FROM_A)
     public abstract Boolean relationshipFromA();
 
     @Nullable
-    @ColumnName(ProgramContract.Columns.SELECT_INCIDENT_DATES_IN_FUTURE)
+    @ColumnName(Columns.SELECT_INCIDENT_DATES_IN_FUTURE)
     public abstract Boolean selectIncidentDatesInFuture();
 
     @Nullable
-    @ColumnName(ProgramContract.Columns.CAPTURE_COORDINATES)
+    @ColumnName(Columns.CAPTURE_COORDINATES)
     public abstract Boolean captureCoordinates();
 
     @Nullable
-    @ColumnName(ProgramContract.Columns.USE_FIRST_STAGE_DURING_REGISTRATION)
+    @ColumnName(Columns.USE_FIRST_STAGE_DURING_REGISTRATION)
     public abstract Boolean useFirstStageDuringRegistration();
 
     @Nullable
-    @ColumnName(ProgramContract.Columns.DISPLAY_FRONT_PAGE_LIST)
+    @ColumnName(Columns.DISPLAY_FRONT_PAGE_LIST)
     public abstract Boolean displayFrontPageList();
 
     @Nullable
-    @ColumnName(ProgramContract.Columns.PROGRAM_TYPE)
+    @ColumnName(Columns.PROGRAM_TYPE)
     @ColumnAdapter(DbProgramTypeColumnAdapter.class)
     public abstract ProgramType programType();
 
     @Nullable
-    @ColumnName(ProgramContract.Columns.RELATIONSHIP_TYPE)
+    @ColumnName(Columns.RELATIONSHIP_TYPE)
     public abstract String relationshipType();
 
     @Nullable
-    @ColumnName(ProgramContract.Columns.RELATIONSHIP_TEXT)
+    @ColumnName(Columns.RELATIONSHIP_TEXT)
     public abstract String relationshipText();
 
     @Nullable
-    @ColumnName(ProgramContract.Columns.RELATED_PROGRAM)
+    @ColumnName(Columns.RELATED_PROGRAM)
     public abstract String relatedProgram();
 
     @Nullable
-    @ColumnName(ProgramContract.Columns.TRACKED_ENTITY)
+    @ColumnName(Columns.TRACKED_ENTITY)
     public abstract String trackedEntity();
 
     //TODO: Add these to the model/sql/... later:
 //    @Nullable
-//    @ColumnName(ProgramContract.Columns.CATEGORY_COMBO)
+//    @ColumnName(Columns.CATEGORY_COMBO)
 //    public abstract String categoryCombo();
 //
 

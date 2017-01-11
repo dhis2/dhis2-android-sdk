@@ -6,7 +6,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-import org.hisp.dhis.android.core.option.OptionSetContract.Columns;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,9 +29,9 @@ public class OptionSetModelStoreIntegrationTest extends AbsStoreTestCase {
     private static final String DATE = "2016-12-20T16:26:00.007";
 
     private static final String[] OPTION_SET_PROJECTION = {
-            Columns.UID, Columns.CODE, Columns.NAME,
-            Columns.DISPLAY_NAME, Columns.CREATED,
-            Columns.LAST_UPDATED, Columns.VERSION, Columns.VALUE_TYPE
+            OptionSetModel.Columns.UID, OptionSetModel.Columns.CODE, OptionSetModel.Columns.NAME,
+            OptionSetModel.Columns.DISPLAY_NAME, OptionSetModel.Columns.CREATED,
+            OptionSetModel.Columns.LAST_UPDATED, OptionSetModel.Columns.VERSION, OptionSetModel.Columns.VALUE_TYPE
     };
 
     private OptionSetStore optionSetStore;

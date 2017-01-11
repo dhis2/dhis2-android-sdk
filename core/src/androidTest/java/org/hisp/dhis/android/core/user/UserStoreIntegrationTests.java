@@ -20,51 +20,51 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 @RunWith(AndroidJUnit4.class)
 public class UserStoreIntegrationTests extends AbsStoreTestCase {
     public static final String[] USER_PROJECTION = {
-            UserContract.Columns.UID,
-            UserContract.Columns.CODE,
-            UserContract.Columns.NAME,
-            UserContract.Columns.DISPLAY_NAME,
-            UserContract.Columns.CREATED,
-            UserContract.Columns.LAST_UPDATED,
-            UserContract.Columns.BIRTHDAY,
-            UserContract.Columns.EDUCATION,
-            UserContract.Columns.GENDER,
-            UserContract.Columns.JOB_TITLE,
-            UserContract.Columns.SURNAME,
-            UserContract.Columns.FIRST_NAME,
-            UserContract.Columns.INTRODUCTION,
-            UserContract.Columns.EMPLOYER,
-            UserContract.Columns.INTERESTS,
-            UserContract.Columns.LANGUAGES,
-            UserContract.Columns.EMAIL,
-            UserContract.Columns.PHONE_NUMBER,
-            UserContract.Columns.NATIONALITY
+            UserModel.Columns.UID,
+            UserModel.Columns.CODE,
+            UserModel.Columns.NAME,
+            UserModel.Columns.DISPLAY_NAME,
+            UserModel.Columns.CREATED,
+            UserModel.Columns.LAST_UPDATED,
+            UserModel.Columns.BIRTHDAY,
+            UserModel.Columns.EDUCATION,
+            UserModel.Columns.GENDER,
+            UserModel.Columns.JOB_TITLE,
+            UserModel.Columns.SURNAME,
+            UserModel.Columns.FIRST_NAME,
+            UserModel.Columns.INTRODUCTION,
+            UserModel.Columns.EMPLOYER,
+            UserModel.Columns.INTERESTS,
+            UserModel.Columns.LANGUAGES,
+            UserModel.Columns.EMAIL,
+            UserModel.Columns.PHONE_NUMBER,
+            UserModel.Columns.NATIONALITY
     };
 
     private UserStore userStore;
 
     public static ContentValues create(long id, String uid) {
         ContentValues user = new ContentValues();
-        user.put(UserContract.Columns.ID, id);
-        user.put(UserContract.Columns.UID, uid);
-        user.put(UserContract.Columns.CODE, "test_code");
-        user.put(UserContract.Columns.NAME, "test_name");
-        user.put(UserContract.Columns.DISPLAY_NAME, "test_display_name");
-        user.put(UserContract.Columns.CREATED, "test_created");
-        user.put(UserContract.Columns.LAST_UPDATED, "test_last_updated");
-        user.put(UserContract.Columns.BIRTHDAY, "test_birthday");
-        user.put(UserContract.Columns.EDUCATION, "test_education");
-        user.put(UserContract.Columns.GENDER, "test_gender");
-        user.put(UserContract.Columns.JOB_TITLE, "test_job_title");
-        user.put(UserContract.Columns.SURNAME, "test_surname");
-        user.put(UserContract.Columns.FIRST_NAME, "test_first_name");
-        user.put(UserContract.Columns.INTRODUCTION, "test_introduction");
-        user.put(UserContract.Columns.EMPLOYER, "test_employer");
-        user.put(UserContract.Columns.INTERESTS, "test_interests");
-        user.put(UserContract.Columns.LANGUAGES, "test_languages");
-        user.put(UserContract.Columns.EMAIL, "test_email");
-        user.put(UserContract.Columns.PHONE_NUMBER, "test_phone_number");
-        user.put(UserContract.Columns.NATIONALITY, "test_nationality");
+        user.put(UserModel.Columns.ID, id);
+        user.put(UserModel.Columns.UID, uid);
+        user.put(UserModel.Columns.CODE, "test_code");
+        user.put(UserModel.Columns.NAME, "test_name");
+        user.put(UserModel.Columns.DISPLAY_NAME, "test_display_name");
+        user.put(UserModel.Columns.CREATED, "test_created");
+        user.put(UserModel.Columns.LAST_UPDATED, "test_last_updated");
+        user.put(UserModel.Columns.BIRTHDAY, "test_birthday");
+        user.put(UserModel.Columns.EDUCATION, "test_education");
+        user.put(UserModel.Columns.GENDER, "test_gender");
+        user.put(UserModel.Columns.JOB_TITLE, "test_job_title");
+        user.put(UserModel.Columns.SURNAME, "test_surname");
+        user.put(UserModel.Columns.FIRST_NAME, "test_first_name");
+        user.put(UserModel.Columns.INTRODUCTION, "test_introduction");
+        user.put(UserModel.Columns.EMPLOYER, "test_employer");
+        user.put(UserModel.Columns.INTERESTS, "test_interests");
+        user.put(UserModel.Columns.LANGUAGES, "test_languages");
+        user.put(UserModel.Columns.EMAIL, "test_email");
+        user.put(UserModel.Columns.PHONE_NUMBER, "test_phone_number");
+        user.put(UserModel.Columns.NATIONALITY, "test_nationality");
         return user;
     }
 

@@ -5,9 +5,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract.Columns;
 
 import java.util.Date;
 
@@ -15,21 +13,21 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.ORGANISATION_UNIT + " (" +
-            Columns.UID + ", " +
-            Columns.CODE + ", " +
-            Columns.NAME + ", " +
-            Columns.DISPLAY_NAME + ", " +
-            Columns.CREATED + ", " +
-            Columns.LAST_UPDATED + ", " +
-            Columns.SHORT_NAME + ", " +
-            Columns.DISPLAY_SHORT_NAME + ", " +
-            Columns.DESCRIPTION + ", " +
-            Columns.DISPLAY_DESCRIPTION + ", " +
-            Columns.PATH + ", " +
-            Columns.OPENING_DATE + ", " +
-            Columns.CLOSED_DATE + ", " +
-            Columns.LEVEL + ", " +
-            Columns.PARENT + ") " +
+            OrganisationUnitModel.Columns.UID + ", " +
+            OrganisationUnitModel.Columns.CODE + ", " +
+            OrganisationUnitModel.Columns.NAME + ", " +
+            OrganisationUnitModel.Columns.DISPLAY_NAME + ", " +
+            OrganisationUnitModel.Columns.CREATED + ", " +
+            OrganisationUnitModel.Columns.LAST_UPDATED + ", " +
+            OrganisationUnitModel.Columns.SHORT_NAME + ", " +
+            OrganisationUnitModel.Columns.DISPLAY_SHORT_NAME + ", " +
+            OrganisationUnitModel.Columns.DESCRIPTION + ", " +
+            OrganisationUnitModel.Columns.DISPLAY_DESCRIPTION + ", " +
+            OrganisationUnitModel.Columns.PATH + ", " +
+            OrganisationUnitModel.Columns.OPENING_DATE + ", " +
+            OrganisationUnitModel.Columns.CLOSED_DATE + ", " +
+            OrganisationUnitModel.Columns.LEVEL + ", " +
+            OrganisationUnitModel.Columns.PARENT + ") " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private final SQLiteStatement sqLiteStatement;

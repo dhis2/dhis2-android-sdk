@@ -47,8 +47,8 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
     @Test
     public void query_shouldReturnPersistedRows() {
         ContentValues authenticatedUser = new ContentValues();
-        authenticatedUser.put(AuthenticatedUserContract.Columns.USER, "test_user_uid");
-        authenticatedUser.put(AuthenticatedUserContract.Columns.CREDENTIALS, "test_user_credentials");
+        authenticatedUser.put(AuthenticatedUserModel.Columns.USER, "test_user_uid");
+        authenticatedUser.put(AuthenticatedUserModel.Columns.CREDENTIALS, "test_user_credentials");
 
         database().insert(DbOpenHelper.Tables.AUTHENTICATED_USER,
                 null, authenticatedUser);

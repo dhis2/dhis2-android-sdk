@@ -43,12 +43,17 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 @AutoValue
 public abstract class UserCredentialsModel extends BaseIdentifiableObjectModel {
 
+    public interface Columns extends BaseIdentifiableObjectModel.Columns {
+        String USERNAME = "username";
+        String USER = "user";
+    }
+
     @Nullable
-    @ColumnName(UserCredentialsContract.Columns.USERNAME)
+    @ColumnName(Columns.USERNAME)
     public abstract String username();
 
     @Nullable
-    @ColumnName(UserCredentialsContract.Columns.USER)
+    @ColumnName(Columns.USER)
     public abstract String user();
 
     @NonNull

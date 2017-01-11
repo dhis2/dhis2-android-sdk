@@ -28,19 +28,19 @@ public class CreateProgramRuleVariableUtils {
 
     public static ContentValues create(long id, String uid) {
         ContentValues programRuleVariable = new ContentValues();
-        programRuleVariable.put(ProgramRuleVariableContract.Columns.ID, id);
-        programRuleVariable.put(ProgramRuleVariableContract.Columns.UID, uid);
-        programRuleVariable.put(ProgramRuleVariableContract.Columns.CODE, CODE);
-        programRuleVariable.put(ProgramRuleVariableContract.Columns.NAME, NAME);
-        programRuleVariable.put(ProgramRuleVariableContract.Columns.DISPLAY_NAME, DISPLAY_NAME);
-        programRuleVariable.put(ProgramRuleVariableContract.Columns.CREATED, DATE);
-        programRuleVariable.put(ProgramRuleVariableContract.Columns.LAST_UPDATED, DATE);
-        programRuleVariable.put(ProgramRuleVariableContract.Columns.USE_CODE_FOR_OPTION_SET, USE_CODE_FOR_OPTION_SET);
-        programRuleVariable.put(ProgramRuleVariableContract.Columns.PROGRAM, PROGRAM);
-        programRuleVariable.put(ProgramRuleVariableContract.Columns.PROGRAM_STAGE, PROGRAM_STAGE);
-        programRuleVariable.put(ProgramRuleVariableContract.Columns.TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_ATTRIBUTE);
-        programRuleVariable.put(ProgramRuleVariableContract.Columns.DATA_ELEMENT, DATA_ELEMENT);
-        programRuleVariable.put(ProgramRuleVariableContract.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE, PROGRAM_RULE_VARIABLE_SOURCE_TYPE.name());
+        programRuleVariable.put(ProgramRuleVariableModel.Columns.ID, id);
+        programRuleVariable.put(ProgramRuleVariableModel.Columns.UID, uid);
+        programRuleVariable.put(ProgramRuleVariableModel.Columns.CODE, CODE);
+        programRuleVariable.put(ProgramRuleVariableModel.Columns.NAME, NAME);
+        programRuleVariable.put(ProgramRuleVariableModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
+        programRuleVariable.put(ProgramRuleVariableModel.Columns.CREATED, DATE);
+        programRuleVariable.put(ProgramRuleVariableModel.Columns.LAST_UPDATED, DATE);
+        programRuleVariable.put(ProgramRuleVariableModel.Columns.USE_CODE_FOR_OPTION_SET, USE_CODE_FOR_OPTION_SET);
+        programRuleVariable.put(ProgramRuleVariableModel.Columns.PROGRAM, PROGRAM);
+        programRuleVariable.put(ProgramRuleVariableModel.Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+        programRuleVariable.put(ProgramRuleVariableModel.Columns.TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_ATTRIBUTE);
+        programRuleVariable.put(ProgramRuleVariableModel.Columns.DATA_ELEMENT, DATA_ELEMENT);
+        programRuleVariable.put(ProgramRuleVariableModel.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE, PROGRAM_RULE_VARIABLE_SOURCE_TYPE.name());
         return programRuleVariable;
     }
 }

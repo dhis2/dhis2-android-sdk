@@ -79,29 +79,29 @@ public class TrackedEntityAttributeStoreIntegrationTests extends AbsStoreTestCas
     private static final String OPTION_SET_UID = "test_option_set_uid";
 
     public static final String[] TRACKED_ENTITY_ATTRIBUTE_PROJECTION = {
-            TrackedEntityAttributeContract.Columns.UID,
-            TrackedEntityAttributeContract.Columns.CODE,
-            TrackedEntityAttributeContract.Columns.NAME,
-            TrackedEntityAttributeContract.Columns.DISPLAY_NAME,
-            TrackedEntityAttributeContract.Columns.CREATED,
-            TrackedEntityAttributeContract.Columns.LAST_UPDATED,
-            TrackedEntityAttributeContract.Columns.SHORT_NAME,
-            TrackedEntityAttributeContract.Columns.DISPLAY_SHORT_NAME,
-            TrackedEntityAttributeContract.Columns.DESCRIPTION,
-            TrackedEntityAttributeContract.Columns.DISPLAY_DESCRIPTION,
-            TrackedEntityAttributeContract.Columns.PATTERN,
-            TrackedEntityAttributeContract.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM,
-            TrackedEntityAttributeContract.Columns.OPTION_SET,
-            TrackedEntityAttributeContract.Columns.VALUE_TYPE,
-            TrackedEntityAttributeContract.Columns.EXPRESSION,
-            TrackedEntityAttributeContract.Columns.SEARCH_SCOPE,
-            TrackedEntityAttributeContract.Columns.PROGRAM_SCOPE,
-            TrackedEntityAttributeContract.Columns.DISPLAY_IN_LIST_NO_PROGRAM,
-            TrackedEntityAttributeContract.Columns.GENERATED,
-            TrackedEntityAttributeContract.Columns.DISPLAY_ON_VISIT_SCHEDULE,
-            TrackedEntityAttributeContract.Columns.ORG_UNIT_SCOPE,
-            TrackedEntityAttributeContract.Columns.UNIQUE,
-            TrackedEntityAttributeContract.Columns.INHERIT
+            TrackedEntityAttributeModel.Columns.UID,
+            TrackedEntityAttributeModel.Columns.CODE,
+            TrackedEntityAttributeModel.Columns.NAME,
+            TrackedEntityAttributeModel.Columns.DISPLAY_NAME,
+            TrackedEntityAttributeModel.Columns.CREATED,
+            TrackedEntityAttributeModel.Columns.LAST_UPDATED,
+            TrackedEntityAttributeModel.Columns.SHORT_NAME,
+            TrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME,
+            TrackedEntityAttributeModel.Columns.DESCRIPTION,
+            TrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION,
+            TrackedEntityAttributeModel.Columns.PATTERN,
+            TrackedEntityAttributeModel.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM,
+            TrackedEntityAttributeModel.Columns.OPTION_SET,
+            TrackedEntityAttributeModel.Columns.VALUE_TYPE,
+            TrackedEntityAttributeModel.Columns.EXPRESSION,
+            TrackedEntityAttributeModel.Columns.SEARCH_SCOPE,
+            TrackedEntityAttributeModel.Columns.PROGRAM_SCOPE,
+            TrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST_NO_PROGRAM,
+            TrackedEntityAttributeModel.Columns.GENERATED,
+            TrackedEntityAttributeModel.Columns.DISPLAY_ON_VISIT_SCHEDULE,
+            TrackedEntityAttributeModel.Columns.ORG_UNIT_SCOPE,
+            TrackedEntityAttributeModel.Columns.UNIQUE,
+            TrackedEntityAttributeModel.Columns.INHERIT
     };
 
     private TrackedEntityAttributeStore trackedEntityAttributeStore;
@@ -109,30 +109,30 @@ public class TrackedEntityAttributeStoreIntegrationTests extends AbsStoreTestCas
     public static ContentValues create(long id, String uid) {
 
         ContentValues trackedEntity = new ContentValues();
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.ID, id);
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.UID, uid);
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.CODE, CODE);
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.NAME, NAME);
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.DISPLAY_NAME, DISPLAY_NAME);
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.CREATED, BaseIdentifiableObject.DATE_FORMAT.format(CREATED));
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.LAST_UPDATED, BaseIdentifiableObject.DATE_FORMAT.format(LAST_UPDATED));
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.SHORT_NAME, SHORT_NAME);
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.DESCRIPTION, DESCRIPTION);
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.PATTERN, PATTERN);
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM, SORT_ORDER_IN_LIST_NO_PROGRAM);
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.OPTION_SET, OPTION_SET_UID);
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.VALUE_TYPE, VALUE_TYPE.toString());
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.EXPRESSION, EXPRESSION);
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.SEARCH_SCOPE, SEARCH_SCOPE.toString());
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.PROGRAM_SCOPE, PROGRAM_SCOPE);
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.DISPLAY_IN_LIST_NO_PROGRAM, DISPLAY_IN_LIST_NO_PROGRAM);
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.GENERATED, GENERATED);
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.DISPLAY_ON_VISIT_SCHEDULE, DISPLAY_ON_VISIT_SCHEDULE);
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.ORG_UNIT_SCOPE, ORG_UNIT_SCOPE);
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.UNIQUE, UNIQUE);
-        trackedEntity.put(TrackedEntityAttributeContract.Columns.INHERIT, INHERIT);
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.ID, id);
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.UID, uid);
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.CODE, CODE);
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.NAME, NAME);
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.CREATED, BaseIdentifiableObject.DATE_FORMAT.format(CREATED));
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.LAST_UPDATED, BaseIdentifiableObject.DATE_FORMAT.format(LAST_UPDATED));
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.SHORT_NAME, SHORT_NAME);
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.DESCRIPTION, DESCRIPTION);
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.PATTERN, PATTERN);
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM, SORT_ORDER_IN_LIST_NO_PROGRAM);
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.OPTION_SET, OPTION_SET_UID);
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.VALUE_TYPE, VALUE_TYPE.toString());
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.EXPRESSION, EXPRESSION);
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.SEARCH_SCOPE, SEARCH_SCOPE.toString());
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.PROGRAM_SCOPE, PROGRAM_SCOPE);
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST_NO_PROGRAM, DISPLAY_IN_LIST_NO_PROGRAM);
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.GENERATED, GENERATED);
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.DISPLAY_ON_VISIT_SCHEDULE, DISPLAY_ON_VISIT_SCHEDULE);
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.ORG_UNIT_SCOPE, ORG_UNIT_SCOPE);
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.UNIQUE, UNIQUE);
+        trackedEntity.put(TrackedEntityAttributeModel.Columns.INHERIT, INHERIT);
         return trackedEntity;
     }
 

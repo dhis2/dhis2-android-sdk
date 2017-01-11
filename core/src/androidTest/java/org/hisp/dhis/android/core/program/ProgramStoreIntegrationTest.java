@@ -6,7 +6,6 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-import org.hisp.dhis.android.core.program.ProgramContract.Columns;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,35 +58,35 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
     private static final String TRACKED_ENTITY = "TrackedEntityUid";
 
     private static final String[] PROGRAM_PROJECTION = {
-            Columns.UID,
-            Columns.CODE,
-            Columns.NAME,
-            Columns.DISPLAY_NAME,
-            Columns.CREATED,
-            Columns.LAST_UPDATED,
-            Columns.SHORT_NAME,
-            Columns.DISPLAY_SHORT_NAME,
-            Columns.DESCRIPTION,
-            Columns.DISPLAY_DESCRIPTION,
-            Columns.VERSION,
-            Columns.ONLY_ENROLL_ONCE,
-            Columns.ENROLLMENT_DATE_LABEL,
-            Columns.DISPLAY_INCIDENT_DATE,
-            Columns.INCIDENT_DATE_LABEL,
-            Columns.REGISTRATION,
-            Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE,
-            Columns.DATA_ENTRY_METHOD,
-            Columns.IGNORE_OVERDUE_EVENTS,
-            Columns.RELATIONSHIP_FROM_A,
-            Columns.SELECT_INCIDENT_DATES_IN_FUTURE,
-            Columns.CAPTURE_COORDINATES,
-            Columns.USE_FIRST_STAGE_DURING_REGISTRATION,
-            Columns.DISPLAY_FRONT_PAGE_LIST,
-            Columns.PROGRAM_TYPE,
-            Columns.RELATIONSHIP_TYPE,
-            Columns.RELATIONSHIP_TEXT,
-            Columns.RELATED_PROGRAM,
-            Columns.TRACKED_ENTITY
+            ProgramModel.Columns.UID,
+            ProgramModel.Columns.CODE,
+            ProgramModel.Columns.NAME,
+            ProgramModel.Columns.DISPLAY_NAME,
+            ProgramModel.Columns.CREATED,
+            ProgramModel.Columns.LAST_UPDATED,
+            ProgramModel.Columns.SHORT_NAME,
+            ProgramModel.Columns.DISPLAY_SHORT_NAME,
+            ProgramModel.Columns.DESCRIPTION,
+            ProgramModel.Columns.DISPLAY_DESCRIPTION,
+            ProgramModel.Columns.VERSION,
+            ProgramModel.Columns.ONLY_ENROLL_ONCE,
+            ProgramModel.Columns.ENROLLMENT_DATE_LABEL,
+            ProgramModel.Columns.DISPLAY_INCIDENT_DATE,
+            ProgramModel.Columns.INCIDENT_DATE_LABEL,
+            ProgramModel.Columns.REGISTRATION,
+            ProgramModel.Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE,
+            ProgramModel.Columns.DATA_ENTRY_METHOD,
+            ProgramModel.Columns.IGNORE_OVERDUE_EVENTS,
+            ProgramModel.Columns.RELATIONSHIP_FROM_A,
+            ProgramModel.Columns.SELECT_INCIDENT_DATES_IN_FUTURE,
+            ProgramModel.Columns.CAPTURE_COORDINATES,
+            ProgramModel.Columns.USE_FIRST_STAGE_DURING_REGISTRATION,
+            ProgramModel.Columns.DISPLAY_FRONT_PAGE_LIST,
+            ProgramModel.Columns.PROGRAM_TYPE,
+            ProgramModel.Columns.RELATIONSHIP_TYPE,
+            ProgramModel.Columns.RELATIONSHIP_TEXT,
+            ProgramModel.Columns.RELATED_PROGRAM,
+            ProgramModel.Columns.TRACKED_ENTITY
     };
 
     private ProgramStore programStore;

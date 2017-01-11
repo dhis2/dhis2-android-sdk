@@ -17,45 +17,45 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 public class OrganisationUnitStoreIntegrationTests extends AbsStoreTestCase {
     public static final String[] ORGANISATION_UNIT_PROJECTION = {
-            OrganisationUnitContract.Columns.UID,
-            OrganisationUnitContract.Columns.CODE,
-            OrganisationUnitContract.Columns.NAME,
-            OrganisationUnitContract.Columns.DISPLAY_NAME,
-            OrganisationUnitContract.Columns.CREATED,
-            OrganisationUnitContract.Columns.LAST_UPDATED,
-            OrganisationUnitContract.Columns.SHORT_NAME,
-            OrganisationUnitContract.Columns.DISPLAY_SHORT_NAME,
-            OrganisationUnitContract.Columns.DESCRIPTION,
-            OrganisationUnitContract.Columns.DISPLAY_DESCRIPTION,
-            OrganisationUnitContract.Columns.PATH,
-            OrganisationUnitContract.Columns.OPENING_DATE,
-            OrganisationUnitContract.Columns.CLOSED_DATE,
-            OrganisationUnitContract.Columns.PARENT,
-            OrganisationUnitContract.Columns.LEVEL
+            OrganisationUnitModel.Columns.UID,
+            OrganisationUnitModel.Columns.CODE,
+            OrganisationUnitModel.Columns.NAME,
+            OrganisationUnitModel.Columns.DISPLAY_NAME,
+            OrganisationUnitModel.Columns.CREATED,
+            OrganisationUnitModel.Columns.LAST_UPDATED,
+            OrganisationUnitModel.Columns.SHORT_NAME,
+            OrganisationUnitModel.Columns.DISPLAY_SHORT_NAME,
+            OrganisationUnitModel.Columns.DESCRIPTION,
+            OrganisationUnitModel.Columns.DISPLAY_DESCRIPTION,
+            OrganisationUnitModel.Columns.PATH,
+            OrganisationUnitModel.Columns.OPENING_DATE,
+            OrganisationUnitModel.Columns.CLOSED_DATE,
+            OrganisationUnitModel.Columns.PARENT,
+            OrganisationUnitModel.Columns.LEVEL
     };
 
     private OrganisationUnitStore organisationUnitStore;
 
     public static ContentValues create(long id, String uid) {
         ContentValues organisationUnit = new ContentValues();
-        organisationUnit.put(OrganisationUnitContract.Columns.ID, id);
-        organisationUnit.put(OrganisationUnitContract.Columns.UID, uid);
-        organisationUnit.put(OrganisationUnitContract.Columns.CODE, "test_code");
-        organisationUnit.put(OrganisationUnitContract.Columns.NAME, "test_name");
-        organisationUnit.put(OrganisationUnitContract.Columns.DISPLAY_NAME, "test_display_name");
-        organisationUnit.put(OrganisationUnitContract.Columns.CREATED, "test_created");
-        organisationUnit.put(OrganisationUnitContract.Columns.LAST_UPDATED, "test_last_updated");
-        organisationUnit.put(OrganisationUnitContract.Columns.SHORT_NAME, "test_short_name");
-        organisationUnit.put(OrganisationUnitContract.Columns.DISPLAY_SHORT_NAME, "test_display_short_name");
-        organisationUnit.put(OrganisationUnitContract.Columns.DESCRIPTION, "test_description");
-        organisationUnit.put(OrganisationUnitContract.Columns.DISPLAY_DESCRIPTION, "test_display_description");
-        organisationUnit.put(OrganisationUnitContract.Columns.PATH, "test_path");
-        organisationUnit.put(OrganisationUnitContract.Columns.OPENING_DATE, "test_opening_date");
-        organisationUnit.put(OrganisationUnitContract.Columns.CLOSED_DATE, "test_closed_date");
-        organisationUnit.put(OrganisationUnitContract.Columns.LEVEL, "test_level");
+        organisationUnit.put(OrganisationUnitModel.Columns.ID, id);
+        organisationUnit.put(OrganisationUnitModel.Columns.UID, uid);
+        organisationUnit.put(OrganisationUnitModel.Columns.CODE, "test_code");
+        organisationUnit.put(OrganisationUnitModel.Columns.NAME, "test_name");
+        organisationUnit.put(OrganisationUnitModel.Columns.DISPLAY_NAME, "test_display_name");
+        organisationUnit.put(OrganisationUnitModel.Columns.CREATED, "test_created");
+        organisationUnit.put(OrganisationUnitModel.Columns.LAST_UPDATED, "test_last_updated");
+        organisationUnit.put(OrganisationUnitModel.Columns.SHORT_NAME, "test_short_name");
+        organisationUnit.put(OrganisationUnitModel.Columns.DISPLAY_SHORT_NAME, "test_display_short_name");
+        organisationUnit.put(OrganisationUnitModel.Columns.DESCRIPTION, "test_description");
+        organisationUnit.put(OrganisationUnitModel.Columns.DISPLAY_DESCRIPTION, "test_display_description");
+        organisationUnit.put(OrganisationUnitModel.Columns.PATH, "test_path");
+        organisationUnit.put(OrganisationUnitModel.Columns.OPENING_DATE, "test_opening_date");
+        organisationUnit.put(OrganisationUnitModel.Columns.CLOSED_DATE, "test_closed_date");
+        organisationUnit.put(OrganisationUnitModel.Columns.LEVEL, "test_level");
 
         // foreign keys
-        organisationUnit.putNull(OrganisationUnitContract.Columns.PARENT);
+        organisationUnit.putNull(OrganisationUnitModel.Columns.PARENT);
 
         return organisationUnit;
     }

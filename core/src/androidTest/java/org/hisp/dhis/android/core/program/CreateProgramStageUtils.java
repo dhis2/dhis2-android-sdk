@@ -3,7 +3,7 @@ package org.hisp.dhis.android.core.program;
 import android.content.ContentValues;
 
 import org.hisp.dhis.android.core.common.FormType;
-import org.hisp.dhis.android.core.program.ProgramStageContract.Columns;
+
 public class CreateProgramStageUtils {
     private static final long ID = 11L;
     private static final String UID = "test_uid";
@@ -35,30 +35,30 @@ public class CreateProgramStageUtils {
 
     public static ContentValues create(long id, String uid, String programId) {
         ContentValues programStage = new ContentValues();
-        programStage.put(Columns.ID, id);
-        programStage.put(Columns.UID, uid);
-        programStage.put(Columns.CODE, CODE);
-        programStage.put(Columns.NAME, NAME);
-        programStage.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
-        programStage.put(Columns.CREATED, DATE);
-        programStage.put(Columns.LAST_UPDATED, DATE);
-        programStage.put(Columns.EXECUTION_DATE_LABEL, EXECUTION_DATE_LABEL);
-        programStage.put(Columns.ALLOW_GENERATE_NEXT_VISIT, ALLOW_GENERATE_NEXT_VISIT);
-        programStage.put(Columns.VALID_COMPLETE_ONLY, VALID_COMPLETE_ONLY);
-        programStage.put(Columns.REPORT_DATE_TO_USE, REPORT_DATE_TO_USE);
-        programStage.put(Columns.OPEN_AFTER_ENROLLMENT, OPEN_AFTER_ENROLLMENT);
-        programStage.put(Columns.REPEATABLE, REPEATABLE);
-        programStage.put(Columns.CAPTURE_COORDINATES, CAPTURE_COORDINATES);
-        programStage.put(Columns.FORM_TYPE, FORM_TYPE.name());
-        programStage.put(Columns.DISPLAY_GENERATE_EVENT_BOX, DISPLAY_GENERATE_EVENT_BOX);
-        programStage.put(Columns.GENERATED_BY_ENROLMENT_DATE, GENERATED_BY_ENROLMENT_DATE);
-        programStage.put(Columns.AUTO_GENERATE_EVENT, AUTO_GENERATE_EVENT);
-        programStage.put(Columns.SORT_ORDER, SORT_ORDER);
-        programStage.put(Columns.HIDE_DUE_DATE, HIDE_DUE_DATE);
-        programStage.put(Columns.BLOCK_ENTRY_FORM, BLOCK_ENTRY_FORM);
-        programStage.put(Columns.MIN_DAYS_FROM_START, MIN_DAYS_FROM_START);
-        programStage.put(Columns.STANDARD_INTERVAL, STANDARD_INTERVAL);
-        programStage.put(Columns.PROGRAM, programId);
+        programStage.put(ProgramStageModel.Columns.ID, id);
+        programStage.put(ProgramStageModel.Columns.UID, uid);
+        programStage.put(ProgramStageModel.Columns.CODE, CODE);
+        programStage.put(ProgramStageModel.Columns.NAME, NAME);
+        programStage.put(ProgramStageModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
+        programStage.put(ProgramStageModel.Columns.CREATED, DATE);
+        programStage.put(ProgramStageModel.Columns.LAST_UPDATED, DATE);
+        programStage.put(ProgramStageModel.Columns.EXECUTION_DATE_LABEL, EXECUTION_DATE_LABEL);
+        programStage.put(ProgramStageModel.Columns.ALLOW_GENERATE_NEXT_VISIT, ALLOW_GENERATE_NEXT_VISIT);
+        programStage.put(ProgramStageModel.Columns.VALID_COMPLETE_ONLY, VALID_COMPLETE_ONLY);
+        programStage.put(ProgramStageModel.Columns.REPORT_DATE_TO_USE, REPORT_DATE_TO_USE);
+        programStage.put(ProgramStageModel.Columns.OPEN_AFTER_ENROLLMENT, OPEN_AFTER_ENROLLMENT);
+        programStage.put(ProgramStageModel.Columns.REPEATABLE, REPEATABLE);
+        programStage.put(ProgramStageModel.Columns.CAPTURE_COORDINATES, CAPTURE_COORDINATES);
+        programStage.put(ProgramStageModel.Columns.FORM_TYPE, FORM_TYPE.name());
+        programStage.put(ProgramStageModel.Columns.DISPLAY_GENERATE_EVENT_BOX, DISPLAY_GENERATE_EVENT_BOX);
+        programStage.put(ProgramStageModel.Columns.GENERATED_BY_ENROLMENT_DATE, GENERATED_BY_ENROLMENT_DATE);
+        programStage.put(ProgramStageModel.Columns.AUTO_GENERATE_EVENT, AUTO_GENERATE_EVENT);
+        programStage.put(ProgramStageModel.Columns.SORT_ORDER, SORT_ORDER);
+        programStage.put(ProgramStageModel.Columns.HIDE_DUE_DATE, HIDE_DUE_DATE);
+        programStage.put(ProgramStageModel.Columns.BLOCK_ENTRY_FORM, BLOCK_ENTRY_FORM);
+        programStage.put(ProgramStageModel.Columns.MIN_DAYS_FROM_START, MIN_DAYS_FROM_START);
+        programStage.put(ProgramStageModel.Columns.STANDARD_INTERVAL, STANDARD_INTERVAL);
+        programStage.put(ProgramStageModel.Columns.PROGRAM, programId);
 
         return programStage;
     }

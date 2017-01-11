@@ -59,8 +59,8 @@ public class UserStoreImpl implements UserStore {
         sqLiteBind(insertRowStatement, 2, code);
         sqLiteBind(insertRowStatement, 3, name);
         sqLiteBind(insertRowStatement, 4, displayName);
-        sqLiteBind(insertRowStatement, 5, BaseIdentifiableObject.DATE_FORMAT.format(created));
-        sqLiteBind(insertRowStatement, 6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
+        sqLiteBind(insertRowStatement, 5, created);
+        sqLiteBind(insertRowStatement, 6, lastUpdated);
         sqLiteBind(insertRowStatement, 7, birthday);
         sqLiteBind(insertRowStatement, 8, education);
         sqLiteBind(insertRowStatement, 9, gender);

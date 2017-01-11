@@ -53,8 +53,7 @@ public class ProgramModelIntegrationTest {
     private static final String RELATIONSHIP_TYPE = "relationshipUid";
     private static final String RELATIONSHIP_TEXT = "test relationship";
     private static final String RELATED_PROGRAM = "ProgramUid";
-
-
+    private static final String TRACKED_ENTITY = "TrackedEntityUid";
 
     @Test
     public void create_shouldConvertToModel() throws ParseException {
@@ -87,7 +86,8 @@ public class ProgramModelIntegrationTest {
                 Columns.PROGRAM_TYPE,
                 Columns.RELATIONSHIP_TYPE,
                 Columns.RELATIONSHIP_TEXT,
-                Columns.RELATED_PROGRAM
+                Columns.RELATED_PROGRAM,
+                Columns.TRACKED_ENTITY
         });
 
         matrixCursor.addRow(new Object[]{
@@ -113,7 +113,8 @@ public class ProgramModelIntegrationTest {
                 PROGRAM_TYPE,
                 RELATIONSHIP_TYPE,
                 RELATIONSHIP_TEXT,
-                RELATED_PROGRAM
+                RELATED_PROGRAM,
+                TRACKED_ENTITY
         });
 
         // move cursor to first item before reading
@@ -151,6 +152,7 @@ public class ProgramModelIntegrationTest {
         assertThat(program.relationshipType()).isEqualTo(RELATIONSHIP_TYPE);
         assertThat(program.relationshipText()).isEqualTo(RELATIONSHIP_TEXT);
         assertThat(program.relatedProgram()).isEqualTo(RELATED_PROGRAM);
+        assertThat(program.trackedEntity()).isEqualTo(TRACKED_ENTITY);
     }
 
     @Test
@@ -186,6 +188,7 @@ public class ProgramModelIntegrationTest {
                 .relationshipType(RELATIONSHIP_TYPE)
                 .relationshipText(RELATIONSHIP_TEXT)
                 .relatedProgram(RELATED_PROGRAM)
+                .trackedEntity(TRACKED_ENTITY)
                 .build();
 
         ContentValues contentValues = program.toContentValues();
@@ -216,5 +219,6 @@ public class ProgramModelIntegrationTest {
         assertThat(contentValues.getAsString(Columns.RELATIONSHIP_TYPE)).isEqualTo(RELATIONSHIP_TYPE);
         assertThat(contentValues.getAsString(Columns.RELATIONSHIP_TEXT)).isEqualTo(RELATIONSHIP_TEXT);
         assertThat(contentValues.getAsString(Columns.RELATED_PROGRAM)).isEqualTo(RELATED_PROGRAM);
+        assertThat(contentValues.getAsString(Columns.TRACKED_ENTITY)).isEqualTo(TRACKED_ENTITY);
     }
 }

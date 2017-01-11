@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
-import android.support.annotation.NonNull;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -43,6 +42,7 @@ import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.AndroidTestUtils.toBoolean;
 
 @RunWith(AndroidJUnit4.class)
 public class TrackedEntityAttributeModelIntegrationTests {
@@ -133,24 +133,15 @@ public class TrackedEntityAttributeModelIntegrationTests {
         assertThat(trackedEntityAttributeModel.valueType()).isEqualTo(VALUE_TYPE);
         assertThat(trackedEntityAttributeModel.expression()).isEqualTo(EXPRESSION);
         assertThat(trackedEntityAttributeModel.searchScope()).isEqualTo(SEARCH_SCOPE);
-        assertThat(trackedEntityAttributeModel.programScope()).isEqualTo(getBooleanFromInteger(PROGRAM_SCOPE));
-        assertThat(trackedEntityAttributeModel.displayInListNoProgram()).isEqualTo(getBooleanFromInteger(DISPLAY_IN_LIST_NO_PROGRAM));
-        assertThat(trackedEntityAttributeModel.generated()).isEqualTo(getBooleanFromInteger(GENERATED));
-        assertThat(trackedEntityAttributeModel.displayOnVisitSchedule()).isEqualTo(getBooleanFromInteger(DISPLAY_ON_VISIT_SCHEDULE));
-        assertThat(trackedEntityAttributeModel.orgUnitScope()).isEqualTo(getBooleanFromInteger(ORG_UNIT_SCOPE));
-        assertThat(trackedEntityAttributeModel.unique()).isEqualTo(getBooleanFromInteger(UNIQUE));
-        assertThat(trackedEntityAttributeModel.inherit()).isEqualTo(getBooleanFromInteger(INHERIT));
+        assertThat(trackedEntityAttributeModel.programScope()).isEqualTo(toBoolean(PROGRAM_SCOPE));
+        assertThat(trackedEntityAttributeModel.displayInListNoProgram()).isEqualTo(toBoolean(DISPLAY_IN_LIST_NO_PROGRAM));
+        assertThat(trackedEntityAttributeModel.generated()).isEqualTo(toBoolean(GENERATED));
+        assertThat(trackedEntityAttributeModel.displayOnVisitSchedule()).isEqualTo(toBoolean(DISPLAY_ON_VISIT_SCHEDULE));
+        assertThat(trackedEntityAttributeModel.orgUnitScope()).isEqualTo(toBoolean(ORG_UNIT_SCOPE));
+        assertThat(trackedEntityAttributeModel.unique()).isEqualTo(toBoolean(UNIQUE));
+        assertThat(trackedEntityAttributeModel.inherit()).isEqualTo(toBoolean(INHERIT));
 
         matrixCursor.close();
-    }
-
-    @NonNull
-    public static boolean getBooleanFromInteger(Integer integer) {
-        if (integer == 1) {
-            return true;
-        }
-
-        return false;
     }
 
     @Test
@@ -176,13 +167,12 @@ public class TrackedEntityAttributeModelIntegrationTests {
         assertThat(contentValues.getAsString(Columns.VALUE_TYPE)).isEqualTo(VALUE_TYPE.toString());
         assertThat(contentValues.getAsString(Columns.EXPRESSION)).isEqualTo(EXPRESSION);
         assertThat(contentValues.getAsString(Columns.SEARCH_SCOPE)).isEqualTo(SEARCH_SCOPE.toString());
-        assertThat(contentValues.getAsBoolean(Columns.PROGRAM_SCOPE)).isEqualTo(getBooleanFromInteger(PROGRAM_SCOPE));
-        assertThat(contentValues.getAsBoolean(Columns.DISPLAY_IN_LIST_NO_PROGRAM)).isEqualTo(getBooleanFromInteger(DISPLAY_IN_LIST_NO_PROGRAM));
-        assertThat(contentValues.getAsBoolean(Columns.GENERATED)).isEqualTo(getBooleanFromInteger(GENERATED));
-        assertThat(contentValues.getAsBoolean(Columns.DISPLAY_ON_VISIT_SCHEDULE)).isEqualTo(getBooleanFromInteger(DISPLAY_ON_VISIT_SCHEDULE));
-        assertThat(contentValues.getAsBoolean(Columns.ORG_UNIT_SCOPE)).isEqualTo(getBooleanFromInteger(ORG_UNIT_SCOPE));
-        assertThat(contentValues.getAsBoolean(Columns.UNIQUE)).isEqualTo(getBooleanFromInteger(UNIQUE));
-        assertThat(contentValues.getAsBoolean(Columns.INHERIT)).isEqualTo(getBooleanFromInteger(INHERIT));
-
+        assertThat(contentValues.getAsBoolean(Columns.PROGRAM_SCOPE)).isEqualTo(toBoolean(PROGRAM_SCOPE));
+        assertThat(contentValues.getAsBoolean(Columns.DISPLAY_IN_LIST_NO_PROGRAM)).isEqualTo(toBoolean(DISPLAY_IN_LIST_NO_PROGRAM));
+        assertThat(contentValues.getAsBoolean(Columns.GENERATED)).isEqualTo(toBoolean(GENERATED));
+        assertThat(contentValues.getAsBoolean(Columns.DISPLAY_ON_VISIT_SCHEDULE)).isEqualTo(toBoolean(DISPLAY_ON_VISIT_SCHEDULE));
+        assertThat(contentValues.getAsBoolean(Columns.ORG_UNIT_SCOPE)).isEqualTo(toBoolean(ORG_UNIT_SCOPE));
+        assertThat(contentValues.getAsBoolean(Columns.UNIQUE)).isEqualTo(toBoolean(UNIQUE));
+        assertThat(contentValues.getAsBoolean(Columns.INHERIT)).isEqualTo(toBoolean(INHERIT));
     }
 }

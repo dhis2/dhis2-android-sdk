@@ -50,8 +50,8 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);
         sqLiteBind(sqLiteStatement, 4, displayName);
-        sqLiteBind(sqLiteStatement, 5, BaseIdentifiableObject.DATE_FORMAT.format(created));
-        sqLiteBind(sqLiteStatement, 6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
+        sqLiteBind(sqLiteStatement, 5, created);
+        sqLiteBind(sqLiteStatement, 6, lastUpdated);
         sqLiteBind(sqLiteStatement, 7, displayInReports);
         sqLiteBind(sqLiteStatement, 8, compulsory);
         sqLiteBind(sqLiteStatement, 9, allowProvidedElsewhere);

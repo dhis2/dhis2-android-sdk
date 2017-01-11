@@ -10,6 +10,7 @@ import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.program.Program.trackedEntity;
 
 public class ProgramStoreImpl implements ProgramStore {
 
@@ -41,11 +42,12 @@ public class ProgramStoreImpl implements ProgramStore {
             ProgramContract.Columns.PROGRAM_TYPE + ", " +
             ProgramContract.Columns.RELATIONSHIP_TYPE + ", " +
             ProgramContract.Columns.RELATIONSHIP_TEXT + ", " +
-            ProgramContract.Columns.RELATED_PROGRAM + ") " +
+            ProgramContract.Columns.RELATED_PROGRAM + ", " +
+            ProgramContract.Columns.TRACKED_ENTITY + ") " +
             "VALUES (" +
             "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
             "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
-            "?, ?, ?, ?, ?, ?, ?, ?);";
+            "?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private final SQLiteStatement sqLiteStatement;
 
@@ -82,7 +84,10 @@ public class ProgramStoreImpl implements ProgramStore {
             @NonNull ProgramType programType,
             @Nullable String relationshipType,
             @Nullable String relationshipText,
-            @Nullable String relatedProgram
+            @Nullable String relatedProgram,
+            @Nullable String trackedEntity
+            //TODO: add category combo when implemented.
+//            @NonNull CategoryCombo categoryCombo
     ) {
 
         sqLiteStatement.clearBindings();
@@ -115,6 +120,7 @@ public class ProgramStoreImpl implements ProgramStore {
         sqLiteBind(sqLiteStatement, 26, relationshipType);
         sqLiteBind(sqLiteStatement, 27, relationshipText);
         sqLiteBind(sqLiteStatement, 28, relatedProgram);
+        sqLiteBind(sqLiteStatement, 29, trackedEntity);
 
         return sqLiteStatement.executeInsert();
     }

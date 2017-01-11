@@ -61,15 +61,15 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);
         sqLiteBind(sqLiteStatement, 4, displayName);
-        sqLiteBind(sqLiteStatement, 5, BaseIdentifiableObject.DATE_FORMAT.format(created));
-        sqLiteBind(sqLiteStatement, 6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
+        sqLiteBind(sqLiteStatement, 5,created);
+        sqLiteBind(sqLiteStatement, 6,lastUpdated);
         sqLiteBind(sqLiteStatement, 7, shortName);
         sqLiteBind(sqLiteStatement, 8, displayShortName);
         sqLiteBind(sqLiteStatement, 9, description);
         sqLiteBind(sqLiteStatement, 10, displayDescription);
         sqLiteBind(sqLiteStatement, 11, path);
-        sqLiteBind(sqLiteStatement, 12, BaseIdentifiableObject.DATE_FORMAT.format(openingDate));
-        sqLiteBind(sqLiteStatement, 13, BaseIdentifiableObject.DATE_FORMAT.format(closedDate));
+        sqLiteBind(sqLiteStatement, 12,openingDate);
+        sqLiteBind(sqLiteStatement, 13,closedDate);
         sqLiteBind(sqLiteStatement, 14, level);
         sqLiteBind(sqLiteStatement, 15, parent);
 

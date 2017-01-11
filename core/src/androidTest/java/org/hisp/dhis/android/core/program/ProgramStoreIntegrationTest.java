@@ -56,6 +56,7 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
     private static final String RELATIONSHIP_TYPE = "relationshipUid";
     private static final String RELATIONSHIP_TEXT = "test relationship";
     private static final String RELATED_PROGRAM = "RelatedProgramUid";
+    private static final String TRACKED_ENTITY = "TrackedEntityUid";
 
     private static final String[] PROGRAM_PROJECTION = {
             Columns.UID,
@@ -85,7 +86,8 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
             Columns.PROGRAM_TYPE,
             Columns.RELATIONSHIP_TYPE,
             Columns.RELATIONSHIP_TEXT,
-            Columns.RELATED_PROGRAM
+            Columns.RELATED_PROGRAM,
+            Columns.TRACKED_ENTITY
     };
 
     private ProgramStore programStore;
@@ -129,7 +131,8 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
                 PROGRAM_TYPE,
                 RELATIONSHIP_TYPE,
                 RELATIONSHIP_TEXT,
-                RELATED_PROGRAM
+                RELATED_PROGRAM,
+                TRACKED_ENTITY
         );
 
         Cursor cursor = database().query(Tables.PROGRAM, PROGRAM_PROJECTION, null, null, null, null, null, null);
@@ -163,7 +166,8 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
                 PROGRAM_TYPE,
                 RELATIONSHIP_TYPE,
                 RELATIONSHIP_TEXT,
-                RELATED_PROGRAM
+                RELATED_PROGRAM,
+                TRACKED_ENTITY
         ).isExhausted();
     }
 
@@ -173,14 +177,14 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
         long rowId = programStore.insert(
                 UID, null, NAME, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, RELATIONSHIP_FROM_A, null,
-                null, null, null, PROGRAM_TYPE, null, null, null);
+                null, null, null, PROGRAM_TYPE, null, null, null, null);
 
         Cursor cursor = database().query(Tables.PROGRAM, PROGRAM_PROJECTION, null, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, null, NAME, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, toInteger(RELATIONSHIP_FROM_A), null,
-                null, null, null, PROGRAM_TYPE, null, null, null).isExhausted();
+                null, null, null, PROGRAM_TYPE, null, null, null, null).isExhausted();
     }
 
     @Test

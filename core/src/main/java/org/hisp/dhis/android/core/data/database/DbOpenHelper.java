@@ -189,7 +189,8 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ProgramContract.Columns.PROGRAM_TYPE + " TEXT," +
             ProgramContract.Columns.RELATIONSHIP_TYPE + " TEXT," +
             ProgramContract.Columns.RELATIONSHIP_TEXT + " TEXT," +
-            ProgramContract.Columns.RELATED_PROGRAM + " TEXT" +
+            ProgramContract.Columns.RELATED_PROGRAM + " TEXT," +
+            ProgramContract.Columns.TRACKED_ENTITY + " TEXT" +
             ");";
 
     private static final String CREATE_TRACKED_ENTITY_TABLE = "CREATE TABLE " + Tables.TRACKED_ENTITY + " (" +
@@ -432,7 +433,6 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ConstantContract.Columns.LAST_UPDATED + " TEXT," +
             ConstantContract.Columns.VALUE + " REAL" +
             ");";
-
 
     /**
      * This method should be used only for testing purposes

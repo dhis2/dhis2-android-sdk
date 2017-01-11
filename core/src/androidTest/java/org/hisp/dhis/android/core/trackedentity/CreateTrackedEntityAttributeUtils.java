@@ -7,7 +7,7 @@ import org.hisp.dhis.android.core.common.ValueType;
 
 import java.text.ParseException;
 
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModelIntegrationTests.getBooleanFromInteger;
+import static org.hisp.dhis.android.core.AndroidTestUtils.toBoolean;
 
 public class CreateTrackedEntityAttributeUtils {
 
@@ -63,13 +63,13 @@ public class CreateTrackedEntityAttributeUtils {
                 .valueType(VALUE_TYPE)
                 .expression(EXPRESSION)
                 .searchScope(SEARCH_SCOPE)
-                .programScope(getBooleanFromInteger(PROGRAM_SCOPE))
-                .displayInListNoProgram(getBooleanFromInteger(DISPLAY_IN_LIST_NO_PROGRAM))
-                .generated(getBooleanFromInteger(GENERATED))
-                .displayOnVisitSchedule(getBooleanFromInteger(DISPLAY_ON_VISIT_SCHEDULE))
-                .orgUnitScope(getBooleanFromInteger(ORG_UNIT_SCOPE))
-                .unique(getBooleanFromInteger(UNIQUE))
-                .inherit(getBooleanFromInteger(INHERIT))
+                .programScope(toBoolean(PROGRAM_SCOPE))
+                .displayInListNoProgram(toBoolean(DISPLAY_IN_LIST_NO_PROGRAM))
+                .generated(toBoolean(GENERATED))
+                .displayOnVisitSchedule(toBoolean(DISPLAY_ON_VISIT_SCHEDULE))
+                .orgUnitScope(toBoolean(ORG_UNIT_SCOPE))
+                .unique(toBoolean(UNIQUE))
+                .inherit(toBoolean(INHERIT))
                 .build();
         return trackedEntityAttributeModel.toContentValues();
     }
@@ -93,13 +93,13 @@ public class CreateTrackedEntityAttributeUtils {
                 .valueType(VALUE_TYPE)
                 .expression(EXPRESSION)
                 .searchScope(SEARCH_SCOPE)
-                .programScope(getBooleanFromInteger(PROGRAM_SCOPE))
-                .displayInListNoProgram(getBooleanFromInteger(DISPLAY_IN_LIST_NO_PROGRAM))
-                .generated(getBooleanFromInteger(GENERATED))
-                .displayOnVisitSchedule(getBooleanFromInteger(DISPLAY_ON_VISIT_SCHEDULE))
-                .orgUnitScope(getBooleanFromInteger(ORG_UNIT_SCOPE))
-                .unique(getBooleanFromInteger(UNIQUE))
-                .inherit(getBooleanFromInteger(INHERIT))
+                .programScope(toBoolean(PROGRAM_SCOPE))
+                .displayInListNoProgram(toBoolean(DISPLAY_IN_LIST_NO_PROGRAM))
+                .generated(toBoolean(GENERATED))
+                .displayOnVisitSchedule(toBoolean(DISPLAY_ON_VISIT_SCHEDULE))
+                .orgUnitScope(toBoolean(ORG_UNIT_SCOPE))
+                .unique(toBoolean(UNIQUE))
+                .inherit(toBoolean(INHERIT))
                 .build();
         return trackedEntityAttributeModel.toContentValues();
     }

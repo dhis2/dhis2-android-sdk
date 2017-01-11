@@ -34,7 +34,6 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.program.CreateUtils;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -148,7 +147,8 @@ public class TrackedEntityAttributeModelIntegrationTests {
     @Test
     public void toContentValues_shouldConvertToContentValues() throws ParseException {
 
-        ContentValues contentValues = CreateUtils.createTrackedEntityAttributeWithOptionSet(ID, UID, OPTION_SET);
+        ContentValues contentValues =
+                CreateTrackedEntityAttributeUtils.createWithOptionSet(ID, UID, OPTION_SET);
 
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
         assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);

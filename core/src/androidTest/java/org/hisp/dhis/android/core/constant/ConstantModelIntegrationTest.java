@@ -16,12 +16,12 @@ import static com.google.common.truth.Truth.assertThat;
 @RunWith(AndroidJUnit4.class)
 public class ConstantModelIntegrationTest {
 
-    private static final long ID = 11L;
+    private static final Long ID = 11L;
     private static final String UID = "test_uid";
     private static final String CODE = "test_code";
     private static final String NAME = "test_name";
     private static final String DISPLAY_NAME = "test_display_name";
-    private static final double VALUE = 0.18;
+    private static final Double VALUE = 0.18;
 
     private static final String DATE_STRING = "2017-01-10T12:59:40.083";
 

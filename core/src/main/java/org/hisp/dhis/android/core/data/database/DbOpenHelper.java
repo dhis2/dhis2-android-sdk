@@ -12,6 +12,9 @@ import org.hisp.dhis.android.core.option.OptionContract;
 import org.hisp.dhis.android.core.option.OptionSetContract;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
 import org.hisp.dhis.android.core.program.ProgramContract;
+import org.hisp.dhis.android.core.program.ProgramIndicatorContract;
+import org.hisp.dhis.android.core.program.ProgramRuleActionContract;
+import org.hisp.dhis.android.core.program.ProgramRuleModel;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableContract;
 import org.hisp.dhis.android.core.program.ProgramStageContract;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementContract;
@@ -56,6 +59,9 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String PROGRAM_TRACKED_ENTITY_ATTRIBUTE = "ProgramTrackedEntityAttribute";
         String CONSTANT = "Constant";
         String SYSTEM_INFO = "SystemInfo";
+        String PROGRAM_RULE = "ProgramRule";
+        String PROGRAM_INDICATOR = "ProgramIndicator";
+        String PROGRAM_RULE_ACTION = "ProgramRuleAction";
     }
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + Tables.USER + " (" +
@@ -404,6 +410,25 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             "ON DELETE CASCADE" +
             ");";
 
+    private static final String CREATE_PROGRAM_RULE_TABLE = "CREATE TABLE " +
+            Tables.PROGRAM_RULE + " (" +
+            ProgramRuleModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramRuleModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ProgramRuleModel.Columns.CODE + " TEXT," +
+            ProgramRuleModel.Columns.NAME + " TEXT," +
+            ProgramRuleModel.Columns.DISPLAY_NAME + " TEXT," +
+            ProgramRuleModel.Columns.CREATED + " TEXT," +
+            ProgramRuleModel.Columns.LAST_UPDATED + " TEXT," +
+            ProgramRuleModel.Columns.PRIORITY + " INTEGER," +
+            ProgramRuleModel.Columns.CONDITION + " TEXT," +
+            ProgramRuleModel.Columns.PROGRAM + " TEXT NOT NULL," +
+            ProgramRuleModel.Columns.PROGRAM_STAGE + " TEXT," +
+            " FOREIGN KEY (" + ProgramRuleModel.Columns.PROGRAM + ")" +
+            " REFERENCES " + Tables.PROGRAM + " (" + ProgramContract.Columns.UID + ")," +
+            " FOREIGN KEY (" + ProgramRuleModel.Columns.PROGRAM_STAGE + ")" +
+            " REFERENCES " + Tables.PROGRAM_STAGE + " (" + ProgramStageContract.Columns.UID + ")" +
+            ");";
+
     private static final String CREATE_CONSTANT_TABLE = "CREATE TABLE " + Tables.CONSTANT + " (" +
             ConstantContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             ConstantContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
@@ -419,6 +444,44 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             SystemInfoModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             SystemInfoModel.Columns.SERVER_DATE + " TEXT," +
             SystemInfoModel.Columns.DATE_FORMAT + " TEXT" +
+            ");";
+
+    private static final String CREATE_PROGRAM_INDICATOR_TABLE = "CREATE TABLE " + Tables.PROGRAM_INDICATOR + " (" +
+            ProgramIndicatorContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramIndicatorContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ProgramIndicatorContract.Columns.CODE + " TEXT," +
+            ProgramIndicatorContract.Columns.NAME + " TEXT," +
+            ProgramIndicatorContract.Columns.DISPLAY_NAME + " TEXT," +
+            ProgramIndicatorContract.Columns.CREATED + " TEXT," +
+            ProgramIndicatorContract.Columns.LAST_UPDATED + " TEXT," +
+            ProgramIndicatorContract.Columns.SHORT_NAME + " TEXT," +
+            ProgramIndicatorContract.Columns.DISPLAY_SHORT_NAME + " TEXT," +
+            ProgramIndicatorContract.Columns.DESCRIPTION + " TEXT," +
+            ProgramIndicatorContract.Columns.DISPLAY_DESCRIPTION + " TEXT," +
+            ProgramIndicatorContract.Columns.DISPLAY_IN_FORM + " INTEGER," +
+            ProgramIndicatorContract.Columns.EXPRESSION + " TEXT," +
+            ProgramIndicatorContract.Columns.DIMENSION_ITEM + " TEXT," +
+            ProgramIndicatorContract.Columns.FILTER + " TEXT," +
+            ProgramIndicatorContract.Columns.DECIMALS + " INTEGER" +
+            ");";
+
+    private static final String CREATE_PROGRAM_RULE_ACTION_TABLE = "CREATE TABLE " + Tables.PROGRAM_RULE_ACTION + " (" +
+            ProgramRuleActionContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramRuleActionContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ProgramRuleActionContract.Columns.CODE + " TEXT," +
+            ProgramRuleActionContract.Columns.NAME + " TEXT," +
+            ProgramRuleActionContract.Columns.DISPLAY_NAME + " TEXT," +
+            ProgramRuleActionContract.Columns.CREATED + " TEXT," +
+            ProgramRuleActionContract.Columns.LAST_UPDATED + " TEXT," +
+            ProgramRuleActionContract.Columns.DATA + " TEXT," +
+            ProgramRuleActionContract.Columns.CONTENT + " TEXT," +
+            ProgramRuleActionContract.Columns.LOCATION + " TEXT," +
+            ProgramRuleActionContract.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT," +
+            ProgramRuleActionContract.Columns.PROGRAM_INDICATOR + " TEXT," +
+            ProgramRuleActionContract.Columns.PROGRAM_STAGE_SECTION + " TEXT," +
+            ProgramRuleActionContract.Columns.PROGRAM_RULE_ACTION_TYPE + " TEXT," +
+            ProgramRuleActionContract.Columns.PROGRAM_STAGE + " TEXT," +
+            ProgramRuleActionContract.Columns.DATA_ELEMENT + " TEXT" +
             ");";
 
     /**
@@ -452,6 +515,10 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_PROGRAM_TRACKED_ENTITY_ATTRIBUTE_TABLE);
         database.execSQL(CREATE_CONSTANT_TABLE);
         database.execSQL(CREATE_SYSTEM_INFO_TABLE);
+        database.execSQL(CREATE_PROGRAM_RULE_TABLE);
+        database.execSQL(CREATE_PROGRAM_INDICATOR_TABLE);
+        database.execSQL(CREATE_PROGRAM_RULE_ACTION_TABLE);
+
         return database;
     }
 

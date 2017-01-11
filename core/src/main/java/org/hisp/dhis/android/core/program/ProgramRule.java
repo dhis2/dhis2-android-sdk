@@ -30,70 +30,73 @@ package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.NestedField;
 
+import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
-
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramRule.Builder.class)
 public abstract class ProgramRule extends BaseIdentifiableObject {
-    private static final String JSON_PROPERTY_PROGRAM_STAGE = "programStage";
-    private static final String JSON_PROPERTY_PROGRAM = "program";
-    private static final String JSON_PROPERTY_PRIORITY = "priority";
-    private static final String JSON_PROPERTY_CONDITION = "condition";
-    private static final String JSON_PROPERTY_PROGRAM_RULE_ACTIONS = "programRuleActions";
+    private static final String PROGRAM_STAGE = "programStage";
+    private static final String PROGRAM = "program";
+    private static final String PRIORITY = "priority";
+    private static final String CONDITION = "condition";
+    private static final String PROGRAM_RULE_ACTIONS = "programRuleActions";
+
+    public static final Field<ProgramRule, String> uid = Field.create(UID);
+    public static final Field<ProgramRule, String> code = Field.create(CODE);
+    public static final Field<ProgramRule, String> name = Field.create(NAME);
+    public static final Field<ProgramRule, String> displayName = Field.create(DISPLAY_NAME);
+
+    public static final Field<ProgramRule, Integer> priority = Field.create(PRIORITY);
+    public static final Field<ProgramRule, String> condition = Field.create(CONDITION);
+    public static final NestedField<ProgramRule, Program> program = NestedField.create(PROGRAM);
+    public static final NestedField<ProgramRule, ProgramStage> programStage = NestedField.create(PROGRAM_STAGE);
+    public static final NestedField<ProgramRule, ProgramRuleAction> programRuleActions = NestedField.create(PROGRAM_RULE_ACTIONS);
+
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE)
-    public abstract ProgramStage programStage();
-
-    @Nullable
-    @JsonProperty(JSON_PROPERTY_PROGRAM)
-    public abstract Program program();
-
-    @Nullable
-    @JsonProperty(JSON_PROPERTY_PRIORITY)
+    @JsonProperty(PRIORITY)
     public abstract Integer priority();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_CONDITION)
+    @JsonProperty(CONDITION)
     public abstract String condition();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_PROGRAM_RULE_ACTIONS)
+    @JsonProperty(PROGRAM)
+    public abstract Program program();
+
+    @Nullable
+    @JsonProperty(PROGRAM_STAGE)
+    public abstract ProgramStage programStage();
+
+
+    @Nullable
+    @JsonProperty(PROGRAM_RULE_ACTIONS)
     public abstract List<ProgramRuleAction> programRuleActions();
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
-
-        @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE)
-        public abstract Builder programStage(@Nullable ProgramStage programStage);
-
-        @JsonProperty(JSON_PROPERTY_PROGRAM)
-        public abstract Builder program(@Nullable Program program);
-
-        @JsonProperty(JSON_PROPERTY_PRIORITY)
-        public abstract Builder priority(@Nullable Integer priority);
-
-        @JsonProperty(JSON_PROPERTY_CONDITION)
-        public abstract Builder condition(@Nullable String condition);
-
-        @JsonProperty(JSON_PROPERTY_PROGRAM_RULE_ACTIONS)
-        public abstract Builder programRuleActions(@Nullable List<ProgramRuleAction> programRuleActions);
-
-        abstract ProgramRule autoBuild();
-
-        abstract List<ProgramRuleAction> programRuleActions();
-
-        public ProgramRule build() {
-            programRuleActions(safeUnmodifiableList(programRuleActions()));
-            return autoBuild();
-        }
+    @JsonCreator
+    public static ProgramRule create(@JsonProperty(UID) String uid,
+                                     @JsonProperty(CODE) String code,
+                                     @JsonProperty(NAME) String name,
+                                     @JsonProperty(DISPLAY_NAME) String displayName,
+                                     @JsonProperty(CREATED) Date created,
+                                     @JsonProperty(LAST_UPDATED) Date lastUpdated,
+                                     @JsonProperty(PRIORITY) Integer priority,
+                                     @JsonProperty(CONDITION) String condition,
+                                     @JsonProperty(PROGRAM) Program program,
+                                     @JsonProperty(PROGRAM_STAGE) ProgramStage programStage,
+                                     @JsonProperty(PROGRAM_RULE_ACTIONS) List<ProgramRuleAction> programRuleActions) {
+        return new AutoValue_ProgramRule(
+                uid, code, name, displayName,
+                created, lastUpdated, priority, condition,
+                program, programStage, programRuleActions);
     }
 }

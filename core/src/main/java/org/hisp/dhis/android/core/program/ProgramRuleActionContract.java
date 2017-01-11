@@ -28,16 +28,19 @@
 
 package org.hisp.dhis.android.core.program;
 
-public enum ProgramRuleActionType {
-    DISPLAYTEXT,
-    DISPLAYKEYVALUEPAIR,
-    HIDEFIELD,
-    HIDESECTION,
-    ASSIGN,
-    SHOWWARNING,
-    WARNINGONCOMPLETE,
-    SHOWERROR,
-    ERRORONCOMPLETE,
-    CREATEEVENT,
-    HIDEPROGRAMSTAGE
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectContract;
+
+public class ProgramRuleActionContract {
+
+    public interface Columns extends BaseIdentifiableObjectContract.Columns {
+        String DATA = "data";
+        String CONTENT = "content";
+        String LOCATION = "location";
+        String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+        String PROGRAM_INDICATOR = "programIndicator";
+        String PROGRAM_STAGE_SECTION = "programStageSection";
+        String PROGRAM_RULE_ACTION_TYPE = "programRuleActionType";
+        String PROGRAM_STAGE = "programStage";
+        String DATA_ELEMENT = "dataElement";
+    }
 }

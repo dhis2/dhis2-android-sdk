@@ -26,18 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.data.database;
 
-public enum ProgramRuleActionType {
-    DISPLAYTEXT,
-    DISPLAYKEYVALUEPAIR,
-    HIDEFIELD,
-    HIDESECTION,
-    ASSIGN,
-    SHOWWARNING,
-    WARNINGONCOMPLETE,
-    SHOWERROR,
-    ERRORONCOMPLETE,
-    CREATEEVENT,
-    HIDEPROGRAMSTAGE
+import android.content.ContentValues;
+import android.database.Cursor;
+
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+
+public abstract class EnumColumnAdapter<T extends Enum<T>> implements ColumnTypeAdapter<T> {
+
+    protected abstract Class<T> getEnumClass();
+
+    @Override
+    public T fromCursor(Cursor cursor, String columnName) {
+
+        int columnIndex = cursor.getColumnIndex(columnName);
+        String sourceValue = cursor.getString(columnIndex);
+
+        T enumModel = null;
+        if (sourceValue != null) {
+            try {
+                enumModel = T.valueOf(getEnumClass(), sourceValue);
+            } catch (Exception exception) {
+                throw new RuntimeException("Unknown " + getEnumClass().getSimpleName() + " type", exception);
+            }
+        }
+        return enumModel;
+    }
+
+    @Override
+    public void toContentValues(ContentValues contentValues, String columnName, T enumValue) {
+        if (enumValue != null) {
+            contentValues.put(columnName, enumValue.name());
+        }
+    }
 }

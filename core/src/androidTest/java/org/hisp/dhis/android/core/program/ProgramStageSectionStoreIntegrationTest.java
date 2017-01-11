@@ -60,7 +60,7 @@ public class ProgramStageSectionStoreIntegrationTest extends AbsStoreTestCase {
     public void insert_shouldPersistProgramStageSectionInDatabase() throws Exception {
         // inserting necessary foreign key
 
-        ContentValues program = CreateUtils.createProgram(ID, PROGRAM);
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM);
         database().insert(Tables.PROGRAM, null, program);
 
         ContentValues programStage = ProgramStageModelIntegrationTest.create(ID, PROGRAM_STAGE, PROGRAM);

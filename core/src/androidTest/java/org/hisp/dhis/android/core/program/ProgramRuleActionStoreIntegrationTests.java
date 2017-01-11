@@ -1,0 +1,159 @@
+/*
+ * Copyright (c) 2016, University of Oslo
+ *
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.hisp.dhis.android.core.program;
+
+import android.database.Cursor;
+import android.support.annotation.NonNull;
+import android.support.test.runner.AndroidJUnit4;
+
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.database.DbOpenHelper;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.Date;
+
+import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
+
+
+@RunWith(AndroidJUnit4.class)
+public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
+    private static final String UID = "test_uid";
+    private static final String CODE = "test_code";
+    private static final String NAME = "test_name";
+    private static final String DISPLAY_NAME = "test_display_name";
+    private static final Date CREATED = new Date();
+    private static final Date LAST_UPDATED = CREATED;
+    private static final String DATA = "test_data";
+    private static final String CONTENT = "test_content";
+    private static final String LOCATION = "test_location";
+    private static final String TRACKED_ENTITY_ATTRIBUTE = "test_trackedEntityAttribute";
+    private static final String PROGRAM_INDICATOR = "test_programIndicator";
+    private static final String PROGRAM_STAGE_SECTION = "test_programStageSection";
+    private static final ProgramRuleActionType PROGRAM_RULE_ACTION_TYPE = ProgramRuleActionType.ASSIGN;
+    private static final String PROGRAM_STAGE = "test_programStage";
+    private static final String DATA_ELEMENT = "test_dataElement";
+
+    public static final String[] PROGRAM_RULE_ACTION_PROJECTION = {
+            ProgramRuleActionContract.Columns.UID,
+            ProgramRuleActionContract.Columns.CODE,
+            ProgramRuleActionContract.Columns.NAME,
+            ProgramRuleActionContract.Columns.DISPLAY_NAME,
+            ProgramRuleActionContract.Columns.CREATED,
+            ProgramRuleActionContract.Columns.LAST_UPDATED,
+            ProgramRuleActionContract.Columns.DATA,
+            ProgramRuleActionContract.Columns.CONTENT,
+            ProgramRuleActionContract.Columns.LOCATION,
+            ProgramRuleActionContract.Columns.TRACKED_ENTITY_ATTRIBUTE,
+            ProgramRuleActionContract.Columns.PROGRAM_INDICATOR,
+            ProgramRuleActionContract.Columns.PROGRAM_STAGE_SECTION,
+            ProgramRuleActionContract.Columns.PROGRAM_RULE_ACTION_TYPE,
+            ProgramRuleActionContract.Columns.PROGRAM_STAGE,
+            ProgramRuleActionContract.Columns.DATA_ELEMENT
+    };
+
+    private ProgramRuleActionStore programRuleActionStore;
+
+    @Before
+    @Override
+    public void setUp() throws IOException {
+        super.setUp();
+
+        programRuleActionStore = new ProgramRuleActionStoreImpl(database());
+    }
+
+    @Test
+    public void insert_shouldPersistRowInDatabase() throws ParseException {
+
+        long rowId = programRuleActionStore.insert(
+                UID,
+                CODE,
+                NAME,
+                DISPLAY_NAME,
+                CREATED,
+                LAST_UPDATED,
+                DATA,
+                CONTENT,
+                LOCATION,
+                TRACKED_ENTITY_ATTRIBUTE,
+                PROGRAM_INDICATOR,
+                PROGRAM_STAGE_SECTION,
+                PROGRAM_RULE_ACTION_TYPE,
+                PROGRAM_STAGE,
+                DATA_ELEMENT
+        );
+
+        Cursor cursor = database().query(DbOpenHelper.Tables.PROGRAM_RULE_ACTION,
+                PROGRAM_RULE_ACTION_PROJECTION, null, null, null, null, null);
+
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor)
+                .hasRow(
+                        UID,
+                        CODE,
+                        NAME,
+                        DISPLAY_NAME,
+                        BaseIdentifiableObject.DATE_FORMAT.format(CREATED),
+                        BaseIdentifiableObject.DATE_FORMAT.format(LAST_UPDATED),
+                        DATA,
+                        CONTENT,
+                        LOCATION,
+                        TRACKED_ENTITY_ATTRIBUTE,
+                        PROGRAM_INDICATOR,
+                        PROGRAM_STAGE_SECTION,
+                        PROGRAM_RULE_ACTION_TYPE,
+                        PROGRAM_STAGE,
+                        DATA_ELEMENT)
+                .isExhausted();
+    }
+
+    // ToDo: consider introducing conflict resolution strategy
+
+    @Test
+    public void close_shouldNotCloseDatabase() {
+        programRuleActionStore.close();
+
+        assertThat(database().isOpen()).isTrue();
+    }
+
+    @NonNull
+    private Integer getIntegerFromBoolean(Boolean bool) {
+        if (bool) {
+            return 1;
+        }
+
+        return 0;
+    }
+
+}

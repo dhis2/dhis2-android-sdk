@@ -3,9 +3,9 @@ package org.hisp.dhis.android.core.organisationunit;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -115,5 +115,21 @@ public class OrganisationUnitStoreIntegrationTests extends AbsStoreTestCase {
         organisationUnitStore.close();
 
         assertThat(database().isOpen()).isTrue();
+    }
+
+    @Test
+    public void delete_shouldDeleteAllRows() {
+        ContentValues organisationUnitOne = create(1L, "test_organisation_unit_one");
+        ContentValues organisationUnitTwo = create(2L, "test_organisation_unit_two");
+
+        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitOne);
+        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitTwo);
+
+        int deleted = organisationUnitStore.delete();
+        Cursor cursor = database().query(DbOpenHelper.Tables.ORGANISATION_UNIT,
+                null, null, null, null, null, null);
+
+        assertThat(deleted).isEqualTo(2);
+        assertThatCursor(cursor).isExhausted();
     }
 }

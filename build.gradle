@@ -34,10 +34,6 @@ buildscript {
         // android gradle plugin
         classpath 'com.android.tools.build:gradle:2.2.3'
 
-        // annotation processing plugin for java modules.
-        // Please, see: https://github.com/tbroyer/gradle-apt-plugin
-        // classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
-
         // method count plugin
         classpath "com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.6.1"
     }
@@ -82,6 +78,6 @@ ext {
             mockito         : "1.10.19",
             truth           : "0.30",
             testrunner      : "0.5",
-            equalsverifier  : "2.1.6"
+            equalsverifier  : "2.1.8"
     ]
 }

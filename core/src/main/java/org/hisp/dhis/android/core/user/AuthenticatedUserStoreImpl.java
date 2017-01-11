@@ -66,6 +66,11 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
     }
 
     @Override
+    public int delete() {
+        return sqLiteDatabase.delete(Tables.AUTHENTICATED_USER, null, null);
+    }
+
+    @Override
     public void close() {
         insertRowStatement.close();
     }

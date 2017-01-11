@@ -10,5 +10,7 @@ public interface UserOrganisationUnitLinkStore {
             @NonNull String organisationUnitScope
     );
 
+    int delete();
+
     void close();
 }

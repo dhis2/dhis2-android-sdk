@@ -2,7 +2,6 @@ package org.hisp.dhis.android.core.configuration;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
@@ -16,24 +15,16 @@ public class ConfigurationStoreImpl implements ConfigurationStore {
             ConfigurationContract.Columns.SERVER_URL
     };
 
-    private static final String INSERT_STATEMENT = "INSERT INTO " + DbOpenHelper.Tables.CONFIGURATION + " (" +
-            ConfigurationContract.Columns.SERVER_URL +
-            ") VALUES (?);";
-
     private final SQLiteDatabase sqLiteDatabase;
-    private final SQLiteStatement insertStatement;
 
     public ConfigurationStoreImpl(SQLiteDatabase sqLiteDatabase) {
         this.sqLiteDatabase = sqLiteDatabase;
-        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
-    public long insert(@NonNull String serverUrl) {
-        insertStatement.clearBindings();
-        insertStatement.bindString(1, serverUrl);
-
-        return insertStatement.executeInsert();
+    public long save(@NonNull ConfigurationModel configurationModel) {
+        return sqLiteDatabase.insertWithOnConflict(DbOpenHelper.Tables.CONFIGURATION, null,
+                configurationModel.toContentValues(), SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     @NonNull
@@ -61,10 +52,5 @@ public class ConfigurationStoreImpl implements ConfigurationStore {
         }
 
         return rows;
-    }
-
-    @Override
-    public void close() {
-        insertStatement.close();
     }
 }

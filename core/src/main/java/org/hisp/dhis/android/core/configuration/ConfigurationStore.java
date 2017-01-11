@@ -5,10 +5,8 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 public interface ConfigurationStore {
-    long insert(@NonNull String serverUrl);
+    long save(@NonNull ConfigurationModel configurationModel);
 
     @NonNull
     List<ConfigurationModel> query();
-
-    void close();
 }

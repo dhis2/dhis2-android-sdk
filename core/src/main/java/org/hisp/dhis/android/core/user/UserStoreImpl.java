@@ -5,7 +5,6 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.user.UserContract.Columns;
 
@@ -36,17 +35,19 @@ public class UserStoreImpl implements UserStore {
             Columns.NATIONALITY +
             ") " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
+    private final SQLiteDatabase sqLiteDatabase;
     private final SQLiteStatement insertRowStatement;
 
     public UserStoreImpl(SQLiteDatabase database) {
+        this.sqLiteDatabase = database;
         this.insertRowStatement = database.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
     public long insert(
             @NonNull String uid, @Nullable String code,
-            @NonNull String name, @NonNull String displayName,
-            @NonNull Date created, @NonNull Date lastUpdated,
+            @Nullable String name, @Nullable String displayName,
+            @Nullable Date created, @Nullable Date lastUpdated,
             @Nullable String birthday, @Nullable String education, @Nullable String gender,
             @Nullable String jobTitle, @Nullable String surname, @Nullable String firstName,
             @Nullable String introduction, @Nullable String employer, @Nullable String interests,
@@ -76,6 +77,11 @@ public class UserStoreImpl implements UserStore {
         sqLiteBind(insertRowStatement, 19, nationality);
 
         return insertRowStatement.executeInsert();
+    }
+
+    @Override
+    public int delete() {
+        return sqLiteDatabase.delete(DbOpenHelper.Tables.USER, null, null);
     }
 
     @Override

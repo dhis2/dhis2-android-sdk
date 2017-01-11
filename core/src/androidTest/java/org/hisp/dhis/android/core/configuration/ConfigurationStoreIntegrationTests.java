@@ -20,6 +20,7 @@ public class ConfigurationStoreIntegrationTests extends AbsStoreTestCase {
     };
 
     private ConfigurationStore configurationStore;
+    private ConfigurationModel configurationModel;
 
     @Before
     @Override
@@ -27,18 +28,40 @@ public class ConfigurationStoreIntegrationTests extends AbsStoreTestCase {
         super.setUp();
 
         configurationStore = new ConfigurationStoreImpl(database());
+        configurationModel = ConfigurationModel.builder()
+                .id(10L)
+                .serverUrl("test_server_url")
+                .build();
     }
 
     @Test
-    public void insert_shouldPersistRowInDatabase() {
-        long rowId = configurationStore.insert("test_server_url");
+    public void save_shouldPersistRowInDatabase() {
+        long rowId = configurationStore.save(configurationModel);
 
         Cursor cursor = database().query(DbOpenHelper.Tables.CONFIGURATION,
                 PROJECTION, null, null, null, null, null);
 
-        assertThat(rowId).isEqualTo(1L);
+        assertThat(rowId).isEqualTo(10L);
         assertThatCursor(cursor)
-                .hasRow(1L, "test_server_url")
+                .hasRow(10L, "test_server_url")
+                .isExhausted();
+    }
+
+    @Test
+    public void save_shouldNotThrowOnConflict() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ConfigurationContract.Columns.SERVER_URL, "test_server_url");
+
+        database().insert(DbOpenHelper.Tables.CONFIGURATION, null, contentValues);
+
+        // trying to save configuration with server url (which is set to be unique in the table)
+        long rowId = configurationStore.save(configurationModel);
+
+        Cursor cursor = database().query(DbOpenHelper.Tables.CONFIGURATION,
+                PROJECTION, null, null, null, null, null);
+        assertThat(rowId).isEqualTo(10L);
+        assertThatCursor(cursor)
+                .hasRow(10L, "test_server_url")
                 .isExhausted();
     }
 
@@ -55,12 +78,5 @@ public class ConfigurationStoreIntegrationTests extends AbsStoreTestCase {
 
         assertThat(configurationStore.query().size()).isEqualTo(1);
         assertThat(configurationStore.query()).contains(configuration);
-    }
-
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        configurationStore.close();
-
-        assertThat(database().isOpen()).isTrue();
     }
 }

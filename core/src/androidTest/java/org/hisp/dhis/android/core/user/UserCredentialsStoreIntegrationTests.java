@@ -90,6 +90,19 @@ public class UserCredentialsStoreIntegrationTests extends AbsStoreTestCase {
     }
 
     @Test
+    public void delete_shouldDeleteAllRows() {
+        ContentValues userCredentials = create(1L, "test_user_credentials", "test_user_uid");
+        database().insert(DbOpenHelper.Tables.USER_CREDENTIALS, null, userCredentials);
+
+        int deleted = userCredentialsStore.delete();
+
+        Cursor cursor = database().query(DbOpenHelper.Tables.USER_CREDENTIALS,
+                null, null, null, null, null, null);
+        assertThat(deleted).isEqualTo(1);
+        assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test
     public void close_shouldNotCloseDatabase() {
         userCredentialsStore.close();
 

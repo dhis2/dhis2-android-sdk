@@ -130,6 +130,19 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
                 .isExhausted();
     }
 
+    @Test
+    public void delete_shouldDeleteAllRows() {
+        ContentValues user = create(1L, "test_user_id");
+        database().insert(DbOpenHelper.Tables.USER, null, user);
+
+        int deleted = userStore.delete();
+
+        Cursor cursor = database().query(DbOpenHelper.Tables.USER,
+                null, null, null, null, null, null);
+        assertThat(deleted).isEqualTo(1);
+        assertThatCursor(cursor).isExhausted();
+    }
+
     // ToDo: consider introducing conflict resolution strategy
 //    @Test
 //    public void save_shouldNotTriggerOtherTablesOnDuplicate() {

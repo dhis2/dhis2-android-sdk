@@ -11,5 +11,7 @@ public interface AuthenticatedUserStore {
     @NonNull
     List<AuthenticatedUserModel> query();
 
+    int delete();
+
     void close();
 }

@@ -56,8 +56,7 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
         authenticatedUser.put(AuthenticatedUserContract.Columns.USER, "test_user_uid");
         authenticatedUser.put(AuthenticatedUserContract.Columns.CREDENTIALS, "test_user_credentials");
 
-        database().insert(DbOpenHelper.Tables.AUTHENTICATED_USER,
-                null, authenticatedUser);
+        database().insert(DbOpenHelper.Tables.AUTHENTICATED_USER, null, authenticatedUser);
 
         AuthenticatedUserModel authenticatedUserModel = AuthenticatedUserModel.builder()
                 .id(1L).user("test_user_uid").credentials("test_user_credentials")
@@ -70,6 +69,22 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
     @Test
     public void query_shouldReturnEmptyListOnEmptyTable() {
         assertThat(authenticatedUserStore.query()).isEmpty();
+    }
+
+    @Test
+    public void delete_shouldDeleteAllRows() {
+        ContentValues authenticatedUser = new ContentValues();
+        authenticatedUser.put(AuthenticatedUserContract.Columns.USER, "test_user_uid");
+        authenticatedUser.put(AuthenticatedUserContract.Columns.CREDENTIALS, "test_user_credentials");
+
+        database().insert(DbOpenHelper.Tables.AUTHENTICATED_USER, null, authenticatedUser);
+
+        int deleted = authenticatedUserStore.delete();
+
+        Cursor cursor = database().query(DbOpenHelper.Tables.AUTHENTICATED_USER,
+                null, null, null, null, null, null);
+        assertThat(deleted).isEqualTo(1);
+        assertThatCursor(cursor).isExhausted();
     }
 
     @Test

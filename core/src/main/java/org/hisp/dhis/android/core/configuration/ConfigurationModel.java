@@ -2,7 +2,7 @@ package org.hisp.dhis.android.core.configuration;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
@@ -14,7 +14,7 @@ import static org.hisp.dhis.android.core.configuration.ConfigurationContract.Col
 @AutoValue
 public abstract class ConfigurationModel extends BaseModel {
 
-    @Nullable
+    @NonNull
     @ColumnName(Columns.SERVER_URL)
     public abstract String serverUrl();
 

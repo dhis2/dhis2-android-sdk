@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
-import android.support.annotation.NonNull;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -48,6 +47,7 @@ import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
@@ -77,7 +77,6 @@ public class TrackedEntityAttributeStoreIntegrationTests extends AbsStoreTestCas
 
     private static final long OPTION_SET_ID = 99L;
     private static final String OPTION_SET_UID = "test_option_set_uid";
-
 
     public static final String[] TRACKED_ENTITY_ATTRIBUTE_PROJECTION = {
             TrackedEntityAttributeContract.Columns.UID,
@@ -200,13 +199,13 @@ public class TrackedEntityAttributeStoreIntegrationTests extends AbsStoreTestCas
                         VALUE_TYPE,
                         EXPRESSION,
                         SEARCH_SCOPE,
-                        getIntegerFromBoolean(PROGRAM_SCOPE),
-                        getIntegerFromBoolean(DISPLAY_IN_LIST_NO_PROGRAM),
-                        getIntegerFromBoolean(GENERATED),
-                        getIntegerFromBoolean(DISPLAY_ON_VISIT_SCHEDULE),
-                        getIntegerFromBoolean(ORG_UNIT_SCOPE),
-                        getIntegerFromBoolean(UNIQUE),
-                        getIntegerFromBoolean(INHERIT))
+                        toInteger(PROGRAM_SCOPE),
+                        toInteger(DISPLAY_IN_LIST_NO_PROGRAM),
+                        toInteger(GENERATED),
+                        toInteger(DISPLAY_ON_VISIT_SCHEDULE),
+                        toInteger(ORG_UNIT_SCOPE),
+                        toInteger(UNIQUE),
+                        toInteger(INHERIT))
                 .isExhausted();
     }
 
@@ -249,14 +248,4 @@ public class TrackedEntityAttributeStoreIntegrationTests extends AbsStoreTestCas
 
         assertThat(database().isOpen()).isTrue();
     }
-
-    @NonNull
-    private Integer getIntegerFromBoolean(Boolean bool) {
-        if (bool) {
-            return 1;
-        }
-
-        return 0;
-    }
-
 }

@@ -17,13 +17,13 @@ import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class OptionSetModelIntegrationTest {
-    private static final long ID = 11L;
+    private static final Long ID = 11L;
     private static final String UID = "test_uid";
     private static final String CODE = "test_code";
     private static final String NAME = "test_name";
     private static final String DISPLAY_NAME = "test_display_name";
     private static final ValueType VALUE_TYPE = ValueType.BOOLEAN;
-    private static final int VERSION = 51;
+    private static final Integer VERSION = 51;
 
     // timestamp
     private static final String DATE = "2016-12-20T16:26:00.007";

@@ -9,6 +9,7 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.dataelement.DataElementModelIntegrationTest;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableContract.Columns;
+import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityAttributeUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,7 +69,7 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
     public void insert_shouldPersistProgramRuleVariableInDatabase() throws Exception {
         // inserting necessary foreign key
 
-        ContentValues program = CreateUtils.createProgram(ID, PROGRAM);
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM);
         database().insert(Tables.PROGRAM, null, program);
 
         ContentValues programStage = ProgramStageModelIntegrationTest.create(ID, PROGRAM_STAGE, PROGRAM);
@@ -77,7 +78,7 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
         ContentValues dataElement = DataElementModelIntegrationTest.createWithoutOptionSet(ID, DATA_ELEMENT);
         database().insert(Tables.DATA_ELEMENT, null, dataElement);
 
-        ContentValues trackedEntityAttribute = CreateUtils.createTrackedEntityAttributeWithoutOptionSet(ID, TRACKED_ENTITY_ATTRIBUTE);
+        ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.createWithoutOptionSet(ID, TRACKED_ENTITY_ATTRIBUTE);
         database().insert(Tables.TRACKED_ENTITY_ATTRIBUTE, null, trackedEntityAttribute);
 
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
@@ -123,7 +124,7 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
 
     @Test
     public void insert_shouldPersistProgramRuleVariableInDatabaseWithProgramForeignKey() throws Exception {
-        ContentValues program = CreateUtils.createProgram(ID, PROGRAM);
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM);
         database().insert(Tables.PROGRAM, null, program);
 
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);

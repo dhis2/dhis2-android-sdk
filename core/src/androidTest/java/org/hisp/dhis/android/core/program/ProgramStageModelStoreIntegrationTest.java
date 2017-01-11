@@ -76,7 +76,7 @@ public class ProgramStageModelStoreIntegrationTest extends AbsStoreTestCase {
     public void insert_shouldPersistRowInDatabase() throws ParseException {
         // inserting necessary foreign key
 
-        ContentValues program = CreateUtils.createProgram(ID, PROGRAM);
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM);
         database().insert(Tables.PROGRAM, null, program);
 
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);

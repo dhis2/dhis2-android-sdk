@@ -28,44 +28,40 @@
 
 package org.hisp.dhis.android.core.relationship;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 // TODO: Tests
 @AutoValue
-@JsonDeserialize(builder = AutoValue_Relationship.Builder.class)
 public abstract class Relationship {
-    private static final String JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_A = "trackedEntityInstanceA";
-    private static final String JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_B = "trackedEntityInstanceB";
-    private static final String JSON_PROPERTY_RELATIONSHIP_TYPE = "relationshipType";
+    private static final String TRACKED_ENTITY_INSTANCE_A = "trackedEntityInstanceA";
+    private static final String TRACKED_ENTITY_INSTANCE_B = "trackedEntityInstanceB";
+    private static final String RELATIONSHIP_TYPE = "relationshipType";
 
-    @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_A)
+    public static final NestedField<Relationship, TrackedEntityInstance> trackedEntityInstanceA = NestedField.create(TRACKED_ENTITY_INSTANCE_A);
+    public static final NestedField<Relationship, TrackedEntityInstance> trackedEntityInstacenB = NestedField.create(TRACKED_ENTITY_INSTANCE_B);
+    public static final NestedField<Relationship, RelationshipType> relationshipType = NestedField.create(RELATIONSHIP_TYPE);
+
+    @JsonProperty(TRACKED_ENTITY_INSTANCE_A)
     public abstract TrackedEntityInstance trackedEntityInstanceA();
 
-    @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_B)
+    @JsonProperty(TRACKED_ENTITY_INSTANCE_B)
     public abstract TrackedEntityInstance trackedEntityInstanceB();
 
-    @JsonProperty(JSON_PROPERTY_RELATIONSHIP_TYPE)
+    @JsonProperty(RELATIONSHIP_TYPE)
     public abstract RelationshipType relationshipType();
 
-    public static Builder builder() {
-        return new AutoValue_Relationship.Builder();
-    }
+    @JsonCreator
+    public static Relationship create(
+            @JsonProperty(TRACKED_ENTITY_INSTANCE_A) TrackedEntityInstance trackedEntityInstanceA,
+            @JsonProperty(TRACKED_ENTITY_INSTANCE_B) TrackedEntityInstance trackedEntityInstanceB,
+            @JsonProperty(RELATIONSHIP_TYPE) RelationshipType relationshipType) {
 
-    @AutoValue.Builder
-    public static abstract class Builder {
-        @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_A)
-        public abstract Builder trackedEntityInstanceA(TrackedEntityInstance entityInstanceA);
+        return new AutoValue_Relationship(trackedEntityInstanceA, trackedEntityInstanceB, relationshipType);
 
-        @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_B)
-        public abstract Builder trackedEntityInstanceB(TrackedEntityInstance entityInstanceB);
-
-        @JsonProperty(JSON_PROPERTY_RELATIONSHIP_TYPE)
-        public abstract Builder relationshipType(RelationshipType relationshipType);
-
-        public abstract Relationship build();
     }
 }

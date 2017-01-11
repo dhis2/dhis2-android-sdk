@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.program.Program.categoryCombo;
+
 public interface ProgramStore {
     long insert(
             @NonNull String uid,
@@ -34,14 +36,10 @@ public interface ProgramStore {
             @NonNull ProgramType programType,
             @Nullable String relationshipType,
             @Nullable String relationshipText,
-//            @NonNull List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes,
-            @Nullable String relatedProgram
-            /*
-            @NonNull CategoryCombo categoryCombo,
-            @Nullable List<ProgramIndicator> programIndicators,
-            @Nullable List<ProgramStage> programStages,
-            @Nullable List<ProgramRule> programRules,
-            @Nullable List<ProgramRuleVariable> programRuleVariables */
+            @Nullable String relatedProgram,
+            @Nullable String trackedEntity
+            //TODO: add category combo when implemented.
+//            @NonNull CategoryCombo categoryCombo
     );
 
     void close();

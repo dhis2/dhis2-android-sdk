@@ -99,35 +99,15 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
     @ColumnName(ProgramContract.Columns.RELATED_PROGRAM)
     public abstract String relatedProgram();
 
-//TODO: Add these to the model/sql/... later:
-//
-//    @Nullable
-//    @ColumnName(ProgramContract.Columns.PROGRAM_TRACKEDENTITY_ATTRIBUTES)
-//    public abstract List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes();
-//
-//    @Nullable
-//    @ColumnName(ProgramContract.Columns.TRACKED_ENTITY)
-//    public abstract TrackedEntity trackedEntity();
-//
+    @Nullable
+    @ColumnName(ProgramContract.Columns.TRACKED_ENTITY)
+    public abstract String trackedEntity();
+
+    //TODO: Add these to the model/sql/... later:
 //    @Nullable
 //    @ColumnName(ProgramContract.Columns.CATEGORY_COMBO)
-//    public abstract CategoryCombo categoryCombo();
+//    public abstract String categoryCombo();
 //
-//    @Nullable
-//    @ColumnName(ProgramContract.Columns.PROGRAM_INDICATORS)
-//    public abstract List<ProgramIndicator> programIndicators();
-//
-//    @Nullable
-//    @ColumnName(ProgramContract.Columns.PROGRAM_STAGES)
-//    public abstract List<ProgramStage> programStages();
-//
-//    @Nullable
-//    @ColumnName(ProgramContract.Columns.PROGRAM_RULES)
-//    public abstract List<ProgramRule> programRules();
-//
-//    @Nullable
-//    @ColumnName(ProgramContract.Columns.PROGRAM_RULE_VARIABLES)
-//    public abstract List<ProgramRuleVariable> programRuleVariables();
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {
@@ -168,58 +148,10 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
 
         public abstract Builder relatedProgram(@Nullable String relatedProgram);
 
-//        public abstract ProgramModel.Builder programTrackedEntityAttributes(
-//                @Nullable List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes);
+        public abstract Builder trackedEntity(@Nullable String trackedEntity);
+//
+//        public abstract Builder categoryCombo(@Nullable String categoryCombo);
 
-        //        public abstract ProgramModel.Builder trackedEntity(@Nullable TrackedEntity trackedEntity);
-//
-//        public abstract ProgramModel.Builder categoryCombo(@Nullable CategoryCombo categoryCombo);
-//
-//        public abstract ProgramModel.Builder programIndicators(
-//                @Nullable List<ProgramIndicator> programIndicators);
-//
-//        public abstract ProgramModel.Builder programStages(@Nullable List<ProgramStage> programStages);
-//
-//        public abstract ProgramModel.Builder programRules(@Nullable List<ProgramRule> programRules);
-//
-//        public abstract ProgramModel.Builder programRuleVariables(
-//                @Nullable List<ProgramRuleVariable> programRuleVariables);
-//
-//        abstract List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes();
-//
-//        abstract List<ProgramIndicator> programIndicators();
-//
-//        abstract List<ProgramStage> programStages();
-//
-//        abstract List<ProgramRule> programRules();
-//
-//        abstract List<ProgramRuleVariable> programRuleVariables();
-//
-        abstract ProgramModel autoBuild();
-
-        public ProgramModel build() {
-//            if (programTrackedEntityAttributes() != null) {
-//                programTrackedEntityAttributes(Collections.safeUnmodifiableList(
-//                        programTrackedEntityAttributes()));
-//            }
-//
-//            if (programIndicators() != null) {
-//                programIndicators(Collections.safeUnmodifiableList(programIndicators()));
-//            }
-//
-//            if (programStages() != null) {
-//                programStages(Collections.safeUnmodifiableList(programStages()));
-//            }
-//
-//            if (programRules() != null) {
-//                programRules(Collections.safeUnmodifiableList(programRules()));
-//            }
-//
-//            if (programRuleVariables() != null) {
-//                programRuleVariables(Collections.safeUnmodifiableList(programRuleVariables()));
-//            }
-
-            return autoBuild();
-        }
+        public abstract ProgramModel build();
     }
 }

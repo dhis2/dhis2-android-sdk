@@ -22,5 +22,6 @@ public class ProgramContract {
         String RELATIONSHIP_TYPE = "relationshipType";
         String RELATIONSHIP_TEXT = "relationshipText";
         String RELATED_PROGRAM = "relatedProgram";
+        String TRACKED_ENTITY = "trackedEntity";
     }
 }

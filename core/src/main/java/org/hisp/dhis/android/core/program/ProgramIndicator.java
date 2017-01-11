@@ -30,59 +30,81 @@ package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.data.api.Field;
+
+import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramIndicator.Builder.class)
 public abstract class ProgramIndicator extends BaseNameableObject {
-    private static final String JSON_PROPERTY_DISPLAY_IN_FORM = "displayInForm";
-    private static final String JSON_PROPERTY_EXPRESSION = "expression";
-    private static final String JSON_PROPERTY_DIMENSION_ITEM = "dimensionItem";
-    private static final String JSON_PROPERTY_FILTER = "filter";
-    private static final String JSON_PROPERTY_DECIMALS = "decimals";
+    private static final String DISPLAY_IN_FORM = "displayInForm";
+    private static final String EXPRESSION = "expression";
+    private static final String DIMENSION_ITEM = "dimensionItem";
+    private static final String FILTER = "filter";
+    private static final String DECIMALS = "decimals";
+
+    public static final Field<ProgramIndicator, String> uid = Field.create(UID);
+    public static final Field<ProgramIndicator, String> code = Field.create(CODE);
+    public static final Field<ProgramIndicator, String> name = Field.create(NAME);
+    public static final Field<ProgramIndicator, String> displayName = Field.create(DISPLAY_NAME);
+    public static final Field<ProgramIndicator, String> created = Field.create(CREATED);
+    public static final Field<ProgramIndicator, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<ProgramIndicator, String> shortName = Field.create(SHORT_NAME);
+    public static final Field<ProgramIndicator, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
+    public static final Field<ProgramIndicator, String> description = Field.create(DESCRIPTION);
+    public static final Field<ProgramIndicator, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
+    public static final Field<ProgramIndicator, Boolean> displayInForm = Field.create(DISPLAY_IN_FORM);
+    public static final Field<ProgramIndicator, String> expression = Field.create(EXPRESSION);
+    public static final Field<ProgramIndicator, String> dimensionItem = Field.create(DIMENSION_ITEM);
+    public static final Field<ProgramIndicator, String> filter = Field.create(FILTER);
+    public static final Field<ProgramIndicator, Integer> decimals = Field.create(DECIMALS);
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_DISPLAY_IN_FORM)
+    @JsonProperty(DISPLAY_IN_FORM)
     public abstract Boolean displayInForm();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_EXPRESSION)
+    @JsonProperty(EXPRESSION)
     public abstract String expression();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_DIMENSION_ITEM)
+    @JsonProperty(DIMENSION_ITEM)
     public abstract String dimensionItem();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_FILTER)
+    @JsonProperty(FILTER)
     public abstract String filter();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_DECIMALS)
+    @JsonProperty(DECIMALS)
     public abstract Integer decimals();
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
-
-        @JsonProperty(JSON_PROPERTY_DISPLAY_IN_FORM)
-        public abstract Builder displayInForm(@Nullable Boolean displayInForm);
-
-        @JsonProperty(JSON_PROPERTY_EXPRESSION)
-        public abstract Builder expression(@Nullable String expression);
-
-        @JsonProperty(JSON_PROPERTY_DIMENSION_ITEM)
-        public abstract Builder dimensionItem(@Nullable String dimensionItem);
-
-        @JsonProperty(JSON_PROPERTY_FILTER)
-        public abstract Builder filter(@Nullable String filter);
-
-        @JsonProperty(JSON_PROPERTY_DECIMALS)
-        public abstract Builder decimals(@Nullable Integer decimals);
-
-        abstract ProgramIndicator build();
+    @JsonCreator
+    public static ProgramIndicator create(
+            @JsonProperty(UID) String uid,
+            @JsonProperty(CODE) String code,
+            @JsonProperty(NAME) String name,
+            @JsonProperty(DISPLAY_NAME) String displayName,
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(SHORT_NAME) String shortName,
+            @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
+            @JsonProperty(DESCRIPTION) String description,
+            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
+            @JsonProperty(DISPLAY_IN_FORM) Boolean displayInForm,
+            @JsonProperty(EXPRESSION) String expression,
+            @JsonProperty(DIMENSION_ITEM) String dimensionItem,
+            @JsonProperty(FILTER) String filter,
+            @JsonProperty(DECIMALS) Integer decimals
+    ) {
+        return new AutoValue_ProgramIndicator(
+                uid, code, name, displayName, created, lastUpdated,
+                shortName, displayShortName, description, displayDescription,
+                displayInForm, expression, dimensionItem, filter, decimals);
     }
+
 }

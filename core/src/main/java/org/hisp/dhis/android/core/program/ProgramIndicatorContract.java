@@ -28,16 +28,15 @@
 
 package org.hisp.dhis.android.core.program;
 
-public enum ProgramRuleActionType {
-    DISPLAYTEXT,
-    DISPLAYKEYVALUEPAIR,
-    HIDEFIELD,
-    HIDESECTION,
-    ASSIGN,
-    SHOWWARNING,
-    WARNINGONCOMPLETE,
-    SHOWERROR,
-    ERRORONCOMPLETE,
-    CREATEEVENT,
-    HIDEPROGRAMSTAGE
+import org.hisp.dhis.android.core.common.BaseNameableObjectContract;
+
+public class ProgramIndicatorContract {
+
+    public interface Columns extends BaseNameableObjectContract.Columns {
+        String DISPLAY_IN_FORM = "displayInForm";
+        String EXPRESSION = "expression";
+        String DIMENSION_ITEM = "dimensionItem";
+        String FILTER = "filter";
+        String DECIMALS = "decimals";
+    }
 }

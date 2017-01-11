@@ -39,24 +39,24 @@ import java.util.Date;
 @AutoValue
 @JsonDeserialize(builder = AutoValue_SystemInfo.Builder.class)
 public abstract class SystemInfo {
-    private static final String JSON_PROPERTY_SERVER_DATE_TIME = "serverDate";
-    private static final String JSON_PROPERTY_DATE_FORMAT = "dateFormat";
+    private static final String SERVER_DATE_TIME = "serverDate";
+    private static final String DATE_FORMAT = "dateFormat";
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_SERVER_DATE_TIME)
+    @JsonProperty(SERVER_DATE_TIME)
     public abstract Date serverDate();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_DATE_FORMAT)
+    @JsonProperty(DATE_FORMAT)
     public abstract String dateFormat();
 
     @AutoValue.Builder
     public static abstract class Builder {
 
-        @JsonProperty(JSON_PROPERTY_SERVER_DATE_TIME)
+        @JsonProperty(SERVER_DATE_TIME)
         public abstract Builder serverDate(@Nullable Date serverDate);
 
-        @JsonProperty(JSON_PROPERTY_DATE_FORMAT)
+        @JsonProperty(DATE_FORMAT)
         public abstract Builder dateFormat(@Nullable String dateFormat);
 
         public abstract SystemInfo build();

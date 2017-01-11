@@ -28,16 +28,19 @@
 
 package org.hisp.dhis.android.core.program;
 
-public enum ProgramRuleActionType {
-    DISPLAYTEXT,
-    DISPLAYKEYVALUEPAIR,
-    HIDEFIELD,
-    HIDESECTION,
-    ASSIGN,
-    SHOWWARNING,
-    WARNINGONCOMPLETE,
-    SHOWERROR,
-    ERRORONCOMPLETE,
-    CREATEEVENT,
-    HIDEPROGRAMSTAGE
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import java.util.Date;
+
+public interface ProgramIndicatorStore {
+    long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
+                @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+                @Nullable String shortName, @Nullable String displayShortName,
+                @Nullable String description, @Nullable String displayDescription,
+                @Nullable Boolean displayInForm, @Nullable String expression,
+                @Nullable String dimensionItem, @Nullable String filter,
+                @Nullable Integer decimals);
+
+    void close();
 }

@@ -28,16 +28,15 @@
 
 package org.hisp.dhis.android.core.program;
 
-public enum ProgramRuleActionType {
-    DISPLAYTEXT,
-    DISPLAYKEYVALUEPAIR,
-    HIDEFIELD,
-    HIDESECTION,
-    ASSIGN,
-    SHOWWARNING,
-    WARNINGONCOMPLETE,
-    SHOWERROR,
-    ERRORONCOMPLETE,
-    CREATEEVENT,
-    HIDEPROGRAMSTAGE
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.data.database.EnumColumnAdapter;
+
+class ProgramRuleActionTypeColumnAdapter extends EnumColumnAdapter<ProgramRuleActionType> {
+
+    @Override
+    @NonNull
+    protected Class<ProgramRuleActionType> getEnumClass() {
+        return ProgramRuleActionType.class;
+    }
 }

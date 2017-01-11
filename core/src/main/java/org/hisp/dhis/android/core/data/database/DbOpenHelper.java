@@ -11,7 +11,9 @@ import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.option.OptionModel;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.program.ProgramIndicatorModel;
 import org.hisp.dhis.android.core.program.ProgramModel;
+import org.hisp.dhis.android.core.program.ProgramRuleActionModel;
 import org.hisp.dhis.android.core.program.ProgramRuleModel;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableModel;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementModel;
@@ -26,6 +28,9 @@ import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.UserCredentialsModel;
 import org.hisp.dhis.android.core.user.UserModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
+
+import org.hisp.dhis.android.core.systeminfo.SystemInfoModel;
+
 
 public final class DbOpenHelper extends SQLiteOpenHelper {
 
@@ -55,7 +60,10 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String TRACKED_ENTITY_ATTRIBUTE = "TrackedEntityAttribute";
         String PROGRAM_TRACKED_ENTITY_ATTRIBUTE = "ProgramTrackedEntityAttribute";
         String CONSTANT = "Constant";
+        String SYSTEM_INFO = "SystemInfo";
         String PROGRAM_RULE = "ProgramRule";
+        String PROGRAM_INDICATOR = "ProgramIndicator";
+        String PROGRAM_RULE_ACTION = "ProgramRuleAction";
     }
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + Tables.USER + " (" +
@@ -434,6 +442,53 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ConstantModel.Columns.VALUE + " REAL" +
             ");";
 
+    private static final String CREATE_SYSTEM_INFO_TABLE = "CREATE TABLE " + Tables.SYSTEM_INFO + " (" +
+            SystemInfoModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            SystemInfoModel.Columns.SERVER_DATE + " TEXT," +
+            SystemInfoModel.Columns.DATE_FORMAT + " TEXT" +
+            ");";
+
+    private static final String CREATE_PROGRAM_INDICATOR_TABLE = "CREATE TABLE " + Tables.PROGRAM_INDICATOR + " (" +
+            ProgramIndicatorModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramIndicatorModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ProgramIndicatorModel.Columns.CODE + " TEXT," +
+            ProgramIndicatorModel.Columns.NAME + " TEXT," +
+            ProgramIndicatorModel.Columns.DISPLAY_NAME + " TEXT," +
+            ProgramIndicatorModel.Columns.CREATED + " TEXT," +
+            ProgramIndicatorModel.Columns.LAST_UPDATED + " TEXT," +
+            ProgramIndicatorModel.Columns.SHORT_NAME + " TEXT," +
+            ProgramIndicatorModel.Columns.DISPLAY_SHORT_NAME + " TEXT," +
+            ProgramIndicatorModel.Columns.DESCRIPTION + " TEXT," +
+            ProgramIndicatorModel.Columns.DISPLAY_DESCRIPTION + " TEXT," +
+            ProgramIndicatorModel.Columns.DISPLAY_IN_FORM + " INTEGER," +
+            ProgramIndicatorModel.Columns.EXPRESSION + " TEXT," +
+            ProgramIndicatorModel.Columns.DIMENSION_ITEM + " TEXT," +
+            ProgramIndicatorModel.Columns.FILTER + " TEXT," +
+            ProgramIndicatorModel.Columns.DECIMALS + " INTEGER" +
+            ");";
+
+    private static final String CREATE_PROGRAM_RULE_ACTION_TABLE = "CREATE TABLE " + Tables.PROGRAM_RULE_ACTION + " (" +
+            ProgramRuleActionModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramRuleActionModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ProgramRuleActionModel.Columns.CODE + " TEXT," +
+            ProgramRuleActionModel.Columns.NAME + " TEXT," +
+            ProgramRuleActionModel.Columns.DISPLAY_NAME + " TEXT," +
+            ProgramRuleActionModel.Columns.CREATED + " TEXT," +
+            ProgramRuleActionModel.Columns.LAST_UPDATED + " TEXT," +
+            ProgramRuleActionModel.Columns.DATA + " TEXT," +
+            ProgramRuleActionModel.Columns.CONTENT + " TEXT," +
+            ProgramRuleActionModel.Columns.LOCATION + " TEXT," +
+            ProgramRuleActionModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT," +
+            ProgramRuleActionModel.Columns.PROGRAM_INDICATOR + " TEXT," +
+            ProgramRuleActionModel.Columns.PROGRAM_STAGE_SECTION + " TEXT," +
+            ProgramRuleActionModel.Columns.PROGRAM_RULE_ACTION_TYPE + " TEXT," +
+            ProgramRuleActionModel.Columns.PROGRAM_STAGE + " TEXT," +
+            ProgramRuleActionModel.Columns.DATA_ELEMENT + " TEXT," +
+            ProgramRuleActionModel.Columns.PROGRAM_RULE + " TEXT NOT NULL," +
+            " FOREIGN KEY (" + ProgramRuleActionModel.Columns.PROGRAM_RULE + ")" +
+            " REFERENCES " + Tables.PROGRAM_RULE + " (" + ProgramRuleModel.Columns.UID + ")" +
+            ");";
+
     /**
      * This method should be used only for testing purposes
      */
@@ -464,7 +519,11 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE);
         database.execSQL(CREATE_PROGRAM_TRACKED_ENTITY_ATTRIBUTE_TABLE);
         database.execSQL(CREATE_CONSTANT_TABLE);
+        database.execSQL(CREATE_SYSTEM_INFO_TABLE);
         database.execSQL(CREATE_PROGRAM_RULE_TABLE);
+        database.execSQL(CREATE_PROGRAM_INDICATOR_TABLE);
+        database.execSQL(CREATE_PROGRAM_RULE_ACTION_TABLE);
+
         return database;
     }
 

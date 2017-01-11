@@ -40,8 +40,8 @@ public interface ProgramRuleActionStore {
                 @Nullable String trackedEntityAttribute, @Nullable String programIndicator,
                 @Nullable String programStageSection,
                 @NonNull ProgramRuleActionType programRuleActionType,
-                @Nullable String programStage, @Nullable String dataElement)
-            ;
+                @Nullable String programStage, @Nullable String dataElement,
+                @Nullable String programRule);
 
     void close();
 }

@@ -44,6 +44,7 @@ import static org.hisp.dhis.android.core.program.ProgramRuleActionContract.Colum
 import static org.hisp.dhis.android.core.program.ProgramRuleActionContract.Columns.DATA_ELEMENT;
 import static org.hisp.dhis.android.core.program.ProgramRuleActionContract.Columns.LOCATION;
 import static org.hisp.dhis.android.core.program.ProgramRuleActionContract.Columns.PROGRAM_INDICATOR;
+import static org.hisp.dhis.android.core.program.ProgramRuleActionContract.Columns.PROGRAM_RULE;
 import static org.hisp.dhis.android.core.program.ProgramRuleActionContract.Columns.PROGRAM_RULE_ACTION_TYPE;
 import static org.hisp.dhis.android.core.program.ProgramRuleActionContract.Columns.PROGRAM_STAGE;
 import static org.hisp.dhis.android.core.program.ProgramRuleActionContract.Columns.PROGRAM_STAGE_SECTION;
@@ -99,6 +100,10 @@ public abstract class ProgramRuleActionModel extends BaseIdentifiableObjectModel
     @ColumnName(DATA_ELEMENT)
     public abstract String dataElement();
 
+    @Nullable
+    @ColumnName(PROGRAM_RULE)
+    public abstract String programRule();
+
     @NonNull
     public abstract ContentValues toContentValues();
 
@@ -125,6 +130,8 @@ public abstract class ProgramRuleActionModel extends BaseIdentifiableObjectModel
         public abstract Builder programStage(@Nullable String programStage);
 
         public abstract Builder dataElement(@Nullable String dataElement);
+
+        public abstract Builder programRule(@Nullable String programRule);
 
         public abstract ProgramRuleActionModel build();
     }

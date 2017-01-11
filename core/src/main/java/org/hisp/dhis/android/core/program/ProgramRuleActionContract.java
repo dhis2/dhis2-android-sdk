@@ -42,5 +42,6 @@ public class ProgramRuleActionContract {
         String PROGRAM_RULE_ACTION_TYPE = "programRuleActionType";
         String PROGRAM_STAGE = "programStage";
         String DATA_ELEMENT = "dataElement";
+        String PROGRAM_RULE = "programRule";
     }
 }

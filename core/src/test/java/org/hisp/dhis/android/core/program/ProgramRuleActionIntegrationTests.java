@@ -84,5 +84,6 @@ public class ProgramRuleActionIntegrationTests {
         assertThat(programRuleAction.programRuleActionType()).isEqualTo(ProgramRuleActionType.SHOWWARNING);
         assertThat(programRuleAction.programStage()).isNull();
         assertThat(programRuleAction.dataElement().uid()).isEqualTo("H6uSAMO5WLD");
+        assertThat(programRuleAction.programRule().uid()).isEqualTo("NAgjOfWMXg6");
     }
 }

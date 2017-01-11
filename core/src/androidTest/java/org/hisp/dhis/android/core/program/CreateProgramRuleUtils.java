@@ -18,10 +18,12 @@ public class CreateProgramRuleUtils {
 
     private static final String CONDITION = "test_condition";
     private static final Integer PRIORITY = 1; // true
-    private static final String PROGRAM = "test_program";
     private static final String PROGRAM_STAGE = "test_programStage";
 
-    public static ContentValues create(long id, String uid) {
+    public static ContentValues createWithProgramStage(long id,
+                                                       String uid,
+                                                       String programUid,
+                                                       String programStageUid) {
         ContentValues programRule = new ContentValues();
         programRule.put(ProgramRuleModel.Columns.ID, id);
         programRule.put(ProgramRuleModel.Columns.UID, uid);
@@ -32,8 +34,24 @@ public class CreateProgramRuleUtils {
         programRule.put(ProgramRuleModel.Columns.LAST_UPDATED, DATE);
         programRule.put(ProgramRuleModel.Columns.CONDITION, CONDITION);
         programRule.put(ProgramRuleModel.Columns.PRIORITY, PRIORITY);
-        programRule.put(ProgramRuleModel.Columns.PROGRAM, PROGRAM);
-        programRule.put(ProgramRuleModel.Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+        programRule.put(ProgramRuleModel.Columns.PROGRAM, programUid);
+        programRule.put(ProgramRuleModel.Columns.PROGRAM_STAGE, programStageUid);
+        return programRule;
+    }
+
+    public static ContentValues createWithoutProgramStage(long id, String uid, String programUid) {
+        ContentValues programRule = new ContentValues();
+        programRule.put(ProgramRuleModel.Columns.ID, id);
+        programRule.put(ProgramRuleModel.Columns.UID, uid);
+        programRule.put(ProgramRuleModel.Columns.CODE, CODE);
+        programRule.put(ProgramRuleModel.Columns.NAME, NAME);
+        programRule.put(ProgramRuleModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
+        programRule.put(ProgramRuleModel.Columns.CREATED, DATE);
+        programRule.put(ProgramRuleModel.Columns.LAST_UPDATED, DATE);
+        programRule.put(ProgramRuleModel.Columns.CONDITION, CONDITION);
+        programRule.put(ProgramRuleModel.Columns.PRIORITY, PRIORITY);
+        programRule.put(ProgramRuleModel.Columns.PROGRAM, programUid);
+        programRule.putNull(ProgramRuleModel.Columns.PROGRAM_STAGE);
         return programRule;
     }
 }

@@ -55,8 +55,9 @@ public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
             ProgramRuleActionContract.Columns.PROGRAM_STAGE_SECTION + ", " +
             ProgramRuleActionContract.Columns.PROGRAM_RULE_ACTION_TYPE + ", " +
             ProgramRuleActionContract.Columns.PROGRAM_STAGE + ", " +
-            ProgramRuleActionContract.Columns.DATA_ELEMENT +
-            ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            ProgramRuleActionContract.Columns.DATA_ELEMENT + ", " +
+            ProgramRuleActionContract.Columns.PROGRAM_RULE +
+            ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private final SQLiteStatement insertRowStatement;
 
@@ -72,7 +73,8 @@ public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
                        @Nullable String location, @Nullable String trackedEntityAttribute,
                        @Nullable String programIndicator, @Nullable String programStageSection,
                        @NonNull ProgramRuleActionType programRuleActionType,
-                       @Nullable String programStage, @Nullable String dataElement) {
+                       @Nullable String programStage, @Nullable String dataElement,
+                       @Nullable String programRule) {
 
         insertRowStatement.clearBindings();
 
@@ -91,6 +93,7 @@ public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
         sqLiteBind(insertRowStatement, 13, programRuleActionType);
         sqLiteBind(insertRowStatement, 14, programStage);
         sqLiteBind(insertRowStatement, 15, dataElement);
+        sqLiteBind(insertRowStatement, 16, programRule);
 
         return insertRowStatement.executeInsert();
     }

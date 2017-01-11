@@ -473,7 +473,10 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ProgramRuleActionContract.Columns.PROGRAM_STAGE_SECTION + " TEXT," +
             ProgramRuleActionContract.Columns.PROGRAM_RULE_ACTION_TYPE + " TEXT," +
             ProgramRuleActionContract.Columns.PROGRAM_STAGE + " TEXT," +
-            ProgramRuleActionContract.Columns.DATA_ELEMENT + " TEXT" +
+            ProgramRuleActionContract.Columns.DATA_ELEMENT + " TEXT," +
+            ProgramRuleActionContract.Columns.PROGRAM_RULE + " TEXT NOT NULL," +
+            " FOREIGN KEY (" + ProgramRuleActionContract.Columns.PROGRAM_RULE + ")" +
+            " REFERENCES " + Tables.PROGRAM_RULE + " (" + ProgramRuleModel.Columns.UID + ")" +
             ");";
 
     /**

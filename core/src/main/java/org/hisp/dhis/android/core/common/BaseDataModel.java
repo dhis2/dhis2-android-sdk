@@ -28,10 +28,15 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.provider.BaseColumns;
 import android.support.annotation.Nullable;
 
 // TODO: Tests
-public abstract class BaseDataModel implements DataModel {
+public abstract class BaseDataModel extends BaseModel implements DataModel {
+
+    public interface Columns extends BaseColumns {
+        String STATE = "state";
+    }
 
     @Override
     @Nullable

@@ -9,10 +9,14 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.program.ProgramStageSectionContract.Columns;
 
 @AutoValue
 public abstract class ProgramStageSectionModel extends BaseIdentifiableObjectModel {
+
+    public interface Columns extends BaseIdentifiableObjectModel.Columns {
+        String SORT_ORDER = "sortOrder";
+        String PROGRAM_STAGE = "programStage";
+    }
 
     public static ProgramStageSectionModel create(Cursor cursor) {
         return AutoValue_ProgramStageSectionModel.createFromCursor(cursor);

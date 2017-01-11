@@ -5,7 +5,6 @@ import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.program.ProgramStageSectionContract.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,15 +28,15 @@ public class ProgramStageSectionModelIntegrationTest {
 
     public static ContentValues create(long id, String uid) {
         ContentValues programStageSection = new ContentValues();
-        programStageSection.put(Columns.ID, id);
-        programStageSection.put(Columns.UID, uid);
-        programStageSection.put(Columns.CODE, CODE);
-        programStageSection.put(Columns.NAME, NAME);
-        programStageSection.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
-        programStageSection.put(Columns.CREATED, DATE);
-        programStageSection.put(Columns.LAST_UPDATED, DATE);
-        programStageSection.put(Columns.SORT_ORDER, SORT_ORDER);
-        programStageSection.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+        programStageSection.put(ProgramStageSectionModel.Columns.ID, id);
+        programStageSection.put(ProgramStageSectionModel.Columns.UID, uid);
+        programStageSection.put(ProgramStageSectionModel.Columns.CODE, CODE);
+        programStageSection.put(ProgramStageSectionModel.Columns.NAME, NAME);
+        programStageSection.put(ProgramStageSectionModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
+        programStageSection.put(ProgramStageSectionModel.Columns.CREATED, DATE);
+        programStageSection.put(ProgramStageSectionModel.Columns.LAST_UPDATED, DATE);
+        programStageSection.put(ProgramStageSectionModel.Columns.SORT_ORDER, SORT_ORDER);
+        programStageSection.put(ProgramStageSectionModel.Columns.PROGRAM_STAGE, PROGRAM_STAGE);
 
         return programStageSection;
     }
@@ -45,9 +44,9 @@ public class ProgramStageSectionModelIntegrationTest {
     @Test
     public void create_shouldConvertToModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                Columns.ID, Columns.UID, Columns.CODE, Columns.NAME,
-                Columns.DISPLAY_NAME, Columns.CREATED, Columns.LAST_UPDATED,
-                Columns.SORT_ORDER, Columns.PROGRAM_STAGE
+                ProgramStageSectionModel.Columns.ID, ProgramStageSectionModel.Columns.UID, ProgramStageSectionModel.Columns.CODE, ProgramStageSectionModel.Columns.NAME,
+                ProgramStageSectionModel.Columns.DISPLAY_NAME, ProgramStageSectionModel.Columns.CREATED, ProgramStageSectionModel.Columns.LAST_UPDATED,
+                ProgramStageSectionModel.Columns.SORT_ORDER, ProgramStageSectionModel.Columns.PROGRAM_STAGE
         });
 
         matrixCursor.addRow(new Object[]{
@@ -90,14 +89,14 @@ public class ProgramStageSectionModelIntegrationTest {
 
         ContentValues contentValues = programStageSection.toContentValues();
 
-        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(Columns.CODE)).isEqualTo(CODE);
-        assertThat(contentValues.getAsString(Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsInteger(Columns.SORT_ORDER)).isEqualTo(SORT_ORDER);
-        assertThat(contentValues.getAsString(Columns.PROGRAM_STAGE)).isEqualTo(PROGRAM_STAGE);
+        assertThat(contentValues.getAsLong(ProgramStageSectionModel.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(ProgramStageSectionModel.Columns.UID)).isEqualTo(UID);
+        assertThat(contentValues.getAsString(ProgramStageSectionModel.Columns.CODE)).isEqualTo(CODE);
+        assertThat(contentValues.getAsString(ProgramStageSectionModel.Columns.NAME)).isEqualTo(NAME);
+        assertThat(contentValues.getAsString(ProgramStageSectionModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
+        assertThat(contentValues.getAsString(ProgramStageSectionModel.Columns.CREATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(ProgramStageSectionModel.Columns.LAST_UPDATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsInteger(ProgramStageSectionModel.Columns.SORT_ORDER)).isEqualTo(SORT_ORDER);
+        assertThat(contentValues.getAsString(ProgramStageSectionModel.Columns.PROGRAM_STAGE)).isEqualTo(PROGRAM_STAGE);
     }
 }

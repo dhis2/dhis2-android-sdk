@@ -32,26 +32,26 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 @RunWith(AndroidJUnit4.class)
 public class OptionSetCallIntegrationTest extends AbsStoreTestCase {
     private static final String[] OPTION_SET_PROJECTION = {
-            OptionSetContract.Columns.ID,
-            OptionSetContract.Columns.UID,
-            OptionSetContract.Columns.CODE,
-            OptionSetContract.Columns.NAME,
-            OptionSetContract.Columns.DISPLAY_NAME,
-            OptionSetContract.Columns.CREATED,
-            OptionSetContract.Columns.LAST_UPDATED,
-            OptionSetContract.Columns.VERSION,
-            OptionSetContract.Columns.VALUE_TYPE
+            OptionSetModel.Columns.ID,
+            OptionSetModel.Columns.UID,
+            OptionSetModel.Columns.CODE,
+            OptionSetModel.Columns.NAME,
+            OptionSetModel.Columns.DISPLAY_NAME,
+            OptionSetModel.Columns.CREATED,
+            OptionSetModel.Columns.LAST_UPDATED,
+            OptionSetModel.Columns.VERSION,
+            OptionSetModel.Columns.VALUE_TYPE
     };
 
     private static final String[] OPTION_PROJECTION = {
-            OptionContract.Columns.ID,
-            OptionContract.Columns.UID,
-            OptionContract.Columns.CODE,
-            OptionContract.Columns.NAME,
-            OptionContract.Columns.DISPLAY_NAME,
-            OptionContract.Columns.CREATED,
-            OptionContract.Columns.LAST_UPDATED,
-            OptionContract.Columns.OPTION_SET
+            OptionModel.Columns.ID,
+            OptionModel.Columns.UID,
+            OptionModel.Columns.CODE,
+            OptionModel.Columns.NAME,
+            OptionModel.Columns.DISPLAY_NAME,
+            OptionModel.Columns.CREATED,
+            OptionModel.Columns.LAST_UPDATED,
+            OptionModel.Columns.OPTION_SET
     };
 
     private MockWebServer mockWebServer;

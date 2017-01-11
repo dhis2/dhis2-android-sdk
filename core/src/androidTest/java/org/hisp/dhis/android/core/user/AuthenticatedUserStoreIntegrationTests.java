@@ -18,9 +18,9 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 @RunWith(AndroidJUnit4.class)
 public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
     private static final String[] PROJECTION = {
-            AuthenticatedUserContract.Columns.ID,
-            AuthenticatedUserContract.Columns.USER,
-            AuthenticatedUserContract.Columns.CREDENTIALS,
+            AuthenticatedUserModel.Columns.ID,
+            AuthenticatedUserModel.Columns.USER,
+            AuthenticatedUserModel.Columns.CREDENTIALS,
     };
 
     private AuthenticatedUserStore authenticatedUserStore;
@@ -53,8 +53,8 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
     @Test
     public void query_shouldReturnPersistedRows() {
         ContentValues authenticatedUser = new ContentValues();
-        authenticatedUser.put(AuthenticatedUserContract.Columns.USER, "test_user_uid");
-        authenticatedUser.put(AuthenticatedUserContract.Columns.CREDENTIALS, "test_user_credentials");
+        authenticatedUser.put(AuthenticatedUserModel.Columns.USER, "test_user_uid");
+        authenticatedUser.put(AuthenticatedUserModel.Columns.CREDENTIALS, "test_user_credentials");
 
         database().insert(DbOpenHelper.Tables.AUTHENTICATED_USER, null, authenticatedUser);
 
@@ -74,8 +74,8 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
     @Test
     public void delete_shouldDeleteAllRows() {
         ContentValues authenticatedUser = new ContentValues();
-        authenticatedUser.put(AuthenticatedUserContract.Columns.USER, "test_user_uid");
-        authenticatedUser.put(AuthenticatedUserContract.Columns.CREDENTIALS, "test_user_credentials");
+        authenticatedUser.put(AuthenticatedUserModel.Columns.USER, "test_user_uid");
+        authenticatedUser.put(AuthenticatedUserModel.Columns.CREDENTIALS, "test_user_credentials");
 
         database().insert(DbOpenHelper.Tables.AUTHENTICATED_USER, null, authenticatedUser);
 

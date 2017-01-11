@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.user.UserCredentialsContract.Columns;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,15 +29,15 @@ public class UserCredentialsModelIntegrationTests {
     @Test
     public void create_shouldConvertToModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                Columns.ID,
-                Columns.UID,
-                Columns.CODE,
-                Columns.NAME,
-                Columns.DISPLAY_NAME,
-                Columns.CREATED,
-                Columns.LAST_UPDATED,
-                Columns.USERNAME,
-                Columns.USER
+                UserCredentialsModel.Columns.ID,
+                UserCredentialsModel.Columns.UID,
+                UserCredentialsModel.Columns.CODE,
+                UserCredentialsModel.Columns.NAME,
+                UserCredentialsModel.Columns.DISPLAY_NAME,
+                UserCredentialsModel.Columns.CREATED,
+                UserCredentialsModel.Columns.LAST_UPDATED,
+                UserCredentialsModel.Columns.USERNAME,
+                UserCredentialsModel.Columns.USER
         });
 
         matrixCursor.addRow(new Object[]{
@@ -81,14 +80,14 @@ public class UserCredentialsModelIntegrationTests {
 
         ContentValues contentValues = userCredentials.toContentValues();
 
-        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(Columns.CODE)).isEqualTo(CODE);
-        assertThat(contentValues.getAsString(Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.USERNAME)).isEqualTo(USERNAME);
-        assertThat(contentValues.getAsString(Columns.USER)).isEqualTo(USER);
+        assertThat(contentValues.getAsLong(UserCredentialsModel.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(UserCredentialsModel.Columns.UID)).isEqualTo(UID);
+        assertThat(contentValues.getAsString(UserCredentialsModel.Columns.CODE)).isEqualTo(CODE);
+        assertThat(contentValues.getAsString(UserCredentialsModel.Columns.NAME)).isEqualTo(NAME);
+        assertThat(contentValues.getAsString(UserCredentialsModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
+        assertThat(contentValues.getAsString(UserCredentialsModel.Columns.CREATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(UserCredentialsModel.Columns.LAST_UPDATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(UserCredentialsModel.Columns.USERNAME)).isEqualTo(USERNAME);
+        assertThat(contentValues.getAsString(UserCredentialsModel.Columns.USER)).isEqualTo(USER);
     }
 }

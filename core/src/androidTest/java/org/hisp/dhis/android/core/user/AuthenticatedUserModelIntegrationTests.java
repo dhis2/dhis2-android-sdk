@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.user.AuthenticatedUserContract.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -19,7 +18,7 @@ public class AuthenticatedUserModelIntegrationTests {
     @Test
     public void create_shouldConvertToModel() {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                Columns.ID, Columns.USER, Columns.CREDENTIALS
+                AuthenticatedUserModel.Columns.ID, AuthenticatedUserModel.Columns.USER, AuthenticatedUserModel.Columns.CREDENTIALS
         });
 
         matrixCursor.addRow(new Object[]{
@@ -43,8 +42,8 @@ public class AuthenticatedUserModelIntegrationTests {
                 .id(ID).user(USER).credentials(CREDENTIALS).build();
 
         ContentValues contentValues = authenticatedUserModel.toContentValues();
-        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.USER)).isEqualTo(USER);
-        assertThat(contentValues.getAsString(Columns.CREDENTIALS)).isEqualTo(CREDENTIALS);
+        assertThat(contentValues.getAsLong(AuthenticatedUserModel.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(AuthenticatedUserModel.Columns.USER)).isEqualTo(USER);
+        assertThat(contentValues.getAsString(AuthenticatedUserModel.Columns.CREDENTIALS)).isEqualTo(CREDENTIALS);
     }
 }

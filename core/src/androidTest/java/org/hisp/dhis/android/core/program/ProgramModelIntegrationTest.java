@@ -5,7 +5,6 @@ import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.program.ProgramContract.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -53,41 +52,41 @@ public class ProgramModelIntegrationTest {
     private static final String RELATIONSHIP_TYPE = "relationshipUid";
     private static final String RELATIONSHIP_TEXT = "test relationship";
     private static final String RELATED_PROGRAM = "ProgramUid";
-
-
+    private static final String TRACKED_ENTITY = "TrackedEntityUid";
 
     @Test
     public void create_shouldConvertToModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                Columns.ID,
-                Columns.UID,
-                Columns.CODE,
-                Columns.NAME,
-                Columns.DISPLAY_NAME,
-                Columns.CREATED,
-                Columns.LAST_UPDATED,
-                Columns.SHORT_NAME,
-                Columns.DISPLAY_SHORT_NAME,
-                Columns.DESCRIPTION,
-                Columns.DISPLAY_DESCRIPTION,
-                Columns.VERSION,
-                Columns.ONLY_ENROLL_ONCE,
-                Columns.ENROLLMENT_DATE_LABEL,
-                Columns.DISPLAY_INCIDENT_DATE,
-                Columns.INCIDENT_DATE_LABEL,
-                Columns.REGISTRATION,
-                Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE,
-                Columns.DATA_ENTRY_METHOD,
-                Columns.IGNORE_OVERDUE_EVENTS,
-                Columns.RELATIONSHIP_FROM_A,
-                Columns.SELECT_INCIDENT_DATES_IN_FUTURE,
-                Columns.CAPTURE_COORDINATES,
-                Columns.USE_FIRST_STAGE_DURING_REGISTRATION,
-                Columns.DISPLAY_FRONT_PAGE_LIST,
-                Columns.PROGRAM_TYPE,
-                Columns.RELATIONSHIP_TYPE,
-                Columns.RELATIONSHIP_TEXT,
-                Columns.RELATED_PROGRAM
+                ProgramModel.Columns.ID,
+                ProgramModel.Columns.UID,
+                ProgramModel.Columns.CODE,
+                ProgramModel.Columns.NAME,
+                ProgramModel.Columns.DISPLAY_NAME,
+                ProgramModel.Columns.CREATED,
+                ProgramModel.Columns.LAST_UPDATED,
+                ProgramModel.Columns.SHORT_NAME,
+                ProgramModel.Columns.DISPLAY_SHORT_NAME,
+                ProgramModel.Columns.DESCRIPTION,
+                ProgramModel.Columns.DISPLAY_DESCRIPTION,
+                ProgramModel.Columns.VERSION,
+                ProgramModel.Columns.ONLY_ENROLL_ONCE,
+                ProgramModel.Columns.ENROLLMENT_DATE_LABEL,
+                ProgramModel.Columns.DISPLAY_INCIDENT_DATE,
+                ProgramModel.Columns.INCIDENT_DATE_LABEL,
+                ProgramModel.Columns.REGISTRATION,
+                ProgramModel.Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE,
+                ProgramModel.Columns.DATA_ENTRY_METHOD,
+                ProgramModel.Columns.IGNORE_OVERDUE_EVENTS,
+                ProgramModel.Columns.RELATIONSHIP_FROM_A,
+                ProgramModel.Columns.SELECT_INCIDENT_DATES_IN_FUTURE,
+                ProgramModel.Columns.CAPTURE_COORDINATES,
+                ProgramModel.Columns.USE_FIRST_STAGE_DURING_REGISTRATION,
+                ProgramModel.Columns.DISPLAY_FRONT_PAGE_LIST,
+                ProgramModel.Columns.PROGRAM_TYPE,
+                ProgramModel.Columns.RELATIONSHIP_TYPE,
+                ProgramModel.Columns.RELATIONSHIP_TEXT,
+                ProgramModel.Columns.RELATED_PROGRAM,
+                ProgramModel.Columns.TRACKED_ENTITY
         });
 
         matrixCursor.addRow(new Object[]{
@@ -113,7 +112,8 @@ public class ProgramModelIntegrationTest {
                 PROGRAM_TYPE,
                 RELATIONSHIP_TYPE,
                 RELATIONSHIP_TEXT,
-                RELATED_PROGRAM
+                RELATED_PROGRAM,
+                TRACKED_ENTITY
         });
 
         // move cursor to first item before reading
@@ -151,6 +151,7 @@ public class ProgramModelIntegrationTest {
         assertThat(program.relationshipType()).isEqualTo(RELATIONSHIP_TYPE);
         assertThat(program.relationshipText()).isEqualTo(RELATIONSHIP_TEXT);
         assertThat(program.relatedProgram()).isEqualTo(RELATED_PROGRAM);
+        assertThat(program.trackedEntity()).isEqualTo(TRACKED_ENTITY);
     }
 
     @Test
@@ -186,35 +187,37 @@ public class ProgramModelIntegrationTest {
                 .relationshipType(RELATIONSHIP_TYPE)
                 .relationshipText(RELATIONSHIP_TEXT)
                 .relatedProgram(RELATED_PROGRAM)
+                .trackedEntity(TRACKED_ENTITY)
                 .build();
 
         ContentValues contentValues = program.toContentValues();
-        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.SHORT_NAME)).isEqualTo(SHORT_NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_SHORT_NAME)).isEqualTo(DISPLAY_SHORT_NAME);
-        assertThat(contentValues.getAsString(Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
-        assertThat(contentValues.getAsInteger(Columns.VERSION)).isEqualTo(VERSION);
-        assertThat(contentValues.getAsBoolean(Columns.ONLY_ENROLL_ONCE)).isEqualTo(toBoolean(ONLY_ENROLL_ONCE));
-        assertThat(contentValues.getAsString(Columns.ENROLLMENT_DATE_LABEL)).isEqualTo(ENROLLMENT_DATE_LABEL);
-        assertThat(contentValues.getAsBoolean(Columns.DISPLAY_INCIDENT_DATE)).isEqualTo(toBoolean(DISPLAY_INCIDENT_DATE));
-        assertThat(contentValues.getAsBoolean(Columns.REGISTRATION)).isEqualTo(toBoolean(REGISTRATION));
-        assertThat(contentValues.getAsBoolean(Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE)).isEqualTo(toBoolean(SELECT_ENROLLMENT_DATES_IN_FUTURE));
-        assertThat(contentValues.getAsBoolean(Columns.DATA_ENTRY_METHOD)).isEqualTo(toBoolean(DATA_ENTRY_METHOD));
-        assertThat(contentValues.getAsBoolean(Columns.IGNORE_OVERDUE_EVENTS)).isEqualTo(toBoolean(IGNORE_OVERDUE_EVENTS));
-        assertThat(contentValues.getAsBoolean(Columns.RELATIONSHIP_FROM_A)).isEqualTo(toBoolean(RELATIONSHIP_FROM_A));
-        assertThat(contentValues.getAsBoolean(Columns.SELECT_INCIDENT_DATES_IN_FUTURE)).isEqualTo(toBoolean(SELECT_INCIDENT_DATES_IN_FUTURE));
-        assertThat(contentValues.getAsBoolean(Columns.CAPTURE_COORDINATES)).isEqualTo(toBoolean(CAPTURE_COORDINATES));
-        assertThat(contentValues.getAsBoolean(Columns.USE_FIRST_STAGE_DURING_REGISTRATION)).isEqualTo(toBoolean(USE_FIRST_STAGE_DURING_REGISTRATION));
-        assertThat(contentValues.getAsBoolean(Columns.DISPLAY_FRONT_PAGE_LIST)).isEqualTo(toBoolean(DISPLAY_FRONT_PAGE_LIST));
-        assertThat(contentValues.getAsString(Columns.PROGRAM_TYPE)).isEqualTo(PROGRAM_TYPE.toString());
-        assertThat(contentValues.getAsString(Columns.RELATIONSHIP_TYPE)).isEqualTo(RELATIONSHIP_TYPE);
-        assertThat(contentValues.getAsString(Columns.RELATIONSHIP_TEXT)).isEqualTo(RELATIONSHIP_TEXT);
-        assertThat(contentValues.getAsString(Columns.RELATED_PROGRAM)).isEqualTo(RELATED_PROGRAM);
+        assertThat(contentValues.getAsLong(ProgramModel.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(ProgramModel.Columns.UID)).isEqualTo(UID);
+        assertThat(contentValues.getAsString(ProgramModel.Columns.NAME)).isEqualTo(NAME);
+        assertThat(contentValues.getAsString(ProgramModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
+        assertThat(contentValues.getAsString(ProgramModel.Columns.CREATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(ProgramModel.Columns.LAST_UPDATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(ProgramModel.Columns.SHORT_NAME)).isEqualTo(SHORT_NAME);
+        assertThat(contentValues.getAsString(ProgramModel.Columns.DISPLAY_SHORT_NAME)).isEqualTo(DISPLAY_SHORT_NAME);
+        assertThat(contentValues.getAsString(ProgramModel.Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
+        assertThat(contentValues.getAsString(ProgramModel.Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
+        assertThat(contentValues.getAsInteger(ProgramModel.Columns.VERSION)).isEqualTo(VERSION);
+        assertThat(contentValues.getAsBoolean(ProgramModel.Columns.ONLY_ENROLL_ONCE)).isEqualTo(toBoolean(ONLY_ENROLL_ONCE));
+        assertThat(contentValues.getAsString(ProgramModel.Columns.ENROLLMENT_DATE_LABEL)).isEqualTo(ENROLLMENT_DATE_LABEL);
+        assertThat(contentValues.getAsBoolean(ProgramModel.Columns.DISPLAY_INCIDENT_DATE)).isEqualTo(toBoolean(DISPLAY_INCIDENT_DATE));
+        assertThat(contentValues.getAsBoolean(ProgramModel.Columns.REGISTRATION)).isEqualTo(toBoolean(REGISTRATION));
+        assertThat(contentValues.getAsBoolean(ProgramModel.Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE)).isEqualTo(toBoolean(SELECT_ENROLLMENT_DATES_IN_FUTURE));
+        assertThat(contentValues.getAsBoolean(ProgramModel.Columns.DATA_ENTRY_METHOD)).isEqualTo(toBoolean(DATA_ENTRY_METHOD));
+        assertThat(contentValues.getAsBoolean(ProgramModel.Columns.IGNORE_OVERDUE_EVENTS)).isEqualTo(toBoolean(IGNORE_OVERDUE_EVENTS));
+        assertThat(contentValues.getAsBoolean(ProgramModel.Columns.RELATIONSHIP_FROM_A)).isEqualTo(toBoolean(RELATIONSHIP_FROM_A));
+        assertThat(contentValues.getAsBoolean(ProgramModel.Columns.SELECT_INCIDENT_DATES_IN_FUTURE)).isEqualTo(toBoolean(SELECT_INCIDENT_DATES_IN_FUTURE));
+        assertThat(contentValues.getAsBoolean(ProgramModel.Columns.CAPTURE_COORDINATES)).isEqualTo(toBoolean(CAPTURE_COORDINATES));
+        assertThat(contentValues.getAsBoolean(ProgramModel.Columns.USE_FIRST_STAGE_DURING_REGISTRATION)).isEqualTo(toBoolean(USE_FIRST_STAGE_DURING_REGISTRATION));
+        assertThat(contentValues.getAsBoolean(ProgramModel.Columns.DISPLAY_FRONT_PAGE_LIST)).isEqualTo(toBoolean(DISPLAY_FRONT_PAGE_LIST));
+        assertThat(contentValues.getAsString(ProgramModel.Columns.PROGRAM_TYPE)).isEqualTo(PROGRAM_TYPE.toString());
+        assertThat(contentValues.getAsString(ProgramModel.Columns.RELATIONSHIP_TYPE)).isEqualTo(RELATIONSHIP_TYPE);
+        assertThat(contentValues.getAsString(ProgramModel.Columns.RELATIONSHIP_TEXT)).isEqualTo(RELATIONSHIP_TEXT);
+        assertThat(contentValues.getAsString(ProgramModel.Columns.RELATED_PROGRAM)).isEqualTo(RELATED_PROGRAM);
+        assertThat(contentValues.getAsString(ProgramModel.Columns.TRACKED_ENTITY)).isEqualTo(TRACKED_ENTITY);
     }
 }

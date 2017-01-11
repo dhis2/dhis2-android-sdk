@@ -6,26 +6,30 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
-import org.hisp.dhis.android.core.configuration.ConfigurationContract;
-import org.hisp.dhis.android.core.constant.ConstantContract;
-import org.hisp.dhis.android.core.dataelement.DataElementContract;
-import org.hisp.dhis.android.core.option.OptionContract;
-import org.hisp.dhis.android.core.option.OptionSetContract;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
-import org.hisp.dhis.android.core.program.ProgramContract;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableContract;
-import org.hisp.dhis.android.core.program.ProgramStageContract;
-import org.hisp.dhis.android.core.program.ProgramStageDataElementContract;
-import org.hisp.dhis.android.core.program.ProgramStageSectionContract;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeContract;
-import org.hisp.dhis.android.core.relationship.RelationshipContract;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeContract;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityContract;
-import org.hisp.dhis.android.core.user.AuthenticatedUserContract;
-import org.hisp.dhis.android.core.user.UserContract;
-import org.hisp.dhis.android.core.user.UserCredentialsContract;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkContract;
+import org.hisp.dhis.android.core.configuration.ConfigurationModel;
+import org.hisp.dhis.android.core.constant.ConstantModel;
+import org.hisp.dhis.android.core.dataelement.DataElementModel;
+import org.hisp.dhis.android.core.option.OptionModel;
+import org.hisp.dhis.android.core.option.OptionSetModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.program.ProgramIndicatorModel;
+import org.hisp.dhis.android.core.program.ProgramModel;
+import org.hisp.dhis.android.core.program.ProgramRuleActionModel;
+import org.hisp.dhis.android.core.program.ProgramRuleModel;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableModel;
+import org.hisp.dhis.android.core.program.ProgramStageDataElementModel;
+import org.hisp.dhis.android.core.program.ProgramStageModel;
+import org.hisp.dhis.android.core.program.ProgramStageSectionModel;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel;
+import org.hisp.dhis.android.core.relationship.RelationshipModel;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
+import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
+import org.hisp.dhis.android.core.user.UserCredentialsModel;
+import org.hisp.dhis.android.core.user.UserModel;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 
 public final class DbOpenHelper extends SQLiteOpenHelper {
 
@@ -53,369 +57,439 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String TRACKED_ENTITY_ATTRIBUTE = "TrackedEntityAttribute";
         String PROGRAM_TRACKED_ENTITY_ATTRIBUTE = "ProgramTrackedEntityAttribute";
         String CONSTANT = "Constant";
+        String SYSTEM_INFO = "SystemInfo";
+        String PROGRAM_RULE = "ProgramRule";
+        String PROGRAM_INDICATOR = "ProgramIndicator";
+        String PROGRAM_RULE_ACTION = "ProgramRuleAction";
     }
 
     private static final String CREATE_CONFIGURATION_TABLE = "CREATE TABLE " + Tables.CONFIGURATION + " (" +
-            ConfigurationContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            ConfigurationContract.Columns.SERVER_URL + " TEXT NOT NULL UNIQUE" +
+            ConfigurationModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ConfigurationModel.Columns.SERVER_URL + " TEXT NOT NULL UNIQUE" +
             ");";
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + Tables.USER + " (" +
-            UserContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            UserContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            UserContract.Columns.CODE + " TEXT," +
-            UserContract.Columns.NAME + " TEXT," +
-            UserContract.Columns.DISPLAY_NAME + " TEXT," +
-            UserContract.Columns.CREATED + " TEXT," +
-            UserContract.Columns.LAST_UPDATED + " TEXT," +
-            UserContract.Columns.BIRTHDAY + " TEXT," +
-            UserContract.Columns.EDUCATION + " TEXT," +
-            UserContract.Columns.GENDER + " TEXT," +
-            UserContract.Columns.JOB_TITLE + " TEXT," +
-            UserContract.Columns.SURNAME + " TEXT," +
-            UserContract.Columns.FIRST_NAME + " TEXT," +
-            UserContract.Columns.INTRODUCTION + " TEXT," +
-            UserContract.Columns.EMPLOYER + " TEXT," +
-            UserContract.Columns.INTERESTS + " TEXT," +
-            UserContract.Columns.LANGUAGES + " TEXT," +
-            UserContract.Columns.EMAIL + " TEXT," +
-            UserContract.Columns.PHONE_NUMBER + " TEXT," +
-            UserContract.Columns.NATIONALITY + " TEXT" +
+            UserModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            UserModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            UserModel.Columns.CODE + " TEXT," +
+            UserModel.Columns.NAME + " TEXT," +
+            UserModel.Columns.DISPLAY_NAME + " TEXT," +
+            UserModel.Columns.CREATED + " TEXT," +
+            UserModel.Columns.LAST_UPDATED + " TEXT," +
+            UserModel.Columns.BIRTHDAY + " TEXT," +
+            UserModel.Columns.EDUCATION + " TEXT," +
+            UserModel.Columns.GENDER + " TEXT," +
+            UserModel.Columns.JOB_TITLE + " TEXT," +
+            UserModel.Columns.SURNAME + " TEXT," +
+            UserModel.Columns.FIRST_NAME + " TEXT," +
+            UserModel.Columns.INTRODUCTION + " TEXT," +
+            UserModel.Columns.EMPLOYER + " TEXT," +
+            UserModel.Columns.INTERESTS + " TEXT," +
+            UserModel.Columns.LANGUAGES + " TEXT," +
+            UserModel.Columns.EMAIL + " TEXT," +
+            UserModel.Columns.PHONE_NUMBER + " TEXT," +
+            UserModel.Columns.NATIONALITY + " TEXT" +
             ");";
 
     private static final String CREATE_USER_CREDENTIALS_TABLE = "CREATE TABLE " + Tables.USER_CREDENTIALS + " (" +
-            UserCredentialsContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            UserCredentialsContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            UserCredentialsContract.Columns.CODE + " TEXT," +
-            UserCredentialsContract.Columns.NAME + " TEXT," +
-            UserCredentialsContract.Columns.DISPLAY_NAME + " TEXT," +
-            UserCredentialsContract.Columns.CREATED + " TEXT," +
-            UserCredentialsContract.Columns.LAST_UPDATED + " TEXT," +
-            UserCredentialsContract.Columns.USERNAME + " TEXT," +
-            UserCredentialsContract.Columns.USER + " TEXT NOT NULL UNIQUE," +
-            "FOREIGN KEY (" + UserCredentialsContract.Columns.USER + ") REFERENCES " + Tables.USER +
-            " (" + UserContract.Columns.UID + ") ON DELETE CASCADE" +
+            UserCredentialsModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            UserCredentialsModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            UserCredentialsModel.Columns.CODE + " TEXT," +
+            UserCredentialsModel.Columns.NAME + " TEXT," +
+            UserCredentialsModel.Columns.DISPLAY_NAME + " TEXT," +
+            UserCredentialsModel.Columns.CREATED + " TEXT," +
+            UserCredentialsModel.Columns.LAST_UPDATED + " TEXT," +
+            UserCredentialsModel.Columns.USERNAME + " TEXT," +
+            UserCredentialsModel.Columns.USER + " TEXT NOT NULL UNIQUE," +
+            "FOREIGN KEY (" + UserCredentialsModel.Columns.USER + ") REFERENCES " + Tables.USER +
+            " (" + UserModel.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_ORGANISATION_UNITS_TABLE = "CREATE TABLE " + Tables.ORGANISATION_UNIT + " (" +
-            OrganisationUnitContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            OrganisationUnitContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            OrganisationUnitContract.Columns.CODE + " TEXT," +
-            OrganisationUnitContract.Columns.NAME + " TEXT," +
-            OrganisationUnitContract.Columns.DISPLAY_NAME + " TEXT," +
-            OrganisationUnitContract.Columns.CREATED + " TEXT," +
-            OrganisationUnitContract.Columns.LAST_UPDATED + " TEXT," +
-            OrganisationUnitContract.Columns.SHORT_NAME + " TEXT," +
-            OrganisationUnitContract.Columns.DISPLAY_SHORT_NAME + " TEXT," +
-            OrganisationUnitContract.Columns.DESCRIPTION + " TEXT," +
-            OrganisationUnitContract.Columns.DISPLAY_DESCRIPTION + " TEXT," +
-            OrganisationUnitContract.Columns.PATH + " TEXT," +
-            OrganisationUnitContract.Columns.OPENING_DATE + " TEXT," +
-            OrganisationUnitContract.Columns.CLOSED_DATE + " TEXT," +
-            OrganisationUnitContract.Columns.LEVEL + " INTEGER," +
-            OrganisationUnitContract.Columns.PARENT + " TEXT" + ");";
+            OrganisationUnitModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            OrganisationUnitModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            OrganisationUnitModel.Columns.CODE + " TEXT," +
+            OrganisationUnitModel.Columns.NAME + " TEXT," +
+            OrganisationUnitModel.Columns.DISPLAY_NAME + " TEXT," +
+            OrganisationUnitModel.Columns.CREATED + " TEXT," +
+            OrganisationUnitModel.Columns.LAST_UPDATED + " TEXT," +
+            OrganisationUnitModel.Columns.SHORT_NAME + " TEXT," +
+            OrganisationUnitModel.Columns.DISPLAY_SHORT_NAME + " TEXT," +
+            OrganisationUnitModel.Columns.DESCRIPTION + " TEXT," +
+            OrganisationUnitModel.Columns.DISPLAY_DESCRIPTION + " TEXT," +
+            OrganisationUnitModel.Columns.PATH + " TEXT," +
+            OrganisationUnitModel.Columns.OPENING_DATE + " TEXT," +
+            OrganisationUnitModel.Columns.CLOSED_DATE + " TEXT," +
+            OrganisationUnitModel.Columns.LEVEL + " INTEGER," +
+            OrganisationUnitModel.Columns.PARENT + " TEXT" + ");";
 
     private static final String CREATE_USER_ORGANISATION_UNIT_TABLE = "CREATE TABLE " + Tables.USER_ORGANISATION_UNIT + " (" +
-            UserOrganisationUnitLinkContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            UserOrganisationUnitLinkContract.Columns.USER + " TEXT NOT NULL," +
-            UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
-            UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT_SCOPE + " TEXT NOT NULL," +
-            "FOREIGN KEY (" + UserOrganisationUnitLinkContract.Columns.USER + ") REFERENCES " + Tables.USER +
-            " (" + UserContract.Columns.UID + ") ON DELETE CASCADE," +
-            "FOREIGN KEY (" + UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT + ") REFERENCES " + Tables.ORGANISATION_UNIT +
-            " (" + OrganisationUnitContract.Columns.UID + ") ON DELETE CASCADE," +
-            "UNIQUE (" + UserOrganisationUnitLinkContract.Columns.USER + ", " +
-            UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT + ", " +
-            UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT_SCOPE + ")" +
+            UserOrganisationUnitLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            UserOrganisationUnitLinkModel.Columns.USER + " TEXT NOT NULL," +
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + " TEXT NOT NULL," +
+            "FOREIGN KEY (" + UserOrganisationUnitLinkModel.Columns.USER + ") REFERENCES " + Tables.USER +
+            " (" + UserModel.Columns.UID + ") ON DELETE CASCADE," +
+            "FOREIGN KEY (" + UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ") REFERENCES " + Tables.ORGANISATION_UNIT +
+            " (" + OrganisationUnitModel.Columns.UID + ") ON DELETE CASCADE," +
+            "UNIQUE (" + UserOrganisationUnitLinkModel.Columns.USER + ", " +
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ", " +
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + ")" +
             ");";
 
     private static final String CREATE_AUTHENTICATED_USER_TABLE = "CREATE TABLE " + Tables.AUTHENTICATED_USER + " (" +
-            AuthenticatedUserContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            AuthenticatedUserContract.Columns.USER + " TEXT NOT NULL UNIQUE," +
-            AuthenticatedUserContract.Columns.CREDENTIALS + " TEXT NOT NULL," +
-            "FOREIGN KEY (" + AuthenticatedUserContract.Columns.USER + ") REFERENCES " + Tables.USER +
-            " (" + UserContract.Columns.UID + ") ON DELETE CASCADE" +
+            AuthenticatedUserModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            AuthenticatedUserModel.Columns.USER + " TEXT NOT NULL UNIQUE," +
+            AuthenticatedUserModel.Columns.CREDENTIALS + " TEXT NOT NULL," +
+            "FOREIGN KEY (" + AuthenticatedUserModel.Columns.USER + ") REFERENCES " + Tables.USER +
+            " (" + UserModel.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_OPTION_SET_TABLE = "CREATE TABLE " + Tables.OPTION_SET + " (" +
-            OptionSetContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            OptionSetContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            OptionSetContract.Columns.CODE + " TEXT," +
-            OptionSetContract.Columns.NAME + " TEXT," +
-            OptionSetContract.Columns.DISPLAY_NAME + " TEXT," +
-            OptionSetContract.Columns.CREATED + " TEXT," +
-            OptionSetContract.Columns.LAST_UPDATED + " TEXT," +
-            OptionSetContract.Columns.VERSION + " INTEGER," +
-            OptionSetContract.Columns.VALUE_TYPE + " TEXT" +
+            OptionSetModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            OptionSetModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            OptionSetModel.Columns.CODE + " TEXT," +
+            OptionSetModel.Columns.NAME + " TEXT," +
+            OptionSetModel.Columns.DISPLAY_NAME + " TEXT," +
+            OptionSetModel.Columns.CREATED + " TEXT," +
+            OptionSetModel.Columns.LAST_UPDATED + " TEXT," +
+            OptionSetModel.Columns.VERSION + " INTEGER," +
+            OptionSetModel.Columns.VALUE_TYPE + " TEXT" +
             ");";
 
     private static final String CREATE_OPTION_TABLE = "CREATE TABLE " + Tables.OPTION + " (" +
-            OptionContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            OptionContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            OptionContract.Columns.CODE + " TEXT," +
-            OptionContract.Columns.NAME + " TEXT," +
-            OptionContract.Columns.DISPLAY_NAME + " TEXT," +
-            OptionContract.Columns.CREATED + " TEXT," +
-            OptionContract.Columns.LAST_UPDATED + " TEXT," +
-            OptionContract.Columns.OPTION_SET + " TEXT NOT NULL," +
-            "FOREIGN KEY (" + OptionContract.Columns.OPTION_SET + ") REFERENCES " + Tables.OPTION_SET +
-            " (" + OptionSetContract.Columns.UID + ") ON DELETE CASCADE" +
+            OptionModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            OptionModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            OptionModel.Columns.CODE + " TEXT," +
+            OptionModel.Columns.NAME + " TEXT," +
+            OptionModel.Columns.DISPLAY_NAME + " TEXT," +
+            OptionModel.Columns.CREATED + " TEXT," +
+            OptionModel.Columns.LAST_UPDATED + " TEXT," +
+            OptionModel.Columns.OPTION_SET + " TEXT NOT NULL," +
+            "FOREIGN KEY (" + OptionModel.Columns.OPTION_SET + ") REFERENCES " + Tables.OPTION_SET +
+            " (" + OptionSetModel.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_PROGRAM_TABLE = "CREATE TABLE " + Tables.PROGRAM + " (" +
-            ProgramContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            ProgramContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            ProgramContract.Columns.CODE + " TEXT," +
-            ProgramContract.Columns.NAME + " TEXT," +
-            ProgramContract.Columns.DISPLAY_NAME + " TEXT," +
-            ProgramContract.Columns.CREATED + " TEXT," +
-            ProgramContract.Columns.LAST_UPDATED + " TEXT," +
-            ProgramContract.Columns.SHORT_NAME + " TEXT," +
-            ProgramContract.Columns.DISPLAY_SHORT_NAME + " TEXT," +
-            ProgramContract.Columns.DESCRIPTION + " TEXT," +
-            ProgramContract.Columns.DISPLAY_DESCRIPTION + " TEXT," +
-            ProgramContract.Columns.VERSION + " INTEGER," +
-            ProgramContract.Columns.ONLY_ENROLL_ONCE + " INTEGER," +
-            ProgramContract.Columns.ENROLLMENT_DATE_LABEL + " TEXT," +
-            ProgramContract.Columns.DISPLAY_INCIDENT_DATE + " INTEGER," +
-            ProgramContract.Columns.INCIDENT_DATE_LABEL + " TEXT," +
-            ProgramContract.Columns.REGISTRATION + " INTEGER," +
-            ProgramContract.Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE + " INTEGER," +
-            ProgramContract.Columns.DATA_ENTRY_METHOD + " INTEGER," +
-            ProgramContract.Columns.IGNORE_OVERDUE_EVENTS + " INTEGER," +
-            ProgramContract.Columns.RELATIONSHIP_FROM_A + " INTEGER," +
-            ProgramContract.Columns.SELECT_INCIDENT_DATES_IN_FUTURE + " INTEGER," +
-            ProgramContract.Columns.CAPTURE_COORDINATES + " INTEGER," +
-            ProgramContract.Columns.USE_FIRST_STAGE_DURING_REGISTRATION + " INTEGER," +
-            ProgramContract.Columns.DISPLAY_FRONT_PAGE_LIST + " INTEGER," +
-            ProgramContract.Columns.PROGRAM_TYPE + " TEXT," +
-            ProgramContract.Columns.RELATIONSHIP_TYPE + " TEXT," +
-            ProgramContract.Columns.RELATIONSHIP_TEXT + " TEXT," +
-            ProgramContract.Columns.RELATED_PROGRAM + " TEXT" +
+            ProgramModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ProgramModel.Columns.CODE + " TEXT," +
+            ProgramModel.Columns.NAME + " TEXT," +
+            ProgramModel.Columns.DISPLAY_NAME + " TEXT," +
+            ProgramModel.Columns.CREATED + " TEXT," +
+            ProgramModel.Columns.LAST_UPDATED + " TEXT," +
+            ProgramModel.Columns.SHORT_NAME + " TEXT," +
+            ProgramModel.Columns.DISPLAY_SHORT_NAME + " TEXT," +
+            ProgramModel.Columns.DESCRIPTION + " TEXT," +
+            ProgramModel.Columns.DISPLAY_DESCRIPTION + " TEXT," +
+            ProgramModel.Columns.VERSION + " INTEGER," +
+            ProgramModel.Columns.ONLY_ENROLL_ONCE + " INTEGER," +
+            ProgramModel.Columns.ENROLLMENT_DATE_LABEL + " TEXT," +
+            ProgramModel.Columns.DISPLAY_INCIDENT_DATE + " INTEGER," +
+            ProgramModel.Columns.INCIDENT_DATE_LABEL + " TEXT," +
+            ProgramModel.Columns.REGISTRATION + " INTEGER," +
+            ProgramModel.Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE + " INTEGER," +
+            ProgramModel.Columns.DATA_ENTRY_METHOD + " INTEGER," +
+            ProgramModel.Columns.IGNORE_OVERDUE_EVENTS + " INTEGER," +
+            ProgramModel.Columns.RELATIONSHIP_FROM_A + " INTEGER," +
+            ProgramModel.Columns.SELECT_INCIDENT_DATES_IN_FUTURE + " INTEGER," +
+            ProgramModel.Columns.CAPTURE_COORDINATES + " INTEGER," +
+            ProgramModel.Columns.USE_FIRST_STAGE_DURING_REGISTRATION + " INTEGER," +
+            ProgramModel.Columns.DISPLAY_FRONT_PAGE_LIST + " INTEGER," +
+            ProgramModel.Columns.PROGRAM_TYPE + " TEXT," +
+            ProgramModel.Columns.RELATIONSHIP_TYPE + " TEXT," +
+            ProgramModel.Columns.RELATIONSHIP_TEXT + " TEXT," +
+            ProgramModel.Columns.RELATED_PROGRAM + " TEXT," +
+            ProgramModel.Columns.TRACKED_ENTITY + " TEXT" +
             ");";
 
     private static final String CREATE_TRACKED_ENTITY_TABLE = "CREATE TABLE " + Tables.TRACKED_ENTITY + " (" +
-            TrackedEntityContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            TrackedEntityContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            TrackedEntityContract.Columns.CODE + " TEXT," +
-            TrackedEntityContract.Columns.NAME + " TEXT," +
-            TrackedEntityContract.Columns.DISPLAY_NAME + " TEXT," +
-            TrackedEntityContract.Columns.CREATED + " TEXT," +
-            TrackedEntityContract.Columns.LAST_UPDATED + " TEXT," +
-            TrackedEntityContract.Columns.SHORT_NAME + " TEXT," +
-            TrackedEntityContract.Columns.DISPLAY_SHORT_NAME + " TEXT," +
-            TrackedEntityContract.Columns.DESCRIPTION + " TEXT," +
-            TrackedEntityContract.Columns.DISPLAY_DESCRIPTION + " TEXT" +
+            TrackedEntityModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            TrackedEntityModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            TrackedEntityModel.Columns.CODE + " TEXT," +
+            TrackedEntityModel.Columns.NAME + " TEXT," +
+            TrackedEntityModel.Columns.DISPLAY_NAME + " TEXT," +
+            TrackedEntityModel.Columns.CREATED + " TEXT," +
+            TrackedEntityModel.Columns.LAST_UPDATED + " TEXT," +
+            TrackedEntityModel.Columns.SHORT_NAME + " TEXT," +
+            TrackedEntityModel.Columns.DISPLAY_SHORT_NAME + " TEXT," +
+            TrackedEntityModel.Columns.DESCRIPTION + " TEXT," +
+            TrackedEntityModel.Columns.DISPLAY_DESCRIPTION + " TEXT" +
             ");";
 
     private static final String CREATE_DATA_ELEMENT_TABLE = "CREATE TABLE " + Tables.DATA_ELEMENT + " (" +
-            DataElementContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            DataElementContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            DataElementContract.Columns.CODE + " TEXT," +
-            DataElementContract.Columns.NAME + " TEXT," +
-            DataElementContract.Columns.DISPLAY_NAME + " TEXT," +
-            DataElementContract.Columns.CREATED + " TEXT," +
-            DataElementContract.Columns.LAST_UPDATED + " TEXT," +
-            DataElementContract.Columns.SHORT_NAME + " TEXT," +
-            DataElementContract.Columns.DISPLAY_SHORT_NAME + " TEXT," +
-            DataElementContract.Columns.DESCRIPTION + " TEXT," +
-            DataElementContract.Columns.DISPLAY_DESCRIPTION + " TEXT," +
-            DataElementContract.Columns.VALUE_TYPE + " TEXT," +
-            DataElementContract.Columns.ZERO_IS_SIGNIFICANT + " INTEGER," +
-            DataElementContract.Columns.AGGREGATION_OPERATOR + " TEXT," +
-            DataElementContract.Columns.FORM_NAME + " TEXT," +
-            DataElementContract.Columns.NUMBER_TYPE + " TEXT," +
-            DataElementContract.Columns.DOMAIN_TYPE + " TEXT," +
-            DataElementContract.Columns.DIMENSION + " TEXT," +
-            DataElementContract.Columns.DISPLAY_FORM_NAME + " TEXT," +
-            DataElementContract.Columns.OPTION_SET + " TEXT," +
-            " FOREIGN KEY ( " + DataElementContract.Columns.OPTION_SET + ")" +
-            " REFERENCES " + Tables.OPTION_SET + " (" + OptionSetContract.Columns.UID + ")" +
+            DataElementModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            DataElementModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            DataElementModel.Columns.CODE + " TEXT," +
+            DataElementModel.Columns.NAME + " TEXT," +
+            DataElementModel.Columns.DISPLAY_NAME + " TEXT," +
+            DataElementModel.Columns.CREATED + " TEXT," +
+            DataElementModel.Columns.LAST_UPDATED + " TEXT," +
+            DataElementModel.Columns.SHORT_NAME + " TEXT," +
+            DataElementModel.Columns.DISPLAY_SHORT_NAME + " TEXT," +
+            DataElementModel.Columns.DESCRIPTION + " TEXT," +
+            DataElementModel.Columns.DISPLAY_DESCRIPTION + " TEXT," +
+            DataElementModel.Columns.VALUE_TYPE + " TEXT," +
+            DataElementModel.Columns.ZERO_IS_SIGNIFICANT + " INTEGER," +
+            DataElementModel.Columns.AGGREGATION_OPERATOR + " TEXT," +
+            DataElementModel.Columns.FORM_NAME + " TEXT," +
+            DataElementModel.Columns.NUMBER_TYPE + " TEXT," +
+            DataElementModel.Columns.DOMAIN_TYPE + " TEXT," +
+            DataElementModel.Columns.DIMENSION + " TEXT," +
+            DataElementModel.Columns.DISPLAY_FORM_NAME + " TEXT," +
+            DataElementModel.Columns.OPTION_SET + " TEXT," +
+            " FOREIGN KEY ( " + DataElementModel.Columns.OPTION_SET + ")" +
+            " REFERENCES " + Tables.OPTION_SET + " (" + OptionSetModel.Columns.UID + ")" +
             ");";
 
     private static final String CREATE_PROGRAM_STAGE_DATA_ELEMENT_TABLE = "CREATE TABLE " +
             Tables.PROGRAM_STAGE_DATA_ELEMENT + " (" +
-            ProgramStageDataElementContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            ProgramStageDataElementContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            ProgramStageDataElementContract.Columns.CODE + " TEXT," +
-            ProgramStageDataElementContract.Columns.NAME + " TEXT," +
-            ProgramStageDataElementContract.Columns.DISPLAY_NAME + " TEXT," +
-            ProgramStageDataElementContract.Columns.CREATED + " TEXT," +
-            ProgramStageDataElementContract.Columns.LAST_UPDATED + " TEXT," +
-            ProgramStageDataElementContract.Columns.DISPLAY_IN_REPORTS + " INTEGER NOT NULL," +
-            ProgramStageDataElementContract.Columns.COMPULSORY + " INTEGER NOT NULL," +
-            ProgramStageDataElementContract.Columns.ALLOW_PROVIDED_ELSEWHERE + " INTEGER NOT NULL," +
-            ProgramStageDataElementContract.Columns.SORT_ORDER + " INTEGER," +
-            ProgramStageDataElementContract.Columns.ALLOW_FUTURE_DATE + " INTEGER NOT NULL," +
-            ProgramStageDataElementContract.Columns.DATA_ELEMENT + " TEXT NOT NULL," +
-            ProgramStageDataElementContract.Columns.PROGRAM_STAGE_SECTION + " TEXT," +
-            " FOREIGN KEY (" + ProgramStageDataElementContract.Columns.DATA_ELEMENT + ")" +
-            "REFERENCES " + Tables.DATA_ELEMENT + " (" + DataElementContract.Columns.UID + ")" +
+            ProgramStageDataElementModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramStageDataElementModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ProgramStageDataElementModel.Columns.CODE + " TEXT," +
+            ProgramStageDataElementModel.Columns.NAME + " TEXT," +
+            ProgramStageDataElementModel.Columns.DISPLAY_NAME + " TEXT," +
+            ProgramStageDataElementModel.Columns.CREATED + " TEXT," +
+            ProgramStageDataElementModel.Columns.LAST_UPDATED + " TEXT," +
+            ProgramStageDataElementModel.Columns.DISPLAY_IN_REPORTS + " INTEGER NOT NULL," +
+            ProgramStageDataElementModel.Columns.COMPULSORY + " INTEGER NOT NULL," +
+            ProgramStageDataElementModel.Columns.ALLOW_PROVIDED_ELSEWHERE + " INTEGER NOT NULL," +
+            ProgramStageDataElementModel.Columns.SORT_ORDER + " INTEGER," +
+            ProgramStageDataElementModel.Columns.ALLOW_FUTURE_DATE + " INTEGER NOT NULL," +
+            ProgramStageDataElementModel.Columns.DATA_ELEMENT + " TEXT NOT NULL," +
+            ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION + " TEXT," +
+            " FOREIGN KEY (" + ProgramStageDataElementModel.Columns.DATA_ELEMENT + ")" +
+            "REFERENCES " + Tables.DATA_ELEMENT + " (" + DataElementModel.Columns.UID + ")" +
             "ON DELETE CASCADE," +
-            "FOREIGN KEY (" + ProgramStageDataElementContract.Columns.PROGRAM_STAGE_SECTION + ")" +
-            "REFERENCES " + Tables.PROGRAM_STAGE_SECTION + " (" + ProgramStageSectionContract.Columns.UID + ")" +
+            "FOREIGN KEY (" + ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION + ")" +
+            "REFERENCES " + Tables.PROGRAM_STAGE_SECTION + " (" + ProgramStageSectionModel.Columns.UID + ")" +
             "ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_RELATIONSHIP_TABLE =
             "CREATE TABLE " + Tables.RELATIONSHIP_TABLE + "(" +
-                    RelationshipContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    RelationshipContract.Columns.TRACKED_ENTITY_INSTANCE_A + " TEXT," +
-                    RelationshipContract.Columns.TRACKED_ENTITY_INSTANCE_B + " TEXT," +
-                    RelationshipContract.Columns.RELATIONSHIP_TYPE + " TEXT NOT NULL," +
-                    "FOREIGN KEY (" + RelationshipContract.Columns.RELATIONSHIP_TYPE + ") " +
+                    RelationshipModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A + " TEXT," +
+                    RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B + " TEXT," +
+                    RelationshipModel.Columns.RELATIONSHIP_TYPE + " TEXT NOT NULL," +
+                    "FOREIGN KEY (" + RelationshipModel.Columns.RELATIONSHIP_TYPE + ") " +
                     "REFERENCES " + Tables.RELATIONSHIP_TYPE +
-                    " (" + RelationshipTypeContract.Columns.UID + ")" +
+                    " (" + RelationshipTypeModel.Columns.UID + ")" +
                     ");";
 
     private static final String CREATE_RELATIONSHIP_TYPE_TABLE = "CREATE TABLE " +
             Tables.RELATIONSHIP_TYPE + "( " +
-            RelationshipTypeContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            RelationshipTypeContract.Columns.UID + " TEXT NOT NULL UNIQUE, " +
-            RelationshipTypeContract.Columns.CODE + " TEXT, " +
-            RelationshipTypeContract.Columns.NAME + " TEXT, " +
-            RelationshipTypeContract.Columns.DISPLAY_NAME + " TEXT, " +
-            RelationshipTypeContract.Columns.CREATED + " TEXT, " +
-            RelationshipTypeContract.Columns.LAST_UPDATED + " TEXT, " +
-            RelationshipTypeContract.Columns.B_IS_TO_A + " TEXT, " +
-            RelationshipTypeContract.Columns.A_IS_TO_B + " TEXT " +
+            RelationshipTypeModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            RelationshipTypeModel.Columns.UID + " TEXT NOT NULL UNIQUE, " +
+            RelationshipTypeModel.Columns.CODE + " TEXT, " +
+            RelationshipTypeModel.Columns.NAME + " TEXT, " +
+            RelationshipTypeModel.Columns.DISPLAY_NAME + " TEXT, " +
+            RelationshipTypeModel.Columns.CREATED + " TEXT, " +
+            RelationshipTypeModel.Columns.LAST_UPDATED + " TEXT, " +
+            RelationshipTypeModel.Columns.B_IS_TO_A + " TEXT, " +
+            RelationshipTypeModel.Columns.A_IS_TO_B + " TEXT " +
             ");";
 
     private static final String CREATE_PROGRAM_STAGE_SECTION_TABLE = "CREATE TABLE " +
             Tables.PROGRAM_STAGE_SECTION + " (" +
-            ProgramStageSectionContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            ProgramStageSectionContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            ProgramStageSectionContract.Columns.CODE + " TEXT," +
-            ProgramStageSectionContract.Columns.NAME + " TEXT," +
-            ProgramStageSectionContract.Columns.DISPLAY_NAME + " TEXT," +
-            ProgramStageSectionContract.Columns.CREATED + " TEXT," +
-            ProgramStageSectionContract.Columns.LAST_UPDATED + " TEXT," +
-            ProgramStageSectionContract.Columns.SORT_ORDER + " INTEGER," +
-            ProgramStageSectionContract.Columns.PROGRAM_STAGE + " TEXT NOT NULL," +
-            " FOREIGN KEY ( " + ProgramStageSectionContract.Columns.PROGRAM_STAGE + ")" +
-            " REFERENCES " + Tables.PROGRAM_STAGE + " (" + ProgramStageContract.Columns.UID + ")" +
+            ProgramStageSectionModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramStageSectionModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ProgramStageSectionModel.Columns.CODE + " TEXT," +
+            ProgramStageSectionModel.Columns.NAME + " TEXT," +
+            ProgramStageSectionModel.Columns.DISPLAY_NAME + " TEXT," +
+            ProgramStageSectionModel.Columns.CREATED + " TEXT," +
+            ProgramStageSectionModel.Columns.LAST_UPDATED + " TEXT," +
+            ProgramStageSectionModel.Columns.SORT_ORDER + " INTEGER," +
+            ProgramStageSectionModel.Columns.PROGRAM_STAGE + " TEXT NOT NULL," +
+            " FOREIGN KEY ( " + ProgramStageSectionModel.Columns.PROGRAM_STAGE + ")" +
+            " REFERENCES " + Tables.PROGRAM_STAGE + " (" + ProgramStageModel.Columns.UID + ")" +
             ");";
 
     private static final String CREATE_PROGRAM_STAGE_TABLE = "CREATE TABLE " +
             Tables.PROGRAM_STAGE + " (" +
-            ProgramStageContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            ProgramStageContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            ProgramStageContract.Columns.CODE + " TEXT," +
-            ProgramStageContract.Columns.NAME + " TEXT," +
-            ProgramStageContract.Columns.DISPLAY_NAME + " TEXT," +
-            ProgramStageContract.Columns.CREATED + " TEXT," +
-            ProgramStageContract.Columns.LAST_UPDATED + " TEXT," +
-            ProgramStageContract.Columns.EXECUTION_DATE_LABEL + " TEXT," +
-            ProgramStageContract.Columns.ALLOW_GENERATE_NEXT_VISIT + " INTEGER," +
-            ProgramStageContract.Columns.VALID_COMPLETE_ONLY + " INTEGER," +
-            ProgramStageContract.Columns.REPORT_DATE_TO_USE + " TEXT," +
-            ProgramStageContract.Columns.OPEN_AFTER_ENROLLMENT + " INTEGER," +
-            ProgramStageContract.Columns.REPEATABLE + " INTEGER," +
-            ProgramStageContract.Columns.CAPTURE_COORDINATES + " INTEGER," +
-            ProgramStageContract.Columns.FORM_TYPE + " TEXT," +
-            ProgramStageContract.Columns.DISPLAY_GENERATE_EVENT_BOX + " INTEGER," +
-            ProgramStageContract.Columns.GENERATED_BY_ENROLMENT_DATE + " INTEGER," +
-            ProgramStageContract.Columns.AUTO_GENERATE_EVENT + " INTEGER," +
-            ProgramStageContract.Columns.SORT_ORDER + " INTEGER," +
-            ProgramStageContract.Columns.HIDE_DUE_DATE + " INTEGER," +
-            ProgramStageContract.Columns.BLOCK_ENTRY_FORM + " INTEGER," +
-            ProgramStageContract.Columns.MIN_DAYS_FROM_START + " INTEGER," +
-            ProgramStageContract.Columns.STANDARD_INTERVAL + " INTEGER," +
-            ProgramStageContract.Columns.PROGRAM + " TEXT NOT NULL," +
-            " FOREIGN KEY ( " + ProgramStageContract.Columns.PROGRAM + ")" +
-            " REFERENCES " + Tables.PROGRAM + " (" + ProgramContract.Columns.UID + ")" +
+            ProgramStageModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramStageModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ProgramStageModel.Columns.CODE + " TEXT," +
+            ProgramStageModel.Columns.NAME + " TEXT," +
+            ProgramStageModel.Columns.DISPLAY_NAME + " TEXT," +
+            ProgramStageModel.Columns.CREATED + " TEXT," +
+            ProgramStageModel.Columns.LAST_UPDATED + " TEXT," +
+            ProgramStageModel.Columns.EXECUTION_DATE_LABEL + " TEXT," +
+            ProgramStageModel.Columns.ALLOW_GENERATE_NEXT_VISIT + " INTEGER," +
+            ProgramStageModel.Columns.VALID_COMPLETE_ONLY + " INTEGER," +
+            ProgramStageModel.Columns.REPORT_DATE_TO_USE + " TEXT," +
+            ProgramStageModel.Columns.OPEN_AFTER_ENROLLMENT + " INTEGER," +
+            ProgramStageModel.Columns.REPEATABLE + " INTEGER," +
+            ProgramStageModel.Columns.CAPTURE_COORDINATES + " INTEGER," +
+            ProgramStageModel.Columns.FORM_TYPE + " TEXT," +
+            ProgramStageModel.Columns.DISPLAY_GENERATE_EVENT_BOX + " INTEGER," +
+            ProgramStageModel.Columns.GENERATED_BY_ENROLMENT_DATE + " INTEGER," +
+            ProgramStageModel.Columns.AUTO_GENERATE_EVENT + " INTEGER," +
+            ProgramStageModel.Columns.SORT_ORDER + " INTEGER," +
+            ProgramStageModel.Columns.HIDE_DUE_DATE + " INTEGER," +
+            ProgramStageModel.Columns.BLOCK_ENTRY_FORM + " INTEGER," +
+            ProgramStageModel.Columns.MIN_DAYS_FROM_START + " INTEGER," +
+            ProgramStageModel.Columns.STANDARD_INTERVAL + " INTEGER," +
+            ProgramStageModel.Columns.PROGRAM + " TEXT NOT NULL," +
+            " FOREIGN KEY ( " + ProgramStageModel.Columns.PROGRAM + ")" +
+            " REFERENCES " + Tables.PROGRAM + " (" + ProgramModel.Columns.UID + ")" +
             ");";
 
     private static final String CREATE_PROGRAM_RULE_VARIABLE_TABLE = "CREATE TABLE " +
             Tables.PROGRAM_RULE_VARIABLE + " (" +
-            ProgramRuleVariableContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            ProgramRuleVariableContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            ProgramRuleVariableContract.Columns.CODE + " TEXT," +
-            ProgramRuleVariableContract.Columns.NAME + " TEXT," +
-            ProgramRuleVariableContract.Columns.DISPLAY_NAME + " TEXT," +
-            ProgramRuleVariableContract.Columns.CREATED + " TEXT," +
-            ProgramRuleVariableContract.Columns.LAST_UPDATED + " TEXT," +
-            ProgramRuleVariableContract.Columns.USE_CODE_FOR_OPTION_SET + " INTEGER," +
-            ProgramRuleVariableContract.Columns.PROGRAM + " TEXT NOT NULL," +
-            ProgramRuleVariableContract.Columns.PROGRAM_STAGE + " TEXT," +
-            ProgramRuleVariableContract.Columns.DATA_ELEMENT + " TEXT," +
-            ProgramRuleVariableContract.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT," +
-            ProgramRuleVariableContract.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE + " TEXT," +
-            " FOREIGN KEY (" + ProgramRuleVariableContract.Columns.PROGRAM + ")" +
-            " REFERENCES " + Tables.PROGRAM + " (" + ProgramContract.Columns.UID + ")," +
-            " FOREIGN KEY (" + ProgramRuleVariableContract.Columns.PROGRAM_STAGE + ")" +
-            " REFERENCES " + Tables.PROGRAM_STAGE + " (" + ProgramStageContract.Columns.UID + ")," +
-            " FOREIGN KEY (" + ProgramRuleVariableContract.Columns.TRACKED_ENTITY_ATTRIBUTE + ")" +
-            " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE + " (" + TrackedEntityAttributeContract.Columns.UID + ")," +
-            " FOREIGN KEY (" + ProgramRuleVariableContract.Columns.DATA_ELEMENT + ")" +
-            " REFERENCES " + Tables.DATA_ELEMENT + " (" + DataElementContract.Columns.UID + ")" +
+            ProgramRuleVariableModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramRuleVariableModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ProgramRuleVariableModel.Columns.CODE + " TEXT," +
+            ProgramRuleVariableModel.Columns.NAME + " TEXT," +
+            ProgramRuleVariableModel.Columns.DISPLAY_NAME + " TEXT," +
+            ProgramRuleVariableModel.Columns.CREATED + " TEXT," +
+            ProgramRuleVariableModel.Columns.LAST_UPDATED + " TEXT," +
+            ProgramRuleVariableModel.Columns.USE_CODE_FOR_OPTION_SET + " INTEGER," +
+            ProgramRuleVariableModel.Columns.PROGRAM + " TEXT NOT NULL," +
+            ProgramRuleVariableModel.Columns.PROGRAM_STAGE + " TEXT," +
+            ProgramRuleVariableModel.Columns.DATA_ELEMENT + " TEXT," +
+            ProgramRuleVariableModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT," +
+            ProgramRuleVariableModel.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE + " TEXT," +
+            " FOREIGN KEY (" + ProgramRuleVariableModel.Columns.PROGRAM + ")" +
+            " REFERENCES " + Tables.PROGRAM + " (" + ProgramModel.Columns.UID + ")," +
+            " FOREIGN KEY (" + ProgramRuleVariableModel.Columns.PROGRAM_STAGE + ")" +
+            " REFERENCES " + Tables.PROGRAM_STAGE + " (" + ProgramStageModel.Columns.UID + ")," +
+            " FOREIGN KEY (" + ProgramRuleVariableModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ")" +
+            " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE + " (" + TrackedEntityAttributeModel.Columns.UID + ")," +
+            " FOREIGN KEY (" + ProgramRuleVariableModel.Columns.DATA_ELEMENT + ")" +
+            " REFERENCES " + Tables.DATA_ELEMENT + " (" + DataElementModel.Columns.UID + ")" +
             ");";
 
     private static final String CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE = "CREATE TABLE " +
             Tables.TRACKED_ENTITY_ATTRIBUTE + " (" +
-            TrackedEntityAttributeContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            TrackedEntityAttributeContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            TrackedEntityAttributeContract.Columns.CODE + " TEXT," +
-            TrackedEntityAttributeContract.Columns.NAME + " TEXT," +
-            TrackedEntityAttributeContract.Columns.DISPLAY_NAME + " TEXT," +
-            TrackedEntityAttributeContract.Columns.CREATED + " TEXT," +
-            TrackedEntityAttributeContract.Columns.LAST_UPDATED + " TEXT," +
-            TrackedEntityAttributeContract.Columns.SHORT_NAME + " TEXT," +
-            TrackedEntityAttributeContract.Columns.DISPLAY_SHORT_NAME + " TEXT," +
-            TrackedEntityAttributeContract.Columns.DESCRIPTION + " TEXT," +
-            TrackedEntityAttributeContract.Columns.DISPLAY_DESCRIPTION + " TEXT," +
-            TrackedEntityAttributeContract.Columns.PATTERN + " TEXT," +
-            TrackedEntityAttributeContract.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM + " INTEGER," +
-            TrackedEntityAttributeContract.Columns.OPTION_SET + " TEXT," +
-            TrackedEntityAttributeContract.Columns.VALUE_TYPE + " TEXT," +
-            TrackedEntityAttributeContract.Columns.EXPRESSION + " TEXT," +
-            TrackedEntityAttributeContract.Columns.SEARCH_SCOPE + " TEXT," +
-            TrackedEntityAttributeContract.Columns.PROGRAM_SCOPE + " INTEGER," +
-            TrackedEntityAttributeContract.Columns.DISPLAY_IN_LIST_NO_PROGRAM + " INTEGER," +
-            TrackedEntityAttributeContract.Columns.GENERATED + " INTEGER," +
-            TrackedEntityAttributeContract.Columns.DISPLAY_ON_VISIT_SCHEDULE + " INTEGER," +
-            TrackedEntityAttributeContract.Columns.ORG_UNIT_SCOPE + " INTEGER," +
-            TrackedEntityAttributeContract.Columns.UNIQUE + " INTEGER," +
-            TrackedEntityAttributeContract.Columns.INHERIT + " INTEGER," +
-            " FOREIGN KEY (" + TrackedEntityAttributeContract.Columns.OPTION_SET + ")" +
-            " REFERENCES " + Tables.OPTION_SET + " (" + OptionSetContract.Columns.UID + ")" +
+            TrackedEntityAttributeModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            TrackedEntityAttributeModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            TrackedEntityAttributeModel.Columns.CODE + " TEXT," +
+            TrackedEntityAttributeModel.Columns.NAME + " TEXT," +
+            TrackedEntityAttributeModel.Columns.DISPLAY_NAME + " TEXT," +
+            TrackedEntityAttributeModel.Columns.CREATED + " TEXT," +
+            TrackedEntityAttributeModel.Columns.LAST_UPDATED + " TEXT," +
+            TrackedEntityAttributeModel.Columns.SHORT_NAME + " TEXT," +
+            TrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME + " TEXT," +
+            TrackedEntityAttributeModel.Columns.DESCRIPTION + " TEXT," +
+            TrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION + " TEXT," +
+            TrackedEntityAttributeModel.Columns.PATTERN + " TEXT," +
+            TrackedEntityAttributeModel.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM + " INTEGER," +
+            TrackedEntityAttributeModel.Columns.OPTION_SET + " TEXT," +
+            TrackedEntityAttributeModel.Columns.VALUE_TYPE + " TEXT," +
+            TrackedEntityAttributeModel.Columns.EXPRESSION + " TEXT," +
+            TrackedEntityAttributeModel.Columns.SEARCH_SCOPE + " TEXT," +
+            TrackedEntityAttributeModel.Columns.PROGRAM_SCOPE + " INTEGER," +
+            TrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST_NO_PROGRAM + " INTEGER," +
+            TrackedEntityAttributeModel.Columns.GENERATED + " INTEGER," +
+            TrackedEntityAttributeModel.Columns.DISPLAY_ON_VISIT_SCHEDULE + " INTEGER," +
+            TrackedEntityAttributeModel.Columns.ORG_UNIT_SCOPE + " INTEGER," +
+            TrackedEntityAttributeModel.Columns.UNIQUE + " INTEGER," +
+            TrackedEntityAttributeModel.Columns.INHERIT + " INTEGER," +
+            " FOREIGN KEY (" + TrackedEntityAttributeModel.Columns.OPTION_SET + ")" +
+            " REFERENCES " + Tables.OPTION_SET + " (" + OptionSetModel.Columns.UID + ")" +
             "ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_PROGRAM_TRACKED_ENTITY_ATTRIBUTE_TABLE = "CREATE TABLE " +
             Tables.PROGRAM_TRACKED_ENTITY_ATTRIBUTE + " (" +
-            ProgramTrackedEntityAttributeContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            ProgramTrackedEntityAttributeContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            ProgramTrackedEntityAttributeContract.Columns.CODE + " TEXT," +
-            ProgramTrackedEntityAttributeContract.Columns.NAME + " TEXT," +
-            ProgramTrackedEntityAttributeContract.Columns.DISPLAY_NAME + " TEXT," +
-            ProgramTrackedEntityAttributeContract.Columns.CREATED + " TEXT," +
-            ProgramTrackedEntityAttributeContract.Columns.LAST_UPDATED + " TEXT," +
-            ProgramTrackedEntityAttributeContract.Columns.SHORT_NAME + " TEXT," +
-            ProgramTrackedEntityAttributeContract.Columns.DISPLAY_SHORT_NAME + " TEXT," +
-            ProgramTrackedEntityAttributeContract.Columns.DESCRIPTION + " TEXT," +
-            ProgramTrackedEntityAttributeContract.Columns.DISPLAY_DESCRIPTION + " TEXT," +
-            ProgramTrackedEntityAttributeContract.Columns.MANDATORY + " INTEGER," +
-            ProgramTrackedEntityAttributeContract.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT," +
-            ProgramTrackedEntityAttributeContract.Columns.VALUE_TYPE + " TEXT," +
-            ProgramTrackedEntityAttributeContract.Columns.ALLOW_FUTURE_DATES + " INTEGER," +
-            ProgramTrackedEntityAttributeContract.Columns.DISPLAY_IN_LIST + " INTEGER," +
-            " FOREIGN KEY (" + ProgramTrackedEntityAttributeContract.Columns.TRACKED_ENTITY_ATTRIBUTE + ")" +
-            " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE + " (" + TrackedEntityAttributeContract.Columns.UID + ")" +
+            ProgramTrackedEntityAttributeModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramTrackedEntityAttributeModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ProgramTrackedEntityAttributeModel.Columns.CODE + " TEXT," +
+            ProgramTrackedEntityAttributeModel.Columns.NAME + " TEXT," +
+            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_NAME + " TEXT," +
+            ProgramTrackedEntityAttributeModel.Columns.CREATED + " TEXT," +
+            ProgramTrackedEntityAttributeModel.Columns.LAST_UPDATED + " TEXT," +
+            ProgramTrackedEntityAttributeModel.Columns.SHORT_NAME + " TEXT," +
+            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME + " TEXT," +
+            ProgramTrackedEntityAttributeModel.Columns.DESCRIPTION + " TEXT," +
+            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION + " TEXT," +
+            ProgramTrackedEntityAttributeModel.Columns.MANDATORY + " INTEGER," +
+            ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT," +
+            ProgramTrackedEntityAttributeModel.Columns.VALUE_TYPE + " TEXT," +
+            ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATES + " INTEGER," +
+            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST + " INTEGER," +
+            " FOREIGN KEY (" + ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ")" +
+            " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE + " (" + TrackedEntityAttributeModel.Columns.UID + ")" +
             "ON DELETE CASCADE" +
             ");";
 
-    private static final String CREATE_CONSTANT_TABLE = "CREATE TABLE " + Tables.CONSTANT + " (" +
-            ConstantContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            ConstantContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            ConstantContract.Columns.CODE + " TEXT," +
-            ConstantContract.Columns.NAME + " TEXT," +
-            ConstantContract.Columns.DISPLAY_NAME + " TEXT," +
-            ConstantContract.Columns.CREATED + " TEXT," +
-            ConstantContract.Columns.LAST_UPDATED + " TEXT," +
-            ConstantContract.Columns.VALUE + " REAL" +
+    private static final String CREATE_PROGRAM_RULE_TABLE = "CREATE TABLE " +
+            Tables.PROGRAM_RULE + " (" +
+            ProgramRuleModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramRuleModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ProgramRuleModel.Columns.CODE + " TEXT," +
+            ProgramRuleModel.Columns.NAME + " TEXT," +
+            ProgramRuleModel.Columns.DISPLAY_NAME + " TEXT," +
+            ProgramRuleModel.Columns.CREATED + " TEXT," +
+            ProgramRuleModel.Columns.LAST_UPDATED + " TEXT," +
+            ProgramRuleModel.Columns.PRIORITY + " INTEGER," +
+            ProgramRuleModel.Columns.CONDITION + " TEXT," +
+            ProgramRuleModel.Columns.PROGRAM + " TEXT NOT NULL," +
+            ProgramRuleModel.Columns.PROGRAM_STAGE + " TEXT," +
+            " FOREIGN KEY (" + ProgramRuleModel.Columns.PROGRAM + ")" +
+            " REFERENCES " + Tables.PROGRAM + " (" + ProgramModel.Columns.UID + ")," +
+            " FOREIGN KEY (" + ProgramRuleModel.Columns.PROGRAM_STAGE + ")" +
+            " REFERENCES " + Tables.PROGRAM_STAGE + " (" + ProgramStageModel.Columns.UID + ")" +
             ");";
 
+    private static final String CREATE_CONSTANT_TABLE = "CREATE TABLE " + Tables.CONSTANT + " (" +
+            ConstantModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ConstantModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ConstantModel.Columns.CODE + " TEXT," +
+            ConstantModel.Columns.NAME + " TEXT," +
+            ConstantModel.Columns.DISPLAY_NAME + " TEXT," +
+            ConstantModel.Columns.CREATED + " TEXT," +
+            ConstantModel.Columns.LAST_UPDATED + " TEXT," +
+            ConstantModel.Columns.VALUE + " REAL" +
+            ");";
+
+    private static final String CREATE_SYSTEM_INFO_TABLE = "CREATE TABLE " + Tables.SYSTEM_INFO + " (" +
+            SystemInfoModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            SystemInfoModel.Columns.SERVER_DATE + " TEXT," +
+            SystemInfoModel.Columns.DATE_FORMAT + " TEXT" +
+            ");";
+
+    private static final String CREATE_PROGRAM_INDICATOR_TABLE = "CREATE TABLE " + Tables.PROGRAM_INDICATOR + " (" +
+            ProgramIndicatorModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramIndicatorModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ProgramIndicatorModel.Columns.CODE + " TEXT," +
+            ProgramIndicatorModel.Columns.NAME + " TEXT," +
+            ProgramIndicatorModel.Columns.DISPLAY_NAME + " TEXT," +
+            ProgramIndicatorModel.Columns.CREATED + " TEXT," +
+            ProgramIndicatorModel.Columns.LAST_UPDATED + " TEXT," +
+            ProgramIndicatorModel.Columns.SHORT_NAME + " TEXT," +
+            ProgramIndicatorModel.Columns.DISPLAY_SHORT_NAME + " TEXT," +
+            ProgramIndicatorModel.Columns.DESCRIPTION + " TEXT," +
+            ProgramIndicatorModel.Columns.DISPLAY_DESCRIPTION + " TEXT," +
+            ProgramIndicatorModel.Columns.DISPLAY_IN_FORM + " INTEGER," +
+            ProgramIndicatorModel.Columns.EXPRESSION + " TEXT," +
+            ProgramIndicatorModel.Columns.DIMENSION_ITEM + " TEXT," +
+            ProgramIndicatorModel.Columns.FILTER + " TEXT," +
+            ProgramIndicatorModel.Columns.DECIMALS + " INTEGER" +
+            ");";
+
+    private static final String CREATE_PROGRAM_RULE_ACTION_TABLE = "CREATE TABLE " + Tables.PROGRAM_RULE_ACTION + " (" +
+            ProgramRuleActionModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramRuleActionModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ProgramRuleActionModel.Columns.CODE + " TEXT," +
+            ProgramRuleActionModel.Columns.NAME + " TEXT," +
+            ProgramRuleActionModel.Columns.DISPLAY_NAME + " TEXT," +
+            ProgramRuleActionModel.Columns.CREATED + " TEXT," +
+            ProgramRuleActionModel.Columns.LAST_UPDATED + " TEXT," +
+            ProgramRuleActionModel.Columns.DATA + " TEXT," +
+            ProgramRuleActionModel.Columns.CONTENT + " TEXT," +
+            ProgramRuleActionModel.Columns.LOCATION + " TEXT," +
+            ProgramRuleActionModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT," +
+            ProgramRuleActionModel.Columns.PROGRAM_INDICATOR + " TEXT," +
+            ProgramRuleActionModel.Columns.PROGRAM_STAGE_SECTION + " TEXT," +
+            ProgramRuleActionModel.Columns.PROGRAM_RULE_ACTION_TYPE + " TEXT," +
+            ProgramRuleActionModel.Columns.PROGRAM_STAGE + " TEXT," +
+            ProgramRuleActionModel.Columns.DATA_ELEMENT + " TEXT," +
+            ProgramRuleActionModel.Columns.PROGRAM_RULE + " TEXT NOT NULL," +
+            " FOREIGN KEY (" + ProgramRuleActionModel.Columns.PROGRAM_RULE + ")" +
+            " REFERENCES " + Tables.PROGRAM_RULE + " (" + ProgramRuleModel.Columns.UID + ")" +
+            ");";
 
     /**
      * This method should be used only for testing purposes
@@ -448,6 +522,11 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE);
         database.execSQL(CREATE_PROGRAM_TRACKED_ENTITY_ATTRIBUTE_TABLE);
         database.execSQL(CREATE_CONSTANT_TABLE);
+        database.execSQL(CREATE_SYSTEM_INFO_TABLE);
+        database.execSQL(CREATE_PROGRAM_RULE_TABLE);
+        database.execSQL(CREATE_PROGRAM_INDICATOR_TABLE);
+        database.execSQL(CREATE_PROGRAM_RULE_ACTION_TABLE);
+
         return database;
     }
 

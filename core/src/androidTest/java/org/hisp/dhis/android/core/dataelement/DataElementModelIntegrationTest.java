@@ -6,7 +6,6 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.dataelement.DataElementContract.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -41,52 +40,52 @@ public class DataElementModelIntegrationTest {
 
     public static ContentValues createWithOptionSet(long id, String uid, String optionSetId) {
         ContentValues dataElement = new ContentValues();
-        dataElement.put(Columns.ID, id);
-        dataElement.put(Columns.UID, uid);
-        dataElement.put(Columns.CODE, CODE);
-        dataElement.put(Columns.NAME, NAME);
-        dataElement.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
-        dataElement.put(Columns.CREATED, DATE);
-        dataElement.put(Columns.LAST_UPDATED, DATE);
-        dataElement.put(Columns.SHORT_NAME, SHORT_NAME);
-        dataElement.put(Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
-        dataElement.put(Columns.DESCRIPTION, DESCRIPTION);
-        dataElement.put(Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
-        dataElement.put(Columns.VALUE_TYPE, VALUE_TYPE.name());
-        dataElement.put(Columns.ZERO_IS_SIGNIFICANT, ZERO_IS_SIGNIFICANT);
-        dataElement.put(Columns.AGGREGATION_OPERATOR, AGGREGATION_OPERATOR);
-        dataElement.put(Columns.FORM_NAME, FORM_NAME);
-        dataElement.put(Columns.NUMBER_TYPE, NUMBER_TYPE);
-        dataElement.put(Columns.DOMAIN_TYPE, DOMAIN_TYPE);
-        dataElement.put(Columns.DIMENSION, DIMENSION);
-        dataElement.put(Columns.DISPLAY_FORM_NAME, DISPLAY_FORM_NAME);
-        dataElement.put(Columns.OPTION_SET, optionSetId);
+        dataElement.put(DataElementModel.Columns.ID, id);
+        dataElement.put(DataElementModel.Columns.UID, uid);
+        dataElement.put(DataElementModel.Columns.CODE, CODE);
+        dataElement.put(DataElementModel.Columns.NAME, NAME);
+        dataElement.put(DataElementModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
+        dataElement.put(DataElementModel.Columns.CREATED, DATE);
+        dataElement.put(DataElementModel.Columns.LAST_UPDATED, DATE);
+        dataElement.put(DataElementModel.Columns.SHORT_NAME, SHORT_NAME);
+        dataElement.put(DataElementModel.Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
+        dataElement.put(DataElementModel.Columns.DESCRIPTION, DESCRIPTION);
+        dataElement.put(DataElementModel.Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
+        dataElement.put(DataElementModel.Columns.VALUE_TYPE, VALUE_TYPE.name());
+        dataElement.put(DataElementModel.Columns.ZERO_IS_SIGNIFICANT, ZERO_IS_SIGNIFICANT);
+        dataElement.put(DataElementModel.Columns.AGGREGATION_OPERATOR, AGGREGATION_OPERATOR);
+        dataElement.put(DataElementModel.Columns.FORM_NAME, FORM_NAME);
+        dataElement.put(DataElementModel.Columns.NUMBER_TYPE, NUMBER_TYPE);
+        dataElement.put(DataElementModel.Columns.DOMAIN_TYPE, DOMAIN_TYPE);
+        dataElement.put(DataElementModel.Columns.DIMENSION, DIMENSION);
+        dataElement.put(DataElementModel.Columns.DISPLAY_FORM_NAME, DISPLAY_FORM_NAME);
+        dataElement.put(DataElementModel.Columns.OPTION_SET, optionSetId);
 
         return dataElement;
     }
 
     public static ContentValues createWithoutOptionSet(long id, String uid) {
         ContentValues dataElement = new ContentValues();
-        dataElement.put(Columns.ID, id);
-        dataElement.put(Columns.UID, uid);
-        dataElement.put(Columns.CODE, CODE);
-        dataElement.put(Columns.NAME, NAME);
-        dataElement.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
-        dataElement.put(Columns.CREATED, DATE);
-        dataElement.put(Columns.LAST_UPDATED, DATE);
-        dataElement.put(Columns.SHORT_NAME, SHORT_NAME);
-        dataElement.put(Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
-        dataElement.put(Columns.DESCRIPTION, DESCRIPTION);
-        dataElement.put(Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
-        dataElement.put(Columns.VALUE_TYPE, VALUE_TYPE.name());
-        dataElement.put(Columns.ZERO_IS_SIGNIFICANT, ZERO_IS_SIGNIFICANT);
-        dataElement.put(Columns.AGGREGATION_OPERATOR, AGGREGATION_OPERATOR);
-        dataElement.put(Columns.FORM_NAME, FORM_NAME);
-        dataElement.put(Columns.NUMBER_TYPE, NUMBER_TYPE);
-        dataElement.put(Columns.DOMAIN_TYPE, DOMAIN_TYPE);
-        dataElement.put(Columns.DIMENSION, DIMENSION);
-        dataElement.put(Columns.DISPLAY_FORM_NAME, DISPLAY_FORM_NAME);
-        dataElement.putNull(Columns.OPTION_SET);
+        dataElement.put(DataElementModel.Columns.ID, id);
+        dataElement.put(DataElementModel.Columns.UID, uid);
+        dataElement.put(DataElementModel.Columns.CODE, CODE);
+        dataElement.put(DataElementModel.Columns.NAME, NAME);
+        dataElement.put(DataElementModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
+        dataElement.put(DataElementModel.Columns.CREATED, DATE);
+        dataElement.put(DataElementModel.Columns.LAST_UPDATED, DATE);
+        dataElement.put(DataElementModel.Columns.SHORT_NAME, SHORT_NAME);
+        dataElement.put(DataElementModel.Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
+        dataElement.put(DataElementModel.Columns.DESCRIPTION, DESCRIPTION);
+        dataElement.put(DataElementModel.Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
+        dataElement.put(DataElementModel.Columns.VALUE_TYPE, VALUE_TYPE.name());
+        dataElement.put(DataElementModel.Columns.ZERO_IS_SIGNIFICANT, ZERO_IS_SIGNIFICANT);
+        dataElement.put(DataElementModel.Columns.AGGREGATION_OPERATOR, AGGREGATION_OPERATOR);
+        dataElement.put(DataElementModel.Columns.FORM_NAME, FORM_NAME);
+        dataElement.put(DataElementModel.Columns.NUMBER_TYPE, NUMBER_TYPE);
+        dataElement.put(DataElementModel.Columns.DOMAIN_TYPE, DOMAIN_TYPE);
+        dataElement.put(DataElementModel.Columns.DIMENSION, DIMENSION);
+        dataElement.put(DataElementModel.Columns.DISPLAY_FORM_NAME, DISPLAY_FORM_NAME);
+        dataElement.putNull(DataElementModel.Columns.OPTION_SET);
 
         return dataElement;
     }
@@ -94,26 +93,26 @@ public class DataElementModelIntegrationTest {
     @Test
     public void create_shouldConvertToDataElementModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                Columns.ID,
-                Columns.UID,
-                Columns.CODE,
-                Columns.NAME,
-                Columns.DISPLAY_NAME,
-                Columns.CREATED,
-                Columns.LAST_UPDATED,
-                Columns.SHORT_NAME,
-                Columns.DISPLAY_SHORT_NAME,
-                Columns.DESCRIPTION,
-                Columns.DISPLAY_DESCRIPTION,
-                Columns.VALUE_TYPE,
-                Columns.ZERO_IS_SIGNIFICANT,
-                Columns.AGGREGATION_OPERATOR,
-                Columns.FORM_NAME,
-                Columns.NUMBER_TYPE,
-                Columns.DOMAIN_TYPE,
-                Columns.DIMENSION,
-                Columns.DISPLAY_FORM_NAME,
-                Columns.OPTION_SET
+                DataElementModel.Columns.ID,
+                DataElementModel.Columns.UID,
+                DataElementModel.Columns.CODE,
+                DataElementModel.Columns.NAME,
+                DataElementModel.Columns.DISPLAY_NAME,
+                DataElementModel.Columns.CREATED,
+                DataElementModel.Columns.LAST_UPDATED,
+                DataElementModel.Columns.SHORT_NAME,
+                DataElementModel.Columns.DISPLAY_SHORT_NAME,
+                DataElementModel.Columns.DESCRIPTION,
+                DataElementModel.Columns.DISPLAY_DESCRIPTION,
+                DataElementModel.Columns.VALUE_TYPE,
+                DataElementModel.Columns.ZERO_IS_SIGNIFICANT,
+                DataElementModel.Columns.AGGREGATION_OPERATOR,
+                DataElementModel.Columns.FORM_NAME,
+                DataElementModel.Columns.NUMBER_TYPE,
+                DataElementModel.Columns.DOMAIN_TYPE,
+                DataElementModel.Columns.DIMENSION,
+                DataElementModel.Columns.DISPLAY_FORM_NAME,
+                DataElementModel.Columns.OPTION_SET
         });
 
         matrixCursor.addRow(new Object[]{
@@ -181,24 +180,24 @@ public class DataElementModelIntegrationTest {
 
         ContentValues contentValues = dataElementModel.toContentValues();
 
-        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(Columns.CODE)).isEqualTo(CODE);
-        assertThat(contentValues.getAsString(Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.SHORT_NAME)).isEqualTo(SHORT_NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_SHORT_NAME)).isEqualTo(DISPLAY_SHORT_NAME);
-        assertThat(contentValues.getAsString(Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
-        assertThat(contentValues.getAsString(Columns.VALUE_TYPE)).isEqualTo(VALUE_TYPE.name());
-        assertThat(contentValues.getAsBoolean(Columns.ZERO_IS_SIGNIFICANT)).isFalse();
-        assertThat(contentValues.getAsString(Columns.AGGREGATION_OPERATOR)).isEqualTo(AGGREGATION_OPERATOR);
-        assertThat(contentValues.getAsString(Columns.FORM_NAME)).isEqualTo(FORM_NAME);
-        assertThat(contentValues.getAsString(Columns.DOMAIN_TYPE)).isEqualTo(DOMAIN_TYPE);
-        assertThat(contentValues.getAsString(Columns.DIMENSION)).isEqualTo(DIMENSION);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_FORM_NAME)).isEqualTo(DISPLAY_FORM_NAME);
-        assertThat(contentValues.getAsString(Columns.OPTION_SET)).isEqualTo(OPTION_SET);
+        assertThat(contentValues.getAsLong(DataElementModel.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(DataElementModel.Columns.UID)).isEqualTo(UID);
+        assertThat(contentValues.getAsString(DataElementModel.Columns.CODE)).isEqualTo(CODE);
+        assertThat(contentValues.getAsString(DataElementModel.Columns.NAME)).isEqualTo(NAME);
+        assertThat(contentValues.getAsString(DataElementModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
+        assertThat(contentValues.getAsString(DataElementModel.Columns.CREATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(DataElementModel.Columns.LAST_UPDATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(DataElementModel.Columns.SHORT_NAME)).isEqualTo(SHORT_NAME);
+        assertThat(contentValues.getAsString(DataElementModel.Columns.DISPLAY_SHORT_NAME)).isEqualTo(DISPLAY_SHORT_NAME);
+        assertThat(contentValues.getAsString(DataElementModel.Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
+        assertThat(contentValues.getAsString(DataElementModel.Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
+        assertThat(contentValues.getAsString(DataElementModel.Columns.VALUE_TYPE)).isEqualTo(VALUE_TYPE.name());
+        assertThat(contentValues.getAsBoolean(DataElementModel.Columns.ZERO_IS_SIGNIFICANT)).isFalse();
+        assertThat(contentValues.getAsString(DataElementModel.Columns.AGGREGATION_OPERATOR)).isEqualTo(AGGREGATION_OPERATOR);
+        assertThat(contentValues.getAsString(DataElementModel.Columns.FORM_NAME)).isEqualTo(FORM_NAME);
+        assertThat(contentValues.getAsString(DataElementModel.Columns.DOMAIN_TYPE)).isEqualTo(DOMAIN_TYPE);
+        assertThat(contentValues.getAsString(DataElementModel.Columns.DIMENSION)).isEqualTo(DIMENSION);
+        assertThat(contentValues.getAsString(DataElementModel.Columns.DISPLAY_FORM_NAME)).isEqualTo(DISPLAY_FORM_NAME);
+        assertThat(contentValues.getAsString(DataElementModel.Columns.OPTION_SET)).isEqualTo(OPTION_SET);
     }
 }

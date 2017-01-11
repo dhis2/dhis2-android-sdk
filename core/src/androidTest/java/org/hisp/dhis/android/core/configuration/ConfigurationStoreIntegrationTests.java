@@ -15,8 +15,8 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 public class ConfigurationStoreIntegrationTests extends AbsStoreTestCase {
     private static final String[] PROJECTION = {
-            ConfigurationContract.Columns.ID,
-            ConfigurationContract.Columns.SERVER_URL
+            ConfigurationModel.Columns.ID,
+            ConfigurationModel.Columns.SERVER_URL
     };
 
     private ConfigurationStore configurationStore;
@@ -50,7 +50,7 @@ public class ConfigurationStoreIntegrationTests extends AbsStoreTestCase {
     @Test
     public void save_shouldNotThrowOnConflict() {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ConfigurationContract.Columns.SERVER_URL, "test_server_url");
+        contentValues.put(ConfigurationModel.Columns.SERVER_URL, "test_server_url");
 
         database().insert(DbOpenHelper.Tables.CONFIGURATION, null, contentValues);
 
@@ -68,7 +68,7 @@ public class ConfigurationStoreIntegrationTests extends AbsStoreTestCase {
     @Test
     public void query_shouldReturnPersistedRows() {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ConfigurationContract.Columns.SERVER_URL, "test_server_url");
+        contentValues.put(ConfigurationModel.Columns.SERVER_URL, "test_server_url");
 
         database().insert(DbOpenHelper.Tables.CONFIGURATION, null, contentValues);
 

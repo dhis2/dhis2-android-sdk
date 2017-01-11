@@ -66,22 +66,22 @@ public class ProgramTrackedEntityAttributeModelIntegrationTests {
     @Test
     public void create_shouldConvertToModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                ProgramTrackedEntityAttributeContract.Columns.ID,
-                ProgramTrackedEntityAttributeContract.Columns.UID,
-                ProgramTrackedEntityAttributeContract.Columns.CODE,
-                ProgramTrackedEntityAttributeContract.Columns.NAME,
-                ProgramTrackedEntityAttributeContract.Columns.DISPLAY_NAME,
-                ProgramTrackedEntityAttributeContract.Columns.CREATED,
-                ProgramTrackedEntityAttributeContract.Columns.LAST_UPDATED,
-                ProgramTrackedEntityAttributeContract.Columns.SHORT_NAME,
-                ProgramTrackedEntityAttributeContract.Columns.DISPLAY_SHORT_NAME,
-                ProgramTrackedEntityAttributeContract.Columns.DESCRIPTION,
-                ProgramTrackedEntityAttributeContract.Columns.DISPLAY_DESCRIPTION,
-                ProgramTrackedEntityAttributeContract.Columns.MANDATORY,
-                ProgramTrackedEntityAttributeContract.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                ProgramTrackedEntityAttributeContract.Columns.VALUE_TYPE,
-                ProgramTrackedEntityAttributeContract.Columns.ALLOW_FUTURE_DATES,
-                ProgramTrackedEntityAttributeContract.Columns.DISPLAY_IN_LIST
+                ProgramTrackedEntityAttributeModel.Columns.ID,
+                ProgramTrackedEntityAttributeModel.Columns.UID,
+                ProgramTrackedEntityAttributeModel.Columns.CODE,
+                ProgramTrackedEntityAttributeModel.Columns.NAME,
+                ProgramTrackedEntityAttributeModel.Columns.DISPLAY_NAME,
+                ProgramTrackedEntityAttributeModel.Columns.CREATED,
+                ProgramTrackedEntityAttributeModel.Columns.LAST_UPDATED,
+                ProgramTrackedEntityAttributeModel.Columns.SHORT_NAME,
+                ProgramTrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME,
+                ProgramTrackedEntityAttributeModel.Columns.DESCRIPTION,
+                ProgramTrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION,
+                ProgramTrackedEntityAttributeModel.Columns.MANDATORY,
+                ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                ProgramTrackedEntityAttributeModel.Columns.VALUE_TYPE,
+                ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATES,
+                ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST
         });
 
         matrixCursor.addRow(new Object[]{
@@ -143,21 +143,21 @@ public class ProgramTrackedEntityAttributeModelIntegrationTests {
 
         ContentValues contentValues = trackedEntityAttributeModel.toContentValues();
 
-        assertThat(contentValues.getAsLong(ProgramTrackedEntityAttributeContract.Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(ProgramTrackedEntityAttributeContract.Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(ProgramTrackedEntityAttributeContract.Columns.CODE)).isEqualTo(CODE);
-        assertThat(contentValues.getAsString(ProgramTrackedEntityAttributeContract.Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(ProgramTrackedEntityAttributeContract.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(ProgramTrackedEntityAttributeContract.Columns.CREATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(ProgramTrackedEntityAttributeContract.Columns.LAST_UPDATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(ProgramTrackedEntityAttributeContract.Columns.SHORT_NAME)).isEqualTo(SHORT_NAME);
-        assertThat(contentValues.getAsString(ProgramTrackedEntityAttributeContract.Columns.DISPLAY_SHORT_NAME)).isEqualTo(DISPLAY_SHORT_NAME);
-        assertThat(contentValues.getAsString(ProgramTrackedEntityAttributeContract.Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
-        assertThat(contentValues.getAsString(ProgramTrackedEntityAttributeContract.Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
-        assertThat(contentValues.getAsBoolean(ProgramTrackedEntityAttributeContract.Columns.MANDATORY)).isEqualTo(MANDATORY);
-        assertThat(contentValues.getAsString(ProgramTrackedEntityAttributeContract.Columns.TRACKED_ENTITY_ATTRIBUTE)).isEqualTo(TRACKED_ENTITY_ATTRIBUTE);
-        assertThat(ValueType.valueOf(contentValues.getAsString(ProgramTrackedEntityAttributeContract.Columns.VALUE_TYPE))).isEqualTo(VALUE_TYPE);
-        assertThat(contentValues.getAsBoolean(ProgramTrackedEntityAttributeContract.Columns.ALLOW_FUTURE_DATES)).isEqualTo(ALLOW_FUTURE_DATES);
-        assertThat(contentValues.getAsBoolean(ProgramTrackedEntityAttributeContract.Columns.DISPLAY_IN_LIST)).isEqualTo(DISPLAY_IN_LIST);
+        assertThat(contentValues.getAsLong(ProgramTrackedEntityAttributeModel.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(ProgramTrackedEntityAttributeModel.Columns.UID)).isEqualTo(UID);
+        assertThat(contentValues.getAsString(ProgramTrackedEntityAttributeModel.Columns.CODE)).isEqualTo(CODE);
+        assertThat(contentValues.getAsString(ProgramTrackedEntityAttributeModel.Columns.NAME)).isEqualTo(NAME);
+        assertThat(contentValues.getAsString(ProgramTrackedEntityAttributeModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
+        assertThat(contentValues.getAsString(ProgramTrackedEntityAttributeModel.Columns.CREATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(ProgramTrackedEntityAttributeModel.Columns.LAST_UPDATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(ProgramTrackedEntityAttributeModel.Columns.SHORT_NAME)).isEqualTo(SHORT_NAME);
+        assertThat(contentValues.getAsString(ProgramTrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME)).isEqualTo(DISPLAY_SHORT_NAME);
+        assertThat(contentValues.getAsString(ProgramTrackedEntityAttributeModel.Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
+        assertThat(contentValues.getAsString(ProgramTrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
+        assertThat(contentValues.getAsBoolean(ProgramTrackedEntityAttributeModel.Columns.MANDATORY)).isEqualTo(MANDATORY);
+        assertThat(contentValues.getAsString(ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE)).isEqualTo(TRACKED_ENTITY_ATTRIBUTE);
+        assertThat(ValueType.valueOf(contentValues.getAsString(ProgramTrackedEntityAttributeModel.Columns.VALUE_TYPE))).isEqualTo(VALUE_TYPE);
+        assertThat(contentValues.getAsBoolean(ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATES)).isEqualTo(ALLOW_FUTURE_DATES);
+        assertThat(contentValues.getAsBoolean(ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST)).isEqualTo(DISPLAY_IN_LIST);
     }
 }

@@ -7,7 +7,6 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-import org.hisp.dhis.android.core.program.ProgramStageSectionContract.Columns;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,14 +36,14 @@ public class ProgramStageSectionStoreIntegrationTest extends AbsStoreTestCase {
     private static final String PROGRAM = "test_program";
 
     private static final String[] PROGRAM_STAGE_SECTION_PROJECTION = {
-            Columns.UID,
-            Columns.CODE,
-            Columns.NAME,
-            Columns.DISPLAY_NAME,
-            Columns.CREATED,
-            Columns.LAST_UPDATED,
-            Columns.SORT_ORDER,
-            Columns.PROGRAM_STAGE
+            ProgramStageSectionModel.Columns.UID,
+            ProgramStageSectionModel.Columns.CODE,
+            ProgramStageSectionModel.Columns.NAME,
+            ProgramStageSectionModel.Columns.DISPLAY_NAME,
+            ProgramStageSectionModel.Columns.CREATED,
+            ProgramStageSectionModel.Columns.LAST_UPDATED,
+            ProgramStageSectionModel.Columns.SORT_ORDER,
+            ProgramStageSectionModel.Columns.PROGRAM_STAGE
     };
 
     private ProgramStageSectionStore programStageSectionStore;
@@ -60,7 +59,7 @@ public class ProgramStageSectionStoreIntegrationTest extends AbsStoreTestCase {
     public void insert_shouldPersistProgramStageSectionInDatabase() throws Exception {
         // inserting necessary foreign key
 
-        ContentValues program = CreateUtils.createProgram(ID, PROGRAM);
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM);
         database().insert(Tables.PROGRAM, null, program);
 
         ContentValues programStage = ProgramStageModelIntegrationTest.create(ID, PROGRAM_STAGE, PROGRAM);

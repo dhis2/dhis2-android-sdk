@@ -14,38 +14,39 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 public class ProgramStoreImpl implements ProgramStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.PROGRAM + " (" +
-            ProgramContract.Columns.UID + ", " +
-            ProgramContract.Columns.CODE + ", " +
-            ProgramContract.Columns.NAME + ", " +
-            ProgramContract.Columns.DISPLAY_NAME + ", " +
-            ProgramContract.Columns.CREATED + ", " +
-            ProgramContract.Columns.LAST_UPDATED + ", " +
-            ProgramContract.Columns.SHORT_NAME + ", " +
-            ProgramContract.Columns.DISPLAY_SHORT_NAME + ", " +
-            ProgramContract.Columns.DESCRIPTION + ", " +
-            ProgramContract.Columns.DISPLAY_DESCRIPTION + ", " +
-            ProgramContract.Columns.VERSION + ", " +
-            ProgramContract.Columns.ONLY_ENROLL_ONCE + ", " +
-            ProgramContract.Columns.ENROLLMENT_DATE_LABEL + ", " +
-            ProgramContract.Columns.DISPLAY_INCIDENT_DATE + ", " +
-            ProgramContract.Columns.INCIDENT_DATE_LABEL + ", " +
-            ProgramContract.Columns.REGISTRATION + ", " +
-            ProgramContract.Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE + ", " +
-            ProgramContract.Columns.DATA_ENTRY_METHOD + ", " +
-            ProgramContract.Columns.IGNORE_OVERDUE_EVENTS + ", " +
-            ProgramContract.Columns.RELATIONSHIP_FROM_A + ", " +
-            ProgramContract.Columns.SELECT_INCIDENT_DATES_IN_FUTURE + ", " +
-            ProgramContract.Columns.CAPTURE_COORDINATES + ", " +
-            ProgramContract.Columns.USE_FIRST_STAGE_DURING_REGISTRATION + ", " +
-            ProgramContract.Columns.DISPLAY_FRONT_PAGE_LIST + ", " +
-            ProgramContract.Columns.PROGRAM_TYPE + ", " +
-            ProgramContract.Columns.RELATIONSHIP_TYPE + ", " +
-            ProgramContract.Columns.RELATIONSHIP_TEXT + ", " +
-            ProgramContract.Columns.RELATED_PROGRAM + ") " +
+            ProgramModel.Columns.UID + ", " +
+            ProgramModel.Columns.CODE + ", " +
+            ProgramModel.Columns.NAME + ", " +
+            ProgramModel.Columns.DISPLAY_NAME + ", " +
+            ProgramModel.Columns.CREATED + ", " +
+            ProgramModel.Columns.LAST_UPDATED + ", " +
+            ProgramModel.Columns.SHORT_NAME + ", " +
+            ProgramModel.Columns.DISPLAY_SHORT_NAME + ", " +
+            ProgramModel.Columns.DESCRIPTION + ", " +
+            ProgramModel.Columns.DISPLAY_DESCRIPTION + ", " +
+            ProgramModel.Columns.VERSION + ", " +
+            ProgramModel.Columns.ONLY_ENROLL_ONCE + ", " +
+            ProgramModel.Columns.ENROLLMENT_DATE_LABEL + ", " +
+            ProgramModel.Columns.DISPLAY_INCIDENT_DATE + ", " +
+            ProgramModel.Columns.INCIDENT_DATE_LABEL + ", " +
+            ProgramModel.Columns.REGISTRATION + ", " +
+            ProgramModel.Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE + ", " +
+            ProgramModel.Columns.DATA_ENTRY_METHOD + ", " +
+            ProgramModel.Columns.IGNORE_OVERDUE_EVENTS + ", " +
+            ProgramModel.Columns.RELATIONSHIP_FROM_A + ", " +
+            ProgramModel.Columns.SELECT_INCIDENT_DATES_IN_FUTURE + ", " +
+            ProgramModel.Columns.CAPTURE_COORDINATES + ", " +
+            ProgramModel.Columns.USE_FIRST_STAGE_DURING_REGISTRATION + ", " +
+            ProgramModel.Columns.DISPLAY_FRONT_PAGE_LIST + ", " +
+            ProgramModel.Columns.PROGRAM_TYPE + ", " +
+            ProgramModel.Columns.RELATIONSHIP_TYPE + ", " +
+            ProgramModel.Columns.RELATIONSHIP_TEXT + ", " +
+            ProgramModel.Columns.RELATED_PROGRAM + ", " +
+            ProgramModel.Columns.TRACKED_ENTITY + ") " +
             "VALUES (" +
             "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
             "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
-            "?, ?, ?, ?, ?, ?, ?, ?);";
+            "?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private final SQLiteStatement sqLiteStatement;
 
@@ -82,7 +83,10 @@ public class ProgramStoreImpl implements ProgramStore {
             @NonNull ProgramType programType,
             @Nullable String relationshipType,
             @Nullable String relationshipText,
-            @Nullable String relatedProgram
+            @Nullable String relatedProgram,
+            @Nullable String trackedEntity
+            //TODO: add category combo when implemented.
+//            @NonNull CategoryCombo categoryCombo
     ) {
 
         sqLiteStatement.clearBindings();
@@ -115,6 +119,7 @@ public class ProgramStoreImpl implements ProgramStore {
         sqLiteBind(sqLiteStatement, 26, relationshipType);
         sqLiteBind(sqLiteStatement, 27, relationshipText);
         sqLiteBind(sqLiteStatement, 28, relatedProgram);
+        sqLiteBind(sqLiteStatement, 29, trackedEntity);
 
         return sqLiteStatement.executeInsert();
     }

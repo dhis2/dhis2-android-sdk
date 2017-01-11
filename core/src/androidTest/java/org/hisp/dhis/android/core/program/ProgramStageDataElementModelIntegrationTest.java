@@ -5,7 +5,6 @@ import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.program.ProgramStageDataElementContract.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,20 +33,20 @@ public class ProgramStageDataElementModelIntegrationTest {
 
     public static ContentValues create(long id, String uid) {
         ContentValues programStageDataElement = new ContentValues();
-        programStageDataElement.put(Columns.ID, id);
-        programStageDataElement.put(Columns.UID, uid);
-        programStageDataElement.put(Columns.CODE, CODE);
-        programStageDataElement.put(Columns.NAME, NAME);
-        programStageDataElement.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
-        programStageDataElement.put(Columns.CREATED, DATE);
-        programStageDataElement.put(Columns.LAST_UPDATED, DATE);
-        programStageDataElement.put(Columns.DISPLAY_IN_REPORTS, DISPLAY_IN_REPORTS);
-        programStageDataElement.put(Columns.COMPULSORY, COMPULSORY);
-        programStageDataElement.put(Columns.ALLOW_PROVIDED_ELSEWHERE, ALLOW_PROVIDED_ELSEWHERE);
-        programStageDataElement.put(Columns.SORT_ORDER, SORT_ORDER);
-        programStageDataElement.put(Columns.ALLOW_FUTURE_DATE, ALLOW_FUTURE_DATE);
-        programStageDataElement.put(Columns.DATA_ELEMENT, DATA_ELEMENT);
-        programStageDataElement.put(Columns.PROGRAM_STAGE_SECTION, PROGRAM_STAGE_SECTION);
+        programStageDataElement.put(ProgramStageDataElementModel.Columns.ID, id);
+        programStageDataElement.put(ProgramStageDataElementModel.Columns.UID, uid);
+        programStageDataElement.put(ProgramStageDataElementModel.Columns.CODE, CODE);
+        programStageDataElement.put(ProgramStageDataElementModel.Columns.NAME, NAME);
+        programStageDataElement.put(ProgramStageDataElementModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
+        programStageDataElement.put(ProgramStageDataElementModel.Columns.CREATED, DATE);
+        programStageDataElement.put(ProgramStageDataElementModel.Columns.LAST_UPDATED, DATE);
+        programStageDataElement.put(ProgramStageDataElementModel.Columns.DISPLAY_IN_REPORTS, DISPLAY_IN_REPORTS);
+        programStageDataElement.put(ProgramStageDataElementModel.Columns.COMPULSORY, COMPULSORY);
+        programStageDataElement.put(ProgramStageDataElementModel.Columns.ALLOW_PROVIDED_ELSEWHERE, ALLOW_PROVIDED_ELSEWHERE);
+        programStageDataElement.put(ProgramStageDataElementModel.Columns.SORT_ORDER, SORT_ORDER);
+        programStageDataElement.put(ProgramStageDataElementModel.Columns.ALLOW_FUTURE_DATE, ALLOW_FUTURE_DATE);
+        programStageDataElement.put(ProgramStageDataElementModel.Columns.DATA_ELEMENT, DATA_ELEMENT);
+        programStageDataElement.put(ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION, PROGRAM_STAGE_SECTION);
 
         return programStageDataElement;
     }
@@ -55,20 +54,20 @@ public class ProgramStageDataElementModelIntegrationTest {
     @Test
     public void create_shouldConvertToModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                Columns.ID,
-                Columns.UID,
-                Columns.CODE,
-                Columns.NAME,
-                Columns.DISPLAY_NAME,
-                Columns.CREATED,
-                Columns.LAST_UPDATED,
-                Columns.DISPLAY_IN_REPORTS,
-                Columns.COMPULSORY,
-                Columns.ALLOW_PROVIDED_ELSEWHERE,
-                Columns.SORT_ORDER,
-                Columns.ALLOW_FUTURE_DATE,
-                Columns.DATA_ELEMENT,
-                Columns.PROGRAM_STAGE_SECTION
+                ProgramStageDataElementModel.Columns.ID,
+                ProgramStageDataElementModel.Columns.UID,
+                ProgramStageDataElementModel.Columns.CODE,
+                ProgramStageDataElementModel.Columns.NAME,
+                ProgramStageDataElementModel.Columns.DISPLAY_NAME,
+                ProgramStageDataElementModel.Columns.CREATED,
+                ProgramStageDataElementModel.Columns.LAST_UPDATED,
+                ProgramStageDataElementModel.Columns.DISPLAY_IN_REPORTS,
+                ProgramStageDataElementModel.Columns.COMPULSORY,
+                ProgramStageDataElementModel.Columns.ALLOW_PROVIDED_ELSEWHERE,
+                ProgramStageDataElementModel.Columns.SORT_ORDER,
+                ProgramStageDataElementModel.Columns.ALLOW_FUTURE_DATE,
+                ProgramStageDataElementModel.Columns.DATA_ELEMENT,
+                ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION
         });
 
         matrixCursor.addRow(new Object[]{
@@ -122,20 +121,20 @@ public class ProgramStageDataElementModelIntegrationTest {
 
         ContentValues contentValues = programStageDataElementModel.toContentValues();
 
-        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(Columns.CODE)).isEqualTo(CODE);
-        assertThat(contentValues.getAsString(Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsBoolean(Columns.DISPLAY_IN_REPORTS)).isTrue();
-        assertThat(contentValues.getAsBoolean(Columns.COMPULSORY)).isFalse();
-        assertThat(contentValues.getAsBoolean(Columns.ALLOW_PROVIDED_ELSEWHERE)).isFalse();
-        assertThat(contentValues.getAsInteger(Columns.SORT_ORDER)).isEqualTo(SORT_ORDER);
-        assertThat(contentValues.getAsBoolean(Columns.ALLOW_FUTURE_DATE)).isTrue();
-        assertThat(contentValues.getAsString(Columns.DATA_ELEMENT)).isEqualTo(DATA_ELEMENT);
-        assertThat(contentValues.getAsString(Columns.PROGRAM_STAGE_SECTION)).isEqualTo(PROGRAM_STAGE_SECTION);
+        assertThat(contentValues.getAsLong(ProgramStageDataElementModel.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(ProgramStageDataElementModel.Columns.UID)).isEqualTo(UID);
+        assertThat(contentValues.getAsString(ProgramStageDataElementModel.Columns.CODE)).isEqualTo(CODE);
+        assertThat(contentValues.getAsString(ProgramStageDataElementModel.Columns.NAME)).isEqualTo(NAME);
+        assertThat(contentValues.getAsString(ProgramStageDataElementModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
+        assertThat(contentValues.getAsString(ProgramStageDataElementModel.Columns.CREATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(ProgramStageDataElementModel.Columns.LAST_UPDATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsBoolean(ProgramStageDataElementModel.Columns.DISPLAY_IN_REPORTS)).isTrue();
+        assertThat(contentValues.getAsBoolean(ProgramStageDataElementModel.Columns.COMPULSORY)).isFalse();
+        assertThat(contentValues.getAsBoolean(ProgramStageDataElementModel.Columns.ALLOW_PROVIDED_ELSEWHERE)).isFalse();
+        assertThat(contentValues.getAsInteger(ProgramStageDataElementModel.Columns.SORT_ORDER)).isEqualTo(SORT_ORDER);
+        assertThat(contentValues.getAsBoolean(ProgramStageDataElementModel.Columns.ALLOW_FUTURE_DATE)).isTrue();
+        assertThat(contentValues.getAsString(ProgramStageDataElementModel.Columns.DATA_ELEMENT)).isEqualTo(DATA_ELEMENT);
+        assertThat(contentValues.getAsString(ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION)).isEqualTo(PROGRAM_STAGE_SECTION);
     }
 
 }

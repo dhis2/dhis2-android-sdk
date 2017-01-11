@@ -48,33 +48,33 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 @RunWith(AndroidJUnit4.class)
 public class TrackedEntityStoreIntegrationTests extends AbsStoreTestCase {
     public static final String[] TRACKED_ENTITY_PROJECTION = {
-            TrackedEntityContract.Columns.UID,
-            TrackedEntityContract.Columns.CODE,
-            TrackedEntityContract.Columns.NAME,
-            TrackedEntityContract.Columns.DISPLAY_NAME,
-            TrackedEntityContract.Columns.CREATED,
-            TrackedEntityContract.Columns.LAST_UPDATED,
-            TrackedEntityContract.Columns.SHORT_NAME,
-            TrackedEntityContract.Columns.DISPLAY_SHORT_NAME,
-            TrackedEntityContract.Columns.DESCRIPTION,
-            TrackedEntityContract.Columns.DISPLAY_DESCRIPTION,
+            TrackedEntityModel.Columns.UID,
+            TrackedEntityModel.Columns.CODE,
+            TrackedEntityModel.Columns.NAME,
+            TrackedEntityModel.Columns.DISPLAY_NAME,
+            TrackedEntityModel.Columns.CREATED,
+            TrackedEntityModel.Columns.LAST_UPDATED,
+            TrackedEntityModel.Columns.SHORT_NAME,
+            TrackedEntityModel.Columns.DISPLAY_SHORT_NAME,
+            TrackedEntityModel.Columns.DESCRIPTION,
+            TrackedEntityModel.Columns.DISPLAY_DESCRIPTION,
     };
 
     private TrackedEntityStore trackedEntityStore;
 
     public static ContentValues create(long id, String uid) {
         ContentValues trackedEntity = new ContentValues();
-        trackedEntity.put(TrackedEntityContract.Columns.ID, id);
-        trackedEntity.put(TrackedEntityContract.Columns.UID, uid);
-        trackedEntity.put(TrackedEntityContract.Columns.CODE, "test_code");
-        trackedEntity.put(TrackedEntityContract.Columns.NAME, "test_name");
-        trackedEntity.put(TrackedEntityContract.Columns.DISPLAY_NAME, "test_display_name");
-        trackedEntity.put(TrackedEntityContract.Columns.CREATED, "test_created");
-        trackedEntity.put(TrackedEntityContract.Columns.LAST_UPDATED, "test_last_updated");
-        trackedEntity.put(TrackedEntityContract.Columns.SHORT_NAME, "test_short_name");
-        trackedEntity.put(TrackedEntityContract.Columns.DISPLAY_SHORT_NAME, "test_display_short_name");
-        trackedEntity.put(TrackedEntityContract.Columns.DESCRIPTION, "test_description");
-        trackedEntity.put(TrackedEntityContract.Columns.DISPLAY_DESCRIPTION, "test_display_description");
+        trackedEntity.put(TrackedEntityModel.Columns.ID, id);
+        trackedEntity.put(TrackedEntityModel.Columns.UID, uid);
+        trackedEntity.put(TrackedEntityModel.Columns.CODE, "test_code");
+        trackedEntity.put(TrackedEntityModel.Columns.NAME, "test_name");
+        trackedEntity.put(TrackedEntityModel.Columns.DISPLAY_NAME, "test_display_name");
+        trackedEntity.put(TrackedEntityModel.Columns.CREATED, "test_created");
+        trackedEntity.put(TrackedEntityModel.Columns.LAST_UPDATED, "test_last_updated");
+        trackedEntity.put(TrackedEntityModel.Columns.SHORT_NAME, "test_short_name");
+        trackedEntity.put(TrackedEntityModel.Columns.DISPLAY_SHORT_NAME, "test_display_short_name");
+        trackedEntity.put(TrackedEntityModel.Columns.DESCRIPTION, "test_description");
+        trackedEntity.put(TrackedEntityModel.Columns.DISPLAY_DESCRIPTION, "test_display_description");
         return trackedEntity;
     }
 

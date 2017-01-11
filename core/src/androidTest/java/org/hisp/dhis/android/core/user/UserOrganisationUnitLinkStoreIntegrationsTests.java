@@ -6,7 +6,6 @@ import android.database.Cursor;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreIntegrationTests;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkContract.Columns;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,7 +16,9 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 public class UserOrganisationUnitLinkStoreIntegrationsTests extends AbsStoreTestCase {
     private static final String[] USER_ORGANISATION_UNITS_PROJECTION = {
-            Columns.USER, Columns.ORGANISATION_UNIT, Columns.ORGANISATION_UNIT_SCOPE
+            UserOrganisationUnitLinkModel.Columns.USER,
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT,
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE
     };
 
     private UserOrganisationUnitLinkStore organisationUnitLinkStore;
@@ -64,9 +65,9 @@ public class UserOrganisationUnitLinkStoreIntegrationsTests extends AbsStoreTest
         ContentValues organisationUnit = OrganisationUnitStoreIntegrationTests
                 .create(1L, "test_organisation_unit_uid");
         ContentValues userOrganisationUnitLink = new ContentValues();
-        userOrganisationUnitLink.put(Columns.USER, "test_user_uid");
-        userOrganisationUnitLink.put(Columns.ORGANISATION_UNIT, "test_organisation_unit_uid");
-        userOrganisationUnitLink.put(Columns.ORGANISATION_UNIT_SCOPE, "test_organisation_unit_scope");
+        userOrganisationUnitLink.put(UserOrganisationUnitLinkModel.Columns.USER, "test_user_uid");
+        userOrganisationUnitLink.put(UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT, "test_organisation_unit_uid");
+        userOrganisationUnitLink.put(UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE, "test_organisation_unit_scope");
 
         database().insert(DbOpenHelper.Tables.USER, null, user);
         database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);

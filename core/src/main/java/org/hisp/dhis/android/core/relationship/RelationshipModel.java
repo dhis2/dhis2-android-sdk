@@ -13,6 +13,13 @@ import org.hisp.dhis.android.core.common.BaseModel;
 @AutoValue
 public abstract class RelationshipModel extends BaseModel {
 
+    public interface Columns extends BaseModel.Columns {
+
+        String TRACKED_ENTITY_INSTANCE_A = "trackedEntityInstanceA";
+        String TRACKED_ENTITY_INSTANCE_B = "trackedEntityInstanceB";
+        String RELATIONSHIP_TYPE = "relationshipType";
+    }
+
     public static RelationshipModel create(Cursor cursor) {
         return AutoValue_RelationshipModel.createFromCursor(cursor);
     }
@@ -25,15 +32,15 @@ public abstract class RelationshipModel extends BaseModel {
     public abstract ContentValues toContentValues();
 
     @Nullable
-    @ColumnName(RelationshipContract.Columns.TRACKED_ENTITY_INSTANCE_A)
+    @ColumnName(Columns.TRACKED_ENTITY_INSTANCE_A)
     public abstract String trackedEntityInstanceA();
 
     @Nullable
-    @ColumnName(RelationshipContract.Columns.TRACKED_ENTITY_INSTANCE_B)
+    @ColumnName(Columns.TRACKED_ENTITY_INSTANCE_B)
     public abstract String trackedEntityInstanceB();
 
     @Nullable
-    @ColumnName(RelationshipContract.Columns.RELATIONSHIP_TYPE)
+    @ColumnName(Columns.RELATIONSHIP_TYPE)
     public abstract String relationshipType();
 
     @AutoValue.Builder

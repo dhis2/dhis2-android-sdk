@@ -30,39 +30,57 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.data.api.Field;
+
+import java.util.Date;
 
 // TODO: Tests
 @AutoValue
-@JsonDeserialize(builder = AutoValue_RelationshipType.Builder.class)
 public abstract class RelationshipType extends BaseIdentifiableObject {
-    private static final String JSON_PROPERTY_B_TO_A = "bIsToA";
-    private static final String JSON_PROPERTY_A_TO_B = "aIsToB";
+    private static final String B_TO_A = "bIsToA";
+    private static final String A_TO_B = "aIsToB";
+
+    public static final Field<RelationshipType, String> uid = Field.create(UID);
+    public static final Field<RelationshipType, String> code = Field.create(CODE);
+    public static final Field<RelationshipType, String> name = Field.create(NAME);
+    public static final Field<RelationshipType, String> displayName = Field.create(DISPLAY_NAME);
+    public static final Field<RelationshipType, String> created = Field.create(CREATED);
+    public static final Field<RelationshipType, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<RelationshipType, String> bIsToA = Field.create(B_TO_A);
+    public static final Field<RelationshipType, String> aIsToB = Field.create(A_TO_B);
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_B_TO_A)
+    @JsonProperty(B_TO_A)
     public abstract String bIsToA();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_A_TO_B)
+    @JsonProperty(A_TO_B)
     public abstract String aIsToB();
 
-    public static Builder builder() {
-        return new AutoValue_RelationshipType.Builder();
-    }
+    @JsonCreator
+    public static RelationshipType create(
+            @JsonProperty(UID) String uid,
+            @JsonProperty(CODE) String code,
+            @JsonProperty(NAME) String name,
+            @JsonProperty(DISPLAY_NAME) String displayName,
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(B_TO_A) String bIsToA,
+            @JsonProperty(A_TO_B) String aIsToB) {
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        @JsonProperty(JSON_PROPERTY_B_TO_A)
-        public abstract Builder bIsToA(@Nullable String bIsToA);
-
-        @JsonProperty(JSON_PROPERTY_A_TO_B)
-        public abstract Builder aIsToB(@Nullable String aIsToB);
-
-        public abstract RelationshipType build();
+        return new AutoValue_RelationshipType(
+                uid,
+                code,
+                name,
+                displayName,
+                created,
+                lastUpdated,
+                bIsToA,
+                aIsToB);
     }
 }

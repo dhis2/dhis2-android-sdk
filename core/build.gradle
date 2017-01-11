@@ -59,6 +59,12 @@ android {
         // Fail early.
         abortOnError true
     }
+
+    buildTypes {
+        debug {
+            testCoverageEnabled = true
+        }
+    }
 }
 
 // Check if the build requires dex count, if yes analyze dex for amount of methods

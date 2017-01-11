@@ -11,8 +11,8 @@ import java.util.List;
 
 public class ConfigurationStoreImpl implements ConfigurationStore {
     private static final String PROJECTION[] = {
-            ConfigurationContract.Columns.ID,
-            ConfigurationContract.Columns.SERVER_URL
+            ConfigurationModel.Columns.ID,
+            ConfigurationModel.Columns.SERVER_URL
     };
 
     private final SQLiteDatabase sqLiteDatabase;

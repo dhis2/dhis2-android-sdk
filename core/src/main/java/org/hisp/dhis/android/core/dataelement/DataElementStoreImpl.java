@@ -5,10 +5,8 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-import org.hisp.dhis.android.core.dataelement.DataElementContract.Columns;
 
 import java.util.Date;
 
@@ -17,25 +15,25 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 public class DataElementStoreImpl implements DataElementStore {
 
     public static final String INSERT_STATEMENT = "INSERT INTO " + Tables.DATA_ELEMENT + " (" +
-            Columns.UID + ", " +
-            Columns.CODE + ", " +
-            Columns.NAME + ", " +
-            Columns.DISPLAY_NAME + ", " +
-            Columns.CREATED + ", " +
-            Columns.LAST_UPDATED + ", " +
-            Columns.SHORT_NAME + ", " +
-            Columns.DISPLAY_SHORT_NAME + ", " +
-            Columns.DESCRIPTION + ", " +
-            Columns.DISPLAY_DESCRIPTION + ", " +
-            Columns.VALUE_TYPE + ", " +
-            Columns.ZERO_IS_SIGNIFICANT + ", " +
-            Columns.AGGREGATION_OPERATOR + ", " +
-            Columns.FORM_NAME + ", " +
-            Columns.NUMBER_TYPE + ", " +
-            Columns.DOMAIN_TYPE + ", " +
-            Columns.DIMENSION + ", " +
-            Columns.DISPLAY_FORM_NAME + ", " +
-            Columns.OPTION_SET + ") " +
+            DataElementModel.Columns.UID + ", " +
+            DataElementModel.Columns.CODE + ", " +
+            DataElementModel.Columns.NAME + ", " +
+            DataElementModel.Columns.DISPLAY_NAME + ", " +
+            DataElementModel.Columns.CREATED + ", " +
+            DataElementModel.Columns.LAST_UPDATED + ", " +
+            DataElementModel.Columns.SHORT_NAME + ", " +
+            DataElementModel.Columns.DISPLAY_SHORT_NAME + ", " +
+            DataElementModel.Columns.DESCRIPTION + ", " +
+            DataElementModel.Columns.DISPLAY_DESCRIPTION + ", " +
+            DataElementModel.Columns.VALUE_TYPE + ", " +
+            DataElementModel.Columns.ZERO_IS_SIGNIFICANT + ", " +
+            DataElementModel.Columns.AGGREGATION_OPERATOR + ", " +
+            DataElementModel.Columns.FORM_NAME + ", " +
+            DataElementModel.Columns.NUMBER_TYPE + ", " +
+            DataElementModel.Columns.DOMAIN_TYPE + ", " +
+            DataElementModel.Columns.DIMENSION + ", " +
+            DataElementModel.Columns.DISPLAY_FORM_NAME + ", " +
+            DataElementModel.Columns.OPTION_SET + ") " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private final SQLiteStatement sqLiteStatement;

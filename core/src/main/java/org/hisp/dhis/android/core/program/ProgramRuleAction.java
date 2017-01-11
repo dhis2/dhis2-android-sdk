@@ -30,96 +30,126 @@ package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
+import java.util.Date;
+
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramRuleAction.Builder.class)
 public abstract class ProgramRuleAction extends BaseIdentifiableObject {
-    private static final String JSON_PROPERTY_DATA = "data";
-    private static final String JSON_PROPERTY_CONTENT = "content";
-    private static final String JSON_PROPERTY_LOCATION = "location";
-    private static final String JSON_PROPERTY_ATTRIBUTE = "trackedEntityAttribute";
-    private static final String JSON_PROPERTY_PROGRAM_INDICATOR = "programIndicator";
-    private static final String JSON_PROPERTY_PROGRAM_STAGE_SECTION = "programStageSection";
-    private static final String JSON_PROPERTY_PROGRAM_RULE_ACTION_TYPE = "programRuleActionType";
-    private static final String JSON_PROPERTY_PROGRAM_STAGE = "programStage";
-    private static final String JSON_PROPERTY_DATA_ELEMENT = "dataElement";
+    private static final String DATA = "data";
+    private static final String CONTENT = "content";
+    private static final String LOCATION = "location";
+    private static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+    private static final String PROGRAM_INDICATOR = "programIndicator";
+    private static final String PROGRAM_STAGE_SECTION = "programStageSection";
+    private static final String PROGRAM_RULE_ACTION_TYPE = "programRuleActionType";
+    private static final String PROGRAM_RULE = "programRule";
+    private static final String PROGRAM_STAGE = "programStage";
+    private static final String DATA_ELEMENT = "dataElement";
+
+    public static final Field<ProgramRuleAction, String> uid = Field.create(UID);
+    public static final Field<ProgramRuleAction, String> code = Field.create(CODE);
+    public static final Field<ProgramRuleAction, String> name = Field.create(NAME);
+    public static final Field<ProgramRuleAction, String> displayName = Field.create(DISPLAY_NAME);
+    public static final Field<ProgramRuleAction, String> created = Field.create(CREATED);
+    public static final Field<ProgramRuleAction, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<ProgramRuleAction, String> data = Field.create(DATA);
+    public static final Field<ProgramRuleAction, String> content = Field.create(CONTENT);
+    public static final Field<ProgramRuleAction, String> location = Field.create(LOCATION);
+
+    /**
+     * Program rule uid is only exposed in the api, so we cannot set this as a nested field
+     */
+    public static final Field<ProgramRuleAction, String> programRule = Field.create(PROGRAM_RULE);
+
+    public static final NestedField<ProgramRuleAction, TrackedEntityAttribute> trackedEntityAttribute =
+            NestedField.create(TRACKED_ENTITY_ATTRIBUTE);
+
+    public static final NestedField<ProgramRuleAction, ProgramIndicator> programIndicator =
+            NestedField.create(PROGRAM_INDICATOR);
+
+    public static final NestedField<ProgramRuleAction, ProgramStageSection> programStageSection =
+            NestedField.create(PROGRAM_STAGE_SECTION);
+
+    public static final Field<ProgramRuleAction, ProgramRuleActionType> programRuleActionType =
+            Field.create(PROGRAM_RULE_ACTION_TYPE);
+
+    public static final NestedField<ProgramRuleAction, ProgramStage> programStage =
+            NestedField.create(PROGRAM_STAGE);
+
+    public static final NestedField<ProgramRuleAction, DataElement> dataElement =
+            NestedField.create(DATA_ELEMENT);
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_DATA)
+    @JsonProperty(DATA)
     public abstract String data();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_CONTENT)
+    @JsonProperty(CONTENT)
     public abstract String content();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_LOCATION)
+    @JsonProperty(LOCATION)
     public abstract String location();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_ATTRIBUTE)
+    @JsonProperty(TRACKED_ENTITY_ATTRIBUTE)
     public abstract TrackedEntityAttribute trackedEntityAttribute();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_PROGRAM_INDICATOR)
+    @JsonProperty(PROGRAM_INDICATOR)
     public abstract ProgramIndicator programIndicator();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE_SECTION)
+    @JsonProperty(PROGRAM_STAGE_SECTION)
     public abstract ProgramStageSection programStageSection();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_PROGRAM_RULE_ACTION_TYPE)
+    @JsonProperty(PROGRAM_RULE_ACTION_TYPE)
     public abstract ProgramRuleActionType programRuleActionType();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE)
+    @JsonProperty(PROGRAM_STAGE)
     public abstract ProgramStage programStage();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_DATA_ELEMENT)
+    @JsonProperty(DATA_ELEMENT)
     public abstract DataElement dataElement();
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    @Nullable
+    @JsonProperty(PROGRAM_RULE)
+    public abstract ProgramRule programRule();
 
-        @JsonProperty(JSON_PROPERTY_DATA)
-        public abstract Builder data(@Nullable String data);
-
-        @JsonProperty(JSON_PROPERTY_CONTENT)
-        public abstract Builder content(@Nullable String content);
-
-        @JsonProperty(JSON_PROPERTY_LOCATION)
-        public abstract Builder location(@Nullable String location);
-
-        @JsonProperty(JSON_PROPERTY_ATTRIBUTE)
-        public abstract Builder trackedEntityAttribute(
-                @Nullable TrackedEntityAttribute trackedEntityAttribute);
-
-        @JsonProperty(JSON_PROPERTY_PROGRAM_INDICATOR)
-        public abstract Builder programIndicator(@Nullable ProgramIndicator programIndicator);
-
-        @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE_SECTION)
-        public abstract Builder programStageSection(
-                @Nullable ProgramStageSection programStageSection);
-
-        @JsonProperty(JSON_PROPERTY_PROGRAM_RULE_ACTION_TYPE)
-        public abstract Builder programRuleActionType(
-                @Nullable ProgramRuleActionType programRuleActionType);
-
-        @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE)
-        public abstract Builder programStage(@Nullable ProgramStage programStage);
-
-        @JsonProperty(JSON_PROPERTY_DATA_ELEMENT)
-        public abstract Builder dataElement(@Nullable DataElement dataElement);
-
-        public abstract ProgramRuleAction build();
+    @JsonCreator
+    public static ProgramRuleAction create(
+            @JsonProperty(UID) String uid,
+            @JsonProperty(CODE) String code,
+            @JsonProperty(NAME) String name,
+            @JsonProperty(DISPLAY_NAME) String displayName,
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(DATA) String data,
+            @JsonProperty(CONTENT) String content,
+            @JsonProperty(LOCATION) String location,
+            @JsonProperty(TRACKED_ENTITY_ATTRIBUTE) TrackedEntityAttribute trackedEntityAttribute,
+            @JsonProperty(PROGRAM_INDICATOR) ProgramIndicator programIndicator,
+            @JsonProperty(PROGRAM_STAGE_SECTION) ProgramStageSection programStageSection,
+            @JsonProperty(PROGRAM_RULE_ACTION_TYPE) ProgramRuleActionType programRuleActionType,
+            @JsonProperty(PROGRAM_STAGE) ProgramStage programStage,
+            @JsonProperty(DATA_ELEMENT) DataElement dataElement,
+            @JsonProperty(PROGRAM_RULE) ProgramRule programRule) {
+        return new AutoValue_ProgramRuleAction(
+                uid, code, name, displayName, created, lastUpdated, data, content, location,
+                trackedEntityAttribute, programIndicator, programStageSection, programRuleActionType,
+                programStage, dataElement, programRule
+        );
     }
 }

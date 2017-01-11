@@ -8,7 +8,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.dataelement.DataElementModelIntegrationTest;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableContract.Columns;
+import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityAttributeUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,18 +41,18 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
             ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM;
 
     private static final String[] PROGRAM_RULE_VARIABLE_PROJECTION = {
-            Columns.UID,
-            Columns.CODE,
-            Columns.NAME,
-            Columns.DISPLAY_NAME,
-            Columns.CREATED,
-            Columns.LAST_UPDATED,
-            Columns.USE_CODE_FOR_OPTION_SET,
-            Columns.PROGRAM,
-            Columns.PROGRAM_STAGE,
-            Columns.DATA_ELEMENT,
-            Columns.TRACKED_ENTITY_ATTRIBUTE,
-            Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
+            ProgramRuleVariableModel.Columns.UID,
+            ProgramRuleVariableModel.Columns.CODE,
+            ProgramRuleVariableModel.Columns.NAME,
+            ProgramRuleVariableModel.Columns.DISPLAY_NAME,
+            ProgramRuleVariableModel.Columns.CREATED,
+            ProgramRuleVariableModel.Columns.LAST_UPDATED,
+            ProgramRuleVariableModel.Columns.USE_CODE_FOR_OPTION_SET,
+            ProgramRuleVariableModel.Columns.PROGRAM,
+            ProgramRuleVariableModel.Columns.PROGRAM_STAGE,
+            ProgramRuleVariableModel.Columns.DATA_ELEMENT,
+            ProgramRuleVariableModel.Columns.TRACKED_ENTITY_ATTRIBUTE,
+            ProgramRuleVariableModel.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
     };
 
     private ProgramRuleVariableModelStore programRuleVariableModelStore;
@@ -68,7 +68,7 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
     public void insert_shouldPersistProgramRuleVariableInDatabase() throws Exception {
         // inserting necessary foreign key
 
-        ContentValues program = CreateUtils.createProgram(ID, PROGRAM);
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM);
         database().insert(Tables.PROGRAM, null, program);
 
         ContentValues programStage = ProgramStageModelIntegrationTest.create(ID, PROGRAM_STAGE, PROGRAM);
@@ -77,7 +77,7 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
         ContentValues dataElement = DataElementModelIntegrationTest.createWithoutOptionSet(ID, DATA_ELEMENT);
         database().insert(Tables.DATA_ELEMENT, null, dataElement);
 
-        ContentValues trackedEntityAttribute = CreateUtils.createTrackedEntityAttributeWithoutOptionSet(ID, TRACKED_ENTITY_ATTRIBUTE);
+        ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.createWithoutOptionSet(ID, TRACKED_ENTITY_ATTRIBUTE);
         database().insert(Tables.TRACKED_ENTITY_ATTRIBUTE, null, trackedEntityAttribute);
 
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
@@ -123,7 +123,7 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
 
     @Test
     public void insert_shouldPersistProgramRuleVariableInDatabaseWithProgramForeignKey() throws Exception {
-        ContentValues program = CreateUtils.createProgram(ID, PROGRAM);
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM);
         database().insert(Tables.PROGRAM, null, program);
 
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);

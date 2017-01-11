@@ -9,10 +9,12 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 
-import static org.hisp.dhis.android.core.configuration.ConfigurationContract.Columns;
-
 @AutoValue
 public abstract class ConfigurationModel extends BaseModel {
+
+    public interface Columns extends BaseModel.Columns {
+        String SERVER_URL = "serverUrl";
+    }
 
     @NonNull
     @ColumnName(Columns.SERVER_URL)

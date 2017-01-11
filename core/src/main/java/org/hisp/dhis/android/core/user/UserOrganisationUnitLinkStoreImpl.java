@@ -10,9 +10,9 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLinkStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + DbOpenHelper.Tables.USER_ORGANISATION_UNIT + " (" +
-            UserOrganisationUnitLinkContract.Columns.USER + ", " +
-            UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT + ", " +
-            UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT_SCOPE + ") " +
+            UserOrganisationUnitLinkModel.Columns.USER + ", " +
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ", " +
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + ") " +
             "VALUES (?, ?, ?);";
 
     private final SQLiteDatabase sqLiteDatabase;

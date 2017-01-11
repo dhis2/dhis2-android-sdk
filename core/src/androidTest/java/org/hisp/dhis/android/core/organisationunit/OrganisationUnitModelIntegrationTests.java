@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract.Columns;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,22 +34,22 @@ public class OrganisationUnitModelIntegrationTests {
     @Test
     public void create_shouldConvertToModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                Columns.ID,
-                Columns.UID,
-                Columns.CODE,
-                Columns.NAME,
-                Columns.DISPLAY_NAME,
-                Columns.CREATED,
-                Columns.LAST_UPDATED,
-                Columns.SHORT_NAME,
-                Columns.DISPLAY_SHORT_NAME,
-                Columns.DESCRIPTION,
-                Columns.DISPLAY_DESCRIPTION,
-                Columns.PATH,
-                Columns.OPENING_DATE,
-                Columns.CLOSED_DATE,
-                Columns.PARENT,
-                Columns.LEVEL,
+                OrganisationUnitModel.Columns.ID,
+                OrganisationUnitModel.Columns.UID,
+                OrganisationUnitModel.Columns.CODE,
+                OrganisationUnitModel.Columns.NAME,
+                OrganisationUnitModel.Columns.DISPLAY_NAME,
+                OrganisationUnitModel.Columns.CREATED,
+                OrganisationUnitModel.Columns.LAST_UPDATED,
+                OrganisationUnitModel.Columns.SHORT_NAME,
+                OrganisationUnitModel.Columns.DISPLAY_SHORT_NAME,
+                OrganisationUnitModel.Columns.DESCRIPTION,
+                OrganisationUnitModel.Columns.DISPLAY_DESCRIPTION,
+                OrganisationUnitModel.Columns.PATH,
+                OrganisationUnitModel.Columns.OPENING_DATE,
+                OrganisationUnitModel.Columns.CLOSED_DATE,
+                OrganisationUnitModel.Columns.PARENT,
+                OrganisationUnitModel.Columns.LEVEL,
         });
 
         matrixCursor.addRow(new Object[]{
@@ -107,21 +106,21 @@ public class OrganisationUnitModelIntegrationTests {
 
         ContentValues contentValues = organisationUnitModel.toContentValues();
 
-        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(Columns.CODE)).isEqualTo(CODE);
-        assertThat(contentValues.getAsString(Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.SHORT_NAME)).isEqualTo(SHORT_NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_SHORT_NAME)).isEqualTo(DISPLAY_SHORT_NAME);
-        assertThat(contentValues.getAsString(Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
-        assertThat(contentValues.getAsString(Columns.PATH)).isEqualTo(PATH);
-        assertThat(contentValues.getAsString(Columns.OPENING_DATE)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.CLOSED_DATE)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.PARENT)).isEqualTo(PARENT);
-        assertThat(contentValues.getAsInteger(Columns.LEVEL)).isEqualTo(LEVEL);
+        assertThat(contentValues.getAsLong(OrganisationUnitModel.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(OrganisationUnitModel.Columns.UID)).isEqualTo(UID);
+        assertThat(contentValues.getAsString(OrganisationUnitModel.Columns.CODE)).isEqualTo(CODE);
+        assertThat(contentValues.getAsString(OrganisationUnitModel.Columns.NAME)).isEqualTo(NAME);
+        assertThat(contentValues.getAsString(OrganisationUnitModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
+        assertThat(contentValues.getAsString(OrganisationUnitModel.Columns.CREATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(OrganisationUnitModel.Columns.LAST_UPDATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(OrganisationUnitModel.Columns.SHORT_NAME)).isEqualTo(SHORT_NAME);
+        assertThat(contentValues.getAsString(OrganisationUnitModel.Columns.DISPLAY_SHORT_NAME)).isEqualTo(DISPLAY_SHORT_NAME);
+        assertThat(contentValues.getAsString(OrganisationUnitModel.Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
+        assertThat(contentValues.getAsString(OrganisationUnitModel.Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
+        assertThat(contentValues.getAsString(OrganisationUnitModel.Columns.PATH)).isEqualTo(PATH);
+        assertThat(contentValues.getAsString(OrganisationUnitModel.Columns.OPENING_DATE)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(OrganisationUnitModel.Columns.CLOSED_DATE)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(OrganisationUnitModel.Columns.PARENT)).isEqualTo(PARENT);
+        assertThat(contentValues.getAsInteger(OrganisationUnitModel.Columns.LEVEL)).isEqualTo(LEVEL);
     }
 }

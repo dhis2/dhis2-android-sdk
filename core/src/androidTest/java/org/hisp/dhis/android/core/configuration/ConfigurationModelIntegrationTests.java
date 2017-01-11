@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.configuration.ConfigurationContract.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -18,7 +17,7 @@ public class ConfigurationModelIntegrationTests {
     @Test
     public void create_shouldConvertToModel() {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                Columns.ID, Columns.SERVER_URL
+                ConfigurationModel.Columns.ID, ConfigurationModel.Columns.SERVER_URL
         });
 
         matrixCursor.addRow(new Object[]{
@@ -39,7 +38,7 @@ public class ConfigurationModelIntegrationTests {
                 .id(ID).serverUrl(SERVER_URL).build();
 
         ContentValues contentValues = configurationModel.toContentValues();
-        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.SERVER_URL)).isEqualTo(SERVER_URL);
+        assertThat(contentValues.getAsLong(ConfigurationModel.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(ConfigurationModel.Columns.SERVER_URL)).isEqualTo(SERVER_URL);
     }
 }

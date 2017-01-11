@@ -5,9 +5,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-import org.hisp.dhis.android.core.program.ProgramStageDataElementContract.Columns;
 
 import java.util.Date;
 
@@ -16,19 +14,19 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 public class ProgramStageDataElementStoreImpl implements ProgramStageDataElementStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.PROGRAM_STAGE_DATA_ELEMENT + " (" +
-            Columns.UID + ", " +
-            Columns.CODE + ", " +
-            Columns.NAME + ", " +
-            Columns.DISPLAY_NAME + ", " +
-            Columns.CREATED + ", " +
-            Columns.LAST_UPDATED + ", " +
-            Columns.DISPLAY_IN_REPORTS + ", " +
-            Columns.COMPULSORY + ", " +
-            Columns.ALLOW_PROVIDED_ELSEWHERE + ", " +
-            Columns.SORT_ORDER + ", " +
-            Columns.ALLOW_FUTURE_DATE + ", " +
-            Columns.DATA_ELEMENT + ", " +
-            Columns.PROGRAM_STAGE_SECTION + ") " +
+            ProgramStageDataElementModel.Columns.UID + ", " +
+            ProgramStageDataElementModel.Columns.CODE + ", " +
+            ProgramStageDataElementModel.Columns.NAME + ", " +
+            ProgramStageDataElementModel.Columns.DISPLAY_NAME + ", " +
+            ProgramStageDataElementModel.Columns.CREATED + ", " +
+            ProgramStageDataElementModel.Columns.LAST_UPDATED + ", " +
+            ProgramStageDataElementModel.Columns.DISPLAY_IN_REPORTS + ", " +
+            ProgramStageDataElementModel.Columns.COMPULSORY + ", " +
+            ProgramStageDataElementModel.Columns.ALLOW_PROVIDED_ELSEWHERE + ", " +
+            ProgramStageDataElementModel.Columns.SORT_ORDER + ", " +
+            ProgramStageDataElementModel.Columns.ALLOW_FUTURE_DATE + ", " +
+            ProgramStageDataElementModel.Columns.DATA_ELEMENT + ", " +
+            ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION + ") " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private final SQLiteStatement sqLiteStatement;

@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.option.OptionSetModelIntegrationTest;
+import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityAttributeUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,21 +72,21 @@ public class ProgramTrackedEntityAttributeStoreIntegrationTests extends AbsStore
     private static final long TRACKED_ENTITY_ATTRIBUTE_ID = 1L;
 
     public static final String[] PROGRAM_TRACKED_ENTITY_ATTRIBUTE_PROJECTION = {
-            ProgramTrackedEntityAttributeContract.Columns.UID,
-            ProgramTrackedEntityAttributeContract.Columns.CODE,
-            ProgramTrackedEntityAttributeContract.Columns.NAME,
-            ProgramTrackedEntityAttributeContract.Columns.DISPLAY_NAME,
-            ProgramTrackedEntityAttributeContract.Columns.CREATED,
-            ProgramTrackedEntityAttributeContract.Columns.LAST_UPDATED,
-            ProgramTrackedEntityAttributeContract.Columns.SHORT_NAME,
-            ProgramTrackedEntityAttributeContract.Columns.DISPLAY_SHORT_NAME,
-            ProgramTrackedEntityAttributeContract.Columns.DESCRIPTION,
-            ProgramTrackedEntityAttributeContract.Columns.DISPLAY_DESCRIPTION,
-            ProgramTrackedEntityAttributeContract.Columns.MANDATORY,
-            ProgramTrackedEntityAttributeContract.Columns.TRACKED_ENTITY_ATTRIBUTE,
-            ProgramTrackedEntityAttributeContract.Columns.VALUE_TYPE,
-            ProgramTrackedEntityAttributeContract.Columns.ALLOW_FUTURE_DATES,
-            ProgramTrackedEntityAttributeContract.Columns.DISPLAY_IN_LIST
+            ProgramTrackedEntityAttributeModel.Columns.UID,
+            ProgramTrackedEntityAttributeModel.Columns.CODE,
+            ProgramTrackedEntityAttributeModel.Columns.NAME,
+            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_NAME,
+            ProgramTrackedEntityAttributeModel.Columns.CREATED,
+            ProgramTrackedEntityAttributeModel.Columns.LAST_UPDATED,
+            ProgramTrackedEntityAttributeModel.Columns.SHORT_NAME,
+            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME,
+            ProgramTrackedEntityAttributeModel.Columns.DESCRIPTION,
+            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION,
+            ProgramTrackedEntityAttributeModel.Columns.MANDATORY,
+            ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE,
+            ProgramTrackedEntityAttributeModel.Columns.VALUE_TYPE,
+            ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATES,
+            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST
     };
 
     private ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
@@ -108,7 +109,8 @@ public class ProgramTrackedEntityAttributeStoreIntegrationTests extends AbsStore
 
         // insert test TrackedEntityAttribute to comply with foreign key constraint of ProgramTrackedEntityAttribute
         ContentValues trackedEntityAttribute =
-                CreateUtils.createTrackedEntityAttributeWithoutOptionSet(TRACKED_ENTITY_ATTRIBUTE_ID, TRACKED_ENTITY_ATTRIBUTE);
+                CreateTrackedEntityAttributeUtils.createWithoutOptionSet(
+                        TRACKED_ENTITY_ATTRIBUTE_ID, TRACKED_ENTITY_ATTRIBUTE);
         database().insert(DbOpenHelper.Tables.TRACKED_ENTITY_ATTRIBUTE, null, trackedEntityAttribute);
 
         long rowId = programTrackedEntityAttributeStore.insert(

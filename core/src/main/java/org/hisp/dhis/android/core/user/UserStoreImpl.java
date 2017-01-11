@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
-import org.hisp.dhis.android.core.user.UserContract.Columns;
 
 import java.util.Date;
 
@@ -14,25 +13,25 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class UserStoreImpl implements UserStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + DbOpenHelper.Tables.USER + " (" +
-            Columns.UID + ", " +
-            Columns.CODE + ", " +
-            Columns.NAME + ", " +
-            Columns.DISPLAY_NAME + ", " +
-            Columns.CREATED + ", " +
-            Columns.LAST_UPDATED + ", " +
-            Columns.BIRTHDAY + ", " +
-            Columns.EDUCATION + ", " +
-            Columns.GENDER + ", " +
-            Columns.JOB_TITLE + ", " +
-            Columns.SURNAME + ", " +
-            Columns.FIRST_NAME + ", " +
-            Columns.INTRODUCTION + ", " +
-            Columns.EMPLOYER + ", " +
-            Columns.INTERESTS + ", " +
-            Columns.LANGUAGES + ", " +
-            Columns.EMAIL + ", " +
-            Columns.PHONE_NUMBER + ", " +
-            Columns.NATIONALITY +
+            UserModel.Columns.UID + ", " +
+            UserModel.Columns.CODE + ", " +
+            UserModel.Columns.NAME + ", " +
+            UserModel.Columns.DISPLAY_NAME + ", " +
+            UserModel.Columns.CREATED + ", " +
+            UserModel.Columns.LAST_UPDATED + ", " +
+            UserModel.Columns.BIRTHDAY + ", " +
+            UserModel.Columns.EDUCATION + ", " +
+            UserModel.Columns.GENDER + ", " +
+            UserModel.Columns.JOB_TITLE + ", " +
+            UserModel.Columns.SURNAME + ", " +
+            UserModel.Columns.FIRST_NAME + ", " +
+            UserModel.Columns.INTRODUCTION + ", " +
+            UserModel.Columns.EMPLOYER + ", " +
+            UserModel.Columns.INTERESTS + ", " +
+            UserModel.Columns.LANGUAGES + ", " +
+            UserModel.Columns.EMAIL + ", " +
+            UserModel.Columns.PHONE_NUMBER + ", " +
+            UserModel.Columns.NATIONALITY +
             ") " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private final SQLiteDatabase sqLiteDatabase;

@@ -26,25 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.BaseNameableObjectContract;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-public class TrackedEntityAttributeContract {
+import java.util.Date;
 
-    public interface Columns extends BaseNameableObjectContract.Columns {
-        String PATTERN = "pattern";
-        String SORT_ORDER_IN_LIST_NO_PROGRAM = "sortOrderInListNoProgram";
-        String OPTION_SET = "optionSet";
-        String VALUE_TYPE = "valueType";
-        String EXPRESSION = "expression";
-        String SEARCH_SCOPE = "searchScope";
-        String PROGRAM_SCOPE = "programScope";
-        String DISPLAY_IN_LIST_NO_PROGRAM = "displayInListNoProgram";
-        String GENERATED = "generated";
-        String DISPLAY_ON_VISIT_SCHEDULE = "displayOnVisitSchedule";
-        String ORG_UNIT_SCOPE = "orgunitScope";
-        String UNIQUE = "uniqueProperty";
-        String INHERIT = "inherit";
-    }
+public interface ProgramIndicatorStore {
+    long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
+                @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+                @Nullable String shortName, @Nullable String displayShortName,
+                @Nullable String description, @Nullable String displayDescription,
+                @Nullable Boolean displayInForm, @Nullable String expression,
+                @Nullable String dimensionItem, @Nullable String filter,
+                @Nullable Integer decimals);
+
+    void close();
 }

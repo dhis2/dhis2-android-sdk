@@ -5,9 +5,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableContract.Columns;
 
 import java.util.Date;
 
@@ -16,18 +14,18 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 public class ProgramRuleVariableModelStoreImpl implements ProgramRuleVariableModelStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.PROGRAM_RULE_VARIABLE + " (" +
-            Columns.UID + ", " +
-            Columns.CODE + ", " +
-            Columns.NAME + ", " +
-            Columns.DISPLAY_NAME + ", " +
-            Columns.CREATED + ", " +
-            Columns.LAST_UPDATED + ", " +
-            Columns.USE_CODE_FOR_OPTION_SET + ", " +
-            Columns.PROGRAM + ", " +
-            Columns.PROGRAM_STAGE + ", " +
-            Columns.DATA_ELEMENT + ", " +
-            Columns.TRACKED_ENTITY_ATTRIBUTE + ", " +
-            Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE + ") " +
+            ProgramRuleVariableModel.Columns.UID + ", " +
+            ProgramRuleVariableModel.Columns.CODE + ", " +
+            ProgramRuleVariableModel.Columns.NAME + ", " +
+            ProgramRuleVariableModel.Columns.DISPLAY_NAME + ", " +
+            ProgramRuleVariableModel.Columns.CREATED + ", " +
+            ProgramRuleVariableModel.Columns.LAST_UPDATED + ", " +
+            ProgramRuleVariableModel.Columns.USE_CODE_FOR_OPTION_SET + ", " +
+            ProgramRuleVariableModel.Columns.PROGRAM + ", " +
+            ProgramRuleVariableModel.Columns.PROGRAM_STAGE + ", " +
+            ProgramRuleVariableModel.Columns.DATA_ELEMENT + ", " +
+            ProgramRuleVariableModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ", " +
+            ProgramRuleVariableModel.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE + ") " +
             "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private final SQLiteStatement sqLiteStatement;

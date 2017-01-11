@@ -4,9 +4,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-import org.hisp.dhis.android.core.option.OptionContract.Columns;
 
 import java.util.Date;
 
@@ -15,13 +13,13 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 public class OptionStoreImpl implements OptionStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.OPTION + " (" +
-            Columns.UID + ", " +
-            Columns.CODE + ", " +
-            Columns.NAME + ", " +
-            Columns.DISPLAY_NAME + ", " +
-            Columns.CREATED + ", " +
-            Columns.LAST_UPDATED + ", " +
-            Columns.OPTION_SET + ")" +
+            OptionModel.Columns.UID + ", " +
+            OptionModel.Columns.CODE + ", " +
+            OptionModel.Columns.NAME + ", " +
+            OptionModel.Columns.DISPLAY_NAME + ", " +
+            OptionModel.Columns.CREATED + ", " +
+            OptionModel.Columns.LAST_UPDATED + ", " +
+            OptionModel.Columns.OPTION_SET + ")" +
             "VALUES (?, ?, ?, ?, ?, ?, ?);";
 
     private final SQLiteStatement sqLiteStatement;

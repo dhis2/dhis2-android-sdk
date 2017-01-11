@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-import org.hisp.dhis.android.core.user.UserCredentialsContract.Columns;
 
 import java.util.Date;
 
@@ -14,14 +13,14 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class UserCredentialsStoreImpl implements UserCredentialsStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.USER_CREDENTIALS + " (" +
-            Columns.UID + ", " +
-            Columns.CODE + ", " +
-            Columns.NAME + ", " +
-            Columns.DISPLAY_NAME + ", " +
-            Columns.CREATED + ", " +
-            Columns.LAST_UPDATED + ", " +
-            Columns.USERNAME + ", " +
-            Columns.USER + ") " +
+            UserCredentialsModel.Columns.UID + ", " +
+            UserCredentialsModel.Columns.CODE + ", " +
+            UserCredentialsModel.Columns.NAME + ", " +
+            UserCredentialsModel.Columns.DISPLAY_NAME + ", " +
+            UserCredentialsModel.Columns.CREATED + ", " +
+            UserCredentialsModel.Columns.LAST_UPDATED + ", " +
+            UserCredentialsModel.Columns.USERNAME + ", " +
+            UserCredentialsModel.Columns.USER + ") " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     private final SQLiteDatabase sqLiteDatabase;

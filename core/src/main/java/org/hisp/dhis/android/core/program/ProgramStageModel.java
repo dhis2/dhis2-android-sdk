@@ -12,10 +12,29 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.data.database.DbFormTypeColumnAdapter;
-import org.hisp.dhis.android.core.program.ProgramStageContract.Columns;
 
 @AutoValue
 public abstract class ProgramStageModel extends BaseIdentifiableObjectModel {
+
+    public interface Columns extends BaseIdentifiableObjectModel.Columns {
+        String EXECUTION_DATE_LABEL = "executionDateLabel";
+        String ALLOW_GENERATE_NEXT_VISIT = "allowGenerateNextVisit";
+        String VALID_COMPLETE_ONLY = "validCompleteOnly";
+        String REPORT_DATE_TO_USE = "reportDateToUse";
+        String OPEN_AFTER_ENROLLMENT = "openAfterEnrollment";
+        String REPEATABLE = "repeatable";
+        String CAPTURE_COORDINATES = "captureCoordinates";
+        String FORM_TYPE = "formType";
+        String DISPLAY_GENERATE_EVENT_BOX = "displayGenerateEventBox";
+        String GENERATED_BY_ENROLMENT_DATE = "generatedByEnrollmentDate";
+        String AUTO_GENERATE_EVENT = "autoGenerateEvent";
+        String SORT_ORDER = "sortOrder";
+        String HIDE_DUE_DATE = "hideDueDate";
+        String BLOCK_ENTRY_FORM = "blockEntryForm";
+        String MIN_DAYS_FROM_START = "minDaysFromStart";
+        String STANDARD_INTERVAL = "standardInterval";
+        String PROGRAM = "program";
+    }
 
     public static ProgramStageModel create(Cursor cursor) {
         return AutoValue_ProgramStageModel.createFromCursor(cursor);

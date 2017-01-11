@@ -26,14 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.BaseNameableObjectContract;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-public class TrackedEntityContract {
+import java.util.Date;
 
-    public interface Columns extends BaseNameableObjectContract.Columns {
-        // Empty by design. BaseNameableObjectContract.Columns contains all needed columns
-        // Keep this interface to provide homogeneity and readability in DbOpenHelper
-    }
+public interface ProgramRuleActionStore {
+    long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
+                @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+                @Nullable String data, @Nullable String content, @Nullable String location,
+                @Nullable String trackedEntityAttribute, @Nullable String programIndicator,
+                @Nullable String programStageSection,
+                @NonNull ProgramRuleActionType programRuleActionType,
+                @Nullable String programStage, @Nullable String dataElement,
+                @Nullable String programRule);
+
+    void close();
 }

@@ -26,17 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.BaseNameableObjectContract;
+import android.content.ContentValues;
+import android.database.Cursor;
 
-public class ProgramTrackedEntityAttributeContract {
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-    public interface Columns extends BaseNameableObjectContract.Columns {
-        String MANDATORY = "mandatory";
-        String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
-        String VALUE_TYPE = "valueType";
-        String ALLOW_FUTURE_DATES = "allowFutureDate";
-        String DISPLAY_IN_LIST = "displayInList";
+public abstract class EnumColumnAdapter<T extends Enum<T>> implements ColumnTypeAdapter<T> {
+
+    protected abstract Class<T> getEnumClass();
+
+    @Override
+    public T fromCursor(Cursor cursor, String columnName) {
+
+        int columnIndex = cursor.getColumnIndex(columnName);
+        String sourceValue = cursor.getString(columnIndex);
+
+        T enumModel = null;
+        if (sourceValue != null) {
+            try {
+                enumModel = T.valueOf(getEnumClass(), sourceValue);
+            } catch (Exception exception) {
+                throw new RuntimeException("Unknown " + getEnumClass().getSimpleName() + " type", exception);
+            }
+        }
+        return enumModel;
+    }
+
+    @Override
+    public void toContentValues(ContentValues contentValues, String columnName, T enumValue) {
+        if (enumValue != null) {
+            contentValues.put(columnName, enumValue.name());
+        }
     }
 }

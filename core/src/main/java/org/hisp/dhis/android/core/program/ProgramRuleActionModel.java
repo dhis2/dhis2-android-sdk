@@ -86,7 +86,7 @@ public abstract class ProgramRuleActionModel extends BaseIdentifiableObjectModel
     @ColumnName(PROGRAM_STAGE_SECTION)
     public abstract String programStageSection();
 
-    @Nullable
+    @NonNull
     @ColumnName(PROGRAM_RULE_ACTION_TYPE)
     @ColumnAdapter(ProgramRuleActionTypeColumnAdapter.class)
     public abstract ProgramRuleActionType programRuleActionType();

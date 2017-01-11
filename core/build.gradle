@@ -82,9 +82,6 @@ if (withDexCount) {
 }
 
 dependencies {
-    // Client models
-    // compile project(":models")
-
     // Support libraries
     compile "com.android.support:support-annotations:${libraries.support}"
 

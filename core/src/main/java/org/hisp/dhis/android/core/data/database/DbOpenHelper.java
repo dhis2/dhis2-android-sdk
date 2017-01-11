@@ -13,6 +13,7 @@ import org.hisp.dhis.android.core.option.OptionSetContract;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitContract;
 import org.hisp.dhis.android.core.program.ProgramContract;
 import org.hisp.dhis.android.core.program.ProgramIndicatorContract;
+import org.hisp.dhis.android.core.program.ProgramRuleActionContract;
 import org.hisp.dhis.android.core.program.ProgramStageContract;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementContract;
 import org.hisp.dhis.android.core.program.ProgramStageSectionContract;
@@ -54,6 +55,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String PROGRAM_TRACKED_ENTITY_ATTRIBUTE = "ProgramTrackedEntityAttribute";
         String CONSTANT = "Constant";
         String PROGRAM_INDICATOR = "ProgramIndicator";
+        String PROGRAM_RULE_ACTION = "ProgramRuleAction";
     }
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + Tables.USER + " (" +
@@ -406,6 +408,25 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ProgramIndicatorContract.Columns.DECIMALS + " INTEGER" +
             ");";
 
+    private static final String CREATE_PROGRAM_RULE_ACTION_TABLE = "CREATE TABLE " + Tables.PROGRAM_RULE_ACTION + " (" +
+            ProgramRuleActionContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramRuleActionContract.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            ProgramRuleActionContract.Columns.CODE + " TEXT," +
+            ProgramRuleActionContract.Columns.NAME + " TEXT," +
+            ProgramRuleActionContract.Columns.DISPLAY_NAME + " TEXT," +
+            ProgramRuleActionContract.Columns.CREATED + " TEXT," +
+            ProgramRuleActionContract.Columns.LAST_UPDATED + " TEXT," +
+            ProgramRuleActionContract.Columns.DATA + " TEXT," +
+            ProgramRuleActionContract.Columns.CONTENT + " TEXT," +
+            ProgramRuleActionContract.Columns.LOCATION + " TEXT," +
+            ProgramRuleActionContract.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT," +
+            ProgramRuleActionContract.Columns.PROGRAM_INDICATOR + " TEXT," +
+            ProgramRuleActionContract.Columns.PROGRAM_STAGE_SECTION + " TEXT," +
+            ProgramRuleActionContract.Columns.PROGRAM_RULE_ACTION_TYPE + " TEXT," +
+            ProgramRuleActionContract.Columns.PROGRAM_STAGE + " TEXT," +
+            ProgramRuleActionContract.Columns.DATA_ELEMENT + " TEXT" +
+            ");";
+
     /**
      * This method should be used only for testing purposes
      */
@@ -436,6 +457,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_PROGRAM_TRACKED_ENTITY_ATTRIBUTE_TABLE);
         database.execSQL(CREATE_CONSTANT_TABLE);
         database.execSQL(CREATE_PROGRAM_INDICATOR_TABLE);
+        database.execSQL(CREATE_PROGRAM_RULE_ACTION_TABLE);
         return database;
     }
 

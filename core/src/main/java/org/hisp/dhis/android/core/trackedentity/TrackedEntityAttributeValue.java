@@ -38,19 +38,19 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 @JsonDeserialize(builder = AutoValue_TrackedEntityAttributeValue.Builder.class)
 public abstract class TrackedEntityAttributeValue {
-    private static final String JSON_PROPERTY_ATTRIBUTE = "attribute";
-    private static final String JSON_PROPERTY_VALUE = "value";
+    private static final String ATTRIBUTE = "attribute";
+    private static final String VALUE = "value";
 
     @JsonIgnore
     @Nullable
     public abstract TrackedEntityInstance trackedEntityInstance();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_ATTRIBUTE)
+    @JsonProperty(ATTRIBUTE)
     public abstract String trackedEntityAttribute();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_VALUE)
+    @JsonProperty(VALUE)
     public abstract String value();
 
     public static Builder builder() {
@@ -64,10 +64,10 @@ public abstract class TrackedEntityAttributeValue {
         public abstract Builder trackedEntityInstance(
                 @Nullable TrackedEntityInstance trackedEntityInstance);
 
-        @JsonProperty(JSON_PROPERTY_ATTRIBUTE)
+        @JsonProperty(ATTRIBUTE)
         public abstract Builder trackedEntityAttribute(String trackedEntityAttribute);
 
-        @JsonProperty(JSON_PROPERTY_VALUE)
+        @JsonProperty(VALUE)
         public abstract Builder value(String value);
 
         public abstract TrackedEntityAttributeValue build();

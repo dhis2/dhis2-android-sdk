@@ -25,6 +25,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipModel;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.UserCredentialsModel;
@@ -62,6 +63,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String PROGRAM_INDICATOR = "ProgramIndicator";
         String PROGRAM_RULE_ACTION = "ProgramRuleAction";
         String EVENT = "Event";
+        String TRACKED_ENTITY_ATTRIBUTE_VALUE = "TrackedEntityAttributeValue";
     }
 
     private static final String CREATE_CONFIGURATION_TABLE = "CREATE TABLE " + Tables.CONFIGURATION + " (" +
@@ -492,6 +494,12 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             " REFERENCES " + Tables.PROGRAM_RULE + " (" + ProgramRuleModel.Columns.UID + ")" +
             ");";
 
+    private static final String CREATE_TRACKED_ENTITY_ATTRIBUTE_VALUE_TABLE = "CREATE TABLE " +
+            Tables.TRACKED_ENTITY_ATTRIBUTE_VALUE + " (" +
+            TrackedEntityAttributeValueModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMNET," +
+            TrackedEntityAttributeValueModel.Columns.ATTRIBUTE + " TEXT," +
+            TrackedEntityAttributeValueModel.Columns.VALUE + " TEXT" + ");";
+
     /**
      * This method should be used only for testing purposes
      */
@@ -527,7 +535,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_PROGRAM_RULE_TABLE);
         database.execSQL(CREATE_PROGRAM_INDICATOR_TABLE);
         database.execSQL(CREATE_PROGRAM_RULE_ACTION_TABLE);
-
+        database.execSQL(CREATE_TRACKED_ENTITY_ATTRIBUTE_VALUE_TABLE);
         return database;
     }
 

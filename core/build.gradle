@@ -27,6 +27,7 @@
  */
 
 apply plugin: "com.android.library"
+apply from: rootProject.file("plugins/android-errorprone.gradle")
 
 def configuration = rootProject.ext.configuration
 def libraries = rootProject.ext.libraries
@@ -59,6 +60,12 @@ android {
         // Fail early.
         abortOnError true
     }
+
+    buildTypes {
+        debug {
+            testCoverageEnabled = true
+        }
+    }
 }
 
 // Check if the build requires dex count, if yes analyze dex for amount of methods
@@ -76,9 +83,6 @@ if (withDexCount) {
 }
 
 dependencies {
-    // Client models
-    // compile project(":models")
-
     // Support libraries
     compile "com.android.support:support-annotations:${libraries.support}"
 

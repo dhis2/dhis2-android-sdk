@@ -10,7 +10,6 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.dataelement.DataElementModelIntegrationTest;
 import org.hisp.dhis.android.core.option.OptionSetModelIntegrationTest;
-import org.hisp.dhis.android.core.program.ProgramStageDataElementContract.Columns;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,19 +47,19 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
     private static final String OPTION_SET = "test_optionSet";
 
     private static final String[] PROGRAM_STAGE_DATA_ELEMENT_PROJECTION = {
-            Columns.UID,
-            Columns.CODE,
-            Columns.NAME,
-            Columns.DISPLAY_NAME,
-            Columns.CREATED,
-            Columns.LAST_UPDATED,
-            Columns.DISPLAY_IN_REPORTS,
-            Columns.COMPULSORY,
-            Columns.ALLOW_PROVIDED_ELSEWHERE,
-            Columns.SORT_ORDER,
-            Columns.ALLOW_FUTURE_DATE,
-            Columns.DATA_ELEMENT,
-            Columns.PROGRAM_STAGE_SECTION
+            ProgramStageDataElementModel.Columns.UID,
+            ProgramStageDataElementModel.Columns.CODE,
+            ProgramStageDataElementModel.Columns.NAME,
+            ProgramStageDataElementModel.Columns.DISPLAY_NAME,
+            ProgramStageDataElementModel.Columns.CREATED,
+            ProgramStageDataElementModel.Columns.LAST_UPDATED,
+            ProgramStageDataElementModel.Columns.DISPLAY_IN_REPORTS,
+            ProgramStageDataElementModel.Columns.COMPULSORY,
+            ProgramStageDataElementModel.Columns.ALLOW_PROVIDED_ELSEWHERE,
+            ProgramStageDataElementModel.Columns.SORT_ORDER,
+            ProgramStageDataElementModel.Columns.ALLOW_FUTURE_DATE,
+            ProgramStageDataElementModel.Columns.DATA_ELEMENT,
+            ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION
     };
 
     private ProgramStageDataElementStore programStageDataElementStore;

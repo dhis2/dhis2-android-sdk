@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkContract.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -22,7 +21,7 @@ public class UserOrganisationUnitLinkModelIntegrationTests {
     @Test
     public void create_shouldConvertToModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                Columns.ID, Columns.USER, Columns.ORGANISATION_UNIT, Columns.ORGANISATION_UNIT_SCOPE
+                UserOrganisationUnitLinkModel.Columns.ID, UserOrganisationUnitLinkModel.Columns.USER, UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT, UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE
         });
 
         matrixCursor.addRow(new Object[]{
@@ -52,9 +51,9 @@ public class UserOrganisationUnitLinkModelIntegrationTests {
 
         ContentValues contentValues = userOrganisationUnitLinkModel.toContentValues();
 
-        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.USER)).isEqualTo(USER);
-        assertThat(contentValues.getAsString(Columns.ORGANISATION_UNIT)).isEqualTo(ORGANISATION_UNIT);
-        assertThat(contentValues.getAsString(Columns.ORGANISATION_UNIT_SCOPE)).isEqualTo(ORGANISATION_UNIT_SCOPE);
+        assertThat(contentValues.getAsLong(UserOrganisationUnitLinkModel.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(UserOrganisationUnitLinkModel.Columns.USER)).isEqualTo(USER);
+        assertThat(contentValues.getAsString(UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT)).isEqualTo(ORGANISATION_UNIT);
+        assertThat(contentValues.getAsString(UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE)).isEqualTo(ORGANISATION_UNIT_SCOPE);
     }
 }

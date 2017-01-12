@@ -8,7 +8,6 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-import org.hisp.dhis.android.core.option.OptionContract.Columns;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,9 +31,9 @@ public class OptionModelStoreIntegrationTest extends AbsStoreTestCase {
     private static final String OPTION_SET_UID = "test_option_set_uid";
 
     private static final String[] OPTION_PROJECTION = {
-            Columns.UID, Columns.CODE, Columns.NAME,
-            Columns.DISPLAY_NAME, Columns.CREATED, Columns.LAST_UPDATED,
-            Columns.OPTION_SET
+            OptionModel.Columns.UID, OptionModel.Columns.CODE, OptionModel.Columns.NAME,
+            OptionModel.Columns.DISPLAY_NAME, OptionModel.Columns.CREATED, OptionModel.Columns.LAST_UPDATED,
+            OptionModel.Columns.OPTION_SET
     };
 
     // timestamp

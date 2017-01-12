@@ -5,7 +5,6 @@ import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableContract.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,10 +38,10 @@ public class ProgramRuleVariableModelIntegrationTest {
     @Test
     public void create_shouldConvertToModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                Columns.ID, Columns.UID, Columns.CODE, Columns.NAME, Columns.DISPLAY_NAME,
-                Columns.CREATED, Columns.LAST_UPDATED, Columns.USE_CODE_FOR_OPTION_SET,
-                Columns.PROGRAM, Columns.PROGRAM_STAGE, Columns.TRACKED_ENTITY_ATTRIBUTE,
-                Columns.DATA_ELEMENT, Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
+                ProgramRuleVariableModel.Columns.ID, ProgramRuleVariableModel.Columns.UID, ProgramRuleVariableModel.Columns.CODE, ProgramRuleVariableModel.Columns.NAME, ProgramRuleVariableModel.Columns.DISPLAY_NAME,
+                ProgramRuleVariableModel.Columns.CREATED, ProgramRuleVariableModel.Columns.LAST_UPDATED, ProgramRuleVariableModel.Columns.USE_CODE_FOR_OPTION_SET,
+                ProgramRuleVariableModel.Columns.PROGRAM, ProgramRuleVariableModel.Columns.PROGRAM_STAGE, ProgramRuleVariableModel.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                ProgramRuleVariableModel.Columns.DATA_ELEMENT, ProgramRuleVariableModel.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
         });
 
         matrixCursor.addRow(new Object[]{
@@ -94,19 +93,19 @@ public class ProgramRuleVariableModelIntegrationTest {
 
         ContentValues contentValues = programRuleVariable.toContentValues();
 
-        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(Columns.CODE)).isEqualTo(CODE);
-        assertThat(contentValues.getAsString(Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsBoolean(Columns.USE_CODE_FOR_OPTION_SET)).isTrue();
-        assertThat(contentValues.getAsString(Columns.PROGRAM)).isEqualTo(PROGRAM);
-        assertThat(contentValues.getAsString(Columns.PROGRAM_STAGE)).isEqualTo(PROGRAM_STAGE);
-        assertThat(contentValues.getAsString(Columns.TRACKED_ENTITY_ATTRIBUTE)).isEqualTo(TRACKED_ENTITY_ATTRIBUTE);
-        assertThat(contentValues.getAsString(Columns.DATA_ELEMENT)).isEqualTo(DATA_ELEMENT);
-        assertThat(contentValues.getAsString(Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE))
+        assertThat(contentValues.getAsLong(ProgramRuleVariableModel.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(ProgramRuleVariableModel.Columns.UID)).isEqualTo(UID);
+        assertThat(contentValues.getAsString(ProgramRuleVariableModel.Columns.CODE)).isEqualTo(CODE);
+        assertThat(contentValues.getAsString(ProgramRuleVariableModel.Columns.NAME)).isEqualTo(NAME);
+        assertThat(contentValues.getAsString(ProgramRuleVariableModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
+        assertThat(contentValues.getAsString(ProgramRuleVariableModel.Columns.CREATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(ProgramRuleVariableModel.Columns.LAST_UPDATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsBoolean(ProgramRuleVariableModel.Columns.USE_CODE_FOR_OPTION_SET)).isTrue();
+        assertThat(contentValues.getAsString(ProgramRuleVariableModel.Columns.PROGRAM)).isEqualTo(PROGRAM);
+        assertThat(contentValues.getAsString(ProgramRuleVariableModel.Columns.PROGRAM_STAGE)).isEqualTo(PROGRAM_STAGE);
+        assertThat(contentValues.getAsString(ProgramRuleVariableModel.Columns.TRACKED_ENTITY_ATTRIBUTE)).isEqualTo(TRACKED_ENTITY_ATTRIBUTE);
+        assertThat(contentValues.getAsString(ProgramRuleVariableModel.Columns.DATA_ELEMENT)).isEqualTo(DATA_ELEMENT);
+        assertThat(contentValues.getAsString(ProgramRuleVariableModel.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE))
                 .isEqualTo(PROGRAM_RULE_VARIABLE_SOURCE_TYPE.name());
 
     }

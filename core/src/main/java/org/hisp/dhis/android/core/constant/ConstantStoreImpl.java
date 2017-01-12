@@ -5,8 +5,6 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.constant.ConstantContract.Columns;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 
 import java.util.Date;
@@ -14,15 +12,14 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class ConstantStoreImpl implements ConstantStore {
-
     public static final String INSERT_STATEMENT = "INSERT INTO " + Tables.CONSTANT + " (" +
-            Columns.UID + "," +
-            Columns.CODE + "," +
-            Columns.NAME + "," +
-            Columns.DISPLAY_NAME + "," +
-            Columns.CREATED + "," +
-            Columns.LAST_UPDATED + "," +
-            Columns.VALUE +
+            ConstantModel.Columns.UID + "," +
+            ConstantModel.Columns.CODE + "," +
+            ConstantModel.Columns.NAME + "," +
+            ConstantModel.Columns.DISPLAY_NAME + "," +
+            ConstantModel.Columns.CREATED + "," +
+            ConstantModel.Columns.LAST_UPDATED + "," +
+            ConstantModel.Columns.VALUE +
             ") VALUES (?, ?, ?, ?, ?, ?, ?);";
 
     private final SQLiteStatement insertStatement;
@@ -34,7 +31,9 @@ public class ConstantStoreImpl implements ConstantStore {
     // TODO: Don't know if these should be @NonNull or @Nullable. They seem to differ in the other stores. For OptionSet they also differ between interface and implementation
 
     @Override
-    public long insert(@Nullable String uid, @Nullable String code, @NonNull String name, @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated, @NonNull Double value) {
+    public long insert(@Nullable String uid, @Nullable String code, @NonNull String name,
+            @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
+            @NonNull Double value) {
         insertStatement.clearBindings();
 
         sqLiteBind(insertStatement, 1, uid);

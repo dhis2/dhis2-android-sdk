@@ -22,6 +22,7 @@ public class FilterConverterUnitTests {
     }
 
     @Test
+    @SuppressWarnings("BadAnnotationImplementation")
     public void converterFactory_shouldReturnConverterOnSpecificAnnotation() {
         Converter.Factory converterFactory = FilterConverterFactory.create();
 

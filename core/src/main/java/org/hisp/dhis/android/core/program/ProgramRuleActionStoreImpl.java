@@ -41,22 +41,23 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + DbOpenHelper.Tables.PROGRAM_RULE_ACTION + " (" +
-            ProgramRuleActionContract.Columns.UID + ", " +
-            ProgramRuleActionContract.Columns.CODE + ", " +
-            ProgramRuleActionContract.Columns.NAME + ", " +
-            ProgramRuleActionContract.Columns.DISPLAY_NAME + ", " +
-            ProgramRuleActionContract.Columns.CREATED + ", " +
-            ProgramRuleActionContract.Columns.LAST_UPDATED + ", " +
-            ProgramRuleActionContract.Columns.DATA + ", " +
-            ProgramRuleActionContract.Columns.CONTENT + ", " +
-            ProgramRuleActionContract.Columns.LOCATION + ", " +
-            ProgramRuleActionContract.Columns.TRACKED_ENTITY_ATTRIBUTE + ", " +
-            ProgramRuleActionContract.Columns.PROGRAM_INDICATOR + ", " +
-            ProgramRuleActionContract.Columns.PROGRAM_STAGE_SECTION + ", " +
-            ProgramRuleActionContract.Columns.PROGRAM_RULE_ACTION_TYPE + ", " +
-            ProgramRuleActionContract.Columns.PROGRAM_STAGE + ", " +
-            ProgramRuleActionContract.Columns.DATA_ELEMENT +
-            ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            ProgramRuleActionModel.Columns.UID + ", " +
+            ProgramRuleActionModel.Columns.CODE + ", " +
+            ProgramRuleActionModel.Columns.NAME + ", " +
+            ProgramRuleActionModel.Columns.DISPLAY_NAME + ", " +
+            ProgramRuleActionModel.Columns.CREATED + ", " +
+            ProgramRuleActionModel.Columns.LAST_UPDATED + ", " +
+            ProgramRuleActionModel.Columns.DATA + ", " +
+            ProgramRuleActionModel.Columns.CONTENT + ", " +
+            ProgramRuleActionModel.Columns.LOCATION + ", " +
+            ProgramRuleActionModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ", " +
+            ProgramRuleActionModel.Columns.PROGRAM_INDICATOR + ", " +
+            ProgramRuleActionModel.Columns.PROGRAM_STAGE_SECTION + ", " +
+            ProgramRuleActionModel.Columns.PROGRAM_RULE_ACTION_TYPE + ", " +
+            ProgramRuleActionModel.Columns.PROGRAM_STAGE + ", " +
+            ProgramRuleActionModel.Columns.DATA_ELEMENT + ", " +
+            ProgramRuleActionModel.Columns.PROGRAM_RULE +
+            ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private final SQLiteStatement insertRowStatement;
 
@@ -72,7 +73,8 @@ public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
                        @Nullable String location, @Nullable String trackedEntityAttribute,
                        @Nullable String programIndicator, @Nullable String programStageSection,
                        @NonNull ProgramRuleActionType programRuleActionType,
-                       @Nullable String programStage, @Nullable String dataElement) {
+                       @Nullable String programStage, @Nullable String dataElement,
+                       @Nullable String programRule) {
 
         insertRowStatement.clearBindings();
 
@@ -91,6 +93,7 @@ public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
         sqLiteBind(insertRowStatement, 13, programRuleActionType);
         sqLiteBind(insertRowStatement, 14, programStage);
         sqLiteBind(insertRowStatement, 15, dataElement);
+        sqLiteBind(insertRowStatement, 16, programRule);
 
         return insertRowStatement.executeInsert();
     }

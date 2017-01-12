@@ -45,6 +45,14 @@ import java.util.Date;
 // TODO: Tests
 @AutoValue
 public abstract class OrganisationUnitModel extends BaseNameableObjectModel {
+    public interface Columns extends BaseNameableObjectModel.Columns {
+        String PATH = "path";
+        String OPENING_DATE = "openingDate";
+        String CLOSED_DATE = "closedDate";
+        String PARENT = "parent";
+        String LEVEL = "level";
+    }
+
     public static final String SCOPE_DATA_CAPTURE = "dataCapture";
 
     public static OrganisationUnitModel create(Cursor cursor) {
@@ -56,25 +64,25 @@ public abstract class OrganisationUnitModel extends BaseNameableObjectModel {
     }
 
     @Nullable
-    @ColumnName(OrganisationUnitContract.Columns.PARENT)
+    @ColumnName(Columns.PARENT)
     public abstract String parent();
 
     @Nullable
-    @ColumnName(OrganisationUnitContract.Columns.PATH)
+    @ColumnName(Columns.PATH)
     public abstract String path();
 
     @Nullable
-    @ColumnName(OrganisationUnitContract.Columns.OPENING_DATE)
+    @ColumnName(Columns.OPENING_DATE)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date openingDate();
 
     @Nullable
-    @ColumnName(OrganisationUnitContract.Columns.CLOSED_DATE)
+    @ColumnName(Columns.CLOSED_DATE)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date closedDate();
 
     @Nullable
-    @ColumnName(OrganisationUnitContract.Columns.LEVEL)
+    @ColumnName(Columns.LEVEL)
     public abstract Integer level();
 
     @NonNull

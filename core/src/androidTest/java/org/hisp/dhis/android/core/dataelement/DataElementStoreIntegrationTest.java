@@ -9,7 +9,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-import org.hisp.dhis.android.core.dataelement.DataElementContract.Columns;
 import org.hisp.dhis.android.core.option.OptionSetModelIntegrationTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,25 +50,25 @@ public class DataElementStoreIntegrationTest extends AbsStoreTestCase {
     private static final String DATE = "2016-12-20T16:26:00.007";
 
     private static final String[] DATA_ELEMENT_PROJECTION = {
-            Columns.UID,
-            Columns.CODE,
-            Columns.NAME,
-            Columns.DISPLAY_NAME,
-            Columns.CREATED,
-            Columns.LAST_UPDATED,
-            Columns.SHORT_NAME,
-            Columns.DISPLAY_SHORT_NAME,
-            Columns.DESCRIPTION,
-            Columns.DISPLAY_DESCRIPTION,
-            Columns.VALUE_TYPE,
-            Columns.ZERO_IS_SIGNIFICANT,
-            Columns.AGGREGATION_OPERATOR,
-            Columns.FORM_NAME,
-            Columns.NUMBER_TYPE,
-            Columns.DOMAIN_TYPE,
-            Columns.DIMENSION,
-            Columns.DISPLAY_FORM_NAME,
-            Columns.OPTION_SET
+            DataElementModel.Columns.UID,
+            DataElementModel.Columns.CODE,
+            DataElementModel.Columns.NAME,
+            DataElementModel.Columns.DISPLAY_NAME,
+            DataElementModel.Columns.CREATED,
+            DataElementModel.Columns.LAST_UPDATED,
+            DataElementModel.Columns.SHORT_NAME,
+            DataElementModel.Columns.DISPLAY_SHORT_NAME,
+            DataElementModel.Columns.DESCRIPTION,
+            DataElementModel.Columns.DISPLAY_DESCRIPTION,
+            DataElementModel.Columns.VALUE_TYPE,
+            DataElementModel.Columns.ZERO_IS_SIGNIFICANT,
+            DataElementModel.Columns.AGGREGATION_OPERATOR,
+            DataElementModel.Columns.FORM_NAME,
+            DataElementModel.Columns.NUMBER_TYPE,
+            DataElementModel.Columns.DOMAIN_TYPE,
+            DataElementModel.Columns.DIMENSION,
+            DataElementModel.Columns.DISPLAY_FORM_NAME,
+            DataElementModel.Columns.OPTION_SET
     };
 
     private DataElementStore dataElementStore;

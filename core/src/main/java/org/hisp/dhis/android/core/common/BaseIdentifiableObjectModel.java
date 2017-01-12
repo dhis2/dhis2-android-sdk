@@ -39,35 +39,44 @@ import java.util.Date;
 
 public abstract class BaseIdentifiableObjectModel extends BaseModel implements IdentifiableObject {
 
+    public interface Columns extends BaseModel.Columns {
+        String UID = "uid";
+        String CODE = "code";
+        String NAME = "name";
+        String DISPLAY_NAME = "displayName";
+        String CREATED = "created";
+        String LAST_UPDATED = "lastUpdated";
+    }
+
     @Override
     @Nullable
-    @ColumnName(BaseIdentifiableObjectContract.Columns.UID)
+    @ColumnName(Columns.UID)
     public abstract String uid();
 
     @Override
     @Nullable
-    @ColumnName(BaseIdentifiableObjectContract.Columns.CODE)
+    @ColumnName(Columns.CODE)
     public abstract String code();
 
     @Override
     @Nullable
-    @ColumnName(BaseIdentifiableObjectContract.Columns.NAME)
+    @ColumnName(Columns.NAME)
     public abstract String name();
 
     @Override
     @Nullable
-    @ColumnName(BaseIdentifiableObjectContract.Columns.DISPLAY_NAME)
+    @ColumnName(Columns.DISPLAY_NAME)
     public abstract String displayName();
 
     @Override
     @Nullable
-    @ColumnName(BaseIdentifiableObjectContract.Columns.CREATED)
+    @ColumnName(Columns.CREATED)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Override
     @Nullable
-    @ColumnName(BaseIdentifiableObjectContract.Columns.LAST_UPDATED)
+    @ColumnName(Columns.LAST_UPDATED)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 

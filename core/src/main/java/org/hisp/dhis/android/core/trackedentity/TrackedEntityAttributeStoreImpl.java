@@ -42,29 +42,29 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + DbOpenHelper.Tables.TRACKED_ENTITY_ATTRIBUTE + " (" +
-            TrackedEntityAttributeContract.Columns.UID + ", " +
-            TrackedEntityAttributeContract.Columns.CODE + ", " +
-            TrackedEntityAttributeContract.Columns.NAME + ", " +
-            TrackedEntityAttributeContract.Columns.DISPLAY_NAME + ", " +
-            TrackedEntityAttributeContract.Columns.CREATED + ", " +
-            TrackedEntityAttributeContract.Columns.LAST_UPDATED + ", " +
-            TrackedEntityAttributeContract.Columns.SHORT_NAME + ", " +
-            TrackedEntityAttributeContract.Columns.DISPLAY_SHORT_NAME + ", " +
-            TrackedEntityAttributeContract.Columns.DESCRIPTION + ", " +
-            TrackedEntityAttributeContract.Columns.DISPLAY_DESCRIPTION + ", " +
-            TrackedEntityAttributeContract.Columns.PATTERN + ", " +
-            TrackedEntityAttributeContract.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM + ", " +
-            TrackedEntityAttributeContract.Columns.OPTION_SET + ", " +
-            TrackedEntityAttributeContract.Columns.VALUE_TYPE + ", " +
-            TrackedEntityAttributeContract.Columns.EXPRESSION + ", " +
-            TrackedEntityAttributeContract.Columns.SEARCH_SCOPE + ", " +
-            TrackedEntityAttributeContract.Columns.PROGRAM_SCOPE + ", " +
-            TrackedEntityAttributeContract.Columns.DISPLAY_IN_LIST_NO_PROGRAM + ", " +
-            TrackedEntityAttributeContract.Columns.GENERATED + ", " +
-            TrackedEntityAttributeContract.Columns.DISPLAY_ON_VISIT_SCHEDULE + ", " +
-            TrackedEntityAttributeContract.Columns.ORG_UNIT_SCOPE + ", " +
-            TrackedEntityAttributeContract.Columns.UNIQUE + ", " +
-            TrackedEntityAttributeContract.Columns.INHERIT +
+            TrackedEntityAttributeModel.Columns.UID + ", " +
+            TrackedEntityAttributeModel.Columns.CODE + ", " +
+            TrackedEntityAttributeModel.Columns.NAME + ", " +
+            TrackedEntityAttributeModel.Columns.DISPLAY_NAME + ", " +
+            TrackedEntityAttributeModel.Columns.CREATED + ", " +
+            TrackedEntityAttributeModel.Columns.LAST_UPDATED + ", " +
+            TrackedEntityAttributeModel.Columns.SHORT_NAME + ", " +
+            TrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME + ", " +
+            TrackedEntityAttributeModel.Columns.DESCRIPTION + ", " +
+            TrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION + ", " +
+            TrackedEntityAttributeModel.Columns.PATTERN + ", " +
+            TrackedEntityAttributeModel.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM + ", " +
+            TrackedEntityAttributeModel.Columns.OPTION_SET + ", " +
+            TrackedEntityAttributeModel.Columns.VALUE_TYPE + ", " +
+            TrackedEntityAttributeModel.Columns.EXPRESSION + ", " +
+            TrackedEntityAttributeModel.Columns.SEARCH_SCOPE + ", " +
+            TrackedEntityAttributeModel.Columns.PROGRAM_SCOPE + ", " +
+            TrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST_NO_PROGRAM + ", " +
+            TrackedEntityAttributeModel.Columns.GENERATED + ", " +
+            TrackedEntityAttributeModel.Columns.DISPLAY_ON_VISIT_SCHEDULE + ", " +
+            TrackedEntityAttributeModel.Columns.ORG_UNIT_SCOPE + ", " +
+            TrackedEntityAttributeModel.Columns.UNIQUE + ", " +
+            TrackedEntityAttributeModel.Columns.INHERIT +
 
             ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 

@@ -34,24 +34,31 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 
 public abstract class BaseNameableObjectModel extends BaseIdentifiableObjectModel implements NameableObject {
 
+    public interface Columns extends BaseIdentifiableObjectModel.Columns {
+        String SHORT_NAME = "shortName";
+        String DISPLAY_SHORT_NAME = "displayShortName";
+        String DESCRIPTION = "description";
+        String DISPLAY_DESCRIPTION = "displayDescription";
+    }
+
     @Nullable
     @Override
-    @ColumnName(BaseNameableObjectContract.Columns.SHORT_NAME)
+    @ColumnName(Columns.SHORT_NAME)
     public abstract String shortName();
 
     @Nullable
     @Override
-    @ColumnName(BaseNameableObjectContract.Columns.DISPLAY_SHORT_NAME)
+    @ColumnName(Columns.DISPLAY_SHORT_NAME)
     public abstract String displayShortName();
 
     @Nullable
     @Override
-    @ColumnName(BaseNameableObjectContract.Columns.DESCRIPTION)
+    @ColumnName(Columns.DESCRIPTION)
     public abstract String description();
 
     @Nullable
     @Override
-    @ColumnName(BaseNameableObjectContract.Columns.DISPLAY_DESCRIPTION)
+    @ColumnName(Columns.DISPLAY_DESCRIPTION)
     public abstract String displayDescription();
 
     protected static abstract class Builder<T extends Builder> extends BaseIdentifiableObjectModel.Builder<T> {

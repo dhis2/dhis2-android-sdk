@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.user.UserContract.Columns;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,26 +40,26 @@ public class UserModelIntegrationTests {
     @Test
     public void create_shouldConvertToModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                Columns.ID,
-                Columns.UID,
-                Columns.CODE,
-                Columns.NAME,
-                Columns.DISPLAY_NAME,
-                Columns.CREATED,
-                Columns.LAST_UPDATED,
-                Columns.BIRTHDAY,
-                Columns.EDUCATION,
-                Columns.GENDER,
-                Columns.JOB_TITLE,
-                Columns.SURNAME,
-                Columns.FIRST_NAME,
-                Columns.INTRODUCTION,
-                Columns.EMPLOYER,
-                Columns.INTERESTS,
-                Columns.LANGUAGES,
-                Columns.EMAIL,
-                Columns.PHONE_NUMBER,
-                Columns.NATIONALITY
+                UserModel.Columns.ID,
+                UserModel.Columns.UID,
+                UserModel.Columns.CODE,
+                UserModel.Columns.NAME,
+                UserModel.Columns.DISPLAY_NAME,
+                UserModel.Columns.CREATED,
+                UserModel.Columns.LAST_UPDATED,
+                UserModel.Columns.BIRTHDAY,
+                UserModel.Columns.EDUCATION,
+                UserModel.Columns.GENDER,
+                UserModel.Columns.JOB_TITLE,
+                UserModel.Columns.SURNAME,
+                UserModel.Columns.FIRST_NAME,
+                UserModel.Columns.INTRODUCTION,
+                UserModel.Columns.EMPLOYER,
+                UserModel.Columns.INTERESTS,
+                UserModel.Columns.LANGUAGES,
+                UserModel.Columns.EMAIL,
+                UserModel.Columns.PHONE_NUMBER,
+                UserModel.Columns.NATIONALITY
         });
 
         matrixCursor.addRow(new Object[]{
@@ -126,25 +125,25 @@ public class UserModelIntegrationTests {
 
         ContentValues contentValues = userModel.toContentValues();
 
-        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(Columns.CODE)).isEqualTo(CODE);
-        assertThat(contentValues.getAsString(Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.BIRTHDAY)).isEqualTo(BIRTHDAY);
-        assertThat(contentValues.getAsString(Columns.EDUCATION)).isEqualTo(EDUCATION);
-        assertThat(contentValues.getAsString(Columns.GENDER)).isEqualTo(GENDER);
-        assertThat(contentValues.getAsString(Columns.JOB_TITLE)).isEqualTo(JOB_TITLE);
-        assertThat(contentValues.getAsString(Columns.SURNAME)).isEqualTo(SURNAME);
-        assertThat(contentValues.getAsString(Columns.FIRST_NAME)).isEqualTo(FIRST_NAME);
-        assertThat(contentValues.getAsString(Columns.INTRODUCTION)).isEqualTo(INTRODUCTION);
-        assertThat(contentValues.getAsString(Columns.EMPLOYER)).isEqualTo(EMPLOYER);
-        assertThat(contentValues.getAsString(Columns.INTERESTS)).isEqualTo(INTERESTS);
-        assertThat(contentValues.getAsString(Columns.LANGUAGES)).isEqualTo(LANGUAGES);
-        assertThat(contentValues.getAsString(Columns.EMAIL)).isEqualTo(EMAIL);
-        assertThat(contentValues.getAsString(Columns.PHONE_NUMBER)).isEqualTo(PHONE_NUMBER);
-        assertThat(contentValues.getAsString(Columns.NATIONALITY)).isEqualTo(NATIONALITY);
+        assertThat(contentValues.getAsLong(UserModel.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(UserModel.Columns.UID)).isEqualTo(UID);
+        assertThat(contentValues.getAsString(UserModel.Columns.CODE)).isEqualTo(CODE);
+        assertThat(contentValues.getAsString(UserModel.Columns.NAME)).isEqualTo(NAME);
+        assertThat(contentValues.getAsString(UserModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
+        assertThat(contentValues.getAsString(UserModel.Columns.CREATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(UserModel.Columns.LAST_UPDATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(UserModel.Columns.BIRTHDAY)).isEqualTo(BIRTHDAY);
+        assertThat(contentValues.getAsString(UserModel.Columns.EDUCATION)).isEqualTo(EDUCATION);
+        assertThat(contentValues.getAsString(UserModel.Columns.GENDER)).isEqualTo(GENDER);
+        assertThat(contentValues.getAsString(UserModel.Columns.JOB_TITLE)).isEqualTo(JOB_TITLE);
+        assertThat(contentValues.getAsString(UserModel.Columns.SURNAME)).isEqualTo(SURNAME);
+        assertThat(contentValues.getAsString(UserModel.Columns.FIRST_NAME)).isEqualTo(FIRST_NAME);
+        assertThat(contentValues.getAsString(UserModel.Columns.INTRODUCTION)).isEqualTo(INTRODUCTION);
+        assertThat(contentValues.getAsString(UserModel.Columns.EMPLOYER)).isEqualTo(EMPLOYER);
+        assertThat(contentValues.getAsString(UserModel.Columns.INTERESTS)).isEqualTo(INTERESTS);
+        assertThat(contentValues.getAsString(UserModel.Columns.LANGUAGES)).isEqualTo(LANGUAGES);
+        assertThat(contentValues.getAsString(UserModel.Columns.EMAIL)).isEqualTo(EMAIL);
+        assertThat(contentValues.getAsString(UserModel.Columns.PHONE_NUMBER)).isEqualTo(PHONE_NUMBER);
+        assertThat(contentValues.getAsString(UserModel.Columns.NATIONALITY)).isEqualTo(NATIONALITY);
     }
 }

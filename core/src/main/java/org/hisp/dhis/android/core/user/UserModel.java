@@ -41,60 +41,77 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 // TODO: Tests
 @AutoValue
 public abstract class UserModel extends BaseIdentifiableObjectModel {
+
+    public interface Columns extends BaseIdentifiableObjectModel.Columns {
+        String BIRTHDAY = "birthday";
+        String EDUCATION = "education";
+        String GENDER = "gender";
+        String JOB_TITLE = "jobTitle";
+        String SURNAME = "surname";
+        String FIRST_NAME = "firstName";
+        String INTRODUCTION = "introduction";
+        String EMPLOYER = "employer";
+        String INTERESTS = "interests";
+        String LANGUAGES = "languages";
+        String EMAIL = "email";
+        String PHONE_NUMBER = "phoneNumber";
+        String NATIONALITY = "nationality";
+    }
+    
     public static final String GENDER_MALE = "gender_male";
     public static final String GENDER_FEMALE = "gender_female";
     public static final String GENDER_OTHER = "gender_other";
 
     @Nullable
-    @ColumnName(UserContract.Columns.BIRTHDAY)
+    @ColumnName(Columns.BIRTHDAY)
     public abstract String birthday();
 
     @Nullable
-    @ColumnName(UserContract.Columns.EDUCATION)
+    @ColumnName(Columns.EDUCATION)
     public abstract String education();
 
     @Nullable
-    @ColumnName(UserContract.Columns.GENDER)
+    @ColumnName(Columns.GENDER)
     public abstract String gender();
 
     @Nullable
-    @ColumnName(UserContract.Columns.JOB_TITLE)
+    @ColumnName(Columns.JOB_TITLE)
     public abstract String jobTitle();
 
     @Nullable
-    @ColumnName(UserContract.Columns.SURNAME)
+    @ColumnName(Columns.SURNAME)
     public abstract String surname();
 
     @Nullable
-    @ColumnName(UserContract.Columns.FIRST_NAME)
+    @ColumnName(Columns.FIRST_NAME)
     public abstract String firstName();
 
     @Nullable
-    @ColumnName(UserContract.Columns.INTRODUCTION)
+    @ColumnName(Columns.INTRODUCTION)
     public abstract String introduction();
 
     @Nullable
-    @ColumnName(UserContract.Columns.EMPLOYER)
+    @ColumnName(Columns.EMPLOYER)
     public abstract String employer();
 
     @Nullable
-    @ColumnName(UserContract.Columns.INTERESTS)
+    @ColumnName(Columns.INTERESTS)
     public abstract String interests();
 
     @Nullable
-    @ColumnName(UserContract.Columns.LANGUAGES)
+    @ColumnName(Columns.LANGUAGES)
     public abstract String languages();
 
     @Nullable
-    @ColumnName(UserContract.Columns.EMAIL)
+    @ColumnName(Columns.EMAIL)
     public abstract String email();
 
     @Nullable
-    @ColumnName(UserContract.Columns.PHONE_NUMBER)
+    @ColumnName(Columns.PHONE_NUMBER)
     public abstract String phoneNumber();
 
     @Nullable
-    @ColumnName(UserContract.Columns.NATIONALITY)
+    @ColumnName(Columns.NATIONALITY)
     public abstract String nationality();
 
     @NonNull

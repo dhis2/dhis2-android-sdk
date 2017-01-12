@@ -65,22 +65,22 @@ public class ProgramIndicatorModelIntegrationTests {
     @Test
     public void create_shouldConvertToModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                ProgramIndicatorContract.Columns.ID,
-                ProgramIndicatorContract.Columns.UID,
-                ProgramIndicatorContract.Columns.CODE,
-                ProgramIndicatorContract.Columns.NAME,
-                ProgramIndicatorContract.Columns.DISPLAY_NAME,
-                ProgramIndicatorContract.Columns.CREATED,
-                ProgramIndicatorContract.Columns.LAST_UPDATED,
-                ProgramIndicatorContract.Columns.SHORT_NAME,
-                ProgramIndicatorContract.Columns.DISPLAY_SHORT_NAME,
-                ProgramIndicatorContract.Columns.DESCRIPTION,
-                ProgramIndicatorContract.Columns.DISPLAY_DESCRIPTION,
-                ProgramIndicatorContract.Columns.DISPLAY_IN_FORM,
-                ProgramIndicatorContract.Columns.EXPRESSION,
-                ProgramIndicatorContract.Columns.DIMENSION_ITEM,
-                ProgramIndicatorContract.Columns.FILTER,
-                ProgramIndicatorContract.Columns.DECIMALS
+                ProgramIndicatorModel.Columns.ID,
+                ProgramIndicatorModel.Columns.UID,
+                ProgramIndicatorModel.Columns.CODE,
+                ProgramIndicatorModel.Columns.NAME,
+                ProgramIndicatorModel.Columns.DISPLAY_NAME,
+                ProgramIndicatorModel.Columns.CREATED,
+                ProgramIndicatorModel.Columns.LAST_UPDATED,
+                ProgramIndicatorModel.Columns.SHORT_NAME,
+                ProgramIndicatorModel.Columns.DISPLAY_SHORT_NAME,
+                ProgramIndicatorModel.Columns.DESCRIPTION,
+                ProgramIndicatorModel.Columns.DISPLAY_DESCRIPTION,
+                ProgramIndicatorModel.Columns.DISPLAY_IN_FORM,
+                ProgramIndicatorModel.Columns.EXPRESSION,
+                ProgramIndicatorModel.Columns.DIMENSION_ITEM,
+                ProgramIndicatorModel.Columns.FILTER,
+                ProgramIndicatorModel.Columns.DECIMALS
         });
 
         matrixCursor.addRow(new Object[]{
@@ -142,21 +142,21 @@ public class ProgramIndicatorModelIntegrationTests {
 
         ContentValues contentValues = programIndicatorModel.toContentValues();
 
-        assertThat(contentValues.getAsLong(ProgramIndicatorContract.Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(ProgramIndicatorContract.Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(ProgramIndicatorContract.Columns.CODE)).isEqualTo(CODE);
-        assertThat(contentValues.getAsString(ProgramIndicatorContract.Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(ProgramIndicatorContract.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(ProgramIndicatorContract.Columns.CREATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(ProgramIndicatorContract.Columns.LAST_UPDATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(ProgramIndicatorContract.Columns.SHORT_NAME)).isEqualTo(SHORT_NAME);
-        assertThat(contentValues.getAsString(ProgramIndicatorContract.Columns.DISPLAY_SHORT_NAME)).isEqualTo(DISPLAY_SHORT_NAME);
-        assertThat(contentValues.getAsString(ProgramIndicatorContract.Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
-        assertThat(contentValues.getAsString(ProgramIndicatorContract.Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
-        assertThat(contentValues.getAsBoolean(ProgramIndicatorContract.Columns.DISPLAY_IN_FORM)).isEqualTo(DISPLAY_IN_FORM);
-        assertThat(contentValues.getAsString(ProgramIndicatorContract.Columns.EXPRESSION)).isEqualTo(EXPRESSION);
-        assertThat(contentValues.getAsString(ProgramIndicatorContract.Columns.DIMENSION_ITEM)).isEqualTo(DIMENSION_ITEM);
-        assertThat(contentValues.getAsString(ProgramIndicatorContract.Columns.FILTER)).isEqualTo(FILTER);
-        assertThat(contentValues.getAsInteger(ProgramIndicatorContract.Columns.DECIMALS)).isEqualTo(DECIMALS);
+        assertThat(contentValues.getAsLong(ProgramIndicatorModel.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(ProgramIndicatorModel.Columns.UID)).isEqualTo(UID);
+        assertThat(contentValues.getAsString(ProgramIndicatorModel.Columns.CODE)).isEqualTo(CODE);
+        assertThat(contentValues.getAsString(ProgramIndicatorModel.Columns.NAME)).isEqualTo(NAME);
+        assertThat(contentValues.getAsString(ProgramIndicatorModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
+        assertThat(contentValues.getAsString(ProgramIndicatorModel.Columns.CREATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(ProgramIndicatorModel.Columns.LAST_UPDATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(ProgramIndicatorModel.Columns.SHORT_NAME)).isEqualTo(SHORT_NAME);
+        assertThat(contentValues.getAsString(ProgramIndicatorModel.Columns.DISPLAY_SHORT_NAME)).isEqualTo(DISPLAY_SHORT_NAME);
+        assertThat(contentValues.getAsString(ProgramIndicatorModel.Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
+        assertThat(contentValues.getAsString(ProgramIndicatorModel.Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
+        assertThat(contentValues.getAsBoolean(ProgramIndicatorModel.Columns.DISPLAY_IN_FORM)).isEqualTo(DISPLAY_IN_FORM);
+        assertThat(contentValues.getAsString(ProgramIndicatorModel.Columns.EXPRESSION)).isEqualTo(EXPRESSION);
+        assertThat(contentValues.getAsString(ProgramIndicatorModel.Columns.DIMENSION_ITEM)).isEqualTo(DIMENSION_ITEM);
+        assertThat(contentValues.getAsString(ProgramIndicatorModel.Columns.FILTER)).isEqualTo(FILTER);
+        assertThat(contentValues.getAsInteger(ProgramIndicatorModel.Columns.DECIMALS)).isEqualTo(DECIMALS);
     }
 }

@@ -6,7 +6,6 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.FormType;
-import org.hisp.dhis.android.core.program.ProgramStageContract.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -47,30 +46,30 @@ public class ProgramStageModelIntegrationTest {
 
     public static ContentValues create(long id, String uid, String programId) {
         ContentValues programStage = new ContentValues();
-        programStage.put(Columns.ID, id);
-        programStage.put(Columns.UID, uid);
-        programStage.put(Columns.CODE, CODE);
-        programStage.put(Columns.NAME, NAME);
-        programStage.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
-        programStage.put(Columns.CREATED, DATE);
-        programStage.put(Columns.LAST_UPDATED, DATE);
-        programStage.put(Columns.EXECUTION_DATE_LABEL, EXECUTION_DATE_LABEL);
-        programStage.put(Columns.ALLOW_GENERATE_NEXT_VISIT, ALLOW_GENERATE_NEXT_VISIT);
-        programStage.put(Columns.VALID_COMPLETE_ONLY, VALID_COMPLETE_ONLY);
-        programStage.put(Columns.REPORT_DATE_TO_USE, REPORT_DATE_TO_USE);
-        programStage.put(Columns.OPEN_AFTER_ENROLLMENT, OPEN_AFTER_ENROLLMENT);
-        programStage.put(Columns.REPEATABLE, REPEATABLE);
-        programStage.put(Columns.CAPTURE_COORDINATES, CAPTURE_COORDINATES);
-        programStage.put(Columns.FORM_TYPE, FORM_TYPE.name());
-        programStage.put(Columns.DISPLAY_GENERATE_EVENT_BOX, DISPLAY_GENERATE_EVENT_BOX);
-        programStage.put(Columns.GENERATED_BY_ENROLMENT_DATE, GENERATED_BY_ENROLMENT_DATE);
-        programStage.put(Columns.AUTO_GENERATE_EVENT, AUTO_GENERATE_EVENT);
-        programStage.put(Columns.SORT_ORDER, SORT_ORDER);
-        programStage.put(Columns.HIDE_DUE_DATE, HIDE_DUE_DATE);
-        programStage.put(Columns.BLOCK_ENTRY_FORM, BLOCK_ENTRY_FORM);
-        programStage.put(Columns.MIN_DAYS_FROM_START, MIN_DAYS_FROM_START);
-        programStage.put(Columns.STANDARD_INTERVAL, STANDARD_INTERVAL);
-        programStage.put(Columns.PROGRAM, programId);
+        programStage.put(ProgramStageModel.Columns.ID, id);
+        programStage.put(ProgramStageModel.Columns.UID, uid);
+        programStage.put(ProgramStageModel.Columns.CODE, CODE);
+        programStage.put(ProgramStageModel.Columns.NAME, NAME);
+        programStage.put(ProgramStageModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
+        programStage.put(ProgramStageModel.Columns.CREATED, DATE);
+        programStage.put(ProgramStageModel.Columns.LAST_UPDATED, DATE);
+        programStage.put(ProgramStageModel.Columns.EXECUTION_DATE_LABEL, EXECUTION_DATE_LABEL);
+        programStage.put(ProgramStageModel.Columns.ALLOW_GENERATE_NEXT_VISIT, ALLOW_GENERATE_NEXT_VISIT);
+        programStage.put(ProgramStageModel.Columns.VALID_COMPLETE_ONLY, VALID_COMPLETE_ONLY);
+        programStage.put(ProgramStageModel.Columns.REPORT_DATE_TO_USE, REPORT_DATE_TO_USE);
+        programStage.put(ProgramStageModel.Columns.OPEN_AFTER_ENROLLMENT, OPEN_AFTER_ENROLLMENT);
+        programStage.put(ProgramStageModel.Columns.REPEATABLE, REPEATABLE);
+        programStage.put(ProgramStageModel.Columns.CAPTURE_COORDINATES, CAPTURE_COORDINATES);
+        programStage.put(ProgramStageModel.Columns.FORM_TYPE, FORM_TYPE.name());
+        programStage.put(ProgramStageModel.Columns.DISPLAY_GENERATE_EVENT_BOX, DISPLAY_GENERATE_EVENT_BOX);
+        programStage.put(ProgramStageModel.Columns.GENERATED_BY_ENROLMENT_DATE, GENERATED_BY_ENROLMENT_DATE);
+        programStage.put(ProgramStageModel.Columns.AUTO_GENERATE_EVENT, AUTO_GENERATE_EVENT);
+        programStage.put(ProgramStageModel.Columns.SORT_ORDER, SORT_ORDER);
+        programStage.put(ProgramStageModel.Columns.HIDE_DUE_DATE, HIDE_DUE_DATE);
+        programStage.put(ProgramStageModel.Columns.BLOCK_ENTRY_FORM, BLOCK_ENTRY_FORM);
+        programStage.put(ProgramStageModel.Columns.MIN_DAYS_FROM_START, MIN_DAYS_FROM_START);
+        programStage.put(ProgramStageModel.Columns.STANDARD_INTERVAL, STANDARD_INTERVAL);
+        programStage.put(ProgramStageModel.Columns.PROGRAM, programId);
 
         return programStage;
     }
@@ -78,30 +77,30 @@ public class ProgramStageModelIntegrationTest {
     @Test
     public void create_shouldConvertToModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                Columns.ID,
-                Columns.UID,
-                Columns.CODE,
-                Columns.NAME,
-                Columns.DISPLAY_NAME,
-                Columns.CREATED,
-                Columns.LAST_UPDATED,
-                Columns.EXECUTION_DATE_LABEL,
-                Columns.ALLOW_GENERATE_NEXT_VISIT,
-                Columns.VALID_COMPLETE_ONLY,
-                Columns.REPORT_DATE_TO_USE,
-                Columns.OPEN_AFTER_ENROLLMENT,
-                Columns.REPEATABLE,
-                Columns.CAPTURE_COORDINATES,
-                Columns.FORM_TYPE,
-                Columns.DISPLAY_GENERATE_EVENT_BOX,
-                Columns.GENERATED_BY_ENROLMENT_DATE,
-                Columns.AUTO_GENERATE_EVENT,
-                Columns.SORT_ORDER,
-                Columns.HIDE_DUE_DATE,
-                Columns.BLOCK_ENTRY_FORM,
-                Columns.MIN_DAYS_FROM_START,
-                Columns.STANDARD_INTERVAL,
-                Columns.PROGRAM
+                ProgramStageModel.Columns.ID,
+                ProgramStageModel.Columns.UID,
+                ProgramStageModel.Columns.CODE,
+                ProgramStageModel.Columns.NAME,
+                ProgramStageModel.Columns.DISPLAY_NAME,
+                ProgramStageModel.Columns.CREATED,
+                ProgramStageModel.Columns.LAST_UPDATED,
+                ProgramStageModel.Columns.EXECUTION_DATE_LABEL,
+                ProgramStageModel.Columns.ALLOW_GENERATE_NEXT_VISIT,
+                ProgramStageModel.Columns.VALID_COMPLETE_ONLY,
+                ProgramStageModel.Columns.REPORT_DATE_TO_USE,
+                ProgramStageModel.Columns.OPEN_AFTER_ENROLLMENT,
+                ProgramStageModel.Columns.REPEATABLE,
+                ProgramStageModel.Columns.CAPTURE_COORDINATES,
+                ProgramStageModel.Columns.FORM_TYPE,
+                ProgramStageModel.Columns.DISPLAY_GENERATE_EVENT_BOX,
+                ProgramStageModel.Columns.GENERATED_BY_ENROLMENT_DATE,
+                ProgramStageModel.Columns.AUTO_GENERATE_EVENT,
+                ProgramStageModel.Columns.SORT_ORDER,
+                ProgramStageModel.Columns.HIDE_DUE_DATE,
+                ProgramStageModel.Columns.BLOCK_ENTRY_FORM,
+                ProgramStageModel.Columns.MIN_DAYS_FROM_START,
+                ProgramStageModel.Columns.STANDARD_INTERVAL,
+                ProgramStageModel.Columns.PROGRAM
         });
 
         matrixCursor.addRow(new Object[]{
@@ -190,29 +189,29 @@ public class ProgramStageModelIntegrationTest {
 
         ContentValues contentValues = programStage.toContentValues();
 
-        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(Columns.CODE)).isEqualTo(CODE);
-        assertThat(contentValues.getAsString(Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.EXECUTION_DATE_LABEL)).isEqualTo(EXECUTION_DATE_LABEL);
-        assertThat(contentValues.getAsBoolean(Columns.ALLOW_GENERATE_NEXT_VISIT)).isFalse();
-        assertThat(contentValues.getAsBoolean(Columns.VALID_COMPLETE_ONLY)).isFalse();
-        assertThat(contentValues.getAsString(Columns.REPORT_DATE_TO_USE)).isEqualTo(REPORT_DATE_TO_USE);
-        assertThat(contentValues.getAsBoolean(Columns.OPEN_AFTER_ENROLLMENT)).isFalse();
-        assertThat(contentValues.getAsBoolean(Columns.REPEATABLE)).isFalse();
-        assertThat(contentValues.getAsBoolean(Columns.CAPTURE_COORDINATES)).isTrue();
-        assertThat(contentValues.getAsString(Columns.FORM_TYPE)).isEqualTo(FORM_TYPE.name());
-        assertThat(contentValues.getAsBoolean(Columns.DISPLAY_GENERATE_EVENT_BOX)).isTrue();
-        assertThat(contentValues.getAsBoolean(Columns.GENERATED_BY_ENROLMENT_DATE)).isTrue();
-        assertThat(contentValues.getAsBoolean(Columns.AUTO_GENERATE_EVENT)).isFalse();
-        assertThat(contentValues.getAsInteger(Columns.SORT_ORDER)).isEqualTo(SORT_ORDER);
-        assertThat(contentValues.getAsBoolean(Columns.HIDE_DUE_DATE)).isTrue();
-        assertThat(contentValues.getAsBoolean(Columns.BLOCK_ENTRY_FORM)).isFalse();
-        assertThat(contentValues.getAsInteger(Columns.MIN_DAYS_FROM_START)).isEqualTo(MIN_DAYS_FROM_START);
-        assertThat(contentValues.getAsInteger(Columns.STANDARD_INTERVAL)).isEqualTo(STANDARD_INTERVAL);
-        assertThat(contentValues.getAsString(Columns.PROGRAM)).isEqualTo(PROGRAM);
+        assertThat(contentValues.getAsLong(ProgramStageModel.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(ProgramStageModel.Columns.UID)).isEqualTo(UID);
+        assertThat(contentValues.getAsString(ProgramStageModel.Columns.CODE)).isEqualTo(CODE);
+        assertThat(contentValues.getAsString(ProgramStageModel.Columns.NAME)).isEqualTo(NAME);
+        assertThat(contentValues.getAsString(ProgramStageModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
+        assertThat(contentValues.getAsString(ProgramStageModel.Columns.CREATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(ProgramStageModel.Columns.LAST_UPDATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(ProgramStageModel.Columns.EXECUTION_DATE_LABEL)).isEqualTo(EXECUTION_DATE_LABEL);
+        assertThat(contentValues.getAsBoolean(ProgramStageModel.Columns.ALLOW_GENERATE_NEXT_VISIT)).isFalse();
+        assertThat(contentValues.getAsBoolean(ProgramStageModel.Columns.VALID_COMPLETE_ONLY)).isFalse();
+        assertThat(contentValues.getAsString(ProgramStageModel.Columns.REPORT_DATE_TO_USE)).isEqualTo(REPORT_DATE_TO_USE);
+        assertThat(contentValues.getAsBoolean(ProgramStageModel.Columns.OPEN_AFTER_ENROLLMENT)).isFalse();
+        assertThat(contentValues.getAsBoolean(ProgramStageModel.Columns.REPEATABLE)).isFalse();
+        assertThat(contentValues.getAsBoolean(ProgramStageModel.Columns.CAPTURE_COORDINATES)).isTrue();
+        assertThat(contentValues.getAsString(ProgramStageModel.Columns.FORM_TYPE)).isEqualTo(FORM_TYPE.name());
+        assertThat(contentValues.getAsBoolean(ProgramStageModel.Columns.DISPLAY_GENERATE_EVENT_BOX)).isTrue();
+        assertThat(contentValues.getAsBoolean(ProgramStageModel.Columns.GENERATED_BY_ENROLMENT_DATE)).isTrue();
+        assertThat(contentValues.getAsBoolean(ProgramStageModel.Columns.AUTO_GENERATE_EVENT)).isFalse();
+        assertThat(contentValues.getAsInteger(ProgramStageModel.Columns.SORT_ORDER)).isEqualTo(SORT_ORDER);
+        assertThat(contentValues.getAsBoolean(ProgramStageModel.Columns.HIDE_DUE_DATE)).isTrue();
+        assertThat(contentValues.getAsBoolean(ProgramStageModel.Columns.BLOCK_ENTRY_FORM)).isFalse();
+        assertThat(contentValues.getAsInteger(ProgramStageModel.Columns.MIN_DAYS_FROM_START)).isEqualTo(MIN_DAYS_FROM_START);
+        assertThat(contentValues.getAsInteger(ProgramStageModel.Columns.STANDARD_INTERVAL)).isEqualTo(STANDARD_INTERVAL);
+        assertThat(contentValues.getAsString(ProgramStageModel.Columns.PROGRAM)).isEqualTo(PROGRAM);
     }
 }

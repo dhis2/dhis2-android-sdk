@@ -7,13 +7,15 @@ import java.util.Date;
 
 public interface OrganisationUnitStore {
     long insert(
-            @NonNull String uid, @NonNull String code, @NonNull String name,
-            @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+            @NonNull String uid, @Nullable String code, @Nullable String name,
+            @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
             @Nullable String shortName, @Nullable String displayShortName,
             @Nullable String description, @Nullable String displayDescription,
             @Nullable String path, @Nullable Date openingDate, @Nullable Date closedDate,
             @Nullable String parent, @Nullable Integer level
     );
+
+    int delete();
 
     void close();
 }

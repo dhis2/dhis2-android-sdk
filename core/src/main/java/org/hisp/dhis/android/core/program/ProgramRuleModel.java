@@ -8,13 +8,12 @@ import android.support.annotation.Nullable;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectContract;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 
 @AutoValue
 public abstract class ProgramRuleModel extends BaseIdentifiableObjectModel {
 
-    public interface Columns extends BaseIdentifiableObjectContract.Columns {
+    public interface Columns extends BaseIdentifiableObjectModel.Columns {
         String PROGRAM_STAGE = "programStage";
         String PROGRAM = "program";
         String PRIORITY = "priority";

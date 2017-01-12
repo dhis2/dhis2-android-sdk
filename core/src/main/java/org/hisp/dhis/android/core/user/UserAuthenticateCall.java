@@ -10,6 +10,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 
 import java.io.IOException;
+import java.util.List;
 
 import retrofit2.Response;
 
@@ -70,6 +71,12 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
             isExecuted = true;
         }
 
+        List<AuthenticatedUserModel> authenticatedUsers = authenticatedUserStore.query();
+        if (!authenticatedUsers.isEmpty()) {
+            throw new IllegalStateException("Another user has already been authenticated: " +
+                    authenticatedUsers.get(0));
+        }
+
         Response<User> response = authenticate(basic(username, password));
         if (response.isSuccessful()) {
             saveUser(response.body());
@@ -124,7 +131,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         Long userId;
 
         // enclosing transaction in try-finally block in
-        // order to make sure that database won't be leaked
+        // order to make sure that database transaction won't be leaked
         try {
             // insert user model into user table
             userId = userStore.insert(

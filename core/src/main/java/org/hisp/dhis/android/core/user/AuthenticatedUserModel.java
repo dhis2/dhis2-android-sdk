@@ -13,16 +13,22 @@ import org.hisp.dhis.android.core.common.BaseModel;
 @AutoValue
 public abstract class AuthenticatedUserModel extends BaseModel {
 
+    public interface Columns extends BaseModel.Columns {
+        String USER = "user";
+        String CREDENTIALS = "credentials";
+    }
+
     @Nullable
-    @ColumnName(AuthenticatedUserContract.Columns.ID)
+    @ColumnName(Columns.ID)
+    @Override
     public abstract Long id();
 
     @Nullable
-    @ColumnName(AuthenticatedUserContract.Columns.USER)
+    @ColumnName(Columns.USER)
     public abstract String user();
 
     @Nullable
-    @ColumnName(AuthenticatedUserContract.Columns.CREDENTIALS)
+    @ColumnName(Columns.CREDENTIALS)
     public abstract String credentials();
 
     @NonNull
@@ -40,6 +46,7 @@ public abstract class AuthenticatedUserModel extends BaseModel {
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
+        @Override
         public abstract Builder id(@Nullable Long id);
 
         public abstract Builder user(@Nullable String user);

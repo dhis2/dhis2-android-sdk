@@ -14,11 +14,11 @@ import java.io.IOException;
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
-public class UserOrganisationUnitStoreIntegrationsTests extends AbsStoreTestCase {
+public class UserOrganisationUnitLinkStoreIntegrationsTests extends AbsStoreTestCase {
     private static final String[] USER_ORGANISATION_UNITS_PROJECTION = {
-            UserOrganisationUnitLinkContract.Columns.USER,
-            UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT,
-            UserOrganisationUnitLinkContract.Columns.ORGANISATION_UNIT_SCOPE
+            UserOrganisationUnitLinkModel.Columns.USER,
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT,
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE
     };
 
     private UserOrganisationUnitLinkStore organisationUnitLinkStore;
@@ -56,6 +56,29 @@ public class UserOrganisationUnitStoreIntegrationsTests extends AbsStoreTestCase
                         "test_organisation_unit_uid",
                         "test_organisation_unit_scope"
                 ).isExhausted();
+    }
+
+    @Test
+    public void delete_shouldDeleteAllRows() {
+        ContentValues user = UserStoreIntegrationTests
+                .create(1L, "test_user_uid");
+        ContentValues organisationUnit = OrganisationUnitStoreIntegrationTests
+                .create(1L, "test_organisation_unit_uid");
+        ContentValues userOrganisationUnitLink = new ContentValues();
+        userOrganisationUnitLink.put(UserOrganisationUnitLinkModel.Columns.USER, "test_user_uid");
+        userOrganisationUnitLink.put(UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT, "test_organisation_unit_uid");
+        userOrganisationUnitLink.put(UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE, "test_organisation_unit_scope");
+
+        database().insert(DbOpenHelper.Tables.USER, null, user);
+        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
+        database().insert(DbOpenHelper.Tables.USER_ORGANISATION_UNIT, null, userOrganisationUnitLink);
+
+        int deleted = organisationUnitLinkStore.delete();
+
+        Cursor cursor = database().query(DbOpenHelper.Tables.USER_ORGANISATION_UNIT,
+                null, null, null, null, null, null);
+        assertThat(deleted).isEqualTo(1L);
+        assertThatCursor(cursor).isExhausted();
     }
 
     @Test

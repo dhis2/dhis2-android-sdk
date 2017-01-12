@@ -46,7 +46,7 @@ public abstract class EnumColumnAdapter<T extends Enum<T>> implements ColumnType
         T enumModel = null;
         if (sourceValue != null) {
             try {
-                enumModel = T.valueOf(getEnumClass(), sourceValue);
+                enumModel = Enum.valueOf(getEnumClass(), sourceValue);
             } catch (Exception exception) {
                 throw new RuntimeException("Unknown " + getEnumClass().getSimpleName() + " type", exception);
             }

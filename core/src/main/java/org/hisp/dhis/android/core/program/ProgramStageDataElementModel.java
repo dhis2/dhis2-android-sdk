@@ -9,10 +9,19 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.program.ProgramStageDataElementContract.Columns;
 
 @AutoValue
 public abstract class ProgramStageDataElementModel extends BaseIdentifiableObjectModel {
+
+    public interface Columns extends BaseIdentifiableObjectModel.Columns {
+        String DISPLAY_IN_REPORTS = "displayInReports";
+        String COMPULSORY = "compulsory";
+        String ALLOW_PROVIDED_ELSEWHERE = "allowProvidedElsewhere";
+        String SORT_ORDER = "sortOrder";
+        String ALLOW_FUTURE_DATE = "allowFutureDate";
+        String DATA_ELEMENT = "dataElement";
+        String PROGRAM_STAGE_SECTION = "programStageSection";
+    }
 
     @Nullable
     @ColumnName(Columns.DISPLAY_IN_REPORTS)

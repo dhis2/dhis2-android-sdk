@@ -28,15 +28,20 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.provider.BaseColumns;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
 public abstract class BaseModel implements Model {
 
+    public interface Columns {
+        String ID = BaseColumns._ID;
+    }
+
     @Override
     @Nullable
-    @ColumnName(BaseModelContract.Columns.ID)
+    @ColumnName(BaseModel.Columns.ID)
     public abstract Long id();
 
     protected static abstract class Builder<T extends Builder> {

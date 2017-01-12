@@ -27,8 +27,8 @@ public class ConstantModelIntegrationTest {
 
     private ConstantModel createConstantModel() {
         MatrixCursor matrixCursor = new MatrixCursor(new String[] {
-                ConstantContract.Columns.ID, ConstantContract.Columns.UID, ConstantContract.Columns.CODE, ConstantContract.Columns.NAME,
-                ConstantContract.Columns.DISPLAY_NAME, ConstantContract.Columns.CREATED, ConstantContract.Columns.LAST_UPDATED, ConstantContract.Columns.VALUE
+                ConstantModel.Columns.ID, ConstantModel.Columns.UID, ConstantModel.Columns.CODE, ConstantModel.Columns.NAME,
+                ConstantModel.Columns.DISPLAY_NAME, ConstantModel.Columns.CREATED, ConstantModel.Columns.LAST_UPDATED, ConstantModel.Columns.VALUE
         });
 
         matrixCursor.addRow(new Object[]{ID, UID, CODE, NAME, DISPLAY_NAME, DATE_STRING, DATE_STRING, VALUE});
@@ -50,7 +50,7 @@ public class ConstantModelIntegrationTest {
         assertThat(constantModel.displayName()).isEqualTo(DISPLAY_NAME);
         assertThat(constantModel.created()).isEqualTo(date);
         assertThat(constantModel.lastUpdated()).isEqualTo(date);
-        assertThat(constantModel.value()).isEqualTo(VALUE); // Undeprecated in later versions of Truth
+        assertThat(constantModel.value()).isEqualTo(VALUE);
     }
 
     @Test
@@ -58,14 +58,14 @@ public class ConstantModelIntegrationTest {
         ConstantModel constantModel = createConstantModel();
         ContentValues contentValues = constantModel.toContentValues();
 
-        assertThat(contentValues.getAsLong(ConstantContract.Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(ConstantContract.Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(ConstantContract.Columns.CODE)).isEqualTo(CODE);
-        assertThat(contentValues.getAsString(ConstantContract.Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(ConstantContract.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(ConstantContract.Columns.CREATED)).isEqualTo(DATE_STRING);
-        assertThat(contentValues.getAsString(ConstantContract.Columns.LAST_UPDATED)).isEqualTo(DATE_STRING);
-        assertThat(contentValues.getAsDouble(ConstantContract.Columns.VALUE)).isEqualTo(VALUE); // Undeprecated in later versions of Truth
+        assertThat(contentValues.getAsLong(ConstantModel.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(ConstantModel.Columns.UID)).isEqualTo(UID);
+        assertThat(contentValues.getAsString(ConstantModel.Columns.CODE)).isEqualTo(CODE);
+        assertThat(contentValues.getAsString(ConstantModel.Columns.NAME)).isEqualTo(NAME);
+        assertThat(contentValues.getAsString(ConstantModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
+        assertThat(contentValues.getAsString(ConstantModel.Columns.CREATED)).isEqualTo(DATE_STRING);
+        assertThat(contentValues.getAsString(ConstantModel.Columns.LAST_UPDATED)).isEqualTo(DATE_STRING);
+        assertThat(contentValues.getAsDouble(ConstantModel.Columns.VALUE)).isEqualTo(VALUE); // Undeprecated in later versions of Truth
 
     }
 }

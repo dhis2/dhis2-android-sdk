@@ -2,8 +2,6 @@ package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 
-import org.hisp.dhis.android.core.program.ProgramContract.Columns;
-
 public class CreateProgramUtils {
     /**
      * BaseIdentifiable propertites
@@ -54,35 +52,35 @@ public class CreateProgramUtils {
      */
     public static ContentValues create(long id, String uid) {
         ContentValues program = new ContentValues();
-        program.put(Columns.ID, id);
-        program.put(Columns.UID, uid);
-        program.put(Columns.CODE, CODE);
-        program.put(Columns.NAME, NAME);
-        program.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
-        program.put(Columns.CREATED, DATE);
-        program.put(Columns.LAST_UPDATED, DATE);
-        program.put(Columns.SHORT_NAME, SHORT_NAME);
-        program.put(Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
-        program.put(Columns.DESCRIPTION, DESCRIPTION);
-        program.put(Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
-        program.put(Columns.VERSION, VERSION);
-        program.put(Columns.ONLY_ENROLL_ONCE, ONLY_ENROLL_ONCE);
-        program.put(Columns.ENROLLMENT_DATE_LABEL, ENROLLMENT_DATE_LABEL);
-        program.put(Columns.DISPLAY_INCIDENT_DATE, DISPLAY_INCIDENT_DATE);
-        program.put(Columns.INCIDENT_DATE_LABEL, INCIDENT_DATE_LABEL);
-        program.put(Columns.REGISTRATION, REGISTRATION);
-        program.put(Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE, SELECT_ENROLLMENT_DATES_IN_FUTURE);
-        program.put(Columns.DATA_ENTRY_METHOD, DATA_ENTRY_METHOD);
-        program.put(Columns.IGNORE_OVERDUE_EVENTS, IGNORE_OVERDUE_EVENTS);
-        program.put(Columns.RELATIONSHIP_FROM_A, RELATIONSHIP_FROM_A);
-        program.put(Columns.SELECT_INCIDENT_DATES_IN_FUTURE, SELECT_INCIDENT_DATES_IN_FUTURE);
-        program.put(Columns.CAPTURE_COORDINATES, CAPTURE_COORDINATES);
-        program.put(Columns.USE_FIRST_STAGE_DURING_REGISTRATION, USE_FIRST_STAGE_DURING_REGISTRATION);
-        program.put(Columns.DISPLAY_FRONT_PAGE_LIST, DISPLAY_FRONT_PAGE_LIST);
-        program.put(Columns.PROGRAM_TYPE, PROGRAM_TYPE.name());
-        program.put(Columns.RELATIONSHIP_TYPE, RELATIONSHIP_TYPE);
-        program.put(Columns.RELATIONSHIP_TEXT, RELATIONSHIP_TEXT);
-        program.put(Columns.RELATED_PROGRAM, RELATED_PROGRAM);
+        program.put(ProgramModel.Columns.ID, id);
+        program.put(ProgramModel.Columns.UID, uid);
+        program.put(ProgramModel.Columns.CODE, CODE);
+        program.put(ProgramModel.Columns.NAME, NAME);
+        program.put(ProgramModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
+        program.put(ProgramModel.Columns.CREATED, DATE);
+        program.put(ProgramModel.Columns.LAST_UPDATED, DATE);
+        program.put(ProgramModel.Columns.SHORT_NAME, SHORT_NAME);
+        program.put(ProgramModel.Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
+        program.put(ProgramModel.Columns.DESCRIPTION, DESCRIPTION);
+        program.put(ProgramModel.Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
+        program.put(ProgramModel.Columns.VERSION, VERSION);
+        program.put(ProgramModel.Columns.ONLY_ENROLL_ONCE, ONLY_ENROLL_ONCE);
+        program.put(ProgramModel.Columns.ENROLLMENT_DATE_LABEL, ENROLLMENT_DATE_LABEL);
+        program.put(ProgramModel.Columns.DISPLAY_INCIDENT_DATE, DISPLAY_INCIDENT_DATE);
+        program.put(ProgramModel.Columns.INCIDENT_DATE_LABEL, INCIDENT_DATE_LABEL);
+        program.put(ProgramModel.Columns.REGISTRATION, REGISTRATION);
+        program.put(ProgramModel.Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE, SELECT_ENROLLMENT_DATES_IN_FUTURE);
+        program.put(ProgramModel.Columns.DATA_ENTRY_METHOD, DATA_ENTRY_METHOD);
+        program.put(ProgramModel.Columns.IGNORE_OVERDUE_EVENTS, IGNORE_OVERDUE_EVENTS);
+        program.put(ProgramModel.Columns.RELATIONSHIP_FROM_A, RELATIONSHIP_FROM_A);
+        program.put(ProgramModel.Columns.SELECT_INCIDENT_DATES_IN_FUTURE, SELECT_INCIDENT_DATES_IN_FUTURE);
+        program.put(ProgramModel.Columns.CAPTURE_COORDINATES, CAPTURE_COORDINATES);
+        program.put(ProgramModel.Columns.USE_FIRST_STAGE_DURING_REGISTRATION, USE_FIRST_STAGE_DURING_REGISTRATION);
+        program.put(ProgramModel.Columns.DISPLAY_FRONT_PAGE_LIST, DISPLAY_FRONT_PAGE_LIST);
+        program.put(ProgramModel.Columns.PROGRAM_TYPE, PROGRAM_TYPE.name());
+        program.put(ProgramModel.Columns.RELATIONSHIP_TYPE, RELATIONSHIP_TYPE);
+        program.put(ProgramModel.Columns.RELATIONSHIP_TEXT, RELATIONSHIP_TEXT);
+        program.put(ProgramModel.Columns.RELATED_PROGRAM, RELATED_PROGRAM);
 
         return program;
     }

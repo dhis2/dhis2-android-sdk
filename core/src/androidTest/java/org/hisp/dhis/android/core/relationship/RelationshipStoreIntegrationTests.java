@@ -27,9 +27,9 @@ public class RelationshipStoreIntegrationTests extends AbsStoreTestCase {
 
     //Relationship projection:
     private static final String[] RELATIONSHIP_PROJECTION = {
-            RelationshipContract.Columns.TRACKED_ENTITY_INSTANCE_A,
-            RelationshipContract.Columns.TRACKED_ENTITY_INSTANCE_B,
-            RelationshipContract.Columns.RELATIONSHIP_TYPE
+            RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A,
+            RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B,
+            RelationshipModel.Columns.RELATIONSHIP_TYPE
     };
 
     private RelationshipStore relationshipStore;

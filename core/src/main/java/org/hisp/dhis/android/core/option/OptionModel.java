@@ -13,6 +13,10 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 @AutoValue
 public abstract class OptionModel extends BaseIdentifiableObjectModel {
 
+    public interface Columns extends BaseIdentifiableObjectModel.Columns {
+        String OPTION_SET = "optionSet";
+    }
+
     public static OptionModel create(Cursor cursor) {
         return AutoValue_OptionModel.createFromCursor(cursor);
     }
@@ -22,7 +26,7 @@ public abstract class OptionModel extends BaseIdentifiableObjectModel {
     }
 
     @Nullable
-    @ColumnName(OptionContract.Columns.OPTION_SET)
+    @ColumnName(Columns.OPTION_SET)
     public abstract String optionSet();
 
     @NonNull

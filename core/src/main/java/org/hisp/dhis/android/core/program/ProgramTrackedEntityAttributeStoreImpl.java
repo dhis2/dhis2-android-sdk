@@ -42,21 +42,21 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEntityAttributeStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + DbOpenHelper.Tables.PROGRAM_TRACKED_ENTITY_ATTRIBUTE + " (" +
-            ProgramTrackedEntityAttributeContract.Columns.UID + ", " +
-            ProgramTrackedEntityAttributeContract.Columns.CODE + ", " +
-            ProgramTrackedEntityAttributeContract.Columns.NAME + ", " +
-            ProgramTrackedEntityAttributeContract.Columns.DISPLAY_NAME + ", " +
-            ProgramTrackedEntityAttributeContract.Columns.CREATED + ", " +
-            ProgramTrackedEntityAttributeContract.Columns.LAST_UPDATED + ", " +
-            ProgramTrackedEntityAttributeContract.Columns.SHORT_NAME + ", " +
-            ProgramTrackedEntityAttributeContract.Columns.DISPLAY_SHORT_NAME + ", " +
-            ProgramTrackedEntityAttributeContract.Columns.DESCRIPTION + ", " +
-            ProgramTrackedEntityAttributeContract.Columns.DISPLAY_DESCRIPTION + ", " +
-            ProgramTrackedEntityAttributeContract.Columns.MANDATORY + ", " +
-            ProgramTrackedEntityAttributeContract.Columns.TRACKED_ENTITY_ATTRIBUTE + ", " +
-            ProgramTrackedEntityAttributeContract.Columns.VALUE_TYPE + ", " +
-            ProgramTrackedEntityAttributeContract.Columns.ALLOW_FUTURE_DATES + ", " +
-            ProgramTrackedEntityAttributeContract.Columns.DISPLAY_IN_LIST +
+            ProgramTrackedEntityAttributeModel.Columns.UID + ", " +
+            ProgramTrackedEntityAttributeModel.Columns.CODE + ", " +
+            ProgramTrackedEntityAttributeModel.Columns.NAME + ", " +
+            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_NAME + ", " +
+            ProgramTrackedEntityAttributeModel.Columns.CREATED + ", " +
+            ProgramTrackedEntityAttributeModel.Columns.LAST_UPDATED + ", " +
+            ProgramTrackedEntityAttributeModel.Columns.SHORT_NAME + ", " +
+            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME + ", " +
+            ProgramTrackedEntityAttributeModel.Columns.DESCRIPTION + ", " +
+            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION + ", " +
+            ProgramTrackedEntityAttributeModel.Columns.MANDATORY + ", " +
+            ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ", " +
+            ProgramTrackedEntityAttributeModel.Columns.VALUE_TYPE + ", " +
+            ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATES + ", " +
+            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST +
 
             ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 

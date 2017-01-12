@@ -36,19 +36,31 @@ import android.support.annotation.Nullable;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.BaseModel;
+
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueContract.Columns.CREATED;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueContract.Columns.DATA_ELEMENT;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueContract.Columns.EVENT;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueContract.Columns.LAST_UPDATED;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueContract.Columns.PROVIDED_ELSEWHERE;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueContract.Columns.STORED_BY;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueContract.Columns.VALUE;
+import static org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel.Columns.CREATED;
+import static org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel.Columns.DATA_ELEMENT;
+import static org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel.Columns.EVENT;
+import static org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel.Columns.LAST_UPDATED;
+import static org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel.Columns.PROVIDED_ELSEWHERE;
+import static org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel.Columns.STORED_BY;
+import static org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel.Columns.VALUE;
 
 //TODO: Tests
 @AutoValue
 public abstract class TrackedEntityDataValueModel {
+
+    public interface Columns extends BaseModel.Columns {
+        String EVENT = "event";
+        String DATA_ELEMENT = "dataElement";
+        String STORED_BY = "storedBy";
+        String VALUE = "value";
+        String CREATED = "created";
+        String LAST_UPDATED = "lastUpdated";
+        String PROVIDED_ELSEWHERE = "providedElsewhere";
+    }
 
     @NonNull
     public static TrackedEntityDataValueModel.Builder builder() {

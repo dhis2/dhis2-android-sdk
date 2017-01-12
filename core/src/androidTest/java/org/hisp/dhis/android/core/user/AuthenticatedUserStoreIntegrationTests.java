@@ -17,6 +17,12 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
+    private static final String[] PROJECTION = {
+            AuthenticatedUserModel.Columns.ID,
+            AuthenticatedUserModel.Columns.USER,
+            AuthenticatedUserModel.Columns.CREDENTIALS,
+    };
+
     private AuthenticatedUserStore authenticatedUserStore;
 
     @Before
@@ -36,7 +42,7 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
         long rowId = authenticatedUserStore.insert("test_user_uid", "test_user_credentials");
 
         Cursor cursor = database().query(DbOpenHelper.Tables.AUTHENTICATED_USER,
-                null, null, null, null, null, null);
+                PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor)
@@ -47,11 +53,10 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
     @Test
     public void query_shouldReturnPersistedRows() {
         ContentValues authenticatedUser = new ContentValues();
-        authenticatedUser.put(AuthenticatedUserContract.Columns.USER, "test_user_uid");
-        authenticatedUser.put(AuthenticatedUserContract.Columns.CREDENTIALS, "test_user_credentials");
+        authenticatedUser.put(AuthenticatedUserModel.Columns.USER, "test_user_uid");
+        authenticatedUser.put(AuthenticatedUserModel.Columns.CREDENTIALS, "test_user_credentials");
 
-        database().insert(DbOpenHelper.Tables.AUTHENTICATED_USER,
-                null, authenticatedUser);
+        database().insert(DbOpenHelper.Tables.AUTHENTICATED_USER, null, authenticatedUser);
 
         AuthenticatedUserModel authenticatedUserModel = AuthenticatedUserModel.builder()
                 .id(1L).user("test_user_uid").credentials("test_user_credentials")
@@ -64,6 +69,22 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
     @Test
     public void query_shouldReturnEmptyListOnEmptyTable() {
         assertThat(authenticatedUserStore.query()).isEmpty();
+    }
+
+    @Test
+    public void delete_shouldDeleteAllRows() {
+        ContentValues authenticatedUser = new ContentValues();
+        authenticatedUser.put(AuthenticatedUserModel.Columns.USER, "test_user_uid");
+        authenticatedUser.put(AuthenticatedUserModel.Columns.CREDENTIALS, "test_user_credentials");
+
+        database().insert(DbOpenHelper.Tables.AUTHENTICATED_USER, null, authenticatedUser);
+
+        int deleted = authenticatedUserStore.delete();
+
+        Cursor cursor = database().query(DbOpenHelper.Tables.AUTHENTICATED_USER,
+                null, null, null, null, null, null);
+        assertThat(deleted).isEqualTo(1);
+        assertThatCursor(cursor).isExhausted();
     }
 
     @Test

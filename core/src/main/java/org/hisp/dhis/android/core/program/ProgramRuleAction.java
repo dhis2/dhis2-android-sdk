@@ -51,6 +51,7 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject {
     private static final String PROGRAM_INDICATOR = "programIndicator";
     private static final String PROGRAM_STAGE_SECTION = "programStageSection";
     private static final String PROGRAM_RULE_ACTION_TYPE = "programRuleActionType";
+    private static final String PROGRAM_RULE = "programRule";
     private static final String PROGRAM_STAGE = "programStage";
     private static final String DATA_ELEMENT = "dataElement";
 
@@ -63,6 +64,11 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject {
     public static final Field<ProgramRuleAction, String> data = Field.create(DATA);
     public static final Field<ProgramRuleAction, String> content = Field.create(CONTENT);
     public static final Field<ProgramRuleAction, String> location = Field.create(LOCATION);
+
+    /**
+     * Program rule uid is only exposed in the api, so we cannot set this as a nested field
+     */
+    public static final Field<ProgramRuleAction, String> programRule = Field.create(PROGRAM_RULE);
 
     public static final NestedField<ProgramRuleAction, TrackedEntityAttribute> trackedEntityAttribute =
             NestedField.create(TRACKED_ENTITY_ATTRIBUTE);
@@ -118,6 +124,10 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject {
     @JsonProperty(DATA_ELEMENT)
     public abstract DataElement dataElement();
 
+    @Nullable
+    @JsonProperty(PROGRAM_RULE)
+    public abstract ProgramRule programRule();
+
     @JsonCreator
     public static ProgramRuleAction create(
             @JsonProperty(UID) String uid,
@@ -134,12 +144,12 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject {
             @JsonProperty(PROGRAM_STAGE_SECTION) ProgramStageSection programStageSection,
             @JsonProperty(PROGRAM_RULE_ACTION_TYPE) ProgramRuleActionType programRuleActionType,
             @JsonProperty(PROGRAM_STAGE) ProgramStage programStage,
-            @JsonProperty(DATA_ELEMENT) DataElement dataElement
-    ) {
+            @JsonProperty(DATA_ELEMENT) DataElement dataElement,
+            @JsonProperty(PROGRAM_RULE) ProgramRule programRule) {
         return new AutoValue_ProgramRuleAction(
                 uid, code, name, displayName, created, lastUpdated, data, content, location,
                 trackedEntityAttribute, programIndicator, programStageSection, programRuleActionType,
-                programStage, dataElement
+                programStage, dataElement, programRule
         );
     }
 }

@@ -42,16 +42,16 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class TrackedEntityStoreImpl implements TrackedEntityStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + DbOpenHelper.Tables.TRACKED_ENTITY + " (" +
-            TrackedEntityContract.Columns.UID + ", " +
-            TrackedEntityContract.Columns.CODE + ", " +
-            TrackedEntityContract.Columns.NAME + ", " +
-            TrackedEntityContract.Columns.DISPLAY_NAME + ", " +
-            TrackedEntityContract.Columns.CREATED + ", " +
-            TrackedEntityContract.Columns.LAST_UPDATED + ", " +
-            TrackedEntityContract.Columns.SHORT_NAME + ", " +
-            TrackedEntityContract.Columns.DISPLAY_SHORT_NAME + ", " +
-            TrackedEntityContract.Columns.DESCRIPTION + ", " +
-            TrackedEntityContract.Columns.DISPLAY_DESCRIPTION +
+            TrackedEntityModel.Columns.UID + ", " +
+            TrackedEntityModel.Columns.CODE + ", " +
+            TrackedEntityModel.Columns.NAME + ", " +
+            TrackedEntityModel.Columns.DISPLAY_NAME + ", " +
+            TrackedEntityModel.Columns.CREATED + ", " +
+            TrackedEntityModel.Columns.LAST_UPDATED + ", " +
+            TrackedEntityModel.Columns.SHORT_NAME + ", " +
+            TrackedEntityModel.Columns.DISPLAY_SHORT_NAME + ", " +
+            TrackedEntityModel.Columns.DESCRIPTION + ", " +
+            TrackedEntityModel.Columns.DISPLAY_DESCRIPTION +
             ") " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private final SQLiteStatement insertRowStatement;

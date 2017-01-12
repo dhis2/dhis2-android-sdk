@@ -11,10 +11,18 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.data.database.DbProgramRuleVariableSourceTypeColumnAdapter;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableContract.Columns;
 
 @AutoValue
 public abstract class ProgramRuleVariableModel extends BaseIdentifiableObjectModel {
+
+    public interface Columns extends BaseIdentifiableObjectModel.Columns {
+        String PROGRAM_STAGE = "programStage";
+        String PROGRAM_RULE_VARIABLE_SOURCE_TYPE = "programRuleVariableSourceType";
+        String USE_CODE_FOR_OPTION_SET = "useCodeForOptionSet";
+        String PROGRAM = "program";
+        String DATA_ELEMENT = "dataElement";
+        String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+    }
 
     public static ProgramRuleVariableModel create(Cursor cursor) {
         return AutoValue_ProgramRuleVariableModel.createFromCursor(cursor);

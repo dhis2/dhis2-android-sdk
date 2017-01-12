@@ -41,14 +41,16 @@ import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 
-import static org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeContract.Columns.ALLOW_FUTURE_DATES;
-import static org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeContract.Columns.DISPLAY_IN_LIST;
-import static org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeContract.Columns.MANDATORY;
-import static org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeContract.Columns.TRACKED_ENTITY_ATTRIBUTE;
-import static org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeContract.Columns.VALUE_TYPE;
-
 @AutoValue
 public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObjectModel {
+
+    public interface Columns extends BaseNameableObjectModel.Columns {
+        String MANDATORY = "mandatory";
+        String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+        String VALUE_TYPE = "valueType";
+        String ALLOW_FUTURE_DATES = "allowFutureDate";
+        String DISPLAY_IN_LIST = "displayInList";
+    }
 
     @NonNull
     public static ProgramTrackedEntityAttributeModel.Builder builder() {
@@ -61,24 +63,24 @@ public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObj
     }
 
     @Nullable
-    @ColumnName(MANDATORY)
+    @ColumnName(Columns.MANDATORY)
     public abstract Boolean mandatory();
 
     @NonNull
-    @ColumnName(TRACKED_ENTITY_ATTRIBUTE)
+    @ColumnName(Columns.TRACKED_ENTITY_ATTRIBUTE)
     public abstract String trackedEntityAttribute();
 
     @Nullable
-    @ColumnName(VALUE_TYPE)
+    @ColumnName(Columns.VALUE_TYPE)
     @ColumnAdapter(DbValueTypeColumnAdapter.class)
     public abstract ValueType valueType();
 
     @Nullable
-    @ColumnName(ALLOW_FUTURE_DATES)
+    @ColumnName(Columns.ALLOW_FUTURE_DATES)
     public abstract Boolean allowFutureDates();
 
     @Nullable
-    @ColumnName(DISPLAY_IN_LIST)
+    @ColumnName(Columns.DISPLAY_IN_LIST)
     public abstract Boolean displayInList();
 
     @NonNull

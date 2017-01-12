@@ -1,19 +1,22 @@
 package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.Date;
 
 public interface UserCredentialsStore {
     long insert(
             @NonNull String uid,
-            @NonNull String code,
-            @NonNull String name,
-            @NonNull String displayName,
-            @NonNull Date created,
-            @NonNull Date lastUpdated,
-            @NonNull String username,
+            @Nullable String code,
+            @Nullable String name,
+            @Nullable String displayName,
+            @Nullable Date created,
+            @Nullable Date lastUpdated,
+            @Nullable String username,
             @NonNull String user);
+
+    int delete();
 
     void close();
 }

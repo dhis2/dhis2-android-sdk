@@ -30,14 +30,25 @@ package org.hisp.dhis.android.core.common;
 
 import android.support.annotation.Nullable;
 
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
+
+import org.hisp.dhis.android.core.data.database.DbStateColumnAdapter;
+
 // TODO: Tests
-public abstract class BaseDataModel implements DataModel {
+public abstract class BaseDataModel extends BaseModel implements DataModel {
+
+    public interface Columns extends BaseModel.Columns {
+        String STATE = "state";
+    }
 
     @Override
     @Nullable
+    @ColumnName(Columns.STATE)
+    @ColumnAdapter(DbStateColumnAdapter.class)
     public abstract State state();
 
-    protected static abstract class Builder<T extends Builder> {
+    protected static abstract class Builder<T extends Builder> extends BaseModel.Builder<T> {
         public abstract T state(State state);
     }
 }

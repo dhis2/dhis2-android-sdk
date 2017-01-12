@@ -89,6 +89,9 @@ public class UserAuthenticateCallUnitTests {
     @Mock
     private Date lastUpdated;
 
+    @Mock
+    private AuthenticatedUserModel authenticatedUser;
+
     // call we are testing
     private Call<Response<User>> userAuthenticateCall;
 
@@ -379,6 +382,19 @@ public class UserAuthenticateCallUnitTests {
             userAuthenticateCall.call();
 
             fail("Invoking call second time should throw exception");
+        } catch (IllegalStateException illegalStateException) {
+            // swallow exception
+        }
+    }
+
+    @Test
+    public void call_shouldThrowExceptionIfUserIsAlreadySignedIn() throws Exception {
+        when(authenticatedUserStore.query()).thenReturn(Arrays.asList(authenticatedUser));
+
+        try {
+            userAuthenticateCall.call();
+
+            fail("IllegalStateException was expected");
         } catch (IllegalStateException illegalStateException) {
             // swallow exception
         }

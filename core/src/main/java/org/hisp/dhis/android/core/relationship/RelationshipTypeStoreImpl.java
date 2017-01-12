@@ -15,14 +15,14 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             DbOpenHelper.Tables.RELATIONSHIP_TYPE + " (" +
-            RelationshipTypeContract.Columns.UID + ", " +
-            RelationshipTypeContract.Columns.CODE + ", " +
-            RelationshipTypeContract.Columns.NAME + ", " +
-            RelationshipTypeContract.Columns.DISPLAY_NAME + ", " +
-            RelationshipTypeContract.Columns.CREATED + ", " +
-            RelationshipTypeContract.Columns.LAST_UPDATED + ", " +
-            RelationshipTypeContract.Columns.A_IS_TO_B + ", " +
-            RelationshipTypeContract.Columns.B_IS_TO_A + ") " +
+            RelationshipTypeModel.Columns.UID + ", " +
+            RelationshipTypeModel.Columns.CODE + ", " +
+            RelationshipTypeModel.Columns.NAME + ", " +
+            RelationshipTypeModel.Columns.DISPLAY_NAME + ", " +
+            RelationshipTypeModel.Columns.CREATED + ", " +
+            RelationshipTypeModel.Columns.LAST_UPDATED + ", " +
+            RelationshipTypeModel.Columns.A_IS_TO_B + ", " +
+            RelationshipTypeModel.Columns.B_IS_TO_A + ") " +
             "VALUES (" + "?, ?, ?, ?, ?, ?, ?, ?" + ");";
 
     private final SQLiteStatement sqLiteStatement;

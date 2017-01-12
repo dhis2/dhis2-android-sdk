@@ -28,13 +28,15 @@
 
 package org.hisp.dhis.android.core.program;
 
+import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.support.annotation.NonNull;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
+import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,23 +66,28 @@ public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
     private static final ProgramRuleActionType PROGRAM_RULE_ACTION_TYPE = ProgramRuleActionType.ASSIGN;
     private static final String PROGRAM_STAGE = "test_programStage";
     private static final String DATA_ELEMENT = "test_dataElement";
+    private static final String PROGRAM_RULE = "test_programRule";
+
+    // nested foreign key
+    private static final String PROGRAM = "test_program";
 
     public static final String[] PROGRAM_RULE_ACTION_PROJECTION = {
-            ProgramRuleActionContract.Columns.UID,
-            ProgramRuleActionContract.Columns.CODE,
-            ProgramRuleActionContract.Columns.NAME,
-            ProgramRuleActionContract.Columns.DISPLAY_NAME,
-            ProgramRuleActionContract.Columns.CREATED,
-            ProgramRuleActionContract.Columns.LAST_UPDATED,
-            ProgramRuleActionContract.Columns.DATA,
-            ProgramRuleActionContract.Columns.CONTENT,
-            ProgramRuleActionContract.Columns.LOCATION,
-            ProgramRuleActionContract.Columns.TRACKED_ENTITY_ATTRIBUTE,
-            ProgramRuleActionContract.Columns.PROGRAM_INDICATOR,
-            ProgramRuleActionContract.Columns.PROGRAM_STAGE_SECTION,
-            ProgramRuleActionContract.Columns.PROGRAM_RULE_ACTION_TYPE,
-            ProgramRuleActionContract.Columns.PROGRAM_STAGE,
-            ProgramRuleActionContract.Columns.DATA_ELEMENT
+            ProgramRuleActionModel.Columns.UID,
+            ProgramRuleActionModel.Columns.CODE,
+            ProgramRuleActionModel.Columns.NAME,
+            ProgramRuleActionModel.Columns.DISPLAY_NAME,
+            ProgramRuleActionModel.Columns.CREATED,
+            ProgramRuleActionModel.Columns.LAST_UPDATED,
+            ProgramRuleActionModel.Columns.DATA,
+            ProgramRuleActionModel.Columns.CONTENT,
+            ProgramRuleActionModel.Columns.LOCATION,
+            ProgramRuleActionModel.Columns.TRACKED_ENTITY_ATTRIBUTE,
+            ProgramRuleActionModel.Columns.PROGRAM_INDICATOR,
+            ProgramRuleActionModel.Columns.PROGRAM_STAGE_SECTION,
+            ProgramRuleActionModel.Columns.PROGRAM_RULE_ACTION_TYPE,
+            ProgramRuleActionModel.Columns.PROGRAM_STAGE,
+            ProgramRuleActionModel.Columns.DATA_ELEMENT,
+            ProgramRuleActionModel.Columns.PROGRAM_RULE
     };
 
     private ProgramRuleActionStore programRuleActionStore;
@@ -95,6 +102,11 @@ public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistRowInDatabase() throws ParseException {
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM);
+        database().insert(Tables.PROGRAM, null, program);
+
+        ContentValues programRule = CreateProgramRuleUtils.createWithoutProgramStage(1L, PROGRAM_RULE, PROGRAM);
+        database().insert(Tables.PROGRAM_RULE, null, programRule);
 
         long rowId = programRuleActionStore.insert(
                 UID,
@@ -111,10 +123,11 @@ public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
                 PROGRAM_STAGE_SECTION,
                 PROGRAM_RULE_ACTION_TYPE,
                 PROGRAM_STAGE,
-                DATA_ELEMENT
+                DATA_ELEMENT,
+                PROGRAM_RULE
         );
 
-        Cursor cursor = database().query(DbOpenHelper.Tables.PROGRAM_RULE_ACTION,
+        Cursor cursor = database().query(Tables.PROGRAM_RULE_ACTION,
                 PROGRAM_RULE_ACTION_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -134,7 +147,113 @@ public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
                         PROGRAM_STAGE_SECTION,
                         PROGRAM_RULE_ACTION_TYPE,
                         PROGRAM_STAGE,
-                        DATA_ELEMENT)
+                        DATA_ELEMENT,
+                        PROGRAM_RULE)
+                .isExhausted();
+    }
+
+    @Test
+    public void insert_shouldPersistRowInDatabaseWithProgramStageAsNestedForeignKey() throws Exception {
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM);
+        database().insert(Tables.PROGRAM, null, program);
+
+        ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
+        database().insert(Tables.PROGRAM_STAGE, null, programStage);
+
+        ContentValues programRule =
+                CreateProgramRuleUtils.createWithProgramStage(
+                        1L, PROGRAM_RULE, PROGRAM, PROGRAM_STAGE);
+
+        database().insert(Tables.PROGRAM_RULE, null, programRule);
+
+        long rowId = programRuleActionStore.insert(
+                UID,
+                CODE,
+                NAME,
+                DISPLAY_NAME,
+                CREATED,
+                LAST_UPDATED,
+                DATA,
+                CONTENT,
+                LOCATION,
+                TRACKED_ENTITY_ATTRIBUTE,
+                PROGRAM_INDICATOR,
+                PROGRAM_STAGE_SECTION,
+                PROGRAM_RULE_ACTION_TYPE,
+                PROGRAM_STAGE,
+                DATA_ELEMENT,
+                PROGRAM_RULE
+        );
+
+        Cursor cursor = database().query(Tables.PROGRAM_RULE_ACTION,
+                PROGRAM_RULE_ACTION_PROJECTION, null, null, null, null, null);
+
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor)
+                .hasRow(
+                        UID,
+                        CODE,
+                        NAME,
+                        DISPLAY_NAME,
+                        BaseIdentifiableObject.DATE_FORMAT.format(CREATED),
+                        BaseIdentifiableObject.DATE_FORMAT.format(LAST_UPDATED),
+                        DATA,
+                        CONTENT,
+                        LOCATION,
+                        TRACKED_ENTITY_ATTRIBUTE,
+                        PROGRAM_INDICATOR,
+                        PROGRAM_STAGE_SECTION,
+                        PROGRAM_RULE_ACTION_TYPE,
+                        PROGRAM_STAGE,
+                        DATA_ELEMENT,
+                        PROGRAM_RULE)
+                .isExhausted();
+
+    }
+
+    @Test(expected = SQLiteConstraintException.class)
+    public void exception_shouldFailWithoutMandatoryForeignKey() throws Exception {
+        long rowId = programRuleActionStore.insert(
+                UID,
+                CODE,
+                NAME,
+                DISPLAY_NAME,
+                CREATED,
+                LAST_UPDATED,
+                DATA,
+                CONTENT,
+                LOCATION,
+                TRACKED_ENTITY_ATTRIBUTE,
+                PROGRAM_INDICATOR,
+                PROGRAM_STAGE_SECTION,
+                PROGRAM_RULE_ACTION_TYPE,
+                PROGRAM_STAGE,
+                DATA_ELEMENT,
+                null
+        );
+
+        Cursor cursor = database().query(Tables.PROGRAM_RULE_ACTION,
+                PROGRAM_RULE_ACTION_PROJECTION, null, null, null, null, null);
+
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor)
+                .hasRow(
+                        UID,
+                        CODE,
+                        NAME,
+                        DISPLAY_NAME,
+                        BaseIdentifiableObject.DATE_FORMAT.format(CREATED),
+                        BaseIdentifiableObject.DATE_FORMAT.format(LAST_UPDATED),
+                        DATA,
+                        CONTENT,
+                        LOCATION,
+                        TRACKED_ENTITY_ATTRIBUTE,
+                        PROGRAM_INDICATOR,
+                        PROGRAM_STAGE_SECTION,
+                        PROGRAM_RULE_ACTION_TYPE,
+                        PROGRAM_STAGE,
+                        DATA_ELEMENT,
+                        null)
                 .isExhausted();
     }
 

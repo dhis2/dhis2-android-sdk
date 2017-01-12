@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.event;
 
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.Coordinates;
@@ -40,133 +40,94 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
-
 // TODO: Tests
 @AutoValue
-@JsonDeserialize(builder = AutoValue_Event.Builder.class)
 public abstract class Event {
-    private static final String JSON_PROPERTY_EVENT_UID = "event";
-    private static final String JSON_PROPERTY_ENROLLMENT_UID = "enrollment";
-    private static final String JSON_PROPERTY_CREATED = "created";
-    private static final String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
-    private static final String JSON_PROPERTY_STATUS = "status";
-    private static final String JSON_PROPERTY_COORDINATE = "coordinate";
-    private static final String JSON_PROPERTY_PROGRAM = "program";
-    private static final String JSON_PROPERTY_PROGRAM_STAGE = "programStage";
-    private static final String JSON_PROPERTY_ORGANISATION_UNIT = "orgUnit";
-    private static final String JSON_PROPERTY_EVENT_DATE = "eventDate";
-    private static final String JSON_PROPERTY_COMPLETE_DATE = "completedDate";
-    private static final String JSON_PROPERTY_DUE_DATE = "dueDate";
-    private static final String JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES = "dataValues";
+    private static final String EVENT_UID = "event";
+    private static final String ENROLLMENT_UID = "enrollment";
+    private static final String CREATED = "created";
+    private static final String LAST_UPDATED = "lastUpdated";
+    private static final String STATUS = "status";
+    private static final String COORDINATE = "coordinate";
+    private static final String PROGRAM = "program";
+    private static final String PROGRAM_STAGE = "programStage";
+    private static final String ORGANISATION_UNIT = "orgUnit";
+    private static final String EVENT_DATE = "eventDate";
+    private static final String COMPLETE_DATE = "completedDate";
+    private static final String DUE_DATE = "dueDate";
+    private static final String TRACKED_ENTITY_DATA_VALUES = "dataValues";
 
     // Mandatory, non-null properties
 
-    @JsonProperty(JSON_PROPERTY_EVENT_UID)
+    @JsonProperty(EVENT_UID)
     public abstract String uid();
 
     // Nullable properties
     @Nullable
-    @JsonProperty(JSON_PROPERTY_STATUS)
-    public abstract EventStatus status();
-
-    @Nullable
-    @JsonProperty(JSON_PROPERTY_PROGRAM)
-    public abstract String program();
-
-    @Nullable
-    @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE)
-    public abstract String programStage();
-
-    @Nullable
-    @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
-    public abstract String organisationUnit();
-
-    @Nullable
-    @JsonProperty(JSON_PROPERTY_EVENT_DATE)
-    public abstract Date eventDate();
-
-    @Nullable
-    @JsonProperty(JSON_PROPERTY_ENROLLMENT_UID)
+    @JsonProperty(ENROLLMENT_UID)
     public abstract String enrollmentUid();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_CREATED)
+    @JsonProperty(CREATED)
     public abstract Date created();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
+    @JsonProperty(LAST_UPDATED)
     public abstract Date lastUpdated();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_COORDINATE)
+    @JsonProperty(PROGRAM)
+    public abstract String program();
+
+    @Nullable
+    @JsonProperty(PROGRAM_STAGE)
+    public abstract String programStage();
+
+    @Nullable
+    @JsonProperty(ORGANISATION_UNIT)
+    public abstract String organisationUnit();
+
+    @Nullable
+    @JsonProperty(EVENT_DATE)
+    public abstract Date eventDate();
+
+    @Nullable
+    @JsonProperty(STATUS)
+    public abstract EventStatus status();
+
+
+    @Nullable
+    @JsonProperty(COORDINATE)
     public abstract Coordinates coordinates();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_COMPLETE_DATE)
+    @JsonProperty(COMPLETE_DATE)
     public abstract Date completedDate();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_DUE_DATE)
+    @JsonProperty(DUE_DATE)
     public abstract Date dueDate();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES)
+    @JsonProperty(TRACKED_ENTITY_DATA_VALUES)
     public abstract List<TrackedEntityDataValue> trackedEntityDataValues();
 
-    public static Builder builder() {
-        return new AutoValue_Event.Builder();
-    }
 
-    @AutoValue.Builder
-    public static abstract class Builder {
-        @JsonProperty(JSON_PROPERTY_EVENT_UID)
-        public abstract Builder uid(@Nullable String uid);
-
-        @JsonProperty(JSON_PROPERTY_CREATED)
-        public abstract Builder created(@Nullable Date created);
-
-        @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
-        public abstract Builder lastUpdated(@Nullable Date lastUpdated);
-
-        @JsonProperty(JSON_PROPERTY_STATUS)
-        public abstract Builder status(EventStatus eventStatus);
-
-        @JsonProperty(JSON_PROPERTY_COORDINATE)
-        public abstract Builder coordinates(@Nullable Coordinates coordinates);
-
-        @JsonProperty(JSON_PROPERTY_ENROLLMENT_UID)
-        public abstract Builder enrollmentUid(@Nullable String enrollmentUid);
-
-        @JsonProperty(JSON_PROPERTY_PROGRAM)
-        public abstract Builder program(String program);
-
-        @JsonProperty(JSON_PROPERTY_PROGRAM_STAGE)
-        public abstract Builder programStage(String programStage);
-
-        @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
-        public abstract Builder organisationUnit(String organisationUnit);
-
-        @JsonProperty(JSON_PROPERTY_EVENT_DATE)
-        public abstract Builder eventDate(Date eventDate);
-
-        @JsonProperty(JSON_PROPERTY_COMPLETE_DATE)
-        public abstract Builder completedDate(@Nullable Date completedDate);
-
-        @JsonProperty(JSON_PROPERTY_DUE_DATE)
-        public abstract Builder dueDate(@Nullable Date dueDate);
-
-        @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_DATA_VALUES)
-        public abstract Builder trackedEntityDataValues(
-                @Nullable List<TrackedEntityDataValue> trackedEntityDataValues);
-
-        abstract List<TrackedEntityDataValue> trackedEntityDataValues();
-
-        abstract Event autoBuild();
-
-        public Event build() {
-            trackedEntityDataValues(safeUnmodifiableList(trackedEntityDataValues()));
-            return autoBuild();
-        }
+    @JsonCreator
+    public static Event create(@JsonProperty(EVENT_UID) String uid,
+                               @JsonProperty(ENROLLMENT_UID) String enrollmentUid,
+                               @JsonProperty(CREATED) Date created,
+                               @JsonProperty(LAST_UPDATED) Date lastUpdated,
+                               @JsonProperty(PROGRAM) String program,
+                               @JsonProperty(PROGRAM_STAGE) String programStage,
+                               @JsonProperty(ORGANISATION_UNIT) String organisationUnit,
+                               @JsonProperty(EVENT_DATE) Date eventDate,
+                               @JsonProperty(STATUS) EventStatus eventStatus,
+                               @JsonProperty(COORDINATE) Coordinates coordinates,
+                               @JsonProperty(COMPLETE_DATE) Date completedDate,
+                               @JsonProperty(DUE_DATE) Date dueDate,
+                               @JsonProperty(TRACKED_ENTITY_DATA_VALUES)
+                                       List<TrackedEntityDataValue> trackedEntityDataValues) {
+        return null;
     }
 }

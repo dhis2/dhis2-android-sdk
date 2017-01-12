@@ -61,6 +61,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String PROGRAM_RULE = "ProgramRule";
         String PROGRAM_INDICATOR = "ProgramIndicator";
         String PROGRAM_RULE_ACTION = "ProgramRuleAction";
+        String EVENT = "Event";
     }
 
     private static final String CREATE_CONFIGURATION_TABLE = "CREATE TABLE " + Tables.CONFIGURATION + " (" +

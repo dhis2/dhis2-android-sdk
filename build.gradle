@@ -76,7 +76,7 @@ ext {
             assertj         : "3.5.2",
             espresso        : "2.2.2",
             mockito         : "1.10.19",
-            truth           : "0.30",
+            truth           : "0.31",
             testrunner      : "0.5",
             equalsverifier  : "2.1.8"
     ]

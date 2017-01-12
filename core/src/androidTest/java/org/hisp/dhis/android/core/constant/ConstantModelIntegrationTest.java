@@ -50,7 +50,7 @@ public class ConstantModelIntegrationTest {
         assertThat(constantModel.displayName()).isEqualTo(DISPLAY_NAME);
         assertThat(constantModel.created()).isEqualTo(date);
         assertThat(constantModel.lastUpdated()).isEqualTo(date);
-        assertThat(constantModel.value()).isEqualTo(VALUE); // Undeprecated in later versions of Truth
+        assertThat(constantModel.value()).isEqualTo(VALUE);
     }
 
     @Test

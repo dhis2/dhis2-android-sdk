@@ -11,11 +11,11 @@ import nl.jqno.equalsverifier.Warning;
 
 public class EventTests {
 
-    private static Event.Builder VALID_BUILDER;
+    private static EventModel.Builder VALID_BUILDER;
 
     @Before
     public void setValidBuilder() {
-        VALID_BUILDER = Event.builder()
+        VALID_BUILDER = EventModel.builder()
                 .uid("a1b2c3d4e5f");
     }
 
@@ -49,14 +49,14 @@ public class EventTests {
     //
     //**************************************************************************************
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void trackedEntityDataValues_shouldThrowOnCollectionMutations() {
-        Event event = VALID_BUILDER
-                .trackedEntityDataValues(Arrays.asList(
-                        TrackedEntityDataValue.builder().build(),
-                        TrackedEntityDataValue.builder().build()
-                )).build();
-
-        event.trackedEntityDataValues().add(TrackedEntityDataValue.builder().build());
-    }
+//    @Test(expected = UnsupportedOperationException.class)
+//    public void trackedEntityDataValues_shouldThrowOnCollectionMutations() {
+//        Event event = VALID_BUILDER
+//                .trackedEntityDataValues(Arrays.asList(
+//                        TrackedEntityDataValue.builder().build(),
+//                        TrackedEntityDataValue.builder().build()
+//                )).build();
+//
+//        event.trackedEntityDataValues().add(TrackedEntityDataValue.builder().build());
+//    }
 }

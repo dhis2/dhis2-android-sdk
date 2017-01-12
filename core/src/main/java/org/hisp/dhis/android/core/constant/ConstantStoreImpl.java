@@ -33,7 +33,7 @@ public class ConstantStoreImpl implements ConstantStore {
     @Override
     public long insert(@Nullable String uid, @Nullable String code, @NonNull String name,
             @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
-            @NonNull Double value) {
+            @NonNull String value) {
         insertStatement.clearBindings();
 
         sqLiteBind(insertStatement, 1, uid);

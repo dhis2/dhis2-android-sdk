@@ -444,7 +444,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ConstantModel.Columns.DISPLAY_NAME + " TEXT," +
             ConstantModel.Columns.CREATED + " TEXT," +
             ConstantModel.Columns.LAST_UPDATED + " TEXT," +
-            ConstantModel.Columns.VALUE + " REAL" +
+            ConstantModel.Columns.VALUE + " TEXT" +
             ");";
 
     private static final String CREATE_SYSTEM_INFO_TABLE = "CREATE TABLE " + Tables.SYSTEM_INFO + " (" +

@@ -24,7 +24,7 @@ public class ConstantStoreIntegrationTest extends AbsStoreTestCase {
     private static final String DISPLAY_NAME = "test_display_name";
     private static final Date CREATED = new java.util.Date();
     private static final Date LAST_UPDATED = new java.util.Date();
-    private static final Double VALUE = 0.18;
+    private static final String VALUE = "0.18";
 
     private static final String[] CONSTANT_PROJECTION = {
             ConstantModel.Columns.UID, ConstantModel.Columns.CODE, ConstantModel.Columns.NAME, ConstantModel.Columns.DISPLAY_NAME,

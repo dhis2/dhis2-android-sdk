@@ -496,7 +496,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TRACKED_ENTITY_ATTRIBUTE_VALUE_TABLE = "CREATE TABLE " +
             Tables.TRACKED_ENTITY_ATTRIBUTE_VALUE + " (" +
-            TrackedEntityAttributeValueModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMNET," +
+            TrackedEntityAttributeValueModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             TrackedEntityAttributeValueModel.Columns.ATTRIBUTE + " TEXT," +
             TrackedEntityAttributeValueModel.Columns.VALUE + " TEXT" + ");";
 

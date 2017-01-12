@@ -5,15 +5,15 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.BaseDataModel;
 
 @AutoValue
-public abstract class TrackedEntityAttributeValueModel extends BaseModel {
+public abstract class TrackedEntityAttributeValueModel extends BaseDataModel {
 
-    public interface Columns extends BaseModel.Columns {
+    public interface Columns extends BaseDataModel.Columns {
         String ATTRIBUTE = "attribute";
         String VALUE = "value";
     }
@@ -30,20 +30,15 @@ public abstract class TrackedEntityAttributeValueModel extends BaseModel {
     public abstract ContentValues toContentValues();
 
     @Nullable
-    public abstract String trackedEntityInstance();
-
-    @Nullable
-    @JsonProperty(Columns.ATTRIBUTE)
+    @ColumnName(Columns.ATTRIBUTE)
     public abstract String trackedEntityAttribute();
 
     @Nullable
-    @JsonProperty(Columns.VALUE)
+    @ColumnName(Columns.VALUE)
     public abstract String value();
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
-
-        public abstract Builder trackedEntityInstance(@Nullable String trackedEntityInstance);
+    public static abstract class Builder extends BaseDataModel.Builder<Builder> {
 
         public abstract Builder trackedEntityAttribute(String trackedEntityAttribute);
 

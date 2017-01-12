@@ -22,7 +22,7 @@ public abstract class Filter<T> {
         return new Builder<>();
     }
 
-    public static final class Builder<T> {
+    public static class Builder<T> {
         private final List<Property<T, ?>> fields;
 
         Builder() {

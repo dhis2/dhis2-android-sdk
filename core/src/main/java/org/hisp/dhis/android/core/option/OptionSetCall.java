@@ -20,13 +20,12 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
     private final OptionSetStore optionSetStore;
     private final OptionStore optionStore;
 
-
     private boolean isExecuted;
 
     public OptionSetCall(OptionSetService optionSetService,
-                         SQLiteDatabase database,
-                         OptionSetStore optionSetStore,
-                         OptionStore optionStore) {
+            SQLiteDatabase database,
+            OptionSetStore optionSetStore,
+            OptionStore optionStore) {
         this.optionSetService = optionSetService;
         this.database = database;
         this.optionSetStore = optionSetStore;
@@ -36,7 +35,9 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
 
     @Override
     public boolean isExecuted() {
-        return isExecuted;
+        synchronized (this) {
+            return isExecuted;
+        }
     }
 
     @Override
@@ -57,7 +58,6 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
     }
 
     private Response<Payload<OptionSet>> getOptionSets() throws IOException {
-
         Filter<OptionSet> optionSetFilter = Filter.<OptionSet>builder().fields(OptionSet.uid,
                 OptionSet.code, OptionSet.name, OptionSet.displayName,
                 OptionSet.created, OptionSet.lastUpdated,

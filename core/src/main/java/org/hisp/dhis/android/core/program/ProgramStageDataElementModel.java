@@ -13,14 +13,14 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 @AutoValue
 public abstract class ProgramStageDataElementModel extends BaseIdentifiableObjectModel {
 
-    public interface Columns extends BaseIdentifiableObjectModel.Columns {
-        String DISPLAY_IN_REPORTS = "displayInReports";
-        String COMPULSORY = "compulsory";
-        String ALLOW_PROVIDED_ELSEWHERE = "allowProvidedElsewhere";
-        String SORT_ORDER = "sortOrder";
-        String ALLOW_FUTURE_DATE = "allowFutureDate";
-        String DATA_ELEMENT = "dataElement";
-        String PROGRAM_STAGE_SECTION = "programStageSection";
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String DISPLAY_IN_REPORTS = "displayInReports";
+        public static final String COMPULSORY = "compulsory";
+        public static final String ALLOW_PROVIDED_ELSEWHERE = "allowProvidedElsewhere";
+        public static final String SORT_ORDER = "sortOrder";
+        public static final String ALLOW_FUTURE_DATE = "allowFutureDate";
+        public static final String DATA_ELEMENT = "dataElement";
+        public static final String PROGRAM_STAGE_SECTION = "programStageSection";
     }
 
     @Nullable

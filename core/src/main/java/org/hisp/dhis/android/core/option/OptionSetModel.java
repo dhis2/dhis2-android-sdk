@@ -16,10 +16,9 @@ import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 
 @AutoValue
 public abstract class OptionSetModel extends BaseIdentifiableObjectModel {
-
-    public interface Columns extends BaseIdentifiableObjectModel.Columns {
-        String VERSION = "version";
-        String VALUE_TYPE = "valueType";
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String VERSION = "version";
+        public static final String VALUE_TYPE = "valueType";
     }
 
     public static OptionSetModel create(Cursor cursor) {

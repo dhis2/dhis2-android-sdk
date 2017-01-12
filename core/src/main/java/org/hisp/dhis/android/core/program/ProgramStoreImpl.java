@@ -12,7 +12,6 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class ProgramStoreImpl implements ProgramStore {
-
     private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.PROGRAM + " (" +
             ProgramModel.Columns.UID + ", " +
             ProgramModel.Columns.CODE + ", " +

@@ -7,7 +7,11 @@ import java.util.Date;
 /**
  * Provides helper functions to handle null checks and type conversions.
  */
-public class StoreUtils {
+public final class StoreUtils {
+
+    private StoreUtils() {
+        // no instances
+    }
 
     /**
      * Handle if String argument is null and bind it using .bindNull() if so.

@@ -17,20 +17,21 @@ import java.util.Date;
 
 @AutoValue
 public abstract class EventModel extends BaseDataModel {
-    interface Columns extends BaseDataModel.Columns {
-        String EVENT_UID = "uid";
-        String ENROLLMENT_UID = "enrollment";
-        String CREATED = "created";
-        String LAST_UPDATED = "lastUpdated";
-        String STATUS = "status";
-        String LATITUDE = "latitude";
-        String LONGITUDE = "longitude";
-        String PROGRAM = "program";
-        String PROGRAM_STAGE = "programStage";
-        String ORGANISATION_UNIT = "orgUnit";
-        String EVENT_DATE = "eventDate";
-        String COMPLETE_DATE = "completedDate";
-        String DUE_DATE = "dueDate";
+
+    public static class Columns extends BaseDataModel.Columns {
+        public static final String UID = "uid";
+        public static final String ENROLLMENT_UID = "enrollment";
+        public static final String CREATED = "created";
+        public static final String LAST_UPDATED = "lastUpdated";
+        public static final String STATUS = "status";
+        public static final String LATITUDE = "latitude";
+        public static final String LONGITUDE = "longitude";
+        public static final String PROGRAM = "program";
+        public static final String PROGRAM_STAGE = "programStage";
+        public static final String ORGANISATION_UNIT = "orgUnit";
+        public static final String EVENT_DATE = "eventDate";
+        public static final String COMPLETE_DATE = "completedDate";
+        public static final String DUE_DATE = "dueDate";
     }
 
     public static EventModel create(Cursor cursor) {
@@ -45,7 +46,7 @@ public abstract class EventModel extends BaseDataModel {
     public abstract ContentValues toContentValues();
 
     @NonNull
-    @ColumnName(Columns.EVENT_UID)
+    @ColumnName(Columns.UID)
     public abstract String uid();
 
     // Nullable properties
@@ -87,11 +88,11 @@ public abstract class EventModel extends BaseDataModel {
 
     @Nullable
     @ColumnName(Columns.LATITUDE)
-    public abstract Double latitude();
+    public abstract String latitude();
 
     @Nullable
     @ColumnName(Columns.LONGITUDE)
-    public abstract Double longitude();
+    public abstract String longitude();
 
     @Nullable
     @ColumnName(Columns.COMPLETE_DATE)
@@ -102,7 +103,6 @@ public abstract class EventModel extends BaseDataModel {
     @ColumnName(Columns.DUE_DATE)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date dueDate();
-
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseDataModel.Builder<Builder> {
@@ -124,9 +124,9 @@ public abstract class EventModel extends BaseDataModel {
 
         public abstract Builder status(@Nullable EventStatus status);
 
-        public abstract Builder latitude(@Nullable Double latitude);
+        public abstract Builder latitude(@Nullable String latitude);
 
-        public abstract Builder longitude(@Nullable Double longitude);
+        public abstract Builder longitude(@Nullable String longitude);
 
         public abstract Builder completedDate(@Nullable Date completedDate);
 

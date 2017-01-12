@@ -5,8 +5,6 @@ import android.support.annotation.Nullable;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.program.Program.categoryCombo;
-
 public interface ProgramStore {
     long insert(
             @NonNull String uid,

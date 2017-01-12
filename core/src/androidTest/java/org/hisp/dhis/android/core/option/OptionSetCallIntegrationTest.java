@@ -162,7 +162,7 @@ public class OptionSetCallIntegrationTest extends AbsStoreTestCase {
 
         // ToDo: consider moving this out
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT);
+        objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw());
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -279,7 +279,6 @@ public class OptionSetCallIntegrationTest extends AbsStoreTestCase {
 
 
     }
-
 
     @After
     @Override

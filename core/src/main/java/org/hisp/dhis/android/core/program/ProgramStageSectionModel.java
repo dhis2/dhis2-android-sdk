@@ -13,9 +13,9 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 @AutoValue
 public abstract class ProgramStageSectionModel extends BaseIdentifiableObjectModel {
 
-    public interface Columns extends BaseIdentifiableObjectModel.Columns {
-        String SORT_ORDER = "sortOrder";
-        String PROGRAM_STAGE = "programStage";
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String SORT_ORDER = "sortOrder";
+        public static final String PROGRAM_STAGE = "programStage";
     }
 
     public static ProgramStageSectionModel create(Cursor cursor) {

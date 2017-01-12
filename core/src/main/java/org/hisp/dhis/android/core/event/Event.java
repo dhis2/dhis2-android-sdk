@@ -40,6 +40,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import java.util.Date;
 import java.util.List;
 
+import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
+
 // TODO: Tests
 @AutoValue
 public abstract class Event {
@@ -57,12 +59,9 @@ public abstract class Event {
     private static final String DUE_DATE = "dueDate";
     private static final String TRACKED_ENTITY_DATA_VALUES = "dataValues";
 
-    // Mandatory, non-null properties
-
     @JsonProperty(EVENT_UID)
     public abstract String uid();
 
-    // Nullable properties
     @Nullable
     @JsonProperty(ENROLLMENT_UID)
     public abstract String enrollmentUid();
@@ -95,7 +94,6 @@ public abstract class Event {
     @JsonProperty(STATUS)
     public abstract EventStatus status();
 
-
     @Nullable
     @JsonProperty(COORDINATE)
     public abstract Coordinates coordinates();
@@ -112,22 +110,23 @@ public abstract class Event {
     @JsonProperty(TRACKED_ENTITY_DATA_VALUES)
     public abstract List<TrackedEntityDataValue> trackedEntityDataValues();
 
-
     @JsonCreator
-    public static Event create(@JsonProperty(EVENT_UID) String uid,
-                               @JsonProperty(ENROLLMENT_UID) String enrollmentUid,
-                               @JsonProperty(CREATED) Date created,
-                               @JsonProperty(LAST_UPDATED) Date lastUpdated,
-                               @JsonProperty(PROGRAM) String program,
-                               @JsonProperty(PROGRAM_STAGE) String programStage,
-                               @JsonProperty(ORGANISATION_UNIT) String organisationUnit,
-                               @JsonProperty(EVENT_DATE) Date eventDate,
-                               @JsonProperty(STATUS) EventStatus eventStatus,
-                               @JsonProperty(COORDINATE) Coordinates coordinates,
-                               @JsonProperty(COMPLETE_DATE) Date completedDate,
-                               @JsonProperty(DUE_DATE) Date dueDate,
-                               @JsonProperty(TRACKED_ENTITY_DATA_VALUES)
-                                       List<TrackedEntityDataValue> trackedEntityDataValues) {
-        return null;
+    public static Event create(
+            @JsonProperty(EVENT_UID) String uid,
+            @JsonProperty(ENROLLMENT_UID) String enrollmentUid,
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(PROGRAM) String program,
+            @JsonProperty(PROGRAM_STAGE) String programStage,
+            @JsonProperty(ORGANISATION_UNIT) String organisationUnit,
+            @JsonProperty(EVENT_DATE) Date eventDate,
+            @JsonProperty(STATUS) EventStatus eventStatus,
+            @JsonProperty(COORDINATE) Coordinates coordinates,
+            @JsonProperty(COMPLETE_DATE) Date completedDate,
+            @JsonProperty(DUE_DATE) Date dueDate,
+            @JsonProperty(TRACKED_ENTITY_DATA_VALUES) List<TrackedEntityDataValue> dataValues) {
+        return new AutoValue_Event(uid, enrollmentUid, created, lastUpdated, program, programStage,
+                organisationUnit, eventDate, eventStatus, coordinates, completedDate, dueDate,
+                safeUnmodifiableList(dataValues));
     }
 }

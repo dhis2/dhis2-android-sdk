@@ -86,8 +86,10 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     }
 
     @Override
-    public synchronized boolean isExecuted() {
-        return isExecuted;
+    public boolean isExecuted() {
+        synchronized (this) {
+            return isExecuted;
+        }
     }
 
     private Response<User> authenticate(String credentials) throws IOException {
@@ -169,7 +171,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                             organisationUnit.path(),
                             organisationUnit.openingDate(),
                             organisationUnit.closedDate(),
-                            organisationUnit.parent() != null ? organisationUnit.parent().uid() : null,
+                            organisationUnit.parent() == null ? null : organisationUnit.parent().uid(),
                             organisationUnit.level()
                     );
 

@@ -15,13 +15,13 @@ import org.hisp.dhis.android.core.data.database.DbProgramRuleVariableSourceTypeC
 @AutoValue
 public abstract class ProgramRuleVariableModel extends BaseIdentifiableObjectModel {
 
-    public interface Columns extends BaseIdentifiableObjectModel.Columns {
-        String PROGRAM_STAGE = "programStage";
-        String PROGRAM_RULE_VARIABLE_SOURCE_TYPE = "programRuleVariableSourceType";
-        String USE_CODE_FOR_OPTION_SET = "useCodeForOptionSet";
-        String PROGRAM = "program";
-        String DATA_ELEMENT = "dataElement";
-        String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String PROGRAM_STAGE = "programStage";
+        public static final String PROGRAM_RULE_VARIABLE_SOURCE_TYPE = "programRuleVariableSourceType";
+        public static final String USE_CODE_FOR_OPTION_SET = "useCodeForOptionSet";
+        public static final String PROGRAM = "program";
+        public static final String DATA_ELEMENT = "dataElement";
+        public static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
     }
 
     public static ProgramRuleVariableModel create(Cursor cursor) {

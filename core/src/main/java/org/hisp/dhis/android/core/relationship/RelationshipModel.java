@@ -13,11 +13,10 @@ import org.hisp.dhis.android.core.common.BaseModel;
 @AutoValue
 public abstract class RelationshipModel extends BaseModel {
 
-    public interface Columns extends BaseModel.Columns {
-
-        String TRACKED_ENTITY_INSTANCE_A = "trackedEntityInstanceA";
-        String TRACKED_ENTITY_INSTANCE_B = "trackedEntityInstanceB";
-        String RELATIONSHIP_TYPE = "relationshipType";
+    public static class Columns extends BaseModel.Columns {
+        public static final String TRACKED_ENTITY_INSTANCE_A = "trackedEntityInstanceA";
+        public static final String TRACKED_ENTITY_INSTANCE_B = "trackedEntityInstanceB";
+        public static final String RELATIONSHIP_TYPE = "relationshipType";
     }
 
     public static RelationshipModel create(Cursor cursor) {

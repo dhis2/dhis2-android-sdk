@@ -6,7 +6,7 @@ import java.lang.reflect.Type;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
 
-public class FilterConverterFactory extends Converter.Factory {
+public final class FilterConverterFactory extends Converter.Factory {
     public static FilterConverterFactory create() {
         return new FilterConverterFactory();
     }

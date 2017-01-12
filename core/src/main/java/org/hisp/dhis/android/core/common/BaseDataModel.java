@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.provider.BaseColumns;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -39,8 +38,8 @@ import org.hisp.dhis.android.core.data.database.DbStateColumnAdapter;
 // TODO: Tests
 public abstract class BaseDataModel extends BaseModel implements DataModel {
 
-    public interface Columns extends BaseModel.Columns {
-        String STATE = "state";
+    public static class Columns extends BaseModel.Columns {
+        public static final String STATE = "state";
     }
 
     @Override

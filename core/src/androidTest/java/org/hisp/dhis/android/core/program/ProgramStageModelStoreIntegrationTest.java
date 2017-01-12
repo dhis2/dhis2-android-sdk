@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -59,7 +60,6 @@ public class ProgramStageModelStoreIntegrationTest extends AbsStoreTestCase {
     private static final Integer MIN_DAYS_FROM_START = 2;
     private static final Integer STANDARD_INTERVAL = 3;
     private static final String PROGRAM = "test_program";
-
 
     // timestamp
     private static final String DATE = "2017-01-05T10:40:00.000";
@@ -122,12 +122,11 @@ public class ProgramStageModelStoreIntegrationTest extends AbsStoreTestCase {
         ).isExhausted();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void exception_shouldPersistProgramStageInDatabaseWithoutProgram() throws ParseException {
-
+    @Test(expected = SQLiteConstraintException.class)
+    public void insert_shouldNotPersistProgramStageInDatabaseWithoutProgram() throws ParseException {
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
-        long rowId = programStageStore.insert(
+        programStageStore.insert(
                 UID, CODE, NAME, DISPLAY_NAME,
                 timeStamp, timeStamp, EXECUTION_DATE_LABEL, ALLOW_GENERATE_NEXT_VISIT,
                 VALID_COMPLETE_ONLY, REPORT_DATE_TO_USE, OPEN_AFTER_ENROLLMENT,
@@ -136,37 +135,6 @@ public class ProgramStageModelStoreIntegrationTest extends AbsStoreTestCase {
                 HIDE_DUE_DATE, BLOCK_ENTRY_FORM, MIN_DAYS_FROM_START, STANDARD_INTERVAL,
                 null
         );
-        Cursor cursor = database().query(Tables.PROGRAM_STAGE, PROGRAM_STAGE_PROJECTION,
-                null, null, null, null, null);
-
-        // Checking if rowId == 1.
-        // If it is 1, then it means it is first successful insert into db
-        assertThat(rowId).isEqualTo(1L);
-
-        assertThatCursor(cursor).hasRow(
-                UID,
-                CODE,
-                NAME,
-                DISPLAY_NAME,
-                DATE, DATE,
-                EXECUTION_DATE_LABEL,
-                0, // ALLOW_GENERATE_NEXT_VISIT = Boolean.FALSE
-                0, // VALID_COMPLETE_ONLY = Boolean.FALSE
-                REPORT_DATE_TO_USE,
-                0, // OPEN_AFTER_ENROLLMENT = Boolean.FALSE
-                1, // REPEATABLE = Boolean.TRUE
-                1, // CAPTURE_COORDINATES = Boolean.TRUE
-                FORM_TYPE,
-                0, // DISPLAY_GENERATE_EVENT_BOX = Boolean.FALSE
-                1, // GENERATED_BY_ENROLMENT_DATE = Boolean.TRUE
-                0, // AUTO_GENERATE_EVENT = Boolean.FALSE
-                SORT_ORDER,
-                1, // HIDE_DUE_DATE = Boolean.TRUE
-                0, // BLOCK_ENTRY_FORM = Boolean.FALSE
-                MIN_DAYS_FROM_START,
-                STANDARD_INTERVAL,
-                null
-        ).isExhausted();
     }
 
     @Test
@@ -175,5 +143,4 @@ public class ProgramStageModelStoreIntegrationTest extends AbsStoreTestCase {
 
         assertThat(database().isOpen()).isTrue();
     }
-
 }

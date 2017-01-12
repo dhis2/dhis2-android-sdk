@@ -38,21 +38,14 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 
-import static org.hisp.dhis.android.core.program.ProgramIndicatorModel.Columns.DECIMALS;
-import static org.hisp.dhis.android.core.program.ProgramIndicatorModel.Columns.DIMENSION_ITEM;
-import static org.hisp.dhis.android.core.program.ProgramIndicatorModel.Columns.DISPLAY_IN_FORM;
-import static org.hisp.dhis.android.core.program.ProgramIndicatorModel.Columns.EXPRESSION;
-import static org.hisp.dhis.android.core.program.ProgramIndicatorModel.Columns.FILTER;
-
 @AutoValue
 public abstract class ProgramIndicatorModel extends BaseNameableObjectModel {
-
-    public interface Columns extends BaseNameableObjectModel.Columns {
-        String DISPLAY_IN_FORM = "displayInForm";
-        String EXPRESSION = "expression";
-        String DIMENSION_ITEM = "dimensionItem";
-        String FILTER = "filter";
-        String DECIMALS = "decimals";
+    public static class Columns extends BaseNameableObjectModel.Columns {
+        public static final String DISPLAY_IN_FORM = "displayInForm";
+        public static final String EXPRESSION = "expression";
+        public static final String DIMENSION_ITEM = "dimensionItem";
+        public static final String FILTER = "filter";
+        public static final String DECIMALS = "decimals";
     }
 
     @NonNull
@@ -66,23 +59,23 @@ public abstract class ProgramIndicatorModel extends BaseNameableObjectModel {
     }
 
     @Nullable
-    @ColumnName(DISPLAY_IN_FORM)
+    @ColumnName(Columns.DISPLAY_IN_FORM)
     public abstract Boolean displayInForm();
 
     @Nullable
-    @ColumnName(EXPRESSION)
+    @ColumnName(Columns.EXPRESSION)
     public abstract String expression();
 
     @Nullable
-    @ColumnName(DIMENSION_ITEM)
+    @ColumnName(Columns.DIMENSION_ITEM)
     public abstract String dimensionItem();
 
     @Nullable
-    @ColumnName(FILTER)
+    @ColumnName(Columns.FILTER)
     public abstract String filter();
 
     @Nullable
-    @ColumnName(DECIMALS)
+    @ColumnName(Columns.DECIMALS)
     public abstract Integer decimals();
 
     @NonNull
@@ -91,19 +84,19 @@ public abstract class ProgramIndicatorModel extends BaseNameableObjectModel {
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {
 
-        @ColumnName(DISPLAY_IN_FORM)
+        @ColumnName(Columns.DISPLAY_IN_FORM)
         public abstract Builder displayInForm(@Nullable Boolean displayInForm);
 
-        @ColumnName(EXPRESSION)
+        @ColumnName(Columns.EXPRESSION)
         public abstract Builder expression(@Nullable String expression);
 
-        @ColumnName(DIMENSION_ITEM)
+        @ColumnName(Columns.DIMENSION_ITEM)
         public abstract Builder dimensionItem(@Nullable String dimensionItem);
 
-        @ColumnName(FILTER)
+        @ColumnName(Columns.FILTER)
         public abstract Builder filter(@Nullable String filter);
 
-        @ColumnName(DECIMALS)
+        @ColumnName(Columns.DECIMALS)
         public abstract Builder decimals(@Nullable Integer decimals);
 
         abstract ProgramIndicatorModel build();

@@ -19,7 +19,7 @@ public class DbProgramRuleVariableSourceTypeColumnAdapter implements ColumnTypeA
             try {
                 programRuleVariableSourceType = ProgramRuleVariableSourceType.valueOf(sourceValue);
             } catch (Exception exception) {
-                throw new RuntimeException("Unknown program rule variable source type");
+                throw new RuntimeException("Unknown program rule variable source type", exception);
             }
         }
         return programRuleVariableSourceType;

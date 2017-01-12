@@ -14,8 +14,8 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 @AutoValue
 public abstract class ConstantModel extends BaseIdentifiableObjectModel {
 
-    public interface Columns extends BaseIdentifiableObjectModel.Columns {
-        String VALUE = "value";
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String VALUE = "value";
     }
 
     public static ConstantModel create(Cursor cursor) {

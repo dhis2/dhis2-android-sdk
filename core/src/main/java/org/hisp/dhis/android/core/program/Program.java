@@ -49,7 +49,6 @@ import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 
 @AutoValue
 public abstract class Program extends BaseNameableObject {
-
     private static final String VERSION = "version";
     private static final String ONLY_ENROLL_ONCE = "onlyEnrollOnce";
     private static final String ENROLLMENT_DATE_LABEL = "enrollmentDateLabel";

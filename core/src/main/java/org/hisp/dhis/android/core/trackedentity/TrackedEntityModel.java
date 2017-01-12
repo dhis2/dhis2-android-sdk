@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 @AutoValue
 public abstract class TrackedEntityModel extends BaseNameableObjectModel {
 
-    public interface Columns extends BaseNameableObjectModel.Columns {
+    public static class Columns extends BaseNameableObjectModel.Columns {
         // Empty by design. BaseNameableObjectModel.Columns contains all needed columns
         // Keep this interface to provide homogeneity and readability in DbOpenHelper
     }

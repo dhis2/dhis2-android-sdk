@@ -42,10 +42,9 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 // TODO: Tests
 @AutoValue
 public abstract class UserCredentialsModel extends BaseIdentifiableObjectModel {
-
-    public interface Columns extends BaseIdentifiableObjectModel.Columns {
-        String USERNAME = "username";
-        String USER = "user";
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String USERNAME = "username";
+        public static final String USER = "user";
     }
 
     @Nullable

@@ -12,11 +12,10 @@ import org.hisp.dhis.android.core.common.BaseModel;
 
 @AutoValue
 public abstract class UserOrganisationUnitLinkModel extends BaseModel {
-
-    public interface Columns extends BaseModel.Columns {
-        String USER = "user";
-        String ORGANISATION_UNIT = "organisationUnit";
-        String ORGANISATION_UNIT_SCOPE = "organisationUnitScope";
+    public static class Columns extends BaseModel.Columns {
+        public static final String USER = "user";
+        public static final String ORGANISATION_UNIT = "organisationUnit";
+        public static final String ORGANISATION_UNIT_SCOPE = "organisationUnitScope";
     }
 
     @Nullable

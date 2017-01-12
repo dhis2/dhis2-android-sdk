@@ -24,6 +24,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipContract;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeContract;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeContract;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityContract;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueContract;
 import org.hisp.dhis.android.core.user.AuthenticatedUserContract;
 import org.hisp.dhis.android.core.user.UserContract;
 import org.hisp.dhis.android.core.user.UserCredentialsContract;
@@ -60,6 +61,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         String PROGRAM_RULE = "ProgramRule";
         String PROGRAM_INDICATOR = "ProgramIndicator";
         String PROGRAM_RULE_ACTION = "ProgramRuleAction";
+        String TRACKED_ENTITY_DATA_VALUE = "TrackedEntityDataValue";
     }
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + Tables.USER + " (" +
@@ -476,6 +478,17 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ProgramRuleActionContract.Columns.DATA_ELEMENT + " TEXT" +
             ");";
 
+    private static final String CREATE_TRACKED_ENTITY_DATA_VALUE_TABLE = "CREATE TABLE " + Tables.TRACKED_ENTITY_DATA_VALUE + " (" +
+            TrackedEntityDataValueContract.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            TrackedEntityDataValueContract.Columns.EVENT + " TEXT NOT NULL," +
+            TrackedEntityDataValueContract.Columns.DATA_ELEMENT + " TEXT," +
+            TrackedEntityDataValueContract.Columns.STORED_BY + " TEXT," +
+            TrackedEntityDataValueContract.Columns.VALUE + " TEXT," +
+            TrackedEntityDataValueContract.Columns.CREATED + " TEXT," +
+            TrackedEntityDataValueContract.Columns.LAST_UPDATED + " TEXT," +
+            TrackedEntityDataValueContract.Columns.PROVIDED_ELSEWHERE + " INTEGER" +
+            ");";
+
     /**
      * This method should be used only for testing purposes
      */
@@ -509,6 +522,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_PROGRAM_RULE_TABLE);
         database.execSQL(CREATE_PROGRAM_INDICATOR_TABLE);
         database.execSQL(CREATE_PROGRAM_RULE_ACTION_TABLE);
+        database.execSQL(CREATE_TRACKED_ENTITY_DATA_VALUE_TABLE);
         return database;
     }
 

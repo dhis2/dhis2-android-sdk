@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 
-public class ConfigurationManagerFactory implements ConfigurationManager.Factory {
+public final class ConfigurationManagerFactory implements ConfigurationManager.Factory {
 
     @NonNull
     private final DbOpenHelper dbOpenHelper;

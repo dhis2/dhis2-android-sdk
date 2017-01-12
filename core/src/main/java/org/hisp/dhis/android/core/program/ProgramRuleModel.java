@@ -13,11 +13,11 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 @AutoValue
 public abstract class ProgramRuleModel extends BaseIdentifiableObjectModel {
 
-    public interface Columns extends BaseIdentifiableObjectModel.Columns {
-        String PROGRAM_STAGE = "programStage";
-        String PROGRAM = "program";
-        String PRIORITY = "priority";
-        String CONDITION = "condition";
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String PROGRAM_STAGE = "programStage";
+        public static final String PROGRAM = "program";
+        public static final String PRIORITY = "priority";
+        public static final String CONDITION = "condition";
     }
 
     public static ProgramRuleModel create(Cursor cursor) {

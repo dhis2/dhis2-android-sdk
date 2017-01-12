@@ -42,17 +42,17 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 @AutoValue
 public abstract class ProgramRuleActionModel extends BaseIdentifiableObjectModel {
 
-    public interface Columns extends BaseIdentifiableObjectModel.Columns {
-        String DATA = "data";
-        String CONTENT = "content";
-        String LOCATION = "location";
-        String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
-        String PROGRAM_INDICATOR = "programIndicator";
-        String PROGRAM_STAGE_SECTION = "programStageSection";
-        String PROGRAM_RULE_ACTION_TYPE = "programRuleActionType";
-        String PROGRAM_STAGE = "programStage";
-        String DATA_ELEMENT = "dataElement";
-        String PROGRAM_RULE = "programRule";
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String DATA = "data";
+        public static final String CONTENT = "content";
+        public static final String LOCATION = "location";
+        public static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+        public static final String PROGRAM_INDICATOR = "programIndicator";
+        public static final String PROGRAM_STAGE_SECTION = "programStageSection";
+        public static final String PROGRAM_RULE_ACTION_TYPE = "programRuleActionType";
+        public static final String PROGRAM_STAGE = "programStage";
+        public static final String DATA_ELEMENT = "dataElement";
+        public static final String PROGRAM_RULE = "programRule";
     }
 
     @NonNull

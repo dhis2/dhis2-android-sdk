@@ -16,16 +16,16 @@ import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 @AutoValue
 public abstract class DataElementModel extends BaseNameableObjectModel {
 
-    public interface Columns extends BaseNameableObjectModel.Columns {
-        String VALUE_TYPE = "valueType";
-        String ZERO_IS_SIGNIFICANT = "zeroIsSignificant";
-        String AGGREGATION_OPERATOR = "aggregationOperator";
-        String FORM_NAME = "formName";
-        String NUMBER_TYPE = "numberType";
-        String DOMAIN_TYPE = "domainType";
-        String DIMENSION = "dimension";
-        String DISPLAY_FORM_NAME = "displayFormName";
-        String OPTION_SET = "optionSet";
+    public static class Columns extends BaseNameableObjectModel.Columns {
+        public static final String VALUE_TYPE = "valueType";
+        public static final String ZERO_IS_SIGNIFICANT = "zeroIsSignificant";
+        public static final String AGGREGATION_OPERATOR = "aggregationOperator";
+        public static final String FORM_NAME = "formName";
+        public static final String NUMBER_TYPE = "numberType";
+        public static final String DOMAIN_TYPE = "domainType";
+        public static final String DIMENSION = "dimension";
+        public static final String DISPLAY_FORM_NAME = "displayFormName";
+        public static final String OPTION_SET = "optionSet";
     }
 
     public static DataElementModel create(Cursor cursor) {

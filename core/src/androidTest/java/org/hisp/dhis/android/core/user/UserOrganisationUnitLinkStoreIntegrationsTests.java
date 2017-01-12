@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
+import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreIntegrationTests;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +37,7 @@ public class UserOrganisationUnitLinkStoreIntegrationsTests extends AbsStoreTest
         // insert a parent user and organisation unit
         ContentValues user = UserStoreIntegrationTests
                 .create(1L, "test_user_uid");
-        ContentValues organisationUnit = OrganisationUnitStoreIntegrationTests
+        ContentValues organisationUnit = CreateOrganisationUnitUtils
                 .create(1L, "test_organisation_unit_uid");
         database().insert(DbOpenHelper.Tables.USER, null, user);
         database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
@@ -62,7 +63,7 @@ public class UserOrganisationUnitLinkStoreIntegrationsTests extends AbsStoreTest
     public void delete_shouldDeleteAllRows() {
         ContentValues user = UserStoreIntegrationTests
                 .create(1L, "test_user_uid");
-        ContentValues organisationUnit = OrganisationUnitStoreIntegrationTests
+        ContentValues organisationUnit = CreateOrganisationUnitUtils
                 .create(1L, "test_organisation_unit_uid");
         ContentValues userOrganisationUnitLink = new ContentValues();
         userOrganisationUnitLink.put(UserOrganisationUnitLinkModel.Columns.USER, "test_user_uid");

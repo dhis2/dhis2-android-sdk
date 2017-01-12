@@ -17,9 +17,9 @@ import java.util.Date;
 @AutoValue
 public abstract class SystemInfoModel extends BaseModel {
 
-    public interface Columns extends BaseModel.Columns {
-        String SERVER_DATE = "serverDate";
-        String DATE_FORMAT = "dateFormat";
+    public static class Columns extends BaseModel.Columns {
+        public static final String SERVER_DATE = "serverDate";
+        public static final String DATE_FORMAT = "dateFormat";
     }
 
     public static SystemInfoModel create(Cursor cursor) {

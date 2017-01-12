@@ -12,10 +12,9 @@ import org.hisp.dhis.android.core.common.BaseModel;
 
 @AutoValue
 public abstract class TrackedEntityAttributeValueModel extends BaseModel {
-
-    public interface Columns extends BaseModel.Columns {
-        String ATTRIBUTE = "attribute";
-        String VALUE = "value";
+    public static class Columns extends BaseModel.Columns {
+        public static final String ATTRIBUTE = "attribute";
+        public static final String VALUE = "value";
     }
 
     public static TrackedEntityAttributeValueModel create(Cursor cursor) {

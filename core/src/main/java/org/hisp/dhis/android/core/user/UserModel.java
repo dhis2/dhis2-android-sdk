@@ -41,26 +41,25 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 // TODO: Tests
 @AutoValue
 public abstract class UserModel extends BaseIdentifiableObjectModel {
-
-    public interface Columns extends BaseIdentifiableObjectModel.Columns {
-        String BIRTHDAY = "birthday";
-        String EDUCATION = "education";
-        String GENDER = "gender";
-        String JOB_TITLE = "jobTitle";
-        String SURNAME = "surname";
-        String FIRST_NAME = "firstName";
-        String INTRODUCTION = "introduction";
-        String EMPLOYER = "employer";
-        String INTERESTS = "interests";
-        String LANGUAGES = "languages";
-        String EMAIL = "email";
-        String PHONE_NUMBER = "phoneNumber";
-        String NATIONALITY = "nationality";
-    }
-    
     public static final String GENDER_MALE = "gender_male";
     public static final String GENDER_FEMALE = "gender_female";
     public static final String GENDER_OTHER = "gender_other";
+
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String BIRTHDAY = "birthday";
+        public static final String EDUCATION = "education";
+        public static final String GENDER = "gender";
+        public static final String JOB_TITLE = "jobTitle";
+        public static final String SURNAME = "surname";
+        public static final String FIRST_NAME = "firstName";
+        public static final String INTRODUCTION = "introduction";
+        public static final String EMPLOYER = "employer";
+        public static final String INTERESTS = "interests";
+        public static final String LANGUAGES = "languages";
+        public static final String EMAIL = "email";
+        public static final String PHONE_NUMBER = "phoneNumber";
+        public static final String NATIONALITY = "nationality";
+    }
 
     @Nullable
     @ColumnName(Columns.BIRTHDAY)

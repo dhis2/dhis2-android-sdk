@@ -38,6 +38,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class D2 {
     private final Retrofit retrofit;
     private final DbOpenHelper dbOpenHelper;
@@ -53,7 +54,7 @@ public final class D2 {
     private final AuthenticatedUserStore authenticatedUserStore;
     private final OrganisationUnitStore organisationUnitStore;
 
-    private D2(@NonNull Retrofit retrofit, @NonNull DbOpenHelper dbOpenHelper) {
+    D2(@NonNull Retrofit retrofit, @NonNull DbOpenHelper dbOpenHelper) {
         this.retrofit = retrofit;
         this.dbOpenHelper = dbOpenHelper;
         this.sqLiteDatabase = dbOpenHelper.getWritableDatabase();
@@ -167,7 +168,7 @@ public final class D2 {
                 throw new IllegalStateException("Configuration must be set first");
             }
 
-            ObjectMapper objectMapper = (new ObjectMapper())
+            ObjectMapper objectMapper = new ObjectMapper()
                     .setDateFormat(BaseIdentifiableObject.DATE_FORMAT)
                     .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 

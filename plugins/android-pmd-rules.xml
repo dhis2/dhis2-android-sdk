@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="android-pmd-rules"
+         xmlns="http://pmd.sf.net/ruleset/1.0.0"
+         xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd"
+         xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd">
+
+    <description>Set of rules applied to the project</description>
+
+    <!-- Files matching to pattern should be excluded -->
+    <exclude-pattern>.*/R.java</exclude-pattern>
+
+    <rule ref="rulesets/java/optimizations.xml">
+        <!-- These rules will lead to source code cluttering with 'final'
+        keywords everywhere, which makes it less readable  -->
+        <exclude name="LocalVariableCouldBeFinal"/>
+        <exclude name="MethodArgumentCouldBeFinal"/>
+    </rule>
+
+    <rule ref="rulesets/java/coupling.xml">
+        <!-- The rule is triggered (and fails build) even in case when
+        method calls are chained for the same object (like builder instance). -->
+        <exclude name="LawOfDemeter"/>
+
+        <!-- This rule requires additional configuration: list of packages which should not
+        be imported by other classes. Excerpt from docs: avoid using classes from the
+        configured package hierarchy outside of the package hierarchy. -->
+        <exclude name="LoosePackageCoupling"/>
+    </rule>
+
+    <rule ref="rulesets/java/android.xml"/>
+    <rule ref="rulesets/java/basic.xml"/>
+    <rule ref="rulesets/java/braces.xml"/>
+    <rule ref="rulesets/java/clone.xml"/>
+    <rule ref="rulesets/java/codesize.xml">
+        <!-- Since long parameter lists are used extensively in persistence
+        layer (to increase performance) for prepared sql statements,
+        we cannot avoid having them. -->
+        <exclude name="ExcessiveParameterList"/>
+    </rule>
+    <rule ref="rulesets/java/codesize.xml/TooManyMethods">
+        <properties>
+            <!-- Default value set to 10 is too low -->
+            <property name="maxmethods" value="50"/>
+        </properties>
+    </rule>
+    <rule ref="rulesets/java/design.xml"/>
+    <rule ref="rulesets/java/empty.xml"/>
+    <rule ref="rulesets/java/imports.xml"/>
+    <rule ref="rulesets/java/logging-java.xml"/>
+    <rule ref="rulesets/java/junit.xml"/>
+    <rule ref="rulesets/java/sunsecure.xml"/>
+    <rule ref="rulesets/java/strings.xml"/>
+    <rule ref="rulesets/java/typeresolution.xml">
+        <!-- Callable interface which is supplied by java standard library has
+        Exception as a part of 'call()' method signature. Since this interface is used
+        extensively across sdk, this rule has to be suppressed -->
+        <exclude name="SignatureDeclareThrowsException"/>
+    </rule>
+    <rule ref="rulesets/java/unnecessary.xml"/>
+    <rule ref="rulesets/java/unusedcode.xml"/>
+</ruleset>

@@ -37,20 +37,20 @@ class FilterConverter implements Converter<Filter, String> {
 
             if (property instanceof Field) {
                 if (propertyIterator.hasNext()) {
-                    builder.append(",");
+                    builder.append(',');
                 }
             } else if (property instanceof NestedField) {
                 List<Property> children = ((NestedField) property).children();
 
                 if (!children.isEmpty()) {
                     // open property array
-                    builder.append("[");
+                    builder.append('[');
 
                     // recursive call to method
                     append(builder, children);
 
                     // close property array
-                    builder.append("]");
+                    builder.append(']');
                 }
             } else {
                 throw new IllegalArgumentException("Unsupported type of Property: " +

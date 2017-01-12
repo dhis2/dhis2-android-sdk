@@ -16,24 +16,24 @@ import org.hisp.dhis.android.core.data.database.DbFormTypeColumnAdapter;
 @AutoValue
 public abstract class ProgramStageModel extends BaseIdentifiableObjectModel {
 
-    public interface Columns extends BaseIdentifiableObjectModel.Columns {
-        String EXECUTION_DATE_LABEL = "executionDateLabel";
-        String ALLOW_GENERATE_NEXT_VISIT = "allowGenerateNextVisit";
-        String VALID_COMPLETE_ONLY = "validCompleteOnly";
-        String REPORT_DATE_TO_USE = "reportDateToUse";
-        String OPEN_AFTER_ENROLLMENT = "openAfterEnrollment";
-        String REPEATABLE = "repeatable";
-        String CAPTURE_COORDINATES = "captureCoordinates";
-        String FORM_TYPE = "formType";
-        String DISPLAY_GENERATE_EVENT_BOX = "displayGenerateEventBox";
-        String GENERATED_BY_ENROLMENT_DATE = "generatedByEnrollmentDate";
-        String AUTO_GENERATE_EVENT = "autoGenerateEvent";
-        String SORT_ORDER = "sortOrder";
-        String HIDE_DUE_DATE = "hideDueDate";
-        String BLOCK_ENTRY_FORM = "blockEntryForm";
-        String MIN_DAYS_FROM_START = "minDaysFromStart";
-        String STANDARD_INTERVAL = "standardInterval";
-        String PROGRAM = "program";
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String EXECUTION_DATE_LABEL = "executionDateLabel";
+        public static final String ALLOW_GENERATE_NEXT_VISIT = "allowGenerateNextVisit";
+        public static final String VALID_COMPLETE_ONLY = "validCompleteOnly";
+        public static final String REPORT_DATE_TO_USE = "reportDateToUse";
+        public static final String OPEN_AFTER_ENROLLMENT = "openAfterEnrollment";
+        public static final String REPEATABLE = "repeatable";
+        public static final String CAPTURE_COORDINATES = "captureCoordinates";
+        public static final String FORM_TYPE = "formType";
+        public static final String DISPLAY_GENERATE_EVENT_BOX = "displayGenerateEventBox";
+        public static final String GENERATED_BY_ENROLMENT_DATE = "generatedByEnrollmentDate";
+        public static final String AUTO_GENERATE_EVENT = "autoGenerateEvent";
+        public static final String SORT_ORDER = "sortOrder";
+        public static final String HIDE_DUE_DATE = "hideDueDate";
+        public static final String BLOCK_ENTRY_FORM = "blockEntryForm";
+        public static final String MIN_DAYS_FROM_START = "minDaysFromStart";
+        public static final String STANDARD_INTERVAL = "standardInterval";
+        public static final String PROGRAM = "program";
     }
 
     public static ProgramStageModel create(Cursor cursor) {

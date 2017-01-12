@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.provider.BaseColumns;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;

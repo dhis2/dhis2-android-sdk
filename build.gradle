@@ -29,13 +29,22 @@
 buildscript {
     repositories {
         jcenter()
+
+        // Required by build-scan and error-prone plugins.
+        maven {
+            url("https://plugins.gradle.org/m2/")
+        }
     }
+
     dependencies {
         // android gradle plugin
         classpath 'com.android.tools.build:gradle:2.2.3'
 
         // method count plugin
         classpath "com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.6.1"
+
+        // semantic, static analysis of the source code
+        classpath "net.ltgt.gradle:gradle-errorprone-plugin:0.0.8"
     }
 }
 
@@ -78,6 +87,9 @@ ext {
             mockito         : "1.10.19",
             truth           : "0.30",
             testrunner      : "0.5",
-            equalsverifier  : "2.1.8"
+            equalsverifier  : "2.1.8",
+
+            // plugins
+            errorpronecore : "2.0.15"
     ]
 }

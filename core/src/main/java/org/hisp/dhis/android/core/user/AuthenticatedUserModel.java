@@ -20,6 +20,7 @@ public abstract class AuthenticatedUserModel extends BaseModel {
 
     @Nullable
     @ColumnName(Columns.ID)
+    @Override
     public abstract Long id();
 
     @Nullable
@@ -45,6 +46,7 @@ public abstract class AuthenticatedUserModel extends BaseModel {
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
+        @Override
         public abstract Builder id(@Nullable Long id);
 
         public abstract Builder user(@Nullable String user);

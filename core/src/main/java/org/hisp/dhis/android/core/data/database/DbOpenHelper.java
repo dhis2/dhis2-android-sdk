@@ -27,6 +27,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.UserCredentialsModel;
@@ -468,6 +469,19 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             " FOREIGN KEY (" + ProgramRuleActionModel.Columns.PROGRAM_RULE + ")" +
             " REFERENCES " + Tables.PROGRAM_RULE + " (" + ProgramRuleModel.Columns.UID + ")" +
             ");";
+    
+    private static final String CREATE_TRACKED_ENTITY_DATA_VALUE_TABLE = "CREATE TABLE " + Tables.TRACKED_ENTITY_DATA_VALUE + " (" +
+            TrackedEntityDataValueModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            TrackedEntityDataValueModel.Columns.EVENT + " TEXT NOT NULL," +
+            TrackedEntityDataValueModel.Columns.DATA_ELEMENT + " TEXT," +
+            TrackedEntityDataValueModel.Columns.STORED_BY + " TEXT," +
+            TrackedEntityDataValueModel.Columns.VALUE + " TEXT," +
+            TrackedEntityDataValueModel.Columns.CREATED + " TEXT," +
+            TrackedEntityDataValueModel.Columns.LAST_UPDATED + " TEXT," +
+            TrackedEntityDataValueModel.Columns.PROVIDED_ELSEWHERE + " INTEGER," +
+            " FOREIGN KEY (" + TrackedEntityDataValueModel.Columns.EVENT + ")" +
+            " REFERENCES " + Tables.EVENT + " (" + EventModel.Columns.UID + ")" +
+            ");";
 
     private static final String CREATE_TRACKED_ENTITY_ATTRIBUTE_VALUE_TABLE = "CREATE TABLE " +
             Tables.TRACKED_ENTITY_ATTRIBUTE_VALUE + " (" +
@@ -527,6 +541,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         public static final String PROGRAM_RULE_ACTION = "ProgramRuleAction";
         public static final String EVENT = "Event";
         public static final String TRACKED_ENTITY_ATTRIBUTE_VALUE = "TrackedEntityAttributeValue";
+        public static final String TRACKED_ENTITY_DATA_VALUE = "TrackedEntityDataValue";
     }
 
     /**
@@ -534,7 +549,6 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
      */
     // ToDo: Revise usage of this method
     @VisibleForTesting
-
     static SQLiteDatabase create() {
         return create(SQLiteDatabase.create(null));
     }
@@ -564,6 +578,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_PROGRAM_RULE_TABLE);
         database.execSQL(CREATE_PROGRAM_INDICATOR_TABLE);
         database.execSQL(CREATE_PROGRAM_RULE_ACTION_TABLE);
+        database.execSQL(CREATE_TRACKED_ENTITY_DATA_VALUE_TABLE);
         database.execSQL(CREATE_TRACKED_ENTITY_ATTRIBUTE_VALUE_TABLE);
         database.execSQL(CREATE_EVENT_TABLE);
 

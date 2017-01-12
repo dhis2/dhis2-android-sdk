@@ -25,13 +25,16 @@ import org.hisp.dhis.android.core.relationship.RelationshipModel;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.UserCredentialsModel;
 import org.hisp.dhis.android.core.user.UserModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"
+})
 public final class DbOpenHelper extends SQLiteOpenHelper {
 
     @VisibleForTesting
@@ -465,6 +468,12 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             " REFERENCES " + Tables.PROGRAM_RULE + " (" + ProgramRuleModel.Columns.UID + ")" +
             ");";
 
+    private static final String CREATE_TRACKED_ENTITY_ATTRIBUTE_VALUE_TABLE = "CREATE TABLE " +
+            Tables.TRACKED_ENTITY_ATTRIBUTE_VALUE + " (" +
+            TrackedEntityAttributeValueModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            TrackedEntityAttributeValueModel.Columns.ATTRIBUTE + " TEXT," +
+            TrackedEntityAttributeValueModel.Columns.VALUE + " TEXT" + ");";
+
     public static class Tables {
         public static final String CONFIGURATION = "Configuration";
         public static final String USER = "User";
@@ -491,6 +500,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         public static final String PROGRAM_INDICATOR = "ProgramIndicator";
         public static final String PROGRAM_RULE_ACTION = "ProgramRuleAction";
         public static final String EVENT = "Event";
+        public static final String TRACKED_ENTITY_ATTRIBUTE_VALUE = "TrackedEntityAttributeValue";
     }
 
     /**
@@ -498,7 +508,6 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
      */
     // ToDo: Revise usage of this method
     @VisibleForTesting
-
     static SQLiteDatabase create() {
         return create(SQLiteDatabase.create(null));
     }
@@ -528,7 +537,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_PROGRAM_RULE_TABLE);
         database.execSQL(CREATE_PROGRAM_INDICATOR_TABLE);
         database.execSQL(CREATE_PROGRAM_RULE_ACTION_TABLE);
-
+        database.execSQL(CREATE_TRACKED_ENTITY_ATTRIBUTE_VALUE_TABLE);
         return database;
     }
 

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.common.State;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -14,6 +15,8 @@ public class RelationshipModelIntegrationTests {
 
     //table id:
     private static final long ID = 11L;
+    //from BaseDataModel:
+    private static final State STATE = State.SYNCED;
 
     // RelationshipModel attributes:
     private static final String TRACKED_ENTITY_INSTANCE_A = "Tei A uid";
@@ -24,19 +27,25 @@ public class RelationshipModelIntegrationTests {
     public void create_shouldConvertToModel() {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
                 RelationshipModel.Columns.ID,
+                RelationshipModel.Columns.STATE,
                 RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A,
                 RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B,
                 RelationshipModel.Columns.RELATIONSHIP_TYPE
         });
 
         matrixCursor.addRow(new Object[]{
-                ID, TRACKED_ENTITY_INSTANCE_A, TRACKED_ENTITY_INSTANCE_B, RELATIONSHIP_TYPE});
+                ID, STATE.name(),
+                TRACKED_ENTITY_INSTANCE_A,
+                TRACKED_ENTITY_INSTANCE_B,
+                RELATIONSHIP_TYPE
+        });
 
         matrixCursor.moveToFirst();
 
         RelationshipModel relationshipModel = RelationshipModel.create(matrixCursor);
 
         assertThat(relationshipModel.id()).isEqualTo(ID);
+        assertThat(relationshipModel.state()).isEqualTo(STATE);
         assertThat(relationshipModel.trackedEntityInstanceA()).isEqualTo(TRACKED_ENTITY_INSTANCE_A);
         assertThat(relationshipModel.trackedEntityInstanceB()).isEqualTo(TRACKED_ENTITY_INSTANCE_B);
         assertThat(relationshipModel.relationshipType()).isEqualTo(RELATIONSHIP_TYPE);
@@ -46,6 +55,7 @@ public class RelationshipModelIntegrationTests {
     public void toContentValues_shouldConvertToContentValues() {
         RelationshipModel relationshipModel = RelationshipModel.builder()
                 .id(ID)
+                .state(STATE)
                 .trackedEntityInstanceA(TRACKED_ENTITY_INSTANCE_A)
                 .trackedEntityInstanceB(TRACKED_ENTITY_INSTANCE_B)
                 .relationshipType(RELATIONSHIP_TYPE)
@@ -54,6 +64,7 @@ public class RelationshipModelIntegrationTests {
         ContentValues contentValues = relationshipModel.toContentValues();
 
         assertThat(contentValues.getAsLong(RelationshipModel.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(RelationshipModel.Columns.STATE)).isEqualTo(STATE.name());
         assertThat(contentValues.getAsString(RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A)).isEqualTo(TRACKED_ENTITY_INSTANCE_A);
         assertThat(contentValues.getAsString(RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B)).isEqualTo(TRACKED_ENTITY_INSTANCE_B);
         assertThat(contentValues.getAsString(RelationshipModel.Columns.RELATIONSHIP_TYPE)).isEqualTo(RELATIONSHIP_TYPE);

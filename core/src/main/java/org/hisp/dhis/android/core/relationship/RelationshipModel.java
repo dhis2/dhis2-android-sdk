@@ -8,12 +8,11 @@ import android.support.annotation.Nullable;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.BaseDataModel;
 
 @AutoValue
-public abstract class RelationshipModel extends BaseModel {
-
-    public static class Columns extends BaseModel.Columns {
+public abstract class RelationshipModel extends BaseDataModel {
+    public static class Columns extends BaseDataModel.Columns {
         public static final String TRACKED_ENTITY_INSTANCE_A = "trackedEntityInstanceA";
         public static final String TRACKED_ENTITY_INSTANCE_B = "trackedEntityInstanceB";
         public static final String RELATIONSHIP_TYPE = "relationshipType";
@@ -43,8 +42,7 @@ public abstract class RelationshipModel extends BaseModel {
     public abstract String relationshipType();
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
-
+    public static abstract class Builder extends BaseDataModel.Builder<Builder> {
         public abstract Builder trackedEntityInstanceA(@Nullable String trackedEntityInstanceA);
 
         public abstract Builder trackedEntityInstanceB(@Nullable String trackedEntityInstanceB);

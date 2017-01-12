@@ -9,8 +9,8 @@ import java.util.Date;
 
 public interface EventModelStore {
     long insert(@NonNull String uid, @Nullable String enrollmentUid, @Nullable Date created,
-                @Nullable Date lastUpdated, @Nullable String status,
-                @Nullable Double latitude, @Nullable Double longitude, @Nullable String program,
+                @Nullable Date lastUpdated, @Nullable EventStatus status,
+                @Nullable String latitude, @Nullable String longitude, @Nullable String program,
                 @Nullable String programStage, @Nullable String organisationUnit,
                 @Nullable Date eventDate, @Nullable Date completedDate, @Nullable Date dueDate,
                 @Nullable State state);

@@ -16,7 +16,7 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 public class EventModelStoreImpl implements EventModelStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.EVENT + " (" +
-            Columns.EVENT_UID + ", " +
+            Columns.UID + ", " +
             Columns.ENROLLMENT_UID + ", " +
             Columns.CREATED + ", " +
             Columns.LAST_UPDATED + ", " +
@@ -30,7 +30,7 @@ public class EventModelStoreImpl implements EventModelStore {
             Columns.COMPLETE_DATE + ", " +
             Columns.DUE_DATE + ", " +
             Columns.STATE + ") " +
-            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private final SQLiteStatement sqLiteStatement;
 
@@ -41,8 +41,8 @@ public class EventModelStoreImpl implements EventModelStore {
     @Override
     public long insert(@NonNull String uid, @Nullable String enrollmentUid,
                        @Nullable Date created, @Nullable Date lastUpdated,
-                       @Nullable String status, @Nullable Double latitude,
-                       @Nullable Double longitude, @Nullable String program,
+                       @Nullable EventStatus status, @Nullable String latitude,
+                       @Nullable String longitude, @Nullable String program,
                        @Nullable String programStage, @Nullable String organisationUnit,
                        @Nullable Date eventDate, @Nullable Date completedDate,
                        @Nullable Date dueDate, @Nullable State state) {

@@ -17,8 +17,8 @@ import java.util.Date;
 
 @AutoValue
 public abstract class EventModel extends BaseDataModel {
-    interface Columns extends BaseDataModel.Columns {
-        String EVENT_UID = "uid";
+    public interface Columns extends BaseDataModel.Columns {
+        String UID = "uid";
         String ENROLLMENT_UID = "enrollment";
         String CREATED = "created";
         String LAST_UPDATED = "lastUpdated";
@@ -45,7 +45,7 @@ public abstract class EventModel extends BaseDataModel {
     public abstract ContentValues toContentValues();
 
     @NonNull
-    @ColumnName(Columns.EVENT_UID)
+    @ColumnName(Columns.UID)
     public abstract String uid();
 
     // Nullable properties
@@ -87,11 +87,11 @@ public abstract class EventModel extends BaseDataModel {
 
     @Nullable
     @ColumnName(Columns.LATITUDE)
-    public abstract Double latitude();
+    public abstract String latitude();
 
     @Nullable
     @ColumnName(Columns.LONGITUDE)
-    public abstract Double longitude();
+    public abstract String longitude();
 
     @Nullable
     @ColumnName(Columns.COMPLETE_DATE)
@@ -124,9 +124,9 @@ public abstract class EventModel extends BaseDataModel {
 
         public abstract Builder status(@Nullable EventStatus status);
 
-        public abstract Builder latitude(@Nullable Double latitude);
+        public abstract Builder latitude(@Nullable String latitude);
 
-        public abstract Builder longitude(@Nullable Double longitude);
+        public abstract Builder longitude(@Nullable String longitude);
 
         public abstract Builder completedDate(@Nullable Date completedDate);
 

@@ -36,30 +36,6 @@ public class OrganisationUnitStoreIntegrationTests extends AbsStoreTestCase {
 
     private OrganisationUnitStore organisationUnitStore;
 
-    public static ContentValues create(long id, String uid) {
-        ContentValues organisationUnit = new ContentValues();
-        organisationUnit.put(OrganisationUnitModel.Columns.ID, id);
-        organisationUnit.put(OrganisationUnitModel.Columns.UID, uid);
-        organisationUnit.put(OrganisationUnitModel.Columns.CODE, "test_code");
-        organisationUnit.put(OrganisationUnitModel.Columns.NAME, "test_name");
-        organisationUnit.put(OrganisationUnitModel.Columns.DISPLAY_NAME, "test_display_name");
-        organisationUnit.put(OrganisationUnitModel.Columns.CREATED, "test_created");
-        organisationUnit.put(OrganisationUnitModel.Columns.LAST_UPDATED, "test_last_updated");
-        organisationUnit.put(OrganisationUnitModel.Columns.SHORT_NAME, "test_short_name");
-        organisationUnit.put(OrganisationUnitModel.Columns.DISPLAY_SHORT_NAME, "test_display_short_name");
-        organisationUnit.put(OrganisationUnitModel.Columns.DESCRIPTION, "test_description");
-        organisationUnit.put(OrganisationUnitModel.Columns.DISPLAY_DESCRIPTION, "test_display_description");
-        organisationUnit.put(OrganisationUnitModel.Columns.PATH, "test_path");
-        organisationUnit.put(OrganisationUnitModel.Columns.OPENING_DATE, "test_opening_date");
-        organisationUnit.put(OrganisationUnitModel.Columns.CLOSED_DATE, "test_closed_date");
-        organisationUnit.put(OrganisationUnitModel.Columns.LEVEL, "test_level");
-
-        // foreign keys
-        organisationUnit.putNull(OrganisationUnitModel.Columns.PARENT);
-
-        return organisationUnit;
-    }
-
     @Before
     @Override
     public void setUp() throws IOException {
@@ -119,8 +95,11 @@ public class OrganisationUnitStoreIntegrationTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteAllRows() {
-        ContentValues organisationUnitOne = create(1L, "test_organisation_unit_one");
-        ContentValues organisationUnitTwo = create(2L, "test_organisation_unit_two");
+        ContentValues organisationUnitOne =
+                CreateOrganisationUnitUtils.create(1L, "test_organisation_unit_one");
+
+        ContentValues organisationUnitTwo =
+                CreateOrganisationUnitUtils.create(2L, "test_organisation_unit_two");
 
         database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitOne);
         database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitTwo);

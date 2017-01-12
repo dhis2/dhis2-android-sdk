@@ -9,6 +9,7 @@ import android.support.annotation.VisibleForTesting;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.constant.ConstantModel;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
+import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.option.OptionModel;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
@@ -492,6 +493,31 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             " REFERENCES " + Tables.PROGRAM_RULE + " (" + ProgramRuleModel.Columns.UID + ")" +
             ");";
 
+    private static final String CREATE_EVENT_TABLE = "CREATE TABLE " + Tables.EVENT + " (" +
+            EventModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            EventModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            EventModel.Columns.ENROLLMENT_UID + " TEXT," +
+            EventModel.Columns.CREATED + " TEXT," +
+            EventModel.Columns.LAST_UPDATED + " TEXT," +
+            EventModel.Columns.STATUS + " TEXT," +
+            EventModel.Columns.LATITUDE + " TEXT," +
+            EventModel.Columns.LONGITUDE + " TEXT," +
+            EventModel.Columns.PROGRAM + " TEXT NOT NULL," +
+            EventModel.Columns.PROGRAM_STAGE + " TEXT NOT NULL," +
+            EventModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
+            EventModel.Columns.EVENT_DATE + " TEXT," +
+            EventModel.Columns.COMPLETE_DATE + " TEXT," +
+            EventModel.Columns.DUE_DATE + " TEXT," +
+            EventModel.Columns.STATE + " TEXT," +
+            " FOREIGN KEY (" + EventModel.Columns.PROGRAM + ")" +
+            " REFERENCES " + Tables.PROGRAM + " (" + ProgramModel.Columns.UID + ")," +
+            " FOREIGN KEY (" + EventModel.Columns.PROGRAM_STAGE + ")" +
+            " REFERENCES " + Tables.PROGRAM_STAGE + " (" + ProgramStageModel.Columns.UID + ")," +
+            " FOREIGN KEY (" + EventModel.Columns.ORGANISATION_UNIT + ")" +
+            " REFERENCES " + Tables.ORGANISATION_UNIT + " (" + OrganisationUnitModel.Columns.UID +
+            ")" +
+            ");";
+
     /**
      * This method should be used only for testing purposes
      */
@@ -527,6 +553,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_PROGRAM_RULE_TABLE);
         database.execSQL(CREATE_PROGRAM_INDICATOR_TABLE);
         database.execSQL(CREATE_PROGRAM_RULE_ACTION_TABLE);
+        database.execSQL(CREATE_EVENT_TABLE);
 
         return database;
     }

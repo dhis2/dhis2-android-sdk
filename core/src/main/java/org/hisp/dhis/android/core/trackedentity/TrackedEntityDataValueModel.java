@@ -33,33 +33,27 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel.Columns.CREATED;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel.Columns.DATA_ELEMENT;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel.Columns.EVENT;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel.Columns.LAST_UPDATED;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel.Columns.PROVIDED_ELSEWHERE;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel.Columns.STORED_BY;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel.Columns.VALUE;
-
 //TODO: Tests
 @AutoValue
-public abstract class TrackedEntityDataValueModel {
+public abstract class TrackedEntityDataValueModel extends BaseModel {
 
-    public interface Columns extends BaseModel.Columns {
-        String EVENT = "event";
-        String DATA_ELEMENT = "dataElement";
-        String STORED_BY = "storedBy";
-        String VALUE = "value";
-        String CREATED = "created";
-        String LAST_UPDATED = "lastUpdated";
-        String PROVIDED_ELSEWHERE = "providedElsewhere";
+    public static class Columns extends BaseModel.Columns {
+        public static final String EVENT = "event";
+        public static final String DATA_ELEMENT = "dataElement";
+        public static final String STORED_BY = "storedBy";
+        public static final String VALUE = "value";
+        public static final String CREATED = "created";
+        public static final String LAST_UPDATED = "lastUpdated";
+        public static final String PROVIDED_ELSEWHERE = "providedElsewhere";
     }
 
     @NonNull
@@ -73,38 +67,40 @@ public abstract class TrackedEntityDataValueModel {
     }
 
     @NonNull
-    @ColumnName(EVENT)
+    @ColumnName(Columns.EVENT)
     public abstract String event();
 
     @Nullable
-    @ColumnName(CREATED)
+    @ColumnName(Columns.CREATED)
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @ColumnName(LAST_UPDATED)
+    @ColumnName(Columns.LAST_UPDATED)
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
-    @ColumnName(DATA_ELEMENT)
+    @ColumnName(Columns.DATA_ELEMENT)
     public abstract String dataElement();
 
     @Nullable
-    @ColumnName(STORED_BY)
+    @ColumnName(Columns.STORED_BY)
     public abstract String storedBy();
 
     @Nullable
-    @ColumnName(VALUE)
+    @ColumnName(Columns.VALUE)
     public abstract String value();
 
     @Nullable
-    @ColumnName(PROVIDED_ELSEWHERE)
+    @ColumnName(Columns.PROVIDED_ELSEWHERE)
     public abstract Boolean providedElsewhere();
 
     @NonNull
     public abstract ContentValues toContentValues();
 
     @AutoValue.Builder
-    public static abstract class Builder {
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
 
         public abstract Builder created(@Nullable Date created);
 

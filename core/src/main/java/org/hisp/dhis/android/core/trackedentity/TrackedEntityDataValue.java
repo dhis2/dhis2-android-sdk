@@ -35,16 +35,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.NestedField;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.event.Event;
 
 import java.util.Date;
 
 //TODO: Tests
 @AutoValue
 public abstract class TrackedEntityDataValue {
-    public final static String EVENT = "event";
     public final static String DATA_ELEMENT = "dataElement";
     public final static String STORED_BY = "storedBy";
     public final static String VALUE = "value";
@@ -52,17 +48,12 @@ public abstract class TrackedEntityDataValue {
     public final static String LAST_UPDATED = "lastUpdated";
     public final static String PROVIDED_ELSEWHERE = "providedElsewhere";
 
-    public static final NestedField<TrackedEntityAttribute, Event> event = NestedField.create(EVENT);
-    public static final NestedField<TrackedEntityAttribute, DataElement> dataElement = NestedField.create(DATA_ELEMENT);
+    public static final Field<TrackedEntityAttribute, String> dataElement = Field.create(DATA_ELEMENT);
     public static final Field<TrackedEntityAttribute, String> storedBy = Field.create(STORED_BY);
     public static final Field<TrackedEntityAttribute, String> value = Field.create(VALUE);
     public static final Field<TrackedEntityAttribute, Date> created = Field.create(CREATED);
     public static final Field<TrackedEntityAttribute, Date> lastUpdated = Field.create(LAST_UPDATED);
     public static final Field<TrackedEntityAttribute, Boolean> providedElsewhere = Field.create(PROVIDED_ELSEWHERE);
-
-    @Nullable
-    @JsonProperty(EVENT)
-    public abstract Event event();
 
     @Nullable
     @JsonProperty(CREATED)
@@ -74,7 +65,7 @@ public abstract class TrackedEntityDataValue {
 
     @Nullable
     @JsonProperty(DATA_ELEMENT)
-    public abstract DataElement dataElement();
+    public abstract String dataElement();
 
     @Nullable
     @JsonProperty(STORED_BY)
@@ -90,16 +81,15 @@ public abstract class TrackedEntityDataValue {
 
     @JsonCreator
     public static TrackedEntityDataValue create(
-            @JsonProperty(EVENT) Event event,
             @JsonProperty(CREATED) Date created,
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(DATA_ELEMENT) DataElement dataElement,
+            @JsonProperty(DATA_ELEMENT) String dataElement,
             @JsonProperty(STORED_BY) String storedBy,
             @JsonProperty(VALUE) String value,
             @JsonProperty(PROVIDED_ELSEWHERE) Boolean providedElsewhere
     ) {
         return new AutoValue_TrackedEntityDataValue(
-                event, created, lastUpdated, dataElement, storedBy, value, providedElsewhere
+                created, lastUpdated, dataElement, storedBy, value, providedElsewhere
         );
     }
 }

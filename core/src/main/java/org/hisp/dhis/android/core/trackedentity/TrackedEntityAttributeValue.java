@@ -30,20 +30,14 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_TrackedEntityAttributeValue.Builder.class)
 public abstract class TrackedEntityAttributeValue {
     private static final String ATTRIBUTE = "attribute";
     private static final String VALUE = "value";
-
-    @JsonIgnore
-    @Nullable
-    public abstract TrackedEntityInstance trackedEntityInstance();
 
     @Nullable
     @JsonProperty(ATTRIBUTE)
@@ -53,23 +47,10 @@ public abstract class TrackedEntityAttributeValue {
     @JsonProperty(VALUE)
     public abstract String value();
 
-    public static Builder builder() {
-        return new AutoValue_TrackedEntityAttributeValue.Builder();
-    }
+    @JsonCreator
+    public static TrackedEntityAttributeValue create(@JsonProperty(ATTRIBUTE) String attribute,
+                                                     @JsonProperty(VALUE) String value) {
 
-    @AutoValue.Builder
-    public static abstract class Builder {
-
-        @JsonIgnore
-        public abstract Builder trackedEntityInstance(
-                @Nullable TrackedEntityInstance trackedEntityInstance);
-
-        @JsonProperty(ATTRIBUTE)
-        public abstract Builder trackedEntityAttribute(String trackedEntityAttribute);
-
-        @JsonProperty(VALUE)
-        public abstract Builder value(String value);
-
-        public abstract TrackedEntityAttributeValue build();
+        return new AutoValue_TrackedEntityAttributeValue(attribute, value);
     }
 }

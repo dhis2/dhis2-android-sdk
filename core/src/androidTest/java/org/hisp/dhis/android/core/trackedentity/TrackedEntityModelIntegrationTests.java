@@ -129,6 +129,5 @@ public class TrackedEntityModelIntegrationTests {
         assertThat(contentValues.getAsString(TrackedEntityModel.Columns.DISPLAY_SHORT_NAME)).isEqualTo(DISPLAY_SHORT_NAME);
         assertThat(contentValues.getAsString(TrackedEntityModel.Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
         assertThat(contentValues.getAsString(TrackedEntityModel.Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
-
     }
 }

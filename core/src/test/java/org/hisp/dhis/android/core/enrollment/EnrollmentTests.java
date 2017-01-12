@@ -56,10 +56,10 @@ public class EnrollmentTests {
     public void trackedEntityAttributeValues_shouldThrowOnCollectionMutations() {
         Enrollment enrollment = VALID_BUILDER
                 .trackedEntityAttributeValues(Arrays.asList(
-                        TrackedEntityAttributeValue.builder().build(),
-                        TrackedEntityAttributeValue.builder().build()))
+                        TrackedEntityAttributeValue.create(null,null),
+                        TrackedEntityAttributeValue.create(null,null)))
                 .build();
 
-        enrollment.trackedEntityAttributeValues().add(TrackedEntityAttributeValue.builder().build());
+        enrollment.trackedEntityAttributeValues().add(TrackedEntityAttributeValue.create(null,null));
     }
 }

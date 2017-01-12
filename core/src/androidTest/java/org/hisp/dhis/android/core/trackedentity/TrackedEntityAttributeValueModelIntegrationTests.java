@@ -29,7 +29,7 @@ public class TrackedEntityAttributeValueModelIntegrationTests {
                 TrackedEntityAttributeValueModel.Columns.VALUE
         });
 
-        matrixCursor.addRow(new Object[] {ID, STATE, ATTRIBUTE, VALUE});
+        matrixCursor.addRow(new Object[]{ID, STATE, ATTRIBUTE, VALUE});
 
         matrixCursor.moveToFirst();
 

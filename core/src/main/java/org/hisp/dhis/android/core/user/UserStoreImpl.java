@@ -52,7 +52,6 @@ public class UserStoreImpl implements UserStore {
             @Nullable String introduction, @Nullable String employer, @Nullable String interests,
             @Nullable String languages, @Nullable String email, @Nullable String phoneNumber,
             @Nullable String nationality) {
-
         insertRowStatement.clearBindings();
 
         sqLiteBind(insertRowStatement, 1, uid);

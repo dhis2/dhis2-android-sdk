@@ -43,7 +43,7 @@ public class Inject {
         ObjectMapper objectMapper = new ObjectMapper();
 
         // setting date format which is used across all models
-        objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT);
+        objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw());
 
         // don't fail on unknown properties
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);

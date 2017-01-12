@@ -64,19 +64,19 @@ public enum ValueType {
     ORGANISATION_UNIT(OrganisationUnit.class),
     TRACKER_ASSOCIATE(TrackedEntityInstance.class);
 
-    public static final Set<ValueType> INTEGER_TYPES = new HashSet<>(Arrays.asList(INTEGER,
+    private static final Set<ValueType> INTEGER_TYPES = new HashSet<>(Arrays.asList(INTEGER,
             INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE));
 
-    public static final Set<ValueType> NUMERIC_TYPES = new HashSet<>(Arrays.asList(INTEGER, NUMBER,
+    private static final Set<ValueType> NUMERIC_TYPES = new HashSet<>(Arrays.asList(INTEGER, NUMBER,
             INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE, UNIT_INTERVAL, PERCENTAGE));
 
-    public static final Set<ValueType> BOOLEAN_TYPES = new HashSet<>(Arrays.asList(BOOLEAN,
+    private static final Set<ValueType> BOOLEAN_TYPES = new HashSet<>(Arrays.asList(BOOLEAN,
             TRUE_ONLY));
 
-    public static final Set<ValueType> TEXT_TYPES = new HashSet<>(Arrays.asList(TEXT, LONG_TEXT,
+    private static final Set<ValueType> TEXT_TYPES = new HashSet<>(Arrays.asList(TEXT, LONG_TEXT,
             LETTER, COORDINATE, TIME));
 
-    public static final Set<ValueType> DATE_TYPES = new HashSet<>(Arrays.asList(DATE, DATETIME));
+    private static final Set<ValueType> DATE_TYPES = new HashSet<>(Arrays.asList(DATE, DATETIME));
 
     private final Class<?> javaClass;
 

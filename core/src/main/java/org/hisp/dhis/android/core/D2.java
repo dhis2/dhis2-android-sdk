@@ -169,7 +169,7 @@ public final class D2 {
             }
 
             ObjectMapper objectMapper = new ObjectMapper()
-                    .setDateFormat(BaseIdentifiableObject.DATE_FORMAT)
+                    .setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw())
                     .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
             Converter.Factory jsonConverterFactory =

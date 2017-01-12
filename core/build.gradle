@@ -27,6 +27,7 @@
  */
 
 apply plugin: "com.android.library"
+apply from: rootProject.file("plugins/android-errorprone.gradle")
 
 def configuration = rootProject.ext.configuration
 def libraries = rootProject.ext.libraries
@@ -82,9 +83,6 @@ if (withDexCount) {
 }
 
 dependencies {
-    // Client models
-    // compile project(":models")
-
     // Support libraries
     compile "com.android.support:support-annotations:${libraries.support}"
 

@@ -240,25 +240,25 @@ public class TrackedEntityInstanceIntegrationTest {
         assertThat(trackedEntityInstance.organisationUnit()).isEqualTo("DiszpKrYNg8");
         assertThat(trackedEntityInstance.relationships()).isEmpty();
 
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(0).trackedEntityAttribute().equals("ruQQnf6rswq"));
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(1).trackedEntityAttribute().equals("w75KJ2mc4zz"));
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(2).trackedEntityAttribute().equals("VqEFza8wbwA"));
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(3).trackedEntityAttribute().equals("GUOBQt5K2WI"));
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(4).trackedEntityAttribute().equals("kyIzQsj96BD"));
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(5).trackedEntityAttribute().equals("VHfUeXpawmE"));
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(6).trackedEntityAttribute().equals("A4xFHyieXys"));
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(7).trackedEntityAttribute().equals("lw1SqmMlnfh"));
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(8).trackedEntityAttribute().equals("cejWyOfXge6"));
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(9).trackedEntityAttribute().equals("n9nUvfpTsxQ"));
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(10).trackedEntityAttribute().equals("o9odfev2Ty5"));
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(11).trackedEntityAttribute().equals("RG7uGl4w5Jq"));
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(12).trackedEntityAttribute().equals("zDhUuAYrxNC"));
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(13).trackedEntityAttribute().equals("OvY4VVhSDeJ"));
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(14).trackedEntityAttribute().equals("H9IlTX2X6SL"));
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(15).trackedEntityAttribute().equals("Qo571yj6Zcn"));
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(16).trackedEntityAttribute().equals("AuPLng5hLbE"));
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(17).trackedEntityAttribute().equals("NDXw0cluzSw"));
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(18).trackedEntityAttribute().equals("FO4sWYJ64LQ"));
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(19).trackedEntityAttribute().equals("P2cwLGskgxn"));
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(0).trackedEntityAttribute()).isEqualTo("ruQQnf6rswq");
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(1).trackedEntityAttribute()).isEqualTo("w75KJ2mc4zz");
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(2).trackedEntityAttribute()).isEqualTo("VqEFza8wbwA");
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(3).trackedEntityAttribute()).isEqualTo("GUOBQt5K2WI");
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(4).trackedEntityAttribute()).isEqualTo("kyIzQsj96BD");
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(5).trackedEntityAttribute()).isEqualTo("VHfUeXpawmE");
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(6).trackedEntityAttribute()).isEqualTo("A4xFHyieXys");
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(7).trackedEntityAttribute()).isEqualTo("lw1SqmMlnfh");
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(8).trackedEntityAttribute()).isEqualTo("cejWyOfXge6");
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(9).trackedEntityAttribute()).isEqualTo("n9nUvfpTsxQ");
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(10).trackedEntityAttribute()).isEqualTo("o9odfev2Ty5");
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(11).trackedEntityAttribute()).isEqualTo("RG7uGl4w5Jq");
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(12).trackedEntityAttribute()).isEqualTo("zDhUuAYrxNC");
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(13).trackedEntityAttribute()).isEqualTo("OvY4VVhSDeJ");
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(14).trackedEntityAttribute()).isEqualTo("H9IlTX2X6SL");
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(15).trackedEntityAttribute()).isEqualTo("Qo571yj6Zcn");
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(16).trackedEntityAttribute()).isEqualTo("AuPLng5hLbE");
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(17).trackedEntityAttribute()).isEqualTo("NDXw0cluzSw");
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(18).trackedEntityAttribute()).isEqualTo("FO4sWYJ64LQ");
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(19).trackedEntityAttribute()).isEqualTo("P2cwLGskgxn");
     }
 }

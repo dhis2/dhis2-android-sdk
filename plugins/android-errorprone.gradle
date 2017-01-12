@@ -1,0 +1,9 @@
+apply plugin: "net.ltgt.errorprone"
+
+def libraries = rootProject.ext.libraries
+
+configurations.errorprone {
+    resolutionStrategy {
+        force("com.google.errorprone:error_prone_core:${libraries.errorpronecore}")
+    }
+}

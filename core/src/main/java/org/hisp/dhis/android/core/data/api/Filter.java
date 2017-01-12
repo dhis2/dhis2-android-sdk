@@ -31,8 +31,8 @@ public abstract class Filter<T> {
 
         @SafeVarargs
         public final Builder<T> fields(@NonNull Property<T, ?>... properties) {
-            if (properties == null) {
-                throw new NullPointerException();
+            if (properties == null || properties.length == 0) {
+                throw new IllegalArgumentException("properties == null or properties.length == 0");
             }
 
             fields.addAll(Arrays.asList(properties));

@@ -15,10 +15,10 @@ public class FilterUnitTests {
     @Test
     public void fields_shouldThrowExceptionOnNullArguments() {
         try {
-            Filter.builder().fields(null).build();
+            Filter.builder().fields().build();
 
-            fail("NullPointerException was expected but was not thrown");
-        } catch (NullPointerException nullPointerException) {
+            fail("IllegalArgumentException was expected but was not thrown");
+        } catch (IllegalArgumentException illegalArgumentException) {
             // swallow exception
         }
     }

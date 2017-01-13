@@ -33,7 +33,8 @@ import android.database.Cursor;
 
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-public class TrackedEntityAttributeSearchScopeColumnAdapter implements ColumnTypeAdapter<TrackedEntityAttributeSearchScope> {
+public class TrackedEntityAttributeSearchScopeColumnAdapter
+        implements ColumnTypeAdapter<TrackedEntityAttributeSearchScope> {
 
     @Override
     public TrackedEntityAttributeSearchScope fromCursor(Cursor cursor, String columnName) {
@@ -55,9 +56,10 @@ public class TrackedEntityAttributeSearchScopeColumnAdapter implements ColumnTyp
     }
 
     @Override
-    public void toContentValues(ContentValues contentValues, String columnName, TrackedEntityAttributeSearchScope trackedEntityAttributeSearchScope) {
-        if (trackedEntityAttributeSearchScope != null) {
-            contentValues.put(columnName, trackedEntityAttributeSearchScope.name());
+    public void toContentValues(ContentValues contentValues, String columnName,
+            TrackedEntityAttributeSearchScope searchScope) {
+        if (searchScope != null) {
+            contentValues.put(columnName, searchScope.name());
         }
     }
 }

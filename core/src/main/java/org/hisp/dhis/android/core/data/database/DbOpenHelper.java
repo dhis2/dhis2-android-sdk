@@ -101,15 +101,16 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             OrganisationUnitModel.Columns.LEVEL + " INTEGER," +
             OrganisationUnitModel.Columns.PARENT + " TEXT" + ");";
 
-    private static final String CREATE_USER_ORGANISATION_UNIT_TABLE = "CREATE TABLE " + Tables.USER_ORGANISATION_UNIT + " (" +
+    private static final String CREATE_USER_ORGANISATION_UNIT_TABLE = "CREATE TABLE " +
+            Tables.USER_ORGANISATION_UNIT + " (" +
             UserOrganisationUnitLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             UserOrganisationUnitLinkModel.Columns.USER + " TEXT NOT NULL," +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + " TEXT NOT NULL," +
-            "FOREIGN KEY (" + UserOrganisationUnitLinkModel.Columns.USER + ") REFERENCES " + Tables.USER +
-            " (" + UserModel.Columns.UID + ") ON DELETE CASCADE," +
-            "FOREIGN KEY (" + UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ") REFERENCES " + Tables.ORGANISATION_UNIT +
-            " (" + OrganisationUnitModel.Columns.UID + ") ON DELETE CASCADE," +
+            "FOREIGN KEY (" + UserOrganisationUnitLinkModel.Columns.USER + ") REFERENCES " +
+            Tables.USER + " (" + UserModel.Columns.UID + ") ON DELETE CASCADE," +
+            "FOREIGN KEY (" + UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ") REFERENCES " +
+            Tables.ORGANISATION_UNIT + " (" + OrganisationUnitModel.Columns.UID + ") ON DELETE CASCADE," +
             "UNIQUE (" + UserOrganisationUnitLinkModel.Columns.USER + ", " +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ", " +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + ")" +

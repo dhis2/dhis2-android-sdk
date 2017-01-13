@@ -75,41 +75,76 @@ public abstract class Program extends BaseNameableObject {
     private static final String PROGRAM_RULES = "programRules";
     private static final String PROGRAM_RULE_VARIABLES = "programRuleVariables";
 
-    public static final Field<Program, String> uid = Field.create(UID);
-    public static final Field<Program, String> code = Field.create(CODE);
-    public static final Field<Program, String> name = Field.create(NAME);
-    public static final Field<Program, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<Program, String> created = Field.create(CREATED);
-    public static final Field<Program, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<Program, String> shortName = Field.create(SHORT_NAME);
-    public static final Field<Program, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
-    public static final Field<Program, String> description = Field.create(DESCRIPTION);
-    public static final Field<Program, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
-    public static final Field<Program, Integer> version = Field.create(VERSION);
-    public static final Field<Program, Boolean> onlyEnrollOnce = Field.create(ONLY_ENROLL_ONCE);
-    public static final Field<Program, String> enrollmentDateLabel = Field.create(ENROLLMENT_DATE_LABEL);
-    public static final Field<Program, Boolean> displayIncidentDate = Field.create(DISPLAY_INCIDENT_DATE);
-    public static final Field<Program, String> incidentDateLabel = Field.create(INCIDENT_DATE_LABEL);
-    public static final Field<Program, Boolean> registration = Field.create(REGISTRATION);
-    public static final Field<Program, Boolean> selectEnrollmentDatesInFuture = Field.create(SELECT_ENROLLMENT_DATES_IN_FUTURE);
-    public static final Field<Program, Boolean> dataEntryMethod = Field.create(DATA_ENTRY_METHOD);
-    public static final Field<Program, Boolean> ignoreOverdueEvents = Field.create(IGNORE_OVERDUE_EVENTS);
-    public static final Field<Program, Boolean> relationshipFromA = Field.create(RELATIONSHIP_FROM_A);
-    public static final Field<Program, Boolean> selectIncidentDatesInFuture = Field.create(SELECT_INCIDENT_DATES_IN_FUTURE);
-    public static final Field<Program, Boolean> captureCoordinates = Field.create(CAPTURE_COORDINATES);
-    public static final Field<Program, Boolean> useFirstStageDuringRegistration = Field.create(USE_FIRST_STAGE_DURING_REGISTRATION);
-    public static final Field<Program, Boolean> displayFrontPageList = Field.create(DISPLAY_FRONT_PAGE_LIST);
-    public static final Field<Program, ProgramType> programType = Field.create(PROGRAM_TYPE);
-    public static final NestedField<Program, RelationshipType> relationshipType = NestedField.create(RELATIONSHIP_TYPE);
-    public static final Field<Program, String> relationshipText = Field.create(RELATIONSHIP_TEXT);
-    public static final NestedField<Program, TrackedEntityAttribute> programTrackedEntityAttributes = NestedField.create(PROGRAM_TRACKED_ENTITY_ATTRIBUTES);
-    public static final NestedField<Program, Program> relatedProgram = NestedField.create(RELATED_PROGRAM);
-    public static final NestedField<Program, TrackedEntity> trackedEntity = NestedField.create(TRACKED_ENTITY);
-    public static final NestedField<Program, CategoryCombo> categoryCombo = NestedField.create(CATEGORY_COMBO);
-    public static final NestedField<Program, ProgramIndicator> programIndicators = NestedField.create(PROGRAM_INDICATORS);
-    public static final NestedField<Program, ProgramStage> programStages = NestedField.create(PROGRAM_STAGES);
-    public static final NestedField<Program, ProgramRule> programRules = NestedField.create(PROGRAM_RULES);
-    public static final NestedField<Program, ProgramRuleVariable> programRuleVariables = NestedField.create(PROGRAM_RULE_VARIABLES);
+    public static final Field<Program, String> uid
+            = Field.create(UID);
+    public static final Field<Program, String> code
+            = Field.create(CODE);
+    public static final Field<Program, String> name
+            = Field.create(NAME);
+    public static final Field<Program, String> displayName
+            = Field.create(DISPLAY_NAME);
+    public static final Field<Program, String> created
+            = Field.create(CREATED);
+    public static final Field<Program, String> lastUpdated
+            = Field.create(LAST_UPDATED);
+    public static final Field<Program, String> shortName
+            = Field.create(SHORT_NAME);
+    public static final Field<Program, String> displayShortName
+            = Field.create(DISPLAY_SHORT_NAME);
+    public static final Field<Program, String> description
+            = Field.create(DESCRIPTION);
+    public static final Field<Program, String> displayDescription
+            = Field.create(DISPLAY_DESCRIPTION);
+    public static final Field<Program, Integer> version
+            = Field.create(VERSION);
+    public static final Field<Program, Boolean> onlyEnrollOnce
+            = Field.create(ONLY_ENROLL_ONCE);
+    public static final Field<Program, String> enrollmentDateLabel
+            = Field.create(ENROLLMENT_DATE_LABEL);
+    public static final Field<Program, Boolean> displayIncidentDate
+            = Field.create(DISPLAY_INCIDENT_DATE);
+    public static final Field<Program, String> incidentDateLabel
+            = Field.create(INCIDENT_DATE_LABEL);
+    public static final Field<Program, Boolean> registration
+            = Field.create(REGISTRATION);
+    public static final Field<Program, Boolean> selectEnrollmentDatesInFuture
+            = Field.create(SELECT_ENROLLMENT_DATES_IN_FUTURE);
+    public static final Field<Program, Boolean> dataEntryMethod
+            = Field.create(DATA_ENTRY_METHOD);
+    public static final Field<Program, Boolean> ignoreOverdueEvents
+            = Field.create(IGNORE_OVERDUE_EVENTS);
+    public static final Field<Program, Boolean> relationshipFromA
+            = Field.create(RELATIONSHIP_FROM_A);
+    public static final Field<Program, Boolean> selectIncidentDatesInFuture
+            = Field.create(SELECT_INCIDENT_DATES_IN_FUTURE);
+    public static final Field<Program, Boolean> captureCoordinates
+            = Field.create(CAPTURE_COORDINATES);
+    public static final Field<Program, Boolean> useFirstStageDuringRegistration
+            = Field.create(USE_FIRST_STAGE_DURING_REGISTRATION);
+    public static final Field<Program, Boolean> displayFrontPageList
+            = Field.create(DISPLAY_FRONT_PAGE_LIST);
+    public static final Field<Program, ProgramType> programType
+            = Field.create(PROGRAM_TYPE);
+    public static final Field<Program, String> relationshipText
+            = Field.create(RELATIONSHIP_TEXT);
+    public static final NestedField<Program, RelationshipType> relationshipType
+            = NestedField.create(RELATIONSHIP_TYPE);
+    public static final NestedField<Program, TrackedEntityAttribute> programTrackedEntityAttributes
+            = NestedField.create(PROGRAM_TRACKED_ENTITY_ATTRIBUTES);
+    public static final NestedField<Program, Program> relatedProgram
+            = NestedField.create(RELATED_PROGRAM);
+    public static final NestedField<Program, TrackedEntity> trackedEntity
+            = NestedField.create(TRACKED_ENTITY);
+    public static final NestedField<Program, CategoryCombo> categoryCombo
+            = NestedField.create(CATEGORY_COMBO);
+    public static final NestedField<Program, ProgramIndicator> programIndicators
+            = NestedField.create(PROGRAM_INDICATORS);
+    public static final NestedField<Program, ProgramStage> programStages
+            = NestedField.create(PROGRAM_STAGES);
+    public static final NestedField<Program, ProgramRule> programRules
+            = NestedField.create(PROGRAM_RULES);
+    public static final NestedField<Program, ProgramRuleVariable> programRuleVariables
+            = NestedField.create(PROGRAM_RULE_VARIABLES);
 
     @Nullable
     @JsonProperty(VERSION)
@@ -240,7 +275,7 @@ public abstract class Program extends BaseNameableObject {
             @JsonProperty(PROGRAM_TYPE) ProgramType programType,
             @JsonProperty(RELATIONSHIP_TYPE) RelationshipType relationshipType,
             @JsonProperty(RELATIONSHIP_TEXT) String relationshipText,
-            @JsonProperty(PROGRAM_TRACKED_ENTITY_ATTRIBUTES) List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes,
+            @JsonProperty(PROGRAM_TRACKED_ENTITY_ATTRIBUTES) List<ProgramTrackedEntityAttribute> attributes,
             @JsonProperty(RELATED_PROGRAM) Program relatedProgram,
             @JsonProperty(TRACKED_ENTITY) TrackedEntity trackedEntity,
             @JsonProperty(CATEGORY_COMBO) CategoryCombo categoryCombo,
@@ -277,7 +312,7 @@ public abstract class Program extends BaseNameableObject {
                 programType,
                 relationshipType,
                 relationshipText,
-                safeUnmodifiableList(programTrackedEntityAttributes),
+                safeUnmodifiableList(attributes),
                 relatedProgram,
                 trackedEntity,
                 categoryCombo,

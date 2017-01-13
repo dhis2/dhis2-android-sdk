@@ -26,9 +26,10 @@ public class DbProgramRuleVariableSourceTypeColumnAdapter implements ColumnTypeA
     }
 
     @Override
-    public void toContentValues(ContentValues contentValues, String columnName, ProgramRuleVariableSourceType programRuleVariableSourceType) {
-        if (programRuleVariableSourceType != null) {
-            contentValues.put(columnName, programRuleVariableSourceType.name());
+    public void toContentValues(ContentValues contentValues, String columnName,
+            ProgramRuleVariableSourceType sourceType) {
+        if (sourceType != null) {
+            contentValues.put(columnName, sourceType.name());
         }
     }
 }

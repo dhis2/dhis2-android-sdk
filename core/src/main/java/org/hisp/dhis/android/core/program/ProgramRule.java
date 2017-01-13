@@ -49,16 +49,24 @@ public abstract class ProgramRule extends BaseIdentifiableObject {
     private static final String CONDITION = "condition";
     private static final String PROGRAM_RULE_ACTIONS = "programRuleActions";
 
-    public static final Field<ProgramRule, String> uid = Field.create(UID);
-    public static final Field<ProgramRule, String> code = Field.create(CODE);
-    public static final Field<ProgramRule, String> name = Field.create(NAME);
-    public static final Field<ProgramRule, String> displayName = Field.create(DISPLAY_NAME);
-
-    public static final Field<ProgramRule, Integer> priority = Field.create(PRIORITY);
-    public static final Field<ProgramRule, String> condition = Field.create(CONDITION);
-    public static final NestedField<ProgramRule, Program> program = NestedField.create(PROGRAM);
-    public static final NestedField<ProgramRule, ProgramStage> programStage = NestedField.create(PROGRAM_STAGE);
-    public static final NestedField<ProgramRule, ProgramRuleAction> programRuleActions = NestedField.create(PROGRAM_RULE_ACTIONS);
+    public static final Field<ProgramRule, String> uid
+            = Field.create(UID);
+    public static final Field<ProgramRule, String> code
+            = Field.create(CODE);
+    public static final Field<ProgramRule, String> name
+            = Field.create(NAME);
+    public static final Field<ProgramRule, String> displayName
+            = Field.create(DISPLAY_NAME);
+    public static final Field<ProgramRule, Integer> priority
+            = Field.create(PRIORITY);
+    public static final Field<ProgramRule, String> condition
+            = Field.create(CONDITION);
+    public static final NestedField<ProgramRule, Program> program
+            = NestedField.create(PROGRAM);
+    public static final NestedField<ProgramRule, ProgramStage> programStage
+            = NestedField.create(PROGRAM_STAGE);
+    public static final NestedField<ProgramRule, ProgramRuleAction> programRuleActions
+            = NestedField.create(PROGRAM_RULE_ACTIONS);
 
 
     @Nullable
@@ -77,23 +85,22 @@ public abstract class ProgramRule extends BaseIdentifiableObject {
     @JsonProperty(PROGRAM_STAGE)
     public abstract ProgramStage programStage();
 
-
     @Nullable
     @JsonProperty(PROGRAM_RULE_ACTIONS)
     public abstract List<ProgramRuleAction> programRuleActions();
 
     @JsonCreator
     public static ProgramRule create(@JsonProperty(UID) String uid,
-                                     @JsonProperty(CODE) String code,
-                                     @JsonProperty(NAME) String name,
-                                     @JsonProperty(DISPLAY_NAME) String displayName,
-                                     @JsonProperty(CREATED) Date created,
-                                     @JsonProperty(LAST_UPDATED) Date lastUpdated,
-                                     @JsonProperty(PRIORITY) Integer priority,
-                                     @JsonProperty(CONDITION) String condition,
-                                     @JsonProperty(PROGRAM) Program program,
-                                     @JsonProperty(PROGRAM_STAGE) ProgramStage programStage,
-                                     @JsonProperty(PROGRAM_RULE_ACTIONS) List<ProgramRuleAction> programRuleActions) {
+            @JsonProperty(CODE) String code,
+            @JsonProperty(NAME) String name,
+            @JsonProperty(DISPLAY_NAME) String displayName,
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(PRIORITY) Integer priority,
+            @JsonProperty(CONDITION) String condition,
+            @JsonProperty(PROGRAM) Program program,
+            @JsonProperty(PROGRAM_STAGE) ProgramStage programStage,
+            @JsonProperty(PROGRAM_RULE_ACTIONS) List<ProgramRuleAction> programRuleActions) {
         return new AutoValue_ProgramRule(
                 uid, code, name, displayName,
                 created, lastUpdated, priority, condition,

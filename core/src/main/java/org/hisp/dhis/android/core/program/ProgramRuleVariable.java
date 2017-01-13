@@ -51,20 +51,30 @@ public abstract class ProgramRuleVariable extends BaseIdentifiableObject {
     private static final String DATA_ELEMENT = "dataElement";
     private static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
 
-    public static final Field<ProgramRuleVariable, String> uid = Field.create(UID);
-    public static final Field<ProgramRuleVariable, String> code = Field.create(CODE);
-    public static final Field<ProgramRuleVariable, String> name = Field.create(NAME);
-    public static final Field<ProgramRuleVariable, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<ProgramRuleVariable, String> created = Field.create(CREATED);
-    public static final Field<ProgramRuleVariable, String> lastUpdated = Field.create(LAST_UPDATED);
-
-    public static final Field<ProgramRuleVariable, Boolean> useCodeForOptionSet = Field.create(USE_CODE_FOR_OPTION_SET);
-    public static final Field<ProgramRuleVariable, ProgramRuleVariableSourceType> programRuleVariableSourceType = Field.create(PROGRAM_RULE_VARIABLE_SOURCE_TYPE);
-
-    public static final NestedField<ProgramRuleVariable, Program> program = NestedField.create(PROGRAM);
-    public static final NestedField<ProgramRuleVariable, ProgramStage> programStage = NestedField.create(PROGRAM_STAGE);
-    public static final NestedField<ProgramRuleVariable, DataElement> dataElement = NestedField.create(DATA_ELEMENT);
-    public static final NestedField<ProgramRuleVariable, TrackedEntityAttribute> trackedEntityAttribute = NestedField.create(TRACKED_ENTITY_ATTRIBUTE);
+    public static final Field<ProgramRuleVariable, String> uid
+            = Field.create(UID);
+    public static final Field<ProgramRuleVariable, String> code
+            = Field.create(CODE);
+    public static final Field<ProgramRuleVariable, String> name
+            = Field.create(NAME);
+    public static final Field<ProgramRuleVariable, String> displayName
+            = Field.create(DISPLAY_NAME);
+    public static final Field<ProgramRuleVariable, String> created
+            = Field.create(CREATED);
+    public static final Field<ProgramRuleVariable, String> lastUpdated
+            = Field.create(LAST_UPDATED);
+    public static final Field<ProgramRuleVariable, Boolean> useCodeForOptionSet
+            = Field.create(USE_CODE_FOR_OPTION_SET);
+    public static final Field<ProgramRuleVariable, ProgramRuleVariableSourceType> programRuleVariableSourceType
+            = Field.create(PROGRAM_RULE_VARIABLE_SOURCE_TYPE);
+    public static final NestedField<ProgramRuleVariable, Program> program
+            = NestedField.create(PROGRAM);
+    public static final NestedField<ProgramRuleVariable, ProgramStage> programStage
+            = NestedField.create(PROGRAM_STAGE);
+    public static final NestedField<ProgramRuleVariable, DataElement> dataElement
+            = NestedField.create(DATA_ELEMENT);
+    public static final NestedField<ProgramRuleVariable, TrackedEntityAttribute> trackedEntityAttribute
+            = NestedField.create(TRACKED_ENTITY_ATTRIBUTE);
 
 
     @Nullable
@@ -104,9 +114,9 @@ public abstract class ProgramRuleVariable extends BaseIdentifiableObject {
             @JsonProperty(PROGRAM_STAGE) ProgramStage programStage,
             @JsonProperty(DATA_ELEMENT) DataElement dataElement,
             @JsonProperty(TRACKED_ENTITY_ATTRIBUTE) TrackedEntityAttribute trackedEntityAttribute,
-            @JsonProperty(PROGRAM_RULE_VARIABLE_SOURCE_TYPE) ProgramRuleVariableSourceType programRuleVariableSourceType) {
+            @JsonProperty(PROGRAM_RULE_VARIABLE_SOURCE_TYPE) ProgramRuleVariableSourceType sourceType) {
         return new AutoValue_ProgramRuleVariable(uid, code, name, displayName, created,
                 lastUpdated, useCodeForOptionSet, program, programStage,
-                dataElement, trackedEntityAttribute, programRuleVariableSourceType);
+                dataElement, trackedEntityAttribute, sourceType);
     }
 }

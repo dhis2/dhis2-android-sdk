@@ -13,8 +13,7 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class OptionSetStoreImpl implements OptionSetStore {
-
-    public static final String INSERT_STATEMENT = "INSERT INTO " + Tables.OPTION_SET + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.OPTION_SET + " (" +
             OptionSetModel.Columns.UID + ", " +
             OptionSetModel.Columns.CODE + ", " +
             OptionSetModel.Columns.NAME + ", " +
@@ -33,13 +32,13 @@ public class OptionSetStoreImpl implements OptionSetStore {
 
     @Override
     public long insert(@NonNull String uid,
-                       @Nullable String code,
-                       @NonNull String name,
-                       @NonNull String displayName,
-                       @NonNull Date created,
-                       @NonNull Date lastUpdated,
-                       @NonNull Integer version,
-                       @NonNull ValueType valueType) {
+            @Nullable String code,
+            @NonNull String name,
+            @NonNull String displayName,
+            @NonNull Date created,
+            @NonNull Date lastUpdated,
+            @NonNull Integer version,
+            @NonNull ValueType valueType) {
         sqLiteStatement.clearBindings();
 
         sqLiteBind(sqLiteStatement, 1, uid);

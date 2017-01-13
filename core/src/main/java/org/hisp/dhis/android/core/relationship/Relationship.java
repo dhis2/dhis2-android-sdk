@@ -44,9 +44,12 @@ public abstract class Relationship {
 
     /*  //Uncommented because of api issued. We cannot query Relationship itself.
         //https://play.dhis2.org/test/api/schemas/relationship.json  returns a json with 404 http status.
-        public static final NestedField<Relationship, TrackedEntityInstance> trackedEntityInstanceA = NestedField.create(TRACKED_ENTITY_INSTANCE_A);
-        public static final NestedField<Relationship, TrackedEntityInstance> trackedEntityInstacenB = NestedField.create(TRACKED_ENTITY_INSTANCE_B);*/
-    public static final NestedField<Relationship, RelationshipType> relationshipType = NestedField.create(RELATIONSHIP_TYPE);
+        public static final NestedField<Relationship, TrackedEntityInstance> trackedEntityInstanceA
+        = NestedField.create(TRACKED_ENTITY_INSTANCE_A);
+        public static final NestedField<Relationship, TrackedEntityInstance> trackedEntityInstacenB
+        = NestedField.create(TRACKED_ENTITY_INSTANCE_B);*/
+    public static final NestedField<Relationship, RelationshipType> relationshipType
+            = NestedField.create(RELATIONSHIP_TYPE);
 
     @JsonProperty(TRACKED_ENTITY_INSTANCE_A)
     public abstract TrackedEntityInstance trackedEntityInstanceA();

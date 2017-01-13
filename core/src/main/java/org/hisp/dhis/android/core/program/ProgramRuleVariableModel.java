@@ -73,7 +73,8 @@ public abstract class ProgramRuleVariableModel extends BaseIdentifiableObjectMod
 
         public abstract Builder trackedEntityAttribute(@Nullable String trackedEntityAttribute);
 
-        public abstract Builder programRuleVariableSourceType(@Nullable ProgramRuleVariableSourceType programRuleVariableSourceType);
+        public abstract Builder programRuleVariableSourceType(
+                @Nullable ProgramRuleVariableSourceType programRuleVariableSourceType);
 
         public abstract ProgramRuleVariableModel build();
 

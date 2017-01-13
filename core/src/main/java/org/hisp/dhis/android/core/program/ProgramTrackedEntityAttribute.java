@@ -50,21 +50,36 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
     private static final String ALLOW_FUTURE_DATE = "allowFutureDate";
     private static final String DISPLAY_IN_LIST = "displayInList";
 
-    public static final Field<TrackedEntityAttribute, String> uid = Field.create(UID);
-    public static final Field<TrackedEntityAttribute, String> code = Field.create(CODE);
-    public static final Field<TrackedEntityAttribute, String> name = Field.create(NAME);
-    public static final Field<TrackedEntityAttribute, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<TrackedEntityAttribute, String> created = Field.create(CREATED);
-    public static final Field<TrackedEntityAttribute, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<TrackedEntityAttribute, String> shortName = Field.create(SHORT_NAME);
-    public static final Field<TrackedEntityAttribute, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
-    public static final Field<TrackedEntityAttribute, String> description = Field.create(DESCRIPTION);
-    public static final Field<TrackedEntityAttribute, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
-    public static final Field<TrackedEntityAttribute, String> mandatory = Field.create(MANDATORY);
-    public static final NestedField<TrackedEntityAttribute, TrackedEntityAttribute> trackedEntityAttribute = NestedField.create(TRACKED_ENTITY_ATTRIBUTE);
-    public static final Field<TrackedEntityAttribute, ValueType> valueType = Field.create(VALUE_TYPE);
-    public static final Field<TrackedEntityAttribute, Boolean> allowFutureDate = Field.create(ALLOW_FUTURE_DATE);
-    public static final Field<TrackedEntityAttribute, Boolean> displayInList = Field.create(DISPLAY_IN_LIST);
+    public static final Field<TrackedEntityAttribute, String> uid
+            = Field.create(UID);
+    public static final Field<TrackedEntityAttribute, String> code
+            = Field.create(CODE);
+    public static final Field<TrackedEntityAttribute, String> name
+            = Field.create(NAME);
+    public static final Field<TrackedEntityAttribute, String> displayName
+            = Field.create(DISPLAY_NAME);
+    public static final Field<TrackedEntityAttribute, String> created
+            = Field.create(CREATED);
+    public static final Field<TrackedEntityAttribute, String> lastUpdated
+            = Field.create(LAST_UPDATED);
+    public static final Field<TrackedEntityAttribute, String> shortName
+            = Field.create(SHORT_NAME);
+    public static final Field<TrackedEntityAttribute, String> displayShortName
+            = Field.create(DISPLAY_SHORT_NAME);
+    public static final Field<TrackedEntityAttribute, String> description
+            = Field.create(DESCRIPTION);
+    public static final Field<TrackedEntityAttribute, String> displayDescription
+            = Field.create(DISPLAY_DESCRIPTION);
+    public static final Field<TrackedEntityAttribute, String> mandatory
+            = Field.create(MANDATORY);
+    public static final NestedField<TrackedEntityAttribute, TrackedEntityAttribute> trackedEntityAttribute
+            = NestedField.create(TRACKED_ENTITY_ATTRIBUTE);
+    public static final Field<TrackedEntityAttribute, ValueType> valueType
+            = Field.create(VALUE_TYPE);
+    public static final Field<TrackedEntityAttribute, Boolean> allowFutureDate
+            = Field.create(ALLOW_FUTURE_DATE);
+    public static final Field<TrackedEntityAttribute, Boolean> displayInList
+            = Field.create(DISPLAY_IN_LIST);
 
     @Nullable
     @JsonProperty(MANDATORY)

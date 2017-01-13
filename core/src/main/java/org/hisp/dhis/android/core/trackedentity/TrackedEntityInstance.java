@@ -92,7 +92,8 @@ public abstract class TrackedEntityInstance {
         public abstract Builder organisationUnit(String organisationUnit);
 
         @JsonProperty(JSON_PROPERTY_ATTRIBUTES)
-        public abstract Builder trackedEntityAttributeValues(List<TrackedEntityAttributeValue> trackedEntityAttributeValues);
+        public abstract Builder trackedEntityAttributeValues(
+                List<TrackedEntityAttributeValue> trackedEntityAttributeValues);
 
         @JsonProperty(JSON_PROPERTY_RELATIONSHIPS)
         public abstract Builder relationships(@Nullable List<Relationship> relationships);

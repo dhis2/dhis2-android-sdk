@@ -177,9 +177,12 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ProgramModel.Columns.USE_FIRST_STAGE_DURING_REGISTRATION + " INTEGER," +
             ProgramModel.Columns.DISPLAY_FRONT_PAGE_LIST + " INTEGER," +
             ProgramModel.Columns.PROGRAM_TYPE + " TEXT," +
+            //TODO: Should be a foreign key:
             ProgramModel.Columns.RELATIONSHIP_TYPE + " TEXT," +
             ProgramModel.Columns.RELATIONSHIP_TEXT + " TEXT," +
+            //TODO: should maybe reference itself as a foreign key. (Wait for org unit to implement it first)
             ProgramModel.Columns.RELATED_PROGRAM + " TEXT," +
+            //TODO: should be a foreign key.
             ProgramModel.Columns.TRACKED_ENTITY + " TEXT" +
             ");";
 

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigurationStoreImpl implements ConfigurationStore {
-    private static final String PROJECTION[] = {
+    private static final String[] PROJECTION = {
             ConfigurationModel.Columns.ID,
             ConfigurationModel.Columns.SERVER_URL
     };

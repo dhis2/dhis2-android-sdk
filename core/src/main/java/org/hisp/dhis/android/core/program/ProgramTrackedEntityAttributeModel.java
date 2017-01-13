@@ -44,12 +44,12 @@ import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 @AutoValue
 public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObjectModel {
 
-    public interface Columns extends BaseNameableObjectModel.Columns {
-        String MANDATORY = "mandatory";
-        String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
-        String VALUE_TYPE = "valueType";
-        String ALLOW_FUTURE_DATES = "allowFutureDate";
-        String DISPLAY_IN_LIST = "displayInList";
+    public static class Columns extends BaseNameableObjectModel.Columns {
+        public static final String MANDATORY = "mandatory";
+        public static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+        public static final String VALUE_TYPE = "valueType";
+        public static final String ALLOW_FUTURE_DATES = "allowFutureDate";
+        public static final String DISPLAY_IN_LIST = "displayInList";
     }
 
     @NonNull

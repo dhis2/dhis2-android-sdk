@@ -12,12 +12,10 @@ import org.hisp.dhis.android.core.common.BaseDataModel;
 
 @AutoValue
 public abstract class RelationshipModel extends BaseDataModel {
-
-    public interface Columns extends BaseDataModel.Columns {
-
-        String TRACKED_ENTITY_INSTANCE_A = "trackedEntityInstanceA";
-        String TRACKED_ENTITY_INSTANCE_B = "trackedEntityInstanceB";
-        String RELATIONSHIP_TYPE = "relationshipType";
+    public static class Columns extends BaseDataModel.Columns {
+        public static final String TRACKED_ENTITY_INSTANCE_A = "trackedEntityInstanceA";
+        public static final String TRACKED_ENTITY_INSTANCE_B = "trackedEntityInstanceB";
+        public static final String RELATIONSHIP_TYPE = "relationshipType";
     }
 
     public static RelationshipModel create(Cursor cursor) {
@@ -45,7 +43,6 @@ public abstract class RelationshipModel extends BaseDataModel {
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseDataModel.Builder<Builder> {
-
         public abstract Builder trackedEntityInstanceA(@Nullable String trackedEntityInstanceA);
 
         public abstract Builder trackedEntityInstanceB(@Nullable String trackedEntityInstanceB);

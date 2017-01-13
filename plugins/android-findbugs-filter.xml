@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<FindBugsFilter>
+    <!-- Do not check auto-generated resources classes -->
+    <Match>
+        <Class name="~.*R\$.*"/>
+    </Match>
+
+    <!-- Ignore Butterknife auto-generated classes -->
+    <Match>
+        <Class name="~.*ViewBinding.*"/>
+    </Match>
+
+    <Match>
+        <!-- This rule fails the build in case if any anonymous
+        classes can be converted to static inner classes. The reason why
+        it might be harmful is extensive usage of anonymous callbacks for RxJava. -->
+        <Bug pattern="SIC_INNER_SHOULD_BE_STATIC_ANON"/>
+    </Match>
+
+    <Match>
+        <!-- Since most fields in android components such as activities and fragments
+        are instantiated within lifecycle methods (onCreate(), onResume(), etc), this
+        rule is triggered even in cases when it is safe to deference variable without
+        null-check.  -->
+        <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR"/>
+    </Match>
+</FindBugsFilter>

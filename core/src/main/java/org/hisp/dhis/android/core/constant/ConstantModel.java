@@ -14,8 +14,8 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 @AutoValue
 public abstract class ConstantModel extends BaseIdentifiableObjectModel {
 
-    public interface Columns extends BaseIdentifiableObjectModel.Columns {
-        String VALUE = "value";
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String VALUE = "value";
     }
 
     public static ConstantModel create(Cursor cursor) {
@@ -29,7 +29,7 @@ public abstract class ConstantModel extends BaseIdentifiableObjectModel {
 
     @Nullable
     @ColumnName(Columns.VALUE)
-    public abstract Double value();
+    public abstract String value();
 
     @NonNull
     public abstract ContentValues toContentValues();
@@ -37,7 +37,7 @@ public abstract class ConstantModel extends BaseIdentifiableObjectModel {
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {
 
-        public abstract Builder value(@Nullable Double value);
+        public abstract Builder value(@Nullable String value);
 
         public abstract ConstantModel build();
     }

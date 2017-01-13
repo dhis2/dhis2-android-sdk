@@ -32,10 +32,7 @@ import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 // ToDo: replace builders with factory methods (in order to
 // ToDo: reduce method count of the library)
@@ -43,8 +40,7 @@ import java.util.Locale;
 public abstract class BaseIdentifiableObject implements IdentifiableObject {
     /* date format which should be used for all Date instances
     within models which extend BaseIdentifiableObject */
-    public static final DateFormat DATE_FORMAT =
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.US);
+    public static final SafeDateFormat DATE_FORMAT = new SafeDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
     public static final int UID_LENGTH = 11;
 

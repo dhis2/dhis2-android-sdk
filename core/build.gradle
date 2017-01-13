@@ -27,7 +27,10 @@
  */
 
 apply plugin: "com.android.library"
+apply from: rootProject.file("plugins/android-checkstyle.gradle")
 apply from: rootProject.file("plugins/android-errorprone.gradle")
+apply from: rootProject.file("plugins/android-findbugs.gradle")
+apply from: rootProject.file("plugins/android-pmd.gradle")
 
 def configuration = rootProject.ext.configuration
 def libraries = rootProject.ext.libraries

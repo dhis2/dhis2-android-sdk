@@ -21,7 +21,7 @@ public class ConstantModelIntegrationTest {
     private static final String CODE = "test_code";
     private static final String NAME = "test_name";
     private static final String DISPLAY_NAME = "test_display_name";
-    private static final Double VALUE = 0.18;
+    private static final String VALUE = "0.18";
 
     private static final String DATE_STRING = "2017-01-10T12:59:40.083";
 
@@ -65,7 +65,7 @@ public class ConstantModelIntegrationTest {
         assertThat(contentValues.getAsString(ConstantModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
         assertThat(contentValues.getAsString(ConstantModel.Columns.CREATED)).isEqualTo(DATE_STRING);
         assertThat(contentValues.getAsString(ConstantModel.Columns.LAST_UPDATED)).isEqualTo(DATE_STRING);
-        assertThat(contentValues.getAsDouble(ConstantModel.Columns.VALUE)).isEqualTo(VALUE); // Undeprecated in later versions of Truth
+        assertThat(contentValues.getAsString(ConstantModel.Columns.VALUE)).isEqualTo(VALUE); // Undeprecated in later versions of Truth
 
     }
 }

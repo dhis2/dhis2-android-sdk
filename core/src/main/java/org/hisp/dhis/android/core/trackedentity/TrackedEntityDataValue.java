@@ -30,80 +30,66 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.data.api.Field;
 
 import java.util.Date;
 
 //TODO: Tests
 @AutoValue
-@JsonDeserialize(builder = AutoValue_TrackedEntityDataValue.Builder.class)
 public abstract class TrackedEntityDataValue {
-    public final static String JSON_PROPERTY_DATA_ELEMENT = "dataElement";
-    public final static String JSON_PROPERTY_STORED_BY = "storedBy";
-    public final static String JSON_PROPERTY_VALUE = "value";
-    public final static String JSON_PROPERTY_CREATED = "created";
-    public final static String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
-    public final static String JSON_PROPERTY_PROVIDED_ELSEWHERE = "providedElsewhere";
+    public final static String DATA_ELEMENT = "dataElement";
+    public final static String STORED_BY = "storedBy";
+    public final static String VALUE = "value";
+    public final static String CREATED = "created";
+    public final static String LAST_UPDATED = "lastUpdated";
+    public final static String PROVIDED_ELSEWHERE = "providedElsewhere";
+
+    public static final Field<TrackedEntityAttribute, String> dataElement = Field.create(DATA_ELEMENT);
+    public static final Field<TrackedEntityAttribute, String> storedBy = Field.create(STORED_BY);
+    public static final Field<TrackedEntityAttribute, String> value = Field.create(VALUE);
+    public static final Field<TrackedEntityAttribute, Date> created = Field.create(CREATED);
+    public static final Field<TrackedEntityAttribute, Date> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<TrackedEntityAttribute, Boolean> providedElsewhere = Field.create(PROVIDED_ELSEWHERE);
 
     @Nullable
-    @JsonIgnore
-    public abstract String event();
-
-    @Nullable
-    @JsonProperty(JSON_PROPERTY_CREATED)
+    @JsonProperty(CREATED)
     public abstract Date created();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
+    @JsonProperty(LAST_UPDATED)
     public abstract Date lastUpdated();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_DATA_ELEMENT)
+    @JsonProperty(DATA_ELEMENT)
     public abstract String dataElement();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_STORED_BY)
+    @JsonProperty(STORED_BY)
     public abstract String storedBy();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_VALUE)
+    @JsonProperty(VALUE)
     public abstract String value();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_PROVIDED_ELSEWHERE)
+    @JsonProperty(PROVIDED_ELSEWHERE)
     public abstract Boolean providedElsewhere();
 
-    public static Builder builder() {
-        return new AutoValue_TrackedEntityDataValue.Builder();
-    }
-
-    @AutoValue.Builder
-    public static abstract class Builder {
-
-        @JsonProperty(JSON_PROPERTY_CREATED)
-        public abstract Builder created(@Nullable Date created);
-
-        @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
-        public abstract Builder lastUpdated(@Nullable Date lastUpdated);
-
-        @JsonProperty(JSON_PROPERTY_DATA_ELEMENT)
-        public abstract Builder dataElement(@Nullable String dataElement);
-
-        @JsonProperty(JSON_PROPERTY_STORED_BY)
-        public abstract Builder storedBy(@Nullable String storedBy);
-
-        @JsonProperty(JSON_PROPERTY_VALUE)
-        public abstract Builder value(@Nullable String value);
-
-        @JsonIgnore
-        public abstract Builder event(@Nullable String event);
-
-        @JsonProperty(JSON_PROPERTY_PROVIDED_ELSEWHERE)
-        public abstract Builder providedElsewhere(@Nullable Boolean providedElsewhere);
-
-        public abstract TrackedEntityDataValue build();
+    @JsonCreator
+    public static TrackedEntityDataValue create(
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(DATA_ELEMENT) String dataElement,
+            @JsonProperty(STORED_BY) String storedBy,
+            @JsonProperty(VALUE) String value,
+            @JsonProperty(PROVIDED_ELSEWHERE) Boolean providedElsewhere
+    ) {
+        return new AutoValue_TrackedEntityDataValue(
+                created, lastUpdated, dataElement, storedBy, value, providedElsewhere
+        );
     }
 }

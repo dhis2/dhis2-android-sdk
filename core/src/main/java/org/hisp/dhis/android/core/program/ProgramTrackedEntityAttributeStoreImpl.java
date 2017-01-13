@@ -41,7 +41,8 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEntityAttributeStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + DbOpenHelper.Tables.PROGRAM_TRACKED_ENTITY_ATTRIBUTE + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " +
+            DbOpenHelper.Tables.PROGRAM_TRACKED_ENTITY_ATTRIBUTE + " (" +
             ProgramTrackedEntityAttributeModel.Columns.UID + ", " +
             ProgramTrackedEntityAttributeModel.Columns.CODE + ", " +
             ProgramTrackedEntityAttributeModel.Columns.NAME + ", " +
@@ -66,15 +67,14 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
         this.insertRowStatement = database.compileStatement(INSERT_STATEMENT);
     }
 
-
     @Override
     public long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
-                       @Nullable String displayName, @NonNull Date created,
-                       @NonNull Date lastUpdated, @Nullable String shortName,
-                       @Nullable String displayShortName, @Nullable String description,
-                       @Nullable String displayDescription, @Nullable Boolean mandatory,
-                       @NonNull String trackedEntityAttribute, @Nullable ValueType valueType,
-                       @Nullable Boolean allowFutureDates, @Nullable Boolean displayInList) {
+            @Nullable String displayName, @NonNull Date created,
+            @NonNull Date lastUpdated, @Nullable String shortName,
+            @Nullable String displayShortName, @Nullable String description,
+            @Nullable String displayDescription, @Nullable Boolean mandatory,
+            @NonNull String trackedEntityAttribute, @Nullable ValueType valueType,
+            @Nullable Boolean allowFutureDates, @Nullable Boolean displayInList) {
         insertRowStatement.clearBindings();
 
         sqLiteBind(insertRowStatement, 1, uid);

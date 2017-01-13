@@ -12,7 +12,7 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class ConstantStoreImpl implements ConstantStore {
-    public static final String INSERT_STATEMENT = "INSERT INTO " + Tables.CONSTANT + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.CONSTANT + " (" +
             ConstantModel.Columns.UID + "," +
             ConstantModel.Columns.CODE + "," +
             ConstantModel.Columns.NAME + "," +
@@ -28,12 +28,13 @@ public class ConstantStoreImpl implements ConstantStore {
         this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
     }
 
-    // TODO: Don't know if these should be @NonNull or @Nullable. They seem to differ in the other stores. For OptionSet they also differ between interface and implementation
+    // TODO: Don't know if these should be @NonNull or @Nullable. They seem to differ in
+    // the other stores. For OptionSet they also differ between interface and implementation
 
     @Override
     public long insert(@Nullable String uid, @Nullable String code, @NonNull String name,
             @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
-            @NonNull Double value) {
+            @NonNull String value) {
         insertStatement.clearBindings();
 
         sqLiteBind(insertStatement, 1, uid);

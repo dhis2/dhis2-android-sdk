@@ -34,11 +34,11 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 
 public abstract class BaseNameableObjectModel extends BaseIdentifiableObjectModel implements NameableObject {
 
-    public interface Columns extends BaseIdentifiableObjectModel.Columns {
-        String SHORT_NAME = "shortName";
-        String DISPLAY_SHORT_NAME = "displayShortName";
-        String DESCRIPTION = "description";
-        String DISPLAY_DESCRIPTION = "displayDescription";
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String SHORT_NAME = "shortName";
+        public static final String DISPLAY_SHORT_NAME = "displayShortName";
+        public static final String DESCRIPTION = "description";
+        public static final String DISPLAY_DESCRIPTION = "displayDescription";
     }
 
     @Nullable

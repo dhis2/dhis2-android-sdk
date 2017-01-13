@@ -45,15 +45,15 @@ import java.util.Date;
 // TODO: Tests
 @AutoValue
 public abstract class OrganisationUnitModel extends BaseNameableObjectModel {
-    public interface Columns extends BaseNameableObjectModel.Columns {
-        String PATH = "path";
-        String OPENING_DATE = "openingDate";
-        String CLOSED_DATE = "closedDate";
-        String PARENT = "parent";
-        String LEVEL = "level";
-    }
-
     public static final String SCOPE_DATA_CAPTURE = "dataCapture";
+
+    public static class Columns extends BaseNameableObjectModel.Columns {
+        public static final String PATH = "path";
+        public static final String OPENING_DATE = "openingDate";
+        public static final String CLOSED_DATE = "closedDate";
+        public static final String PARENT = "parent";
+        public static final String LEVEL = "level";
+    }
 
     public static OrganisationUnitModel create(Cursor cursor) {
         return AutoValue_OrganisationUnitModel.createFromCursor(cursor);

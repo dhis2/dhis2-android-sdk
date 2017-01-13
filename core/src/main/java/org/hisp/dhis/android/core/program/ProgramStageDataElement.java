@@ -42,7 +42,8 @@ import org.hisp.dhis.android.core.dataelement.DataElement;
 import java.util.Date;
 
 @AutoValue
-//TODO: ProgramStageDataElement is not a true BaseIdentifiableObject. It lacks name and displayName in API. Override those properties and return dataElement.getName() and dataElement.getDisplayName()
+//TODO: ProgramStageDataElement is not a true BaseIdentifiableObject. It lacks name and
+// displayName in API. Override those properties and return dataElement.getName() and dataElement.getDisplayName()
 public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
     private static final String DISPLAY_IN_REPORTS = "displayInReports";
     private static final String DATA_ELEMENT = "dataElement";
@@ -51,19 +52,30 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
     private static final String SORT_ORDER = "sortOrder";
     private static final String ALLOW_FUTURE_DATE = "allowFutureDate";
 
-    public static final Field<ProgramStageDataElement, String> uid = Field.create(UID);
-    public static final Field<ProgramStageDataElement, String> code = Field.create(CODE);
-    public static final Field<ProgramStageDataElement, String> name = Field.create(NAME);
-    public static final Field<ProgramStageDataElement, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<ProgramStageDataElement, String> created = Field.create(CREATED);
-    public static final Field<ProgramStageDataElement, String> lastUpdated = Field.create(LAST_UPDATED);
-
-    public static final Field<ProgramStageDataElement, String> displayInReports = Field.create(DISPLAY_IN_REPORTS);
-    public static final Field<ProgramStageDataElement, Boolean> compulsory = Field.create(COMPULSORY);
-    public static final Field<ProgramStageDataElement, Boolean> allowProvidedElsewhere = Field.create(ALLOW_PROVIDED_ELSEWHERE);
-    public static final Field<ProgramStageDataElement, Integer> sortOrder = Field.create(SORT_ORDER);
-    public static final Field<ProgramStageDataElement, Boolean> allowFutureDate = Field.create(ALLOW_FUTURE_DATE);
-    public static final NestedField<ProgramStageDataElement, DataElement> dataElement = NestedField.create(DATA_ELEMENT);
+    public static final Field<ProgramStageDataElement, String> uid
+            = Field.create(UID);
+    public static final Field<ProgramStageDataElement, String> code
+            = Field.create(CODE);
+    public static final Field<ProgramStageDataElement, String> name
+            = Field.create(NAME);
+    public static final Field<ProgramStageDataElement, String> displayName
+            = Field.create(DISPLAY_NAME);
+    public static final Field<ProgramStageDataElement, String> created
+            = Field.create(CREATED);
+    public static final Field<ProgramStageDataElement, String> lastUpdated
+            = Field.create(LAST_UPDATED);
+    public static final Field<ProgramStageDataElement, String> displayInReports
+            = Field.create(DISPLAY_IN_REPORTS);
+    public static final Field<ProgramStageDataElement, Boolean> compulsory
+            = Field.create(COMPULSORY);
+    public static final Field<ProgramStageDataElement, Boolean> allowProvidedElsewhere
+            = Field.create(ALLOW_PROVIDED_ELSEWHERE);
+    public static final Field<ProgramStageDataElement, Integer> sortOrder
+            = Field.create(SORT_ORDER);
+    public static final Field<ProgramStageDataElement, Boolean> allowFutureDate
+            = Field.create(ALLOW_FUTURE_DATE);
+    public static final NestedField<ProgramStageDataElement, DataElement> dataElement
+            = NestedField.create(DATA_ELEMENT);
 
     @Nullable
     @JsonProperty(DISPLAY_IN_REPORTS)

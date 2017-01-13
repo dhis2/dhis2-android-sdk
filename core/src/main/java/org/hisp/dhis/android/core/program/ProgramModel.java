@@ -15,26 +15,26 @@ import org.hisp.dhis.android.core.data.database.DbProgramTypeColumnAdapter;
 @AutoValue
 public abstract class ProgramModel extends BaseNameableObjectModel {
 
-    public interface Columns extends BaseNameableObjectModel.Columns {
-        String VERSION = "version";
-        String ONLY_ENROLL_ONCE = "onlyEnrollOnce";
-        String ENROLLMENT_DATE_LABEL = "enrollmentDateLabel";
-        String DISPLAY_INCIDENT_DATE = "displayIncidentDate";
-        String INCIDENT_DATE_LABEL = "incidentDateLabel";
-        String REGISTRATION = "registration";
-        String SELECT_ENROLLMENT_DATES_IN_FUTURE = "selectEnrollmentDatesInFuture";
-        String DATA_ENTRY_METHOD = "dataEntryMethod";
-        String IGNORE_OVERDUE_EVENTS = "ignoreOverdueEvents";
-        String RELATIONSHIP_FROM_A = "relationshipFromA";
-        String SELECT_INCIDENT_DATES_IN_FUTURE = "selectIncidentDatesInFuture";
-        String CAPTURE_COORDINATES = "captureCoordinates";
-        String USE_FIRST_STAGE_DURING_REGISTRATION = "useFirstStageDuringRegistration";
-        String DISPLAY_FRONT_PAGE_LIST = "displayFrontPageList";
-        String PROGRAM_TYPE = "programType";
-        String RELATIONSHIP_TYPE = "relationshipType";
-        String RELATIONSHIP_TEXT = "relationshipText";
-        String RELATED_PROGRAM = "relatedProgram";
-        String TRACKED_ENTITY = "trackedEntity";
+    public static class Columns extends BaseNameableObjectModel.Columns {
+        public static final String VERSION = "version";
+        public static final String ONLY_ENROLL_ONCE = "onlyEnrollOnce";
+        public static final String ENROLLMENT_DATE_LABEL = "enrollmentDateLabel";
+        public static final String DISPLAY_INCIDENT_DATE = "displayIncidentDate";
+        public static final String INCIDENT_DATE_LABEL = "incidentDateLabel";
+        public static final String REGISTRATION = "registration";
+        public static final String SELECT_ENROLLMENT_DATES_IN_FUTURE = "selectEnrollmentDatesInFuture";
+        public static final String DATA_ENTRY_METHOD = "dataEntryMethod";
+        public static final String IGNORE_OVERDUE_EVENTS = "ignoreOverdueEvents";
+        public static final String RELATIONSHIP_FROM_A = "relationshipFromA";
+        public static final String SELECT_INCIDENT_DATES_IN_FUTURE = "selectIncidentDatesInFuture";
+        public static final String CAPTURE_COORDINATES = "captureCoordinates";
+        public static final String USE_FIRST_STAGE_DURING_REGISTRATION = "useFirstStageDuringRegistration";
+        public static final String DISPLAY_FRONT_PAGE_LIST = "displayFrontPageList";
+        public static final String PROGRAM_TYPE = "programType";
+        public static final String RELATIONSHIP_TYPE = "relationshipType";
+        public static final String RELATIONSHIP_TEXT = "relationshipText";
+        public static final String RELATED_PROGRAM = "relatedProgram";
+        public static final String TRACKED_ENTITY = "trackedEntity";
     }
 
     public static ProgramModel create(Cursor cursor) {

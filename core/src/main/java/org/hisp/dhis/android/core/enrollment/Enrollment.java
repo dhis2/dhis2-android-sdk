@@ -137,7 +137,8 @@ public abstract class Enrollment {
         public abstract Builder trackedEntityInstance(@Nullable String trackedEntityInstance);
 
         @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_ATTRIBUTE_VALUES)
-        public abstract Builder trackedEntityAttributeValues(@Nullable List<TrackedEntityAttributeValue> trackedEntityAttributeValues);
+        public abstract Builder trackedEntityAttributeValues(
+                @Nullable List<TrackedEntityAttributeValue> attributeValues);
 
         abstract Enrollment autoBuild();
 

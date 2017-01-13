@@ -44,21 +44,20 @@ import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 // TODO: Tests
 @AutoValue
 public abstract class TrackedEntityAttributeModel extends BaseNameableObjectModel {
-
-    public interface Columns extends BaseNameableObjectModel.Columns {
-        String PATTERN = "pattern";
-        String SORT_ORDER_IN_LIST_NO_PROGRAM = "sortOrderInListNoProgram";
-        String OPTION_SET = "optionSet";
-        String VALUE_TYPE = "valueType";
-        String EXPRESSION = "expression";
-        String SEARCH_SCOPE = "searchScope";
-        String PROGRAM_SCOPE = "programScope";
-        String DISPLAY_IN_LIST_NO_PROGRAM = "displayInListNoProgram";
-        String GENERATED = "generated";
-        String DISPLAY_ON_VISIT_SCHEDULE = "displayOnVisitSchedule";
-        String ORG_UNIT_SCOPE = "orgunitScope";
-        String UNIQUE = "uniqueProperty";
-        String INHERIT = "inherit";
+    public static class Columns extends BaseNameableObjectModel.Columns {
+        public static final String PATTERN = "pattern";
+        public static final String SORT_ORDER_IN_LIST_NO_PROGRAM = "sortOrderInListNoProgram";
+        public static final String OPTION_SET = "optionSet";
+        public static final String VALUE_TYPE = "valueType";
+        public static final String EXPRESSION = "expression";
+        public static final String SEARCH_SCOPE = "searchScope";
+        public static final String PROGRAM_SCOPE = "programScope";
+        public static final String DISPLAY_IN_LIST_NO_PROGRAM = "displayInListNoProgram";
+        public static final String GENERATED = "generated";
+        public static final String DISPLAY_ON_VISIT_SCHEDULE = "displayOnVisitSchedule";
+        public static final String ORG_UNIT_SCOPE = "orgunitScope";
+        public static final String UNIQUE = "uniqueProperty";
+        public static final String INHERIT = "inherit";
     }
 
     @NonNull

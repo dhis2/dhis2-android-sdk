@@ -14,7 +14,9 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
     private static final String[] PROJECTION = new String[]{
-            AuthenticatedUserModel.Columns.ID, AuthenticatedUserModel.Columns.USER, AuthenticatedUserModel.Columns.CREDENTIALS
+            AuthenticatedUserModel.Columns.ID,
+            AuthenticatedUserModel.Columns.USER,
+            AuthenticatedUserModel.Columns.CREDENTIALS
     };
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.AUTHENTICATED_USER +

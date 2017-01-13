@@ -13,8 +13,7 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class DataElementStoreImpl implements DataElementStore {
-
-    public static final String INSERT_STATEMENT = "INSERT INTO " + Tables.DATA_ELEMENT + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.DATA_ELEMENT + " (" +
             DataElementModel.Columns.UID + ", " +
             DataElementModel.Columns.CODE + ", " +
             DataElementModel.Columns.NAME + ", " +
@@ -44,14 +43,14 @@ public class DataElementStoreImpl implements DataElementStore {
 
     @Override
     public long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
-                       @NonNull String displayName, @NonNull Date created,
-                       @NonNull Date lastUpdated, @Nullable String shortName,
-                       @Nullable String displayShortName, @Nullable String description,
-                       @Nullable String displayDescription, @NonNull ValueType valueType,
-                       @Nullable Boolean zeroIsSignificant, @Nullable String aggregationOperator,
-                       @Nullable String formName, @Nullable String numberType,
-                       @Nullable String domainType, @Nullable String dimension,
-                       @Nullable String displayFormName, @Nullable String optionSet) {
+            @NonNull String displayName, @NonNull Date created,
+            @NonNull Date lastUpdated, @Nullable String shortName,
+            @Nullable String displayShortName, @Nullable String description,
+            @Nullable String displayDescription, @NonNull ValueType valueType,
+            @Nullable Boolean zeroIsSignificant, @Nullable String aggregationOperator,
+            @Nullable String formName, @Nullable String numberType,
+            @Nullable String domainType, @Nullable String dimension,
+            @Nullable String displayFormName, @Nullable String optionSet) {
         sqLiteStatement.clearBindings();
 
         sqLiteBind(sqLiteStatement, 1, uid);

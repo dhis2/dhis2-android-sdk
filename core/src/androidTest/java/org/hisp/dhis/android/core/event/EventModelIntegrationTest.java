@@ -20,8 +20,8 @@ public class EventModelIntegrationTest {
     private static final String EVENT_UID = "test_uid";
     private static final String ENROLLMENT_UID = "test_enrollment";
     private static final EventStatus STATUS = EventStatus.ACTIVE;
-    private static final Double LATITUDE = 10.832100;
-    private static final Double LONGITUDE = 59.345210;
+    private static final String LATITUDE = "10.832100";
+    private static final String LONGITUDE = "59.345210";
     private static final String PROGRAM = "test_program";
     private static final String PROGRAM_STAGE = "test_programStage";
     private static final String ORGANISATION_UNIT = "test_orgUnit";
@@ -33,7 +33,7 @@ public class EventModelIntegrationTest {
     @Test
     public void create_shouldConvertToModel() throws Exception {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                Columns.ID, Columns.EVENT_UID, Columns.ENROLLMENT_UID,
+                Columns.ID, Columns.UID, Columns.ENROLLMENT_UID,
                 Columns.CREATED, Columns.LAST_UPDATED,
                 Columns.STATUS, Columns.LATITUDE,
                 Columns.LONGITUDE, Columns.PROGRAM, Columns.PROGRAM_STAGE,
@@ -84,23 +84,23 @@ public class EventModelIntegrationTest {
                 .eventDate(timeStamp)
                 .completedDate(timeStamp)
                 .dueDate(timeStamp)
+                .state(STATE)
                 .build();
 
         ContentValues contentValues = event.toContentValues();
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.EVENT_UID)).isEqualTo(EVENT_UID);
+        assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(EVENT_UID);
         assertThat(contentValues.getAsString(Columns.ENROLLMENT_UID)).isEqualTo(ENROLLMENT_UID);
         assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(DATE);
         assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(DATE);
         assertThat(contentValues.getAsString(Columns.STATUS)).isEqualTo(STATUS.name());
-        assertThat(contentValues.getAsDouble(Columns.LATITUDE)).isEqualTo(LATITUDE);
-        assertThat(contentValues.getAsDouble(Columns.LONGITUDE)).isEqualTo(LONGITUDE);
+        assertThat(contentValues.getAsString(Columns.LATITUDE)).isEqualTo(LATITUDE);
+        assertThat(contentValues.getAsString(Columns.LONGITUDE)).isEqualTo(LONGITUDE);
         assertThat(contentValues.getAsString(Columns.PROGRAM)).isEqualTo(PROGRAM);
         assertThat(contentValues.getAsString(Columns.PROGRAM_STAGE)).isEqualTo(PROGRAM_STAGE);
         assertThat(contentValues.getAsString(Columns.EVENT_DATE)).isEqualTo(DATE);
         assertThat(contentValues.getAsString(Columns.COMPLETE_DATE)).isEqualTo(DATE);
         assertThat(contentValues.getAsString(Columns.DUE_DATE)).isEqualTo(DATE);
-
-
+        assertThat(contentValues.getAsString(Columns.STATE)).isEqualTo(STATE.name());
     }
 }

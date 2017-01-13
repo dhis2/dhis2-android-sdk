@@ -13,10 +13,10 @@ import org.hisp.dhis.android.core.common.BaseDataModel;
 @AutoValue
 public abstract class TrackedEntityAttributeValueModel extends BaseDataModel {
 
-    public interface Columns extends BaseDataModel.Columns {
-        String VALUE = "value";
-        String ATTRIBUTE = "trackedEntityAttribute";
-        String INSTANCE = "trackedEntityAttributeInstance";
+    public static class Columns extends BaseDataModel.Columns {
+        public static final String VALUE = "value";
+        public static final String ATTRIBUTE = "trackedEntityAttribute";
+        public static final String INSTANCE = "trackedEntityAttributeInstance";
     }
 
     public static TrackedEntityAttributeValueModel create(Cursor cursor) {

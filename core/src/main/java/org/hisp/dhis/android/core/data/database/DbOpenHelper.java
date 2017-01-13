@@ -9,6 +9,7 @@ import android.support.annotation.VisibleForTesting;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.constant.ConstantModel;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
+import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.option.OptionModel;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
@@ -26,45 +27,20 @@ import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.UserCredentialsModel;
 import org.hisp.dhis.android.core.user.UserModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"
+})
 public final class DbOpenHelper extends SQLiteOpenHelper {
 
     @VisibleForTesting
     static final int VERSION = 1;
-
-    public interface Tables {
-        String CONFIGURATION = "Configuration";
-        String USER = "User";
-        String USER_CREDENTIALS = "UserCredentials";
-        String ORGANISATION_UNIT = "OrganisationUnit";
-        String USER_ORGANISATION_UNIT = "UserOrganisationUnit";
-        String AUTHENTICATED_USER = "AuthenticatedUser";
-        String OPTION_SET = "OptionSet";
-        String OPTION = "Option";
-        String PROGRAM = "Program";
-        String TRACKED_ENTITY = "TrackedEntity";
-        String DATA_ELEMENT = "DataElement";
-        String PROGRAM_STAGE_DATA_ELEMENT = "ProgramStageDataElement";
-        String PROGRAM_STAGE_SECTION = "ProgramStageSection";
-        String PROGRAM_STAGE = "ProgramStage";
-        String PROGRAM_RULE_VARIABLE = "ProgramRuleVariable";
-        String RELATIONSHIP_TABLE = "Relationship";
-        String RELATIONSHIP_TYPE = "RelationshipType";
-        String TRACKED_ENTITY_ATTRIBUTE = "TrackedEntityAttribute";
-        String PROGRAM_TRACKED_ENTITY_ATTRIBUTE = "ProgramTrackedEntityAttribute";
-        String CONSTANT = "Constant";
-        String SYSTEM_INFO = "SystemInfo";
-        String PROGRAM_RULE = "ProgramRule";
-        String PROGRAM_INDICATOR = "ProgramIndicator";
-        String PROGRAM_RULE_ACTION = "ProgramRuleAction";
-        String EVENT = "Event";
-        String TRACKED_ENTITY_ATTRIBUTE_VALUE = "TrackedEntityAttributeValue";
-    }
 
     private static final String CREATE_CONFIGURATION_TABLE = "CREATE TABLE " + Tables.CONFIGURATION + " (" +
             ConfigurationModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -126,15 +102,16 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             OrganisationUnitModel.Columns.LEVEL + " INTEGER," +
             OrganisationUnitModel.Columns.PARENT + " TEXT" + ");";
 
-    private static final String CREATE_USER_ORGANISATION_UNIT_TABLE = "CREATE TABLE " + Tables.USER_ORGANISATION_UNIT + " (" +
+    private static final String CREATE_USER_ORGANISATION_UNIT_TABLE = "CREATE TABLE " +
+            Tables.USER_ORGANISATION_UNIT + " (" +
             UserOrganisationUnitLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             UserOrganisationUnitLinkModel.Columns.USER + " TEXT NOT NULL," +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + " TEXT NOT NULL," +
-            "FOREIGN KEY (" + UserOrganisationUnitLinkModel.Columns.USER + ") REFERENCES " + Tables.USER +
-            " (" + UserModel.Columns.UID + ") ON DELETE CASCADE," +
-            "FOREIGN KEY (" + UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ") REFERENCES " + Tables.ORGANISATION_UNIT +
-            " (" + OrganisationUnitModel.Columns.UID + ") ON DELETE CASCADE," +
+            "FOREIGN KEY (" + UserOrganisationUnitLinkModel.Columns.USER + ") REFERENCES " +
+            Tables.USER + " (" + UserModel.Columns.UID + ") ON DELETE CASCADE," +
+            "FOREIGN KEY (" + UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ") REFERENCES " +
+            Tables.ORGANISATION_UNIT + " (" + OrganisationUnitModel.Columns.UID + ") ON DELETE CASCADE," +
             "UNIQUE (" + UserOrganisationUnitLinkModel.Columns.USER + ", " +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ", " +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + ")" +
@@ -444,7 +421,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ConstantModel.Columns.DISPLAY_NAME + " TEXT," +
             ConstantModel.Columns.CREATED + " TEXT," +
             ConstantModel.Columns.LAST_UPDATED + " TEXT," +
-            ConstantModel.Columns.VALUE + " REAL" +
+            ConstantModel.Columns.VALUE + " TEXT" +
             ");";
 
     private static final String CREATE_SYSTEM_INFO_TABLE = "CREATE TABLE " + Tables.SYSTEM_INFO + " (" +
@@ -493,6 +470,20 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             " FOREIGN KEY (" + ProgramRuleActionModel.Columns.PROGRAM_RULE + ")" +
             " REFERENCES " + Tables.PROGRAM_RULE + " (" + ProgramRuleModel.Columns.UID + ")" +
             ");";
+    
+    private static final String CREATE_TRACKED_ENTITY_DATA_VALUE_TABLE = "CREATE TABLE " +
+            Tables.TRACKED_ENTITY_DATA_VALUE + " (" +
+            TrackedEntityDataValueModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            TrackedEntityDataValueModel.Columns.EVENT + " TEXT NOT NULL," +
+            TrackedEntityDataValueModel.Columns.DATA_ELEMENT + " TEXT," +
+            TrackedEntityDataValueModel.Columns.STORED_BY + " TEXT," +
+            TrackedEntityDataValueModel.Columns.VALUE + " TEXT," +
+            TrackedEntityDataValueModel.Columns.CREATED + " TEXT," +
+            TrackedEntityDataValueModel.Columns.LAST_UPDATED + " TEXT," +
+            TrackedEntityDataValueModel.Columns.PROVIDED_ELSEWHERE + " INTEGER," +
+            " FOREIGN KEY (" + TrackedEntityDataValueModel.Columns.EVENT + ")" +
+            " REFERENCES " + Tables.EVENT + " (" + EventModel.Columns.UID + ")" +
+            ");";
 
     private static final String CREATE_TRACKED_ENTITY_ATTRIBUTE_VALUE_TABLE = "CREATE TABLE " +
             Tables.TRACKED_ENTITY_ATTRIBUTE_VALUE + " (" +
@@ -500,14 +491,72 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             TrackedEntityAttributeValueModel.Columns.STATE + " TEXT," +
             TrackedEntityAttributeValueModel.Columns.VALUE + " TEXT," +
             TrackedEntityAttributeValueModel.Columns.ATTRIBUTE + " TEXT" +
-            //TODO: add these foreign keys after implementing the TrackedEntityInstance and modify in Store to be @NonNull:
+            //TODO: add these foreign keys after implementing the TrackedEntityInstance
+            // and modify in Store to be @NonNull:
            /* TrackedEntityAttributeValueModel.Columns.ATTRIBUTE + " TEXT NOT NULL," +
             " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.ATTRIBUTE + ")" +
-            " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE + " (" + TrackedEntityAttributeModel.Columns.UID + ")" +
+            " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE +
+            " (" + TrackedEntityAttributeModel.Columns.UID + ")" +
             TrackedEntityAttributeValueModel.Columns.INSTANCE + " TEXT NOT NULL," +
             " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.ATTRIBUTE + ")" +
-            " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE_INSTANCE + " (" +  TrackedEntityInstanceModel.Columns.UID + ")" +*/
+            " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE_INSTANCE +
+            " (" +  TrackedEntityInstanceModel.Columns.UID + ")" +*/
             ");";
+
+    private static final String CREATE_EVENT_TABLE = "CREATE TABLE " + Tables.EVENT + " (" +
+            EventModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            EventModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            EventModel.Columns.ENROLLMENT_UID + " TEXT," +
+            EventModel.Columns.CREATED + " TEXT," +
+            EventModel.Columns.LAST_UPDATED + " TEXT," +
+            EventModel.Columns.STATUS + " TEXT," +
+            EventModel.Columns.LATITUDE + " TEXT," +
+            EventModel.Columns.LONGITUDE + " TEXT," +
+            EventModel.Columns.PROGRAM + " TEXT NOT NULL," +
+            EventModel.Columns.PROGRAM_STAGE + " TEXT NOT NULL," +
+            EventModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
+            EventModel.Columns.EVENT_DATE + " TEXT," +
+            EventModel.Columns.COMPLETE_DATE + " TEXT," +
+            EventModel.Columns.DUE_DATE + " TEXT," +
+            EventModel.Columns.STATE + " TEXT," +
+            " FOREIGN KEY (" + EventModel.Columns.PROGRAM + ")" +
+            " REFERENCES " + Tables.PROGRAM + " (" + ProgramModel.Columns.UID + ")," +
+            " FOREIGN KEY (" + EventModel.Columns.PROGRAM_STAGE + ")" +
+            " REFERENCES " + Tables.PROGRAM_STAGE + " (" + ProgramStageModel.Columns.UID + ")," +
+            " FOREIGN KEY (" + EventModel.Columns.ORGANISATION_UNIT + ")" +
+            " REFERENCES " + Tables.ORGANISATION_UNIT + " (" + OrganisationUnitModel.Columns.UID +
+            ")" +
+            ");";
+
+    public static class Tables {
+        public static final String CONFIGURATION = "Configuration";
+        public static final String USER = "User";
+        public static final String USER_CREDENTIALS = "UserCredentials";
+        public static final String ORGANISATION_UNIT = "OrganisationUnit";
+        public static final String USER_ORGANISATION_UNIT = "UserOrganisationUnit";
+        public static final String AUTHENTICATED_USER = "AuthenticatedUser";
+        public static final String OPTION_SET = "OptionSet";
+        public static final String OPTION = "Option";
+        public static final String PROGRAM = "Program";
+        public static final String TRACKED_ENTITY = "TrackedEntity";
+        public static final String DATA_ELEMENT = "DataElement";
+        public static final String PROGRAM_STAGE_DATA_ELEMENT = "ProgramStageDataElement";
+        public static final String PROGRAM_STAGE_SECTION = "ProgramStageSection";
+        public static final String PROGRAM_STAGE = "ProgramStage";
+        public static final String PROGRAM_RULE_VARIABLE = "ProgramRuleVariable";
+        public static final String RELATIONSHIP_TABLE = "Relationship";
+        public static final String RELATIONSHIP_TYPE = "RelationshipType";
+        public static final String TRACKED_ENTITY_ATTRIBUTE = "TrackedEntityAttribute";
+        public static final String PROGRAM_TRACKED_ENTITY_ATTRIBUTE = "ProgramTrackedEntityAttribute";
+        public static final String CONSTANT = "Constant";
+        public static final String SYSTEM_INFO = "SystemInfo";
+        public static final String PROGRAM_RULE = "ProgramRule";
+        public static final String PROGRAM_INDICATOR = "ProgramIndicator";
+        public static final String PROGRAM_RULE_ACTION = "ProgramRuleAction";
+        public static final String EVENT = "Event";
+        public static final String TRACKED_ENTITY_ATTRIBUTE_VALUE = "TrackedEntityAttributeValue";
+        public static final String TRACKED_ENTITY_DATA_VALUE = "TrackedEntityDataValue";
+    }
 
     /**
      * This method should be used only for testing purposes
@@ -543,7 +592,10 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_PROGRAM_RULE_TABLE);
         database.execSQL(CREATE_PROGRAM_INDICATOR_TABLE);
         database.execSQL(CREATE_PROGRAM_RULE_ACTION_TABLE);
+        database.execSQL(CREATE_TRACKED_ENTITY_DATA_VALUE_TABLE);
         database.execSQL(CREATE_TRACKED_ENTITY_ATTRIBUTE_VALUE_TABLE);
+        database.execSQL(CREATE_EVENT_TABLE);
+
         return database;
     }
 

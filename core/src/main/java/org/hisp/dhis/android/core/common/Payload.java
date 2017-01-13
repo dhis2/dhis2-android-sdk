@@ -10,6 +10,7 @@ public class Payload<T> {
 
     @JsonProperty("pager")
     Pager pager;
+
     @JsonIgnore
     List<T> items;
 
@@ -19,7 +20,7 @@ public class Payload<T> {
 
     @JsonAnySetter
     @SuppressWarnings("unused")
-    private void processItems(String key, List<T> values) {
+    /* package */ void processItems(String key, List<T> values) {
         this.items = values;
     }
 

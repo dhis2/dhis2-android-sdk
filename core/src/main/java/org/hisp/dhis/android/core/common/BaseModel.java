@@ -35,8 +35,8 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 
 public abstract class BaseModel implements Model {
 
-    public interface Columns {
-        String ID = BaseColumns._ID;
+    public static class Columns {
+        public static final String ID = BaseColumns._ID;
     }
 
     @Override

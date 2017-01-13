@@ -5,11 +5,12 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 
 import java.util.Date;
+
+import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class ProgramStageStoreImpl implements ProgramStageStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.PROGRAM_STAGE + " (" +
@@ -45,70 +46,54 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
     }
 
     @Override
-    public long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
-                       @NonNull String displayName, @NonNull Date created,
-                       @NonNull Date lastUpdated,
-                       @Nullable String executionDateLabel,
-                       @NonNull Boolean allowGenerateNextVisit,
-                       @NonNull Boolean validCompleteOnly,
-                       @Nullable String reportDateToUse,
-                       @NonNull Boolean openAfterEnrollment,
-                       @NonNull Boolean repeatable,
-                       @NonNull Boolean captureCoordinates,
-                       @NonNull FormType formType,
-                       @NonNull Boolean displayGenerateEventBox,
-                       @NonNull Boolean generatedByEnrollmentDate,
-                       @NonNull Boolean autoGenerateEvent,
-                       @NonNull Integer sortOrder,
-                       @NonNull Boolean hideDueDate,
-                       @NonNull Boolean blockEntryForm,
-                       @NonNull Integer minDaysFromStart,
-                       @NonNull Integer standardInterval,
-                       @NonNull String program) {
-
+    public long insert(@NonNull String uid,
+            @Nullable String code,
+            @NonNull String name,
+            @NonNull String displayName,
+            @NonNull Date created,
+            @NonNull Date lastUpdated,
+            @Nullable String executionDateLabel,
+            @NonNull Boolean allowGenerateNextVisit,
+            @NonNull Boolean validCompleteOnly,
+            @Nullable String reportDateToUse,
+            @NonNull Boolean openAfterEnrollment,
+            @NonNull Boolean repeatable,
+            @NonNull Boolean captureCoordinates,
+            @NonNull FormType formType,
+            @NonNull Boolean displayGenerateEventBox,
+            @NonNull Boolean generatedByEnrollmentDate,
+            @NonNull Boolean autoGenerateEvent,
+            @NonNull Integer sortOrder,
+            @NonNull Boolean hideDueDate,
+            @NonNull Boolean blockEntryForm,
+            @NonNull Integer minDaysFromStart,
+            @NonNull Integer standardInterval,
+            @NonNull String program) {
         sqLiteStatement.clearBindings();
 
-        sqLiteStatement.bindString(1, uid);
-
-        if (code == null) {
-            sqLiteStatement.bindNull(2);
-        } else {
-            sqLiteStatement.bindString(2, code);
-        }
-
-        sqLiteStatement.bindString(3, name);
-        sqLiteStatement.bindString(4, displayName);
-        sqLiteStatement.bindString(5, BaseIdentifiableObject.DATE_FORMAT.format(created));
-        sqLiteStatement.bindString(6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
-
-        if (executionDateLabel == null) {
-            sqLiteStatement.bindNull(7);
-        } else {
-            sqLiteStatement.bindString(7, executionDateLabel);
-        }
-
-        sqLiteStatement.bindLong(8, allowGenerateNextVisit ? 1 : 0);
-        sqLiteStatement.bindLong(9, validCompleteOnly ? 1 : 0);
-
-        if (reportDateToUse == null) {
-            sqLiteStatement.bindNull(10);
-        } else {
-            sqLiteStatement.bindString(10, reportDateToUse);
-        }
-
-        sqLiteStatement.bindLong(11, openAfterEnrollment ? 1 : 0);
-        sqLiteStatement.bindLong(12, repeatable ? 1 : 0);
-        sqLiteStatement.bindLong(13, captureCoordinates ? 1 : 0);
-        sqLiteStatement.bindString(14, formType.name());
-        sqLiteStatement.bindLong(15, displayGenerateEventBox ? 1 : 0);
-        sqLiteStatement.bindLong(16, generatedByEnrollmentDate ? 1 : 0);
-        sqLiteStatement.bindLong(17, autoGenerateEvent ? 1 : 0);
-        sqLiteStatement.bindLong(18, sortOrder);
-        sqLiteStatement.bindLong(19, hideDueDate ? 1 : 0);
-        sqLiteStatement.bindLong(20, blockEntryForm ? 1 : 0);
-        sqLiteStatement.bindLong(21, minDaysFromStart);
-        sqLiteStatement.bindLong(22, standardInterval);
-        sqLiteStatement.bindString(23, program);
+        sqLiteBind(sqLiteStatement, 1, uid);
+        sqLiteBind(sqLiteStatement, 2, code);
+        sqLiteBind(sqLiteStatement, 3, name);
+        sqLiteBind(sqLiteStatement, 4, displayName);
+        sqLiteBind(sqLiteStatement, 5, created);
+        sqLiteBind(sqLiteStatement, 6, lastUpdated);
+        sqLiteBind(sqLiteStatement, 7, executionDateLabel);
+        sqLiteBind(sqLiteStatement, 8, allowGenerateNextVisit);
+        sqLiteBind(sqLiteStatement, 9, validCompleteOnly);
+        sqLiteBind(sqLiteStatement, 10, reportDateToUse);
+        sqLiteBind(sqLiteStatement, 11, openAfterEnrollment);
+        sqLiteBind(sqLiteStatement, 12, repeatable);
+        sqLiteBind(sqLiteStatement, 13, captureCoordinates);
+        sqLiteBind(sqLiteStatement, 14, formType.name());
+        sqLiteBind(sqLiteStatement, 15, displayGenerateEventBox);
+        sqLiteBind(sqLiteStatement, 16, generatedByEnrollmentDate);
+        sqLiteBind(sqLiteStatement, 17, autoGenerateEvent);
+        sqLiteBind(sqLiteStatement, 18, sortOrder);
+        sqLiteBind(sqLiteStatement, 19, hideDueDate);
+        sqLiteBind(sqLiteStatement, 20, blockEntryForm);
+        sqLiteBind(sqLiteStatement, 21, minDaysFromStart);
+        sqLiteBind(sqLiteStatement, 22, standardInterval);
+        sqLiteBind(sqLiteStatement, 23, program);
 
         return sqLiteStatement.executeInsert();
     }

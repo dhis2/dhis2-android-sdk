@@ -39,13 +39,13 @@ import java.util.Date;
 
 public abstract class BaseIdentifiableObjectModel extends BaseModel implements IdentifiableObject {
 
-    public interface Columns extends BaseModel.Columns {
-        String UID = "uid";
-        String CODE = "code";
-        String NAME = "name";
-        String DISPLAY_NAME = "displayName";
-        String CREATED = "created";
-        String LAST_UPDATED = "lastUpdated";
+    public static class Columns extends BaseModel.Columns {
+        public static final String UID = "uid";
+        public static final String CODE = "code";
+        public static final String NAME = "name";
+        public static final String DISPLAY_NAME = "displayName";
+        public static final String CREATED = "created";
+        public static final String LAST_UPDATED = "lastUpdated";
     }
 
     @Override

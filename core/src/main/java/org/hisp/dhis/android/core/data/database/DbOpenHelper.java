@@ -471,7 +471,8 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             " REFERENCES " + Tables.PROGRAM_RULE + " (" + ProgramRuleModel.Columns.UID + ")" +
             ");";
     
-    private static final String CREATE_TRACKED_ENTITY_DATA_VALUE_TABLE = "CREATE TABLE " + Tables.TRACKED_ENTITY_DATA_VALUE + " (" +
+    private static final String CREATE_TRACKED_ENTITY_DATA_VALUE_TABLE = "CREATE TABLE " +
+            Tables.TRACKED_ENTITY_DATA_VALUE + " (" +
             TrackedEntityDataValueModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             TrackedEntityDataValueModel.Columns.EVENT + " TEXT NOT NULL," +
             TrackedEntityDataValueModel.Columns.DATA_ELEMENT + " TEXT," +

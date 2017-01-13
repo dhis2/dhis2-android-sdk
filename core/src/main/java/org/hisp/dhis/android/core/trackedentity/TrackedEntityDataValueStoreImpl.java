@@ -40,7 +40,8 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + DbOpenHelper.Tables.TRACKED_ENTITY_DATA_VALUE + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " +
+            DbOpenHelper.Tables.TRACKED_ENTITY_DATA_VALUE + " (" +
             TrackedEntityDataValueModel.Columns.EVENT + ", " +
             TrackedEntityDataValueModel.Columns.CREATED + ", " +
             TrackedEntityDataValueModel.Columns.LAST_UPDATED + ", " +
@@ -58,8 +59,8 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
 
     @Override
     public long insert(@NonNull String event, @Nullable Date created, @Nullable Date lastUpdated,
-                       @Nullable String dataElement, @Nullable String storedBy,
-                       @Nullable String value, @Nullable Boolean providedElsewhere) {
+            @Nullable String dataElement, @Nullable String storedBy,
+            @Nullable String value, @Nullable Boolean providedElsewhere) {
         insertRowStatement.clearBindings();
 
         sqLiteBind(insertRowStatement, 1, event);

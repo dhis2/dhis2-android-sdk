@@ -14,8 +14,9 @@ import org.hisp.dhis.android.core.common.BaseDataModel;
 public abstract class TrackedEntityAttributeValueModel extends BaseDataModel {
 
     public interface Columns extends BaseDataModel.Columns {
-        String ATTRIBUTE = "attribute";
         String VALUE = "value";
+        String ATTRIBUTE = "trackedEntityAttribute";
+        String INSTANCE = "trackedEntityAttributeInstance";
     }
 
     public static TrackedEntityAttributeValueModel create(Cursor cursor) {

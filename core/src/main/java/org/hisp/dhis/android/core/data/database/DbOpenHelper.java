@@ -497,15 +497,23 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
     private static final String CREATE_TRACKED_ENTITY_ATTRIBUTE_VALUE_TABLE = "CREATE TABLE " +
             Tables.TRACKED_ENTITY_ATTRIBUTE_VALUE + " (" +
             TrackedEntityAttributeValueModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            TrackedEntityAttributeValueModel.Columns.ATTRIBUTE + " TEXT," +
-            TrackedEntityAttributeValueModel.Columns.VALUE + " TEXT" + ");";
+            TrackedEntityAttributeValueModel.Columns.STATE + " TEXT," +
+            TrackedEntityAttributeValueModel.Columns.VALUE + " TEXT," +
+            TrackedEntityAttributeValueModel.Columns.ATTRIBUTE + " TEXT" +
+            //TODO: add these foreign keys after implementing the TrackedEntityInstance and modify in Store to be @NonNull:
+           /* TrackedEntityAttributeValueModel.Columns.ATTRIBUTE + " TEXT NOT NULL," +
+            " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.ATTRIBUTE + ")" +
+            " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE + " (" + TrackedEntityAttributeModel.Columns.UID + ")" +
+            TrackedEntityAttributeValueModel.Columns.INSTANCE + " TEXT NOT NULL," +
+            " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.ATTRIBUTE + ")" +
+            " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE_INSTANCE + " (" +  TrackedEntityInstanceModel.Columns.UID + ")" +*/
+            ");";
 
     /**
      * This method should be used only for testing purposes
      */
     // ToDo: Revise usage of this method
     @VisibleForTesting
-
     static SQLiteDatabase create() {
         return create(SQLiteDatabase.create(null));
     }

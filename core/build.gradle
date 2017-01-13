@@ -121,3 +121,5 @@ dependencies {
         exclude group: 'junit' // Android has JUnit built in.
     }
 }
+
+apply from: rootProject.file('plugins/gradle-mvn-push.gradle')

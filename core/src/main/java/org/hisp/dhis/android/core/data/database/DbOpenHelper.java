@@ -28,6 +28,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.UserCredentialsModel;
@@ -473,7 +474,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             " FOREIGN KEY (" + ProgramRuleActionModel.Columns.PROGRAM_RULE + ")" +
             " REFERENCES " + Tables.PROGRAM_RULE + " (" + ProgramRuleModel.Columns.UID + ")" +
             ");";
-    
+
     private static final String CREATE_TRACKED_ENTITY_DATA_VALUE_TABLE = "CREATE TABLE " +
             Tables.TRACKED_ENTITY_DATA_VALUE + " (" +
             TrackedEntityDataValueModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -531,6 +532,19 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ")" +
             ");";
 
+
+    private static final String CREATE_TRACKED_ENTITY_INSTANCE_TABLE = "CREATE TABLE " +
+            Tables.TRACKED_ENTITY_INSTANCE + " (" +
+            TrackedEntityInstanceModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            TrackedEntityInstanceModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            TrackedEntityInstanceModel.Columns.CREATED + " TEXT," +
+            TrackedEntityInstanceModel.Columns.LAST_UPDATED + " TEXT," +
+            TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
+            TrackedEntityInstanceModel.Columns.STATE + " TEXT," +
+            " FOREIGN KEY (" + TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT + ")" +
+            " REFERENCES " + Tables.ORGANISATION_UNIT + " (" + OrganisationUnitModel.Columns.UID + ")" +
+            ");";
+
     public static class Tables {
         public static final String CONFIGURATION = "Configuration";
         public static final String USER = "User";
@@ -559,6 +573,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         public static final String EVENT = "Event";
         public static final String TRACKED_ENTITY_ATTRIBUTE_VALUE = "TrackedEntityAttributeValue";
         public static final String TRACKED_ENTITY_DATA_VALUE = "TrackedEntityDataValue";
+        public static final String TRACKED_ENTITY_INSTANCE = "TrackedEntityInstance";
     }
 
     /**
@@ -598,6 +613,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_TRACKED_ENTITY_DATA_VALUE_TABLE);
         database.execSQL(CREATE_TRACKED_ENTITY_ATTRIBUTE_VALUE_TABLE);
         database.execSQL(CREATE_EVENT_TABLE);
+        database.execSQL(CREATE_TRACKED_ENTITY_INSTANCE_TABLE);
 
         return database;
     }

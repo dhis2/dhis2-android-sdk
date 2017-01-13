@@ -30,10 +30,12 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.relationship.Relationship;
 
 import java.util.Date;
@@ -43,68 +45,56 @@ import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 
 // TODO: Tests
 @AutoValue
-@JsonDeserialize(builder = AutoValue_TrackedEntityInstance.Builder.class)
 public abstract class TrackedEntityInstance {
-    private static final String JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_UID = "trackedEntityInstance";
-    private static final String JSON_PROPERTY_CREATED = "created";
-    private static final String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
-    private static final String JSON_PROPERTY_ORGANISATION_UNIT = "orgUnit";
-    private static final String JSON_PROPERTY_ATTRIBUTES = "attributes";
-    private static final String JSON_PROPERTY_RELATIONSHIPS = "relationships";
+    private static final String UID = "trackedEntityInstance";
+    private static final String CREATED = "created";
+    private static final String LAST_UPDATED = "lastUpdated";
+    private static final String ORGANISATION_UNIT = "orgUnit";
+    private static final String TRACKED_ENTITY_ATTRIBUTES = "attributes";
+    private static final String RELATIONSHIPS = "relationships";
 
-    @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_UID)
+    public static final Field<TrackedEntityInstance, String> uid = Field.create(UID);
+    public static final Field<TrackedEntityInstance, Date> created = Field.create(CREATED);
+    public static final Field<TrackedEntityInstance, Date> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<TrackedEntityInstance, String> organisationUnit = Field.create(ORGANISATION_UNIT);
+
+    public static final NestedField<TrackedEntityInstance, TrackedEntityAttribute> trackedEntityAttributes
+            = NestedField.create(TRACKED_ENTITY_ATTRIBUTES);
+    public static final NestedField<TrackedEntityInstance, Relationship> relationships
+            = NestedField.create(RELATIONSHIPS);
+
+    @JsonProperty(UID)
     public abstract String uid();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_CREATED)
+    @JsonProperty(CREATED)
     public abstract Date created();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
+    @JsonProperty(LAST_UPDATED)
     public abstract Date lastUpdated();
 
-    @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
+    @JsonProperty(ORGANISATION_UNIT)
     public abstract String organisationUnit();
 
-    @JsonProperty(JSON_PROPERTY_ATTRIBUTES)
+    @JsonProperty(TRACKED_ENTITY_ATTRIBUTES)
     public abstract List<TrackedEntityAttributeValue> trackedEntityAttributeValues();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_RELATIONSHIPS)
+    @JsonProperty(RELATIONSHIPS)
     public abstract List<Relationship> relationships();
 
-    public static Builder builder() {
-        return new AutoValue_TrackedEntityInstance.Builder();
+    @JsonCreator
+    public static TrackedEntityInstance create(
+            @JsonProperty(UID) String uid,
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(ORGANISATION_UNIT) String organisationUnit,
+            @JsonProperty(TRACKED_ENTITY_ATTRIBUTES) List<TrackedEntityAttributeValue> trackedEntityAttributeValues,
+            @JsonProperty(RELATIONSHIPS) List<Relationship> relationships) {
+        return new AutoValue_TrackedEntityInstance(uid, created, lastUpdated, organisationUnit,
+                safeUnmodifiableList(trackedEntityAttributeValues),
+                safeUnmodifiableList(relationships));
     }
 
-    @AutoValue.Builder
-    public static abstract class Builder {
-        @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE_UID)
-        public abstract Builder uid(String uid);
-
-        @JsonProperty(JSON_PROPERTY_CREATED)
-        public abstract Builder created(@Nullable Date created);
-
-        @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
-        public abstract Builder lastUpdated(@Nullable Date lastUpdated);
-
-        @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
-        public abstract Builder organisationUnit(String organisationUnit);
-
-        @JsonProperty(JSON_PROPERTY_ATTRIBUTES)
-        public abstract Builder trackedEntityAttributeValues(
-                List<TrackedEntityAttributeValue> trackedEntityAttributeValues);
-
-        @JsonProperty(JSON_PROPERTY_RELATIONSHIPS)
-        public abstract Builder relationships(@Nullable List<Relationship> relationships);
-
-        abstract List<TrackedEntityAttributeValue> trackedEntityAttributeValues();
-
-        abstract TrackedEntityInstance autoBuild();
-
-        public TrackedEntityInstance build() {
-            trackedEntityAttributeValues(safeUnmodifiableList(trackedEntityAttributeValues()));
-            return autoBuild();
-        }
-    }
 }

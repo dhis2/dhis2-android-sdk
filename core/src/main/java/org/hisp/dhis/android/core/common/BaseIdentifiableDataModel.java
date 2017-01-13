@@ -5,25 +5,30 @@ import android.support.annotation.Nullable;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
-import org.hisp.dhis.android.core.data.database.DbStateColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+
+import java.util.Date;
 
 public abstract class BaseIdentifiableDataModel extends BaseDataModel {
 
-    public static class Columns extends BaseIdentifiableObjectModel.Columns {
-        public static final String STATE = "state";
-        public static final String UID = "uid";
+    public static class Columns extends BaseDataModel.Columns {
         public static final String CREATED = "created";
         public static final String LAST_UPDATED = "lastUpdated";
-
     }
 
-    @Override
     @Nullable
-    @ColumnName(BaseDataModel.Columns.STATE)
-    @ColumnAdapter(DbStateColumnAdapter.class)
-    public abstract State state();
+    @ColumnName(Columns.CREATED)
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date created();
 
-    protected static abstract class Builder<T extends Builder> extends BaseIdentifiableObjectModel.Builder<T> {
-        public abstract T state(State state);
+    @Nullable
+    @ColumnName(Columns.LAST_UPDATED)
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date lastUpdated();
+
+    protected static abstract class Builder<T extends Builder> extends BaseDataModel.Builder<T> {
+        public abstract T created(@Nullable Date created);
+
+        public abstract T lastUpdated(@Nullable Date created);
     }
 }

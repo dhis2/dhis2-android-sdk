@@ -20,7 +20,7 @@ env:
     - secure: "XXl6Te0fn10PTM/myO3kwI5j1drZqTNWhlANxzQ94hmz26Bc9xPDc/EVCA4ijKiro9S1grFuBoVU/5bGa8NLBK05W2YdisMcnL+KobZqtYK7nKtRVg2aNAkl60NwO9DOzgmG77BQccDZEnd7fwdxwX7/rujQ/uYutCQG9dp3alI="
 
 script:
-  - .buildscript/build.sh
+  - ./build.sh
 
 before_script:
   - echo no | android create avd --force -n test -t android-18 --abi armeabi-v7a

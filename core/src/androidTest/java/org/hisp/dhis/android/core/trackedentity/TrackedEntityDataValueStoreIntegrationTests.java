@@ -99,12 +99,19 @@ public class TrackedEntityDataValueStoreIntegrationTests extends AbsStoreTestCas
     @Test
     public void insert_shouldPersistRowInDatabase() throws ParseException {
 
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.create(1L, ORGANISATION_UNIT);
+        //Create Program & insert a row in the table.
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
+                RELATIONSHIP_TYPE_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
+
+        database().insert(DbOpenHelper.Tables.TRACKED_ENTITY, null, trackedEntity);
+        database().insert(DbOpenHelper.Tables.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(DbOpenHelper.Tables.PROGRAM, null, program);
+
+        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
         ContentValues event = CreateEventUtils.create(EVENT, PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT);
-        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
-        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID, RELATIONSHIP_TYPE_UID);
-        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
 
         database().insert(DbOpenHelper.Tables.TRACKED_ENTITY, null, trackedEntity);
         database().insert(DbOpenHelper.Tables.RELATIONSHIP_TYPE, null, relationshipType);

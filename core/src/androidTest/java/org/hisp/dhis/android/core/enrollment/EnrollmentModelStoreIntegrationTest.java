@@ -1,20 +1,20 @@
-package org.hisp.dhis.android.core.event;
+package org.hisp.dhis.android.core.enrollment;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.AndroidTestUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-import org.hisp.dhis.android.core.event.EventModel.Columns;
 import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
-import org.hisp.dhis.android.core.program.CreateProgramStageUtils;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
+import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityInstanceUtils;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,35 +27,35 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
-public class EventModelStoreIntegrationTest extends AbsStoreTestCase {
+public class EnrollmentModelStoreIntegrationTest extends AbsStoreTestCase {
     private static final String[] EVENT_PROJECTION = {
-            Columns.UID,
-            Columns.ENROLLMENT_UID,
-            Columns.CREATED, // created
-            Columns.LAST_UPDATED, // lastUpdated
-            Columns.STATUS,
-            Columns.LATITUDE,
-            Columns.LONGITUDE,
-            Columns.PROGRAM,
-            Columns.PROGRAM_STAGE,
-            Columns.ORGANISATION_UNIT,
-            Columns.EVENT_DATE, // eventDate
-            Columns.COMPLETE_DATE, // completedDate
-            Columns.DUE_DATE, // dueDate
-            Columns.STATE
+            EnrollmentModel.Columns.UID,
+            EnrollmentModel.Columns.CREATED,
+            EnrollmentModel.Columns.LAST_UPDATED,
+            EnrollmentModel.Columns.ORGANISATION_UNIT,
+            EnrollmentModel.Columns.PROGRAM,
+            EnrollmentModel.Columns.DATE_OF_ENROLLMENT,
+            EnrollmentModel.Columns.DATE_OF_INCIDENT,
+            EnrollmentModel.Columns.FOLLOW_UP,
+            EnrollmentModel.Columns.ENROLLMENT_STATUS,
+            EnrollmentModel.Columns.TRACKED_ENTITY_INSTANCE,
+            EnrollmentModel.Columns.LATITUDE,
+            EnrollmentModel.Columns.LONGITUDE,
+            EnrollmentModel.Columns.STATE
     };
-    private EventModelStore eventModelStore;
+    private EnrollmentModelStore enrollmentModelStore;
 
     private static final Long ID = 3L;
-    private static final String EVENT_UID = "test_uid";
-    private static final String ENROLLMENT_UID = "test_enrollment";
-    private static final EventStatus STATUS = EventStatus.ACTIVE;
+    private static final String UID = "test_uid";
+    private static final String ORGANISATION_UNIT = "test_orgUnit";
+    private static final String PROGRAM = "test_program";
+    private static final Boolean FOLLOW_UP = true;
+    private static final EnrollmentStatus ENROLLMENT_STATUS = EnrollmentStatus.COMPLETED;
+    private static final String TRACKED_ENTITY_INSTANCE = "test_trackedEntityInstance";
     private static final String LATITUDE = "10.832152";
     private static final String LONGITUDE = "59.345231";
-    private static final String PROGRAM = "test_program";
-    private static final String PROGRAM_STAGE = "test_programStage";
-    private static final String ORGANISATION_UNIT = "test_orgUnit";
-    private static final State STATE = State.TO_POST;
+
+    private static final State STATE = State.TO_UPDATE;
 
     // timestamp
     private static final String DATE = "2017-01-12T11:31:00.000";
@@ -70,11 +70,11 @@ public class EventModelStoreIntegrationTest extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.eventModelStore = new EventModelStoreImpl(database());
+        this.enrollmentModelStore = new EnrollmentModelStoreImpl(database());
     }
 
     @Test
-    public void insert_shouldPersistEventInDatabase() throws Exception {
+    public void insert_shouldPersistInDatabase() throws Exception {
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
@@ -86,84 +86,76 @@ public class EventModelStoreIntegrationTest extends AbsStoreTestCase {
         database().insert(DbOpenHelper.Tables.PROGRAM, null, program);
 
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
-        ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
+        ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.createWithOrgUnit(
+                TRACKED_ENTITY_INSTANCE, ORGANISATION_UNIT);
 
         database().insert(Tables.ORGANISATION_UNIT, null, organisationUnit);
-        database().insert(Tables.PROGRAM_STAGE, null, programStage);
+        database().insert(Tables.TRACKED_ENTITY_INSTANCE, null, trackedEntityInstance);
 
-        Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
+        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
-        long rowId = eventModelStore.insert(
-                EVENT_UID,
-                ENROLLMENT_UID,
-                timeStamp, // created
-                timeStamp, // lastUpdated
-                STATUS,
+        long rowId = enrollmentModelStore.insert(
+                UID,
+                date,
+                date,
+                ORGANISATION_UNIT,
+                PROGRAM,
+                date,
+                date,
+                FOLLOW_UP,
+                ENROLLMENT_STATUS,
+                TRACKED_ENTITY_INSTANCE,
                 LATITUDE,
                 LONGITUDE,
-                PROGRAM,
-                PROGRAM_STAGE,
-                ORGANISATION_UNIT,
-                timeStamp, // eventDate
-                timeStamp, // completedDate
-                timeStamp, // dueDate
                 STATE
         );
 
-        Cursor cursor = database().query(Tables.EVENT, EVENT_PROJECTION,
+        Cursor cursor = database().query(Tables.ENROLLMENT, EVENT_PROJECTION,
                 null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
 
         assertThatCursor(cursor).hasRow(
-                EVENT_UID,
-                ENROLLMENT_UID,
-                DATE, // created
-                DATE, // lastUpdated
-                STATUS,
+                UID,
+                DATE,
+                DATE,
+                ORGANISATION_UNIT,
+                PROGRAM,
+                DATE,
+                DATE,
+                AndroidTestUtils.toInteger(FOLLOW_UP),
+                ENROLLMENT_STATUS,
+                TRACKED_ENTITY_INSTANCE,
                 LATITUDE,
                 LONGITUDE,
-                PROGRAM,
-                PROGRAM_STAGE,
-                ORGANISATION_UNIT,
-                DATE, // eventDate
-                DATE, // completedDate
-                DATE, // dueDate
                 STATE
         ).isExhausted();
     }
 
-    /**
-     * trying to insert event with program, stage and org unit without
-     * inserting them to db.
-     * @throws Exception
-     */
     @Test(expected = SQLiteConstraintException.class)
-    public void insert_shouldThrowSqliteConstraintException() throws Exception {
-        Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
+    public void insertMissingForeignKey_shouldThrowSqliteConstraintException() throws Exception {
+        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
-        long rowId = eventModelStore.insert(
-                EVENT_UID,
-                ENROLLMENT_UID,
-                timeStamp, // created
-                timeStamp, // lastUpdated
-                STATUS,
+        enrollmentModelStore.insert(
+                UID,
+                date,
+                date,
+                ORGANISATION_UNIT,
+                PROGRAM,
+                date,
+                date,
+                FOLLOW_UP,
+                ENROLLMENT_STATUS,
+                TRACKED_ENTITY_INSTANCE,
                 LATITUDE,
                 LONGITUDE,
-                PROGRAM,
-                PROGRAM_STAGE,
-                ORGANISATION_UNIT,
-                timeStamp, // eventDate
-                timeStamp, // completedDate
-                timeStamp, // dueDate
                 STATE
         );
-
     }
 
     @Test
     public void close_shouldNotCloseDatabase() {
-        eventModelStore.close();
+        enrollmentModelStore.close();
 
         assertThat(database().isOpen()).isTrue();
     }

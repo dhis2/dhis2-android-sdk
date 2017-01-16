@@ -147,7 +147,7 @@ public class TrackedEntityAttributeModelIntegrationTests {
     public void toContentValues_shouldConvertToContentValues() throws ParseException {
 
         ContentValues contentValues =
-                CreateTrackedEntityAttributeUtils.createWithOptionSet(ID, UID, OPTION_SET);
+                CreateTrackedEntityAttributeUtils.create(ID, UID, OPTION_SET);
 
         assertThat(contentValues.getAsLong(TrackedEntityAttributeModel.Columns.ID)).isEqualTo(ID);
         assertThat(contentValues.getAsString(TrackedEntityAttributeModel.Columns.UID)).isEqualTo(UID);

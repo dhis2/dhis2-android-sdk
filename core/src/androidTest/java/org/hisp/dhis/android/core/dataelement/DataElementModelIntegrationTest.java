@@ -38,58 +38,6 @@ public class DataElementModelIntegrationTest {
     // timestamp
     private static final String DATE = "2014-03-20T13:37:00.007";
 
-    public static ContentValues createWithOptionSet(long id, String uid, String optionSetId) {
-        ContentValues dataElement = new ContentValues();
-        dataElement.put(DataElementModel.Columns.ID, id);
-        dataElement.put(DataElementModel.Columns.UID, uid);
-        dataElement.put(DataElementModel.Columns.CODE, CODE);
-        dataElement.put(DataElementModel.Columns.NAME, NAME);
-        dataElement.put(DataElementModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
-        dataElement.put(DataElementModel.Columns.CREATED, DATE);
-        dataElement.put(DataElementModel.Columns.LAST_UPDATED, DATE);
-        dataElement.put(DataElementModel.Columns.SHORT_NAME, SHORT_NAME);
-        dataElement.put(DataElementModel.Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
-        dataElement.put(DataElementModel.Columns.DESCRIPTION, DESCRIPTION);
-        dataElement.put(DataElementModel.Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
-        dataElement.put(DataElementModel.Columns.VALUE_TYPE, VALUE_TYPE.name());
-        dataElement.put(DataElementModel.Columns.ZERO_IS_SIGNIFICANT, ZERO_IS_SIGNIFICANT);
-        dataElement.put(DataElementModel.Columns.AGGREGATION_OPERATOR, AGGREGATION_OPERATOR);
-        dataElement.put(DataElementModel.Columns.FORM_NAME, FORM_NAME);
-        dataElement.put(DataElementModel.Columns.NUMBER_TYPE, NUMBER_TYPE);
-        dataElement.put(DataElementModel.Columns.DOMAIN_TYPE, DOMAIN_TYPE);
-        dataElement.put(DataElementModel.Columns.DIMENSION, DIMENSION);
-        dataElement.put(DataElementModel.Columns.DISPLAY_FORM_NAME, DISPLAY_FORM_NAME);
-        dataElement.put(DataElementModel.Columns.OPTION_SET, optionSetId);
-
-        return dataElement;
-    }
-
-    public static ContentValues createWithoutOptionSet(long id, String uid) {
-        ContentValues dataElement = new ContentValues();
-        dataElement.put(DataElementModel.Columns.ID, id);
-        dataElement.put(DataElementModel.Columns.UID, uid);
-        dataElement.put(DataElementModel.Columns.CODE, CODE);
-        dataElement.put(DataElementModel.Columns.NAME, NAME);
-        dataElement.put(DataElementModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
-        dataElement.put(DataElementModel.Columns.CREATED, DATE);
-        dataElement.put(DataElementModel.Columns.LAST_UPDATED, DATE);
-        dataElement.put(DataElementModel.Columns.SHORT_NAME, SHORT_NAME);
-        dataElement.put(DataElementModel.Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
-        dataElement.put(DataElementModel.Columns.DESCRIPTION, DESCRIPTION);
-        dataElement.put(DataElementModel.Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
-        dataElement.put(DataElementModel.Columns.VALUE_TYPE, VALUE_TYPE.name());
-        dataElement.put(DataElementModel.Columns.ZERO_IS_SIGNIFICANT, ZERO_IS_SIGNIFICANT);
-        dataElement.put(DataElementModel.Columns.AGGREGATION_OPERATOR, AGGREGATION_OPERATOR);
-        dataElement.put(DataElementModel.Columns.FORM_NAME, FORM_NAME);
-        dataElement.put(DataElementModel.Columns.NUMBER_TYPE, NUMBER_TYPE);
-        dataElement.put(DataElementModel.Columns.DOMAIN_TYPE, DOMAIN_TYPE);
-        dataElement.put(DataElementModel.Columns.DIMENSION, DIMENSION);
-        dataElement.put(DataElementModel.Columns.DISPLAY_FORM_NAME, DISPLAY_FORM_NAME);
-        dataElement.putNull(DataElementModel.Columns.OPTION_SET);
-
-        return dataElement;
-    }
-
     @Test
     public void create_shouldConvertToDataElementModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{

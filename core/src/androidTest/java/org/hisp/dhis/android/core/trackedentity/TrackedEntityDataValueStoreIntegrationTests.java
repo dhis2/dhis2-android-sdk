@@ -106,7 +106,7 @@ public class TrackedEntityDataValueStoreIntegrationTests extends AbsStoreTestCas
     @Test
     public void insert_shouldPersistRowInDatabase() throws ParseException {
 
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.create(1L, ORGANISATION_UNIT);
+        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM);
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
         ContentValues event = CreateEventUtils.create(EVENT, PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT);

@@ -29,15 +29,11 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
-import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.State;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.text.ParseException;
 
-@RunWith(AndroidJUnit4.class)
 public class CreateTrackedEntityInstanceUtils {
     private static final long ID = 11L;
     private static final String UID = "test_uid";
@@ -46,8 +42,7 @@ public class CreateTrackedEntityInstanceUtils {
     // used for timestamps
     private static final String DATE = "2011-12-24T12:24:25.203";
 
-    @Test
-    public static ContentValues create(String uid, String organisationUnit) throws ParseException {
+    public static ContentValues createWithOrgUnit(String uid, String organisationUnit) throws ParseException {
         ContentValues trackedEntityInstance = new ContentValues();
         trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.ID, ID);
         trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.UID, uid);

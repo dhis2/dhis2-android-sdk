@@ -7,6 +7,7 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
+import org.hisp.dhis.android.core.program.ProgramStageSectionModel.Columns;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,14 +37,14 @@ public class ProgramStageSectionStoreIntegrationTest extends AbsStoreTestCase {
     private static final String PROGRAM = "test_program";
 
     private static final String[] PROGRAM_STAGE_SECTION_PROJECTION = {
-            ProgramStageSectionModel.Columns.UID,
-            ProgramStageSectionModel.Columns.CODE,
-            ProgramStageSectionModel.Columns.NAME,
-            ProgramStageSectionModel.Columns.DISPLAY_NAME,
-            ProgramStageSectionModel.Columns.CREATED,
-            ProgramStageSectionModel.Columns.LAST_UPDATED,
-            ProgramStageSectionModel.Columns.SORT_ORDER,
-            ProgramStageSectionModel.Columns.PROGRAM_STAGE
+            Columns.UID,
+            Columns.CODE,
+            Columns.NAME,
+            Columns.DISPLAY_NAME,
+            Columns.CREATED,
+            Columns.LAST_UPDATED,
+            Columns.SORT_ORDER,
+            Columns.PROGRAM_STAGE
     };
 
     private ProgramStageSectionStore programStageSectionStore;
@@ -84,6 +85,33 @@ public class ProgramStageSectionStoreIntegrationTest extends AbsStoreTestCase {
                 UID, CODE, NAME, DISPLAY_NAME,
                 DATE, DATE, SORT_ORDER, PROGRAM_STAGE
         ).isExhausted();
+    }
+
+    @Test
+    public void delete_shouldDeleteProgramStageSectionWhenDeletingProgramStage() throws Exception {
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM);
+        database().insert(Tables.PROGRAM, null, program);
+
+        ContentValues programStage = ProgramStageModelIntegrationTest.create(ID, PROGRAM_STAGE, PROGRAM);
+        database().insert(Tables.PROGRAM_STAGE, null, programStage);
+
+        ContentValues programStageSection = new ContentValues();
+        programStageSection.put(Columns.ID, ID);
+        programStageSection.put(Columns.UID, UID);
+        programStageSection.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+        database().insert(Tables.PROGRAM_STAGE_SECTION, null, programStageSection);
+
+        String[] projection = {Columns.ID, Columns.UID, Columns.PROGRAM_STAGE};
+        Cursor cursor = database().query(Tables.PROGRAM_STAGE_SECTION, projection, null, null, null, null, null);
+        // checking that program stage section was successfully inserted
+        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM_STAGE);
+
+        // deleting foreign key reference
+        database().delete(Tables.PROGRAM_STAGE, ProgramStageModel.Columns.UID + "=?", new String[]{PROGRAM_STAGE});
+
+        cursor = database().query(Tables.PROGRAM_STAGE_SECTION, projection, null, null, null, null, null);
+        // checking that program stage section is deleted.
+        assertThatCursor(cursor).isExhausted();
     }
 
     @Test

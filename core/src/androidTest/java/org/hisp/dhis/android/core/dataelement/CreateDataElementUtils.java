@@ -41,7 +41,7 @@ public class CreateDataElementUtils {
         dataElement.put(DataElementModel.Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
         dataElement.put(DataElementModel.Columns.VALUE_TYPE, VALUE_TYPE.name());
         dataElement.put(DataElementModel.Columns.ZERO_IS_SIGNIFICANT, ZERO_IS_SIGNIFICANT);
-        dataElement.put(DataElementModel.Columns.AGGREGATION_OPERATOR, AGGREGATION_OPERATOR);
+        dataElement.put(DataElementModel.Columns.AGGREGATION_TYPE, AGGREGATION_OPERATOR);
         dataElement.put(DataElementModel.Columns.FORM_NAME, FORM_NAME);
         dataElement.put(DataElementModel.Columns.NUMBER_TYPE, NUMBER_TYPE);
         dataElement.put(DataElementModel.Columns.DOMAIN_TYPE, DOMAIN_TYPE);

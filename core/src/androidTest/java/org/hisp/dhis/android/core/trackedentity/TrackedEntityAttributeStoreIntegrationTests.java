@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
+import org.hisp.dhis.android.core.option.CreateOptionSetUtils;
 import org.hisp.dhis.android.core.option.OptionSetModelIntegrationTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -147,7 +148,7 @@ public class TrackedEntityAttributeStoreIntegrationTests extends AbsStoreTestCas
     @Test
     public void insert_shouldPersistRowInDatabase() {
         ContentValues optionSet =
-                OptionSetModelIntegrationTest.create(OPTION_SET_ID, OPTION_SET_UID);
+                CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
 
         database().insert(DbOpenHelper.Tables.OPTION_SET, null, optionSet);
 

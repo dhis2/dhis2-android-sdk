@@ -52,7 +52,7 @@ public class OptionModelStoreIntegrationTest extends AbsStoreTestCase {
     public void insert_shouldPersistOptionInDatabase() throws ParseException {
         // INSERT OPTION SETS
         ContentValues optionSet =
-                OptionSetModelIntegrationTest.create(OPTION_SET_ID, OPTION_SET_UID);
+                CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
 
         database().insert(Tables.OPTION_SET, null, optionSet);
 

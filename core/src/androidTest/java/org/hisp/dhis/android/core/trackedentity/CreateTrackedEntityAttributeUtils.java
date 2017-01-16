@@ -44,7 +44,7 @@ public class CreateTrackedEntityAttributeUtils {
     private static final Integer INHERIT = 0; // false
 
 
-    public static ContentValues createWithOptionSet(long id, String uid, String optionSetUid) throws ParseException {
+    public static ContentValues create(long id, String uid, String optionSetUid) throws ParseException {
         TrackedEntityAttributeModel trackedEntityAttributeModel = TrackedEntityAttributeModel.builder()
                 .id(id)
                 .uid(uid)
@@ -74,33 +74,4 @@ public class CreateTrackedEntityAttributeUtils {
         return trackedEntityAttributeModel.toContentValues();
     }
 
-    public static ContentValues createWithoutOptionSet(long id, String uid) throws ParseException {
-        TrackedEntityAttributeModel trackedEntityAttributeModel = TrackedEntityAttributeModel.builder()
-                .id(id)
-                .uid(uid)
-                .code(CODE)
-                .name(NAME)
-                .displayName(DISPLAY_NAME)
-                .created(BaseIdentifiableObject.DATE_FORMAT.parse(DATE))
-                .lastUpdated(BaseIdentifiableObject.DATE_FORMAT.parse(DATE))
-                .shortName(SHORT_NAME)
-                .displayShortName(DISPLAY_SHORT_NAME)
-                .description(DESCRIPTION)
-                .displayDescription(DISPLAY_DESCRIPTION)
-                .pattern(PATTERN)
-                .sortOrderInListNoProgram(SORT_ORDER_IN_LIST_NO_PROGRAM)
-                .optionSet(null)
-                .valueType(VALUE_TYPE)
-                .expression(EXPRESSION)
-                .searchScope(SEARCH_SCOPE)
-                .programScope(toBoolean(PROGRAM_SCOPE))
-                .displayInListNoProgram(toBoolean(DISPLAY_IN_LIST_NO_PROGRAM))
-                .generated(toBoolean(GENERATED))
-                .displayOnVisitSchedule(toBoolean(DISPLAY_ON_VISIT_SCHEDULE))
-                .orgUnitScope(toBoolean(ORG_UNIT_SCOPE))
-                .unique(toBoolean(UNIQUE))
-                .inherit(toBoolean(INHERIT))
-                .build();
-        return trackedEntityAttributeModel.toContentValues();
-    }
 }

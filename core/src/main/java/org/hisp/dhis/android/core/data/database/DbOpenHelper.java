@@ -335,13 +335,14 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ProgramRuleVariableModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT," +
             ProgramRuleVariableModel.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE + " TEXT," +
             " FOREIGN KEY (" + ProgramRuleVariableModel.Columns.PROGRAM + ")" +
-            " REFERENCES " + Tables.PROGRAM + " (" + ProgramModel.Columns.UID + ")," +
+            " REFERENCES " + Tables.PROGRAM + " (" + ProgramModel.Columns.UID + ") ON DELETE CASCADE," +
             " FOREIGN KEY (" + ProgramRuleVariableModel.Columns.PROGRAM_STAGE + ")" +
-            " REFERENCES " + Tables.PROGRAM_STAGE + " (" + ProgramStageModel.Columns.UID + ")," +
+            " REFERENCES " + Tables.PROGRAM_STAGE + " (" + ProgramStageModel.Columns.UID + ") ON DELETE SET NULL," +
             " FOREIGN KEY (" + ProgramRuleVariableModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ")" +
-            " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE + " (" + TrackedEntityAttributeModel.Columns.UID + ")," +
+            " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE + " (" + TrackedEntityAttributeModel.Columns.UID + ")" +
+            "ON DELETE SET NULL," +
             " FOREIGN KEY (" + ProgramRuleVariableModel.Columns.DATA_ELEMENT + ")" +
-            " REFERENCES " + Tables.DATA_ELEMENT + " (" + DataElementModel.Columns.UID + ")" +
+            " REFERENCES " + Tables.DATA_ELEMENT + " (" + DataElementModel.Columns.UID + ") ON DELETE SET NULL" +
             ");";
 
     private static final String CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE = "CREATE TABLE " +

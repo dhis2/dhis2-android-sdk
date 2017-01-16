@@ -8,6 +8,7 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
+import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils;
 import org.hisp.dhis.android.core.dataelement.DataElementModelIntegrationTest;
 import org.hisp.dhis.android.core.option.OptionSetModelIntegrationTest;
 import org.junit.Before;
@@ -74,7 +75,7 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
     @Test
     public void insert_shouldPersistProgramStageDataElementInDatabase() throws ParseException {
         // inserting necessary foreign key
-        ContentValues dataElement = DataElementModelIntegrationTest.createWithoutOptionSet(ID, DATA_ELEMENT);
+        ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
         database().insert(Tables.DATA_ELEMENT, null, dataElement);
 
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
@@ -126,7 +127,7 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
         ContentValues optionSet = OptionSetModelIntegrationTest.create(ID, OPTION_SET);
         database().insert(Tables.OPTION_SET, null, optionSet);
 
-        ContentValues dataElement = DataElementModelIntegrationTest.createWithOptionSet(ID, DATA_ELEMENT, OPTION_SET);
+        ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, OPTION_SET);
         database().insert(Tables.DATA_ELEMENT, null, dataElement);
 
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);

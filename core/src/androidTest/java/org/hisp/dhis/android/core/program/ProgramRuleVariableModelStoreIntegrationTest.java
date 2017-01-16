@@ -7,8 +7,11 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-import org.hisp.dhis.android.core.dataelement.DataElementModelIntegrationTest;
+import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils;
+import org.hisp.dhis.android.core.dataelement.DataElementModel;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableModel.Columns;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityAttributeUtils;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,18 +44,18 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
             ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM;
 
     private static final String[] PROGRAM_RULE_VARIABLE_PROJECTION = {
-            ProgramRuleVariableModel.Columns.UID,
-            ProgramRuleVariableModel.Columns.CODE,
-            ProgramRuleVariableModel.Columns.NAME,
-            ProgramRuleVariableModel.Columns.DISPLAY_NAME,
-            ProgramRuleVariableModel.Columns.CREATED,
-            ProgramRuleVariableModel.Columns.LAST_UPDATED,
-            ProgramRuleVariableModel.Columns.USE_CODE_FOR_OPTION_SET,
-            ProgramRuleVariableModel.Columns.PROGRAM,
-            ProgramRuleVariableModel.Columns.PROGRAM_STAGE,
-            ProgramRuleVariableModel.Columns.DATA_ELEMENT,
-            ProgramRuleVariableModel.Columns.TRACKED_ENTITY_ATTRIBUTE,
-            ProgramRuleVariableModel.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
+            Columns.UID,
+            Columns.CODE,
+            Columns.NAME,
+            Columns.DISPLAY_NAME,
+            Columns.CREATED,
+            Columns.LAST_UPDATED,
+            Columns.USE_CODE_FOR_OPTION_SET,
+            Columns.PROGRAM,
+            Columns.PROGRAM_STAGE,
+            Columns.DATA_ELEMENT,
+            Columns.TRACKED_ENTITY_ATTRIBUTE,
+            Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
     };
 
     private ProgramRuleVariableModelStore programRuleVariableModelStore;
@@ -74,10 +77,12 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
         ContentValues programStage = ProgramStageModelIntegrationTest.create(ID, PROGRAM_STAGE, PROGRAM);
         database().insert(Tables.PROGRAM_STAGE, null, programStage);
 
-        ContentValues dataElement = DataElementModelIntegrationTest.createWithoutOptionSet(ID, DATA_ELEMENT);
+        ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
         database().insert(Tables.DATA_ELEMENT, null, dataElement);
 
-        ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.createWithoutOptionSet(ID, TRACKED_ENTITY_ATTRIBUTE);
+        ContentValues trackedEntityAttribute =
+                CreateTrackedEntityAttributeUtils.create(ID, TRACKED_ENTITY_ATTRIBUTE, null);
+
         database().insert(Tables.TRACKED_ENTITY_ATTRIBUTE, null, trackedEntityAttribute);
 
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
@@ -168,9 +173,131 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
     }
 
     @Test
+    public void delete_shouldDeleteProgramRuleVariableWhenDeletingProgram() throws Exception {
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM);
+        database().insert(Tables.PROGRAM, null, program);
+
+        ContentValues programRuleVariable = new ContentValues();
+        programRuleVariable.put(Columns.ID, ID);
+        programRuleVariable.put(Columns.UID, UID);
+        programRuleVariable.put(Columns.PROGRAM, PROGRAM);
+
+        database().insert(Tables.PROGRAM_RULE_VARIABLE, null, programRuleVariable);
+
+        String[] PROJECTION = {Columns.ID, Columns.UID, Columns.PROGRAM};
+
+        Cursor cursor = database().query(Tables.PROGRAM_RULE_VARIABLE, PROJECTION, null, null, null, null, null);
+
+        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM);
+
+        database().delete(Tables.PROGRAM, ProgramModel.Columns.UID + " =?", new String[]{PROGRAM});
+
+        cursor.moveToFirst();
+        assertThatCursor(cursor).isExhausted();
+
+    }
+
+    @Test
+    public void delete_shouldNotDeleteProgramRuleVariableWhenDeletingProgramStage() throws Exception {
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM);
+        database().insert(Tables.PROGRAM, null, program);
+
+        ContentValues programStage = CreateProgramStageUtils.create(ID, PROGRAM_STAGE, PROGRAM);
+        database().insert(Tables.PROGRAM_STAGE, null, programStage);
+
+        ContentValues programRuleVariable = new ContentValues();
+        programRuleVariable.put(Columns.ID, ID);
+        programRuleVariable.put(Columns.UID, UID);
+        programRuleVariable.put(Columns.PROGRAM, PROGRAM);
+        programRuleVariable.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+
+        database().insert(Tables.PROGRAM_RULE_VARIABLE, null, programRuleVariable);
+
+
+        String[] PROJECTION = {Columns.ID, Columns.UID, Columns.PROGRAM, Columns.PROGRAM_STAGE};
+
+        Cursor cursor = database().query(Tables.PROGRAM_RULE_VARIABLE, PROJECTION, null, null, null, null, null);
+
+        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM, PROGRAM_STAGE);
+
+        database().delete(Tables.PROGRAM_STAGE, ProgramStageModel.Columns.UID + " =?", new String[]{PROGRAM_STAGE});
+
+        cursor = database().query(Tables.PROGRAM_RULE_VARIABLE, PROJECTION,
+                null, null, null, null, null);
+
+        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM, null).isExhausted();
+    }
+
+    @Test
+    public void delete_shouldNotDeleteProgramRuleVariableWhenDeletingDataElement() throws Exception {
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM);
+        database().insert(Tables.PROGRAM, null, program);
+
+        ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
+        database().insert(Tables.DATA_ELEMENT, null, dataElement);
+
+        ContentValues programRuleVariable = new ContentValues();
+        programRuleVariable.put(Columns.ID, ID);
+        programRuleVariable.put(Columns.UID, UID);
+        programRuleVariable.put(Columns.PROGRAM, PROGRAM);
+        programRuleVariable.put(Columns.DATA_ELEMENT, DATA_ELEMENT);
+
+        database().insert(Tables.PROGRAM_RULE_VARIABLE, null, programRuleVariable);
+
+
+        String[] PROJECTION = {Columns.ID, Columns.UID, Columns.PROGRAM, Columns.DATA_ELEMENT};
+
+        Cursor cursor = database().query(Tables.PROGRAM_RULE_VARIABLE, PROJECTION, null, null, null, null, null);
+
+        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM, DATA_ELEMENT);
+
+        database().delete(Tables.DATA_ELEMENT, DataElementModel.Columns.UID + " =?", new String[]{DATA_ELEMENT});
+
+        cursor = database().query(Tables.PROGRAM_RULE_VARIABLE, PROJECTION,
+                null, null, null, null, null);
+
+        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM, null).isExhausted();
+
+    }
+
+    @Test
+    public void delete_shouldNotDeleteProgramRuleVariableWhenDeletingTrackedEntityAttribute() throws Exception {
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM);
+        database().insert(Tables.PROGRAM, null, program);
+
+        ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.create(ID, TRACKED_ENTITY_ATTRIBUTE, null);
+        database().insert(Tables.TRACKED_ENTITY_ATTRIBUTE, null, trackedEntityAttribute);
+
+        ContentValues programRuleVariable = new ContentValues();
+        programRuleVariable.put(Columns.ID, ID);
+        programRuleVariable.put(Columns.UID, UID);
+        programRuleVariable.put(Columns.PROGRAM, PROGRAM);
+        programRuleVariable.put(Columns.TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_ATTRIBUTE);
+
+        database().insert(Tables.PROGRAM_RULE_VARIABLE, null, programRuleVariable);
+
+
+        String[] PROJECTION = {Columns.ID, Columns.UID, Columns.PROGRAM, Columns.TRACKED_ENTITY_ATTRIBUTE};
+
+        Cursor cursor = database().query(Tables.PROGRAM_RULE_VARIABLE, PROJECTION, null, null, null, null, null);
+
+        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM, TRACKED_ENTITY_ATTRIBUTE);
+
+        database().delete(Tables.TRACKED_ENTITY_ATTRIBUTE,
+                TrackedEntityAttributeModel.Columns.UID + " =?", new String[]{TRACKED_ENTITY_ATTRIBUTE});
+
+        cursor = database().query(Tables.PROGRAM_RULE_VARIABLE, PROJECTION,
+                null, null, null, null, null);
+
+        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM, null).isExhausted();
+
+    }
+
+    @Test
     public void close_shouldNotCloseDatabase() throws Exception {
         programRuleVariableModelStore.close();
 
         assertThat(database().isOpen()).isTrue();
     }
 }
+

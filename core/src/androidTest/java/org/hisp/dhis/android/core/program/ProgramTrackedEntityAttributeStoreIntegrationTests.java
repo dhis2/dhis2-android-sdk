@@ -109,8 +109,8 @@ public class ProgramTrackedEntityAttributeStoreIntegrationTests extends AbsStore
 
         // insert test TrackedEntityAttribute to comply with foreign key constraint of ProgramTrackedEntityAttribute
         ContentValues trackedEntityAttribute =
-                CreateTrackedEntityAttributeUtils.createWithoutOptionSet(
-                        TRACKED_ENTITY_ATTRIBUTE_ID, TRACKED_ENTITY_ATTRIBUTE);
+                CreateTrackedEntityAttributeUtils.create(
+                        TRACKED_ENTITY_ATTRIBUTE_ID, TRACKED_ENTITY_ATTRIBUTE, null);
         database().insert(DbOpenHelper.Tables.TRACKED_ENTITY_ATTRIBUTE, null, trackedEntityAttribute);
 
         long rowId = programTrackedEntityAttributeStore.insert(

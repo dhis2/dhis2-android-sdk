@@ -47,7 +47,7 @@ import java.util.Date;
 public abstract class DataElement extends BaseNameableObject {
     private final static String VALUE_TYPE = "valueType";
     private final static String ZERO_IS_SIGNIFICANT = "zeroIsSignificant";
-    private final static String AGGREGATION_OPERATOR = "aggregationOperator";
+    private final static String AGGREGATION_TYPE = "aggregationType";
     private final static String FORM_NAME = "formName";
     private final static String NUMBER_TYPE = "numberType";
     private final static String DOMAIN_TYPE = "domainType";
@@ -68,7 +68,7 @@ public abstract class DataElement extends BaseNameableObject {
 
     public static final Field<DataElement, ValueType> valueType = Field.create(VALUE_TYPE);
     public static final Field<DataElement, Boolean> zeroIsSignificant = Field.create(ZERO_IS_SIGNIFICANT);
-    public static final Field<DataElement, String> aggregationOperator = Field.create(AGGREGATION_OPERATOR);
+    public static final Field<DataElement, String> aggregationType = Field.create(AGGREGATION_TYPE);
     public static final Field<DataElement, String> formName = Field.create(FORM_NAME);
     public static final Field<DataElement, String> numberType = Field.create(NUMBER_TYPE);
     public static final Field<DataElement, String> domainType = Field.create(DOMAIN_TYPE);
@@ -85,8 +85,8 @@ public abstract class DataElement extends BaseNameableObject {
     public abstract Boolean zeroIsSignificant();
 
     @Nullable
-    @JsonProperty(AGGREGATION_OPERATOR)
-    public abstract String aggregationOperator();
+    @JsonProperty(AGGREGATION_TYPE)
+    public abstract String aggregationType();
 
     @Nullable
     @JsonProperty(FORM_NAME)
@@ -126,7 +126,7 @@ public abstract class DataElement extends BaseNameableObject {
             @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
             @JsonProperty(VALUE_TYPE) ValueType valueType,
             @JsonProperty(ZERO_IS_SIGNIFICANT) Boolean zeroIsSignificant,
-            @JsonProperty(AGGREGATION_OPERATOR) String aggregationOperator,
+            @JsonProperty(AGGREGATION_TYPE) String aggregationType,
             @JsonProperty(FORM_NAME) String formName,
             @JsonProperty(NUMBER_TYPE) String numberType,
             @JsonProperty(DOMAIN_TYPE) String domainType,
@@ -137,7 +137,7 @@ public abstract class DataElement extends BaseNameableObject {
         return new AutoValue_DataElement(uid, code, name,
                 displayName, created, lastUpdated,
                 shortName, displayShortName, description, displayDescription, valueType,
-                zeroIsSignificant, aggregationOperator, formName, numberType,
+                zeroIsSignificant, aggregationType, formName, numberType,
                 domainType, dimension, displayFormName, optionSet);
 
     }

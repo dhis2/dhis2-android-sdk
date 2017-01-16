@@ -9,7 +9,9 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-import org.hisp.dhis.android.core.option.OptionSetModelIntegrationTest;
+import org.hisp.dhis.android.core.dataelement.DataElementModel.Columns;
+import org.hisp.dhis.android.core.option.CreateOptionSetUtils;
+import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,25 +52,25 @@ public class DataElementStoreIntegrationTest extends AbsStoreTestCase {
     private static final String DATE = "2016-12-20T16:26:00.007";
 
     private static final String[] DATA_ELEMENT_PROJECTION = {
-            DataElementModel.Columns.UID,
-            DataElementModel.Columns.CODE,
-            DataElementModel.Columns.NAME,
-            DataElementModel.Columns.DISPLAY_NAME,
-            DataElementModel.Columns.CREATED,
-            DataElementModel.Columns.LAST_UPDATED,
-            DataElementModel.Columns.SHORT_NAME,
-            DataElementModel.Columns.DISPLAY_SHORT_NAME,
-            DataElementModel.Columns.DESCRIPTION,
-            DataElementModel.Columns.DISPLAY_DESCRIPTION,
-            DataElementModel.Columns.VALUE_TYPE,
-            DataElementModel.Columns.ZERO_IS_SIGNIFICANT,
-            DataElementModel.Columns.AGGREGATION_OPERATOR,
-            DataElementModel.Columns.FORM_NAME,
-            DataElementModel.Columns.NUMBER_TYPE,
-            DataElementModel.Columns.DOMAIN_TYPE,
-            DataElementModel.Columns.DIMENSION,
-            DataElementModel.Columns.DISPLAY_FORM_NAME,
-            DataElementModel.Columns.OPTION_SET
+            Columns.UID,
+            Columns.CODE,
+            Columns.NAME,
+            Columns.DISPLAY_NAME,
+            Columns.CREATED,
+            Columns.LAST_UPDATED,
+            Columns.SHORT_NAME,
+            Columns.DISPLAY_SHORT_NAME,
+            Columns.DESCRIPTION,
+            Columns.DISPLAY_DESCRIPTION,
+            Columns.VALUE_TYPE,
+            Columns.ZERO_IS_SIGNIFICANT,
+            Columns.AGGREGATION_TYPE,
+            Columns.FORM_NAME,
+            Columns.NUMBER_TYPE,
+            Columns.DOMAIN_TYPE,
+            Columns.DIMENSION,
+            Columns.DISPLAY_FORM_NAME,
+            Columns.OPTION_SET
     };
 
     private DataElementStore dataElementStore;
@@ -82,7 +84,7 @@ public class DataElementStoreIntegrationTest extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistDataElementInDatabase() throws ParseException {
-        ContentValues optionSet = OptionSetModelIntegrationTest.create(ID, OPTION_SET);
+        ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
 
 
         database().insert(Tables.OPTION_SET, null, optionSet);
@@ -222,6 +224,34 @@ public class DataElementStoreIntegrationTest extends AbsStoreTestCase {
         );
 
         assertThat(rowId).isEqualTo(-1);
+    }
+
+    @Test
+    public void delete_shouldDeleteDataElementWhenDeletingOptionSetForeignKey() throws Exception {
+        ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
+        database().insert(Tables.OPTION_SET, null, optionSet);
+
+        ContentValues dataElement = new ContentValues();
+        dataElement.put(Columns.ID, ID);
+        dataElement.put(Columns.UID, UID);
+        dataElement.put(Columns.OPTION_SET, OPTION_SET);
+
+        database().insert(Tables.DATA_ELEMENT, null, dataElement);
+
+        String[] PROJECTION = {Columns.ID, Columns.UID, Columns.OPTION_SET};
+
+        Cursor cursor = database().query(Tables.DATA_ELEMENT, PROJECTION, null, null, null, null, null);
+
+        // checking that dataElement was successfully inserted
+        assertThatCursor(cursor).hasRow(ID, UID, OPTION_SET);
+
+        // deleting option set
+        database().delete(Tables.OPTION_SET, OptionSetModel.Columns.UID + "=?", new String[]{OPTION_SET});
+
+        cursor = database().query(Tables.DATA_ELEMENT, PROJECTION, null, null, null, null, null);
+
+        // checking that dataElement was deleted by option set on delete cascade
+        assertThatCursor(cursor).isExhausted();
     }
 
     @Test

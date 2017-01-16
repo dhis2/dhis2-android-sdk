@@ -8,6 +8,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
+import org.hisp.dhis.android.core.program.ProgramStageSectionModel.Columns;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.junit.Before;
@@ -44,14 +45,14 @@ public class ProgramStageSectionStoreIntegrationTest extends AbsStoreTestCase {
     private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
 
     private static final String[] PROGRAM_STAGE_SECTION_PROJECTION = {
-            ProgramStageSectionModel.Columns.UID,
-            ProgramStageSectionModel.Columns.CODE,
-            ProgramStageSectionModel.Columns.NAME,
-            ProgramStageSectionModel.Columns.DISPLAY_NAME,
-            ProgramStageSectionModel.Columns.CREATED,
-            ProgramStageSectionModel.Columns.LAST_UPDATED,
-            ProgramStageSectionModel.Columns.SORT_ORDER,
-            ProgramStageSectionModel.Columns.PROGRAM_STAGE
+            Columns.UID,
+            Columns.CODE,
+            Columns.NAME,
+            Columns.DISPLAY_NAME,
+            Columns.CREATED,
+            Columns.LAST_UPDATED,
+            Columns.SORT_ORDER,
+            Columns.PROGRAM_STAGE
     };
 
     private ProgramStageSectionStore programStageSectionStore;
@@ -66,14 +67,7 @@ public class ProgramStageSectionStoreIntegrationTest extends AbsStoreTestCase {
     @Test
     public void insert_shouldPersistProgramStageSectionInDatabase() throws Exception {
 
-        //Create Program & insert a row in the table.
-        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
-        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID, RELATIONSHIP_TYPE_UID);
-        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
-
-        database().insert(DbOpenHelper.Tables.TRACKED_ENTITY, null, trackedEntity);
-        database().insert(DbOpenHelper.Tables.RELATIONSHIP_TYPE, null, relationshipType);
-        database().insert(DbOpenHelper.Tables.PROGRAM, null, program);
+        insertForeignKeys();
 
         ContentValues programStage = ProgramStageModelIntegrationTest.create(ID, PROGRAM_STAGE, PROGRAM);
         database().insert(Tables.PROGRAM_STAGE, null, programStage);
@@ -100,9 +94,51 @@ public class ProgramStageSectionStoreIntegrationTest extends AbsStoreTestCase {
     }
 
     @Test
+    public void delete_shouldDeleteProgramStageSectionWhenDeletingProgramStage() throws Exception {
+        insertForeignKeys();
+
+        ContentValues programStage = ProgramStageModelIntegrationTest.create(ID, PROGRAM_STAGE, PROGRAM);
+        database().insert(Tables.PROGRAM_STAGE, null, programStage);
+
+        ContentValues programStageSection = new ContentValues();
+        programStageSection.put(Columns.ID, ID);
+        programStageSection.put(Columns.UID, UID);
+        programStageSection.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+        database().insert(Tables.PROGRAM_STAGE_SECTION, null, programStageSection);
+
+        String[] projection = {Columns.ID, Columns.UID, Columns.PROGRAM_STAGE};
+        Cursor cursor = database().query(Tables.PROGRAM_STAGE_SECTION, projection, null, null, null, null, null);
+        // checking that program stage section was successfully inserted
+        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM_STAGE);
+
+        // deleting foreign key reference
+        database().delete(Tables.PROGRAM_STAGE, ProgramStageModel.Columns.UID + "=?", new String[]{PROGRAM_STAGE});
+
+        cursor = database().query(Tables.PROGRAM_STAGE_SECTION, projection, null, null, null, null, null);
+        // checking that program stage section is deleted.
+        assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test
     public void close_shouldNotCloseDatabase() throws Exception {
         programStageSectionStore.close();
 
         assertThat(database().isOpen()).isTrue();
+    }
+
+    /**
+     * Inserts the rows necessary to satisfy the foreign keys:
+     * Program needs TrackedEntity and RelationshipType.
+     */
+    private void insertForeignKeys() {
+        //Create Program & insert a row in the table.
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
+                RELATIONSHIP_TYPE_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
+
+        database().insert(DbOpenHelper.Tables.TRACKED_ENTITY, null, trackedEntity);
+        database().insert(DbOpenHelper.Tables.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(DbOpenHelper.Tables.PROGRAM, null, program);
     }
 }

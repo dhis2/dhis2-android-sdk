@@ -220,7 +220,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             DataElementModel.Columns.DISPLAY_DESCRIPTION + " TEXT," +
             DataElementModel.Columns.VALUE_TYPE + " TEXT," +
             DataElementModel.Columns.ZERO_IS_SIGNIFICANT + " INTEGER," +
-            DataElementModel.Columns.AGGREGATION_OPERATOR + " TEXT," +
+            DataElementModel.Columns.AGGREGATION_TYPE + " TEXT," +
             DataElementModel.Columns.FORM_NAME + " TEXT," +
             DataElementModel.Columns.NUMBER_TYPE + " TEXT," +
             DataElementModel.Columns.DOMAIN_TYPE + " TEXT," +
@@ -228,7 +228,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             DataElementModel.Columns.DISPLAY_FORM_NAME + " TEXT," +
             DataElementModel.Columns.OPTION_SET + " TEXT," +
             " FOREIGN KEY ( " + DataElementModel.Columns.OPTION_SET + ")" +
-            " REFERENCES " + Tables.OPTION_SET + " (" + OptionSetModel.Columns.UID + ")" +
+            " REFERENCES " + Tables.OPTION_SET + " (" + OptionSetModel.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_PROGRAM_STAGE_DATA_ELEMENT_TABLE = "CREATE TABLE " +
@@ -240,11 +240,11 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ProgramStageDataElementModel.Columns.DISPLAY_NAME + " TEXT," +
             ProgramStageDataElementModel.Columns.CREATED + " TEXT," +
             ProgramStageDataElementModel.Columns.LAST_UPDATED + " TEXT," +
-            ProgramStageDataElementModel.Columns.DISPLAY_IN_REPORTS + " INTEGER NOT NULL," +
-            ProgramStageDataElementModel.Columns.COMPULSORY + " INTEGER NOT NULL," +
-            ProgramStageDataElementModel.Columns.ALLOW_PROVIDED_ELSEWHERE + " INTEGER NOT NULL," +
+            ProgramStageDataElementModel.Columns.DISPLAY_IN_REPORTS + " INTEGER," +
+            ProgramStageDataElementModel.Columns.COMPULSORY + " INTEGER," +
+            ProgramStageDataElementModel.Columns.ALLOW_PROVIDED_ELSEWHERE + " INTEGER," +
             ProgramStageDataElementModel.Columns.SORT_ORDER + " INTEGER," +
-            ProgramStageDataElementModel.Columns.ALLOW_FUTURE_DATE + " INTEGER NOT NULL," +
+            ProgramStageDataElementModel.Columns.ALLOW_FUTURE_DATE + " INTEGER," +
             ProgramStageDataElementModel.Columns.DATA_ELEMENT + " TEXT NOT NULL," +
             ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION + " TEXT," +
             " FOREIGN KEY (" + ProgramStageDataElementModel.Columns.DATA_ELEMENT + ")" +
@@ -291,7 +291,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ProgramStageSectionModel.Columns.SORT_ORDER + " INTEGER," +
             ProgramStageSectionModel.Columns.PROGRAM_STAGE + " TEXT NOT NULL," +
             " FOREIGN KEY ( " + ProgramStageSectionModel.Columns.PROGRAM_STAGE + ")" +
-            " REFERENCES " + Tables.PROGRAM_STAGE + " (" + ProgramStageModel.Columns.UID + ")" +
+            " REFERENCES " + Tables.PROGRAM_STAGE + " (" + ProgramStageModel.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_PROGRAM_STAGE_TABLE = "CREATE TABLE " +
@@ -321,7 +321,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ProgramStageModel.Columns.STANDARD_INTERVAL + " INTEGER," +
             ProgramStageModel.Columns.PROGRAM + " TEXT NOT NULL," +
             " FOREIGN KEY ( " + ProgramStageModel.Columns.PROGRAM + ")" +
-            " REFERENCES " + Tables.PROGRAM + " (" + ProgramModel.Columns.UID + ")" +
+            " REFERENCES " + Tables.PROGRAM + " (" + ProgramModel.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_PROGRAM_RULE_VARIABLE_TABLE = "CREATE TABLE " +

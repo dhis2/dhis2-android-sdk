@@ -26,7 +26,7 @@ public class DataElementStoreImpl implements DataElementStore {
             DataElementModel.Columns.DISPLAY_DESCRIPTION + ", " +
             DataElementModel.Columns.VALUE_TYPE + ", " +
             DataElementModel.Columns.ZERO_IS_SIGNIFICANT + ", " +
-            DataElementModel.Columns.AGGREGATION_OPERATOR + ", " +
+            DataElementModel.Columns.AGGREGATION_TYPE + ", " +
             DataElementModel.Columns.FORM_NAME + ", " +
             DataElementModel.Columns.NUMBER_TYPE + ", " +
             DataElementModel.Columns.DOMAIN_TYPE + ", " +

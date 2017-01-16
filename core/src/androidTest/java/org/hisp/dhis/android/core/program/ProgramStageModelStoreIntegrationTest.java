@@ -10,6 +10,7 @@ import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
+import org.hisp.dhis.android.core.program.ProgramStageModel.Columns;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.junit.Before;
@@ -26,15 +27,29 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 @RunWith(AndroidJUnit4.class)
 public class ProgramStageModelStoreIntegrationTest extends AbsStoreTestCase {
     public static final String[] PROGRAM_STAGE_PROJECTION = {
-            ProgramStageModel.Columns.UID, ProgramStageModel.Columns.CODE, ProgramStageModel.Columns.NAME, ProgramStageModel.Columns.DISPLAY_NAME,
-            ProgramStageModel.Columns.CREATED, ProgramStageModel.Columns.LAST_UPDATED, ProgramStageModel.Columns.EXECUTION_DATE_LABEL,
-            ProgramStageModel.Columns.ALLOW_GENERATE_NEXT_VISIT, ProgramStageModel.Columns.VALID_COMPLETE_ONLY,
-            ProgramStageModel.Columns.REPORT_DATE_TO_USE, ProgramStageModel.Columns.OPEN_AFTER_ENROLLMENT,
-            ProgramStageModel.Columns.REPEATABLE, ProgramStageModel.Columns.CAPTURE_COORDINATES, ProgramStageModel.Columns.FORM_TYPE,
-            ProgramStageModel.Columns.DISPLAY_GENERATE_EVENT_BOX, ProgramStageModel.Columns.GENERATED_BY_ENROLMENT_DATE,
-            ProgramStageModel.Columns.AUTO_GENERATE_EVENT, ProgramStageModel.Columns.SORT_ORDER, ProgramStageModel.Columns.HIDE_DUE_DATE,
-            ProgramStageModel.Columns.BLOCK_ENTRY_FORM, ProgramStageModel.Columns.MIN_DAYS_FROM_START,
-            ProgramStageModel.Columns.STANDARD_INTERVAL, ProgramStageModel.Columns.PROGRAM
+            Columns.UID,
+            Columns.CODE,
+            Columns.NAME,
+            Columns.DISPLAY_NAME,
+            Columns.CREATED,
+            Columns.LAST_UPDATED,
+            Columns.EXECUTION_DATE_LABEL,
+            Columns.ALLOW_GENERATE_NEXT_VISIT,
+            Columns.VALID_COMPLETE_ONLY,
+            Columns.REPORT_DATE_TO_USE,
+            Columns.OPEN_AFTER_ENROLLMENT,
+            Columns.REPEATABLE,
+            Columns.CAPTURE_COORDINATES,
+            Columns.FORM_TYPE,
+            Columns.DISPLAY_GENERATE_EVENT_BOX,
+            Columns.GENERATED_BY_ENROLMENT_DATE,
+            Columns.AUTO_GENERATE_EVENT,
+            Columns.SORT_ORDER,
+            Columns.HIDE_DUE_DATE,
+            Columns.BLOCK_ENTRY_FORM,
+            Columns.MIN_DAYS_FROM_START,
+            Columns.STANDARD_INTERVAL,
+            Columns.PROGRAM
     };
 
     private ProgramStageStore programStageStore;
@@ -82,15 +97,7 @@ public class ProgramStageModelStoreIntegrationTest extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistRowInDatabase() throws ParseException {
-        //Create Program & insert a row in the table.
-        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
-        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
-                RELATIONSHIP_TYPE_UID);
-        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
-
-        database().insert(DbOpenHelper.Tables.TRACKED_ENTITY, null, trackedEntity);
-        database().insert(DbOpenHelper.Tables.RELATIONSHIP_TYPE, null, relationshipType);
-        database().insert(DbOpenHelper.Tables.PROGRAM, null, program);
+        insertForeignKeys();
 
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
@@ -152,9 +159,49 @@ public class ProgramStageModelStoreIntegrationTest extends AbsStoreTestCase {
     }
 
     @Test
+    public void delete_shouldDeleteProgramStageWhenDeletingProgram() throws Exception {
+        insertForeignKeys();
+
+        ContentValues programStage = new ContentValues();
+        programStage.put(Columns.ID, ID);
+        programStage.put(Columns.UID, UID);
+        programStage.put(Columns.PROGRAM, PROGRAM);
+
+        database().insert(Tables.PROGRAM_STAGE, null, programStage);
+
+        String[] projection = {Columns.ID, Columns.UID, Columns.PROGRAM};
+
+        Cursor cursor = database().query(Tables.PROGRAM_STAGE, projection, null, null, null, null, null);
+        // checking that program stage was successfully inserted
+        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM);
+
+        database().delete(Tables.PROGRAM, ProgramModel.Columns.UID + "=?", new String[]{PROGRAM});
+
+        cursor = database().query(Tables.PROGRAM_STAGE, projection, null, null, null, null, null);
+
+        assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test
     public void close_shouldNotCloseDatabase() {
         programStageStore.close();
 
         assertThat(database().isOpen()).isTrue();
+    }
+
+    /**
+     * Inserts the rows necessary to satisfy the foreign keys:
+     * Program needs TrackedEntity and RelationshipType.
+     */
+    private void insertForeignKeys() {
+        //Create Program & insert a row in the table.
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
+                RELATIONSHIP_TYPE_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
+
+        database().insert(DbOpenHelper.Tables.TRACKED_ENTITY, null, trackedEntity);
+        database().insert(DbOpenHelper.Tables.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(DbOpenHelper.Tables.PROGRAM, null, program);
     }
 }

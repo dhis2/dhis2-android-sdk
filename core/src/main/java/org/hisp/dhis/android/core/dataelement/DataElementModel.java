@@ -19,7 +19,7 @@ public abstract class DataElementModel extends BaseNameableObjectModel {
     public static class Columns extends BaseNameableObjectModel.Columns {
         public static final String VALUE_TYPE = "valueType";
         public static final String ZERO_IS_SIGNIFICANT = "zeroIsSignificant";
-        public static final String AGGREGATION_OPERATOR = "aggregationOperator";
+        public static final String AGGREGATION_TYPE = "aggregationType";
         public static final String FORM_NAME = "formName";
         public static final String NUMBER_TYPE = "numberType";
         public static final String DOMAIN_TYPE = "domainType";
@@ -46,8 +46,8 @@ public abstract class DataElementModel extends BaseNameableObjectModel {
     public abstract Boolean zeroIsSignificant();
 
     @Nullable
-    @ColumnName(Columns.AGGREGATION_OPERATOR)
-    public abstract String aggregationOperator();
+    @ColumnName(Columns.AGGREGATION_TYPE)
+    public abstract String aggregationType();
 
     @Nullable
     @ColumnName(Columns.FORM_NAME)
@@ -82,7 +82,7 @@ public abstract class DataElementModel extends BaseNameableObjectModel {
 
         public abstract Builder zeroIsSignificant(Boolean zeroIsSignificant);
 
-        public abstract Builder aggregationOperator(String aggregationOperator);
+        public abstract Builder aggregationType(String aggregationType);
 
         public abstract Builder formName(String formName);
 

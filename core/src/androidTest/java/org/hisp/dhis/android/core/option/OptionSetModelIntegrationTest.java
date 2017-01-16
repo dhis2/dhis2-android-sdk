@@ -27,18 +27,6 @@ public class OptionSetModelIntegrationTest {
     // timestamp
     private static final String DATE = "2016-12-20T16:26:00.007";
 
-    public static ContentValues create(long id, String uid) {
-        ContentValues optionSet = new ContentValues();
-        optionSet.put(OptionSetModel.Columns.ID, id);
-        optionSet.put(OptionSetModel.Columns.UID, uid);
-        optionSet.put(OptionSetModel.Columns.CODE, CODE);
-        optionSet.put(OptionSetModel.Columns.NAME, NAME);
-        optionSet.put(OptionSetModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
-        optionSet.put(OptionSetModel.Columns.VERSION, VERSION);
-        optionSet.put(OptionSetModel.Columns.VALUE_TYPE, VALUE_TYPE.name());
-        return optionSet;
-    }
-
     @Test
     public void create_shouldConvertToModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{

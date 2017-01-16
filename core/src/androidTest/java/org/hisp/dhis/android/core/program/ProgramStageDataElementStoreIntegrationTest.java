@@ -7,10 +7,15 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils;
-import org.hisp.dhis.android.core.dataelement.DataElementModelIntegrationTest;
-import org.hisp.dhis.android.core.option.OptionSetModelIntegrationTest;
+import org.hisp.dhis.android.core.dataelement.DataElementModel;
+import org.hisp.dhis.android.core.option.CreateOptionSetUtils;
+import org.hisp.dhis.android.core.option.OptionSetModel;
+import org.hisp.dhis.android.core.program.ProgramStageDataElementModel.Columns;
+import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
+import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,20 +52,27 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
     // Nested foreign key
     private static final String OPTION_SET = "test_optionSet";
 
+    private static final String PROGRAM = "test_program";
+    //foreign keys to program:
+    private static final long TRACKED_ENTITY_ID = 1L;
+    private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
+    private static final long RELATIONSHIP_TYPE_ID = 3L;
+    private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
+
     private static final String[] PROGRAM_STAGE_DATA_ELEMENT_PROJECTION = {
-            ProgramStageDataElementModel.Columns.UID,
-            ProgramStageDataElementModel.Columns.CODE,
-            ProgramStageDataElementModel.Columns.NAME,
-            ProgramStageDataElementModel.Columns.DISPLAY_NAME,
-            ProgramStageDataElementModel.Columns.CREATED,
-            ProgramStageDataElementModel.Columns.LAST_UPDATED,
-            ProgramStageDataElementModel.Columns.DISPLAY_IN_REPORTS,
-            ProgramStageDataElementModel.Columns.COMPULSORY,
-            ProgramStageDataElementModel.Columns.ALLOW_PROVIDED_ELSEWHERE,
-            ProgramStageDataElementModel.Columns.SORT_ORDER,
-            ProgramStageDataElementModel.Columns.ALLOW_FUTURE_DATE,
-            ProgramStageDataElementModel.Columns.DATA_ELEMENT,
-            ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION
+            Columns.UID,
+            Columns.CODE,
+            Columns.NAME,
+            Columns.DISPLAY_NAME,
+            Columns.CREATED,
+            Columns.LAST_UPDATED,
+            Columns.DISPLAY_IN_REPORTS,
+            Columns.COMPULSORY,
+            Columns.ALLOW_PROVIDED_ELSEWHERE,
+            Columns.SORT_ORDER,
+            Columns.ALLOW_FUTURE_DATE,
+            Columns.DATA_ELEMENT,
+            Columns.PROGRAM_STAGE_SECTION
     };
 
     private ProgramStageDataElementStore programStageDataElementStore;
@@ -124,7 +136,7 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
     @Test
     public void insert_shouldPersistProgramStageDataElementInDatabaseWithOptionSet() throws Exception {
         // inserting necessary foreign key
-        ContentValues optionSet = OptionSetModelIntegrationTest.create(ID, OPTION_SET);
+        ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
         database().insert(Tables.OPTION_SET, null, optionSet);
 
         ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, OPTION_SET);
@@ -194,6 +206,111 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
         );
 
         assertThat(rowId).isEqualTo(-1);
+    }
+
+    @Test
+    public void delete_shouldDeleteProgramStageDataElementWhenDeletingDataElement() throws Exception {
+        ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
+        database().insert(Tables.DATA_ELEMENT, null, dataElement);
+
+        ContentValues programStageDataElement = new ContentValues();
+        programStageDataElement.put(Columns.ID, ID);
+        programStageDataElement.put(Columns.UID, UID);
+        programStageDataElement.put(Columns.DATA_ELEMENT, DATA_ELEMENT);
+        database().insert(Tables.PROGRAM_STAGE_DATA_ELEMENT, null, programStageDataElement);
+
+        String[] projection = {Columns.ID, Columns.UID, Columns.DATA_ELEMENT};
+
+        Cursor cursor = database().query(Tables.PROGRAM_STAGE_DATA_ELEMENT, projection, null, null, null, null, null);
+        // Checking that programStageDataElement was inserted
+        assertThatCursor(cursor).hasRow(ID, UID, DATA_ELEMENT);
+
+        // deleting data element
+        database().delete(Tables.DATA_ELEMENT, DataElementModel.Columns.UID + "=?", new String[]{DATA_ELEMENT});
+
+        cursor = database().query(Tables.PROGRAM_STAGE_DATA_ELEMENT, projection, null, null, null, null, null);
+
+        // program stage data element should now be deleted when foreign key was deleted
+        assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test
+    public void delete_shouldDeleteProgramStageDataElementWhenDeletingOptionSetNestedForeignKey() throws Exception {
+        ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
+        database().insert(Tables.OPTION_SET, null, optionSet);
+
+        ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, OPTION_SET);
+        database().insert(Tables.DATA_ELEMENT, null, dataElement);
+
+        ContentValues programStageDataElement = new ContentValues();
+        programStageDataElement.put(Columns.ID, ID);
+        programStageDataElement.put(Columns.UID, UID);
+        programStageDataElement.put(Columns.DATA_ELEMENT, DATA_ELEMENT);
+        database().insert(Tables.PROGRAM_STAGE_DATA_ELEMENT, null, programStageDataElement);
+
+        String[] projection = {Columns.ID, Columns.UID, Columns.DATA_ELEMENT};
+
+        Cursor cursor = database().query(Tables.PROGRAM_STAGE_DATA_ELEMENT, projection, null, null, null, null, null);
+        // Checking that programStageDataElement was inserted
+        assertThatCursor(cursor).hasRow(ID, UID, DATA_ELEMENT);
+
+        // deleting optionSet
+        database().delete(Tables.OPTION_SET, OptionSetModel.Columns.UID + "=?", new String[]{OPTION_SET});
+
+        cursor = database().query(Tables.PROGRAM_STAGE_DATA_ELEMENT, projection, null, null, null, null, null);
+
+        // program stage data element should now be deleted when nested foreign key was deleted
+        assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test
+    public void delete_shouldDeleteProgramStageDataElementWhenDeletingProgramStageSection() throws Exception {
+        String programStageUid = "test_programStageUid";
+
+        //Create Program & insert a row in the table.
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
+                RELATIONSHIP_TYPE_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
+
+        database().insert(DbOpenHelper.Tables.TRACKED_ENTITY, null, trackedEntity);
+        database().insert(DbOpenHelper.Tables.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(DbOpenHelper.Tables.PROGRAM, null, program);
+
+        ContentValues programStage = CreateProgramStageUtils.create(ID, programStageUid, PROGRAM);
+        database().insert(Tables.PROGRAM_STAGE, null, programStage);
+
+        ContentValues programStageSection =
+                CreateProgramStageSectionUtils.create(ID, PROGRAM_STAGE_SECTION, programStageUid);
+
+        database().insert(Tables.PROGRAM_STAGE_SECTION, null, programStageSection);
+
+        ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
+        database().insert(Tables.DATA_ELEMENT, null, dataElement);
+
+        ContentValues programStageDataElement = new ContentValues();
+        programStageDataElement.put(Columns.ID, ID);
+        programStageDataElement.put(Columns.UID, UID);
+        programStageDataElement.put(Columns.PROGRAM_STAGE_SECTION, PROGRAM_STAGE_SECTION);
+        programStageDataElement.put(Columns.DATA_ELEMENT, DATA_ELEMENT);
+
+        database().insert(Tables.PROGRAM_STAGE_DATA_ELEMENT, null, programStageDataElement);
+
+        String[] projection = {Columns.ID, Columns.UID, Columns.PROGRAM_STAGE_SECTION, Columns.DATA_ELEMENT};
+
+        Cursor cursor = database().query(Tables.PROGRAM_STAGE_DATA_ELEMENT, projection, null, null, null, null, null);
+        // Checking that programStageDataElement was inserted
+        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM_STAGE_SECTION, DATA_ELEMENT);
+
+        // deleting referenced program stage section
+        database().delete(
+                Tables.PROGRAM_STAGE_SECTION,
+                ProgramStageSectionModel.Columns.UID + "=?", new String[]{PROGRAM_STAGE_SECTION});
+
+        cursor = database().query(Tables.PROGRAM_STAGE_DATA_ELEMENT, projection, null, null, null, null, null);
+
+        // checking that program stage data element is deleted
+        assertThatCursor(cursor).isExhausted();
     }
 
     @Test

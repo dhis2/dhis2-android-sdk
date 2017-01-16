@@ -42,7 +42,7 @@ public class CreateTrackedEntityInstanceUtils {
     // used for timestamps
     private static final String DATE = "2011-12-24T12:24:25.203";
 
-    public static ContentValues createWithOrgUnit(String uid, String organisationUnit) throws ParseException {
+    public static ContentValues createWithOrgUnit(String uid, String organisationUnit) {
         ContentValues trackedEntityInstance = new ContentValues();
         trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.ID, ID);
         trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.UID, uid);

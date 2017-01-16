@@ -179,13 +179,17 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ProgramModel.Columns.USE_FIRST_STAGE_DURING_REGISTRATION + " INTEGER," +
             ProgramModel.Columns.DISPLAY_FRONT_PAGE_LIST + " INTEGER," +
             ProgramModel.Columns.PROGRAM_TYPE + " TEXT," +
-            //TODO: Should be a foreign key:
-            ProgramModel.Columns.RELATIONSHIP_TYPE + " TEXT," +
+            ProgramModel.Columns.RELATIONSHIP_TYPE + " TEXT NOT NULL," +
             ProgramModel.Columns.RELATIONSHIP_TEXT + " TEXT," +
             //TODO: should maybe reference itself as a foreign key. (Wait for org unit to implement it first)
             ProgramModel.Columns.RELATED_PROGRAM + " TEXT," +
-            //TODO: should be a foreign key.
-            ProgramModel.Columns.TRACKED_ENTITY + " TEXT" +
+            ProgramModel.Columns.TRACKED_ENTITY + " TEXT NOT NULL," +
+            " FOREIGN KEY (" + ProgramModel.Columns.RELATIONSHIP_TYPE + ") REFERENCES " +
+            Tables.RELATIONSHIP_TYPE + " (" + RelationshipTypeModel.Columns.UID + "), " +
+           /* " FOREIGN KEY (" + ProgramModel.Columns.RELATED_PROGRAM + ") REFERENCES " +
+            Tables.PROGRAM + " (" + ProgramModel.Columns.UID + "), " + */
+            " FOREIGN KEY (" + ProgramModel.Columns.TRACKED_ENTITY + ") REFERENCES " +
+            Tables.TRACKED_ENTITY + " (" + TrackedEntityModel.Columns.UID + ") " +
             ");";
 
     private static final String CREATE_TRACKED_ENTITY_TABLE = "CREATE TABLE " + Tables.TRACKED_ENTITY + " (" +
@@ -252,7 +256,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ");";
 
     private static final String CREATE_RELATIONSHIP_TABLE =
-            "CREATE TABLE " + Tables.RELATIONSHIP_TABLE + "(" +
+            "CREATE TABLE " + Tables.RELATIONSHIP + " (" +
                     RelationshipModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A + " TEXT," +
                     RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B + " TEXT," +
@@ -263,7 +267,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
                     ");";
 
     private static final String CREATE_RELATIONSHIP_TYPE_TABLE = "CREATE TABLE " +
-            Tables.RELATIONSHIP_TYPE + "( " +
+            Tables.RELATIONSHIP_TYPE + " (" +
             RelationshipTypeModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             RelationshipTypeModel.Columns.UID + " TEXT NOT NULL UNIQUE, " +
             RelationshipTypeModel.Columns.CODE + " TEXT, " +
@@ -477,8 +481,8 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             " REFERENCES " + Tables.PROGRAM_RULE + " (" + ProgramRuleModel.Columns.UID + ")" +
             ");";
 
-    private static final String CREATE_TRACKED_ENTITY_DATA_VALUE_TABLE = "CREATE TABLE "
-            + Tables.TRACKED_ENTITY_DATA_VALUE + " (" +
+    private static final String CREATE_TRACKED_ENTITY_DATA_VALUE_TABLE = "CREATE TABLE " +
+            Tables.TRACKED_ENTITY_DATA_VALUE + " (" +
             TrackedEntityDataValueModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             TrackedEntityDataValueModel.Columns.EVENT + " TEXT NOT NULL," +
             TrackedEntityDataValueModel.Columns.DATA_ELEMENT + " TEXT," +
@@ -497,17 +501,12 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             TrackedEntityAttributeValueModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             TrackedEntityAttributeValueModel.Columns.STATE + " TEXT," +
             TrackedEntityAttributeValueModel.Columns.VALUE + " TEXT," +
-            TrackedEntityAttributeValueModel.Columns.ATTRIBUTE + " TEXT" +
-            //TODO: add these foreign keys after implementing the TrackedEntityInstance
-            // and modify in Store to be @NonNull:
-           /* TrackedEntityAttributeValueModel.Columns.ATTRIBUTE + " TEXT NOT NULL," +
-            " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.ATTRIBUTE + ")" +
-            " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE +
-            " (" + TrackedEntityAttributeModel.Columns.UID + ")" +
-            TrackedEntityAttributeValueModel.Columns.INSTANCE + " TEXT NOT NULL," +
-            " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.ATTRIBUTE + ")" +
-            " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE_INSTANCE +
-            " (" +  TrackedEntityInstanceModel.Columns.UID + ")" +*/
+            TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT NOT NULL," +
+            TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + " TEXT NOT NULL," +
+            " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ")" +
+            " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE + " (" + TrackedEntityAttributeModel.Columns.UID + "), " +
+            " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + ")" +
+            " REFERENCES " + Tables.TRACKED_ENTITY_INSTANCE + " (" +  TrackedEntityInstanceModel.Columns.UID + ")" +
             ");";
 
     private static final String CREATE_EVENT_TABLE = "CREATE TABLE " + Tables.EVENT + " (" +
@@ -590,7 +589,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
         public static final String PROGRAM_STAGE_SECTION = "ProgramStageSection";
         public static final String PROGRAM_STAGE = "ProgramStage";
         public static final String PROGRAM_RULE_VARIABLE = "ProgramRuleVariable";
-        public static final String RELATIONSHIP_TABLE = "Relationship";
+        public static final String RELATIONSHIP = "Relationship";
         public static final String RELATIONSHIP_TYPE = "RelationshipType";
         public static final String TRACKED_ENTITY_ATTRIBUTE = "TrackedEntityAttribute";
         public static final String PROGRAM_TRACKED_ENTITY_ATTRIBUTE = "ProgramTrackedEntityAttribute";

@@ -7,8 +7,11 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.program.ProgramRuleModel.Columns;
+import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
+import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,13 +42,17 @@ public class ProgramRuleModelStoreIntegrationTest extends AbsStoreTestCase {
     // timestamp
     private static final String DATE = "2017-01-11T13:48:00.000";
 
-
     // bound to Program Rule
     private static final String PROGRAM_STAGE = "test_programStage";
     private static final String PROGRAM = "test_program";
     private static final Integer PRIORITY = 2;
     private static final String CONDITION = "test_condition";
 
+    //foreign keys to program:
+    private static final long TRACKED_ENTITY_ID = 1L;
+    private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
+    private static final long RELATIONSHIP_TYPE_ID = 3L;
+    private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
 
     @Override
     @Before
@@ -56,8 +63,15 @@ public class ProgramRuleModelStoreIntegrationTest extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistProgramRuleInDatabase() throws ParseException {
-        ContentValues program = CreateProgramUtils.create(1L, PROGRAM);
-        database().insert(Tables.PROGRAM, null, program);
+        //Create Program & insert a row in the table.
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
+                RELATIONSHIP_TYPE_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
+
+        database().insert(DbOpenHelper.Tables.TRACKED_ENTITY, null, trackedEntity);
+        database().insert(DbOpenHelper.Tables.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(DbOpenHelper.Tables.PROGRAM, null, program);
 
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
         database().insert(Tables.PROGRAM_STAGE, null, programStage);
@@ -86,8 +100,15 @@ public class ProgramRuleModelStoreIntegrationTest extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistProgramRuleInDatabaseWithoutProgramStageForeignKey() throws Exception {
-        ContentValues program = CreateProgramUtils.create(1L, PROGRAM);
-        database().insert(Tables.PROGRAM, null, program);
+        //Create Program & insert a row in the table.
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
+                RELATIONSHIP_TYPE_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
+
+        database().insert(DbOpenHelper.Tables.TRACKED_ENTITY, null, trackedEntity);
+        database().insert(DbOpenHelper.Tables.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(DbOpenHelper.Tables.PROGRAM, null, program);
 
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
@@ -109,7 +130,6 @@ public class ProgramRuleModelStoreIntegrationTest extends AbsStoreTestCase {
                 PRIORITY, CONDITION,
                 PROGRAM, null
         ).isExhausted();
-
     }
 
     @Test(expected = SQLiteConstraintException.class)
@@ -135,7 +155,6 @@ public class ProgramRuleModelStoreIntegrationTest extends AbsStoreTestCase {
                 PRIORITY, CONDITION,
                 null, null // Program and programStage == null
         ).isExhausted();
-
     }
 
     @Test

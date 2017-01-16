@@ -6,11 +6,14 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableModel.Columns;
+import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityAttributeUtils;
+import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,6 +42,13 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
     private static final String PROGRAM_STAGE = "test_programStage";
     private static final String TRACKED_ENTITY_ATTRIBUTE = "test_trackedEntityAttribute";
     private static final String DATA_ELEMENT = "test_dataElement";
+
+    //foreign keys to program:
+    private static final long TRACKED_ENTITY_ID = 1L;
+    private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
+    private static final long RELATIONSHIP_TYPE_ID = 3L;
+    private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
+
 
     private static final ProgramRuleVariableSourceType PROGRAM_RULE_VARIABLE_SOURCE_TYPE =
             ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM;
@@ -69,10 +79,7 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
 
     @Test
     public void insert_shouldPersistProgramRuleVariableInDatabase() throws Exception {
-        // inserting necessary foreign key
-
-        ContentValues program = CreateProgramUtils.create(ID, PROGRAM);
-        database().insert(Tables.PROGRAM, null, program);
+        insertProgramForeignKey();
 
         ContentValues programStage = ProgramStageModelIntegrationTest.create(ID, PROGRAM_STAGE, PROGRAM);
         database().insert(Tables.PROGRAM_STAGE, null, programStage);
@@ -128,8 +135,7 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
 
     @Test
     public void insert_shouldPersistProgramRuleVariableInDatabaseWithProgramForeignKey() throws Exception {
-        ContentValues program = CreateProgramUtils.create(ID, PROGRAM);
-        database().insert(Tables.PROGRAM, null, program);
+        insertProgramForeignKey();
 
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
@@ -174,8 +180,7 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
 
     @Test
     public void delete_shouldDeleteProgramRuleVariableWhenDeletingProgram() throws Exception {
-        ContentValues program = CreateProgramUtils.create(ID, PROGRAM);
-        database().insert(Tables.PROGRAM, null, program);
+        insertProgramForeignKey();
 
         ContentValues programRuleVariable = new ContentValues();
         programRuleVariable.put(Columns.ID, ID);
@@ -194,13 +199,11 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
 
         cursor.moveToFirst();
         assertThatCursor(cursor).isExhausted();
-
     }
 
     @Test
     public void delete_shouldNotDeleteProgramRuleVariableWhenDeletingProgramStage() throws Exception {
-        ContentValues program = CreateProgramUtils.create(ID, PROGRAM);
-        database().insert(Tables.PROGRAM, null, program);
+        insertProgramForeignKey();
 
         ContentValues programStage = CreateProgramStageUtils.create(ID, PROGRAM_STAGE, PROGRAM);
         database().insert(Tables.PROGRAM_STAGE, null, programStage);
@@ -212,7 +215,6 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
         programRuleVariable.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
 
         database().insert(Tables.PROGRAM_RULE_VARIABLE, null, programRuleVariable);
-
 
         String[] PROJECTION = {Columns.ID, Columns.UID, Columns.PROGRAM, Columns.PROGRAM_STAGE};
 
@@ -230,8 +232,7 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
 
     @Test
     public void delete_shouldNotDeleteProgramRuleVariableWhenDeletingDataElement() throws Exception {
-        ContentValues program = CreateProgramUtils.create(ID, PROGRAM);
-        database().insert(Tables.PROGRAM, null, program);
+        insertProgramForeignKey();
 
         ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
         database().insert(Tables.DATA_ELEMENT, null, dataElement);
@@ -243,7 +244,6 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
         programRuleVariable.put(Columns.DATA_ELEMENT, DATA_ELEMENT);
 
         database().insert(Tables.PROGRAM_RULE_VARIABLE, null, programRuleVariable);
-
 
         String[] PROJECTION = {Columns.ID, Columns.UID, Columns.PROGRAM, Columns.DATA_ELEMENT};
 
@@ -257,13 +257,11 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
                 null, null, null, null, null);
 
         assertThatCursor(cursor).hasRow(ID, UID, PROGRAM, null).isExhausted();
-
     }
 
     @Test
     public void delete_shouldNotDeleteProgramRuleVariableWhenDeletingTrackedEntityAttribute() throws Exception {
-        ContentValues program = CreateProgramUtils.create(ID, PROGRAM);
-        database().insert(Tables.PROGRAM, null, program);
+        insertProgramForeignKey();
 
         ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.create(ID, TRACKED_ENTITY_ATTRIBUTE, null);
         database().insert(Tables.TRACKED_ENTITY_ATTRIBUTE, null, trackedEntityAttribute);
@@ -275,7 +273,6 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
         programRuleVariable.put(Columns.TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_ATTRIBUTE);
 
         database().insert(Tables.PROGRAM_RULE_VARIABLE, null, programRuleVariable);
-
 
         String[] PROJECTION = {Columns.ID, Columns.UID, Columns.PROGRAM, Columns.TRACKED_ENTITY_ATTRIBUTE};
 
@@ -290,7 +287,6 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
                 null, null, null, null, null);
 
         assertThatCursor(cursor).hasRow(ID, UID, PROGRAM, null).isExhausted();
-
     }
 
     @Test
@@ -298,6 +294,18 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
         programRuleVariableModelStore.close();
 
         assertThat(database().isOpen()).isTrue();
+    }
+
+    private void insertProgramForeignKey() {
+        //Create Program & insert a row in the table.
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
+                RELATIONSHIP_TYPE_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
+
+        database().insert(DbOpenHelper.Tables.TRACKED_ENTITY, null, trackedEntity);
+        database().insert(DbOpenHelper.Tables.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(DbOpenHelper.Tables.PROGRAM, null, program);
     }
 }
 

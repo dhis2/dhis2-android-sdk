@@ -12,7 +12,7 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 public class RelationshipStoreImpl implements RelationshipStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
-            DbOpenHelper.Tables.RELATIONSHIP_TABLE + " (" +
+            DbOpenHelper.Tables.RELATIONSHIP + " (" +
             RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A + ", " +
             RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B + ", " +
             RelationshipModel.Columns.RELATIONSHIP_TYPE + ") " +

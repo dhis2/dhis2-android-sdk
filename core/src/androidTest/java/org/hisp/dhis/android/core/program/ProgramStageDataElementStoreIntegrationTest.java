@@ -7,12 +7,15 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.option.CreateOptionSetUtils;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementModel.Columns;
+import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
+import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,6 +51,13 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
 
     // Nested foreign key
     private static final String OPTION_SET = "test_optionSet";
+
+    private static final String PROGRAM = "test_program";
+    //foreign keys to program:
+    private static final long TRACKED_ENTITY_ID = 1L;
+    private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
+    private static final long RELATIONSHIP_TYPE_ID = 3L;
+    private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
 
     private static final String[] PROGRAM_STAGE_DATA_ELEMENT_PROJECTION = {
             Columns.UID,
@@ -222,7 +232,6 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
 
         // program stage data element should now be deleted when foreign key was deleted
         assertThatCursor(cursor).isExhausted();
-
     }
 
     @Test
@@ -256,13 +265,19 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
 
     @Test
     public void delete_shouldDeleteProgramStageDataElementWhenDeletingProgramStageSection() throws Exception {
-        String programUid = "test_program_uid";
         String programStageUid = "test_programStageUid";
 
-        ContentValues program = CreateProgramUtils.create(ID, programUid);
-        database().insert(Tables.PROGRAM, null, program);
+        //Create Program & insert a row in the table.
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
+                RELATIONSHIP_TYPE_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
 
-        ContentValues programStage = CreateProgramStageUtils.create(ID, programStageUid, programUid);
+        database().insert(DbOpenHelper.Tables.TRACKED_ENTITY, null, trackedEntity);
+        database().insert(DbOpenHelper.Tables.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(DbOpenHelper.Tables.PROGRAM, null, program);
+
+        ContentValues programStage = CreateProgramStageUtils.create(ID, programStageUid, PROGRAM);
         database().insert(Tables.PROGRAM_STAGE, null, programStage);
 
         ContentValues programStageSection =

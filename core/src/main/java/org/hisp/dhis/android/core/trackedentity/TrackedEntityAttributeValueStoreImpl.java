@@ -15,9 +15,10 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             DbOpenHelper.Tables.TRACKED_ENTITY_ATTRIBUTE_VALUE + " (" +
             TrackedEntityAttributeValueModel.Columns.STATE + ", " +
-            TrackedEntityAttributeValueModel.Columns.ATTRIBUTE + ", " +
-            TrackedEntityAttributeValueModel.Columns.VALUE + ") " +
-            "VALUES (?, ?, ?)";
+            TrackedEntityAttributeValueModel.Columns.VALUE  + ", " +
+            TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ", " +
+            TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + ") " +
+            "VALUES (?, ?, ?, ?)";
 
     private final SQLiteStatement insertRowStatement;
 
@@ -26,13 +27,17 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
     }
 
     @Override
-    public long insert(@NonNull State state, @NonNull String attribute, @Nullable String value) {
+    public long insert(@NonNull State state,
+                       @Nullable String value,
+                       @NonNull String trackedEntityAttribute,
+                       @NonNull String trackedEntityInstance) {
 
         insertRowStatement.clearBindings();
 
         sqLiteBind(insertRowStatement, 1, state);
-        sqLiteBind(insertRowStatement, 2, attribute);
-        sqLiteBind(insertRowStatement, 3, value);
+        sqLiteBind(insertRowStatement, 2, value);
+        sqLiteBind(insertRowStatement, 3, trackedEntityAttribute);
+        sqLiteBind(insertRowStatement, 4, trackedEntityInstance);
 
         return insertRowStatement.executeInsert();
     }

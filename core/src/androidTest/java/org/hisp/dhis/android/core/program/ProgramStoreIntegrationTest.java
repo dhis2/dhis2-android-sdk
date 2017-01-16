@@ -1,11 +1,14 @@
 package org.hisp.dhis.android.core.program;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
+import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
+import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,9 +55,11 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
     private static final Boolean USE_FIRST_STAGE_DURING_REGISTRATION = true;
     private static final Boolean DISPLAY_FRONT_PAGE_LIST = true;
     private static final ProgramType PROGRAM_TYPE = ProgramType.WITH_REGISTRATION;
+    private static final Long RELATIONSHIP_TYPE_ID = 3L;
     private static final String RELATIONSHIP_TYPE = "relationshipUid";
     private static final String RELATIONSHIP_TEXT = "test relationship";
     private static final String RELATED_PROGRAM = "RelatedProgramUid";
+    private static final Long TRACKED_ENTITY_ID = 4L;
     private static final String TRACKED_ENTITY = "TrackedEntityUid";
 
     private static final String[] PROGRAM_PROJECTION = {
@@ -100,6 +105,9 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistProgramInDatabase() throws ParseException {
+        //make sure that the foreign keys are in the database.
+        insert_foreignKeyRows();
+
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
         long rowId = programStore.insert(
@@ -172,23 +180,36 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistProgramNullableInDatabase() throws ParseException {
+        //make sure that the foreign keys are in the database.
+        insert_foreignKeyRows();
 
         long rowId = programStore.insert(
                 UID, null, NAME, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, RELATIONSHIP_FROM_A, null,
-                null, null, null, PROGRAM_TYPE, null, null, null, null);
+                null, null, null, PROGRAM_TYPE, RELATIONSHIP_TYPE, null, null, TRACKED_ENTITY);
 
         Cursor cursor = database().query(Tables.PROGRAM, PROGRAM_PROJECTION, null, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, null, NAME, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, toInteger(RELATIONSHIP_FROM_A), null,
-                null, null, null, PROGRAM_TYPE, null, null, null, null).isExhausted();
+                null, null, null, PROGRAM_TYPE, RELATIONSHIP_TYPE, null, null, TRACKED_ENTITY).isExhausted();
     }
 
     @Test
     public void close_shouldNotCloseDatabase() {
         programStore.close();
         assertThat(database().isOpen()).isTrue();
+    }
+
+    private void insert_foreignKeyRows() {
+
+        //RelationshipType foreign key corresponds to table entry
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID, RELATIONSHIP_TYPE);
+        database().insert(Tables.RELATIONSHIP_TYPE, null, relationshipType);
+
+        //TrackedEntity foreign key corresponds to table entry
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY);
+        database().insert(Tables.TRACKED_ENTITY, null, trackedEntity);
     }
 }

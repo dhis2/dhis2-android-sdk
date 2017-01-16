@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.event.CreateEventUtils;
 import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
 import org.hisp.dhis.android.core.program.CreateProgramStageUtils;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
+import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,6 +60,12 @@ public class TrackedEntityDataValueStoreIntegrationTests extends AbsStoreTestCas
     private static final String DATE = "2011-12-24T12:24:25.203";
 
     private static final long ID = 11L;
+    private static final long TRACKED_ENTITY_ID = 1L;
+    private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
+    private static final long RELATIONSHIP_TYPE_ID = 3L;
+    private static final String RELATIONSHIP_TYPE_UID = "relationshpTypeUid";
+
+
     private static final String EVENT = "test_event";
     private static final String DATA_ELEMENT = "test_dataElement";
     private static final String STORED_BY = "test_storedBy";
@@ -81,20 +88,6 @@ public class TrackedEntityDataValueStoreIntegrationTests extends AbsStoreTestCas
 
     private TrackedEntityDataValueStore trackedEntityDataValueStore;
 
-    public static ContentValues create(long id) {
-
-        ContentValues trackedEntityDataValues = new ContentValues();
-        trackedEntityDataValues.put(TrackedEntityDataValueModel.Columns.ID, id);
-        trackedEntityDataValues.put(TrackedEntityDataValueModel.Columns.EVENT, EVENT);
-        trackedEntityDataValues.put(TrackedEntityDataValueModel.Columns.CREATED, DATE);
-        trackedEntityDataValues.put(TrackedEntityDataValueModel.Columns.LAST_UPDATED, DATE);
-        trackedEntityDataValues.put(TrackedEntityDataValueModel.Columns.DATA_ELEMENT, DATA_ELEMENT);
-        trackedEntityDataValues.put(TrackedEntityDataValueModel.Columns.STORED_BY, STORED_BY);
-        trackedEntityDataValues.put(TrackedEntityDataValueModel.Columns.VALUE, VALUE);
-        trackedEntityDataValues.put(TrackedEntityDataValueModel.Columns.PROVIDED_ELSEWHERE, PROVIDED_ELSEWHERE);
-        return trackedEntityDataValues;
-    }
-
     @Before
     @Override
     public void setUp() throws IOException {
@@ -106,13 +99,24 @@ public class TrackedEntityDataValueStoreIntegrationTests extends AbsStoreTestCas
     @Test
     public void insert_shouldPersistRowInDatabase() throws ParseException {
 
+        //Create Program & insert a row in the table.
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
+                RELATIONSHIP_TYPE_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
+
+        database().insert(DbOpenHelper.Tables.TRACKED_ENTITY, null, trackedEntity);
+        database().insert(DbOpenHelper.Tables.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(DbOpenHelper.Tables.PROGRAM, null, program);
+
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
-        ContentValues program = CreateProgramUtils.create(1L, PROGRAM);
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
         ContentValues event = CreateEventUtils.create(EVENT, PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT);
 
-        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
+        database().insert(DbOpenHelper.Tables.TRACKED_ENTITY, null, trackedEntity);
+        database().insert(DbOpenHelper.Tables.RELATIONSHIP_TYPE, null, relationshipType);
         database().insert(DbOpenHelper.Tables.PROGRAM, null, program);
+        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
         database().insert(DbOpenHelper.Tables.PROGRAM_STAGE, null, programStage);
         database().insert(DbOpenHelper.Tables.EVENT, null, event);
 

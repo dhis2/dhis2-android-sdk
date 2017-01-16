@@ -42,8 +42,8 @@ public class RelationshipStoreIntegrationTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistRelationshipInDatabase() {
-        //Insert RelationshipType in RelationshipType table, shuch that it can be used as foreign key:
-        ContentValues relationshipType = RelationshipTypeModelIntegrationTests.create(
+        //Insert RelationshipType in RelationshipType table, such that it can be used as foreign key:
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(
                 RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE
         );
@@ -57,7 +57,7 @@ public class RelationshipStoreIntegrationTests extends AbsStoreTestCase {
         );
 
         Cursor cursor = database().query(
-                Tables.RELATIONSHIP_TABLE,
+                Tables.RELATIONSHIP,
                 RELATIONSHIP_PROJECTION,
                 null, null, null, null, null, null
         );
@@ -73,14 +73,14 @@ public class RelationshipStoreIntegrationTests extends AbsStoreTestCase {
     @Test
     public void insert_shouldPersistRelationshipNullableInDatabase() {
         //Insert foreign keys in their respective tables:
-        ContentValues relationshipType = RelationshipTypeModelIntegrationTests.create(
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(
                 RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE
         );
         database().insert(Tables.RELATIONSHIP_TYPE, null, relationshipType);
 
         long rowId = relationshipStore.insert(null, null, RELATIONSHIP_TYPE);
-        Cursor cursor = database().query(Tables.RELATIONSHIP_TABLE, RELATIONSHIP_PROJECTION,
+        Cursor cursor = database().query(Tables.RELATIONSHIP, RELATIONSHIP_PROJECTION,
                 null, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);

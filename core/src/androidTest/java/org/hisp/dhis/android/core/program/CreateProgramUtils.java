@@ -38,7 +38,6 @@ public class CreateProgramUtils {
     private static final Boolean USE_FIRST_STAGE_DURING_REGISTRATION = true;
     private static final Boolean DISPLAY_FRONT_PAGE_LIST = true;
     private static final ProgramType PROGRAM_TYPE = ProgramType.WITH_REGISTRATION;
-    private static final String RELATIONSHIP_TYPE = "relationshipUid";
     private static final String RELATIONSHIP_TEXT = "test relationship";
     private static final String RELATED_PROGRAM = "RelatedProgramUid";
 
@@ -48,9 +47,10 @@ public class CreateProgramUtils {
      *
      * @param id
      * @param uid
-     * @return
+     * @param relationshipTypeUid
+     *@param trackedEntityUid @return
      */
-    public static ContentValues create(long id, String uid) {
+    public static ContentValues create(long id, String uid, String relationshipTypeUid, String trackedEntityUid) {
         ContentValues program = new ContentValues();
         program.put(ProgramModel.Columns.ID, id);
         program.put(ProgramModel.Columns.UID, uid);
@@ -78,9 +78,10 @@ public class CreateProgramUtils {
         program.put(ProgramModel.Columns.USE_FIRST_STAGE_DURING_REGISTRATION, USE_FIRST_STAGE_DURING_REGISTRATION);
         program.put(ProgramModel.Columns.DISPLAY_FRONT_PAGE_LIST, DISPLAY_FRONT_PAGE_LIST);
         program.put(ProgramModel.Columns.PROGRAM_TYPE, PROGRAM_TYPE.name());
-        program.put(ProgramModel.Columns.RELATIONSHIP_TYPE, RELATIONSHIP_TYPE);
+        program.put(ProgramModel.Columns.RELATIONSHIP_TYPE, relationshipTypeUid);
         program.put(ProgramModel.Columns.RELATIONSHIP_TEXT, RELATIONSHIP_TEXT);
         program.put(ProgramModel.Columns.RELATED_PROGRAM, RELATED_PROGRAM);
+        program.put(ProgramModel.Columns.TRACKED_ENTITY, trackedEntityUid);
 
         return program;
     }

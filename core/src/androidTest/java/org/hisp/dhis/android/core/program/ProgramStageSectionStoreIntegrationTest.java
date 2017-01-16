@@ -6,7 +6,10 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
+import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
+import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +37,11 @@ public class ProgramStageSectionStoreIntegrationTest extends AbsStoreTestCase {
 
     // nested foreign key
     private static final String PROGRAM = "test_program";
+    //foreign keys to program:
+    private static final long TRACKED_ENTITY_ID = 1L;
+    private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
+    private static final long RELATIONSHIP_TYPE_ID = 1L;
+    private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
 
     private static final String[] PROGRAM_STAGE_SECTION_PROJECTION = {
             ProgramStageSectionModel.Columns.UID,
@@ -57,10 +65,15 @@ public class ProgramStageSectionStoreIntegrationTest extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistProgramStageSectionInDatabase() throws Exception {
-        // inserting necessary foreign key
 
-        ContentValues program = CreateProgramUtils.create(ID, PROGRAM);
-        database().insert(Tables.PROGRAM, null, program);
+        //Create Program & insert a row in the table.
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID, RELATIONSHIP_TYPE_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
+
+        database().insert(DbOpenHelper.Tables.TRACKED_ENTITY, null, trackedEntity);
+        database().insert(DbOpenHelper.Tables.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(DbOpenHelper.Tables.PROGRAM, null, program);
 
         ContentValues programStage = ProgramStageModelIntegrationTest.create(ID, PROGRAM_STAGE, PROGRAM);
         database().insert(Tables.PROGRAM_STAGE, null, programStage);

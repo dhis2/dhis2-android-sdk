@@ -30,123 +30,86 @@ package org.hisp.dhis.android.core.enrollment;
 
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.core.common.Coordinates;
 
 import java.util.Date;
-import java.util.List;
-
-import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_Enrollment.Builder.class)
 public abstract class Enrollment {
-    private static final String JSON_PROPERTY_UID = "enrollment";
-    private static final String JSON_PROPERTY_CREATED = "created";
-    private static final String JSON_PROPERTY_LAST_UPDATED = "lastUpdated";
-    private static final String JSON_PROPERTY_ORGANISATION_UNIT = "orgUnit";
-    private static final String JSON_PROPERTY_PROGRAM = "program";
-    private static final String JSON_PROPERTY_DATE_OF_ENROLLMENT = "enrollmentDate";
-    private static final String JSON_PROPERTY_DATE_OF_INCIDENT = "incidentDate";
-    private static final String JSON_PROPERTY_FOLLOW_UP = "followup";
-    private static final String JSON_PROPERTY_ENROLLMENT_STATUS = "status";
-    private static final String JSON_PROPERTY_TRACKED_ENTITY_ATTRIBUTE_VALUES = "attributes";
-    private static final String JSON_PROPERTY_TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+    private static final String UID = "enrollment";
+    private static final String CREATED = "created";
+    private static final String LAST_UPDATED = "lastUpdated";
+    private static final String ORGANISATION_UNIT = "orgUnit";
+    private static final String PROGRAM = "program";
+    private static final String DATE_OF_ENROLLMENT = "enrollmentDate";
+    private static final String DATE_OF_INCIDENT = "incidentDate";
+    private static final String FOLLOW_UP = "followup";
+    private static final String ENROLLMENT_STATUS = "status";
+    private static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+    private static final String COORDINATE = "coordinate";
 
-    @JsonProperty(JSON_PROPERTY_UID)
+    @JsonProperty(UID)
     public abstract String uid();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_CREATED)
+    @JsonProperty(CREATED)
     public abstract Date created();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
+    @JsonProperty(LAST_UPDATED)
     public abstract Date lastUpdated();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
+    @JsonProperty(ORGANISATION_UNIT)
     public abstract String organisationUnit();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_PROGRAM)
+    @JsonProperty(PROGRAM)
     public abstract String program();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_DATE_OF_ENROLLMENT)
+    @JsonProperty(DATE_OF_ENROLLMENT)
     public abstract Date dateOfEnrollment();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_DATE_OF_INCIDENT)
+    @JsonProperty(DATE_OF_INCIDENT)
     public abstract Date dateOfIncident();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_FOLLOW_UP)
+    @JsonProperty(FOLLOW_UP)
     public abstract Boolean followUp();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_ENROLLMENT_STATUS)
+    @JsonProperty(ENROLLMENT_STATUS)
     public abstract EnrollmentStatus enrollmentStatus();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE)
+    @JsonProperty(TRACKED_ENTITY_INSTANCE)
     public abstract String trackedEntityInstance();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_ATTRIBUTE_VALUES)
-    public abstract List<TrackedEntityAttributeValue> trackedEntityAttributeValues();
+    @JsonProperty(COORDINATE)
+    public abstract Coordinates coordinate();
 
-    public static Builder builder() {
-        return new AutoValue_Enrollment.Builder();
-    }
-
-    @AutoValue.Builder
-    public static abstract class Builder {
-
-        @JsonProperty(JSON_PROPERTY_UID)
-        public abstract Builder uid(String uid);
-
-        @JsonProperty(JSON_PROPERTY_CREATED)
-        public abstract Builder created(@Nullable Date created);
-
-        @JsonProperty(JSON_PROPERTY_LAST_UPDATED)
-        public abstract Builder lastUpdated(@Nullable Date lastUpdated);
-
-        @JsonProperty(JSON_PROPERTY_ORGANISATION_UNIT)
-        public abstract Builder organisationUnit(@Nullable String orgUnit);
-
-        @JsonProperty(JSON_PROPERTY_PROGRAM)
-        public abstract Builder program(@Nullable String program);
-
-        @JsonProperty(JSON_PROPERTY_DATE_OF_ENROLLMENT)
-        public abstract Builder dateOfEnrollment(@Nullable Date dateOfEnrollment);
-
-        @JsonProperty(JSON_PROPERTY_DATE_OF_INCIDENT)
-        public abstract Builder dateOfIncident(@Nullable Date dateOfIncident);
-
-        @JsonProperty(JSON_PROPERTY_FOLLOW_UP)
-        public abstract Builder followUp(@Nullable Boolean followUp);
-
-        @JsonProperty(JSON_PROPERTY_ENROLLMENT_STATUS)
-        public abstract Builder enrollmentStatus(@Nullable EnrollmentStatus enrollmentStatus);
-
-        @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_INSTANCE)
-        public abstract Builder trackedEntityInstance(@Nullable String trackedEntityInstance);
-
-        @JsonProperty(JSON_PROPERTY_TRACKED_ENTITY_ATTRIBUTE_VALUES)
-        public abstract Builder trackedEntityAttributeValues(
-                @Nullable List<TrackedEntityAttributeValue> attributeValues);
-
-        abstract Enrollment autoBuild();
-
-        abstract List<TrackedEntityAttributeValue> trackedEntityAttributeValues();
-
-        public Enrollment build() {
-            trackedEntityAttributeValues(safeUnmodifiableList(trackedEntityAttributeValues()));
-            return autoBuild();
-        }
+    @JsonCreator
+    public static Enrollment create(
+            @JsonProperty(UID) String uid,
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(ORGANISATION_UNIT) String organisationUnit,
+            @JsonProperty(PROGRAM) String program,
+            @JsonProperty(DATE_OF_ENROLLMENT) Date dateOfEnrollment,
+            @JsonProperty(DATE_OF_INCIDENT) Date dateOfIncident,
+            @JsonProperty(FOLLOW_UP) Boolean followUp,
+            @JsonProperty(ENROLLMENT_STATUS) EnrollmentStatus enrollmentStatus,
+            @JsonProperty(TRACKED_ENTITY_INSTANCE) String trackedEntityInstance,
+            @JsonProperty(COORDINATE) Coordinates coordinate) {
+        return new AutoValue_Enrollment(uid, created, lastUpdated, organisationUnit, program,
+                dateOfEnrollment, dateOfIncident, followUp, enrollmentStatus, trackedEntityInstance,
+                coordinate);
     }
 }

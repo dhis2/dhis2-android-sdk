@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.Coordinates;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -28,6 +29,7 @@ public class EnrollmentIntegrationTest {
                 "\"followup\": false,\n" +
                 "\"incidentDate\": \"2014-07-21T12:27:50.730\",\n" +
                 "\"status\": \"ACTIVE\",\n" +
+                "\"coordinate\": { \"latitude\": 12.1, \"longitude\": 22.2 }\n" +
                 "\"notes\": [],\n" +
                 "\"attributes\": []\n" +
                 "}", Enrollment.class);
@@ -45,8 +47,9 @@ public class EnrollmentIntegrationTest {
         assertThat(enrollment.enrollmentStatus()).isEqualTo(EnrollmentStatus.ACTIVE);
         assertThat(enrollment.trackedEntityInstance()).isEqualTo("D2dUWKQErfQ");
 
-        // TODO: Find an example Enrollment with a non-empty list of trackedEntityAttributeValues for testing:
-        assertThat(enrollment.trackedEntityAttributeValues()).isEmpty();
+        Coordinates coordinates = enrollment.coordinate();
+        assertThat(coordinates.latitude()).isEqualTo(12.1);
+        assertThat(coordinates.longitude()).isEqualTo(22.2);
     }
 
 }

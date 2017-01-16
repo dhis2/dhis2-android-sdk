@@ -9,9 +9,9 @@ public interface TrackedEntityAttributeValueStore {
 
     long insert(
             @NonNull State state,
-            @Nullable String attribute,
-            @Nullable String value
-    );
+            @Nullable String value,
+            @NonNull String trackedEntityAttribute,
+            @NonNull String trackedEntityInstance);
 
     void close();
 }

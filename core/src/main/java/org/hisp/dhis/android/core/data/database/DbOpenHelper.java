@@ -501,17 +501,12 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             TrackedEntityAttributeValueModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             TrackedEntityAttributeValueModel.Columns.STATE + " TEXT," +
             TrackedEntityAttributeValueModel.Columns.VALUE + " TEXT," +
-            TrackedEntityAttributeValueModel.Columns.ATTRIBUTE + " TEXT" +
-            //TODO: add these foreign keys after implementing the TrackedEntityInstance
-            // and modify in Store to be @NonNull:
-           /* TrackedEntityAttributeValueModel.Columns.ATTRIBUTE + " TEXT NOT NULL," +
-            " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.ATTRIBUTE + ")" +
-            " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE +
-            " (" + TrackedEntityAttributeModel.Columns.UID + ")" +
-            TrackedEntityAttributeValueModel.Columns.INSTANCE + " TEXT NOT NULL," +
-            " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.ATTRIBUTE + ")" +
-            " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE_INSTANCE +
-            " (" +  TrackedEntityInstanceModel.Columns.UID + ")" +*/
+            TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT NOT NULL," +
+            TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + " TEXT NOT NULL," +
+            " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ")" +
+            " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE + " (" + TrackedEntityAttributeModel.Columns.UID + "), " +
+            " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + ")" +
+            " REFERENCES " + Tables.TRACKED_ENTITY_INSTANCE + " (" +  TrackedEntityInstanceModel.Columns.UID + ")" +
             ");";
 
     private static final String CREATE_EVENT_TABLE = "CREATE TABLE " + Tables.EVENT + " (" +

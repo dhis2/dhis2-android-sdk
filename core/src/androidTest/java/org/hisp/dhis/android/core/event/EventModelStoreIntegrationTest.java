@@ -67,7 +67,7 @@ public class EventModelStoreIntegrationTest extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistEventInDatabase() throws Exception {
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.create(1L, ORGANISATION_UNIT);
+        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM);
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
 

@@ -91,7 +91,7 @@ public class TrackedEntityInstanceStoreIntegrationTests extends AbsStoreTestCase
     public void insert_shouldPersistRowInDatabase() throws Exception {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.create(1L, ORGANISATION_UNIT);
+        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
 
         long rowId = trackedEntityInstanceStore.insert(

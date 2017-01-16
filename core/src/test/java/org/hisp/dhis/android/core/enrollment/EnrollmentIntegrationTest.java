@@ -29,7 +29,7 @@ public class EnrollmentIntegrationTest {
                 "\"followup\": false,\n" +
                 "\"incidentDate\": \"2014-07-21T12:27:50.730\",\n" +
                 "\"status\": \"ACTIVE\",\n" +
-                "\"coordinate\": { \"latitude\": 12.1, \"longitude\": 22.2 }\n" +
+                "\"coordinate\": { \"latitude\": 12.1, \"longitude\": 22.2 },\n" +
                 "\"notes\": [],\n" +
                 "\"attributes\": []\n" +
                 "}", Enrollment.class);

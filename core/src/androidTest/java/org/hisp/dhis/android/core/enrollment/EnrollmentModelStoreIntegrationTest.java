@@ -67,9 +67,10 @@ public class EnrollmentModelStoreIntegrationTest extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistInDatabase() throws Exception {
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.create(1L, ORGANISATION_UNIT);
+        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM);
-        ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(TRACKED_ENTITY_INSTANCE, ORGANISATION_UNIT);
+        ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.createWithOrgUnit(
+                TRACKED_ENTITY_INSTANCE, ORGANISATION_UNIT);
 
         database().insert(Tables.ORGANISATION_UNIT, null, organisationUnit);
         database().insert(Tables.PROGRAM, null, program);

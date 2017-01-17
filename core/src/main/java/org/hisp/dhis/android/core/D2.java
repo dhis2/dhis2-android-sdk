@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
@@ -102,10 +102,6 @@ public final class D2 {
                 new OrganisationUnitStoreImpl(sqLiteDatabase);
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
     @NonNull
     public Retrofit retrofit() {
         return retrofit;
@@ -148,7 +144,7 @@ public final class D2 {
         );
     }
 
-    static class Builder {
+    public static class Builder {
         private ConfigurationModel configurationModel;
         private DbOpenHelper dbOpenHelper;
         private OkHttpClient okHttpClient;

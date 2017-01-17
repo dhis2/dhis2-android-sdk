@@ -34,7 +34,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 
 import java.util.Date;
 
@@ -42,7 +41,7 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEntityAttributeStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
-            DbOpenHelper.Tables.PROGRAM_TRACKED_ENTITY_ATTRIBUTE + " (" +
+            ProgramTrackedEntityAttributeModel.PROGRAM_TRACKED_ENTITY_ATTRIBUTE + " (" +
             ProgramTrackedEntityAttributeModel.Columns.UID + ", " +
             ProgramTrackedEntityAttributeModel.Columns.CODE + ", " +
             ProgramTrackedEntityAttributeModel.Columns.NAME + ", " +

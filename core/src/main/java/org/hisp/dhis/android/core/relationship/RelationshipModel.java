@@ -40,6 +40,8 @@ import org.hisp.dhis.android.core.common.BaseDataModel;
 
 @AutoValue
 public abstract class RelationshipModel extends BaseDataModel {
+    public static final String RELATIONSHIP = "Relationship";
+
     public static class Columns extends BaseDataModel.Columns {
         public static final String TRACKED_ENTITY_INSTANCE_A = "trackedEntityInstanceA";
         public static final String TRACKED_ENTITY_INSTANCE_B = "trackedEntityInstanceB";

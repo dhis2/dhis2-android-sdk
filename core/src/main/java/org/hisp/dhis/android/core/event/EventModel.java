@@ -46,6 +46,8 @@ import java.util.Date;
 @AutoValue
 public abstract class EventModel extends BaseDataModel {
 
+    public static final String EVENT = "Event";
+
     public static class Columns extends BaseDataModel.Columns {
         public static final String UID = "uid";
         public static final String ENROLLMENT_UID = "enrollment";

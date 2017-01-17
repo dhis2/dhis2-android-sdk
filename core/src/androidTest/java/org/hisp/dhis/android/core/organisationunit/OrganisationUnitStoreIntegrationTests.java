@@ -33,7 +33,6 @@ import android.database.Cursor;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -90,7 +89,7 @@ public class OrganisationUnitStoreIntegrationTests extends AbsStoreTestCase {
                 date, date, null, 11
         );
 
-        Cursor cursor = database().query(DbOpenHelper.Tables.ORGANISATION_UNIT,
+        Cursor cursor = database().query(OrganisationUnitModel.ORGANISATION_UNIT,
                 ORGANISATION_UNIT_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -129,11 +128,11 @@ public class OrganisationUnitStoreIntegrationTests extends AbsStoreTestCase {
         ContentValues organisationUnitTwo =
                 CreateOrganisationUnitUtils.createOrgUnit(2L, "test_organisation_unit_two");
 
-        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitOne);
-        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitTwo);
+        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnitOne);
+        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnitTwo);
 
         int deleted = organisationUnitStore.delete();
-        Cursor cursor = database().query(DbOpenHelper.Tables.ORGANISATION_UNIT,
+        Cursor cursor = database().query(OrganisationUnitModel.ORGANISATION_UNIT,
                 null, null, null, null, null, null);
 
         assertThat(deleted).isEqualTo(2);

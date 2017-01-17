@@ -35,8 +35,8 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -78,7 +78,7 @@ public class TrackedEntityAttributeValueStoreIntegrationTests extends AbsStoreTe
 
         long rowId = store.insert(STATE, VALUE, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE);
 
-        Cursor cursor = database().query(Tables.TRACKED_ENTITY_ATTRIBUTE_VALUE,
+        Cursor cursor = database().query(TrackedEntityAttributeValueModel.TRACKED_ENTITY_ATTRIBUTE_VALUE,
                 TRACKED_ENTITY_ATTRIBUTE_VALUE_PROJECTION,
                 null, null, null, null, null);
 
@@ -93,7 +93,7 @@ public class TrackedEntityAttributeValueStoreIntegrationTests extends AbsStoreTe
 
         long rowId = store.insert(STATE, null, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE);
 
-        Cursor cursor = database().query(Tables.TRACKED_ENTITY_ATTRIBUTE_VALUE,
+        Cursor cursor = database().query(TrackedEntityAttributeValueModel.TRACKED_ENTITY_ATTRIBUTE_VALUE,
                 TRACKED_ENTITY_ATTRIBUTE_VALUE_PROJECTION,
                 null, null, null, null, null);
 
@@ -121,10 +121,10 @@ public class TrackedEntityAttributeValueStoreIntegrationTests extends AbsStoreTe
         //Insert:
         insert_shouldPersistTrackedEntityAttributeValueNullableInDatabase();
         //Delete foreign key row:
-        database().delete(Tables.TRACKED_ENTITY_ATTRIBUTE,
+        database().delete(TrackedEntityAttributeModel.TRACKED_ENTITY_ATTRIBUTE,
                 TrackedEntityAttributeModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY_ATTRIBUTE});
         //Query and confirm that TrackedEntityAttributeValue is also deleted:
-        Cursor cursor = database().query(Tables.TRACKED_ENTITY_ATTRIBUTE_VALUE,
+        Cursor cursor = database().query(TrackedEntityAttributeValueModel.TRACKED_ENTITY_ATTRIBUTE_VALUE,
                 TRACKED_ENTITY_ATTRIBUTE_VALUE_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
@@ -134,10 +134,10 @@ public class TrackedEntityAttributeValueStoreIntegrationTests extends AbsStoreTe
         //Insert:
         insert_shouldPersistTrackedEntityAttributeValueNullableInDatabase();
         //Delete foreign key row:
-        database().delete(Tables.TRACKED_ENTITY_INSTANCE,
+        database().delete(TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE,
                 TrackedEntityInstanceModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY_INSTANCE});
         //Query and confirm that TrackedEntityAttributeValue is also deleted:
-        Cursor cursor = database().query(Tables.TRACKED_ENTITY_ATTRIBUTE_VALUE,
+        Cursor cursor = database().query(TrackedEntityAttributeValueModel.TRACKED_ENTITY_ATTRIBUTE_VALUE,
                 TRACKED_ENTITY_ATTRIBUTE_VALUE_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
@@ -158,8 +158,8 @@ public class TrackedEntityAttributeValueStoreIntegrationTests extends AbsStoreTe
         ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.createWithOrgUnit(TRACKED_ENTITY_INSTANCE, ORGANIZATION_UNIT);
         ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.create(1L, TRACKED_ENTITY_ATTRIBUTE, null);
 
-        database().insert(Tables.ORGANISATION_UNIT, null, organisationUnit);
-        database().insert(Tables.TRACKED_ENTITY_INSTANCE, null, trackedEntityInstance);
-        database().insert(Tables.TRACKED_ENTITY_ATTRIBUTE, null, trackedEntityAttribute);
+        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
+        database().insert(TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE, null, trackedEntityInstance);
+        database().insert(TrackedEntityAttributeModel.TRACKED_ENTITY_ATTRIBUTE, null, trackedEntityAttribute);
     }
 }

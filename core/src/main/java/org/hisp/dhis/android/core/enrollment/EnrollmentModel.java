@@ -45,6 +45,8 @@ import java.util.Date;
 @AutoValue
 public abstract class EnrollmentModel extends BaseDataModel {
 
+    public static final String ENROLLMENT = "Enrollment";
+
     public static EnrollmentModel create(Cursor cursor) {
         return AutoValue_EnrollmentModel.createFromCursor(cursor);
     }

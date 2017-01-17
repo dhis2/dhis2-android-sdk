@@ -36,7 +36,6 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.option.CreateOptionSetUtils;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel.Columns;
@@ -151,7 +150,7 @@ public class TrackedEntityAttributeStoreIntegrationTests extends AbsStoreTestCas
         ContentValues optionSet =
                 CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
 
-        database().insert(Tables.OPTION_SET, null, optionSet);
+        database().insert(OptionSetModel.OPTION_SET, null, optionSet);
 
         long rowId = trackedEntityAttributeStore.insert(
                 UID,
@@ -179,7 +178,7 @@ public class TrackedEntityAttributeStoreIntegrationTests extends AbsStoreTestCas
                 INHERIT
         );
 
-        Cursor cursor = database().query(Tables.TRACKED_ENTITY_ATTRIBUTE,
+        Cursor cursor = database().query(TrackedEntityAttributeModel.TRACKED_ENTITY_ATTRIBUTE,
                 TRACKED_ENTITY_ATTRIBUTE_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -243,22 +242,22 @@ public class TrackedEntityAttributeStoreIntegrationTests extends AbsStoreTestCas
     @Test
     public void delete_shouldDeleteTrackedEntityAttributeWhenDeletingOptionSet() throws Exception {
         ContentValues optionSet = CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
-        database().insert(Tables.OPTION_SET, null, optionSet);
+        database().insert(OptionSetModel.OPTION_SET, null, optionSet);
 
         ContentValues trackedEntityAttribute = new ContentValues();
         trackedEntityAttribute.put(Columns.ID, 1L);
         trackedEntityAttribute.put(Columns.UID, UID);
         trackedEntityAttribute.put(Columns.OPTION_SET, OPTION_SET_UID);
 
-        database().insert(Tables.TRACKED_ENTITY_ATTRIBUTE, null, trackedEntityAttribute);
+        database().insert(TrackedEntityAttributeModel.TRACKED_ENTITY_ATTRIBUTE, null, trackedEntityAttribute);
 
         String[] projection = {Columns.ID, Columns.UID, Columns.OPTION_SET};
-        Cursor cursor = database().query(Tables.TRACKED_ENTITY_ATTRIBUTE, projection, null, null, null, null, null);
+        Cursor cursor = database().query(TrackedEntityAttributeModel.TRACKED_ENTITY_ATTRIBUTE, projection, null, null, null, null, null);
         // checking that tracked entity attribute is successfully inserted
         assertThatCursor(cursor).hasRow(1L, UID, OPTION_SET_UID);
 
-        database().delete(Tables.OPTION_SET, OptionSetModel.Columns.UID + " =?", new String[]{OPTION_SET_UID});
-        cursor = database().query(Tables.TRACKED_ENTITY_ATTRIBUTE, projection, null, null, null, null, null);
+        database().delete(OptionSetModel.OPTION_SET, OptionSetModel.Columns.UID + " =?", new String[]{OPTION_SET_UID});
+        cursor = database().query(TrackedEntityAttributeModel.TRACKED_ENTITY_ATTRIBUTE, projection, null, null, null, null, null);
 
         // checking that tracked entity attribute is deleted
         assertThatCursor(cursor).isExhausted();

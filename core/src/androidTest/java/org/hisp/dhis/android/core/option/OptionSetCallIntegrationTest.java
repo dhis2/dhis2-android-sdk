@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -212,9 +211,9 @@ public class OptionSetCallIntegrationTest extends AbsStoreTestCase {
     public void call_shouldPersistOptionSetWithOptionsInDatabase() throws Exception {
         optionSetCall.call();
 
-        Cursor optionSetCursor = database().query(DbOpenHelper.Tables.OPTION_SET,
+        Cursor optionSetCursor = database().query(OptionSetModel.OPTION_SET,
                 OPTION_SET_PROJECTION, null, null, null, null, null);
-        Cursor optionCursor = database().query(DbOpenHelper.Tables.OPTION,
+        Cursor optionCursor = database().query(OptionModel.OPTION,
                 OPTION_PROJECTION, null, null, null, null, null);
 
         assertThatCursor(optionSetCursor)

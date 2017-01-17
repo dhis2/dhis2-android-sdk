@@ -43,6 +43,8 @@ import org.hisp.dhis.android.core.data.database.DbProgramTypeColumnAdapter;
 @AutoValue
 public abstract class ProgramModel extends BaseNameableObjectModel {
 
+    public static final String PROGRAM = "Program";
+
     public static class Columns extends BaseNameableObjectModel.Columns {
         public static final String VERSION = "version";
         public static final String ONLY_ENROLL_ONCE = "onlyEnrollOnce";

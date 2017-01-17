@@ -34,14 +34,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class TrackedEntityInstanceModelStoreImpl implements TrackedEntityInstanceModelStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + DbOpenHelper.Tables.TRACKED_ENTITY_INSTANCE + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " +
+            TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE + " (" +
             TrackedEntityInstanceModel.Columns.UID + ", " +
             TrackedEntityInstanceModel.Columns.CREATED + ", " +
             TrackedEntityInstanceModel.Columns.LAST_UPDATED + ", " +
@@ -59,7 +59,7 @@ public class TrackedEntityInstanceModelStoreImpl implements TrackedEntityInstanc
 
     @Override
     public long insert(@NonNull String uid, @Nullable Date created, @Nullable Date lastUpdated,
-                       @Nullable String organisationUnit, @Nullable State state) {
+                       @NonNull String organisationUnit, @Nullable State state) {
         insertRowStatement.clearBindings();
 
         sqLiteBind(insertRowStatement, 1, uid);
@@ -73,7 +73,7 @@ public class TrackedEntityInstanceModelStoreImpl implements TrackedEntityInstanc
 
     @Override
     public int delete() {
-        return sqLiteDatabase.delete(DbOpenHelper.Tables.TRACKED_ENTITY_INSTANCE, null, null);
+        return sqLiteDatabase.delete(TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE, null, null);
     }
 
     @Override

@@ -33,7 +33,6 @@ import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,7 +60,7 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
 
         // row which will be referenced
         ContentValues userRow = UserStoreIntegrationTests.create(1L, "test_user_uid");
-        database().insert(DbOpenHelper.Tables.USER, null, userRow);
+        database().insert(UserModel.USER, null, userRow);
     }
 
     @Test
@@ -69,7 +68,7 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
         // inserting authenticated user model item
         long rowId = authenticatedUserStore.insert("test_user_uid", "test_user_credentials");
 
-        Cursor cursor = database().query(DbOpenHelper.Tables.AUTHENTICATED_USER,
+        Cursor cursor = database().query(AuthenticatedUserModel.AUTHENTICATED_USER,
                 PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -84,7 +83,7 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
         authenticatedUser.put(AuthenticatedUserModel.Columns.USER, "test_user_uid");
         authenticatedUser.put(AuthenticatedUserModel.Columns.CREDENTIALS, "test_user_credentials");
 
-        database().insert(DbOpenHelper.Tables.AUTHENTICATED_USER, null, authenticatedUser);
+        database().insert(AuthenticatedUserModel.AUTHENTICATED_USER, null, authenticatedUser);
 
         AuthenticatedUserModel authenticatedUserModel = AuthenticatedUserModel.builder()
                 .id(1L).user("test_user_uid").credentials("test_user_credentials")
@@ -105,11 +104,11 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
         authenticatedUser.put(AuthenticatedUserModel.Columns.USER, "test_user_uid");
         authenticatedUser.put(AuthenticatedUserModel.Columns.CREDENTIALS, "test_user_credentials");
 
-        database().insert(DbOpenHelper.Tables.AUTHENTICATED_USER, null, authenticatedUser);
+        database().insert(AuthenticatedUserModel.AUTHENTICATED_USER, null, authenticatedUser);
 
         int deleted = authenticatedUserStore.delete();
 
-        Cursor cursor = database().query(DbOpenHelper.Tables.AUTHENTICATED_USER,
+        Cursor cursor = database().query(AuthenticatedUserModel.AUTHENTICATED_USER,
                 null, null, null, null, null, null);
         assertThat(deleted).isEqualTo(1);
         assertThatCursor(cursor).isExhausted();

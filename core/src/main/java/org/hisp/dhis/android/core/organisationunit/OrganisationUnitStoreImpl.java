@@ -33,14 +33,12 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.ORGANISATION_UNIT + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + OrganisationUnitModel.ORGANISATION_UNIT + " (" +
             OrganisationUnitModel.Columns.UID + ", " +
             OrganisationUnitModel.Columns.CODE + ", " +
             OrganisationUnitModel.Columns.NAME + ", " +
@@ -106,7 +104,7 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
 
     @Override
     public int delete() {
-        return sqLiteDatabase.delete(Tables.ORGANISATION_UNIT, null, null);
+        return sqLiteDatabase.delete(OrganisationUnitModel.ORGANISATION_UNIT, null, null);
     }
 
     @Override

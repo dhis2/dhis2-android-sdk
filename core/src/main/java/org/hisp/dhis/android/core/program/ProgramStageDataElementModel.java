@@ -41,6 +41,8 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 @AutoValue
 public abstract class ProgramStageDataElementModel extends BaseIdentifiableObjectModel {
 
+    public static final String PROGRAM_STAGE_DATA_ELEMENT = "ProgramStageDataElement";
+
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
         public static final String DISPLAY_IN_REPORTS = "displayInReports";
         public static final String COMPULSORY = "compulsory";

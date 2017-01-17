@@ -33,15 +33,14 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
 
-    private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.PROGRAM_STAGE_SECTION + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " +
+            ProgramStageSectionModel.PROGRAM_STAGE_SECTION + " (" +
             ProgramStageSectionModel.Columns.UID + ", " +
             ProgramStageSectionModel.Columns.CODE + ", " +
             ProgramStageSectionModel.Columns.NAME + ", " +

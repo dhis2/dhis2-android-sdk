@@ -34,14 +34,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.FormType;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class ProgramStageStoreImpl implements ProgramStageStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.PROGRAM_STAGE + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + ProgramStageModel.PROGRAM_STAGE + " (" +
             ProgramStageModel.Columns.UID + ", " +
             ProgramStageModel.Columns.CODE + ", " +
             ProgramStageModel.Columns.NAME + ", " +

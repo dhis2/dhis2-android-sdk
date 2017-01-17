@@ -44,6 +44,8 @@ import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 @AutoValue
 public abstract class DataElementModel extends BaseNameableObjectModel {
 
+    public static final String DATA_ELEMENT = "DataElement";
+
     public static class Columns extends BaseNameableObjectModel.Columns {
         public static final String VALUE_TYPE = "valueType";
         public static final String ZERO_IS_SIGNIFICANT = "zeroIsSignificant";

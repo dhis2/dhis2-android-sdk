@@ -35,7 +35,6 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
@@ -149,7 +148,7 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
                 RELATIONSHIP_TYPE, RELATIONSHIP_TEXT, RELATED_PROGRAM, TRACKED_ENTITY
         );
 
-        Cursor cursor = database().query(Tables.PROGRAM, PROGRAM_PROJECTION, null, null, null, null, null, null);
+        Cursor cursor = database().query(ProgramModel.PROGRAM, PROGRAM_PROJECTION, null, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, CODE, NAME, DISPLAY_NAME, BaseIdentifiableObject.DATE_FORMAT.format(date),
@@ -194,7 +193,7 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
                 null, null, null, null, null, null, null, RELATIONSHIP_FROM_A, null,
                 null, null, null, PROGRAM_TYPE, null, null, null, null);
 
-        Cursor cursor = database().query(Tables.PROGRAM, PROGRAM_PROJECTION, null, null, null, null, null, null);
+        Cursor cursor = database().query(ProgramModel.PROGRAM, PROGRAM_PROJECTION, null, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, null, NAME, null, null, null, null, null, null, null, null, null,
@@ -207,10 +206,10 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
         //Insert
         insert_shouldPersistProgramInDatabase();
         //Delete foreign key:
-        database().delete(Tables.RELATIONSHIP_TYPE,
+        database().delete(RelationshipTypeModel.RELATIONSHIP_TYPE,
                 RelationshipTypeModel.Columns.UID + "=?", new String[]{RELATIONSHIP_TYPE});
         //Check that Program row is deleted as well:
-        Cursor cursor = database().query(Tables.PROGRAM, PROGRAM_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(ProgramModel.PROGRAM, PROGRAM_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 
@@ -219,9 +218,9 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
         //Insert:
         insert_shouldPersistProgramInDatabase();
         //Delete foreign key:
-        database().delete(Tables.TRACKED_ENTITY, TrackedEntityModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY});
+        database().delete(TrackedEntityModel.TRACKED_ENTITY, TrackedEntityModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY});
         //Check that Program row is deleted as well:
-        Cursor cursor = database().query(Tables.PROGRAM, PROGRAM_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(ProgramModel.PROGRAM, PROGRAM_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 
@@ -235,10 +234,10 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
 
         //RelationshipType foreign key corresponds to table entry
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID, RELATIONSHIP_TYPE);
-        database().insert(Tables.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
 
         //TrackedEntity foreign key corresponds to table entry
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY);
-        database().insert(Tables.TRACKED_ENTITY, null, trackedEntity);
+        database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
     }
 }

@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.enrollment;
+package org.hisp.dhis.android.core.event;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,13 +35,22 @@ import org.hisp.dhis.android.core.common.State;
 
 import java.util.Date;
 
-public interface EnrollmentModelStore {
-    long insert(@NonNull String uid, @Nullable Date created, @Nullable Date lastUpdated,
-                @Nullable String organisationUnit, @Nullable String program,
-                @Nullable Date dateOfEnrollment, @Nullable Date dateOfIncident,
-                @Nullable Boolean followUp, @Nullable EnrollmentStatus enrollmentStatus,
-                @Nullable String trackedEntityInstance, @Nullable String latitude,
-                @Nullable String longitude, @Nullable State state);
+public interface EventStore {
+    long insert(@NonNull String uid,
+                @Nullable String enrollmentUid,
+                @Nullable Date created,
+                @Nullable Date lastUpdated,
+                @Nullable EventStatus status,
+                @Nullable String latitude,
+                @Nullable String longitude,
+                @NonNull String program,
+                @NonNull String programStage,
+                @NonNull String organisationUnit,
+                @Nullable Date eventDate,
+                @Nullable Date completedDate,
+                @Nullable Date dueDate,
+                @Nullable State state
+    );
 
     void close();
 }

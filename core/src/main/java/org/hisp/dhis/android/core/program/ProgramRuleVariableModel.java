@@ -43,6 +43,8 @@ import org.hisp.dhis.android.core.data.database.DbProgramRuleVariableSourceTypeC
 @AutoValue
 public abstract class ProgramRuleVariableModel extends BaseIdentifiableObjectModel {
 
+    public static final String PROGRAM_RULE_VARIABLE = "ProgramRuleVariable";
+
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
         public static final String PROGRAM_STAGE = "programStage";
         public static final String PROGRAM_RULE_VARIABLE_SOURCE_TYPE = "programRuleVariableSourceType";

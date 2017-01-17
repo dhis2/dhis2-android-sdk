@@ -36,8 +36,8 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,7 +51,7 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class TrackedEntityInstanceStoreIntegrationTests extends AbsStoreTestCase {
-    private static final long ID = 11L;
+
     private static final String UID = "test_uid";
     private static final String ORGANISATION_UNIT = "test_organisationUnit";
     private static final State STATE = State.ERROR;
@@ -93,7 +93,7 @@ public class TrackedEntityInstanceStoreIntegrationTests extends AbsStoreTestCase
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
-        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
+        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
 
         long rowId = trackedEntityInstanceStore.insert(
                 UID,
@@ -103,7 +103,7 @@ public class TrackedEntityInstanceStoreIntegrationTests extends AbsStoreTestCase
                 STATE
         );
 
-        Cursor cursor = database().query(DbOpenHelper.Tables.TRACKED_ENTITY_INSTANCE,
+        Cursor cursor = database().query(TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE,
                 TRACKED_ENTITY_INSTANCE_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -115,6 +115,21 @@ public class TrackedEntityInstanceStoreIntegrationTests extends AbsStoreTestCase
                         ORGANISATION_UNIT,
                         STATE)
                 .isExhausted();
+    }
+
+    @Test
+    public void insert_shouldPersistNullableRowInDatabase() throws Exception {
+
+        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
+        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
+
+        long rowId = trackedEntityInstanceStore.insert(UID, null, null, ORGANISATION_UNIT, null);
+
+        Cursor cursor = database().query(TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE,
+                TRACKED_ENTITY_INSTANCE_PROJECTION, null, null, null, null, null);
+
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(UID, null, null, ORGANISATION_UNIT, null).isExhausted();
     }
 
     @Test(expected = SQLiteConstraintException.class)
@@ -129,7 +144,29 @@ public class TrackedEntityInstanceStoreIntegrationTests extends AbsStoreTestCase
         );
     }
 
-    // ToDo: test cascade deletion
+    @Test
+    public void delete_shouldDeleteTrackedEntityInstanceWhenDeletingOrganisationUnitForeignKey() throws Exception {
+        //Insert:
+        insert_shouldPersistRowInDatabase();
+        //Delete OrganisationUnit:
+        database().delete(OrganisationUnitModel.ORGANISATION_UNIT,
+                OrganisationUnitModel.Columns.UID + "=?", new String[]{ORGANISATION_UNIT});
+        //Check that TrackedEntityInstance is deleted:
+        Cursor cursor = database().query(TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE,
+                TRACKED_ENTITY_INSTANCE_PROJECTION, null, null, null, null, null);
+        assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test(expected = SQLiteConstraintException.class)
+    public void exception_persistTrackedEntityInstanceWithInvalidForeignKey() throws ParseException {
+        String wrongOrgUnit = "wrong";
+        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
+
+        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
+        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
+
+        trackedEntityInstanceStore.insert(UID, date, date, wrongOrgUnit, STATE);
+    }
 
     // ToDo: consider introducing conflict resolution strategy
 

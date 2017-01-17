@@ -46,6 +46,8 @@ import java.util.Date;
 @AutoValue
 public abstract class TrackedEntityDataValueModel extends BaseModel {
 
+    public static final String TRACKED_ENTITY_DATA_VALUE = "TrackedEntityDataValue";
+
     public static class Columns extends BaseModel.Columns {
         public static final String EVENT = "event";
         public static final String DATA_ELEMENT = "dataElement";

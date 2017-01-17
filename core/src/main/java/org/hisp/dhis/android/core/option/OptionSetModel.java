@@ -44,6 +44,8 @@ import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 
 @AutoValue
 public abstract class OptionSetModel extends BaseIdentifiableObjectModel {
+    public static final String OPTION_SET = "OptionSet";
+
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
         public static final String VERSION = "version";
         public static final String VALUE_TYPE = "valueType";

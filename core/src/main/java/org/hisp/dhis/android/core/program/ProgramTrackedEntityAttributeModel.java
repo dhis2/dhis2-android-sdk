@@ -44,6 +44,8 @@ import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 @AutoValue
 public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObjectModel {
 
+    public static final String PROGRAM_TRACKED_ENTITY_ATTRIBUTE = "ProgramTrackedEntityAttribute";
+
     public static class Columns extends BaseNameableObjectModel.Columns {
         public static final String MANDATORY = "mandatory";
         public static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";

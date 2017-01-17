@@ -40,6 +40,8 @@ import org.hisp.dhis.android.core.common.BaseModel;
 
 @AutoValue
 public abstract class UserOrganisationUnitLinkModel extends BaseModel {
+    public static final String USER_ORGANISATION_UNIT_LINK = "UserOrganisationUnit";
+
     public static class Columns extends BaseModel.Columns {
         public static final String USER = "user";
         public static final String ORGANISATION_UNIT = "organisationUnit";

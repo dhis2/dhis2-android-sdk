@@ -36,7 +36,6 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.dataelement.DataElementModel.Columns;
 import org.hisp.dhis.android.core.option.CreateOptionSetUtils;
 import org.hisp.dhis.android.core.option.OptionSetModel;
@@ -115,7 +114,7 @@ public class DataElementStoreIntegrationTest extends AbsStoreTestCase {
         ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
 
 
-        database().insert(Tables.OPTION_SET, null, optionSet);
+        database().insert(OptionSetModel.OPTION_SET, null, optionSet);
 
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
         long rowId = dataElementStore.insert(
@@ -140,7 +139,7 @@ public class DataElementStoreIntegrationTest extends AbsStoreTestCase {
                 OPTION_SET
         );
 
-        Cursor cursor = database().query(Tables.DATA_ELEMENT, DATA_ELEMENT_PROJECTION,
+        Cursor cursor = database().query(DataElementModel.DATA_ELEMENT, DATA_ELEMENT_PROJECTION,
                 null, null, null, null, null);
 
         // Checking if rowId == 1.
@@ -195,7 +194,7 @@ public class DataElementStoreIntegrationTest extends AbsStoreTestCase {
                 null
         );
 
-        Cursor cursor = database().query(Tables.DATA_ELEMENT, DATA_ELEMENT_PROJECTION,
+        Cursor cursor = database().query(DataElementModel.DATA_ELEMENT, DATA_ELEMENT_PROJECTION,
                 null, null, null, null, null);
 
         // Checking if rowId == 1.
@@ -255,26 +254,26 @@ public class DataElementStoreIntegrationTest extends AbsStoreTestCase {
     @Test
     public void delete_shouldDeleteDataElementWhenDeletingOptionSetForeignKey() {
         ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
-        database().insert(Tables.OPTION_SET, null, optionSet);
+        database().insert(OptionSetModel.OPTION_SET, null, optionSet);
 
         ContentValues dataElement = new ContentValues();
         dataElement.put(Columns.ID, ID);
         dataElement.put(Columns.UID, UID);
         dataElement.put(Columns.OPTION_SET, OPTION_SET);
 
-        database().insert(Tables.DATA_ELEMENT, null, dataElement);
+        database().insert(DataElementModel.DATA_ELEMENT, null, dataElement);
 
         String[] PROJECTION = {Columns.ID, Columns.UID, Columns.OPTION_SET};
 
-        Cursor cursor = database().query(Tables.DATA_ELEMENT, PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(DataElementModel.DATA_ELEMENT, PROJECTION, null, null, null, null, null);
 
         // checking that dataElement was successfully inserted
         assertThatCursor(cursor).hasRow(ID, UID, OPTION_SET).isExhausted();
 
         // deleting option set
-        database().delete(Tables.OPTION_SET, OptionSetModel.Columns.UID + "=?", new String[]{OPTION_SET});
+        database().delete(OptionSetModel.OPTION_SET, OptionSetModel.Columns.UID + "=?", new String[]{OPTION_SET});
 
-        cursor = database().query(Tables.DATA_ELEMENT, PROJECTION, null, null, null, null, null);
+        cursor = database().query(DataElementModel.DATA_ELEMENT, PROJECTION, null, null, null, null, null);
 
         // checking that dataElement was deleted by option set on delete cascade
         assertThatCursor(cursor).isExhausted();

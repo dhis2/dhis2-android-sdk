@@ -34,7 +34,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.program.ProgramRuleModel.Columns;
 
 import java.util.Date;
@@ -43,7 +42,7 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class ProgramRuleModelStoreImpl implements ProgramRuleModelStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
-            Tables.PROGRAM_RULE + " (" +
+            ProgramRuleModel.PROGRAM_RULE + " (" +
             Columns.UID + ", " +
             Columns.CODE + ", " +
             Columns.NAME + ", " +

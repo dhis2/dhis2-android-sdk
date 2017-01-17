@@ -32,15 +32,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class OptionStoreImpl implements OptionStore {
 
-    private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.OPTION + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + OptionModel.OPTION + " (" +
             OptionModel.Columns.UID + ", " +
             OptionModel.Columns.CODE + ", " +
             OptionModel.Columns.NAME + ", " +

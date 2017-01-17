@@ -34,16 +34,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel.Columns;
 
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
-public class EnrollmentModelStoreImpl implements EnrollmentModelStore {
+public class EnrollmentStoreImpl implements EnrollmentStore {
 
-    private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.ENROLLMENT + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + EnrollmentModel.ENROLLMENT + " (" +
             Columns.UID + ", " +
             Columns.CREATED + ", " +
             Columns.LAST_UPDATED + ", " +
@@ -61,16 +60,16 @@ public class EnrollmentModelStoreImpl implements EnrollmentModelStore {
 
     private final SQLiteStatement sqLiteStatement;
 
-    public EnrollmentModelStoreImpl(SQLiteDatabase sqLiteDatabase) {
+    public EnrollmentStoreImpl(SQLiteDatabase sqLiteDatabase) {
         this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
     }
 
 
     @Override
     public long insert(@NonNull String uid, @Nullable Date created, @Nullable Date lastUpdated,
-                       @Nullable String organisationUnit, @Nullable String program, @Nullable Date dateOfEnrollment,
+                       @NonNull String organisationUnit, @NonNull String program, @Nullable Date dateOfEnrollment,
                        @Nullable Date dateOfIncident, @Nullable Boolean followUp,
-                       @Nullable EnrollmentStatus enrollmentStatus, @Nullable String trackedEntityInstance,
+                       @Nullable EnrollmentStatus enrollmentStatus, @NonNull String trackedEntityInstance,
                        @Nullable String latitude, @Nullable String longitude, @Nullable State state) {
         sqLiteStatement.clearBindings();
 

@@ -33,7 +33,6 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -96,7 +95,7 @@ public class RelationshipTypeStoreIntegrationTest extends AbsStoreTestCase {
         );
 
         Cursor cursor = database().query(
-                Tables.RELATIONSHIP_TYPE,
+                RelationshipTypeModel.RELATIONSHIP_TYPE,
                 RELATIONSHIP_TYPE_PROJECTION,
                 null, null, null, null, null, null);
 
@@ -127,7 +126,7 @@ public class RelationshipTypeStoreIntegrationTest extends AbsStoreTestCase {
         );
 
         Cursor cursor = database().query(
-                Tables.RELATIONSHIP_TYPE,
+                RelationshipTypeModel.RELATIONSHIP_TYPE,
                 RELATIONSHIP_TYPE_PROJECTION,
                 null, null, null, null, null, null);
 

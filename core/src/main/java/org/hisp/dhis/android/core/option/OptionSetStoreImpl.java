@@ -34,14 +34,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class OptionSetStoreImpl implements OptionSetStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.OPTION_SET + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + OptionSetModel.OPTION_SET + " (" +
             OptionSetModel.Columns.UID + ", " +
             OptionSetModel.Columns.CODE + ", " +
             OptionSetModel.Columns.NAME + ", " +

@@ -58,7 +58,7 @@ android {
 
     lintOptions {
         // casting 'InvalidPackage' error to warning
-        warning 'InvalidPackage'
+        warning "InvalidPackage"
 
         // Fail early.
         abortOnError true
@@ -122,4 +122,4 @@ dependencies {
     }
 }
 
-apply from: rootProject.file('plugins/gradle-mvn-push.gradle')
+apply from: rootProject.file("plugins/gradle-mvn-push.gradle")

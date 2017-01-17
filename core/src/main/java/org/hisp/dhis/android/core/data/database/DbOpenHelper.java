@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"
 })
-public final class DbOpenHelper extends SQLiteOpenHelper {
+public class DbOpenHelper extends SQLiteOpenHelper {
 
     @VisibleForTesting
     static final int VERSION = 1;
@@ -506,7 +506,7 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ")" +
             " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE + " (" + TrackedEntityAttributeModel.Columns.UID + "), " +
             " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + ")" +
-            " REFERENCES " + Tables.TRACKED_ENTITY_INSTANCE + " (" +  TrackedEntityInstanceModel.Columns.UID + ")" +
+            " REFERENCES " + Tables.TRACKED_ENTITY_INSTANCE + " (" + TrackedEntityInstanceModel.Columns.UID + ")" +
             ");";
 
     private static final String CREATE_EVENT_TABLE = "CREATE TABLE " + Tables.EVENT + " (" +

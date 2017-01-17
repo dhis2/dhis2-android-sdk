@@ -1,12 +1,13 @@
 package org.hisp.dhis.android.core.configuration;
 
 import android.support.annotation.NonNull;
-
-import java.util.List;
+import android.support.annotation.Nullable;
 
 public interface ConfigurationStore {
-    long save(@NonNull ConfigurationModel configurationModel);
+    long save(@NonNull String serverUrl);
 
-    @NonNull
-    List<ConfigurationModel> query();
+    @Nullable
+    ConfigurationModel query();
+
+    int delete();
 }

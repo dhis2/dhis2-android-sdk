@@ -2,16 +2,14 @@ package org.hisp.dhis.android.core;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Call;
-import org.hisp.dhis.android.core.configuration.ConfigurationManager;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
-import org.hisp.dhis.android.core.data.api.Authenticator;
-import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
@@ -54,6 +52,7 @@ public final class D2 {
     private final AuthenticatedUserStore authenticatedUserStore;
     private final OrganisationUnitStore organisationUnitStore;
 
+    @VisibleForTesting
     D2(@NonNull Retrofit retrofit, @NonNull DbOpenHelper dbOpenHelper) {
         this.retrofit = retrofit;
         this.dbOpenHelper = dbOpenHelper;
@@ -73,6 +72,10 @@ public final class D2 {
                 new AuthenticatedUserStoreImpl(sqLiteDatabase);
         this.organisationUnitStore =
                 new OrganisationUnitStoreImpl(sqLiteDatabase);
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     @NonNull
@@ -117,8 +120,8 @@ public final class D2 {
         );
     }
 
-    public static class Builder {
-        private ConfigurationManager configurationManager;
+    static class Builder {
+        private ConfigurationModel configurationModel;
         private DbOpenHelper dbOpenHelper;
         private OkHttpClient okHttpClient;
 
@@ -127,13 +130,13 @@ public final class D2 {
         }
 
         @NonNull
-        public Builder configurationManager(@NonNull ConfigurationManager configurationManager) {
-            this.configurationManager = configurationManager;
+        public Builder configuration(@NonNull ConfigurationModel configurationModel) {
+            this.configurationModel = configurationModel;
             return this;
         }
 
         @NonNull
-        public Builder sqliteOpenHelper(@NonNull DbOpenHelper dbOpenHelper) {
+        public Builder dbOpenHelper(@NonNull DbOpenHelper dbOpenHelper) {
             this.dbOpenHelper = dbOpenHelper;
             return this;
         }
@@ -146,26 +149,15 @@ public final class D2 {
 
         public D2 build() {
             if (dbOpenHelper == null) {
-                throw new NullPointerException("dbOpenHelper == null");
+                throw new IllegalArgumentException("dbOpenHelper == null");
+            }
+
+            if (configurationModel == null) {
+                throw new IllegalStateException("Configuration must be set first");
             }
 
             if (okHttpClient == null) {
-                // fallback to default solution
-                Authenticator.Factory authenticatorFactory =
-                        BasicAuthenticatorFactory.create(dbOpenHelper);
-
-                okHttpClient = new OkHttpClient.Builder()
-                        .addInterceptor(authenticatorFactory.authenticator())
-                        .build();
-            }
-
-            if (configurationManager == null) {
-                throw new NullPointerException("configurationManager == null");
-            }
-
-            ConfigurationModel configurationModel = configurationManager.configuration();
-            if (configurationModel == null) {
-                throw new IllegalStateException("Configuration must be set first");
+                throw new IllegalArgumentException("okHttpClient == null");
             }
 
             ObjectMapper objectMapper = new ObjectMapper()

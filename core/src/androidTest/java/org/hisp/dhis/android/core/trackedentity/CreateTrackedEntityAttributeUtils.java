@@ -7,7 +7,7 @@ import org.hisp.dhis.android.core.common.ValueType;
 public class CreateTrackedEntityAttributeUtils {
 
     /**
-     * BaseIdentifiable propertites
+     * BaseIdentifiable properties
      */
     private static final String CODE = "test_code";
     private static final String NAME = "test_name";

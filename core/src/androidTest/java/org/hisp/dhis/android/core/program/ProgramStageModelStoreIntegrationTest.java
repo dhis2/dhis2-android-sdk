@@ -159,7 +159,7 @@ public class ProgramStageModelStoreIntegrationTest extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteProgramStageWhenDeletingProgram() throws Exception {
+    public void delete_shouldDeleteProgramStageWhenDeletingProgram() {
         insertForeignKeys();
 
         ContentValues programStage = new ContentValues();

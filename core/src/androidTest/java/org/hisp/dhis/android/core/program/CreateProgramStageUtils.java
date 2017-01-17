@@ -5,8 +5,7 @@ import android.content.ContentValues;
 import org.hisp.dhis.android.core.common.FormType;
 
 public class CreateProgramStageUtils {
-    private static final long ID = 11L;
-    private static final String UID = "test_uid";
+
     private static final String CODE = "test_code";
     private static final String NAME = "test_name";
     private static final String DISPLAY_NAME = "test_display_name";
@@ -28,7 +27,6 @@ public class CreateProgramStageUtils {
     private static final Integer BLOCK_ENTRY_FORM = 0;
     private static final Integer MIN_DAYS_FROM_START = 5;
     private static final Integer STANDARD_INTERVAL = 7;
-    private static final String PROGRAM = "test_program";
 
     // used for timestamps
     private static final String DATE = "2017-01-05T15:39:00.000";

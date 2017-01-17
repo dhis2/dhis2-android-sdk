@@ -11,6 +11,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -32,7 +33,7 @@ public class EnrollmentModelIntegrationTest {
     private static final String DATE = "2016-01-12T10:01:00.000";
 
     @Test
-    public void create_shouldConvertToModel() throws Exception {
+    public void create_shouldConvertToModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
                 Columns.ID, Columns.UID, Columns.CREATED, Columns.LAST_UPDATED, Columns.ORGANISATION_UNIT,
                 Columns.PROGRAM, Columns.DATE_OF_ENROLLMENT, Columns.DATE_OF_INCIDENT, Columns.FOLLOW_UP,
@@ -67,7 +68,7 @@ public class EnrollmentModelIntegrationTest {
     }
 
     @Test
-    public void toContentValues_shouldConvertToContentValues() throws Exception {
+    public void toContentValues_shouldConvertToContentValues() throws ParseException {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
         EnrollmentModel enrollmentModel = EnrollmentModel.builder()

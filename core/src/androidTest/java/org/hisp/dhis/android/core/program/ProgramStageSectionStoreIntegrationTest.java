@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -65,7 +66,7 @@ public class ProgramStageSectionStoreIntegrationTest extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistProgramStageSectionInDatabase() throws Exception {
+    public void insert_shouldPersistProgramStageSectionInDatabase() throws ParseException {
 
         insertForeignKeys();
 
@@ -94,7 +95,7 @@ public class ProgramStageSectionStoreIntegrationTest extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteProgramStageSectionWhenDeletingProgramStage() throws Exception {
+    public void delete_shouldDeleteProgramStageSectionWhenDeletingProgramStage() {
         insertForeignKeys();
 
         ContentValues programStage = ProgramStageModelIntegrationTest.create(ID, PROGRAM_STAGE, PROGRAM);
@@ -120,7 +121,7 @@ public class ProgramStageSectionStoreIntegrationTest extends AbsStoreTestCase {
     }
 
     @Test
-    public void close_shouldNotCloseDatabase() throws Exception {
+    public void close_shouldNotCloseDatabase() {
         programStageSectionStore.close();
 
         assertThat(database().isOpen()).isTrue();

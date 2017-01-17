@@ -134,7 +134,7 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
     }
 
     @Test
-    public void insert_shouldPersistProgramStageDataElementInDatabaseWithOptionSet() throws Exception {
+    public void insert_shouldPersistProgramStageDataElementInDatabaseWithOptionSet() throws ParseException {
         // inserting necessary foreign key
         ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
         database().insert(Tables.OPTION_SET, null, optionSet);
@@ -189,7 +189,7 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
     public void exception_persistProgramStageDataElementWithInvalidForeignKey() throws ParseException {
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
         String fakeDataElementId = "fake_data_element_id";
-        long rowId = programStageDataElementStore.insert(
+        programStageDataElementStore.insert(
                 UID,
                 CODE,
                 NAME,
@@ -204,12 +204,10 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
                 fakeDataElementId,
                 null
         );
-
-        assertThat(rowId).isEqualTo(-1);
     }
 
     @Test
-    public void delete_shouldDeleteProgramStageDataElementWhenDeletingDataElement() throws Exception {
+    public void delete_shouldDeleteProgramStageDataElementWhenDeletingDataElement() {
         ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
         database().insert(Tables.DATA_ELEMENT, null, dataElement);
 
@@ -235,7 +233,7 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
     }
 
     @Test
-    public void delete_shouldDeleteProgramStageDataElementWhenDeletingOptionSetNestedForeignKey() throws Exception {
+    public void delete_shouldDeleteProgramStageDataElementWhenDeletingOptionSetNestedForeignKey() {
         ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
         database().insert(Tables.OPTION_SET, null, optionSet);
 
@@ -264,7 +262,7 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
     }
 
     @Test
-    public void delete_shouldDeleteProgramStageDataElementWhenDeletingProgramStageSection() throws Exception {
+    public void delete_shouldDeleteProgramStageDataElementWhenDeletingProgramStageSection() {
         String programStageUid = "test_programStageUid";
 
         //Create Program & insert a row in the table.
@@ -314,7 +312,7 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
     }
 
     @Test
-    public void close_shouldNotCloseDatabase() throws Exception {
+    public void close_shouldNotCloseDatabase() {
         programStageDataElementStore.close();
 
         assertThat(database().isOpen()).isTrue();

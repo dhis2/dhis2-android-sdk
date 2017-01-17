@@ -77,11 +77,7 @@ public class OptionModelStoreIntegrationTest extends AbsStoreTestCase {
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistOptionWithoutForeignKey() throws ParseException {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-        long rowId = optionStore.insert(
-                UID, CODE, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID
-        );
-
-        assertThat(rowId).isEqualTo(-1);
+        optionStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID);
     }
 
     @Test

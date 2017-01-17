@@ -31,7 +31,7 @@ public class TrackedEntityInstanceModelStoreImpl implements TrackedEntityInstanc
 
     @Override
     public long insert(@NonNull String uid, @Nullable Date created, @Nullable Date lastUpdated,
-                       @Nullable String organisationUnit, @Nullable State state) {
+                       @NonNull String organisationUnit, @Nullable State state) {
         insertRowStatement.clearBindings();
 
         sqLiteBind(insertRowStatement, 1, uid);

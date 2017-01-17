@@ -10,7 +10,7 @@ import java.util.Date;
 public interface TrackedEntityInstanceModelStore {
     long insert(
             @NonNull String uid, @Nullable Date created, @Nullable Date lastUpdated,
-            @Nullable String organisationUnit, @Nullable State state);
+            @NonNull String organisationUnit, @Nullable State state);
 
     int delete();
 

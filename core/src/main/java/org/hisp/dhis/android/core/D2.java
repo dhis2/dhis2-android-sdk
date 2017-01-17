@@ -1,17 +1,43 @@
-package org.hisp.dhis.android.core;
+/*
+ * Copyright (c) 2017, University of Oslo
+ *
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+ package org.hisp.dhis.android.core;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Call;
-import org.hisp.dhis.android.core.configuration.ConfigurationManager;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
-import org.hisp.dhis.android.core.data.api.Authenticator;
-import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
@@ -54,6 +80,7 @@ public final class D2 {
     private final AuthenticatedUserStore authenticatedUserStore;
     private final OrganisationUnitStore organisationUnitStore;
 
+    @VisibleForTesting
     D2(@NonNull Retrofit retrofit, @NonNull DbOpenHelper dbOpenHelper) {
         this.retrofit = retrofit;
         this.dbOpenHelper = dbOpenHelper;
@@ -73,6 +100,10 @@ public final class D2 {
                 new AuthenticatedUserStoreImpl(sqLiteDatabase);
         this.organisationUnitStore =
                 new OrganisationUnitStoreImpl(sqLiteDatabase);
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     @NonNull
@@ -117,8 +148,8 @@ public final class D2 {
         );
     }
 
-    public static class Builder {
-        private ConfigurationManager configurationManager;
+    static class Builder {
+        private ConfigurationModel configurationModel;
         private DbOpenHelper dbOpenHelper;
         private OkHttpClient okHttpClient;
 
@@ -127,13 +158,13 @@ public final class D2 {
         }
 
         @NonNull
-        public Builder configurationManager(@NonNull ConfigurationManager configurationManager) {
-            this.configurationManager = configurationManager;
+        public Builder configuration(@NonNull ConfigurationModel configurationModel) {
+            this.configurationModel = configurationModel;
             return this;
         }
 
         @NonNull
-        public Builder sqliteOpenHelper(@NonNull DbOpenHelper dbOpenHelper) {
+        public Builder dbOpenHelper(@NonNull DbOpenHelper dbOpenHelper) {
             this.dbOpenHelper = dbOpenHelper;
             return this;
         }
@@ -146,26 +177,15 @@ public final class D2 {
 
         public D2 build() {
             if (dbOpenHelper == null) {
-                throw new NullPointerException("dbOpenHelper == null");
+                throw new IllegalArgumentException("dbOpenHelper == null");
+            }
+
+            if (configurationModel == null) {
+                throw new IllegalStateException("Configuration must be set first");
             }
 
             if (okHttpClient == null) {
-                // fallback to default solution
-                Authenticator.Factory authenticatorFactory =
-                        BasicAuthenticatorFactory.create(dbOpenHelper);
-
-                okHttpClient = new OkHttpClient.Builder()
-                        .addInterceptor(authenticatorFactory.authenticator())
-                        .build();
-            }
-
-            if (configurationManager == null) {
-                throw new NullPointerException("configurationManager == null");
-            }
-
-            ConfigurationModel configurationModel = configurationManager.configuration();
-            if (configurationModel == null) {
-                throw new IllegalStateException("Configuration must be set first");
+                throw new IllegalArgumentException("okHttpClient == null");
             }
 
             ObjectMapper objectMapper = new ObjectMapper()

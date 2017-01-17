@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, University of Oslo
+ * Copyright (c) 2017, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+ package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -90,7 +90,7 @@ public class TrackedEntityInstanceStoreIntegrationTests extends AbsStoreTestCase
     }
 
     @Test
-    public void insert_shouldPersistRowInDatabase() throws Exception {
+    public void insert_shouldPersistRowInDatabase() throws ParseException {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
@@ -134,7 +134,7 @@ public class TrackedEntityInstanceStoreIntegrationTests extends AbsStoreTestCase
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void insertWithoutForeignKey_shouldThrowException() throws Exception {
+    public void insertWithoutForeignKey_shouldThrowException() throws ParseException {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
         trackedEntityInstanceStore.insert(
                 UID,

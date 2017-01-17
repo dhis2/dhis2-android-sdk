@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, University of Oslo
+ * Copyright (c) 2017, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+ package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -50,6 +50,7 @@ public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObj
         public static final String VALUE_TYPE = "valueType";
         public static final String ALLOW_FUTURE_DATES = "allowFutureDate";
         public static final String DISPLAY_IN_LIST = "displayInList";
+        public static final String PROGRAM = "program";
     }
 
     @NonNull

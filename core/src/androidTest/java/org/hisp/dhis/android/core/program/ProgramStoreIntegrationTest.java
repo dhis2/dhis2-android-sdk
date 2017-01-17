@@ -1,4 +1,32 @@
-package org.hisp.dhis.android.core.program;
+/*
+ * Copyright (c) 2017, University of Oslo
+ *
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+ package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -139,29 +167,21 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistProgramWithInvalidRelationshipTypeForeignKey() {
         String wrongRelationshipTypeUid = "wrong";
-
         //make sure that the foreign keys are in the database.
         insert_foreignKeyRows();
-
-        long rowId = programStore.insert(
-                UID, null, NAME, null, null, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, null, RELATIONSHIP_FROM_A, null,
-                null, null, null, PROGRAM_TYPE, wrongRelationshipTypeUid, null, null, TRACKED_ENTITY);
-        assertThat(rowId).isEqualTo(-1);
+        programStore.insert(UID, null, NAME, null, null, null, null, null, null, null, null, null, null, null,
+                null, null, null, null, null, RELATIONSHIP_FROM_A, null, null, null, null, PROGRAM_TYPE,
+                wrongRelationshipTypeUid, null, null, TRACKED_ENTITY);
     }
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistProgramWithInvalidTrackedEntityForeignKey() {
         String wrongTrackedEntityUid = "wrong";
-
         //make sure that the foreign keys are in the database.
         insert_foreignKeyRows();
-
-        long rowId = programStore.insert(
-                UID, null, NAME, null, null, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, null, RELATIONSHIP_FROM_A, null,
-                null, null, null, PROGRAM_TYPE, RELATIONSHIP_TYPE, null, null, wrongTrackedEntityUid);
-        assertThat(rowId).isEqualTo(-1);
+        programStore.insert(UID, null, NAME, null, null, null, null, null, null, null, null, null, null, null,
+                null, null, null, null, null, RELATIONSHIP_FROM_A, null, null, null, null, PROGRAM_TYPE,
+                RELATIONSHIP_TYPE, null, null, wrongTrackedEntityUid);
     }
 
     @Test
@@ -172,20 +192,20 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
         long rowId = programStore.insert(
                 UID, null, NAME, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, RELATIONSHIP_FROM_A, null,
-                null, null, null, PROGRAM_TYPE, RELATIONSHIP_TYPE, null, null, TRACKED_ENTITY);
+                null, null, null, PROGRAM_TYPE, null, null, null, null);
 
         Cursor cursor = database().query(Tables.PROGRAM, PROGRAM_PROJECTION, null, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, null, NAME, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, toInteger(RELATIONSHIP_FROM_A), null,
-                null, null, null, PROGRAM_TYPE, RELATIONSHIP_TYPE, null, null, TRACKED_ENTITY).isExhausted();
+                null, null, null, PROGRAM_TYPE, null, null, null, null).isExhausted();
     }
 
     @Test
-    public void delete_shouldDeleteProgramWhenDeletingRelationshipTypeForeignKey() {
+    public void delete_shouldDeleteProgramWhenDeletingRelationshipTypeForeignKey() throws ParseException {
         //Insert
-        insert_shouldPersistProgramNullableInDatabase();
+        insert_shouldPersistProgramInDatabase();
         //Delete foreign key:
         database().delete(Tables.RELATIONSHIP_TYPE,
                 RelationshipTypeModel.Columns.UID + "=?", new String[]{RELATIONSHIP_TYPE});
@@ -195,9 +215,9 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteProgramWhenDeletingTrackedEntityForeignKey() {
+    public void delete_shouldDeleteProgramWhenDeletingTrackedEntityForeignKey() throws ParseException {
         //Insert:
-        insert_shouldPersistProgramNullableInDatabase();
+        insert_shouldPersistProgramInDatabase();
         //Delete foreign key:
         database().delete(Tables.TRACKED_ENTITY, TrackedEntityModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY});
         //Check that Program row is deleted as well:

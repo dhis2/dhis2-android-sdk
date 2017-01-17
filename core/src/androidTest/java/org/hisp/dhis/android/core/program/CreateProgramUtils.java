@@ -1,10 +1,39 @@
-package org.hisp.dhis.android.core.program;
+/*
+ * Copyright (c) 2017, University of Oslo
+ *
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+ package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
+import android.support.annotation.Nullable;
 
 public class CreateProgramUtils {
     /**
-     * BaseIdentifiable propertites
+     * BaseIdentifiable properties
      */
     private static final String CODE = "test_code";
     private static final String NAME = "test_name";
@@ -50,7 +79,10 @@ public class CreateProgramUtils {
      * @param relationshipTypeUid
      *@param trackedEntityUid @return
      */
-    public static ContentValues create(long id, String uid, String relationshipTypeUid, String trackedEntityUid) {
+    public static ContentValues create(long id, String uid,
+                                       @Nullable String relationshipTypeUid,
+                                       @Nullable String trackedEntityUid) {
+
         ContentValues program = new ContentValues();
         program.put(ProgramModel.Columns.ID, id);
         program.put(ProgramModel.Columns.UID, uid);
@@ -78,11 +110,18 @@ public class CreateProgramUtils {
         program.put(ProgramModel.Columns.USE_FIRST_STAGE_DURING_REGISTRATION, USE_FIRST_STAGE_DURING_REGISTRATION);
         program.put(ProgramModel.Columns.DISPLAY_FRONT_PAGE_LIST, DISPLAY_FRONT_PAGE_LIST);
         program.put(ProgramModel.Columns.PROGRAM_TYPE, PROGRAM_TYPE.name());
-        program.put(ProgramModel.Columns.RELATIONSHIP_TYPE, relationshipTypeUid);
+        if(relationshipTypeUid == null) {
+            program.putNull(ProgramModel.Columns.RELATIONSHIP_TYPE);
+        } else {
+            program.put(ProgramModel.Columns.RELATIONSHIP_TYPE, relationshipTypeUid);
+        }
         program.put(ProgramModel.Columns.RELATIONSHIP_TEXT, RELATIONSHIP_TEXT);
         program.put(ProgramModel.Columns.RELATED_PROGRAM, RELATED_PROGRAM);
-        program.put(ProgramModel.Columns.TRACKED_ENTITY, trackedEntityUid);
-
+        if(trackedEntityUid == null) {
+            program.putNull(ProgramModel.Columns.TRACKED_ENTITY);
+        } else {
+            program.put(ProgramModel.Columns.TRACKED_ENTITY, trackedEntityUid);
+        }
         return program;
     }
 }

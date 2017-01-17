@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, University of Oslo
+ * Copyright (c) 2017, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+ package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -42,7 +42,7 @@ public interface ProgramTrackedEntityAttributeStore {
                 @Nullable String description, @Nullable String displayDescription,
                 @Nullable Boolean mandatory, @NonNull String trackedEntityAttribute,
                 @Nullable ValueType valueType, @Nullable Boolean allowFutureDates,
-                @Nullable Boolean displayInList);
+                @Nullable Boolean displayInList, @NonNull String program);
 
     void close();
 }

@@ -4,11 +4,16 @@
 .settings
 
 # IntelliJ IDEA
-.idea
 *.iml
 *.ipr
 *.iws
 out
+
+# ignore .idea directory
+.idea/*
+# keep fileTemplates directory
+!.idea/fileTemplates
+!.idea/fileTemplates/*
 
 # Ant
 build.xml

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, University of Oslo
+ * Copyright (c) 2017, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+ package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -36,9 +36,10 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
+import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.option.CreateOptionSetUtils;
-import org.hisp.dhis.android.core.option.OptionSetModelIntegrationTest;
+import org.hisp.dhis.android.core.option.OptionSetModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel.Columns;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -80,29 +81,29 @@ public class TrackedEntityAttributeStoreIntegrationTests extends AbsStoreTestCas
     private static final String OPTION_SET_UID = "test_option_set_uid";
 
     public static final String[] TRACKED_ENTITY_ATTRIBUTE_PROJECTION = {
-            TrackedEntityAttributeModel.Columns.UID,
-            TrackedEntityAttributeModel.Columns.CODE,
-            TrackedEntityAttributeModel.Columns.NAME,
-            TrackedEntityAttributeModel.Columns.DISPLAY_NAME,
-            TrackedEntityAttributeModel.Columns.CREATED,
-            TrackedEntityAttributeModel.Columns.LAST_UPDATED,
-            TrackedEntityAttributeModel.Columns.SHORT_NAME,
-            TrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME,
-            TrackedEntityAttributeModel.Columns.DESCRIPTION,
-            TrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION,
-            TrackedEntityAttributeModel.Columns.PATTERN,
-            TrackedEntityAttributeModel.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM,
-            TrackedEntityAttributeModel.Columns.OPTION_SET,
-            TrackedEntityAttributeModel.Columns.VALUE_TYPE,
-            TrackedEntityAttributeModel.Columns.EXPRESSION,
-            TrackedEntityAttributeModel.Columns.SEARCH_SCOPE,
-            TrackedEntityAttributeModel.Columns.PROGRAM_SCOPE,
-            TrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST_NO_PROGRAM,
-            TrackedEntityAttributeModel.Columns.GENERATED,
-            TrackedEntityAttributeModel.Columns.DISPLAY_ON_VISIT_SCHEDULE,
-            TrackedEntityAttributeModel.Columns.ORG_UNIT_SCOPE,
-            TrackedEntityAttributeModel.Columns.UNIQUE,
-            TrackedEntityAttributeModel.Columns.INHERIT
+            Columns.UID,
+            Columns.CODE,
+            Columns.NAME,
+            Columns.DISPLAY_NAME,
+            Columns.CREATED,
+            Columns.LAST_UPDATED,
+            Columns.SHORT_NAME,
+            Columns.DISPLAY_SHORT_NAME,
+            Columns.DESCRIPTION,
+            Columns.DISPLAY_DESCRIPTION,
+            Columns.PATTERN,
+            Columns.SORT_ORDER_IN_LIST_NO_PROGRAM,
+            Columns.OPTION_SET,
+            Columns.VALUE_TYPE,
+            Columns.EXPRESSION,
+            Columns.SEARCH_SCOPE,
+            Columns.PROGRAM_SCOPE,
+            Columns.DISPLAY_IN_LIST_NO_PROGRAM,
+            Columns.GENERATED,
+            Columns.DISPLAY_ON_VISIT_SCHEDULE,
+            Columns.ORG_UNIT_SCOPE,
+            Columns.UNIQUE,
+            Columns.INHERIT
     };
 
     private TrackedEntityAttributeStore trackedEntityAttributeStore;
@@ -110,30 +111,30 @@ public class TrackedEntityAttributeStoreIntegrationTests extends AbsStoreTestCas
     public static ContentValues create(long id, String uid) {
 
         ContentValues trackedEntity = new ContentValues();
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.ID, id);
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.UID, uid);
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.CODE, CODE);
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.NAME, NAME);
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.CREATED, BaseIdentifiableObject.DATE_FORMAT.format(CREATED));
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.LAST_UPDATED, BaseIdentifiableObject.DATE_FORMAT.format(LAST_UPDATED));
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.SHORT_NAME, SHORT_NAME);
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.DESCRIPTION, DESCRIPTION);
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.PATTERN, PATTERN);
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM, SORT_ORDER_IN_LIST_NO_PROGRAM);
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.OPTION_SET, OPTION_SET_UID);
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.VALUE_TYPE, VALUE_TYPE.toString());
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.EXPRESSION, EXPRESSION);
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.SEARCH_SCOPE, SEARCH_SCOPE.toString());
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.PROGRAM_SCOPE, PROGRAM_SCOPE);
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST_NO_PROGRAM, DISPLAY_IN_LIST_NO_PROGRAM);
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.GENERATED, GENERATED);
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.DISPLAY_ON_VISIT_SCHEDULE, DISPLAY_ON_VISIT_SCHEDULE);
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.ORG_UNIT_SCOPE, ORG_UNIT_SCOPE);
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.UNIQUE, UNIQUE);
-        trackedEntity.put(TrackedEntityAttributeModel.Columns.INHERIT, INHERIT);
+        trackedEntity.put(Columns.ID, id);
+        trackedEntity.put(Columns.UID, uid);
+        trackedEntity.put(Columns.CODE, CODE);
+        trackedEntity.put(Columns.NAME, NAME);
+        trackedEntity.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
+        trackedEntity.put(Columns.CREATED, BaseIdentifiableObject.DATE_FORMAT.format(CREATED));
+        trackedEntity.put(Columns.LAST_UPDATED, BaseIdentifiableObject.DATE_FORMAT.format(LAST_UPDATED));
+        trackedEntity.put(Columns.SHORT_NAME, SHORT_NAME);
+        trackedEntity.put(Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
+        trackedEntity.put(Columns.DESCRIPTION, DESCRIPTION);
+        trackedEntity.put(Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
+        trackedEntity.put(Columns.PATTERN, PATTERN);
+        trackedEntity.put(Columns.SORT_ORDER_IN_LIST_NO_PROGRAM, SORT_ORDER_IN_LIST_NO_PROGRAM);
+        trackedEntity.put(Columns.OPTION_SET, OPTION_SET_UID);
+        trackedEntity.put(Columns.VALUE_TYPE, VALUE_TYPE.toString());
+        trackedEntity.put(Columns.EXPRESSION, EXPRESSION);
+        trackedEntity.put(Columns.SEARCH_SCOPE, SEARCH_SCOPE.toString());
+        trackedEntity.put(Columns.PROGRAM_SCOPE, PROGRAM_SCOPE);
+        trackedEntity.put(Columns.DISPLAY_IN_LIST_NO_PROGRAM, DISPLAY_IN_LIST_NO_PROGRAM);
+        trackedEntity.put(Columns.GENERATED, GENERATED);
+        trackedEntity.put(Columns.DISPLAY_ON_VISIT_SCHEDULE, DISPLAY_ON_VISIT_SCHEDULE);
+        trackedEntity.put(Columns.ORG_UNIT_SCOPE, ORG_UNIT_SCOPE);
+        trackedEntity.put(Columns.UNIQUE, UNIQUE);
+        trackedEntity.put(Columns.INHERIT, INHERIT);
         return trackedEntity;
     }
 
@@ -150,7 +151,7 @@ public class TrackedEntityAttributeStoreIntegrationTests extends AbsStoreTestCas
         ContentValues optionSet =
                 CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
 
-        database().insert(DbOpenHelper.Tables.OPTION_SET, null, optionSet);
+        database().insert(Tables.OPTION_SET, null, optionSet);
 
         long rowId = trackedEntityAttributeStore.insert(
                 UID,
@@ -178,7 +179,7 @@ public class TrackedEntityAttributeStoreIntegrationTests extends AbsStoreTestCas
                 INHERIT
         );
 
-        Cursor cursor = database().query(DbOpenHelper.Tables.TRACKED_ENTITY_ATTRIBUTE,
+        Cursor cursor = database().query(Tables.TRACKED_ENTITY_ATTRIBUTE,
                 TRACKED_ENTITY_ATTRIBUTE_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -239,7 +240,30 @@ public class TrackedEntityAttributeStoreIntegrationTests extends AbsStoreTestCas
         );
     }
 
-    // ToDo: test cascade deletion: on option set referenced with foreign key delete -> TEA delete
+    @Test
+    public void delete_shouldDeleteTrackedEntityAttributeWhenDeletingOptionSet() throws Exception {
+        ContentValues optionSet = CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
+        database().insert(Tables.OPTION_SET, null, optionSet);
+
+        ContentValues trackedEntityAttribute = new ContentValues();
+        trackedEntityAttribute.put(Columns.ID, 1L);
+        trackedEntityAttribute.put(Columns.UID, UID);
+        trackedEntityAttribute.put(Columns.OPTION_SET, OPTION_SET_UID);
+
+        database().insert(Tables.TRACKED_ENTITY_ATTRIBUTE, null, trackedEntityAttribute);
+
+        String[] projection = {Columns.ID, Columns.UID, Columns.OPTION_SET};
+        Cursor cursor = database().query(Tables.TRACKED_ENTITY_ATTRIBUTE, projection, null, null, null, null, null);
+        // checking that tracked entity attribute is successfully inserted
+        assertThatCursor(cursor).hasRow(1L, UID, OPTION_SET_UID);
+
+        database().delete(Tables.OPTION_SET, OptionSetModel.Columns.UID + " =?", new String[]{OPTION_SET_UID});
+        cursor = database().query(Tables.TRACKED_ENTITY_ATTRIBUTE, projection, null, null, null, null, null);
+
+        // checking that tracked entity attribute is deleted
+        assertThatCursor(cursor).isExhausted();
+
+    }
 
     // ToDo: consider introducing conflict resolution strategy
 

@@ -33,7 +33,7 @@ after_success:
 
 notifications:
   slack:
-    secure: AkHqcKUwKfSfljvrHXkSaYwjLfLiiqdwRL3zqim9EMIA+AoqW9dhkwoegbeSr44plK82KJsVgo7UrSDLSiJR3UCXtjgkYwwf+hqOM7BVbIK/uTglrjhrDeJ4ZrE/W/FP1O4oeFYE1QZFeAFEb9yLtKBG8rfoQNDl4t83auWuehA=
+    secure: "AkHqcKUwKfSfljvrHXkSaYwjLfLiiqdwRL3zqim9EMIA+AoqW9dhkwoegbeSr44plK82KJsVgo7UrSDLSiJR3UCXtjgkYwwf+hqOM7BVbIK/uTglrjhrDeJ4ZrE/W/FP1O4oeFYE1QZFeAFEb9yLtKBG8rfoQNDl4t83auWuehA="
   email: true
 
 cache:

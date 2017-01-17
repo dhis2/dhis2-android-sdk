@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, University of Oslo
+ * Copyright (c) 2017, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,17 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+ package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
 
 import org.hisp.dhis.android.core.common.State;
 
-import java.text.ParseException;
-
 public class CreateTrackedEntityInstanceUtils {
+
     private static final long ID = 11L;
-    private static final String UID = "test_uid";
     private static final State STATE = State.ERROR;
 
     // used for timestamps

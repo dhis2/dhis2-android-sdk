@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, University of Oslo
+ * Copyright (c) 2017, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+ package org.hisp.dhis.android.core.program;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -93,6 +93,7 @@ public class ProgramTrackedEntityAttributeIntegrationTests {
 
         assertThat(programTrackedEntityAttribute.mandatory()).isEqualTo(false);
         assertThat(programTrackedEntityAttribute.trackedEntityAttribute().uid()).isEqualTo("cejWyOfXge6");
+        assertThat(programTrackedEntityAttribute.program().uid()).isEqualTo("IpHINAT79UW");
         assertThat(programTrackedEntityAttribute.valueType()).isEqualTo(ValueType.TEXT);
         assertThat(programTrackedEntityAttribute.allowFutureDate()).isEqualTo(false);
         assertThat(programTrackedEntityAttribute.displayInList()).isEqualTo(false);

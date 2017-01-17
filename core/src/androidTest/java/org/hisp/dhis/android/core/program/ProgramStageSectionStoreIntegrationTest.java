@@ -110,7 +110,7 @@ public class ProgramStageSectionStoreIntegrationTest extends AbsStoreTestCase {
         String[] projection = {Columns.ID, Columns.UID, Columns.PROGRAM_STAGE};
         Cursor cursor = database().query(Tables.PROGRAM_STAGE_SECTION, projection, null, null, null, null, null);
         // checking that program stage section was successfully inserted
-        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM_STAGE);
+        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM_STAGE).isExhausted();
 
         // deleting foreign key reference
         database().delete(Tables.PROGRAM_STAGE, ProgramStageModel.Columns.UID + "=?", new String[]{PROGRAM_STAGE});

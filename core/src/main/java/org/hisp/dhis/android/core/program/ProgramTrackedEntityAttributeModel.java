@@ -50,6 +50,7 @@ public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObj
         public static final String VALUE_TYPE = "valueType";
         public static final String ALLOW_FUTURE_DATES = "allowFutureDate";
         public static final String DISPLAY_IN_LIST = "displayInList";
+        public static final String PROGRAM = "program";
     }
 
     @NonNull

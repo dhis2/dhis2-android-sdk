@@ -173,7 +173,7 @@ public class ProgramStageModelStoreIntegrationTest extends AbsStoreTestCase {
 
         Cursor cursor = database().query(Tables.PROGRAM_STAGE, projection, null, null, null, null, null);
         // checking that program stage was successfully inserted
-        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM);
+        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM).isExhausted();
 
         database().delete(Tables.PROGRAM, ProgramModel.Columns.UID + "=?", new String[]{PROGRAM});
 

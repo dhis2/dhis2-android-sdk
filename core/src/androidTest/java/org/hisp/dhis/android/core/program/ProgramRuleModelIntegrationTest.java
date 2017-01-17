@@ -70,7 +70,7 @@ public class ProgramRuleModelIntegrationTest {
     }
 
     @Test
-    public void toContentValues_shouldConvertToContentValues() throws Exception {
+    public void toContentValues_shouldConvertToContentValues() {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ProgramRuleModel.Columns.ID, ID);
         contentValues.put(ProgramRuleModel.Columns.UID, UID);

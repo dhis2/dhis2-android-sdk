@@ -225,7 +225,7 @@ public class DataElementStoreIntegrationTest extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteDataElementWhenDeletingOptionSetForeignKey() throws Exception {
+    public void delete_shouldDeleteDataElementWhenDeletingOptionSetForeignKey() {
         ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
         database().insert(Tables.OPTION_SET, null, optionSet);
 

@@ -72,7 +72,7 @@ public class ProgramRuleVariableModelIntegrationTest {
     }
 
     @Test
-    public void create_shouldConvertToContentValues() throws Exception {
+    public void create_shouldConvertToContentValues() throws ParseException {
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
         ProgramRuleVariableModel programRuleVariable = ProgramRuleVariableModel.builder()

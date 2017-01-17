@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -78,7 +79,7 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
     }
 
     @Test
-    public void insert_shouldPersistProgramRuleVariableInDatabase() throws Exception {
+    public void insert_shouldPersistProgramRuleVariableInDatabase() throws ParseException {
         insertProgramForeignKey();
 
         ContentValues programStage = ProgramStageModelIntegrationTest.create(ID, PROGRAM_STAGE, PROGRAM);
@@ -134,7 +135,7 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
     }
 
     @Test
-    public void insert_shouldPersistProgramRuleVariableInDatabaseWithProgramForeignKey() throws Exception {
+    public void insert_shouldPersistProgramRuleVariableInDatabaseWithProgramForeignKey() throws ParseException {
         insertProgramForeignKey();
 
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
@@ -179,7 +180,7 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
     }
 
     @Test
-    public void delete_shouldDeleteProgramRuleVariableWhenDeletingProgram() throws Exception {
+    public void delete_shouldDeleteProgramRuleVariableWhenDeletingProgram() {
         insertProgramForeignKey();
 
         ContentValues programRuleVariable = new ContentValues();
@@ -203,7 +204,7 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
     }
 
     @Test
-    public void delete_shouldNotDeleteProgramRuleVariableWhenDeletingProgramStage() throws Exception {
+    public void delete_shouldNotDeleteProgramRuleVariableWhenDeletingProgramStage() {
         insertProgramForeignKey();
 
         ContentValues programStage = CreateProgramStageUtils.create(ID, PROGRAM_STAGE, PROGRAM);
@@ -232,7 +233,7 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
     }
 
     @Test
-    public void delete_shouldNotDeleteProgramRuleVariableWhenDeletingDataElement() throws Exception {
+    public void delete_shouldNotDeleteProgramRuleVariableWhenDeletingDataElement() {
         insertProgramForeignKey();
 
         ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
@@ -261,7 +262,7 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
     }
 
     @Test
-    public void delete_shouldNotDeleteProgramRuleVariableWhenDeletingTrackedEntityAttribute() throws Exception {
+    public void delete_shouldNotDeleteProgramRuleVariableWhenDeletingTrackedEntityAttribute() {
         insertProgramForeignKey();
 
         ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.create(ID, TRACKED_ENTITY_ATTRIBUTE, null);
@@ -292,7 +293,7 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
     }
 
     @Test
-    public void close_shouldNotCloseDatabase() throws Exception {
+    public void close_shouldNotCloseDatabase() {
         programRuleVariableModelStore.close();
 
         assertThat(database().isOpen()).isTrue();

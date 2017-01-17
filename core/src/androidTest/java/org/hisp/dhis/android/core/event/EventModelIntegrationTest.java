@@ -10,6 +10,7 @@ import org.hisp.dhis.android.core.event.EventModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -31,7 +32,7 @@ public class EventModelIntegrationTest {
     private static final String DATE = "2016-01-12T10:01:00.000";
 
     @Test
-    public void create_shouldConvertToModel() throws Exception {
+    public void create_shouldConvertToModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
                 Columns.ID, Columns.UID, Columns.ENROLLMENT_UID,
                 Columns.CREATED, Columns.LAST_UPDATED,
@@ -66,7 +67,7 @@ public class EventModelIntegrationTest {
     }
 
     @Test
-    public void toContentValues_shouldConvertToContentValues() throws Exception {
+    public void toContentValues_shouldConvertToContentValues() throws ParseException {
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
         EventModel event = EventModel.builder()

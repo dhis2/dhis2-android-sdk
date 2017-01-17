@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -74,7 +75,7 @@ public class EventModelStoreIntegrationTest extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistEventInDatabase() throws Exception {
+    public void insert_shouldPersistEventInDatabase() throws ParseException {
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
@@ -136,13 +137,13 @@ public class EventModelStoreIntegrationTest extends AbsStoreTestCase {
     /**
      * trying to insert event with program, stage and org unit without
      * inserting them to db.
-     * @throws Exception
+     * @throws ParseException
      */
     @Test(expected = SQLiteConstraintException.class)
-    public void insert_shouldThrowSqliteConstraintException() throws Exception {
+    public void insert_shouldThrowSqliteConstraintException() throws ParseException {
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
-        long rowId = eventModelStore.insert(
+        eventModelStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
                 timeStamp, // created

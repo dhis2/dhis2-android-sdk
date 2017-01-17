@@ -116,7 +116,6 @@ public class OptionModelStoreIntegrationTest extends AbsStoreTestCase {
 
         assertThatCursor(cursor).isExhausted();
 
-
     }
 
     @Test

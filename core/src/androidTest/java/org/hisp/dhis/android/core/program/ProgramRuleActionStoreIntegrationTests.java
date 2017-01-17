@@ -169,7 +169,7 @@ public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistRowInDatabaseWithProgramStageAsNestedForeignKey() throws Exception {
+    public void insert_shouldPersistRowInDatabaseWithProgramStageAsNestedForeignKey() {
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
@@ -234,8 +234,8 @@ public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_shouldFailWithoutMandatoryForeignKey() throws Exception {
-        long rowId = programRuleActionStore.insert(
+    public void exception_shouldFailWithoutMandatoryForeignKey() {
+        programRuleActionStore.insert(
                 UID,
                 CODE,
                 NAME,
@@ -253,30 +253,6 @@ public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
                 DATA_ELEMENT,
                 null
         );
-
-        Cursor cursor = database().query(Tables.PROGRAM_RULE_ACTION,
-                PROGRAM_RULE_ACTION_PROJECTION, null, null, null, null, null);
-
-        assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor)
-                .hasRow(
-                        UID,
-                        CODE,
-                        NAME,
-                        DISPLAY_NAME,
-                        BaseIdentifiableObject.DATE_FORMAT.format(CREATED),
-                        BaseIdentifiableObject.DATE_FORMAT.format(LAST_UPDATED),
-                        DATA,
-                        CONTENT,
-                        LOCATION,
-                        TRACKED_ENTITY_ATTRIBUTE,
-                        PROGRAM_INDICATOR,
-                        PROGRAM_STAGE_SECTION,
-                        PROGRAM_RULE_ACTION_TYPE,
-                        PROGRAM_STAGE,
-                        DATA_ELEMENT,
-                        null)
-                .isExhausted();
     }
 
     @Test

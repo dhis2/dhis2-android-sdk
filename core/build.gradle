@@ -30,6 +30,7 @@ apply plugin: "com.android.library"
 apply from: rootProject.file("plugins/android-checkstyle.gradle")
 apply from: rootProject.file("plugins/android-errorprone.gradle")
 apply from: rootProject.file("plugins/android-findbugs.gradle")
+apply from: rootProject.file("plugins/android-dexcount.gradle")
 apply from: rootProject.file("plugins/android-pmd.gradle")
 
 def configuration = rootProject.ext.configuration
@@ -68,20 +69,6 @@ android {
         debug {
             testCoverageEnabled = true
         }
-    }
-}
-
-// Check if the build requires dex count, if yes analyze dex for amount of methods
-def withDexCount = project.hasProperty("withDexCount")
-if (withDexCount) {
-    apply plugin: "com.getkeepsafe.dexcount"
-
-    dexcount {
-        format = "list"
-        verbose = false
-        includeFieldCount = true
-        includeTotalMethodCount = true
-        maxTreeDepth = Integer.MAX_VALUE
     }
 }
 

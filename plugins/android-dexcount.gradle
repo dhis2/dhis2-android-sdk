@@ -1,0 +1,9 @@
+apply plugin: "com.getkeepsafe.dexcount"
+
+dexcount {
+    format = "list"
+    includeFieldCount = true
+    includeTotalMethodCount = true
+    verbose = false
+    maxTreeDepth = Integer.MAX_VALUE
+}

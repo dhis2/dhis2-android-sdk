@@ -35,13 +35,21 @@ import org.hisp.dhis.android.core.common.State;
 
 import java.util.Date;
 
-public interface EnrollmentModelStore {
-    long insert(@NonNull String uid, @Nullable Date created, @Nullable Date lastUpdated,
-                @Nullable String organisationUnit, @Nullable String program,
-                @Nullable Date dateOfEnrollment, @Nullable Date dateOfIncident,
-                @Nullable Boolean followUp, @Nullable EnrollmentStatus enrollmentStatus,
-                @Nullable String trackedEntityInstance, @Nullable String latitude,
-                @Nullable String longitude, @Nullable State state);
+public interface EnrollmentStore {
+    long insert(@NonNull String uid,
+                @Nullable Date created,
+                @Nullable Date lastUpdated,
+                @NonNull String organisationUnit,
+                @NonNull String program,
+                @Nullable Date dateOfEnrollment,
+                @Nullable Date dateOfIncident,
+                @Nullable Boolean followUp,
+                @Nullable EnrollmentStatus enrollmentStatus,
+                @NonNull String trackedEntityInstance,
+                @Nullable String latitude,
+                @Nullable String longitude,
+                @Nullable State state
+    );
 
     void close();
 }

@@ -32,11 +32,9 @@ import android.content.ContentValues;
 
 import org.hisp.dhis.android.core.common.State;
 
-import java.text.ParseException;
-
 public class CreateTrackedEntityInstanceUtils {
+
     private static final long ID = 11L;
-    private static final String UID = "test_uid";
     private static final State STATE = State.ERROR;
 
     // used for timestamps

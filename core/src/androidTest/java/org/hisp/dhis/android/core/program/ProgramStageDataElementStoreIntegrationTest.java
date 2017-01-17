@@ -189,7 +189,7 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
     public void exception_persistProgramStageDataElementWithInvalidForeignKey() throws ParseException {
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
         String fakeDataElementId = "fake_data_element_id";
-        long rowId = programStageDataElementStore.insert(
+        programStageDataElementStore.insert(
                 UID,
                 CODE,
                 NAME,
@@ -204,8 +204,6 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
                 fakeDataElementId,
                 null
         );
-
-        assertThat(rowId).isEqualTo(-1);
     }
 
     @Test

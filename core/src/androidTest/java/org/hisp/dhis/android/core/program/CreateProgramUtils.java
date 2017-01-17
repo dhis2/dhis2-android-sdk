@@ -4,7 +4,7 @@ import android.content.ContentValues;
 
 public class CreateProgramUtils {
     /**
-     * BaseIdentifiable propertites
+     * BaseIdentifiable properties
      */
     private static final String CODE = "test_code";
     private static final String NAME = "test_name";

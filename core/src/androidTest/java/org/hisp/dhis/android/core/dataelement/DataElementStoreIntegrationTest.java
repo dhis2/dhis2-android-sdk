@@ -201,7 +201,7 @@ public class DataElementStoreIntegrationTest extends AbsStoreTestCase {
     public void exception_persistDataElementWithInvalidForeignKey() throws ParseException {
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
         String fakeOptionSetUid = "fake_option_set_uid";
-        long rowId = dataElementStore.insert(
+        dataElementStore.insert(
                 UID,
                 CODE,
                 NAME,
@@ -222,8 +222,6 @@ public class DataElementStoreIntegrationTest extends AbsStoreTestCase {
                 DISPLAY_FORM_NAME,
                 fakeOptionSetUid
         );
-
-        assertThat(rowId).isEqualTo(-1);
     }
 
     @Test

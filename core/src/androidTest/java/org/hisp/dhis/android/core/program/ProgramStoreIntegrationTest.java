@@ -139,29 +139,21 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistProgramWithInvalidRelationshipTypeForeignKey() {
         String wrongRelationshipTypeUid = "wrong";
-
         //make sure that the foreign keys are in the database.
         insert_foreignKeyRows();
-
-        long rowId = programStore.insert(
-                UID, null, NAME, null, null, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, null, RELATIONSHIP_FROM_A, null,
-                null, null, null, PROGRAM_TYPE, wrongRelationshipTypeUid, null, null, TRACKED_ENTITY);
-        assertThat(rowId).isEqualTo(-1);
+        programStore.insert(UID, null, NAME, null, null, null, null, null, null, null, null, null, null, null,
+                null, null, null, null, null, RELATIONSHIP_FROM_A, null, null, null, null, PROGRAM_TYPE,
+                wrongRelationshipTypeUid, null, null, TRACKED_ENTITY);
     }
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistProgramWithInvalidTrackedEntityForeignKey() {
         String wrongTrackedEntityUid = "wrong";
-
         //make sure that the foreign keys are in the database.
         insert_foreignKeyRows();
-
-        long rowId = programStore.insert(
-                UID, null, NAME, null, null, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, null, RELATIONSHIP_FROM_A, null,
-                null, null, null, PROGRAM_TYPE, RELATIONSHIP_TYPE, null, null, wrongTrackedEntityUid);
-        assertThat(rowId).isEqualTo(-1);
+        programStore.insert(UID, null, NAME, null, null, null, null, null, null, null, null, null, null, null,
+                null, null, null, null, null, RELATIONSHIP_FROM_A, null, null, null, null, PROGRAM_TYPE,
+                RELATIONSHIP_TYPE, null, null, wrongTrackedEntityUid);
     }
 
     @Test

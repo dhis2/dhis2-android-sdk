@@ -99,7 +99,7 @@ public class ProgramRuleModelStoreIntegrationTest extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistProgramRuleInDatabaseWithoutProgramStageForeignKey() throws Exception {
+    public void insert_shouldPersistProgramRuleInDatabaseWithoutProgramStageForeignKey() throws ParseException {
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
@@ -133,28 +133,11 @@ public class ProgramRuleModelStoreIntegrationTest extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_shouldNotPersistProgramRuleInDatabaseWithoutProgram() throws Exception {
-
+    public void exception_shouldNotPersistProgramRuleInDatabaseWithoutProgram() throws ParseException {
+        String wrongProgramUid = "wrong";
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-
-        long rowId = programRuleStore.insert(
-                UID, CODE, NAME, DISPLAY_NAME,
-                timeStamp, timeStamp, PRIORITY,
-                CONDITION, null, null);
-
-        Cursor cursor = database().query(Tables.PROGRAM_RULE, PROGRAM_RULE_MODEL_PROJECTION,
-                null, null, null, null, null);
-
-        assertThat(rowId).isEqualTo(1L);
-
-        assertThatCursor(cursor).hasRow(
-                UID, CODE,
-                NAME,
-                DISPLAY_NAME,
-                DATE, DATE,
-                PRIORITY, CONDITION,
-                null, null // Program and programStage == null
-        ).isExhausted();
+        programRuleStore.insert(UID, CODE, NAME, DISPLAY_NAME, timeStamp, timeStamp, PRIORITY, CONDITION,
+                wrongProgramUid, null);
     }
 
     @Test

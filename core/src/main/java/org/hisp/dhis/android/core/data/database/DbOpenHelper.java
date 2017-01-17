@@ -606,7 +606,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             "ON DELETE CASCADE" +
             ");";
 
-    private static final java.lang.String CREATE_ENROLLMENT_TABLE = "CREATE TABLE " + EnrollmentModel.ENROLLMENT +
+    private static final String CREATE_ENROLLMENT_TABLE = "CREATE TABLE " + EnrollmentModel.ENROLLMENT +
             " (" +
             EnrollmentModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             EnrollmentModel.Columns.UID + " TEXT NOT NULL UNIQUE," +

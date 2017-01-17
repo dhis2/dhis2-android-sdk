@@ -193,11 +193,12 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
 
         Cursor cursor = database().query(Tables.PROGRAM_RULE_VARIABLE, PROJECTION, null, null, null, null, null);
 
-        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM);
+        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM).isExhausted();
 
         database().delete(Tables.PROGRAM, ProgramModel.Columns.UID + " =?", new String[]{PROGRAM});
 
-        cursor.moveToFirst();
+        cursor = database().query(Tables.PROGRAM_RULE_VARIABLE, PROJECTION, null, null, null, null, null);
+
         assertThatCursor(cursor).isExhausted();
     }
 
@@ -227,7 +228,7 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
         cursor = database().query(Tables.PROGRAM_RULE_VARIABLE, PROJECTION,
                 null, null, null, null, null);
 
-        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM, null).isExhausted();
+        assertThatCursor(cursor).isExhausted();
     }
 
     @Test
@@ -256,7 +257,7 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
         cursor = database().query(Tables.PROGRAM_RULE_VARIABLE, PROJECTION,
                 null, null, null, null, null);
 
-        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM, null).isExhausted();
+        assertThatCursor(cursor).isExhausted();
     }
 
     @Test
@@ -286,7 +287,8 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
         cursor = database().query(Tables.PROGRAM_RULE_VARIABLE, PROJECTION,
                 null, null, null, null, null);
 
-        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM, null).isExhausted();
+        assertThatCursor(cursor).isExhausted();
+
     }
 
     @Test

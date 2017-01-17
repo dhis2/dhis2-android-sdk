@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
+import org.hisp.dhis.android.core.program.ProgramRuleActionModel.Columns;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,6 +53,7 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
+    private static final Long ID = 2L;
     private static final String UID = "test_uid";
     private static final String CODE = "test_code";
     private static final String NAME = "test_name";
@@ -73,22 +75,22 @@ public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
     private static final String PROGRAM = "test_program";
 
     public static final String[] PROGRAM_RULE_ACTION_PROJECTION = {
-            ProgramRuleActionModel.Columns.UID,
-            ProgramRuleActionModel.Columns.CODE,
-            ProgramRuleActionModel.Columns.NAME,
-            ProgramRuleActionModel.Columns.DISPLAY_NAME,
-            ProgramRuleActionModel.Columns.CREATED,
-            ProgramRuleActionModel.Columns.LAST_UPDATED,
-            ProgramRuleActionModel.Columns.DATA,
-            ProgramRuleActionModel.Columns.CONTENT,
-            ProgramRuleActionModel.Columns.LOCATION,
-            ProgramRuleActionModel.Columns.TRACKED_ENTITY_ATTRIBUTE,
-            ProgramRuleActionModel.Columns.PROGRAM_INDICATOR,
-            ProgramRuleActionModel.Columns.PROGRAM_STAGE_SECTION,
-            ProgramRuleActionModel.Columns.PROGRAM_RULE_ACTION_TYPE,
-            ProgramRuleActionModel.Columns.PROGRAM_STAGE,
-            ProgramRuleActionModel.Columns.DATA_ELEMENT,
-            ProgramRuleActionModel.Columns.PROGRAM_RULE
+            Columns.UID,
+            Columns.CODE,
+            Columns.NAME,
+            Columns.DISPLAY_NAME,
+            Columns.CREATED,
+            Columns.LAST_UPDATED,
+            Columns.DATA,
+            Columns.CONTENT,
+            Columns.LOCATION,
+            Columns.TRACKED_ENTITY_ATTRIBUTE,
+            Columns.PROGRAM_INDICATOR,
+            Columns.PROGRAM_STAGE_SECTION,
+            Columns.PROGRAM_RULE_ACTION_TYPE,
+            Columns.PROGRAM_STAGE,
+            Columns.DATA_ELEMENT,
+            Columns.PROGRAM_RULE
     };
 
     private ProgramRuleActionStore programRuleActionStore;
@@ -132,12 +134,12 @@ public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
                 DATA,
                 CONTENT,
                 LOCATION,
-                TRACKED_ENTITY_ATTRIBUTE,
-                PROGRAM_INDICATOR,
-                PROGRAM_STAGE_SECTION,
+                null,
+                null,
+                null,
                 PROGRAM_RULE_ACTION_TYPE,
-                PROGRAM_STAGE,
-                DATA_ELEMENT,
+                null,
+                null,
                 PROGRAM_RULE
         );
 
@@ -156,12 +158,12 @@ public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
                         DATA,
                         CONTENT,
                         LOCATION,
-                        TRACKED_ENTITY_ATTRIBUTE,
-                        PROGRAM_INDICATOR,
-                        PROGRAM_STAGE_SECTION,
+                        null,
+                        null,
+                        null,
                         PROGRAM_RULE_ACTION_TYPE,
-                        PROGRAM_STAGE,
-                        DATA_ELEMENT,
+                        null,
+                        null,
                         PROGRAM_RULE)
                 .isExhausted();
     }
@@ -197,12 +199,12 @@ public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
                 DATA,
                 CONTENT,
                 LOCATION,
-                TRACKED_ENTITY_ATTRIBUTE,
-                PROGRAM_INDICATOR,
-                PROGRAM_STAGE_SECTION,
+                null,
+                null,
+                null,
                 PROGRAM_RULE_ACTION_TYPE,
                 PROGRAM_STAGE,
-                DATA_ELEMENT,
+                null,
                 PROGRAM_RULE
         );
 
@@ -221,12 +223,12 @@ public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
                         DATA,
                         CONTENT,
                         LOCATION,
-                        TRACKED_ENTITY_ATTRIBUTE,
-                        PROGRAM_INDICATOR,
-                        PROGRAM_STAGE_SECTION,
+                        null,
+                        null,
+                        null,
                         PROGRAM_RULE_ACTION_TYPE,
                         PROGRAM_STAGE,
-                        DATA_ELEMENT,
+                        null,
                         PROGRAM_RULE)
                 .isExhausted();
     }
@@ -275,6 +277,41 @@ public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
                         DATA_ELEMENT,
                         null)
                 .isExhausted();
+    }
+
+    @Test
+    public void delete_shouldDeleteProgramRuleActionWhenDeletingProgramRule() throws Exception {
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
+        database().insert(Tables.TRACKED_ENTITY, null, trackedEntity);
+
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
+                RELATIONSHIP_TYPE_UID);
+        database().insert(Tables.RELATIONSHIP_TYPE, null, relationshipType);
+
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
+        database().insert(Tables.PROGRAM, null, program);
+
+        ContentValues programRule = CreateProgramRuleUtils.createWithoutProgramStage(ID, PROGRAM_RULE, PROGRAM);
+        database().insert(Tables.PROGRAM_RULE, null, programRule);
+
+        ContentValues programRuleAction = new ContentValues();
+        programRuleAction.put(Columns.ID, ID);
+        programRuleAction.put(Columns.UID, UID);
+        programRuleAction.put(Columns.PROGRAM_RULE, PROGRAM_RULE);
+        database().insert(Tables.PROGRAM_RULE_ACTION, null, programRuleAction);
+
+        String[] projection = {Columns.ID, Columns.UID, Columns.PROGRAM_RULE};
+
+        Cursor cursor = database().query(Tables.PROGRAM_RULE_ACTION, projection, null, null, null, null, null);
+        // checking that program rule action was successfully inserted
+        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM_RULE).isExhausted();
+        // deleting program rule
+        database().delete(Tables.PROGRAM_RULE, ProgramRuleModel.Columns.UID + " =?", new String[]{PROGRAM_RULE});
+
+        cursor = database().query(Tables.PROGRAM_RULE_ACTION, projection, null, null, null, null, null);
+        // checking that program rule action is deleted
+        assertThatCursor(cursor).isExhausted();
+
     }
 
     // ToDo: consider introducing conflict resolution strategy

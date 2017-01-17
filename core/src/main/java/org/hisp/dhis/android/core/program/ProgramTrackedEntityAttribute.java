@@ -49,36 +49,39 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
     private static final String VALUE_TYPE = "valueType";
     private static final String ALLOW_FUTURE_DATE = "allowFutureDate";
     private static final String DISPLAY_IN_LIST = "displayInList";
+    private static final String PROGRAM = "program";
 
-    public static final Field<TrackedEntityAttribute, String> uid
+    public static final Field<ProgramTrackedEntityAttribute, String> uid
             = Field.create(UID);
-    public static final Field<TrackedEntityAttribute, String> code
+    public static final Field<ProgramTrackedEntityAttribute, String> code
             = Field.create(CODE);
-    public static final Field<TrackedEntityAttribute, String> name
+    public static final Field<ProgramTrackedEntityAttribute, String> name
             = Field.create(NAME);
-    public static final Field<TrackedEntityAttribute, String> displayName
+    public static final Field<ProgramTrackedEntityAttribute, String> displayName
             = Field.create(DISPLAY_NAME);
-    public static final Field<TrackedEntityAttribute, String> created
+    public static final Field<ProgramTrackedEntityAttribute, String> created
             = Field.create(CREATED);
-    public static final Field<TrackedEntityAttribute, String> lastUpdated
+    public static final Field<ProgramTrackedEntityAttribute, String> lastUpdated
             = Field.create(LAST_UPDATED);
-    public static final Field<TrackedEntityAttribute, String> shortName
+    public static final Field<ProgramTrackedEntityAttribute, String> shortName
             = Field.create(SHORT_NAME);
-    public static final Field<TrackedEntityAttribute, String> displayShortName
+    public static final Field<ProgramTrackedEntityAttribute, String> displayShortName
             = Field.create(DISPLAY_SHORT_NAME);
-    public static final Field<TrackedEntityAttribute, String> description
+    public static final Field<ProgramTrackedEntityAttribute, String> description
             = Field.create(DESCRIPTION);
-    public static final Field<TrackedEntityAttribute, String> displayDescription
+    public static final Field<ProgramTrackedEntityAttribute, String> displayDescription
             = Field.create(DISPLAY_DESCRIPTION);
-    public static final Field<TrackedEntityAttribute, String> mandatory
+    public static final Field<ProgramTrackedEntityAttribute, String> mandatory
             = Field.create(MANDATORY);
-    public static final NestedField<TrackedEntityAttribute, TrackedEntityAttribute> trackedEntityAttribute
+    public static final NestedField<ProgramTrackedEntityAttribute, TrackedEntityAttribute> trackedEntityAttribute
             = NestedField.create(TRACKED_ENTITY_ATTRIBUTE);
-    public static final Field<TrackedEntityAttribute, ValueType> valueType
+    public static final NestedField<ProgramTrackedEntityAttribute, Program> program
+            = NestedField.create(PROGRAM);
+    public static final Field<ProgramTrackedEntityAttribute, ValueType> valueType
             = Field.create(VALUE_TYPE);
-    public static final Field<TrackedEntityAttribute, Boolean> allowFutureDate
+    public static final Field<ProgramTrackedEntityAttribute, Boolean> allowFutureDate
             = Field.create(ALLOW_FUTURE_DATE);
-    public static final Field<TrackedEntityAttribute, Boolean> displayInList
+    public static final Field<ProgramTrackedEntityAttribute, Boolean> displayInList
             = Field.create(DISPLAY_IN_LIST);
 
     @Nullable
@@ -101,6 +104,10 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
     @JsonProperty(DISPLAY_IN_LIST)
     public abstract Boolean displayInList();
 
+    @Nullable
+    @JsonProperty(PROGRAM)
+    public abstract Program program();
+
     @JsonCreator
     public static ProgramTrackedEntityAttribute create(
             @JsonProperty(UID) String uid,
@@ -117,12 +124,13 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
             @JsonProperty(TRACKED_ENTITY_ATTRIBUTE) TrackedEntityAttribute trackedEntityAttribute,
             @JsonProperty(VALUE_TYPE) ValueType valueType,
             @JsonProperty(ALLOW_FUTURE_DATE) Boolean allowFutureDate,
-            @JsonProperty(DISPLAY_IN_LIST) Boolean displayInList
+            @JsonProperty(DISPLAY_IN_LIST) Boolean displayInList,
+            @JsonProperty(PROGRAM) Program program
     ) {
         return new AutoValue_ProgramTrackedEntityAttribute(
                 uid, code, name, displayName, created, lastUpdated,
                 shortName, displayShortName, description, displayDescription,
-                mandatory, trackedEntityAttribute, valueType, allowFutureDate, displayInList);
+                mandatory, trackedEntityAttribute, valueType, allowFutureDate, displayInList, program);
     }
 
 }

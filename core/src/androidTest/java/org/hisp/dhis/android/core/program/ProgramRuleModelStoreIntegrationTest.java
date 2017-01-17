@@ -34,6 +34,8 @@ public class ProgramRuleModelStoreIntegrationTest extends AbsStoreTestCase {
 
     private ProgramRuleModelStore programRuleStore;
 
+    private static final Long ID = 1L;
+
     private static final String UID = "test_uid";
     private static final String CODE = "test_code";
     private static final String NAME = "test_name";
@@ -155,6 +157,32 @@ public class ProgramRuleModelStoreIntegrationTest extends AbsStoreTestCase {
                 PRIORITY, CONDITION,
                 null, null // Program and programStage == null
         ).isExhausted();
+    }
+
+    @Test
+    public void delete_shouldDeleteProgramRuleWhenDeletingProgram() throws Exception {
+
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
+        database().insert(Tables.PROGRAM, null, program);
+
+        ContentValues programRule = new ContentValues();
+        programRule.put(Columns.ID, ID);
+        programRule.put(Columns.UID, UID);
+        programRule.put(Columns.PROGRAM, PROGRAM);
+
+        database().insert(Tables.PROGRAM_RULE, null, programRule);
+
+        String[] projection = {Columns.ID, Columns.UID, Columns.PROGRAM};
+        Cursor cursor = database().query(Tables.PROGRAM_RULE, projection, null, null, null, null, null);
+        // checking that program rule was successfully inserted into database
+        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM);
+
+        database().delete(Tables.PROGRAM, ProgramModel.Columns.UID + " =?", new String[]{PROGRAM});
+
+        cursor = database().query(Tables.PROGRAM_RULE, projection, null, null, null, null, null);
+
+        assertThatCursor(cursor).isExhausted();
+
     }
 
     @Test

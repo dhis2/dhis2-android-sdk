@@ -223,7 +223,7 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
 
         Cursor cursor = database().query(Tables.PROGRAM_STAGE_DATA_ELEMENT, projection, null, null, null, null, null);
         // Checking that programStageDataElement was inserted
-        assertThatCursor(cursor).hasRow(ID, UID, DATA_ELEMENT);
+        assertThatCursor(cursor).hasRow(ID, UID, DATA_ELEMENT).isExhausted();
 
         // deleting data element
         database().delete(Tables.DATA_ELEMENT, DataElementModel.Columns.UID + "=?", new String[]{DATA_ELEMENT});
@@ -252,7 +252,7 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
 
         Cursor cursor = database().query(Tables.PROGRAM_STAGE_DATA_ELEMENT, projection, null, null, null, null, null);
         // Checking that programStageDataElement was inserted
-        assertThatCursor(cursor).hasRow(ID, UID, DATA_ELEMENT);
+        assertThatCursor(cursor).hasRow(ID, UID, DATA_ELEMENT).isExhausted();
 
         // deleting optionSet
         database().delete(Tables.OPTION_SET, OptionSetModel.Columns.UID + "=?", new String[]{OPTION_SET});
@@ -300,7 +300,7 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
 
         Cursor cursor = database().query(Tables.PROGRAM_STAGE_DATA_ELEMENT, projection, null, null, null, null, null);
         // Checking that programStageDataElement was inserted
-        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM_STAGE_SECTION, DATA_ELEMENT);
+        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM_STAGE_SECTION, DATA_ELEMENT).isExhausted();
 
         // deleting referenced program stage section
         database().delete(

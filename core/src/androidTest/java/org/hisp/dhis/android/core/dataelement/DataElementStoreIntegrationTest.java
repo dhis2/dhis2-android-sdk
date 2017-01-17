@@ -243,7 +243,7 @@ public class DataElementStoreIntegrationTest extends AbsStoreTestCase {
         Cursor cursor = database().query(Tables.DATA_ELEMENT, PROJECTION, null, null, null, null, null);
 
         // checking that dataElement was successfully inserted
-        assertThatCursor(cursor).hasRow(ID, UID, OPTION_SET);
+        assertThatCursor(cursor).hasRow(ID, UID, OPTION_SET).isExhausted();
 
         // deleting option set
         database().delete(Tables.OPTION_SET, OptionSetModel.Columns.UID + "=?", new String[]{OPTION_SET});

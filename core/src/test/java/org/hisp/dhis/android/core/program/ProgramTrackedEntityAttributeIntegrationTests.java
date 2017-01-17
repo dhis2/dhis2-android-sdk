@@ -93,6 +93,7 @@ public class ProgramTrackedEntityAttributeIntegrationTests {
 
         assertThat(programTrackedEntityAttribute.mandatory()).isEqualTo(false);
         assertThat(programTrackedEntityAttribute.trackedEntityAttribute().uid()).isEqualTo("cejWyOfXge6");
+        assertThat(programTrackedEntityAttribute.program().uid()).isEqualTo("IpHINAT79UW");
         assertThat(programTrackedEntityAttribute.valueType()).isEqualTo(ValueType.TEXT);
         assertThat(programTrackedEntityAttribute.allowFutureDate()).isEqualTo(false);
         assertThat(programTrackedEntityAttribute.displayInList()).isEqualTo(false);

@@ -504,9 +504,11 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT NOT NULL," +
             TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + " TEXT NOT NULL," +
             " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ")" +
-            " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE + " (" + TrackedEntityAttributeModel.Columns.UID + "), " +
-            " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + ")" +
-            " REFERENCES " + Tables.TRACKED_ENTITY_INSTANCE + " (" +  TrackedEntityInstanceModel.Columns.UID + ")" +
+            " REFERENCES " + Tables.TRACKED_ENTITY_ATTRIBUTE +
+            " (" + TrackedEntityAttributeModel.Columns.UID + ") ON DELETE CASCADE, " +
+            " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + ") " +
+            " REFERENCES " + Tables.TRACKED_ENTITY_INSTANCE +
+            " (" + TrackedEntityInstanceModel.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_EVENT_TABLE = "CREATE TABLE " + Tables.EVENT + " (" +

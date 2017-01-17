@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -61,22 +60,6 @@ public class TrackedEntityStoreIntegrationTests extends AbsStoreTestCase {
     };
 
     private TrackedEntityStore trackedEntityStore;
-
-    public static ContentValues create(long id, String uid) {
-        ContentValues trackedEntity = new ContentValues();
-        trackedEntity.put(TrackedEntityModel.Columns.ID, id);
-        trackedEntity.put(TrackedEntityModel.Columns.UID, uid);
-        trackedEntity.put(TrackedEntityModel.Columns.CODE, "test_code");
-        trackedEntity.put(TrackedEntityModel.Columns.NAME, "test_name");
-        trackedEntity.put(TrackedEntityModel.Columns.DISPLAY_NAME, "test_display_name");
-        trackedEntity.put(TrackedEntityModel.Columns.CREATED, "test_created");
-        trackedEntity.put(TrackedEntityModel.Columns.LAST_UPDATED, "test_last_updated");
-        trackedEntity.put(TrackedEntityModel.Columns.SHORT_NAME, "test_short_name");
-        trackedEntity.put(TrackedEntityModel.Columns.DISPLAY_SHORT_NAME, "test_display_short_name");
-        trackedEntity.put(TrackedEntityModel.Columns.DESCRIPTION, "test_description");
-        trackedEntity.put(TrackedEntityModel.Columns.DISPLAY_DESCRIPTION, "test_display_description");
-        return trackedEntity;
-    }
 
     @Before
     @Override

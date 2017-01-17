@@ -43,6 +43,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -88,10 +89,10 @@ public class TrackedEntityInstanceStoreIntegrationTests extends AbsStoreTestCase
     }
 
     @Test
-    public void insert_shouldPersistRowInDatabase() throws Exception {
+    public void insert_shouldPersistRowInDatabase() throws ParseException {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.create(1L, ORGANISATION_UNIT);
+        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
 
         long rowId = trackedEntityInstanceStore.insert(
@@ -117,7 +118,7 @@ public class TrackedEntityInstanceStoreIntegrationTests extends AbsStoreTestCase
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void insertWithoutForeignKey_shouldThrowException() throws Exception {
+    public void insertWithoutForeignKey_shouldThrowException() throws ParseException {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
         trackedEntityInstanceStore.insert(
                 UID,

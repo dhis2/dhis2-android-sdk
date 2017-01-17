@@ -6,23 +6,17 @@ import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStoreImpl;
 
-public final class BasicAuthenticatorFactory implements Authenticator.Factory {
-    private final DbOpenHelper dbOpenHelper;
+public final class BasicAuthenticatorFactory {
+    private BasicAuthenticatorFactory() {
+        // no instances
+    }
 
-    public static Authenticator.Factory create(@NonNull DbOpenHelper dbOpenHelper) {
+    @NonNull
+    public static Authenticator create(@NonNull DbOpenHelper dbOpenHelper) {
         if (dbOpenHelper == null) {
-            throw new NullPointerException("dbOpenHelper == null");
+            throw new IllegalArgumentException("dbOpenHelper == null");
         }
 
-        return new BasicAuthenticatorFactory(dbOpenHelper);
-    }
-
-    private BasicAuthenticatorFactory(DbOpenHelper dbOpenHelper) {
-        this.dbOpenHelper = dbOpenHelper;
-    }
-
-    @Override
-    public Authenticator authenticator() {
         AuthenticatedUserStore authenticatedUserStore = new AuthenticatedUserStoreImpl(
                 dbOpenHelper.getWritableDatabase());
         return new BasicAuthenticator(authenticatedUserStore);

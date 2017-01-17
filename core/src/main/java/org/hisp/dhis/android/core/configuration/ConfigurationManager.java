@@ -4,13 +4,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 public interface ConfigurationManager {
-    void configure(@NonNull ConfigurationModel configurationModel);
+
+    @NonNull
+    ConfigurationModel save(@NonNull String serverUrl);
 
     @Nullable
-    ConfigurationModel configuration();
+    ConfigurationModel get();
 
-    interface Factory {
-        @NonNull
-        ConfigurationManager create();
-    }
+    int remove();
 }

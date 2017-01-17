@@ -57,9 +57,10 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
             ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ", " +
             ProgramTrackedEntityAttributeModel.Columns.VALUE_TYPE + ", " +
             ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATES + ", " +
-            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST +
+            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST + ", " +
+            ProgramTrackedEntityAttributeModel.Columns.PROGRAM +
 
-            ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private final SQLiteStatement insertRowStatement;
 
@@ -69,12 +70,13 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
 
     @Override
     public long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
-            @Nullable String displayName, @NonNull Date created,
-            @NonNull Date lastUpdated, @Nullable String shortName,
-            @Nullable String displayShortName, @Nullable String description,
-            @Nullable String displayDescription, @Nullable Boolean mandatory,
-            @NonNull String trackedEntityAttribute, @Nullable ValueType valueType,
-            @Nullable Boolean allowFutureDates, @Nullable Boolean displayInList) {
+                       @Nullable String displayName, @NonNull Date created,
+                       @NonNull Date lastUpdated, @Nullable String shortName,
+                       @Nullable String displayShortName, @Nullable String description,
+                       @Nullable String displayDescription, @Nullable Boolean mandatory,
+                       @NonNull String trackedEntityAttribute, @Nullable ValueType valueType,
+                       @Nullable Boolean allowFutureDates, @Nullable Boolean displayInList,
+                       @NonNull String program) {
         insertRowStatement.clearBindings();
 
         sqLiteBind(insertRowStatement, 1, uid);
@@ -92,7 +94,7 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
         sqLiteBind(insertRowStatement, 13, valueType);
         sqLiteBind(insertRowStatement, 14, allowFutureDates);
         sqLiteBind(insertRowStatement, 15, displayInList);
-
+        sqLiteBind(insertRowStatement, 16, program);
         return insertRowStatement.executeInsert();
     }
 

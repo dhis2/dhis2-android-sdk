@@ -1,10 +1,11 @@
 package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
+import android.support.annotation.Nullable;
 
 public class CreateProgramUtils {
     /**
-     * BaseIdentifiable propertites
+     * BaseIdentifiable properties
      */
     private static final String CODE = "test_code";
     private static final String NAME = "test_name";
@@ -38,7 +39,6 @@ public class CreateProgramUtils {
     private static final Boolean USE_FIRST_STAGE_DURING_REGISTRATION = true;
     private static final Boolean DISPLAY_FRONT_PAGE_LIST = true;
     private static final ProgramType PROGRAM_TYPE = ProgramType.WITH_REGISTRATION;
-    private static final String RELATIONSHIP_TYPE = "relationshipUid";
     private static final String RELATIONSHIP_TEXT = "test relationship";
     private static final String RELATED_PROGRAM = "RelatedProgramUid";
 
@@ -48,9 +48,13 @@ public class CreateProgramUtils {
      *
      * @param id
      * @param uid
-     * @return
+     * @param relationshipTypeUid
+     *@param trackedEntityUid @return
      */
-    public static ContentValues create(long id, String uid) {
+    public static ContentValues create(long id, String uid,
+                                       @Nullable String relationshipTypeUid,
+                                       @Nullable String trackedEntityUid) {
+
         ContentValues program = new ContentValues();
         program.put(ProgramModel.Columns.ID, id);
         program.put(ProgramModel.Columns.UID, uid);
@@ -78,10 +82,18 @@ public class CreateProgramUtils {
         program.put(ProgramModel.Columns.USE_FIRST_STAGE_DURING_REGISTRATION, USE_FIRST_STAGE_DURING_REGISTRATION);
         program.put(ProgramModel.Columns.DISPLAY_FRONT_PAGE_LIST, DISPLAY_FRONT_PAGE_LIST);
         program.put(ProgramModel.Columns.PROGRAM_TYPE, PROGRAM_TYPE.name());
-        program.put(ProgramModel.Columns.RELATIONSHIP_TYPE, RELATIONSHIP_TYPE);
+        if(relationshipTypeUid == null) {
+            program.putNull(ProgramModel.Columns.RELATIONSHIP_TYPE);
+        } else {
+            program.put(ProgramModel.Columns.RELATIONSHIP_TYPE, relationshipTypeUid);
+        }
         program.put(ProgramModel.Columns.RELATIONSHIP_TEXT, RELATIONSHIP_TEXT);
         program.put(ProgramModel.Columns.RELATED_PROGRAM, RELATED_PROGRAM);
-
+        if(trackedEntityUid == null) {
+            program.putNull(ProgramModel.Columns.TRACKED_ENTITY);
+        } else {
+            program.put(ProgramModel.Columns.TRACKED_ENTITY, trackedEntityUid);
+        }
         return program;
     }
 }

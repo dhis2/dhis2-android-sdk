@@ -26,21 +26,6 @@ public class ProgramStageSectionModelIntegrationTest {
     // timestamp
     private static final String DATE = "2017-01-05T10:26:00.000";
 
-    public static ContentValues create(long id, String uid) {
-        ContentValues programStageSection = new ContentValues();
-        programStageSection.put(ProgramStageSectionModel.Columns.ID, id);
-        programStageSection.put(ProgramStageSectionModel.Columns.UID, uid);
-        programStageSection.put(ProgramStageSectionModel.Columns.CODE, CODE);
-        programStageSection.put(ProgramStageSectionModel.Columns.NAME, NAME);
-        programStageSection.put(ProgramStageSectionModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
-        programStageSection.put(ProgramStageSectionModel.Columns.CREATED, DATE);
-        programStageSection.put(ProgramStageSectionModel.Columns.LAST_UPDATED, DATE);
-        programStageSection.put(ProgramStageSectionModel.Columns.SORT_ORDER, SORT_ORDER);
-        programStageSection.put(ProgramStageSectionModel.Columns.PROGRAM_STAGE, PROGRAM_STAGE);
-
-        return programStageSection;
-    }
-
     @Test
     public void create_shouldConvertToModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{

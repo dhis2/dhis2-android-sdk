@@ -7,8 +7,11 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.program.ProgramRuleModel.Columns;
+import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
+import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +34,8 @@ public class ProgramRuleModelStoreIntegrationTest extends AbsStoreTestCase {
 
     private ProgramRuleModelStore programRuleStore;
 
+    private static final Long ID = 1L;
+
     private static final String UID = "test_uid";
     private static final String CODE = "test_code";
     private static final String NAME = "test_name";
@@ -39,13 +44,17 @@ public class ProgramRuleModelStoreIntegrationTest extends AbsStoreTestCase {
     // timestamp
     private static final String DATE = "2017-01-11T13:48:00.000";
 
-
     // bound to Program Rule
     private static final String PROGRAM_STAGE = "test_programStage";
     private static final String PROGRAM = "test_program";
     private static final Integer PRIORITY = 2;
     private static final String CONDITION = "test_condition";
 
+    //foreign keys to program:
+    private static final long TRACKED_ENTITY_ID = 1L;
+    private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
+    private static final long RELATIONSHIP_TYPE_ID = 3L;
+    private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
 
     @Override
     @Before
@@ -56,8 +65,15 @@ public class ProgramRuleModelStoreIntegrationTest extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistProgramRuleInDatabase() throws ParseException {
-        ContentValues program = CreateProgramUtils.create(1L, PROGRAM);
-        database().insert(Tables.PROGRAM, null, program);
+        //Create Program & insert a row in the table.
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
+                RELATIONSHIP_TYPE_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
+
+        database().insert(DbOpenHelper.Tables.TRACKED_ENTITY, null, trackedEntity);
+        database().insert(DbOpenHelper.Tables.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(DbOpenHelper.Tables.PROGRAM, null, program);
 
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
         database().insert(Tables.PROGRAM_STAGE, null, programStage);
@@ -85,9 +101,16 @@ public class ProgramRuleModelStoreIntegrationTest extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistProgramRuleInDatabaseWithoutProgramStageForeignKey() throws Exception {
-        ContentValues program = CreateProgramUtils.create(1L, PROGRAM);
-        database().insert(Tables.PROGRAM, null, program);
+    public void insert_shouldPersistProgramRuleInDatabaseWithoutProgramStageForeignKey() throws ParseException {
+        //Create Program & insert a row in the table.
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
+                RELATIONSHIP_TYPE_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
+
+        database().insert(DbOpenHelper.Tables.TRACKED_ENTITY, null, trackedEntity);
+        database().insert(DbOpenHelper.Tables.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(DbOpenHelper.Tables.PROGRAM, null, program);
 
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
@@ -109,32 +132,66 @@ public class ProgramRuleModelStoreIntegrationTest extends AbsStoreTestCase {
                 PRIORITY, CONDITION,
                 PROGRAM, null
         ).isExhausted();
-
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_shouldNotPersistProgramRuleInDatabaseWithoutProgram() throws Exception {
-
+    public void exception_shouldNotPersistProgramRuleInDatabaseWithoutProgram() throws ParseException {
+        String wrongProgramUid = "wrong";
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
+        programRuleStore.insert(UID, CODE, NAME, DISPLAY_NAME, timeStamp, timeStamp, PRIORITY, CONDITION,
+                wrongProgramUid, null);
+    }
 
-        long rowId = programRuleStore.insert(
-                UID, CODE, NAME, DISPLAY_NAME,
-                timeStamp, timeStamp, PRIORITY,
-                CONDITION, null, null);
+    @Test
+    public void delete_shouldDeleteProgramRuleWhenDeletingProgram() throws Exception {
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null);
+        database().insert(Tables.PROGRAM, null, program);
 
-        Cursor cursor = database().query(Tables.PROGRAM_RULE, PROGRAM_RULE_MODEL_PROJECTION,
-                null, null, null, null, null);
+        ContentValues programRule = new ContentValues();
+        programRule.put(Columns.ID, ID);
+        programRule.put(Columns.UID, UID);
+        programRule.put(Columns.PROGRAM, PROGRAM);
 
-        assertThat(rowId).isEqualTo(1L);
+        database().insert(Tables.PROGRAM_RULE, null, programRule);
 
-        assertThatCursor(cursor).hasRow(
-                UID, CODE,
-                NAME,
-                DISPLAY_NAME,
-                DATE, DATE,
-                PRIORITY, CONDITION,
-                null, null // Program and programStage == null
-        ).isExhausted();
+        String[] projection = {Columns.ID, Columns.UID, Columns.PROGRAM};
+        Cursor cursor = database().query(Tables.PROGRAM_RULE, projection, null, null, null, null, null);
+        // checking that program rule was successfully inserted into database
+        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM);
+
+        database().delete(Tables.PROGRAM, ProgramModel.Columns.UID + " =?", new String[]{PROGRAM});
+
+        cursor = database().query(Tables.PROGRAM_RULE, projection, null, null, null, null, null);
+
+        assertThatCursor(cursor).isExhausted();
+
+    }
+
+    @Test
+    public void delete_shouldDeleteProgramRuleWhenDeletingProgramStage() throws Exception {
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null);
+        database().insert(Tables.PROGRAM, null, program);
+
+        ContentValues programStage = CreateProgramStageUtils.create(ID, PROGRAM_STAGE, PROGRAM);
+        database().insert(Tables.PROGRAM_STAGE, null, programStage);
+
+        ContentValues programRule = new ContentValues();
+        programRule.put(Columns.ID, ID);
+        programRule.put(Columns.UID, UID);
+        programRule.put(Columns.PROGRAM, PROGRAM);
+        programRule.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+
+        database().insert(Tables.PROGRAM_RULE, null, programRule);
+
+        String[] projection = {Columns.ID, Columns.UID, Columns.PROGRAM, Columns.PROGRAM_STAGE};
+        Cursor cursor = database().query(Tables.PROGRAM_RULE, projection, null, null, null, null, null);
+        // checking that program rule is successfully inserted
+        assertThatCursor(cursor).hasRow(ID, UID, PROGRAM, PROGRAM_STAGE);
+
+        database().delete(Tables.PROGRAM_STAGE, ProgramStageModel.Columns.UID + " =?", new String[]{PROGRAM_STAGE});
+
+        cursor = database().query(Tables.PROGRAM_RULE, projection, null, null, null, null, null);
+        assertThatCursor(cursor).isExhausted();
 
     }
 

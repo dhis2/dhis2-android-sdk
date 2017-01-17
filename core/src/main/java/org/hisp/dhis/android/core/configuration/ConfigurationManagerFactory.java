@@ -4,23 +4,18 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 
-public final class ConfigurationManagerFactory implements ConfigurationManager.Factory {
+public final class ConfigurationManagerFactory {
 
-    @NonNull
-    private final DbOpenHelper dbOpenHelper;
-
-    private ConfigurationManagerFactory(@NonNull DbOpenHelper dbOpenHelper) {
-        this.dbOpenHelper = dbOpenHelper;
+    private ConfigurationManagerFactory() {
+        // no instances
     }
 
     @NonNull
-    public static ConfigurationManager.Factory create(@NonNull DbOpenHelper dbOpenHelper) {
-        return new ConfigurationManagerFactory(dbOpenHelper);
-    }
+    public static ConfigurationManager create(@NonNull DbOpenHelper dbOpenHelper) {
+        if (dbOpenHelper == null) {
+            throw new IllegalArgumentException("dbOpenHelper == null");
+        }
 
-    @NonNull
-    @Override
-    public ConfigurationManager create() {
         ConfigurationStore configurationStore = new ConfigurationStoreImpl(
                 dbOpenHelper.getWritableDatabase());
         return new ConfigurationManagerImpl(configurationStore);

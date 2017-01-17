@@ -42,7 +42,7 @@ public interface ProgramTrackedEntityAttributeStore {
                 @Nullable String description, @Nullable String displayDescription,
                 @Nullable Boolean mandatory, @NonNull String trackedEntityAttribute,
                 @Nullable ValueType valueType, @Nullable Boolean allowFutureDates,
-                @Nullable Boolean displayInList);
+                @Nullable Boolean displayInList, @NonNull String program);
 
     void close();
 }

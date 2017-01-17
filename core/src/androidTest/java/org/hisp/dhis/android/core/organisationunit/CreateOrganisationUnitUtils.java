@@ -4,7 +4,7 @@ import android.content.ContentValues;
 
 public class CreateOrganisationUnitUtils {
 
-    public static ContentValues create(long id, String uid) {
+    public static ContentValues createOrgUnit(long id, String uid) {
         ContentValues organisationUnit = new ContentValues();
         organisationUnit.put(OrganisationUnitModel.Columns.ID, id);
         organisationUnit.put(OrganisationUnitModel.Columns.UID, uid);

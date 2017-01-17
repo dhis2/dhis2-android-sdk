@@ -29,31 +29,6 @@ public class RelationshipTypeModelIntegrationTests {
     private static final String A_IS_TO_B = "cat of";
     private static final String B_IS_TO_A = "owner of";
 
-    /**
-     * A method to createTrackedEntityAttribute ContentValues from a RelationshipType.
-     * To be used by other tests that have RelationshipType as foreign key.
-     *
-     * @param id
-     * @param uid
-     * @return
-     */
-    public static ContentValues create(long id, String uid) {
-
-        ContentValues relationshipType = new ContentValues();
-
-        relationshipType.put(RelationshipTypeModel.Columns.ID, id);
-        relationshipType.put(RelationshipTypeModel.Columns.UID, uid);
-        relationshipType.put(RelationshipTypeModel.Columns.CODE, CODE);
-        relationshipType.put(RelationshipTypeModel.Columns.NAME, NAME);
-        relationshipType.put(RelationshipTypeModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
-        relationshipType.put(RelationshipTypeModel.Columns.CREATED, DATE);
-        relationshipType.put(RelationshipTypeModel.Columns.LAST_UPDATED, DATE);
-        relationshipType.put(RelationshipTypeModel.Columns.A_IS_TO_B, A_IS_TO_B);
-        relationshipType.put(RelationshipTypeModel.Columns.B_IS_TO_A, B_IS_TO_A);
-
-        return relationshipType;
-    }
-
     @Test
     public void create_shouldConvertToModel() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{

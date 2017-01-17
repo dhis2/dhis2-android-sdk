@@ -7,9 +7,9 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Arrays;
-
+import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -19,7 +19,6 @@ public class ConfigurationManagerUnitTests {
     @Mock
     private ConfigurationStore configurationStore;
 
-    private ConfigurationModel configurationModel;
     private ConfigurationManager configurationManager;
 
     @Before
@@ -27,22 +26,23 @@ public class ConfigurationManagerUnitTests {
         MockitoAnnotations.initMocks(this);
 
         configurationManager = new ConfigurationManagerImpl(configurationStore);
-        configurationModel = ConfigurationModel.builder()
-                .serverUrl("test_server_url")
-                .build();
+
     }
 
     @Test
-    public void configure_shouldCallStoreWithCorrectArguments() {
-        configurationManager.configure(configurationModel);
+    public void save_shouldCallStoreWithCorrectArguments() {
+        when(configurationStore.save("test_server_url")).thenReturn(1L);
+        ConfigurationModel savedConfiguration = configurationManager.save("test_server_url");
 
-        verify(configurationStore).save(configurationModel);
+        verify(configurationStore).save("test_server_url");
+        assertThat(savedConfiguration.id()).isEqualTo(1L);
+        assertThat(savedConfiguration.serverUrl()).isEqualTo("test_server_url");
     }
 
     @Test
-    public void configure_shouldFailOnNullArgument() {
+    public void save_shouldFailOnNullArgument() {
         try {
-            configurationManager.configure(null);
+            configurationManager.save(null);
 
             fail("IllegalArgumentException was not thrown");
         } catch (IllegalArgumentException illegalArgumentException) {
@@ -51,12 +51,9 @@ public class ConfigurationManagerUnitTests {
     }
 
     @Test
-    public void configure_shouldFailOnMalformedServerUrl() {
+    public void save_shouldFailOnMalformedServerUrl() {
         try {
-            ConfigurationModel configurationModel = ConfigurationModel.builder()
-                    .serverUrl("")
-                    .build();
-            configurationManager.configure(configurationModel);
+            configurationManager.save("");
 
             fail("IllegalArgumentException was not thrown");
         } catch (IllegalArgumentException illegalArgumentException) {
@@ -65,15 +62,39 @@ public class ConfigurationManagerUnitTests {
     }
 
     @Test
-    public void configure_shouldFailIfConfigurationIsAlreadyPersisted() {
-        when(configurationStore.query()).thenReturn(Arrays.asList(configurationModel));
+    public void get_shouldCallQueryOnStore() {
+        ConfigurationModel configurationModel = mock(ConfigurationModel.class);
+        when(configurationStore.query()).thenReturn(configurationModel);
 
-        try {
-            configurationManager.configure(configurationModel);
+        ConfigurationModel configuration = configurationManager.get();
 
-            fail("IllegalArgumentException was not thrown");
-        } catch (IllegalArgumentException illegalArgumentException) {
-            // swallow exception
-        }
+        verify(configurationStore).query();
+        assertThat(configuration).isEqualTo(configurationModel);
+    }
+
+    @Test
+    public void get_shouldReturnNull_ifNoConfigurationIsPersisted() {
+        ConfigurationModel configuration = configurationManager.get();
+
+        verify(configurationStore).query();
+        assertThat(configuration).isNull();
+    }
+
+    @Test
+    public void remove_shouldReturnOne_ifConfigurationIsPersisted() {
+        when(configurationStore.delete()).thenReturn(1);
+
+        int removed = configurationManager.remove();
+
+        verify(configurationStore).delete();
+        assertThat(removed).isEqualTo(1);
+    }
+
+    @Test
+    public void remove_shouldReturnZero_ifNoConfigurationIsPersisted() {
+        int removed = configurationManager.remove();
+
+        verify(configurationStore).delete();
+        assertThat(removed).isEqualTo(0);
     }
 }

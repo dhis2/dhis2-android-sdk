@@ -30,8 +30,7 @@ final class BasicAuthenticator implements Authenticator {
             return chain.proceed(chain.request());
         }
 
-        List<AuthenticatedUserModel> authenticatedUsers =
-                authenticatedUserStore.query();
+        List<AuthenticatedUserModel> authenticatedUsers = authenticatedUserStore.query();
         if (authenticatedUsers.isEmpty()) {
             // proceed request if we do not
             // have any users authenticated

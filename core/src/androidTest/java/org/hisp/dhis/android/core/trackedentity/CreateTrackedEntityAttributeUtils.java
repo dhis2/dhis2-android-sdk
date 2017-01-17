@@ -2,17 +2,12 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ValueType;
-
-import java.text.ParseException;
-
-import static org.hisp.dhis.android.core.AndroidTestUtils.toBoolean;
 
 public class CreateTrackedEntityAttributeUtils {
 
     /**
-     * BaseIdentifiable propertites
+     * BaseIdentifiable properties
      */
     private static final String CODE = "test_code";
     private static final String NAME = "test_name";
@@ -43,64 +38,37 @@ public class CreateTrackedEntityAttributeUtils {
     private static final Integer UNIQUE = 1; // true
     private static final Integer INHERIT = 0; // false
 
+    public static ContentValues create(long id, String uid, String optionSetUid) {
 
-    public static ContentValues createWithOptionSet(long id, String uid, String optionSetUid) throws ParseException {
-        TrackedEntityAttributeModel trackedEntityAttributeModel = TrackedEntityAttributeModel.builder()
-                .id(id)
-                .uid(uid)
-                .code(CODE)
-                .name(NAME)
-                .displayName(DISPLAY_NAME)
-                .created(BaseIdentifiableObject.DATE_FORMAT.parse(DATE))
-                .lastUpdated(BaseIdentifiableObject.DATE_FORMAT.parse(DATE))
-                .shortName(SHORT_NAME)
-                .displayShortName(DISPLAY_SHORT_NAME)
-                .description(DESCRIPTION)
-                .displayDescription(DISPLAY_DESCRIPTION)
-                .pattern(PATTERN)
-                .sortOrderInListNoProgram(SORT_ORDER_IN_LIST_NO_PROGRAM)
-                .optionSet(optionSetUid)
-                .valueType(VALUE_TYPE)
-                .expression(EXPRESSION)
-                .searchScope(SEARCH_SCOPE)
-                .programScope(toBoolean(PROGRAM_SCOPE))
-                .displayInListNoProgram(toBoolean(DISPLAY_IN_LIST_NO_PROGRAM))
-                .generated(toBoolean(GENERATED))
-                .displayOnVisitSchedule(toBoolean(DISPLAY_ON_VISIT_SCHEDULE))
-                .orgUnitScope(toBoolean(ORG_UNIT_SCOPE))
-                .unique(toBoolean(UNIQUE))
-                .inherit(toBoolean(INHERIT))
-                .build();
-        return trackedEntityAttributeModel.toContentValues();
+        ContentValues values = new ContentValues();
+
+        values.put(TrackedEntityAttributeModel.Columns.ID, id);
+        values.put(TrackedEntityAttributeModel.Columns.UID, uid);
+        values.put(TrackedEntityAttributeModel.Columns.CODE, CODE);
+        values.put(TrackedEntityAttributeModel.Columns.NAME, NAME);
+        values.put(TrackedEntityAttributeModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
+        values.put(TrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
+        values.put(TrackedEntityAttributeModel.Columns.CREATED, DATE);
+        values.put(TrackedEntityAttributeModel.Columns.LAST_UPDATED, DATE);
+        values.put(TrackedEntityAttributeModel.Columns.SHORT_NAME, SHORT_NAME);
+        values.put(TrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
+        values.put(TrackedEntityAttributeModel.Columns.DESCRIPTION, DESCRIPTION);
+        values.put(TrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
+        values.put(TrackedEntityAttributeModel.Columns.PATTERN, PATTERN);
+        values.put(TrackedEntityAttributeModel.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM, SORT_ORDER_IN_LIST_NO_PROGRAM);
+        values.put(TrackedEntityAttributeModel.Columns.OPTION_SET, optionSetUid);
+        values.put(TrackedEntityAttributeModel.Columns.VALUE_TYPE, VALUE_TYPE.name());
+        values.put(TrackedEntityAttributeModel.Columns.EXPRESSION, EXPRESSION);
+        values.put(TrackedEntityAttributeModel.Columns.SEARCH_SCOPE, SEARCH_SCOPE.name());
+        values.put(TrackedEntityAttributeModel.Columns.PROGRAM_SCOPE, PROGRAM_SCOPE);
+        values.put(TrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST_NO_PROGRAM, DISPLAY_IN_LIST_NO_PROGRAM);
+        values.put(TrackedEntityAttributeModel.Columns.GENERATED, GENERATED);
+        values.put(TrackedEntityAttributeModel.Columns.DISPLAY_ON_VISIT_SCHEDULE, DISPLAY_ON_VISIT_SCHEDULE);
+        values.put(TrackedEntityAttributeModel.Columns.ORG_UNIT_SCOPE, ORG_UNIT_SCOPE);
+        values.put(TrackedEntityAttributeModel.Columns.UNIQUE, UNIQUE);
+        values.put(TrackedEntityAttributeModel.Columns.INHERIT, INHERIT);
+
+        return values;
     }
 
-    public static ContentValues createWithoutOptionSet(long id, String uid) throws ParseException {
-        TrackedEntityAttributeModel trackedEntityAttributeModel = TrackedEntityAttributeModel.builder()
-                .id(id)
-                .uid(uid)
-                .code(CODE)
-                .name(NAME)
-                .displayName(DISPLAY_NAME)
-                .created(BaseIdentifiableObject.DATE_FORMAT.parse(DATE))
-                .lastUpdated(BaseIdentifiableObject.DATE_FORMAT.parse(DATE))
-                .shortName(SHORT_NAME)
-                .displayShortName(DISPLAY_SHORT_NAME)
-                .description(DESCRIPTION)
-                .displayDescription(DISPLAY_DESCRIPTION)
-                .pattern(PATTERN)
-                .sortOrderInListNoProgram(SORT_ORDER_IN_LIST_NO_PROGRAM)
-                .optionSet(null)
-                .valueType(VALUE_TYPE)
-                .expression(EXPRESSION)
-                .searchScope(SEARCH_SCOPE)
-                .programScope(toBoolean(PROGRAM_SCOPE))
-                .displayInListNoProgram(toBoolean(DISPLAY_IN_LIST_NO_PROGRAM))
-                .generated(toBoolean(GENERATED))
-                .displayOnVisitSchedule(toBoolean(DISPLAY_ON_VISIT_SCHEDULE))
-                .orgUnitScope(toBoolean(ORG_UNIT_SCOPE))
-                .unique(toBoolean(UNIQUE))
-                .inherit(toBoolean(INHERIT))
-                .build();
-        return trackedEntityAttributeModel.toContentValues();
-    }
 }

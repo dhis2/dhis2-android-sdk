@@ -3,8 +3,6 @@ package org.hisp.dhis.android.core.configuration;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.util.List;
-
 final class ConfigurationManagerImpl implements ConfigurationManager {
 
     @NonNull
@@ -14,37 +12,32 @@ final class ConfigurationManagerImpl implements ConfigurationManager {
         this.configurationStore = configurationStore;
     }
 
+    @NonNull
     @Override
-    public void configure(@NonNull ConfigurationModel configurationModel) {
-        if (configurationModel == null) {
-            throw new IllegalArgumentException("configurationModel == null");
+    public ConfigurationModel save(@NonNull String serverUrl) {
+        if (serverUrl == null) {
+            throw new IllegalArgumentException("serverUrl == null");
         }
 
-        if (configurationModel.serverUrl() == null) {
-            throw new IllegalArgumentException("configurationModel.serverUrl() == null");
+        if (serverUrl.isEmpty()) {
+            throw new IllegalArgumentException("serverUrl() must not be empty");
         }
 
-        if (configurationModel.serverUrl().isEmpty()) {
-            throw new IllegalArgumentException("configurationModel.serverUrl() must not be empty");
-        }
-
-        List<ConfigurationModel> configurations = configurationStore.query();
-        if (!configurations.isEmpty()) {
-            throw new IllegalArgumentException("Has been already configured with: " + configurations.get(0));
-        }
-
-        configurationStore.save(configurationModel);
+        long configurationId = configurationStore.save(serverUrl);
+        return ConfigurationModel.builder()
+                .id(configurationId)
+                .serverUrl(serverUrl)
+                .build();
     }
 
     @Nullable
     @Override
-    public ConfigurationModel configuration() {
-        List<ConfigurationModel> configurations = configurationStore.query();
+    public ConfigurationModel get() {
+        return configurationStore.query();
+    }
 
-        if (!configurations.isEmpty()) {
-            return configurations.get(0);
-        }
-
-        return null;
+    @Override
+    public int remove() {
+        return configurationStore.delete();
     }
 }

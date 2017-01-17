@@ -8,16 +8,20 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.event.EventModel.Columns;
 import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
 import org.hisp.dhis.android.core.program.CreateProgramStageUtils;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
+import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
+import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -57,6 +61,11 @@ public class EventModelStoreIntegrationTest extends AbsStoreTestCase {
     // timestamp
     private static final String DATE = "2017-01-12T11:31:00.000";
 
+    //foreign keys to program:
+    private static final long TRACKED_ENTITY_ID = 1L;
+    private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
+    private static final long RELATIONSHIP_TYPE_ID = 3L;
+    private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
 
     @Override
     @Before
@@ -66,14 +75,21 @@ public class EventModelStoreIntegrationTest extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistEventInDatabase() throws Exception {
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.create(1L, ORGANISATION_UNIT);
-        ContentValues program = CreateProgramUtils.create(1L, PROGRAM);
+    public void insert_shouldPersistEventInDatabase() throws ParseException {
+        //Create Program & insert a row in the table.
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
+                RELATIONSHIP_TYPE_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
+
+        database().insert(DbOpenHelper.Tables.TRACKED_ENTITY, null, trackedEntity);
+        database().insert(DbOpenHelper.Tables.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(DbOpenHelper.Tables.PROGRAM, null, program);
+
+        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
 
-
         database().insert(Tables.ORGANISATION_UNIT, null, organisationUnit);
-        database().insert(Tables.PROGRAM, null, program);
         database().insert(Tables.PROGRAM_STAGE, null, programStage);
 
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
@@ -121,13 +137,13 @@ public class EventModelStoreIntegrationTest extends AbsStoreTestCase {
     /**
      * trying to insert event with program, stage and org unit without
      * inserting them to db.
-     * @throws Exception
+     * @throws ParseException
      */
     @Test(expected = SQLiteConstraintException.class)
-    public void insert_shouldThrowSqliteConstraintException() throws Exception {
+    public void insert_shouldThrowSqliteConstraintException() throws ParseException {
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
-        long rowId = eventModelStore.insert(
+        eventModelStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
                 timeStamp, // created

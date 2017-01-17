@@ -96,10 +96,10 @@ public class OrganisationUnitStoreIntegrationTests extends AbsStoreTestCase {
     @Test
     public void delete_shouldDeleteAllRows() {
         ContentValues organisationUnitOne =
-                CreateOrganisationUnitUtils.create(1L, "test_organisation_unit_one");
+                CreateOrganisationUnitUtils.createOrgUnit(1L, "test_organisation_unit_one");
 
         ContentValues organisationUnitTwo =
-                CreateOrganisationUnitUtils.create(2L, "test_organisation_unit_two");
+                CreateOrganisationUnitUtils.createOrgUnit(2L, "test_organisation_unit_two");
 
         database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitOne);
         database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnitTwo);

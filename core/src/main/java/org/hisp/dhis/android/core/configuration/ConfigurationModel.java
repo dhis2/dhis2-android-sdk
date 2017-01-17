@@ -20,18 +20,22 @@ public abstract class ConfigurationModel extends BaseModel {
     @ColumnName(Columns.SERVER_URL)
     public abstract String serverUrl();
 
-    public abstract ContentValues toContentValues();
+    // package visible for access in the store and manager
+    abstract ContentValues toContentValues();
 
-    public static ConfigurationModel create(Cursor cursor) {
+    // package visible for access in the store and manager
+    static ConfigurationModel create(Cursor cursor) {
         return AutoValue_ConfigurationModel.createFromCursor(cursor);
     }
 
-    public static Builder builder() {
+    // package visible for access in the store and manager
+    static Builder builder() {
         return new $$AutoValue_ConfigurationModel.Builder();
     }
 
+    // package visible for access in the store and manager
     @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
+    static abstract class Builder extends BaseModel.Builder<Builder> {
         public abstract Builder serverUrl(String serverUrl);
 
         public abstract ConfigurationModel build();

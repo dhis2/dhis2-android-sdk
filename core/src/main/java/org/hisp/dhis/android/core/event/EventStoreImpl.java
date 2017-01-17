@@ -13,7 +13,7 @@ import java.util.Date;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
-public class EventModelStoreImpl implements EventModelStore {
+public class EventStoreImpl implements EventStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.EVENT + " (" +
             Columns.UID + ", " +
@@ -34,7 +34,7 @@ public class EventModelStoreImpl implements EventModelStore {
 
     private final SQLiteStatement sqLiteStatement;
 
-    public EventModelStoreImpl(SQLiteDatabase sqLiteDatabase) {
+    public EventStoreImpl(SQLiteDatabase sqLiteDatabase) {
         this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
     }
 
@@ -42,8 +42,8 @@ public class EventModelStoreImpl implements EventModelStore {
     public long insert(@NonNull String uid, @Nullable String enrollmentUid,
                        @Nullable Date created, @Nullable Date lastUpdated,
                        @Nullable EventStatus status, @Nullable String latitude,
-                       @Nullable String longitude, @Nullable String program,
-                       @Nullable String programStage, @Nullable String organisationUnit,
+                       @Nullable String longitude, @NonNull String program,
+                       @NonNull String programStage, @NonNull String organisationUnit,
                        @Nullable Date eventDate, @Nullable Date completedDate,
                        @Nullable Date dueDate, @Nullable State state) {
         sqLiteStatement.clearBindings();

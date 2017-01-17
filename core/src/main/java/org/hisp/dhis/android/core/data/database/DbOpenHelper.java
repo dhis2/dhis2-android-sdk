@@ -525,13 +525,12 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             EventModel.Columns.COMPLETE_DATE + " TEXT," +
             EventModel.Columns.DUE_DATE + " TEXT," +
             EventModel.Columns.STATE + " TEXT," +
-            " FOREIGN KEY (" + EventModel.Columns.PROGRAM + ")" +
-            " REFERENCES " + Tables.PROGRAM + " (" + ProgramModel.Columns.UID + ")," +
-            " FOREIGN KEY (" + EventModel.Columns.PROGRAM_STAGE + ")" +
-            " REFERENCES " + Tables.PROGRAM_STAGE + " (" + ProgramStageModel.Columns.UID + ")," +
-            " FOREIGN KEY (" + EventModel.Columns.ORGANISATION_UNIT + ")" +
-            " REFERENCES " + Tables.ORGANISATION_UNIT + " (" + OrganisationUnitModel.Columns.UID +
-            ")" +
+            " FOREIGN KEY (" + EventModel.Columns.PROGRAM + ")" + " REFERENCES " + Tables.PROGRAM +
+            " (" + ProgramModel.Columns.UID + ") ON DELETE CASCADE," +
+            " FOREIGN KEY (" + EventModel.Columns.PROGRAM_STAGE + ")" + " REFERENCES " + Tables.PROGRAM_STAGE +
+            " (" + ProgramStageModel.Columns.UID + ") ON DELETE CASCADE," +
+            " FOREIGN KEY (" + EventModel.Columns.ORGANISATION_UNIT + ")" + " REFERENCES " + Tables.ORGANISATION_UNIT +
+            " (" + OrganisationUnitModel.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_TRACKED_ENTITY_INSTANCE_TABLE = "CREATE TABLE " +

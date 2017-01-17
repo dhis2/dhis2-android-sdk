@@ -36,7 +36,6 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.junit.Before;
@@ -94,7 +93,7 @@ public class TrackedEntityInstanceStoreIntegrationTests extends AbsStoreTestCase
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
-        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
+        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
 
         long rowId = trackedEntityInstanceStore.insert(
                 UID,
@@ -104,7 +103,7 @@ public class TrackedEntityInstanceStoreIntegrationTests extends AbsStoreTestCase
                 STATE
         );
 
-        Cursor cursor = database().query(DbOpenHelper.Tables.TRACKED_ENTITY_INSTANCE,
+        Cursor cursor = database().query(TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE,
                 TRACKED_ENTITY_INSTANCE_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -122,11 +121,11 @@ public class TrackedEntityInstanceStoreIntegrationTests extends AbsStoreTestCase
     public void insert_shouldPersistNullableRowInDatabase() throws Exception {
 
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
-        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
+        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
 
         long rowId = trackedEntityInstanceStore.insert(UID, null, null, ORGANISATION_UNIT, null);
 
-        Cursor cursor = database().query(DbOpenHelper.Tables.TRACKED_ENTITY_INSTANCE,
+        Cursor cursor = database().query(TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE,
                 TRACKED_ENTITY_INSTANCE_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -150,10 +149,10 @@ public class TrackedEntityInstanceStoreIntegrationTests extends AbsStoreTestCase
         //Insert:
         insert_shouldPersistRowInDatabase();
         //Delete OrganisationUnit:
-        database().delete(DbOpenHelper.Tables.ORGANISATION_UNIT,
+        database().delete(OrganisationUnitModel.ORGANISATION_UNIT,
                 OrganisationUnitModel.Columns.UID + "=?", new String[]{ORGANISATION_UNIT});
         //Check that TrackedEntityInstance is deleted:
-        Cursor cursor = database().query(DbOpenHelper.Tables.TRACKED_ENTITY_INSTANCE,
+        Cursor cursor = database().query(TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE,
                 TRACKED_ENTITY_INSTANCE_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
@@ -164,7 +163,7 @@ public class TrackedEntityInstanceStoreIntegrationTests extends AbsStoreTestCase
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
-        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
+        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
 
         trackedEntityInstanceStore.insert(UID, date, date, wrongOrgUnit, STATE);
     }

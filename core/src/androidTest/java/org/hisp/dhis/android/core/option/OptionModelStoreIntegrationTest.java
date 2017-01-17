@@ -35,7 +35,6 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.option.OptionModel.Columns;
 import org.junit.Before;
 import org.junit.Test;
@@ -83,14 +82,14 @@ public class OptionModelStoreIntegrationTest extends AbsStoreTestCase {
         ContentValues optionSet =
                 CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
 
-        database().insert(Tables.OPTION_SET, null, optionSet);
+        database().insert(OptionSetModel.OPTION_SET, null, optionSet);
 
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
         long rowId = optionStore.insert(
                 UID, CODE, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID
         );
 
-        Cursor cursor = database().query(Tables.OPTION, OPTION_PROJECTION,
+        Cursor cursor = database().query(OptionModel.OPTION, OPTION_PROJECTION,
                 null, null, null, null, null);
 
         // Checking if rowId == 1.
@@ -114,7 +113,7 @@ public class OptionModelStoreIntegrationTest extends AbsStoreTestCase {
     @Test
     public void delete_shouldDeleteOptionsWhenDeletingOptionSet() throws Exception {
         ContentValues optionSet = CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
-        database().insert(Tables.OPTION_SET, null, optionSet);
+        database().insert(OptionSetModel.OPTION_SET, null, optionSet);
 
         ContentValues option = new ContentValues();
         option.put(Columns.ID, 1L);
@@ -128,19 +127,19 @@ public class OptionModelStoreIntegrationTest extends AbsStoreTestCase {
         option1.put(Columns.UID, option1Uid);
         option1.put(Columns.OPTION_SET, OPTION_SET_UID);
 
-        database().insert(Tables.OPTION, null, option);
-        database().insert(Tables.OPTION, null, option1);
+        database().insert(OptionModel.OPTION, null, option);
+        database().insert(OptionModel.OPTION, null, option1);
 
         String[] projection = {Columns.ID, Columns.UID, Columns.OPTION_SET};
 
-        Cursor cursor = database().query(Tables.OPTION, projection, null, null, null, null, null);
+        Cursor cursor = database().query(OptionModel.OPTION, projection, null, null, null, null, null);
 
         assertThatCursor(cursor).hasRow(1L, UID, OPTION_SET_UID);
         assertThatCursor(cursor).hasRow(2L, option1Uid, OPTION_SET_UID).isExhausted();
 
-        database().delete(Tables.OPTION_SET, OptionSetModel.Columns.UID + " =?", new String[]{OPTION_SET_UID});
+        database().delete(OptionSetModel.OPTION_SET, OptionSetModel.Columns.UID + " =?", new String[]{OPTION_SET_UID});
 
-        cursor = database().query(Tables.OPTION, projection, null, null, null, null, null);
+        cursor = database().query(OptionModel.OPTION, projection, null, null, null, null, null);
 
         assertThatCursor(cursor).isExhausted();
 

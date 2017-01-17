@@ -33,7 +33,6 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModel.Columns;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,7 +74,7 @@ public class SystemInfoStoreIntegrationTests extends AbsStoreTestCase {
 
         long rowId = systemInfoStore.insert(date, DATE_FORMAT);
         Cursor cursor = database().query(
-                DbOpenHelper.Tables.SYSTEM_INFO,
+                SystemInfoModel.SYSTEM_INFO,
                 SYSTEM_INFO_PROJECTION,
                 null, null, null, null, null, null);
 

@@ -34,7 +34,6 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -129,7 +128,7 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
                 "test_user_nationality"
         );
 
-        Cursor cursor = database().query(DbOpenHelper.Tables.USER,
+        Cursor cursor = database().query(UserModel.USER,
                 USER_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -161,11 +160,11 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
     @Test
     public void delete_shouldDeleteAllRows() {
         ContentValues user = create(1L, "test_user_id");
-        database().insert(DbOpenHelper.Tables.USER, null, user);
+        database().insert(UserModel.USER, null, user);
 
         int deleted = userStore.delete();
 
-        Cursor cursor = database().query(DbOpenHelper.Tables.USER,
+        Cursor cursor = database().query(UserModel.USER,
                 null, null, null, null, null, null);
         assertThat(deleted).isEqualTo(1);
         assertThatCursor(cursor).isExhausted();

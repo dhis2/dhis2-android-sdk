@@ -32,7 +32,6 @@ import android.database.Cursor;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -69,7 +68,7 @@ public class ConstantStoreIntegrationTest extends AbsStoreTestCase {
     @Test
     public void insert_shouldPersistRowInDatabase() {
         long rowId = constantStore.insert(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, VALUE);
-        Cursor cursor = database().query(DbOpenHelper.Tables.CONSTANT, CONSTANT_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(ConstantModel.CONSTANT, CONSTANT_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isNotEqualTo(-1L); // Checks that the insert was successful (row ID would otherwise be -1)
 

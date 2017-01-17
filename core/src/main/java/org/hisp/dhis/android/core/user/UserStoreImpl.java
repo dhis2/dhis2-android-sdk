@@ -33,14 +33,12 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
-
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class UserStoreImpl implements UserStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + DbOpenHelper.Tables.USER + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + UserModel.USER + " (" +
             UserModel.Columns.UID + ", " +
             UserModel.Columns.CODE + ", " +
             UserModel.Columns.NAME + ", " +
@@ -107,7 +105,7 @@ public class UserStoreImpl implements UserStore {
 
     @Override
     public int delete() {
-        return sqLiteDatabase.delete(DbOpenHelper.Tables.USER, null, null);
+        return sqLiteDatabase.delete(UserModel.USER, null, null);
     }
 
     @Override

@@ -32,7 +32,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModel.Columns;
 
 import java.util.Date;
@@ -41,7 +40,7 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class SystemInfoStoreImpl implements SystemInfoStore {
 
-    private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.SYSTEM_INFO + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + SystemInfoModel.SYSTEM_INFO + " (" +
             Columns.SERVER_DATE + ", " +
             Columns.DATE_FORMAT + ") " +
             "VALUES (?, ?);";

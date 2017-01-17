@@ -32,12 +32,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
-
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLinkStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + DbOpenHelper.Tables.USER_ORGANISATION_UNIT + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " +
+            UserOrganisationUnitLinkModel.USER_ORGANISATION_UNIT_LINK + " (" +
             UserOrganisationUnitLinkModel.Columns.USER + ", " +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ", " +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + ") " +
@@ -66,7 +65,7 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
 
     @Override
     public int delete() {
-        return sqLiteDatabase.delete(DbOpenHelper.Tables.USER_ORGANISATION_UNIT, null, null);
+        return sqLiteDatabase.delete(UserOrganisationUnitLinkModel.USER_ORGANISATION_UNIT_LINK, null, null);
     }
 
     @Override

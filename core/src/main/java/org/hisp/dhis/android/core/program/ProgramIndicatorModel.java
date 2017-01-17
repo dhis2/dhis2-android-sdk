@@ -40,6 +40,8 @@ import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 
 @AutoValue
 public abstract class ProgramIndicatorModel extends BaseNameableObjectModel {
+    public static final String PROGRAM_INDICATOR = "ProgramIndicator";
+
     public static class Columns extends BaseNameableObjectModel.Columns {
         public static final String DISPLAY_IN_FORM = "displayInForm";
         public static final String EXPRESSION = "expression";

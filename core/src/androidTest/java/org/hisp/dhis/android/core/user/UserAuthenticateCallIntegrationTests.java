@@ -37,7 +37,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
@@ -215,15 +214,15 @@ public class UserAuthenticateCallIntegrationTests extends AbsStoreTestCase {
         authenticateUserCall.call();
 
         // verify that user is persisted in database with corresponding data
-        Cursor userCursor = database().query(DbOpenHelper.Tables.USER,
+        Cursor userCursor = database().query(UserModel.USER,
                 USER_PROJECTION, null, null, null, null, null);
-        Cursor userCredentialsCursor = database().query(DbOpenHelper.Tables.USER_CREDENTIALS,
+        Cursor userCredentialsCursor = database().query(UserCredentialsModel.USER_CREDENTIALS,
                 USER_CREDENTIALS_PROJECTION, null, null, null, null, null);
-        Cursor organisationUnits = database().query(DbOpenHelper.Tables.ORGANISATION_UNIT,
+        Cursor organisationUnits = database().query(OrganisationUnitModel.ORGANISATION_UNIT,
                 ORGANISATION_UNIT_PROJECTION, null, null, null, null, null);
-        Cursor authenticatedUsers = database().query(DbOpenHelper.Tables.AUTHENTICATED_USER,
+        Cursor authenticatedUsers = database().query(AuthenticatedUserModel.AUTHENTICATED_USER,
                 AUTHENTICATED_USERS_PROJECTION, null, null, null, null, null);
-        Cursor userOrganisationUnitLinks = database().query(DbOpenHelper.Tables.USER_ORGANISATION_UNIT,
+        Cursor userOrganisationUnitLinks = database().query(UserOrganisationUnitLinkModel.USER_ORGANISATION_UNIT_LINK,
                 USER_ORGANISATION_UNIT_PROJECTION, null, null, null, null, null);
 
         assertThatCursor(userCursor)

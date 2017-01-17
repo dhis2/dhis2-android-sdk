@@ -34,14 +34,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttributeValueStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
-            DbOpenHelper.Tables.TRACKED_ENTITY_ATTRIBUTE_VALUE + " (" +
+            TrackedEntityAttributeValueModel.TRACKED_ENTITY_ATTRIBUTE_VALUE + " (" +
             TrackedEntityAttributeValueModel.Columns.STATE + ", " +
             TrackedEntityAttributeValueModel.Columns.VALUE  + ", " +
             TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ", " +

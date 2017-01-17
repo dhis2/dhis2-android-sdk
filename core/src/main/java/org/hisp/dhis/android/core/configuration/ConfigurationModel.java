@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.BaseModel;
 
 @AutoValue
 public abstract class ConfigurationModel extends BaseModel {
+    public static final String CONFIGURATION = "Configuration";
 
     public static class Columns extends BaseModel.Columns {
         public static final String SERVER_URL = "serverUrl";

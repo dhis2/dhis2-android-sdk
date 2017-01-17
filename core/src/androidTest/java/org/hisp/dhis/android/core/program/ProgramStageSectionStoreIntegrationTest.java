@@ -34,11 +34,11 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.program.ProgramStageSectionModel.Columns;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -99,7 +99,7 @@ public class ProgramStageSectionStoreIntegrationTest extends AbsStoreTestCase {
         insertForeignKeys();
 
         ContentValues programStage = ProgramStageModelIntegrationTest.create(ID, PROGRAM_STAGE, PROGRAM);
-        database().insert(Tables.PROGRAM_STAGE, null, programStage);
+        database().insert(ProgramStageModel.PROGRAM_STAGE, null, programStage);
 
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
@@ -109,7 +109,7 @@ public class ProgramStageSectionStoreIntegrationTest extends AbsStoreTestCase {
                 PROGRAM_STAGE
         );
 
-        Cursor cursor = database().query(Tables.PROGRAM_STAGE_SECTION, PROGRAM_STAGE_SECTION_PROJECTION,
+        Cursor cursor = database().query(ProgramStageSectionModel.PROGRAM_STAGE_SECTION, PROGRAM_STAGE_SECTION_PROJECTION,
                 null, null, null, null, null);
 
         // Checking if rowId == 1.
@@ -126,23 +126,23 @@ public class ProgramStageSectionStoreIntegrationTest extends AbsStoreTestCase {
         insertForeignKeys();
 
         ContentValues programStage = ProgramStageModelIntegrationTest.create(ID, PROGRAM_STAGE, PROGRAM);
-        database().insert(Tables.PROGRAM_STAGE, null, programStage);
+        database().insert(ProgramStageModel.PROGRAM_STAGE, null, programStage);
 
         ContentValues programStageSection = new ContentValues();
         programStageSection.put(Columns.ID, ID);
         programStageSection.put(Columns.UID, UID);
         programStageSection.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
-        database().insert(Tables.PROGRAM_STAGE_SECTION, null, programStageSection);
+        database().insert(ProgramStageSectionModel.PROGRAM_STAGE_SECTION, null, programStageSection);
 
         String[] projection = {Columns.ID, Columns.UID, Columns.PROGRAM_STAGE};
-        Cursor cursor = database().query(Tables.PROGRAM_STAGE_SECTION, projection, null, null, null, null, null);
+        Cursor cursor = database().query(ProgramStageSectionModel.PROGRAM_STAGE_SECTION, projection, null, null, null, null, null);
         // checking that program stage section was successfully inserted
         assertThatCursor(cursor).hasRow(ID, UID, PROGRAM_STAGE).isExhausted();
 
         // deleting foreign key reference
-        database().delete(Tables.PROGRAM_STAGE, ProgramStageModel.Columns.UID + "=?", new String[]{PROGRAM_STAGE});
+        database().delete(ProgramStageModel.PROGRAM_STAGE, ProgramStageModel.Columns.UID + "=?", new String[]{PROGRAM_STAGE});
 
-        cursor = database().query(Tables.PROGRAM_STAGE_SECTION, projection, null, null, null, null, null);
+        cursor = database().query(ProgramStageSectionModel.PROGRAM_STAGE_SECTION, projection, null, null, null, null, null);
         // checking that program stage section is deleted.
         assertThatCursor(cursor).isExhausted();
     }
@@ -165,8 +165,8 @@ public class ProgramStageSectionStoreIntegrationTest extends AbsStoreTestCase {
                 RELATIONSHIP_TYPE_UID);
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
 
-        database().insert(DbOpenHelper.Tables.TRACKED_ENTITY, null, trackedEntity);
-        database().insert(DbOpenHelper.Tables.RELATIONSHIP_TYPE, null, relationshipType);
-        database().insert(DbOpenHelper.Tables.PROGRAM, null, program);
+        database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
+        database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(ProgramModel.PROGRAM, null, program);
     }
 }

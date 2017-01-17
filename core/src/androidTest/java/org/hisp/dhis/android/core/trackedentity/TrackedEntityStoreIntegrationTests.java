@@ -33,7 +33,6 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -86,7 +85,7 @@ public class TrackedEntityStoreIntegrationTests extends AbsStoreTestCase {
                 "test_display_description"
         );
 
-        Cursor cursor = database().query(DbOpenHelper.Tables.TRACKED_ENTITY,
+        Cursor cursor = database().query(TrackedEntityModel.TRACKED_ENTITY,
                 TRACKED_ENTITY_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);

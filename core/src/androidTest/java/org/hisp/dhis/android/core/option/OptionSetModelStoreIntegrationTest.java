@@ -33,7 +33,6 @@ import android.database.Cursor;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -77,7 +76,7 @@ public class OptionSetModelStoreIntegrationTest extends AbsStoreTestCase {
         long rowId = optionSetStore.insert(
                 UID, CODE, NAME, DISPLAY_NAME, date, date, VERSION, VALUE_TYPE);
 
-        Cursor cursor = database().query(Tables.OPTION_SET, OPTION_SET_PROJECTION,
+        Cursor cursor = database().query(OptionSetModel.OPTION_SET, OPTION_SET_PROJECTION,
                 null, null, null, null, null);
 
         // Checking if rowId == 1.

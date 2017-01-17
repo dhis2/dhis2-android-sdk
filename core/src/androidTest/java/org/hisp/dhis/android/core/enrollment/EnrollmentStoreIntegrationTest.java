@@ -37,15 +37,16 @@ import org.hisp.dhis.android.core.AndroidTestUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityInstanceUtils;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,7 +57,7 @@ import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
-import static org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables.ENROLLMENT;
+import static org.hisp.dhis.android.core.enrollment.EnrollmentModel.ENROLLMENT;
 
 @RunWith(AndroidJUnit4.class)
 public class EnrollmentStoreIntegrationTest extends AbsStoreTestCase {
@@ -186,7 +187,7 @@ public class EnrollmentStoreIntegrationTest extends AbsStoreTestCase {
         enrollmentStore.insert(UID, date, date, ORGANISATION_UNIT, PROGRAM, date, date, FOLLOW_UP,
                 ENROLLMENT_STATUS, TRACKED_ENTITY_INSTANCE, LATITUDE, LONGITUDE, STATE);
         //Delete OrgUnit:
-        database().delete(Tables.ORGANISATION_UNIT,
+        database().delete(OrganisationUnitModel.ORGANISATION_UNIT,
                 OrganisationUnitModel.Columns.UID + " =?", new String[]{ORGANISATION_UNIT});
         //Query for Enrollment:
         Cursor cursor = database().query(ENROLLMENT, ENROLLMENT_PROJECTION, null, null, null, null, null, null);
@@ -200,7 +201,7 @@ public class EnrollmentStoreIntegrationTest extends AbsStoreTestCase {
         enrollmentStore.insert(UID, date, date, ORGANISATION_UNIT, PROGRAM, date, date, FOLLOW_UP,
                 ENROLLMENT_STATUS, TRACKED_ENTITY_INSTANCE, LATITUDE, LONGITUDE, STATE);
         //Delete OrgUnit:
-        database().delete(Tables.PROGRAM,
+        database().delete(ProgramModel.PROGRAM,
                 ProgramModel.Columns.UID + " =?", new String[]{PROGRAM});
         //Query for Enrollment:
         Cursor cursor = database().query(ENROLLMENT, ENROLLMENT_PROJECTION, null, null, null, null, null, null);
@@ -214,7 +215,7 @@ public class EnrollmentStoreIntegrationTest extends AbsStoreTestCase {
         enrollmentStore.insert(UID, date, date, ORGANISATION_UNIT, PROGRAM, date, date, FOLLOW_UP,
                 ENROLLMENT_STATUS, TRACKED_ENTITY_INSTANCE, LATITUDE, LONGITUDE, STATE);
         //Delete OrgUnit:
-        database().delete(Tables.TRACKED_ENTITY_INSTANCE,
+        database().delete(TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE,
                 ProgramModel.Columns.UID + " =?", new String[]{TRACKED_ENTITY_INSTANCE});
         //Query for Enrollment:
         Cursor cursor = database().query(ENROLLMENT, ENROLLMENT_PROJECTION, null, null, null, null, null, null);
@@ -259,15 +260,15 @@ public class EnrollmentStoreIntegrationTest extends AbsStoreTestCase {
                 RELATIONSHIP_TYPE_UID);
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
 
-        database().insert(DbOpenHelper.Tables.TRACKED_ENTITY, null, trackedEntity);
-        database().insert(DbOpenHelper.Tables.RELATIONSHIP_TYPE, null, relationshipType);
-        database().insert(DbOpenHelper.Tables.PROGRAM, null, program);
+        database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
+        database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(ProgramModel.PROGRAM, null, program);
 
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.createWithOrgUnit(
                 TRACKED_ENTITY_INSTANCE, ORGANISATION_UNIT);
 
-        database().insert(Tables.ORGANISATION_UNIT, null, organisationUnit);
-        database().insert(Tables.TRACKED_ENTITY_INSTANCE, null, trackedEntityInstance);
+        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
+        database().insert(TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE, null, trackedEntityInstance);
     }
 }

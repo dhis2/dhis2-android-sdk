@@ -33,8 +33,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +45,7 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
             AuthenticatedUserModel.Columns.CREDENTIALS
     };
 
-    private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.AUTHENTICATED_USER +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + AuthenticatedUserModel.AUTHENTICATED_USER +
             " (" + AuthenticatedUserModel.Columns.USER + ", " + AuthenticatedUserModel.Columns.CREDENTIALS + ")" +
             " VALUES (?, ?);";
 
@@ -72,7 +70,7 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
     public List<AuthenticatedUserModel> query() {
         List<AuthenticatedUserModel> rows = new ArrayList<>();
 
-        Cursor queryCursor = sqLiteDatabase.query(Tables.AUTHENTICATED_USER,
+        Cursor queryCursor = sqLiteDatabase.query(AuthenticatedUserModel.AUTHENTICATED_USER,
                 PROJECTION, null, null, null, null, null);
 
         if (queryCursor == null) {
@@ -96,7 +94,7 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
 
     @Override
     public int delete() {
-        return sqLiteDatabase.delete(Tables.AUTHENTICATED_USER, null, null);
+        return sqLiteDatabase.delete(AuthenticatedUserModel.AUTHENTICATED_USER, null, null);
     }
 
     @Override

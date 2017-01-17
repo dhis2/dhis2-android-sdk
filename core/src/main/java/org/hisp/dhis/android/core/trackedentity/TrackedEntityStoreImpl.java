@@ -34,14 +34,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class TrackedEntityStoreImpl implements TrackedEntityStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + DbOpenHelper.Tables.TRACKED_ENTITY + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + TrackedEntityModel.TRACKED_ENTITY + " (" +
             TrackedEntityModel.Columns.UID + ", " +
             TrackedEntityModel.Columns.CODE + ", " +
             TrackedEntityModel.Columns.NAME + ", " +

@@ -33,15 +33,14 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class ProgramRuleVariableModelStoreImpl implements ProgramRuleVariableModelStore {
 
-    private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.PROGRAM_RULE_VARIABLE + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " +
+            ProgramRuleVariableModel.PROGRAM_RULE_VARIABLE + " (" +
             ProgramRuleVariableModel.Columns.UID + ", " +
             ProgramRuleVariableModel.Columns.CODE + ", " +
             ProgramRuleVariableModel.Columns.NAME + ", " +

@@ -34,7 +34,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.event.EventModel.Columns;
 
 import java.util.Date;
@@ -43,7 +42,7 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class EventStoreImpl implements EventStore {
 
-    private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.EVENT + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + EventModel.EVENT + " (" +
             Columns.UID + ", " +
             Columns.ENROLLMENT_UID + ", " +
             Columns.CREATED + ", " +

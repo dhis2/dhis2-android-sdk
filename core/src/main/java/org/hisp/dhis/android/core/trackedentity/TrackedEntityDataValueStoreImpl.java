@@ -33,15 +33,13 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
-
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
-            DbOpenHelper.Tables.TRACKED_ENTITY_DATA_VALUE + " (" +
+            TrackedEntityDataValueModel.TRACKED_ENTITY_DATA_VALUE + " (" +
             TrackedEntityDataValueModel.Columns.EVENT + ", " +
             TrackedEntityDataValueModel.Columns.CREATED + ", " +
             TrackedEntityDataValueModel.Columns.LAST_UPDATED + ", " +

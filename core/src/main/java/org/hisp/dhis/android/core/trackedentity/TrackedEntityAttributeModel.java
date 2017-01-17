@@ -44,6 +44,8 @@ import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 // TODO: Tests
 @AutoValue
 public abstract class TrackedEntityAttributeModel extends BaseNameableObjectModel {
+    public static final String TRACKED_ENTITY_ATTRIBUTE = "TrackedEntityAttribute";
+
     public static class Columns extends BaseNameableObjectModel.Columns {
         public static final String PATTERN = "pattern";
         public static final String SORT_ORDER_IN_LIST_NO_PROGRAM = "sortOrderInListNoProgram";

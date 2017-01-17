@@ -34,7 +34,6 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -83,7 +82,7 @@ public class UserCredentialsStoreIntegrationTests extends AbsStoreTestCase {
 
         // row which will be referenced
         ContentValues userRow = UserStoreIntegrationTests.create(1L, "test_user_uid");
-        database().insert(DbOpenHelper.Tables.USER, null, userRow);
+        database().insert(UserModel.USER, null, userRow);
     }
 
     @Test
@@ -100,7 +99,7 @@ public class UserCredentialsStoreIntegrationTests extends AbsStoreTestCase {
                 "test_user_credentials_username",
                 "test_user_uid");
 
-        Cursor cursor = database().query(DbOpenHelper.Tables.USER_CREDENTIALS,
+        Cursor cursor = database().query(UserCredentialsModel.USER_CREDENTIALS,
                 PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -120,11 +119,11 @@ public class UserCredentialsStoreIntegrationTests extends AbsStoreTestCase {
     @Test
     public void delete_shouldDeleteAllRows() {
         ContentValues userCredentials = create(1L, "test_user_credentials", "test_user_uid");
-        database().insert(DbOpenHelper.Tables.USER_CREDENTIALS, null, userCredentials);
+        database().insert(UserCredentialsModel.USER_CREDENTIALS, null, userCredentials);
 
         int deleted = userCredentialsStore.delete();
 
-        Cursor cursor = database().query(DbOpenHelper.Tables.USER_CREDENTIALS,
+        Cursor cursor = database().query(UserCredentialsModel.USER_CREDENTIALS,
                 null, null, null, null, null, null);
         assertThat(deleted).isEqualTo(1);
         assertThatCursor(cursor).isExhausted();

@@ -35,12 +35,16 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.event.CreateEventUtils;
+import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.program.CreateProgramStageUtils;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
+import org.hisp.dhis.android.core.program.ProgramModel;
+import org.hisp.dhis.android.core.program.ProgramStageModel;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -105,20 +109,20 @@ public class TrackedEntityDataValueStoreIntegrationTests extends AbsStoreTestCas
                 RELATIONSHIP_TYPE_UID);
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
 
-        database().insert(DbOpenHelper.Tables.TRACKED_ENTITY, null, trackedEntity);
-        database().insert(DbOpenHelper.Tables.RELATIONSHIP_TYPE, null, relationshipType);
-        database().insert(DbOpenHelper.Tables.PROGRAM, null, program);
+        database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
+        database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(ProgramModel.PROGRAM, null, program);
 
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
         ContentValues event = CreateEventUtils.create(EVENT, PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT);
 
-        database().insert(DbOpenHelper.Tables.TRACKED_ENTITY, null, trackedEntity);
-        database().insert(DbOpenHelper.Tables.RELATIONSHIP_TYPE, null, relationshipType);
-        database().insert(DbOpenHelper.Tables.PROGRAM, null, program);
-        database().insert(DbOpenHelper.Tables.ORGANISATION_UNIT, null, organisationUnit);
-        database().insert(DbOpenHelper.Tables.PROGRAM_STAGE, null, programStage);
-        database().insert(DbOpenHelper.Tables.EVENT, null, event);
+        database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
+        database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(ProgramModel.PROGRAM, null, program);
+        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
+        database().insert(ProgramStageModel.PROGRAM_STAGE, null, programStage);
+        database().insert(EventModel.EVENT, null, event);
 
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
@@ -132,7 +136,7 @@ public class TrackedEntityDataValueStoreIntegrationTests extends AbsStoreTestCas
                 PROVIDED_ELSEWHERE
         );
 
-        Cursor cursor = database().query(DbOpenHelper.Tables.TRACKED_ENTITY_DATA_VALUE,
+        Cursor cursor = database().query(TrackedEntityDataValueModel.TRACKED_ENTITY_DATA_VALUE,
                 TRACKED_ENTITY_DATA_VALUE_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);

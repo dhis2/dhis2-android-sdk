@@ -34,8 +34,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
-
 public class ConfigurationStoreImpl implements ConfigurationStore {
     private static final long CONFIGURATION_ID = 1L;
     private static final String[] PROJECTION = {
@@ -65,7 +63,7 @@ public class ConfigurationStoreImpl implements ConfigurationStore {
     @Nullable
     @Override
     public ConfigurationModel query() {
-        Cursor queryCursor = sqLiteDatabase.query(DbOpenHelper.Tables.CONFIGURATION,
+        Cursor queryCursor = sqLiteDatabase.query(ConfigurationModel.CONFIGURATION,
                 PROJECTION, ConfigurationModel.Columns.ID + " = ?", new String[]{
                         String.valueOf(CONFIGURATION_ID)
                 }, null, null, null);
@@ -89,18 +87,18 @@ public class ConfigurationStoreImpl implements ConfigurationStore {
 
     @Override
     public int delete() {
-        return sqLiteDatabase.delete(DbOpenHelper.Tables.CONFIGURATION, null, null);
+        return sqLiteDatabase.delete(ConfigurationModel.CONFIGURATION, null, null);
     }
 
     private int update(@NonNull ContentValues contentValues) {
-        return sqLiteDatabase.update(DbOpenHelper.Tables.CONFIGURATION, contentValues,
+        return sqLiteDatabase.update(ConfigurationModel.CONFIGURATION, contentValues,
                 ConfigurationModel.Columns.ID + " = ?", new String[]{
                         String.valueOf(CONFIGURATION_ID)
                 });
     }
 
     private long insert(@NonNull ContentValues contentValues) {
-        return sqLiteDatabase.insertWithOnConflict(DbOpenHelper.Tables.CONFIGURATION, null,
+        return sqLiteDatabase.insertWithOnConflict(ConfigurationModel.CONFIGURATION, null,
                 contentValues, SQLiteDatabase.CONFLICT_FAIL);
     }
 }

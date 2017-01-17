@@ -33,14 +33,12 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
-
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class ConstantStoreImpl implements ConstantStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + Tables.CONSTANT + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + ConstantModel.CONSTANT + " (" +
             ConstantModel.Columns.UID + "," +
             ConstantModel.Columns.CODE + "," +
             ConstantModel.Columns.NAME + "," +

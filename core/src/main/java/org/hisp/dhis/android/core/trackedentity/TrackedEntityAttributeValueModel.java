@@ -41,6 +41,8 @@ import org.hisp.dhis.android.core.common.BaseDataModel;
 @AutoValue
 public abstract class TrackedEntityAttributeValueModel extends BaseDataModel {
 
+    public static final String TRACKED_ENTITY_ATTRIBUTE_VALUE = "TrackedEntityAttributeValue";
+
     public static class Columns extends BaseDataModel.Columns {
         public static final String VALUE = "value";
         public static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";

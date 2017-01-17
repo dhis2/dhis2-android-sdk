@@ -41,6 +41,8 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 @AutoValue
 public abstract class RelationshipTypeModel extends BaseIdentifiableObjectModel {
 
+    public static final String RELATIONSHIP_TYPE = "RelationshipType";
+
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
         public static final String B_IS_TO_A = "bIsToA";
         public static final String A_IS_TO_B = "AIsToB";

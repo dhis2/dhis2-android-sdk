@@ -44,6 +44,8 @@ import org.hisp.dhis.android.core.data.database.DbFormTypeColumnAdapter;
 @AutoValue
 public abstract class ProgramStageModel extends BaseIdentifiableObjectModel {
 
+    public static final String PROGRAM_STAGE = "ProgramStage";
+
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
         public static final String EXECUTION_DATE_LABEL = "executionDateLabel";
         public static final String ALLOW_GENERATE_NEXT_VISIT = "allowGenerateNextVisit";

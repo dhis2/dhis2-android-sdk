@@ -36,8 +36,6 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.event.EventModel.Columns;
 import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
@@ -46,7 +44,9 @@ import org.hisp.dhis.android.core.program.CreateProgramUtils;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.program.ProgramStageModel;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -129,7 +129,7 @@ public class EventStoreIntegrationTest extends AbsStoreTestCase {
                 date, // dueDate
                 STATE
         );
-        Cursor cursor = database().query(Tables.EVENT, EVENT_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(EventModel.EVENT, EVENT_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(
@@ -155,7 +155,7 @@ public class EventStoreIntegrationTest extends AbsStoreTestCase {
         insertForeignKeyRows();
         long rowId = eventStore.insert(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, PROGRAM,
                 PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null);
-        Cursor cursor = database().query(Tables.EVENT, EVENT_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(EventModel.EVENT, EVENT_PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, PROGRAM,
                 PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null).isExhausted();
@@ -177,8 +177,8 @@ public class EventStoreIntegrationTest extends AbsStoreTestCase {
         eventStore.insert(EVENT_UID, ENROLLMENT_UID, date, date, STATUS, LATITUDE, LONGITUDE, PROGRAM,
                 PROGRAM_STAGE, ORGANISATION_UNIT, date, date, date, STATE);
 
-        database().delete(Tables.PROGRAM, ProgramModel.Columns.UID + "=?", new String[]{PROGRAM});
-        Cursor cursor = database().query(Tables.EVENT, EVENT_PROJECTION, null, null, null, null, null);
+        database().delete(ProgramModel.PROGRAM, ProgramModel.Columns.UID + "=?", new String[]{PROGRAM});
+        Cursor cursor = database().query(EventModel.EVENT, EVENT_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 
@@ -188,8 +188,8 @@ public class EventStoreIntegrationTest extends AbsStoreTestCase {
         eventStore.insert(EVENT_UID, ENROLLMENT_UID, date, date, STATUS, LATITUDE, LONGITUDE, PROGRAM,
                 PROGRAM_STAGE, ORGANISATION_UNIT, date, date, date, STATE);
 
-        database().delete(Tables.PROGRAM_STAGE, ProgramStageModel.Columns.UID + "=?", new String[]{PROGRAM_STAGE});
-        Cursor cursor = database().query(Tables.EVENT, EVENT_PROJECTION, null, null, null, null, null);
+        database().delete(ProgramStageModel.PROGRAM_STAGE, ProgramStageModel.Columns.UID + "=?", new String[]{PROGRAM_STAGE});
+        Cursor cursor = database().query(EventModel.EVENT, EVENT_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 
@@ -199,10 +199,10 @@ public class EventStoreIntegrationTest extends AbsStoreTestCase {
         eventStore.insert(EVENT_UID, ENROLLMENT_UID, date, date, STATUS, LATITUDE, LONGITUDE, PROGRAM,
                 PROGRAM_STAGE, ORGANISATION_UNIT, date, date, date, STATE);
 
-        database().delete(Tables.ORGANISATION_UNIT,
+        database().delete(OrganisationUnitModel.ORGANISATION_UNIT,
                 OrganisationUnitModel.Columns.UID + "=?", new String[]{ORGANISATION_UNIT});
 
-        Cursor cursor = database().query(Tables.EVENT, EVENT_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(EventModel.EVENT, EVENT_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 
@@ -243,14 +243,14 @@ public class EventStoreIntegrationTest extends AbsStoreTestCase {
                 RELATIONSHIP_TYPE_UID);
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
 
-        database().insert(DbOpenHelper.Tables.TRACKED_ENTITY, null, trackedEntity);
-        database().insert(DbOpenHelper.Tables.RELATIONSHIP_TYPE, null, relationshipType);
-        database().insert(DbOpenHelper.Tables.PROGRAM, null, program);
+        database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
+        database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(ProgramModel.PROGRAM, null, program);
 
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
 
-        database().insert(Tables.ORGANISATION_UNIT, null, organisationUnit);
-        database().insert(Tables.PROGRAM_STAGE, null, programStage);
+        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
+        database().insert(ProgramStageModel.PROGRAM_STAGE, null, programStage);
     }
 }

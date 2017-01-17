@@ -1,6 +1,7 @@
 package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
+import android.support.annotation.Nullable;
 
 public class CreateProgramUtils {
     /**
@@ -50,7 +51,10 @@ public class CreateProgramUtils {
      * @param relationshipTypeUid
      *@param trackedEntityUid @return
      */
-    public static ContentValues create(long id, String uid, String relationshipTypeUid, String trackedEntityUid) {
+    public static ContentValues create(long id, String uid,
+                                       @Nullable String relationshipTypeUid,
+                                       @Nullable String trackedEntityUid) {
+
         ContentValues program = new ContentValues();
         program.put(ProgramModel.Columns.ID, id);
         program.put(ProgramModel.Columns.UID, uid);
@@ -78,11 +82,18 @@ public class CreateProgramUtils {
         program.put(ProgramModel.Columns.USE_FIRST_STAGE_DURING_REGISTRATION, USE_FIRST_STAGE_DURING_REGISTRATION);
         program.put(ProgramModel.Columns.DISPLAY_FRONT_PAGE_LIST, DISPLAY_FRONT_PAGE_LIST);
         program.put(ProgramModel.Columns.PROGRAM_TYPE, PROGRAM_TYPE.name());
-        program.put(ProgramModel.Columns.RELATIONSHIP_TYPE, relationshipTypeUid);
+        if(relationshipTypeUid == null) {
+            program.putNull(ProgramModel.Columns.RELATIONSHIP_TYPE);
+        } else {
+            program.put(ProgramModel.Columns.RELATIONSHIP_TYPE, relationshipTypeUid);
+        }
         program.put(ProgramModel.Columns.RELATIONSHIP_TEXT, RELATIONSHIP_TEXT);
         program.put(ProgramModel.Columns.RELATED_PROGRAM, RELATED_PROGRAM);
-        program.put(ProgramModel.Columns.TRACKED_ENTITY, trackedEntityUid);
-
+        if(trackedEntityUid == null) {
+            program.putNull(ProgramModel.Columns.TRACKED_ENTITY);
+        } else {
+            program.put(ProgramModel.Columns.TRACKED_ENTITY, trackedEntityUid);
+        }
         return program;
     }
 }

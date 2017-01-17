@@ -164,20 +164,20 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
         long rowId = programStore.insert(
                 UID, null, NAME, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, RELATIONSHIP_FROM_A, null,
-                null, null, null, PROGRAM_TYPE, RELATIONSHIP_TYPE, null, null, TRACKED_ENTITY);
+                null, null, null, PROGRAM_TYPE, null, null, null, null);
 
         Cursor cursor = database().query(Tables.PROGRAM, PROGRAM_PROJECTION, null, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, null, NAME, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, toInteger(RELATIONSHIP_FROM_A), null,
-                null, null, null, PROGRAM_TYPE, RELATIONSHIP_TYPE, null, null, TRACKED_ENTITY).isExhausted();
+                null, null, null, PROGRAM_TYPE, null, null, null, null).isExhausted();
     }
 
     @Test
-    public void delete_shouldDeleteProgramWhenDeletingRelationshipTypeForeignKey() {
+    public void delete_shouldDeleteProgramWhenDeletingRelationshipTypeForeignKey() throws ParseException {
         //Insert
-        insert_shouldPersistProgramNullableInDatabase();
+        insert_shouldPersistProgramInDatabase();
         //Delete foreign key:
         database().delete(Tables.RELATIONSHIP_TYPE,
                 RelationshipTypeModel.Columns.UID + "=?", new String[]{RELATIONSHIP_TYPE});
@@ -187,9 +187,9 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteProgramWhenDeletingTrackedEntityForeignKey() {
+    public void delete_shouldDeleteProgramWhenDeletingTrackedEntityForeignKey() throws ParseException {
         //Insert:
-        insert_shouldPersistProgramNullableInDatabase();
+        insert_shouldPersistProgramInDatabase();
         //Delete foreign key:
         database().delete(Tables.TRACKED_ENTITY, TrackedEntityModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY});
         //Check that Program row is deleted as well:

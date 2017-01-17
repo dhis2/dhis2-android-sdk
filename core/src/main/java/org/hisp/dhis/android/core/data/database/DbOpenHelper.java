@@ -185,11 +185,11 @@ public final class DbOpenHelper extends SQLiteOpenHelper {
             ProgramModel.Columns.RELATED_PROGRAM + " TEXT," +
             ProgramModel.Columns.TRACKED_ENTITY + " TEXT NOT NULL," +
             " FOREIGN KEY (" + ProgramModel.Columns.RELATIONSHIP_TYPE + ") REFERENCES " +
-            Tables.RELATIONSHIP_TYPE + " (" + RelationshipTypeModel.Columns.UID + "), " +
+            Tables.RELATIONSHIP_TYPE + " (" + RelationshipTypeModel.Columns.UID + ")  ON DELETE CASCADE, " +
            /* " FOREIGN KEY (" + ProgramModel.Columns.RELATED_PROGRAM + ") REFERENCES " +
             Tables.PROGRAM + " (" + ProgramModel.Columns.UID + "), " + */
             " FOREIGN KEY (" + ProgramModel.Columns.TRACKED_ENTITY + ") REFERENCES " +
-            Tables.TRACKED_ENTITY + " (" + TrackedEntityModel.Columns.UID + ") " +
+            Tables.TRACKED_ENTITY + " (" + TrackedEntityModel.Columns.UID + ")  ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_TRACKED_ENTITY_TABLE = "CREATE TABLE " + Tables.TRACKED_ENTITY + " (" +

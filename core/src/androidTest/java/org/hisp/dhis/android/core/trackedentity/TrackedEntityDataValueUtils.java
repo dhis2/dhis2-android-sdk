@@ -2,7 +2,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
 
-public class TrackedEntityDatValueUtils {
+public class TrackedEntityDataValueUtils {
 
     // used for timestamps
     private static final String DATE = "2011-12-24T12:24:25.203";

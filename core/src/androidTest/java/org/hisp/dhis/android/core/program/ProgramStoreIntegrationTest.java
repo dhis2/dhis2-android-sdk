@@ -2,13 +2,16 @@ package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper.Tables;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -110,76 +113,59 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
 
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
-        long rowId = programStore.insert(
-                UID,
-                CODE,
-                NAME,
-                DISPLAY_NAME,
-                date,
-                date,
-                SHORT_NAME,
-                DISPLAY_SHORT_NAME,
-                DESCRIPTION,
-                DISPLAY_DESCRIPTION,
-                VERSION,
-                ONLY_ENROLL_ONCE,
-                ENROLLMENT_DATE_LABEL,
-                DISPLAY_INCIDENT_DATE,
-                INCIDENT_DATE_LABEL,
-                REGISTRATION,
-                SELECT_ENROLLMENT_DATES_IN_FUTURE,
-                DATA_ENTRY_METHOD,
-                IGNORE_OVERDUE_EVENTS,
-                RELATIONSHIP_FROM_A,
-                SELECT_INCIDENT_DATES_IN_FUTURE,
-                CAPTURE_COORDINATES,
-                USE_FIRST_STAGE_DURING_REGISTRATION,
-                DISPLAY_FRONT_PAGE_LIST,
-                PROGRAM_TYPE,
-                RELATIONSHIP_TYPE,
-                RELATIONSHIP_TEXT,
-                RELATED_PROGRAM,
-                TRACKED_ENTITY
+        long rowId = programStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME,
+                DESCRIPTION, DISPLAY_DESCRIPTION, VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL,
+                DISPLAY_INCIDENT_DATE, INCIDENT_DATE_LABEL, REGISTRATION, SELECT_ENROLLMENT_DATES_IN_FUTURE,
+                DATA_ENTRY_METHOD, IGNORE_OVERDUE_EVENTS, RELATIONSHIP_FROM_A, SELECT_INCIDENT_DATES_IN_FUTURE,
+                CAPTURE_COORDINATES, USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE,
+                RELATIONSHIP_TYPE, RELATIONSHIP_TEXT, RELATED_PROGRAM, TRACKED_ENTITY
         );
 
         Cursor cursor = database().query(Tables.PROGRAM, PROGRAM_PROJECTION, null, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor).hasRow(
-                UID,
-                CODE,
-                NAME,
-                DISPLAY_NAME,
-                BaseIdentifiableObject.DATE_FORMAT.format(date),
-                BaseIdentifiableObject.DATE_FORMAT.format(date),
-                SHORT_NAME,
-                DISPLAY_SHORT_NAME,
-                DESCRIPTION,
-                DISPLAY_DESCRIPTION,
-                VERSION,
-                toInteger(ONLY_ENROLL_ONCE),
-                ENROLLMENT_DATE_LABEL,
-                toInteger(DISPLAY_INCIDENT_DATE),
-                INCIDENT_DATE_LABEL,
-                toInteger(REGISTRATION),
-                toInteger(SELECT_ENROLLMENT_DATES_IN_FUTURE),
-                toInteger(DATA_ENTRY_METHOD),
-                toInteger(IGNORE_OVERDUE_EVENTS),
-                toInteger(RELATIONSHIP_FROM_A),
-                toInteger(SELECT_INCIDENT_DATES_IN_FUTURE),
-                toInteger(CAPTURE_COORDINATES),
-                toInteger(USE_FIRST_STAGE_DURING_REGISTRATION),
-                toInteger(DISPLAY_FRONT_PAGE_LIST),
-                PROGRAM_TYPE,
-                RELATIONSHIP_TYPE,
-                RELATIONSHIP_TEXT,
-                RELATED_PROGRAM,
-                TRACKED_ENTITY
+        assertThatCursor(cursor).hasRow(UID, CODE, NAME, DISPLAY_NAME, BaseIdentifiableObject.DATE_FORMAT.format(date),
+                BaseIdentifiableObject.DATE_FORMAT.format(date), SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
+                DISPLAY_DESCRIPTION, VERSION, toInteger(ONLY_ENROLL_ONCE), ENROLLMENT_DATE_LABEL,
+                toInteger(DISPLAY_INCIDENT_DATE), INCIDENT_DATE_LABEL, toInteger(REGISTRATION),
+                toInteger(SELECT_ENROLLMENT_DATES_IN_FUTURE), toInteger(DATA_ENTRY_METHOD),
+                toInteger(IGNORE_OVERDUE_EVENTS), toInteger(RELATIONSHIP_FROM_A),
+                toInteger(SELECT_INCIDENT_DATES_IN_FUTURE), toInteger(CAPTURE_COORDINATES),
+                toInteger(USE_FIRST_STAGE_DURING_REGISTRATION), toInteger(DISPLAY_FRONT_PAGE_LIST),
+                PROGRAM_TYPE, RELATIONSHIP_TYPE, RELATIONSHIP_TEXT, RELATED_PROGRAM, TRACKED_ENTITY
         ).isExhausted();
     }
 
+    @Test(expected = SQLiteConstraintException.class)
+    public void exception_persistProgramWithInvalidRelationshipTypeForeignKey() {
+        String wrongRelationshipTypeUid = "wrong";
+
+        //make sure that the foreign keys are in the database.
+        insert_foreignKeyRows();
+
+        long rowId = programStore.insert(
+                UID, null, NAME, null, null, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null, RELATIONSHIP_FROM_A, null,
+                null, null, null, PROGRAM_TYPE, wrongRelationshipTypeUid, null, null, TRACKED_ENTITY);
+        assertThat(rowId).isEqualTo(-1);
+    }
+
+    @Test(expected = SQLiteConstraintException.class)
+    public void exception_persistProgramWithInvalidTrackedEntityForeignKey() {
+        String wrongTrackedEntityUid = "wrong";
+
+        //make sure that the foreign keys are in the database.
+        insert_foreignKeyRows();
+
+        long rowId = programStore.insert(
+                UID, null, NAME, null, null, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null, RELATIONSHIP_FROM_A, null,
+                null, null, null, PROGRAM_TYPE, RELATIONSHIP_TYPE, null, null, wrongTrackedEntityUid);
+        assertThat(rowId).isEqualTo(-1);
+    }
+
     @Test
-    public void insert_shouldPersistProgramNullableInDatabase() throws ParseException {
+    public void insert_shouldPersistProgramNullableInDatabase() {
         //make sure that the foreign keys are in the database.
         insert_foreignKeyRows();
 
@@ -194,6 +180,29 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(UID, null, NAME, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, toInteger(RELATIONSHIP_FROM_A), null,
                 null, null, null, PROGRAM_TYPE, RELATIONSHIP_TYPE, null, null, TRACKED_ENTITY).isExhausted();
+    }
+
+    @Test
+    public void delete_shouldDeleteProgramWhenDeletingRelationshipTypeForeignKey() {
+        //Insert
+        insert_shouldPersistProgramNullableInDatabase();
+        //Delete foreign key:
+        database().delete(Tables.RELATIONSHIP_TYPE,
+                RelationshipTypeModel.Columns.UID + "=?", new String[]{RELATIONSHIP_TYPE});
+        //Check that Program row is deleted as well:
+        Cursor cursor = database().query(Tables.PROGRAM, PROGRAM_PROJECTION, null, null, null, null, null);
+        assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test
+    public void delete_shouldDeleteProgramWhenDeletingTrackedEntityForeignKey() {
+        //Insert:
+        insert_shouldPersistProgramNullableInDatabase();
+        //Delete foreign key:
+        database().delete(Tables.TRACKED_ENTITY, TrackedEntityModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY});
+        //Check that Program row is deleted as well:
+        Cursor cursor = database().query(Tables.PROGRAM, PROGRAM_PROJECTION, null, null, null, null, null);
+        assertThatCursor(cursor).isExhausted();
     }
 
     @Test

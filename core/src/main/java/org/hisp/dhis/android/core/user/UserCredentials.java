@@ -80,30 +80,4 @@ public abstract class UserCredentials extends BaseIdentifiableObject {
                 safeUnmodifiableList(userRoles)
         );
     }
-
-//    public static Builder builder() {
-//        return new AutoValue_UserCredentials.Builder();
-//    }
-//    @AutoValue.Builder
-//    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
-//
-//        @JsonProperty(USER_ROLES)
-//        public abstract Builder userRoles(@Nullable List<UserRole> userRoles);
-//
-//        @JsonProperty(USERNAME)
-//        public abstract Builder username(@Nullable String username);
-//
-//        // internal, not exposed
-//        abstract List<UserRole> userRoles();
-//
-//        abstract UserCredentials autoBuild();
-//
-//        public UserCredentials build() {
-//            if (userRoles() != null) {
-//                userRoles(Collections.safeUnmodifiableList(userRoles()));
-//            }
-//
-//            return autoBuild();
-//        }
-//    }
 }

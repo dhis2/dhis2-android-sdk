@@ -175,12 +175,12 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
 //    public void save_shouldNotTriggerOtherTablesOnDuplicate() {
 //        // inserting user
 //        ContentValues user = UserContractIntegrationTests.authenticator(1L, "test_user_uid");
-//        database().insert(DbOpenHelper.Tables.USER, null, user);
+//        database().insert(DbOpenHelper.Tables.USER_UID, null, user);
 //
 //        // inserting user credentials
 //        ContentValues userCredentials = UserCredentialsContractIntegrationTests.authenticator(
 //                1L, "test_user_credentials", "test_user_uid");
-//        database().insert(DbOpenHelper.Tables.USER_CREDENTIALS, null, userCredentials);
+//        database().insert(DbOpenHelper.Tables.UID, null, userCredentials);
 //
 //        // try to insert duplicate into user table through store
 //        Date date = new Date();
@@ -207,7 +207,7 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
 //
 //        System.out.println("RowId: " + rowId);
 //
-//        assertThatCursor(database().query(DbOpenHelper.Tables.USER_CREDENTIALS, UserCredentialsContractIntegrationTests.USER_CREDENTIALS_PROJECTION, null, null, null, null, null))
+//        assertThatCursor(database().query(DbOpenHelper.Tables.UID, UserCredentialsContractIntegrationTests.USER_CREDENTIALS_PROJECTION, null, null, null, null, null))
 //                .hasRow(UserCredentialsContractIntegrationTests.USER_CREDENTIALS_PROJECTION, userCredentials)
 //                .isExhausted();
 //    }

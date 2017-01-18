@@ -70,11 +70,20 @@ public class TrackedEntityAttributeValueStoreIntegrationTests extends AbsStoreTe
     public void setUp() throws IOException {
         super.setUp();
         this.store = new TrackedEntityAttributeValueStoreImpl(database());
+
+        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANIZATION_UNIT);
+        ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.createWithOrgUnit(
+                TRACKED_ENTITY_INSTANCE, ORGANIZATION_UNIT);
+        ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.create(1L, TRACKED_ENTITY_ATTRIBUTE,
+                null);
+
+        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
+        database().insert(TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE, null, trackedEntityInstance);
+        database().insert(TrackedEntityAttributeModel.TRACKED_ENTITY_ATTRIBUTE, null, trackedEntityAttribute);
     }
 
     @Test
     public void insert_shouldPersistTrackedEntityAttributeValueInDatabase() {
-        insertForeignKeys();
 
         long rowId = store.insert(STATE, VALUE, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE);
 
@@ -89,7 +98,6 @@ public class TrackedEntityAttributeValueStoreIntegrationTests extends AbsStoreTe
 
     @Test
     public void insert_shouldPersistTrackedEntityAttributeValueNullableInDatabase() {
-        insertForeignKeys();
 
         long rowId = store.insert(STATE, null, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE);
 
@@ -104,26 +112,22 @@ public class TrackedEntityAttributeValueStoreIntegrationTests extends AbsStoreTe
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistTrackedEntityAttributeValueWithInvalidTrackedEntityAttribute() {
-        String wrongTrackedEntityAttributeUid = "wrong";
-        insertForeignKeys();
-        store.insert(STATE, VALUE, wrongTrackedEntityAttributeUid, TRACKED_ENTITY_INSTANCE);
+        store.insert(STATE, VALUE, "wrong", TRACKED_ENTITY_INSTANCE);
     }
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistTrackedEntityAttributeValueWithInvalidTrackedEntityInstance() {
-        String wrongTrackedEntityInstanceUid = "wrong";
-        insertForeignKeys();
-        store.insert(STATE, VALUE, TRACKED_ENTITY_ATTRIBUTE, wrongTrackedEntityInstanceUid);
+        store.insert(STATE, VALUE, TRACKED_ENTITY_ATTRIBUTE, "wrong");
     }
 
     @Test
     public void delete_shouldDeleteTrackedEntityAttributeValueWhenDeletingTrackedEntityAttribute() {
-        //Insert:
+
         insert_shouldPersistTrackedEntityAttributeValueNullableInDatabase();
-        //Delete foreign key row:
+
         database().delete(TrackedEntityAttributeModel.TRACKED_ENTITY_ATTRIBUTE,
                 TrackedEntityAttributeModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY_ATTRIBUTE});
-        //Query and confirm that TrackedEntityAttributeValue is also deleted:
+
         Cursor cursor = database().query(TrackedEntityAttributeValueModel.TRACKED_ENTITY_ATTRIBUTE_VALUE,
                 TRACKED_ENTITY_ATTRIBUTE_VALUE_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
@@ -131,12 +135,12 @@ public class TrackedEntityAttributeValueStoreIntegrationTests extends AbsStoreTe
 
     @Test
     public void delete_shouldDeleteTrackedEntityAttributeValueWhenDeletingTrackedEntityInstance() {
-        //Insert:
+
         insert_shouldPersistTrackedEntityAttributeValueNullableInDatabase();
-        //Delete foreign key row:
+
         database().delete(TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE,
                 TrackedEntityInstanceModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY_INSTANCE});
-        //Query and confirm that TrackedEntityAttributeValue is also deleted:
+
         Cursor cursor = database().query(TrackedEntityAttributeValueModel.TRACKED_ENTITY_ATTRIBUTE_VALUE,
                 TRACKED_ENTITY_ATTRIBUTE_VALUE_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
@@ -146,20 +150,5 @@ public class TrackedEntityAttributeValueStoreIntegrationTests extends AbsStoreTe
     public void close_shouldNotCloseDatabase() {
         store.close();
         assertThat(database().isOpen()).isTrue();
-    }
-
-    /**
-     * Creates and inserts the foreign key rows in their respective tables.
-     * For TrackedEntityAttributeValue : TrackedEntityAttribute , TrackedEntityAttributeInstance
-     * For TrackedEntityInstance : OrganisationUnit
-     */
-    private void insertForeignKeys() {
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANIZATION_UNIT);
-        ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.createWithOrgUnit(TRACKED_ENTITY_INSTANCE, ORGANIZATION_UNIT);
-        ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.create(1L, TRACKED_ENTITY_ATTRIBUTE, null);
-
-        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
-        database().insert(TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE, null, trackedEntityInstance);
-        database().insert(TrackedEntityAttributeModel.TRACKED_ENTITY_ATTRIBUTE, null, trackedEntityAttribute);
     }
 }

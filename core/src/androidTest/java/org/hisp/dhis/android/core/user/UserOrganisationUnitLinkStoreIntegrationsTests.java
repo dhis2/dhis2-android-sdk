@@ -30,6 +30,7 @@
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
@@ -43,6 +44,12 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 public class UserOrganisationUnitLinkStoreIntegrationsTests extends AbsStoreTestCase {
+
+    public static final long ID = 1L;
+    private static final String USER_UID = "test_user_uid";
+    private static final String ORGANISATION_UNIT_UID = "test_organisation_unit_uid";
+
+    private static final String ORGANISATION_UNIT_SCOPE = "test_organisation_unit_scope";
     private static final String[] USER_ORGANISATION_UNITS_PROJECTION = {
             UserOrganisationUnitLinkModel.Columns.USER,
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT,
@@ -55,64 +62,102 @@ public class UserOrganisationUnitLinkStoreIntegrationsTests extends AbsStoreTest
     @Override
     public void setUp() throws IOException {
         super.setUp();
-
         organisationUnitLinkStore = new UserOrganisationUnitLinkStoreImpl(database());
+
+        // insert a parent user and organisation unit
+        ContentValues user = UserStoreIntegrationTests.create(ID, USER_UID);
+        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT_UID);
+        database().insert(UserModel.USER, null, user);
+        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
     }
 
     @Test
     public void insert_shouldPersistRowInDatabase() {
-        // insert a parent user and organisation unit
-        ContentValues user = UserStoreIntegrationTests
-                .create(1L, "test_user_uid");
-        ContentValues organisationUnit = CreateOrganisationUnitUtils
-                .createOrgUnit(1L, "test_organisation_unit_uid");
-        database().insert(UserModel.USER, null, user);
-        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
-
         long rowId = organisationUnitLinkStore.insert(
-                "test_user_uid",
-                "test_organisation_unit_uid",
-                "test_organisation_unit_scope"
+                USER_UID,
+                ORGANISATION_UNIT_UID,
+                ORGANISATION_UNIT_SCOPE
         );
 
         Cursor cursor = database().query(UserOrganisationUnitLinkModel.USER_ORGANISATION_UNIT_LINK,
                 USER_ORGANISATION_UNITS_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor)
-                .hasRow("test_user_uid",
-                        "test_organisation_unit_uid",
-                        "test_organisation_unit_scope"
-                ).isExhausted();
+        assertThatCursor(cursor).hasRow(USER_UID,
+                ORGANISATION_UNIT_UID,
+                ORGANISATION_UNIT_SCOPE
+        ).isExhausted();
     }
 
     @Test
     public void delete_shouldDeleteAllRows() {
-        ContentValues user = UserStoreIntegrationTests
-                .create(1L, "test_user_uid");
-        ContentValues organisationUnit = CreateOrganisationUnitUtils
-                .createOrgUnit(1L, "test_organisation_unit_uid");
-        ContentValues userOrganisationUnitLink = new ContentValues();
-        userOrganisationUnitLink.put(UserOrganisationUnitLinkModel.Columns.USER, "test_user_uid");
-        userOrganisationUnitLink.put(UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT, "test_organisation_unit_uid");
-        userOrganisationUnitLink.put(UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE, "test_organisation_unit_scope");
-
-        database().insert(UserModel.USER, null, user);
-        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
-        database().insert(UserOrganisationUnitLinkModel.USER_ORGANISATION_UNIT_LINK, null, userOrganisationUnitLink);
+        organisationUnitLinkStore.insert(
+                USER_UID,
+                ORGANISATION_UNIT_UID,
+                ORGANISATION_UNIT_SCOPE
+        );
 
         int deleted = organisationUnitLinkStore.delete();
 
         Cursor cursor = database().query(UserOrganisationUnitLinkModel.USER_ORGANISATION_UNIT_LINK,
                 null, null, null, null, null, null);
+
         assertThat(deleted).isEqualTo(1L);
         assertThatCursor(cursor).isExhausted();
     }
 
     @Test
+    public void delete_shouldDeleteUserOrganisationUnitLinkWhenDeletingUserForeignKey() {
+        organisationUnitLinkStore.insert(
+                USER_UID,
+                ORGANISATION_UNIT_UID,
+                ORGANISATION_UNIT_SCOPE
+        );
+
+        database().delete(UserModel.USER, UserModel.Columns.UID + "=?", new String[]{USER_UID});
+
+        Cursor cursor = database().query(UserOrganisationUnitLinkModel.USER_ORGANISATION_UNIT_LINK,
+                USER_ORGANISATION_UNITS_PROJECTION, null, null, null, null, null);
+        assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test
+    public void delete_shouldDeleteUserOrganisationUnitLinkWhenDeletingOrganisationUnitForeignKey() {
+        organisationUnitLinkStore.insert(
+                USER_UID,
+                ORGANISATION_UNIT_UID,
+                ORGANISATION_UNIT_SCOPE
+        );
+
+        database().delete(OrganisationUnitModel.ORGANISATION_UNIT,
+                OrganisationUnitModel.Columns.UID + "=?", new String[]{ORGANISATION_UNIT_UID});
+
+        Cursor cursor = database().query(UserOrganisationUnitLinkModel.USER_ORGANISATION_UNIT_LINK,
+                USER_ORGANISATION_UNITS_PROJECTION, null, null, null, null, null);
+        assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test(expected = SQLiteConstraintException.class)
+    public void exception_persistUserOrganisationUnitLinkWithInvalidUserForeignKey() {
+        organisationUnitLinkStore.insert(
+                "wrong",
+                ORGANISATION_UNIT_UID,
+                ORGANISATION_UNIT_SCOPE
+        );
+    }
+
+    @Test(expected = SQLiteConstraintException.class)
+    public void exception_persistUserOrganisationUnitLinkWithInvalidOrganisationUnitForeignKey() {
+        organisationUnitLinkStore.insert(
+                USER_UID,
+                "wrong",
+                ORGANISATION_UNIT_SCOPE
+        );
+    }
+
+    @Test
     public void close_shouldNotCloseDatabase() {
         organisationUnitLinkStore.close();
-
         assertThat(database().isOpen()).isTrue();
     }
 }

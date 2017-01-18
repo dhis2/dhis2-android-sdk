@@ -30,6 +30,7 @@
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -44,6 +45,10 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
+
+    private static final String USER_UID = "test_user_uid";
+    private static final String USER_CREDENTIALS = "test_user_credentials";
+
     private static final String[] PROJECTION = {
             AuthenticatedUserModel.Columns.ID,
             AuthenticatedUserModel.Columns.USER,
@@ -57,36 +62,33 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
         authenticatedUserStore = new AuthenticatedUserStoreImpl(database());
-
         // row which will be referenced
-        ContentValues userRow = UserStoreIntegrationTests.create(1L, "test_user_uid");
+        ContentValues userRow = UserStoreIntegrationTests.create(1L, USER_UID);
         database().insert(UserModel.USER, null, userRow);
     }
 
     @Test
     public void insert_shouldPersistRowInDatabase() {
         // inserting authenticated user model item
-        long rowId = authenticatedUserStore.insert("test_user_uid", "test_user_credentials");
+        long rowId = authenticatedUserStore.insert(USER_UID, USER_CREDENTIALS);
 
         Cursor cursor = database().query(AuthenticatedUserModel.AUTHENTICATED_USER,
                 PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor)
-                .hasRow(1L, "test_user_uid", "test_user_credentials")
-                .isExhausted();
+        assertThatCursor(cursor).hasRow(1L, USER_UID, USER_CREDENTIALS).isExhausted();
     }
 
     @Test
     public void query_shouldReturnPersistedRows() {
         ContentValues authenticatedUser = new ContentValues();
-        authenticatedUser.put(AuthenticatedUserModel.Columns.USER, "test_user_uid");
-        authenticatedUser.put(AuthenticatedUserModel.Columns.CREDENTIALS, "test_user_credentials");
+        authenticatedUser.put(AuthenticatedUserModel.Columns.USER, USER_UID);
+        authenticatedUser.put(AuthenticatedUserModel.Columns.CREDENTIALS, USER_CREDENTIALS);
 
         database().insert(AuthenticatedUserModel.AUTHENTICATED_USER, null, authenticatedUser);
 
         AuthenticatedUserModel authenticatedUserModel = AuthenticatedUserModel.builder()
-                .id(1L).user("test_user_uid").credentials("test_user_credentials")
+                .id(1L).user(USER_UID).credentials(USER_CREDENTIALS)
                 .build();
 
         assertThat(authenticatedUserStore.query().size()).isEqualTo(1);
@@ -101,8 +103,8 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
     @Test
     public void delete_shouldDeleteAllRows() {
         ContentValues authenticatedUser = new ContentValues();
-        authenticatedUser.put(AuthenticatedUserModel.Columns.USER, "test_user_uid");
-        authenticatedUser.put(AuthenticatedUserModel.Columns.CREDENTIALS, "test_user_credentials");
+        authenticatedUser.put(AuthenticatedUserModel.Columns.USER, USER_UID);
+        authenticatedUser.put(AuthenticatedUserModel.Columns.CREDENTIALS, USER_CREDENTIALS);
 
         database().insert(AuthenticatedUserModel.AUTHENTICATED_USER, null, authenticatedUser);
 
@@ -115,9 +117,23 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
     }
 
     @Test
+    public void delete_shouldDeleteAuthenticatedUserStoreWhenDeletingUserForeignKey() {
+        authenticatedUserStore.insert(USER_UID, USER_CREDENTIALS);
+        database().delete(UserModel.USER, UserModel.Columns.UID + "=?", new String[]{USER_UID});
+        Cursor cursor = database().query(AuthenticatedUserModel.AUTHENTICATED_USER,
+                PROJECTION, null, null, null, null, null);
+        assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test(expected = SQLiteConstraintException.class)
+    public void exception_persistAuthenticatedUserWithInvalidUserForeignKey() {
+        String wrongUserUid = "wrong";
+        authenticatedUserStore.insert(wrongUserUid, USER_CREDENTIALS);
+    }
+
+    @Test
     public void close_shouldNotCloseDatabase() {
         authenticatedUserStore.close();
-
         assertThat(database().isOpen()).isTrue();
     }
 }

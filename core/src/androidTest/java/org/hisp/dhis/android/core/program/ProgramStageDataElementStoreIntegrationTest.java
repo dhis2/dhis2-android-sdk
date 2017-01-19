@@ -297,7 +297,7 @@ public class ProgramStageDataElementStoreIntegrationTest extends AbsStoreTestCas
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE_UID);
-        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
 
         database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
         database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);

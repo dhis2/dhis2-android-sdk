@@ -97,7 +97,7 @@ public class ProgramRuleModelStoreIntegrationTest extends AbsStoreTestCase {
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE_UID);
-        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
 
         database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
         database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
@@ -134,7 +134,7 @@ public class ProgramRuleModelStoreIntegrationTest extends AbsStoreTestCase {
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE_UID);
-        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
 
         database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
         database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
@@ -172,7 +172,7 @@ public class ProgramRuleModelStoreIntegrationTest extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteProgramRuleWhenDeletingProgram() throws Exception {
-        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null);
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null, null);
         database().insert(ProgramModel.PROGRAM, null, program);
 
         ContentValues programRule = new ContentValues();
@@ -197,7 +197,7 @@ public class ProgramRuleModelStoreIntegrationTest extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteProgramRuleWhenDeletingProgramStage() throws Exception {
-        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null);
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null, null);
         database().insert(ProgramModel.PROGRAM, null, program);
 
         ContentValues programStage = CreateProgramStageUtils.create(ID, PROGRAM_STAGE, PROGRAM);

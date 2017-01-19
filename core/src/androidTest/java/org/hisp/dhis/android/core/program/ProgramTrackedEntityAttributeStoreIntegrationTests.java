@@ -109,7 +109,7 @@ public class ProgramTrackedEntityAttributeStoreIntegrationTests extends AbsStore
     public void insert_shouldPersistRowInDatabase() throws ParseException {
 
         // insert test OptionSet to comply with foreign key constraint of TrackedEntityAttribute
-        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null);
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null, null);
         database().insert(ProgramModel.PROGRAM, null, program);
         ContentValues optionSet =
                 CreateOptionSetUtils.create(99L, "test_option_set_uid");
@@ -188,7 +188,7 @@ public class ProgramTrackedEntityAttributeStoreIntegrationTests extends AbsStore
 
     @Test
     public void delete_shouldDeleteProgramTrackedEntityAttributeWhenDeletingProgram() throws Exception {
-        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null);
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null, null);
         database().insert(ProgramModel.PROGRAM, null, program);
 
         ContentValues trackedEntityAttribute =
@@ -218,7 +218,7 @@ public class ProgramTrackedEntityAttributeStoreIntegrationTests extends AbsStore
 
     @Test
     public void delete_shouldDeleteProgramTrackedEntityAttributeWhenDeletingTrackedEntityAttribute() throws Exception {
-        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null);
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null, null);
         database().insert(ProgramModel.PROGRAM, null, program);
 
         ContentValues trackedEntityAttribute =
@@ -250,7 +250,7 @@ public class ProgramTrackedEntityAttributeStoreIntegrationTests extends AbsStore
 
     @Test
     public void delete_shouldDeleteProgramTrackedEntityAttributeWhenDeletingOptionSetNestedForeignKey() throws Exception {
-        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null);
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null, null);
         database().insert(ProgramModel.PROGRAM, null, program);
 
         ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);

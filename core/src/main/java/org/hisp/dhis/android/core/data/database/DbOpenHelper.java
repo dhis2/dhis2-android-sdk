@@ -216,14 +216,14 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ProgramModel.Columns.PROGRAM_TYPE + " TEXT," +
             ProgramModel.Columns.RELATIONSHIP_TYPE + " TEXT," +
             ProgramModel.Columns.RELATIONSHIP_TEXT + " TEXT," +
-            //TODO: should maybe reference itself as a foreign key. (Wait for org unit to implement it first)
             ProgramModel.Columns.RELATED_PROGRAM + " TEXT," +
             ProgramModel.Columns.TRACKED_ENTITY + " TEXT," +
             " FOREIGN KEY (" + ProgramModel.Columns.RELATIONSHIP_TYPE + ")" +
             " REFERENCES " + RelationshipTypeModel.RELATIONSHIP_TYPE +
             " (" + RelationshipTypeModel.Columns.UID + ")  ON DELETE CASCADE, " +
-           /* " FOREIGN KEY (" + ProgramModel.Columns.RELATED_PROGRAM + ") REFERENCES " +
-            Tables.PROGRAM + " (" + ProgramModel.Columns.UID + "), " + */
+            " FOREIGN KEY (" + ProgramModel.Columns.RELATED_PROGRAM + ") " +
+            " REFERENCES " + ProgramModel.PROGRAM +
+            " (" + ProgramModel.Columns.UID + ") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED , " +
             " FOREIGN KEY (" + ProgramModel.Columns.TRACKED_ENTITY + ")" +
             " REFERENCES " + TrackedEntityModel.TRACKED_ENTITY +
             " (" + TrackedEntityModel.Columns.UID + ")  ON DELETE CASCADE" +

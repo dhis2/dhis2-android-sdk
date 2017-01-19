@@ -35,10 +35,10 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.program.ProgramRuleActionModel.Columns;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
-import org.hisp.dhis.android.core.program.ProgramRuleActionModel.Columns;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -115,7 +115,7 @@ public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE_UID);
-        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
 
         database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
         database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
@@ -174,7 +174,7 @@ public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE_UID);
-        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
 
         database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
         database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
@@ -264,7 +264,7 @@ public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
                 RELATIONSHIP_TYPE_UID);
         database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
 
-        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
         database().insert(ProgramModel.PROGRAM, null, program);
 
         ContentValues programRule = CreateProgramRuleUtils.createWithoutProgramStage(ID, PROGRAM_RULE, PROGRAM);

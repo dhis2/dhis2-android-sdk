@@ -46,6 +46,7 @@ public class Option extends BaseMetaDataObject {
     @Column(name = "sortIndex")
     int sortIndex;
 
+    @JsonProperty("optionSet")
     @Column(name = "optionSet")
     String optionSet;
 

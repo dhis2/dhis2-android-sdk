@@ -44,7 +44,7 @@ import static org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceMode
 @AutoValue
 public abstract class TrackedEntityInstanceModel extends BaseIdentifiableDataModel {
 
-    public static final String TRACKED_ENTITY_INSTANCE = "TrackedEntityInstance";
+    public static final String TABLE = "TrackedEntityInstance";
 
     public static class Columns extends BaseIdentifiableDataModel.Columns {
         public static final String UID = "uid";

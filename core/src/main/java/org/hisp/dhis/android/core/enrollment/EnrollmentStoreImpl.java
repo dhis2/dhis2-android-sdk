@@ -42,7 +42,7 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class EnrollmentStoreImpl implements EnrollmentStore {
 
-    private static final String INSERT_STATEMENT = "INSERT INTO " + EnrollmentModel.ENROLLMENT + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + EnrollmentModel.TABLE + " (" +
             Columns.UID + ", " +
             Columns.CREATED + ", " +
             Columns.LAST_UPDATED + ", " +

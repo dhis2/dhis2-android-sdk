@@ -38,7 +38,7 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 public class RelationshipStoreImpl implements RelationshipStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
-            RelationshipModel.RELATIONSHIP + " (" +
+            RelationshipModel.TABLE + " (" +
             RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A + ", " +
             RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B + ", " +
             RelationshipModel.Columns.RELATIONSHIP_TYPE + ") " +

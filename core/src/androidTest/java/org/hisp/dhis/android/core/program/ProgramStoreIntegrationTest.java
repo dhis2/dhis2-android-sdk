@@ -142,11 +142,11 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
 
         //RelationshipType foreign key corresponds to table entry
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID, RELATIONSHIP_TYPE);
-        database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
 
         //TrackedEntity foreign key corresponds to table entry
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY);
-        database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
+        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
     }
 
     @Test
@@ -183,7 +183,7 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
                 TRACKED_ENTITY
         );
 
-        Cursor cursor = database().query(ProgramModel.PROGRAM, PROGRAM_PROJECTION, null, null, null, null, null, null);
+        Cursor cursor = database().query(ProgramModel.TABLE, PROGRAM_PROJECTION, null, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(
@@ -248,7 +248,7 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
         database().setTransactionSuccessful();
         database().endTransaction();
 
-        Cursor cursor = database().query(ProgramModel.PROGRAM, PROGRAM_PROJECTION, null, null, null, null, null, null);
+        Cursor cursor = database().query(ProgramModel.TABLE, PROGRAM_PROJECTION, null, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThat(rowId2).isEqualTo(2L);
@@ -309,9 +309,9 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
         database().setTransactionSuccessful();
         database().endTransaction();
 
-        database().delete(ProgramModel.PROGRAM, ProgramModel.Columns.UID + "=?", new String[]{UID});
+        database().delete(ProgramModel.TABLE, ProgramModel.Columns.UID + "=?", new String[]{UID});
 
-        Cursor cursor = database().query(ProgramModel.PROGRAM, PROGRAM_PROJECTION, null, null, null, null, null, null);
+        Cursor cursor = database().query(ProgramModel.TABLE, PROGRAM_PROJECTION, null, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 
@@ -354,7 +354,7 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
                 null, null, null, null, null, null, null, RELATIONSHIP_FROM_A, null,
                 null, null, null, PROGRAM_TYPE, null, null, null, null);
 
-        Cursor cursor = database().query(ProgramModel.PROGRAM, PROGRAM_PROJECTION, null, null, null, null, null, null);
+        Cursor cursor = database().query(ProgramModel.TABLE, PROGRAM_PROJECTION, null, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, null, NAME, null, null, null, null, null, null, null, null, null,
@@ -396,10 +396,10 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
                 TRACKED_ENTITY
         );
 
-        database().delete(RelationshipTypeModel.RELATIONSHIP_TYPE,
+        database().delete(RelationshipTypeModel.TABLE,
                 RelationshipTypeModel.Columns.UID + "=?", new String[]{RELATIONSHIP_TYPE});
 
-        Cursor cursor = database().query(ProgramModel.PROGRAM, PROGRAM_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(ProgramModel.TABLE, PROGRAM_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 
@@ -437,10 +437,10 @@ public class ProgramStoreIntegrationTest extends AbsStoreTestCase {
                 TRACKED_ENTITY
         );
 
-        database().delete(TrackedEntityModel.TRACKED_ENTITY,
+        database().delete(TrackedEntityModel.TABLE,
                 TrackedEntityModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY});
 
-        Cursor cursor = database().query(ProgramModel.PROGRAM, PROGRAM_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(ProgramModel.TABLE, PROGRAM_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 

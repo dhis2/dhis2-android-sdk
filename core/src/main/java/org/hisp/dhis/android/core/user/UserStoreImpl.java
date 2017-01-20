@@ -38,7 +38,7 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class UserStoreImpl implements UserStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + UserModel.USER + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + UserModel.TABLE + " (" +
             UserModel.Columns.UID + ", " +
             UserModel.Columns.CODE + ", " +
             UserModel.Columns.NAME + ", " +
@@ -105,7 +105,7 @@ public class UserStoreImpl implements UserStore {
 
     @Override
     public int delete() {
-        return sqLiteDatabase.delete(UserModel.USER, null, null);
+        return sqLiteDatabase.delete(UserModel.TABLE, null, null);
     }
 
     @Override

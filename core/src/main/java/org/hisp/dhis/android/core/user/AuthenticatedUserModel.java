@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.common.BaseModel;
 @AutoValue
 public abstract class AuthenticatedUserModel extends BaseModel {
 
-    public static final String AUTHENTICATED_USER = "AuthenticatedUser";
+    public static final String TABLE = "AuthenticatedUser";
 
     public static class Columns extends BaseModel.Columns {
         public static final String USER = "user";

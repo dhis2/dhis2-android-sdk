@@ -40,7 +40,7 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class SystemInfoStoreImpl implements SystemInfoStore {
 
-    private static final String INSERT_STATEMENT = "INSERT INTO " + SystemInfoModel.SYSTEM_INFO + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + SystemInfoModel.TABLE + " (" +
             Columns.SERVER_DATE + ", " +
             Columns.DATE_FORMAT + ") " +
             "VALUES (?, ?);";

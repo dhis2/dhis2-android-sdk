@@ -42,7 +42,7 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class EventStoreImpl implements EventStore {
 
-    private static final String INSERT_STATEMENT = "INSERT INTO " + EventModel.EVENT + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + EventModel.TABLE + " (" +
             Columns.UID + ", " +
             Columns.ENROLLMENT_UID + ", " +
             Columns.CREATED + ", " +

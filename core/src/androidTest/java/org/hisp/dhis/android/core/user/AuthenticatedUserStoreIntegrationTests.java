@@ -64,7 +64,7 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
         authenticatedUserStore = new AuthenticatedUserStoreImpl(database());
         // row which will be referenced
         ContentValues userRow = UserStoreIntegrationTests.create(1L, USER_UID);
-        database().insert(UserModel.USER, null, userRow);
+        database().insert(UserModel.TABLE, null, userRow);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
         // inserting authenticated user model item
         long rowId = authenticatedUserStore.insert(USER_UID, USER_CREDENTIALS);
 
-        Cursor cursor = database().query(AuthenticatedUserModel.AUTHENTICATED_USER,
+        Cursor cursor = database().query(AuthenticatedUserModel.TABLE,
                 PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -85,7 +85,7 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
         authenticatedUser.put(AuthenticatedUserModel.Columns.USER, USER_UID);
         authenticatedUser.put(AuthenticatedUserModel.Columns.CREDENTIALS, USER_CREDENTIALS);
 
-        database().insert(AuthenticatedUserModel.AUTHENTICATED_USER, null, authenticatedUser);
+        database().insert(AuthenticatedUserModel.TABLE, null, authenticatedUser);
 
         AuthenticatedUserModel authenticatedUserModel = AuthenticatedUserModel.builder()
                 .id(1L).user(USER_UID).credentials(USER_CREDENTIALS)
@@ -106,11 +106,11 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
         authenticatedUser.put(AuthenticatedUserModel.Columns.USER, USER_UID);
         authenticatedUser.put(AuthenticatedUserModel.Columns.CREDENTIALS, USER_CREDENTIALS);
 
-        database().insert(AuthenticatedUserModel.AUTHENTICATED_USER, null, authenticatedUser);
+        database().insert(AuthenticatedUserModel.TABLE, null, authenticatedUser);
 
         int deleted = authenticatedUserStore.delete();
 
-        Cursor cursor = database().query(AuthenticatedUserModel.AUTHENTICATED_USER,
+        Cursor cursor = database().query(AuthenticatedUserModel.TABLE,
                 null, null, null, null, null, null);
         assertThat(deleted).isEqualTo(1);
         assertThatCursor(cursor).isExhausted();
@@ -119,8 +119,8 @@ public class AuthenticatedUserStoreIntegrationTests extends AbsStoreTestCase {
     @Test
     public void delete_shouldDeleteAuthenticatedUserStoreWhenDeletingUserForeignKey() {
         authenticatedUserStore.insert(USER_UID, USER_CREDENTIALS);
-        database().delete(UserModel.USER, UserModel.Columns.UID + "=?", new String[]{USER_UID});
-        Cursor cursor = database().query(AuthenticatedUserModel.AUTHENTICATED_USER,
+        database().delete(UserModel.TABLE, UserModel.Columns.UID + "=?", new String[]{USER_UID});
+        Cursor cursor = database().query(AuthenticatedUserModel.TABLE,
                 PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }

@@ -106,12 +106,12 @@ public class ProgramStageSectionStoreIntegrationTest extends AbsStoreTestCase {
                 RELATIONSHIP_TYPE_UID);
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
 
-        database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
-        database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
-        database().insert(ProgramModel.PROGRAM, null, program);
+        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
+        database().insert(ProgramModel.TABLE, null, program);
         //Create ProgramStage & insert a row in the table:
         ContentValues programStage = CreateProgramStageUtils.create(ID, PROGRAM_STAGE, PROGRAM);
-        database().insert(ProgramStageModel.PROGRAM_STAGE, null, programStage);
+        database().insert(ProgramStageModel.TABLE, null, programStage);
     }
 
     @Test
@@ -128,7 +128,7 @@ public class ProgramStageSectionStoreIntegrationTest extends AbsStoreTestCase {
                 PROGRAM_STAGE
         );
 
-        Cursor cursor = database().query(ProgramStageSectionModel.PROGRAM_STAGE_SECTION,
+        Cursor cursor = database().query(ProgramStageSectionModel.TABLE,
                 PROGRAM_STAGE_SECTION_PROJECTION, null, null, null, null, null);
 
         // Checking if rowId == 1.
@@ -153,19 +153,19 @@ public class ProgramStageSectionStoreIntegrationTest extends AbsStoreTestCase {
         programStageSection.put(Columns.ID, ID);
         programStageSection.put(Columns.UID, UID);
         programStageSection.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
-        database().insert(ProgramStageSectionModel.PROGRAM_STAGE_SECTION, null, programStageSection);
+        database().insert(ProgramStageSectionModel.TABLE, null, programStageSection);
 
         String[] projection = {Columns.ID, Columns.UID, Columns.PROGRAM_STAGE};
-        Cursor cursor = database().query(ProgramStageSectionModel.PROGRAM_STAGE_SECTION, projection,
+        Cursor cursor = database().query(ProgramStageSectionModel.TABLE, projection,
                 null, null, null, null, null);
         // checking that program stage section was successfully inserted
         assertThatCursor(cursor).hasRow(ID, UID, PROGRAM_STAGE).isExhausted();
 
         // deleting foreign key reference
-        database().delete(ProgramStageModel.PROGRAM_STAGE,
+        database().delete(ProgramStageModel.TABLE,
                 ProgramStageModel.Columns.UID + "=?", new String[]{PROGRAM_STAGE});
 
-        cursor = database().query(ProgramStageSectionModel.PROGRAM_STAGE_SECTION, projection,
+        cursor = database().query(ProgramStageSectionModel.TABLE, projection,
                 null, null, null, null, null);
         // checking that program stage section is deleted.
         assertThatCursor(cursor).isExhausted();

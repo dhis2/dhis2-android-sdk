@@ -91,7 +91,7 @@ public class UserCredentialsStoreIntegrationTests extends AbsStoreTestCase {
 
         // row which will be referenced
         ContentValues userRow = UserStoreIntegrationTests.create(1L, USER_UID);
-        database().insert(UserModel.USER, null, userRow);
+        database().insert(UserModel.TABLE, null, userRow);
     }
 
     @Test
@@ -105,7 +105,7 @@ public class UserCredentialsStoreIntegrationTests extends AbsStoreTestCase {
                 USER_CREDENTIALS_USERNAME,
                 USER_UID);
 
-        Cursor cursor = database().query(UserCredentialsModel.USER_CREDENTIALS,
+        Cursor cursor = database().query(UserCredentialsModel.TABLE,
                 USER_CREDENTIALS_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -132,7 +132,7 @@ public class UserCredentialsStoreIntegrationTests extends AbsStoreTestCase {
                 null,
                 USER_UID);
 
-        Cursor cursor = database().query(UserCredentialsModel.USER_CREDENTIALS,
+        Cursor cursor = database().query(UserCredentialsModel.TABLE,
                 USER_CREDENTIALS_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -158,9 +158,9 @@ public class UserCredentialsStoreIntegrationTests extends AbsStoreTestCase {
                 USER_CREDENTIALS_USERNAME,
                 USER_UID);
 
-        database().delete(UserModel.USER, UserModel.Columns.UID + "=?", new String[]{USER_UID});
+        database().delete(UserModel.TABLE, UserModel.Columns.UID + "=?", new String[]{USER_UID});
 
-        Cursor cursor = database().query(UserCredentialsModel.USER_CREDENTIALS, USER_CREDENTIALS_PROJECTION,
+        Cursor cursor = database().query(UserCredentialsModel.TABLE, USER_CREDENTIALS_PROJECTION,
                 null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
@@ -180,11 +180,11 @@ public class UserCredentialsStoreIntegrationTests extends AbsStoreTestCase {
     @Test
     public void delete_shouldDeleteAllRows() {
         ContentValues userCredentials = CreateUserCredentialsUtils.create(ID, UID, USER_UID);
-        database().insert(UserCredentialsModel.USER_CREDENTIALS, null, userCredentials);
+        database().insert(UserCredentialsModel.TABLE, null, userCredentials);
 
         int deleted = userCredentialsStore.delete();
 
-        Cursor cursor = database().query(UserCredentialsModel.USER_CREDENTIALS, null, null, null, null, null, null);
+        Cursor cursor = database().query(UserCredentialsModel.TABLE, null, null, null, null, null, null);
         assertThat(deleted).isEqualTo(1);
         assertThatCursor(cursor).isExhausted();
     }

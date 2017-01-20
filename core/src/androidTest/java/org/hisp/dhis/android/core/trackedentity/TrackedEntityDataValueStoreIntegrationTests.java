@@ -108,20 +108,20 @@ public class TrackedEntityDataValueStoreIntegrationTests extends AbsStoreTestCas
                 RELATIONSHIP_TYPE_UID);
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
 
-        database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
-        database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
-        database().insert(ProgramModel.PROGRAM, null, program);
+        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
+        database().insert(ProgramModel.TABLE, null, program);
 
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
         ContentValues event = CreateEventUtils.create(EVENT, PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT);
 
-        database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
-        database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
-        database().insert(ProgramModel.PROGRAM, null, program);
-        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
-        database().insert(ProgramStageModel.PROGRAM_STAGE, null, programStage);
-        database().insert(EventModel.EVENT, null, event);
+        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
+        database().insert(ProgramModel.TABLE, null, program);
+        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
+        database().insert(ProgramStageModel.TABLE, null, programStage);
+        database().insert(EventModel.TABLE, null, event);
     }
 
     @Test
@@ -135,7 +135,7 @@ public class TrackedEntityDataValueStoreIntegrationTests extends AbsStoreTestCas
                 VALUE,
                 PROVIDED_ELSEWHERE
         );
-        Cursor cursor = database().query(TrackedEntityDataValueModel.TRACKED_ENTITY_DATA_VALUE,
+        Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE,
                 TRACKED_ENTITY_DATA_VALUE_PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(
@@ -153,7 +153,7 @@ public class TrackedEntityDataValueStoreIntegrationTests extends AbsStoreTestCas
     public void insert_shouldPersistNullableRowInDatabase() throws ParseException {
         long rowId = trackedEntityDataValueStore.insert(EVENT, null, null, null, null, null, null);
 
-        Cursor cursor = database().query(TrackedEntityDataValueModel.TRACKED_ENTITY_DATA_VALUE,
+        Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE,
                 TRACKED_ENTITY_DATA_VALUE_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -184,9 +184,9 @@ public class TrackedEntityDataValueStoreIntegrationTests extends AbsStoreTestCas
                 VALUE,
                 PROVIDED_ELSEWHERE
         );
-        database().delete(EventModel.EVENT, EventModel.Columns.UID + "=?", new String[]{EVENT});
+        database().delete(EventModel.TABLE, EventModel.Columns.UID + "=?", new String[]{EVENT});
 
-        Cursor cursor = database().query(TrackedEntityDataValueModel.TRACKED_ENTITY_DATA_VALUE,
+        Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE,
                 TRACKED_ENTITY_DATA_VALUE_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }

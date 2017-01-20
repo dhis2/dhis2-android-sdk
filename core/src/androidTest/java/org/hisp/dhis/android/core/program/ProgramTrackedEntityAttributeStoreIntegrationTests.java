@@ -110,16 +110,16 @@ public class ProgramTrackedEntityAttributeStoreIntegrationTests extends AbsStore
 
         // insert test OptionSet to comply with foreign key constraint of TrackedEntityAttribute
         ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null, null);
-        database().insert(ProgramModel.PROGRAM, null, program);
+        database().insert(ProgramModel.TABLE, null, program);
         ContentValues optionSet =
                 CreateOptionSetUtils.create(99L, "test_option_set_uid");
-        database().insert(OptionSetModel.OPTION_SET, null, optionSet);
+        database().insert(OptionSetModel.TABLE, null, optionSet);
 
         // insert test TrackedEntityAttribute to comply with foreign key constraint of ProgramTrackedEntityAttribute
         ContentValues trackedEntityAttribute =
                 CreateTrackedEntityAttributeUtils.create(
                         TRACKED_ENTITY_ATTRIBUTE_ID, TRACKED_ENTITY_ATTRIBUTE, null);
-        database().insert(TrackedEntityAttributeModel.TRACKED_ENTITY_ATTRIBUTE, null, trackedEntityAttribute);
+        database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
 
         long rowId = programTrackedEntityAttributeStore.insert(
                 UID,
@@ -140,7 +140,7 @@ public class ProgramTrackedEntityAttributeStoreIntegrationTests extends AbsStore
                 PROGRAM
         );
 
-        Cursor cursor = database().query(ProgramTrackedEntityAttributeModel.PROGRAM_TRACKED_ENTITY_ATTRIBUTE,
+        Cursor cursor = database().query(ProgramTrackedEntityAttributeModel.TABLE,
                 PROGRAM_TRACKED_ENTITY_ATTRIBUTE_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -189,11 +189,11 @@ public class ProgramTrackedEntityAttributeStoreIntegrationTests extends AbsStore
     @Test
     public void delete_shouldDeleteProgramTrackedEntityAttributeWhenDeletingProgram() throws Exception {
         ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null, null);
-        database().insert(ProgramModel.PROGRAM, null, program);
+        database().insert(ProgramModel.TABLE, null, program);
 
         ContentValues trackedEntityAttribute =
                 CreateTrackedEntityAttributeUtils.create(ID, TRACKED_ENTITY_ATTRIBUTE, null);
-        database().insert(TrackedEntityAttributeModel.TRACKED_ENTITY_ATTRIBUTE, null, trackedEntityAttribute);
+        database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
 
         ContentValues programTrackedEntityAttribute = new ContentValues();
         programTrackedEntityAttribute.put(Columns.ID, ID);
@@ -201,16 +201,16 @@ public class ProgramTrackedEntityAttributeStoreIntegrationTests extends AbsStore
         programTrackedEntityAttribute.put(Columns.PROGRAM, PROGRAM);
         programTrackedEntityAttribute.put(Columns.TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_ATTRIBUTE);
 
-        database().insert(ProgramTrackedEntityAttributeModel.PROGRAM_TRACKED_ENTITY_ATTRIBUTE, null, programTrackedEntityAttribute);
+        database().insert(ProgramTrackedEntityAttributeModel.TABLE, null, programTrackedEntityAttribute);
 
         String[] projection = {Columns.ID, Columns.UID, Columns.PROGRAM, Columns.TRACKED_ENTITY_ATTRIBUTE};
 
-        Cursor cursor = database().query(ProgramTrackedEntityAttributeModel.PROGRAM_TRACKED_ENTITY_ATTRIBUTE, projection,
+        Cursor cursor = database().query(ProgramTrackedEntityAttributeModel.TABLE, projection,
                 null, null, null, null, null);
         assertThatCursor(cursor).hasRow(ID, UID, PROGRAM, TRACKED_ENTITY_ATTRIBUTE);
 
-        database().delete(ProgramModel.PROGRAM, ProgramModel.Columns.UID + " =?", new String[]{PROGRAM});
-        cursor = database().query(ProgramTrackedEntityAttributeModel.PROGRAM_TRACKED_ENTITY_ATTRIBUTE, projection, null, null, null, null, null);
+        database().delete(ProgramModel.TABLE, ProgramModel.Columns.UID + " =?", new String[]{PROGRAM});
+        cursor = database().query(ProgramTrackedEntityAttributeModel.TABLE, projection, null, null, null, null, null);
 
         assertThatCursor(cursor).isExhausted();
 
@@ -219,11 +219,11 @@ public class ProgramTrackedEntityAttributeStoreIntegrationTests extends AbsStore
     @Test
     public void delete_shouldDeleteProgramTrackedEntityAttributeWhenDeletingTrackedEntityAttribute() throws Exception {
         ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null, null);
-        database().insert(ProgramModel.PROGRAM, null, program);
+        database().insert(ProgramModel.TABLE, null, program);
 
         ContentValues trackedEntityAttribute =
                 CreateTrackedEntityAttributeUtils.create(ID, TRACKED_ENTITY_ATTRIBUTE, null);
-        database().insert(TrackedEntityAttributeModel.TRACKED_ENTITY_ATTRIBUTE, null, trackedEntityAttribute);
+        database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
 
         ContentValues programTrackedEntityAttribute = new ContentValues();
         programTrackedEntityAttribute.put(Columns.ID, ID);
@@ -231,18 +231,18 @@ public class ProgramTrackedEntityAttributeStoreIntegrationTests extends AbsStore
         programTrackedEntityAttribute.put(Columns.PROGRAM, PROGRAM);
         programTrackedEntityAttribute.put(Columns.TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_ATTRIBUTE);
 
-        database().insert(ProgramTrackedEntityAttributeModel.PROGRAM_TRACKED_ENTITY_ATTRIBUTE, null, programTrackedEntityAttribute);
+        database().insert(ProgramTrackedEntityAttributeModel.TABLE, null, programTrackedEntityAttribute);
 
         String[] projection = {Columns.ID, Columns.UID, Columns.PROGRAM, Columns.TRACKED_ENTITY_ATTRIBUTE};
 
-        Cursor cursor = database().query(ProgramTrackedEntityAttributeModel.PROGRAM_TRACKED_ENTITY_ATTRIBUTE, projection,
+        Cursor cursor = database().query(ProgramTrackedEntityAttributeModel.TABLE, projection,
                 null, null, null, null, null);
         assertThatCursor(cursor).hasRow(ID, UID, PROGRAM, TRACKED_ENTITY_ATTRIBUTE);
 
-        database().delete(TrackedEntityAttributeModel.TRACKED_ENTITY_ATTRIBUTE,
+        database().delete(TrackedEntityAttributeModel.TABLE,
                 TrackedEntityAttributeModel.Columns.UID + " =?", new String[]{TRACKED_ENTITY_ATTRIBUTE});
 
-        cursor = database().query(ProgramTrackedEntityAttributeModel.PROGRAM_TRACKED_ENTITY_ATTRIBUTE, projection, null, null, null, null, null);
+        cursor = database().query(ProgramTrackedEntityAttributeModel.TABLE, projection, null, null, null, null, null);
 
         assertThatCursor(cursor).isExhausted();
 
@@ -251,14 +251,14 @@ public class ProgramTrackedEntityAttributeStoreIntegrationTests extends AbsStore
     @Test
     public void delete_shouldDeleteProgramTrackedEntityAttributeWhenDeletingOptionSetNestedForeignKey() throws Exception {
         ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null, null);
-        database().insert(ProgramModel.PROGRAM, null, program);
+        database().insert(ProgramModel.TABLE, null, program);
 
         ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
-        database().insert(OptionSetModel.OPTION_SET, null, optionSet);
+        database().insert(OptionSetModel.TABLE, null, optionSet);
 
         ContentValues trackedEntityAttribute =
                 CreateTrackedEntityAttributeUtils.create(ID, TRACKED_ENTITY_ATTRIBUTE, OPTION_SET);
-        database().insert(TrackedEntityAttributeModel.TRACKED_ENTITY_ATTRIBUTE, null, trackedEntityAttribute);
+        database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
 
         ContentValues programTrackedEntityAttribute = new ContentValues();
         programTrackedEntityAttribute.put(Columns.ID, ID);
@@ -266,18 +266,18 @@ public class ProgramTrackedEntityAttributeStoreIntegrationTests extends AbsStore
         programTrackedEntityAttribute.put(Columns.PROGRAM, PROGRAM);
         programTrackedEntityAttribute.put(Columns.TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_ATTRIBUTE);
 
-        database().insert(ProgramTrackedEntityAttributeModel.PROGRAM_TRACKED_ENTITY_ATTRIBUTE, null, programTrackedEntityAttribute);
+        database().insert(ProgramTrackedEntityAttributeModel.TABLE, null, programTrackedEntityAttribute);
 
         String[] projection = {Columns.ID, Columns.UID, Columns.PROGRAM, Columns.TRACKED_ENTITY_ATTRIBUTE};
 
-        Cursor cursor = database().query(ProgramTrackedEntityAttributeModel.PROGRAM_TRACKED_ENTITY_ATTRIBUTE, projection,
+        Cursor cursor = database().query(ProgramTrackedEntityAttributeModel.TABLE, projection,
                 null, null, null, null, null);
         assertThatCursor(cursor).hasRow(ID, UID, PROGRAM, TRACKED_ENTITY_ATTRIBUTE);
 
-        database().delete(OptionSetModel.OPTION_SET,
+        database().delete(OptionSetModel.TABLE,
                 OptionSetModel.Columns.UID + " =?", new String[]{OPTION_SET});
 
-        cursor = database().query(ProgramTrackedEntityAttributeModel.PROGRAM_TRACKED_ENTITY_ATTRIBUTE, projection, null, null, null, null, null);
+        cursor = database().query(ProgramTrackedEntityAttributeModel.TABLE, projection, null, null, null, null, null);
 
         assertThatCursor(cursor).isExhausted();
 

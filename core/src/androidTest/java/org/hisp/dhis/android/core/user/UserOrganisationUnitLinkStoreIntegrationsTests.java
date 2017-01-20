@@ -67,8 +67,8 @@ public class UserOrganisationUnitLinkStoreIntegrationsTests extends AbsStoreTest
         // insert a parent user and organisation unit
         ContentValues user = UserStoreIntegrationTests.create(ID, USER_UID);
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT_UID);
-        database().insert(UserModel.USER, null, user);
-        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
+        database().insert(UserModel.TABLE, null, user);
+        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
     }
 
     @Test
@@ -79,7 +79,7 @@ public class UserOrganisationUnitLinkStoreIntegrationsTests extends AbsStoreTest
                 ORGANISATION_UNIT_SCOPE
         );
 
-        Cursor cursor = database().query(UserOrganisationUnitLinkModel.USER_ORGANISATION_UNIT_LINK,
+        Cursor cursor = database().query(UserOrganisationUnitLinkModel.TABLE,
                 USER_ORGANISATION_UNITS_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -99,7 +99,7 @@ public class UserOrganisationUnitLinkStoreIntegrationsTests extends AbsStoreTest
 
         int deleted = organisationUnitLinkStore.delete();
 
-        Cursor cursor = database().query(UserOrganisationUnitLinkModel.USER_ORGANISATION_UNIT_LINK,
+        Cursor cursor = database().query(UserOrganisationUnitLinkModel.TABLE,
                 null, null, null, null, null, null);
 
         assertThat(deleted).isEqualTo(1L);
@@ -114,9 +114,9 @@ public class UserOrganisationUnitLinkStoreIntegrationsTests extends AbsStoreTest
                 ORGANISATION_UNIT_SCOPE
         );
 
-        database().delete(UserModel.USER, UserModel.Columns.UID + "=?", new String[]{USER_UID});
+        database().delete(UserModel.TABLE, UserModel.Columns.UID + "=?", new String[]{USER_UID});
 
-        Cursor cursor = database().query(UserOrganisationUnitLinkModel.USER_ORGANISATION_UNIT_LINK,
+        Cursor cursor = database().query(UserOrganisationUnitLinkModel.TABLE,
                 USER_ORGANISATION_UNITS_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
@@ -129,10 +129,10 @@ public class UserOrganisationUnitLinkStoreIntegrationsTests extends AbsStoreTest
                 ORGANISATION_UNIT_SCOPE
         );
 
-        database().delete(OrganisationUnitModel.ORGANISATION_UNIT,
+        database().delete(OrganisationUnitModel.TABLE,
                 OrganisationUnitModel.Columns.UID + "=?", new String[]{ORGANISATION_UNIT_UID});
 
-        Cursor cursor = database().query(UserOrganisationUnitLinkModel.USER_ORGANISATION_UNIT_LINK,
+        Cursor cursor = database().query(UserOrganisationUnitLinkModel.TABLE,
                 USER_ORGANISATION_UNITS_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }

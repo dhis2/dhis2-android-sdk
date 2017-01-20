@@ -57,7 +57,7 @@ import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
-import static org.hisp.dhis.android.core.enrollment.EnrollmentModel.ENROLLMENT;
+import static org.hisp.dhis.android.core.enrollment.EnrollmentModel.TABLE;
 
 @RunWith(AndroidJUnit4.class)
 public class EnrollmentStoreIntegrationTest extends AbsStoreTestCase {
@@ -120,16 +120,16 @@ public class EnrollmentStoreIntegrationTest extends AbsStoreTestCase {
                 RELATIONSHIP_TYPE_UID);
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
 
-        database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
-        database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
-        database().insert(ProgramModel.PROGRAM, null, program);
+        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
+        database().insert(ProgramModel.TABLE, null, program);
 
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.createWithOrgUnit(
                 TRACKED_ENTITY_INSTANCE, ORGANISATION_UNIT);
 
-        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
-        database().insert(TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE, null, trackedEntityInstance);
+        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
+        database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
     }
 
     @Test
@@ -151,7 +151,7 @@ public class EnrollmentStoreIntegrationTest extends AbsStoreTestCase {
                 STATE
         );
 
-        Cursor cursor = database().query(ENROLLMENT, ENROLLMENT_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(TABLE, ENROLLMENT_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(
@@ -176,7 +176,7 @@ public class EnrollmentStoreIntegrationTest extends AbsStoreTestCase {
 
         long rowId = enrollmentStore.insert(UID, null, null, ORGANISATION_UNIT, PROGRAM, null, null, null, null,
                 TRACKED_ENTITY_INSTANCE, null, null, null);
-        Cursor cursor = database().query(ENROLLMENT, ENROLLMENT_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(TABLE, ENROLLMENT_PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, null, null, ORGANISATION_UNIT, PROGRAM, null, null, null, null,
                 TRACKED_ENTITY_INSTANCE, null, null, null).isExhausted();
@@ -200,10 +200,10 @@ public class EnrollmentStoreIntegrationTest extends AbsStoreTestCase {
                 STATE
         );
         //Delete OrgUnit:
-        database().delete(OrganisationUnitModel.ORGANISATION_UNIT,
+        database().delete(OrganisationUnitModel.TABLE,
                 OrganisationUnitModel.Columns.UID + " =?", new String[]{ORGANISATION_UNIT});
         //Query for Enrollment:
-        Cursor cursor = database().query(ENROLLMENT, ENROLLMENT_PROJECTION, null, null, null, null, null, null);
+        Cursor cursor = database().query(TABLE, ENROLLMENT_PROJECTION, null, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 
@@ -226,10 +226,10 @@ public class EnrollmentStoreIntegrationTest extends AbsStoreTestCase {
                 STATE
         );
 
-        database().delete(ProgramModel.PROGRAM,
+        database().delete(ProgramModel.TABLE,
                 ProgramModel.Columns.UID + " =?", new String[]{PROGRAM});
 
-        Cursor cursor = database().query(ENROLLMENT, ENROLLMENT_PROJECTION, null, null, null, null, null, null);
+        Cursor cursor = database().query(TABLE, ENROLLMENT_PROJECTION, null, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 
@@ -251,10 +251,10 @@ public class EnrollmentStoreIntegrationTest extends AbsStoreTestCase {
                 STATE
         );
 
-        database().delete(TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE,
+        database().delete(TrackedEntityInstanceModel.TABLE,
                 ProgramModel.Columns.UID + " =?", new String[]{TRACKED_ENTITY_INSTANCE});
 
-        Cursor cursor = database().query(ENROLLMENT, ENROLLMENT_PROJECTION, null, null, null, null, null, null);
+        Cursor cursor = database().query(TABLE, ENROLLMENT_PROJECTION, null, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 

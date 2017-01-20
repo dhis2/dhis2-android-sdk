@@ -40,7 +40,7 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class TrackedEntityStoreImpl implements TrackedEntityStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + TrackedEntityModel.TRACKED_ENTITY + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + TrackedEntityModel.TABLE + " (" +
             TrackedEntityModel.Columns.UID + ", " +
             TrackedEntityModel.Columns.CODE + ", " +
             TrackedEntityModel.Columns.NAME + ", " +

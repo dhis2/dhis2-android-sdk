@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 @AutoValue
 public abstract class TrackedEntityModel extends BaseNameableObjectModel {
 
-    public static final String TRACKED_ENTITY = "TrackedEntity";
+    public static final String TABLE = "TrackedEntity";
 
     public static class Columns extends BaseNameableObjectModel.Columns {
         // Empty by design. BaseNameableObjectModel.Columns contains all needed columns

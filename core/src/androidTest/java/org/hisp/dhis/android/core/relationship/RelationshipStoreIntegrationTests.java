@@ -71,7 +71,7 @@ public class RelationshipStoreIntegrationTests extends AbsStoreTestCase {
                 RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE
         );
-        database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class RelationshipStoreIntegrationTests extends AbsStoreTestCase {
         );
 
         Cursor cursor = database().query(
-                RelationshipModel.RELATIONSHIP,
+                RelationshipModel.TABLE,
                 RELATIONSHIP_PROJECTION,
                 null, null, null, null, null, null
         );
@@ -103,10 +103,10 @@ public class RelationshipStoreIntegrationTests extends AbsStoreTestCase {
                 RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE
         );
-        database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
 
         long rowId = relationshipStore.insert(null, null, RELATIONSHIP_TYPE);
-        Cursor cursor = database().query(RelationshipModel.RELATIONSHIP, RELATIONSHIP_PROJECTION,
+        Cursor cursor = database().query(RelationshipModel.TABLE, RELATIONSHIP_PROJECTION,
                 null, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -120,7 +120,7 @@ public class RelationshipStoreIntegrationTests extends AbsStoreTestCase {
                 TRACKED_ENTITY_INSTANCE_B,
                 RELATIONSHIP_TYPE
         );
-        database().delete(RelationshipTypeModel.RELATIONSHIP_TYPE,
+        database().delete(RelationshipTypeModel.TABLE,
                 RelationshipTypeModel.Columns.UID + "=?", new String[] {RELATIONSHIP_TYPE});
 
     }

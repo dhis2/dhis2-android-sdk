@@ -77,9 +77,9 @@ public class TrackedEntityAttributeValueStoreIntegrationTests extends AbsStoreTe
         ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.create(1L, TRACKED_ENTITY_ATTRIBUTE,
                 null);
 
-        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
-        database().insert(TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE, null, trackedEntityInstance);
-        database().insert(TrackedEntityAttributeModel.TRACKED_ENTITY_ATTRIBUTE, null, trackedEntityAttribute);
+        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
+        database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
+        database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
     }
 
     @Test
@@ -87,7 +87,7 @@ public class TrackedEntityAttributeValueStoreIntegrationTests extends AbsStoreTe
 
         long rowId = store.insert(STATE, VALUE, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE);
 
-        Cursor cursor = database().query(TrackedEntityAttributeValueModel.TRACKED_ENTITY_ATTRIBUTE_VALUE,
+        Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
                 TRACKED_ENTITY_ATTRIBUTE_VALUE_PROJECTION,
                 null, null, null, null, null);
 
@@ -101,7 +101,7 @@ public class TrackedEntityAttributeValueStoreIntegrationTests extends AbsStoreTe
 
         long rowId = store.insert(STATE, null, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE);
 
-        Cursor cursor = database().query(TrackedEntityAttributeValueModel.TRACKED_ENTITY_ATTRIBUTE_VALUE,
+        Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
                 TRACKED_ENTITY_ATTRIBUTE_VALUE_PROJECTION,
                 null, null, null, null, null);
 
@@ -125,10 +125,10 @@ public class TrackedEntityAttributeValueStoreIntegrationTests extends AbsStoreTe
 
         insert_shouldPersistTrackedEntityAttributeValueNullableInDatabase();
 
-        database().delete(TrackedEntityAttributeModel.TRACKED_ENTITY_ATTRIBUTE,
+        database().delete(TrackedEntityAttributeModel.TABLE,
                 TrackedEntityAttributeModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY_ATTRIBUTE});
 
-        Cursor cursor = database().query(TrackedEntityAttributeValueModel.TRACKED_ENTITY_ATTRIBUTE_VALUE,
+        Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
                 TRACKED_ENTITY_ATTRIBUTE_VALUE_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
@@ -138,10 +138,10 @@ public class TrackedEntityAttributeValueStoreIntegrationTests extends AbsStoreTe
 
         insert_shouldPersistTrackedEntityAttributeValueNullableInDatabase();
 
-        database().delete(TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE,
+        database().delete(TrackedEntityInstanceModel.TABLE,
                 TrackedEntityInstanceModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY_INSTANCE});
 
-        Cursor cursor = database().query(TrackedEntityAttributeValueModel.TRACKED_ENTITY_ATTRIBUTE_VALUE,
+        Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
                 TRACKED_ENTITY_ATTRIBUTE_VALUE_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }

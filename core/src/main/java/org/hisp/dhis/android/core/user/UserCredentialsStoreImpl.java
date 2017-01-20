@@ -38,7 +38,7 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class UserCredentialsStoreImpl implements UserCredentialsStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + UserCredentialsModel.USER_CREDENTIALS + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + UserCredentialsModel.TABLE + " (" +
             UserCredentialsModel.Columns.UID + ", " +
             UserCredentialsModel.Columns.CODE + ", " +
             UserCredentialsModel.Columns.NAME + ", " +
@@ -78,7 +78,7 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
 
     @Override
     public int delete() {
-        return sqLiteDatabase.delete(UserCredentialsModel.USER_CREDENTIALS, null, null);
+        return sqLiteDatabase.delete(UserCredentialsModel.TABLE, null, null);
     }
 
     @Override

@@ -117,12 +117,12 @@ public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
                 RELATIONSHIP_TYPE_UID);
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
 
-        database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
-        database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
-        database().insert(ProgramModel.PROGRAM, null, program);
+        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
+        database().insert(ProgramModel.TABLE, null, program);
 
         ContentValues programRule = CreateProgramRuleUtils.createWithoutProgramStage(1L, PROGRAM_RULE, PROGRAM);
-        database().insert(ProgramRuleModel.PROGRAM_RULE, null, programRule);
+        database().insert(ProgramRuleModel.TABLE, null, programRule);
 
         long rowId = programRuleActionStore.insert(
                 UID,
@@ -143,7 +143,7 @@ public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
                 PROGRAM_RULE
         );
 
-        Cursor cursor = database().query(ProgramRuleActionModel.PROGRAM_RULE_ACTION,
+        Cursor cursor = database().query(ProgramRuleActionModel.TABLE,
                 PROGRAM_RULE_ACTION_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -176,18 +176,18 @@ public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
                 RELATIONSHIP_TYPE_UID);
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
 
-        database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
-        database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
-        database().insert(ProgramModel.PROGRAM, null, program);
+        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
+        database().insert(ProgramModel.TABLE, null, program);
 
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
-        database().insert(ProgramStageModel.PROGRAM_STAGE, null, programStage);
+        database().insert(ProgramStageModel.TABLE, null, programStage);
 
         ContentValues programRule =
                 CreateProgramRuleUtils.createWithProgramStage(
                         1L, PROGRAM_RULE, PROGRAM, PROGRAM_STAGE);
 
-        database().insert(ProgramRuleModel.PROGRAM_RULE, null, programRule);
+        database().insert(ProgramRuleModel.TABLE, null, programRule);
 
         long rowId = programRuleActionStore.insert(
                 UID,
@@ -208,7 +208,7 @@ public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
                 PROGRAM_RULE
         );
 
-        Cursor cursor = database().query(ProgramRuleActionModel.PROGRAM_RULE_ACTION,
+        Cursor cursor = database().query(ProgramRuleActionModel.TABLE,
                 PROGRAM_RULE_ACTION_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -258,33 +258,33 @@ public class ProgramRuleActionStoreIntegrationTests extends AbsStoreTestCase {
     @Test
     public void delete_shouldDeleteProgramRuleActionWhenDeletingProgramRule() throws Exception {
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
-        database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
+        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
 
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE_UID);
-        database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
+        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
 
         ContentValues program = CreateProgramUtils.create(ID, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
-        database().insert(ProgramModel.PROGRAM, null, program);
+        database().insert(ProgramModel.TABLE, null, program);
 
         ContentValues programRule = CreateProgramRuleUtils.createWithoutProgramStage(ID, PROGRAM_RULE, PROGRAM);
-        database().insert(ProgramRuleModel.PROGRAM_RULE, null, programRule);
+        database().insert(ProgramRuleModel.TABLE, null, programRule);
 
         ContentValues programRuleAction = new ContentValues();
         programRuleAction.put(Columns.ID, ID);
         programRuleAction.put(Columns.UID, UID);
         programRuleAction.put(Columns.PROGRAM_RULE, PROGRAM_RULE);
-        database().insert(ProgramRuleActionModel.PROGRAM_RULE_ACTION, null, programRuleAction);
+        database().insert(ProgramRuleActionModel.TABLE, null, programRuleAction);
 
         String[] projection = {Columns.ID, Columns.UID, Columns.PROGRAM_RULE};
 
-        Cursor cursor = database().query(ProgramRuleActionModel.PROGRAM_RULE_ACTION, projection, null, null, null, null, null);
+        Cursor cursor = database().query(ProgramRuleActionModel.TABLE, projection, null, null, null, null, null);
         // checking that program rule action was successfully inserted
         assertThatCursor(cursor).hasRow(ID, UID, PROGRAM_RULE).isExhausted();
         // deleting program rule
-        database().delete(ProgramRuleModel.PROGRAM_RULE, ProgramRuleModel.Columns.UID + " =?", new String[]{PROGRAM_RULE});
+        database().delete(ProgramRuleModel.TABLE, ProgramRuleModel.Columns.UID + " =?", new String[]{PROGRAM_RULE});
 
-        cursor = database().query(ProgramRuleActionModel.PROGRAM_RULE_ACTION, projection, null, null, null, null, null);
+        cursor = database().query(ProgramRuleActionModel.TABLE, projection, null, null, null, null, null);
         // checking that program rule action is deleted
         assertThatCursor(cursor).isExhausted();
 

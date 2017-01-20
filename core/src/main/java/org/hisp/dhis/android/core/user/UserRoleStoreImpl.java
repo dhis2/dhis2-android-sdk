@@ -40,7 +40,7 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class UserRoleStoreImpl implements UserRoleStore {
 
-    private static final String INSERT_STATEMENT = "INSERT INTO " + UserRoleModel.USER_ROLE + "( " +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + UserRoleModel.TABLE + "( " +
             Columns.UID + ", " +
             Columns.CODE + ", " +
             Columns.NAME + ", " +

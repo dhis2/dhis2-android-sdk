@@ -30,7 +30,6 @@
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -107,7 +106,7 @@ public class OrganisationUnitStoreIntegrationTests extends AbsStoreTestCase {
                 date, date, null, LEVEL
         );
 
-        Cursor cursor = database().query(OrganisationUnitModel.ORGANISATION_UNIT, PROJECTION,
+        Cursor cursor = database().query(OrganisationUnitModel.TABLE, PROJECTION,
                 null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -139,11 +138,11 @@ public class OrganisationUnitStoreIntegrationTests extends AbsStoreTestCase {
         ContentValues organisationUnitOne = CreateOrganisationUnitUtils.createOrgUnit(1L, "organisation_unit_one");
         ContentValues organisationUnitTwo = CreateOrganisationUnitUtils.createOrgUnit(2L, "organisation_unit_two");
 
-        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnitOne);
-        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnitTwo);
+        database().insert(OrganisationUnitModel.TABLE, null, organisationUnitOne);
+        database().insert(OrganisationUnitModel.TABLE, null, organisationUnitTwo);
 
         int deleted = organisationUnitStore.delete();
-        Cursor cursor = database().query(OrganisationUnitModel.ORGANISATION_UNIT, null, null, null, null, null, null);
+        Cursor cursor = database().query(OrganisationUnitModel.TABLE, null, null, null, null, null, null);
 
         assertThat(deleted).isEqualTo(2);
         assertThatCursor(cursor).isExhausted();

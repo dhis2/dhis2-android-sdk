@@ -80,7 +80,7 @@ public class UserRoleStoreIntegrationTests extends AbsStoreTestCase {
     @Test
     public void insert_shouldPersistRowInDatabase() {
         long rowId = userRoleStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date);
-        Cursor cursor = database().query(UserRoleModel.USER_ROLE, PROJECTION, null, null, null, null, null, null);
+        Cursor cursor = database().query(UserRoleModel.TABLE, PROJECTION, null, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, CODE, NAME, DISPLAY_NAME, dateString, dateString).isExhausted();

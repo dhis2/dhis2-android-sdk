@@ -38,7 +38,7 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class ConstantStoreImpl implements ConstantStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + ConstantModel.CONSTANT + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + ConstantModel.TABLE + " (" +
             ConstantModel.Columns.UID + "," +
             ConstantModel.Columns.CODE + "," +
             ConstantModel.Columns.NAME + "," +

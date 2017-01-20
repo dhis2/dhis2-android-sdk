@@ -38,7 +38,7 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + ProgramRuleActionModel.PROGRAM_RULE_ACTION + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + ProgramRuleActionModel.TABLE + " (" +
             ProgramRuleActionModel.Columns.UID + ", " +
             ProgramRuleActionModel.Columns.CODE + ", " +
             ProgramRuleActionModel.Columns.NAME + ", " +

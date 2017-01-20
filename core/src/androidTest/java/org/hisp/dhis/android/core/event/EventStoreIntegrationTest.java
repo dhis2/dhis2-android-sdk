@@ -119,15 +119,15 @@ public class EventStoreIntegrationTest extends AbsStoreTestCase {
                 RELATIONSHIP_TYPE_UID);
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
 
-        database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
-        database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
-        database().insert(ProgramModel.PROGRAM, null, program);
+        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
+        database().insert(ProgramModel.TABLE, null, program);
 
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
 
-        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
-        database().insert(ProgramStageModel.PROGRAM_STAGE, null, programStage);
+        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
+        database().insert(ProgramStageModel.TABLE, null, programStage);
     }
 
     @Test
@@ -149,7 +149,7 @@ public class EventStoreIntegrationTest extends AbsStoreTestCase {
                 date, // dueDate
                 STATE
         );
-        Cursor cursor = database().query(EventModel.EVENT, EVENT_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(
@@ -175,7 +175,7 @@ public class EventStoreIntegrationTest extends AbsStoreTestCase {
 
         long rowId = eventStore.insert(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, PROGRAM,
                 PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null);
-        Cursor cursor = database().query(EventModel.EVENT, EVENT_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, PROGRAM,
                 PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null).isExhausted();
@@ -201,8 +201,8 @@ public class EventStoreIntegrationTest extends AbsStoreTestCase {
                 STATE
         );
 
-        database().delete(ProgramModel.PROGRAM, ProgramModel.Columns.UID + "=?", new String[]{PROGRAM});
-        Cursor cursor = database().query(EventModel.EVENT, EVENT_PROJECTION, null, null, null, null, null);
+        database().delete(ProgramModel.TABLE, ProgramModel.Columns.UID + "=?", new String[]{PROGRAM});
+        Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 
@@ -226,8 +226,8 @@ public class EventStoreIntegrationTest extends AbsStoreTestCase {
                 STATE
         );
 
-        database().delete(ProgramStageModel.PROGRAM_STAGE, ProgramStageModel.Columns.UID + "=?", new String[]{PROGRAM_STAGE});
-        Cursor cursor = database().query(EventModel.EVENT, EVENT_PROJECTION, null, null, null, null, null);
+        database().delete(ProgramStageModel.TABLE, ProgramStageModel.Columns.UID + "=?", new String[]{PROGRAM_STAGE});
+        Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 
@@ -251,10 +251,10 @@ public class EventStoreIntegrationTest extends AbsStoreTestCase {
                 STATE
         );
 
-        database().delete(OrganisationUnitModel.ORGANISATION_UNIT,
+        database().delete(OrganisationUnitModel.TABLE,
                 OrganisationUnitModel.Columns.UID + "=?", new String[]{ORGANISATION_UNIT});
 
-        Cursor cursor = database().query(EventModel.EVENT, EVENT_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 

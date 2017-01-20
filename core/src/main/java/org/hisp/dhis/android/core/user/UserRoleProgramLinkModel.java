@@ -30,31 +30,48 @@ package org.hisp.dhis.android.core.user;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
 
 @AutoValue
-public abstract class UserRoleModel extends BaseIdentifiableObjectModel {
-    public static final String TABLE = "UserRole";
+public abstract class UserRoleProgramLinkModel extends BaseModel {
+    public static final String TABLE = "userRoleProgramLink";
 
-    public static class Columns extends BaseIdentifiableObjectModel.Columns {}
+    public static class Columns extends BaseModel.Columns {
+        public static final String USER_ROLE = "userRole";
+        public static final String PROGRAM = "program";
+    }
 
-    public static UserRoleModel create(Cursor cursor) {
-        return AutoValue_UserRoleModel.createFromCursor(cursor);
+    public static UserRoleProgramLinkModel create(Cursor cursor) {
+        return AutoValue_UserRoleProgramLinkModel.createFromCursor(cursor);
     }
 
     public static Builder builder() {
-        return new $$AutoValue_UserRoleModel.Builder();
+        return new $$AutoValue_UserRoleProgramLinkModel.Builder();
     }
 
     @NonNull
     public abstract ContentValues toContentValues();
 
+    @Nullable
+    @ColumnName(Columns.USER_ROLE)
+    public abstract String userRole();
+
+    @Nullable
+    @ColumnName(Columns.PROGRAM)
+    public abstract String program();
+
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {
-        public abstract UserRoleModel build();
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder userRole(@Nullable String user);
+
+        public abstract Builder program(@Nullable String organisationUnit);
+
+        public abstract UserRoleProgramLinkModel build();
     }
 }

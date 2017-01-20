@@ -40,7 +40,7 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 public class ProgramStageDataElementStoreImpl implements ProgramStageDataElementStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
-            ProgramStageDataElementModel.PROGRAM_STAGE_DATA_ELEMENT + " (" +
+            ProgramStageDataElementModel.TABLE + " (" +
             ProgramStageDataElementModel.Columns.UID + ", " +
             ProgramStageDataElementModel.Columns.CODE + ", " +
             ProgramStageDataElementModel.Columns.NAME + ", " +

@@ -128,7 +128,7 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
                 "test_user_nationality"
         );
 
-        Cursor cursor = database().query(UserModel.USER,
+        Cursor cursor = database().query(UserModel.TABLE,
                 USER_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -160,11 +160,11 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
     @Test
     public void delete_shouldDeleteAllRows() {
         ContentValues user = create(1L, "test_user_id");
-        database().insert(UserModel.USER, null, user);
+        database().insert(UserModel.TABLE, null, user);
 
         int deleted = userStore.delete();
 
-        Cursor cursor = database().query(UserModel.USER,
+        Cursor cursor = database().query(UserModel.TABLE,
                 null, null, null, null, null, null);
         assertThat(deleted).isEqualTo(1);
         assertThatCursor(cursor).isExhausted();

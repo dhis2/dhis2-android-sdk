@@ -134,9 +134,9 @@ public class ProgramStageModelStoreIntegrationTest extends AbsStoreTestCase {
                 RELATIONSHIP_TYPE_UID);
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
 
-        database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
-        database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
-        database().insert(ProgramModel.PROGRAM, null, program);
+        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
+        database().insert(ProgramModel.TABLE, null, program);
     }
 
     @Test
@@ -151,7 +151,7 @@ public class ProgramStageModelStoreIntegrationTest extends AbsStoreTestCase {
                 HIDE_DUE_DATE, BLOCK_ENTRY_FORM, MIN_DAYS_FROM_START, STANDARD_INTERVAL,
                 PROGRAM
         );
-        Cursor cursor = database().query(ProgramStageModel.PROGRAM_STAGE, PROGRAM_STAGE_PROJECTION,
+        Cursor cursor = database().query(ProgramStageModel.TABLE, PROGRAM_STAGE_PROJECTION,
                 null, null, null, null, null);
 
         // Checking if rowId == 1.
@@ -205,17 +205,17 @@ public class ProgramStageModelStoreIntegrationTest extends AbsStoreTestCase {
         programStage.put(Columns.UID, UID);
         programStage.put(Columns.PROGRAM, PROGRAM);
 
-        database().insert(ProgramStageModel.PROGRAM_STAGE, null, programStage);
+        database().insert(ProgramStageModel.TABLE, null, programStage);
 
         String[] projection = {Columns.ID, Columns.UID, Columns.PROGRAM};
 
-        Cursor cursor = database().query(ProgramStageModel.PROGRAM_STAGE, projection, null, null, null, null, null);
+        Cursor cursor = database().query(ProgramStageModel.TABLE, projection, null, null, null, null, null);
         // checking that program stage was successfully inserted
         assertThatCursor(cursor).hasRow(ID, UID, PROGRAM).isExhausted();
 
-        database().delete(ProgramModel.PROGRAM, ProgramModel.Columns.UID + "=?", new String[]{PROGRAM});
+        database().delete(ProgramModel.TABLE, ProgramModel.Columns.UID + "=?", new String[]{PROGRAM});
 
-        cursor = database().query(ProgramStageModel.PROGRAM_STAGE, projection, null, null, null, null, null);
+        cursor = database().query(ProgramStageModel.TABLE, projection, null, null, null, null, null);
 
         assertThatCursor(cursor).isExhausted();
     }

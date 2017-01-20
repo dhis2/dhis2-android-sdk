@@ -64,6 +64,9 @@ import org.hisp.dhis.android.core.user.UserCredentialsModel;
 import org.hisp.dhis.android.core.user.UserModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserRoleModel;
+import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel;
+
+import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"
@@ -78,7 +81,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ConfigurationModel.Columns.SERVER_URL + " TEXT NOT NULL UNIQUE" +
             ");";
 
-    private static final String CREATE_USER_TABLE = "CREATE TABLE " + UserModel.USER + " (" +
+    private static final String CREATE_USER_TABLE = "CREATE TABLE " + UserModel.TABLE + " (" +
             UserModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             UserModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             UserModel.Columns.CODE + " TEXT," +
@@ -102,7 +105,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ");";
 
     private static final String CREATE_USER_CREDENTIALS_TABLE = "CREATE TABLE " +
-            UserCredentialsModel.USER_CREDENTIALS + " (" +
+            UserCredentialsModel.TABLE + " (" +
             UserCredentialsModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             UserCredentialsModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             UserCredentialsModel.Columns.CODE + " TEXT," +
@@ -112,12 +115,12 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             UserCredentialsModel.Columns.LAST_UPDATED + " TEXT," +
             UserCredentialsModel.Columns.USERNAME + " TEXT," +
             UserCredentialsModel.Columns.USER + " TEXT NOT NULL UNIQUE," +
-            " FOREIGN KEY (" + UserCredentialsModel.Columns.USER + ") REFERENCES " + UserModel.USER +
+            " FOREIGN KEY (" + UserCredentialsModel.Columns.USER + ") REFERENCES " + UserModel.TABLE +
             " (" + UserModel.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_ORGANISATION_UNIT_TABLE = "CREATE TABLE " +
-            OrganisationUnitModel.ORGANISATION_UNIT + " (" +
+            OrganisationUnitModel.TABLE + " (" +
             OrganisationUnitModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             OrganisationUnitModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             OrganisationUnitModel.Columns.CODE + " TEXT," +
@@ -137,32 +140,32 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ");";
 
     private static final String CREATE_USER_ORGANISATION_UNIT_TABLE = "CREATE TABLE " +
-            UserOrganisationUnitLinkModel.USER_ORGANISATION_UNIT_LINK + " (" +
+            UserOrganisationUnitLinkModel.TABLE + " (" +
             UserOrganisationUnitLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             UserOrganisationUnitLinkModel.Columns.USER + " TEXT NOT NULL," +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
-            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + " TEXT NOT NULL," +
+            ORGANISATION_UNIT_SCOPE + " TEXT NOT NULL," +
             " FOREIGN KEY (" + UserOrganisationUnitLinkModel.Columns.USER + ") " +
-            " REFERENCES " + UserModel.USER + " (" + UserModel.Columns.UID + ") ON DELETE CASCADE," +
+            " REFERENCES " + UserModel.TABLE + " (" + UserModel.Columns.UID + ") ON DELETE CASCADE," +
             " FOREIGN KEY (" + UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ") " +
-            " REFERENCES " + OrganisationUnitModel.ORGANISATION_UNIT +
+            " REFERENCES " + OrganisationUnitModel.TABLE +
             " (" + OrganisationUnitModel.Columns.UID + ") ON DELETE CASCADE," +
             "UNIQUE (" + UserOrganisationUnitLinkModel.Columns.USER + ", " +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ", " +
-            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + ")" +
+            ORGANISATION_UNIT_SCOPE + ")" +
             ");";
 
     private static final String CREATE_AUTHENTICATED_USER_TABLE = "CREATE TABLE " +
-            AuthenticatedUserModel.AUTHENTICATED_USER + " (" +
+            AuthenticatedUserModel.TABLE + " (" +
             AuthenticatedUserModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             AuthenticatedUserModel.Columns.USER + " TEXT NOT NULL UNIQUE," +
             AuthenticatedUserModel.Columns.CREDENTIALS + " TEXT NOT NULL," +
             " FOREIGN KEY (" + AuthenticatedUserModel.Columns.USER + ") " +
-            " REFERENCES " + UserModel.USER +
+            " REFERENCES " + UserModel.TABLE +
             " (" + UserModel.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
-    private static final String CREATE_OPTION_SET_TABLE = "CREATE TABLE " + OptionSetModel.OPTION_SET + " (" +
+    private static final String CREATE_OPTION_SET_TABLE = "CREATE TABLE " + OptionSetModel.TABLE + " (" +
             OptionSetModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             OptionSetModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             OptionSetModel.Columns.CODE + " TEXT," +
@@ -174,7 +177,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             OptionSetModel.Columns.VALUE_TYPE + " TEXT" +
             ");";
 
-    private static final String CREATE_OPTION_TABLE = "CREATE TABLE " + OptionModel.OPTION + " (" +
+    private static final String CREATE_OPTION_TABLE = "CREATE TABLE " + OptionModel.TABLE + " (" +
             OptionModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             OptionModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             OptionModel.Columns.CODE + " TEXT," +
@@ -184,11 +187,11 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             OptionModel.Columns.LAST_UPDATED + " TEXT," +
             OptionModel.Columns.OPTION_SET + " TEXT NOT NULL," +
             " FOREIGN KEY (" + OptionModel.Columns.OPTION_SET + ") " +
-            " REFERENCES " + OptionSetModel.OPTION_SET +
+            " REFERENCES " + OptionSetModel.TABLE +
             " (" + OptionSetModel.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
-    private static final String CREATE_PROGRAM_TABLE = "CREATE TABLE " + ProgramModel.PROGRAM + " (" +
+    private static final String CREATE_PROGRAM_TABLE = "CREATE TABLE " + ProgramModel.TABLE + " (" +
             ProgramModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             ProgramModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             ProgramModel.Columns.CODE + " TEXT," +
@@ -220,17 +223,17 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ProgramModel.Columns.RELATED_PROGRAM + " TEXT," +
             ProgramModel.Columns.TRACKED_ENTITY + " TEXT," +
             " FOREIGN KEY (" + ProgramModel.Columns.RELATIONSHIP_TYPE + ")" +
-            " REFERENCES " + RelationshipTypeModel.RELATIONSHIP_TYPE +
+            " REFERENCES " + RelationshipTypeModel.TABLE +
             " (" + RelationshipTypeModel.Columns.UID + ")  ON DELETE CASCADE, " +
             " FOREIGN KEY (" + ProgramModel.Columns.RELATED_PROGRAM + ") " +
-            " REFERENCES " + ProgramModel.PROGRAM +
+            " REFERENCES " + ProgramModel.TABLE +
             " (" + ProgramModel.Columns.UID + ") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED , " +
             " FOREIGN KEY (" + ProgramModel.Columns.TRACKED_ENTITY + ")" +
-            " REFERENCES " + TrackedEntityModel.TRACKED_ENTITY +
+            " REFERENCES " + TrackedEntityModel.TABLE +
             " (" + TrackedEntityModel.Columns.UID + ")  ON DELETE CASCADE" +
             ");";
 
-    private static final String CREATE_TRACKED_ENTITY_TABLE = "CREATE TABLE " + TrackedEntityModel.TRACKED_ENTITY +
+    private static final String CREATE_TRACKED_ENTITY_TABLE = "CREATE TABLE " + TrackedEntityModel.TABLE +
             " (" +
             TrackedEntityModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             TrackedEntityModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
@@ -245,7 +248,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             TrackedEntityModel.Columns.DISPLAY_DESCRIPTION + " TEXT" +
             ");";
 
-    private static final String CREATE_DATA_ELEMENT_TABLE = "CREATE TABLE " + DataElementModel.DATA_ELEMENT + " (" +
+    private static final String CREATE_DATA_ELEMENT_TABLE = "CREATE TABLE " + DataElementModel.TABLE + " (" +
             DataElementModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             DataElementModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             DataElementModel.Columns.CODE + " TEXT," +
@@ -267,12 +270,12 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             DataElementModel.Columns.DISPLAY_FORM_NAME + " TEXT," +
             DataElementModel.Columns.OPTION_SET + " TEXT," +
             " FOREIGN KEY ( " + DataElementModel.Columns.OPTION_SET + ")" +
-            " REFERENCES " + OptionSetModel.OPTION_SET +
+            " REFERENCES " + OptionSetModel.TABLE +
             " (" + OptionSetModel.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_PROGRAM_STAGE_DATA_ELEMENT_TABLE = "CREATE TABLE " +
-            ProgramStageDataElementModel.PROGRAM_STAGE_DATA_ELEMENT + " (" +
+            ProgramStageDataElementModel.TABLE + " (" +
             ProgramStageDataElementModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             ProgramStageDataElementModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             ProgramStageDataElementModel.Columns.CODE + " TEXT," +
@@ -288,26 +291,26 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ProgramStageDataElementModel.Columns.DATA_ELEMENT + " TEXT NOT NULL," +
             ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION + " TEXT," +
             " FOREIGN KEY (" + ProgramStageDataElementModel.Columns.DATA_ELEMENT + ")" +
-            " REFERENCES " + DataElementModel.DATA_ELEMENT +
+            " REFERENCES " + DataElementModel.TABLE +
             " (" + DataElementModel.Columns.UID + ")" + "ON DELETE CASCADE," +
             " FOREIGN KEY (" + ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION + ")" +
-            " REFERENCES " + ProgramStageSectionModel.PROGRAM_STAGE_SECTION +
+            " REFERENCES " + ProgramStageSectionModel.TABLE +
             " (" + ProgramStageSectionModel.Columns.UID + ")" + "ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_RELATIONSHIP_TABLE =
-            "CREATE TABLE " + RelationshipModel.RELATIONSHIP + " (" +
+            "CREATE TABLE " + RelationshipModel.TABLE + " (" +
                     RelationshipModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A + " TEXT," +
                     RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B + " TEXT," +
                     RelationshipModel.Columns.RELATIONSHIP_TYPE + " TEXT NOT NULL," +
                     " FOREIGN KEY (" + RelationshipModel.Columns.RELATIONSHIP_TYPE + ") " +
-                    " REFERENCES " + RelationshipTypeModel.RELATIONSHIP_TYPE +
+                    " REFERENCES " + RelationshipTypeModel.TABLE +
                     " (" + RelationshipTypeModel.Columns.UID + ") ON DELETE CASCADE" +
                     ");";
 
     private static final String CREATE_RELATIONSHIP_TYPE_TABLE = "CREATE TABLE " +
-            RelationshipTypeModel.RELATIONSHIP_TYPE + " (" +
+            RelationshipTypeModel.TABLE + " (" +
             RelationshipTypeModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             RelationshipTypeModel.Columns.UID + " TEXT NOT NULL UNIQUE, " +
             RelationshipTypeModel.Columns.CODE + " TEXT, " +
@@ -320,7 +323,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ");";
 
     private static final String CREATE_PROGRAM_STAGE_SECTION_TABLE = "CREATE TABLE " +
-            ProgramStageSectionModel.PROGRAM_STAGE_SECTION + " (" +
+            ProgramStageSectionModel.TABLE + " (" +
             ProgramStageSectionModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             ProgramStageSectionModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             ProgramStageSectionModel.Columns.CODE + " TEXT," +
@@ -331,12 +334,12 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ProgramStageSectionModel.Columns.SORT_ORDER + " INTEGER," +
             ProgramStageSectionModel.Columns.PROGRAM_STAGE + " TEXT NOT NULL," +
             " FOREIGN KEY ( " + ProgramStageSectionModel.Columns.PROGRAM_STAGE + ")" +
-            " REFERENCES " + ProgramStageModel.PROGRAM_STAGE +
+            " REFERENCES " + ProgramStageModel.TABLE +
             " (" + ProgramStageModel.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_PROGRAM_STAGE_TABLE = "CREATE TABLE " +
-            ProgramStageModel.PROGRAM_STAGE + " (" +
+            ProgramStageModel.TABLE + " (" +
             ProgramStageModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             ProgramStageModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             ProgramStageModel.Columns.CODE + " TEXT," +
@@ -362,12 +365,12 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ProgramStageModel.Columns.STANDARD_INTERVAL + " INTEGER," +
             ProgramStageModel.Columns.PROGRAM + " TEXT NOT NULL," +
             " FOREIGN KEY ( " + ProgramStageModel.Columns.PROGRAM + ")" +
-            " REFERENCES " + ProgramModel.PROGRAM +
+            " REFERENCES " + ProgramModel.TABLE +
             " (" + ProgramModel.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_PROGRAM_RULE_VARIABLE_TABLE = "CREATE TABLE " +
-            ProgramRuleVariableModel.PROGRAM_RULE_VARIABLE + " (" +
+            ProgramRuleVariableModel.TABLE + " (" +
             ProgramRuleVariableModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             ProgramRuleVariableModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             ProgramRuleVariableModel.Columns.CODE + " TEXT," +
@@ -382,20 +385,20 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ProgramRuleVariableModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT," +
             ProgramRuleVariableModel.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE + " TEXT," +
             " FOREIGN KEY (" + ProgramRuleVariableModel.Columns.PROGRAM + ")" +
-            " REFERENCES " + ProgramModel.PROGRAM + " (" + ProgramModel.Columns.UID + ") ON DELETE CASCADE," +
+            " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ") ON DELETE CASCADE," +
             " FOREIGN KEY (" + ProgramRuleVariableModel.Columns.PROGRAM_STAGE + ")" +
-            " REFERENCES " + ProgramStageModel.PROGRAM_STAGE +
+            " REFERENCES " + ProgramStageModel.TABLE +
             " (" + ProgramStageModel.Columns.UID + ") ON DELETE CASCADE," +
             " FOREIGN KEY (" + ProgramRuleVariableModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ")" +
-            " REFERENCES " + TrackedEntityAttributeModel.TRACKED_ENTITY_ATTRIBUTE +
+            " REFERENCES " + TrackedEntityAttributeModel.TABLE +
             " (" + TrackedEntityAttributeModel.Columns.UID + ")" + "ON DELETE CASCADE," +
             " FOREIGN KEY (" + ProgramRuleVariableModel.Columns.DATA_ELEMENT + ")" +
-            " REFERENCES " + DataElementModel.DATA_ELEMENT +
+            " REFERENCES " + DataElementModel.TABLE +
             " (" + DataElementModel.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE = "CREATE TABLE " +
-            TrackedEntityAttributeModel.TRACKED_ENTITY_ATTRIBUTE + " (" +
+            TrackedEntityAttributeModel.TABLE + " (" +
             TrackedEntityAttributeModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             TrackedEntityAttributeModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             TrackedEntityAttributeModel.Columns.CODE + " TEXT," +
@@ -421,12 +424,12 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             TrackedEntityAttributeModel.Columns.UNIQUE + " INTEGER," +
             TrackedEntityAttributeModel.Columns.INHERIT + " INTEGER," +
             " FOREIGN KEY (" + TrackedEntityAttributeModel.Columns.OPTION_SET + ")" +
-            " REFERENCES " + OptionSetModel.OPTION_SET +
+            " REFERENCES " + OptionSetModel.TABLE +
             " (" + OptionSetModel.Columns.UID + ")" + "ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_PROGRAM_TRACKED_ENTITY_ATTRIBUTE_TABLE = "CREATE TABLE " +
-            ProgramTrackedEntityAttributeModel.PROGRAM_TRACKED_ENTITY_ATTRIBUTE + " (" +
+            ProgramTrackedEntityAttributeModel.TABLE + " (" +
             ProgramTrackedEntityAttributeModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             ProgramTrackedEntityAttributeModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             ProgramTrackedEntityAttributeModel.Columns.CODE + " TEXT," +
@@ -445,15 +448,15 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST + " INTEGER," +
             ProgramTrackedEntityAttributeModel.Columns.PROGRAM + " TEXT NOT NULL," +
             " FOREIGN KEY (" + ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ")" +
-            " REFERENCES " + TrackedEntityAttributeModel.TRACKED_ENTITY_ATTRIBUTE +
+            " REFERENCES " + TrackedEntityAttributeModel.TABLE +
             " (" + TrackedEntityAttributeModel.Columns.UID + ")" + "ON DELETE CASCADE," +
             " FOREIGN KEY (" + ProgramTrackedEntityAttributeModel.Columns.PROGRAM + ")" +
-            " REFERENCES " + ProgramModel.PROGRAM +
+            " REFERENCES " + ProgramModel.TABLE +
             " (" + ProgramModel.Columns.UID + ")" + "ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_PROGRAM_RULE_TABLE = "CREATE TABLE " +
-            ProgramRuleModel.PROGRAM_RULE + " (" +
+            ProgramRuleModel.TABLE + " (" +
             ProgramRuleModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             ProgramRuleModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             ProgramRuleModel.Columns.CODE + " TEXT," +
@@ -466,14 +469,14 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ProgramRuleModel.Columns.PROGRAM + " TEXT NOT NULL," +
             ProgramRuleModel.Columns.PROGRAM_STAGE + " TEXT," +
             " FOREIGN KEY (" + ProgramRuleModel.Columns.PROGRAM + ")" +
-            " REFERENCES " + ProgramModel.PROGRAM +
+            " REFERENCES " + ProgramModel.TABLE +
             " (" + ProgramModel.Columns.UID + ") ON DELETE CASCADE," +
             " FOREIGN KEY (" + ProgramRuleModel.Columns.PROGRAM_STAGE + ")" +
-            " REFERENCES " + ProgramStageModel.PROGRAM_STAGE +
+            " REFERENCES " + ProgramStageModel.TABLE +
             " (" + ProgramStageModel.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
-    private static final String CREATE_CONSTANT_TABLE = "CREATE TABLE " + ConstantModel.CONSTANT + " (" +
+    private static final String CREATE_CONSTANT_TABLE = "CREATE TABLE " + ConstantModel.TABLE + " (" +
             ConstantModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             ConstantModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             ConstantModel.Columns.CODE + " TEXT," +
@@ -484,14 +487,14 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ConstantModel.Columns.VALUE + " TEXT" +
             ");";
 
-    private static final String CREATE_SYSTEM_INFO_TABLE = "CREATE TABLE " + SystemInfoModel.SYSTEM_INFO + " (" +
+    private static final String CREATE_SYSTEM_INFO_TABLE = "CREATE TABLE " + SystemInfoModel.TABLE + " (" +
             SystemInfoModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             SystemInfoModel.Columns.SERVER_DATE + " TEXT," +
             SystemInfoModel.Columns.DATE_FORMAT + " TEXT" +
             ");";
 
     private static final String CREATE_PROGRAM_INDICATOR_TABLE = "CREATE TABLE " +
-            ProgramIndicatorModel.PROGRAM_INDICATOR + " (" +
+            ProgramIndicatorModel.TABLE + " (" +
             ProgramIndicatorModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             ProgramIndicatorModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             ProgramIndicatorModel.Columns.CODE + " TEXT," +
@@ -511,7 +514,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ");";
 
     private static final String CREATE_PROGRAM_RULE_ACTION_TABLE = "CREATE TABLE " +
-            ProgramRuleActionModel.PROGRAM_RULE_ACTION + " (" +
+            ProgramRuleActionModel.TABLE + " (" +
             ProgramRuleActionModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             ProgramRuleActionModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             ProgramRuleActionModel.Columns.CODE + " TEXT," +
@@ -530,26 +533,26 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ProgramRuleActionModel.Columns.DATA_ELEMENT + " TEXT," +
             ProgramRuleActionModel.Columns.PROGRAM_RULE + " TEXT NOT NULL," +
             " FOREIGN KEY (" + ProgramRuleActionModel.Columns.PROGRAM_RULE + ")" + " REFERENCES " +
-            ProgramRuleModel.PROGRAM_RULE + " (" + ProgramRuleModel.Columns.UID + ") ON DELETE CASCADE," +
+            ProgramRuleModel.TABLE + " (" + ProgramRuleModel.Columns.UID + ") ON DELETE CASCADE," +
             " FOREIGN KEY (" + ProgramRuleActionModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ")" +
-            " REFERENCES " + TrackedEntityAttributeModel.TRACKED_ENTITY_ATTRIBUTE +
+            " REFERENCES " + TrackedEntityAttributeModel.TABLE +
             " (" + TrackedEntityAttributeModel.Columns.UID + ") " + "ON DELETE CASCADE," +
             " FOREIGN KEY (" + ProgramRuleActionModel.Columns.PROGRAM_INDICATOR + ")" +
-            " REFERENCES " + ProgramIndicatorModel.PROGRAM_INDICATOR +
+            " REFERENCES " + ProgramIndicatorModel.TABLE +
             " (" + ProgramIndicatorModel.Columns.UID + ") " + "ON DELETE CASCADE," +
             " FOREIGN KEY (" + ProgramRuleActionModel.Columns.PROGRAM_STAGE_SECTION + ")" +
-            " REFERENCES " + ProgramStageSectionModel.PROGRAM_STAGE_SECTION +
+            " REFERENCES " + ProgramStageSectionModel.TABLE +
             " (" + ProgramStageSectionModel.Columns.UID + ") " + "ON DELETE CASCADE," +
             " FOREIGN KEY (" + ProgramRuleActionModel.Columns.PROGRAM_STAGE + ")" +
-            " REFERENCES " + ProgramStageModel.PROGRAM_STAGE +
+            " REFERENCES " + ProgramStageModel.TABLE +
             " (" + ProgramStageModel.Columns.UID + ") ON DELETE CASCADE," +
             " FOREIGN KEY (" + ProgramRuleActionModel.Columns.DATA_ELEMENT + ")" +
-            " REFERENCES " + DataElementModel.DATA_ELEMENT +
+            " REFERENCES " + DataElementModel.TABLE +
             " (" + DataElementModel.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_TRACKED_ENTITY_DATA_VALUE_TABLE = "CREATE TABLE " +
-            TrackedEntityDataValueModel.TRACKED_ENTITY_DATA_VALUE + " (" +
+            TrackedEntityDataValueModel.TABLE + " (" +
             TrackedEntityDataValueModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             TrackedEntityDataValueModel.Columns.EVENT + " TEXT NOT NULL," +
             TrackedEntityDataValueModel.Columns.DATA_ELEMENT + " TEXT," +
@@ -559,25 +562,25 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             TrackedEntityDataValueModel.Columns.LAST_UPDATED + " TEXT," +
             TrackedEntityDataValueModel.Columns.PROVIDED_ELSEWHERE + " INTEGER," +
             " FOREIGN KEY (" + TrackedEntityDataValueModel.Columns.EVENT + ")" +
-            " REFERENCES " + EventModel.EVENT +
+            " REFERENCES " + EventModel.TABLE +
             " (" + EventModel.Columns.UID + ")" + "ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_TRACKED_ENTITY_ATTRIBUTE_VALUE_TABLE = "CREATE TABLE " +
-            TrackedEntityAttributeValueModel.TRACKED_ENTITY_ATTRIBUTE_VALUE + " (" +
+            TrackedEntityAttributeValueModel.TABLE + " (" +
             TrackedEntityAttributeValueModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             TrackedEntityAttributeValueModel.Columns.STATE + " TEXT," +
             TrackedEntityAttributeValueModel.Columns.VALUE + " TEXT," +
             TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT NOT NULL," +
             TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + " TEXT NOT NULL," +
             " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ")" +
-            " REFERENCES " + TrackedEntityAttributeModel.TRACKED_ENTITY_ATTRIBUTE +
+            " REFERENCES " + TrackedEntityAttributeModel.TABLE +
             " (" + TrackedEntityAttributeModel.Columns.UID + ") ON DELETE CASCADE, " +
             " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + ") " +
-            " REFERENCES " + TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE +
+            " REFERENCES " + TrackedEntityInstanceModel.TABLE +
             " (" + TrackedEntityInstanceModel.Columns.UID + ") ON DELETE CASCADE" + ");";
 
-    private static final String CREATE_EVENT_TABLE = "CREATE TABLE " + EventModel.EVENT + " (" +
+    private static final String CREATE_EVENT_TABLE = "CREATE TABLE " + EventModel.TABLE + " (" +
             EventModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             EventModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             EventModel.Columns.ENROLLMENT_UID + " TEXT," +
@@ -594,18 +597,18 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             EventModel.Columns.DUE_DATE + " TEXT," +
             EventModel.Columns.STATE + " TEXT," +
             " FOREIGN KEY (" + EventModel.Columns.PROGRAM + ")" +
-            " REFERENCES " + ProgramModel.PROGRAM +
+            " REFERENCES " + ProgramModel.TABLE +
             " (" + ProgramModel.Columns.UID + ") ON DELETE CASCADE," +
             " FOREIGN KEY (" + EventModel.Columns.PROGRAM_STAGE + ")" +
-            " REFERENCES " + ProgramStageModel.PROGRAM_STAGE +
+            " REFERENCES " + ProgramStageModel.TABLE +
             " (" + ProgramStageModel.Columns.UID + ") ON DELETE CASCADE," +
             " FOREIGN KEY (" + EventModel.Columns.ORGANISATION_UNIT + ")" +
-            " REFERENCES " + OrganisationUnitModel.ORGANISATION_UNIT +
+            " REFERENCES " + OrganisationUnitModel.TABLE +
             " (" + OrganisationUnitModel.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_TRACKED_ENTITY_INSTANCE_TABLE = "CREATE TABLE " +
-            TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE + " (" +
+            TrackedEntityInstanceModel.TABLE + " (" +
             TrackedEntityInstanceModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             TrackedEntityInstanceModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             TrackedEntityInstanceModel.Columns.CREATED + " TEXT," +
@@ -613,12 +616,11 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
             TrackedEntityInstanceModel.Columns.STATE + " TEXT," +
             " FOREIGN KEY (" + TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT + ")" +
-            " REFERENCES " + OrganisationUnitModel.ORGANISATION_UNIT +
+            " REFERENCES " + OrganisationUnitModel.TABLE +
             " (" + OrganisationUnitModel.Columns.UID + ")" + "ON DELETE CASCADE" +
             ");";
 
-    private static final String CREATE_ENROLLMENT_TABLE = "CREATE TABLE " + EnrollmentModel.ENROLLMENT +
-            " (" +
+    private static final String CREATE_ENROLLMENT_TABLE = "CREATE TABLE " + EnrollmentModel.TABLE + " (" +
             EnrollmentModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             EnrollmentModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             EnrollmentModel.Columns.CREATED + " TEXT," +
@@ -634,17 +636,17 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             EnrollmentModel.Columns.LONGITUDE + " TEXT," +
             EnrollmentModel.Columns.STATE + " TEXT," +
             " FOREIGN KEY (" + EnrollmentModel.Columns.ORGANISATION_UNIT + ")" +
-            " REFERENCES " + OrganisationUnitModel.ORGANISATION_UNIT +
+            " REFERENCES " + OrganisationUnitModel.TABLE +
             " (" + OrganisationUnitModel.Columns.UID + ")" + "ON DELETE CASCADE," +
             " FOREIGN KEY (" + EnrollmentModel.Columns.PROGRAM + ")" +
-            " REFERENCES " + ProgramModel.PROGRAM +
+            " REFERENCES " + ProgramModel.TABLE +
             " (" + ProgramModel.Columns.UID + ")" + "ON DELETE CASCADE," +
             " FOREIGN KEY (" + EnrollmentModel.Columns.TRACKED_ENTITY_INSTANCE + ")" +
-            " REFERENCES " + TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE +
+            " REFERENCES " + TrackedEntityInstanceModel.TABLE +
             " (" + TrackedEntityInstanceModel.Columns.UID + ")" + "ON DELETE CASCADE" + ");";
 
 
-    private static final String CREATE_USER_ROLE_TABLE = "CREATE TABLE " + UserRoleModel.USER_ROLE + " (" +
+    private static final String CREATE_USER_ROLE_TABLE = "CREATE TABLE " + UserRoleModel.TABLE + " (" +
             UserRoleModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             UserRoleModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             UserRoleModel.Columns.CODE + " TEXT," +
@@ -654,7 +656,19 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             UserRoleModel.Columns.LAST_UPDATED + " TEXT" +
             ");";
     //TODO: Write store for this table: and the link table:
-
+    private static final String CREATE_USER_ROLE_PROGRAM_TABLE = "CREATE TABLE " +
+            UserRoleProgramLinkModel.TABLE + " (" +
+            UserRoleProgramLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            UserRoleProgramLinkModel.Columns.USER_ROLE + " TEXT NOT NULL," +
+            UserRoleProgramLinkModel.Columns.PROGRAM + " TEXT NOT NULL," +
+            " FOREIGN KEY (" + UserRoleProgramLinkModel.Columns.USER_ROLE + ") " +
+            " REFERENCES " + UserRoleModel.TABLE + " (" + UserRoleModel.Columns.UID + ") ON DELETE CASCADE," +
+            " FOREIGN KEY (" + UserRoleProgramLinkModel.Columns.PROGRAM + ") " +
+            " REFERENCES " + ProgramModel.TABLE +
+            " (" + ProgramModel.Columns.UID + ") ON DELETE CASCADE," +
+            "UNIQUE (" + UserRoleProgramLinkModel.Columns.USER_ROLE + ", " +
+            UserRoleProgramLinkModel.Columns.PROGRAM + ")" +
+            ");";
     /**
      * This method should be used only for testing purposes
      */
@@ -695,6 +709,8 @@ public class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_TRACKED_ENTITY_INSTANCE_TABLE);
         database.execSQL(CREATE_ENROLLMENT_TABLE);
         database.execSQL(CREATE_USER_ROLE_TABLE);
+        database.execSQL(CREATE_USER_ROLE_PROGRAM_TABLE);
+
         return database;
     }
 

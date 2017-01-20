@@ -63,6 +63,7 @@ import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.UserCredentialsModel;
 import org.hisp.dhis.android.core.user.UserModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
+import org.hisp.dhis.android.core.user.UserRoleModel;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"
@@ -115,7 +116,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             " (" + UserModel.Columns.UID + ") ON DELETE CASCADE" +
             ");";
 
-    private static final String CREATE_ORGANISATION_UNITS_TABLE = "CREATE TABLE " +
+    private static final String CREATE_ORGANISATION_UNIT_TABLE = "CREATE TABLE " +
             OrganisationUnitModel.ORGANISATION_UNIT + " (" +
             OrganisationUnitModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             OrganisationUnitModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
@@ -642,6 +643,18 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             " REFERENCES " + TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE +
             " (" + TrackedEntityInstanceModel.Columns.UID + ")" + "ON DELETE CASCADE" + ");";
 
+
+    private static final String CREATE_USER_ROLE_TABLE = "CREATE TABLE " + UserRoleModel.USER_ROLE + " (" +
+            UserRoleModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            UserRoleModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            UserRoleModel.Columns.CODE + " TEXT," +
+            UserRoleModel.Columns.NAME + " TEXT," +
+            UserRoleModel.Columns.DISPLAY_NAME + " TEXT," +
+            UserRoleModel.Columns.CREATED + " TEXT," +
+            UserRoleModel.Columns.LAST_UPDATED + " TEXT" +
+            ");";
+    //TODO: Write store for this table: and the link table:
+
     /**
      * This method should be used only for testing purposes
      */
@@ -655,7 +668,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_CONFIGURATION_TABLE);
         database.execSQL(CREATE_USER_TABLE);
         database.execSQL(CREATE_USER_CREDENTIALS_TABLE);
-        database.execSQL(CREATE_ORGANISATION_UNITS_TABLE);
+        database.execSQL(CREATE_ORGANISATION_UNIT_TABLE);
         database.execSQL(CREATE_USER_ORGANISATION_UNIT_TABLE);
         database.execSQL(CREATE_AUTHENTICATED_USER_TABLE);
         database.execSQL(CREATE_OPTION_SET_TABLE);
@@ -681,6 +694,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_EVENT_TABLE);
         database.execSQL(CREATE_TRACKED_ENTITY_INSTANCE_TABLE);
         database.execSQL(CREATE_ENROLLMENT_TABLE);
+        database.execSQL(CREATE_USER_ROLE_TABLE);
         return database;
     }
 

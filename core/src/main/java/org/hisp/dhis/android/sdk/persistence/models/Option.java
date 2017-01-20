@@ -53,6 +53,11 @@ public class Option extends BaseMetaDataObject {
     @Column(name = "code")
     String code;
 
+    @JsonProperty("optionSet")
+    public void handleOptionSets(OptionSet optionSet) {
+        setOptionSet(optionSet.getUid());
+    }
+
     public String getCode() {
         return code;
     }

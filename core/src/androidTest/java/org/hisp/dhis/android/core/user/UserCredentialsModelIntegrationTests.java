@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -51,12 +50,17 @@ public class UserCredentialsModelIntegrationTests {
     private static final String USERNAME = "test_username";
     private static final String USER = "test_user";
 
-    // used for timestamps
-    private static final String DATE = "2011-12-24T12:24:25.203";
+    private final Date date;
+    private final String dateString;
+
+    public UserCredentialsModelIntegrationTests() {
+        this.date = new Date();
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
+    }
 
     @Test
-    public void create_shouldConvertToModel() throws ParseException {
-        MatrixCursor matrixCursor = new MatrixCursor(new String[]{
+    public void create_shouldConvertToModel() {
+        MatrixCursor cursor = new MatrixCursor(new String[]{
                 UserCredentialsModel.Columns.ID,
                 UserCredentialsModel.Columns.UID,
                 UserCredentialsModel.Columns.CODE,
@@ -67,34 +71,26 @@ public class UserCredentialsModelIntegrationTests {
                 UserCredentialsModel.Columns.USERNAME,
                 UserCredentialsModel.Columns.USER
         });
+        cursor.addRow(new Object[]{ID, UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, USERNAME, USER});
+        cursor.moveToFirst();
 
-        matrixCursor.addRow(new Object[]{
-                ID, UID, CODE, NAME, DISPLAY_NAME, DATE, DATE, USERNAME, USER
-        });
+        UserCredentialsModel model = UserCredentialsModel.create(cursor);
+        cursor.close();
 
-        // move cursor to first item before reading
-        matrixCursor.moveToFirst();
-
-        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-
-        UserCredentialsModel userCredentialsModel = UserCredentialsModel.create(matrixCursor);
-
-        assertThat(userCredentialsModel.id()).isEqualTo(ID);
-        assertThat(userCredentialsModel.uid()).isEqualTo(UID);
-        assertThat(userCredentialsModel.code()).isEqualTo(CODE);
-        assertThat(userCredentialsModel.name()).isEqualTo(NAME);
-        assertThat(userCredentialsModel.displayName()).isEqualTo(DISPLAY_NAME);
-        assertThat(userCredentialsModel.created()).isEqualTo(date);
-        assertThat(userCredentialsModel.lastUpdated()).isEqualTo(date);
-        assertThat(userCredentialsModel.username()).isEqualTo(USERNAME);
-        assertThat(userCredentialsModel.user()).isEqualTo(USER);
+        assertThat(model.id()).isEqualTo(ID);
+        assertThat(model.uid()).isEqualTo(UID);
+        assertThat(model.code()).isEqualTo(CODE);
+        assertThat(model.name()).isEqualTo(NAME);
+        assertThat(model.displayName()).isEqualTo(DISPLAY_NAME);
+        assertThat(model.created()).isEqualTo(date);
+        assertThat(model.lastUpdated()).isEqualTo(date);
+        assertThat(model.username()).isEqualTo(USERNAME);
+        assertThat(model.user()).isEqualTo(USER);
     }
 
     @Test
-    public void toContentValues_shouldConvertToContentValues() throws ParseException {
-        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-
-        UserCredentialsModel userCredentials = UserCredentialsModel.builder()
+    public void toContentValues_shouldConvertToContentValues() {
+        UserCredentialsModel model = UserCredentialsModel.builder()
                 .id(ID)
                 .uid(UID)
                 .code(CODE)
@@ -105,16 +101,15 @@ public class UserCredentialsModelIntegrationTests {
                 .username(USERNAME)
                 .user(USER)
                 .build();
-
-        ContentValues contentValues = userCredentials.toContentValues();
+        ContentValues contentValues = model.toContentValues();
 
         assertThat(contentValues.getAsLong(UserCredentialsModel.Columns.ID)).isEqualTo(ID);
         assertThat(contentValues.getAsString(UserCredentialsModel.Columns.UID)).isEqualTo(UID);
         assertThat(contentValues.getAsString(UserCredentialsModel.Columns.CODE)).isEqualTo(CODE);
         assertThat(contentValues.getAsString(UserCredentialsModel.Columns.NAME)).isEqualTo(NAME);
         assertThat(contentValues.getAsString(UserCredentialsModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(UserCredentialsModel.Columns.CREATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(UserCredentialsModel.Columns.LAST_UPDATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(UserCredentialsModel.Columns.CREATED)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(UserCredentialsModel.Columns.LAST_UPDATED)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(UserCredentialsModel.Columns.USERNAME)).isEqualTo(USERNAME);
         assertThat(contentValues.getAsString(UserCredentialsModel.Columns.USER)).isEqualTo(USER);
     }

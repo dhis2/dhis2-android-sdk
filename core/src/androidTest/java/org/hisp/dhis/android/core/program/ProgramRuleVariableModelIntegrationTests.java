@@ -26,71 +26,63 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.organisationunit;
+ package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel.Columns;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class OrganisationUnitModelIntegrationTests {
+public class ProgramRuleVariableModelIntegrationTests {
     private static final long ID = 11L;
     private static final String UID = "test_uid";
     private static final String CODE = "test_code";
     private static final String NAME = "test_name";
     private static final String DISPLAY_NAME = "test_display_name";
-    private static final String SHORT_NAME = "test_short_name";
-    private static final String DISPLAY_SHORT_NAME = "test_display_short_name";
-    private static final String DESCRIPTION = "test_description";
-    private static final String DISPLAY_DESCRIPTION = "test_display_description";
-    private static final String PATH = "test_path";
-    private static final String PARENT = "test_parent";
-    private static final int LEVEL = 100;
+
+    private static final String PROGRAM_STAGE = "test_programStage";
+    private static final ProgramRuleVariableSourceType PROGRAM_RULE_VARIABLE_SOURCE_TYPE =
+            ProgramRuleVariableSourceType.CALCULATED_VALUE;
+
+    private static final Integer USE_CODE_FOR_OPTION_SET = 1; // true
+    private static final String PROGRAM = "test_program";
+    private static final String DATA_ELEMENT = "test_dataElement";
+    private static final String TRACKED_ENTITY_ATTRIBUTE = "test_trackedEntityAttribute";
 
     private final Date date;
     private final String dateString;
 
-    public OrganisationUnitModelIntegrationTests() {
+    public ProgramRuleVariableModelIntegrationTests() {
         this.date = new Date();
         this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
 
     @Test
-    public void create_shouldConvertToModel() {
+    public void create_shouldConvertToModel() throws ParseException {
         MatrixCursor cursor = new MatrixCursor(new String[]{
-                Columns.ID,
-                Columns.UID,
-                Columns.CODE,
-                Columns.NAME,
-                Columns.DISPLAY_NAME,
-                Columns.CREATED,
-                Columns.LAST_UPDATED,
-                Columns.SHORT_NAME,
-                Columns.DISPLAY_SHORT_NAME,
-                Columns.DESCRIPTION,
-                Columns.DISPLAY_DESCRIPTION,
-                Columns.PATH,
-                Columns.OPENING_DATE,
-                Columns.CLOSED_DATE,
-                Columns.PARENT,
-                Columns.LEVEL,
+                Columns.ID, Columns.UID, Columns.CODE, Columns.NAME, Columns.DISPLAY_NAME,
+                Columns.CREATED, Columns.LAST_UPDATED, Columns.USE_CODE_FOR_OPTION_SET,
+                Columns.PROGRAM, Columns.PROGRAM_STAGE, Columns.TRACKED_ENTITY_ATTRIBUTE,
+                Columns.DATA_ELEMENT, Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
         });
         cursor.addRow(new Object[]{
-                ID, UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, SHORT_NAME, DISPLAY_SHORT_NAME,
-                DESCRIPTION, DISPLAY_DESCRIPTION, PATH, dateString, dateString, PARENT, LEVEL
+                ID, UID, CODE, NAME, DISPLAY_NAME, dateString, dateString,
+                USE_CODE_FOR_OPTION_SET, PROGRAM, PROGRAM_STAGE, TRACKED_ENTITY_ATTRIBUTE,
+                DATA_ELEMENT, PROGRAM_RULE_VARIABLE_SOURCE_TYPE
         });
         cursor.moveToFirst();
 
-        OrganisationUnitModel model = OrganisationUnitModel.create(cursor);
+        ProgramRuleVariableModel model = ProgramRuleVariableModel.create(cursor);
         cursor.close();
 
         assertThat(model.id()).isEqualTo(ID);
@@ -100,20 +92,18 @@ public class OrganisationUnitModelIntegrationTests {
         assertThat(model.displayName()).isEqualTo(DISPLAY_NAME);
         assertThat(model.created()).isEqualTo(date);
         assertThat(model.lastUpdated()).isEqualTo(date);
-        assertThat(model.shortName()).isEqualTo(SHORT_NAME);
-        assertThat(model.displayShortName()).isEqualTo(DISPLAY_SHORT_NAME);
-        assertThat(model.description()).isEqualTo(DESCRIPTION);
-        assertThat(model.displayDescription()).isEqualTo(DISPLAY_DESCRIPTION);
-        assertThat(model.path()).isEqualTo(PATH);
-        assertThat(model.openingDate()).isEqualTo(date);
-        assertThat(model.closedDate()).isEqualTo(date);
-        assertThat(model.parent()).isEqualTo(PARENT);
-        assertThat(model.level()).isEqualTo(LEVEL);
+        assertThat(model.useCodeForOptionSet()).isTrue();
+        assertThat(model.program()).isEqualTo(PROGRAM);
+        assertThat(model.programStage()).isEqualTo(PROGRAM_STAGE);
+        assertThat(model.trackedEntityAttribute()).isEqualTo(TRACKED_ENTITY_ATTRIBUTE);
+        assertThat(model.dataElement()).isEqualTo(DATA_ELEMENT);
+        assertThat(model.programRuleVariableSourceType()).isEqualTo(PROGRAM_RULE_VARIABLE_SOURCE_TYPE);
     }
 
     @Test
-    public void toContentValues_shouldConvertToContentValues() {
-        OrganisationUnitModel model = OrganisationUnitModel.builder()
+    public void create_shouldConvertToContentValues() throws ParseException {
+
+        ProgramRuleVariableModel model = ProgramRuleVariableModel.builder()
                 .id(ID)
                 .uid(UID)
                 .code(CODE)
@@ -121,15 +111,12 @@ public class OrganisationUnitModelIntegrationTests {
                 .displayName(DISPLAY_NAME)
                 .created(date)
                 .lastUpdated(date)
-                .shortName(SHORT_NAME)
-                .displayShortName(DISPLAY_SHORT_NAME)
-                .description(DESCRIPTION)
-                .displayDescription(DISPLAY_DESCRIPTION)
-                .path(PATH)
-                .openingDate(date)
-                .closedDate(date)
-                .parent(PARENT)
-                .level(LEVEL)
+                .useCodeForOptionSet(Boolean.TRUE)
+                .program(PROGRAM)
+                .programStage(PROGRAM_STAGE)
+                .trackedEntityAttribute(TRACKED_ENTITY_ATTRIBUTE)
+                .dataElement(DATA_ELEMENT)
+                .programRuleVariableSourceType(PROGRAM_RULE_VARIABLE_SOURCE_TYPE)
                 .build();
         ContentValues contentValues = model.toContentValues();
 
@@ -140,14 +127,13 @@ public class OrganisationUnitModelIntegrationTests {
         assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
         assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.SHORT_NAME)).isEqualTo(SHORT_NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_SHORT_NAME)).isEqualTo(DISPLAY_SHORT_NAME);
-        assertThat(contentValues.getAsString(Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
-        assertThat(contentValues.getAsString(Columns.PATH)).isEqualTo(PATH);
-        assertThat(contentValues.getAsString(Columns.OPENING_DATE)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.CLOSED_DATE)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.PARENT)).isEqualTo(PARENT);
-        assertThat(contentValues.getAsInteger(Columns.LEVEL)).isEqualTo(LEVEL);
+        assertThat(contentValues.getAsBoolean(Columns.USE_CODE_FOR_OPTION_SET)).isTrue();
+        assertThat(contentValues.getAsString(Columns.PROGRAM)).isEqualTo(PROGRAM);
+        assertThat(contentValues.getAsString(Columns.PROGRAM_STAGE)).isEqualTo(PROGRAM_STAGE);
+        assertThat(contentValues.getAsString(Columns.TRACKED_ENTITY_ATTRIBUTE)).isEqualTo(TRACKED_ENTITY_ATTRIBUTE);
+        assertThat(contentValues.getAsString(Columns.DATA_ELEMENT)).isEqualTo(DATA_ELEMENT);
+        assertThat(contentValues.getAsString(Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE))
+                .isEqualTo(PROGRAM_RULE_VARIABLE_SOURCE_TYPE.name());
+
     }
 }

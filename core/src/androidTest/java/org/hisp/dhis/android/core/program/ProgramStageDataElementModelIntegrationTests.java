@@ -26,40 +26,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.organisationunit;
+ package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel.Columns;
+import org.hisp.dhis.android.core.program.ProgramStageDataElementModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.AndroidTestUtils.toBoolean;
 
 @RunWith(AndroidJUnit4.class)
-public class OrganisationUnitModelIntegrationTests {
-    private static final long ID = 11L;
+public class ProgramStageDataElementModelIntegrationTests {
+    private static final long ID = 3L;
     private static final String UID = "test_uid";
     private static final String CODE = "test_code";
     private static final String NAME = "test_name";
     private static final String DISPLAY_NAME = "test_display_name";
-    private static final String SHORT_NAME = "test_short_name";
-    private static final String DISPLAY_SHORT_NAME = "test_display_short_name";
-    private static final String DESCRIPTION = "test_description";
-    private static final String DISPLAY_DESCRIPTION = "test_display_description";
-    private static final String PATH = "test_path";
-    private static final String PARENT = "test_parent";
-    private static final int LEVEL = 100;
+    private static final Integer DISPLAY_IN_REPORTS = 1;
+    private static final Integer COMPULSORY = 0;
+    private static final Integer ALLOW_PROVIDED_ELSEWHERE = 0;
+    private static final Integer SORT_ORDER = 7;
+    private static final Integer ALLOW_FUTURE_DATE = 1;
+    private static final String DATA_ELEMENT = "test_dataElement";
+    private static final String PROGRAM_STAGE_SECTION = "test_program_stage_section";
 
     private final Date date;
     private final String dateString;
 
-    public OrganisationUnitModelIntegrationTests() {
+    public ProgramStageDataElementModelIntegrationTests() {
         this.date = new Date();
         this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
@@ -74,23 +75,22 @@ public class OrganisationUnitModelIntegrationTests {
                 Columns.DISPLAY_NAME,
                 Columns.CREATED,
                 Columns.LAST_UPDATED,
-                Columns.SHORT_NAME,
-                Columns.DISPLAY_SHORT_NAME,
-                Columns.DESCRIPTION,
-                Columns.DISPLAY_DESCRIPTION,
-                Columns.PATH,
-                Columns.OPENING_DATE,
-                Columns.CLOSED_DATE,
-                Columns.PARENT,
-                Columns.LEVEL,
+                Columns.DISPLAY_IN_REPORTS,
+                Columns.COMPULSORY,
+                Columns.ALLOW_PROVIDED_ELSEWHERE,
+                Columns.SORT_ORDER,
+                Columns.ALLOW_FUTURE_DATE,
+                Columns.DATA_ELEMENT,
+                Columns.PROGRAM_STAGE_SECTION
         });
         cursor.addRow(new Object[]{
-                ID, UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, SHORT_NAME, DISPLAY_SHORT_NAME,
-                DESCRIPTION, DISPLAY_DESCRIPTION, PATH, dateString, dateString, PARENT, LEVEL
+                ID, UID, CODE, NAME, DISPLAY_NAME, dateString, dateString,
+                DISPLAY_IN_REPORTS, COMPULSORY, ALLOW_PROVIDED_ELSEWHERE,
+                SORT_ORDER, ALLOW_FUTURE_DATE, DATA_ELEMENT, PROGRAM_STAGE_SECTION
         });
         cursor.moveToFirst();
 
-        OrganisationUnitModel model = OrganisationUnitModel.create(cursor);
+        ProgramStageDataElementModel model = ProgramStageDataElementModel.create(cursor);
         cursor.close();
 
         assertThat(model.id()).isEqualTo(ID);
@@ -100,20 +100,19 @@ public class OrganisationUnitModelIntegrationTests {
         assertThat(model.displayName()).isEqualTo(DISPLAY_NAME);
         assertThat(model.created()).isEqualTo(date);
         assertThat(model.lastUpdated()).isEqualTo(date);
-        assertThat(model.shortName()).isEqualTo(SHORT_NAME);
-        assertThat(model.displayShortName()).isEqualTo(DISPLAY_SHORT_NAME);
-        assertThat(model.description()).isEqualTo(DESCRIPTION);
-        assertThat(model.displayDescription()).isEqualTo(DISPLAY_DESCRIPTION);
-        assertThat(model.path()).isEqualTo(PATH);
-        assertThat(model.openingDate()).isEqualTo(date);
-        assertThat(model.closedDate()).isEqualTo(date);
-        assertThat(model.parent()).isEqualTo(PARENT);
-        assertThat(model.level()).isEqualTo(LEVEL);
+        assertThat(model.displayInReports()).isTrue();
+        assertThat(model.compulsory()).isFalse();
+        assertThat(model.allowProvidedElsewhere()).isFalse();
+        assertThat(model.sortOrder()).isEqualTo(SORT_ORDER);
+        assertThat(model.allowFutureDate()).isTrue();
+        assertThat(model.dataElement()).isEqualTo(DATA_ELEMENT);
+        assertThat(model.programStageSection()).isEqualTo(PROGRAM_STAGE_SECTION);
+
     }
 
     @Test
-    public void toContentValues_shouldConvertToContentValues() {
-        OrganisationUnitModel model = OrganisationUnitModel.builder()
+    public void create_shouldConvertToContentValues() {
+        ProgramStageDataElementModel model = ProgramStageDataElementModel.builder()
                 .id(ID)
                 .uid(UID)
                 .code(CODE)
@@ -121,15 +120,13 @@ public class OrganisationUnitModelIntegrationTests {
                 .displayName(DISPLAY_NAME)
                 .created(date)
                 .lastUpdated(date)
-                .shortName(SHORT_NAME)
-                .displayShortName(DISPLAY_SHORT_NAME)
-                .description(DESCRIPTION)
-                .displayDescription(DISPLAY_DESCRIPTION)
-                .path(PATH)
-                .openingDate(date)
-                .closedDate(date)
-                .parent(PARENT)
-                .level(LEVEL)
+                .displayInReports(toBoolean(DISPLAY_IN_REPORTS))
+                .compulsory(toBoolean(COMPULSORY))
+                .allowProvidedElsewhere(toBoolean(ALLOW_PROVIDED_ELSEWHERE))
+                .sortOrder(SORT_ORDER)
+                .allowFutureDate(toBoolean(ALLOW_FUTURE_DATE))
+                .dataElement(DATA_ELEMENT)
+                .programStageSection(PROGRAM_STAGE_SECTION)
                 .build();
         ContentValues contentValues = model.toContentValues();
 
@@ -140,14 +137,13 @@ public class OrganisationUnitModelIntegrationTests {
         assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
         assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.SHORT_NAME)).isEqualTo(SHORT_NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_SHORT_NAME)).isEqualTo(DISPLAY_SHORT_NAME);
-        assertThat(contentValues.getAsString(Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
-        assertThat(contentValues.getAsString(Columns.PATH)).isEqualTo(PATH);
-        assertThat(contentValues.getAsString(Columns.OPENING_DATE)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.CLOSED_DATE)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.PARENT)).isEqualTo(PARENT);
-        assertThat(contentValues.getAsInteger(Columns.LEVEL)).isEqualTo(LEVEL);
+        assertThat(contentValues.getAsBoolean(Columns.DISPLAY_IN_REPORTS)).isTrue();
+        assertThat(contentValues.getAsBoolean(Columns.COMPULSORY)).isFalse();
+        assertThat(contentValues.getAsBoolean(Columns.ALLOW_PROVIDED_ELSEWHERE)).isFalse();
+        assertThat(contentValues.getAsInteger(Columns.SORT_ORDER)).isEqualTo(SORT_ORDER);
+        assertThat(contentValues.getAsBoolean(Columns.ALLOW_FUTURE_DATE)).isTrue();
+        assertThat(contentValues.getAsString(Columns.DATA_ELEMENT)).isEqualTo(DATA_ELEMENT);
+        assertThat(contentValues.getAsString(Columns.PROGRAM_STAGE_SECTION)).isEqualTo(PROGRAM_STAGE_SECTION);
     }
+
 }

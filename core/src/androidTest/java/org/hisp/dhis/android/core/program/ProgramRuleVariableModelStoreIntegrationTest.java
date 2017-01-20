@@ -110,7 +110,7 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
     public void insert_shouldPersistProgramRuleVariableInDatabase() throws ParseException {
         insertProgramForeignKey();
 
-        ContentValues programStage = ProgramStageModelIntegrationTest.create(ID, PROGRAM_STAGE, PROGRAM);
+        ContentValues programStage = CreateProgramStageUtils.create(ID, PROGRAM_STAGE, PROGRAM);
         database().insert(ProgramStageModel.PROGRAM_STAGE, null, programStage);
 
         ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
@@ -140,9 +140,6 @@ public class ProgramRuleVariableModelStoreIntegrationTest extends AbsStoreTestCa
 
         Cursor cursor = database().query(ProgramRuleVariableModel.PROGRAM_RULE_VARIABLE, PROGRAM_RULE_VARIABLE_PROJECTION,
                 null, null, null, null, null);
-
-        // Checking if rowId == 1.
-        // If it is 1, then it means it is first successful insert into db
         assertThat(rowId).isEqualTo(1L);
 
         assertThatCursor(cursor).hasRow(

@@ -31,7 +31,7 @@
 import android.content.ContentValues;
 import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
-
+import org.hisp.dhis.android.core.configuration.ConfigurationModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -44,20 +44,15 @@ public class ConfigurationModelIntegrationTests {
 
     @Test
     public void create_shouldConvertToModel() {
-        MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                ConfigurationModel.Columns.ID, ConfigurationModel.Columns.SERVER_URL
-        });
+        MatrixCursor cursor = new MatrixCursor(new String[]{Columns.ID, Columns.SERVER_URL});
+        cursor.addRow(new Object[]{ID, SERVER_URL});
+        cursor.moveToFirst();
 
-        matrixCursor.addRow(new Object[]{
-                ID, SERVER_URL
-        });
+        ConfigurationModel model = ConfigurationModel.create(cursor);
+        cursor.close();
 
-        matrixCursor.moveToFirst();
-
-        ConfigurationModel configuration = ConfigurationModel.create(matrixCursor);
-
-        assertThat(configuration.id()).isEqualTo(ID);
-        assertThat(configuration.serverUrl()).isEqualTo(SERVER_URL);
+        assertThat(model.id()).isEqualTo(ID);
+        assertThat(model.serverUrl()).isEqualTo(SERVER_URL);
     }
 
     @Test
@@ -66,7 +61,7 @@ public class ConfigurationModelIntegrationTests {
                 .id(ID).serverUrl(SERVER_URL).build();
 
         ContentValues contentValues = configurationModel.toContentValues();
-        assertThat(contentValues.getAsLong(ConfigurationModel.Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(ConfigurationModel.Columns.SERVER_URL)).isEqualTo(SERVER_URL);
+        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(Columns.SERVER_URL)).isEqualTo(SERVER_URL);
     }
 }

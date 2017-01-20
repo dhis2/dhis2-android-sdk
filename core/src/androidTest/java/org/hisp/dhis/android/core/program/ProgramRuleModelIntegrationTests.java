@@ -37,13 +37,12 @@ import org.hisp.dhis.android.core.program.ProgramRuleModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class ProgramRuleModelIntegrationTest {
+public class ProgramRuleModelIntegrationTests {
     // identifiable
     private static final long ID = 1L;
     private static final String UID = "test_uid";
@@ -51,19 +50,23 @@ public class ProgramRuleModelIntegrationTest {
     private static final String NAME = "test_name";
     private static final String DISPLAY_NAME = "test_display_name";
 
-    // used for timestamps
-    private static final String DATE = "2017-11-01T11:40:00.000";
-
     // bound to Program Rule
     private static final String PROGRAM_STAGE = "test_programStage";
     private static final String PROGRAM = "test_program";
     private static final Integer PRIORITY = 2;
     private static final String CONDITION = "test_condition";
 
+    private final Date date;
+    private final String dateString;
+
+    public ProgramRuleModelIntegrationTests() {
+        this.date = new Date();
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
+    }
 
     @Test
-    public void create_shouldConvertToModel() throws ParseException {
-        MatrixCursor matrixCursor = new MatrixCursor(new String[]{
+    public void create_shouldConvertToModel() {
+        MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID, Columns.UID, Columns.CODE,
                 Columns.NAME,
                 Columns.DISPLAY_NAME,
@@ -72,53 +75,52 @@ public class ProgramRuleModelIntegrationTest {
                 Columns.PRIORITY, Columns.CONDITION,
                 Columns.PROGRAM, Columns.PROGRAM_STAGE,
         });
-
-        matrixCursor.addRow(new Object[]{
-                ID, UID, CODE, NAME, DISPLAY_NAME, DATE, DATE,
+        cursor.addRow(new Object[]{
+                ID, UID, CODE, NAME, DISPLAY_NAME, dateString, dateString,
                 PRIORITY, CONDITION, PROGRAM, PROGRAM_STAGE
         });
+        cursor.moveToFirst();
 
-        matrixCursor.moveToFirst();
+        ProgramRuleModel model = ProgramRuleModel.create(cursor);
+        cursor.close();
 
-        Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-
-        ProgramRuleModel programRule = ProgramRuleModel.create(matrixCursor);
-
-        assertThat(programRule.id()).isEqualTo(ID);
-        assertThat(programRule.uid()).isEqualTo(UID);
-        assertThat(programRule.code()).isEqualTo(CODE);
-        assertThat(programRule.name()).isEqualTo(NAME);
-        assertThat(programRule.displayName()).isEqualTo(DISPLAY_NAME);
-        assertThat(programRule.created()).isEqualTo(timeStamp);
-        assertThat(programRule.lastUpdated()).isEqualTo(timeStamp);
-        assertThat(programRule.priority()).isEqualTo(PRIORITY);
-        assertThat(programRule.condition()).isEqualTo(CONDITION);
-        assertThat(programRule.program()).isEqualTo(PROGRAM);
-        assertThat(programRule.programStage()).isEqualTo(PROGRAM_STAGE);
+        assertThat(model.id()).isEqualTo(ID);
+        assertThat(model.uid()).isEqualTo(UID);
+        assertThat(model.code()).isEqualTo(CODE);
+        assertThat(model.name()).isEqualTo(NAME);
+        assertThat(model.displayName()).isEqualTo(DISPLAY_NAME);
+        assertThat(model.created()).isEqualTo(date);
+        assertThat(model.lastUpdated()).isEqualTo(date);
+        assertThat(model.priority()).isEqualTo(PRIORITY);
+        assertThat(model.condition()).isEqualTo(CONDITION);
+        assertThat(model.program()).isEqualTo(PROGRAM);
+        assertThat(model.programStage()).isEqualTo(PROGRAM_STAGE);
     }
 
     @Test
     public void toContentValues_shouldConvertToContentValues() {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(ProgramRuleModel.Columns.ID, ID);
-        contentValues.put(ProgramRuleModel.Columns.UID, UID);
-        contentValues.put(ProgramRuleModel.Columns.CODE, CODE);
-        contentValues.put(ProgramRuleModel.Columns.NAME, NAME);
-        contentValues.put(ProgramRuleModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
-        contentValues.put(ProgramRuleModel.Columns.CREATED, DATE);
-        contentValues.put(ProgramRuleModel.Columns.LAST_UPDATED, DATE);
-        contentValues.put(ProgramRuleModel.Columns.CONDITION, CONDITION);
-        contentValues.put(ProgramRuleModel.Columns.PRIORITY, PRIORITY);
-        contentValues.put(ProgramRuleModel.Columns.PROGRAM, PROGRAM);
-        contentValues.put(ProgramRuleModel.Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+        ProgramRuleModel model = ProgramRuleModel.builder()
+                .id(ID)
+                .uid(UID)
+                .code(CODE)
+                .name(NAME)
+                .displayName(DISPLAY_NAME)
+                .created(date)
+                .lastUpdated(date)
+                .condition(CONDITION)
+                .priority(PRIORITY)
+                .program(PROGRAM)
+                .programStage(PROGRAM_STAGE)
+                .build();
+        ContentValues contentValues = model.toContentValues();
 
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
         assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);
         assertThat(contentValues.getAsString(Columns.CODE)).isEqualTo(CODE);
         assertThat(contentValues.getAsString(Columns.NAME)).isEqualTo(NAME);
         assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(Columns.CONDITION)).isEqualTo(CONDITION);
         assertThat(contentValues.getAsInteger(Columns.PRIORITY)).isEqualTo(PRIORITY);
         assertThat(contentValues.getAsString(Columns.PROGRAM)).isEqualTo(PROGRAM);

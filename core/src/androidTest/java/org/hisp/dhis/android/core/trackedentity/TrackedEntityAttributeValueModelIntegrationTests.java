@@ -40,7 +40,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class TrackedEntityAttributeValueModelIntegrationTests {
-
     //BaseModel:
     private static final long ID = 11L;
     //BaseDataModel:
@@ -53,31 +52,28 @@ public class TrackedEntityAttributeValueModelIntegrationTests {
     @Test
     public void create_shouldConvertToModel() {
 
-        MatrixCursor matrixCursor = new MatrixCursor(new String[]{
+        MatrixCursor cursor = new MatrixCursor(new String[]{
                 TrackedEntityAttributeValueModel.Columns.ID,
                 TrackedEntityAttributeValueModel.Columns.STATE,
                 TrackedEntityAttributeValueModel.Columns.VALUE,
                 TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE,
                 TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE
         });
+        cursor.addRow(new Object[]{ID, STATE, VALUE, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE});
+        cursor.moveToFirst();
 
-        matrixCursor.addRow(new Object[]{ID, STATE, VALUE, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE});
-
-        matrixCursor.moveToFirst();
-
-        TrackedEntityAttributeValueModel model = TrackedEntityAttributeValueModel.create(matrixCursor);
+        TrackedEntityAttributeValueModel model = TrackedEntityAttributeValueModel.create(cursor);
+        cursor.close();
 
         assertThat(model.id()).isEqualTo(ID);
         assertThat(model.state()).isEqualTo(STATE);
         assertThat(model.value()).isEqualTo(VALUE);
         assertThat(model.trackedEntityAttribute()).isEqualTo(TRACKED_ENTITY_ATTRIBUTE);
         assertThat(model.trackedEntityInstance()).isEqualTo(TRACKED_ENTITY_INSTANCE);
-        matrixCursor.close();
     }
 
     @Test
     public void toContentValues_shouldConvertToContentValues() {
-
         TrackedEntityAttributeValueModel model = TrackedEntityAttributeValueModel.builder()
                 .id(ID)
                 .state(STATE)
@@ -85,7 +81,6 @@ public class TrackedEntityAttributeValueModelIntegrationTests {
                 .trackedEntityInstance(TRACKED_ENTITY_INSTANCE)
                 .value(VALUE)
                 .build();
-
         ContentValues contentValues = model.toContentValues();
 
         assertThat(contentValues.getAsLong(TrackedEntityAttributeValueModel.Columns.ID)).isEqualTo(ID);

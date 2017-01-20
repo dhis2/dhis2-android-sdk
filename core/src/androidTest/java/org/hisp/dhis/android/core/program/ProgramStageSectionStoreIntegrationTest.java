@@ -110,7 +110,7 @@ public class ProgramStageSectionStoreIntegrationTest extends AbsStoreTestCase {
         database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
         database().insert(ProgramModel.PROGRAM, null, program);
         //Create ProgramStage & insert a row in the table:
-        ContentValues programStage = ProgramStageModelIntegrationTest.create(ID, PROGRAM_STAGE, PROGRAM);
+        ContentValues programStage = CreateProgramStageUtils.create(ID, PROGRAM_STAGE, PROGRAM);
         database().insert(ProgramStageModel.PROGRAM_STAGE, null, programStage);
     }
 

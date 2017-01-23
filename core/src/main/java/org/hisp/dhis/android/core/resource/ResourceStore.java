@@ -32,7 +32,7 @@ import android.support.annotation.Nullable;
 
 import java.util.Date;
 
-public interface ResourceModelStore {
+public interface ResourceStore {
     long insert(@NonNull String resourceType, @NonNull String resourceUid, @Nullable Date lastSynced);
 
     void close();

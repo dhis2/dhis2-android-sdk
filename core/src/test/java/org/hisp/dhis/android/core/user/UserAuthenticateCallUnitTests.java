@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user;
 
 import android.database.sqlite.SQLiteDatabase;
 
@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -88,6 +89,9 @@ public class UserAuthenticateCallUnitTests {
     private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
 
     @Mock
+    private ResourceStore resourceStore;
+
+    @Mock
     private OrganisationUnitStore organisationUnitStore;
 
     @Mock
@@ -129,7 +133,7 @@ public class UserAuthenticateCallUnitTests {
         MockitoAnnotations.initMocks(this);
 
         userAuthenticateCall = new UserAuthenticateCall(userService, database, userStore,
-                userCredentialsStore, userOrganisationUnitLinkStore, authenticatedUserStore,
+                userCredentialsStore, userOrganisationUnitLinkStore, resourceStore, authenticatedUserStore,
                 organisationUnitStore, "test_user_name", "test_user_password");
 
         when(userCredentials.uid()).thenReturn("test_user_credentials_uid");

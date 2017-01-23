@@ -38,7 +38,7 @@ import java.util.Date;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
-public class ResourceModelStoreImpl implements ResourceModelStore {
+public class ResourceStoreImpl implements ResourceStore {
     public static final String INSERT_STATEMENT = "INSERT INTO " + ResourceModel.RESOURCE + " (" +
             Columns.RESOURCE_TYPE + ", " +
             Columns.RESOURCE_UID + ", " +
@@ -47,7 +47,7 @@ public class ResourceModelStoreImpl implements ResourceModelStore {
 
     private final SQLiteStatement sqLiteStatement;
 
-    public ResourceModelStoreImpl(SQLiteDatabase sqLiteDatabase) {
+    public ResourceStoreImpl(SQLiteDatabase sqLiteDatabase) {
         this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
     }
 

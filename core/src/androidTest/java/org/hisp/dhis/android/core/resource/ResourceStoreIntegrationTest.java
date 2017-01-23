@@ -19,7 +19,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
-public class ResourceModelStoreIntegrationTest extends AbsStoreTestCase {
+public class ResourceStoreIntegrationTest extends AbsStoreTestCase {
     private static final Long ID = 2L;
     private static final String RESOURCE_TYPE = "OrganisationUnit";
     private static final String RESOURCE_UID = "test_organisation_unit_uid";
@@ -29,19 +29,19 @@ public class ResourceModelStoreIntegrationTest extends AbsStoreTestCase {
 
     private static final String[] PROJECTION = {Columns.RESOURCE_TYPE, Columns.RESOURCE_UID, Columns.LAST_SYNCED};
 
-    private ResourceModelStore resourceModelStore;
+    private ResourceStore resourceStore;
 
     @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.resourceModelStore = new ResourceModelStoreImpl(database());
+        this.resourceStore = new ResourceStoreImpl(database());
     }
 
     @Test
     public void insert_shouldPersistResourceInDatabase() throws ParseException {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-        long rowId = resourceModelStore.insert(RESOURCE_TYPE, RESOURCE_UID, date);
+        long rowId = resourceStore.insert(RESOURCE_TYPE, RESOURCE_UID, date);
 
         // checking that resource was successfully inserted into database
         assertThat(rowId).isEqualTo(1L);
@@ -54,7 +54,7 @@ public class ResourceModelStoreIntegrationTest extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistResourceInDatabaseWithoutLastSynced() throws Exception {
-        long rowId = resourceModelStore.insert(RESOURCE_TYPE, RESOURCE_UID, null);
+        long rowId = resourceStore.insert(RESOURCE_TYPE, RESOURCE_UID, null);
         assertThat(rowId).isEqualTo(1L);
         Cursor cursor = database().query(ResourceModel.RESOURCE, PROJECTION, null, null, null, null, null);
 
@@ -65,19 +65,19 @@ public class ResourceModelStoreIntegrationTest extends AbsStoreTestCase {
     @Test(expected = SQLiteConstraintException.class)
     public void exception_shouldNotPersistResourceInDatabaseWithoutResourceUid() throws Exception {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-        resourceModelStore.insert(RESOURCE_TYPE, null, date);
+        resourceStore.insert(RESOURCE_TYPE, null, date);
 
     }
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_shouldNotPersistResourceInDatabaseWithoutResourceType() throws Exception {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-        resourceModelStore.insert(null, RESOURCE_UID, date);
+        resourceStore.insert(null, RESOURCE_UID, date);
     }
 
     @Test
     public void close_shouldNotCloseDatabase() throws Exception {
-        resourceModelStore.close();
+        resourceStore.close();
         assertThat(database().isOpen()).isTrue();
     }
 }

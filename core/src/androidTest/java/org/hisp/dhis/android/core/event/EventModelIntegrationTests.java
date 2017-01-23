@@ -44,7 +44,7 @@ import java.util.Date;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class EventModelIntegrationTest {
+public class EventModelIntegrationTests {
     private static final Long ID = 3L;
     private static final String EVENT_UID = "test_uid";
     private static final String ENROLLMENT_UID = "test_enrollment";
@@ -56,12 +56,17 @@ public class EventModelIntegrationTest {
     private static final String ORGANISATION_UNIT = "test_orgUnit";
     private static final State STATE = State.TO_POST;
 
-    // timestamp
-    private static final String DATE = "2016-01-12T10:01:00.000";
+    private final Date date;
+    private final String dateString;
+
+    public EventModelIntegrationTests() {
+        this.date = new Date();
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
+    }
 
     @Test
-    public void create_shouldConvertToModel() throws ParseException {
-        MatrixCursor matrixCursor = new MatrixCursor(new String[]{
+    public void create_shouldConvertToModel() {
+        MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID, Columns.UID, Columns.ENROLLMENT_UID,
                 Columns.CREATED, Columns.LAST_UPDATED,
                 Columns.STATUS, Columns.LATITUDE,
@@ -70,66 +75,63 @@ public class EventModelIntegrationTest {
                 Columns.DUE_DATE, Columns.STATE
         });
 
-        matrixCursor.addRow(new Object[]{
-                ID, EVENT_UID, ENROLLMENT_UID, DATE, DATE, STATUS, LATITUDE, LONGITUDE,
-                PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT, DATE, DATE, DATE, STATE
+        cursor.addRow(new Object[]{
+                ID, EVENT_UID, ENROLLMENT_UID, dateString, dateString, STATUS, LATITUDE, LONGITUDE,
+                PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT, dateString, dateString, dateString, STATE
         });
+        cursor.moveToFirst();
+        EventModel model = EventModel.create(cursor);
+        cursor.close();
 
-        matrixCursor.moveToFirst();
-
-        Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-        EventModel event = EventModel.create(matrixCursor);
-        assertThat(event.id()).isEqualTo(ID);
-        assertThat(event.uid()).isEqualTo(EVENT_UID);
-        assertThat(event.enrollmentUid()).isEqualTo(ENROLLMENT_UID);
-        assertThat(event.created()).isEqualTo(timeStamp);
-        assertThat(event.lastUpdated()).isEqualTo(timeStamp);
-        assertThat(event.status()).isEqualTo(STATUS);
-        assertThat(event.latitude()).isEqualTo(LATITUDE);
-        assertThat(event.program()).isEqualTo(PROGRAM);
-        assertThat(event.programStage()).isEqualTo(PROGRAM_STAGE);
-        assertThat(event.organisationUnit()).isEqualTo(ORGANISATION_UNIT);
-        assertThat(event.eventDate()).isEqualTo(timeStamp);
-        assertThat(event.completedDate()).isEqualTo(timeStamp);
-        assertThat(event.dueDate()).isEqualTo(timeStamp);
+        assertThat(model.id()).isEqualTo(ID);
+        assertThat(model.uid()).isEqualTo(EVENT_UID);
+        assertThat(model.enrollmentUid()).isEqualTo(ENROLLMENT_UID);
+        assertThat(model.created()).isEqualTo(date);
+        assertThat(model.lastUpdated()).isEqualTo(date);
+        assertThat(model.status()).isEqualTo(STATUS);
+        assertThat(model.latitude()).isEqualTo(LATITUDE);
+        assertThat(model.program()).isEqualTo(PROGRAM);
+        assertThat(model.programStage()).isEqualTo(PROGRAM_STAGE);
+        assertThat(model.organisationUnit()).isEqualTo(ORGANISATION_UNIT);
+        assertThat(model.eventDate()).isEqualTo(date);
+        assertThat(model.completedDate()).isEqualTo(date);
+        assertThat(model.dueDate()).isEqualTo(date);
     }
 
     @Test
-    public void toContentValues_shouldConvertToContentValues() throws ParseException {
-        Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-
-        EventModel event = EventModel.builder()
+    public void toContentValues_shouldConvertToContentValues(){
+        EventModel model = EventModel.builder()
                 .id(ID)
                 .uid(EVENT_UID)
                 .enrollmentUid(ENROLLMENT_UID)
-                .created(timeStamp)
-                .lastUpdated(timeStamp)
+                .created(date)
+                .lastUpdated(date)
                 .status(STATUS)
                 .latitude(LATITUDE)
                 .longitude(LONGITUDE)
                 .program(PROGRAM)
                 .programStage(PROGRAM_STAGE)
                 .organisationUnit(ORGANISATION_UNIT)
-                .eventDate(timeStamp)
-                .completedDate(timeStamp)
-                .dueDate(timeStamp)
+                .eventDate(date)
+                .completedDate(date)
+                .dueDate(date)
                 .state(STATE)
                 .build();
+        ContentValues contentValues = model.toContentValues();
 
-        ContentValues contentValues = event.toContentValues();
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
         assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(EVENT_UID);
         assertThat(contentValues.getAsString(Columns.ENROLLMENT_UID)).isEqualTo(ENROLLMENT_UID);
-        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(Columns.STATUS)).isEqualTo(STATUS.name());
         assertThat(contentValues.getAsString(Columns.LATITUDE)).isEqualTo(LATITUDE);
         assertThat(contentValues.getAsString(Columns.LONGITUDE)).isEqualTo(LONGITUDE);
         assertThat(contentValues.getAsString(Columns.PROGRAM)).isEqualTo(PROGRAM);
         assertThat(contentValues.getAsString(Columns.PROGRAM_STAGE)).isEqualTo(PROGRAM_STAGE);
-        assertThat(contentValues.getAsString(Columns.EVENT_DATE)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.COMPLETE_DATE)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(Columns.DUE_DATE)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(Columns.EVENT_DATE)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(Columns.COMPLETE_DATE)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(Columns.DUE_DATE)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(Columns.STATE)).isEqualTo(STATE.name());
     }
 }

@@ -32,22 +32,18 @@ import android.content.ContentValues;
 import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.AndroidTestUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
 
 @RunWith(AndroidJUnit4.class)
 public class TrackedEntityDataValueModelIntegrationTests {
-
-    // used for timestamps
-    private static final String DATE = "2011-12-24T12:24:25.203";
-
     private static final long ID = 11L;
     private static final String EVENT = "test_event";
     private static final String DATA_ELEMENT = "test_dataElement";
@@ -55,55 +51,64 @@ public class TrackedEntityDataValueModelIntegrationTests {
     private static final String VALUE = "test_value";
     private static final Boolean PROVIDED_ELSEWHERE = false;
 
-    @Test
-    public void create_shouldConvertToModel() throws ParseException {
-        MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                TrackedEntityDataValueModel.Columns.ID,
-                TrackedEntityDataValueModel.Columns.EVENT,
-                TrackedEntityDataValueModel.Columns.DATA_ELEMENT,
-                TrackedEntityDataValueModel.Columns.STORED_BY,
-                TrackedEntityDataValueModel.Columns.VALUE,
-                TrackedEntityDataValueModel.Columns.CREATED,
-                TrackedEntityDataValueModel.Columns.LAST_UPDATED,
-                TrackedEntityDataValueModel.Columns.PROVIDED_ELSEWHERE
-        });
+    private final Date date;
+    private final String dateString;
 
-        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-
-        matrixCursor.addRow(new Object[]{
-                ID, EVENT, DATA_ELEMENT, STORED_BY, VALUE, DATE, DATE, AndroidTestUtils.toInteger(PROVIDED_ELSEWHERE)
-        });
-
-        // move cursor to first item before reading
-        matrixCursor.moveToFirst();
-
-        TrackedEntityDataValueModel trackedEntityDataValueModel = TrackedEntityDataValueModel.create(matrixCursor);
-
-        assertThat(trackedEntityDataValueModel.id()).isEqualTo(ID);
-        assertThat(trackedEntityDataValueModel.event()).isEqualTo(EVENT);
-        assertThat(trackedEntityDataValueModel.dataElement()).isEqualTo(DATA_ELEMENT);
-        assertThat(trackedEntityDataValueModel.storedBy()).isEqualTo(STORED_BY);
-        assertThat(trackedEntityDataValueModel.value()).isEqualTo(VALUE);
-        assertThat(trackedEntityDataValueModel.created()).isEqualTo(date);
-        assertThat(trackedEntityDataValueModel.lastUpdated()).isEqualTo(date);
-        assertThat(trackedEntityDataValueModel.providedElsewhere()).isEqualTo(PROVIDED_ELSEWHERE);
-
-        matrixCursor.close();
+    public TrackedEntityDataValueModelIntegrationTests() {
+        this.date = new Date();
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
 
     @Test
-    public void toContentValues_shouldConvertToContentValues() throws ParseException {
+    public void create_shouldConvertToModel() {
+        MatrixCursor cursor = new MatrixCursor(new String[]{
+                Columns.ID,
+                Columns.EVENT,
+                Columns.DATA_ELEMENT,
+                Columns.STORED_BY,
+                Columns.VALUE,
+                Columns.CREATED,
+                Columns.LAST_UPDATED,
+                Columns.PROVIDED_ELSEWHERE
+        });
+        cursor.addRow(new Object[]{
+                ID, EVENT, DATA_ELEMENT, STORED_BY, VALUE, dateString, dateString, toInteger(PROVIDED_ELSEWHERE)});
+        cursor.moveToFirst();
 
-        ContentValues contentValues =
-                CreateTrackedEntityDataValueUtils.create(ID);
+        TrackedEntityDataValueModel model = TrackedEntityDataValueModel.create(cursor);
+        cursor.close();
 
-        assertThat(contentValues.getAsLong(TrackedEntityDataValueModel.Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(TrackedEntityDataValueModel.Columns.EVENT)).isEqualTo(EVENT);
-        assertThat(contentValues.getAsString(TrackedEntityDataValueModel.Columns.DATA_ELEMENT)).isEqualTo(DATA_ELEMENT);
-        assertThat(contentValues.getAsString(TrackedEntityDataValueModel.Columns.STORED_BY)).isEqualTo(STORED_BY);
-        assertThat(contentValues.getAsString(TrackedEntityDataValueModel.Columns.VALUE)).isEqualTo(VALUE);
-        assertThat(contentValues.getAsString(TrackedEntityDataValueModel.Columns.CREATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(TrackedEntityDataValueModel.Columns.LAST_UPDATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsBoolean(TrackedEntityDataValueModel.Columns.PROVIDED_ELSEWHERE)).isEqualTo(PROVIDED_ELSEWHERE);
+        assertThat(model.id()).isEqualTo(ID);
+        assertThat(model.event()).isEqualTo(EVENT);
+        assertThat(model.dataElement()).isEqualTo(DATA_ELEMENT);
+        assertThat(model.storedBy()).isEqualTo(STORED_BY);
+        assertThat(model.value()).isEqualTo(VALUE);
+        assertThat(model.created()).isEqualTo(date);
+        assertThat(model.lastUpdated()).isEqualTo(date);
+        assertThat(model.providedElsewhere()).isEqualTo(PROVIDED_ELSEWHERE);
+    }
+
+    @Test
+    public void toContentValues_shouldConvertToContentValues() {
+        TrackedEntityDataValueModel model = TrackedEntityDataValueModel.builder()
+                .id(ID)
+                .event(EVENT)
+                .dataElement(DATA_ELEMENT)
+                .storedBy(STORED_BY)
+                .value(VALUE)
+                .created(date)
+                .lastUpdated(date)
+                .providedElsewhere(PROVIDED_ELSEWHERE)
+                .build();
+        ContentValues contentValues = model.toContentValues();
+
+        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(Columns.EVENT)).isEqualTo(EVENT);
+        assertThat(contentValues.getAsString(Columns.DATA_ELEMENT)).isEqualTo(DATA_ELEMENT);
+        assertThat(contentValues.getAsString(Columns.STORED_BY)).isEqualTo(STORED_BY);
+        assertThat(contentValues.getAsString(Columns.VALUE)).isEqualTo(VALUE);
+        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(dateString);
+        assertThat(contentValues.getAsBoolean(Columns.PROVIDED_ELSEWHERE)).isEqualTo(PROVIDED_ELSEWHERE);
     }
 }

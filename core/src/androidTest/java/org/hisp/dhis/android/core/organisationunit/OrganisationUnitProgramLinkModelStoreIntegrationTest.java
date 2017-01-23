@@ -66,10 +66,10 @@ public class OrganisationUnitProgramLinkModelStoreIntegrationTest extends AbsSto
     public void insert_shouldPersistInDatabase() throws Exception {
         // inserting mandatory foreign keys
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(ID, ORGANISATION_UNIT_UID);
-        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
+        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
 
-        ContentValues program = CreateProgramUtils.create(ID, PROGRAM_UID, null, null);
-        database().insert(ProgramModel.PROGRAM, null, program);
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM_UID, null, null, null);
+        database().insert(ProgramModel.TABLE, null, program);
 
         long rowId = organisationUnitProgramLinkStore.insert(ORGANISATION_UNIT_UID, PROGRAM_UID);
 
@@ -84,8 +84,8 @@ public class OrganisationUnitProgramLinkModelStoreIntegrationTest extends AbsSto
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_shouldNotPersistInDatabaseWithMissingOrganisationUnitForeignKey() throws Exception {
-        ContentValues program = CreateProgramUtils.create(ID, PROGRAM_UID, null, null);
-        database().insert(ProgramModel.PROGRAM, null, program);
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM_UID, null, null, null);
+        database().insert(ProgramModel.TABLE, null, program);
 
         organisationUnitProgramLinkStore.insert(ORGANISATION_UNIT_UID, PROGRAM_UID);
     }
@@ -93,7 +93,7 @@ public class OrganisationUnitProgramLinkModelStoreIntegrationTest extends AbsSto
     @Test(expected = SQLiteConstraintException.class)
     public void exception_shouldNotPersistInDatabaseWithMissingProgramForeignKey() throws Exception {
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(ID, ORGANISATION_UNIT_UID);
-        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
+        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
 
         organisationUnitProgramLinkStore.insert(ORGANISATION_UNIT_UID, PROGRAM_UID);
     }
@@ -102,10 +102,10 @@ public class OrganisationUnitProgramLinkModelStoreIntegrationTest extends AbsSto
     public void delete_shouldDeleteLinkWhenDeletingOrganisationUnit() throws Exception {
         // inserting mandatory foreign keys
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(ID, ORGANISATION_UNIT_UID);
-        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
+        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
 
-        ContentValues program = CreateProgramUtils.create(ID, PROGRAM_UID, null, null);
-        database().insert(ProgramModel.PROGRAM, null, program);
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM_UID, null, null, null);
+        database().insert(ProgramModel.TABLE, null, program);
 
         ContentValues organisationUnitProgramLink = new ContentValues();
         organisationUnitProgramLink.put(Columns.ID, ID);
@@ -123,7 +123,7 @@ public class OrganisationUnitProgramLinkModelStoreIntegrationTest extends AbsSto
         // checking that link was successfully inserted
         assertThatCursor(cursor).hasRow(ID, ORGANISATION_UNIT_UID, PROGRAM_UID).isExhausted();
 
-        database().delete(OrganisationUnitModel.ORGANISATION_UNIT,
+        database().delete(OrganisationUnitModel.TABLE,
                 OrganisationUnitModel.Columns.UID + " =?", new String[]{ORGANISATION_UNIT_UID});
 
         cursor = database().query(OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK, projection,
@@ -136,10 +136,10 @@ public class OrganisationUnitProgramLinkModelStoreIntegrationTest extends AbsSto
     public void delete_shouldDeleteLinkWhenDeletingProgram() throws Exception {
         // inserting mandatory foreign keys
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(ID, ORGANISATION_UNIT_UID);
-        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
+        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
 
-        ContentValues program = CreateProgramUtils.create(ID, PROGRAM_UID, null, null);
-        database().insert(ProgramModel.PROGRAM, null, program);
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM_UID, null, null, null);
+        database().insert(ProgramModel.TABLE, null, program);
 
         ContentValues organisationUnitProgramLink = new ContentValues();
         organisationUnitProgramLink.put(Columns.ID, ID);

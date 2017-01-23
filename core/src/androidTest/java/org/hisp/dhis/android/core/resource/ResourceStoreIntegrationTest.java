@@ -46,7 +46,7 @@ public class ResourceStoreIntegrationTest extends AbsStoreTestCase {
         // checking that resource was successfully inserted into database
         assertThat(rowId).isEqualTo(1L);
 
-        Cursor cursor = database().query(ResourceModel.RESOURCE, PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(ResourceModel.TABLE, PROJECTION, null, null, null, null, null);
 
         assertThatCursor(cursor).hasRow(RESOURCE_TYPE, RESOURCE_UID, DATE).isExhausted();
 
@@ -56,7 +56,7 @@ public class ResourceStoreIntegrationTest extends AbsStoreTestCase {
     public void insert_shouldPersistResourceInDatabaseWithoutLastSynced() throws Exception {
         long rowId = resourceStore.insert(RESOURCE_TYPE, RESOURCE_UID, null);
         assertThat(rowId).isEqualTo(1L);
-        Cursor cursor = database().query(ResourceModel.RESOURCE, PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(ResourceModel.TABLE, PROJECTION, null, null, null, null, null);
 
         assertThatCursor(cursor).hasRow(RESOURCE_TYPE, RESOURCE_UID, null).isExhausted();
 

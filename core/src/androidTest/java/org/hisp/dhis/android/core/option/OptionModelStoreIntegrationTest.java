@@ -78,18 +78,18 @@ public class OptionModelStoreIntegrationTest extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistOptionInDatabase() throws ParseException {
-        // INSERT OPTION SETS
+        // INSERT TABLE SETS
         ContentValues optionSet =
                 CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
 
-        database().insert(OptionSetModel.OPTION_SET, null, optionSet);
+        database().insert(OptionSetModel.TABLE, null, optionSet);
 
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
         long rowId = optionStore.insert(
                 UID, CODE, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID
         );
 
-        Cursor cursor = database().query(OptionModel.OPTION, OPTION_PROJECTION,
+        Cursor cursor = database().query(OptionModel.TABLE, OPTION_PROJECTION,
                 null, null, null, null, null);
 
         // Checking if rowId == 1.
@@ -113,7 +113,7 @@ public class OptionModelStoreIntegrationTest extends AbsStoreTestCase {
     @Test
     public void delete_shouldDeleteOptionsWhenDeletingOptionSet() throws Exception {
         ContentValues optionSet = CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
-        database().insert(OptionSetModel.OPTION_SET, null, optionSet);
+        database().insert(OptionSetModel.TABLE, null, optionSet);
 
         ContentValues option = new ContentValues();
         option.put(Columns.ID, 1L);
@@ -127,19 +127,19 @@ public class OptionModelStoreIntegrationTest extends AbsStoreTestCase {
         option1.put(Columns.UID, option1Uid);
         option1.put(Columns.OPTION_SET, OPTION_SET_UID);
 
-        database().insert(OptionModel.OPTION, null, option);
-        database().insert(OptionModel.OPTION, null, option1);
+        database().insert(OptionModel.TABLE, null, option);
+        database().insert(OptionModel.TABLE, null, option1);
 
         String[] projection = {Columns.ID, Columns.UID, Columns.OPTION_SET};
 
-        Cursor cursor = database().query(OptionModel.OPTION, projection, null, null, null, null, null);
+        Cursor cursor = database().query(OptionModel.TABLE, projection, null, null, null, null, null);
 
         assertThatCursor(cursor).hasRow(1L, UID, OPTION_SET_UID);
         assertThatCursor(cursor).hasRow(2L, option1Uid, OPTION_SET_UID).isExhausted();
 
-        database().delete(OptionSetModel.OPTION_SET, OptionSetModel.Columns.UID + " =?", new String[]{OPTION_SET_UID});
+        database().delete(OptionSetModel.TABLE, OptionSetModel.Columns.UID + " =?", new String[]{OPTION_SET_UID});
 
-        cursor = database().query(OptionModel.OPTION, projection, null, null, null, null, null);
+        cursor = database().query(OptionModel.TABLE, projection, null, null, null, null, null);
 
         assertThatCursor(cursor).isExhausted();
 

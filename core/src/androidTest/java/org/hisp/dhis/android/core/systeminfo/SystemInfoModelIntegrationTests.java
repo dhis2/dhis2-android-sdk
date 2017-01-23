@@ -44,45 +44,46 @@ import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class SystemInfoModelIntegrationTests {
-
     private static final long ID = 1L;
     private static final String DATE_FORMAT = "testDateFormat";
 
-    // timestamp
-    private static final String DATE = "2014-03-20T13:37:00.007";
+    private final Date date;
+    private final String dateString;
+
+    public SystemInfoModelIntegrationTests() {
+        this.date = new Date();
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
+    }
 
     @Test
-    public void create_shouldConvertToModel() throws ParseException {
-        MatrixCursor matrixCursor = new MatrixCursor(new String[]{
+    public void create_shouldConvertToModel() {
+        MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID,
                 Columns.SERVER_DATE,
                 Columns.DATE_FORMAT
         });
+        cursor.addRow(new Object[]{ID, dateString, DATE_FORMAT});
+        cursor.moveToFirst();
 
-        matrixCursor.addRow(new Object[]{ID, DATE, DATE_FORMAT});
-        matrixCursor.moveToFirst();
-
-        Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-        SystemInfoModel systemInfoModel = SystemInfoModel.create(matrixCursor);
+        SystemInfoModel systemInfoModel = SystemInfoModel.create(cursor);
+        cursor.close();
 
         assertThat(systemInfoModel.id()).isEqualTo(ID);
-        assertThat(systemInfoModel.serverDate()).isEqualTo(timeStamp);
+        assertThat(systemInfoModel.serverDate()).isEqualTo(date);
         assertThat(systemInfoModel.dateFormat()).isEqualTo(DATE_FORMAT);
     }
 
     @Test
-    public void toContentValues_shouldConvertToContentValues() throws ParseException {
-        Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-
-        SystemInfoModel systemInfoModel = SystemInfoModel.builder()
+    public void toContentValues_shouldConvertToContentValues() {
+        SystemInfoModel model = SystemInfoModel.builder()
                 .id(ID)
-                .serverDate(timeStamp)
+                .serverDate(date)
                 .dateFormat(DATE_FORMAT)
                 .build();
 
-        ContentValues contentValues = systemInfoModel.toContentValues();
+        ContentValues contentValues = model.toContentValues();
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.SERVER_DATE)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(Columns.SERVER_DATE)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(Columns.DATE_FORMAT)).isEqualTo(DATE_FORMAT);
     }
 }

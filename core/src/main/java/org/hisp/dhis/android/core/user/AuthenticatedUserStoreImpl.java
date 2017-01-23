@@ -45,7 +45,7 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
             AuthenticatedUserModel.Columns.CREDENTIALS
     };
 
-    private static final String INSERT_STATEMENT = "INSERT INTO " + AuthenticatedUserModel.AUTHENTICATED_USER +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + AuthenticatedUserModel.TABLE +
             " (" + AuthenticatedUserModel.Columns.USER + ", " + AuthenticatedUserModel.Columns.CREDENTIALS + ")" +
             " VALUES (?, ?);";
 
@@ -70,7 +70,7 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
     public List<AuthenticatedUserModel> query() {
         List<AuthenticatedUserModel> rows = new ArrayList<>();
 
-        Cursor queryCursor = sqLiteDatabase.query(AuthenticatedUserModel.AUTHENTICATED_USER,
+        Cursor queryCursor = sqLiteDatabase.query(AuthenticatedUserModel.TABLE,
                 PROJECTION, null, null, null, null, null);
 
         if (queryCursor == null) {
@@ -94,7 +94,7 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
 
     @Override
     public int delete() {
-        return sqLiteDatabase.delete(AuthenticatedUserModel.AUTHENTICATED_USER, null, null);
+        return sqLiteDatabase.delete(AuthenticatedUserModel.TABLE, null, null);
     }
 
     @Override

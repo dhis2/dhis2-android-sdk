@@ -40,7 +40,7 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
-            RelationshipTypeModel.RELATIONSHIP_TYPE + " (" +
+            RelationshipTypeModel.TABLE + " (" +
             RelationshipTypeModel.Columns.UID + ", " +
             RelationshipTypeModel.Columns.CODE + ", " +
             RelationshipTypeModel.Columns.NAME + ", " +

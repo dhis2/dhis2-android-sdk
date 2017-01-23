@@ -37,7 +37,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Call;
-import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
@@ -60,12 +59,14 @@ import org.hisp.dhis.android.core.user.UserStoreImpl;
 
 import java.util.concurrent.Callable;
 
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import retrofit2.Converter;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+// ToDo: handle corner cases when user initially has been signed in, but later was locked (or password has changed)
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class D2 {
     private final Retrofit retrofit;
@@ -150,7 +151,7 @@ public final class D2 {
     }
 
     public static class Builder {
-        private ConfigurationModel configurationModel;
+        private HttpUrl baseUrl;
         private DbOpenHelper dbOpenHelper;
         private OkHttpClient okHttpClient;
 
@@ -159,8 +160,8 @@ public final class D2 {
         }
 
         @NonNull
-        public Builder configuration(@NonNull ConfigurationModel configurationModel) {
-            this.configurationModel = configurationModel;
+        public Builder baseUrl(@NonNull HttpUrl baseUrl) {
+            this.baseUrl = baseUrl;
             return this;
         }
 
@@ -181,8 +182,8 @@ public final class D2 {
                 throw new IllegalArgumentException("dbOpenHelper == null");
             }
 
-            if (configurationModel == null) {
-                throw new IllegalStateException("Configuration must be set first");
+            if (baseUrl == null) {
+                throw new IllegalStateException("BaseUrl must be set first");
             }
 
             if (okHttpClient == null) {
@@ -199,7 +200,7 @@ public final class D2 {
                     FilterConverterFactory.create();
 
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(configurationModel.serverUrl())
+                    .baseUrl(baseUrl)
                     .client(okHttpClient)
                     .addConverterFactory(jsonConverterFactory)
                     .addConverterFactory(filterConverterFactory)

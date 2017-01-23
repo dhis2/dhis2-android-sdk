@@ -30,6 +30,7 @@
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -46,7 +47,22 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class UserCredentialsStoreIntegrationTests extends AbsStoreTestCase {
-    private static final String[] PROJECTION = {
+
+    public static final long ID = 1L;
+    public static final String UID = "test_user_credentials_uid";
+    public static final String USER_UID = "test_user_uid";
+    public static final String NAME = "test_name";
+    public static final String CODE = "test_code";
+    public static final String DISPLAY_NAME = "test_display_name";
+    public static final String CREATED = "test_created";
+    public static final String LAST_UPDATED = "test_lastUpdated";
+    public static final String USER_CREDENTIALS_CODE = "test_user_credentials_code";
+    public static final String USER_CREDENTIALS_NAME = "test_user_credentials_name";
+    public static final String USER_CREDENTIALS_DISPLAY_NAME = "test_user_credentials_display_name";
+
+    public static final String USER_CREDENTIALS_USERNAME = "test_user_credentials_username";
+
+    private static final String[] USER_CREDENTIALS_PROJECTION = {
             UserCredentialsModel.Columns.UID,
             UserCredentialsModel.Columns.CODE,
             UserCredentialsModel.Columns.NAME,
@@ -59,72 +75,116 @@ public class UserCredentialsStoreIntegrationTests extends AbsStoreTestCase {
 
     private UserCredentialsStore userCredentialsStore;
 
-    public static ContentValues create(long id, String uid, String user) {
-        ContentValues userCredentials = new ContentValues();
-        userCredentials.put(UserCredentialsModel.Columns.ID, id);
-        userCredentials.put(UserCredentialsModel.Columns.UID, uid);
-        userCredentials.put(UserCredentialsModel.Columns.CODE, "test_code");
-        userCredentials.put(UserCredentialsModel.Columns.NAME, "test_name");
-        userCredentials.put(UserCredentialsModel.Columns.DISPLAY_NAME, "test_display_name");
-        userCredentials.put(UserCredentialsModel.Columns.CREATED, "test_created");
-        userCredentials.put(UserCredentialsModel.Columns.LAST_UPDATED, "test_lastUpdated");
-        userCredentials.put(UserCredentialsModel.Columns.USERNAME, "test_username");
-        userCredentials.put(UserCredentialsModel.Columns.USER, user);
-        return userCredentials;
+    public final Date date;
+    public final String dateString;
+
+    public UserCredentialsStoreIntegrationTests() {
+        this.date = new Date();
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
-
         userCredentialsStore = new UserCredentialsStoreImpl(database());
 
         // row which will be referenced
-        ContentValues userRow = UserStoreIntegrationTests.create(1L, "test_user_uid");
-        database().insert(UserModel.USER, null, userRow);
+        ContentValues userRow = UserStoreIntegrationTests.create(1L, USER_UID);
+        database().insert(UserModel.TABLE, null, userRow);
     }
 
     @Test
     public void insert_shouldPersistRowInDatabase() {
-        Date date = new Date();
-
-        // inserting authenticated user model item
         long rowId = userCredentialsStore.insert(
-                "test_user_credentials_uid",
-                "test_user_credentials_code",
-                "test_user_credentials_name",
-                "test_user_credentials_display_name",
+                UID,
+                USER_CREDENTIALS_CODE,
+                USER_CREDENTIALS_NAME,
+                USER_CREDENTIALS_DISPLAY_NAME,
                 date, date,
-                "test_user_credentials_username",
-                "test_user_uid");
+                USER_CREDENTIALS_USERNAME,
+                USER_UID);
 
-        Cursor cursor = database().query(UserCredentialsModel.USER_CREDENTIALS,
-                PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(UserCredentialsModel.TABLE,
+                USER_CREDENTIALS_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor)
-                .hasRow(
-                        "test_user_credentials_uid",
-                        "test_user_credentials_code",
-                        "test_user_credentials_name",
-                        "test_user_credentials_display_name",
-                        BaseIdentifiableObject.DATE_FORMAT.format(date),
-                        BaseIdentifiableObject.DATE_FORMAT.format(date),
-                        "test_user_credentials_username",
-                        "test_user_uid"
-                ).isExhausted();
+        assertThatCursor(cursor).hasRow(
+                UID,
+                USER_CREDENTIALS_CODE,
+                USER_CREDENTIALS_NAME,
+                USER_CREDENTIALS_DISPLAY_NAME,
+                dateString,
+                dateString,
+                USER_CREDENTIALS_USERNAME,
+                USER_UID
+        ).isExhausted();
+    }
+
+    @Test
+    public void insert_shouldPersistNullableRowInDatabase() {
+        long rowId = userCredentialsStore.insert(
+                UID,
+                null,
+                null,
+                null,
+                null, null,
+                null,
+                USER_UID);
+
+        Cursor cursor = database().query(UserCredentialsModel.TABLE,
+                USER_CREDENTIALS_PROJECTION, null, null, null, null, null);
+
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(
+                UID,
+                null,
+                null,
+                null,
+                null, null,
+                null,
+                USER_UID
+        ).isExhausted();
+    }
+
+    @Test
+    public void delete_shouldDeleteUserCredentialsWhenDeletingUserForeignKey() {
+        userCredentialsStore.insert(
+                UID,
+                USER_CREDENTIALS_CODE,
+                USER_CREDENTIALS_NAME,
+                USER_CREDENTIALS_DISPLAY_NAME,
+                date, date,
+                USER_CREDENTIALS_USERNAME,
+                USER_UID);
+
+        database().delete(UserModel.TABLE, UserModel.Columns.UID + "=?", new String[]{USER_UID});
+
+        Cursor cursor = database().query(UserCredentialsModel.TABLE, USER_CREDENTIALS_PROJECTION,
+                null, null, null, null, null);
+        assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test(expected = SQLiteConstraintException.class)
+    public void exception_persistUserCredentialsWithInvalidUserForeignKey() {
+        userCredentialsStore.insert(
+                UID,
+                USER_CREDENTIALS_CODE,
+                USER_CREDENTIALS_NAME,
+                USER_CREDENTIALS_DISPLAY_NAME,
+                date, date,
+                USER_CREDENTIALS_USERNAME,
+                "wrong");
     }
 
     @Test
     public void delete_shouldDeleteAllRows() {
-        ContentValues userCredentials = create(1L, "test_user_credentials", "test_user_uid");
-        database().insert(UserCredentialsModel.USER_CREDENTIALS, null, userCredentials);
+        ContentValues userCredentials = CreateUserCredentialsUtils.create(ID, UID, USER_UID);
+        database().insert(UserCredentialsModel.TABLE, null, userCredentials);
 
         int deleted = userCredentialsStore.delete();
 
-        Cursor cursor = database().query(UserCredentialsModel.USER_CREDENTIALS,
-                null, null, null, null, null, null);
+        Cursor cursor = database().query(UserCredentialsModel.TABLE, null, null, null, null, null, null);
         assertThat(deleted).isEqualTo(1);
         assertThatCursor(cursor).isExhausted();
     }
@@ -132,7 +192,6 @@ public class UserCredentialsStoreIntegrationTests extends AbsStoreTestCase {
     @Test
     public void close_shouldNotCloseDatabase() {
         userCredentialsStore.close();
-
         assertThat(database().isOpen()).isTrue();
     }
 }

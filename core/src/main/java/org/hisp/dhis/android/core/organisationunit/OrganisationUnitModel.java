@@ -45,7 +45,7 @@ import java.util.Date;
 // TODO: Tests
 @AutoValue
 public abstract class OrganisationUnitModel extends BaseNameableObjectModel {
-    public static final String ORGANISATION_UNIT = "OrganisationUnit";
+    public static final String TABLE = "OrganisationUnit";
     public static final String SCOPE_DATA_CAPTURE = "dataCapture";
 
     public static class Columns extends BaseNameableObjectModel.Columns {

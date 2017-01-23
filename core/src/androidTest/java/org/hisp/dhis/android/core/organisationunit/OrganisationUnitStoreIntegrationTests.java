@@ -43,7 +43,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 public class OrganisationUnitStoreIntegrationTests extends AbsStoreTestCase {
-    public static final String[] ORGANISATION_UNIT_PROJECTION = {
+    public static final String[] PROJECTION = {
             OrganisationUnitModel.Columns.UID,
             OrganisationUnitModel.Columns.CODE,
             OrganisationUnitModel.Columns.NAME,
@@ -61,79 +61,88 @@ public class OrganisationUnitStoreIntegrationTests extends AbsStoreTestCase {
             OrganisationUnitModel.Columns.LEVEL
     };
 
+    private static final String UID = "organisation_unit_uid";
+    private static final String CODE = "organisation_unit_code";
+    private static final String NAME = "organisation_unit_name";
+    private static final String DISPLAY_NAME = "organisation_unit_display_name";
+    private static final String SHORT_NAME = "organisation_unit_short_name";
+    private static final String DISPLAY_SHORT_NAME = "organisation_unit_display_short_name";
+    private static final String DESCRIPTION = "organisation_unit_description";
+    private static final String DISPLAY_DESCRIPTION = "organisation_unit_display_description";
+    private static final String PATH = "organisation_unit_path";
+    private static final int LEVEL = 11;
+
     private OrganisationUnitStore organisationUnitStore;
+
+    // timestamp
+    private final Date date;
+    private final String dateString;
+
+    public OrganisationUnitStoreIntegrationTests() {
+        this.date = new Date();
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
+    }
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
-
         organisationUnitStore = new OrganisationUnitStoreImpl(database());
     }
 
     @Test
     public void insert_shouldPersistRowInDatabase() {
-        Date date = new Date();
-
         long rowId = organisationUnitStore.insert(
-                "test_organisation_unit_uid",
-                "test_organisation_unit_code",
-                "test_organisation_unit_name",
-                "test_organisation_unit_display_name",
+                UID,
+                CODE,
+                NAME,
+                DISPLAY_NAME,
                 date, date,
-                "test_organisation_unit_short_name",
-                "test_organisation_unit_display_short_name",
-                "test_organisation_unit_description",
-                "test_organisation_unit_display_description",
-                "test_organisation_unit_path",
-                date, date, null, 11
+                SHORT_NAME,
+                DISPLAY_SHORT_NAME,
+                DESCRIPTION,
+                DISPLAY_DESCRIPTION,
+                PATH,
+                date, date, null, LEVEL
         );
 
-        Cursor cursor = database().query(OrganisationUnitModel.ORGANISATION_UNIT,
-                ORGANISATION_UNIT_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(OrganisationUnitModel.TABLE, PROJECTION,
+                null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor)
-                .hasRow(
-                        "test_organisation_unit_uid",
-                        "test_organisation_unit_code",
-                        "test_organisation_unit_name",
-                        "test_organisation_unit_display_name",
-                        BaseIdentifiableObject.DATE_FORMAT.format(date),
-                        BaseIdentifiableObject.DATE_FORMAT.format(date),
-                        "test_organisation_unit_short_name",
-                        "test_organisation_unit_display_short_name",
-                        "test_organisation_unit_description",
-                        "test_organisation_unit_display_description",
-                        "test_organisation_unit_path",
-                        BaseIdentifiableObject.DATE_FORMAT.format(date),
-                        BaseIdentifiableObject.DATE_FORMAT.format(date),
-                        null, 11
-                )
-                .isExhausted();
+        assertThatCursor(cursor).hasRow(UID,
+                CODE,
+                NAME,
+                DISPLAY_NAME,
+                dateString,
+                dateString,
+                SHORT_NAME,
+                DISPLAY_SHORT_NAME,
+                DESCRIPTION,
+                DISPLAY_DESCRIPTION,
+                PATH,
+                dateString,
+                dateString,
+                null, LEVEL
+        ).isExhausted();
     }
 
     @Test
     public void close_shouldNotCloseDatabase() {
         organisationUnitStore.close();
-
         assertThat(database().isOpen()).isTrue();
     }
 
     @Test
     public void delete_shouldDeleteAllRows() {
-        ContentValues organisationUnitOne =
-                CreateOrganisationUnitUtils.createOrgUnit(1L, "test_organisation_unit_one");
+        ContentValues organisationUnitOne = CreateOrganisationUnitUtils.createOrgUnit(1L, "organisation_unit_one");
+        ContentValues organisationUnitTwo = CreateOrganisationUnitUtils.createOrgUnit(2L, "organisation_unit_two");
 
-        ContentValues organisationUnitTwo =
-                CreateOrganisationUnitUtils.createOrgUnit(2L, "test_organisation_unit_two");
-
-        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnitOne);
-        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnitTwo);
+        database().insert(OrganisationUnitModel.TABLE, null, organisationUnitOne);
+        database().insert(OrganisationUnitModel.TABLE, null, organisationUnitTwo);
 
         int deleted = organisationUnitStore.delete();
-        Cursor cursor = database().query(OrganisationUnitModel.ORGANISATION_UNIT,
-                null, null, null, null, null, null);
+        Cursor cursor = database().query(OrganisationUnitModel.TABLE, null, null, null, null, null, null);
 
         assertThat(deleted).isEqualTo(2);
         assertThatCursor(cursor).isExhausted();

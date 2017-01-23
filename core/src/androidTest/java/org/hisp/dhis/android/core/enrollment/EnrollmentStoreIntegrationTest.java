@@ -57,10 +57,11 @@ import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
-import static org.hisp.dhis.android.core.enrollment.EnrollmentModel.ENROLLMENT;
+import static org.hisp.dhis.android.core.enrollment.EnrollmentModel.TABLE;
 
 @RunWith(AndroidJUnit4.class)
 public class EnrollmentStoreIntegrationTest extends AbsStoreTestCase {
+
     private static final String[] ENROLLMENT_PROJECTION = {
             EnrollmentModel.Columns.UID,
             EnrollmentModel.Columns.CREATED,
@@ -76,6 +77,7 @@ public class EnrollmentStoreIntegrationTest extends AbsStoreTestCase {
             EnrollmentModel.Columns.LONGITUDE,
             EnrollmentModel.Columns.STATE
     };
+
     private EnrollmentStore enrollmentStore;
 
     private static final String UID = "test_uid";
@@ -89,19 +91,21 @@ public class EnrollmentStoreIntegrationTest extends AbsStoreTestCase {
 
     private static final State STATE = State.TO_UPDATE;
 
-    // timestamp
-    private static final String DATE = "2017-01-12T11:31:00.000";
-
     //foreign keys to program:
     private static final long TRACKED_ENTITY_ID = 1L;
     private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
     private static final long RELATIONSHIP_TYPE_ID = 3L;
     private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
 
+    // timestamp
     private final Date date;
+    private final String dateString;
+
+    private final String WRONG_UID = "wrong";
 
     public EnrollmentStoreIntegrationTest() throws ParseException {
-        this.date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
+        this.date = new Date();
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
 
     @Override
@@ -109,11 +113,28 @@ public class EnrollmentStoreIntegrationTest extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
         this.enrollmentStore = new EnrollmentStoreImpl(database());
+
+        //Create Program & insert a row in the table.
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
+                RELATIONSHIP_TYPE_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
+
+        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
+        database().insert(ProgramModel.TABLE, null, program);
+
+        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
+        ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.createWithOrgUnit(
+                TRACKED_ENTITY_INSTANCE, ORGANISATION_UNIT);
+
+        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
+        database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
     }
 
     @Test
     public void insert_shouldPersistInDatabase() {
-        insertForeignKeyRows();
+
         long rowId = enrollmentStore.insert(
                 UID,
                 date,
@@ -130,17 +151,17 @@ public class EnrollmentStoreIntegrationTest extends AbsStoreTestCase {
                 STATE
         );
 
-        Cursor cursor = database().query(ENROLLMENT, ENROLLMENT_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(TABLE, ENROLLMENT_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(
                 UID,
-                DATE,
-                DATE,
+                dateString,
+                dateString,
                 ORGANISATION_UNIT,
                 PROGRAM,
-                DATE,
-                DATE,
+                dateString,
+                dateString,
                 AndroidTestUtils.toInteger(FOLLOW_UP),
                 ENROLLMENT_STATUS,
                 TRACKED_ENTITY_INSTANCE,
@@ -152,17 +173,17 @@ public class EnrollmentStoreIntegrationTest extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistNullableInDatabase() {
-        insertForeignKeyRows();
+
         long rowId = enrollmentStore.insert(UID, null, null, ORGANISATION_UNIT, PROGRAM, null, null, null, null,
                 TRACKED_ENTITY_INSTANCE, null, null, null);
-        Cursor cursor = database().query(ENROLLMENT, ENROLLMENT_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(TABLE, ENROLLMENT_PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, null, null, ORGANISATION_UNIT, PROGRAM, null, null, null, null,
                 TRACKED_ENTITY_INSTANCE, null, null, null).isExhausted();
     }
 
-    @Test(expected = SQLiteConstraintException.class)
-    public void insertMissingForeignKey_shouldThrowSQLiteConstraintException() {
+    @Test
+    public void delete_shouldDeleteEnrollmentWhenDeletingOrgUnit() {
         enrollmentStore.insert(
                 UID,
                 date,
@@ -178,97 +199,126 @@ public class EnrollmentStoreIntegrationTest extends AbsStoreTestCase {
                 LONGITUDE,
                 STATE
         );
-    }
-
-    @Test
-    public void delete_shouldDeleteEnrollmentWhenDeletingOrgUnit() {
-        //Insert:
-        insertForeignKeyRows();
-        enrollmentStore.insert(UID, date, date, ORGANISATION_UNIT, PROGRAM, date, date, FOLLOW_UP,
-                ENROLLMENT_STATUS, TRACKED_ENTITY_INSTANCE, LATITUDE, LONGITUDE, STATE);
         //Delete OrgUnit:
-        database().delete(OrganisationUnitModel.ORGANISATION_UNIT,
+        database().delete(OrganisationUnitModel.TABLE,
                 OrganisationUnitModel.Columns.UID + " =?", new String[]{ORGANISATION_UNIT});
         //Query for Enrollment:
-        Cursor cursor = database().query(ENROLLMENT, ENROLLMENT_PROJECTION, null, null, null, null, null, null);
+        Cursor cursor = database().query(TABLE, ENROLLMENT_PROJECTION, null, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 
     @Test
     public void delete_shouldDeleteEnrollmentWhenDeletingProgram() {
-        //Insert:
-        insertForeignKeyRows();
-        enrollmentStore.insert(UID, date, date, ORGANISATION_UNIT, PROGRAM, date, date, FOLLOW_UP,
-                ENROLLMENT_STATUS, TRACKED_ENTITY_INSTANCE, LATITUDE, LONGITUDE, STATE);
-        //Delete OrgUnit:
-        database().delete(ProgramModel.PROGRAM,
+
+        enrollmentStore.insert(
+                UID,
+                date,
+                date,
+                ORGANISATION_UNIT,
+                PROGRAM,
+                date,
+                date,
+                FOLLOW_UP,
+                ENROLLMENT_STATUS,
+                TRACKED_ENTITY_INSTANCE,
+                LATITUDE,
+                LONGITUDE,
+                STATE
+        );
+
+        database().delete(ProgramModel.TABLE,
                 ProgramModel.Columns.UID + " =?", new String[]{PROGRAM});
-        //Query for Enrollment:
-        Cursor cursor = database().query(ENROLLMENT, ENROLLMENT_PROJECTION, null, null, null, null, null, null);
+
+        Cursor cursor = database().query(TABLE, ENROLLMENT_PROJECTION, null, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 
     @Test
     public void delete_shouldDeleteEnrollmentWhenDeletingTrackedEntityInstance() {
-        //Insert:
-        insertForeignKeyRows();
-        enrollmentStore.insert(UID, date, date, ORGANISATION_UNIT, PROGRAM, date, date, FOLLOW_UP,
-                ENROLLMENT_STATUS, TRACKED_ENTITY_INSTANCE, LATITUDE, LONGITUDE, STATE);
-        //Delete OrgUnit:
-        database().delete(TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE,
+        enrollmentStore.insert(
+                UID,
+                date,
+                date,
+                ORGANISATION_UNIT,
+                PROGRAM,
+                date,
+                date,
+                FOLLOW_UP,
+                ENROLLMENT_STATUS,
+                TRACKED_ENTITY_INSTANCE,
+                LATITUDE,
+                LONGITUDE,
+                STATE
+        );
+
+        database().delete(TrackedEntityInstanceModel.TABLE,
                 ProgramModel.Columns.UID + " =?", new String[]{TRACKED_ENTITY_INSTANCE});
-        //Query for Enrollment:
-        Cursor cursor = database().query(ENROLLMENT, ENROLLMENT_PROJECTION, null, null, null, null, null, null);
+
+        Cursor cursor = database().query(TABLE, ENROLLMENT_PROJECTION, null, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistEnrollWithInvalidOrgUnitForeignKey() {
-        String wrongOrgUnitUid = "wrong";
-        insertForeignKeyRows();
-        enrollmentStore.insert(UID, date, date, wrongOrgUnitUid, PROGRAM, date, date, FOLLOW_UP,
-                ENROLLMENT_STATUS, TRACKED_ENTITY_INSTANCE, LATITUDE, LONGITUDE, STATE);
+        enrollmentStore.insert(
+                UID,
+                date,
+                date,
+                WRONG_UID, //supply wrong uid
+                PROGRAM,
+                date,
+                date,
+                FOLLOW_UP,
+                ENROLLMENT_STATUS,
+                TRACKED_ENTITY_INSTANCE,
+                LATITUDE,
+                LONGITUDE,
+                STATE
+        );
     }
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistEnrollWithInvalidProgramForeignKey() {
-        String wrongProgramUid = "wrong";
-        insertForeignKeyRows();
-        enrollmentStore.insert(UID, date, date, ORGANISATION_UNIT, wrongProgramUid, date, date, FOLLOW_UP,
-                ENROLLMENT_STATUS, TRACKED_ENTITY_INSTANCE, LATITUDE, LONGITUDE, STATE);
+        enrollmentStore.insert(
+                UID,
+                date,
+                date,
+                ORGANISATION_UNIT,
+                WRONG_UID, //supply wrong uid
+                date,
+                date,
+                FOLLOW_UP,
+                ENROLLMENT_STATUS,
+                TRACKED_ENTITY_INSTANCE,
+                LATITUDE,
+                LONGITUDE,
+                STATE
+        );
     }
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistEnrollWithInvalidTrackedEntityInstanceForeignKey() {
-        String wrongTeiUid = "wrong";
-        insertForeignKeyRows();
-        enrollmentStore.insert(UID, date, date, ORGANISATION_UNIT, PROGRAM, date, date, FOLLOW_UP,
-                ENROLLMENT_STATUS, wrongTeiUid, LATITUDE, LONGITUDE, STATE);
+        enrollmentStore.insert(
+                UID,
+                date,
+                date,
+                ORGANISATION_UNIT,
+                PROGRAM,
+                date,
+                date,
+                FOLLOW_UP,
+                ENROLLMENT_STATUS,
+                WRONG_UID, //supply wrong uid
+                LATITUDE,
+                LONGITUDE,
+                STATE
+        );
     }
 
     @Test
     public void close_shouldNotCloseDatabase() {
         enrollmentStore.close();
-
         assertThat(database().isOpen()).isTrue();
     }
 
-    private void insertForeignKeyRows() {
-        //Create Program & insert a row in the table.
-        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
-        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
-                RELATIONSHIP_TYPE_UID);
-        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
-
-        database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
-        database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
-        database().insert(ProgramModel.PROGRAM, null, program);
-
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
-        ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.createWithOrgUnit(
-                TRACKED_ENTITY_INSTANCE, ORGANISATION_UNIT);
-
-        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
-        database().insert(TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE, null, trackedEntityInstance);
-    }
 }

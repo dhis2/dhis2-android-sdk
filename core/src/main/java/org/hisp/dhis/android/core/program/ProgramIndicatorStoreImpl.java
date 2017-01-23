@@ -38,7 +38,7 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + ProgramIndicatorModel.PROGRAM_INDICATOR + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + ProgramIndicatorModel.TABLE + " (" +
             ProgramIndicatorModel.Columns.UID + ", " +
             ProgramIndicatorModel.Columns.CODE + ", " +
             ProgramIndicatorModel.Columns.NAME + ", " +

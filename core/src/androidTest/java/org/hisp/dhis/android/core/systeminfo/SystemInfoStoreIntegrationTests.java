@@ -74,7 +74,7 @@ public class SystemInfoStoreIntegrationTests extends AbsStoreTestCase {
 
         long rowId = systemInfoStore.insert(date, DATE_FORMAT);
         Cursor cursor = database().query(
-                SystemInfoModel.SYSTEM_INFO,
+                SystemInfoModel.TABLE,
                 SYSTEM_INFO_PROJECTION,
                 null, null, null, null, null, null);
 

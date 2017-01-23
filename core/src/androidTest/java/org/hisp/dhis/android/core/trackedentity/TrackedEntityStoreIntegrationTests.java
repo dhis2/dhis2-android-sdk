@@ -85,7 +85,7 @@ public class TrackedEntityStoreIntegrationTests extends AbsStoreTestCase {
                 "test_display_description"
         );
 
-        Cursor cursor = database().query(TrackedEntityModel.TRACKED_ENTITY,
+        Cursor cursor = database().query(TrackedEntityModel.TABLE,
                 TRACKED_ENTITY_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);

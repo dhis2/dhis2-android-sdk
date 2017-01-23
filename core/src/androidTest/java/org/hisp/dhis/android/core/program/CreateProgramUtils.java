@@ -73,15 +73,15 @@ public class CreateProgramUtils {
     /**
      * A method to createTrackedEntityAttribute ContentValues for a Program.
      * To be used by other tests.
-     *
-     * @param id
+     *  @param id
      * @param uid
      * @param relationshipTypeUid
-     *@param trackedEntityUid @return
+     * @param relatedProgram
+     * @param trackedEntityUid @return
      */
     public static ContentValues create(long id, String uid,
                                        @Nullable String relationshipTypeUid,
-                                       @Nullable String trackedEntityUid) {
+                                       String relatedProgram, @Nullable String trackedEntityUid) {
 
         ContentValues program = new ContentValues();
         program.put(ProgramModel.Columns.ID, id);
@@ -116,7 +116,11 @@ public class CreateProgramUtils {
             program.put(ProgramModel.Columns.RELATIONSHIP_TYPE, relationshipTypeUid);
         }
         program.put(ProgramModel.Columns.RELATIONSHIP_TEXT, RELATIONSHIP_TEXT);
-        program.put(ProgramModel.Columns.RELATED_PROGRAM, RELATED_PROGRAM);
+        if (relatedProgram == null) {
+            program.putNull(ProgramModel.Columns.RELATED_PROGRAM);
+        } else {
+            program.put(ProgramModel.Columns.RELATED_PROGRAM, RELATED_PROGRAM);
+        }
         if(trackedEntityUid == null) {
             program.putNull(ProgramModel.Columns.TRACKED_ENTITY);
         } else {

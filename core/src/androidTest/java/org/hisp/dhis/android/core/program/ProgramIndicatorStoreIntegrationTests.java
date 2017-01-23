@@ -114,7 +114,7 @@ public class ProgramIndicatorStoreIntegrationTests extends AbsStoreTestCase {
                 DECIMALS
         );
 
-        Cursor cursor = database().query(ProgramIndicatorModel.PROGRAM_INDICATOR,
+        Cursor cursor = database().query(ProgramIndicatorModel.TABLE,
                 PROGRAM_INDICATOR_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);

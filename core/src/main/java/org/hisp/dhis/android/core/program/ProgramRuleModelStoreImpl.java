@@ -42,7 +42,7 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class ProgramRuleModelStoreImpl implements ProgramRuleModelStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
-            ProgramRuleModel.PROGRAM_RULE + " (" +
+            ProgramRuleModel.TABLE + " (" +
             Columns.UID + ", " +
             Columns.CODE + ", " +
             Columns.NAME + ", " +

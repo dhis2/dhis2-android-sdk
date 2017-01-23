@@ -95,7 +95,7 @@ public class RelationshipTypeStoreIntegrationTest extends AbsStoreTestCase {
         );
 
         Cursor cursor = database().query(
-                RelationshipTypeModel.RELATIONSHIP_TYPE,
+                RelationshipTypeModel.TABLE,
                 RELATIONSHIP_TYPE_PROJECTION,
                 null, null, null, null, null, null);
 
@@ -126,7 +126,7 @@ public class RelationshipTypeStoreIntegrationTest extends AbsStoreTestCase {
         );
 
         Cursor cursor = database().query(
-                RelationshipTypeModel.RELATIONSHIP_TYPE,
+                RelationshipTypeModel.TABLE,
                 RELATIONSHIP_TYPE_PROJECTION,
                 null, null, null, null, null, null);
 

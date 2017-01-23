@@ -38,7 +38,7 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class OptionStoreImpl implements OptionStore {
 
-    private static final String INSERT_STATEMENT = "INSERT INTO " + OptionModel.OPTION + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + OptionModel.TABLE + " (" +
             OptionModel.Columns.UID + ", " +
             OptionModel.Columns.CODE + ", " +
             OptionModel.Columns.NAME + ", " +

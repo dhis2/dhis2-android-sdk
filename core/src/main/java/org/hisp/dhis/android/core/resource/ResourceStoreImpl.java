@@ -39,7 +39,7 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class ResourceStoreImpl implements ResourceStore {
-    public static final String INSERT_STATEMENT = "INSERT INTO " + ResourceModel.RESOURCE + " (" +
+    public static final String INSERT_STATEMENT = "INSERT INTO " + ResourceModel.TABLE + " (" +
             Columns.RESOURCE_TYPE + ", " +
             Columns.RESOURCE_UID + ", " +
             Columns.LAST_SYNCED + ") " +

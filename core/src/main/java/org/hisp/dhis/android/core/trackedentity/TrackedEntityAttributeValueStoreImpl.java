@@ -40,7 +40,7 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttributeValueStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
-            TrackedEntityAttributeValueModel.TRACKED_ENTITY_ATTRIBUTE_VALUE + " (" +
+            TrackedEntityAttributeValueModel.TABLE + " (" +
             TrackedEntityAttributeValueModel.Columns.STATE + ", " +
             TrackedEntityAttributeValueModel.Columns.VALUE  + ", " +
             TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ", " +

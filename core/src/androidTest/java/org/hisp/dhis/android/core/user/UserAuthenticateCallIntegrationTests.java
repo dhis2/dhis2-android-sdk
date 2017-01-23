@@ -229,18 +229,18 @@ public class UserAuthenticateCallIntegrationTests extends AbsStoreTestCase {
         authenticateUserCall.call();
 
         // verify that user is persisted in database with corresponding data
-        Cursor userCursor = database().query(UserModel.USER,
+        Cursor userCursor = database().query(UserModel.TABLE,
                 USER_PROJECTION, null, null, null, null, null);
-        Cursor userCredentialsCursor = database().query(UserCredentialsModel.USER_CREDENTIALS,
+        Cursor userCredentialsCursor = database().query(UserCredentialsModel.TABLE,
                 USER_CREDENTIALS_PROJECTION, null, null, null, null, null);
-        Cursor organisationUnits = database().query(OrganisationUnitModel.ORGANISATION_UNIT,
+        Cursor organisationUnits = database().query(OrganisationUnitModel.TABLE,
                 ORGANISATION_UNIT_PROJECTION, null, null, null, null, null);
-        Cursor authenticatedUsers = database().query(AuthenticatedUserModel.AUTHENTICATED_USER,
+        Cursor authenticatedUsers = database().query(AuthenticatedUserModel.TABLE,
                 AUTHENTICATED_USERS_PROJECTION, null, null, null, null, null);
-        Cursor userOrganisationUnitLinks = database().query(UserOrganisationUnitLinkModel.USER_ORGANISATION_UNIT_LINK,
+        Cursor userOrganisationUnitLinks = database().query(UserOrganisationUnitLinkModel.TABLE,
                 USER_ORGANISATION_UNIT_PROJECTION, null, null, null, null, null);
 
-        Cursor resource = database().query(ResourceModel.RESOURCE, RESOURCE_PROJECTION,
+        Cursor resource = database().query(ResourceModel.TABLE, RESOURCE_PROJECTION,
                 null, null, null, null, null);
 
         assertThatCursor(userCursor)

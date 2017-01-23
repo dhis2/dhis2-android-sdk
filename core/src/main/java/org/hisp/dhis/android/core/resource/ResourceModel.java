@@ -43,7 +43,7 @@ import java.util.Date;
 
 @AutoValue
 public abstract class ResourceModel extends BaseModel {
-    public static final String RESOURCE = "Resource";
+    public static final String TABLE = "Resource";
 
     public static class Columns extends BaseModel.Columns {
         public static final String RESOURCE_TYPE = "resourceType";

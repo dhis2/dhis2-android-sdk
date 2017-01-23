@@ -45,7 +45,7 @@ import java.util.Date;
 @AutoValue
 public abstract class SystemInfoModel extends BaseModel {
 
-    public static final String SYSTEM_INFO = "SystemInfo";
+    public static final String TABLE = "SystemInfo";
 
     public static class Columns extends BaseModel.Columns {
         public static final String SERVER_DATE = "serverDate";

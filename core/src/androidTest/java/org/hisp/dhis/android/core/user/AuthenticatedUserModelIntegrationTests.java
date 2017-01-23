@@ -32,6 +32,7 @@ import android.content.ContentValues;
 import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.user.AuthenticatedUserModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -45,33 +46,29 @@ public class AuthenticatedUserModelIntegrationTests {
 
     @Test
     public void create_shouldConvertToModel() {
-        MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                AuthenticatedUserModel.Columns.ID, AuthenticatedUserModel.Columns.USER, AuthenticatedUserModel.Columns.CREDENTIALS
-        });
+        MatrixCursor cursor = new MatrixCursor(new String[]{Columns.ID, Columns.USER, Columns.CREDENTIALS});
+        cursor.addRow(new Object[]{ID, USER, CREDENTIALS});
+        cursor.moveToFirst();
 
-        matrixCursor.addRow(new Object[]{
-                ID, USER, CREDENTIALS
-        });
+        AuthenticatedUserModel model = AuthenticatedUserModel.create(cursor);
+        cursor.close();
 
-        // move cursor to first item before reading
-        matrixCursor.moveToFirst();
-
-        AuthenticatedUserModel authenticatedUserModel =
-                AuthenticatedUserModel.create(matrixCursor);
-
-        assertThat(authenticatedUserModel.id()).isEqualTo(ID);
-        assertThat(authenticatedUserModel.user()).isEqualTo(USER);
-        assertThat(authenticatedUserModel.credentials()).isEqualTo(CREDENTIALS);
+        assertThat(model.id()).isEqualTo(ID);
+        assertThat(model.user()).isEqualTo(USER);
+        assertThat(model.credentials()).isEqualTo(CREDENTIALS);
     }
 
     @Test
     public void toContentValues_shouldConvertToContentValues() {
-        AuthenticatedUserModel authenticatedUserModel = AuthenticatedUserModel.builder()
-                .id(ID).user(USER).credentials(CREDENTIALS).build();
+        AuthenticatedUserModel model = AuthenticatedUserModel.builder()
+                .id(ID)
+                .user(USER)
+                .credentials(CREDENTIALS)
+                .build();
+        ContentValues contentValues = model.toContentValues();
 
-        ContentValues contentValues = authenticatedUserModel.toContentValues();
-        assertThat(contentValues.getAsLong(AuthenticatedUserModel.Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(AuthenticatedUserModel.Columns.USER)).isEqualTo(USER);
-        assertThat(contentValues.getAsString(AuthenticatedUserModel.Columns.CREDENTIALS)).isEqualTo(CREDENTIALS);
+        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(Columns.USER)).isEqualTo(USER);
+        assertThat(contentValues.getAsString(Columns.CREDENTIALS)).isEqualTo(CREDENTIALS);
     }
 }

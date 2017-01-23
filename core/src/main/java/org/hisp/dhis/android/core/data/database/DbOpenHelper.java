@@ -655,7 +655,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             UserRoleModel.Columns.CREATED + " TEXT," +
             UserRoleModel.Columns.LAST_UPDATED + " TEXT" +
             ");";
-    //TODO: Write store for this table: and the link table:
+
     private static final String CREATE_USER_ROLE_PROGRAM_TABLE = "CREATE TABLE " +
             UserRoleProgramLinkModel.TABLE + " (" +
             UserRoleProgramLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +

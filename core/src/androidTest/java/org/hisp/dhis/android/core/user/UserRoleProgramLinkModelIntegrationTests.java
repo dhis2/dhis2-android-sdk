@@ -28,51 +28,46 @@
 package org.hisp.dhis.android.core.user;
 
 import android.content.ContentValues;
-import android.database.Cursor;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.database.MatrixCursor;
+import android.support.test.runner.AndroidJUnit4;
 
-import com.gabrielittner.auto.value.cursor.ColumnName;
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel.Columns;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import org.hisp.dhis.android.core.common.BaseModel;
+import static com.google.common.truth.Truth.assertThat;
 
-@AutoValue
-public abstract class UserRoleProgramLinkModel extends BaseModel {
-    public static final String TABLE = "userRoleProgramLink";
+@RunWith(AndroidJUnit4.class)
+public class UserRoleProgramLinkModelIntegrationTests {
+    private static final long ID = 1L;
+    private static final String USER_ROLE = "test_user_role_uid";
+    private static final String PROGRAM = "test_program_uid";
 
-    public static class Columns extends BaseModel.Columns {
-        public static final String USER_ROLE = "userRole";
-        public static final String PROGRAM = "program";
+    @Test
+    public void create_shouldConvertToModel() {
+        MatrixCursor cursor = new MatrixCursor(new String[]{Columns.ID, Columns.USER_ROLE, Columns.PROGRAM});
+        cursor.addRow(new Object[]{ID, USER_ROLE, PROGRAM});
+        cursor.moveToFirst();
+
+        UserRoleProgramLinkModel model = UserRoleProgramLinkModel.create(cursor);
+        cursor.close();
+
+        assertThat(model.id()).isEqualTo(ID);
+        assertThat(model.userRole()).isEqualTo(USER_ROLE);
+        assertThat(model.program()).isEqualTo(PROGRAM);
     }
 
-    public static UserRoleProgramLinkModel create(Cursor cursor) {
-        return AutoValue_UserRoleProgramLinkModel.createFromCursor(cursor);
-    }
+    @Test
+    public void toContentValues_shouldConvertToContentValues() {
+        UserRoleProgramLinkModel model = UserRoleProgramLinkModel.builder()
+                .id(ID)
+                .userRole(USER_ROLE)
+                .program(PROGRAM)
+                .build();
+        ContentValues contentValues = model.toContentValues();
 
-    public static Builder builder() {
-        return new $$AutoValue_UserRoleProgramLinkModel.Builder();
-    }
-
-    @NonNull
-    public abstract ContentValues toContentValues();
-
-    @Nullable
-    @ColumnName(Columns.USER_ROLE)
-    public abstract String userRole();
-
-    @Nullable
-    @ColumnName(Columns.PROGRAM)
-    public abstract String program();
-
-
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
-
-        public abstract Builder userRole(@Nullable String user);
-
-        public abstract Builder program(@Nullable String organisationUnit);
-
-        public abstract UserRoleProgramLinkModel build();
+        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(Columns.USER_ROLE)).isEqualTo(USER_ROLE);
+        assertThat(contentValues.getAsString(Columns.PROGRAM)).isEqualTo(PROGRAM);
     }
 }

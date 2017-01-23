@@ -27,52 +27,39 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnName;
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel.Columns;
 
-import org.hisp.dhis.android.core.common.BaseModel;
+import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
-@AutoValue
-public abstract class UserRoleProgramLinkModel extends BaseModel {
-    public static final String TABLE = "userRoleProgramLink";
+public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
+    private static final String INSERT_STATEMENT = "INSERT INTO " +
+            UserRoleProgramLinkModel.TABLE + " (" +
+            Columns.USER_ROLE + ", " +
+            Columns.PROGRAM + ") " +
+            "VALUES (?, ?);";
 
-    public static class Columns extends BaseModel.Columns {
-        public static final String USER_ROLE = "userRole";
-        public static final String PROGRAM = "program";
+    private final SQLiteStatement sqLiteStatement;
+
+    public UserRoleProgramLinkStoreImpl(SQLiteDatabase sqLiteDatabase) {
+        this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
     }
 
-    public static UserRoleProgramLinkModel create(Cursor cursor) {
-        return AutoValue_UserRoleProgramLinkModel.createFromCursor(cursor);
+    @Override
+    public long insert(@NonNull String userRole, @NonNull String program) {
+        sqLiteStatement.clearBindings();
+
+        sqLiteBind(sqLiteStatement, 1, userRole);
+        sqLiteBind(sqLiteStatement, 2, program);
+
+        return sqLiteStatement.executeInsert();
     }
 
-    public static Builder builder() {
-        return new $$AutoValue_UserRoleProgramLinkModel.Builder();
-    }
-
-    @NonNull
-    public abstract ContentValues toContentValues();
-
-    @Nullable
-    @ColumnName(Columns.USER_ROLE)
-    public abstract String userRole();
-
-    @Nullable
-    @ColumnName(Columns.PROGRAM)
-    public abstract String program();
-
-
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
-
-        public abstract Builder userRole(@Nullable String user);
-
-        public abstract Builder program(@Nullable String organisationUnit);
-
-        public abstract UserRoleProgramLinkModel build();
+    @Override
+    public void close() {
+        sqLiteStatement.close();
     }
 }

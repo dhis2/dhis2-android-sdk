@@ -60,23 +60,19 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 @RunWith(AndroidJUnit4.class)
 public class TrackedEntityDataValueStoreIntegrationTests extends AbsStoreTestCase {
 
-    // used for timestamps
-    private static final String DATE = "2011-12-24T12:24:25.203";
-
-    private static final long ID = 11L;
     private static final long TRACKED_ENTITY_ID = 1L;
+
     private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
     private static final long RELATIONSHIP_TYPE_ID = 3L;
-    private static final String RELATIONSHIP_TYPE_UID = "relationshpTypeUid";
-
-
+    private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
     private static final String EVENT = "test_event";
+
     private static final String DATA_ELEMENT = "test_dataElement";
     private static final String STORED_BY = "test_storedBy";
     private static final String VALUE = "test_value";
     private static final Boolean PROVIDED_ELSEWHERE = false;
-
     private static final String ORGANISATION_UNIT = "test_orgUnit";
+
     private static final String PROGRAM = "test_program";
     private static final String PROGRAM_STAGE = "test_programStage";
 
@@ -90,42 +86,46 @@ public class TrackedEntityDataValueStoreIntegrationTests extends AbsStoreTestCas
             TrackedEntityDataValueModel.Columns.PROVIDED_ELSEWHERE
     };
 
+    private final Date date;
+    private final String dateString;
+
     private TrackedEntityDataValueStore trackedEntityDataValueStore;
+
+    public TrackedEntityDataValueStoreIntegrationTests() throws ParseException {
+        this.date = new Date();
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
+    }
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
-
         trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl(database());
-    }
-
-    @Test
-    public void insert_shouldPersistRowInDatabase() throws ParseException {
 
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE_UID);
-        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
 
-        database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
-        database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
-        database().insert(ProgramModel.PROGRAM, null, program);
+        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
+        database().insert(ProgramModel.TABLE, null, program);
 
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
         ContentValues event = CreateEventUtils.create(EVENT, PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT);
 
-        database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
-        database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
-        database().insert(ProgramModel.PROGRAM, null, program);
-        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
-        database().insert(ProgramStageModel.PROGRAM_STAGE, null, programStage);
-        database().insert(EventModel.EVENT, null, event);
+        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
+        database().insert(ProgramModel.TABLE, null, program);
+        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
+        database().insert(ProgramStageModel.TABLE, null, programStage);
+        database().insert(EventModel.TABLE, null, event);
+    }
 
-        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-
+    @Test
+    public void insert_shouldPersistRowInDatabase() throws ParseException {
         long rowId = trackedEntityDataValueStore.insert(
                 EVENT,
                 date,
@@ -135,29 +135,35 @@ public class TrackedEntityDataValueStoreIntegrationTests extends AbsStoreTestCas
                 VALUE,
                 PROVIDED_ELSEWHERE
         );
+        Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE,
+                TRACKED_ENTITY_DATA_VALUE_PROJECTION, null, null, null, null, null);
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(
+                EVENT,
+                dateString,
+                dateString,
+                DATA_ELEMENT,
+                STORED_BY,
+                VALUE,
+                toInteger(PROVIDED_ELSEWHERE)
+        ).isExhausted();
+    }
 
-        Cursor cursor = database().query(TrackedEntityDataValueModel.TRACKED_ENTITY_DATA_VALUE,
+    @Test
+    public void insert_shouldPersistNullableRowInDatabase() throws ParseException {
+        long rowId = trackedEntityDataValueStore.insert(EVENT, null, null, null, null, null, null);
+
+        Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE,
                 TRACKED_ENTITY_DATA_VALUE_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor)
-                .hasRow(
-                        EVENT,
-                        DATE,
-                        DATE,
-                        DATA_ELEMENT,
-                        STORED_BY,
-                        VALUE,
-                        toInteger(PROVIDED_ELSEWHERE))
-                .isExhausted();
+        assertThatCursor(cursor).hasRow(EVENT, null, null, null, null, null, null).isExhausted();
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void insertWithoutForeignKey_shouldThrowException() throws ParseException {
-        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-
+    public void insertWithoutForeignKey_shouldThrowException() {
         trackedEntityDataValueStore.insert(
-                EVENT,
+                null,
                 date,
                 date,
                 DATA_ELEMENT,
@@ -167,14 +173,42 @@ public class TrackedEntityDataValueStoreIntegrationTests extends AbsStoreTestCas
         );
     }
 
-    // ToDo: test cascade deletion
+    @Test
+    public void delete_shouldDeleteTrackedEntityDataValueWhenDeletingEventForeignKey() throws ParseException {
+        trackedEntityDataValueStore.insert(
+                EVENT,
+                date,
+                date,
+                DATA_ELEMENT,
+                STORED_BY,
+                VALUE,
+                PROVIDED_ELSEWHERE
+        );
+        database().delete(EventModel.TABLE, EventModel.Columns.UID + "=?", new String[]{EVENT});
+
+        Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE,
+                TRACKED_ENTITY_DATA_VALUE_PROJECTION, null, null, null, null, null);
+        assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test(expected = SQLiteConstraintException.class)
+    public void exception_persistTrackedEntityDataValueWithInvalidEventForeignKey() throws ParseException {
+        trackedEntityDataValueStore.insert(
+                "wrong",
+                date,
+                date,
+                DATA_ELEMENT,
+                STORED_BY,
+                VALUE,
+                PROVIDED_ELSEWHERE
+        );
+    }
 
     // ToDo: consider introducing conflict resolution strategy
 
     @Test
     public void close_shouldNotCloseDatabase() {
         trackedEntityDataValueStore.close();
-
         assertThat(database().isOpen()).isTrue();
     }
 }

@@ -40,7 +40,7 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 public class ProgramRuleVariableModelStoreImpl implements ProgramRuleVariableModelStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
-            ProgramRuleVariableModel.PROGRAM_RULE_VARIABLE + " (" +
+            ProgramRuleVariableModel.TABLE + " (" +
             ProgramRuleVariableModel.Columns.UID + ", " +
             ProgramRuleVariableModel.Columns.CODE + ", " +
             ProgramRuleVariableModel.Columns.NAME + ", " +

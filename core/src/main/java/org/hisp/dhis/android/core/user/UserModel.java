@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 // TODO: Tests
 @AutoValue
 public abstract class UserModel extends BaseIdentifiableObjectModel {
-    public static final String USER = "User";
+    public static final String TABLE = "User";
     public static final String GENDER_MALE = "gender_male";
     public static final String GENDER_FEMALE = "gender_female";
     public static final String GENDER_OTHER = "gender_other";

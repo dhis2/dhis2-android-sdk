@@ -88,8 +88,7 @@ public class EventStoreIntegrationTest extends AbsStoreTestCase {
     private static final String ORGANISATION_UNIT = "test_orgUnit";
     private static final State STATE = State.TO_POST;
 
-    // timestamp
-    private static final String DATE = "2017-01-12T11:31:00.000";
+
 
     //foreign keys to program:
     private static final long TRACKED_ENTITY_ID = 1L;
@@ -97,10 +96,15 @@ public class EventStoreIntegrationTest extends AbsStoreTestCase {
     private static final long RELATIONSHIP_TYPE_ID = 3L;
     private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
 
+    // timestamp
     private final Date date;
+    private final String dateString;
+
+    private final String WRONG_UID = "wrong";
 
     public EventStoreIntegrationTest() throws ParseException {
-        this.date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
+        this.date = new Date();
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
 
     @Override
@@ -108,11 +112,27 @@ public class EventStoreIntegrationTest extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
         this.eventStore = new EventStoreImpl(database());
+
+        //Create Program & insert a row in the table.
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
+                RELATIONSHIP_TYPE_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
+
+        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
+        database().insert(ProgramModel.TABLE, null, program);
+
+        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
+        ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
+
+        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
+        database().insert(ProgramStageModel.TABLE, null, programStage);
     }
 
     @Test
     public void insert_shouldPersistEventInDatabase() {
-        insertForeignKeyRows();
+
         long rowId = eventStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
@@ -129,128 +149,178 @@ public class EventStoreIntegrationTest extends AbsStoreTestCase {
                 date, // dueDate
                 STATE
         );
-        Cursor cursor = database().query(EventModel.EVENT, EVENT_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(
                 EVENT_UID,
                 ENROLLMENT_UID,
-                DATE, // created
-                DATE, // lastUpdated
+                dateString, // created
+                dateString, // lastUpdated
                 STATUS,
                 LATITUDE,
                 LONGITUDE,
                 PROGRAM,
                 PROGRAM_STAGE,
                 ORGANISATION_UNIT,
-                DATE, // eventDate
-                DATE, // completedDate
-                DATE, // dueDate
+                dateString, // eventDate
+                dateString, // completedDate
+                dateString, // dueDate
                 STATE
         ).isExhausted();
     }
 
     @Test
     public void insert_shouldPersistEventNullableInDatabase() {
-        insertForeignKeyRows();
+
         long rowId = eventStore.insert(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, PROGRAM,
                 PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null);
-        Cursor cursor = database().query(EventModel.EVENT, EVENT_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, PROGRAM,
                 PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null).isExhausted();
     }
 
-    /**
-     * trying to insert event with program, stage and org unit without
-     * inserting them to db.
-     */
-    @Test(expected = SQLiteConstraintException.class)
-    public void insert_shouldThrowSqliteConstraintException() {
-        eventStore.insert(EVENT_UID, ENROLLMENT_UID, date, date, STATUS, LATITUDE, LONGITUDE, PROGRAM,
-                PROGRAM_STAGE, ORGANISATION_UNIT, date, date, date, STATE);
-    }
-
     @Test
     public void delete_shouldDeleteEventWhenDeletingProgramForeignKey() {
-        insertForeignKeyRows();
-        eventStore.insert(EVENT_UID, ENROLLMENT_UID, date, date, STATUS, LATITUDE, LONGITUDE, PROGRAM,
-                PROGRAM_STAGE, ORGANISATION_UNIT, date, date, date, STATE);
 
-        database().delete(ProgramModel.PROGRAM, ProgramModel.Columns.UID + "=?", new String[]{PROGRAM});
-        Cursor cursor = database().query(EventModel.EVENT, EVENT_PROJECTION, null, null, null, null, null);
+        eventStore.insert(
+                EVENT_UID,
+                ENROLLMENT_UID,
+                date,
+                date,
+                STATUS,
+                LATITUDE,
+                LONGITUDE,
+                PROGRAM,
+                PROGRAM_STAGE,
+                ORGANISATION_UNIT,
+                date,
+                date,
+                date,
+                STATE
+        );
+
+        database().delete(ProgramModel.TABLE, ProgramModel.Columns.UID + "=?", new String[]{PROGRAM});
+        Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 
     @Test
     public void delete_shouldDeleteEventWhenDeletingProgramStageForeignKey() {
-        insertForeignKeyRows();
-        eventStore.insert(EVENT_UID, ENROLLMENT_UID, date, date, STATUS, LATITUDE, LONGITUDE, PROGRAM,
-                PROGRAM_STAGE, ORGANISATION_UNIT, date, date, date, STATE);
 
-        database().delete(ProgramStageModel.PROGRAM_STAGE, ProgramStageModel.Columns.UID + "=?", new String[]{PROGRAM_STAGE});
-        Cursor cursor = database().query(EventModel.EVENT, EVENT_PROJECTION, null, null, null, null, null);
+        eventStore.insert(
+                EVENT_UID,
+                ENROLLMENT_UID,
+                date,
+                date,
+                STATUS,
+                LATITUDE,
+                LONGITUDE,
+                PROGRAM,
+                PROGRAM_STAGE,
+                ORGANISATION_UNIT,
+                date,
+                date,
+                date,
+                STATE
+        );
+
+        database().delete(ProgramStageModel.TABLE, ProgramStageModel.Columns.UID + "=?", new String[]{PROGRAM_STAGE});
+        Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 
     @Test
     public void delete_shouldDeleteEventWhenDeletingOrganisationUnitForeignKey() {
-        insertForeignKeyRows();
-        eventStore.insert(EVENT_UID, ENROLLMENT_UID, date, date, STATUS, LATITUDE, LONGITUDE, PROGRAM,
-                PROGRAM_STAGE, ORGANISATION_UNIT, date, date, date, STATE);
 
-        database().delete(OrganisationUnitModel.ORGANISATION_UNIT,
+        eventStore.insert(
+                EVENT_UID,
+                ENROLLMENT_UID,
+                date,
+                date,
+                STATUS,
+                LATITUDE,
+                LONGITUDE,
+                PROGRAM,
+                PROGRAM_STAGE,
+                ORGANISATION_UNIT,
+                date,
+                date,
+                date,
+                STATE
+        );
+
+        database().delete(OrganisationUnitModel.TABLE,
                 OrganisationUnitModel.Columns.UID + "=?", new String[]{ORGANISATION_UNIT});
 
-        Cursor cursor = database().query(EventModel.EVENT, EVENT_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistEventWithInvalidProgramForeignKey() {
-        String wrongProgramUid = "wrong";
-        insertForeignKeyRows();
-        eventStore.insert(EVENT_UID, ENROLLMENT_UID, date, date, STATUS, LATITUDE, LONGITUDE, wrongProgramUid,
-                PROGRAM_STAGE, ORGANISATION_UNIT, date, date, date, STATE);
+        eventStore.insert(
+                EVENT_UID,
+                ENROLLMENT_UID,
+                date,
+                date,
+                STATUS,
+                LATITUDE,
+                LONGITUDE,
+                WRONG_UID, //supply wrong uid
+                PROGRAM_STAGE,
+                ORGANISATION_UNIT,
+                date,
+                date,
+                date,
+                STATE
+        );
     }
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistEventWithInvalidProgramStageForeignKey() throws ParseException {
-        String wrongProgramStageUid = "wrong";
-        insertForeignKeyRows();
-        eventStore.insert(EVENT_UID, ENROLLMENT_UID, date, date, STATUS, LATITUDE, LONGITUDE, PROGRAM,
-                wrongProgramStageUid, ORGANISATION_UNIT, date, date, date, STATE);
+        eventStore.insert(
+                EVENT_UID,
+                ENROLLMENT_UID,
+                date,
+                date,
+                STATUS,
+                LATITUDE,
+                LONGITUDE,
+                PROGRAM,
+                WRONG_UID, //supply wrong uid
+                ORGANISATION_UNIT,
+                date,
+                date,
+                date,
+                STATE
+        );
     }
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistEventWithInvalidOrganisationUnitForeignKey() {
-        String wrongOrganisationUnitUid = "wrong";
-        insertForeignKeyRows();
-        eventStore.insert(EVENT_UID, ENROLLMENT_UID, date, date, STATUS, LATITUDE, LONGITUDE, PROGRAM,
-                PROGRAM_STAGE, wrongOrganisationUnitUid, date, date, date, STATE);
+        eventStore.insert(
+                EVENT_UID,
+                ENROLLMENT_UID,
+                date,
+                date,
+                STATUS,
+                LATITUDE,
+                LONGITUDE,
+                PROGRAM,
+                PROGRAM_STAGE,
+                WRONG_UID, //supply wrong uid
+                date,
+                date,
+                date,
+                STATE
+        );
     }
 
     @Test
     public void close_shouldNotCloseDatabase() {
         eventStore.close();
         assertThat(database().isOpen()).isTrue();
-    }
-
-    private void insertForeignKeyRows() {
-        //Create Program & insert a row in the table.
-        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
-        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
-                RELATIONSHIP_TYPE_UID);
-        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, TRACKED_ENTITY_UID);
-
-        database().insert(TrackedEntityModel.TRACKED_ENTITY, null, trackedEntity);
-        database().insert(RelationshipTypeModel.RELATIONSHIP_TYPE, null, relationshipType);
-        database().insert(ProgramModel.PROGRAM, null, program);
-
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
-        ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
-
-        database().insert(OrganisationUnitModel.ORGANISATION_UNIT, null, organisationUnit);
-        database().insert(ProgramStageModel.PROGRAM_STAGE, null, programStage);
     }
 }

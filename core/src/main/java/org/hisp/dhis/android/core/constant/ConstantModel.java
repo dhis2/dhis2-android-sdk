@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 @AutoValue
 public abstract class ConstantModel extends BaseIdentifiableObjectModel {
 
-    public static final String CONSTANT = "Constant";
+    public static final String TABLE = "Constant";
 
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
         public static final String VALUE = "value";

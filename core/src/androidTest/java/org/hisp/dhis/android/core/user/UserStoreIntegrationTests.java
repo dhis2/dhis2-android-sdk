@@ -128,7 +128,7 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
                 "test_user_nationality"
         );
 
-        Cursor cursor = database().query(UserModel.USER,
+        Cursor cursor = database().query(UserModel.TABLE,
                 USER_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -160,11 +160,11 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
     @Test
     public void delete_shouldDeleteAllRows() {
         ContentValues user = create(1L, "test_user_id");
-        database().insert(UserModel.USER, null, user);
+        database().insert(UserModel.TABLE, null, user);
 
         int deleted = userStore.delete();
 
-        Cursor cursor = database().query(UserModel.USER,
+        Cursor cursor = database().query(UserModel.TABLE,
                 null, null, null, null, null, null);
         assertThat(deleted).isEqualTo(1);
         assertThatCursor(cursor).isExhausted();
@@ -175,12 +175,12 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
 //    public void save_shouldNotTriggerOtherTablesOnDuplicate() {
 //        // inserting user
 //        ContentValues user = UserContractIntegrationTests.authenticator(1L, "test_user_uid");
-//        database().insert(DbOpenHelper.Tables.USER, null, user);
+//        database().insert(DbOpenHelper.Tables.USER_UID, null, user);
 //
 //        // inserting user credentials
 //        ContentValues userCredentials = UserCredentialsContractIntegrationTests.authenticator(
 //                1L, "test_user_credentials", "test_user_uid");
-//        database().insert(DbOpenHelper.Tables.USER_CREDENTIALS, null, userCredentials);
+//        database().insert(DbOpenHelper.Tables.UID, null, userCredentials);
 //
 //        // try to insert duplicate into user table through store
 //        Date date = new Date();
@@ -207,7 +207,7 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
 //
 //        System.out.println("RowId: " + rowId);
 //
-//        assertThatCursor(database().query(DbOpenHelper.Tables.USER_CREDENTIALS, UserCredentialsContractIntegrationTests.USER_CREDENTIALS_PROJECTION, null, null, null, null, null))
+//        assertThatCursor(database().query(DbOpenHelper.Tables.UID, UserCredentialsContractIntegrationTests.USER_CREDENTIALS_PROJECTION, null, null, null, null, null))
 //                .hasRow(UserCredentialsContractIntegrationTests.USER_CREDENTIALS_PROJECTION, userCredentials)
 //                .isExhausted();
 //    }

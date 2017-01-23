@@ -34,10 +34,10 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -49,44 +49,40 @@ public class TrackedEntityInstanceModelIntegrationTests {
     private static final String ORGANISATION_UNIT = "test_organisationUnit";
     private static final State STATE = State.ERROR;
 
-    // used for timestamps
-    private static final String DATE = "2011-12-24T12:24:25.203";
+    private final Date date;
+    private final String dateString;
 
-    @Test
-    public void create_shouldConvertToModel() throws ParseException {
-        MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                TrackedEntityInstanceModel.Columns.ID,
-                TrackedEntityInstanceModel.Columns.UID,
-                TrackedEntityInstanceModel.Columns.CREATED,
-                TrackedEntityInstanceModel.Columns.LAST_UPDATED,
-                TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT,
-                TrackedEntityInstanceModel.Columns.STATE
-        });
-
-        matrixCursor.addRow(new Object[]{
-                ID, UID, DATE, DATE, ORGANISATION_UNIT, STATE
-        });
-
-        // move cursor to first item before reading
-        matrixCursor.moveToFirst();
-
-        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-        TrackedEntityInstanceModel trackedEntityInstanceModel = TrackedEntityInstanceModel.create(matrixCursor);
-
-        assertThat(trackedEntityInstanceModel.id()).isEqualTo(ID);
-        assertThat(trackedEntityInstanceModel.uid()).isEqualTo(UID);
-        assertThat(trackedEntityInstanceModel.created()).isEqualTo(date);
-        assertThat(trackedEntityInstanceModel.lastUpdated()).isEqualTo(date);
-        assertThat(trackedEntityInstanceModel.organisationUnit()).isEqualTo(ORGANISATION_UNIT);
-
-        matrixCursor.close();
+    public TrackedEntityInstanceModelIntegrationTests() {
+        this.date = new Date();
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
 
     @Test
-    public void toContentValues_shouldConvertToContentValues() throws ParseException {
-        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
+    public void create_shouldConvertToModel() {
+        MatrixCursor cursor = new MatrixCursor(new String[]{
+                Columns.ID,
+                Columns.UID,
+                Columns.CREATED,
+                Columns.LAST_UPDATED,
+                Columns.ORGANISATION_UNIT,
+                Columns.STATE
+        });
+        cursor.addRow(new Object[]{ID, UID, dateString, dateString, ORGANISATION_UNIT, STATE});
+        cursor.moveToFirst();
 
-        TrackedEntityInstanceModel trackedEntityInstanceModel = TrackedEntityInstanceModel.builder()
+        TrackedEntityInstanceModel model = TrackedEntityInstanceModel.create(cursor);
+        cursor.close();
+
+        assertThat(model.id()).isEqualTo(ID);
+        assertThat(model.uid()).isEqualTo(UID);
+        assertThat(model.created()).isEqualTo(date);
+        assertThat(model.lastUpdated()).isEqualTo(date);
+        assertThat(model.organisationUnit()).isEqualTo(ORGANISATION_UNIT);
+    }
+
+    @Test
+    public void toContentValues_shouldConvertToContentValues() {
+        TrackedEntityInstanceModel model = TrackedEntityInstanceModel.builder()
                 .id(ID)
                 .uid(UID)
                 .created(date)
@@ -94,15 +90,13 @@ public class TrackedEntityInstanceModelIntegrationTests {
                 .organisationUnit(ORGANISATION_UNIT)
                 .state(STATE)
                 .build();
+        ContentValues contentValues = model.toContentValues();
 
-        ContentValues contentValues = trackedEntityInstanceModel.toContentValues();
-
-        assertThat(contentValues.getAsLong(TrackedEntityInstanceModel.Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(TrackedEntityInstanceModel.Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(TrackedEntityInstanceModel.Columns.CREATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(TrackedEntityInstanceModel.Columns.LAST_UPDATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT))
-                .isEqualTo(ORGANISATION_UNIT);
-        assertThat(contentValues.getAsString(TrackedEntityInstanceModel.Columns.STATE)).isEqualTo(STATE.name());
+        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);
+        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(Columns.ORGANISATION_UNIT)).isEqualTo(ORGANISATION_UNIT);
+        assertThat(contentValues.getAsString(Columns.STATE)).isEqualTo(STATE.name());
     }
 }

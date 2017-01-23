@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 @AutoValue
 public abstract class ProgramRuleActionModel extends BaseIdentifiableObjectModel {
 
-    public static final String PROGRAM_RULE_ACTION = "ProgramRuleAction";
+    public static final String TABLE = "ProgramRuleAction";
 
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
         public static final String DATA = "data";

@@ -26,9 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core;
 
-import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +36,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 
 import static org.assertj.core.api.Java6Assertions.fail;
@@ -48,9 +48,6 @@ public class D2UnitTests {
     private DbOpenHelper dbOpenHelper;
 
     @Mock
-    private ConfigurationModel configuration;
-
-    @Mock
     private OkHttpClient okHttpClient;
 
     private D2.Builder builder;
@@ -59,8 +56,10 @@ public class D2UnitTests {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
+        HttpUrl dummyUrl = HttpUrl.parse("https://play.dhis2.org/demo");
+
         this.builder = new D2.Builder()
-                .configuration(configuration)
+                .baseUrl(dummyUrl)
                 .okHttpClient(okHttpClient)
                 .dbOpenHelper(dbOpenHelper);
     }
@@ -88,9 +87,9 @@ public class D2UnitTests {
     }
 
     @Test
-    public void build_shouldThrowIllegalStateException_ifNoConfiguration() {
+    public void buildShouldThrowExceptionWhenNoBaseUrl() {
         try {
-            builder.configuration(null).build();
+            builder.baseUrl(null).build();
 
             fail("IllegalStateException was expected, but was not thrown");
         } catch (IllegalStateException illegalStateException) {

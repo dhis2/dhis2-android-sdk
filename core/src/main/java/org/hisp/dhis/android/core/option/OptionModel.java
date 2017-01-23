@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 
 @AutoValue
 public abstract class OptionModel extends BaseIdentifiableObjectModel {
-    public static final String OPTION = "Option";
+    public static final String TABLE = "Option";
 
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
         public static final String OPTION_SET = "optionSet";

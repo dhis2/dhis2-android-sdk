@@ -211,9 +211,9 @@ public class OptionSetCallIntegrationTest extends AbsStoreTestCase {
     public void call_shouldPersistOptionSetWithOptionsInDatabase() throws Exception {
         optionSetCall.call();
 
-        Cursor optionSetCursor = database().query(OptionSetModel.OPTION_SET,
+        Cursor optionSetCursor = database().query(OptionSetModel.TABLE,
                 OPTION_SET_PROJECTION, null, null, null, null, null);
-        Cursor optionCursor = database().query(OptionModel.OPTION,
+        Cursor optionCursor = database().query(OptionModel.TABLE,
                 OPTION_PROJECTION, null, null, null, null, null);
 
         assertThatCursor(optionSetCursor)

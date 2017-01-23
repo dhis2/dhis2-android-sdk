@@ -40,7 +40,7 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class ProgramStageStoreImpl implements ProgramStageStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + ProgramStageModel.PROGRAM_STAGE + " (" +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + ProgramStageModel.TABLE + " (" +
             ProgramStageModel.Columns.UID + ", " +
             ProgramStageModel.Columns.CODE + ", " +
             ProgramStageModel.Columns.NAME + ", " +

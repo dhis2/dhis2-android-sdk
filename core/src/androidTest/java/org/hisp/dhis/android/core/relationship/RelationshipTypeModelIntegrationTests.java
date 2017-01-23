@@ -33,10 +33,10 @@ import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -49,72 +49,71 @@ public class RelationshipTypeModelIntegrationTests {
     private static final String CODE = "test_code";
     private static final String NAME = "test_name";
     private static final String DISPLAY_NAME = "test_display_name";
-
-    // timestamp
-    private static final String DATE = "2014-03-20T13:37:00.007";
-
     //RelationshipTypeModel attributes:
     private static final String A_IS_TO_B = "cat of";
     private static final String B_IS_TO_A = "owner of";
 
-    @Test
-    public void create_shouldConvertToModel() throws ParseException {
-        MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                RelationshipTypeModel.Columns.ID,
-                RelationshipTypeModel.Columns.UID,
-                RelationshipTypeModel.Columns.CODE,
-                RelationshipTypeModel.Columns.NAME,
-                RelationshipTypeModel.Columns.DISPLAY_NAME,
-                RelationshipTypeModel.Columns.CREATED,
-                RelationshipTypeModel.Columns.LAST_UPDATED,
-                RelationshipTypeModel.Columns.A_IS_TO_B,
-                RelationshipTypeModel.Columns.B_IS_TO_A,
-        });
+    private final Date date;
+    private final String dateString;
 
-        matrixCursor.addRow(new Object[]{
-                ID, UID, CODE, NAME, DISPLAY_NAME, DATE, DATE, A_IS_TO_B, B_IS_TO_A});
-
-        matrixCursor.moveToFirst();
-        Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-
-        RelationshipTypeModel relationshipTypeModel = RelationshipTypeModel.create(matrixCursor);
-
-        assertThat(relationshipTypeModel.id()).isEqualTo(ID);
-        assertThat(relationshipTypeModel.uid()).isEqualTo(UID);
-        assertThat(relationshipTypeModel.code()).isEqualTo(CODE);
-        assertThat(relationshipTypeModel.name()).isEqualTo(NAME);
-        assertThat(relationshipTypeModel.displayName()).isEqualTo(DISPLAY_NAME);
-        assertThat(relationshipTypeModel.created()).isEqualTo(timeStamp);
-        assertThat(relationshipTypeModel.lastUpdated()).isEqualTo(timeStamp);
-        assertThat(relationshipTypeModel.aIsToB()).isEqualTo(A_IS_TO_B);
-        assertThat(relationshipTypeModel.bIsToA()).isEqualTo(B_IS_TO_A);
+    public RelationshipTypeModelIntegrationTests() {
+        this.date = new Date();
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
 
     @Test
-    public void toContentValues_shouldConvertToContentValues() throws ParseException {
-        Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
+    public void create_shouldConvertToModel() {
+        MatrixCursor cursor = new MatrixCursor(new String[]{
+                Columns.ID,
+                Columns.UID,
+                Columns.CODE,
+                Columns.NAME,
+                Columns.DISPLAY_NAME,
+                Columns.CREATED,
+                Columns.LAST_UPDATED,
+                Columns.A_IS_TO_B,
+                Columns.B_IS_TO_A,
+        });
+        cursor.addRow(new Object[]{ID, UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, A_IS_TO_B, B_IS_TO_A});
 
-        RelationshipTypeModel relationshipTypeModel = RelationshipTypeModel.builder()
+        cursor.moveToFirst();
+        RelationshipTypeModel model = RelationshipTypeModel.create(cursor);
+        cursor.close();
+
+        assertThat(model.id()).isEqualTo(ID);
+        assertThat(model.uid()).isEqualTo(UID);
+        assertThat(model.code()).isEqualTo(CODE);
+        assertThat(model.name()).isEqualTo(NAME);
+        assertThat(model.displayName()).isEqualTo(DISPLAY_NAME);
+        assertThat(model.created()).isEqualTo(date);
+        assertThat(model.lastUpdated()).isEqualTo(date);
+        assertThat(model.aIsToB()).isEqualTo(A_IS_TO_B);
+        assertThat(model.bIsToA()).isEqualTo(B_IS_TO_A);
+    }
+
+    @Test
+    public void toContentValues_shouldConvertToContentValues() {
+        RelationshipTypeModel model = RelationshipTypeModel.builder()
                 .id(ID)
                 .uid(UID)
                 .code(CODE)
                 .name(NAME)
                 .displayName(DISPLAY_NAME)
-                .created(timeStamp)
-                .lastUpdated(timeStamp)
+                .created(date)
+                .lastUpdated(date)
                 .aIsToB(A_IS_TO_B)
                 .bIsToA(B_IS_TO_A)
                 .build();
+        ContentValues contentValues = model.toContentValues();
 
-        ContentValues contentValues = relationshipTypeModel.toContentValues();
-        assertThat(contentValues.getAsLong(RelationshipTypeModel.Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(RelationshipTypeModel.Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(RelationshipTypeModel.Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(RelationshipTypeModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(RelationshipTypeModel.Columns.CREATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(RelationshipTypeModel.Columns.LAST_UPDATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(RelationshipTypeModel.Columns.A_IS_TO_B)).isEqualTo(A_IS_TO_B);
-        assertThat(contentValues.getAsString(RelationshipTypeModel.Columns.B_IS_TO_A)).isEqualTo(B_IS_TO_A);
+        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);
+        assertThat(contentValues.getAsString(Columns.NAME)).isEqualTo(NAME);
+        assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
+        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(Columns.A_IS_TO_B)).isEqualTo(A_IS_TO_B);
+        assertThat(contentValues.getAsString(Columns.B_IS_TO_A)).isEqualTo(B_IS_TO_A);
     }
 }
 

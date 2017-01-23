@@ -76,7 +76,7 @@ public class OptionSetModelStoreIntegrationTest extends AbsStoreTestCase {
         long rowId = optionSetStore.insert(
                 UID, CODE, NAME, DISPLAY_NAME, date, date, VERSION, VALUE_TYPE);
 
-        Cursor cursor = database().query(OptionSetModel.OPTION_SET, OPTION_SET_PROJECTION,
+        Cursor cursor = database().query(OptionSetModel.TABLE, OPTION_SET_PROJECTION,
                 null, null, null, null, null);
 
         // Checking if rowId == 1.

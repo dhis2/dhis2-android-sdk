@@ -33,10 +33,10 @@ import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -53,56 +53,53 @@ public class TrackedEntityModelIntegrationTests {
     private static final String DESCRIPTION = "test_description";
     private static final String DISPLAY_DESCRIPTION = "test_display_description";
 
-    // used for timestamps
-    private static final String DATE = "2011-12-24T12:24:25.203";
+    private final Date date;
+    private final String dateString;
 
-    @Test
-    public void create_shouldConvertToModel() throws ParseException {
-        MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                TrackedEntityModel.Columns.ID,
-                TrackedEntityModel.Columns.UID,
-                TrackedEntityModel.Columns.CODE,
-                TrackedEntityModel.Columns.NAME,
-                TrackedEntityModel.Columns.DISPLAY_NAME,
-                TrackedEntityModel.Columns.CREATED,
-                TrackedEntityModel.Columns.LAST_UPDATED,
-                TrackedEntityModel.Columns.SHORT_NAME,
-                TrackedEntityModel.Columns.DISPLAY_SHORT_NAME,
-                TrackedEntityModel.Columns.DESCRIPTION,
-                TrackedEntityModel.Columns.DISPLAY_DESCRIPTION
-        });
-
-        matrixCursor.addRow(new Object[]{
-                ID, UID, CODE, NAME, DISPLAY_NAME, DATE, DATE,
-                SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION
-        });
-
-        // move cursor to first item before reading
-        matrixCursor.moveToFirst();
-
-        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-        TrackedEntityModel trackedEntityModel = TrackedEntityModel.create(matrixCursor);
-
-        assertThat(trackedEntityModel.id()).isEqualTo(ID);
-        assertThat(trackedEntityModel.uid()).isEqualTo(UID);
-        assertThat(trackedEntityModel.code()).isEqualTo(CODE);
-        assertThat(trackedEntityModel.name()).isEqualTo(NAME);
-        assertThat(trackedEntityModel.displayName()).isEqualTo(DISPLAY_NAME);
-        assertThat(trackedEntityModel.created()).isEqualTo(date);
-        assertThat(trackedEntityModel.lastUpdated()).isEqualTo(date);
-        assertThat(trackedEntityModel.shortName()).isEqualTo(SHORT_NAME);
-        assertThat(trackedEntityModel.displayShortName()).isEqualTo(DISPLAY_SHORT_NAME);
-        assertThat(trackedEntityModel.description()).isEqualTo(DESCRIPTION);
-        assertThat(trackedEntityModel.displayDescription()).isEqualTo(DISPLAY_DESCRIPTION);
-
-        matrixCursor.close();
+    public TrackedEntityModelIntegrationTests() {
+        this.date = new Date();
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
 
     @Test
-    public void toContentValues_shouldConvertToContentValues() throws ParseException {
-        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
+    public void create_shouldConvertToModel() {
+        MatrixCursor cursor = new MatrixCursor(new String[]{
+                Columns.ID,
+                Columns.UID,
+                Columns.CODE,
+                Columns.NAME,
+                Columns.DISPLAY_NAME,
+                Columns.CREATED,
+                Columns.LAST_UPDATED,
+                Columns.SHORT_NAME,
+                Columns.DISPLAY_SHORT_NAME,
+                Columns.DESCRIPTION,
+                Columns.DISPLAY_DESCRIPTION
+        });
+        cursor.addRow(new Object[]{
+                ID, UID, CODE, NAME, DISPLAY_NAME, dateString, dateString,
+                SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION
+        });
+        cursor.moveToFirst();
+        TrackedEntityModel model = TrackedEntityModel.create(cursor);
+        cursor.close();
 
-        TrackedEntityModel trackedEntityModel = TrackedEntityModel.builder()
+        assertThat(model.id()).isEqualTo(ID);
+        assertThat(model.uid()).isEqualTo(UID);
+        assertThat(model.code()).isEqualTo(CODE);
+        assertThat(model.name()).isEqualTo(NAME);
+        assertThat(model.displayName()).isEqualTo(DISPLAY_NAME);
+        assertThat(model.created()).isEqualTo(date);
+        assertThat(model.lastUpdated()).isEqualTo(date);
+        assertThat(model.shortName()).isEqualTo(SHORT_NAME);
+        assertThat(model.displayShortName()).isEqualTo(DISPLAY_SHORT_NAME);
+        assertThat(model.description()).isEqualTo(DESCRIPTION);
+        assertThat(model.displayDescription()).isEqualTo(DISPLAY_DESCRIPTION);
+    }
+
+    @Test
+    public void toContentValues_shouldConvertToContentValues() {
+        TrackedEntityModel model = TrackedEntityModel.builder()
                 .id(ID)
                 .uid(UID)
                 .code(CODE)
@@ -115,19 +112,20 @@ public class TrackedEntityModelIntegrationTests {
                 .description(DESCRIPTION)
                 .displayDescription(DISPLAY_DESCRIPTION)
                 .build();
-
-        ContentValues contentValues = trackedEntityModel.toContentValues();
+        ContentValues contentValues = model.toContentValues();
 
         assertThat(contentValues.getAsLong(TrackedEntityModel.Columns.ID)).isEqualTo(ID);
         assertThat(contentValues.getAsString(TrackedEntityModel.Columns.UID)).isEqualTo(UID);
         assertThat(contentValues.getAsString(TrackedEntityModel.Columns.CODE)).isEqualTo(CODE);
         assertThat(contentValues.getAsString(TrackedEntityModel.Columns.NAME)).isEqualTo(NAME);
         assertThat(contentValues.getAsString(TrackedEntityModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(TrackedEntityModel.Columns.CREATED)).isEqualTo(DATE);
-        assertThat(contentValues.getAsString(TrackedEntityModel.Columns.LAST_UPDATED)).isEqualTo(DATE);
+        assertThat(contentValues.getAsString(TrackedEntityModel.Columns.CREATED)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(TrackedEntityModel.Columns.LAST_UPDATED)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(TrackedEntityModel.Columns.SHORT_NAME)).isEqualTo(SHORT_NAME);
-        assertThat(contentValues.getAsString(TrackedEntityModel.Columns.DISPLAY_SHORT_NAME)).isEqualTo(DISPLAY_SHORT_NAME);
+        assertThat(contentValues.getAsString(TrackedEntityModel.Columns.DISPLAY_SHORT_NAME))
+                .isEqualTo(DISPLAY_SHORT_NAME);
         assertThat(contentValues.getAsString(TrackedEntityModel.Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
-        assertThat(contentValues.getAsString(TrackedEntityModel.Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
+        assertThat(contentValues.getAsString(TrackedEntityModel.Columns.DISPLAY_DESCRIPTION))
+                .isEqualTo(DISPLAY_DESCRIPTION);
     }
 }

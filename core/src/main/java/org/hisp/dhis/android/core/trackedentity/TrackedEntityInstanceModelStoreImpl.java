@@ -41,7 +41,7 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
 public class TrackedEntityInstanceModelStoreImpl implements TrackedEntityInstanceModelStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
-            TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE + " (" +
+            TrackedEntityInstanceModel.TABLE + " (" +
             TrackedEntityInstanceModel.Columns.UID + ", " +
             TrackedEntityInstanceModel.Columns.CREATED + ", " +
             TrackedEntityInstanceModel.Columns.LAST_UPDATED + ", " +
@@ -73,7 +73,7 @@ public class TrackedEntityInstanceModelStoreImpl implements TrackedEntityInstanc
 
     @Override
     public int delete() {
-        return sqLiteDatabase.delete(TrackedEntityInstanceModel.TRACKED_ENTITY_INSTANCE, null, null);
+        return sqLiteDatabase.delete(TrackedEntityInstanceModel.TABLE, null, null);
     }
 
     @Override

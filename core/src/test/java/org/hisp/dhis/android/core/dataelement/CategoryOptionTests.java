@@ -28,45 +28,67 @@
 
  package org.hisp.dhis.android.core.dataelement;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.hisp.dhis.android.core.Inject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Date;
+import java.io.IOException;
+import java.text.ParseException;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class CategoryOptionTests {
 
     @Test
-    public void equals_shouldConformToContract() {
-        CategoryOption validCategoryOption = CategoryOption.builder()
-                .uid("a1b2c3d4e5f")
-                .created(new Date())
-                .lastUpdated(new Date())
-                .build();
+    public void categoryOption_shouldMapFromJsonString() throws IOException, ParseException {
+        ObjectMapper objectMapper = Inject.objectMapper();
+        CategoryOption option = objectMapper.readValue("{" +
+                        "\"lastUpdated\":\"2016-08-08T11:17:59.448\"," +
+                        "\"id\":\"cQYFfHX9oIT\"," +
+                        "\"created\":\"2016-08-08T11:17:59.448\"," +
+                        "\"name\":\"Green\"," +
+                        "\"shortName\":\"Green\"," +
+                        "\"displayName\":\"Green\"," +
+                        "\"displayShortName\":\"Green\"," +
+                        "\"startDate\":\"2016-04-01T00:00:00.000\"," +
+                        "\"endDate\":\"2016-05-01T00:00:00.000\"," +
+                        "\"externalAccess\":false," +
+                        "\"dimensionItem\":\"cQYFfHX9oIT\"," +
+                        "\"dimensionItemType\":\"CATEGORY_OPTION\"," +
+                        "\"categories\":[]," +
+                        "\"organisationUnits\":[]," +
+                        "\"categoryOptionCombos\":[" +
+                        "{\"id\":\"S34ULMcHMca\"}," +
+                        "{\"id\":\"sqGRzCziswD\"}," +
+                        "{\"id\":\"WVzTbHctjok\"}," +
+                        "{\"id\":\"QFcGyiRFFH5\"}" +
+                        "]," +
+                        "\"categoryOptionGroups\":[]" +
+                        "}",
+                CategoryOption.class);
 
-        EqualsVerifier.forClass(validCategoryOption.getClass())
-                .suppress(Warning.NULL_FIELDS)
-                .verify();
-    }
+        assertThat(option.uid()).isEqualTo("cQYFfHX9oIT");
+        assertThat(option.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2016-08-08T11:17:59.448"));
+        assertThat(option.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2016-08-08T11:17:59.448"));
 
-    @Test(expected = IllegalStateException.class)
-    public void build_shouldThrowOnNullUidField() {
-        CategoryOption.builder().build();
-    }
+        assertThat(option.name()).isEqualTo("Green");
+        assertThat(option.shortName()).isEqualTo("Green");
+        assertThat(option.displayName()).isEqualTo("Green");
+        assertThat(option.displayShortName()).isEqualTo("Green");
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void categoryOptionCombos_shouldThrowOnCollectionMutations() {
-        CategoryOption categoryOption = CategoryOption.builder()
-                .uid("abc")
-                .categoryOptionCombos(Arrays.asList(
-                        CategoryOptionCombo.builder().uid("cde").build(),
-                        CategoryOptionCombo.builder().uid("fgp").build()
-                ))
-                .build();
+        assertThat(option.startDate()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2016-04-01T00:00:00.000"));
+        assertThat(option.endDate()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2016-05-01T00:00:00.000"));
 
-        categoryOption.categoryOptionCombos().add(
-                CategoryOptionCombo.builder().uid("kpc").build());
+        // check if list maintains order of the items in payload
+        assertThat(option.categoryOptionCombos().get(0).uid()).isEqualTo("S34ULMcHMca");
+        assertThat(option.categoryOptionCombos().get(1).uid()).isEqualTo("sqGRzCziswD");
+        assertThat(option.categoryOptionCombos().get(2).uid()).isEqualTo("WVzTbHctjok");
+        assertThat(option.categoryOptionCombos().get(3).uid()).isEqualTo("QFcGyiRFFH5");
     }
 }

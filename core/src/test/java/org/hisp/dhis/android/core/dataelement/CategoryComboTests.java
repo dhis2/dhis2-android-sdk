@@ -28,68 +28,61 @@
 
  package org.hisp.dhis.android.core.dataelement;
 
-import org.junit.Before;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.hisp.dhis.android.core.Inject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.junit.Test;
 
-import java.util.Arrays;
+import java.io.IOException;
+import java.text.ParseException;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class CategoryComboTests {
 
-    private static CategoryCombo.Builder VALID_BUILDER;
-
-    @Before
-    public void setUp() {
-        VALID_BUILDER = createValidBuilder();
-    }
-
-    private CategoryCombo.Builder createValidBuilder() {
-        return CategoryCombo.builder()
-                .uid("a1b2c3d4e5f")
-                .created(new java.util.Date())
-                .lastUpdated(new java.util.Date());
-    }
-
-    //**************************************************************************************
-    //
-    // BASE IDENTIFIABLE OBJECT TESTS
-    //
-    //**************************************************************************************
-
-    @Test(expected = IllegalStateException.class)
-    public void build_shouldThrowOnNullUidField() {
-        VALID_BUILDER.uid(null).build();
-    }
-
-    //**************************************************************************************
-    //
-    // EQUALS VERIFIER
-    //
-    //**************************************************************************************
-
     @Test
-    public void equals_shouldConformToContract() {
-        EqualsVerifier.forClass(VALID_BUILDER.build().getClass())
-                .suppress(Warning.NULL_FIELDS)
-                .verify();
-    }
+    public void categoryCombo_shouldMapFromJsonString() throws IOException, ParseException {
+        ObjectMapper objectMapper = Inject.objectMapper();
 
-    //**************************************************************************************
-    //
-    // COLLECTION MUTATION TESTS
-    //
-    //**************************************************************************************
+        CategoryCombo combo = objectMapper.readValue("{" +
+                        "\"code\":\"BIRTHS\"," +
+                        "\"created\":\"2011-12-24T12:24:25.203\"," +
+                        "\"lastUpdated\":\"2016-04-18T16:04:34.745\"," +
+                        "\"name\":\"Births\"," +
+                        "\"id\":\"m2jTvAj5kkm\"," +
+                        "\"dataDimensionType\":\"DISAGGREGATION\"," +
+                        "\"displayName\":\"Births\"," +
+                        "\"publicAccess\":\"rw------\"," +
+                        "\"externalAccess\":false," +
+                        "\"isDefault\":false," +
+                        "\"skipTotal\":false," +
+                        "\"user\":{\"id\":\"GOLswS44mh8\"}," +
+                        "\"userGroupAccesses\":[]," +
+                        "\"attributeValues\":[]," +
+                        "\"categoryOptionCombos\":[" +
+                        "{\"id\":\"b19Ye0TWs1D\"}," +
+                        "{\"id\":\"YEmiuCcgNQI\"}," +
+                        "{\"id\":\"vP9xV78M67W\"}]," +
+                        "\"categories\":[" +
+                        "{\"id\":\"KfdsGBcoiCa\"}," +
+                        "{\"id\":\"cX5k9anHEHd\"}" +
+                        "]" +
+                        "}",
+                CategoryCombo.class);
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void categories_shouldThrowOnCollectionMutations() {
-        CategoryCombo categoryCombo = VALID_BUILDER
-                .categories(Arrays.asList(
-                        Category.builder().uid("categoryId1").build(),
-                        Category.builder().uid("categoryId2").build()))
-                .build();
+        assertThat(combo.uid()).isEqualTo("m2jTvAj5kkm");
+        assertThat(combo.code()).isEqualTo("BIRTHS");
+        assertThat(combo.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.203"));
+        assertThat(combo.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2016-04-18T16:04:34.745"));
+        assertThat(combo.name()).isEqualTo("Births");
+        assertThat(combo.displayName()).isEqualTo("Births");
+        assertThat(combo.isDefault()).isEqualTo(false);
 
-        categoryCombo.categories().add(Category.builder().uid("categoryUid3").build());
+        // categories
+        assertThat(combo.categories().get(0).uid()).isEqualTo("KfdsGBcoiCa");
+        assertThat(combo.categories().get(1).uid()).isEqualTo("cX5k9anHEHd");
     }
 }

@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.option;
+ package org.hisp.dhis.android.core.relationship;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -39,22 +39,22 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class OptionTests {
+public class RelationshipTypeTests {
 
     @Test
-    public void option_shouldMapFromJsonString() throws IOException, ParseException {
+    public void relationshipType_shouldMapFromJsonString() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
 
-        Option option = objectMapper.readValue("{\n" +
+        RelationshipType relationshipType = objectMapper.readValue("{\n" +
                         "\n" +
-                        "    \"code\": \"15-19 years\",\n" +
-                        "    \"created\": \"2014-08-18T12:39:16.000\",\n" +
-                        "    \"lastUpdated\": \"2014-08-18T12:39:16.000\",\n" +
-                        "    \"name\": \"15-19 years\",\n" +
-                        "    \"href\": \"https://play.dhis2.org/demo/api/options/egT1YqFWsVk\",\n" +
-                        "    \"id\": \"egT1YqFWsVk\",\n" +
-                        "    \"displayName\": \"15-19 years\",\n" +
+                        "    \"created\": \"2013-09-19T15:17:41.000\",\n" +
+                        "    \"lastUpdated\": \"2014-04-14T13:53:20.166\",\n" +
+                        "    \"name\": \"Mother-Child\",\n" +
+                        "    \"id\": \"V2kkHafqs8G\",\n" +
+                        "    \"displayName\": \"Mother-Child\",\n" +
+                        "    \"bIsToA\": \"Child\",\n" +
                         "    \"externalAccess\": false,\n" +
+                        "    \"aIsToB\": \"Mother\",\n" +
                         "    \"access\": {\n" +
                         "        \"read\": true,\n" +
                         "        \"update\": true,\n" +
@@ -63,23 +63,21 @@ public class OptionTests {
                         "        \"write\": true,\n" +
                         "        \"manage\": false\n" +
                         "    },\n" +
-                        "    \"optionSet\": {\n" +
-                        "        \"id\": \"VQ2lai3OfVG\"\n" +
-                        "    },\n" +
                         "    \"userGroupAccesses\": [ ],\n" +
                         "    \"attributeValues\": [ ],\n" +
                         "    \"translations\": [ ]\n" +
                         "\n" +
                         "}",
-                Option.class);
+                RelationshipType.class);
 
-        assertThat(option.uid()).isEqualTo("egT1YqFWsVk");
-        assertThat(option.code()).isEqualTo("15-19 years");
-        assertThat(option.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2014-08-18T12:39:16.000"));
-        assertThat(option.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2014-08-18T12:39:16.000"));
-        assertThat(option.name()).isEqualTo("15-19 years");
-        assertThat(option.displayName()).isEqualTo("15-19 years");
+        assertThat(relationshipType.uid()).isEqualTo("V2kkHafqs8G");
+        assertThat(relationshipType.name()).isEqualTo("Mother-Child");
+        assertThat(relationshipType.displayName()).isEqualTo("Mother-Child");
+        assertThat(relationshipType.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2013-09-19T15:17:41.000"));
+        assertThat(relationshipType.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2014-04-14T13:53:20.166"));
+        assertThat(relationshipType.aIsToB()).isEqualTo("Mother");
+        assertThat(relationshipType.bIsToA()).isEqualTo("Child");
     }
 }

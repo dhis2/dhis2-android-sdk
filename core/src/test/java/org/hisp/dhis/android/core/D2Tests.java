@@ -42,7 +42,7 @@ import okhttp3.OkHttpClient;
 import static org.assertj.core.api.Java6Assertions.fail;
 
 @RunWith(JUnit4.class)
-public class D2UnitTests {
+public class D2Tests {
 
     @Mock
     private DbOpenHelper dbOpenHelper;

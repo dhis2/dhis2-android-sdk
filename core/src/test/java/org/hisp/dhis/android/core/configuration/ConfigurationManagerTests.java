@@ -42,7 +42,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class ConfigurationManagerUnitTests {
+public class ConfigurationManagerTests {
 
     @Mock
     private ConfigurationStore configurationStore;

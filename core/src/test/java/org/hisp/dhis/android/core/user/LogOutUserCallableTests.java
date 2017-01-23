@@ -26,22 +26,58 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.option;
+ package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
+import java.util.concurrent.Callable;
+
+import static org.mockito.Mockito.verify;
 
 @RunWith(JUnit4.class)
-public class OptionSetUnitTests {
+public class LogOutUserCallableTests {
+
+    @Mock
+    private UserStore userStore;
+
+    @Mock
+    private UserCredentialsStore userCredentialsStore;
+
+    @Mock
+    private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
+
+    @Mock
+    private AuthenticatedUserStore authenticatedUserStore;
+
+    @Mock
+    private OrganisationUnitStore organisationUnitStore;
+
+    private Callable<Void> logOutUserCallable;
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+
+        logOutUserCallable = new LogOutUserCallable(
+                userStore, userCredentialsStore, userOrganisationUnitLinkStore,
+                authenticatedUserStore, organisationUnitStore
+        );
+    }
 
     @Test
-    public void equals_shouldConformToContract() {
-        EqualsVerifier.forClass(OptionSetModel.builder().build().getClass())
-                .suppress(Warning.NULL_FIELDS)
-                .verify();
+    public void logOut_shouldClearTables() throws Exception {
+        logOutUserCallable.call();
+
+        verify(userStore).delete();
+        verify(userCredentialsStore).delete();
+        verify(userOrganisationUnitLinkStore).delete();
+        verify(authenticatedUserStore).delete();
+        verify(organisationUnitStore).delete();
     }
 }

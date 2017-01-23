@@ -37,9 +37,19 @@ import org.junit.Test;
 import java.io.IOException;
 import java.text.ParseException;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
+
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class OptionTests {
+
+    @Test
+    public void equals_shouldConformToContract() {
+        EqualsVerifier.forClass(OptionModel.builder().build().getClass())
+                .suppress(Warning.NULL_FIELDS)
+                .verify();
+    }
 
     @Test
     public void option_shouldMapFromJsonString() throws IOException, ParseException {

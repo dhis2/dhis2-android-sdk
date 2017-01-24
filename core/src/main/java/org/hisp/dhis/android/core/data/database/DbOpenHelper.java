@@ -115,8 +115,9 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             UserCredentialsModel.Columns.LAST_UPDATED + " TEXT," +
             UserCredentialsModel.Columns.USERNAME + " TEXT," +
             UserCredentialsModel.Columns.USER + " TEXT NOT NULL UNIQUE," +
-            " FOREIGN KEY (" + UserCredentialsModel.Columns.USER + ") REFERENCES " + UserModel.TABLE +
-            " (" + UserModel.Columns.UID + ") ON DELETE CASCADE" +
+            " FOREIGN KEY (" + UserCredentialsModel.Columns.USER + ") " +
+            "REFERENCES " + UserModel.TABLE + " (" + UserModel.Columns.UID + ") " +
+            "ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED " +
             ");";
 
     private static final String CREATE_ORGANISATION_UNIT_TABLE = "CREATE TABLE " +

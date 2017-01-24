@@ -43,7 +43,7 @@ import java.io.IOException;
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
-public class UserOrganisationUnitLinkStoreIntegrationsTests extends AbsStoreTestCase {
+public class UserOrganisationUnitLinkStoreTests extends AbsStoreTestCase {
 
     public static final long ID = 1L;
     private static final String USER_UID = "test_user_uid";

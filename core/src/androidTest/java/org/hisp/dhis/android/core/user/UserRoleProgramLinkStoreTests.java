@@ -49,17 +49,16 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel.Columns;
 
 public class UserRoleProgramLinkStoreTests extends AbsStoreTestCase {
+    private static final String[] PROJECTION = {Columns.USER_ROLE, Columns.PROGRAM,};
     public static final long ID = 1L;
     private static final String USER_ROLE_UID = "test_user_role_uid";
     private static final String PROGRAM_UID = "test_program_uid";
-
     //foreign keys to program:
     private static final long TRACKED_ENTITY_ID = 1L;
     private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
     private static final long RELATIONSHIP_TYPE_ID = 3L;
-    private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
 
-    private static final String[] PROJECTION = {Columns.USER_ROLE, Columns.PROGRAM,};
+    private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
 
     private UserRoleProgramLinkStore organisationUnitLinkStore;
 
@@ -68,14 +67,12 @@ public class UserRoleProgramLinkStoreTests extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
         organisationUnitLinkStore = new UserRoleProgramLinkStoreImpl(database());
-
         ContentValues userRole = CreateUserRoleUtils.create(ID, USER_ROLE_UID);
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE_UID);
-
-        ContentValues program = CreateProgramUtils.create(1L, PROGRAM_UID, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
-
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM_UID,
+                RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
         database().insert(UserRoleModel.TABLE, null, userRole);
         database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
         database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
@@ -85,20 +82,35 @@ public class UserRoleProgramLinkStoreTests extends AbsStoreTestCase {
     @Test
     public void insert_shouldPersistRowInDatabase() {
         long rowId = organisationUnitLinkStore.insert(USER_ROLE_UID, PROGRAM_UID);
-
-        Cursor cursor = database().query(UserRoleProgramLinkModel.TABLE,
-                PROJECTION, null, null, null, null, null);
-
+        Cursor cursor = database().query(UserRoleProgramLinkModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(USER_ROLE_UID, PROGRAM_UID).isExhausted();
     }
 
     @Test
+    public void insert_shouldPersistDeferrableRowInDatabase() {
+        final String deferredUserRole = "deferredUserRole";
+        final String deferredProgram = "deferredProgram";
+
+        database().beginTransaction();
+        long rowId = organisationUnitLinkStore.insert(deferredUserRole, deferredProgram);
+        ContentValues userRole = CreateUserRoleUtils.create(3L, deferredUserRole);
+        ContentValues program = CreateProgramUtils.create(3L, deferredProgram,
+                RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
+        database().insert(UserRoleModel.TABLE, null, userRole);
+        database().insert(ProgramModel.TABLE, null, program);
+        database().setTransactionSuccessful();
+        database().endTransaction();
+
+        Cursor cursor = database().query(UserRoleProgramLinkModel.TABLE, PROJECTION, null, null, null, null, null);
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(deferredUserRole, deferredProgram).isExhausted();
+    }
+
+    @Test
     public void delete_shouldDeleteUserRoleProgramLinkWhenDeletingUserRoleForeignKey() {
         organisationUnitLinkStore.insert(USER_ROLE_UID, PROGRAM_UID);
-
         database().delete(UserRoleModel.TABLE, UserRoleModel.Columns.UID + "=?", new String[]{USER_ROLE_UID});
-
         Cursor cursor = database().query(UserRoleProgramLinkModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
@@ -106,9 +118,7 @@ public class UserRoleProgramLinkStoreTests extends AbsStoreTestCase {
     @Test
     public void delete_shouldDeleteUserRoleProgramLinkWhenDeletingProgramForeignKey() {
         organisationUnitLinkStore.insert(USER_ROLE_UID, PROGRAM_UID);
-
         database().delete(ProgramModel.TABLE, ProgramModel.Columns.UID + "=?", new String[]{PROGRAM_UID});
-
         Cursor cursor = database().query(UserRoleProgramLinkModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }

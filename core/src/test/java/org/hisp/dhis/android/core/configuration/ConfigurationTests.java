@@ -35,7 +35,7 @@ import nl.jqno.equalsverifier.Warning;
 
 import static junit.framework.Assert.fail;
 
-public class ConfigurationModelTests {
+public class ConfigurationTests {
 
     @Test
     public void equals_shouldConformToContract() {

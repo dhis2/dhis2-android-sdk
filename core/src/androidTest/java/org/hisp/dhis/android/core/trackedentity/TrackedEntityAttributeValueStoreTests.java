@@ -57,7 +57,7 @@ public class TrackedEntityAttributeValueStoreTests extends AbsStoreTestCase {
     private static final String TRACKED_ENTITY_INSTANCE = "TestTrackedEntityInstanceUid";
     private static final String ORGANIZATION_UNIT = "TestOrganizationUnitUid";
 
-    private static final String[] TRACKED_ENTITY_ATTRIBUTE_VALUE_PROJECTION = {
+    private static final String[] PROJECTION = {
             TrackedEntityAttributeValueModel.Columns.STATE,
             TrackedEntityAttributeValueModel.Columns.VALUE,
             TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE,
@@ -88,11 +88,35 @@ public class TrackedEntityAttributeValueStoreTests extends AbsStoreTestCase {
         long rowId = store.insert(STATE, VALUE, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE);
 
         Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
-                TRACKED_ENTITY_ATTRIBUTE_VALUE_PROJECTION,
+                PROJECTION,
                 null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(STATE, VALUE, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE)
+                .isExhausted();
+    }
+
+    @Test
+    public void insert_shouldPersistDeferrableTrackedEntityAttributeValueInDatabase() {
+        final String deferredTrackedEntityAttribute = "deferredTrackedEntityAttribute";
+        final String deferredTrackedEntityInstance = "deferredTrackedEntityInstance";
+
+        database().beginTransaction();
+        long rowId = store.insert(STATE, VALUE, deferredTrackedEntityAttribute, deferredTrackedEntityInstance);
+        ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.createWithOrgUnit(
+                deferredTrackedEntityInstance, ORGANIZATION_UNIT);
+        ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.create(3L,
+                deferredTrackedEntityAttribute, null);
+        database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
+        database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
+        database().setTransactionSuccessful();
+        database().endTransaction();
+
+        Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
+                PROJECTION, null, null, null, null, null);
+
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(STATE, VALUE, deferredTrackedEntityAttribute, deferredTrackedEntityInstance)
                 .isExhausted();
     }
 
@@ -102,7 +126,7 @@ public class TrackedEntityAttributeValueStoreTests extends AbsStoreTestCase {
         long rowId = store.insert(STATE, null, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE);
 
         Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
-                TRACKED_ENTITY_ATTRIBUTE_VALUE_PROJECTION,
+                PROJECTION,
                 null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -129,7 +153,7 @@ public class TrackedEntityAttributeValueStoreTests extends AbsStoreTestCase {
                 TrackedEntityAttributeModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY_ATTRIBUTE});
 
         Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
-                TRACKED_ENTITY_ATTRIBUTE_VALUE_PROJECTION, null, null, null, null, null);
+                PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 
@@ -142,7 +166,7 @@ public class TrackedEntityAttributeValueStoreTests extends AbsStoreTestCase {
                 TrackedEntityInstanceModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY_INSTANCE});
 
         Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
-                TRACKED_ENTITY_ATTRIBUTE_VALUE_PROJECTION, null, null, null, null, null);
+                PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 

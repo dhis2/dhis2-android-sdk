@@ -47,6 +47,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.bouncycastle.asn1.x500.style.RFC4519Style.l;
 import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
@@ -123,7 +124,6 @@ public class ProgramStoreTests extends AbsStoreTestCase {
 
     private static final String TRACKED_ENTITY = "TrackedEntityUid";
 
-    // timestamp
     private final Date date;
     private final String dateString;
 
@@ -221,6 +221,8 @@ public class ProgramStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistProgramWithDeferredForeignKeyInDatabase() {
+        final String deferredRelationshipTypeUid = "deferredRelationshipTypeUid";
+        final String deferredTrackedEntityUid = "deferredTrackedEntityUid";
 
         database().beginTransaction();
         long rowId = programStore.insert(
@@ -229,11 +231,18 @@ public class ProgramStoreTests extends AbsStoreTestCase {
                 DISPLAY_DESCRIPTION, VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE,
                 INCIDENT_DATE_LABEL, REGISTRATION, SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD,
                 IGNORE_OVERDUE_EVENTS, RELATIONSHIP_FROM_A, SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES,
-                USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE, RELATIONSHIP_TYPE,
+                USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE, deferredRelationshipTypeUid,
                 RELATIONSHIP_TEXT,
                 UID2,
-                TRACKED_ENTITY
+                deferredTrackedEntityUid
         );
+        //RelationshipType foreign key corresponds to table entry
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(2L, deferredRelationshipTypeUid);
+        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
+        //TrackedEntity foreign key corresponds to table entry
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(2L, deferredTrackedEntityUid);
+        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+
         long rowId2 = programStore.insert(
                 UID2,
                 CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
@@ -261,9 +270,9 @@ public class ProgramStoreTests extends AbsStoreTestCase {
                 toInteger(IGNORE_OVERDUE_EVENTS), toInteger(RELATIONSHIP_FROM_A),
                 toInteger(SELECT_INCIDENT_DATES_IN_FUTURE), toInteger(CAPTURE_COORDINATES),
                 toInteger(USE_FIRST_STAGE_DURING_REGISTRATION), toInteger(DISPLAY_FRONT_PAGE_LIST),
-                PROGRAM_TYPE, RELATIONSHIP_TYPE, RELATIONSHIP_TEXT,
+                PROGRAM_TYPE, deferredRelationshipTypeUid, RELATIONSHIP_TEXT,
                 UID2,
-                TRACKED_ENTITY
+                deferredTrackedEntityUid
         );
         assertThatCursor(cursor).hasRow(
                 UID2,

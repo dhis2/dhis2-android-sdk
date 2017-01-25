@@ -52,25 +52,7 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class ProgramStageSectionStoreTests extends AbsStoreTestCase {
-    private static final long ID = 2L;
-
-    private static final String UID = "test_uid";
-    private static final String CODE = "test_code";
-    private static final String NAME = "test_name";
-    private static final String DISPLAY_NAME = "test_display_name";
-
-    private static final Integer SORT_ORDER = 7;
-    private static final String PROGRAM_STAGE = "test_program_stage";
-
-    // nested foreign key
-    private static final String PROGRAM = "test_program";
-
-    //foreign keys to program:
-    private static final long TRACKED_ENTITY_ID = 1L;
-    private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
-    private static final long RELATIONSHIP_TYPE_ID = 1L;
-    private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
-    private static final String[] PROGRAM_STAGE_SECTION_PROJECTION = {
+    private static final String[] PROJECTION = {
             Columns.UID,
             Columns.CODE,
             Columns.NAME,
@@ -80,12 +62,23 @@ public class ProgramStageSectionStoreTests extends AbsStoreTestCase {
             Columns.SORT_ORDER,
             Columns.PROGRAM_STAGE
     };
+    private static final long ID = 2L;
+    private static final String UID = "test_uid";
+    private static final String CODE = "test_code";
+    private static final String NAME = "test_name";
+    private static final String DISPLAY_NAME = "test_display_name";
+    private static final Integer SORT_ORDER = 7;
+    private static final String PROGRAM_STAGE = "test_program_stage";
+    // nested foreign key
+    private static final String PROGRAM = "test_program";
+    //foreign keys to program:
+    private static final long TRACKED_ENTITY_ID = 1L;
+    private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
+    private static final long RELATIONSHIP_TYPE_ID = 1L;
+    private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
 
-    // timestamp
     private final Date date;
     private final String dateString;
-
-    private final String WRONG_UID = "wrong";
 
     private ProgramStageSectionStore programStageSectionStore;
 
@@ -129,7 +122,7 @@ public class ProgramStageSectionStoreTests extends AbsStoreTestCase {
         );
 
         Cursor cursor = database().query(ProgramStageSectionModel.TABLE,
-                PROGRAM_STAGE_SECTION_PROJECTION, null, null, null, null, null);
+                PROJECTION, null, null, null, null, null);
 
         // Checking if rowId == 1.
         // If it is 1, then it means it is first successful insert into db
@@ -143,6 +136,26 @@ public class ProgramStageSectionStoreTests extends AbsStoreTestCase {
                 dateString,
                 SORT_ORDER,
                 PROGRAM_STAGE
+        ).isExhausted();
+    }
+
+    @Test
+    public void insert_shouldPersistDeferrableProgramStageSectionInDatabase() {
+        final String deferredProgramStage = "deferredProgramStage";
+
+        database().beginTransaction();
+        long rowId = programStageSectionStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER,
+                deferredProgramStage
+        );
+        ContentValues programStage = CreateProgramStageUtils.create(3L, deferredProgramStage, PROGRAM);
+        database().insert(ProgramStageModel.TABLE, null, programStage);
+        database().setTransactionSuccessful();
+        database().endTransaction();
+
+        Cursor cursor = database().query(ProgramStageSectionModel.TABLE, PROJECTION, null, null, null, null, null);
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, SORT_ORDER,
+                deferredProgramStage
         ).isExhausted();
     }
 
@@ -173,6 +186,7 @@ public class ProgramStageSectionStoreTests extends AbsStoreTestCase {
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistProgramStageSectionWithInvalidProgramStageForeignKey() {
+        String WRONG_UID = "wrong";
         programStageSectionStore.insert(
                 UID,
                 CODE,

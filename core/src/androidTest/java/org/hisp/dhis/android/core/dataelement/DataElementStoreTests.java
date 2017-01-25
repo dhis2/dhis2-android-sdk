@@ -44,7 +44,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -52,31 +51,6 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class DataElementStoreTests extends AbsStoreTestCase {
-
-    private static final long ID = 21L;
-
-    private static final String UID = "test_uid";
-    private static final String CODE = "test_code";
-    private static final String NAME = "test_name";
-    private static final String DISPLAY_NAME = "test_display_name";
-
-    private static final String SHORT_NAME = "test_short_name";
-    private static final String DISPLAY_SHORT_NAME = "test_display_short_name";
-    private static final String DESCRIPTION = "test_description";
-    private static final String DISPLAY_DESCRIPTION = "test_display_description";
-
-    private static final ValueType VALUE_TYPE = ValueType.TEXT;
-    private static final Boolean ZERO_IS_SIGNIFICANT = Boolean.FALSE;
-    private static final String AGGREGATION_OPERATOR = "test_aggregationOperator";
-    private static final String FORM_NAME = "test_formName";
-    private static final String NUMBER_TYPE = "test_numberType";
-    private static final String DOMAIN_TYPE = "test_domainType";
-    private static final String DIMENSION = "test_dimension";
-    private static final String DISPLAY_FORM_NAME = "test_displayFormName";
-    private static final String OPTION_SET = "test_optionSet";
-
-    // timestamp
-    private static final String DATE = "2016-12-20T16:26:00.007";
 
     private static final String[] DATA_ELEMENT_PROJECTION = {
             Columns.UID,
@@ -100,7 +74,36 @@ public class DataElementStoreTests extends AbsStoreTestCase {
             Columns.OPTION_SET
     };
 
+    private static final long ID = 21L;
+    private static final String UID = "test_uid";
+    private static final String CODE = "test_code";
+    private static final String NAME = "test_name";
+
+    private static final String DISPLAY_NAME = "test_display_name";
+    private static final String SHORT_NAME = "test_short_name";
+    private static final String DISPLAY_SHORT_NAME = "test_display_short_name";
+    private static final String DESCRIPTION = "test_description";
+
+    private static final String DISPLAY_DESCRIPTION = "test_display_description";
+    private static final ValueType VALUE_TYPE = ValueType.TEXT;
+    private static final Boolean ZERO_IS_SIGNIFICANT = Boolean.FALSE;
+    private static final String AGGREGATION_OPERATOR = "test_aggregationOperator";
+    private static final String FORM_NAME = "test_formName";
+    private static final String NUMBER_TYPE = "test_numberType";
+    private static final String DOMAIN_TYPE = "test_domainType";
+    private static final String DIMENSION = "test_dimension";
+    private static final String DISPLAY_FORM_NAME = "test_displayFormName";
+    private static final String OPTION_SET = "test_optionSet";
+
     private DataElementStore dataElementStore;
+
+    private final Date date;
+    private final String dateString;
+
+    public DataElementStoreTests() {
+        this.date = new Date();
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
+    }
 
     @Override
     @Before
@@ -110,20 +113,17 @@ public class DataElementStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistDataElementInDatabase() throws ParseException {
+    public void insert_shouldPersistDataElementInDatabase() {
         ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
-
-
         database().insert(OptionSetModel.TABLE, null, optionSet);
 
-        Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
         long rowId = dataElementStore.insert(
                 UID,
                 CODE,
                 NAME,
                 DISPLAY_NAME,
-                timeStamp,
-                timeStamp,
+                date,
+                date,
                 SHORT_NAME,
                 DISPLAY_SHORT_NAME,
                 DESCRIPTION,
@@ -138,10 +138,8 @@ public class DataElementStoreTests extends AbsStoreTestCase {
                 DISPLAY_FORM_NAME,
                 OPTION_SET
         );
-
         Cursor cursor = database().query(DataElementModel.TABLE, DATA_ELEMENT_PROJECTION,
                 null, null, null, null, null);
-
         // Checking if rowId == 1.
         // If it is 1, then it means it is first successful insert into db
         assertThat(rowId).isEqualTo(1L);
@@ -151,8 +149,8 @@ public class DataElementStoreTests extends AbsStoreTestCase {
                 CODE,
                 NAME,
                 DISPLAY_NAME,
-                DATE,
-                DATE,
+                dateString,
+                dateString,
                 SHORT_NAME,
                 DISPLAY_SHORT_NAME,
                 DESCRIPTION,
@@ -170,15 +168,38 @@ public class DataElementStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistDataElementInDatabaseWithoutOptionSet() throws ParseException {
-        Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
+    public void insert_shouldPersistDeferrableDataElementInDatabase() {
+        final String deferredOptionSetUid = "deferredOptionSetUid";
+
+        database().beginTransaction();
+        long rowId = dataElementStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
+                DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, VALUE_TYPE, ZERO_IS_SIGNIFICANT,
+                AGGREGATION_OPERATOR, FORM_NAME, NUMBER_TYPE, DOMAIN_TYPE, DIMENSION, DISPLAY_FORM_NAME,
+                deferredOptionSetUid
+        );
+        ContentValues optionSet = CreateOptionSetUtils.create(2L, deferredOptionSetUid);
+        database().insert(OptionSetModel.TABLE, null, optionSet);
+        database().setTransactionSuccessful();
+        database().endTransaction();
+
+        Cursor cursor = database().query(DataElementModel.TABLE, DATA_ELEMENT_PROJECTION, null, null, null, null, null);
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, SHORT_NAME,
+                DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, VALUE_TYPE, 0, AGGREGATION_OPERATOR,
+                FORM_NAME, NUMBER_TYPE, DOMAIN_TYPE, DIMENSION, DISPLAY_FORM_NAME,
+                deferredOptionSetUid
+        ).isExhausted();
+    }
+
+    @Test
+    public void insert_shouldPersistDataElementInDatabaseWithoutOptionSet() {
         long rowId = dataElementStore.insert(
                 UID,
                 CODE,
                 NAME,
                 DISPLAY_NAME,
-                timeStamp,
-                timeStamp,
+                date,
+                date,
                 SHORT_NAME,
                 DISPLAY_SHORT_NAME,
                 DESCRIPTION,
@@ -206,8 +227,8 @@ public class DataElementStoreTests extends AbsStoreTestCase {
                 CODE,
                 NAME,
                 DISPLAY_NAME,
-                DATE,
-                DATE,
+                dateString,
+                dateString,
                 SHORT_NAME,
                 DISPLAY_SHORT_NAME,
                 DESCRIPTION,
@@ -225,16 +246,15 @@ public class DataElementStoreTests extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistDataElementWithInvalidForeignKey() throws ParseException {
-        Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
+    public void exception_persistDataElementWithInvalidForeignKey() {
         String fakeOptionSetUid = "fake_option_set_uid";
         dataElementStore.insert(
                 UID,
                 CODE,
                 NAME,
                 DISPLAY_NAME,
-                timeStamp,
-                timeStamp,
+                date,
+                date,
                 SHORT_NAME,
                 DISPLAY_SHORT_NAME,
                 DESCRIPTION,
@@ -282,7 +302,6 @@ public class DataElementStoreTests extends AbsStoreTestCase {
     @Test
     public void close_shouldNotCloseDatabase() {
         dataElementStore.close();
-
         assertThat(database().isOpen()).isTrue();
     }
 

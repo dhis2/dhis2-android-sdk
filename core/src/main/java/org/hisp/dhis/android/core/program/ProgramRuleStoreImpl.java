@@ -40,7 +40,7 @@ import java.util.Date;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
-public class ProgramRuleModelStoreImpl implements ProgramRuleModelStore {
+public class ProgramRuleStoreImpl implements ProgramRuleStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             ProgramRuleModel.TABLE + " (" +
             Columns.UID + ", " +
@@ -56,7 +56,7 @@ public class ProgramRuleModelStoreImpl implements ProgramRuleModelStore {
             "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
     private final SQLiteStatement sqLiteStatement;
 
-    public ProgramRuleModelStoreImpl(SQLiteDatabase sqLiteDatabase) {
+    public ProgramRuleStoreImpl(SQLiteDatabase sqLiteDatabase) {
         this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
     }
 

@@ -49,45 +49,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
-//TODO: Add test when persisting with programStageSection foreign key
 @RunWith(AndroidJUnit4.class)
 public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
-    private static final long ID = 11L;
-
-    private static final String UID = "test_uid";
-    private static final String CODE = "test_code";
-    private static final String NAME = "test_name";
-    private static final String DISPLAY_NAME = "test_display_name";
-
-    private static final Boolean DISPLAY_IN_REPORTS = Boolean.TRUE;
-    private static final Boolean COMPULSORY = Boolean.FALSE;
-    private static final Boolean ALLOW_PROVIDED_ELSEWHERE = Boolean.FALSE;
-    private static final Integer SORT_ORDER = 7;
-    private static final Boolean ALLOW_FUTURE_DATE = Boolean.TRUE;
-    private static final String DATA_ELEMENT = "test_dataElement";
-    private static final String PROGRAM_STAGE_SECTION = "test_program_stage_section";
-
-    // timestamp
-    private static final String DATE = "2017-01-04T17:04:00.000";
-
-
-    // Nested foreign key
-    private static final String OPTION_SET = "test_optionSet";
-
-    private static final String PROGRAM = "test_program";
-    //foreign keys to program:
-    private static final long TRACKED_ENTITY_ID = 1L;
-    private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
-    private static final long RELATIONSHIP_TYPE_ID = 3L;
-    private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
-
-    private static final String[] PROGRAM_STAGE_DATA_ELEMENT_PROJECTION = {
+    private static final String[] PROJECTION = {
             Columns.UID,
             Columns.CODE,
             Columns.NAME,
@@ -103,7 +72,37 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
             Columns.PROGRAM_STAGE_SECTION
     };
 
+    private static final long ID = 11L;
+    private static final String UID = "test_uid";
+    private static final String CODE = "test_code";
+    private static final String NAME = "test_name";
+    private static final String DISPLAY_NAME = "test_display_name";
+    private static final Boolean DISPLAY_IN_REPORTS = Boolean.TRUE;
+    private static final Boolean COMPULSORY = Boolean.FALSE;
+    private static final Boolean ALLOW_PROVIDED_ELSEWHERE = Boolean.FALSE;
+    private static final Integer SORT_ORDER = 7;
+    private static final Boolean ALLOW_FUTURE_DATE = Boolean.TRUE;
+    private static final String DATA_ELEMENT = "test_dataElement";
+    private static final String PROGRAM_STAGE_SECTION = "test_program_stage_section";
+    // Nested foreign key
+    private static final String OPTION_SET = "test_optionSet";
+    private static final String PROGRAM = "test_program";
+    //foreign keys to program:
+    private static final long TRACKED_ENTITY_ID = 1L;
+    private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
+    private static final long RELATIONSHIP_TYPE_ID = 3L;
+    private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
+    private static final String PROGRAM_STAGE = "stageUid";
+
     private ProgramStageDataElementStore programStageDataElementStore;
+
+    private final Date date;
+    private final String dateString;
+
+    public ProgramStageDataElementStoreTests() {
+        this.date = new Date();
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
+    }
 
     @Override
     @Before
@@ -113,20 +112,18 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistProgramStageDataElementInDatabase() throws ParseException {
+    public void insert_shouldPersistProgramStageDataElementInDatabase() {
         // inserting necessary foreign key
         ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
         database().insert(DataElementModel.TABLE, null, dataElement);
-
-        Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
         long rowId = programStageDataElementStore.insert(
                 UID,
                 CODE,
                 NAME,
                 DISPLAY_NAME,
-                timeStamp,
-                timeStamp,
+                date,
+                date,
                 DISPLAY_IN_REPORTS,
                 COMPULSORY,
                 ALLOW_PROVIDED_ELSEWHERE,
@@ -136,7 +133,7 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
                 null
         );
 
-        Cursor cursor = database().query(ProgramStageDataElementModel.TABLE, PROGRAM_STAGE_DATA_ELEMENT_PROJECTION,
+        Cursor cursor = database().query(ProgramStageDataElementModel.TABLE, PROJECTION,
                 null, null, null, null, null);
 
 
@@ -149,8 +146,8 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
                 CODE,
                 NAME,
                 DISPLAY_NAME,
-                DATE,
-                DATE,
+                dateString,
+                dateString,
                 1, // DISPLAY_IN_REPORTS = Boolean.FALSE
                 0, // COMPULSORY = Boolean.FALSE
                 0, // ALLOW_PROVIDED_ELSEWHERE = Boolean.FALSE
@@ -162,7 +159,44 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistProgramStageDataElementInDatabaseWithOptionSet() throws ParseException {
+    public void insert_shouldPersistDeferrableProgramStageDataElementInDatabase() {
+        final String deferredDataElementUid = "deferredDataElementUid";
+        final String deferredProgramStageSectionUid = "deferredProgramStageSectionUid";
+
+        database().beginTransaction();
+        long rowId = programStageDataElementStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date,
+                DISPLAY_IN_REPORTS, COMPULSORY, ALLOW_PROVIDED_ELSEWHERE, SORT_ORDER, ALLOW_FUTURE_DATE,
+                deferredDataElementUid,
+                deferredProgramStageSectionUid
+        );
+        ContentValues dataElement = CreateDataElementUtils.create(ID, deferredDataElementUid, null);
+        ContentValues programStage = CreateProgramStageUtils.create(1L , PROGRAM_STAGE, PROGRAM);
+        ContentValues programStageSection = CreateProgramStageSectionUtils.create(
+                ID, deferredProgramStageSectionUid, PROGRAM_STAGE);
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(
+                RELATIONSHIP_TYPE_ID, RELATIONSHIP_TYPE_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
+
+        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
+        database().insert(ProgramModel.TABLE, null, program);
+        database().insert(ProgramStageModel.TABLE, null, programStage);
+        database().insert(ProgramStageSectionModel.TABLE, null, programStageSection);
+        database().insert(DataElementModel.TABLE, null, dataElement);
+        database().setTransactionSuccessful();
+        database().endTransaction();
+
+        Cursor cursor = database().query(ProgramStageDataElementModel.TABLE, PROJECTION, null, null, null, null, null);
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, 1, 0, 0, SORT_ORDER, 1,
+                deferredDataElementUid,
+                deferredProgramStageSectionUid
+        ).isExhausted();
+    }
+
+    @Test
+    public void insert_shouldPersistProgramStageDataElementInDatabaseWithOptionSet() {
         // inserting necessary foreign key
         ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
         database().insert(OptionSetModel.TABLE, null, optionSet);
@@ -170,15 +204,14 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
         ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, OPTION_SET);
         database().insert(DataElementModel.TABLE, null, dataElement);
 
-        Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
         long rowId = programStageDataElementStore.insert(
                 UID,
                 CODE,
                 NAME,
                 DISPLAY_NAME,
-                timeStamp,
-                timeStamp,
+                date,
+                date,
                 DISPLAY_IN_REPORTS,
                 COMPULSORY,
                 ALLOW_PROVIDED_ELSEWHERE,
@@ -188,7 +221,7 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
                 null
         );
 
-        Cursor cursor = database().query(ProgramStageDataElementModel.TABLE, PROGRAM_STAGE_DATA_ELEMENT_PROJECTION,
+        Cursor cursor = database().query(ProgramStageDataElementModel.TABLE, PROJECTION,
                 null, null, null, null, null);
 
 
@@ -201,8 +234,8 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
                 CODE,
                 NAME,
                 DISPLAY_NAME,
-                DATE,
-                DATE,
+                dateString,
+                dateString,
                 1, // DISPLAY_IN_REPORTS = Boolean.FALSE
                 0, // COMPULSORY = Boolean.FALSE
                 0, // ALLOW_PROVIDED_ELSEWHERE = Boolean.FALSE
@@ -214,16 +247,15 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistProgramStageDataElementWithInvalidForeignKey() throws ParseException {
-        Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
+    public void exception_persistProgramStageDataElementWithInvalidForeignKey() {
         String fakeDataElementId = "fake_data_element_id";
         programStageDataElementStore.insert(
                 UID,
                 CODE,
                 NAME,
                 DISPLAY_NAME,
-                timeStamp,
-                timeStamp,
+                date,
+                date,
                 DISPLAY_IN_REPORTS,
                 COMPULSORY,
                 ALLOW_PROVIDED_ELSEWHERE,

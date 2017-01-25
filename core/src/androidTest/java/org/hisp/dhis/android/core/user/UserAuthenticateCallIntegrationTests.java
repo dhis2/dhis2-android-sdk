@@ -62,7 +62,7 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 // ToDo: more tests to verify correct store behaviour
 // ToDo:    - what will happen if the same user will be inserted twice?
 @RunWith(AndroidJUnit4.class)
-public class UserAuthenticateCallTests extends AbsStoreTestCase {
+public class UserAuthenticateCallIntegrationTests extends AbsStoreTestCase {
     private static final String[] USER_PROJECTION = {
             UserModel.Columns.ID,
             UserModel.Columns.UID,

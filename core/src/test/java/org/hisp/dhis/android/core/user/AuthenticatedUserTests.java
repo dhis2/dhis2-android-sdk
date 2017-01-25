@@ -26,22 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.event;
+ package org.hisp.dhis.android.core.user;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class EventModelTests {
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 
-    @Test(expected = IllegalStateException.class)
-    public void build_throwOnNullUidField() {
-        EventModel.builder().uid(null).build();
+@RunWith(JUnit4.class)
+public class AuthenticatedUserTests {
+
+    @Test
+    public void equals_shouldConformToContract() {
+        EqualsVerifier.forClass(AuthenticatedUserModel.builder().build().getClass())
+                .suppress(Warning.NULL_FIELDS)
+                .verify();
     }
-
-    // ToDo: Consider re-evaluating usage of EqualsVerifier for store models
-//    @Test
-//    public void equals_shouldConformToContract() {
-//        EqualsVerifier.forClass(EventModel.builder().uid("a1b2c3d4e5f").build().getClass())
-//                .suppress(Warning.NULL_FIELDS)
-//                .verify();
-//    }
 }

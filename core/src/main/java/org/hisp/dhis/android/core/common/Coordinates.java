@@ -32,7 +32,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
-//TODO: Tests
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Coordinates.Builder.class)
 public abstract class Coordinates {

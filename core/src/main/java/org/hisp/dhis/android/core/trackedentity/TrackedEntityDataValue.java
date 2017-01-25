@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.data.api.Field;
 
 import java.util.Date;
 
-//TODO: Tests
 @AutoValue
 public abstract class TrackedEntityDataValue {
     public final static String DATA_ELEMENT = "dataElement";

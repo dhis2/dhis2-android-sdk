@@ -35,7 +35,6 @@ import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
 import org.hisp.dhis.android.core.program.ProgramType;
 
-//TODO: Write unit-test's for this adapter:
 public class DbProgramTypeColumnAdapter implements ColumnTypeAdapter<ProgramType> {
 
     @Override

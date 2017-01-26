@@ -186,10 +186,6 @@ public abstract class User extends BaseIdentifiableObject {
     @JsonProperty(DATA_VIEW_ORGANISATION_UNITS)
     public abstract List<OrganisationUnit> dataViewOrganisationUnits();
 
-    @Nullable
-    @JsonProperty(DELETED)
-    public abstract Boolean deleted();
-
     @JsonCreator
     public static User create(
             @JsonProperty(UID) String uid,
@@ -219,13 +215,12 @@ public abstract class User extends BaseIdentifiableObject {
         // ToDo: change from jackson to gson and implement autovalue-gson extension
 
         return new AutoValue_User(
-                uid, code, name, displayName, created, lastUpdated, birthday, education, gender,
+                uid, code, name, displayName, created, lastUpdated, deleted, birthday, education, gender,
                 jobTitle, surname, firstName, introduction, employer, interests, languages, email,
                 phoneNumber, nationality, userCredentials,
                 safeUnmodifiableList(orgUnits),
                 safeUnmodifiableList(searchOrgUnits),
-                safeUnmodifiableList(dataViewOrgUnits),
-                deleted
+                safeUnmodifiableList(dataViewOrgUnits)
         );
     }
 

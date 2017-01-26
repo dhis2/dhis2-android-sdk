@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.Nullable;
 
@@ -67,6 +67,8 @@ public abstract class ProgramRule extends BaseIdentifiableObject {
             = NestedField.create(PROGRAM_STAGE);
     public static final NestedField<ProgramRule, ProgramRuleAction> programRuleActions
             = NestedField.create(PROGRAM_RULE_ACTIONS);
+    public static final Field<ProgramRule, Boolean> deleted
+            = Field.create(DELETED);
 
 
     @Nullable
@@ -91,19 +93,20 @@ public abstract class ProgramRule extends BaseIdentifiableObject {
 
     @JsonCreator
     public static ProgramRule create(@JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(PRIORITY) Integer priority,
-            @JsonProperty(CONDITION) String condition,
-            @JsonProperty(PROGRAM) Program program,
-            @JsonProperty(PROGRAM_STAGE) ProgramStage programStage,
-            @JsonProperty(PROGRAM_RULE_ACTIONS) List<ProgramRuleAction> programRuleActions) {
+                                     @JsonProperty(CODE) String code,
+                                     @JsonProperty(NAME) String name,
+                                     @JsonProperty(DISPLAY_NAME) String displayName,
+                                     @JsonProperty(CREATED) Date created,
+                                     @JsonProperty(LAST_UPDATED) Date lastUpdated,
+                                     @JsonProperty(PRIORITY) Integer priority,
+                                     @JsonProperty(CONDITION) String condition,
+                                     @JsonProperty(PROGRAM) Program program,
+                                     @JsonProperty(PROGRAM_STAGE) ProgramStage programStage,
+                                     @JsonProperty(PROGRAM_RULE_ACTIONS) List<ProgramRuleAction> programRuleActions,
+                                     @JsonProperty(DELETED) Boolean deleted) {
         return new AutoValue_ProgramRule(
                 uid, code, name, displayName,
-                created, lastUpdated, priority, condition,
+                created, lastUpdated, deleted, priority, condition,
                 program, programStage, programRuleActions);
     }
 }

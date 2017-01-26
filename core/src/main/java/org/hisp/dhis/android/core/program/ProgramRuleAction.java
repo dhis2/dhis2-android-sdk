@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.Nullable;
 
@@ -64,6 +64,7 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject {
     public static final Field<ProgramRuleAction, String> data = Field.create(DATA);
     public static final Field<ProgramRuleAction, String> content = Field.create(CONTENT);
     public static final Field<ProgramRuleAction, String> location = Field.create(LOCATION);
+    public static final Field<ProgramRuleAction, Boolean> deleted = Field.create(DELETED);
 
     /**
      * Program rule uid is only exposed in the api, so we cannot set this as a nested field
@@ -145,9 +146,10 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject {
             @JsonProperty(PROGRAM_RULE_ACTION_TYPE) ProgramRuleActionType programRuleActionType,
             @JsonProperty(PROGRAM_STAGE) ProgramStage programStage,
             @JsonProperty(DATA_ELEMENT) DataElement dataElement,
-            @JsonProperty(PROGRAM_RULE) ProgramRule programRule) {
+            @JsonProperty(PROGRAM_RULE) ProgramRule programRule,
+            @JsonProperty(DELETED) Boolean deleted) {
         return new AutoValue_ProgramRuleAction(
-                uid, code, name, displayName, created, lastUpdated, data, content, location,
+                uid, code, name, displayName, created, lastUpdated, deleted, data, content, location,
                 trackedEntityAttribute, programIndicator, programStageSection, programRuleActionType,
                 programStage, dataElement, programRule
         );

@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.dataelement;
 
 import android.support.annotation.Nullable;
 
@@ -64,6 +64,7 @@ public abstract class DataElement extends BaseNameableObject {
     public static final Field<DataElement, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
     public static final Field<DataElement, String> description = Field.create(DESCRIPTION);
     public static final Field<DataElement, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
+    public static final Field<DataElement, Boolean> deleted = Field.create(DELETED);
 
     public static final Field<DataElement, ValueType> valueType = Field.create(VALUE_TYPE);
     public static final Field<DataElement, Boolean> zeroIsSignificant = Field.create(ZERO_IS_SIGNIFICANT);
@@ -131,10 +132,11 @@ public abstract class DataElement extends BaseNameableObject {
             @JsonProperty(DOMAIN_TYPE) String domainType,
             @JsonProperty(DIMENSION) String dimension,
             @JsonProperty(DISPLAY_FORM_NAME) String displayFormName,
-            @JsonProperty(OPTION_SET) OptionSet optionSet) {
+            @JsonProperty(OPTION_SET) OptionSet optionSet,
+            @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_DataElement(uid, code, name,
-                displayName, created, lastUpdated,
+                displayName, created, lastUpdated, deleted,
                 shortName, displayShortName, description, displayDescription, valueType,
                 zeroIsSignificant, aggregationType, formName, numberType,
                 domainType, dimension, displayFormName, optionSet);

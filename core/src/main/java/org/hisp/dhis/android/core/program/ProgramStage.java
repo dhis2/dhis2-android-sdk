@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.Nullable;
 
@@ -36,6 +36,8 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.FormType;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.NestedField;
 
 import java.util.Date;
 import java.util.List;
@@ -62,6 +64,36 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     private static final String MIN_DAYS_FROM_START = "minDaysFromStart";
     private static final String STANDARD_INTERVAL = "standardInterval";
     private static final String PROGRAM_STAGE_SECTIONS = "programStageSections";
+
+    public static final Field<ProgramStage, String> uid = Field.create(UID);
+    public static final Field<ProgramStage, String> code = Field.create(CODE);
+    public static final Field<ProgramStage, String> name = Field.create(NAME);
+    public static final Field<ProgramStage, String> displayName = Field.create(DISPLAY_NAME);
+    public static final Field<ProgramStage, String> created = Field.create(CREATED);
+    public static final Field<ProgramStage, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<ProgramStage, Integer> sortOrder = Field.create(SORT_ORDER);
+    public static final Field<ProgramStage, Boolean> deleted = Field.create(DELETED);
+    public static final Field<ProgramStage, String> executionDateLabel = Field.create(EXECUTION_DATE_LABEL);
+    public static final Field<ProgramStage, Boolean> allowGenerateNextVisit = Field.create(ALLOW_GENERATE_NEXT_VISIT);
+    public static final Field<ProgramStage, Boolean> validCompleteOnly = Field.create(VALID_COMPLETE_ONLY);
+    public static final Field<ProgramStage, String> reportDateToUse = Field.create(REPORT_DATE_TO_USE);
+    public static final Field<ProgramStage, Boolean> openAfterEnrollment = Field.create(OPEN_AFTER_ENROLLMENT);
+    public static final Field<ProgramStage, Boolean> repeatable = Field.create(REPEATABLE);
+    public static final Field<ProgramStage, Boolean> captureCoordinates = Field.create(CAPTURE_COORDINATES);
+    public static final Field<ProgramStage, FormType> formType = Field.create(FORM_TYPE);
+    public static final Field<ProgramStage, Boolean> displayGenerateEventBox = Field.create(DISPLAY_GENERATE_EVENT_BOX);
+    public static final Field<ProgramStage, Boolean> generatedByEnrollmentDate =
+            Field.create(GENERATED_BY_ENROLMENT_DATE);
+    public static final Field<ProgramStage, Boolean> autoGenerateEvent = Field.create(AUTO_GENERATE_EVENT);
+    public static final Field<ProgramStage, Boolean> hideDueDate = Field.create(HIDE_DUE_DATE);
+    public static final Field<ProgramStage, Boolean> blockEntryForm = Field.create(BLOCK_ENTRY_FORM);
+    public static final Field<ProgramStage, Integer> minDaysFromStart = Field.create(MIN_DAYS_FROM_START);
+    public static final Field<ProgramStage, Integer> standardInterval = Field.create(STANDARD_INTERVAL);
+
+    public static final NestedField<ProgramStage, ProgramStageSection> programStageSections
+            = NestedField.create(PROGRAM_STAGE_SECTIONS);
+    public static final NestedField<ProgramStage, ProgramStageDataElement> programStageDataElements =
+            NestedField.create(PROGRAM_STAGE_DATA_ELEMENTS);
 
     @Nullable
     @JsonProperty(EXECUTION_DATE_LABEL)
@@ -160,7 +192,8 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
             @JsonProperty(MIN_DAYS_FROM_START) Integer minDaysFromStart,
             @JsonProperty(STANDARD_INTERVAL) Integer standardInterval,
             @JsonProperty(PROGRAM_STAGE_SECTIONS) List<ProgramStageSection> programStageSections,
-            @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS) List<ProgramStageDataElement> programStageDataElements
+            @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS) List<ProgramStageDataElement> programStageDataElements,
+            @JsonProperty(DELETED) Boolean deleted
     ) {
 
         return new AutoValue_ProgramStage(
@@ -170,6 +203,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
                 displayName,
                 created,
                 lastUpdated,
+                deleted,
                 executionDateLabel,
                 allowGenerateNextVisit,
                 validCompleteOnly,

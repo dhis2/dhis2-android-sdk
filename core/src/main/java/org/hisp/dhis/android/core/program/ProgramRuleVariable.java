@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.Nullable;
 
@@ -75,6 +75,8 @@ public abstract class ProgramRuleVariable extends BaseIdentifiableObject {
             = NestedField.create(DATA_ELEMENT);
     public static final NestedField<ProgramRuleVariable, TrackedEntityAttribute> trackedEntityAttribute
             = NestedField.create(TRACKED_ENTITY_ATTRIBUTE);
+    public static final Field<ProgramRuleVariable, Boolean> deleted
+            = Field.create(DELETED);
 
 
     @Nullable
@@ -114,9 +116,10 @@ public abstract class ProgramRuleVariable extends BaseIdentifiableObject {
             @JsonProperty(PROGRAM_STAGE) ProgramStage programStage,
             @JsonProperty(DATA_ELEMENT) DataElement dataElement,
             @JsonProperty(TRACKED_ENTITY_ATTRIBUTE) TrackedEntityAttribute trackedEntityAttribute,
-            @JsonProperty(PROGRAM_RULE_VARIABLE_SOURCE_TYPE) ProgramRuleVariableSourceType sourceType) {
+            @JsonProperty(PROGRAM_RULE_VARIABLE_SOURCE_TYPE) ProgramRuleVariableSourceType sourceType,
+            @JsonProperty(DELETED) Boolean deleted) {
         return new AutoValue_ProgramRuleVariable(uid, code, name, displayName, created,
-                lastUpdated, useCodeForOptionSet, program, programStage,
+                lastUpdated, deleted, useCodeForOptionSet, program, programStage,
                 dataElement, trackedEntityAttribute, sourceType);
     }
 }

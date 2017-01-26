@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.common;
 
 import android.support.annotation.Nullable;
 
@@ -45,6 +45,7 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject {
     protected static final String DISPLAY_NAME = "displayName";
     protected static final String CREATED = "created";
     protected static final String LAST_UPDATED = "lastUpdated";
+    protected static final String DELETED = "deleted";
 
     @Override
     @JsonProperty(UID)
@@ -75,6 +76,10 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject {
     @JsonProperty(LAST_UPDATED)
     public abstract Date lastUpdated();
 
+    @Nullable
+    @JsonProperty(DELETED)
+    public abstract Boolean deleted();
+
     protected static abstract class Builder<T extends Builder> {
 
         @JsonProperty(UID)
@@ -94,5 +99,8 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject {
 
         @JsonProperty(LAST_UPDATED)
         public abstract T lastUpdated(@Nullable Date lastUpdated);
+
+        @JsonProperty(DELETED)
+        public abstract T deleted(@Nullable Boolean deleted);
     }
 }

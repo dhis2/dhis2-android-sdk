@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.Nullable;
 
@@ -56,6 +56,7 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject {
     public static final Field<ProgramStageSection, String> created = Field.create(CREATED);
     public static final Field<ProgramStageSection, String> lastUpdated = Field.create(LAST_UPDATED);
     public static final Field<ProgramStageSection, Integer> sortOrder = Field.create(SORT_ORDER);
+    public static final Field<ProgramStageSection, Boolean> deleted = Field.create(DELETED);
 
     public static final NestedField<ProgramStageSection, ProgramIndicator> programIndicators =
             NestedField.create(PROGRAM_INDICATORS);
@@ -85,10 +86,11 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject {
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
             @JsonProperty(SORT_ORDER) Integer sortOrder,
             @JsonProperty(PROGRAM_INDICATORS) List<ProgramIndicator> programIndicators,
-            @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS) List<ProgramStageDataElement> programStageDataElements) {
+            @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS) List<ProgramStageDataElement> programStageDataElements,
+            @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_ProgramStageSection(
-                uid, code, name, displayName, created, lastUpdated, sortOrder,
+                uid, code, name, displayName, created, lastUpdated, deleted, sortOrder,
                 safeUnmodifiableList(programIndicators),
                 safeUnmodifiableList(programStageDataElements)
         );

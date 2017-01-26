@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.Nullable;
 
@@ -74,6 +74,8 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
             = Field.create(ALLOW_FUTURE_DATE);
     public static final NestedField<ProgramStageDataElement, DataElement> dataElement
             = NestedField.create(DATA_ELEMENT);
+    public static final Field<ProgramStageDataElement, Boolean> deleted
+            = Field.create(DELETED);
 
     @Nullable
     @JsonProperty(DISPLAY_IN_REPORTS)
@@ -112,7 +114,8 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
             @JsonProperty(ALLOW_PROVIDED_ELSEWHERE) Boolean allowProvidedElsewhere,
             @JsonProperty(SORT_ORDER) Integer sortOrder,
             @JsonProperty(ALLOW_FUTURE_DATE) Boolean allowFutureDate,
-            @JsonProperty(DATA_ELEMENT) DataElement dataElement
+            @JsonProperty(DATA_ELEMENT) DataElement dataElement,
+            @JsonProperty(DELETED) Boolean deleted
     ) {
 
         return new AutoValue_ProgramStageDataElement(
@@ -122,6 +125,7 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
                 displayName,
                 created,
                 lastUpdated,
+                deleted,
                 displayInReports,
                 compulsory,
                 allowProvidedElsewhere,

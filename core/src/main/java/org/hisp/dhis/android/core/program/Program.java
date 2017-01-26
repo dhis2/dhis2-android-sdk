@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.Nullable;
 
@@ -87,6 +87,8 @@ public abstract class Program extends BaseNameableObject {
             = Field.create(CREATED);
     public static final Field<Program, String> lastUpdated
             = Field.create(LAST_UPDATED);
+    public static final Field<Program, Boolean> deleted
+            = Field.create(DELETED);
     public static final Field<Program, String> shortName
             = Field.create(SHORT_NAME);
     public static final Field<Program, String> displayShortName
@@ -282,7 +284,8 @@ public abstract class Program extends BaseNameableObject {
             @JsonProperty(PROGRAM_INDICATORS) List<ProgramIndicator> programIndicators,
             @JsonProperty(PROGRAM_STAGES) List<ProgramStage> programStages,
             @JsonProperty(PROGRAM_RULES) List<ProgramRule> programRules,
-            @JsonProperty(PROGRAM_RULE_VARIABLES) List<ProgramRuleVariable> programRuleVariables) {
+            @JsonProperty(PROGRAM_RULE_VARIABLES) List<ProgramRuleVariable> programRuleVariables,
+            @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_Program(
                 uid,
@@ -291,6 +294,7 @@ public abstract class Program extends BaseNameableObject {
                 displayName,
                 created,
                 lastUpdated,
+                deleted,
                 shortName,
                 displayShortName,
                 description,

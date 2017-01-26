@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option;
 
 import android.support.annotation.Nullable;
 
@@ -57,7 +57,8 @@ public abstract class OptionSet extends BaseIdentifiableObject {
     public static final Field<OptionSet, String> created = Field.create(CREATED);
     public static final Field<OptionSet, String> lastUpdated = Field.create(LAST_UPDATED);
     public static final Field<OptionSet, String> version = Field.create(VERSION);
-    public static final Field<OptionSet, String> valueType = Field.create(VALUE_TYPE);
+    public static final Field<OptionSet, ValueType> valueType = Field.create(VALUE_TYPE);
+    public static final Field<OptionSet, Boolean> deleted = Field.create(DELETED);
     public static final NestedField<OptionSet, Option> options = NestedField.create(OPTIONS);
 
     @Nullable
@@ -82,7 +83,8 @@ public abstract class OptionSet extends BaseIdentifiableObject {
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
             @JsonProperty(VERSION) Integer version,
             @JsonProperty(VALUE_TYPE) ValueType valueType,
-            @JsonProperty(OPTIONS) List<Option> options) {
+            @JsonProperty(OPTIONS) List<Option> options,
+            @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_OptionSet(
                 uid,
@@ -91,6 +93,7 @@ public abstract class OptionSet extends BaseIdentifiableObject {
                 displayName,
                 created,
                 lastUpdated,
+                deleted,
                 version,
                 valueType,
                 safeUnmodifiableList(options)

@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.Nullable;
 
@@ -53,6 +53,7 @@ public abstract class ProgramIndicator extends BaseNameableObject {
     public static final Field<ProgramIndicator, String> displayName = Field.create(DISPLAY_NAME);
     public static final Field<ProgramIndicator, String> created = Field.create(CREATED);
     public static final Field<ProgramIndicator, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<ProgramIndicator, Boolean> deleted = Field.create(DELETED);
     public static final Field<ProgramIndicator, String> shortName = Field.create(SHORT_NAME);
     public static final Field<ProgramIndicator, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
     public static final Field<ProgramIndicator, String> description = Field.create(DESCRIPTION);
@@ -99,10 +100,11 @@ public abstract class ProgramIndicator extends BaseNameableObject {
             @JsonProperty(EXPRESSION) String expression,
             @JsonProperty(DIMENSION_ITEM) String dimensionItem,
             @JsonProperty(FILTER) String filter,
-            @JsonProperty(DECIMALS) Integer decimals
+            @JsonProperty(DECIMALS) Integer decimals,
+            @JsonProperty(DELETED) Boolean deleted
     ) {
         return new AutoValue_ProgramIndicator(
-                uid, code, name, displayName, created, lastUpdated,
+                uid, code, name, displayName, created, lastUpdated, deleted,
                 shortName, displayShortName, description, displayDescription,
                 displayInForm, expression, dimensionItem, filter, decimals);
     }

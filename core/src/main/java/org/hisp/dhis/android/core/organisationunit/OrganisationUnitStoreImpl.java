@@ -37,6 +37,9 @@ import java.util.Date;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals"
+})
 public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + OrganisationUnitModel.TABLE + " (" +
             OrganisationUnitModel.Columns.UID + ", " +

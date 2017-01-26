@@ -42,4 +42,5 @@ public interface IdentifiableObject {
     Date created();
 
     Date lastUpdated();
+
 }

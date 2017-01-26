@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import android.database.sqlite.SQLiteDatabase;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.HeaderUtils;
 import org.hisp.dhis.android.core.data.api.Filter;
@@ -147,9 +148,9 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
             // TODO: check that this is user is authenticated and is persisted in db
             Date serverDateTime = response.headers().getDate(HeaderUtils.DATE);
 
-            if (user.deleted() != null && user.deleted()) {
+            if (isDeleted(user)) {
                 userStore.delete(user.uid());
-                resourceStore.delete(user.uid());
+                deleteInResourceStore(user.uid());
             } else {
                 int updatedRow = userStore.update(user.uid(), user.code(), user.name(), user.displayName(),
                         user.created(), user.lastUpdated(), user.birthday(), user.education(),
@@ -168,12 +169,12 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
                 }
 
                 // update the resource table
-                int updatedResourceRow = resourceStore.update(
+                int updatedResourceRow = updateInReouceStore(
                         User.class.getSimpleName(), user.uid(), serverDateTime, user.uid()
                 );
 
                 if (updatedResourceRow <= 0) {
-                    resourceStore.insert(
+                    insertIntoResourceStore(
                             User.class.getSimpleName(), user.uid(), serverDateTime
                     );
                 }
@@ -182,9 +183,9 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
 
             UserCredentials userCredentials = user.userCredentials();
 
-            if (userCredentials.deleted() != null && userCredentials.deleted()) {
+            if (isDeleted(userCredentials)) {
                 userCredentialsStore.delete(userCredentials.uid());
-                resourceStore.delete(userCredentials.uid());
+                deleteInResourceStore(userCredentials.uid());
             } else {
                 int updatedRow = userCredentialsStore.update(userCredentials.uid(), userCredentials.code(),
                         userCredentials.name(), userCredentials.displayName(), userCredentials.created(),
@@ -198,12 +199,12 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
                             userCredentials.username(), user.uid()
                     );
                 }
-                int updatedResourceRow = resourceStore.update(
+                int updatedResourceRow = updateInReouceStore(
                         UserCredentials.class.getSimpleName(), userCredentials.uid(),
                         serverDateTime, userCredentials.uid()
                 );
                 if (updatedResourceRow <= 0) {
-                    resourceStore.insert(
+                    insertIntoResourceStore(
                             UserCredentials.class.getSimpleName(), userCredentials.uid(), serverDateTime
                     );
                 }
@@ -238,73 +239,106 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
         for (int i = 0; i < size; i++) {
             OrganisationUnit organisationUnit = organisationUnits.get(i);
 
-            if (organisationUnit.deleted() != null && organisationUnit.deleted()) {
-                organisationUnitStore.delete(organisationUnit.uid());
-                resourceStore.delete(organisationUnit.uid());
-                userOrganisationUnitLinkStore.delete(user.uid(), organisationUnit.uid());
+            if (isDeleted(organisationUnit)) {
+                delete(user, organisationUnit);
 
             } else {
-                int updatedRow = organisationUnitStore.update(organisationUnit.uid(),
-                        organisationUnit.code(),
-                        organisationUnit.name(),
-                        organisationUnit.displayName(),
-                        organisationUnit.created(),
-                        organisationUnit.lastUpdated(),
-                        organisationUnit.shortName(),
-                        organisationUnit.displayShortName(),
-                        organisationUnit.description(),
-                        organisationUnit.displayDescription(),
-                        organisationUnit.path(),
-                        organisationUnit.openingDate(),
-                        organisationUnit.closedDate(),
-                        organisationUnit.parent() == null ? null : organisationUnit.parent().uid(),
-                        organisationUnit.level(), organisationUnit.uid());
-
-                if (updatedRow <= 0) {
-                    organisationUnitStore.insert(
-                            organisationUnit.uid(),
-                            organisationUnit.code(),
-                            organisationUnit.name(),
-                            organisationUnit.displayName(),
-                            organisationUnit.created(),
-                            organisationUnit.lastUpdated(),
-                            organisationUnit.shortName(),
-                            organisationUnit.displayShortName(),
-                            organisationUnit.description(),
-                            organisationUnit.displayDescription(),
-                            organisationUnit.path(),
-                            organisationUnit.openingDate(),
-                            organisationUnit.closedDate(),
-                            organisationUnit.parent() == null ? null : organisationUnit.parent().uid(),
-                            organisationUnit.level()
-                    );
-
-                    int updatedResourceRow = resourceStore.update(organisationUnitSimpleName,
-                            organisationUnit.uid(), serverDateTime, organisationUnit.uid());
-
-                    if (updatedResourceRow <= 0) {
-                        resourceStore.insert(
-                                organisationUnitSimpleName, organisationUnit.uid(), serverDateTime
-                        );
-                    }
-
-                    // maintain link between user and organisation unit
-                    int updatedUserOrgunitLinkRow = userOrganisationUnitLinkStore.update(
-                            user.uid(), organisationUnit.uid(),
-                            organisationUnitScope.name(),
-                            user.uid(), organisationUnit.uid()
-                    );
-
-                    if (updatedUserOrgunitLinkRow <= 0) {
-                        userOrganisationUnitLinkStore.insert(
-                                user.uid(), organisationUnit.uid(),
-                                organisationUnitScope.name()
-                        );
-                    }
-
-                }
+                updateOrInsert(
+                        organisationUnitScope, user, serverDateTime,
+                        organisationUnitSimpleName, organisationUnit);
             }
         }
 
+    }
+
+    private void updateOrInsert(OrganisationUnitModel.Scope organisationUnitScope, User user,
+                                Date serverDateTime, String organisationUnitSimpleName,
+                                OrganisationUnit organisationUnit) {
+        int updatedRow = organisationUnitStore.update(organisationUnit.uid(),
+                organisationUnit.code(),
+                organisationUnit.name(),
+                organisationUnit.displayName(),
+                organisationUnit.created(),
+                organisationUnit.lastUpdated(),
+                organisationUnit.shortName(),
+                organisationUnit.displayShortName(),
+                organisationUnit.description(),
+                organisationUnit.displayDescription(),
+                organisationUnit.path(),
+                organisationUnit.openingDate(),
+                organisationUnit.closedDate(),
+                organisationUnit.parent() == null ? null : organisationUnit.parent().uid(),
+                organisationUnit.level(), organisationUnit.uid());
+
+        if (updatedRow <= 0) {
+            organisationUnitStore.insert(
+                    organisationUnit.uid(),
+                    organisationUnit.code(),
+                    organisationUnit.name(),
+                    organisationUnit.displayName(),
+                    organisationUnit.created(),
+                    organisationUnit.lastUpdated(),
+                    organisationUnit.shortName(),
+                    organisationUnit.displayShortName(),
+                    organisationUnit.description(),
+                    organisationUnit.displayDescription(),
+                    organisationUnit.path(),
+                    organisationUnit.openingDate(),
+                    organisationUnit.closedDate(),
+                    organisationUnit.parent() == null ? null : organisationUnit.parent().uid(),
+                    organisationUnit.level()
+            );
+
+            int updatedResourceRow = updateInReouceStore(organisationUnitSimpleName,
+                    organisationUnit.uid(), serverDateTime, organisationUnit.uid());
+
+            if (updatedResourceRow <= 0) {
+                insertIntoResourceStore(
+                        organisationUnitSimpleName, organisationUnit.uid(), serverDateTime
+                );
+            }
+
+            // maintain link between user and organisation unit
+            int updatedUserOrganisationUnitLinkRow = userOrganisationUnitLinkStore.update(
+                    user.uid(), organisationUnit.uid(),
+                    organisationUnitScope.name(),
+                    user.uid(), organisationUnit.uid()
+            );
+
+            if (updatedUserOrganisationUnitLinkRow <= 0) {
+                userOrganisationUnitLinkStore.insert(
+                        user.uid(), organisationUnit.uid(),
+                        organisationUnitScope.name()
+                );
+            }
+
+        }
+    }
+
+    private void delete(User user, OrganisationUnit organisationUnit) {
+        organisationUnitStore.delete(organisationUnit.uid());
+        deleteInResourceStore(organisationUnit.uid());
+        userOrganisationUnitLinkStore.delete(user.uid(), organisationUnit.uid());
+    }
+
+    private int updateInReouceStore(final String className,
+                                    final String uid,
+                                    final Date serverDate,
+                                    final String whereUid) {
+        return resourceStore.update(className, uid, serverDate, whereUid);
+    }
+
+    private long insertIntoResourceStore(final String className,
+                                         final String uid,
+                                         final Date serverDate) {
+        return resourceStore.insert(className, uid, serverDate);
+    }
+
+    private int deleteInResourceStore(final String uid) {
+        return resourceStore.delete(uid);
+    }
+
+    private <T extends BaseIdentifiableObject> boolean isDeleted(T object) {
+        return object.deleted() != null && object.deleted();
     }
 }

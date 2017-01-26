@@ -200,7 +200,10 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
 
             if (user.organisationUnits() != null) {
                 String organisationUnitSimpleName = OrganisationUnit.class.getSimpleName();
-                for (OrganisationUnit organisationUnit : user.organisationUnits()) {
+                int size = user.organisationUnits().size();
+                for (int i = 0; i < size; i++) {
+                    OrganisationUnit organisationUnit = user.organisationUnits().get(i);
+
                     organisationUnitStore.insert(
                             organisationUnit.uid(),
                             organisationUnit.code(),
@@ -225,7 +228,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
 
                     // insert link between user and organisation unit
                     userOrganisationUnitLinkStore.insert(
-                            user.uid(), organisationUnit.uid(), OrganisationUnitModel.SCOPE_DATA_CAPTURE
+                            user.uid(), organisationUnit.uid(), OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE.name()
                     );
                 }
             }

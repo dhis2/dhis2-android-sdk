@@ -316,7 +316,7 @@ public class UserAuthenticateCallIntegrationTests extends AbsStoreTestCase {
                         1L, // id
                         "DXyJmlo9rge", // user
                         "DiszpKrYNg8", // organisation unit
-                        OrganisationUnitModel.SCOPE_DATA_CAPTURE // scope
+                        OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE // scope
                 )
                 .isExhausted();
 

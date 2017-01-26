@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -44,7 +44,18 @@ public interface UserCredentialsStore {
             @Nullable String username,
             @NonNull String user);
 
-    int delete();
+    int update(
+            @NonNull String uid,
+            @Nullable String code,
+            @Nullable String name,
+            @Nullable String displayName,
+            @Nullable Date created,
+            @Nullable Date lastUpdated,
+            @Nullable String username,
+            @NonNull String user,
+            @NonNull String whereUid);
 
-    void close();
+    int delete(@NonNull String uid);
+
+    int delete();
 }

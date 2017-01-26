@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -189,9 +189,4 @@ public class UserCredentialsStoreIntegrationTests extends AbsStoreTestCase {
         assertThatCursor(cursor).isExhausted();
     }
 
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        userCredentialsStore.close();
-        assertThat(database().isOpen()).isTrue();
-    }
 }

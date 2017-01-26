@@ -25,21 +25,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.resource;
+package org.hisp.dhis.android.core.organisationunit;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.user.User;
 
-import java.util.Date;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-public interface ResourceStore {
-    long insert(@NonNull String resourceType, @NonNull String resourceUid, @Nullable Date lastSynced);
-
-    int update(
-            @NonNull String resourceType, @NonNull String resourceUid, @Nullable Date lastSynced,
-            @NonNull String whereResourceUid
-    );
-
-    int delete(@NonNull String resourceUid);
+public interface AssignedOrganisationUnitService {
+    @GET("me")
+    Call<User> getAssignedOrganisationUnits(@Query("fields") @Fields Filter<User> filter);
 
 }

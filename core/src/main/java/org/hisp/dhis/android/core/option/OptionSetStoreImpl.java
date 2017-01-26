@@ -26,12 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.ValueType;
 
@@ -51,23 +50,69 @@ public class OptionSetStoreImpl implements OptionSetStore {
             OptionSetModel.Columns.VALUE_TYPE + ") " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 
-    private final SQLiteStatement sqLiteStatement;
+    private static final String UPDATE_STATEMENT = "UPDATE " + OptionSetModel.TABLE + " SET " +
+            OptionSetModel.Columns.UID + " =?, " +
+            OptionSetModel.Columns.CODE + "=?, " +
+            OptionSetModel.Columns.NAME + "=?, " +
+            OptionSetModel.Columns.DISPLAY_NAME + "=?, " +
+            OptionSetModel.Columns.CREATED + "=?, " +
+            OptionSetModel.Columns.LAST_UPDATED + "=?, " +
+            OptionSetModel.Columns.VERSION + "=?, " +
+            OptionSetModel.Columns.VALUE_TYPE + "=?" + " WHERE " +
+            OptionSetModel.Columns.UID + " = ?;";
+
+
+    private static final String DELETE_STATEMENT = "DELETE FROM " + OptionSetModel.TABLE +
+            " WHERE " + OptionSetModel.Columns.UID + " =?;";
+
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
+    private final SQLiteStatement insertStatement;
 
     public OptionSetStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
+        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
-    public long insert(@NonNull String uid,
-            @Nullable String code,
-            @NonNull String name,
-            @NonNull String displayName,
-            @NonNull Date created,
-            @NonNull Date lastUpdated,
-            @NonNull Integer version,
-            @NonNull ValueType valueType) {
-        sqLiteStatement.clearBindings();
+    public long insert(@NonNull String uid, @NonNull String code, @NonNull String name, @NonNull String displayName,
+                       @NonNull Date created, @NonNull Date lastUpdated, @NonNull Integer version,
+                       @NonNull ValueType valueType) {
+        insertStatement.clearBindings();
+        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, version, valueType);
 
+        return insertStatement.executeInsert();
+    }
+
+    @Override
+    public int update(@NonNull String uid, @NonNull String code, @NonNull String name,
+                      @NonNull String displayName, @NonNull Date created,
+                      @NonNull Date lastUpdated, @NonNull Integer version, @NonNull ValueType valueType,
+                      @NonNull String whereUid) {
+        updateStatement.clearBindings();
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, version, valueType);
+
+        // bind the where clause
+        sqLiteBind(updateStatement, 9, whereUid);
+
+
+        return updateStatement.executeUpdateDelete();
+    }
+
+    @Override
+    public int delete(@NonNull String uid) {
+        deleteStatement.clearBindings();
+
+        // bind the where clause
+        sqLiteBind(deleteStatement, 1, uid);
+
+        return deleteStatement.executeUpdateDelete();
+    }
+
+    private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid, @NonNull String code,
+                               @NonNull String name, @NonNull String displayName, @NonNull Date created,
+                               @NonNull Date lastUpdated, @NonNull Integer version, @NonNull ValueType valueType) {
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);
@@ -75,13 +120,8 @@ public class OptionSetStoreImpl implements OptionSetStore {
         sqLiteBind(sqLiteStatement, 5, created);
         sqLiteBind(sqLiteStatement, 6, lastUpdated);
         sqLiteBind(sqLiteStatement, 7, version);
-        sqLiteBind(sqLiteStatement, 8, valueType.name());
-
-        return sqLiteStatement.executeInsert();
+        sqLiteBind(sqLiteStatement, 8, valueType);
     }
 
-    @Override
-    public void close() {
-        sqLiteStatement.close();
-    }
+
 }

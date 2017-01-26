@@ -45,25 +45,57 @@ public class ResourceStoreImpl implements ResourceStore {
             Columns.LAST_SYNCED + ") " +
             "VALUES(?, ?, ?);";
 
-    private final SQLiteStatement sqLiteStatement;
+    private static final String UPDATE_STATEMENT = "UPDATE " + ResourceModel.TABLE + " SET " +
+            Columns.RESOURCE_TYPE + " =?, " +
+            Columns.RESOURCE_UID + "=?, " +
+            Columns.LAST_SYNCED + "=?, " + " WHERE " +
+            Columns.RESOURCE_UID + " = ?;";
+
+    private static final String DELETE_STATEMENT = "DELETE FROM " + ResourceModel.TABLE +
+            " WHERE " + Columns.RESOURCE_UID+ " =?;";
+
+    private final SQLiteStatement insertStatement;
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
 
     public ResourceStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
     public long insert(@NonNull String resourceType, @NonNull String resourceUid, @Nullable Date lastSynced) {
-        sqLiteStatement.clearBindings();
+        insertStatement.clearBindings();
 
-        sqLiteBind(sqLiteStatement, 1, resourceType);
-        sqLiteBind(sqLiteStatement, 2, resourceUid);
-        sqLiteBind(sqLiteStatement, 3, lastSynced);
+        sqLiteBind(insertStatement, 1, resourceType);
+        sqLiteBind(insertStatement, 2, resourceUid);
+        sqLiteBind(insertStatement, 3, lastSynced);
 
-        return sqLiteStatement.executeInsert();
+        return insertStatement.executeInsert();
     }
 
     @Override
-    public void close() {
-        sqLiteStatement.close();
+    public int update(@NonNull String resourceType, @NonNull String resourceUid, @Nullable Date lastSynced,
+                      @NonNull String whereUid) {
+        updateStatement.clearBindings();
+
+        sqLiteBind(updateStatement, 1, resourceType);
+        sqLiteBind(updateStatement, 2, resourceUid);
+        sqLiteBind(updateStatement, 3, lastSynced);
+
+        // bind the where clause
+        sqLiteBind(updateStatement, 4, whereUid);
+
+        return updateStatement.executeUpdateDelete();
     }
+
+    @Override
+    public int delete(@NonNull String resourceUid) {
+        deleteStatement.clearBindings();
+        sqLiteBind(updateStatement, 1, resourceUid);
+
+        return deleteStatement.executeUpdateDelete();
+    }
+
 }

@@ -26,13 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.option.OptionSetModel.Columns;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -56,9 +58,9 @@ public class OptionSetModelStoreIntegrationTest extends AbsStoreTestCase {
     private static final String DATE = "2016-12-20T16:26:00.007";
 
     private static final String[] OPTION_SET_PROJECTION = {
-            OptionSetModel.Columns.UID, OptionSetModel.Columns.CODE, OptionSetModel.Columns.NAME,
-            OptionSetModel.Columns.DISPLAY_NAME, OptionSetModel.Columns.CREATED,
-            OptionSetModel.Columns.LAST_UPDATED, OptionSetModel.Columns.VERSION, OptionSetModel.Columns.VALUE_TYPE
+            Columns.UID, Columns.CODE, Columns.NAME,
+            Columns.DISPLAY_NAME, Columns.CREATED,
+            Columns.LAST_UPDATED, Columns.VERSION, Columns.VALUE_TYPE
     };
 
     private OptionSetStore optionSetStore;
@@ -90,9 +92,165 @@ public class OptionSetModelStoreIntegrationTest extends AbsStoreTestCase {
     }
 
     @Test
-    public void close_shouldNotCloseDatabase() {
-        optionSetStore.close();
+    public void update_shouldUpdateOptionSetInDatabase() throws Exception {
+        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
-        assertThat(database().isOpen()).isTrue();
+        ContentValues optionSet = new ContentValues();
+        optionSet.put(Columns.ID, 1L);
+        optionSet.put(Columns.UID, UID);
+        optionSet.put(Columns.VERSION, VERSION);
+        optionSet.put(Columns.NAME, NAME);
+        optionSet.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
+
+        database().insert(OptionSetModel.TABLE, null, optionSet);
+
+        String[] projection = {Columns.UID, Columns.NAME, Columns.DISPLAY_NAME};
+        Cursor cursor = database().query(OptionSetModel.TABLE, projection, null, null, null, null, null);
+
+        // checking that option set is successfully inserted
+        assertThatCursor(cursor).hasRow(UID, NAME, DISPLAY_NAME).isExhausted();
+
+        int updatedRow = optionSetStore.update(
+                UID, CODE, "new_name", "new_display_name", date, date, 5, VALUE_TYPE, UID
+        );
+
+        assertThat(updatedRow).isEqualTo(1);
+
+        cursor = database().query(OptionSetModel.TABLE, projection, null, null, null, null, null);
+
+        assertThatCursor(cursor).hasRow(
+                UID, "new_name", "new_display_name"
+        ).isExhausted();
+
     }
+
+    @Test
+    public void delete_shouldDeleteOptionSetInDatabase() throws Exception {
+        ContentValues optionSet = new ContentValues();
+        optionSet.put(Columns.ID, 1L);
+        optionSet.put(Columns.UID, UID);
+        optionSet.put(Columns.NAME, NAME);
+        optionSet.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
+
+        database().insert(OptionSetModel.TABLE, null, optionSet);
+
+        String[] projection = {Columns.UID, Columns.NAME, Columns.DISPLAY_NAME};
+        Cursor cursor = database().query(OptionSetModel.TABLE, projection, null, null, null, null, null);
+
+        // checking that option set is successfully inserted
+        assertThatCursor(cursor).hasRow(UID, NAME, DISPLAY_NAME).isExhausted();
+
+        // deleting the optionSet
+        optionSetStore.delete(UID);
+
+        cursor = database().query(OptionSetModel.TABLE, projection, null, null, null, null, null);
+
+        // checking that optionSet is deleted
+        assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test
+    public void delete_shouldDeleteAnUpdatedOptionSet() throws Exception {
+        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
+
+        ContentValues optionSet = new ContentValues();
+        optionSet.put(Columns.ID, 1L);
+        optionSet.put(Columns.UID, UID);
+        optionSet.put(Columns.NAME, NAME);
+        optionSet.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
+
+        database().insert(OptionSetModel.TABLE, null, optionSet);
+
+        String[] projection = {Columns.UID, Columns.NAME, Columns.DISPLAY_NAME};
+        Cursor cursor = database().query(OptionSetModel.TABLE, projection, null, null, null, null, null);
+
+        // checking that option set is successfully inserted
+        assertThatCursor(cursor).hasRow(UID, NAME, DISPLAY_NAME).isExhausted();
+
+        // updates the option set with new uid
+        optionSetStore.update(
+                "new_uid", CODE, NAME, DISPLAY_NAME, date, date, 5, VALUE_TYPE, UID
+        );
+
+        cursor = database().query(OptionSetModel.TABLE, projection, null, null, null, null, null);
+
+        // checking that optionSet was successfully updated
+        assertThatCursor(cursor).hasRow("new_uid", NAME, DISPLAY_NAME).isExhausted();
+
+        // deletes the optionset
+        optionSetStore.delete("new_uid");
+
+        cursor = database().query(OptionSetModel.TABLE, projection, null, null, null, null, null);
+
+        // checking that the option set was successfully deleted
+        assertThatCursor(cursor).isExhausted();
+
+    }
+
+    //    @Test
+//    public void insertOrReplace_shouldPersistOptionSetInDatabase() throws ParseException {
+//        database().beginTransaction();
+//        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
+//
+//        ContentValues optionSet = new ContentValues();
+//        optionSet.put(Columns.ID, 1L);
+//        optionSet.put(Columns.UID, UID);
+//        optionSet.put(Columns.VERSION, VERSION);
+//        optionSet.put(Columns.NAME, NAME);
+//        optionSet.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
+//
+//        database().insert(OptionSetModel.TABLE, null, optionSet);
+//
+//        String[] projection = {Columns.UID, Columns.NAME, Columns.DISPLAY_NAME};
+//        Cursor cursor = database().query(OptionSetModel.TABLE, projection, null, null, null, null, null);
+//
+//        // checking that option set is successfully inserted
+//        assertThatCursor(cursor).hasRow(UID, NAME, DISPLAY_NAME).isExhausted();
+//
+//
+//        // inserting two options linked to the option set
+//        String optionUid = "option_uid";
+//        ContentValues option = new ContentValues();
+//        option.put(OptionModel.Columns.ID, 1L);
+//        option.put(OptionModel.Columns.UID, optionUid);
+//        option.put(OptionModel.Columns.OPTION_SET, UID);
+//
+//        database().insert(OptionModel.TABLE, null, option);
+//
+//        String option1Uid = "option1_uid";
+//        ContentValues option1 = new ContentValues();
+//        option1.put(OptionModel.Columns.ID, 2L);
+//        option1.put(OptionModel.Columns.UID, option1Uid);
+//        option1.put(OptionModel.Columns.OPTION_SET, UID);
+//
+//        database().insert(OptionModel.TABLE, null, option1);
+//
+//        String[] optionProjection = {OptionModel.Columns.UID, OptionModel.Columns.OPTION_SET};
+//
+//        cursor = database().query(OptionModel.TABLE, optionProjection, null, null, null, null, null);
+//
+//        assertThatCursor(cursor).hasRow(optionUid, UID);
+//        assertThatCursor(cursor).hasRow(option1Uid, UID).isExhausted();
+//
+//        String newOptionSetName = "newOptionSetName";
+//        String newOptionSetDisplayName = "newOptionSetDisplayName";
+//
+//        optionSetStore.insertOrReplace(UID, CODE, newOptionSetName, newOptionSetDisplayName, date, date, VERSION, VALUE_TYPE);
+//
+//        cursor = database().query(OptionSetModel.TABLE, projection, null, null, null, null, null);
+//
+//        assertThatCursor(cursor).hasRow(UID, newOptionSetName, newOptionSetDisplayName).isExhausted();
+//
+//
+//        cursor = database().query(OptionModel.TABLE, optionProjection, null, null, null, null, null);
+//
+//        assertThatCursor(cursor).hasRow(optionUid, UID);
+//        assertThatCursor(cursor).hasRow(option1Uid, UID).isExhausted();
+//
+//        database().setTransactionSuccessful();
+//
+//        database().endTransaction();
+//
+//    }
+
 }

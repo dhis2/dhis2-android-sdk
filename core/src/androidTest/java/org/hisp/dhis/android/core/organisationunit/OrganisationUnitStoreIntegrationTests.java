@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.organisationunit;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -125,12 +125,6 @@ public class OrganisationUnitStoreIntegrationTests extends AbsStoreTestCase {
                 dateString,
                 null, LEVEL
         ).isExhausted();
-    }
-
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        organisationUnitStore.close();
-        assertThat(database().isOpen()).isTrue();
     }
 
     @Test

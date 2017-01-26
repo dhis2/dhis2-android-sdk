@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -67,6 +67,12 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
             UserModel.Columns.PHONE_NUMBER,
             UserModel.Columns.NATIONALITY
     };
+
+    private static final Long ID = 2L;
+    private static final String UID = "test_user_uid";
+    private static final String CODE = "test_code";
+    private static final String NAME = "test_name";
+    private static final String DISPLAY_NAME = "test_display_name";
 
     private UserStore userStore;
 
@@ -158,6 +164,56 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
     }
 
     @Test
+    public void insertAndReplace_shouldReplaceRowInDatabase() throws Exception {
+        ContentValues user = new ContentValues();
+        user.put(UserModel.Columns.ID, ID);
+        user.put(UserModel.Columns.UID, UID);
+        user.put(UserModel.Columns.CODE, CODE);
+        user.put(UserModel.Columns.NAME, NAME);
+        user.put(UserModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
+
+        database().insert(UserModel.TABLE, null, user);
+        String[] projection = {
+                UserModel.Columns.ID, UserModel.Columns.UID,
+                UserModel.Columns.CODE, UserModel.Columns.NAME,
+                UserModel.Columns.DISPLAY_NAME
+        };
+
+        Cursor cursor = database().query(UserModel.TABLE, projection, null, null, null, null, null);
+
+        // checking that the user was successfully inserted
+        assertThatCursor(cursor).hasRow(ID, UID, CODE, NAME, DISPLAY_NAME);
+
+        Date date = new Date();
+
+        String newName = "test_new_name";
+        String newDisplayName = "test_new_display_name";
+
+        userStore.update(UID, CODE, newName, newDisplayName, date,
+                date,
+                "test_user_birthday",
+                "test_user_education",
+                "test_user_gender",
+                "test_user_job_title",
+                "test_user_surname",
+                "test_user_first_name",
+                "test_user_introduction",
+                "test_user_employer",
+                "test_user_interests",
+                "test_user_languages",
+                "test_user_email",
+                "test_user_phone_number",
+                "test_user_nationality",
+                UID
+        );
+
+        cursor = database().query(UserModel.TABLE, projection, null, null, null, null, null);
+        Long replacedId = ID + 1L;
+        assertThatCursor(cursor).hasRow(replacedId, UID, CODE, newName, newDisplayName).isExhausted();
+
+    }
+
+    @Test
     public void delete_shouldDeleteAllRows() {
         ContentValues user = create(1L, "test_user_id");
         database().insert(UserModel.TABLE, null, user);
@@ -211,11 +267,4 @@ public class UserStoreIntegrationTests extends AbsStoreTestCase {
 //                .hasRow(UserCredentialsContractIntegrationTests.USER_CREDENTIALS_PROJECTION, userCredentials)
 //                .isExhausted();
 //    }
-
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        userStore.close();
-
-        assertThat(database().isOpen()).isTrue();
-    }
 }

@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -155,9 +155,4 @@ public class UserOrganisationUnitLinkStoreIntegrationsTests extends AbsStoreTest
         );
     }
 
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        organisationUnitLinkStore.close();
-        assertThat(database().isOpen()).isTrue();
-    }
 }

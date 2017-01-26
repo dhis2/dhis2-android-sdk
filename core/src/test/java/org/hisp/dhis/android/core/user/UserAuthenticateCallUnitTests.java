@@ -347,7 +347,7 @@ public class UserAuthenticateCallUnitTests {
         verify(userOrganisationUnitLinkStore, times(1)).insert(
                 "test_user_uid",
                 "test_organisation_unit_uid",
-                OrganisationUnitModel.SCOPE_DATA_CAPTURE
+                OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE.name()
         );
     }
 

@@ -75,9 +75,4 @@ public class ResourceStoreIntegrationTest extends AbsStoreTestCase {
         resourceStore.insert(null, RESOURCE_UID, date);
     }
 
-    @Test
-    public void close_shouldNotCloseDatabase() throws Exception {
-        resourceStore.close();
-        assertThat(database().isOpen()).isTrue();
-    }
 }

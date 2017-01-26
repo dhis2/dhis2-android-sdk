@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.organisationunit;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -43,7 +43,17 @@ public interface OrganisationUnitStore {
             @Nullable String parent, @Nullable Integer level
     );
 
+    int update(
+            @NonNull String uid, @Nullable String code, @Nullable String name,
+            @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
+            @Nullable String shortName, @Nullable String displayShortName,
+            @Nullable String description, @Nullable String displayDescription,
+            @Nullable String path, @Nullable Date openingDate, @Nullable Date closedDate,
+            @Nullable String parent, @Nullable Integer level, @NonNull String whereUid
+    );
+
+    int delete(@NonNull String uid);
+
     int delete();
 
-    void close();
 }

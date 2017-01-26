@@ -46,7 +46,6 @@ import java.util.Date;
 @AutoValue
 public abstract class OrganisationUnitModel extends BaseNameableObjectModel {
     public static final String TABLE = "OrganisationUnit";
-    public static final String SCOPE_DATA_CAPTURE = "dataCapture";
 
     public static class Columns extends BaseNameableObjectModel.Columns {
         public static final String PATH = "path";
@@ -54,6 +53,10 @@ public abstract class OrganisationUnitModel extends BaseNameableObjectModel {
         public static final String CLOSED_DATE = "closedDate";
         public static final String PARENT = "parent";
         public static final String LEVEL = "level";
+    }
+    public enum Scope {
+        SCOPE_DATA_CAPTURE,
+        SCOPE_TEI_SEARCH
     }
 
     public static OrganisationUnitModel create(Cursor cursor) {

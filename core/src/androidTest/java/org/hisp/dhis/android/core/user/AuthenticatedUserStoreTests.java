@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -61,7 +61,7 @@ public class AuthenticatedUserStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        authenticatedUserStore = new AuthenticatedUserStoreImpl(database());
+        authenticatedUserStore = new AuthenticatedUserStoreImpl(databaseAdapter());
         // row which will be referenced
         ContentValues userRow = UserStoreTests.create(1L, USER_UID);
         database().insert(UserModel.TABLE, null, userRow);

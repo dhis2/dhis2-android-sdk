@@ -38,7 +38,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
+import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
@@ -70,6 +72,7 @@ public final class D2 {
     private final Retrofit retrofit;
     private final DbOpenHelper dbOpenHelper;
     private final SQLiteDatabase sqLiteDatabase;
+    private final DatabaseAdapter databaseAdapter;
 
     // services
     private final UserService userService;
@@ -86,6 +89,7 @@ public final class D2 {
         this.retrofit = retrofit;
         this.dbOpenHelper = dbOpenHelper;
         this.sqLiteDatabase = dbOpenHelper.getWritableDatabase();
+        this.databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
 
         // services
         this.userService = retrofit.create(UserService.class);
@@ -98,7 +102,7 @@ public final class D2 {
         this.userOrganisationUnitLinkStore =
                 new UserOrganisationUnitLinkStoreImpl(sqLiteDatabase);
         this.authenticatedUserStore =
-                new AuthenticatedUserStoreImpl(sqLiteDatabase);
+                new AuthenticatedUserStoreImpl(databaseAdapter);
         this.organisationUnitStore =
                 new OrganisationUnitStoreImpl(sqLiteDatabase);
     }
@@ -132,7 +136,7 @@ public final class D2 {
     public Callable<Boolean> isUserLoggedIn() {
         SQLiteDatabase sqLiteDatabase = dbOpenHelper.getWritableDatabase();
         AuthenticatedUserStore authenticatedUserStore =
-                new AuthenticatedUserStoreImpl(sqLiteDatabase);
+                new AuthenticatedUserStoreImpl(databaseAdapter);
 
         return new IsUserLoggedInCallable(authenticatedUserStore);
     }
@@ -149,6 +153,7 @@ public final class D2 {
         private HttpUrl baseUrl;
         private DbOpenHelper dbOpenHelper;
         private OkHttpClient okHttpClient;
+        private DatabaseAdapter databaseAdapter;
 
         public Builder() {
             // empty constructor
@@ -157,6 +162,12 @@ public final class D2 {
         @NonNull
         public Builder baseUrl(@NonNull HttpUrl baseUrl) {
             this.baseUrl = baseUrl;
+            return this;
+        }
+
+        @NonNull
+        public Builder databaseAdapter(@NonNull DatabaseAdapter databaseAdapter) {
+            this.databaseAdapter = databaseAdapter;
             return this;
         }
 

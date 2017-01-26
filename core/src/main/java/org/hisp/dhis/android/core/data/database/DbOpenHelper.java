@@ -670,6 +670,16 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             "UNIQUE (" + UserRoleProgramLinkModel.Columns.USER_ROLE + ", " +
             UserRoleProgramLinkModel.Columns.PROGRAM + ")" +
             ");";
+
+    /**
+     * This method should be used only for testing purposes
+     */
+    // ToDo: Revise usage of this method
+    @VisibleForTesting
+    static DatabaseAdapter createDatabaseAdapter() {
+        return new SqLiteDatabaseAdapter(SQLiteDatabase.create(null));
+    }
+
     /**
      * This method should be used only for testing purposes
      */

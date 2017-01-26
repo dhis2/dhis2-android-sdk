@@ -28,37 +28,49 @@
 
 package org.hisp.dhis.android.core.data.database;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
-import org.junit.After;
-import org.junit.Before;
 
-import java.io.IOException;
+public class SqLiteDatabaseAdapter implements DatabaseAdapter {
 
-import static com.google.common.truth.Truth.assertThat;
+    private final SQLiteDatabase sqLiteDatabase;
+    private final DbOpenHelper dbOpenHelper;
 
-public abstract class AbsStoreTestCase {
-    private SQLiteDatabase sqLiteDatabase;
-    private DatabaseAdapter databaseAdapter;
-
-    @Before
-    public void setUp() throws IOException {
-        databaseAdapter = DbOpenHelper.createDatabaseAdapter();
-        sqLiteDatabase = DbOpenHelper.create();
-        sqLiteDatabase.execSQL("PRAGMA foreign_keys = ON;");
+    public SqLiteDatabaseAdapter(@NonNull DbOpenHelper dbOpenHelper) {
+        this.dbOpenHelper = dbOpenHelper;
+        this.sqLiteDatabase = dbOpenHelper.getWritableDatabase();
     }
 
-    @After
-    public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
+    @Override
+    public SQLiteStatement compileStatement(String sql) {
+        return sqLiteDatabase.compileStatement(sql);
     }
 
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
+    @Override
+    public Cursor query(String table, String sql, String... selectionArgs) {
+        return sqLiteDatabase.rawQuery(sql, selectionArgs);
     }
 
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
+    @Override
+    public long executeInsert(String table, SQLiteStatement sqLiteStatement) {
+        return sqLiteStatement.executeInsert();
+    }
+
+    @Override
+    public int delete(String table, String whereClause, String[] whereArgs) {
+        return sqLiteDatabase.delete(table, whereClause, whereArgs);
+    }
+
+    /**
+     * This method should be used only for testing purposes
+     */
+    // ToDo: Revise usage of this method
+    @VisibleForTesting
+    public SqLiteDatabaseAdapter(SQLiteDatabase sqLiteDatabase) {
+        this.sqLiteDatabase = sqLiteDatabase;
     }
 }

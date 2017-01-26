@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user;
 
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
@@ -201,7 +201,7 @@ public class UserAuthenticateCallTests extends AbsStoreTestCase {
         UserStore userStore = new UserStoreImpl(database());
         UserCredentialsStore userCredentialsStore = new UserCredentialsStoreImpl(database());
         OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(database());
-        AuthenticatedUserStore authenticatedUserStore = new AuthenticatedUserStoreImpl(database());
+        AuthenticatedUserStore authenticatedUserStore = new AuthenticatedUserStoreImpl(databaseAdapter());
         UserOrganisationUnitLinkStore userOrganisationUnitLinkStore = new UserOrganisationUnitLinkStoreImpl(database());
 
         authenticateUserCall = new UserAuthenticateCall(userService, database(), userStore,

@@ -26,14 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
@@ -49,12 +52,12 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
             " (" + AuthenticatedUserModel.Columns.USER + ", " + AuthenticatedUserModel.Columns.CREDENTIALS + ")" +
             " VALUES (?, ?);";
 
-    private final SQLiteDatabase sqLiteDatabase;
     private final SQLiteStatement insertRowStatement;
+    private final DatabaseAdapter databaseAdapter;
 
-    public AuthenticatedUserStoreImpl(@NonNull SQLiteDatabase database) {
-        this.sqLiteDatabase = database;
-        this.insertRowStatement = database.compileStatement(INSERT_STATEMENT);
+    public AuthenticatedUserStoreImpl(@NonNull DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertRowStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
@@ -69,9 +72,9 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
     @Override
     public List<AuthenticatedUserModel> query() {
         List<AuthenticatedUserModel> rows = new ArrayList<>();
+        String sql = "SELECT " + Arrays.toString(PROJECTION) + " FROM " + AuthenticatedUserModel.TABLE;
 
-        Cursor queryCursor = sqLiteDatabase.query(AuthenticatedUserModel.TABLE,
-                PROJECTION, null, null, null, null, null);
+        Cursor queryCursor = databaseAdapter.query(AuthenticatedUserModel.TABLE, sql);
 
         if (queryCursor == null) {
             return rows;
@@ -94,7 +97,7 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
 
     @Override
     public int delete() {
-        return sqLiteDatabase.delete(AuthenticatedUserModel.TABLE, null, null);
+        return databaseAdapter.delete(AuthenticatedUserModel.TABLE, null, null);
     }
 
     @Override

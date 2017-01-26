@@ -26,11 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.data.api;
+package org.hisp.dhis.android.core.data.api;
 
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
+import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStoreImpl;
 
@@ -46,7 +47,7 @@ public final class BasicAuthenticatorFactory {
         }
 
         AuthenticatedUserStore authenticatedUserStore = new AuthenticatedUserStoreImpl(
-                dbOpenHelper.getWritableDatabase());
+                new SqLiteDatabaseAdapter(dbOpenHelper));
         return new BasicAuthenticator(authenticatedUserStore);
     }
 }

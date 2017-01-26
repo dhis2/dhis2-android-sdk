@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.data.database;
 
 import android.support.test.runner.AndroidJUnit4;
 

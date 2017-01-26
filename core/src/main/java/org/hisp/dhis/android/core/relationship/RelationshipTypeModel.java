@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship;
 
 import android.content.ContentValues;
 import android.database.Cursor;

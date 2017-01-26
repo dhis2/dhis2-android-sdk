@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.data.api;
+package org.hisp.dhis.android.core.data.api;
 
 import android.support.annotation.NonNull;
 

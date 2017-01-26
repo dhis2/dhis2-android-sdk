@@ -62,8 +62,7 @@ public final class DbDateColumnAdapter implements ColumnTypeAdapter<Date> {
     @Override
     public void toContentValues(ContentValues contentValues, String columnName, Date date) {
         if (date != null) {
-            contentValues.put(columnName,
-                    BaseIdentifiableObject.DATE_FORMAT.format(date));
+            contentValues.put(columnName, BaseIdentifiableObject.DATE_FORMAT.format(date));
         }
     }
 }

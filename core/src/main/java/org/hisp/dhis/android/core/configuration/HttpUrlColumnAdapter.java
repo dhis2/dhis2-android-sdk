@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -29,45 +29,29 @@
 package org.hisp.dhis.android.core.configuration;
 
 import android.content.ContentValues;
-import android.database.MatrixCursor;
-import android.support.test.runner.AndroidJUnit4;
+import android.database.Cursor;
 
-import org.hisp.dhis.android.core.configuration.ConfigurationModel.Columns;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
 import okhttp3.HttpUrl;
 
-import static com.google.common.truth.Truth.assertThat;
+final class HttpUrlColumnAdapter implements ColumnTypeAdapter<HttpUrl> {
 
-@RunWith(AndroidJUnit4.class)
-public class ConfigurationModelTests {
-    private static final long ID = 11L;
-    private static final String SERVER_URL = "https://testurl.org/";
+    @Override
+    public HttpUrl fromCursor(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        String sourceServerUrl = cursor.getString(columnIndex);
 
-    @Test
-    public void create_shouldConvertToModel() {
-        MatrixCursor cursor = new MatrixCursor(new String[]{
-                Columns.ID, Columns.SERVER_URL
-        });
-        cursor.addRow(new Object[]{
-                ID, SERVER_URL
-        });
-        cursor.moveToFirst();
-
-        ConfigurationModel model = ConfigurationModel.create(cursor);
-
-        assertThat(model.id()).isEqualTo(ID);
-        assertThat(model.serverUrl()).isEqualTo(HttpUrl.parse(SERVER_URL));
+        if (sourceServerUrl != null) {
+            return HttpUrl.parse(sourceServerUrl);
+        }
+        return null;
     }
 
-    @Test
-    public void toContentValues_shouldConvertToContentValuesCorrectly() {
-        ConfigurationModel configurationModel = ConfigurationModel.builder()
-                .id(ID).serverUrl(HttpUrl.parse(SERVER_URL)).build();
-
-        ContentValues contentValues = configurationModel.toContentValues();
-        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.SERVER_URL)).isEqualTo(SERVER_URL);
+    @Override
+    public void toContentValues(ContentValues values, String columnName, HttpUrl value) {
+        if (value != null) {
+            values.put(columnName, value.toString());
+        }
     }
 }

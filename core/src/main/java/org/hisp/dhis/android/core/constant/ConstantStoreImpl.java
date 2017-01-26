@@ -54,13 +54,10 @@ public class ConstantStoreImpl implements ConstantStore {
         this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
     }
 
-    // TODO: Don't know if these should be @NonNull or @Nullable. They seem to differ in
-    // the other stores. For OptionSet they also differ between interface and implementation
-
     @Override
-    public long insert(@Nullable String uid, @Nullable String code, @NonNull String name,
-            @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
-            @NonNull String value) {
+    public long insert(@NonNull String uid, @Nullable String code, @Nullable String name,
+                       @Nullable String displayName, @Nullable Date created,
+                       @Nullable Date lastUpdated, @NonNull String value) {
         insertStatement.clearBindings();
 
         sqLiteBind(insertStatement, 1, uid);

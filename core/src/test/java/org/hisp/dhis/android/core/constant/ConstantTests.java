@@ -28,25 +28,62 @@
 
  package org.hisp.dhis.android.core.constant;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.hisp.dhis.android.core.Inject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.text.ParseException;
+
+import static org.assertj.core.api.Java6Assertions.assertThat;
+
 public class ConstantTests {
 
-    // TODO: Unit tests for Constants API model client model
+    /**
+     * Checks whether the parsing from JSON string works as expected. Payload intentionally
+     * contains properties which are not present in the model, in order to check if model
+     * explicitly ignores unknown values.
+     *
+     * @throws IOException if parsing fails.
+     */
+    @Test
+    public void constant_shouldMapFromJsonString() throws IOException, ParseException {
+        ObjectMapper objectMapper = Inject.objectMapper();
 
-//    @Test
-//    public void equals_shouldConformToContract() {
-//        Constant validConstant = Constant.builder()
-//                .uid("a1b2c3d4e5f")
-//                .created(new Date())
-//                .lastUpdated(new Date())
-//                .build();
-//
-//        EqualsVerifier.forClass(validConstant.getClass())
-//                .suppress(Warning.NULL_FIELDS)
-//                .verify();
-//    }
-//
-//    @Test(expected = IllegalStateException.class)
-//    public void build_shouldThrowOnNullUidField() {
-//        Constant.builder().build();
-//    }
+        // parse payload into model instance
+        Constant constant = objectMapper.readValue("{" +
+                "\"created\":\"2013-03-11T16:39:33.083\"," +
+                "\"lastUpdated\":\"2013-03-11T16:39:33.083\"," +
+                "\"name\":\"Pi\"," +
+                "\"href\":\"https://play.dhis2.org/demo/api/constants/bCqvfPR02Im\"," +
+                "\"id\":\"bCqvfPR02Im\"," +
+                "\"displayName\":\"Pi\"," +
+                "\"externalAccess\":false," +
+                "\"value\":3.14," +
+                "\"access\":{" +
+                "\"read\":true," +
+                "\"update\":false," +
+                "\"externalize\":false," +
+                "\"delete\":false," +
+                "\"write\":false," +
+                "\"manage\":false}," +
+                "\"userGroupAccesses\":[]," +
+                "\"attributeValues\":[]," +
+                "\"translations\":[]" +
+                "}", Constant.class);
+
+        // we need to make sure that jackson is parsing dates in correct way
+        assertThat(constant.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2013-03-11T16:39:33.083"));
+        assertThat(constant.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2013-03-11T16:39:33.083"));
+
+        // check if all properties are present and correspond to values in payload
+        assertThat(constant.name()).isEqualTo("Pi");
+        assertThat(constant.displayName()).isEqualTo("Pi");
+        assertThat(constant.value()).isEqualTo(3.14);
+        assertThat(constant.uid()).isEqualTo("bCqvfPR02Im");
+    }
 }

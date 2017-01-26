@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
 
-// TODO: Tests
 @AutoValue
 public abstract class OrganisationUnitModel extends BaseNameableObjectModel {
     public static final String TABLE = "OrganisationUnit";

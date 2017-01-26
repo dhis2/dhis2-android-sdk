@@ -28,49 +28,84 @@
 
  package org.hisp.dhis.android.core.dataelement;
 
-import org.junit.Before;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.hisp.dhis.android.core.Inject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.ValueType;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.text.ParseException;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
+import static org.assertj.core.api.Java6Assertions.assertThat;
+
 public class DataElementTests {
-
-    private static DataElementModel.Builder VALID_BUILDER;
-
-    @Before
-    public void setUp() {
-        VALID_BUILDER = createValidBuilder();
-    }
-
-    private DataElementModel.Builder createValidBuilder() {
-        return DataElementModel.builder()
-                .uid("a1b2c3d4e5f")
-                .created(new java.util.Date())
-                .lastUpdated(new java.util.Date());
-    }
-
-    //**************************************************************************************
-    //
-    // BASE IDENTIFIABLE OBJECT TESTS
-    // THIS SHOULD BE LEGAL SINCE PROJECTION CAN BE SPECIFIED WITHOUT UID
-    //
-    //**************************************************************************************
-
-    public void build_withNullUidField() {
-        VALID_BUILDER.uid(null).build();
-    }
-
-    //**************************************************************************************
-    //
-    // EQUALS VERIFIER
-    //
-    //**************************************************************************************
 
     @Test
     public void equals_shouldConformToContract() {
-        EqualsVerifier.forClass(VALID_BUILDER.build().getClass())
+        EqualsVerifier.forClass(DataElementModel.builder().build().getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();
+    }
+
+    @Test
+    public void dataElement_shouldMapFromJsonString() throws IOException, ParseException {
+        ObjectMapper objectMapper = Inject.objectMapper();
+        DataElement dataElement = objectMapper.readValue("{" +
+                        "\"code\":\"DE_2005735\"," +
+                        "\"lastUpdated\":\"2014-11-11T21:56:05.560\"," +
+                        "\"id\":\"g9eOBujte1U\"," +
+                        "\"href\":\"https://play.dhis2.org/demo/api/dataElements/g9eOBujte1U\"," +
+                        "\"created\":\"2012-09-20T08:36:46.552\"," +
+                        "\"name\":\"MCH ANC Visit\"," +
+                        "\"shortName\":\"ANC Visit\"," +
+                        "\"aggregationType\":\"AVERAGE\"," +
+                        "\"domainType\":\"TRACKER\"," +
+                        "\"displayName\":\"MCH ANC Visit\"," +
+                        "\"publicAccess\":\"rw------\"," +
+                        "\"displayShortName\":\"ANC Visit\"," +
+                        "\"externalAccess\":false," +
+                        "\"valueType\":\"TEXT\"," +
+                        "\"formName\":\"ANC Visit\"," +
+                        "\"dimensionItem\":\"g9eOBujte1U\"," +
+                        "\"displayFormName\":\"ANC Visit\"," +
+                        "\"zeroIsSignificant\":false," +
+                        "\"url\":\"\"," +
+                        "\"optionSetValue\":true," +
+                        "\"dimensionItemType\":\"DATA_ELEMENT\"," +
+                        "\"optionSet\":{\"id\":\"fUS7fy2HbaI\"}," +
+                        "\"categoryCombo\":{\"id\":\"p0KPaWEg3cf\"}," +
+                        "\"user\":{\"id\":\"GOLswS44mh8\"}," +
+                        "\"dataSetElements\":[]," +
+                        "\"translations\":[],\"userGroupAccesses\":[]," +
+                        "\"dataElementGroups\":[]," +
+                        "\"attributeValues\":[]," +
+                        "\"aggregationLevels\":[]}",
+                DataElement.class);
+
+        // basic properties
+        assertThat(dataElement.uid()).isEqualTo("g9eOBujte1U");
+        assertThat(dataElement.code()).isEqualTo("DE_2005735");
+        assertThat(dataElement.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2012-09-20T08:36:46.552"));
+        assertThat(dataElement.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2014-11-11T21:56:05.560"));
+
+        // names
+        assertThat(dataElement.name()).isEqualTo("MCH ANC Visit");
+        assertThat(dataElement.shortName()).isEqualTo("ANC Visit");
+        assertThat(dataElement.displayName()).isEqualTo("MCH ANC Visit");
+        assertThat(dataElement.displayShortName()).isEqualTo("ANC Visit");
+        assertThat(dataElement.formName()).isEqualTo("ANC Visit");
+        assertThat(dataElement.displayFormName()).isEqualTo("ANC Visit");
+
+        assertThat(dataElement.valueType()).isEqualTo(ValueType.TEXT);
+        assertThat(dataElement.zeroIsSignificant()).isEqualTo(false);
+        assertThat(dataElement.optionSet().uid()).isEqualTo("fUS7fy2HbaI");
+        assertThat(dataElement.domainType()).isEqualTo("TRACKER");
     }
 }

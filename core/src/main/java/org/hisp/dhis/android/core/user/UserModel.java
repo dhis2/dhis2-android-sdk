@@ -38,7 +38,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 
-// TODO: Tests
 @AutoValue
 public abstract class UserModel extends BaseIdentifiableObjectModel {
     public static final String TABLE = "User";

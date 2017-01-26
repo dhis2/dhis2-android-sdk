@@ -29,6 +29,8 @@
  package org.hisp.dhis.android.core.dataelement;
 
 import android.content.ContentValues;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.ValueType;
 
@@ -54,7 +56,7 @@ public class CreateDataElementUtils {
     // timestamp
     private static final String DATE = "2014-03-20T13:37:00.007";
 
-    public static ContentValues create(long id, String uid, String optionSetId) {
+    public static ContentValues create(long id, @NonNull String uid, @Nullable String optionSetId) {
         ContentValues dataElement = new ContentValues();
         dataElement.put(DataElementModel.Columns.ID, id);
         dataElement.put(DataElementModel.Columns.UID, uid);

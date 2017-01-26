@@ -39,7 +39,7 @@ public interface ProgramStageDataElementStore {
             @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
             @NonNull Boolean displayInReports, @NonNull Boolean compulsory,
             @NonNull Boolean allowProvidedElsewhere, @Nullable Integer sortOrder,
-            @NonNull Boolean allowFutureDate, @NonNull String dataElement, @Nullable String programStage
+            @NonNull Boolean allowFutureDate, @NonNull String dataElement, @Nullable String programStageSection
     );
 
     void close();

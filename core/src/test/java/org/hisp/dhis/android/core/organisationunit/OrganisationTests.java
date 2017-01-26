@@ -57,6 +57,7 @@ public class OrganisationTests {
                         "    \"displayName\": \"Baomahun CHC\",\n" +
                         "    \"displayShortName\": \"Baomahun CHC\",\n" +
                         "    \"externalAccess\": false,\n" +
+                        "    \"deleted\": false,\n" +
                         "    \"path\": \"/ImspTQPwCqd/O6uvpzGd5pu/npWGUj37qDe/FLjwMPWLrL2\",\n" +
                         "    \"featureType\": \"POINT\",\n" +
                         "    \"openingDate\": \"1970-01-01T00:00:00.000\",\n" +
@@ -153,6 +154,8 @@ public class OrganisationTests {
         assertThat(organisationUnit.displayName()).isEqualTo("Baomahun CHC");
         assertThat(organisationUnit.displayShortName()).isEqualTo("Baomahun CHC");
         assertThat(organisationUnit.parent().uid()).isEqualTo("npWGUj37qDe");
+
+        assertThat(organisationUnit.deleted()).isFalse();
 
         // checking programs
         assertThat(organisationUnit.programs().get(0).uid()).isEqualTo("uy2gU8kT1jF");

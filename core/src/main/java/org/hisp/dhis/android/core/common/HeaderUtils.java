@@ -25,37 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common;
 
-package org.hisp.dhis.android.core.user;
+public final class HeaderUtils {
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+    public static final String CONNECTION = "Connection";
+    public static final String CONTENT_TYPE = "Content-Type";
+    public static final String CONTENT_ENCODING = "Content-Encoding";
+    public static final String DATE = "Date";
+    public static final String SERVER = "Server";
+    public static final String TRANSER_ENCODING = "Transfer-Encoding";
+    public static final String X_CONTENT_TYPE_OPTIONS = "X-Content-Type-Options";
+    public static final String X_FRAME_OPTIONS = "X-Frame-Options";
+    public static final String X_XSS_PROTECTION = "X-XSS-Protection";
 
-import java.util.Date;
+    private HeaderUtils() {
+        // no instances
+    }
 
-public interface UserCredentialsStore {
-    long insert(
-            @NonNull String uid,
-            @Nullable String code,
-            @Nullable String name,
-            @Nullable String displayName,
-            @Nullable Date created,
-            @Nullable Date lastUpdated,
-            @Nullable String username,
-            @NonNull String user);
-
-    int update(
-            @NonNull String uid,
-            @Nullable String code,
-            @Nullable String name,
-            @Nullable String displayName,
-            @Nullable Date created,
-            @Nullable Date lastUpdated,
-            @Nullable String username,
-            @NonNull String user,
-            @NonNull String whereUid);
-
-    int delete(@NonNull String uid);
-
-    int delete();
 }

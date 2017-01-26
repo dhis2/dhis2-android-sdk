@@ -25,37 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.organisationunit;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import java.util.Date;
+public interface OrganisationUnitProgramLinkStore {
+    long insert(@NonNull String organisationUnitUid, @NonNull String programUid);
 
-public interface UserCredentialsStore {
-    long insert(
-            @NonNull String uid,
-            @Nullable String code,
-            @Nullable String name,
-            @Nullable String displayName,
-            @Nullable Date created,
-            @Nullable Date lastUpdated,
-            @Nullable String username,
-            @NonNull String user);
-
-    int update(
-            @NonNull String uid,
-            @Nullable String code,
-            @Nullable String name,
-            @Nullable String displayName,
-            @Nullable Date created,
-            @Nullable Date lastUpdated,
-            @Nullable String username,
-            @NonNull String user,
-            @NonNull String whereUid);
-
-    int delete(@NonNull String uid);
-
-    int delete();
+    void close();
 }

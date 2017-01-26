@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option;
 
 import android.support.annotation.NonNull;
 
@@ -41,5 +41,14 @@ public interface OptionSetStore {
             @NonNull Integer version, @NonNull ValueType valueType
     );
 
-    void close();
+    int update(
+            @NonNull String uid, @NonNull String code, @NonNull String name,
+            @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+            @NonNull Integer version, @NonNull ValueType valueType, @NonNull String whereUid
+    );
+
+    int delete(
+            @NonNull String uid
+    );
+
 }

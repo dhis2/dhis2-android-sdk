@@ -25,37 +25,54 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.organisationunit;
 
-package org.hisp.dhis.android.core.user;
-
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.util.Date;
+import com.gabrielittner.auto.value.cursor.ColumnName;
+import com.google.auto.value.AutoValue;
 
-public interface UserCredentialsStore {
-    long insert(
-            @NonNull String uid,
-            @Nullable String code,
-            @Nullable String name,
-            @Nullable String displayName,
-            @Nullable Date created,
-            @Nullable Date lastUpdated,
-            @Nullable String username,
-            @NonNull String user);
+import org.hisp.dhis.android.core.common.BaseModel;
 
-    int update(
-            @NonNull String uid,
-            @Nullable String code,
-            @Nullable String name,
-            @Nullable String displayName,
-            @Nullable Date created,
-            @Nullable Date lastUpdated,
-            @Nullable String username,
-            @NonNull String user,
-            @NonNull String whereUid);
+@AutoValue
+public abstract class OrganisationUnitProgramLinkModel extends BaseModel {
+    public static final String ORGANISATION_UNIT_PROGRAM_LINK = "OrganisationUnitProgramLink";
 
-    int delete(@NonNull String uid);
+    public static class Columns extends BaseModel.Columns {
+        public static final String PROGRAM = "program";
+        public static final String ORGANISATION_UNIT = "organisationUnit";
+    }
 
-    int delete();
+    @Nullable
+    @ColumnName(Columns.PROGRAM)
+    public abstract String program();
+
+    @Nullable
+    @ColumnName(Columns.ORGANISATION_UNIT)
+    public abstract String organisationUnit();
+
+    @NonNull
+    public abstract ContentValues toContentValues();
+
+    @NonNull
+    public static OrganisationUnitProgramLinkModel create(Cursor cursor) {
+        return AutoValue_OrganisationUnitProgramLinkModel.createFromCursor(cursor);
+    }
+
+    @NonNull
+    public static Builder builder() {
+        return new $$AutoValue_OrganisationUnitProgramLinkModel.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder program(@Nullable String program);
+
+        public abstract Builder organisationUnit(@Nullable String organisationUnit);
+
+        public abstract OrganisationUnitProgramLinkModel build();
+    }
 }

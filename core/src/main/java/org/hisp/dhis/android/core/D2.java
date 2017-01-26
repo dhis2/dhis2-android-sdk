@@ -43,6 +43,8 @@ import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
+import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStoreImpl;
 import org.hisp.dhis.android.core.user.IsUserLoggedInCallable;
@@ -83,6 +85,7 @@ public final class D2 {
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final AuthenticatedUserStore authenticatedUserStore;
     private final OrganisationUnitStore organisationUnitStore;
+    private final ResourceStore resourceStore;
 
     @VisibleForTesting
     D2(@NonNull Retrofit retrofit, @NonNull DbOpenHelper dbOpenHelper) {
@@ -105,6 +108,8 @@ public final class D2 {
                 new AuthenticatedUserStoreImpl(databaseAdapter);
         this.organisationUnitStore =
                 new OrganisationUnitStoreImpl(sqLiteDatabase);
+        this.resourceStore =
+                new ResourceStoreImpl(sqLiteDatabase);
     }
 
     @NonNull
@@ -127,7 +132,7 @@ public final class D2 {
         }
 
         return new UserAuthenticateCall(userService, sqLiteDatabase, userStore,
-                userCredentialsStore, userOrganisationUnitLinkStore, authenticatedUserStore,
+                userCredentialsStore, userOrganisationUnitLinkStore, resourceStore, authenticatedUserStore,
                 organisationUnitStore, username, password
         );
     }

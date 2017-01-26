@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.Nullable;
 
@@ -47,10 +47,12 @@ import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 public abstract class UserCredentials extends BaseIdentifiableObject {
     private static final String USER_ROLES = "userRoles";
     private static final String USERNAME = "username";
+    private static final String DELETED = "deleted";
 
     public static final Field<UserCredentials, String> uid = Field.create(UID);
     public static final Field<UserCredentials, String> code = Field.create(CODE);
     public static final Field<UserCredentials, String> name = Field.create(NAME);
+    public static final Field<UserCredentials, String> deleted = Field.create(DELETED);
     public static final Field<UserCredentials, String> displayName = Field.create(DISPLAY_NAME);
     public static final Field<UserCredentials, String> created = Field.create(CREATED);
     public static final Field<UserCredentials, String> lastUpdated = Field.create(LAST_UPDATED);
@@ -65,6 +67,10 @@ public abstract class UserCredentials extends BaseIdentifiableObject {
     @JsonProperty(USER_ROLES)
     public abstract List<UserRole> userRoles();
 
+    @Nullable
+    @JsonProperty(DELETED)
+    public abstract Boolean deleted();
+
     @JsonCreator
     public static UserCredentials create(
             @JsonProperty(UID) String uid,
@@ -74,35 +80,10 @@ public abstract class UserCredentials extends BaseIdentifiableObject {
             @JsonProperty(CREATED) Date created,
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
             @JsonProperty(USERNAME) String username,
-            @JsonProperty(USER_ROLES) List<UserRole> userRoles) {
+            @JsonProperty(USER_ROLES) List<UserRole> userRoles,
+            @JsonProperty(DELETED) Boolean deleted) {
         return new AutoValue_UserCredentials(uid, code, name, displayName, created, lastUpdated, username,
-                safeUnmodifiableList(userRoles)
+                safeUnmodifiableList(userRoles), deleted
         );
     }
-
-//    public static Builder builder() {
-//        return new AutoValue_UserCredentials.Builder();
-//    }
-//    @AutoValue.Builder
-//    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
-//
-//        @JsonProperty(USER_ROLES)
-//        public abstract Builder userRoles(@Nullable List<UserRole> userRoles);
-//
-//        @JsonProperty(USERNAME)
-//        public abstract Builder username(@Nullable String username);
-//
-//        // internal, not exposed
-//        abstract List<UserRole> userRoles();
-//
-//        abstract UserCredentials autoBuild();
-//
-//        public UserCredentials build() {
-//            if (userRoles() != null) {
-//                userRoles(Collections.safeUnmodifiableList(userRoles()));
-//            }
-//
-//            return autoBuild();
-//        }
-//    }
 }

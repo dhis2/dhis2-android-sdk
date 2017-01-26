@@ -25,37 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.organisationunit;
 
-package org.hisp.dhis.android.core.user;
-
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import java.util.Date;
+import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
-public interface UserCredentialsStore {
-    long insert(
-            @NonNull String uid,
-            @Nullable String code,
-            @Nullable String name,
-            @Nullable String displayName,
-            @Nullable Date created,
-            @Nullable Date lastUpdated,
-            @Nullable String username,
-            @NonNull String user);
+public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitProgramLinkStore {
+    private static final String INSERT_STATEMENT = "INSERT INTO " +
+            OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK + " (" +
+            OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT + ", " +
+            OrganisationUnitProgramLinkModel.Columns.PROGRAM + ") " +
+            "VALUES(?,?);";
 
-    int update(
-            @NonNull String uid,
-            @Nullable String code,
-            @Nullable String name,
-            @Nullable String displayName,
-            @Nullable Date created,
-            @Nullable Date lastUpdated,
-            @Nullable String username,
-            @NonNull String user,
-            @NonNull String whereUid);
+    private final SQLiteStatement sqLiteStatement;
 
-    int delete(@NonNull String uid);
+    public OrganisationUnitProgramLinkStoreImpl(SQLiteDatabase sqLiteDatabase) {
+        this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+    }
 
-    int delete();
+    @Override
+    public long insert(@NonNull String organisationUnitUid, @NonNull String programUid) {
+        sqLiteStatement.clearBindings();
+
+        sqLiteBind(sqLiteStatement, 1, organisationUnitUid);
+        sqLiteBind(sqLiteStatement, 2, programUid);
+
+        return sqLiteStatement.executeInsert();
+    }
+
+    @Override
+    public void close() {
+        sqLiteStatement.close();
+    }
 }

@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
@@ -49,12 +49,30 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
             UserCredentialsModel.Columns.USER + ") " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
+    private static final String UPDATE_STATEMENT = "UPDATE " + UserCredentialsModel.TABLE + " SET " +
+            UserCredentialsModel.Columns.UID + " =?, " +
+            UserCredentialsModel.Columns.CODE + "=?, " +
+            UserCredentialsModel.Columns.NAME + "=?, " +
+            UserCredentialsModel.Columns.DISPLAY_NAME + "=?, " +
+            UserCredentialsModel.Columns.CREATED + "=?, " +
+            UserCredentialsModel.Columns.LAST_UPDATED + "=?, " +
+            UserCredentialsModel.Columns.USERNAME + "=?, " +
+            UserCredentialsModel.Columns.USER + "=?" + " WHERE " +
+            UserCredentialsModel.Columns.UID + " = ?;";
+
+    private static final String DELETE_STATEMENT = "DELETE FROM " + UserCredentialsModel.TABLE +
+            " WHERE " + UserCredentialsModel.Columns.UID + " =?;";
+
     private final SQLiteDatabase sqLiteDatabase;
     private final SQLiteStatement insertStatement;
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
 
-    public UserCredentialsStoreImpl(SQLiteDatabase database) {
-        this.sqLiteDatabase = database;
-        this.insertStatement = database.compileStatement(INSERT_STATEMENT);
+    public UserCredentialsStoreImpl(SQLiteDatabase sqLiteDatabase) {
+        this.sqLiteDatabase = sqLiteDatabase;
+        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -64,16 +82,33 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
             @Nullable String username, @NonNull String user) {
         insertStatement.clearBindings();
 
-        sqLiteBind(insertStatement, 1, uid);
-        sqLiteBind(insertStatement, 2, code);
-        sqLiteBind(insertStatement, 3, name);
-        sqLiteBind(insertStatement, 4, displayName);
-        sqLiteBind(insertStatement, 5, created);
-        sqLiteBind(insertStatement, 6, lastUpdated);
-        sqLiteBind(insertStatement, 7, username);
-        sqLiteBind(insertStatement, 8, user);
+        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, username, user);
 
         return insertStatement.executeInsert();
+    }
+
+    @Override
+    public int update(@NonNull String uid, @Nullable String code, @Nullable String name,
+                      @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
+                      @Nullable String username, @NonNull String user, @NonNull String whereUid) {
+        updateStatement.clearBindings();
+
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, username, user);
+
+        // bind the where clause
+        sqLiteBind(updateStatement, 9, whereUid);
+
+        return updateStatement.executeUpdateDelete();
+    }
+
+    @Override
+    public int delete(@NonNull String uid) {
+        deleteStatement.clearBindings();
+
+        // bind the where clause
+        sqLiteBind(deleteStatement, 1, uid);
+
+        return deleteStatement.executeUpdateDelete();
     }
 
     @Override
@@ -81,8 +116,17 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
         return sqLiteDatabase.delete(UserCredentialsModel.TABLE, null, null);
     }
 
-    @Override
-    public void close() {
-        insertStatement.close();
+    private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,
+                               @Nullable String name, @Nullable String displayName,
+                               @Nullable Date created, @Nullable Date lastUpdated,
+                               @Nullable String username, @NonNull String user) {
+        sqLiteBind(sqLiteStatement, 1, uid);
+        sqLiteBind(sqLiteStatement, 2, code);
+        sqLiteBind(sqLiteStatement, 3, name);
+        sqLiteBind(sqLiteStatement, 4, displayName);
+        sqLiteBind(sqLiteStatement, 5, created);
+        sqLiteBind(sqLiteStatement, 6, lastUpdated);
+        sqLiteBind(sqLiteStatement, 7, username);
+        sqLiteBind(sqLiteStatement, 8, user);
     }
 }

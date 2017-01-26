@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.NonNull;
 
@@ -38,7 +38,16 @@ public interface UserOrganisationUnitLinkStore {
             @NonNull String organisationUnitScope
     );
 
+    int update(
+            @NonNull String user,
+            @NonNull String organisationUnit,
+            @NonNull String organisationUnitScope,
+            @NonNull String whereUserUid,
+            @NonNull String whereOrganisationUnitUid
+    );
+
+    int delete(String userUid, String organisationUnitUid);
+
     int delete();
 
-    void close();
 }

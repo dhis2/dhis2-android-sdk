@@ -25,8 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
- package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.resource;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -37,72 +36,56 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class OrganisationUnitModel extends BaseNameableObjectModel {
-    public static final String TABLE = "OrganisationUnit";
+public abstract class ResourceModel extends BaseModel {
+    public static final String TABLE = "Resource";
 
-    public static class Columns extends BaseNameableObjectModel.Columns {
-        public static final String PATH = "path";
-        public static final String OPENING_DATE = "openingDate";
-        public static final String CLOSED_DATE = "closedDate";
-        public static final String PARENT = "parent";
-        public static final String LEVEL = "level";
-    }
-    public enum Scope {
-        SCOPE_DATA_CAPTURE,
-        SCOPE_TEI_SEARCH
-    }
-
-    public static OrganisationUnitModel create(Cursor cursor) {
-        return AutoValue_OrganisationUnitModel.createFromCursor(cursor);
-    }
-
-    public static Builder builder() {
-        return new $$AutoValue_OrganisationUnitModel.Builder();
+    public static class Columns extends BaseModel.Columns {
+        public static final String RESOURCE_TYPE = "resourceType";
+        public static final String RESOURCE_UID = "uid";
+        public static final String LAST_SYNCED = "lastSynced";
     }
 
     @Nullable
-    @ColumnName(Columns.PARENT)
-    public abstract String parent();
+    @ColumnName(Columns.RESOURCE_TYPE)
+    public abstract String resourceType();
 
     @Nullable
-    @ColumnName(Columns.PATH)
-    public abstract String path();
+    @ColumnName(Columns.RESOURCE_UID)
+    public abstract String uid();
 
     @Nullable
-    @ColumnName(Columns.OPENING_DATE)
+    @ColumnName(Columns.LAST_SYNCED)
     @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date openingDate();
-
-    @Nullable
-    @ColumnName(Columns.CLOSED_DATE)
-    @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date closedDate();
-
-    @Nullable
-    @ColumnName(Columns.LEVEL)
-    public abstract Integer level();
+    public abstract Date lastSynced();
 
     @NonNull
     public abstract ContentValues toContentValues();
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {
-        public abstract Builder parent(@Nullable String parent);
-
-        public abstract Builder path(@Nullable String path);
-
-        public abstract Builder openingDate(@Nullable Date openingDate);
-
-        public abstract Builder closedDate(@Nullable Date closedDate);
-
-        public abstract Builder level(@Nullable Integer level);
-
-        public abstract OrganisationUnitModel build();
+    @NonNull
+    public static ResourceModel create(Cursor cursor) {
+        return AutoValue_ResourceModel.createFromCursor(cursor);
     }
+
+    @NonNull
+    public static Builder builder() {
+        return new $$AutoValue_ResourceModel.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder resourceType(@Nullable String resourceType);
+
+        public abstract Builder uid(@Nullable String uid);
+
+        public abstract Builder lastSynced(@Nullable Date lastSynced);
+
+        public abstract ResourceModel build();
+    }
+
 }

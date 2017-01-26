@@ -40,12 +40,12 @@
         <module name="ArrayTypeStyle"/>
     </module>
     <module name="Header">
-        <property name="headerFile" value="java.header"/>
+        <property name="headerFile" value="plugins/checkstyle/java.header"/>
         <property name="ignoreLines" value="2"/>
         <property name="fileExtensions" value="java"/>
     </module>
     <module name="Header">
-        <property name="headerFile" value="xml.header"/>
+        <property name="headerFile" value="plugins/checkstyle/xml.header"/>
         <property name="ignoreLines" value="3"/>
         <property name="fileExtensions" value="xml"/>
     </module>

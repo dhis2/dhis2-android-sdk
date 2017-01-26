@@ -14,7 +14,7 @@ afterEvaluate {
         checkstyleTask.showViolations = false
 
         checkstyleTask.configFile = rootProject.file(
-                "plugins/android-checkstyle-style.xml"
+                "plugins/checkstyle/android-checkstyle-style.xml"
         )
 
         checkstyleTask.include(

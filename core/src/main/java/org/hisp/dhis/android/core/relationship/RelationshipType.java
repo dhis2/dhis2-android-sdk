@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship;
 
 import android.support.annotation.Nullable;
 
@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.data.api.Field;
 
 import java.util.Date;
 
-// TODO: Tests
 @AutoValue
 public abstract class RelationshipType extends BaseIdentifiableObject {
     private static final String B_TO_A = "bIsToA";

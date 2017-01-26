@@ -26,14 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.dataelement;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 
-// TODO: Unit tests
+// TODO: Write CategoryOptionCobo- Store, StoreImp, Model and their tests (Datacapture)
 @AutoValue
 @JsonDeserialize(builder = AutoValue_CategoryOptionCombo.Builder.class)
 public abstract class CategoryOptionCombo extends BaseNameableObject {

@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
 
@@ -42,7 +42,7 @@ public class CreateTrackedEntityInstanceUtils {
 
     public static ContentValues createWithOrgUnit(String uid, String organisationUnit) {
         ContentValues trackedEntityInstance = new ContentValues();
-        trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.ID, ID);
+//        trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.ID, ID);
         trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.UID, uid);
         trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.CREATED, DATE);
         trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.LAST_UPDATED, DATE);

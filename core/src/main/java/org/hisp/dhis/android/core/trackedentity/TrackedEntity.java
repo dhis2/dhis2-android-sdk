@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.data.api.Field;
 
 import java.util.Date;
 
-// TODO: Tests
 @AutoValue
 public abstract class TrackedEntity extends BaseNameableObject {
 

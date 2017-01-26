@@ -11,6 +11,7 @@ out
 
 # ignore .idea directory
 .idea/*
+
 # keep fileTemplates directory
 !.idea/fileTemplates
 !.idea/fileTemplates/*

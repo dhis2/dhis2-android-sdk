@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -38,7 +38,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 
-// TODO: Tests
 @AutoValue
 public abstract class UserModel extends BaseIdentifiableObjectModel {
     public static final String TABLE = "User";

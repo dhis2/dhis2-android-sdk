@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core;
 
 /**
  * A collection of convenience functions/abstractions to be used by the tests.

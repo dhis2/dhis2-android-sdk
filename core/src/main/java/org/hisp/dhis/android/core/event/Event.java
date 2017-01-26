@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.event;
+package org.hisp.dhis.android.core.event;
 
 import android.support.annotation.Nullable;
 
@@ -42,7 +42,6 @@ import java.util.List;
 
 import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 
-// TODO: Tests
 @AutoValue
 public abstract class Event {
     private static final String EVENT_UID = "event";

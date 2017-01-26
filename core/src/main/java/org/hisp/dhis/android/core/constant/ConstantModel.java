@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.constant;
+package org.hisp.dhis.android.core.constant;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -38,7 +38,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 
-// TODO: Tests
 @AutoValue
 public abstract class ConstantModel extends BaseIdentifiableObjectModel {
 

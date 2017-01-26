@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.organisationunit;
 
 import android.support.annotation.Nullable;
 
@@ -45,7 +45,6 @@ import java.util.List;
 
 import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 
-// TODO: Tests
 @AutoValue
 public abstract class OrganisationUnit extends BaseNameableObject {
     private static final String PARENT = "parent";

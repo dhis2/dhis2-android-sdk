@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.dataelement;
 
 import android.support.annotation.Nullable;
 
@@ -40,7 +40,7 @@ import java.util.List;
 
 import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 
-// TODO: Unit tests
+// TODO: Write CategoryCombo- Store, StoreImp, Model and their tests (Datacapture)
 @AutoValue
 @JsonDeserialize(builder = AutoValue_CategoryCombo.Builder.class)
 public abstract class CategoryCombo extends BaseIdentifiableObject {

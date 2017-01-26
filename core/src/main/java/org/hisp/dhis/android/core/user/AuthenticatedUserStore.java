@@ -26,13 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.NonNull;
 
 import java.util.List;
 
-// ToDo: consider removing .close() method
 public interface AuthenticatedUserStore {
     long insert(@NonNull String userUid, @NonNull String credentials);
 

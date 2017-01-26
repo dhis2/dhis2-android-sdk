@@ -26,13 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
-//TODO: Tests
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Coordinates.Builder.class)
 public abstract class Coordinates {

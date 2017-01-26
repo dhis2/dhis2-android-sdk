@@ -26,76 +26,72 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.dataelement;
 
-import org.junit.Before;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.hisp.dhis.android.core.Inject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.junit.Test;
 
-import java.util.Arrays;
+import java.io.IOException;
+import java.text.ParseException;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class CategoryTests {
-
-    private static Category.Builder VALID_BUILDER;
-
-    @Before
-    public void setUp() {
-        VALID_BUILDER = createValidBuilder();
-    }
-
-    //**************************************************************************************
-    //
-    // BASE IDENTIFIABLE OBJECT TESTS
-    //
-    //**************************************************************************************
-
-    @Test(expected = IllegalStateException.class)
-    public void build_shouldThrowOnNullUidField() {
-        VALID_BUILDER.uid(null).build();
-    }
-
-    //**************************************************************************************
-    //
-    // EQUALS VERIFIER
-    //
-    //**************************************************************************************
-
     @Test
-    public void equals_shouldConformToContract() {
-        EqualsVerifier.forClass(VALID_BUILDER.build().getClass())
-                .suppress(Warning.NULL_FIELDS)
-                .verify();
-    }
+    public void category_shouldMapFromJsonString() throws IOException, ParseException {
+        ObjectMapper objectMapper = Inject.objectMapper();
 
-    //**************************************************************************************
-    //
-    // COLLECTION MUTATION TESTS
-    //
-    //**************************************************************************************
+        Category category = objectMapper.readValue("{\"" +
+                        "lastUpdated\":\"2014-11-19T12:58:52.558\"," +
+                        "\"id\":\"KfdsGBcoiCa\"," +
+                        "\"href\":\"https://play.dhis2.org/demo/api/categories/KfdsGBcoiCa\"," +
+                        "\"created\":\"2011-12-24T12:24:25.155\"," +
+                        "\"name\":\"Births attended by\"," +
+                        "\"shortName\":\"Births attended by\"," +
+                        "\"dataDimensionType\":\"DISAGGREGATION\"," +
+                        "\"dimensionType\":\"CATEGORY\"," +
+                        "\"displayName\":\"Births attended by\"," +
+                        "\"publicAccess\":\"rw------\"," +
+                        "\"displayShortName\":\"Births attended by\"," +
+                        "\"externalAccess\":false," +
+                        "\"dimension\":\"KfdsGBcoiCa\"," +
+                        "\"allItems\":false," +
+                        "\"dataDimension\":false," +
+                        "\"user\":{\"id\":\"GOLswS44mh8\"}," +
+                        "\"translations\":[]," +
+                        "\"categoryCombos\":[{\"id\":\"m2jTvAj5kkm\"}]," +
+                        "\"categoryOptions\":[" +
+                        "{\"id\":\"TNYQzTHdoxL\"}," +
+                        "{\"id\":\"TXGfLxZlInA\"}," +
+                        "{\"id\":\"QgULqw9YDu2\"}," +
+                        "{\"id\":\"OjIOxG7vgna\"}," +
+                        "{\"id\":\"uZUnebiT5DI\"}," +
+                        "{\"id\":\"HTHvCohKoXt\"}]," +
+                        "\"userGroupAccesses\":[]" +
+                        "}",
+                Category.class);
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void categoryOptions_shouldThrowOnCollectionMutations() {
-        Category category = VALID_BUILDER
-                .categoryOptions(Arrays.asList(
-                        CategoryOption.builder().uid("catOptUid01").build(),
-                        CategoryOption.builder().uid("catOptUid02").build()))
-                .build();
+        assertThat(category.uid()).isEqualTo("KfdsGBcoiCa");
+        assertThat(category.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.155"));
+        assertThat(category.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2014-11-19T12:58:52.558"));
 
-        category.categoryOptions().add(CategoryOption.builder().uid("catOptUid03").build());
-    }
+        // names
+        assertThat(category.name()).isEqualTo("Births attended by");
+        assertThat(category.shortName()).isEqualTo("Births attended by");
+        assertThat(category.displayName()).isEqualTo("Births attended by");
+        assertThat(category.displayShortName()).isEqualTo("Births attended by");
 
-    //**************************************************************************************
-    //
-    // CREATE VALID BUILDER OBJECT
-    //
-    //**************************************************************************************
-
-    private Category.Builder createValidBuilder() {
-        return Category.builder()
-                .uid("a1b2c3d4e5f")
-                .created(new java.util.Date())
-                .lastUpdated(new java.util.Date());
+        // checking options
+        assertThat(category.categoryOptions().get(0).uid()).isEqualTo("TNYQzTHdoxL");
+        assertThat(category.categoryOptions().get(1).uid()).isEqualTo("TXGfLxZlInA");
+        assertThat(category.categoryOptions().get(2).uid()).isEqualTo("QgULqw9YDu2");
+        assertThat(category.categoryOptions().get(3).uid()).isEqualTo("OjIOxG7vgna");
+        assertThat(category.categoryOptions().get(4).uid()).isEqualTo("uZUnebiT5DI");
+        assertThat(category.categoryOptions().get(5).uid()).isEqualTo("HTHvCohKoXt");
     }
 }

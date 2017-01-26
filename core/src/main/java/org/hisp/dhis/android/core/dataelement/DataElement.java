@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.dataelement;
 
 import android.support.annotation.Nullable;
 
@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.option.OptionSet;
 
 import java.util.Date;
 
-// TODO: Unit tests
 @AutoValue
 public abstract class DataElement extends BaseNameableObject {
     private final static String VALUE_TYPE = "valueType";

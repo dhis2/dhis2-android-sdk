@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -39,7 +39,7 @@ public interface ProgramStageDataElementStore {
             @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
             @NonNull Boolean displayInReports, @NonNull Boolean compulsory,
             @NonNull Boolean allowProvidedElsewhere, @Nullable Integer sortOrder,
-            @NonNull Boolean allowFutureDate, @NonNull String dataElement, @Nullable String programStage
+            @NonNull Boolean allowFutureDate, @NonNull String dataElement, @Nullable String programStageSection
     );
 
     void close();

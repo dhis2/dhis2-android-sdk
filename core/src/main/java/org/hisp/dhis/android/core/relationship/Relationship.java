@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -35,7 +35,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
-// TODO: Tests
+// TODO: Tests when relationship is fixed to be queried.
 @AutoValue
 public abstract class Relationship {
     private static final String TRACKED_ENTITY_INSTANCE_A = "trackedEntityInstanceA";

@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 
-// TODO: Tests
 @AutoValue
 public abstract class TrackedEntityAttributeModel extends BaseNameableObjectModel {
     public static final String TABLE = "TrackedEntityAttribute";

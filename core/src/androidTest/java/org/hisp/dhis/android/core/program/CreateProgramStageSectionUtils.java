@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 
@@ -35,9 +35,7 @@ public class CreateProgramStageSectionUtils {
     private static final String NAME = "test_name";
     private static final String DISPLAY_NAME = "test_display_name";
     private static final Integer SORT_ORDER = 7;
-    private static final String PROGRAM_STAGE = "test_program_stage";
 
-    // timestamp
     private static final String DATE = "2017-01-05T10:26:00.000";
 
     public static ContentValues create(long id, String uid, String programStageUid) {

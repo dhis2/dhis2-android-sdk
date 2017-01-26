@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.organisationunit;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
 
-// TODO: Tests
 @AutoValue
 public abstract class OrganisationUnitModel extends BaseNameableObjectModel {
     public static final String TABLE = "OrganisationUnit";

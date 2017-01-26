@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.data.database;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -35,7 +35,6 @@ import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
 import org.hisp.dhis.android.core.program.ProgramType;
 
-//TODO: Write unit-test's for this adapter:
 public class DbProgramTypeColumnAdapter implements ColumnTypeAdapter<ProgramType> {
 
     @Override

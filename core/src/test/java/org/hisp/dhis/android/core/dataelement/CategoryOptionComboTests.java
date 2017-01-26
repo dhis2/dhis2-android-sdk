@@ -26,32 +26,55 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.dataelement;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.hisp.dhis.android.core.Inject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.junit.Test;
 
-import java.util.Date;
+import java.io.IOException;
+import java.text.ParseException;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class CategoryOptionComboTests {
 
     @Test
-    public void equals_shouldConformToContract() {
-        CategoryOptionCombo validCoc = CategoryOptionCombo.builder()
-                .uid("a1b2c3d4e5f")
-                .created(new Date())
-                .lastUpdated(new Date())
-                .build();
+    public void categoryOptionCombo_shouldMapFromJsonString() throws IOException, ParseException {
+        ObjectMapper objectMapper = Inject.objectMapper();
 
-        EqualsVerifier.forClass(validCoc.getClass())
-                .suppress(Warning.NULL_FIELDS)
-                .verify();
-    }
+        CategoryOptionCombo categoryOptionCombo = objectMapper.readValue("{" +
+                        "\"code\":\"COC_358963\"," +
+                        "\"lastUpdated\":\"2011-12-24T12:24:25.319\"," +
+                        "\"id\":\"S34ULMcHMca\"," +
+                        "\"created\":\"2011-12-24T12:24:25.319\"," +
+                        "\"name\":\"0-11m\"," +
+                        "\"shortName\":\"0-11m\"," +
+                        "\"displayName\":\"0-11m\"," +
+                        "\"displayShortName\":\"0-11m\"," +
+                        "\"externalAccess\":false," +
+                        "\"ignoreApproval\":false," +
+                        "\"dimensionItem\":\"S34ULMcHMca\"," +
+                        "\"categoryCombo\":{\"id\":\"t3aNCvHsoSn\"}," +
+                        "\"translations\":[]," +
+                        "\"categoryOptions\":[{\"id\":\"FbLZS3ueWbQ\"}]," +
+                        "\"userGroupAccesses\":[]," +
+                        "\"attributeValues\":[]}",
+                CategoryOptionCombo.class);
 
-    @Test(expected = IllegalStateException.class)
-    public void build_shouldThrowOnNullUidField() {
-        CategoryOptionCombo.builder().build();
+        assertThat(categoryOptionCombo.uid()).isEqualTo("S34ULMcHMca");
+        assertThat(categoryOptionCombo.code()).isEqualTo("COC_358963");
+
+        assertThat(categoryOptionCombo.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.319"));
+        assertThat(categoryOptionCombo.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.319"));
+
+        assertThat(categoryOptionCombo.name()).isEqualTo("0-11m");
+        assertThat(categoryOptionCombo.shortName()).isEqualTo("0-11m");
+        assertThat(categoryOptionCombo.displayName()).isEqualTo("0-11m");
+        assertThat(categoryOptionCombo.displayShortName()).isEqualTo("0-11m");
     }
 }

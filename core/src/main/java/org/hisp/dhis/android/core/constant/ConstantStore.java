@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.constant;
+package org.hisp.dhis.android.core.constant;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -36,7 +36,7 @@ import java.util.Date;
 public interface ConstantStore {
 
     long insert(
-            @Nullable String uid, @Nullable String code, @NonNull String name,
+            @NonNull String uid, @Nullable String code, @Nullable String name,
             @Nullable String displayName, @Nullable Date created,
             @Nullable Date lastUpdated, @NonNull String value
     );

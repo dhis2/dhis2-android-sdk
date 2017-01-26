@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.organisationunit;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;

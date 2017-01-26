@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.common.BaseNameableObject;
 import java.util.Collections;
 import java.util.List;
 
-// TODO: Unit tests
+// TODO: Write Category- Store, StoreImp, Model and their tests (Datacapture)
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Category.Builder.class)
 public abstract class Category extends BaseNameableObject {

@@ -53,33 +53,7 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class TrackedEntityAttributeStoreTests extends AbsStoreTestCase {
-    private static final String UID = "test_uid";
-    private static final String CODE = "test_code";
-    private static final String NAME = "test_name";
-    private static final String DISPLAY_NAME = "test_display_name";
-    private static final Date CREATED = new Date();
-    private static final Date LAST_UPDATED = CREATED;
-    private static final String SHORT_NAME = "test_short_name";
-    private static final String DISPLAY_SHORT_NAME = "test_display_short_name";
-    private static final String DESCRIPTION = "test_description";
-    private static final String DISPLAY_DESCRIPTION = "test_display_description";
-    private static final String PATTERN = "test_pattern";
-    private static final String SORT_ORDER_IN_LIST_NO_PROGRAM = "test_sort_order_in_list_no_program";
-    private static final ValueType VALUE_TYPE = ValueType.BOOLEAN;
-    private static final String EXPRESSION = "test_expression";
-    private static final TrackedEntityAttributeSearchScope SEARCH_SCOPE = TrackedEntityAttributeSearchScope.SEARCH_ORG_UNITS;
-    private static final Boolean PROGRAM_SCOPE = true;
-    private static final Boolean DISPLAY_IN_LIST_NO_PROGRAM = false;
-    private static final Boolean GENERATED = true;
-    private static final Boolean DISPLAY_ON_VISIT_SCHEDULE = false;
-    private static final Boolean ORG_UNIT_SCOPE = true;
-    private static final Boolean UNIQUE = false;
-    private static final Boolean INHERIT = true;
-
-    private static final long OPTION_SET_ID = 99L;
-    private static final String OPTION_SET_UID = "test_option_set_uid";
-
-    public static final String[] TRACKED_ENTITY_ATTRIBUTE_PROJECTION = {
+    public static final String[] PROJECTION = {
             Columns.UID,
             Columns.CODE,
             Columns.NAME,
@@ -104,61 +78,57 @@ public class TrackedEntityAttributeStoreTests extends AbsStoreTestCase {
             Columns.UNIQUE,
             Columns.INHERIT
     };
-
+    private static final String UID = "test_uid";
+    private static final String CODE = "test_code";
+    private static final String NAME = "test_name";
+    private static final String DISPLAY_NAME = "test_display_name";
+    private static final String SHORT_NAME = "test_short_name";
+    private static final String DISPLAY_SHORT_NAME = "test_display_short_name";
+    private static final String DESCRIPTION = "test_description";
+    private static final String DISPLAY_DESCRIPTION = "test_display_description";
+    private static final String PATTERN = "test_pattern";
+    private static final String SORT_ORDER_IN_LIST_NO_PROGRAM = "test_sort_order_in_list_no_program";
+    private static final ValueType VALUE_TYPE = ValueType.BOOLEAN;
+    private static final String EXPRESSION = "test_expression";
+    private static final TrackedEntityAttributeSearchScope SEARCH_SCOPE =
+            TrackedEntityAttributeSearchScope.SEARCH_ORG_UNITS;
+    private static final Boolean PROGRAM_SCOPE = true;
+    private static final Boolean DISPLAY_IN_LIST_NO_PROGRAM = false;
+    private static final Boolean GENERATED = true;
+    private static final Boolean DISPLAY_ON_VISIT_SCHEDULE = false;
+    private static final Boolean ORG_UNIT_SCOPE = true;
+    private static final Boolean UNIQUE = false;
+    private static final Boolean INHERIT = true;
+    private static final long OPTION_SET_ID = 99L;
+    private static final String OPTION_SET_UID = "test_option_set_uid";
     private TrackedEntityAttributeStore trackedEntityAttributeStore;
 
-    public static ContentValues create(long id, String uid) {
+    private final Date date;
+    private final String dateString;
 
-        ContentValues trackedEntity = new ContentValues();
-        trackedEntity.put(Columns.ID, id);
-        trackedEntity.put(Columns.UID, uid);
-        trackedEntity.put(Columns.CODE, CODE);
-        trackedEntity.put(Columns.NAME, NAME);
-        trackedEntity.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
-        trackedEntity.put(Columns.CREATED, BaseIdentifiableObject.DATE_FORMAT.format(CREATED));
-        trackedEntity.put(Columns.LAST_UPDATED, BaseIdentifiableObject.DATE_FORMAT.format(LAST_UPDATED));
-        trackedEntity.put(Columns.SHORT_NAME, SHORT_NAME);
-        trackedEntity.put(Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
-        trackedEntity.put(Columns.DESCRIPTION, DESCRIPTION);
-        trackedEntity.put(Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
-        trackedEntity.put(Columns.PATTERN, PATTERN);
-        trackedEntity.put(Columns.SORT_ORDER_IN_LIST_NO_PROGRAM, SORT_ORDER_IN_LIST_NO_PROGRAM);
-        trackedEntity.put(Columns.OPTION_SET, OPTION_SET_UID);
-        trackedEntity.put(Columns.VALUE_TYPE, VALUE_TYPE.toString());
-        trackedEntity.put(Columns.EXPRESSION, EXPRESSION);
-        trackedEntity.put(Columns.SEARCH_SCOPE, SEARCH_SCOPE.toString());
-        trackedEntity.put(Columns.PROGRAM_SCOPE, PROGRAM_SCOPE);
-        trackedEntity.put(Columns.DISPLAY_IN_LIST_NO_PROGRAM, DISPLAY_IN_LIST_NO_PROGRAM);
-        trackedEntity.put(Columns.GENERATED, GENERATED);
-        trackedEntity.put(Columns.DISPLAY_ON_VISIT_SCHEDULE, DISPLAY_ON_VISIT_SCHEDULE);
-        trackedEntity.put(Columns.ORG_UNIT_SCOPE, ORG_UNIT_SCOPE);
-        trackedEntity.put(Columns.UNIQUE, UNIQUE);
-        trackedEntity.put(Columns.INHERIT, INHERIT);
-        return trackedEntity;
+    public TrackedEntityAttributeStoreTests() {
+        this.date = new Date();
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
-
         trackedEntityAttributeStore = new TrackedEntityAttributeStoreImpl(database());
+        ContentValues optionSet = CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
+        database().insert(OptionSetModel.TABLE, null, optionSet);
     }
 
     @Test
     public void insert_shouldPersistRowInDatabase() {
-        ContentValues optionSet =
-                CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
-
-        database().insert(OptionSetModel.TABLE, null, optionSet);
-
         long rowId = trackedEntityAttributeStore.insert(
                 UID,
                 CODE,
                 NAME,
                 DISPLAY_NAME,
-                CREATED,
-                LAST_UPDATED,
+                date,
+                date,
                 SHORT_NAME,
                 DISPLAY_SHORT_NAME,
                 DESCRIPTION,
@@ -177,48 +147,16 @@ public class TrackedEntityAttributeStoreTests extends AbsStoreTestCase {
                 UNIQUE,
                 INHERIT
         );
-
-        Cursor cursor = database().query(TrackedEntityAttributeModel.TABLE,
-                TRACKED_ENTITY_ATTRIBUTE_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(TrackedEntityAttributeModel.TABLE, PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor)
-                .hasRow(
-                        UID,
-                        CODE,
-                        NAME,
-                        DISPLAY_NAME,
-                        BaseIdentifiableObject.DATE_FORMAT.format(CREATED),
-                        BaseIdentifiableObject.DATE_FORMAT.format(LAST_UPDATED),
-                        SHORT_NAME,
-                        DISPLAY_SHORT_NAME,
-                        DESCRIPTION,
-                        DISPLAY_DESCRIPTION,
-                        PATTERN,
-                        SORT_ORDER_IN_LIST_NO_PROGRAM,
-                        OPTION_SET_UID,
-                        VALUE_TYPE,
-                        EXPRESSION,
-                        SEARCH_SCOPE,
-                        toInteger(PROGRAM_SCOPE),
-                        toInteger(DISPLAY_IN_LIST_NO_PROGRAM),
-                        toInteger(GENERATED),
-                        toInteger(DISPLAY_ON_VISIT_SCHEDULE),
-                        toInteger(ORG_UNIT_SCOPE),
-                        toInteger(UNIQUE),
-                        toInteger(INHERIT))
-                .isExhausted();
-    }
-
-    @Test(expected = SQLiteConstraintException.class)
-    public void insertWithoutForeignKey_shouldThrowException() throws ParseException {
-        trackedEntityAttributeStore.insert(
+        assertThatCursor(cursor).hasRow(
                 UID,
                 CODE,
                 NAME,
                 DISPLAY_NAME,
-                CREATED,
-                LAST_UPDATED,
+                dateString,
+                dateString,
                 SHORT_NAME,
                 DISPLAY_SHORT_NAME,
                 DESCRIPTION,
@@ -229,21 +167,54 @@ public class TrackedEntityAttributeStoreTests extends AbsStoreTestCase {
                 VALUE_TYPE,
                 EXPRESSION,
                 SEARCH_SCOPE,
-                PROGRAM_SCOPE,
-                DISPLAY_IN_LIST_NO_PROGRAM,
-                GENERATED,
-                DISPLAY_ON_VISIT_SCHEDULE,
-                ORG_UNIT_SCOPE,
-                UNIQUE,
-                INHERIT
+                toInteger(PROGRAM_SCOPE),
+                toInteger(DISPLAY_IN_LIST_NO_PROGRAM),
+                toInteger(GENERATED),
+                toInteger(DISPLAY_ON_VISIT_SCHEDULE),
+                toInteger(ORG_UNIT_SCOPE),
+                toInteger(UNIQUE),
+                toInteger(INHERIT)
+        ).isExhausted();
+    }
+
+    @Test
+    public void insert_shouldPersistDeferrableRowInDatabase() {
+        final String deferredOptionSet = "deferredOptionSet";
+        database().beginTransaction();
+        long rowId = trackedEntityAttributeStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
+                DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, PATTERN, SORT_ORDER_IN_LIST_NO_PROGRAM,
+                deferredOptionSet,
+                VALUE_TYPE, EXPRESSION, SEARCH_SCOPE, PROGRAM_SCOPE, DISPLAY_IN_LIST_NO_PROGRAM, GENERATED,
+                DISPLAY_ON_VISIT_SCHEDULE, ORG_UNIT_SCOPE, UNIQUE, INHERIT
+        );
+        ContentValues optionSet = CreateOptionSetUtils.create(3L, deferredOptionSet);
+        database().insert(OptionSetModel.TABLE, null, optionSet);
+        database().setTransactionSuccessful();
+        database().endTransaction();
+
+        Cursor cursor = database().query(TrackedEntityAttributeModel.TABLE, PROJECTION, null, null, null, null, null);
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, SHORT_NAME,
+                DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, PATTERN, SORT_ORDER_IN_LIST_NO_PROGRAM,
+                deferredOptionSet,
+                VALUE_TYPE, EXPRESSION, SEARCH_SCOPE, toInteger(PROGRAM_SCOPE), toInteger(DISPLAY_IN_LIST_NO_PROGRAM),
+                toInteger(GENERATED), toInteger(DISPLAY_ON_VISIT_SCHEDULE), toInteger(ORG_UNIT_SCOPE),
+                toInteger(UNIQUE), toInteger(INHERIT)
+        ).isExhausted();
+    }
+
+    @Test(expected = SQLiteConstraintException.class)
+    public void insertWithoutForeignKey_shouldThrowException() throws ParseException {
+        trackedEntityAttributeStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME,
+                DESCRIPTION, DISPLAY_DESCRIPTION, PATTERN, SORT_ORDER_IN_LIST_NO_PROGRAM,
+                "wrong",
+                VALUE_TYPE, EXPRESSION, SEARCH_SCOPE, PROGRAM_SCOPE, DISPLAY_IN_LIST_NO_PROGRAM, GENERATED,
+                DISPLAY_ON_VISIT_SCHEDULE, ORG_UNIT_SCOPE, UNIQUE, INHERIT
         );
     }
 
     @Test
     public void delete_shouldDeleteTrackedEntityAttributeWhenDeletingOptionSet() throws Exception {
-        ContentValues optionSet = CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
-        database().insert(OptionSetModel.TABLE, null, optionSet);
-
         ContentValues trackedEntityAttribute = new ContentValues();
         trackedEntityAttribute.put(Columns.ID, 1L);
         trackedEntityAttribute.put(Columns.UID, UID);
@@ -265,11 +236,9 @@ public class TrackedEntityAttributeStoreTests extends AbsStoreTestCase {
     }
 
     // ToDo: consider introducing conflict resolution strategy
-
     @Test
     public void close_shouldNotCloseDatabase() {
         trackedEntityAttributeStore.close();
-
         assertThat(database().isOpen()).isTrue();
     }
 }

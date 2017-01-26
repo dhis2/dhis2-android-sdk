@@ -70,7 +70,7 @@ import static org.mockito.Mockito.when;
 
 
 @RunWith(JUnit4.class)
-public class UserAuthenticateCallTests {
+public class UserAuthenticateCallUnitTests {
 
     @Mock
     private UserService userService;

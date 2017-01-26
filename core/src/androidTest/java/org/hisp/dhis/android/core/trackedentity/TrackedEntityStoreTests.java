@@ -45,7 +45,7 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class TrackedEntityStoreTests extends AbsStoreTestCase {
-    public static final String[] TRACKED_ENTITY_PROJECTION = {
+    public static final String[] PROJECTION = {
             TrackedEntityModel.Columns.UID,
             TrackedEntityModel.Columns.CODE,
             TrackedEntityModel.Columns.NAME,
@@ -57,52 +57,60 @@ public class TrackedEntityStoreTests extends AbsStoreTestCase {
             TrackedEntityModel.Columns.DESCRIPTION,
             TrackedEntityModel.Columns.DISPLAY_DESCRIPTION,
     };
+    public static final String UID = "uid";
+    public static final String CODE = "code";
+    public static final String NAME = "name";
+    public static final String DISPLAY_NAME = "display_name";
+    public static final String SHORT_NAME = "short_name";
+    public static final String DISPLAY_SHORT_NAME = "display_short_name";
+    public static final String DESCRIPTION = "description";
+    public static final String DISPLAY_DESCRIPTION = "display_description";
 
+    private final Date date;
+    private final String dateString;
+
+    public TrackedEntityStoreTests() {
+        this.date = new Date();
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
+    }
     private TrackedEntityStore trackedEntityStore;
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
-
         trackedEntityStore = new TrackedEntityStoreImpl(database());
     }
 
     @Test
     public void insert_shouldPersistRowInDatabase() {
-        Date date = new Date();
-
         long rowId = trackedEntityStore.insert(
-                "test_uid",
-                "test_code",
-                "test_name",
-                "test_display_name",
+                UID,
+                CODE,
+                NAME,
+                DISPLAY_NAME,
                 date,
                 date,
-                "test_short_name",
-                "test_display_short_name",
-                "test_description",
-                "test_display_description"
+                SHORT_NAME,
+                DISPLAY_SHORT_NAME,
+                DESCRIPTION,
+                DISPLAY_DESCRIPTION
         );
-
-        Cursor cursor = database().query(TrackedEntityModel.TABLE,
-                TRACKED_ENTITY_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(TrackedEntityModel.TABLE, PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor)
-                .hasRow(
-                        "test_uid",
-                        "test_code",
-                        "test_name",
-                        "test_display_name",
-                        BaseIdentifiableObject.DATE_FORMAT.format(date),
-                        BaseIdentifiableObject.DATE_FORMAT.format(date),
-                        "test_short_name",
-                        "test_display_short_name",
-                        "test_description",
-                        "test_display_description"
-                )
-                .isExhausted();
+        assertThatCursor(cursor).hasRow(
+                UID,
+                CODE,
+                NAME,
+                DISPLAY_NAME,
+                dateString,
+                dateString,
+                SHORT_NAME,
+                DISPLAY_SHORT_NAME,
+                DESCRIPTION,
+                DISPLAY_DESCRIPTION
+        ).isExhausted();
     }
 
     // ToDo: consider introducing conflict resolution strategy
@@ -110,7 +118,6 @@ public class TrackedEntityStoreTests extends AbsStoreTestCase {
     @Test
     public void close_shouldNotCloseDatabase() {
         trackedEntityStore.close();
-
         assertThat(database().isOpen()).isTrue();
     }
 }

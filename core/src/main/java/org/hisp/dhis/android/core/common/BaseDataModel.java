@@ -35,7 +35,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 
 import org.hisp.dhis.android.core.data.database.DbStateColumnAdapter;
 
-// TODO: Tests
 public abstract class BaseDataModel extends BaseModel implements DataModel {
 
     public static class Columns extends BaseModel.Columns {

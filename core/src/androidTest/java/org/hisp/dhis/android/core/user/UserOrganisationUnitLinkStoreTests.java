@@ -90,6 +90,37 @@ public class UserOrganisationUnitLinkStoreTests extends AbsStoreTestCase {
     }
 
     @Test
+    public void insert_shouldPersistDeferrableRowInDatabase() {
+        final String deferrableUserUid = "deferrableUser";
+        final String deferrableOrgUnitUid = "deferrableOrgUnit";
+
+        database().beginTransaction();
+
+        long rowId = organisationUnitLinkStore.insert(
+                deferrableUserUid,
+                deferrableOrgUnitUid,
+                ORGANISATION_UNIT_SCOPE
+        );
+        ContentValues user = UserStoreTests.create(2L, deferrableUserUid);
+        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(2L, deferrableOrgUnitUid);
+        database().insert(UserModel.TABLE, null, user);
+        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
+
+        database().setTransactionSuccessful();
+        database().endTransaction();
+
+        Cursor cursor = database().query(UserOrganisationUnitLinkModel.TABLE,
+                USER_ORGANISATION_UNITS_PROJECTION, null, null, null, null, null);
+
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(
+                deferrableUserUid,
+                deferrableOrgUnitUid,
+                ORGANISATION_UNIT_SCOPE
+        ).isExhausted();
+    }
+
+    @Test
     public void delete_shouldDeleteAllRows() {
         organisationUnitLinkStore.insert(
                 USER_UID,

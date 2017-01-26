@@ -97,6 +97,34 @@ public class RelationshipStoreTests extends AbsStoreTestCase {
     }
 
     @Test
+    public void insert_shouldPersistDeferrableRelationshipInDatabase() {
+        final String deferredRelationshipType = "deferredRelationshipType";
+
+        database().beginTransaction();
+        long rowId = relationshipStore.insert(
+                TRACKED_ENTITY_INSTANCE_A,
+                TRACKED_ENTITY_INSTANCE_B,
+                deferredRelationshipType
+        );
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(2L, deferredRelationshipType);
+        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
+        database().setTransactionSuccessful();
+        database().endTransaction();
+
+        Cursor cursor = database().query(
+                RelationshipModel.TABLE,
+                RELATIONSHIP_PROJECTION,
+                null, null, null, null, null, null
+        );
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(
+                TRACKED_ENTITY_INSTANCE_A,
+                TRACKED_ENTITY_INSTANCE_B,
+                deferredRelationshipType
+        ).isExhausted();
+    }
+
+    @Test
     public void insert_shouldPersistRelationshipNullableInDatabase() {
         //Insert foreign keys in their respective tables:
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(

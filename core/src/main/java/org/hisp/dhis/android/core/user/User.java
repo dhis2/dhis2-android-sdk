@@ -44,7 +44,6 @@ import java.util.List;
 
 import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 
-// TODO: Tests
 @AutoValue
 // @JsonDeserialize(builder = AutoValue_User.Builder.class)
 public abstract class User extends BaseIdentifiableObject {
@@ -210,7 +209,6 @@ public abstract class User extends BaseIdentifiableObject {
             @JsonProperty(TEI_SEARCH_ORGANISATION_UNITS) List<OrganisationUnit> searchOrgUnits,
             @JsonProperty(DATA_VIEW_ORGANISATION_UNITS) List<OrganisationUnit> dataViewOrgUnits) {
         // ToDo: change from jackson to gson and implement autovalue-gson extension
-        // ToDo: remove builders and use constructor with authenticator methods
 
         return new AutoValue_User(
                 uid, code, name, displayName, created, lastUpdated, birthday, education, gender,

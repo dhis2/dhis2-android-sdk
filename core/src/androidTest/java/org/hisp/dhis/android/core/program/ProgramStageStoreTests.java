@@ -52,8 +52,8 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
-public class ProgramStageModelStoreTests extends AbsStoreTestCase {
-    public static final String[] PROGRAM_STAGE_PROJECTION = {
+public class ProgramStageStoreTests extends AbsStoreTestCase {
+    public static final String[] PROJECTION = {
             Columns.UID,
             Columns.CODE,
             Columns.NAME,
@@ -105,19 +105,16 @@ public class ProgramStageModelStoreTests extends AbsStoreTestCase {
     private static final String PROGRAM = "test_program";
     //foreign keys to program:
     private static final long TRACKED_ENTITY_ID = 1L;
-
     private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
-
     private static final long RELATIONSHIP_TYPE_ID = 3L;
     private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
 
-    // timestamp
     private final Date date;
     private final String dateString;
 
     private ProgramStageStore programStageStore;
 
-    public ProgramStageModelStoreTests() {
+    public ProgramStageStoreTests() {
         this.date = new Date();
         this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
@@ -151,7 +148,7 @@ public class ProgramStageModelStoreTests extends AbsStoreTestCase {
                 HIDE_DUE_DATE, BLOCK_ENTRY_FORM, MIN_DAYS_FROM_START, STANDARD_INTERVAL,
                 PROGRAM
         );
-        Cursor cursor = database().query(ProgramStageModel.TABLE, PROGRAM_STAGE_PROJECTION,
+        Cursor cursor = database().query(ProgramStageModel.TABLE, PROJECTION,
                 null, null, null, null, null);
 
         // Checking if rowId == 1.
@@ -181,6 +178,33 @@ public class ProgramStageModelStoreTests extends AbsStoreTestCase {
                 MIN_DAYS_FROM_START,
                 STANDARD_INTERVAL,
                 PROGRAM
+        ).isExhausted();
+    }
+
+    @Test
+    public void insert_shouldPersistDeferrableRowInDatabase() {
+        final String deferredProgram = "deferredProgram";
+        database().beginTransaction();
+        long rowId = programStageStore.insert(
+                UID, CODE, NAME, DISPLAY_NAME,
+                date, date, EXECUTION_DATE_LABEL, ALLOW_GENERATE_NEXT_VISIT,
+                VALID_COMPLETE_ONLY, REPORT_DATE_TO_USE, OPEN_AFTER_ENROLLMENT,
+                REPEATABLE, CAPTURE_COORDINATES, FORM_TYPE, DISPLAY_GENERATE_EVENT_BOX,
+                GENERATED_BY_ENROLMENT_DATE, AUTO_GENERATE_EVENT, SORT_ORDER,
+                HIDE_DUE_DATE, BLOCK_ENTRY_FORM, MIN_DAYS_FROM_START, STANDARD_INTERVAL,
+                deferredProgram
+        );
+        ContentValues program = CreateProgramUtils.create(2L, deferredProgram, RELATIONSHIP_TYPE_UID, null,
+                TRACKED_ENTITY_UID);
+        database().insert(ProgramModel.TABLE, null, program);
+        database().setTransactionSuccessful();
+        database().endTransaction();
+
+        Cursor cursor = database().query(ProgramStageModel.TABLE, PROJECTION, null, null, null, null, null);
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, EXECUTION_DATE_LABEL,
+                0, 0, REPORT_DATE_TO_USE, 0, 1, 1, FORM_TYPE, 0, 1, 0, SORT_ORDER, 1, 0, MIN_DAYS_FROM_START,
+                STANDARD_INTERVAL, deferredProgram
         ).isExhausted();
     }
 

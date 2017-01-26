@@ -33,6 +33,7 @@ import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
@@ -48,41 +49,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
-public class ProgramRuleVariableModelStoreTests extends AbsStoreTestCase {
-    private static final long ID = 2L;
-
-    private static final String UID = "test_uid";
-    private static final String CODE = "test_code";
-    private static final String NAME = "test_name";
-    private static final String DISPLAY_NAME = "test_display_name";
-
-    // timestamp
-    private static final String DATE = "2017-01-09T14:48:00.000";
-
-    private static final Boolean USE_CODE_FOR_OPTION_SET = Boolean.TRUE;
-    private static final String PROGRAM = "test_program";
-    private static final String PROGRAM_STAGE = "test_programStage";
-    private static final String TRACKED_ENTITY_ATTRIBUTE = "test_trackedEntityAttribute";
-    private static final String DATA_ELEMENT = "test_dataElement";
-
-    //foreign keys to program:
-    private static final long TRACKED_ENTITY_ID = 1L;
-    private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
-    private static final long RELATIONSHIP_TYPE_ID = 3L;
-    private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
-
-
-    private static final ProgramRuleVariableSourceType PROGRAM_RULE_VARIABLE_SOURCE_TYPE =
-            ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM;
-
-    private static final String[] PROGRAM_RULE_VARIABLE_PROJECTION = {
+public class ProgramRuleVariableStoreTests extends AbsStoreTestCase {
+    private static final String[] PROJECTION = {
             Columns.UID,
             Columns.CODE,
             Columns.NAME,
@@ -96,40 +70,67 @@ public class ProgramRuleVariableModelStoreTests extends AbsStoreTestCase {
             Columns.TRACKED_ENTITY_ATTRIBUTE,
             Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
     };
+    private static final long ID = 2L;
+    private static final String UID = "test_uid";
+    private static final String CODE = "test_code";
+    private static final String NAME = "test_name";
+    private static final String DISPLAY_NAME = "test_display_name";
+    private static final Boolean USE_CODE_FOR_OPTION_SET = Boolean.TRUE;
+    private static final String PROGRAM = "test_program";
+    private static final String PROGRAM_STAGE = "test_programStage";
+    private static final String TRACKED_ENTITY_ATTRIBUTE = "test_trackedEntityAttribute";
+    private static final String DATA_ELEMENT = "test_dataElement";
+    //foreign keys to program:
+    private static final long TRACKED_ENTITY_ID = 1L;
+    private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
+    private static final long RELATIONSHIP_TYPE_ID = 3L;
+    private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
+
+    private static final ProgramRuleVariableSourceType PROGRAM_RULE_VARIABLE_SOURCE_TYPE =
+            ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM;
 
     private ProgramRuleVariableModelStore programRuleVariableModelStore;
+
+    private final Date date;
+    private final String dateString;
+
+    public ProgramRuleVariableStoreTests() {
+        this.date = new Date();
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
+    }
 
     @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
         programRuleVariableModelStore = new ProgramRuleVariableModelStoreImpl(database());
+        //Create Program & insert a row in the table.
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
+                RELATIONSHIP_TYPE_UID);
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
+        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
+        database().insert(ProgramModel.TABLE, null, program);
+        //Create & insert the other foreign keys (progStage, dataElement and trackedEntityAttribute)
+        ContentValues programStage = CreateProgramStageUtils.create(ID, PROGRAM_STAGE, PROGRAM);
+        database().insert(ProgramStageModel.TABLE, null, programStage);
+        ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
+        database().insert(DataElementModel.TABLE, null, dataElement);
+        ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.create(ID,
+                TRACKED_ENTITY_ATTRIBUTE, null);
+        database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
     }
 
     @Test
-    public void insert_shouldPersistProgramRuleVariableInDatabase() throws ParseException {
-        insertProgramForeignKey();
-
-        ContentValues programStage = CreateProgramStageUtils.create(ID, PROGRAM_STAGE, PROGRAM);
-        database().insert(ProgramStageModel.TABLE, null, programStage);
-
-        ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
-        database().insert(DataElementModel.TABLE, null, dataElement);
-
-        ContentValues trackedEntityAttribute =
-                CreateTrackedEntityAttributeUtils.create(ID, TRACKED_ENTITY_ATTRIBUTE, null);
-
-        database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
-
-        Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-
+    public void insert_shouldPersistProgramRuleVariableInDatabase() {
         long rowId = programRuleVariableModelStore.insert(
                 UID,
                 CODE,
                 NAME,
                 DISPLAY_NAME,
-                timeStamp,
-                timeStamp,
+                date,
+                date,
                 USE_CODE_FOR_OPTION_SET,
                 PROGRAM,
                 PROGRAM_STAGE,
@@ -137,9 +138,7 @@ public class ProgramRuleVariableModelStoreTests extends AbsStoreTestCase {
                 TRACKED_ENTITY_ATTRIBUTE,
                 PROGRAM_RULE_VARIABLE_SOURCE_TYPE
         );
-
-        Cursor cursor = database().query(ProgramRuleVariableModel.TABLE, PROGRAM_RULE_VARIABLE_PROJECTION,
-                null, null, null, null, null);
+        Cursor cursor = database().query(ProgramRuleVariableModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
 
         assertThatCursor(cursor).hasRow(
@@ -147,8 +146,8 @@ public class ProgramRuleVariableModelStoreTests extends AbsStoreTestCase {
                 CODE,
                 NAME,
                 DISPLAY_NAME,
-                DATE,
-                DATE,
+                dateString,
+                dateString,
                 1, // USE_CODE_FOR_OPTION_SET = Boolean.TRUE
                 PROGRAM,
                 PROGRAM_STAGE,
@@ -156,22 +155,58 @@ public class ProgramRuleVariableModelStoreTests extends AbsStoreTestCase {
                 TRACKED_ENTITY_ATTRIBUTE,
                 PROGRAM_RULE_VARIABLE_SOURCE_TYPE
         ).isExhausted();
+    }
+
+    @Test
+    public void insert_shouldPersistDeferrableProgramRuleVariableInDatabase() {
+        final String deferredProgram = "deferredProgram";
+        final String deferredProgramStage = "deferredProgramStage";
+        final String deferredTrackedEntityAttribute = "deferredTrackedEntityAttribute";
+        final String deferredDataElement = "deferredDataElement";
+
+        database().beginTransaction();
+        long rowId = programRuleVariableModelStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date,
+                USE_CODE_FOR_OPTION_SET,
+                deferredProgram,
+                deferredProgramStage,
+                deferredDataElement,
+                deferredTrackedEntityAttribute,
+                PROGRAM_RULE_VARIABLE_SOURCE_TYPE
+        );
+        ContentValues program = CreateProgramUtils.create(3L, deferredProgram, RELATIONSHIP_TYPE_UID, null,
+                TRACKED_ENTITY_UID);
+        database().insert(ProgramModel.TABLE, null, program);
+        ContentValues programStage = CreateProgramStageUtils.create(3L, deferredProgramStage, PROGRAM);
+        database().insert(ProgramStageModel.TABLE, null, programStage);
+        ContentValues dataElement = CreateDataElementUtils.create(3L, deferredDataElement, null);
+        database().insert(DataElementModel.TABLE, null, dataElement);
+        ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.create(3L,
+                deferredTrackedEntityAttribute, null);
+        database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
+        database().setTransactionSuccessful();
+        database().endTransaction();
+
+        Cursor cursor = database().query(ProgramRuleVariableModel.TABLE, PROJECTION, null, null, null, null, null);
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, 1,
+                deferredProgram,
+                deferredProgramStage,
+                deferredDataElement,
+                deferredTrackedEntityAttribute,
+                PROGRAM_RULE_VARIABLE_SOURCE_TYPE
+        ).isExhausted();
 
     }
 
     @Test
-    public void insert_shouldPersistProgramRuleVariableInDatabaseWithProgramForeignKey() throws ParseException {
-        insertProgramForeignKey();
-
-        Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-
+    public void insert_shouldPersistProgramRuleVariableInDatabaseWithProgramForeignKey() {
         long rowId = programRuleVariableModelStore.insert(
                 UID,
                 CODE,
                 NAME,
                 DISPLAY_NAME,
-                timeStamp,
-                timeStamp,
+                date,
+                date,
                 USE_CODE_FOR_OPTION_SET,
                 PROGRAM,
                 null,
@@ -179,21 +214,16 @@ public class ProgramRuleVariableModelStoreTests extends AbsStoreTestCase {
                 null,
                 PROGRAM_RULE_VARIABLE_SOURCE_TYPE
         );
+        Cursor cursor = database().query(ProgramRuleVariableModel.TABLE, PROJECTION, null, null, null, null, null);
 
-        Cursor cursor = database().query(ProgramRuleVariableModel.TABLE, PROGRAM_RULE_VARIABLE_PROJECTION,
-                null, null, null, null, null);
-
-        // Checking if rowId == 1.
-        // If it is 1, then it means it is first successful insert into db
         assertThat(rowId).isEqualTo(1L);
-
         assertThatCursor(cursor).hasRow(
                 UID,
                 CODE,
                 NAME,
                 DISPLAY_NAME,
-                DATE,
-                DATE,
+                dateString,
+                dateString,
                 1, // USE_CODE_FOR_OPTION_SET = Boolean.TRUE
                 PROGRAM,
                 null,
@@ -206,7 +236,6 @@ public class ProgramRuleVariableModelStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteProgramRuleVariableWhenDeletingProgram() {
-        insertProgramForeignKey();
 
         ContentValues programRuleVariable = new ContentValues();
         programRuleVariable.put(Columns.ID, ID);
@@ -230,10 +259,6 @@ public class ProgramRuleVariableModelStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldNotDeleteProgramRuleVariableWhenDeletingProgramStage() {
-        insertProgramForeignKey();
-
-        ContentValues programStage = CreateProgramStageUtils.create(ID, PROGRAM_STAGE, PROGRAM);
-        database().insert(ProgramStageModel.TABLE, null, programStage);
 
         ContentValues programRuleVariable = new ContentValues();
         programRuleVariable.put(Columns.ID, ID);
@@ -259,10 +284,6 @@ public class ProgramRuleVariableModelStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldNotDeleteProgramRuleVariableWhenDeletingDataElement() {
-        insertProgramForeignKey();
-
-        ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
-        database().insert(DataElementModel.TABLE, null, dataElement);
 
         ContentValues programRuleVariable = new ContentValues();
         programRuleVariable.put(Columns.ID, ID);
@@ -288,10 +309,6 @@ public class ProgramRuleVariableModelStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldNotDeleteProgramRuleVariableWhenDeletingTrackedEntityAttribute() {
-        insertProgramForeignKey();
-
-        ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.create(ID, TRACKED_ENTITY_ATTRIBUTE, null);
-        database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
 
         ContentValues programRuleVariable = new ContentValues();
         programRuleVariable.put(Columns.ID, ID);
@@ -320,20 +337,7 @@ public class ProgramRuleVariableModelStoreTests extends AbsStoreTestCase {
     @Test
     public void close_shouldNotCloseDatabase() {
         programRuleVariableModelStore.close();
-
         assertThat(database().isOpen()).isTrue();
-    }
-
-    private void insertProgramForeignKey() {
-        //Create Program & insert a row in the table.
-        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
-        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
-                RELATIONSHIP_TYPE_UID);
-        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
-
-        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
-        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
-        database().insert(ProgramModel.TABLE, null, program);
     }
 }
 

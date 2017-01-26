@@ -143,7 +143,6 @@ public class ProgramIndicatorStoreTests extends AbsStoreTestCase {
     @Test
     public void close_shouldNotCloseDatabase() {
         programIndicatorStore.close();
-
         assertThat(database().isOpen()).isTrue();
     }
 }

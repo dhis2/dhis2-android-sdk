@@ -34,15 +34,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 
-// ToDo: replace builders with factory methods (in order to
-// ToDo: reduce method count of the library)
-// ToDo: consider removing Validatable interface
 public abstract class BaseIdentifiableObject implements IdentifiableObject {
     /* date format which should be used for all Date instances
     within models which extend BaseIdentifiableObject */
     public static final SafeDateFormat DATE_FORMAT = new SafeDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-
-    public static final int UID_LENGTH = 11;
 
     protected static final String UID = "id";
     protected static final String CODE = "code";

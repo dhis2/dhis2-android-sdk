@@ -41,14 +41,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
-public class OptionModelStoreTests extends AbsStoreTestCase {
+public class OptionStoreTests extends AbsStoreTestCase {
 
     private static final String UID = "test_uid";
     private static final String CODE = "test_code";
@@ -64,8 +63,13 @@ public class OptionModelStoreTests extends AbsStoreTestCase {
             Columns.LAST_UPDATED, Columns.OPTION_SET
     };
 
-    // timestamp
-    private static final String DATE = "2016-12-20T16:26:00.007";
+    private final Date date;
+    private final String dateString;
+
+    public OptionStoreTests() {
+        this.date = new Date();
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
+    }
 
     private OptionStore optionStore;
 
@@ -77,14 +81,13 @@ public class OptionModelStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistOptionInDatabase() throws ParseException {
+    public void insert_shouldPersistOptionInDatabase() {
         // INSERT TABLE SETS
         ContentValues optionSet =
                 CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
 
         database().insert(OptionSetModel.TABLE, null, optionSet);
 
-        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
         long rowId = optionStore.insert(
                 UID, CODE, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID
         );
@@ -102,16 +105,33 @@ public class OptionModelStoreTests extends AbsStoreTestCase {
                 .isExhausted();
     }
 
+    @Test
+    public void insert_shouldPersistDeferrableOptionInDatabase() {
+
+        database().beginTransaction();
+        long rowId = optionStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID);
+        ContentValues optionSet = CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
+        database().insert(OptionSetModel.TABLE, null, optionSet);
+        database().setTransactionSuccessful();
+        database().endTransaction();
+
+        Cursor cursor = database().query(OptionModel.TABLE, OPTION_PROJECTION, null, null, null, null, null);
+
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(
+                UID, CODE, NAME,
+                DISPLAY_NAME, BaseIdentifiableObject.DATE_FORMAT.format(date),
+                BaseIdentifiableObject.DATE_FORMAT.format(date), OPTION_SET_UID)
+                .isExhausted();
+    }
+
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_shouldNotPersistOptionWithoutForeignKey() throws ParseException {
-        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-        optionStore.insert(
-                UID, CODE, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID
-        );
+    public void exception_shouldNotPersistOptionWithoutForeignKey() {
+        optionStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID);
     }
 
     @Test
-    public void delete_shouldDeleteOptionsWhenDeletingOptionSet() throws Exception {
+    public void delete_shouldDeleteOptionsWhenDeletingOptionSet() {
         ContentValues optionSet = CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
         database().insert(OptionSetModel.TABLE, null, optionSet);
 

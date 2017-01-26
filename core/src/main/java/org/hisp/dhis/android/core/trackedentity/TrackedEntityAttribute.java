@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.option.OptionSet;
 
 import java.util.Date;
 
-// TODO: Tests
 @AutoValue
 public abstract class TrackedEntityAttribute extends BaseNameableObject {
 

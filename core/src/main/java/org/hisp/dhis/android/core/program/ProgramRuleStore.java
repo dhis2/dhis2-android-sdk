@@ -26,22 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.user;
+ package org.hisp.dhis.android.core.program;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
+import java.util.Date;
 
-@RunWith(JUnit4.class)
-public class AuthenticatedUserModelTests {
+public interface ProgramRuleStore {
+    long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
+                @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+                @Nullable Integer priority, @Nullable String condition, @NonNull String program,
+                @Nullable String programStage);
 
-    @Test
-    public void equals_shouldConformToContract() {
-        EqualsVerifier.forClass(AuthenticatedUserModel.builder().build().getClass())
-                .suppress(Warning.NULL_FIELDS)
-                .verify();
-    }
+    void close();
 }

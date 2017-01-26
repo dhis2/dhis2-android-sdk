@@ -45,7 +45,6 @@ import java.util.List;
 
 import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
 
-// TODO: Tests
 @AutoValue
 public abstract class OrganisationUnit extends BaseNameableObject {
     private static final String PARENT = "parent";

@@ -80,6 +80,24 @@ public class AuthenticatedUserStoreTests extends AbsStoreTestCase {
     }
 
     @Test
+    public void insert_shouldPersistDeferrableRowInDatabase() {
+        final String deferrableUserUid = "deferrableUserUid";
+
+        database().beginTransaction();
+        long rowId = authenticatedUserStore.insert(deferrableUserUid, USER_CREDENTIALS);
+        ContentValues userRow = UserStoreTests.create(2L, deferrableUserUid);
+        database().insert(UserModel.TABLE, null, userRow);
+        database().setTransactionSuccessful();
+        database().endTransaction();
+
+        Cursor cursor = database().query(AuthenticatedUserModel.TABLE,
+                PROJECTION, null, null, null, null, null);
+
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(1L, deferrableUserUid, USER_CREDENTIALS).isExhausted();
+    }
+
+    @Test
     public void query_shouldReturnPersistedRows() {
         ContentValues authenticatedUser = new ContentValues();
         authenticatedUser.put(AuthenticatedUserModel.Columns.USER, USER_UID);

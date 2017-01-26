@@ -76,7 +76,7 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
     private static final String PROGRAM = "test_program";
     private static final String PROGRAM_STAGE = "test_programStage";
 
-    public static final String[] TRACKED_ENTITY_DATA_VALUE_PROJECTION = {
+    public static final String[] PROJECTION = {
             TrackedEntityDataValueModel.Columns.EVENT,
             TrackedEntityDataValueModel.Columns.CREATED,
             TrackedEntityDataValueModel.Columns.LAST_UPDATED,
@@ -91,7 +91,7 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
 
     private TrackedEntityDataValueStore trackedEntityDataValueStore;
 
-    public TrackedEntityDataValueStoreTests() throws ParseException {
+    public TrackedEntityDataValueStoreTests()  {
         this.date = new Date();
         this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
@@ -125,7 +125,7 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistRowInDatabase() throws ParseException {
+    public void insert_shouldPersistRowInDatabase() {
         long rowId = trackedEntityDataValueStore.insert(
                 EVENT,
                 date,
@@ -136,7 +136,7 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
                 PROVIDED_ELSEWHERE
         );
         Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE,
-                TRACKED_ENTITY_DATA_VALUE_PROJECTION, null, null, null, null, null);
+                PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(
                 EVENT,
@@ -150,11 +150,43 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistNullableRowInDatabase() throws ParseException {
+    public void insert_shouldPersistDeferrableRowInDatabase() {
+        final String deferredEvent = "deferredEvent";
+        database().beginTransaction();
+        long rowId = trackedEntityDataValueStore.insert(
+                deferredEvent,
+                date,
+                date,
+                DATA_ELEMENT,
+                STORED_BY,
+                VALUE,
+                PROVIDED_ELSEWHERE
+        );
+        ContentValues event = CreateEventUtils.create(deferredEvent, PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT);
+        database().insert(EventModel.TABLE, null, event);
+
+        database().setTransactionSuccessful();
+        database().endTransaction();
+
+        Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE, PROJECTION, null, null, null, null, null);
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(
+                deferredEvent,
+                dateString,
+                dateString,
+                DATA_ELEMENT,
+                STORED_BY,
+                VALUE,
+                toInteger(PROVIDED_ELSEWHERE)
+        ).isExhausted();
+    }
+
+    @Test
+    public void insert_shouldPersistNullableRowInDatabase()  {
         long rowId = trackedEntityDataValueStore.insert(EVENT, null, null, null, null, null, null);
 
         Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE,
-                TRACKED_ENTITY_DATA_VALUE_PROJECTION, null, null, null, null, null);
+                PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(EVENT, null, null, null, null, null, null).isExhausted();
@@ -174,7 +206,7 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteTrackedEntityDataValueWhenDeletingEventForeignKey() throws ParseException {
+    public void delete_shouldDeleteTrackedEntityDataValueWhenDeletingEventForeignKey()  {
         trackedEntityDataValueStore.insert(
                 EVENT,
                 date,
@@ -187,12 +219,12 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
         database().delete(EventModel.TABLE, EventModel.Columns.UID + "=?", new String[]{EVENT});
 
         Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE,
-                TRACKED_ENTITY_DATA_VALUE_PROJECTION, null, null, null, null, null);
+                PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistTrackedEntityDataValueWithInvalidEventForeignKey() throws ParseException {
+    public void exception_persistTrackedEntityDataValueWithInvalidEventForeignKey()  {
         trackedEntityDataValueStore.insert(
                 "wrong",
                 date,

@@ -35,17 +35,19 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils;
+import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.program.ProgramRuleActionModel.Columns;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -53,28 +55,7 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class ProgramRuleActionStoreTests extends AbsStoreTestCase {
-    private static final Long ID = 2L;
-    private static final String UID = "test_uid";
-    private static final String CODE = "test_code";
-    private static final String NAME = "test_name";
-    private static final String DISPLAY_NAME = "test_display_name";
-    private static final Date CREATED = new Date();
-    private static final Date LAST_UPDATED = CREATED;
-    private static final String DATA = "test_data";
-    private static final String CONTENT = "test_content";
-    private static final String LOCATION = "test_location";
-    private static final String TRACKED_ENTITY_ATTRIBUTE = "test_trackedEntityAttribute";
-    private static final String PROGRAM_INDICATOR = "test_programIndicator";
-    private static final String PROGRAM_STAGE_SECTION = "test_programStageSection";
-    private static final ProgramRuleActionType PROGRAM_RULE_ACTION_TYPE = ProgramRuleActionType.ASSIGN;
-    private static final String PROGRAM_STAGE = "test_programStage";
-    private static final String DATA_ELEMENT = "test_dataElement";
-    private static final String PROGRAM_RULE = "test_programRule";
-
-    // nested foreign key
-    private static final String PROGRAM = "test_program";
-
-    public static final String[] PROGRAM_RULE_ACTION_PROJECTION = {
+    public static final String[] PROJECTION = {
             Columns.UID,
             Columns.CODE,
             Columns.NAME,
@@ -92,25 +73,44 @@ public class ProgramRuleActionStoreTests extends AbsStoreTestCase {
             Columns.DATA_ELEMENT,
             Columns.PROGRAM_RULE
     };
-
-    private ProgramRuleActionStore programRuleActionStore;
-
+    private static final Long ID = 2L;
+    private static final String UID = "test_uid";
+    private static final String CODE = "test_code";
+    private static final String NAME = "test_name";
+    private static final String DISPLAY_NAME = "test_display_name";
+    private static final String DATA = "test_data";
+    private static final String CONTENT = "test_content";
+    private static final String LOCATION = "test_location";
+    private static final String TRACKED_ENTITY_ATTRIBUTE = "test_trackedEntityAttribute";
+    private static final String PROGRAM_INDICATOR = "test_programIndicator";
+    private static final String PROGRAM_STAGE_SECTION = "test_programStageSection";
+    private static final ProgramRuleActionType PROGRAM_RULE_ACTION_TYPE = ProgramRuleActionType.ASSIGN;
+    private static final String PROGRAM_STAGE = "test_programStage";
+    private static final String DATA_ELEMENT = "test_dataElement";
+    private static final String PROGRAM_RULE = "test_programRule";
     //foreign keys to program:
     private static final long TRACKED_ENTITY_ID = 1L;
     private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
     private static final long RELATIONSHIP_TYPE_ID = 3L;
     private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
+    // nested foreign key
+    private static final String PROGRAM = "test_program";
+
+    private ProgramRuleActionStore programRuleActionStore;
+
+    private final Date date;
+    private final String dateString;
+
+    public ProgramRuleActionStoreTests() {
+        this.date = new Date();
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
+    }
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
-
         programRuleActionStore = new ProgramRuleActionStoreImpl(database());
-    }
-
-    @Test
-    public void insert_shouldPersistRowInDatabase() throws ParseException {
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
@@ -123,125 +123,29 @@ public class ProgramRuleActionStoreTests extends AbsStoreTestCase {
 
         ContentValues programRule = CreateProgramRuleUtils.createWithoutProgramStage(1L, PROGRAM_RULE, PROGRAM);
         database().insert(ProgramRuleModel.TABLE, null, programRule);
-
-        long rowId = programRuleActionStore.insert(
-                UID,
-                CODE,
-                NAME,
-                DISPLAY_NAME,
-                CREATED,
-                LAST_UPDATED,
-                DATA,
-                CONTENT,
-                LOCATION,
-                null,
-                null,
-                null,
-                PROGRAM_RULE_ACTION_TYPE,
-                null,
-                null,
-                PROGRAM_RULE
-        );
-
-        Cursor cursor = database().query(ProgramRuleActionModel.TABLE,
-                PROGRAM_RULE_ACTION_PROJECTION, null, null, null, null, null);
-
-        assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor)
-                .hasRow(
-                        UID,
-                        CODE,
-                        NAME,
-                        DISPLAY_NAME,
-                        BaseIdentifiableObject.DATE_FORMAT.format(CREATED),
-                        BaseIdentifiableObject.DATE_FORMAT.format(LAST_UPDATED),
-                        DATA,
-                        CONTENT,
-                        LOCATION,
-                        null,
-                        null,
-                        null,
-                        PROGRAM_RULE_ACTION_TYPE,
-                        null,
-                        null,
-                        PROGRAM_RULE)
-                .isExhausted();
+        //Nullable foreign keys:
+        ContentValues trackedEntityAttribute = CreateTrackedEntityUtils.create(1L, TRACKED_ENTITY_ATTRIBUTE);
+        database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
+        ContentValues programStage = CreateProgramStageUtils.create(2L, PROGRAM_STAGE, PROGRAM);
+        database().insert(ProgramStageModel.TABLE, null, programStage);
+        ContentValues programStageSection = CreateProgramStageSectionUtils.create(1L,
+                PROGRAM_STAGE_SECTION, PROGRAM_STAGE);
+        database().insert(ProgramStageSectionModel.TABLE, null, programStageSection);
+        ContentValues dataElement = CreateDataElementUtils.create(1L, DATA_ELEMENT, null);
+        database().insert(DataElementModel.TABLE, null, dataElement);
+        ContentValues programIndicator = CreateProgramIndicatorUtils.create(1L, PROGRAM_INDICATOR);
+        database().insert(ProgramIndicatorModel.TABLE, null, programIndicator);
     }
 
     @Test
-    public void insert_shouldPersistRowInDatabaseWithProgramStageAsNestedForeignKey() {
-        //Create Program & insert a row in the table.
-        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
-        ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
-                RELATIONSHIP_TYPE_UID);
-        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
-
-        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
-        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
-        database().insert(ProgramModel.TABLE, null, program);
-
-        ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
-        database().insert(ProgramStageModel.TABLE, null, programStage);
-
-        ContentValues programRule =
-                CreateProgramRuleUtils.createWithProgramStage(
-                        1L, PROGRAM_RULE, PROGRAM, PROGRAM_STAGE);
-
-        database().insert(ProgramRuleModel.TABLE, null, programRule);
-
+    public void insert_shouldPersistRowInDatabase() {
         long rowId = programRuleActionStore.insert(
                 UID,
                 CODE,
                 NAME,
                 DISPLAY_NAME,
-                CREATED,
-                LAST_UPDATED,
-                DATA,
-                CONTENT,
-                LOCATION,
-                null,
-                null,
-                null,
-                PROGRAM_RULE_ACTION_TYPE,
-                PROGRAM_STAGE,
-                null,
-                PROGRAM_RULE
-        );
-
-        Cursor cursor = database().query(ProgramRuleActionModel.TABLE,
-                PROGRAM_RULE_ACTION_PROJECTION, null, null, null, null, null);
-
-        assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor)
-                .hasRow(
-                        UID,
-                        CODE,
-                        NAME,
-                        DISPLAY_NAME,
-                        BaseIdentifiableObject.DATE_FORMAT.format(CREATED),
-                        BaseIdentifiableObject.DATE_FORMAT.format(LAST_UPDATED),
-                        DATA,
-                        CONTENT,
-                        LOCATION,
-                        null,
-                        null,
-                        null,
-                        PROGRAM_RULE_ACTION_TYPE,
-                        PROGRAM_STAGE,
-                        null,
-                        PROGRAM_RULE)
-                .isExhausted();
-    }
-
-    @Test(expected = SQLiteConstraintException.class)
-    public void exception_shouldFailWithoutMandatoryForeignKey() {
-        programRuleActionStore.insert(
-                UID,
-                CODE,
-                NAME,
-                DISPLAY_NAME,
-                CREATED,
-                LAST_UPDATED,
+                date,
+                date,
                 DATA,
                 CONTENT,
                 LOCATION,
@@ -251,7 +155,147 @@ public class ProgramRuleActionStoreTests extends AbsStoreTestCase {
                 PROGRAM_RULE_ACTION_TYPE,
                 PROGRAM_STAGE,
                 DATA_ELEMENT,
-                null
+                PROGRAM_RULE
+        );
+        Cursor cursor = database().query(ProgramRuleActionModel.TABLE, PROJECTION, null, null, null, null, null);
+
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(
+                UID,
+                CODE,
+                NAME,
+                DISPLAY_NAME,
+                dateString,
+                dateString,
+                DATA,
+                CONTENT,
+                LOCATION,
+                TRACKED_ENTITY_ATTRIBUTE,
+                PROGRAM_INDICATOR,
+                PROGRAM_STAGE_SECTION,
+                PROGRAM_RULE_ACTION_TYPE,
+                PROGRAM_STAGE,
+                DATA_ELEMENT,
+                PROGRAM_RULE
+        ).isExhausted();
+    }
+
+    @Test
+    public void insert_shouldPersistDeferrableRowInDatabase() {
+        final String deferredProgramRule = "deferredProgramRule";
+        final String deferredTrackedEntityAttribute = "deferredTrackedEntityAttribute";
+        final String deferredProgramStageSection = "deferredProgramStageSection";
+        final String deferredProgramStage = "deferredProgramStage";
+        final String deferredDataElement = "deferredDataElement";
+
+        database().beginTransaction();
+        long rowId = programRuleActionStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, DATA, CONTENT, LOCATION,
+                deferredTrackedEntityAttribute,
+                PROGRAM_INDICATOR,
+                deferredProgramStageSection,
+                PROGRAM_RULE_ACTION_TYPE,
+                deferredProgramStage,
+                deferredDataElement,
+                deferredProgramRule
+        );
+        ContentValues programRule = CreateProgramRuleUtils.createWithoutProgramStage(3L, deferredProgramRule, PROGRAM);
+        database().insert(ProgramRuleModel.TABLE, null, programRule);
+        ContentValues trackedEntityAttribute = CreateTrackedEntityUtils.create(3L, deferredTrackedEntityAttribute);
+        database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
+        ContentValues programStage = CreateProgramStageUtils.create(3L, deferredProgramStage, PROGRAM);
+        database().insert(ProgramStageModel.TABLE, null, programStage);
+        ContentValues programStageSection = CreateProgramStageSectionUtils.create(3L,
+                deferredProgramStageSection, deferredProgramStage);
+        database().insert(ProgramStageSectionModel.TABLE, null, programStageSection);
+        ContentValues dataElement = CreateDataElementUtils.create(3L, deferredDataElement, null);
+        database().insert(DataElementModel.TABLE, null, dataElement);
+        database().setTransactionSuccessful();
+        database().endTransaction();
+
+        Cursor cursor = database().query(ProgramRuleActionModel.TABLE, PROJECTION, null, null, null, null, null);
+
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, DATA, CONTENT, LOCATION,
+                deferredTrackedEntityAttribute,
+                PROGRAM_INDICATOR,
+                deferredProgramStageSection,
+                PROGRAM_RULE_ACTION_TYPE,
+                deferredProgramStage,
+                deferredDataElement,
+                deferredProgramRule
+        ).isExhausted();
+    }
+
+    @Test
+    public void insert_shouldPersistNullableRowInDatabase() {
+        long rowId = programRuleActionStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, DATA, CONTENT, LOCATION,
+                null,
+                null,
+                null,
+                PROGRAM_RULE_ACTION_TYPE,
+                null,
+                null,
+                PROGRAM_RULE
+        );
+        Cursor cursor = database().query(ProgramRuleActionModel.TABLE, PROJECTION, null, null, null, null, null);
+
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, DATA, CONTENT, LOCATION,
+                null,
+                null,
+                null,
+                PROGRAM_RULE_ACTION_TYPE,
+                null,
+                null,
+                PROGRAM_RULE
+        ).isExhausted();
+    }
+
+    @Test(expected = SQLiteConstraintException.class)
+    public void exception_shouldFailWithoutMandatoryForeignKey() {
+        programRuleActionStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, DATA, CONTENT, LOCATION,
+                TRACKED_ENTITY_ATTRIBUTE, PROGRAM_INDICATOR, PROGRAM_STAGE_SECTION, PROGRAM_RULE_ACTION_TYPE,
+                PROGRAM_STAGE, DATA_ELEMENT, null
+        );
+    }
+
+    @Test(expected = SQLiteConstraintException.class)
+    public void exception_shouldFailWithWrongMandatoryForeignKey() {
+        programRuleActionStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, DATA, CONTENT, LOCATION,
+                TRACKED_ENTITY_ATTRIBUTE, PROGRAM_INDICATOR, PROGRAM_STAGE_SECTION, PROGRAM_RULE_ACTION_TYPE,
+                PROGRAM_STAGE, DATA_ELEMENT, "wrong"
+        );
+    }
+
+    @Test(expected = SQLiteConstraintException.class)
+    public void exception_shouldFailWithWrongTrackedEntityAttributeForeignKey() {
+        programRuleActionStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, DATA, CONTENT, LOCATION,
+                "wrong", PROGRAM_INDICATOR, PROGRAM_STAGE_SECTION, PROGRAM_RULE_ACTION_TYPE,
+                PROGRAM_STAGE, DATA_ELEMENT, PROGRAM
+        );
+    }
+
+    @Test(expected = SQLiteConstraintException.class)
+    public void exception_shouldFailWithWrongProgramStageSectionForeignKey() {
+        programRuleActionStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, DATA, CONTENT, LOCATION,
+                TRACKED_ENTITY_ATTRIBUTE, PROGRAM_INDICATOR, "wrong", PROGRAM_RULE_ACTION_TYPE,
+                PROGRAM_STAGE, DATA_ELEMENT, PROGRAM
+        );
+    }
+
+    @Test(expected = SQLiteConstraintException.class)
+    public void exception_shouldFailWithWrongProgramStageForeignKey() {
+        programRuleActionStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, DATA, CONTENT, LOCATION,
+                TRACKED_ENTITY_ATTRIBUTE, PROGRAM_INDICATOR, PROGRAM_STAGE_SECTION, PROGRAM_RULE_ACTION_TYPE,
+                "wrong", DATA_ELEMENT, PROGRAM
+        );
+    }
+
+    @Test(expected = SQLiteConstraintException.class)
+    public void exception_shouldFailWithWrongDataElementForeignKey() {
+        programRuleActionStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, DATA, CONTENT, LOCATION,
+                TRACKED_ENTITY_ATTRIBUTE, PROGRAM_INDICATOR, PROGRAM_STAGE_SECTION, PROGRAM_RULE_ACTION_TYPE,
+                PROGRAM_STAGE, "wrong", PROGRAM
         );
     }
 

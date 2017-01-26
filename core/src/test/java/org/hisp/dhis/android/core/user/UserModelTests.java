@@ -35,10 +35,10 @@ import org.junit.runners.JUnit4;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
-// ToDo: consider testing .isValid() as well.
 @RunWith(JUnit4.class)
 public class UserModelTests {
 
+    //TODO: add more tests ?
     @Test
     public void equals_shouldConformToContract() {
         EqualsVerifier.forClass(UserModel.builder().build().getClass())

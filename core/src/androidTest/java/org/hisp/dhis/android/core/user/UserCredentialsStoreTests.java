@@ -122,6 +122,42 @@ public class UserCredentialsStoreTests extends AbsStoreTestCase {
     }
 
     @Test
+    public void insert_shouldPersistDeferredRowInDatabase(){
+        final String deferredUid = "deferredForeignKeyUid";
+
+        database().beginTransaction();
+
+        long rowId = userCredentialsStore.insert(
+                UID,
+                USER_CREDENTIALS_CODE,
+                USER_CREDENTIALS_NAME,
+                USER_CREDENTIALS_DISPLAY_NAME,
+                date, date,
+                USER_CREDENTIALS_USERNAME,
+                deferredUid);
+        ContentValues userRow = UserStoreTests.create(2L, deferredUid);
+        database().insert(UserModel.TABLE, null, userRow);
+
+        database().setTransactionSuccessful();
+        database().endTransaction();
+
+        Cursor cursor = database().query(UserCredentialsModel.TABLE,
+                USER_CREDENTIALS_PROJECTION, null, null, null, null, null);
+
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(
+                UID,
+                USER_CREDENTIALS_CODE,
+                USER_CREDENTIALS_NAME,
+                USER_CREDENTIALS_DISPLAY_NAME,
+                dateString,
+                dateString,
+                USER_CREDENTIALS_USERNAME,
+                deferredUid
+        ).isExhausted();
+    }
+
+    @Test
     public void insert_shouldPersistNullableRowInDatabase() {
         long rowId = userCredentialsStore.insert(
                 UID,

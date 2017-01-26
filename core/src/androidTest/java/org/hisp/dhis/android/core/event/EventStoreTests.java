@@ -76,8 +76,6 @@ public class EventStoreTests extends AbsStoreTestCase {
             Columns.DUE_DATE, // dueDate
             Columns.STATE
     };
-    private EventStore eventStore;
-
     private static final String EVENT_UID = "test_uid";
     private static final String ENROLLMENT_UID = "test_enrollment";
     private static final EventStatus STATUS = EventStatus.ACTIVE;
@@ -87,20 +85,17 @@ public class EventStoreTests extends AbsStoreTestCase {
     private static final String PROGRAM_STAGE = "test_programStage";
     private static final String ORGANISATION_UNIT = "test_orgUnit";
     private static final State STATE = State.TO_POST;
-
-
-
     //foreign keys to program:
     private static final long TRACKED_ENTITY_ID = 1L;
     private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
     private static final long RELATIONSHIP_TYPE_ID = 3L;
     private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
-
-    // timestamp
     private final Date date;
-    private final String dateString;
 
+    private final String dateString;
     private final String WRONG_UID = "wrong";
+
+    private EventStore eventStore;
 
     public EventStoreTests() throws ParseException {
         this.date = new Date();
@@ -112,7 +107,6 @@ public class EventStoreTests extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
         this.eventStore = new EventStoreImpl(database());
-
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
@@ -132,7 +126,6 @@ public class EventStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistEventInDatabase() {
-
         long rowId = eventStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
@@ -171,8 +164,62 @@ public class EventStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistEventNullableInDatabase() {
+    public void insert_shouldPersistDeferrableEventInDatabase() {
+        final String deferredProgram = "deferredProgram";
+        final String deferredProgramStage = "deferredProgramStage";
+        final String deferredOrganisationUnit = "deferredOrganisationUnit";
 
+        database().beginTransaction();
+        long rowId = eventStore.insert(
+                EVENT_UID,
+                ENROLLMENT_UID,
+                date, // created
+                date, // lastUpdated
+                STATUS,
+                LATITUDE,
+                LONGITUDE,
+                deferredProgram,
+                deferredProgramStage,
+                deferredOrganisationUnit,
+                date, // eventDate
+                date, // completedDate
+                date, // dueDate
+                STATE
+        );
+
+        ContentValues program = CreateProgramUtils.create(11L, deferredProgram,
+                RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
+        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(11L, deferredOrganisationUnit);
+        ContentValues programStage = CreateProgramStageUtils.create(11L, deferredProgramStage, PROGRAM);
+
+        database().insert(ProgramModel.TABLE, null, program);
+        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
+        database().insert(ProgramStageModel.TABLE, null, programStage);
+        database().setTransactionSuccessful();
+        database().endTransaction();
+
+        Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(
+                EVENT_UID,
+                ENROLLMENT_UID,
+                dateString, // created
+                dateString, // lastUpdated
+                STATUS,
+                LATITUDE,
+                LONGITUDE,
+                deferredProgram,
+                deferredProgramStage,
+                deferredOrganisationUnit,
+                dateString, // eventDate
+                dateString, // completedDate
+                dateString, // dueDate
+                STATE
+        ).isExhausted();
+    }
+
+    @Test
+    public void insert_shouldPersistEventNullableInDatabase() {
         long rowId = eventStore.insert(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, PROGRAM,
                 PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null);
         Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
@@ -183,7 +230,6 @@ public class EventStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteEventWhenDeletingProgramForeignKey() {
-
         eventStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
@@ -208,7 +254,6 @@ public class EventStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteEventWhenDeletingProgramStageForeignKey() {
-
         eventStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
@@ -233,7 +278,6 @@ public class EventStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteEventWhenDeletingOrganisationUnitForeignKey() {
-
         eventStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,

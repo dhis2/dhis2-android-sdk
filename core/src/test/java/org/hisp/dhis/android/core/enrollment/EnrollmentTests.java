@@ -28,59 +28,51 @@
 
  package org.hisp.dhis.android.core.enrollment;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.hisp.dhis.android.core.Inject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.text.ParseException;
+
+import static org.assertj.core.api.Java6Assertions.assertThat;
+
 public class EnrollmentTests {
 
-    /*TODO: fix this: Use new Create method instead of Builder
-
-    private static Enrollment.Builder VALID_BUILDER;
-
-    @Before public void setUp() {
-        VALID_BUILDER = createValidBuilder();
-    }
-
-    private Enrollment.Builder createValidBuilder() {
-        return Enrollment.builder()
-                .uid("a1b2c3d4e5f");
-    }
-
-    //**************************************************************************************
-    //
-    // UID NULL TEST
-    //
-    //**************************************************************************************
-
-    @Test(expected = IllegalStateException.class)
-    public void build_shouldThrowOnNullUidField() {
-        VALID_BUILDER.uid(null).build();
-    }
-
-    //**************************************************************************************
-    //
-    // EQUALS VERIFIER
-    //
-    //**************************************************************************************
-
     @Test
-    public void equals_shouldConformToContract() {
-        EqualsVerifier.forClass(VALID_BUILDER.build().getClass())
-                .suppress(Warning.NULL_FIELDS)
-                .verify();
+    public void enrollment_shouldMapFromJsonString() throws IOException, ParseException {
+        ObjectMapper objectMapper = Inject.objectMapper();
+        Enrollment enrollment = objectMapper.readValue("{\n " +
+                "    \"trackedEntity\": \"nEenWmSyUEp\",\n " +
+                "    \"created\": \"2015-03-28T12:27:50.740\",\n " +
+                "    \"orgUnit\": \"Rp268JB6Ne4\",\n " +
+                "    \"program\": \"ur1Edk5Oe2n\",\n " +
+                "    \"trackedEntityInstance\": \"D2dUWKQErfQ\",\n " +
+                "    \"enrollment\": \"BVJQIxoM2o4\",\n " +
+                "    \"lastUpdated\": \"2015-03-28T12:27:50.748\",\n " +
+                "    \"orgUnitName\": \"Adonkia CHP\",\n " +
+                "    \"enrollmentDate\": \"2014-08-07T12:27:50.730\",\n " +
+                "    \"followup\": false,\n " +
+                "    \"incidentDate\": \"2014-07-21T12:27:50.730\",\n " +
+                "    \"status\": \"ACTIVE\",\n " +
+                "    \"notes\": [],\n " +
+                "    \"attributes\": []\n " +
+                "    }",
+                Enrollment.class);
+
+        assertThat(enrollment.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2015-03-28T12:27:50.740"));
+        assertThat(enrollment.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2015-03-28T12:27:50.748"));
+        assertThat(enrollment.uid()).isEqualTo("BVJQIxoM2o4");
+        assertThat(enrollment.organisationUnit()).isEqualTo("Rp268JB6Ne4");
+        assertThat(enrollment.program()).isEqualTo("ur1Edk5Oe2n");
+        assertThat(enrollment.dateOfEnrollment()).isEqualTo("2014-08-07T12:27:50.730");
+        assertThat(enrollment.dateOfIncident()).isEqualTo("2014-07-21T12:27:50.730");
+        assertThat(enrollment.followUp()).isEqualTo(false);
+        assertThat(enrollment.enrollmentStatus()).isEqualTo(EnrollmentStatus.ACTIVE);
+        assertThat(enrollment.trackedEntityInstance()).isEqualTo("D2dUWKQErfQ");
     }
-
-    //**************************************************************************************
-    //
-    // COLLECTION MUTATION TESTS
-    //
-    //**************************************************************************************
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void trackedEntityAttributeValues_shouldThrowOnCollectionMutations() {
-        Enrollment enrollment = VALID_BUILDER
-                .trackedEntityAttributeValues(Arrays.asList(
-                        TrackedEntityAttributeValue.builder().build(),
-                        TrackedEntityAttributeValue.builder().build()))
-                .build();
-
-        enrollment.trackedEntityAttributeValues().add(TrackedEntityAttributeValue.builder().build());
-    }*/
 }

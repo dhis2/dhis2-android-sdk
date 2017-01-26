@@ -42,8 +42,6 @@ import org.hisp.dhis.android.core.dataelement.DataElement;
 import java.util.Date;
 
 @AutoValue
-//TODO: ProgramStageDataElement is not a true BaseIdentifiableObject. It lacks name and
-// displayName in API. Override those properties and return dataElement.getName() and dataElement.getDisplayName()
 public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
     private static final String DISPLAY_IN_REPORTS = "displayInReports";
     private static final String DATA_ELEMENT = "dataElement";

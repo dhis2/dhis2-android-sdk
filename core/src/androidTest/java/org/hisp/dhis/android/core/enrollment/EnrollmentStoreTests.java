@@ -61,8 +61,7 @@ import static org.hisp.dhis.android.core.enrollment.EnrollmentModel.TABLE;
 
 @RunWith(AndroidJUnit4.class)
 public class EnrollmentStoreTests extends AbsStoreTestCase {
-
-    private static final String[] ENROLLMENT_PROJECTION = {
+    private static final String[] PROJECTION = {
             EnrollmentModel.Columns.UID,
             EnrollmentModel.Columns.CREATED,
             EnrollmentModel.Columns.LAST_UPDATED,
@@ -88,19 +87,15 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
     private static final String TRACKED_ENTITY_INSTANCE = "test_trackedEntityInstance";
     private static final String LATITUDE = "10.832152";
     private static final String LONGITUDE = "59.345231";
-
     private static final State STATE = State.TO_UPDATE;
-
     //foreign keys to program:
     private static final long TRACKED_ENTITY_ID = 1L;
     private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
     private static final long RELATIONSHIP_TYPE_ID = 3L;
     private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
 
-    // timestamp
     private final Date date;
     private final String dateString;
-
     private final String WRONG_UID = "wrong";
 
     public EnrollmentStoreTests() throws ParseException {
@@ -113,28 +108,23 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
         this.enrollmentStore = new EnrollmentStoreImpl(database());
-
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE_UID);
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
-
         database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
         database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
         database().insert(ProgramModel.TABLE, null, program);
-
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.createWithOrgUnit(
                 TRACKED_ENTITY_INSTANCE, ORGANISATION_UNIT);
-
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
     }
 
     @Test
     public void insert_shouldPersistInDatabase() {
-
         long rowId = enrollmentStore.insert(
                 UID,
                 date,
@@ -151,7 +141,7 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
                 STATE
         );
 
-        Cursor cursor = database().query(TABLE, ENROLLMENT_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(TABLE, PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(
@@ -172,11 +162,47 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
     }
 
     @Test
+    public void insert_shouldPersistDeferrableInDatabase() {
+        final String deferredOrganisationUnit = "deferredOrganisationUnit";
+        final String deferredProgram = "deferredProgram";
+        final String deferredTrackedEntityInstance = "deferredTrackedEntityInstance";
+
+        database().beginTransaction();
+        long rowId = enrollmentStore.insert(UID, date, date,
+                deferredOrganisationUnit,
+                deferredProgram,
+                date, date, FOLLOW_UP, ENROLLMENT_STATUS,
+                deferredTrackedEntityInstance,
+                LATITUDE, LONGITUDE, STATE
+        );
+        ContentValues program = CreateProgramUtils.create(11L, deferredProgram,
+                RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
+        database().insert(ProgramModel.TABLE, null, program);
+        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(11L, deferredOrganisationUnit);
+        ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.createWithOrgUnit(
+                deferredTrackedEntityInstance, ORGANISATION_UNIT);
+        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
+        database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
+        database().setTransactionSuccessful();
+        database().endTransaction();
+
+        Cursor cursor = database().query(TABLE, PROJECTION, null, null, null, null, null);
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(UID, dateString, dateString,
+                deferredOrganisationUnit,
+                deferredProgram,
+                dateString, dateString, AndroidTestUtils.toInteger(FOLLOW_UP), ENROLLMENT_STATUS,
+                deferredTrackedEntityInstance,
+                LATITUDE, LONGITUDE, STATE
+        ).isExhausted();
+    }
+
+    @Test
     public void insert_shouldPersistNullableInDatabase() {
 
         long rowId = enrollmentStore.insert(UID, null, null, ORGANISATION_UNIT, PROGRAM, null, null, null, null,
                 TRACKED_ENTITY_INSTANCE, null, null, null);
-        Cursor cursor = database().query(TABLE, ENROLLMENT_PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(TABLE, PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, null, null, ORGANISATION_UNIT, PROGRAM, null, null, null, null,
                 TRACKED_ENTITY_INSTANCE, null, null, null).isExhausted();
@@ -203,7 +229,7 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
         database().delete(OrganisationUnitModel.TABLE,
                 OrganisationUnitModel.Columns.UID + " =?", new String[]{ORGANISATION_UNIT});
         //Query for Enrollment:
-        Cursor cursor = database().query(TABLE, ENROLLMENT_PROJECTION, null, null, null, null, null, null);
+        Cursor cursor = database().query(TABLE, PROJECTION, null, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 
@@ -229,7 +255,7 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
         database().delete(ProgramModel.TABLE,
                 ProgramModel.Columns.UID + " =?", new String[]{PROGRAM});
 
-        Cursor cursor = database().query(TABLE, ENROLLMENT_PROJECTION, null, null, null, null, null, null);
+        Cursor cursor = database().query(TABLE, PROJECTION, null, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 
@@ -254,7 +280,7 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
         database().delete(TrackedEntityInstanceModel.TABLE,
                 ProgramModel.Columns.UID + " =?", new String[]{TRACKED_ENTITY_INSTANCE});
 
-        Cursor cursor = database().query(TABLE, ENROLLMENT_PROJECTION, null, null, null, null, null, null);
+        Cursor cursor = database().query(TABLE, PROJECTION, null, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 

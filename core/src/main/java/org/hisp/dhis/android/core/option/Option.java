@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.data.api.NestedField;
 
 import java.util.Date;
 
-// TODO: Tests
 @AutoValue
 public abstract class Option extends BaseIdentifiableObject {
     private static final String OPTION_SET = "optionSet";

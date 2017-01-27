@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.configuration;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -58,39 +58,39 @@ public class ConfigurationStoreTests extends AbsStoreTestCase {
 
     @Test
     public void save_shouldPersistRowInDatabase() {
-        long rowId = configurationStore.save("test_server_url");
+        long rowId = configurationStore.save("http://testserver.org/");
 
         Cursor cursor = database().query(ConfigurationModel.CONFIGURATION,
                 PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor)
-                .hasRow(1L, "test_server_url")
+                .hasRow(1L, "http://testserver.org/")
                 .isExhausted();
     }
 
     @Test
     public void save_shouldNotThrowOnConflict() {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ConfigurationModel.Columns.SERVER_URL, "test_server_url");
+        contentValues.put(ConfigurationModel.Columns.SERVER_URL, "http://testserver.org/");
 
         database().insert(ConfigurationModel.CONFIGURATION, null, contentValues);
 
         // trying to save configuration with server url (which is set to be unique in the table)
-        long rowId = configurationStore.save("test_server_url");
+        long rowId = configurationStore.save("http://testserver.org/");
 
         Cursor cursor = database().query(ConfigurationModel.CONFIGURATION,
                 PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor)
-                .hasRow(1L, "test_server_url")
+                .hasRow(1L, "http://testserver.org/")
                 .isExhausted();
     }
 
     @Test
     public void save_shouldNotPersistMoreThatOneUrl() {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ConfigurationModel.Columns.SERVER_URL, "test_server_url");
+        contentValues.put(ConfigurationModel.Columns.SERVER_URL, "http://testserver.org/");
 
         database().insert(ConfigurationModel.CONFIGURATION, null, contentValues);
 
@@ -107,7 +107,7 @@ public class ConfigurationStoreTests extends AbsStoreTestCase {
     @Test
     public void delete_shouldDeletePersistedRows() {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ConfigurationModel.Columns.SERVER_URL, "test_server_url");
+        contentValues.put(ConfigurationModel.Columns.SERVER_URL, "http://testserver.org/");
 
         database().insert(ConfigurationModel.CONFIGURATION, null, contentValues);
 
@@ -128,13 +128,13 @@ public class ConfigurationStoreTests extends AbsStoreTestCase {
     @Test
     public void query_shouldReturnPersistedRow() {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ConfigurationModel.Columns.SERVER_URL, "test_server_url");
+        contentValues.put(ConfigurationModel.Columns.SERVER_URL, "http://testserver.org/");
 
         database().insert(ConfigurationModel.CONFIGURATION, null, contentValues);
 
         ConfigurationModel persistedConfiguration = configurationStore.query();
         assertThat(persistedConfiguration.id()).isEqualTo(1L);
-        assertThat(persistedConfiguration.serverUrl()).isEqualTo("test_server_url");
+        assertThat(persistedConfiguration.serverUrl().toString()).isEqualTo("http://testserver.org/");
     }
 
     @Test

@@ -26,39 +26,45 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.configuration;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
+
 import org.hisp.dhis.android.core.configuration.ConfigurationModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import okhttp3.HttpUrl;
 
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class ConfigurationModelTests {
     private static final long ID = 11L;
-    private static final String SERVER_URL = "https://testurl.org";
+    private static final String SERVER_URL = "https://testurl.org/";
 
     @Test
     public void create_shouldConvertToModel() {
-        MatrixCursor cursor = new MatrixCursor(new String[]{Columns.ID, Columns.SERVER_URL});
-        cursor.addRow(new Object[]{ID, SERVER_URL});
+        MatrixCursor cursor = new MatrixCursor(new String[]{
+                Columns.ID, Columns.SERVER_URL
+        });
+        cursor.addRow(new Object[]{
+                ID, SERVER_URL
+        });
         cursor.moveToFirst();
 
         ConfigurationModel model = ConfigurationModel.create(cursor);
-        cursor.close();
 
         assertThat(model.id()).isEqualTo(ID);
-        assertThat(model.serverUrl()).isEqualTo(SERVER_URL);
+        assertThat(model.serverUrl()).isEqualTo(HttpUrl.parse(SERVER_URL));
     }
 
     @Test
     public void toContentValues_shouldConvertToContentValuesCorrectly() {
         ConfigurationModel configurationModel = ConfigurationModel.builder()
-                .id(ID).serverUrl(SERVER_URL).build();
+                .id(ID).serverUrl(HttpUrl.parse(SERVER_URL)).build();
 
         ContentValues contentValues = configurationModel.toContentValues();
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);

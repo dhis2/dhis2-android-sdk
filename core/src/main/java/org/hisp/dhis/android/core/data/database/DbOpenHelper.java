@@ -684,7 +684,9 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             " REFERENCES " + OrganisationUnitModel.TABLE + " (" + OrganisationUnitModel.Columns.UID + ")" +
             " ON DELETE CASCADE," +
             " FOREIGN KEY (" + OrganisationUnitProgramLinkModel.Columns.PROGRAM + ")" +
-            " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" + " ON DELETE CASCADE" +
+            " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" + " ON DELETE CASCADE," +
+            " UNIQUE (" + OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT + ", " +
+            OrganisationUnitProgramLinkModel.Columns.PROGRAM + ")" +
             ");";
 
     private static final String CREATE_USER_ROLE_TABLE = "CREATE TABLE " + UserRoleModel.TABLE + " (" +

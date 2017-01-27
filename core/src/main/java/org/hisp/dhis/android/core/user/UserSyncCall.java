@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.user;
 
 import android.database.sqlite.SQLiteDatabase;
 
@@ -33,15 +33,11 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.HeaderUtils;
 import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceStore;
-import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserCredentials;
-import org.hisp.dhis.android.core.user.UserCredentialsStore;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
-import org.hisp.dhis.android.core.user.UserRole;
-import org.hisp.dhis.android.core.user.UserRoleStore;
-import org.hisp.dhis.android.core.user.UserStore;
 
 import java.io.IOException;
 import java.util.Date;
@@ -49,9 +45,9 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public final class AssignedOrganisationUnitsCall implements Call<Response<User>> {
+public final class UserSyncCall implements Call<Response<User>> {
     // retrofit service
-    private final AssignedOrganisationUnitService assignedOrganisationUnitService;
+    private final UserSyncService syncUserService;
 
     // database and stores
     private final SQLiteDatabase database;
@@ -60,25 +56,28 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
     private final UserCredentialsStore userCredentialsStore;
     private final UserRoleStore userRoleStore;
     private final UserStore userStore;
+    private final UserRoleProgramLinkStore userRoleProgramLinkStore;
     private final ResourceStore resourceStore;
 
     private boolean isExecuted;
 
-    public AssignedOrganisationUnitsCall(AssignedOrganisationUnitService assignedOrganisationUnitService,
-                                         SQLiteDatabase database,
-                                         OrganisationUnitStore organisationUnitStore,
-                                         UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
-                                         UserCredentialsStore userCredentialsStore,
-                                         UserRoleStore userRoleStore,
-                                         UserStore userStore,
-                                         ResourceStore resourceStore) {
-        this.assignedOrganisationUnitService = assignedOrganisationUnitService;
+    public UserSyncCall(UserSyncService syncUserService,
+                        SQLiteDatabase database,
+                        OrganisationUnitStore organisationUnitStore,
+                        UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
+                        UserCredentialsStore userCredentialsStore,
+                        UserRoleStore userRoleStore,
+                        UserStore userStore,
+                        UserRoleProgramLinkStore userRoleProgramLinkStore,
+                        ResourceStore resourceStore) {
+        this.syncUserService = syncUserService;
         this.database = database;
         this.organisationUnitStore = organisationUnitStore;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.userCredentialsStore = userCredentialsStore;
         this.userRoleStore = userRoleStore;
         this.userStore = userStore;
+        this.userRoleProgramLinkStore = userRoleProgramLinkStore;
         this.resourceStore = resourceStore;
     }
 
@@ -99,16 +98,16 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
             isExecuted = true;
         }
 
-        Response<User> response = getAssignedOrganisationUnits();
+        Response<User> response = getUser();
         if (response.isSuccessful()) {
-            saveAssignedOrganisationUnits(response);
+            deleteOrPersistUserGraph(response);
         }
 
 
-        return null;
+        return response;
     }
 
-    private Response<User> getAssignedOrganisationUnits() throws IOException {
+    private Response<User> getUser() throws IOException {
         Filter<User> filter = Filter.<User>builder().fields(
                 User.uid, User.code, User.name, User.displayName,
                 User.created, User.lastUpdated, User.birthday, User.education,
@@ -140,10 +139,10 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
                 )
         ).build();
 
-        return assignedOrganisationUnitService.getAssignedOrganisationUnits(filter).execute();
+        return syncUserService.getUser(filter).execute();
     }
 
-    private void saveAssignedOrganisationUnits(Response<User> response) {
+    private void deleteOrPersistUserGraph(Response<User> response) {
         database.beginTransaction();
 
         try {
@@ -151,78 +150,15 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
             // TODO: check that this is user is authenticated and is persisted in db
             Date serverDateTime = response.headers().getDate(HeaderUtils.DATE);
 
-            if (isDeleted(user)) {
-                userStore.delete(user.uid());
-                deleteInResourceStore(user.uid());
-            } else {
-                int updatedRow = userStore.update(user.uid(), user.code(), user.name(), user.displayName(),
-                        user.created(), user.lastUpdated(), user.birthday(), user.education(),
-                        user.gender(), user.jobTitle(), user.surname(), user.firstName(),
-                        user.introduction(), user.employer(), user.interests(), user.languages(),
-                        user.email(), user.phoneNumber(), user.nationality(), user.uid());
-
-                // TODO: Does this make sense?
-                // if user object was not updated, it means that it wasn't found in database. Insert it.
-                if (updatedRow <= 0) {
-                    userStore.insert(user.uid(), user.code(), user.name(), user.displayName(), user.created(),
-                            user.lastUpdated(), user.birthday(), user.education(),
-                            user.gender(), user.jobTitle(), user.surname(), user.firstName(),
-                            user.introduction(), user.employer(), user.interests(), user.languages(),
-                            user.email(), user.phoneNumber(), user.nationality());
-                }
-
-                // update the resource table
-                int updatedResourceRow = updateInResourceStore(
-                        User.class.getSimpleName(), user.uid(), serverDateTime, user.uid()
-                );
-
-                if (updatedResourceRow <= 0) {
-                    insertIntoResourceStore(
-                            User.class.getSimpleName(), user.uid(), serverDateTime
-                    );
-                }
-            }
-
+            deleteOrPersistUser(user, serverDateTime);
 
             UserCredentials userCredentials = user.userCredentials();
 
-            if (isDeleted(userCredentials)) {
-                userCredentialsStore.delete(userCredentials.uid());
-                deleteInResourceStore(userCredentials.uid());
-            } else {
-                int updatedRow = userCredentialsStore.update(userCredentials.uid(), userCredentials.code(),
-                        userCredentials.name(), userCredentials.displayName(), userCredentials.created(),
-                        userCredentials.lastUpdated(), userCredentials.username(), user.uid(), userCredentials.uid()
-                );
-
-                if (updatedRow <= 0) {
-                    userCredentialsStore.insert(
-                            userCredentials.uid(), userCredentials.code(), userCredentials.name(),
-                            userCredentials.displayName(), userCredentials.created(), userCredentials.lastUpdated(),
-                            userCredentials.username(), user.uid()
-                    );
-                }
-                int updatedResourceRow = updateInResourceStore(
-                        UserCredentials.class.getSimpleName(), userCredentials.uid(),
-                        serverDateTime, userCredentials.uid()
-                );
-                if (updatedResourceRow <= 0) {
-                    insertIntoResourceStore(
-                            UserCredentials.class.getSimpleName(), userCredentials.uid(), serverDateTime
-                    );
-                }
-            }
+            deleteOrPersistUserCredentials(user, serverDateTime, userCredentials);
 
             List<UserRole> userRoles = userCredentials.userRoles();
-            int size = userRoles.size();
-            for (int i = 0; i < size; i++) {
-                UserRole userRole = userRoles.get(i);
 
-                if (isDeleted(userRole)) {
-                    userRoleStore.delete(userRole.uid());
-
-                }
-            }
+            deleteOrPersistUserRoles(userRoles, serverDateTime);
 
             deleteOrPersistOrganisationUnits(
                     user.organisationUnits(), OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user, serverDateTime
@@ -237,6 +173,120 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
             database.setTransactionSuccessful();
         } finally {
             database.endTransaction();
+        }
+
+    }
+
+    private void deleteOrPersistUser(User user, Date serverDateTime) {
+        if (isDeleted(user)) {
+            userStore.delete(user.uid());
+            deleteInResourceStore(user.uid());
+        } else {
+            int updatedRow = userStore.update(user.uid(), user.code(), user.name(), user.displayName(),
+                    user.created(), user.lastUpdated(), user.birthday(), user.education(),
+                    user.gender(), user.jobTitle(), user.surname(), user.firstName(),
+                    user.introduction(), user.employer(), user.interests(), user.languages(),
+                    user.email(), user.phoneNumber(), user.nationality(), user.uid());
+
+            // TODO: Does this make sense?
+            // if user object was not updated, it means that it wasn't found in database. Insert it.
+            if (updatedRow <= 0) {
+                userStore.insert(user.uid(), user.code(), user.name(), user.displayName(), user.created(),
+                        user.lastUpdated(), user.birthday(), user.education(),
+                        user.gender(), user.jobTitle(), user.surname(), user.firstName(),
+                        user.introduction(), user.employer(), user.interests(), user.languages(),
+                        user.email(), user.phoneNumber(), user.nationality());
+            }
+
+            // update the resource table
+            int updatedResourceRow = updateInResourceStore(
+                    User.class.getSimpleName(), user.uid(), serverDateTime, user.uid()
+            );
+
+            if (updatedResourceRow <= 0) {
+                insertIntoResourceStore(
+                        User.class.getSimpleName(), user.uid(), serverDateTime
+                );
+            }
+        }
+    }
+
+    private void deleteOrPersistUserCredentials(User user, Date serverDateTime, UserCredentials userCredentials) {
+        if (isDeleted(userCredentials)) {
+            userCredentialsStore.delete(userCredentials.uid());
+            deleteInResourceStore(userCredentials.uid());
+        } else {
+            int updatedRow = userCredentialsStore.update(userCredentials.uid(), userCredentials.code(),
+                    userCredentials.name(), userCredentials.displayName(), userCredentials.created(),
+                    userCredentials.lastUpdated(), userCredentials.username(), user.uid(), userCredentials.uid()
+            );
+
+            if (updatedRow <= 0) {
+                userCredentialsStore.insert(
+                        userCredentials.uid(), userCredentials.code(), userCredentials.name(),
+                        userCredentials.displayName(), userCredentials.created(), userCredentials.lastUpdated(),
+                        userCredentials.username(), user.uid()
+                );
+            }
+            int updatedResourceRow = updateInResourceStore(
+                    UserCredentials.class.getSimpleName(), userCredentials.uid(),
+                    serverDateTime, userCredentials.uid()
+            );
+            if (updatedResourceRow <= 0) {
+                insertIntoResourceStore(
+                        UserCredentials.class.getSimpleName(), userCredentials.uid(), serverDateTime
+                );
+            }
+        }
+    }
+
+    private void deleteOrPersistUserRoles(List<UserRole> userRoles, Date serverDate) {
+        if (userRoles == null) {
+            return;
+        }
+        int size = userRoles.size();
+        for (int i = 0; i < size; i++) {
+            UserRole userRole = userRoles.get(i);
+
+            if (isDeleted(userRole)) {
+                userRoleStore.delete(userRole.uid());
+                deleteInResourceStore(userRole.uid());
+            } else {
+                int updatedRow = userRoleStore.update(userRole.uid(), userRole.code(),
+                        userRole.name(), userRole.displayName(), userRole.created(),
+                        userRole.lastUpdated(), userRole.uid());
+                if (updatedRow <= 0) {
+                    userRoleStore.insert(userRole.uid(), userRole.code(),
+                            userRole.name(), userRole.displayName(), userRole.created(),
+                            userRole.lastUpdated());
+                }
+
+                int updatedResourceRow = updateInResourceStore(
+                        UserRole.class.getSimpleName(), userRole.uid(), serverDate, userRole.uid()
+                );
+
+                if (updatedResourceRow <= 0) {
+                    insertIntoResourceStore(UserRole.class.getSimpleName(), userRole.uid(), serverDate);
+                }
+
+                List<Program> programs = userRole.programs();
+                insertOrUpdateUserRoleProgramLink(userRole, programs);
+
+            }
+        }
+    }
+
+    private void insertOrUpdateUserRoleProgramLink(UserRole userRole, List<Program> programs) {
+        int programSize = userRole.programs().size();
+        for (int i = 0; i < programSize; i++) {
+
+            Program program = programs.get(i);
+            int updatedLinkRow = userRoleProgramLinkStore.update(
+                    userRole.uid(), program.uid(), userRole.uid(), program.uid());
+
+            if (updatedLinkRow <= 0) {
+                userRoleProgramLinkStore.insert(userRole.uid(), program.uid());
+            }
         }
     }
 
@@ -254,7 +304,7 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
             OrganisationUnit organisationUnit = organisationUnits.get(i);
 
             if (isDeleted(organisationUnit)) {
-                delete(user, organisationUnit);
+                deleteOrganisationUnit(organisationUnit);
 
             } else {
                 updateOrInsertOrganisationUnits(
@@ -329,10 +379,9 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
         }
     }
 
-    private void delete(final User user, final OrganisationUnit organisationUnit) {
+    private void deleteOrganisationUnit(final OrganisationUnit organisationUnit) {
         organisationUnitStore.delete(organisationUnit.uid());
         deleteInResourceStore(organisationUnit.uid());
-        userOrganisationUnitLinkStore.delete(user.uid(), organisationUnit.uid());
     }
 
     private int updateInResourceStore(final String className,

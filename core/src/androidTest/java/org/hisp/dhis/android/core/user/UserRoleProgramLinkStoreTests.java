@@ -32,13 +32,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
+import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel.Columns;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,7 +46,6 @@ import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
-import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel.Columns;
 
 public class UserRoleProgramLinkStoreTests extends AbsStoreTestCase {
     private static final String[] PROJECTION = {Columns.USER_ROLE, Columns.PROGRAM,};
@@ -133,9 +132,4 @@ public class UserRoleProgramLinkStoreTests extends AbsStoreTestCase {
         organisationUnitLinkStore.insert(USER_ROLE_UID, "wrong");
     }
 
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        organisationUnitLinkStore.close();
-        assertThat(database().isOpen()).isTrue();
-    }
 }

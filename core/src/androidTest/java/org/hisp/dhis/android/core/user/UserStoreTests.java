@@ -214,6 +214,35 @@ public class UserStoreTests extends AbsStoreTestCase {
     }
 
     @Test
+    public void delete_shouldDeleteUserObject() throws Exception {
+        ContentValues user = new ContentValues();
+        user.put(UserModel.Columns.ID, ID);
+        user.put(UserModel.Columns.UID, UID);
+        user.put(UserModel.Columns.CODE, CODE);
+        user.put(UserModel.Columns.NAME, NAME);
+        user.put(UserModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
+
+        database().insert(UserModel.TABLE, null, user);
+        String[] projection = {
+                UserModel.Columns.ID, UserModel.Columns.UID,
+                UserModel.Columns.CODE, UserModel.Columns.NAME,
+                UserModel.Columns.DISPLAY_NAME
+        };
+
+        Cursor cursor = database().query(UserModel.TABLE, projection, null, null, null, null, null);
+
+        // checking that the user was successfully inserted
+        assertThatCursor(cursor).hasRow(ID, UID, CODE, NAME, DISPLAY_NAME);
+
+        // delete the user
+        userStore.delete(UID);
+
+        cursor = database().query(UserModel.TABLE, projection, null, null, null, null, null);
+        // checking that user was successfully deleted
+        assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test
     public void delete_shouldDeleteAllRows() {
         ContentValues user = create(1L, "test_user_id");
         database().insert(UserModel.TABLE, null, user);

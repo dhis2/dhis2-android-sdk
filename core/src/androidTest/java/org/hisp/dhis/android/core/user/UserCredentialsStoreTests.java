@@ -35,6 +35,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.user.UserCredentialsModel.Columns;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -122,7 +123,7 @@ public class UserCredentialsStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistDeferredRowInDatabase(){
+    public void insert_shouldPersistDeferredRowInDatabase() {
         final String deferredUid = "deferredForeignKeyUid";
 
         database().beginTransaction();
@@ -199,6 +200,75 @@ public class UserCredentialsStoreTests extends AbsStoreTestCase {
         Cursor cursor = database().query(UserCredentialsModel.TABLE, USER_CREDENTIALS_PROJECTION,
                 null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test
+    public void update_shouldUpdateUserCredentials() throws Exception {
+        ContentValues user = new ContentValues();
+        user.put(UserModel.Columns.ID, ID);
+        user.put(UserModel.Columns.UID, USER_UID);
+        database().insert(UserModel.TABLE, null, user);
+
+        ContentValues userCredentials = new ContentValues();
+        userCredentials.put(Columns.ID, ID);
+        userCredentials.put(Columns.UID, UID);
+        userCredentials.put(Columns.NAME, NAME);
+        userCredentials.put(Columns.USER, USER_UID);
+        database().insert(UserCredentialsModel.TABLE, null, userCredentials);
+
+        String[] projection = {
+                Columns.ID, Columns.UID, Columns.NAME, Columns.USER
+        };
+        Cursor cursor = database().query(UserCredentialsModel.TABLE, projection, null, null, null, null, null);
+
+        // checking that userCredentials was successfully inserted into database
+        assertThatCursor(cursor).hasRow(ID, UID, NAME, USER_UID);
+
+        Date date = new Date();
+
+        int updatedRow = userCredentialsStore.update(
+                UID, CODE, "new name", DISPLAY_NAME, date, date, USER_CREDENTIALS_USERNAME, USER_UID, UID
+        );
+
+        cursor = database().query(UserCredentialsModel.TABLE, projection, null, null, null, null, null);
+
+        // checking that userCredentials was successfully updated
+        assertThat(updatedRow).isEqualTo(1);
+        assertThatCursor(cursor).hasRow(ID, UID, "new name", USER_UID);
+
+    }
+
+    @Test
+    public void delete_shouldDeleteUserCredentials() throws Exception {
+
+        // inserting foreign key
+        ContentValues user = new ContentValues();
+        user.put(UserModel.Columns.ID, ID);
+        user.put(UserModel.Columns.UID, USER_UID);
+        database().insert(UserModel.TABLE, null, user);
+
+        ContentValues userCredentials = new ContentValues();
+        userCredentials.put(Columns.ID, ID);
+        userCredentials.put(Columns.UID, UID);
+        userCredentials.put(Columns.NAME, NAME);
+        userCredentials.put(Columns.USER, USER_UID);
+        database().insert(UserCredentialsModel.TABLE, null, userCredentials);
+
+        String[] projection = {
+                Columns.ID, Columns.UID, Columns.NAME, Columns.USER
+        };
+        Cursor cursor = database().query(UserCredentialsModel.TABLE, projection, null, null, null, null, null);
+
+        // checking that userCredentials was successfully inserted into database
+        assertThatCursor(cursor).hasRow(ID, UID, NAME, USER_UID);
+
+        int deletedRow = userCredentialsStore.delete(UID);
+
+        cursor = database().query(UserCredentialsModel.TABLE, projection, null, null, null, null, null);
+
+        assertThat(deletedRow).isEqualTo(1);
+        assertThatCursor(cursor).isExhausted();
+
     }
 
     @Test(expected = SQLiteConstraintException.class)

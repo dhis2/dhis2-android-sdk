@@ -25,18 +25,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
-import org.hisp.dhis.android.core.user.User;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public interface AssignedOrganisationUnitService {
+public interface UserSyncService {
     @GET("me")
-    Call<User> getAssignedOrganisationUnits(@Query("fields") @Fields Filter<User> filter);
+    Call<User> getUser(@Query("fields") @Fields Filter<User> filter);
 
 }

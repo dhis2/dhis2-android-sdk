@@ -42,24 +42,57 @@ public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
             Columns.PROGRAM + ") " +
             "VALUES (?, ?);";
 
-    private final SQLiteStatement sqLiteStatement;
+    private static final String UPDATE_STATEMENT = "UPDATE " + UserRoleProgramLinkModel.TABLE +
+            " SET " + Columns.USER_ROLE + "=?," + Columns.PROGRAM + "=?" +
+            " WHERE " + Columns.USER_ROLE + "=?" + " AND " + Columns.PROGRAM + "=?;";
+
+    private static final String DELETE_STATEMENT = "DELETE FROM " + UserRoleProgramLinkModel.TABLE +
+            " WHERE " + Columns.USER_ROLE + " =?" + " AND " + Columns.PROGRAM + "=?;";
+
+    private final SQLiteStatement insertStatement;
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
 
     public UserRoleProgramLinkStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
     public long insert(@NonNull String userRole, @NonNull String program) {
-        sqLiteStatement.clearBindings();
+        insertStatement.clearBindings();
 
-        sqLiteBind(sqLiteStatement, 1, userRole);
-        sqLiteBind(sqLiteStatement, 2, program);
+        sqLiteBind(insertStatement, 1, userRole);
+        sqLiteBind(insertStatement, 2, program);
 
-        return sqLiteStatement.executeInsert();
+        return insertStatement.executeInsert();
     }
 
     @Override
-    public void close() {
-        sqLiteStatement.close();
+    public int update(@NonNull String userRoleUid, @NonNull String programUid,
+                      @NonNull String whereUserRoleUid, @NonNull String whereProgramUid) {
+        updateStatement.clearBindings();
+
+        sqLiteBind(updateStatement, 1, userRoleUid);
+        sqLiteBind(updateStatement, 2, programUid);
+
+        // bind whereClause
+
+        sqLiteBind(updateStatement, 3, whereUserRoleUid);
+        sqLiteBind(updateStatement, 4, whereProgramUid);
+
+        return updateStatement.executeUpdateDelete();
     }
+
+    @Override
+    public int delete(@NonNull String userRoleUid, @NonNull String programUid) {
+        deleteStatement.clearBindings();
+
+        sqLiteBind(deleteStatement, 1, userRoleUid);
+        sqLiteBind(deleteStatement, 2, programUid);
+
+        return deleteStatement.executeUpdateDelete();
+    }
+
 }

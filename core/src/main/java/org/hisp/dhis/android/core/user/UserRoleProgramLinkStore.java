@@ -33,5 +33,8 @@ public interface UserRoleProgramLinkStore {
 
     long insert(@NonNull String userRole, @NonNull String program);
 
-    void close();
+    int update(@NonNull String userRoleUid, @NonNull String programUid,
+               @NonNull String whereUserRoleUid, @NonNull String whereProgramUid);
+
+    int delete(@NonNull String userRoleUid, @NonNull String programUid);
 }

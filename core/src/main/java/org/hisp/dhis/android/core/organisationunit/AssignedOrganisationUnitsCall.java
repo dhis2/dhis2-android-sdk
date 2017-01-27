@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserRole;
+import org.hisp.dhis.android.core.user.UserRoleStore;
 import org.hisp.dhis.android.core.user.UserStore;
 
 import java.io.IOException;
@@ -57,7 +58,7 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
     private final OrganisationUnitStore organisationUnitStore;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final UserCredentialsStore userCredentialsStore;
-    //    private final UserRoleStore userRoleStore;
+    private final UserRoleStore userRoleStore;
     private final UserStore userStore;
     private final ResourceStore resourceStore;
 
@@ -68,13 +69,15 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
                                          OrganisationUnitStore organisationUnitStore,
                                          UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
                                          UserCredentialsStore userCredentialsStore,
-                                         UserStore userStore, ResourceStore resourceStore) {
+                                         UserRoleStore userRoleStore,
+                                         UserStore userStore,
+                                         ResourceStore resourceStore) {
         this.assignedOrganisationUnitService = assignedOrganisationUnitService;
         this.database = database;
         this.organisationUnitStore = organisationUnitStore;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.userCredentialsStore = userCredentialsStore;
-//        this.userRoleStore = userRoleStore;
+        this.userRoleStore = userRoleStore;
         this.userStore = userStore;
         this.resourceStore = resourceStore;
     }
@@ -169,7 +172,7 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
                 }
 
                 // update the resource table
-                int updatedResourceRow = updateInReouceStore(
+                int updatedResourceRow = updateInResourceStore(
                         User.class.getSimpleName(), user.uid(), serverDateTime, user.uid()
                 );
 
@@ -199,7 +202,7 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
                             userCredentials.username(), user.uid()
                     );
                 }
-                int updatedResourceRow = updateInReouceStore(
+                int updatedResourceRow = updateInResourceStore(
                         UserCredentials.class.getSimpleName(), userCredentials.uid(),
                         serverDateTime, userCredentials.uid()
                 );
@@ -210,11 +213,22 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
                 }
             }
 
-            deleteInsertOrUpdateAssignedOrganisationUnits(
+            List<UserRole> userRoles = userCredentials.userRoles();
+            int size = userRoles.size();
+            for (int i = 0; i < size; i++) {
+                UserRole userRole = userRoles.get(i);
+
+                if (isDeleted(userRole)) {
+                    userRoleStore.delete(userRole.uid());
+
+                }
+            }
+
+            deleteOrPersistOrganisationUnits(
                     user.organisationUnits(), OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user, serverDateTime
             );
 
-            deleteInsertOrUpdateAssignedOrganisationUnits(
+            deleteOrPersistOrganisationUnits(
                     user.teiSearchOrganisationUnits(),
                     OrganisationUnitModel.Scope.SCOPE_TEI_SEARCH, user, serverDateTime
             );
@@ -226,10 +240,10 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
         }
     }
 
-    private void deleteInsertOrUpdateAssignedOrganisationUnits(List<OrganisationUnit> organisationUnits,
-                                                               OrganisationUnitModel.Scope organisationUnitScope,
-                                                               User user,
-                                                               Date serverDateTime) {
+    private void deleteOrPersistOrganisationUnits(List<OrganisationUnit> organisationUnits,
+                                                  OrganisationUnitModel.Scope organisationUnitScope,
+                                                  User user,
+                                                  Date serverDateTime) {
         if (organisationUnits == null) {
             return;
         }
@@ -243,7 +257,7 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
                 delete(user, organisationUnit);
 
             } else {
-                updateOrInsert(
+                updateOrInsertOrganisationUnits(
                         organisationUnitScope, user, serverDateTime,
                         organisationUnitSimpleName, organisationUnit);
             }
@@ -251,9 +265,9 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
 
     }
 
-    private void updateOrInsert(OrganisationUnitModel.Scope organisationUnitScope, User user,
-                                Date serverDateTime, String organisationUnitSimpleName,
-                                OrganisationUnit organisationUnit) {
+    private void updateOrInsertOrganisationUnits(OrganisationUnitModel.Scope organisationUnitScope, User user,
+                                                 Date serverDateTime, String organisationUnitSimpleName,
+                                                 OrganisationUnit organisationUnit) {
         int updatedRow = organisationUnitStore.update(organisationUnit.uid(),
                 organisationUnit.code(),
                 organisationUnit.name(),
@@ -289,7 +303,7 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
                     organisationUnit.level()
             );
 
-            int updatedResourceRow = updateInReouceStore(organisationUnitSimpleName,
+            int updatedResourceRow = updateInResourceStore(organisationUnitSimpleName,
                     organisationUnit.uid(), serverDateTime, organisationUnit.uid());
 
             if (updatedResourceRow <= 0) {
@@ -315,16 +329,16 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
         }
     }
 
-    private void delete(User user, OrganisationUnit organisationUnit) {
+    private void delete(final User user, final OrganisationUnit organisationUnit) {
         organisationUnitStore.delete(organisationUnit.uid());
         deleteInResourceStore(organisationUnit.uid());
         userOrganisationUnitLinkStore.delete(user.uid(), organisationUnit.uid());
     }
 
-    private int updateInReouceStore(final String className,
-                                    final String uid,
-                                    final Date serverDate,
-                                    final String whereUid) {
+    private int updateInResourceStore(final String className,
+                                      final String uid,
+                                      final Date serverDate,
+                                      final String whereUid) {
         return resourceStore.update(className, uid, serverDate, whereUid);
     }
 
@@ -338,7 +352,7 @@ public final class AssignedOrganisationUnitsCall implements Call<Response<User>>
         return resourceStore.delete(uid);
     }
 
-    private <T extends BaseIdentifiableObject> boolean isDeleted(T object) {
+    private <T extends BaseIdentifiableObject> boolean isDeleted(final T object) {
         return object.deleted() != null && object.deleted();
     }
 }

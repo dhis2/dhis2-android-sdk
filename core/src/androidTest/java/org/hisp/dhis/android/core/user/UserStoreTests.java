@@ -164,7 +164,7 @@ public class UserStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void insertAndReplace_shouldReplaceRowInDatabase() throws Exception {
+    public void update_shouldUpdateRowInDatabase() throws Exception {
         ContentValues user = new ContentValues();
         user.put(UserModel.Columns.ID, ID);
         user.put(UserModel.Columns.UID, UID);
@@ -208,8 +208,8 @@ public class UserStoreTests extends AbsStoreTestCase {
         );
 
         cursor = database().query(UserModel.TABLE, projection, null, null, null, null, null);
-        Long replacedId = ID + 1L;
-        assertThatCursor(cursor).hasRow(replacedId, UID, CODE, newName, newDisplayName).isExhausted();
+
+        assertThatCursor(cursor).hasRow(ID, UID, CODE, newName, newDisplayName).isExhausted();
 
     }
 

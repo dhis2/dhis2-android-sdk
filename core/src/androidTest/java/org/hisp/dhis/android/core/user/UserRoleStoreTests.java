@@ -88,9 +88,4 @@ public class UserRoleStoreTests extends AbsStoreTestCase {
         cursor.close();
     }
 
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        userRoleStore.close();
-        assertThat(database().isOpen()).isTrue();
-    }
 }

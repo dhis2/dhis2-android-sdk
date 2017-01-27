@@ -74,7 +74,7 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
             OrganisationUnitModel.Columns.OPENING_DATE + "=?, " +
             OrganisationUnitModel.Columns.CLOSED_DATE + "=?, " +
             OrganisationUnitModel.Columns.LEVEL + "=?, " +
-            OrganisationUnitModel.Columns.PARENT + "=?, " +
+            OrganisationUnitModel.Columns.PARENT + "=? " +
             " WHERE " +
             OrganisationUnitModel.Columns.UID + " = ?;";
 

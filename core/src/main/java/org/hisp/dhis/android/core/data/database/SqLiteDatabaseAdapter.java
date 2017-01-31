@@ -32,27 +32,23 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
-
 
 public class SqLiteDatabaseAdapter implements DatabaseAdapter {
 
-    private final SQLiteDatabase sqLiteDatabase;
     private final DbOpenHelper dbOpenHelper;
 
     public SqLiteDatabaseAdapter(@NonNull DbOpenHelper dbOpenHelper) {
         this.dbOpenHelper = dbOpenHelper;
-        this.sqLiteDatabase = dbOpenHelper.getWritableDatabase();
     }
 
     @Override
     public SQLiteStatement compileStatement(String sql) {
-        return sqLiteDatabase.compileStatement(sql);
+        return database().compileStatement(sql);
     }
 
     @Override
-    public Cursor query(String table, String sql, String... selectionArgs) {
-        return sqLiteDatabase.rawQuery(sql, selectionArgs);
+    public Cursor query(String sql, String... selectionArgs) {
+        return dbOpenHelper.getReadableDatabase().rawQuery(sql, selectionArgs);
     }
 
     @Override
@@ -61,16 +57,31 @@ public class SqLiteDatabaseAdapter implements DatabaseAdapter {
     }
 
     @Override
-    public int delete(String table, String whereClause, String[] whereArgs) {
-        return sqLiteDatabase.delete(table, whereClause, whereArgs);
+    public int executeUpdateDelete(String table, SQLiteStatement sqLiteStatement) {
+        return sqLiteStatement.executeUpdateDelete();
     }
 
-    /**
-     * This method should be used only for testing purposes
-     */
-    // ToDo: Revise usage of this method
-    @VisibleForTesting
-    public SqLiteDatabaseAdapter(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteDatabase = sqLiteDatabase;
+    @Override
+    public int delete(String table, String whereClause, String[] whereArgs) {
+        return database().delete(table, whereClause, whereArgs);
+    }
+
+    @Override
+    public void beginTransaction() {
+        database().beginTransaction();
+    }
+
+    @Override
+    public void setTransactionSuccessful() {
+        database().setTransactionSuccessful();
+    }
+
+    @Override
+    public void endTransaction() {
+        database().endTransaction();
+    }
+
+    private SQLiteDatabase database() {
+        return dbOpenHelper.getWritableDatabase();
     }
 }

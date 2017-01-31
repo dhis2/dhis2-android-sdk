@@ -29,16 +29,16 @@
 package org.hisp.dhis.android.core.data.database;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteProgram;
 import android.database.sqlite.SQLiteStatement;
 
+@SuppressWarnings("PMD.UseVarargs")
 public interface DatabaseAdapter {
 
     /**
      * Compiles an SQL statement into a reusable pre-compiled statement object.
      * You may put ?s in the
-     * statement and fill in those values with {@link SQLiteProgram#bindString}
-     * and {@link SQLiteProgram#bindLong} each time you want to run the
+     * statement and fill in those values with SQLiteProgram.bindString
+     * and SQLiteProgram.bindLong each time you want to run the
      * statement. Statements may not return result sets larger than 1x1.
      * <p>
      * No two threads should be using the same {@link SQLiteStatement} at the same time.
@@ -51,23 +51,23 @@ public interface DatabaseAdapter {
     SQLiteStatement compileStatement(String sql);
 
     /**
-     * Query the given table, returning a {@link Cursor} over the result set.
+     * Runs the provided SQL and returns a {@link Cursor} over the result set.
      *
-     * @param table         The table name to compile the query against.
-     * @param sql           The SQL statement to execute
+     * @param sql           the SQL query. The SQL string must not be ; terminated
      * @param selectionArgs You may include ?s in where clause in the query,
      *                      which will be replaced by the values from selectionArgs. The
      *                      values will be bound as Strings.
      * @return A {@link Cursor} object, which is positioned before the first entry. Note that
      * {@link Cursor}s are not synchronized, see the documentation for more details.
-     * @see Cursor
      */
-    Cursor query(String table, String sql, String... selectionArgs);
+    Cursor query(String sql, String... selectionArgs);
 
     /**
      * Execute {@code statement} and return the ID of the row inserted due to this call.
      * The SQL statement should be an INSERT for this to be a useful call.
      *
+     * @param table           The affected table
+     * @param sqLiteStatement The SQL statement to execute
      * @return the row ID of the last row inserted, if this insert is successful. -1 otherwise.
      * @throws android.database.SQLException If the SQL string is invalid
      * @see SQLiteStatement#executeInsert()
@@ -75,9 +75,21 @@ public interface DatabaseAdapter {
     long executeInsert(String table, SQLiteStatement sqLiteStatement);
 
     /**
+     * Execute this SQL statement, if the the number of rows affected by execution of this SQL
+     * statement is of any importance to the caller - for example, UPDATE / DELETE SQL statements.
+     *
+     * @param table           The affected table
+     * @param sqLiteStatement The SQL statement to execute
+     * @return the number of rows affected by this SQL statement execution.
+     * @throws android.database.SQLException If the SQL string is invalid for
+     *                                       some reason
+     */
+    int executeUpdateDelete(String table, SQLiteStatement sqLiteStatement);
+
+    /**
      * Convenience method for deleting rows in the database.
      *
-     * @param table       the table to delete from
+     * @param table       The affected table
      * @param whereClause the optional WHERE clause to apply when deleting.
      *                    Passing null will delete all rows.
      * @param whereArgs   You may include ?s in the where clause, which
@@ -88,4 +100,44 @@ public interface DatabaseAdapter {
      * whereClause.
      */
     int delete(String table, String whereClause, String[] whereArgs);
+
+    /**
+     * Begins a transaction in EXCLUSIVE mode.
+     * <p>
+     * Transactions can be nested.
+     * When the outer transaction is ended all of
+     * the work done in that transaction and all of the nested transactions will be committed or
+     * rolled back. The changes will be rolled back if any transaction is ended without being
+     * marked as clean (by calling setTransactionSuccessful). Otherwise they will be committed.
+     * </p>
+     * <p>Here is the standard idiom for transactions:
+     * <p>
+     * <pre>
+     *   db.beginTransaction();
+     *   try {
+     *     ...
+     *     db.setTransactionSuccessful();
+     *   } finally {
+     *     db.endTransaction();
+     *   }
+     * </pre>
+     */
+    void beginTransaction();
+
+    /**
+     * Marks the current transaction as successful. Do not do any more database work between
+     * calling this and calling endTransaction. Do as little non-database work as possible in that
+     * situation too. If any errors are encountered between this and endTransaction the transaction
+     * will still be committed.
+     *
+     * @throws IllegalStateException if the current thread is not in a transaction or the
+     *                               transaction is already marked as successful.
+     */
+    void setTransactionSuccessful();
+
+    /**
+     * End a transaction. See beginTransaction for notes about how to use this and when transactions
+     * are committed and rolled back.
+     */
+    void endTransaction();
 }

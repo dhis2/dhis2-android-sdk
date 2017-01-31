@@ -28,37 +28,59 @@
 
 package org.hisp.dhis.android.core.data.database;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
-import org.junit.After;
-import org.junit.Before;
+public class TestDatabaseAdapter implements DatabaseAdapter {
 
-import java.io.IOException;
+    // memory-backed test database
+    private final SQLiteDatabase sqLiteDatabase;
 
-import static com.google.common.truth.Truth.assertThat;
-
-public abstract class AbsStoreTestCase {
-    private SQLiteDatabase sqLiteDatabase;
-    private DatabaseAdapter databaseAdapter;
-
-    @Before
-    public void setUp() throws IOException {
-        databaseAdapter = new TestDatabaseAdapter();
-        sqLiteDatabase = DbOpenHelper.create();
+    public TestDatabaseAdapter() {
+        this.sqLiteDatabase = SQLiteDatabase.create(null);
         sqLiteDatabase.execSQL("PRAGMA foreign_keys = ON;");
     }
 
-    @After
-    public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
+    @Override
+    public SQLiteStatement compileStatement(String sql) {
+        return sqLiteDatabase.compileStatement(sql);
     }
 
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
+    @Override
+    public Cursor query(String sql, String... selectionArgs) {
+        return sqLiteDatabase.rawQuery(sql, selectionArgs);
     }
 
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
+    @Override
+    public long executeInsert(String table, SQLiteStatement sqLiteStatement) {
+        return sqLiteStatement.executeInsert();
+    }
+
+    @Override
+    public int executeUpdateDelete(String table, SQLiteStatement sqLiteStatement) {
+        return sqLiteStatement.executeUpdateDelete();
+    }
+
+    @Override
+    public int delete(String table, String whereClause, String[] whereArgs) {
+        return sqLiteDatabase.delete(table, whereClause, whereArgs);
+    }
+
+    @Override
+    public void beginTransaction() {
+        sqLiteDatabase.beginTransaction();
+    }
+
+    @Override
+    public void setTransactionSuccessful() {
+        sqLiteDatabase.setTransactionSuccessful();
+    }
+
+    @Override
+    public void endTransaction() {
+        sqLiteDatabase.endTransaction();
     }
 }

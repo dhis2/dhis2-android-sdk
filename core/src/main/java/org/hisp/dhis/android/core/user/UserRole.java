@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.program.Program;
 import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
+import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 // TODO: Tests
 @AutoValue

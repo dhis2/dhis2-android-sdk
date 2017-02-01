@@ -29,8 +29,6 @@ package org.hisp.dhis.android.core.user;
 
 import android.database.sqlite.SQLiteDatabase;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.HeaderUtils;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;

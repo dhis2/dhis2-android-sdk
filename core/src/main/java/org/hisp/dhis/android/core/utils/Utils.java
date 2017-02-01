@@ -25,39 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.organisationunit;
 
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
+package org.hisp.dhis.android.core.utils;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import android.support.annotation.Nullable;
 
-public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitProgramLinkStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " +
-            OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK + " (" +
-            OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT + ", " +
-            OrganisationUnitProgramLinkModel.Columns.PROGRAM + ") " +
-            "VALUES(?,?);";
+import java.util.Collections;
+import java.util.List;
 
-    private final SQLiteStatement sqLiteStatement;
+/**
+ * A collection of utility abstractions
+ */
+public final class Utils {
 
-    public OrganisationUnitProgramLinkStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+    private Utils() {
+        // no instances
     }
 
-    @Override
-    public long insert(@NonNull String organisationUnitUid, @NonNull String programUid) {
-        sqLiteStatement.clearBindings();
+    /**
+     * A Null-safe safeUnmodifiableList.
+     *
+     * @param list
+     * @return
+     */
+    @Nullable
+    public static <T> List<T> safeUnmodifiableList(@Nullable List<T> list) {
+        if (list != null) {
+            return Collections.unmodifiableList(list);
+        }
 
-        sqLiteBind(sqLiteStatement, 1, organisationUnitUid);
-        sqLiteBind(sqLiteStatement, 2, programUid);
-
-        return sqLiteStatement.executeInsert();
-    }
-
-    @Override
-    public void close() {
-        sqLiteStatement.close();
+        return null;
     }
 }

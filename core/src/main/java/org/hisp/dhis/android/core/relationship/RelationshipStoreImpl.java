@@ -33,7 +33,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class RelationshipStoreImpl implements RelationshipStore {
 

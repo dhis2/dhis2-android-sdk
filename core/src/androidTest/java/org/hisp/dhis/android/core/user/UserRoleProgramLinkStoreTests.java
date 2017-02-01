@@ -48,7 +48,8 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 public class UserRoleProgramLinkStoreTests extends AbsStoreTestCase {
-    private static final String[] PROJECTION = {Columns.USER_ROLE, Columns.PROGRAM,};
+    private static final String[] PROJECTION = {Columns.USER_ROLE, Columns.PROGRAM};
+
     public static final long ID = 1L;
     private static final String USER_ROLE_UID = "test_user_role_uid";
     private static final String PROGRAM_UID = "test_program_uid";

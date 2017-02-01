@@ -33,7 +33,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel.Columns;
 
-import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +

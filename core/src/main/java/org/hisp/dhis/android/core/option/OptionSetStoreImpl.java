@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.common.ValueType;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"

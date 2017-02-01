@@ -32,7 +32,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLinkStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +

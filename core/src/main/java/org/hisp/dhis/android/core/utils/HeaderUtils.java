@@ -25,35 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.utils;
 
-package org.hisp.dhis.android.core.common;
+public final class HeaderUtils {
 
-import android.support.annotation.Nullable;
+    public static final String CONNECTION = "Connection";
+    public static final String CONTENT_TYPE = "Content-Type";
+    public static final String CONTENT_ENCODING = "Content-Encoding";
+    public static final String DATE = "Date";
+    public static final String SERVER = "Server";
+    public static final String TRANSER_ENCODING = "Transfer-Encoding";
+    public static final String X_CONTENT_TYPE_OPTIONS = "X-Content-Type-Options";
+    public static final String X_FRAME_OPTIONS = "X-Frame-Options";
+    public static final String X_XSS_PROTECTION = "X-XSS-Protection";
 
-import java.util.Collections;
-import java.util.List;
-
-/**
- * A collection of utility abstractions
- */
-public final class Utils {
-
-    private Utils() {
+    private HeaderUtils() {
         // no instances
     }
 
-    /**
-     * A Null-safe safeUnmodifiableList.
-     *
-     * @param list
-     * @return
-     */
-    @Nullable
-    public static <T> List<T> safeUnmodifiableList(@Nullable List<T> list) {
-        if (list != null) {
-            return Collections.unmodifiableList(list);
-        }
-
-        return null;
-    }
 }

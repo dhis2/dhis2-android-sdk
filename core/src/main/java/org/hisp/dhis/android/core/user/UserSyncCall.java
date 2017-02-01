@@ -31,7 +31,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Call;
-import org.hisp.dhis.android.core.common.HeaderUtils;
+import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
@@ -274,7 +274,10 @@ public final class UserSyncCall implements Call<Response<User>> {
                 }
 
                 List<Program> programs = userRole.programs();
+
                 insertOrUpdateUserRoleProgramLink(userRole, programs);
+
+
 
             }
         }

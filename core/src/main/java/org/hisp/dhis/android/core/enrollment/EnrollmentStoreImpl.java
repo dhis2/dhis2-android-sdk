@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentModel.Columns;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class EnrollmentStoreImpl implements EnrollmentStore {
 

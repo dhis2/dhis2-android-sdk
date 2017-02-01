@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.common.ValueType;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class DataElementStoreImpl implements DataElementStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + DataElementModel.TABLE + " (" +

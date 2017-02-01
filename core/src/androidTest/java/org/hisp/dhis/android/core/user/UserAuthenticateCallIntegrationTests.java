@@ -36,7 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Call;
-import org.hisp.dhis.android.core.common.HeaderUtils;
+import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;

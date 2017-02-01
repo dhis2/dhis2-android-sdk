@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.common.BaseNameableObject;
 import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
+import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_CategoryOption.Builder.class)

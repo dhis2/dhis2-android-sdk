@@ -48,12 +48,12 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 public class UserRoleStoreTests extends AbsStoreTestCase {
 
     private static final String[] PROJECTION = {
-            UserModel.Columns.UID,
-            UserModel.Columns.CODE,
-            UserModel.Columns.NAME,
-            UserModel.Columns.DISPLAY_NAME,
-            UserModel.Columns.CREATED,
-            UserModel.Columns.LAST_UPDATED
+            Columns.UID,
+            Columns.CODE,
+            Columns.NAME,
+            Columns.DISPLAY_NAME,
+            Columns.CREATED,
+            Columns.LAST_UPDATED
     };
 
     //BaseIdentifiableModel attributes:

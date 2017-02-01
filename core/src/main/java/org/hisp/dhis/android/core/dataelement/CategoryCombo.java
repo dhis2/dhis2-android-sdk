@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 
 import java.util.List;
 
-import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
+import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 // TODO: Write CategoryCombo- Store, StoreImp, Model and their tests (Datacapture)
 @AutoValue

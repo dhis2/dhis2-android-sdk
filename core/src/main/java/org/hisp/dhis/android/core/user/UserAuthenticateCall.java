@@ -32,7 +32,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.Call;
-import org.hisp.dhis.android.core.common.HeaderUtils;
+import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;

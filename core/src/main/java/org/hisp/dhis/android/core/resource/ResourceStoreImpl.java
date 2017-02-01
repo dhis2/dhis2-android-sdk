@@ -41,18 +41,16 @@ import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 public class ResourceStoreImpl implements ResourceStore {
     public static final String INSERT_STATEMENT = "INSERT INTO " + ResourceModel.TABLE + " (" +
             Columns.RESOURCE_TYPE + ", " +
-            Columns.RESOURCE_UID + ", " +
             Columns.LAST_SYNCED + ") " +
-            "VALUES(?, ?, ?);";
+            "VALUES(?, ?);";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + ResourceModel.TABLE + " SET " +
             Columns.RESOURCE_TYPE + " =?, " +
-            Columns.RESOURCE_UID + "=?, " +
             Columns.LAST_SYNCED + "=? " + " WHERE " +
-            Columns.RESOURCE_UID + " = ?;";
+            Columns.RESOURCE_TYPE + " = ?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + ResourceModel.TABLE +
-            " WHERE " + Columns.RESOURCE_UID+ " =?;";
+            " WHERE " + Columns.RESOURCE_TYPE + " =?;";
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -65,35 +63,33 @@ public class ResourceStoreImpl implements ResourceStore {
     }
 
     @Override
-    public long insert(@NonNull String resourceType, @NonNull String resourceUid, @Nullable Date lastSynced) {
+    public long insert(@NonNull String resourceType, @Nullable Date lastSynced) {
         insertStatement.clearBindings();
 
         sqLiteBind(insertStatement, 1, resourceType);
-        sqLiteBind(insertStatement, 2, resourceUid);
-        sqLiteBind(insertStatement, 3, lastSynced);
+        sqLiteBind(insertStatement, 2, lastSynced);
 
         return insertStatement.executeInsert();
     }
 
     @Override
-    public int update(@NonNull String resourceType, @NonNull String resourceUid, @Nullable Date lastSynced,
-                      @NonNull String whereUid) {
+    public int update(@NonNull String resourceType, @Nullable Date lastSynced,
+                      @NonNull String whereResourceType) {
         updateStatement.clearBindings();
 
         sqLiteBind(updateStatement, 1, resourceType);
-        sqLiteBind(updateStatement, 2, resourceUid);
-        sqLiteBind(updateStatement, 3, lastSynced);
+        sqLiteBind(updateStatement, 2, lastSynced);
 
         // bind the where clause
-        sqLiteBind(updateStatement, 4, whereUid);
+        sqLiteBind(updateStatement, 3, whereResourceType);
 
         return updateStatement.executeUpdateDelete();
     }
 
     @Override
-    public int delete(@NonNull String resourceUid) {
+    public int delete(@NonNull String resourceType) {
         deleteStatement.clearBindings();
-        sqLiteBind(updateStatement, 1, resourceUid);
+        sqLiteBind(updateStatement, 1, resourceType);
 
         return deleteStatement.executeUpdateDelete();
     }

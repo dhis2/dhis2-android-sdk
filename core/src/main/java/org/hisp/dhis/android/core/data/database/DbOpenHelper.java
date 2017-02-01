@@ -672,7 +672,6 @@ public class DbOpenHelper extends SQLiteOpenHelper {
     private static final String CREATE_RESOURCE_TABLE = "CREATE TABLE " + ResourceModel.TABLE + " (" +
             ResourceModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             ResourceModel.Columns.RESOURCE_TYPE + " TEXT NOT NULL," +
-            ResourceModel.Columns.RESOURCE_UID + " TEXT NOT NULL UNIQUE," +
             ResourceModel.Columns.LAST_SYNCED + " TEXT" + ");";
 
     private static final String CREATE_ORGANISATION_UNIT_PROGRAM_LINK_TABLE = "CREATE TABLE " +

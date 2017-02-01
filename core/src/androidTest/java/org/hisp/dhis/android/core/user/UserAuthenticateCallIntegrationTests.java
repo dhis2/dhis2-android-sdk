@@ -140,7 +140,6 @@ public class UserAuthenticateCallIntegrationTests extends AbsStoreTestCase {
     private static String[] RESOURCE_PROJECTION = {
             ResourceModel.Columns.ID,
             ResourceModel.Columns.RESOURCE_TYPE,
-            ResourceModel.Columns.RESOURCE_UID,
             ResourceModel.Columns.LAST_SYNCED
     };
 
@@ -326,7 +325,6 @@ public class UserAuthenticateCallIntegrationTests extends AbsStoreTestCase {
                 .hasRow(
                         1L,
                         User.class.getSimpleName(),
-                        "DXyJmlo9rge", // user uid
                         dateString
                 );
 
@@ -334,7 +332,6 @@ public class UserAuthenticateCallIntegrationTests extends AbsStoreTestCase {
                 .hasRow(
                         2L,
                         UserCredentials.class.getSimpleName(),
-                        "M0fCOxtkURr", // user credentials uid
                         dateString
                 );
 
@@ -342,7 +339,6 @@ public class UserAuthenticateCallIntegrationTests extends AbsStoreTestCase {
                 .hasRow(
                         3L,
                         OrganisationUnit.class.getSimpleName(),
-                        "DiszpKrYNg8", // organisation unit uid
                         dateString
                 ).isExhausted();
 

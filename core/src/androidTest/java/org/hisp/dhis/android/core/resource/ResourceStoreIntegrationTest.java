@@ -27,7 +27,7 @@ public class ResourceStoreIntegrationTest extends AbsStoreTestCase {
     // timestamp
     private static final String DATE = "2017-01-18T13:39:00.000";
 
-    private static final String[] PROJECTION = {Columns.RESOURCE_TYPE, Columns.RESOURCE_UID, Columns.LAST_SYNCED};
+    private static final String[] PROJECTION = {Columns.RESOURCE_TYPE, Columns.LAST_SYNCED};
 
     private ResourceStore resourceStore;
 
@@ -41,38 +41,32 @@ public class ResourceStoreIntegrationTest extends AbsStoreTestCase {
     @Test
     public void insert_shouldPersistResourceInDatabase() throws ParseException {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-        long rowId = resourceStore.insert(RESOURCE_TYPE, RESOURCE_UID, date);
+        long rowId = resourceStore.insert(RESOURCE_TYPE, date);
 
         // checking that resource was successfully inserted into database
         assertThat(rowId).isEqualTo(1L);
 
         Cursor cursor = database().query(ResourceModel.TABLE, PROJECTION, null, null, null, null, null);
 
-        assertThatCursor(cursor).hasRow(RESOURCE_TYPE, RESOURCE_UID, DATE).isExhausted();
+        assertThatCursor(cursor).hasRow(RESOURCE_TYPE, DATE).isExhausted();
 
     }
 
     @Test
     public void insert_shouldPersistResourceInDatabaseWithoutLastSynced() throws Exception {
-        long rowId = resourceStore.insert(RESOURCE_TYPE, RESOURCE_UID, null);
+        long rowId = resourceStore.insert(RESOURCE_TYPE, null);
         assertThat(rowId).isEqualTo(1L);
         Cursor cursor = database().query(ResourceModel.TABLE, PROJECTION, null, null, null, null, null);
 
-        assertThatCursor(cursor).hasRow(RESOURCE_TYPE, RESOURCE_UID, null).isExhausted();
+        assertThatCursor(cursor).hasRow(RESOURCE_TYPE, null).isExhausted();
 
     }
 
-    @Test(expected = SQLiteConstraintException.class)
-    public void exception_shouldNotPersistResourceInDatabaseWithoutResourceUid() throws Exception {
-        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-        resourceStore.insert(RESOURCE_TYPE, null, date);
-
-    }
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_shouldNotPersistResourceInDatabaseWithoutResourceType() throws Exception {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-        resourceStore.insert(null, RESOURCE_UID, date);
+        resourceStore.insert(null, date);
     }
 
 }

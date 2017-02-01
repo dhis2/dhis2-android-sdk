@@ -180,7 +180,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                     user.email(), user.phoneNumber(), user.nationality()
             );
 
-            resourceStore.insert(User.class.getSimpleName(), user.uid(), serverDateTime);
+            resourceStore.insert(User.class.getSimpleName(), serverDateTime);
 
 
             // insert user credentials
@@ -192,7 +192,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
             );
 
             resourceStore.insert(
-                    UserCredentials.class.getSimpleName(), userCredentials.uid(), serverDateTime
+                    UserCredentials.class.getSimpleName(), serverDateTime
             );
 
             // insert user as authenticated entity
@@ -223,7 +223,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                     );
 
                     resourceStore.insert(
-                            organisationUnitSimpleName, organisationUnit.uid(), serverDateTime
+                            organisationUnitSimpleName, serverDateTime
                     );
 
                     // insert link between user and organisation unit

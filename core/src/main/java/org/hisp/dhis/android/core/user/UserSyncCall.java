@@ -47,7 +47,7 @@ import retrofit2.Response;
 
 public final class UserSyncCall implements Call<Response<User>> {
     // retrofit service
-    private final UserSyncService syncUserService;
+    private final UserSyncService userSyncService;
 
     // database and stores
     private final SQLiteDatabase database;
@@ -61,7 +61,7 @@ public final class UserSyncCall implements Call<Response<User>> {
 
     private boolean isExecuted;
 
-    public UserSyncCall(UserSyncService syncUserService,
+    public UserSyncCall(UserSyncService userSyncService,
                         SQLiteDatabase database,
                         OrganisationUnitStore organisationUnitStore,
                         UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
@@ -70,7 +70,7 @@ public final class UserSyncCall implements Call<Response<User>> {
                         UserStore userStore,
                         UserRoleProgramLinkStore userRoleProgramLinkStore,
                         ResourceStore resourceStore) {
-        this.syncUserService = syncUserService;
+        this.userSyncService = userSyncService;
         this.database = database;
         this.organisationUnitStore = organisationUnitStore;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
@@ -139,7 +139,7 @@ public final class UserSyncCall implements Call<Response<User>> {
                 )
         ).build();
 
-        return syncUserService.getUser(filter).execute();
+        return userSyncService.getUser(filter).execute();
     }
 
     private void deleteOrPersistUserGraph(Response<User> response) {
@@ -178,6 +178,7 @@ public final class UserSyncCall implements Call<Response<User>> {
     }
 
     private void deleteOrPersistUser(User user, Date serverDateTime) {
+        String userClassName = User.class.getSimpleName();
         if (isDeleted(user)) {
             userStore.delete(user.uid());
             deleteInResourceStore(user.uid());
@@ -200,18 +201,19 @@ public final class UserSyncCall implements Call<Response<User>> {
 
             // update the resource table
             int updatedResourceRow = updateInResourceStore(
-                    User.class.getSimpleName(), user.uid(), serverDateTime, user.uid()
+                    userClassName, serverDateTime, userClassName
             );
 
             if (updatedResourceRow <= 0) {
                 insertIntoResourceStore(
-                        User.class.getSimpleName(), user.uid(), serverDateTime
+                        userClassName, serverDateTime
                 );
             }
         }
     }
 
     private void deleteOrPersistUserCredentials(User user, Date serverDateTime, UserCredentials userCredentials) {
+        String userCredentialsClassName = UserCredentials.class.getSimpleName();
         if (isDeleted(userCredentials)) {
             userCredentialsStore.delete(userCredentials.uid());
             deleteInResourceStore(userCredentials.uid());
@@ -229,12 +231,12 @@ public final class UserSyncCall implements Call<Response<User>> {
                 );
             }
             int updatedResourceRow = updateInResourceStore(
-                    UserCredentials.class.getSimpleName(), userCredentials.uid(),
-                    serverDateTime, userCredentials.uid()
+                    userCredentialsClassName,
+                    serverDateTime, userCredentialsClassName
             );
             if (updatedResourceRow <= 0) {
                 insertIntoResourceStore(
-                        UserCredentials.class.getSimpleName(), userCredentials.uid(), serverDateTime
+                        userCredentialsClassName, serverDateTime
                 );
             }
         }
@@ -244,6 +246,8 @@ public final class UserSyncCall implements Call<Response<User>> {
         if (userRoles == null) {
             return;
         }
+        String userRoleClassName = UserRole.class.getSimpleName();
+
         int size = userRoles.size();
         for (int i = 0; i < size; i++) {
             UserRole userRole = userRoles.get(i);
@@ -262,11 +266,11 @@ public final class UserSyncCall implements Call<Response<User>> {
                 }
 
                 int updatedResourceRow = updateInResourceStore(
-                        UserRole.class.getSimpleName(), userRole.uid(), serverDate, userRole.uid()
+                        userRoleClassName, serverDate, userRoleClassName
                 );
 
                 if (updatedResourceRow <= 0) {
-                    insertIntoResourceStore(UserRole.class.getSimpleName(), userRole.uid(), serverDate);
+                    insertIntoResourceStore(userRoleClassName, serverDate);
                 }
 
                 List<Program> programs = userRole.programs();
@@ -277,7 +281,11 @@ public final class UserSyncCall implements Call<Response<User>> {
     }
 
     private void insertOrUpdateUserRoleProgramLink(UserRole userRole, List<Program> programs) {
-        int programSize = userRole.programs().size();
+        if (programs == null) {
+            return;
+        }
+
+        int programSize = programs.size();
         for (int i = 0; i < programSize; i++) {
 
             Program program = programs.get(i);
@@ -354,11 +362,11 @@ public final class UserSyncCall implements Call<Response<User>> {
             );
 
             int updatedResourceRow = updateInResourceStore(organisationUnitSimpleName,
-                    organisationUnit.uid(), serverDateTime, organisationUnit.uid());
+                    serverDateTime, organisationUnit.uid());
 
             if (updatedResourceRow <= 0) {
                 insertIntoResourceStore(
-                        organisationUnitSimpleName, organisationUnit.uid(), serverDateTime
+                        organisationUnitSimpleName, serverDateTime
                 );
             }
 
@@ -385,20 +393,18 @@ public final class UserSyncCall implements Call<Response<User>> {
     }
 
     private int updateInResourceStore(final String className,
-                                      final String uid,
                                       final Date serverDate,
-                                      final String whereUid) {
-        return resourceStore.update(className, uid, serverDate, whereUid);
+                                      final String whereClassName) {
+        return resourceStore.update(className, serverDate, whereClassName);
     }
 
     private long insertIntoResourceStore(final String className,
-                                         final String uid,
                                          final Date serverDate) {
-        return resourceStore.insert(className, uid, serverDate);
+        return resourceStore.insert(className, serverDate);
     }
 
-    private int deleteInResourceStore(final String uid) {
-        return resourceStore.delete(uid);
+    private int deleteInResourceStore(final String resourceType) {
+        return resourceStore.delete(resourceType);
     }
 
     private <T extends BaseIdentifiableObject> boolean isDeleted(final T object) {

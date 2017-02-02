@@ -31,6 +31,9 @@ package org.hisp.dhis.android.core.configuration;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.util.List;
+import java.util.Locale;
+
 import okhttp3.HttpUrl;
 
 final class ConfigurationManagerImpl implements ConfigurationManager {
@@ -44,15 +47,21 @@ final class ConfigurationManagerImpl implements ConfigurationManager {
 
     @NonNull
     @Override
-    public ConfigurationModel save(@NonNull HttpUrl serverUrl) {
+    public ConfigurationModel configure(@NonNull HttpUrl serverUrl) {
         if (serverUrl == null) {
             throw new IllegalArgumentException("serverUrl == null");
         }
 
-        long configurationId = configurationStore.save(serverUrl.toString());
+        List<String> pathSegments = serverUrl.pathSegments();
+        if (!"".equals(pathSegments.get(pathSegments.size() - 1))) {
+            throw new IllegalArgumentException("baseUrl must end in /: " + serverUrl);
+        }
+
+        HttpUrl baseUrl = canonizeBaseUrl(serverUrl);
+        long configurationId = configurationStore.save(baseUrl.toString());
         return ConfigurationModel.builder()
                 .id(configurationId)
-                .serverUrl(serverUrl)
+                .serverUrl(baseUrl)
                 .build();
     }
 
@@ -65,5 +74,9 @@ final class ConfigurationManagerImpl implements ConfigurationManager {
     @Override
     public int remove() {
         return configurationStore.delete();
+    }
+
+    private static HttpUrl canonizeBaseUrl(HttpUrl baseUrl) {
+        return HttpUrl.parse(String.format(Locale.US, "%sapi/", baseUrl.toString()));
     }
 }

@@ -28,15 +28,16 @@
 
 package org.hisp.dhis.android.core;
 
+import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 
 import static org.assertj.core.api.Java6Assertions.fail;
@@ -44,11 +45,14 @@ import static org.assertj.core.api.Java6Assertions.fail;
 @RunWith(JUnit4.class)
 public class D2Tests {
 
-    @Mock
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private DbOpenHelper dbOpenHelper;
 
     @Mock
     private OkHttpClient okHttpClient;
+
+    @Mock
+    private ConfigurationModel configuration;
 
     private D2.Builder builder;
 
@@ -56,16 +60,14 @@ public class D2Tests {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        HttpUrl dummyUrl = HttpUrl.parse("https://play.dhis2.org/demo");
-
         this.builder = new D2.Builder()
-                .baseUrl(dummyUrl)
+                .configuration(configuration)
                 .okHttpClient(okHttpClient)
                 .dbOpenHelper(dbOpenHelper);
     }
 
     @Test
-    public void build_shouldThrowIllegalArgumentException_ifNoOkHttpClient() {
+    public void buildShouldThrowIllegalArgumentExceptionWhenNoOkHttpClient() {
         try {
             builder.okHttpClient(null).build();
 
@@ -76,7 +78,7 @@ public class D2Tests {
     }
 
     @Test
-    public void build_shouldThrowIllegalArgumentException_ifNoDbOpenHelper() {
+    public void buildShouldThrowIllegalArgumentExceptionWhenNoDbOpenHelper() {
         try {
             builder.dbOpenHelper(null).build();
 
@@ -89,7 +91,7 @@ public class D2Tests {
     @Test
     public void buildShouldThrowExceptionWhenNoBaseUrl() {
         try {
-            builder.baseUrl(null).build();
+            builder.configuration(null).build();
 
             fail("IllegalStateException was expected, but was not thrown");
         } catch (IllegalStateException illegalStateException) {

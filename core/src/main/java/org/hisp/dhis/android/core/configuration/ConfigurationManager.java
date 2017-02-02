@@ -36,7 +36,7 @@ import okhttp3.HttpUrl;
 public interface ConfigurationManager {
 
     @NonNull
-    ConfigurationModel save(@NonNull HttpUrl serverUrl);
+    ConfigurationModel configure(@NonNull HttpUrl serverUrl);
 
     @Nullable
     ConfigurationModel get();

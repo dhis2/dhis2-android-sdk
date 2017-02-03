@@ -74,12 +74,12 @@ ext {
             minSdkVersion    : 15,
             targetSdkVersion : 24,
             versionCode      : 3,
-            versionName      : "0.0.6-SNAPSHOT"
+            versionName      : "0.0.7-SNAPSHOT"
     ]
 
     libraries = [
             // android
-            support         : "25.1.0",
+            support         : "25.1.1",
 
             // java
             jackson         : "2.8.5",

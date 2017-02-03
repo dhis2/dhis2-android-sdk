@@ -29,13 +29,13 @@
 
 package org.hisp.dhis.android.sdk.utils.api;
 
+import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 
 /**
  * @author Lars Helge Overland
@@ -63,7 +63,8 @@ public enum ValueType
     ORGANISATION_UNIT(OrganisationUnit.class),
     USERNAME( String.class ),
     FILE_RESOURCE( String.class ),
-    COORDINATE( String.class);
+    COORDINATE( String.class),
+    AGE( Date.class );
 
     public static final Set<ValueType> INTEGER_TYPES = new HashSet<>(Arrays.asList(
         INTEGER, INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE ));
@@ -73,13 +74,13 @@ public enum ValueType
 
     public static final Set<ValueType> BOOLEAN_TYPES = new HashSet<>(Arrays.asList(
         BOOLEAN, TRUE_ONLY ));
-    
+
     public static final Set<ValueType> TEXT_TYPES = new HashSet<>(Arrays.asList(
         TEXT, LONG_TEXT, LETTER, COORDINATE, TIME ));
-    
+
     public static final Set<ValueType> DATE_TYPES = new HashSet<>(Arrays.asList(
         DATE, DATETIME ));
-    
+
     private final Class<?> javaClass;
 
     private ValueType()
@@ -106,7 +107,7 @@ public enum ValueType
     {
         return NUMERIC_TYPES.contains( this );
     }
-    
+
     public boolean isBoolean()
     {
         return BOOLEAN_TYPES.contains( this );
@@ -126,7 +127,7 @@ public enum ValueType
     {
         return this == FILE_RESOURCE;
     }
-    
+
     public boolean isCoordinate()
     {
     	return this == COORDINATE;

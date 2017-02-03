@@ -62,7 +62,7 @@ public abstract class ConfigurationModel extends BaseModel {
     }
 
     // package visible for access in the store and manager
-    static Builder builder() {
+    public static Builder builder() {
         return new $$AutoValue_ConfigurationModel.Builder();
     }
 

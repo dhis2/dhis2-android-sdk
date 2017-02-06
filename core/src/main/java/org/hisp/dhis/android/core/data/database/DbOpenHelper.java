@@ -717,15 +717,6 @@ public class DbOpenHelper extends SQLiteOpenHelper {
      */
     // ToDo: Revise usage of this method
     @VisibleForTesting
-    static DatabaseAdapter createDatabaseAdapter() {
-        return new SqLiteDatabaseAdapter(SQLiteDatabase.create(null));
-    }
-
-    /**
-     * This method should be used only for testing purposes
-     */
-    // ToDo: Revise usage of this method
-    @VisibleForTesting
     static SQLiteDatabase create() {
         return create(SQLiteDatabase.create(null));
     }

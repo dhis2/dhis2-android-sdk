@@ -31,8 +31,6 @@ package org.hisp.dhis.android.core.data.database;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
 
 public class TestDatabaseAdapter implements DatabaseAdapter {
 
@@ -40,7 +38,7 @@ public class TestDatabaseAdapter implements DatabaseAdapter {
     private final SQLiteDatabase sqLiteDatabase;
 
     public TestDatabaseAdapter() {
-        this.sqLiteDatabase = SQLiteDatabase.create(null);
+        this.sqLiteDatabase = DbOpenHelper.create();
         sqLiteDatabase.execSQL("PRAGMA foreign_keys = ON;");
     }
 

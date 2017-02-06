@@ -47,7 +47,6 @@ import java.io.IOException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.bouncycastle.asn1.x500.style.RFC4519Style.l;
 import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 

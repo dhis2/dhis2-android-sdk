@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;

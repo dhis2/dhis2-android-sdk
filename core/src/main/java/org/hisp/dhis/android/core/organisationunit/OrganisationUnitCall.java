@@ -27,12 +27,14 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
@@ -40,12 +42,15 @@ import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import retrofit2.Response;
 
 public class OrganisationUnitCall implements Call<Response<Payload<OrganisationUnit>>> {
+
     private final User user;
     private final OrganisationUnitService organisationUnitService;
     private final SQLiteDatabase database;
@@ -111,9 +116,18 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
     }
 
     private Response<Payload<OrganisationUnit>> getOrganisationUnit(@NonNull String uid) throws IOException {
+        Map<String, String> queryMap = new HashMap<>();
+        String updatedDate = getLastUpdated();
+        if (updatedDate != null && !updatedDate.isEmpty()) {
+            queryMap.put(OrganisationUnitModel.Columns.LAST_UPDATED,
+                    OrganisationUnitModel.Columns.LAST_UPDATED + ":gt:" + updatedDate);
+        }
+
         Filter<OrganisationUnit> filter = Filter.<OrganisationUnit>builder().fields(
                 OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
-                OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
+                OrganisationUnit.displayName, OrganisationUnit.created,
+                //TODO: lookup the date from resource in database and use that:
+//                OrganisationUnit.lastUpdated,
                 OrganisationUnit.shortName, OrganisationUnit.displayShortName,
                 OrganisationUnit.description, OrganisationUnit.displayDescription,
                 OrganisationUnit.displayDescription, OrganisationUnit.path, OrganisationUnit.openingDate,
@@ -123,7 +137,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                 OrganisationUnit.programs
         ).build();
         retrofit2.Call<Payload<OrganisationUnit>> call = organisationUnitService.getOrganisationUnits(uid, filter,
-                true, false);
+                queryMap, true, false);
         return call.execute();
     }
 
@@ -132,12 +146,13 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
 
         for (int i = 0, size = organisationUnits.size(); i < size; i++) {
             OrganisationUnit organisationUnit = organisationUnits.get(i);
-            updateInResourceStore(serverDate);
-
             if (organisationUnit.deleted()) {
                 organisationUnitStore.delete(organisationUnit.uid());
             } else {
                 insertOrUpdate(organisationUnit, organisationUnitScope);
+            }
+            if (i == size - 1) { //if last one:
+                updateInResourceStore(serverDate);
             }
         }
     }
@@ -210,5 +225,20 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         if (rowId <= 0) {
             resourceStore.insert(OrganisationUnit.class.getSimpleName(), serverDate);
         }
+    }
+
+    private String getLastUpdated() {
+        String lastUpdated;
+        Cursor cursor = database.query(
+                ResourceModel.TABLE,
+                new String[]{ResourceModel.Columns.LAST_SYNCED},
+                ResourceModel.Columns.RESOURCE_TYPE + "=?",
+                new String[]{OrganisationUnit.class.getSimpleName()},
+                null, null, null
+        );
+        cursor.moveToFirst();
+        lastUpdated = cursor.getString(cursor.getColumnIndex(ResourceModel.Columns.LAST_SYNCED));
+        cursor.close();
+        return lastUpdated;
     }
 }

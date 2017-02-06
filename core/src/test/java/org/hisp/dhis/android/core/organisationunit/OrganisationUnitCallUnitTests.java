@@ -28,10 +28,12 @@
 package org.hisp.dhis.android.core.organisationunit;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
@@ -50,6 +52,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -61,7 +64,9 @@ import retrofit2.Response;
 import static junit.framework.Assert.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -70,6 +75,9 @@ import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class OrganisationUnitCallUnitTests {
+
+    @Mock
+    private Cursor cursor;
 
     @Mock
     private SQLiteDatabase database;
@@ -96,6 +104,9 @@ public class OrganisationUnitCallUnitTests {
 
     @Captor
     private ArgumentCaptor<Filter<OrganisationUnit>> filterCaptor;
+
+    @Captor
+    private ArgumentCaptor<Map<String, String>> queryMapCaptor;
 
     @Captor
     private ArgumentCaptor<Boolean> descendantsCaptor;
@@ -168,7 +179,8 @@ public class OrganisationUnitCallUnitTests {
 
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
         when(organisationUnitService.getOrganisationUnits(
-                uidCaptor.capture(), filterCaptor.capture(), descendantsCaptor.capture(), pagingCaptor.capture()
+                uidCaptor.capture(), filterCaptor.capture(), queryMapCaptor.capture(), descendantsCaptor.capture(),
+                pagingCaptor.capture()
         )).thenReturn(retrofitCall);
         when(retrofitCall.execute()).thenReturn(Response.success(payload));
     }
@@ -183,7 +195,7 @@ public class OrganisationUnitCallUnitTests {
         assertThat(uidCaptor.getValue()).isEqualTo(organisationUnit.uid());
         assertThat(filterCaptor.getValue().fields()).contains(
                 OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
-                OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
+                OrganisationUnit.displayName, OrganisationUnit.created,
                 OrganisationUnit.shortName, OrganisationUnit.displayShortName,
                 OrganisationUnit.description, OrganisationUnit.displayDescription,
                 OrganisationUnit.displayDescription, OrganisationUnit.path, OrganisationUnit.openingDate,
@@ -191,6 +203,40 @@ public class OrganisationUnitCallUnitTests {
                 OrganisationUnit.parent,
                 OrganisationUnit.programs
         );
+        assertThat(queryMapCaptor.getValue().containsKey("filter")).isFalse();
+        assertThat(queryMapCaptor.getValue().isEmpty()).isTrue();
+        assertThat(descendantsCaptor.getValue()).isTrue();
+        assertThat(pagingCaptor.getValue()).isFalse();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void call_shouldInvokeServerWithCorrectParametersWithLastUpdated() throws Exception {
+        String key = OrganisationUnitModel.Columns.LAST_UPDATED;
+        String date = "2014-11-25T09:37:53.358";
+        String expectedValue = "lastUpdated:gt:" + date;
+        when(database.query(eq(ResourceModel.TABLE), any(String[].class), anyString(), any(String[].class),
+                anyString(), anyString(), anyString())).thenReturn(cursor);
+        when(cursor.getString(anyInt())).thenReturn(date);
+
+        when(payload.items()).thenReturn(Collections.singletonList(organisationUnit));
+
+        organisationUnitCall.call();
+
+        assertThat(uidCaptor.getValue()).isEqualTo(organisationUnit.uid());
+        assertThat(filterCaptor.getValue().fields()).contains(
+                OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
+                OrganisationUnit.displayName, OrganisationUnit.created,
+                OrganisationUnit.shortName, OrganisationUnit.displayShortName,
+                OrganisationUnit.description, OrganisationUnit.displayDescription,
+                OrganisationUnit.displayDescription, OrganisationUnit.path, OrganisationUnit.openingDate,
+                OrganisationUnit.closedDate, OrganisationUnit.level, OrganisationUnit.deleted,
+                OrganisationUnit.parent,
+                OrganisationUnit.programs
+        );
+
+        assertThat(queryMapCaptor.getValue().containsKey(key)).isTrue();
+        assertThat(queryMapCaptor.getValue().get(key)).isEqualTo(expectedValue);
         assertThat(descendantsCaptor.getValue()).isTrue();
         assertThat(pagingCaptor.getValue()).isFalse();
     }

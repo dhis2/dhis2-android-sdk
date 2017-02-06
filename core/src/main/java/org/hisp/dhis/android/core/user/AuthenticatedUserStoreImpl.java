@@ -64,7 +64,7 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
         insertRowStatement.clearBindings();
         sqLiteBind(insertRowStatement, 1, userUid);
         sqLiteBind(insertRowStatement, 2, credentials);
-        return insertRowStatement.executeInsert();
+        return databaseAdapter.executeInsert(AuthenticatedUserModel.TABLE, insertRowStatement);
     }
 
     @NonNull

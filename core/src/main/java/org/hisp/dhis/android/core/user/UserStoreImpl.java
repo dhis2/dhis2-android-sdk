@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
@@ -86,16 +87,16 @@ public class UserStoreImpl implements UserStore {
     private static final String DELETE_STATEMENT = "DELETE FROM " + UserModel.TABLE +
             " WHERE " + UserModel.Columns.UID + " =?;";
 
-    private final SQLiteDatabase sqLiteDatabase;
+    private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
 
-    public UserStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteDatabase = sqLiteDatabase;
-        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
-        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
-        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
+    public UserStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -117,7 +118,7 @@ public class UserStoreImpl implements UserStore {
                 languages, email, phoneNumber, nationality
         );
 
-        return insertStatement.executeInsert();
+        return databaseAdapter.executeInsert(UserModel.TABLE, insertStatement);
     }
 
     @Override
@@ -142,7 +143,7 @@ public class UserStoreImpl implements UserStore {
         // bind the where clause
         sqLiteBind(updateStatement, 20, whereUid);
 
-        return updateStatement.executeUpdateDelete();
+        return databaseAdapter.executeUpdateDelete(UserModel.TABLE, updateStatement);
     }
 
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,
@@ -180,12 +181,12 @@ public class UserStoreImpl implements UserStore {
 
         sqLiteBind(deleteStatement, 1, uid);
 
-        return deleteStatement.executeUpdateDelete();
+        return databaseAdapter.executeUpdateDelete(UserModel.TABLE, deleteStatement);
     }
 
     @Override
     public int delete() {
-        return sqLiteDatabase.delete(UserModel.TABLE, null, null);
+        return databaseAdapter.delete(UserModel.TABLE, null, null);
     }
 
 }

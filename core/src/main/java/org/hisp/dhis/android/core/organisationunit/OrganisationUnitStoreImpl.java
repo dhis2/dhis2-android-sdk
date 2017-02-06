@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
@@ -79,16 +80,16 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
             " WHERE " + OrganisationUnitModel.Columns.UID + " =?;";
 
 
-    private final SQLiteDatabase sqLiteDatabase;
+    private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
 
-    public OrganisationUnitStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteDatabase = sqLiteDatabase;
-        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
-        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
-        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
+    public OrganisationUnitStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -116,7 +117,7 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
                 path, openingDate, closedDate, parent, level
         );
 
-        return insertStatement.executeInsert();
+        return databaseAdapter.executeInsert(OrganisationUnitModel.TABLE, insertStatement);
     }
 
     @Override
@@ -136,8 +137,7 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
         // bind the whereClause
         sqLiteBind(updateStatement, 16, whereUid);
 
-
-        return updateStatement.executeUpdateDelete();
+        return databaseAdapter.executeUpdateDelete(OrganisationUnitModel.TABLE, updateStatement);
     }
 
     @Override
@@ -147,12 +147,12 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
         // bind the whereClause
         sqLiteBind(deleteStatement, 1, uid);
 
-        return deleteStatement.executeUpdateDelete();
+        return databaseAdapter.executeUpdateDelete(OrganisationUnitModel.TABLE, deleteStatement);
     }
 
     @Override
     public int delete() {
-        return sqLiteDatabase.delete(OrganisationUnitModel.TABLE, null, null);
+        return databaseAdapter.delete(OrganisationUnitModel.TABLE, null, null);
     }
 
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid,

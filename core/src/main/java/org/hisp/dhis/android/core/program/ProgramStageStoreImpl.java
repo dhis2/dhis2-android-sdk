@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;

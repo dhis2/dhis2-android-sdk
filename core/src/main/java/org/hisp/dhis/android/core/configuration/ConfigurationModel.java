@@ -26,16 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.configuration;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
+
+import okhttp3.HttpUrl;
 
 @AutoValue
 public abstract class ConfigurationModel extends BaseModel {
@@ -47,7 +50,8 @@ public abstract class ConfigurationModel extends BaseModel {
 
     @NonNull
     @ColumnName(Columns.SERVER_URL)
-    public abstract String serverUrl();
+    @ColumnAdapter(HttpUrlColumnAdapter.class)
+    public abstract HttpUrl serverUrl();
 
     // package visible for access in the store and manager
     abstract ContentValues toContentValues();
@@ -58,14 +62,14 @@ public abstract class ConfigurationModel extends BaseModel {
     }
 
     // package visible for access in the store and manager
-    static Builder builder() {
+    public static Builder builder() {
         return new $$AutoValue_ConfigurationModel.Builder();
     }
 
     // package visible for access in the store and manager
     @AutoValue.Builder
-    static abstract class Builder extends BaseModel.Builder<Builder> {
-        public abstract Builder serverUrl(String serverUrl);
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder serverUrl(HttpUrl serverUrl);
 
         public abstract ConfigurationModel build();
     }

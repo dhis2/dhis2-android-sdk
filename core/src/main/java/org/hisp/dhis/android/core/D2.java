@@ -37,6 +37,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Call;
+import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
@@ -61,7 +62,6 @@ import org.hisp.dhis.android.core.user.UserStoreImpl;
 
 import java.util.concurrent.Callable;
 
-import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import retrofit2.Converter;
 import retrofit2.Response;
@@ -97,6 +97,8 @@ public final class D2 {
         // services
         this.userService = retrofit.create(UserService.class);
 
+        SQLiteDatabase sqLiteDatabase = dbOpenHelper.getWritableDatabase();
+
         // stores
         this.userStore =
                 new UserStoreImpl(sqLiteDatabase);
@@ -131,18 +133,17 @@ public final class D2 {
             throw new NullPointerException("password == null");
         }
 
-        return new UserAuthenticateCall(userService, sqLiteDatabase, userStore,
-                userCredentialsStore, userOrganisationUnitLinkStore, resourceStore, authenticatedUserStore,
-                organisationUnitStore, username, password
+        return new UserAuthenticateCall(userService, dbOpenHelper.getWritableDatabase(), userStore,
+                userCredentialsStore, userOrganisationUnitLinkStore, resourceStore,
+                authenticatedUserStore, organisationUnitStore, username, password
         );
     }
 
     @NonNull
     public Callable<Boolean> isUserLoggedIn() {
-        SQLiteDatabase sqLiteDatabase = dbOpenHelper.getWritableDatabase();
         AuthenticatedUserStore authenticatedUserStore =
                 new AuthenticatedUserStoreImpl(databaseAdapter);
-
+        
         return new IsUserLoggedInCallable(authenticatedUserStore);
     }
 
@@ -155,7 +156,7 @@ public final class D2 {
     }
 
     public static class Builder {
-        private HttpUrl baseUrl;
+        private ConfigurationModel configuration;
         private DbOpenHelper dbOpenHelper;
         private OkHttpClient okHttpClient;
         private DatabaseAdapter databaseAdapter;
@@ -165,8 +166,8 @@ public final class D2 {
         }
 
         @NonNull
-        public Builder baseUrl(@NonNull HttpUrl baseUrl) {
-            this.baseUrl = baseUrl;
+        public Builder configuration(@NonNull ConfigurationModel configuration) {
+            this.configuration = configuration;
             return this;
         }
 
@@ -193,8 +194,8 @@ public final class D2 {
                 throw new IllegalArgumentException("dbOpenHelper == null");
             }
 
-            if (baseUrl == null) {
-                throw new IllegalStateException("BaseUrl must be set first");
+            if (configuration == null) {
+                throw new IllegalStateException("configuration must be set first");
             }
 
             if (okHttpClient == null) {
@@ -205,13 +206,13 @@ public final class D2 {
                     .setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw())
                     .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-            Converter.Factory jsonConverterFactory =
-                    JacksonConverterFactory.create(objectMapper);
-            Converter.Factory filterConverterFactory =
-                    FilterConverterFactory.create();
+            Converter.Factory jsonConverterFactory
+                    = JacksonConverterFactory.create(objectMapper);
+            Converter.Factory filterConverterFactory
+                    = FilterConverterFactory.create();
 
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(baseUrl)
+                    .baseUrl(configuration.serverUrl())
                     .client(okHttpClient)
                     .addConverterFactory(jsonConverterFactory)
                     .addConverterFactory(filterConverterFactory)

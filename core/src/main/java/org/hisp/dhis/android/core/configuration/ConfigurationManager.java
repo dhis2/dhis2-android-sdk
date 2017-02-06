@@ -26,15 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.configuration;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import okhttp3.HttpUrl;
+
 public interface ConfigurationManager {
 
     @NonNull
-    ConfigurationModel save(@NonNull String serverUrl);
+    ConfigurationModel configure(@NonNull HttpUrl serverUrl);
 
     @Nullable
     ConfigurationModel get();

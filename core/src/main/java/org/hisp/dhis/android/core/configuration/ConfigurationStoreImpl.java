@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class ConfigurationStoreImpl implements ConfigurationStore {
 
     private static final long CONFIGURATION_ID = 1L;
@@ -48,11 +47,6 @@ public class ConfigurationStoreImpl implements ConfigurationStore {
             ConfigurationModel.Columns.SERVER_URL + ") " +
             "VALUES(?,?);";
 
-    private static final String UPDATE_STATEMENT = "UPDATE " + ConfigurationModel.CONFIGURATION +
-            " SET " + ConfigurationModel.Columns.ID + " =?, " +
-            ConfigurationModel.Columns.SERVER_URL + "=? WHERE " +
-            ConfigurationModel.Columns.ID + " = ?;";
-
     private static final String[] PROJECTION = {
             ConfigurationModel.Columns.ID,
             ConfigurationModel.Columns.SERVER_URL
@@ -60,13 +54,11 @@ public class ConfigurationStoreImpl implements ConfigurationStore {
 
     private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
-    private final SQLiteStatement updateStatement;
 
 
     public ConfigurationStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
         this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
-        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
     }
 
     @Override

@@ -39,12 +39,13 @@ import static com.google.common.truth.Truth.assertThat;
 
 public abstract class AbsStoreTestCase {
     private SQLiteDatabase sqLiteDatabase;
-    private DatabaseAdapter databaseAdapter;
+    private TestDatabaseAdapter databaseAdapter;
 
     @Before
     public void setUp() throws IOException {
-        databaseAdapter = new TestDatabaseAdapter();
-        sqLiteDatabase = databaseAdapter.database();
+        sqLiteDatabase = DbOpenHelper.create();
+        sqLiteDatabase.execSQL("PRAGMA foreign_keys = ON;");
+        databaseAdapter = new TestDatabaseAdapter(sqLiteDatabase);
     }
 
     @After

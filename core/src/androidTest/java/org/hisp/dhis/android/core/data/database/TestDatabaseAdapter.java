@@ -37,9 +37,8 @@ public class TestDatabaseAdapter implements DatabaseAdapter {
     // memory-backed test database
     private final SQLiteDatabase sqLiteDatabase;
 
-    public TestDatabaseAdapter() {
-        this.sqLiteDatabase = DbOpenHelper.create();
-        sqLiteDatabase.execSQL("PRAGMA foreign_keys = ON;");
+    public TestDatabaseAdapter(SQLiteDatabase database) {
+        this.sqLiteDatabase = database;
     }
 
     @Override
@@ -80,10 +79,5 @@ public class TestDatabaseAdapter implements DatabaseAdapter {
     @Override
     public void endTransaction() {
         sqLiteDatabase.endTransaction();
-    }
-
-    @Override
-    public SQLiteDatabase database() {
-        return sqLiteDatabase;
     }
 }

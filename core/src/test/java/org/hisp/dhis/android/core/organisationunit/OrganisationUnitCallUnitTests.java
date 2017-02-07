@@ -215,8 +215,11 @@ public class OrganisationUnitCallUnitTests {
         String key = OrganisationUnitModel.Columns.LAST_UPDATED;
         String date = "2014-11-25T09:37:53.358";
         String expectedValue = "lastUpdated:gt:" + date;
+
         when(database.query(eq(ResourceModel.TABLE), any(String[].class), anyString(), any(String[].class),
                 anyString(), anyString(), anyString())).thenReturn(cursor);
+
+        when(cursor.getCount()).thenReturn(1);
         when(cursor.getString(anyInt())).thenReturn(date);
 
         when(payload.items()).thenReturn(Collections.singletonList(organisationUnit));

@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -95,18 +96,26 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         database.beginTransaction();
         try {
             Set<String> rootOrgUnitUids = OrganisationUnitTree.findRoots(user.organisationUnits());
+            Date serverDate = null;
+            Map<String, String> queryMap = new HashMap<>();
+            String updatedDate = getLastUpdated();
+            if (updatedDate != null && !updatedDate.isEmpty()) {
+                queryMap.put(OrganisationUnitModel.Columns.LAST_UPDATED,
+                        OrganisationUnitModel.Columns.LAST_UPDATED + ":gt:" + updatedDate);
+            }
             // Call OrganisationUnitService for each tree root & try to persist sub-tree:
-
             for (String uid : rootOrgUnitUids) {
-                response = getOrganisationUnit(uid);
+            response = getOrganisationUnit(uid, Collections.unmodifiableMap(queryMap));
                 if (response.isSuccessful()) {
-                    persistOrganisationUnits(response.body().items(), response.headers().getDate(HeaderUtils.DATE),
-                            OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE);
+                    serverDate = response.headers().getDate(HeaderUtils.DATE);
+                    persistOrganisationUnits(response.body().items(), OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE);
                 } else {
                     break; //stop early unsuccessful:
                 }
+
             }
             if (response != null && response.isSuccessful()) {
+                updateInResourceStore(serverDate);
                 database.setTransactionSuccessful();
             }
         } finally {
@@ -115,14 +124,8 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         return response;
     }
 
-    private Response<Payload<OrganisationUnit>> getOrganisationUnit(@NonNull String uid) throws IOException {
-        Map<String, String> queryMap = new HashMap<>();
-        String updatedDate = getLastUpdated();
-        if (updatedDate != null && !updatedDate.isEmpty()) {
-            queryMap.put(OrganisationUnitModel.Columns.LAST_UPDATED,
-                    OrganisationUnitModel.Columns.LAST_UPDATED + ":gt:" + updatedDate);
-        }
-
+    private Response<Payload<OrganisationUnit>> getOrganisationUnit(@NonNull String uid,
+                                                                    Map<String, String> queryMap) throws IOException {
         Filter<OrganisationUnit> filter = Filter.<OrganisationUnit>builder().fields(
                 OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
                 OrganisationUnit.displayName, OrganisationUnit.created,
@@ -141,7 +144,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         return call.execute();
     }
 
-    private void persistOrganisationUnits(@NonNull List<OrganisationUnit> organisationUnits, Date serverDate,
+    private void persistOrganisationUnits(@NonNull List<OrganisationUnit> organisationUnits,
                                           OrganisationUnitModel.Scope organisationUnitScope) {
 
         for (int i = 0, size = organisationUnits.size(); i < size; i++) {
@@ -151,9 +154,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
             } else {
                 insertOrUpdate(organisationUnit, organisationUnitScope);
             }
-            if (i == size - 1) { //if last one:
-                updateInResourceStore(serverDate);
-            }
+
         }
     }
 
@@ -228,7 +229,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
     }
 
     private String getLastUpdated() {
-        String lastUpdated;
+        String lastUpdated = null;
         Cursor cursor = database.query(
                 ResourceModel.TABLE,
                 new String[]{ResourceModel.Columns.LAST_SYNCED},
@@ -236,9 +237,13 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                 new String[]{OrganisationUnit.class.getSimpleName()},
                 null, null, null
         );
-        cursor.moveToFirst();
-        lastUpdated = cursor.getString(cursor.getColumnIndex(ResourceModel.Columns.LAST_SYNCED));
-        cursor.close();
+        if (cursor != null) {
+            cursor.moveToFirst();
+            if(cursor.getCount() > 0) {
+                lastUpdated = cursor.getString(cursor.getColumnIndex(ResourceModel.Columns.LAST_SYNCED));
+            }
+            cursor.close();
+        }
         return lastUpdated;
     }
 }

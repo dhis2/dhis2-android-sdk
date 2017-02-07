@@ -62,7 +62,7 @@ public class UserOrganisationUnitLinkStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        organisationUnitLinkStore = new UserOrganisationUnitLinkStoreImpl(database());
+        organisationUnitLinkStore = new UserOrganisationUnitLinkStoreImpl(databaseAdapter());
 
         // insert a parent user and organisation unit
         ContentValues user = UserStoreTests.create(ID, USER_UID);

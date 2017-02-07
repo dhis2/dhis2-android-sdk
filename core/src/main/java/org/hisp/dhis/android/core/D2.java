@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
@@ -37,8 +36,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Call;
+import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.resource.ResourceStore;
@@ -59,7 +59,6 @@ import org.hisp.dhis.android.core.user.UserStoreImpl;
 
 import java.util.concurrent.Callable;
 
-import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import retrofit2.Converter;
 import retrofit2.Response;
@@ -70,8 +69,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class D2 {
     private final Retrofit retrofit;
-    private final DbOpenHelper dbOpenHelper;
-    private final SQLiteDatabase sqLiteDatabase;
+    private final DatabaseAdapter databaseAdapter;
 
     // services
     private final UserService userService;
@@ -85,27 +83,26 @@ public final class D2 {
     private final ResourceStore resourceStore;
 
     @VisibleForTesting
-    D2(@NonNull Retrofit retrofit, @NonNull DbOpenHelper dbOpenHelper) {
+    D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter) {
         this.retrofit = retrofit;
-        this.dbOpenHelper = dbOpenHelper;
-        this.sqLiteDatabase = dbOpenHelper.getWritableDatabase();
+        this.databaseAdapter = databaseAdapter;
 
         // services
         this.userService = retrofit.create(UserService.class);
 
         // stores
         this.userStore =
-                new UserStoreImpl(sqLiteDatabase);
+                new UserStoreImpl(databaseAdapter);
         this.userCredentialsStore =
-                new UserCredentialsStoreImpl(sqLiteDatabase);
+                new UserCredentialsStoreImpl(databaseAdapter);
         this.userOrganisationUnitLinkStore =
-                new UserOrganisationUnitLinkStoreImpl(sqLiteDatabase);
+                new UserOrganisationUnitLinkStoreImpl(databaseAdapter);
         this.authenticatedUserStore =
-                new AuthenticatedUserStoreImpl(sqLiteDatabase);
+                new AuthenticatedUserStoreImpl(databaseAdapter);
         this.organisationUnitStore =
-                new OrganisationUnitStoreImpl(sqLiteDatabase);
+                new OrganisationUnitStoreImpl(databaseAdapter);
         this.resourceStore =
-                new ResourceStoreImpl(sqLiteDatabase);
+                new ResourceStoreImpl(databaseAdapter);
     }
 
     @NonNull
@@ -114,8 +111,8 @@ public final class D2 {
     }
 
     @NonNull
-    public DbOpenHelper sqliteOpenHelper() {
-        return dbOpenHelper;
+    public DatabaseAdapter databaseAdapter() {
+        return databaseAdapter;
     }
 
     @NonNull
@@ -127,17 +124,16 @@ public final class D2 {
             throw new NullPointerException("password == null");
         }
 
-        return new UserAuthenticateCall(userService, sqLiteDatabase, userStore,
-                userCredentialsStore, userOrganisationUnitLinkStore, resourceStore, authenticatedUserStore,
-                organisationUnitStore, username, password
+        return new UserAuthenticateCall(userService, databaseAdapter, userStore,
+                userCredentialsStore, userOrganisationUnitLinkStore, resourceStore,
+                authenticatedUserStore, organisationUnitStore, username, password
         );
     }
 
     @NonNull
     public Callable<Boolean> isUserLoggedIn() {
-        SQLiteDatabase sqLiteDatabase = dbOpenHelper.getWritableDatabase();
         AuthenticatedUserStore authenticatedUserStore =
-                new AuthenticatedUserStoreImpl(sqLiteDatabase);
+                new AuthenticatedUserStoreImpl(databaseAdapter);
 
         return new IsUserLoggedInCallable(authenticatedUserStore);
     }
@@ -151,8 +147,8 @@ public final class D2 {
     }
 
     public static class Builder {
-        private HttpUrl baseUrl;
-        private DbOpenHelper dbOpenHelper;
+        private ConfigurationModel configuration;
+        private DatabaseAdapter databaseAdapter;
         private OkHttpClient okHttpClient;
 
         public Builder() {
@@ -160,14 +156,14 @@ public final class D2 {
         }
 
         @NonNull
-        public Builder baseUrl(@NonNull HttpUrl baseUrl) {
-            this.baseUrl = baseUrl;
+        public Builder configuration(@NonNull ConfigurationModel configuration) {
+            this.configuration = configuration;
             return this;
         }
 
         @NonNull
-        public Builder dbOpenHelper(@NonNull DbOpenHelper dbOpenHelper) {
-            this.dbOpenHelper = dbOpenHelper;
+        public Builder databaseAdapter(@NonNull DatabaseAdapter databaseAdapter) {
+            this.databaseAdapter = databaseAdapter;
             return this;
         }
 
@@ -178,12 +174,12 @@ public final class D2 {
         }
 
         public D2 build() {
-            if (dbOpenHelper == null) {
-                throw new IllegalArgumentException("dbOpenHelper == null");
+            if (databaseAdapter == null) {
+                throw new IllegalArgumentException("databaseAdapter == null");
             }
 
-            if (baseUrl == null) {
-                throw new IllegalStateException("BaseUrl must be set first");
+            if (configuration == null) {
+                throw new IllegalStateException("configuration must be set first");
             }
 
             if (okHttpClient == null) {
@@ -194,20 +190,20 @@ public final class D2 {
                     .setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw())
                     .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-            Converter.Factory jsonConverterFactory =
-                    JacksonConverterFactory.create(objectMapper);
-            Converter.Factory filterConverterFactory =
-                    FilterConverterFactory.create();
+            Converter.Factory jsonConverterFactory
+                    = JacksonConverterFactory.create(objectMapper);
+            Converter.Factory filterConverterFactory
+                    = FilterConverterFactory.create();
 
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(baseUrl)
+                    .baseUrl(configuration.serverUrl())
                     .client(okHttpClient)
                     .addConverterFactory(jsonConverterFactory)
                     .addConverterFactory(filterConverterFactory)
                     .validateEagerly(true)
                     .build();
 
-            return new D2(retrofit, dbOpenHelper);
+            return new D2(retrofit, databaseAdapter);
         }
     }
 }

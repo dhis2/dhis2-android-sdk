@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.user.UserRoleModel.Columns;
 
 import java.util.Date;
@@ -50,9 +50,11 @@ public class UserRoleStoreImpl implements UserRoleStore {
             ") VALUES (?, ?, ?, ?, ?, ?)";
 
     private final SQLiteStatement insertStatement;
+    private final DatabaseAdapter databaseAdapter;
 
-    public UserRoleStoreImpl(SQLiteDatabase database) {
-        this.insertStatement = database.compileStatement(INSERT_STATEMENT);
+    public UserRoleStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
@@ -73,7 +75,7 @@ public class UserRoleStoreImpl implements UserRoleStore {
         sqLiteBind(insertStatement, 5, created);
         sqLiteBind(insertStatement, 6, lastUpdated);
 
-        return insertStatement.executeInsert();
+        return databaseAdapter.executeInsert(UserRoleModel.TABLE, insertStatement);
     }
 
     @Override

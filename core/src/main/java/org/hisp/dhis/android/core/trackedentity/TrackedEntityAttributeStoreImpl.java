@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
@@ -69,9 +69,11 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
             ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private final SQLiteStatement insertRowStatement;
+    private final DatabaseAdapter databaseAdapter;
 
-    public TrackedEntityAttributeStoreImpl(SQLiteDatabase database) {
-        this.insertRowStatement = database.compileStatement(INSERT_STATEMENT);
+    public TrackedEntityAttributeStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertRowStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
@@ -114,7 +116,7 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
         sqLiteBind(insertRowStatement, 22, unique);
         sqLiteBind(insertRowStatement, 23, inherit);
 
-        return insertRowStatement.executeInsert();
+        return databaseAdapter.executeInsert(TrackedEntityAttributeModel.TABLE, insertRowStatement);
     }
 
     @Override

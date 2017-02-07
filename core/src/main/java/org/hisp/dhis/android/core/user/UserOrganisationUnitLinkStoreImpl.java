@@ -28,9 +28,10 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
@@ -42,34 +43,76 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + ") " +
             "VALUES (?, ?, ?);";
 
-    private final SQLiteDatabase sqLiteDatabase;
-    private final SQLiteStatement sqLiteStatement;
+    private static final String UPDATE_STATEMENT = "UPDATE " + UserOrganisationUnitLinkModel.TABLE + " SET " +
+            UserOrganisationUnitLinkModel.Columns.USER + " =?, " +
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + "=?, " +
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + "=? " +
+            " WHERE " +
+            UserOrganisationUnitLinkModel.Columns.USER + " = ? AND " +
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + " = ?;";
 
-    public UserOrganisationUnitLinkStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteDatabase = sqLiteDatabase;
-        this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+
+    private static final String DELETE_STATEMENT = "DELETE FROM " + UserOrganisationUnitLinkModel.TABLE +
+            " WHERE " + UserOrganisationUnitLinkModel.Columns.USER + " =? AND " +
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + " =?;";
+
+    private final DatabaseAdapter databaseAdapter;
+    private final SQLiteStatement insertStatement;
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
+
+    public UserOrganisationUnitLinkStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
     public long insert(@NonNull String user, @NonNull String organisationUnit,
-            @NonNull String organisationUnitScope) {
+                       @NonNull String organisationUnitScope) {
 
-        sqLiteStatement.clearBindings();
+        insertStatement.clearBindings();
 
+        bindArguments(insertStatement, user, organisationUnit, organisationUnitScope);
+
+        return databaseAdapter.executeInsert(UserOrganisationUnitLinkModel.TABLE, insertStatement);
+    }
+
+    @Override
+    public int update(@NonNull String user, @NonNull String organisationUnit, @NonNull String organisationUnitScope,
+                      @NonNull String whereUserUid, @NonNull String whereOrganisationUnitUid) {
+        updateStatement.clearBindings();
+
+        bindArguments(updateStatement, user, organisationUnit, organisationUnitScope);
+
+        // bind the whereClause
+        sqLiteBind(updateStatement, 4, whereUserUid);
+        sqLiteBind(updateStatement, 5, whereOrganisationUnitUid);
+
+        return databaseAdapter.executeUpdateDelete(UserOrganisationUnitLinkModel.TABLE, updateStatement);
+    }
+
+    @Override
+    public int delete(String userUid, String organisationUnitUid) {
+        deleteStatement.clearBindings();
+
+        // bind the whereClause
+        sqLiteBind(deleteStatement, 1, userUid);
+        sqLiteBind(deleteStatement, 2, organisationUnitUid);
+        return databaseAdapter.executeUpdateDelete(UserOrganisationUnitLinkModel.TABLE, deleteStatement);
+    }
+
+    private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String user, @NonNull String organisationUnit,
+                               @NonNull String organisationUnitScope) {
         sqLiteBind(sqLiteStatement, 1, user);
         sqLiteBind(sqLiteStatement, 2, organisationUnit);
         sqLiteBind(sqLiteStatement, 3, organisationUnitScope);
-
-        return sqLiteStatement.executeInsert();
     }
 
     @Override
     public int delete() {
-        return sqLiteDatabase.delete(UserOrganisationUnitLinkModel.TABLE, null, null);
+        return databaseAdapter.delete(UserOrganisationUnitLinkModel.TABLE, null, null);
     }
 
-    @Override
-    public void close() {
-        sqLiteStatement.close();
-    }
 }

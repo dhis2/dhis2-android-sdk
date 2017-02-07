@@ -43,7 +43,17 @@ public interface UserStore {
             @Nullable String languages, @Nullable String email, @Nullable String phoneNumber,
             @Nullable String nationality);
 
+    int update(
+            @NonNull String uid, @Nullable String code, @Nullable String name, @Nullable String displayName,
+            @Nullable Date created, @Nullable Date lastUpdated,
+            @Nullable String birthday, @Nullable String education, @Nullable String gender,
+            @Nullable String jobTitle, @Nullable String surname, @Nullable String firstName,
+            @Nullable String introduction, @Nullable String employer, @Nullable String interests,
+            @Nullable String languages, @Nullable String email, @Nullable String phoneNumber,
+            @Nullable String nationality, @NonNull String whereUid);
+
+    int delete(@NonNull String uid);
+
     int delete();
 
-    void close();
 }

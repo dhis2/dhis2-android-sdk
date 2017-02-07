@@ -87,7 +87,7 @@ public class OrganisationUnitStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        organisationUnitStore = new OrganisationUnitStoreImpl(database());
+        organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter());
     }
 
     @Test
@@ -125,12 +125,6 @@ public class OrganisationUnitStoreTests extends AbsStoreTestCase {
                 dateString,
                 null, LEVEL
         ).isExhausted();
-    }
-
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        organisationUnitStore.close();
-        assertThat(database().isOpen()).isTrue();
     }
 
     @Test

@@ -91,7 +91,7 @@ public class ProgramStageSectionStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.programStageSectionStore = new ProgramStageSectionStoreImpl(database());
+        this.programStageSectionStore = new ProgramStageSectionStoreImpl(databaseAdapter());
 
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);

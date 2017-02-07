@@ -70,11 +70,11 @@ buildScan {
 
 ext {
     configuration = [
-            buildToolsVersion: "24.0.2",
+            buildToolsVersion: "25.0.2",
             minSdkVersion    : 15,
-            targetSdkVersion : 24,
-            versionCode      : 3,
-            versionName      : "0.0.7-SNAPSHOT"
+            targetSdkVersion : 25,
+            versionCode      : 4,
+            versionName      : "0.0.8-SNAPSHOT"
     ]
 
     libraries = [

@@ -108,7 +108,7 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.programStageDataElementStore = new ProgramStageDataElementStoreImpl(database());
+        this.programStageDataElementStore = new ProgramStageDataElementStoreImpl(databaseAdapter());
     }
 
     @Test
@@ -170,7 +170,7 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
                 deferredProgramStageSectionUid
         );
         ContentValues dataElement = CreateDataElementUtils.create(ID, deferredDataElementUid, null);
-        ContentValues programStage = CreateProgramStageUtils.create(1L , PROGRAM_STAGE, PROGRAM);
+        ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
         ContentValues programStageSection = CreateProgramStageSectionUtils.create(
                 ID, deferredProgramStageSectionUid, PROGRAM_STAGE);
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);

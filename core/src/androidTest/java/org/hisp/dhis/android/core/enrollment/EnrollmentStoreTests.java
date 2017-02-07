@@ -107,7 +107,7 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.enrollmentStore = new EnrollmentStoreImpl(database());
+        this.enrollmentStore = new EnrollmentStoreImpl(databaseAdapter());
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,

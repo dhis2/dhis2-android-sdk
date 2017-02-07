@@ -92,7 +92,7 @@ public class OrganisationUnitStructureTests {
                     uids[i],
                     null, null, null, null, null, null, null, null, null, null,
                     paths[i],
-                    null, null, null, null
+                    null, null, null, null, false
             ));
         }
 
@@ -114,7 +114,7 @@ public class OrganisationUnitStructureTests {
                 uids[0],
                 null, null, null, null, null, null, null, null, null, null,
                 "RootOrgUnit/Level11",
-                null, null, null, null));
+                null, null, null, null, false));
 
         Set<String> rootUids = OrganisationUnitStructure.getRootUids(orgUnits, userAccessibleOrgUnits);
         assertThat(rootUids.contains(UNASSIGNED_L12)).isFalse();
@@ -132,7 +132,7 @@ public class OrganisationUnitStructureTests {
                 uids[0],
                 null, null, null, null, null, null, null, null, null, null,
                 "//RootOrgUnit//Level11//",
-                null, null, null, null));
+                null, null, null, null, false));
 
         Set<String> rootUids = OrganisationUnitStructure.getRootUids(orgUnits, userAccessibleOrgUnits);
         assertThat(rootUids.contains(UNASSIGNED_L12)).isFalse();
@@ -150,7 +150,7 @@ public class OrganisationUnitStructureTests {
                 uids[0],
                 null, null, null, null, null, null, null, null, null, null,
                 null, //<--passing null path
-                null, null, null, null));
+                null, null, null, null, false));
 
         OrganisationUnitStructure.getRootUids(orgUnits, userAccessibleOrgUnits);
     }
@@ -162,7 +162,7 @@ public class OrganisationUnitStructureTests {
                 uids[0],
                 null, null, null, null, null, null, null, null, null, null,
                 "", //<--passing empty path
-                null, null, null, null));
+                null, null, null, null, false));
 
         OrganisationUnitStructure.getRootUids(orgUnits, userAccessibleOrgUnits);
     }
@@ -174,7 +174,7 @@ public class OrganisationUnitStructureTests {
                 uids[0],
                 null, null, null, null, null, null, null, null, null, null,
                 "/RootOrgUnit//Level11/",
-                null, null, null, null));
+                null, null, null, null, false));
 
         Set<String> rootUids = OrganisationUnitStructure.getRootUids(orgUnits, new ArrayList<String>());
         assertThat(rootUids.isEmpty()).isTrue();

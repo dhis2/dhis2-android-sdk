@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.sqlite.SQLiteDatabase;
-
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
@@ -77,7 +76,7 @@ public class UserAuthenticateCallUnitTests {
     private UserService userService;
 
     @Mock
-    private SQLiteDatabase database;
+    private DatabaseAdapter databaseAdapter;
 
     @Mock
     private UserStore userStore;
@@ -132,7 +131,7 @@ public class UserAuthenticateCallUnitTests {
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
 
-        userAuthenticateCall = new UserAuthenticateCall(userService, database, userStore,
+        userAuthenticateCall = new UserAuthenticateCall(userService, databaseAdapter, userStore,
                 userCredentialsStore, userOrganisationUnitLinkStore, resourceStore, authenticatedUserStore,
                 organisationUnitStore, "test_user_name", "test_user_password");
 
@@ -245,9 +244,9 @@ public class UserAuthenticateCallUnitTests {
             fail("Expected exception was not thrown");
         } catch (Exception exception) {
             // ensure that transaction is not created
-            verify(database, never()).beginTransaction();
-            verify(database, never()).setTransactionSuccessful();
-            verify(database, never()).endTransaction();
+            verify(databaseAdapter, never()).beginTransaction();
+            verify(databaseAdapter, never()).setTransactionSuccessful();
+            verify(databaseAdapter, never()).endTransaction();
 
             // stores must not be invoked
             verify(authenticatedUserStore, never()).insert(anyString(), anyString());
@@ -277,9 +276,9 @@ public class UserAuthenticateCallUnitTests {
         assertThat(userResponse.code()).isEqualTo(HttpURLConnection.HTTP_UNAUTHORIZED);
 
         // ensure that transaction is not created
-        verify(database, never()).beginTransaction();
-        verify(database, never()).setTransactionSuccessful();
-        verify(database, never()).endTransaction();
+        verify(databaseAdapter, never()).beginTransaction();
+        verify(databaseAdapter, never()).setTransactionSuccessful();
+        verify(databaseAdapter, never()).endTransaction();
 
         // stores must not be invoked
         verify(authenticatedUserStore, never()).insert(anyString(), anyString());
@@ -303,10 +302,10 @@ public class UserAuthenticateCallUnitTests {
 
         userAuthenticateCall.call();
 
-        InOrder transactionMethodsOrder = inOrder(database);
-        transactionMethodsOrder.verify(database, times(1)).beginTransaction();
-        transactionMethodsOrder.verify(database, times(1)).setTransactionSuccessful();
-        transactionMethodsOrder.verify(database, times(1)).endTransaction();
+        InOrder transactionMethodsOrder = inOrder(databaseAdapter);
+        transactionMethodsOrder.verify(databaseAdapter, times(1)).beginTransaction();
+        transactionMethodsOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
+        transactionMethodsOrder.verify(databaseAdapter, times(1)).endTransaction();
 
         verify(authenticatedUserStore, times(1)).insert(
                 "test_user_uid", base64("test_user_name", "test_user_password"));
@@ -360,9 +359,9 @@ public class UserAuthenticateCallUnitTests {
         userAuthenticateCall.call();
 
         // ensure that transaction is not created
-        verify(database, times(1)).beginTransaction();
-        verify(database, times(1)).setTransactionSuccessful();
-        verify(database, times(1)).endTransaction();
+        verify(databaseAdapter, times(1)).beginTransaction();
+        verify(databaseAdapter, times(1)).setTransactionSuccessful();
+        verify(databaseAdapter, times(1)).endTransaction();
 
         // stores must not be invoked
         verify(authenticatedUserStore, times(1)).insert(anyString(), anyString());

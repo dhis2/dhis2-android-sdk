@@ -28,15 +28,17 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + OrganisationUnitModel.TABLE + " (" +
             OrganisationUnitModel.Columns.UID + ", " +
@@ -56,12 +58,39 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
             OrganisationUnitModel.Columns.PARENT + ") " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-    private final SQLiteDatabase sqLiteDatabase;
-    private final SQLiteStatement sqLiteStatement;
+    private static final String UPDATE_STATEMENT = "UPDATE " + OrganisationUnitModel.TABLE + " SET " +
+            OrganisationUnitModel.Columns.UID + " =?, " +
+            OrganisationUnitModel.Columns.CODE + "=?, " +
+            OrganisationUnitModel.Columns.NAME + "=?, " +
+            OrganisationUnitModel.Columns.DISPLAY_NAME + "=?, " +
+            OrganisationUnitModel.Columns.CREATED + "=?, " +
+            OrganisationUnitModel.Columns.LAST_UPDATED + "=?, " +
+            OrganisationUnitModel.Columns.SHORT_NAME + "=?, " +
+            OrganisationUnitModel.Columns.DISPLAY_SHORT_NAME + "=?, " +
+            OrganisationUnitModel.Columns.DESCRIPTION + "=?, " +
+            OrganisationUnitModel.Columns.DISPLAY_DESCRIPTION + "=?, " +
+            OrganisationUnitModel.Columns.PATH + "=?, " +
+            OrganisationUnitModel.Columns.OPENING_DATE + "=?, " +
+            OrganisationUnitModel.Columns.CLOSED_DATE + "=?, " +
+            OrganisationUnitModel.Columns.LEVEL + "=?, " +
+            OrganisationUnitModel.Columns.PARENT + "=? " +
+            " WHERE " +
+            OrganisationUnitModel.Columns.UID + " = ?;";
 
-    public OrganisationUnitStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteDatabase = sqLiteDatabase;
-        this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+    private static final String DELETE_STATEMENT = "DELETE FROM " + OrganisationUnitModel.TABLE +
+            " WHERE " + OrganisationUnitModel.Columns.UID + " =?;";
+
+
+    private final DatabaseAdapter databaseAdapter;
+    private final SQLiteStatement insertStatement;
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
+
+    public OrganisationUnitStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -81,8 +110,67 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
             @Nullable Date closedDate,
             @Nullable String parent,
             @Nullable Integer level) {
-        sqLiteStatement.clearBindings();
+        insertStatement.clearBindings();
 
+        bindArguments(
+                insertStatement, uid, code, name, displayName, created,
+                lastUpdated, shortName, displayShortName, description, displayDescription,
+                path, openingDate, closedDate, parent, level
+        );
+
+        return databaseAdapter.executeInsert(OrganisationUnitModel.TABLE, insertStatement);
+    }
+
+    @Override
+    public int update(@NonNull String uid, @Nullable String code, @Nullable String name, @Nullable String displayName,
+                      @Nullable Date created, @Nullable Date lastUpdated,
+                      @Nullable String shortName, @Nullable String displayShortName,
+                      @Nullable String description, @Nullable String displayDescription,
+                      @Nullable String path, @Nullable Date openingDate, @Nullable Date closedDate,
+                      @Nullable String parent, @Nullable Integer level, @NonNull String whereUid) {
+        updateStatement.clearBindings();
+
+        bindArguments(
+                updateStatement, uid, code, name, displayName, created, lastUpdated, shortName,
+                displayShortName, description, displayDescription, path, openingDate, closedDate, parent, level
+        );
+
+        // bind the whereClause
+        sqLiteBind(updateStatement, 16, whereUid);
+
+        return databaseAdapter.executeUpdateDelete(OrganisationUnitModel.TABLE, updateStatement);
+    }
+
+    @Override
+    public int delete(@NonNull String uid) {
+        deleteStatement.clearBindings();
+
+        // bind the whereClause
+        sqLiteBind(deleteStatement, 1, uid);
+
+        return databaseAdapter.executeUpdateDelete(OrganisationUnitModel.TABLE, deleteStatement);
+    }
+
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(OrganisationUnitModel.TABLE, null, null);
+    }
+
+    private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid,
+                               @Nullable String code,
+                               @Nullable String name,
+                               @Nullable String displayName,
+                               @Nullable Date created,
+                               @Nullable Date lastUpdated,
+                               @Nullable String shortName,
+                               @Nullable String displayShortName,
+                               @Nullable String description,
+                               @Nullable String displayDescription,
+                               @Nullable String path,
+                               @Nullable Date openingDate,
+                               @Nullable Date closedDate,
+                               @Nullable String parent,
+                               @Nullable Integer level) {
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);
@@ -98,17 +186,6 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
         sqLiteBind(sqLiteStatement, 13, closedDate);
         sqLiteBind(sqLiteStatement, 14, level);
         sqLiteBind(sqLiteStatement, 15, parent);
-
-        return sqLiteStatement.executeInsert();
     }
 
-    @Override
-    public int delete() {
-        return sqLiteDatabase.delete(OrganisationUnitModel.TABLE, null, null);
-    }
-
-    @Override
-    public void close() {
-        sqLiteStatement.close();
-    }
 }

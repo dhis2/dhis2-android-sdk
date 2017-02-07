@@ -28,16 +28,19 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class UserStoreImpl implements UserStore {
+
     private static final String INSERT_STATEMENT = "INSERT INTO " + UserModel.TABLE + " (" +
             UserModel.Columns.UID + ", " +
             UserModel.Columns.CODE + ", " +
@@ -60,12 +63,41 @@ public class UserStoreImpl implements UserStore {
             UserModel.Columns.NATIONALITY +
             ") " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    private final SQLiteDatabase sqLiteDatabase;
-    private final SQLiteStatement insertRowStatement;
+    private static final String UPDATE_STATEMENT = "UPDATE " + UserModel.TABLE + " SET " +
+            UserModel.Columns.UID + " =?, " +
+            UserModel.Columns.CODE + " =?, " +
+            UserModel.Columns.NAME + " =?, " +
+            UserModel.Columns.DISPLAY_NAME + " =?, " +
+            UserModel.Columns.CREATED + " =?, " +
+            UserModel.Columns.LAST_UPDATED + " =?, " +
+            UserModel.Columns.BIRTHDAY + " =?, " +
+            UserModel.Columns.EDUCATION + " =?, " +
+            UserModel.Columns.GENDER + " =?, " +
+            UserModel.Columns.JOB_TITLE + " =?, " +
+            UserModel.Columns.SURNAME + " =?, " +
+            UserModel.Columns.FIRST_NAME + " =?, " +
+            UserModel.Columns.INTRODUCTION + " =?, " +
+            UserModel.Columns.EMPLOYER + " =?, " +
+            UserModel.Columns.INTERESTS + " =?, " +
+            UserModel.Columns.LANGUAGES + " =?, " +
+            UserModel.Columns.EMAIL + " =?, " +
+            UserModel.Columns.PHONE_NUMBER + " =?, " +
+            UserModel.Columns.NATIONALITY + " =? " + " WHERE " +
+            UserModel.Columns.UID + " =?;";
 
-    public UserStoreImpl(SQLiteDatabase database) {
-        this.sqLiteDatabase = database;
-        this.insertRowStatement = database.compileStatement(INSERT_STATEMENT);
+    private static final String DELETE_STATEMENT = "DELETE FROM " + UserModel.TABLE +
+            " WHERE " + UserModel.Columns.UID + " =?;";
+
+    private final DatabaseAdapter databaseAdapter;
+    private final SQLiteStatement insertStatement;
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
+
+    public UserStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -78,38 +110,84 @@ public class UserStoreImpl implements UserStore {
             @Nullable String introduction, @Nullable String employer, @Nullable String interests,
             @Nullable String languages, @Nullable String email, @Nullable String phoneNumber,
             @Nullable String nationality) {
-        insertRowStatement.clearBindings();
+        insertStatement.clearBindings();
 
-        sqLiteBind(insertRowStatement, 1, uid);
-        sqLiteBind(insertRowStatement, 2, code);
-        sqLiteBind(insertRowStatement, 3, name);
-        sqLiteBind(insertRowStatement, 4, displayName);
-        sqLiteBind(insertRowStatement, 5, created);
-        sqLiteBind(insertRowStatement, 6, lastUpdated);
-        sqLiteBind(insertRowStatement, 7, birthday);
-        sqLiteBind(insertRowStatement, 8, education);
-        sqLiteBind(insertRowStatement, 9, gender);
-        sqLiteBind(insertRowStatement, 10, jobTitle);
-        sqLiteBind(insertRowStatement, 11, surname);
-        sqLiteBind(insertRowStatement, 12, firstName);
-        sqLiteBind(insertRowStatement, 13, introduction);
-        sqLiteBind(insertRowStatement, 14, employer);
-        sqLiteBind(insertRowStatement, 15, interests);
-        sqLiteBind(insertRowStatement, 16, languages);
-        sqLiteBind(insertRowStatement, 17, email);
-        sqLiteBind(insertRowStatement, 18, phoneNumber);
-        sqLiteBind(insertRowStatement, 19, nationality);
+        bindArguments(
+                insertStatement, uid, code, name,
+                displayName, created, lastUpdated, birthday, education, gender,
+                jobTitle, surname, firstName, introduction, employer, interests,
+                languages, email, phoneNumber, nationality
+        );
 
-        return insertRowStatement.executeInsert();
+        return databaseAdapter.executeInsert(UserModel.TABLE, insertStatement);
+    }
+
+    @Override
+    public int update(
+            @NonNull String uid, @Nullable String code,
+            @Nullable String name, @Nullable String displayName,
+            @Nullable Date created, @Nullable Date lastUpdated,
+            @Nullable String birthday, @Nullable String education, @Nullable String gender,
+            @Nullable String jobTitle, @Nullable String surname, @Nullable String firstName,
+            @Nullable String introduction, @Nullable String employer, @Nullable String interests,
+            @Nullable String languages, @Nullable String email, @Nullable String phoneNumber,
+            @Nullable String nationality, @NonNull String whereUid) {
+        updateStatement.clearBindings();
+
+        bindArguments(
+                updateStatement, uid, code, name,
+                displayName, created, lastUpdated, birthday, education, gender,
+                jobTitle, surname, firstName, introduction, employer, interests,
+                languages, email, phoneNumber, nationality
+        );
+
+        // bind the where clause
+        sqLiteBind(updateStatement, 20, whereUid);
+
+        return databaseAdapter.executeUpdateDelete(UserModel.TABLE, updateStatement);
+    }
+
+    private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,
+                               @Nullable String name, @Nullable String displayName,
+                               @Nullable Date created, @Nullable Date lastUpdated,
+                               @Nullable String birthday, @Nullable String education, @Nullable String gender,
+                               @Nullable String jobTitle, @Nullable String surname, @Nullable String firstName,
+                               @Nullable String introduction, @Nullable String employer, @Nullable String interests,
+                               @Nullable String languages, @Nullable String email, @Nullable String phoneNumber,
+                               @Nullable String nationality) {
+        sqLiteBind(sqLiteStatement, 1, uid);
+        sqLiteBind(sqLiteStatement, 2, code);
+        sqLiteBind(sqLiteStatement, 3, name);
+        sqLiteBind(sqLiteStatement, 4, displayName);
+        sqLiteBind(sqLiteStatement, 5, created);
+        sqLiteBind(sqLiteStatement, 6, lastUpdated);
+        sqLiteBind(sqLiteStatement, 7, birthday);
+        sqLiteBind(sqLiteStatement, 8, education);
+        sqLiteBind(sqLiteStatement, 9, gender);
+        sqLiteBind(sqLiteStatement, 10, jobTitle);
+        sqLiteBind(sqLiteStatement, 11, surname);
+        sqLiteBind(sqLiteStatement, 12, firstName);
+        sqLiteBind(sqLiteStatement, 13, introduction);
+        sqLiteBind(sqLiteStatement, 14, employer);
+        sqLiteBind(sqLiteStatement, 15, interests);
+        sqLiteBind(sqLiteStatement, 16, languages);
+        sqLiteBind(sqLiteStatement, 17, email);
+        sqLiteBind(sqLiteStatement, 18, phoneNumber);
+        sqLiteBind(sqLiteStatement, 19, nationality);
+    }
+
+    @Override
+    public int delete(@NonNull String uid) {
+        deleteStatement.clearBindings();
+
+        sqLiteBind(deleteStatement, 1, uid);
+
+        return databaseAdapter.executeUpdateDelete(UserModel.TABLE, deleteStatement);
     }
 
     @Override
     public int delete() {
-        return sqLiteDatabase.delete(UserModel.TABLE, null, null);
+        return databaseAdapter.delete(UserModel.TABLE, null, null);
     }
 
-    @Override
-    public void close() {
-        insertRowStatement.close();
-    }
 }

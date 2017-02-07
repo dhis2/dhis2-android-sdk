@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.data.api;
 
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.NestedField;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

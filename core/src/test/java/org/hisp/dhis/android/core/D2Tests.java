@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
+import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,7 +64,7 @@ public class D2Tests {
         this.builder = new D2.Builder()
                 .configuration(configuration)
                 .okHttpClient(okHttpClient)
-                .dbOpenHelper(dbOpenHelper);
+                .databaseAdapter(new SqLiteDatabaseAdapter(dbOpenHelper));
     }
 
     @Test
@@ -80,7 +81,18 @@ public class D2Tests {
     @Test
     public void buildShouldThrowIllegalArgumentExceptionWhenNoDbOpenHelper() {
         try {
-            builder.dbOpenHelper(null).build();
+            builder.databaseAdapter(new SqLiteDatabaseAdapter(null)).build();
+
+            fail("IllegalArgumentException was expected, but was not thrown");
+        } catch (IllegalArgumentException illegalArgumentException) {
+            // swallow exception
+        }
+    }
+
+    @Test
+    public void buildShouldThrowIllegalArgumentExceptionWhenNoDatabaseAdapter() {
+        try {
+            builder.databaseAdapter(null).build();
 
             fail("IllegalArgumentException was expected, but was not thrown");
         } catch (IllegalArgumentException illegalArgumentException) {

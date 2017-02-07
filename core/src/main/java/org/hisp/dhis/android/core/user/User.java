@@ -68,6 +68,7 @@ public abstract class User extends BaseIdentifiableObject {
     private static final String ORGANISATION_UNITS = "organisationUnits";
     private static final String TEI_SEARCH_ORGANISATION_UNITS = "teiSearchOrganisationUnits";
     private static final String DATA_VIEW_ORGANISATION_UNITS = "dataViewOrganisationUnits";
+    private static final String DELETED = "deleted";
 
     public static final Field<User, String> uid
             = Field.create(UID);
@@ -107,6 +108,8 @@ public abstract class User extends BaseIdentifiableObject {
             = Field.create(PHONE_NUMBER);
     public static final Field<User, String> nationality
             = Field.create(NATIONALITY);
+    public static final Field<User, Boolean> deleted
+            = Field.create(DELETED);
     public static final NestedField<User, UserCredentials> userCredentials
             = NestedField.create(USER_CREDENTIALS);
     public static final NestedField<User, OrganisationUnit> organisationUnits
@@ -183,6 +186,10 @@ public abstract class User extends BaseIdentifiableObject {
     @JsonProperty(DATA_VIEW_ORGANISATION_UNITS)
     public abstract List<OrganisationUnit> dataViewOrganisationUnits();
 
+    @Nullable
+    @JsonProperty(DELETED)
+    public abstract Boolean deleted();
+
     @JsonCreator
     public static User create(
             @JsonProperty(UID) String uid,
@@ -207,7 +214,8 @@ public abstract class User extends BaseIdentifiableObject {
             @JsonProperty(USER_CREDENTIALS) UserCredentials userCredentials,
             @JsonProperty(ORGANISATION_UNITS) List<OrganisationUnit> orgUnits,
             @JsonProperty(TEI_SEARCH_ORGANISATION_UNITS) List<OrganisationUnit> searchOrgUnits,
-            @JsonProperty(DATA_VIEW_ORGANISATION_UNITS) List<OrganisationUnit> dataViewOrgUnits) {
+            @JsonProperty(DATA_VIEW_ORGANISATION_UNITS) List<OrganisationUnit> dataViewOrgUnits,
+            @JsonProperty(DELETED) Boolean deleted) {
         // ToDo: change from jackson to gson and implement autovalue-gson extension
 
         return new AutoValue_User(
@@ -216,78 +224,9 @@ public abstract class User extends BaseIdentifiableObject {
                 phoneNumber, nationality, userCredentials,
                 safeUnmodifiableList(orgUnits),
                 safeUnmodifiableList(searchOrgUnits),
-                safeUnmodifiableList(dataViewOrgUnits)
+                safeUnmodifiableList(dataViewOrgUnits),
+                deleted
         );
     }
 
-//    public static Builder builder() {
-//        return new AutoValue_User.Builder();
-//    }
-
-//    @AutoValue.Builder
-//    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
-//        public abstract Builder birthday(@Nullable String birthday);
-//
-//        public abstract Builder education(@Nullable String education);
-//
-//        public abstract Builder gender(@Nullable String gender);
-//
-//        public abstract Builder jobTitle(@Nullable String jobTitle);
-//
-//        public abstract Builder surname(@Nullable String surName);
-//
-//        public abstract Builder firstName(@Nullable String firstName);
-//
-//        public abstract Builder introduction(@Nullable String introduction);
-//
-//        public abstract Builder employer(@Nullable String employer);
-//
-//        public abstract Builder interests(@Nullable String interests);
-//
-//        public abstract Builder languages(@Nullable String languages);
-//
-//        public abstract Builder email(@Nullable String email);
-//
-//        public abstract Builder phoneNumber(@Nullable String phoneNumber);
-//
-//        public abstract Builder nationality(@Nullable String nationality);
-//
-//        public abstract Builder userCredentials(UserCredentials userCredentials);
-//
-//        public abstract Builder organisationUnits(@Nullable List<OrganisationUnit> orgUnits);
-//
-//        public abstract Builder teiSearchOrganisationUnits(@Nullable List<OrganisationUnit> orgUnits);
-//
-//        public abstract Builder dataViewOrganisationUnits(@Nullable List<OrganisationUnit> orgUnits);
-//
-//        // internal, not exposed
-//        abstract List<OrganisationUnit> organisationUnits();
-//
-//        abstract List<OrganisationUnit> teiSearchOrganisationUnits();
-//
-//        abstract List<OrganisationUnit> dataViewOrganisationUnits();
-//
-//        abstract UserCredentials userCredentials();
-//
-//        abstract User autoBuild();
-//
-//        public User build() {
-//            if (organisationUnits() != null) {
-//                organisationUnits(Collections.safeUnmodifiableList(
-//                        organisationUnits()));
-//            }
-//
-//            if (teiSearchOrganisationUnits() != null) {
-//                teiSearchOrganisationUnits(Collections.safeUnmodifiableList(
-//                        teiSearchOrganisationUnits()));
-//            }
-//
-//            if (dataViewOrganisationUnits() != null) {
-//                dataViewOrganisationUnits(Collections.safeUnmodifiableList(
-//                        dataViewOrganisationUnits()));
-//            }
-//
-//            return autoBuild();
-//        }
-//    }
 }

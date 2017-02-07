@@ -38,7 +38,16 @@ public interface UserOrganisationUnitLinkStore {
             @NonNull String organisationUnitScope
     );
 
+    int update(
+            @NonNull String user,
+            @NonNull String organisationUnit,
+            @NonNull String organisationUnitScope,
+            @NonNull String whereUserUid,
+            @NonNull String whereOrganisationUnitUid
+    );
+
+    int delete(String userUid, String organisationUnitUid);
+
     int delete();
 
-    void close();
 }

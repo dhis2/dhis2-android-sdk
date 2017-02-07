@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
@@ -56,9 +57,11 @@ public class ProgramRuleVariableModelStoreImpl implements ProgramRuleVariableMod
             "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private final SQLiteStatement sqLiteStatement;
+    private final DatabaseAdapter databaseAdapter;
 
-    public ProgramRuleVariableModelStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+    public ProgramRuleVariableModelStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.sqLiteStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
@@ -83,7 +86,8 @@ public class ProgramRuleVariableModelStoreImpl implements ProgramRuleVariableMod
         sqLiteBind(sqLiteStatement, 11, trackedEntityAttribute);
         sqLiteBind(sqLiteStatement, 12, programRuleVariableSourceType.name());
 
-        return sqLiteStatement.executeInsert();
+        return databaseAdapter.executeInsert(ProgramRuleVariableModel.TABLE,
+                sqLiteStatement);
     }
 
     @Override

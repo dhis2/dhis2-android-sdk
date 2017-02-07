@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.option.OptionModel;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkModel;
 import org.hisp.dhis.android.core.program.ProgramIndicatorModel;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.program.ProgramRuleActionModel;
@@ -53,6 +54,7 @@ import org.hisp.dhis.android.core.program.ProgramStageSectionModel;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.relationship.RelationshipModel;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
@@ -667,6 +669,23 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             ");";
 
+    private static final String CREATE_RESOURCE_TABLE = "CREATE TABLE " + ResourceModel.TABLE + " (" +
+            ResourceModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ResourceModel.Columns.RESOURCE_TYPE + " TEXT NOT NULL," +
+            ResourceModel.Columns.RESOURCE_UID + " TEXT NOT NULL UNIQUE," +
+            ResourceModel.Columns.LAST_SYNCED + " TEXT" + ");";
+
+    private static final String CREATE_ORGANISATION_UNIT_PROGRAM_LINK_TABLE = "CREATE TABLE " +
+            OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK + " (" +
+            OrganisationUnitProgramLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
+            OrganisationUnitProgramLinkModel.Columns.PROGRAM + " TEXT NOT NULL," +
+            " FOREIGN KEY (" + OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT + ")" +
+            " REFERENCES " + OrganisationUnitModel.TABLE + " (" + OrganisationUnitModel.Columns.UID + ")" +
+            " ON DELETE CASCADE," +
+            " FOREIGN KEY (" + OrganisationUnitProgramLinkModel.Columns.PROGRAM + ")" +
+            " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" + " ON DELETE CASCADE" +
+            ");";
 
     private static final String CREATE_USER_ROLE_TABLE = "CREATE TABLE " + UserRoleModel.TABLE + " (" +
             UserRoleModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -692,6 +711,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             " UNIQUE (" + UserRoleProgramLinkModel.Columns.USER_ROLE + ", " +
             UserRoleProgramLinkModel.Columns.PROGRAM + ")" +
             ");";
+
     /**
      * This method should be used only for testing purposes
      */
@@ -731,6 +751,8 @@ public class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_EVENT_TABLE);
         database.execSQL(CREATE_TRACKED_ENTITY_INSTANCE_TABLE);
         database.execSQL(CREATE_ENROLLMENT_TABLE);
+        database.execSQL(CREATE_RESOURCE_TABLE);
+        database.execSQL(CREATE_ORGANISATION_UNIT_PROGRAM_LINK_TABLE);
         database.execSQL(CREATE_USER_ROLE_TABLE);
         database.execSQL(CREATE_USER_ROLE_PROGRAM_TABLE);
 

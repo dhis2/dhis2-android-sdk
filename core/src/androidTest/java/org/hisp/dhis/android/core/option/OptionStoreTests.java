@@ -77,7 +77,7 @@ public class OptionStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.optionStore = new OptionStoreImpl(database());
+        this.optionStore = new OptionStoreImpl(databaseAdapter());
     }
 
     @Test

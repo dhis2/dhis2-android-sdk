@@ -53,6 +53,7 @@ public abstract class OrganisationUnit extends BaseNameableObject {
     private static final String CLOSED_DATE = "closedDate";
     private static final String LEVEL = "level";
     private static final String PROGRAMS = "programs";
+    private static final String DELETED = "deleted";
 
     public static final Field<OrganisationUnit, String> uid = Field.create(BaseIdentifiableObject.UID);
     public static final Field<OrganisationUnit, String> code = Field.create(BaseIdentifiableObject.CODE);
@@ -68,6 +69,7 @@ public abstract class OrganisationUnit extends BaseNameableObject {
     public static final Field<OrganisationUnit, String> openingDate = Field.create(OPENING_DATE);
     public static final Field<OrganisationUnit, String> closedDate = Field.create(CLOSED_DATE);
     public static final Field<OrganisationUnit, String> level = Field.create(LEVEL);
+    public static final Field<OrganisationUnit, Boolean> deleted = Field.create(DELETED);
     public static final NestedField<OrganisationUnit, OrganisationUnit> parent = NestedField.create(PARENT);
     public static final NestedField<OrganisationUnit, Program> programs = NestedField.create(PROGRAMS);
 
@@ -95,6 +97,10 @@ public abstract class OrganisationUnit extends BaseNameableObject {
     @JsonProperty(PROGRAMS)
     public abstract List<Program> programs();
 
+    @Nullable
+    @JsonProperty(DELETED)
+    public abstract Boolean deleted();
+
     @JsonCreator
     public static OrganisationUnit create(
             @JsonProperty(UID) String uid,
@@ -112,47 +118,10 @@ public abstract class OrganisationUnit extends BaseNameableObject {
             @JsonProperty(OPENING_DATE) Date openingDate,
             @JsonProperty(CLOSED_DATE) Date closedDate,
             @JsonProperty(LEVEL) Integer level,
-            @JsonProperty(PROGRAMS) List<Program> programs) {
-
+            @JsonProperty(PROGRAMS) List<Program> programs,
+            @JsonProperty(DELETED) Boolean deleted) {
         return new AutoValue_OrganisationUnit(uid, code, name, displayName, created, lastUpdated,
                 shortName, displayShortName, description, displayDescription, parent, path, openingDate,
-                closedDate, level, safeUnmodifiableList(programs));
+                closedDate, level, safeUnmodifiableList(programs), deleted);
     }
-
-//    public static Builder builder() {
-//        return new AutoValue_OrganisationUnit.Builder();
-//    }
-//
-//    @AutoValue.Builder
-//    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
-//        @JsonProperty(PARENT)
-//        public abstract Builder parent(@Nullable OrganisationUnit parent);
-//
-//        @JsonProperty(PATH)
-//        public abstract Builder path(@Nullable String path);
-//
-//        @JsonProperty(OPENING_DATE)
-//        public abstract Builder openingDate(@Nullable Date openingDate);
-//
-//        @JsonProperty(CLOSED_DATE)
-//        public abstract Builder closedDate(@Nullable Date closedDate);
-//
-//        @JsonProperty(LEVEL)
-//        public abstract Builder level(@Nullable Integer level);
-//
-//        @JsonProperty(PROGRAMS)
-//        public abstract Builder programs(@Nullable List<Program> programs);
-//
-//        abstract List<Program> programs();
-//
-//        abstract OrganisationUnit autoBuild();
-//
-//        public OrganisationUnit build() {
-//            if (programs() != null) {
-//                programs(Collections.safeUnmodifiableList(programs()));
-//            }
-//
-//            return autoBuild();
-//        }
-//    }
 }

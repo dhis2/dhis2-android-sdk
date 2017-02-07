@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
@@ -58,9 +59,11 @@ public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
             ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private final SQLiteStatement insertRowStatement;
+    private final DatabaseAdapter databaseAdapter;
 
-    public ProgramRuleActionStoreImpl(SQLiteDatabase database) {
-        this.insertRowStatement = database.compileStatement(INSERT_STATEMENT);
+    public ProgramRuleActionStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertRowStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
 
@@ -93,7 +96,7 @@ public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
         sqLiteBind(insertRowStatement, 15, dataElement);
         sqLiteBind(insertRowStatement, 16, programRule);
 
-        return insertRowStatement.executeInsert();
+        return databaseAdapter.executeInsert(ProgramRuleActionModel.TABLE, insertRowStatement);
     }
 
     @Override

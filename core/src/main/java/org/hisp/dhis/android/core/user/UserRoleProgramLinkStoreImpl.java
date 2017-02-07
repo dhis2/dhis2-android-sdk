@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel.Columns;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
@@ -43,9 +43,11 @@ public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
             "VALUES (?, ?);";
 
     private final SQLiteStatement sqLiteStatement;
+    private final DatabaseAdapter databaseAdapter;
 
-    public UserRoleProgramLinkStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+    public UserRoleProgramLinkStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.sqLiteStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
@@ -55,7 +57,7 @@ public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
         sqLiteBind(sqLiteStatement, 1, userRole);
         sqLiteBind(sqLiteStatement, 2, program);
 
-        return sqLiteStatement.executeInsert();
+        return databaseAdapter.executeInsert(UserRoleProgramLinkModel.TABLE, sqLiteStatement);
     }
 
     @Override

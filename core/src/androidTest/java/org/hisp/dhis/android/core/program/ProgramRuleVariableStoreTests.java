@@ -102,7 +102,7 @@ public class ProgramRuleVariableStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        programRuleVariableModelStore = new ProgramRuleVariableModelStoreImpl(database());
+        programRuleVariableModelStore = new ProgramRuleVariableModelStoreImpl(databaseAdapter());
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,

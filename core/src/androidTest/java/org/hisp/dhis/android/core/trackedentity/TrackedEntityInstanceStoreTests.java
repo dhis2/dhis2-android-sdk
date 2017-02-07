@@ -76,7 +76,7 @@ public class TrackedEntityInstanceStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        trackedEntityInstanceStore = new TrackedEntityInstanceModelStoreImpl(database());
+        trackedEntityInstanceStore = new TrackedEntityInstanceModelStoreImpl(databaseAdapter());
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
     }

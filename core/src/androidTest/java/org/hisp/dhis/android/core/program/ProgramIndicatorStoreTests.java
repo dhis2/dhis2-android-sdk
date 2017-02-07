@@ -90,7 +90,7 @@ public class ProgramIndicatorStoreTests extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        programIndicatorStore = new ProgramIndicatorStoreImpl(database());
+        programIndicatorStore = new ProgramIndicatorStoreImpl(databaseAdapter());
     }
 
     @Test

@@ -90,7 +90,7 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
 
     private TrackedEntityDataValueStore trackedEntityDataValueStore;
 
-    public TrackedEntityDataValueStoreTests()  {
+    public TrackedEntityDataValueStoreTests() {
         this.date = new Date();
         this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
@@ -99,7 +99,7 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl(database());
+        trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl(databaseAdapter());
 
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
@@ -181,7 +181,7 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistNullableRowInDatabase()  {
+    public void insert_shouldPersistNullableRowInDatabase() {
         long rowId = trackedEntityDataValueStore.insert(EVENT, null, null, null, null, null, null);
 
         Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE,
@@ -205,7 +205,7 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteTrackedEntityDataValueWhenDeletingEventForeignKey()  {
+    public void delete_shouldDeleteTrackedEntityDataValueWhenDeletingEventForeignKey() {
         trackedEntityDataValueStore.insert(
                 EVENT,
                 date,
@@ -223,7 +223,7 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistTrackedEntityDataValueWithInvalidEventForeignKey()  {
+    public void exception_persistTrackedEntityDataValueWithInvalidEventForeignKey() {
         trackedEntityDataValueStore.insert(
                 "wrong",
                 date,

@@ -73,13 +73,14 @@ public class TrackedEntityStoreTests extends AbsStoreTestCase {
         this.date = new Date();
         this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
+
     private TrackedEntityStore trackedEntityStore;
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        trackedEntityStore = new TrackedEntityStoreImpl(database());
+        trackedEntityStore = new TrackedEntityStoreImpl(databaseAdapter());
     }
 
     @Test

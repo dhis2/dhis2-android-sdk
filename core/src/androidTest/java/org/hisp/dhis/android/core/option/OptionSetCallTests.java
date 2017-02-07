@@ -200,7 +200,7 @@ public class OptionSetCallTests extends AbsStoreTestCase {
 
         OptionSetService optionSetService = retrofit.create(OptionSetService.class);
         OptionSetStore optionSetStore = new OptionSetStoreImpl(database());
-        OptionStore optionStore = new OptionStoreImpl(database());
+        OptionStore optionStore = new OptionStoreImpl(databaseAdapter());
 
         optionSetCall = new OptionSetCall(optionSetService, database(), optionSetStore, optionStore);
 

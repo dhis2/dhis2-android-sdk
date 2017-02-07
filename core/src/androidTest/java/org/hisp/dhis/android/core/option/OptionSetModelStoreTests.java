@@ -69,7 +69,7 @@ public class OptionSetModelStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        this.optionSetStore = new OptionSetStoreImpl(database());
+        this.optionSetStore = new OptionSetStoreImpl(databaseAdapter());
     }
 
     @Test

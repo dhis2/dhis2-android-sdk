@@ -137,7 +137,7 @@ public class ProgramStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        this.programStore = new ProgramStoreImpl(database());
+        this.programStore = new ProgramStoreImpl(databaseAdapter());
 
         //RelationshipType foreign key corresponds to table entry
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID, RELATIONSHIP_TYPE);

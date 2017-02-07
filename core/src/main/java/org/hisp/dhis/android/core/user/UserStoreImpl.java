@@ -38,6 +38,7 @@ import java.util.Date;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class UserStoreImpl implements UserStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + UserModel.TABLE + " (" +

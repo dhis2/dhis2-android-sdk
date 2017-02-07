@@ -47,6 +47,7 @@ import java.util.List;
 
 import retrofit2.Response;
 
+@SuppressWarnings("PMD")
 public final class AssignedOrganisationUnitsCall implements Call<Response<User>> {
     // retrofit service
     private final AssignedOrganisationUnitService assignedOrganisationUnitService;

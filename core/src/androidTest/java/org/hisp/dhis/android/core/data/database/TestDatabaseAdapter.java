@@ -81,4 +81,9 @@ public class TestDatabaseAdapter implements DatabaseAdapter {
     public void endTransaction() {
         sqLiteDatabase.endTransaction();
     }
+
+    @Override
+    public SQLiteDatabase database() {
+        return sqLiteDatabase;
+    }
 }

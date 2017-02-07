@@ -44,8 +44,7 @@ public abstract class AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         databaseAdapter = new TestDatabaseAdapter();
-        sqLiteDatabase = DbOpenHelper.create();
-        sqLiteDatabase.execSQL("PRAGMA foreign_keys = ON;");
+        sqLiteDatabase = databaseAdapter.database();
     }
 
     @After

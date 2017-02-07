@@ -29,7 +29,9 @@
 package org.hisp.dhis.android.core.data.database;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.VisibleForTesting;
 
 @SuppressWarnings("PMD.UseVarargs")
 public interface DatabaseAdapter {
@@ -140,4 +142,7 @@ public interface DatabaseAdapter {
      * are committed and rolled back.
      */
     void endTransaction();
+
+    @VisibleForTesting
+    SQLiteDatabase database();
 }

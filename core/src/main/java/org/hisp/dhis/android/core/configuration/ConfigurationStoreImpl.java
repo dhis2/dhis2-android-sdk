@@ -50,7 +50,7 @@ public class ConfigurationStoreImpl implements ConfigurationStore {
 
     private static final String UPDATE_STATEMENT = "UPDATE " + ConfigurationModel.CONFIGURATION +
             " SET " + ConfigurationModel.Columns.ID + " =?, " +
-            ConfigurationModel.Columns.SERVER_URL + "=?, " + " WHERE " +
+            ConfigurationModel.Columns.SERVER_URL + "=? WHERE " +
             ConfigurationModel.Columns.ID + " = ?;";
 
     private static final String[] PROJECTION = {
@@ -72,22 +72,13 @@ public class ConfigurationStoreImpl implements ConfigurationStore {
     @Override
     public long save(@NonNull String serverUrl) {
 
-        updateStatement.clearBindings();
-        sqLiteBind(updateStatement, 1, CONFIGURATION_ID);
-        sqLiteBind(updateStatement, 2, serverUrl);
-
-        int affectedRow = databaseAdapter.executeUpdateDelete(
-                ConfigurationModel.CONFIGURATION, updateStatement);
-
-        if (affectedRow <= 0) {
-            insertStatement.clearBindings();
-            sqLiteBind(insertStatement, 1, CONFIGURATION_ID);
-            sqLiteBind(insertStatement, 2, serverUrl);
-            databaseAdapter.executeInsert(ConfigurationModel.CONFIGURATION, insertStatement);
-        }
+        delete(); // Delete all rows from table. We only allow one row.
+        insertStatement.clearBindings();
+        sqLiteBind(insertStatement, 1, CONFIGURATION_ID);
+        sqLiteBind(insertStatement, 2, serverUrl);
+        databaseAdapter.executeInsert(ConfigurationModel.CONFIGURATION, insertStatement);
 
         return 1;
-
     }
 
     @Nullable

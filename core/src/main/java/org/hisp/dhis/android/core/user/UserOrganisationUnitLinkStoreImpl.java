@@ -46,14 +46,14 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
     private static final String UPDATE_STATEMENT = "UPDATE " + UserOrganisationUnitLinkModel.TABLE + " SET " +
             UserOrganisationUnitLinkModel.Columns.USER + " =?, " +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + "=?, " +
-            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + "=?, " +
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + "=? " +
             " WHERE " +
-            UserOrganisationUnitLinkModel.Columns.USER + " = ?, " +
+            UserOrganisationUnitLinkModel.Columns.USER + " = ? AND " +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + " = ?;";
 
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + UserOrganisationUnitLinkModel.TABLE +
-            " WHERE " + UserOrganisationUnitLinkModel.Columns.USER + " =?, " +
+            " WHERE " + UserOrganisationUnitLinkModel.Columns.USER + " =? AND " +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + " =?;";
 
     private final DatabaseAdapter databaseAdapter;

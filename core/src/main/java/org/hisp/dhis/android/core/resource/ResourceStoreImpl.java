@@ -48,7 +48,7 @@ public class ResourceStoreImpl implements ResourceStore {
     private static final String UPDATE_STATEMENT = "UPDATE " + ResourceModel.TABLE + " SET " +
             Columns.RESOURCE_TYPE + " =?, " +
             Columns.RESOURCE_UID + "=?, " +
-            Columns.LAST_SYNCED + "=?, " + " WHERE " +
+            Columns.LAST_SYNCED + "=? " + " WHERE " +
             Columns.RESOURCE_UID + " = ?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + ResourceModel.TABLE +

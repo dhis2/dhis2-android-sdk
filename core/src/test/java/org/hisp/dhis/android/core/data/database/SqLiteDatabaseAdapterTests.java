@@ -1,6 +1,7 @@
 package org.hisp.dhis.android.core.data.database;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +21,9 @@ public class SqLiteDatabaseAdapterTests {
 
     @Mock
     DbOpenHelper dbOpenHelper;
+
+    @Mock
+    SQLiteStatement sqLiteStatement;
 
     SqLiteDatabaseAdapter sqLiteDatabaseAdapter; // the class we are testing
 
@@ -54,6 +58,15 @@ public class SqLiteDatabaseAdapterTests {
     public void deleteIsRunOnWritableDatabase() throws Exception {
         sqLiteDatabaseAdapter.delete(null, null, null);
         verify(writableDatabase).delete(null, null, null);
+    }
+
+    @Test
+    public void sqlStatementsAreExecuted() throws Exception {
+        sqLiteDatabaseAdapter.executeInsert("TABLE", sqLiteStatement);
+        verify(sqLiteStatement).executeInsert();
+
+        sqLiteDatabaseAdapter.executeUpdateDelete("TABLE", sqLiteStatement);
+        verify(sqLiteStatement).executeUpdateDelete();
     }
 
     @Test

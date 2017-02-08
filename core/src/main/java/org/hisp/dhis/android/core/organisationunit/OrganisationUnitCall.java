@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +48,8 @@ import java.util.Map;
 import java.util.Set;
 
 import retrofit2.Response;
+
+import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
 
 public class OrganisationUnitCall implements Call<Response<Payload<OrganisationUnit>>> {
 
@@ -60,12 +61,12 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
     private final ResourceStore resourceStore;
     private boolean isExecuted;
 
-    public OrganisationUnitCall(User user,
-                                OrganisationUnitService organisationUnitService,
-                                SQLiteDatabase sqLiteDatabase,
-                                OrganisationUnitStore organisationUnitStore,
-                                UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
-                                ResourceStore resourceStore
+    public OrganisationUnitCall(@NonNull User user,
+                                @NonNull OrganisationUnitService organisationUnitService,
+                                @NonNull SQLiteDatabase sqLiteDatabase,
+                                @NonNull OrganisationUnitStore organisationUnitStore,
+                                @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
+                                @NonNull ResourceStore resourceStore
     ) {
         this.user = user;
         this.organisationUnitService = organisationUnitService;
@@ -95,7 +96,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
 
         database.beginTransaction();
         try {
-            Set<String> rootOrgUnitUids = OrganisationUnitTree.findRoots(user.organisationUnits());
+            Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
             Date serverDate = null;
             Map<String, String> queryMap = new HashMap<>();
             String updatedDate = getLastUpdated();
@@ -105,9 +106,11 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
             }
             // Call OrganisationUnitService for each tree root & try to persist sub-tree:
             for (String uid : rootOrgUnitUids) {
-            response = getOrganisationUnit(uid, Collections.unmodifiableMap(queryMap));
+                response = getOrganisationUnit(uid, queryMap);
                 if (response.isSuccessful()) {
-                    serverDate = response.headers().getDate(HeaderUtils.DATE);
+                    if (serverDate == null) {//only get the very first date-time for the entire call.
+                        serverDate = response.headers().getDate(HeaderUtils.DATE);
+                    }
                     persistOrganisationUnits(response.body().items(), OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE);
                 } else {
                     break; //stop early unsuccessful:
@@ -129,8 +132,6 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         Filter<OrganisationUnit> filter = Filter.<OrganisationUnit>builder().fields(
                 OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
                 OrganisationUnit.displayName, OrganisationUnit.created,
-                //TODO: lookup the date from resource in database and use that:
-//                OrganisationUnit.lastUpdated,
                 OrganisationUnit.shortName, OrganisationUnit.displayShortName,
                 OrganisationUnit.description, OrganisationUnit.displayDescription,
                 OrganisationUnit.displayDescription, OrganisationUnit.path, OrganisationUnit.openingDate,

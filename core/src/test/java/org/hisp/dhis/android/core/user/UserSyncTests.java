@@ -27,9 +27,8 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import android.database.sqlite.SQLiteDatabase;
-
 import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
@@ -73,7 +72,7 @@ public class UserSyncTests {
     private UserSyncService userSyncService;
 
     @Mock
-    private SQLiteDatabase sqLiteDatabase;
+    private DatabaseAdapter databaseAdapter;
 
     @Mock
     private UserStore userStore;
@@ -130,7 +129,7 @@ public class UserSyncTests {
         MockitoAnnotations.initMocks(this);
 
         userSyncCall = new UserSyncCall(
-                userSyncService, sqLiteDatabase, organisationUnitStore,
+                userSyncService, databaseAdapter, organisationUnitStore,
                 userOrganisationUnitLinkStore, userCredentialsStore,
                 userRoleStore, userStore, userRoleProgramLinkStore, resourceStore
         );
@@ -249,9 +248,9 @@ public class UserSyncTests {
         } catch (Exception ex) {
 
             // verify that database was not touched
-            verify(sqLiteDatabase, never()).beginTransaction();
-            verify(sqLiteDatabase, never()).setTransactionSuccessful();
-            verify(sqLiteDatabase, never()).endTransaction();
+            verify(databaseAdapter, never()).beginTransaction();
+            verify(databaseAdapter, never()).setTransactionSuccessful();
+            verify(databaseAdapter, never()).endTransaction();
 
             // verify that nothing was inserted into stores
 
@@ -313,9 +312,9 @@ public class UserSyncTests {
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_UNAUTHORIZED);
 
         // verify that database was not touched
-        verify(sqLiteDatabase, never()).beginTransaction();
-        verify(sqLiteDatabase, never()).setTransactionSuccessful();
-        verify(sqLiteDatabase, never()).endTransaction();
+        verify(databaseAdapter, never()).beginTransaction();
+        verify(databaseAdapter, never()).setTransactionSuccessful();
+        verify(databaseAdapter, never()).endTransaction();
 
         // verify that nothing was inserted into stores
 
@@ -386,11 +385,11 @@ public class UserSyncTests {
 
         userSyncCall.call();
 
-        InOrder transactionOrder = inOrder(sqLiteDatabase);
+        InOrder transactionOrder = inOrder(databaseAdapter);
 
-        transactionOrder.verify(sqLiteDatabase, times(1)).beginTransaction();
-        transactionOrder.verify(sqLiteDatabase, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(sqLiteDatabase, times(1)).endTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
+        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
 
         verify(userStore, times(1)).update(user.uid(), user.code(), user.name(), user.displayName(), user.created(),
                 user.lastUpdated(), user.birthday(), user.education(), "transgender", user.jobTitle(),
@@ -424,11 +423,11 @@ public class UserSyncTests {
 
         userSyncCall.call();
 
-        InOrder transactionOrder = inOrder(sqLiteDatabase);
+        InOrder transactionOrder = inOrder(databaseAdapter);
 
-        transactionOrder.verify(sqLiteDatabase, times(1)).beginTransaction();
-        transactionOrder.verify(sqLiteDatabase, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(sqLiteDatabase, times(1)).endTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
+        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
 
         // verify that updateWithSection is called once
         verify(userCredentialsStore, times(1)).update(userCredentials.uid(), userCredentials.code(),
@@ -453,11 +452,11 @@ public class UserSyncTests {
 
         userSyncCall.call();
 
-        InOrder transactionOrder = inOrder(sqLiteDatabase);
+        InOrder transactionOrder = inOrder(databaseAdapter);
 
-        transactionOrder.verify(sqLiteDatabase, times(1)).beginTransaction();
-        transactionOrder.verify(sqLiteDatabase, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(sqLiteDatabase, times(1)).endTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
+        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
 
         // verify that userRoleStore was called once with insert
         verify(userRoleStore, times(1)).insert(anyString(), anyString(), anyString(),
@@ -485,11 +484,11 @@ public class UserSyncTests {
 
         userSyncCall.call();
 
-        InOrder transactionOrder = inOrder(sqLiteDatabase);
+        InOrder transactionOrder = inOrder(databaseAdapter);
 
-        transactionOrder.verify(sqLiteDatabase, times(1)).beginTransaction();
-        transactionOrder.verify(sqLiteDatabase, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(sqLiteDatabase, times(1)).endTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
+        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
 
         verify(userRoleStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString());
@@ -507,11 +506,11 @@ public class UserSyncTests {
 
         userSyncCall.call();
 
-        InOrder transactionOrder = inOrder(sqLiteDatabase);
+        InOrder transactionOrder = inOrder(databaseAdapter);
 
-        transactionOrder.verify(sqLiteDatabase, times(1)).beginTransaction();
-        transactionOrder.verify(sqLiteDatabase, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(sqLiteDatabase, times(1)).endTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
+        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
 
         // verify that insert is called once
         verify(userRoleProgramLinkStore, times(1)).insert(anyString(), anyString());
@@ -534,11 +533,11 @@ public class UserSyncTests {
 
         userSyncCall.call();
 
-        InOrder transactionOrder = inOrder(sqLiteDatabase);
+        InOrder transactionOrder = inOrder(databaseAdapter);
 
-        transactionOrder.verify(sqLiteDatabase, times(1)).beginTransaction();
-        transactionOrder.verify(sqLiteDatabase, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(sqLiteDatabase, times(1)).endTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
+        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
 
         // verify that updateWithSection is called once
         verify(userRoleProgramLinkStore, times(1)).update(anyString(), anyString(), anyString(), anyString());
@@ -558,11 +557,11 @@ public class UserSyncTests {
         when(userCall.execute()).thenReturn(Response.success(user));
         userSyncCall.call();
 
-        InOrder transactionOrder = inOrder(sqLiteDatabase);
+        InOrder transactionOrder = inOrder(databaseAdapter);
 
-        transactionOrder.verify(sqLiteDatabase, times(1)).beginTransaction();
-        transactionOrder.verify(sqLiteDatabase, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(sqLiteDatabase, times(1)).endTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
+        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
 
         // verify that insert is called once
         verify(organisationUnitStore, times(1)).insert(anyString(), anyString(), anyString(),
@@ -590,11 +589,11 @@ public class UserSyncTests {
         when(userCall.execute()).thenReturn(Response.success(user));
         userSyncCall.call();
 
-        InOrder transactionOrder = inOrder(sqLiteDatabase);
+        InOrder transactionOrder = inOrder(databaseAdapter);
 
-        transactionOrder.verify(sqLiteDatabase, times(1)).beginTransaction();
-        transactionOrder.verify(sqLiteDatabase, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(sqLiteDatabase, times(1)).endTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
+        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
 
         // verify that updateWithSection is called once
         verify(organisationUnitStore, times(1)).update(anyString(), anyString(), anyString(),
@@ -621,11 +620,11 @@ public class UserSyncTests {
         when(userCall.execute()).thenReturn(Response.success(user));
         userSyncCall.call();
 
-        InOrder transactionOrder = inOrder(sqLiteDatabase);
+        InOrder transactionOrder = inOrder(databaseAdapter);
 
-        transactionOrder.verify(sqLiteDatabase, times(1)).beginTransaction();
-        transactionOrder.verify(sqLiteDatabase, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(sqLiteDatabase, times(1)).endTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
+        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
 
         // verify that insert is called once
         verify(userOrganisationUnitLinkStore, times(1)).insert(anyString(), anyString(), anyString());
@@ -646,11 +645,11 @@ public class UserSyncTests {
 
         userSyncCall.call();
 
-        InOrder transactionOrder = inOrder(sqLiteDatabase);
+        InOrder transactionOrder = inOrder(databaseAdapter);
 
-        transactionOrder.verify(sqLiteDatabase, times(1)).beginTransaction();
-        transactionOrder.verify(sqLiteDatabase, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(sqLiteDatabase, times(1)).endTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
+        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
 
         // verify that updateWithSection is called once
         verify(userOrganisationUnitLinkStore, times(1)).update(
@@ -667,11 +666,11 @@ public class UserSyncTests {
         when(userCall.execute()).thenReturn(Response.success(user));
 
         userSyncCall.call();
-        InOrder transactionOrder = inOrder(sqLiteDatabase);
+        InOrder transactionOrder = inOrder(databaseAdapter);
 
-        transactionOrder.verify(sqLiteDatabase, times(1)).beginTransaction();
-        transactionOrder.verify(sqLiteDatabase, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(sqLiteDatabase, times(1)).endTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
+        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
 
         // verify that delete is called once
         verify(organisationUnitStore, times(1)).delete(anyString());
@@ -695,11 +694,11 @@ public class UserSyncTests {
         when(userCall.execute()).thenReturn(Response.success(user));
 
         userSyncCall.call();
-        InOrder transactionOrder = inOrder(sqLiteDatabase);
+        InOrder transactionOrder = inOrder(databaseAdapter);
 
-        transactionOrder.verify(sqLiteDatabase, times(1)).beginTransaction();
-        transactionOrder.verify(sqLiteDatabase, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(sqLiteDatabase, times(1)).endTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
+        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
 
         // verify that delete is called once
         verify(userRoleStore, times(1)).delete(anyString());
@@ -718,11 +717,11 @@ public class UserSyncTests {
         when(userCall.execute()).thenReturn(Response.success(user));
 
         userSyncCall.call();
-        InOrder transactionOrder = inOrder(sqLiteDatabase);
+        InOrder transactionOrder = inOrder(databaseAdapter);
 
-        transactionOrder.verify(sqLiteDatabase, times(1)).beginTransaction();
-        transactionOrder.verify(sqLiteDatabase, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(sqLiteDatabase, times(1)).endTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
+        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
 
         verify(userCredentialsStore, times(1)).delete(anyString());
 
@@ -744,11 +743,11 @@ public class UserSyncTests {
         when(userCall.execute()).thenReturn(Response.success(user));
 
         userSyncCall.call();
-        InOrder transactionOrder = inOrder(sqLiteDatabase);
+        InOrder transactionOrder = inOrder(databaseAdapter);
 
-        transactionOrder.verify(sqLiteDatabase, times(1)).beginTransaction();
-        transactionOrder.verify(sqLiteDatabase, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(sqLiteDatabase, times(1)).endTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
+        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
+        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
 
         // verify that delete is called once
         verify(userStore, times(1)).delete(anyString());
@@ -783,11 +782,11 @@ public class UserSyncTests {
 //        when(userCall.execute()).thenReturn(Response.success(user));
 //
 //        userSyncCall.call();
-//        InOrder transactionOrder = inOrder(sqLiteDatabase);
+//        InOrder transactionOrder = inOrder(databaseAdapter);
 //
-//        transactionOrder.verify(sqLiteDatabase, times(1)).beginTransaction();
-//        transactionOrder.verify(sqLiteDatabase, times(1)).setTransactionSuccessful();
-//        transactionOrder.verify(sqLiteDatabase, times(1)).endTransaction();
+//        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
+//        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
+//        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
 //
 //        // verify that userStore.updateWithSection() is called once
 //        verify(userStore, times(1)).updateWithSection(anyString(), anyString(), anyString(), anyString(),

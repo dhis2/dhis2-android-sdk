@@ -313,7 +313,7 @@ public class UserSyncCallIntegrationTest extends AbsStoreTestCase {
         UserRoleProgramLinkStore userRoleProgramLinkStore = new UserRoleProgramLinkStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
-        userSyncCall = new UserSyncCall(userSyncService, database(), organisationUnitStore,
+        userSyncCall = new UserSyncCall(userSyncService, databaseAdapter(), organisationUnitStore,
                 userOrganisationUnitStore, userCredentialsStore, userRoleStore,
                 userStore, userRoleProgramLinkStore, resourceStore);
 

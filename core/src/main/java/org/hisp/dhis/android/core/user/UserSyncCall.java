@@ -27,17 +27,16 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import android.database.sqlite.SQLiteDatabase;
-
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Call;
-import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
 import java.util.Date;
@@ -49,8 +48,8 @@ public final class UserSyncCall implements Call<Response<User>> {
     // retrofit service
     private final UserSyncService userSyncService;
 
-    // database and stores
-    private final SQLiteDatabase database;
+    // databaseAdapter and stores
+    private final DatabaseAdapter databaseAdapter;
     private final OrganisationUnitStore organisationUnitStore;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final UserCredentialsStore userCredentialsStore;
@@ -62,7 +61,7 @@ public final class UserSyncCall implements Call<Response<User>> {
     private boolean isExecuted;
 
     public UserSyncCall(UserSyncService userSyncService,
-                        SQLiteDatabase database,
+                        DatabaseAdapter databaseAdapter,
                         OrganisationUnitStore organisationUnitStore,
                         UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
                         UserCredentialsStore userCredentialsStore,
@@ -71,7 +70,7 @@ public final class UserSyncCall implements Call<Response<User>> {
                         UserRoleProgramLinkStore userRoleProgramLinkStore,
                         ResourceStore resourceStore) {
         this.userSyncService = userSyncService;
-        this.database = database;
+        this.databaseAdapter = databaseAdapter;
         this.organisationUnitStore = organisationUnitStore;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.userCredentialsStore = userCredentialsStore;
@@ -143,7 +142,7 @@ public final class UserSyncCall implements Call<Response<User>> {
     }
 
     private void deleteOrPersistUserGraph(Response<User> response) {
-        database.beginTransaction();
+        databaseAdapter.beginTransaction();
 
         try {
             User user = response.body();
@@ -170,9 +169,9 @@ public final class UserSyncCall implements Call<Response<User>> {
             );
 
 
-            database.setTransactionSuccessful();
+            databaseAdapter.setTransactionSuccessful();
         } finally {
-            database.endTransaction();
+            databaseAdapter.endTransaction();
         }
 
     }
@@ -190,7 +189,7 @@ public final class UserSyncCall implements Call<Response<User>> {
                     user.email(), user.phoneNumber(), user.nationality(), user.uid());
 
             // TODO: Does this make sense?
-            // if user object was not updated, it means that it wasn't found in database. Insert it.
+            // if user object was not updated, it means that it wasn't found in databaseAdapter. Insert it.
             if (updatedRow <= 0) {
                 userStore.insert(user.uid(), user.code(), user.name(), user.displayName(), user.created(),
                         user.lastUpdated(), user.birthday(), user.education(),
@@ -276,7 +275,6 @@ public final class UserSyncCall implements Call<Response<User>> {
                 List<Program> programs = userRole.programs();
 
                 insertOrUpdateUserRoleProgramLink(userRole, programs);
-
 
 
             }

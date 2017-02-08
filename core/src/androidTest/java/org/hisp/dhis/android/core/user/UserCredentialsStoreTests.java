@@ -88,7 +88,7 @@ public class UserCredentialsStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        userCredentialsStore = new UserCredentialsStoreImpl(database());
+        userCredentialsStore = new UserCredentialsStoreImpl(databaseAdapter());
 
         // row which will be referenced
         ContentValues userRow = UserStoreTests.create(1L, USER_UID);

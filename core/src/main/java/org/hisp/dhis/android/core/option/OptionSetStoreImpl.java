@@ -28,19 +28,17 @@
 
 package org.hisp.dhis.android.core.option;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-@SuppressWarnings({
-        "PMD.AvoidDuplicateLiterals"
-})
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class OptionSetStoreImpl implements OptionSetStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + OptionSetModel.TABLE + " (" +
             OptionSetModel.Columns.UID + ", " +
@@ -71,11 +69,13 @@ public class OptionSetStoreImpl implements OptionSetStore {
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
     private final SQLiteStatement insertStatement;
+    private final DatabaseAdapter databaseAdapter;
 
-    public OptionSetStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
-        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
-        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
+    public OptionSetStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -85,10 +85,12 @@ public class OptionSetStoreImpl implements OptionSetStore {
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, version, valueType);
 
         // execute and clear bindings
-        Long insert = insertStatement.executeInsert();
+        Long insert = databaseAdapter.executeInsert(OptionSetModel.TABLE, insertStatement);
         insertStatement.clearBindings();
 
         return insert;
+
+
     }
 
     @Override
@@ -102,7 +104,7 @@ public class OptionSetStoreImpl implements OptionSetStore {
         sqLiteBind(updateStatement, 9, whereUid);
 
 
-        int update = updateStatement.executeUpdateDelete();
+        int update = databaseAdapter.executeUpdateDelete(OptionSetModel.TABLE, updateStatement);
         updateStatement.clearBindings();
 
         return update;
@@ -115,7 +117,7 @@ public class OptionSetStoreImpl implements OptionSetStore {
         sqLiteBind(deleteStatement, 1, uid);
 
         // execute and clear bindings
-        int delete = deleteStatement.executeUpdateDelete();
+        int delete = databaseAdapter.executeUpdateDelete(OptionSetModel.TABLE, deleteStatement);
         deleteStatement.clearBindings();
 
         return delete;

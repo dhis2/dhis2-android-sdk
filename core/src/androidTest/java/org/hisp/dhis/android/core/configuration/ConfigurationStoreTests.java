@@ -53,7 +53,7 @@ public class ConfigurationStoreTests extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        configurationStore = new ConfigurationStoreImpl(database());
+        configurationStore = new ConfigurationStoreImpl(databaseAdapter());
     }
 
     @Test
@@ -76,7 +76,7 @@ public class ConfigurationStoreTests extends AbsStoreTestCase {
 
         database().insert(ConfigurationModel.CONFIGURATION, null, contentValues);
 
-        // trying to save configuration with server url (which is set to be unique in the table)
+        // trying to configure configuration with server url (which is set to be unique in the table)
         long rowId = configurationStore.save("http://testserver.org/");
 
         Cursor cursor = database().query(ConfigurationModel.CONFIGURATION,

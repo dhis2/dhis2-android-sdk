@@ -109,7 +109,7 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.programStageDataElementStore = new ProgramStageDataElementStoreImpl(database());
+        this.programStageDataElementStore = new ProgramStageDataElementStoreImpl(databaseAdapter());
     }
 
     @Test

@@ -62,13 +62,13 @@ public abstract class ConfigurationModel extends BaseModel {
     }
 
     // package visible for access in the store and manager
-    static Builder builder() {
+    public static Builder builder() {
         return new $$AutoValue_ConfigurationModel.Builder();
     }
 
     // package visible for access in the store and manager
     @AutoValue.Builder
-    static abstract class Builder extends BaseModel.Builder<Builder> {
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
         public abstract Builder serverUrl(HttpUrl serverUrl);
 
         public abstract ConfigurationModel build();

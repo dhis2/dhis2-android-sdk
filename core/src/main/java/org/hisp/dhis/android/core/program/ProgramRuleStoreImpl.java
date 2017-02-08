@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.program.ProgramRuleModel.Columns;
 
 import java.util.Date;
@@ -56,7 +56,7 @@ public class ProgramRuleStoreImpl implements ProgramRuleStore {
             Columns.PROGRAM + ", " +
             Columns.PROGRAM_STAGE + ") " +
             "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-    
+
     private static final String UPDATE_STATEMENT = "UPDATE " + ProgramRuleModel.TABLE + " SET " +
             Columns.UID + " =?, " +
             Columns.CODE + " =?, " +
@@ -79,10 +79,13 @@ public class ProgramRuleStoreImpl implements ProgramRuleStore {
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
 
-    public ProgramRuleStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
-        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
-        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
+    private final DatabaseAdapter databaseAdapter;
+
+    public ProgramRuleStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -94,7 +97,7 @@ public class ProgramRuleStoreImpl implements ProgramRuleStore {
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, priority,
                 condition, program, programStage);
 
-        Long insert = insertStatement.executeInsert();
+        Long insert = databaseAdapter.executeInsert(ProgramRuleModel.TABLE, insertStatement);
         insertStatement.clearBindings();
 
         return insert;
@@ -111,7 +114,7 @@ public class ProgramRuleStoreImpl implements ProgramRuleStore {
         // bind the where argument
         sqLiteBind(updateStatement, 11, whereProgramRuleUid);
 
-        int update = updateStatement.executeUpdateDelete();
+        int update = databaseAdapter.executeUpdateDelete(ProgramRuleModel.TABLE, updateStatement);
         updateStatement.clearBindings();
 
         return update;
@@ -123,7 +126,7 @@ public class ProgramRuleStoreImpl implements ProgramRuleStore {
         sqLiteBind(deleteStatement, 1, uid);
 
         // execute and clear bindings
-        int delete = deleteStatement.executeUpdateDelete();
+        int delete = databaseAdapter.executeUpdateDelete(ProgramRuleModel.TABLE, deleteStatement);
         deleteStatement.clearBindings();
 
         return delete;
@@ -145,4 +148,5 @@ public class ProgramRuleStoreImpl implements ProgramRuleStore {
         sqLiteBind(sqLiteStatement, 9, program);
         sqLiteBind(sqLiteStatement, 10, programStage);
     }
+
 }

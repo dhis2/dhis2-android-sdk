@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.user.UserRoleModel.Columns;
 
 import java.util.Date;
@@ -69,10 +69,13 @@ public class UserRoleStoreImpl implements UserRoleStore {
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
 
-    public UserRoleStoreImpl(SQLiteDatabase database) {
-        this.insertStatement = database.compileStatement(INSERT_STATEMENT);
-        this.updateStatement = database.compileStatement(UPDATE_STATEMENT);
-        this.deleteStatement = database.compileStatement(DELETE_STATEMENT);
+    private final DatabaseAdapter databaseAdapter;
+
+    public UserRoleStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -86,7 +89,10 @@ public class UserRoleStoreImpl implements UserRoleStore {
 
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated);
 
-        return insertStatement.executeInsert();
+        Long insert = databaseAdapter.executeInsert(UserRoleModel.TABLE, insertStatement);
+        insertStatement.clearBindings();
+
+        return insert;
     }
 
     @Override
@@ -102,7 +108,10 @@ public class UserRoleStoreImpl implements UserRoleStore {
         // bind the whereClause
         sqLiteBind(updateStatement, 7, whereUid);
 
-        return updateStatement.executeUpdateDelete();
+        int update = databaseAdapter.executeUpdateDelete(UserRoleModel.TABLE, updateStatement);
+        updateStatement.clearBindings();
+
+        return update;
     }
 
     @Override
@@ -111,7 +120,9 @@ public class UserRoleStoreImpl implements UserRoleStore {
         // bind the whereClause
         sqLiteBind(deleteStatement, 1, uid);
 
-        return deleteStatement.executeUpdateDelete();
+        int delete = databaseAdapter.executeUpdateDelete(UserRoleModel.TABLE, deleteStatement);
+        deleteStatement.clearBindings();
+        return delete;
     }
 
     private void bindArguments(SQLiteStatement sqLiteStatement,
@@ -121,7 +132,6 @@ public class UserRoleStoreImpl implements UserRoleStore {
                                @Nullable String displayName,
                                @Nullable Date created,
                                @Nullable Date lastUpdated) {
-        sqLiteStatement.clearBindings();
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);

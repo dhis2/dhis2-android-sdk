@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
@@ -93,10 +93,13 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
 
-    public ProgramTrackedEntityAttributeStoreImpl(SQLiteDatabase database) {
-        this.insertStatement = database.compileStatement(INSERT_STATEMENT);
-        this.updateStatement = database.compileStatement(UPDATE_STATEMENT);
-        this.deleteStatement = database.compileStatement(DELETE_STATEMENT);
+    private final DatabaseAdapter databaseAdapter;
+
+    public ProgramTrackedEntityAttributeStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -111,7 +114,8 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, shortName,
                 displayShortName, description, displayDescription, mandatory, trackedEntityAttribute, valueType,
                 allowFutureDates, displayInList, program);
-        Long insert = insertStatement.executeInsert();
+
+        Long insert = databaseAdapter.executeInsert(ProgramTrackedEntityAttributeModel.TABLE, insertStatement);
         insertStatement.clearBindings();
 
         return insert;
@@ -133,7 +137,7 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
         sqLiteBind(updateStatement, 17, whereProgramTrackedEntityAttributeUid);
 
         // execute and clear bindings
-        int update = updateStatement.executeUpdateDelete();
+        int update = databaseAdapter.executeUpdateDelete(ProgramTrackedEntityAttributeModel.TABLE, updateStatement);
         updateStatement.clearBindings();
 
         return update;
@@ -145,7 +149,7 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
         sqLiteBind(deleteStatement, 1, uid);
 
         // execute and clear bindings
-        int delete = deleteStatement.executeUpdateDelete();
+        int delete = databaseAdapter.executeUpdateDelete(ProgramTrackedEntityAttributeModel.TABLE, deleteStatement);
         deleteStatement.clearBindings();
 
         return delete;

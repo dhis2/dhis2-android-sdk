@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
@@ -56,7 +57,7 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
             ProgramStageDataElementModel.Columns.SORT_ORDER + ", " +
             ProgramStageDataElementModel.Columns.ALLOW_FUTURE_DATE + ", " +
             ProgramStageDataElementModel.Columns.DATA_ELEMENT + ", " +
-            ProgramStageDataElementModel.Columns.PROGRAM_STAGE+ ", " +
+            ProgramStageDataElementModel.Columns.PROGRAM_STAGE + ", " +
             ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION + ") " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
@@ -105,11 +106,14 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
     private final SQLiteStatement updateWithoutSectionStatement;
     private final SQLiteStatement deleteStatement;
 
-    public ProgramStageDataElementStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
-        this.updateWithSectionStatement = sqLiteDatabase.compileStatement(UPDATE_WITH_SECTION_STATEMENT);
-        this.updateWithoutSectionStatement = sqLiteDatabase.compileStatement(UPDATE_WITHOUT_SECTION_STATEMENT);
-        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
+    private final DatabaseAdapter databaseAdapter;
+
+    public ProgramStageDataElementStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateWithSectionStatement = databaseAdapter.compileStatement(UPDATE_WITH_SECTION_STATEMENT);
+        this.updateWithoutSectionStatement = databaseAdapter.compileStatement(UPDATE_WITHOUT_SECTION_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -126,7 +130,7 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
         // bind the optional argument program stage section
         sqLiteBind(insertStatement, 14, programStageSection);
 
-        Long insert = insertStatement.executeInsert();
+        Long insert = databaseAdapter.executeInsert(ProgramStageDataElementModel.TABLE, insertStatement);
         insertStatement.clearBindings();
 
         return insert;
@@ -153,7 +157,9 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
         sqLiteBind(updateWithSectionStatement, 15, whereProgramStageDataElementUid);
 
         // execute and clear bindings
-        int update = updateWithSectionStatement.executeUpdateDelete();
+        int update =
+                databaseAdapter.executeUpdateDelete(ProgramStageDataElementModel.TABLE, updateWithSectionStatement);
+
         updateWithSectionStatement.clearBindings();
 
         return update;
@@ -175,7 +181,9 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
         sqLiteBind(updateWithoutSectionStatement, 14, whereProgramStageDataElementUid);
 
         // execute and clear bindings
-        int update = updateWithoutSectionStatement.executeUpdateDelete();
+        int update =
+                databaseAdapter.executeUpdateDelete(ProgramStageDataElementModel.TABLE, updateWithoutSectionStatement);
+
         updateWithoutSectionStatement.clearBindings();
 
         return update;
@@ -187,7 +195,7 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
         sqLiteBind(deleteStatement, 1, uid);
 
         // execute and clear bindings
-        int delete = deleteStatement.executeUpdateDelete();
+        int delete = databaseAdapter.executeUpdateDelete(ProgramStageDataElementModel.TABLE, deleteStatement);
         deleteStatement.clearBindings();
 
         return delete;

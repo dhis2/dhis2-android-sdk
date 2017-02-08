@@ -115,7 +115,7 @@ public class TrackedEntityAttributeStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        trackedEntityAttributeStore = new TrackedEntityAttributeStoreImpl(database());
+        trackedEntityAttributeStore = new TrackedEntityAttributeStoreImpl(databaseAdapter());
         ContentValues optionSet = CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
         database().insert(OptionSetModel.TABLE, null, optionSet);
     }

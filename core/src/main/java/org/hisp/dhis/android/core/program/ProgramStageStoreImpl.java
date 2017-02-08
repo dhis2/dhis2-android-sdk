@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.FormType;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
@@ -102,10 +102,13 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
 
-    public ProgramStageStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
-        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
-        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
+    private final DatabaseAdapter databaseAdapter;
+
+    public ProgramStageStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -137,7 +140,7 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
                 captureCoordinates, formType, displayGenerateEventBox, generatedByEnrollmentDate, autoGenerateEvent,
                 sortOrder, hideDueDate, blockEntryForm, minDaysFromStart, standardInterval, program);
 
-        Long insert = insertStatement.executeInsert();
+        Long insert = databaseAdapter.executeInsert(ProgramStageModel.TABLE, insertStatement);
 
         insertStatement.clearBindings();
         return insert;
@@ -164,7 +167,7 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
         sqLiteBind(updateStatement, 24, whereProgramStageUid);
 
         // execute and clear bindings
-        int update = updateStatement.executeUpdateDelete();
+        int update = databaseAdapter.executeUpdateDelete(ProgramStageModel.TABLE, updateStatement);
         updateStatement.clearBindings();
 
         return update;
@@ -176,7 +179,7 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
         sqLiteBind(deleteStatement, 1, uid);
 
         // execute and clear bindings
-        int delete = deleteStatement.executeUpdateDelete();
+        int delete = databaseAdapter.executeUpdateDelete(ProgramStageModel.TABLE, deleteStatement);
         deleteStatement.clearBindings();
 
         return delete;
@@ -216,6 +219,6 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
         sqLiteBind(sqLiteStatement, 21, minDaysFromStart);
         sqLiteBind(sqLiteStatement, 22, standardInterval);
         sqLiteBind(sqLiteStatement, 23, program);
-
     }
+
 }

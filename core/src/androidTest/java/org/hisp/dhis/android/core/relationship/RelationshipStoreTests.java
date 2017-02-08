@@ -65,7 +65,7 @@ public class RelationshipStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        relationshipStore = new RelationshipStoreImpl(database());
+        relationshipStore = new RelationshipStoreImpl(databaseAdapter());
         //Insert RelationshipType in RelationshipType table, such that it can be used as foreign key:
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(
                 RELATIONSHIP_TYPE_ID,
@@ -149,7 +149,7 @@ public class RelationshipStoreTests extends AbsStoreTestCase {
                 RELATIONSHIP_TYPE
         );
         database().delete(RelationshipTypeModel.TABLE,
-                RelationshipTypeModel.Columns.UID + "=?", new String[] {RELATIONSHIP_TYPE});
+                RelationshipTypeModel.Columns.UID + "=?", new String[]{RELATIONSHIP_TYPE});
 
     }
 
@@ -163,9 +163,4 @@ public class RelationshipStoreTests extends AbsStoreTestCase {
         );
     }
 
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        relationshipStore.close();
-        assertThat(database().isOpen()).isTrue();
-    }
 }

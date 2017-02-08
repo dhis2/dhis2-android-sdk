@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
@@ -117,10 +118,13 @@ public class ProgramStoreImpl implements ProgramStore {
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
 
-    public ProgramStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
-        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
-        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
+    private final DatabaseAdapter databaseAdapter;
+
+    public ProgramStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -165,8 +169,9 @@ public class ProgramStoreImpl implements ProgramStore {
                 useFirstStageDuringRegistration, displayInFrontPageList, programType,
                 relationshipType, relationshipText, relatedProgram, trackedEntity);
 
-        Long insert = insertStatement.executeInsert();
+        Long insert = databaseAdapter.executeInsert(ProgramModel.TABLE, insertStatement);
         insertStatement.clearBindings();
+
         return insert;
     }
 
@@ -213,7 +218,7 @@ public class ProgramStoreImpl implements ProgramStore {
         sqLiteBind(updateStatement, 30, whereProgramUid);
 
         // execute and clear bindings
-        int update = updateStatement.executeUpdateDelete();
+        int update = databaseAdapter.executeUpdateDelete(ProgramModel.TABLE, updateStatement);
         updateStatement.clearBindings();
 
         return update;
@@ -226,7 +231,7 @@ public class ProgramStoreImpl implements ProgramStore {
         sqLiteBind(deleteStatement, 1, uid);
 
         // execute and clear bindings
-        int delete = deleteStatement.executeUpdateDelete();
+        int delete = databaseAdapter.executeUpdateDelete(ProgramModel.TABLE, deleteStatement);
         deleteStatement.clearBindings();
 
         return delete;
@@ -292,4 +297,5 @@ public class ProgramStoreImpl implements ProgramStore {
         sqLiteBind(sqLiteStatement, 28, relatedProgram);
         sqLiteBind(sqLiteStatement, 29, trackedEntity);
     }
+
 }

@@ -38,9 +38,7 @@ import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-@SuppressWarnings({
-        "PMD.AvoidDuplicateLiterals"
-})
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class UserStoreImpl implements UserStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + UserModel.TABLE + " (" +
@@ -112,7 +110,6 @@ public class UserStoreImpl implements UserStore {
             @Nullable String introduction, @Nullable String employer, @Nullable String interests,
             @Nullable String languages, @Nullable String email, @Nullable String phoneNumber,
             @Nullable String nationality) {
-        insertStatement.clearBindings();
 
         bindArguments(
                 insertStatement, uid, code, name,
@@ -121,7 +118,10 @@ public class UserStoreImpl implements UserStore {
                 languages, email, phoneNumber, nationality
         );
 
-        return databaseAdapter.executeInsert(UserModel.TABLE, insertStatement);
+        Long insert = databaseAdapter.executeInsert(UserModel.TABLE, insertStatement);
+        insertStatement.clearBindings();
+
+        return insert;
     }
 
     @Override
@@ -134,8 +134,6 @@ public class UserStoreImpl implements UserStore {
             @Nullable String introduction, @Nullable String employer, @Nullable String interests,
             @Nullable String languages, @Nullable String email, @Nullable String phoneNumber,
             @Nullable String nationality, @NonNull String whereUid) {
-        updateStatement.clearBindings();
-
         bindArguments(
                 updateStatement, uid, code, name,
                 displayName, created, lastUpdated, birthday, education, gender,
@@ -146,7 +144,10 @@ public class UserStoreImpl implements UserStore {
         // bind the where clause
         sqLiteBind(updateStatement, 20, whereUid);
 
-        return databaseAdapter.executeUpdateDelete(UserModel.TABLE, updateStatement);
+        int update = databaseAdapter.executeUpdateDelete(UserModel.TABLE, updateStatement);
+        updateStatement.clearBindings();
+
+        return update;
     }
 
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,
@@ -180,11 +181,13 @@ public class UserStoreImpl implements UserStore {
 
     @Override
     public int delete(@NonNull String uid) {
-        deleteStatement.clearBindings();
 
         sqLiteBind(deleteStatement, 1, uid);
 
-        return databaseAdapter.executeUpdateDelete(UserModel.TABLE, deleteStatement);
+        int delete = databaseAdapter.executeUpdateDelete(UserModel.TABLE, deleteStatement);
+        deleteStatement.clearBindings();
+
+        return delete;
     }
 
     @Override

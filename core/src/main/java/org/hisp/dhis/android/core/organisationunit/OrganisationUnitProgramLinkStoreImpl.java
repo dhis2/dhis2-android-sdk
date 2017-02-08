@@ -27,9 +27,10 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
@@ -41,9 +42,11 @@ public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitPro
             "VALUES(?,?);";
 
     private final SQLiteStatement sqLiteStatement;
+    private final DatabaseAdapter databaseAdapter;
 
-    public OrganisationUnitProgramLinkStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+    public OrganisationUnitProgramLinkStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.sqLiteStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
@@ -53,11 +56,7 @@ public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitPro
         sqLiteBind(sqLiteStatement, 1, organisationUnitUid);
         sqLiteBind(sqLiteStatement, 2, programUid);
 
-        return sqLiteStatement.executeInsert();
-    }
-
-    @Override
-    public void close() {
-        sqLiteStatement.close();
+        return databaseAdapter.executeInsert(
+                OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK, sqLiteStatement);
     }
 }

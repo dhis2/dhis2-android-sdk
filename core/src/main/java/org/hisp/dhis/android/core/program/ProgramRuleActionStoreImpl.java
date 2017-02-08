@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
@@ -84,14 +85,17 @@ public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
             " WHERE " +
             ProgramRuleActionModel.Columns.UID + " =?;";
 
-    private final SQLiteStatement insertRowStatement;
+    private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
 
-    public ProgramRuleActionStoreImpl(SQLiteDatabase database) {
-        this.insertRowStatement = database.compileStatement(INSERT_STATEMENT);
-        this.updateStatement = database.compileStatement(UPDATE_STATEMENT);
-        this.deleteStatement = database.compileStatement(DELETE_STATEMENT);
+    private final DatabaseAdapter databaseAdapter;
+
+    public ProgramRuleActionStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
 
@@ -105,15 +109,17 @@ public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
                        @Nullable String programStage, @Nullable String dataElement,
                        @Nullable String programRule) {
 
-        bindArguments(insertRowStatement, uid, code, name, displayName, created, lastUpdated, data,
+        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, data,
                 content, location, trackedEntityAttribute, programIndicator, programStageSection,
                 programRuleActionType, programStage, dataElement, programRule);
 
         // execute and clear bindings
-        Long insert = insertRowStatement.executeInsert();
-        insertRowStatement.clearBindings();
+        Long insert = databaseAdapter.executeInsert(ProgramRuleActionModel.TABLE, insertStatement);
+        insertStatement.clearBindings();
 
         return insert;
+
+
     }
 
     @Override
@@ -132,7 +138,7 @@ public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
         sqLiteBind(updateStatement, 17, whereProgramRuleActionUid);
 
         // execute and clear bindings
-        int update = updateStatement.executeUpdateDelete();
+        int update = databaseAdapter.executeUpdateDelete(ProgramRuleActionModel.TABLE, updateStatement);
         updateStatement.clearBindings();
 
         return update;
@@ -144,7 +150,7 @@ public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
         sqLiteBind(deleteStatement, 1, uid);
 
         // execute and clear bindings
-        int delete = deleteStatement.executeUpdateDelete();
+        int delete = databaseAdapter.executeUpdateDelete(ProgramRuleActionModel.TABLE, deleteStatement);
         deleteStatement.clearBindings();
 
         return delete;

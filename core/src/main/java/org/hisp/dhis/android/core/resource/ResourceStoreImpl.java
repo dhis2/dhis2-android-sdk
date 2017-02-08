@@ -51,7 +51,7 @@ public class ResourceStoreImpl implements ResourceStore {
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + ResourceModel.TABLE +
             " WHERE " + Columns.RESOURCE_TYPE + " =?;";
-
+    
     private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;

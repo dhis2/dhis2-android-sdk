@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel.Columns;
 
 import java.util.Date;
@@ -59,9 +59,11 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
             "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?);";
 
     private final SQLiteStatement sqLiteStatement;
+    private final DatabaseAdapter databaseAdapter;
 
-    public EnrollmentStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+    public EnrollmentStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.sqLiteStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
 
@@ -87,7 +89,7 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
         sqLiteBind(sqLiteStatement, 12, longitude);
         sqLiteBind(sqLiteStatement, 13, state);
 
-        return sqLiteStatement.executeInsert();
+        return databaseAdapter.executeInsert(EnrollmentModel.TABLE, sqLiteStatement);
     }
 
     @Override

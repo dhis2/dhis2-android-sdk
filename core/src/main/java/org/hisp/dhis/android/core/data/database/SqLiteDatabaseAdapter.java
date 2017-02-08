@@ -38,6 +38,9 @@ public class SqLiteDatabaseAdapter implements DatabaseAdapter {
     private final DbOpenHelper dbOpenHelper;
 
     public SqLiteDatabaseAdapter(@NonNull DbOpenHelper dbOpenHelper) {
+        if (dbOpenHelper == null) {
+            throw new IllegalArgumentException("dbOpenHelper == null");
+        }
         this.dbOpenHelper = dbOpenHelper;
     }
 

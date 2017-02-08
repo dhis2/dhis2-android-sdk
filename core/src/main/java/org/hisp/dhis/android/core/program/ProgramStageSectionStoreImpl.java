@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
@@ -54,17 +55,35 @@ public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
             ProgramStageSectionModel.Columns.PROGRAM_STAGE + ") " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 
-    private static final String UPDATE_STATEMENT = "";
-    private static final String DELETE_STATEMENT = "";
+    private static final String UPDATE_STATEMENT = "UPDATE " + ProgramStageSectionModel.TABLE +
+            " SET " +
+            ProgramStageSectionModel.Columns.UID + " =?, " +
+            ProgramStageSectionModel.Columns.CODE + " =?, " +
+            ProgramStageSectionModel.Columns.NAME + " =?, " +
+            ProgramStageSectionModel.Columns.DISPLAY_NAME + " =?, " +
+            ProgramStageSectionModel.Columns.CREATED + " =?, " +
+            ProgramStageSectionModel.Columns.LAST_UPDATED + " =?, " +
+            ProgramStageSectionModel.Columns.SORT_ORDER + " =?, " +
+            ProgramStageSectionModel.Columns.PROGRAM_STAGE + " =? " +
+            " WHERE " +
+            ProgramStageSectionModel.Columns.UID + " =?;";
+
+    private static final String DELETE_STATEMENT = "DELETE FROM " + ProgramStageSectionModel.TABLE +
+            " WHERE " +
+            ProgramStageSectionModel.Columns.UID + " =?;";
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
 
-    public ProgramStageSectionStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
-        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
-        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
+
+    private final DatabaseAdapter databaseAdapter;
+
+    public ProgramStageSectionStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -74,7 +93,7 @@ public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
                        @Nullable Integer sortOrder, @Nullable String programStage) {
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, sortOrder, programStage);
 
-        Long insert = insertStatement.executeInsert();
+        Long insert = databaseAdapter.executeInsert(ProgramStageSectionModel.TABLE, insertStatement);
         insertStatement.clearBindings();
 
         return insert;
@@ -90,7 +109,7 @@ public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
         sqLiteBind(updateStatement, 9, whereProgramStageSectionUid);
 
         // execute and clear bindings
-        int update = updateStatement.executeUpdateDelete();
+        int update = databaseAdapter.executeUpdateDelete(ProgramStageSectionModel.TABLE, updateStatement);
         updateStatement.clearBindings();
 
         return update;
@@ -99,7 +118,7 @@ public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
     @Override
     public int delete(String uid) {
         sqLiteBind(deleteStatement, 1, uid);
-        int delete = deleteStatement.executeUpdateDelete();
+        int delete = databaseAdapter.executeUpdateDelete(ProgramStageSectionModel.TABLE, deleteStatement);
         deleteStatement.clearBindings();
 
         return delete;

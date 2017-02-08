@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
@@ -83,10 +84,13 @@ public class ProgramRuleVariableModelStoreImpl implements ProgramRuleVariableMod
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
 
-    public ProgramRuleVariableModelStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
-        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
-        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
+    private final DatabaseAdapter databaseAdapter;
+
+    public ProgramRuleVariableModelStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -100,7 +104,7 @@ public class ProgramRuleVariableModelStoreImpl implements ProgramRuleVariableMod
                 program, programStage, dataElement, trackedEntityAttribute, programRuleVariableSourceType);
 
         // execute and clear bindings
-        Long insert = insertStatement.executeInsert();
+        Long insert = databaseAdapter.executeInsert(ProgramRuleVariableModel.TABLE, insertStatement);
         insertStatement.clearBindings();
 
         return insert;
@@ -120,7 +124,7 @@ public class ProgramRuleVariableModelStoreImpl implements ProgramRuleVariableMod
         sqLiteBind(updateStatement, 13, whereProgramRuleVariableUid);
 
         // execute and clear bindings
-        int update = updateStatement.executeUpdateDelete();
+        int update = databaseAdapter.executeUpdateDelete(ProgramRuleVariableModel.TABLE, updateStatement);
         updateStatement.clearBindings();
 
         return update;
@@ -132,7 +136,7 @@ public class ProgramRuleVariableModelStoreImpl implements ProgramRuleVariableMod
         sqLiteBind(deleteStatement, 1, uid);
 
         // execute and clear bindings
-        int delete = deleteStatement.executeUpdateDelete();
+        int delete = databaseAdapter.executeUpdateDelete(ProgramRuleVariableModel.TABLE, deleteStatement);
         deleteStatement.clearBindings();
 
         return delete;
@@ -156,5 +160,8 @@ public class ProgramRuleVariableModelStoreImpl implements ProgramRuleVariableMod
         sqLiteBind(sqLiteStatement, 10, dataElement);
         sqLiteBind(sqLiteStatement, 11, trackedEntityAttribute);
         sqLiteBind(sqLiteStatement, 12, programRuleVariableSourceType.name());
+
+
     }
+
 }

@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
@@ -85,13 +86,18 @@ public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
             ProgramIndicatorModel.Columns.UID + " =?;";
 
     private final SQLiteStatement insertRowStatement;
+
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
 
-    public ProgramIndicatorStoreImpl(SQLiteDatabase database) {
-        this.insertRowStatement = database.compileStatement(INSERT_STATEMENT);
-        this.updateStatement = database.compileStatement(UPDATE_STATEMENT);
-        this.deleteStatement = database.compileStatement(DELETE_STATEMENT);
+
+    private final DatabaseAdapter databaseAdapter;
+
+    public ProgramIndicatorStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertRowStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -109,7 +115,7 @@ public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
                 filter, decimals, program);
 
         // execute and clear bindings
-        Long insert = insertRowStatement.executeInsert();
+        Long insert = databaseAdapter.executeInsert(ProgramIndicatorModel.TABLE, insertRowStatement);
         insertRowStatement.clearBindings();
 
         return insert;
@@ -131,7 +137,7 @@ public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
         sqLiteBind(updateStatement, 17, whereProgramIndicatorUid);
 
         // execute and clear bindings
-        int update = updateStatement.executeUpdateDelete();
+        int update = databaseAdapter.executeUpdateDelete(ProgramIndicatorModel.TABLE, updateStatement);
         updateStatement.clearBindings();
 
         return update;
@@ -143,7 +149,7 @@ public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
         sqLiteBind(deleteStatement, 1, uid);
 
         // execute and clear bindings
-        int delete = deleteStatement.executeUpdateDelete();
+        int delete = databaseAdapter.executeUpdateDelete(ProgramIndicatorModel.TABLE, deleteStatement);
         deleteStatement.clearBindings();
 
         return delete;

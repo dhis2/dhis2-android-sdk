@@ -39,5 +39,4 @@ public interface RelationshipStore {
             @NonNull String relationshipType
     );
 
-    void close();
 }

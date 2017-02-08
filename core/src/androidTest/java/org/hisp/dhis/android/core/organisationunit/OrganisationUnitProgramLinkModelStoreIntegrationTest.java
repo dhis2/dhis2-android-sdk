@@ -59,7 +59,7 @@ public class OrganisationUnitProgramLinkModelStoreIntegrationTest extends AbsSto
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        organisationUnitProgramLinkStore = new OrganisationUnitProgramLinkStoreImpl(database());
+        organisationUnitProgramLinkStore = new OrganisationUnitProgramLinkStoreImpl(databaseAdapter());
     }
 
     @Test
@@ -155,11 +155,5 @@ public class OrganisationUnitProgramLinkModelStoreIntegrationTest extends AbsSto
                 null, null, null, null, null);
 
         assertThatCursor(cursor).hasRow(ID, ORGANISATION_UNIT_UID, PROGRAM_UID).isExhausted();
-    }
-
-    @Test
-    public void close_shouldNotCloseDatabase() throws Exception {
-        organisationUnitProgramLinkStore.close();
-        assertThat(database().isOpen()).isTrue();
     }
 }

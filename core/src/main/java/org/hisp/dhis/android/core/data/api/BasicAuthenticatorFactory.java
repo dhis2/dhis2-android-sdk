@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.data.api;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStoreImpl;
 
@@ -40,13 +40,13 @@ public final class BasicAuthenticatorFactory {
     }
 
     @NonNull
-    public static Authenticator create(@NonNull DbOpenHelper dbOpenHelper) {
-        if (dbOpenHelper == null) {
-            throw new IllegalArgumentException("dbOpenHelper == null");
+    public static Authenticator create(@NonNull DatabaseAdapter databaseAdapter) {
+        if (databaseAdapter == null) {
+            throw new IllegalArgumentException("databaseAdapter == null");
         }
 
         AuthenticatedUserStore authenticatedUserStore = new AuthenticatedUserStoreImpl(
-                dbOpenHelper.getWritableDatabase());
+                databaseAdapter);
         return new BasicAuthenticator(authenticatedUserStore);
     }
 }

@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel.Columns;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -53,10 +53,13 @@ public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
 
-    public UserRoleProgramLinkStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
-        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
-        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
+    private final DatabaseAdapter databaseAdapter;
+
+    public UserRoleProgramLinkStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -66,7 +69,10 @@ public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
         sqLiteBind(insertStatement, 1, userRole);
         sqLiteBind(insertStatement, 2, program);
 
-        return insertStatement.executeInsert();
+        Long insert = insertStatement.executeInsert();
+        insertStatement.clearBindings();
+
+        return insert;
     }
 
     @Override
@@ -82,7 +88,10 @@ public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
         sqLiteBind(updateStatement, 3, whereUserRoleUid);
         sqLiteBind(updateStatement, 4, whereProgramUid);
 
-        return updateStatement.executeUpdateDelete();
+        int update = databaseAdapter.executeUpdateDelete(UserRoleProgramLinkModel.TABLE, updateStatement);
+        updateStatement.clearBindings();
+
+        return update;
     }
 
     @Override
@@ -92,7 +101,9 @@ public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
         sqLiteBind(deleteStatement, 1, userRoleUid);
         sqLiteBind(deleteStatement, 2, programUid);
 
-        return deleteStatement.executeUpdateDelete();
+        int delete = databaseAdapter.executeUpdateDelete(UserRoleProgramLinkModel.TABLE, deleteStatement);
+        deleteStatement.clearBindings();
+        return delete;
     }
 
 }

@@ -26,19 +26,58 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.Filter;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Header;
-import retrofit2.http.Query;
+public class TestDatabaseAdapter implements DatabaseAdapter {
 
-public interface UserService {
+    // memory-backed test database
+    private final SQLiteDatabase sqLiteDatabase;
 
-    @GET("me")
-    Call<User> authenticate(@Header("Authorization") String credentials,
-            @Query("fields") @Fields Filter<User> filter);
+    public TestDatabaseAdapter(SQLiteDatabase database) {
+        this.sqLiteDatabase = database;
+    }
+
+    @Override
+    public SQLiteStatement compileStatement(String sql) {
+        return sqLiteDatabase.compileStatement(sql);
+    }
+
+    @Override
+    public Cursor query(String sql, String... selectionArgs) {
+        return sqLiteDatabase.rawQuery(sql, selectionArgs);
+    }
+
+    @Override
+    public long executeInsert(String table, SQLiteStatement sqLiteStatement) {
+        return sqLiteStatement.executeInsert();
+    }
+
+    @Override
+    public int executeUpdateDelete(String table, SQLiteStatement sqLiteStatement) {
+        return sqLiteStatement.executeUpdateDelete();
+    }
+
+    @Override
+    public int delete(String table, String whereClause, String[] whereArgs) {
+        return sqLiteDatabase.delete(table, whereClause, whereArgs);
+    }
+
+    @Override
+    public void beginTransaction() {
+        sqLiteDatabase.beginTransaction();
+    }
+
+    @Override
+    public void setTransactionSuccessful() {
+        sqLiteDatabase.setTransactionSuccessful();
+    }
+
+    @Override
+    public void endTransaction() {
+        sqLiteDatabase.endTransaction();
+    }
 }

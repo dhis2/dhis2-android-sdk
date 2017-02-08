@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
@@ -50,15 +51,17 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
             ") " + "VALUES (?,?,?,?,?,?,?)";
 
     private final SQLiteStatement insertRowStatement;
+    private final DatabaseAdapter databaseAdapter;
 
-    public TrackedEntityDataValueStoreImpl(SQLiteDatabase database) {
-        this.insertRowStatement = database.compileStatement(INSERT_STATEMENT);
+    public TrackedEntityDataValueStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertRowStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
     public long insert(@NonNull String event, @Nullable Date created, @Nullable Date lastUpdated,
-            @Nullable String dataElement, @Nullable String storedBy,
-            @Nullable String value, @Nullable Boolean providedElsewhere) {
+                       @Nullable String dataElement, @Nullable String storedBy,
+                       @Nullable String value, @Nullable Boolean providedElsewhere) {
         insertRowStatement.clearBindings();
 
         sqLiteBind(insertRowStatement, 1, event);
@@ -69,7 +72,7 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
         sqLiteBind(insertRowStatement, 6, value);
         sqLiteBind(insertRowStatement, 7, providedElsewhere);
 
-        return insertRowStatement.executeInsert();
+        return databaseAdapter.executeInsert(TrackedEntityDataValueModel.TABLE, insertRowStatement);
     }
 
     @Override

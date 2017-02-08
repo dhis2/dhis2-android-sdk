@@ -31,9 +31,9 @@ package org.hisp.dhis.android.core.user;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
@@ -79,14 +79,10 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
 
         bindArguments(insertStatement, user, organisationUnit, organisationUnitScope);
 
-
-
-
         Long insert = databaseAdapter.executeInsert(UserOrganisationUnitLinkModel.TABLE, insertStatement);
         insertStatement.clearBindings();
 
         return insert;
-
     }
 
     @Override
@@ -113,7 +109,6 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
         // bind the whereClause
         sqLiteBind(deleteStatement, 1, userUid);
         sqLiteBind(deleteStatement, 2, organisationUnitUid);
-
 
         int delete = databaseAdapter.executeUpdateDelete(UserOrganisationUnitLinkModel.TABLE, deleteStatement);
         deleteStatement.clearBindings();

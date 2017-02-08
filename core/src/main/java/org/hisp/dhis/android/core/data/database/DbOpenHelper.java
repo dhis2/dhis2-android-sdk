@@ -193,7 +193,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             OptionModel.Columns.OPTION_SET + " TEXT NOT NULL," +
             " FOREIGN KEY (" + OptionModel.Columns.OPTION_SET + ") " +
             " REFERENCES " + OptionSetModel.TABLE +
-            " (" + OptionSetModel.Columns.UID + ") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+            " (" + OptionSetModel.Columns.UID + ") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED " +
             ");";
 
     private static final String CREATE_PROGRAM_TABLE = "CREATE TABLE " + ProgramModel.TABLE + " (" +

@@ -75,7 +75,7 @@ public class RelationshipTypeStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        this.relationshipTypeStore = new RelationshipTypeStoreImpl(database());
+        this.relationshipTypeStore = new RelationshipTypeStoreImpl(databaseAdapter());
     }
 
     @Test

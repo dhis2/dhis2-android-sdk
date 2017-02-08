@@ -26,19 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.Filter;
+import android.support.annotation.NonNull;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Header;
-import retrofit2.http.Query;
+@SuppressWarnings("PMD.UseVarargs")
+public final class DbUtils {
 
-public interface UserService {
+    private DbUtils() {
+        // no instances
+    }
 
-    @GET("me")
-    Call<User> authenticate(@Header("Authorization") String credentials,
-            @Query("fields") @Fields Filter<User> filter);
+    @NonNull
+    public static String projectionToSqlString(String[] projection) {
+        StringBuilder sqlStringBuilder = new StringBuilder();
+        for (int i = 0; i < projection.length; i++) {
+            sqlStringBuilder.append(projection[i]);
+            if (i < projection.length - 1) {
+                sqlStringBuilder.append(", ");
+            }
+        }
+        return sqlStringBuilder.toString();
+    }
 }

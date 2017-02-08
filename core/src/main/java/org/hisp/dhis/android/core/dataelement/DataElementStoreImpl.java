@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
@@ -94,10 +94,13 @@ public class DataElementStoreImpl implements DataElementStore {
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
 
-    public DataElementStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
-        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
-        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
+    private final DatabaseAdapter databaseAdapter;
+
+    public DataElementStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -116,7 +119,7 @@ public class DataElementStoreImpl implements DataElementStore {
                 numberType, domainType, dimension, displayFormName, optionSet);
 
         // execute and clear bindings
-        Long insert = insertStatement.executeInsert();
+        Long insert = databaseAdapter.executeInsert(DataElementModel.TABLE, insertStatement);
         insertStatement.clearBindings();
 
         return insert;
@@ -128,7 +131,7 @@ public class DataElementStoreImpl implements DataElementStore {
         sqLiteBind(deleteStatement, 1, uid);
 
         // execute and clear bindings
-        int delete = deleteStatement.executeUpdateDelete();
+        int delete = databaseAdapter.executeUpdateDelete(DataElementModel.TABLE, deleteStatement);
         deleteStatement.clearBindings();
 
         return delete;
@@ -151,7 +154,7 @@ public class DataElementStoreImpl implements DataElementStore {
         sqLiteBind(updateStatement, 20, whereDataElementUid);
 
         // execute and clear bindings
-        int update = updateStatement.executeUpdateDelete();
+        int update = databaseAdapter.executeUpdateDelete(DataElementModel.TABLE, updateStatement);
         updateStatement.clearBindings();
 
         return update;
@@ -185,6 +188,7 @@ public class DataElementStoreImpl implements DataElementStore {
         sqLiteBind(sqLiteStatement, 17, dimension);
         sqLiteBind(sqLiteStatement, 18, displayFormName);
         sqLiteBind(sqLiteStatement, 19, optionSet);
+
     }
 
 }

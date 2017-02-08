@@ -264,9 +264,11 @@ public class OrganisationUnitCallIntegrationTests extends AbsStoreTestCase {
                 null, null, null, null);
         //dependencies for the OrganisationUnitCall:
         OrganisationUnitService organisationUnitService = retrofit.create(OrganisationUnitService.class);
-        OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(database());
-        UserOrganisationUnitLinkStore userOrganisationUnitLinkStore = new UserOrganisationUnitLinkStoreImpl(database());
-        ResourceStore resourceStore = new ResourceStoreImpl(database());
+        OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter());
+        UserOrganisationUnitLinkStore userOrganisationUnitLinkStore =
+                new UserOrganisationUnitLinkStoreImpl(databaseAdapter());
+
+        ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
         // Create a user with the root as assigned organisation unit (for the test):
         User user = User.create("user_uid", "code", "name", "display_name", new Date(), new Date(), "birthday",
                 "education", "gender", "job_title", "surname", "firstName", "introduction", "employer", "interests",

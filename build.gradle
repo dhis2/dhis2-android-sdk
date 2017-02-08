@@ -40,7 +40,7 @@ buildscript {
 
     dependencies {
         // android gradle plugin
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath "com.android.tools.build:gradle:2.2.3"
 
         // method count plugin
         classpath "com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.6.1"
@@ -70,16 +70,16 @@ buildScan {
 
 ext {
     configuration = [
-            buildToolsVersion: "24.0.2",
+            buildToolsVersion: "25.0.2",
             minSdkVersion    : 15,
-            targetSdkVersion : 24,
-            versionCode      : 1,
-            versionName      : "0.0.1"
+            targetSdkVersion : 25,
+            versionCode      : 4,
+            versionName      : "0.0.8-SNAPSHOT"
     ]
 
     libraries = [
             // android
-            support         : "25.1.0",
+            support         : "25.1.1",
 
             // java
             jackson         : "2.8.5",

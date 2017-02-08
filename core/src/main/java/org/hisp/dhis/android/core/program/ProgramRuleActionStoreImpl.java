@@ -37,6 +37,9 @@ import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals"
+})
 public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + ProgramRuleActionModel.TABLE + " (" +
             ProgramRuleActionModel.Columns.UID + ", " +
@@ -57,10 +60,38 @@ public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
             ProgramRuleActionModel.Columns.PROGRAM_RULE +
             ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
+    private static final String UPDATE_STATEMENT = "UPDATE " + ProgramRuleActionModel.TABLE + " SET " +
+            ProgramRuleActionModel.Columns.UID + " =?, " +
+            ProgramRuleActionModel.Columns.CODE + " =?, " +
+            ProgramRuleActionModel.Columns.NAME + " =?, " +
+            ProgramRuleActionModel.Columns.DISPLAY_NAME + " =?, " +
+            ProgramRuleActionModel.Columns.CREATED + " =?, " +
+            ProgramRuleActionModel.Columns.LAST_UPDATED + " =?, " +
+            ProgramRuleActionModel.Columns.DATA + " =?, " +
+            ProgramRuleActionModel.Columns.CONTENT + " =?, " +
+            ProgramRuleActionModel.Columns.LOCATION + " =?, " +
+            ProgramRuleActionModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " =?, " +
+            ProgramRuleActionModel.Columns.PROGRAM_INDICATOR + " =?, " +
+            ProgramRuleActionModel.Columns.PROGRAM_STAGE_SECTION + " =?, " +
+            ProgramRuleActionModel.Columns.PROGRAM_RULE_ACTION_TYPE + " =?, " +
+            ProgramRuleActionModel.Columns.PROGRAM_STAGE + " =?, " +
+            ProgramRuleActionModel.Columns.DATA_ELEMENT + " =?, " +
+            ProgramRuleActionModel.Columns.PROGRAM_RULE + " =? " +
+            " WHERE " +
+            ProgramRuleActionModel.Columns.UID + " =?;";
+
+    private static final String DELETE_STATEMENT = "DELETE FROM " + ProgramRuleActionModel.TABLE +
+            " WHERE " +
+            ProgramRuleActionModel.Columns.UID + " =?;";
+
     private final SQLiteStatement insertRowStatement;
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
 
     public ProgramRuleActionStoreImpl(SQLiteDatabase database) {
         this.insertRowStatement = database.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = database.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = database.compileStatement(DELETE_STATEMENT);
     }
 
 
@@ -74,30 +105,77 @@ public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
                        @Nullable String programStage, @Nullable String dataElement,
                        @Nullable String programRule) {
 
+        bindArguments(insertRowStatement, uid, code, name, displayName, created, lastUpdated, data,
+                content, location, trackedEntityAttribute, programIndicator, programStageSection,
+                programRuleActionType, programStage, dataElement, programRule);
+
+        // execute and clear bindings
+        Long insert = insertRowStatement.executeInsert();
         insertRowStatement.clearBindings();
 
-        sqLiteBind(insertRowStatement, 1, uid);
-        sqLiteBind(insertRowStatement, 2, code);
-        sqLiteBind(insertRowStatement, 3, name);
-        sqLiteBind(insertRowStatement, 4, displayName);
-        sqLiteBind(insertRowStatement, 5, created);
-        sqLiteBind(insertRowStatement, 6, lastUpdated);
-        sqLiteBind(insertRowStatement, 7, data);
-        sqLiteBind(insertRowStatement, 8, content);
-        sqLiteBind(insertRowStatement, 9, location);
-        sqLiteBind(insertRowStatement, 10, trackedEntityAttribute);
-        sqLiteBind(insertRowStatement, 11, programIndicator);
-        sqLiteBind(insertRowStatement, 12, programStageSection);
-        sqLiteBind(insertRowStatement, 13, programRuleActionType);
-        sqLiteBind(insertRowStatement, 14, programStage);
-        sqLiteBind(insertRowStatement, 15, dataElement);
-        sqLiteBind(insertRowStatement, 16, programRule);
-
-        return insertRowStatement.executeInsert();
+        return insert;
     }
 
     @Override
-    public void close() {
-        insertRowStatement.close();
+    public int update(@NonNull String uid, @Nullable String code, @NonNull String name, @Nullable String displayName,
+                      @NonNull Date created, @NonNull Date lastUpdated, @Nullable String data,
+                      @Nullable String content, @Nullable String location, @Nullable String trackedEntityAttribute,
+                      @Nullable String programIndicator, @Nullable String programStageSection,
+                      @NonNull ProgramRuleActionType programRuleActionType, @Nullable String programStage,
+                      @Nullable String dataElement, @Nullable String programRule,
+                      @NonNull String whereProgramRuleActionUid) {
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, data,
+                content, location, trackedEntityAttribute, programIndicator, programStageSection,
+                programRuleActionType, programStage, dataElement, programRule);
+
+        // bind the where argument
+        sqLiteBind(updateStatement, 17, whereProgramRuleActionUid);
+
+        // execute and clear bindings
+        int update = updateStatement.executeUpdateDelete();
+        updateStatement.clearBindings();
+
+        return update;
     }
+
+    @Override
+    public int delete(String uid) {
+        // bind the where argument
+        sqLiteBind(deleteStatement, 1, uid);
+
+        // execute and clear bindings
+        int delete = deleteStatement.executeUpdateDelete();
+        deleteStatement.clearBindings();
+
+        return delete;
+    }
+
+    private void bindArguments(@NonNull SQLiteStatement sqLiteStatement,
+                               @NonNull String uid, @Nullable String code, @NonNull String name,
+                               @Nullable String displayName, @NonNull Date created,
+                               @NonNull Date lastUpdated, @Nullable String data, @Nullable String content,
+                               @Nullable String location, @Nullable String trackedEntityAttribute,
+                               @Nullable String programIndicator, @Nullable String programStageSection,
+                               @NonNull ProgramRuleActionType programRuleActionType,
+                               @Nullable String programStage, @Nullable String dataElement,
+                               @Nullable String programRule) {
+
+        sqLiteBind(sqLiteStatement, 1, uid);
+        sqLiteBind(sqLiteStatement, 2, code);
+        sqLiteBind(sqLiteStatement, 3, name);
+        sqLiteBind(sqLiteStatement, 4, displayName);
+        sqLiteBind(sqLiteStatement, 5, created);
+        sqLiteBind(sqLiteStatement, 6, lastUpdated);
+        sqLiteBind(sqLiteStatement, 7, data);
+        sqLiteBind(sqLiteStatement, 8, content);
+        sqLiteBind(sqLiteStatement, 9, location);
+        sqLiteBind(sqLiteStatement, 10, trackedEntityAttribute);
+        sqLiteBind(sqLiteStatement, 11, programIndicator);
+        sqLiteBind(sqLiteStatement, 12, programStageSection);
+        sqLiteBind(sqLiteStatement, 13, programRuleActionType);
+        sqLiteBind(sqLiteStatement, 14, programStage);
+        sqLiteBind(sqLiteStatement, 15, dataElement);
+        sqLiteBind(sqLiteStatement, 16, programRule);
+    }
+
 }

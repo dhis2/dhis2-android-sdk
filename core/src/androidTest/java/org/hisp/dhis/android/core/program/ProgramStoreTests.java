@@ -453,9 +453,4 @@ public class ProgramStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).isExhausted();
     }
 
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        programStore.close();
-        assertThat(database().isOpen()).isTrue();
-    }
 }

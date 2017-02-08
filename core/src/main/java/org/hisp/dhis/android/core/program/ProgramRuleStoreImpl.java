@@ -33,13 +33,15 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.program.ProgramRuleModel.Columns;
 
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals"
+})
 public class ProgramRuleStoreImpl implements ProgramRuleStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             ProgramRuleModel.TABLE + " (" +
@@ -54,10 +56,33 @@ public class ProgramRuleStoreImpl implements ProgramRuleStore {
             Columns.PROGRAM + ", " +
             Columns.PROGRAM_STAGE + ") " +
             "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-    private final SQLiteStatement sqLiteStatement;
+    
+    private static final String UPDATE_STATEMENT = "UPDATE " + ProgramRuleModel.TABLE + " SET " +
+            Columns.UID + " =?, " +
+            Columns.CODE + " =?, " +
+            Columns.NAME + " =?, " +
+            Columns.DISPLAY_NAME + " =?, " +
+            Columns.CREATED + " =?, " +
+            Columns.LAST_UPDATED + " =?, " +
+            Columns.PRIORITY + " =?, " +
+            Columns.CONDITION + " =?, " +
+            Columns.PROGRAM + " =?, " +
+            Columns.PROGRAM_STAGE + " =? " +
+            " WHERE " +
+            Columns.UID + " =?;";
+
+    private static final String DELETE_STATEMENT = "DELETE FROM " + ProgramRuleModel.TABLE +
+            " WHERE " +
+            Columns.UID + " =?;";
+
+    private final SQLiteStatement insertStatement;
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
 
     public ProgramRuleStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -66,22 +91,58 @@ public class ProgramRuleStoreImpl implements ProgramRuleStore {
                        @NonNull Date lastUpdated, @Nullable Integer priority,
                        @Nullable String condition, @NonNull String program,
                        @Nullable String programStage) {
+        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, priority,
+                condition, program, programStage);
+
+        Long insert = insertStatement.executeInsert();
+        insertStatement.clearBindings();
+
+        return insert;
+    }
+
+    @Override
+    public int update(@NonNull String uid, @Nullable String code, @NonNull String name, @NonNull String displayName,
+                      @NonNull Date created, @NonNull Date lastUpdated, @Nullable Integer priority,
+                      @Nullable String condition, @NonNull String program, @Nullable String programStage,
+                      @NonNull String whereProgramRuleUid) {
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, priority,
+                condition, program, programStage);
+
+        // bind the where argument
+        sqLiteBind(updateStatement, 11, whereProgramRuleUid);
+
+        int update = updateStatement.executeUpdateDelete();
+        updateStatement.clearBindings();
+
+        return update;
+    }
+
+    @Override
+    public int delete(String uid) {
+        // bind the where argument
+        sqLiteBind(deleteStatement, 1, uid);
+
+        // execute and clear bindings
+        int delete = deleteStatement.executeUpdateDelete();
+        deleteStatement.clearBindings();
+
+        return delete;
+    }
+
+    private void bindArguments(@NonNull SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,
+                               @NonNull String name, @NonNull String displayName, @NonNull Date created,
+                               @NonNull Date lastUpdated, @Nullable Integer priority,
+                               @Nullable String condition, @NonNull String program,
+                               @Nullable String programStage) {
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);
         sqLiteBind(sqLiteStatement, 4, displayName);
-        sqLiteBind(sqLiteStatement, 5, BaseIdentifiableObject.DATE_FORMAT.format(created));
-        sqLiteBind(sqLiteStatement, 6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
+        sqLiteBind(sqLiteStatement, 5, created);
+        sqLiteBind(sqLiteStatement, 6, lastUpdated);
         sqLiteBind(sqLiteStatement, 7, priority);
         sqLiteBind(sqLiteStatement, 8, condition);
         sqLiteBind(sqLiteStatement, 9, program);
         sqLiteBind(sqLiteStatement, 10, programStage);
-
-        return sqLiteStatement.executeInsert();
-    }
-
-    @Override
-    public void close() {
-        sqLiteStatement.close();
     }
 }

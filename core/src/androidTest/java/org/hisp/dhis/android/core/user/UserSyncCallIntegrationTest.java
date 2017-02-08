@@ -327,7 +327,7 @@ public class UserSyncCallIntegrationTest extends AbsStoreTestCase {
     // this test is commented out until we finish sync the program sub graph.
     // This test will break since we try to insert userRoleProgramLink without having programs.
 //    @Test
-    public void call_shouldPersistInDatabase() throws Exception {
+    public void call_shouldPersistInDatabase() throws Exception  {
         userSyncCall.call();
 
         Cursor userCursor = database().query(UserModel.TABLE, USER_PROJECTION, null, null, null, null, null);

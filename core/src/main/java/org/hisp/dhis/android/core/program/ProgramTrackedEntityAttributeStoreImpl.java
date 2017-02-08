@@ -39,6 +39,9 @@ import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals"
+})
 public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEntityAttributeStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             ProgramTrackedEntityAttributeModel.TABLE + " (" +
@@ -61,10 +64,39 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
 
             ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-    private final SQLiteStatement insertRowStatement;
+    private static final String UPDATE_STATEMENT = "UPDATE " + ProgramTrackedEntityAttributeModel.TABLE +
+            " SET " +
+            ProgramTrackedEntityAttributeModel.Columns.UID + " =?, " +
+            ProgramTrackedEntityAttributeModel.Columns.CODE + " =?, " +
+            ProgramTrackedEntityAttributeModel.Columns.NAME + " =?, " +
+            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_NAME + " =?, " +
+            ProgramTrackedEntityAttributeModel.Columns.CREATED + " =?, " +
+            ProgramTrackedEntityAttributeModel.Columns.LAST_UPDATED + " =?, " +
+            ProgramTrackedEntityAttributeModel.Columns.SHORT_NAME + " =?, " +
+            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME + " =?, " +
+            ProgramTrackedEntityAttributeModel.Columns.DESCRIPTION + " =?, " +
+            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION + " =?, " +
+            ProgramTrackedEntityAttributeModel.Columns.MANDATORY + " =?, " +
+            ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " =?, " +
+            ProgramTrackedEntityAttributeModel.Columns.VALUE_TYPE + " =?, " +
+            ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATES + " =?, " +
+            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST + " =?, " +
+            ProgramTrackedEntityAttributeModel.Columns.PROGRAM + " =? " +
+            " WHERE " +
+            ProgramTrackedEntityAttributeModel.Columns.UID + " =?;";
+
+    private static final String DELETE_STATEMENT = "DELETE FROM " + ProgramTrackedEntityAttributeModel.TABLE +
+            " WHERE " +
+            ProgramTrackedEntityAttributeModel.Columns.UID + " =?;";
+
+    private final SQLiteStatement insertStatement;
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
 
     public ProgramTrackedEntityAttributeStoreImpl(SQLiteDatabase database) {
-        this.insertRowStatement = database.compileStatement(INSERT_STATEMENT);
+        this.insertStatement = database.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = database.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = database.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -76,29 +108,73 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
                        @NonNull String trackedEntityAttribute, @Nullable ValueType valueType,
                        @Nullable Boolean allowFutureDates, @Nullable Boolean displayInList,
                        @NonNull String program) {
-        insertRowStatement.clearBindings();
+        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, shortName,
+                displayShortName, description, displayDescription, mandatory, trackedEntityAttribute, valueType,
+                allowFutureDates, displayInList, program);
+        Long insert = insertStatement.executeInsert();
+        insertStatement.clearBindings();
 
-        sqLiteBind(insertRowStatement, 1, uid);
-        sqLiteBind(insertRowStatement, 2, code);
-        sqLiteBind(insertRowStatement, 3, name);
-        sqLiteBind(insertRowStatement, 4, displayName);
-        sqLiteBind(insertRowStatement, 5, created);
-        sqLiteBind(insertRowStatement, 6, lastUpdated);
-        sqLiteBind(insertRowStatement, 7, shortName);
-        sqLiteBind(insertRowStatement, 8, displayShortName);
-        sqLiteBind(insertRowStatement, 9, description);
-        sqLiteBind(insertRowStatement, 10, displayDescription);
-        sqLiteBind(insertRowStatement, 11, mandatory);
-        sqLiteBind(insertRowStatement, 12, trackedEntityAttribute);
-        sqLiteBind(insertRowStatement, 13, valueType);
-        sqLiteBind(insertRowStatement, 14, allowFutureDates);
-        sqLiteBind(insertRowStatement, 15, displayInList);
-        sqLiteBind(insertRowStatement, 16, program);
-        return insertRowStatement.executeInsert();
+        return insert;
     }
 
     @Override
-    public void close() {
-        insertRowStatement.close();
+    public int update(@NonNull String uid, @Nullable String code, @NonNull String name, @Nullable String displayName,
+                      @NonNull Date created, @NonNull Date lastUpdated, @Nullable String shortName,
+                      @Nullable String displayShortName, @Nullable String description,
+                      @Nullable String displayDescription, @Nullable Boolean mandatory,
+                      @NonNull String trackedEntityAttribute, @Nullable ValueType valueType,
+                      @Nullable Boolean allowFutureDates, @Nullable Boolean displayInList,
+                      @NonNull String program, @NonNull String whereProgramTrackedEntityAttributeUid) {
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, shortName,
+                displayShortName, description, displayDescription, mandatory, trackedEntityAttribute, valueType,
+                allowFutureDates, displayInList, program);
+
+        // bind the where argument
+        sqLiteBind(updateStatement, 17, whereProgramTrackedEntityAttributeUid);
+
+        // execute and clear bindings
+        int update = updateStatement.executeUpdateDelete();
+        updateStatement.clearBindings();
+
+        return update;
     }
+
+    @Override
+    public int delete(String uid) {
+        // bind the where argument
+        sqLiteBind(deleteStatement, 1, uid);
+
+        // execute and clear bindings
+        int delete = deleteStatement.executeUpdateDelete();
+        deleteStatement.clearBindings();
+
+        return delete;
+    }
+
+    private void bindArguments(@NonNull SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,
+                               @NonNull String name, @Nullable String displayName, @NonNull Date created,
+                               @NonNull Date lastUpdated, @Nullable String shortName,
+                               @Nullable String displayShortName, @Nullable String description,
+                               @Nullable String displayDescription, @Nullable Boolean mandatory,
+                               @NonNull String trackedEntityAttribute, @Nullable ValueType valueType,
+                               @Nullable Boolean allowFutureDates, @Nullable Boolean displayInList,
+                               @NonNull String program) {
+        sqLiteBind(sqLiteStatement, 1, uid);
+        sqLiteBind(sqLiteStatement, 2, code);
+        sqLiteBind(sqLiteStatement, 3, name);
+        sqLiteBind(sqLiteStatement, 4, displayName);
+        sqLiteBind(sqLiteStatement, 5, created);
+        sqLiteBind(sqLiteStatement, 6, lastUpdated);
+        sqLiteBind(sqLiteStatement, 7, shortName);
+        sqLiteBind(sqLiteStatement, 8, displayShortName);
+        sqLiteBind(sqLiteStatement, 9, description);
+        sqLiteBind(sqLiteStatement, 10, displayDescription);
+        sqLiteBind(sqLiteStatement, 11, mandatory);
+        sqLiteBind(sqLiteStatement, 12, trackedEntityAttribute);
+        sqLiteBind(sqLiteStatement, 13, valueType);
+        sqLiteBind(sqLiteStatement, 14, allowFutureDates);
+        sqLiteBind(sqLiteStatement, 15, displayInList);
+        sqLiteBind(sqLiteStatement, 16, program);
+    }
+
 }

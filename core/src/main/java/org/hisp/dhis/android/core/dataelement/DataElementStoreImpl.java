@@ -39,6 +39,9 @@ import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals"
+})
 public class DataElementStoreImpl implements DataElementStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + DataElementModel.TABLE + " (" +
             DataElementModel.Columns.UID + ", " +
@@ -62,24 +65,107 @@ public class DataElementStoreImpl implements DataElementStore {
             DataElementModel.Columns.OPTION_SET + ") " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-    private final SQLiteStatement sqLiteStatement;
+    private static final String UPDATE_STATEMENT = "UPDATE " + DataElementModel.TABLE + " SET " +
+            DataElementModel.Columns.UID + " =?, " +
+            DataElementModel.Columns.CODE + " =?, " +
+            DataElementModel.Columns.NAME + " =?, " +
+            DataElementModel.Columns.DISPLAY_NAME + " =?, " +
+            DataElementModel.Columns.CREATED + " =?, " +
+            DataElementModel.Columns.LAST_UPDATED + " =?, " +
+            DataElementModel.Columns.SHORT_NAME + " =?, " +
+            DataElementModel.Columns.DISPLAY_SHORT_NAME + " =?, " +
+            DataElementModel.Columns.DESCRIPTION + " =?, " +
+            DataElementModel.Columns.DISPLAY_DESCRIPTION + " =?, " +
+            DataElementModel.Columns.VALUE_TYPE + " =?, " +
+            DataElementModel.Columns.ZERO_IS_SIGNIFICANT + " =?, " +
+            DataElementModel.Columns.AGGREGATION_TYPE + " =?, " +
+            DataElementModel.Columns.FORM_NAME + " =?, " +
+            DataElementModel.Columns.NUMBER_TYPE + " =?, " +
+            DataElementModel.Columns.DOMAIN_TYPE + " =?, " +
+            DataElementModel.Columns.DIMENSION + " =?, " +
+            DataElementModel.Columns.DISPLAY_FORM_NAME + " =?, " +
+            DataElementModel.Columns.OPTION_SET + " =? " +
+            " WHERE " + DataElementModel.Columns.UID + " =?;";
+
+    private static final String DELETE_STATEMENT = "DELETE FROM " + DataElementModel.TABLE +
+            " WHERE " + DataElementModel.Columns.UID + " =?;";
+
+    private final SQLiteStatement insertStatement;
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
 
     public DataElementStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
     public long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
-            @NonNull String displayName, @NonNull Date created,
-            @NonNull Date lastUpdated, @Nullable String shortName,
-            @Nullable String displayShortName, @Nullable String description,
-            @Nullable String displayDescription, @NonNull ValueType valueType,
-            @Nullable Boolean zeroIsSignificant, @Nullable String aggregationOperator,
-            @Nullable String formName, @Nullable String numberType,
-            @Nullable String domainType, @Nullable String dimension,
-            @Nullable String displayFormName, @Nullable String optionSet) {
-        sqLiteStatement.clearBindings();
+                       @NonNull String displayName, @NonNull Date created,
+                       @NonNull Date lastUpdated, @Nullable String shortName,
+                       @Nullable String displayShortName, @Nullable String description,
+                       @Nullable String displayDescription, @NonNull ValueType valueType,
+                       @Nullable Boolean zeroIsSignificant, @Nullable String aggregationOperator,
+                       @Nullable String formName, @Nullable String numberType,
+                       @Nullable String domainType, @Nullable String dimension,
+                       @Nullable String displayFormName, @Nullable String optionSet) {
 
+        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
+                description, displayDescription, valueType, zeroIsSignificant, aggregationOperator, formName,
+                numberType, domainType, dimension, displayFormName, optionSet);
+
+        // execute and clear bindings
+        Long insert = insertStatement.executeInsert();
+        insertStatement.clearBindings();
+
+        return insert;
+    }
+
+    @Override
+    public int delete(String uid) {
+        // bind the where argument
+        sqLiteBind(deleteStatement, 1, uid);
+
+        // execute and clear bindings
+        int delete = deleteStatement.executeUpdateDelete();
+        deleteStatement.clearBindings();
+
+        return delete;
+    }
+
+    @Override
+    public int update(@NonNull String uid, @Nullable String code, @NonNull String name, @NonNull String displayName,
+                      @NonNull Date created, @NonNull Date lastUpdated, @Nullable String shortName,
+                      @Nullable String displayShortName, @Nullable String description,
+                      @Nullable String displayDescription, @NonNull ValueType valueType,
+                      @Nullable Boolean zeroIsSignificant, @Nullable String aggregationOperator,
+                      @Nullable String formName, @Nullable String numberType, @Nullable String domainType,
+                      @Nullable String dimension, @Nullable String displayFormName, @Nullable String optionSet,
+                      @NonNull String whereDataElementUid) {
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, shortName,
+                displayShortName, description, displayDescription, valueType, zeroIsSignificant, aggregationOperator,
+                formName, numberType, domainType, dimension, displayFormName, optionSet);
+
+        // bind the where argument
+        sqLiteBind(updateStatement, 20, whereDataElementUid);
+
+        // execute and clear bindings
+        int update = updateStatement.executeUpdateDelete();
+        updateStatement.clearBindings();
+
+        return update;
+    }
+
+    private void bindArguments(@NonNull SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,
+                               @NonNull String name, @NonNull String displayName, @NonNull Date created,
+                               @NonNull Date lastUpdated, @Nullable String shortName,
+                               @Nullable String displayShortName, @Nullable String description,
+                               @Nullable String displayDescription, @NonNull ValueType valueType,
+                               @Nullable Boolean zeroIsSignificant, @Nullable String aggregationOperator,
+                               @Nullable String formName, @Nullable String numberType,
+                               @Nullable String domainType, @Nullable String dimension,
+                               @Nullable String displayFormName, @Nullable String optionSet) {
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);
@@ -99,12 +185,6 @@ public class DataElementStoreImpl implements DataElementStore {
         sqLiteBind(sqLiteStatement, 17, dimension);
         sqLiteBind(sqLiteStatement, 18, displayFormName);
         sqLiteBind(sqLiteStatement, 19, optionSet);
-
-        return sqLiteStatement.executeInsert();
     }
 
-    @Override
-    public void close() {
-        sqLiteStatement.close();
-    }
 }

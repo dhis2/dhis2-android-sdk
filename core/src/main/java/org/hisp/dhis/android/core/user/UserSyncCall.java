@@ -199,7 +199,7 @@ public final class UserSyncCall implements Call<Response<User>> {
                         user.email(), user.phoneNumber(), user.nationality());
             }
 
-            // update the resource table
+            // updateWithSection the resource table
             int updatedResourceRow = updateInResourceStore(
                     userClassName, serverDateTime, userClassName
             );
@@ -365,7 +365,7 @@ public final class UserSyncCall implements Call<Response<User>> {
             );
 
             int updatedResourceRow = updateInResourceStore(organisationUnitSimpleName,
-                    serverDateTime, organisationUnit.uid());
+                    serverDateTime, organisationUnitSimpleName);
 
             if (updatedResourceRow <= 0) {
                 insertIntoResourceStore(

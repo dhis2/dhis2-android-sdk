@@ -299,10 +299,4 @@ public class DataElementStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).isExhausted();
     }
 
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        dataElementStore.close();
-        assertThat(database().isOpen()).isTrue();
-    }
-
 }

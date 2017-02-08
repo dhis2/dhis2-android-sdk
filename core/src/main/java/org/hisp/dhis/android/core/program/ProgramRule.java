@@ -57,6 +57,10 @@ public abstract class ProgramRule extends BaseIdentifiableObject {
             = Field.create(NAME);
     public static final Field<ProgramRule, String> displayName
             = Field.create(DISPLAY_NAME);
+    public static final Field<ProgramRule, String> created =
+            Field.create(CREATED);
+    public static final Field<ProgramRule, String> lastUpdated =
+            Field.create(LAST_UPDATED);
     public static final Field<ProgramRule, Integer> priority
             = Field.create(PRIORITY);
     public static final Field<ProgramRule, String> condition

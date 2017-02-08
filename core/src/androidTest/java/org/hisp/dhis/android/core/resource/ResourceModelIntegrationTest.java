@@ -17,7 +17,6 @@ import static com.google.common.truth.Truth.assertThat;
 public class ResourceModelIntegrationTest {
     private static final Long ID = 2L;
     private static final String RESOURCE_TYPE = "OrganisationUnit";
-    private static final String RESOURCE_UID = "test_organisation_unit_uid";
 
     // timestamp
     private static final String DATE = "2017-01-18T13:39:00.000";
@@ -25,11 +24,11 @@ public class ResourceModelIntegrationTest {
     @Test
     public void create_shouldConvertToModel() throws Exception {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                Columns.ID, Columns.RESOURCE_TYPE, Columns.RESOURCE_UID, Columns.LAST_SYNCED
+                Columns.ID, Columns.RESOURCE_TYPE, Columns.LAST_SYNCED
         });
 
         matrixCursor.addRow(new Object[]{
-                ID, RESOURCE_TYPE, RESOURCE_UID, DATE
+                ID, RESOURCE_TYPE, DATE
         });
 
         matrixCursor.moveToFirst();
@@ -39,7 +38,6 @@ public class ResourceModelIntegrationTest {
         ResourceModel resource = ResourceModel.create(matrixCursor);
         assertThat(resource.id()).isEqualTo(ID);
         assertThat(resource.resourceType()).isEqualTo(RESOURCE_TYPE);
-        assertThat(resource.uid()).isEqualTo(RESOURCE_UID);
         assertThat(resource.lastSynced()).isEqualTo(timeStamp);
     }
 
@@ -49,7 +47,6 @@ public class ResourceModelIntegrationTest {
         ResourceModel resource = ResourceModel.builder()
                 .id(ID)
                 .resourceType(RESOURCE_TYPE)
-                .uid(RESOURCE_UID)
                 .lastSynced(timeStamp)
                 .build();
 
@@ -57,7 +54,6 @@ public class ResourceModelIntegrationTest {
 
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
         assertThat(contentValues.getAsString(Columns.RESOURCE_TYPE)).isEqualTo(RESOURCE_TYPE);
-        assertThat(contentValues.getAsString(Columns.RESOURCE_UID)).isEqualTo(RESOURCE_UID);
         assertThat(contentValues.getAsString(Columns.LAST_SYNCED)).isEqualTo(DATE);
     }
 }

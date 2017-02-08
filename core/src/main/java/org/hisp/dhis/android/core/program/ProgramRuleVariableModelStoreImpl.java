@@ -37,6 +37,9 @@ import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals"
+})
 public class ProgramRuleVariableModelStoreImpl implements ProgramRuleVariableModelStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
@@ -55,10 +58,35 @@ public class ProgramRuleVariableModelStoreImpl implements ProgramRuleVariableMod
             ProgramRuleVariableModel.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE + ") " +
             "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-    private final SQLiteStatement sqLiteStatement;
+    private static final String UPDATE_STATEMENT = "UPDATE " + ProgramRuleVariableModel.TABLE +
+            " SET " +
+            ProgramRuleVariableModel.Columns.UID + " =?, " +
+            ProgramRuleVariableModel.Columns.CODE + " =?, " +
+            ProgramRuleVariableModel.Columns.NAME + " =?, " +
+            ProgramRuleVariableModel.Columns.DISPLAY_NAME + " =?, " +
+            ProgramRuleVariableModel.Columns.CREATED + " =?, " +
+            ProgramRuleVariableModel.Columns.LAST_UPDATED + " =?, " +
+            ProgramRuleVariableModel.Columns.USE_CODE_FOR_OPTION_SET + " =?, " +
+            ProgramRuleVariableModel.Columns.PROGRAM + " =?, " +
+            ProgramRuleVariableModel.Columns.PROGRAM_STAGE + " =?, " +
+            ProgramRuleVariableModel.Columns.DATA_ELEMENT + " =?, " +
+            ProgramRuleVariableModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " =?, " +
+            ProgramRuleVariableModel.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE + " =? " +
+            " WHERE " +
+            ProgramRuleVariableModel.Columns.UID + " =?;";
+
+    private static final String DELETE_STATEMENT = "DELETE FROM " + ProgramRuleVariableModel.TABLE +
+            " WHERE " +
+            ProgramRuleVariableModel.Columns.UID + " =?;";
+
+    private final SQLiteStatement insertStatement;
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
 
     public ProgramRuleVariableModelStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -68,8 +96,54 @@ public class ProgramRuleVariableModelStoreImpl implements ProgramRuleVariableMod
                        @NonNull String program, @Nullable String programStage,
                        @Nullable String dataElement, @Nullable String trackedEntityAttribute,
                        @Nullable ProgramRuleVariableSourceType programRuleVariableSourceType) {
-        sqLiteStatement.clearBindings();
+        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, useCodeForOptionSet,
+                program, programStage, dataElement, trackedEntityAttribute, programRuleVariableSourceType);
 
+        // execute and clear bindings
+        Long insert = insertStatement.executeInsert();
+        insertStatement.clearBindings();
+
+        return insert;
+    }
+
+    @Override
+    public int update(@NonNull String uid, @Nullable String code, @NonNull String name, @NonNull String displayName,
+                      @NonNull Date created, @NonNull Date lastUpdated, @Nullable Boolean useCodeForOptionSet,
+                      @NonNull String program, @Nullable String programStage, @Nullable String dataElement,
+                      @Nullable String trackedEntityAttribute,
+                      @Nullable ProgramRuleVariableSourceType programRuleVariableSourceType,
+                      @NonNull String whereProgramRuleVariableUid) {
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, useCodeForOptionSet,
+                program, programStage, dataElement, trackedEntityAttribute, programRuleVariableSourceType);
+
+        // bind the where argument
+        sqLiteBind(updateStatement, 13, whereProgramRuleVariableUid);
+
+        // execute and clear bindings
+        int update = updateStatement.executeUpdateDelete();
+        updateStatement.clearBindings();
+
+        return update;
+    }
+
+    @Override
+    public int delete(String uid) {
+        // bind the where argument
+        sqLiteBind(deleteStatement, 1, uid);
+
+        // execute and clear bindings
+        int delete = deleteStatement.executeUpdateDelete();
+        deleteStatement.clearBindings();
+
+        return delete;
+    }
+
+    private void bindArguments(@NonNull SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,
+                               @NonNull String name, @NonNull String displayName, @NonNull Date created,
+                               @NonNull Date lastUpdated, @Nullable Boolean useCodeForOptionSet,
+                               @NonNull String program, @Nullable String programStage,
+                               @Nullable String dataElement, @Nullable String trackedEntityAttribute,
+                               @Nullable ProgramRuleVariableSourceType programRuleVariableSourceType) {
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);
@@ -82,12 +156,5 @@ public class ProgramRuleVariableModelStoreImpl implements ProgramRuleVariableMod
         sqLiteBind(sqLiteStatement, 10, dataElement);
         sqLiteBind(sqLiteStatement, 11, trackedEntityAttribute);
         sqLiteBind(sqLiteStatement, 12, programRuleVariableSourceType.name());
-
-        return sqLiteStatement.executeInsert();
-    }
-
-    @Override
-    public void close() {
-        sqLiteStatement.close();
     }
 }

@@ -51,7 +51,7 @@ public class CreateProgramIndicatorUtils {
     private static final String FILTER = "test_filter";
     private static final Integer DECIMALS = 3;
 
-    public static ContentValues create(long id, @NonNull String uid) {
+    public static ContentValues create(long id, @NonNull String uid, @NonNull String program) {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(Columns.ID, id);
@@ -70,6 +70,7 @@ public class CreateProgramIndicatorUtils {
         contentValues.put(Columns.DIMENSION_ITEM, DIMENSION_ITEM);
         contentValues.put(Columns.FILTER, FILTER);
         contentValues.put(Columns.DECIMALS, DECIMALS);
+        contentValues.put(Columns.PROGRAM, program);
 
         return contentValues;
     }

@@ -270,9 +270,4 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
     }
 
     // ToDo: consider introducing conflict resolution strategy
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        programTrackedEntityAttributeStore.close();
-        assertThat(database().isOpen()).isTrue();
-    }
 }

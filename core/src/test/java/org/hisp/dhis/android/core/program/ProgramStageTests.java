@@ -72,7 +72,7 @@ public class ProgramStageTests {
                 "    \"minDaysFromStart\": 0,\n" +
                 "    \"access\": {\n" +
                 "        \"read\": true,\n" +
-                "        \"update\": true,\n" +
+                "        \"updateWithSection\": true,\n" +
                 "        \"externalize\": false,\n" +
                 "        \"delete\": true,\n" +
                 "        \"write\": true,\n" +

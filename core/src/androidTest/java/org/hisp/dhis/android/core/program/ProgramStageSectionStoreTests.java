@@ -199,9 +199,4 @@ public class ProgramStageSectionStoreTests extends AbsStoreTestCase {
         );
     }
 
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        programStageSectionStore.close();
-        assertThat(database().isOpen()).isTrue();
-    }
 }

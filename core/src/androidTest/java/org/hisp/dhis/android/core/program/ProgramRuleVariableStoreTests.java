@@ -334,10 +334,5 @@ public class ProgramRuleVariableStoreTests extends AbsStoreTestCase {
 
     }
 
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        programRuleVariableModelStore.close();
-        assertThat(database().isOpen()).isTrue();
-    }
 }
 

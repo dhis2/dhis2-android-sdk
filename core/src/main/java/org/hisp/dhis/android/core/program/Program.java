@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.dataelement.CategoryCombo;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
 import java.util.Date;
 import java.util.List;
@@ -131,7 +130,7 @@ public abstract class Program extends BaseNameableObject {
             = Field.create(RELATIONSHIP_TEXT);
     public static final NestedField<Program, RelationshipType> relationshipType
             = NestedField.create(RELATIONSHIP_TYPE);
-    public static final NestedField<Program, TrackedEntityAttribute> programTrackedEntityAttributes
+    public static final NestedField<Program, ProgramTrackedEntityAttribute> programTrackedEntityAttributes
             = NestedField.create(PROGRAM_TRACKED_ENTITY_ATTRIBUTES);
     public static final NestedField<Program, Program> relatedProgram
             = NestedField.create(RELATED_PROGRAM);

@@ -51,6 +51,7 @@ import org.hisp.dhis.android.core.program.ProgramRuleVariableModel;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementModel;
 import org.hisp.dhis.android.core.program.ProgramStageModel;
 import org.hisp.dhis.android.core.program.ProgramStageSectionModel;
+import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkModel;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.relationship.RelationshipModel;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
@@ -293,7 +294,11 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ProgramStageDataElementModel.Columns.SORT_ORDER + " INTEGER," +
             ProgramStageDataElementModel.Columns.ALLOW_FUTURE_DATE + " INTEGER," +
             ProgramStageDataElementModel.Columns.DATA_ELEMENT + " TEXT NOT NULL," +
+            ProgramStageDataElementModel.Columns.PROGRAM_STAGE + " TEXT NOT NULL," +
             ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION + " TEXT," +
+            " FOREIGN KEY (" + ProgramStageDataElementModel.Columns.PROGRAM_STAGE + ")" +
+            " REFERENCES " + ProgramStageModel.TABLE + " (" + ProgramStageModel.Columns.UID + ")" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
             " FOREIGN KEY (" + ProgramStageDataElementModel.Columns.DATA_ELEMENT + ")" +
             " REFERENCES " + DataElementModel.TABLE + " (" + DataElementModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
@@ -516,7 +521,11 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ProgramIndicatorModel.Columns.EXPRESSION + " TEXT," +
             ProgramIndicatorModel.Columns.DIMENSION_ITEM + " TEXT," +
             ProgramIndicatorModel.Columns.FILTER + " TEXT," +
-            ProgramIndicatorModel.Columns.DECIMALS + " INTEGER" +
+            ProgramIndicatorModel.Columns.DECIMALS + " INTEGER," +
+            ProgramIndicatorModel.Columns.PROGRAM + " TEXT NOT NULL," +
+            " FOREIGN KEY (" + ProgramIndicatorModel.Columns.PROGRAM + ")" +
+            " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED " +
             ");";
 
     private static final String CREATE_PROGRAM_RULE_ACTION_TABLE = "CREATE TABLE " +
@@ -713,6 +722,21 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             UserRoleProgramLinkModel.Columns.PROGRAM + ")" +
             ");";
 
+    private static final String CREATE_PROGRAM_STAGE_SECTION_PROGRAM_INDICATOR_LINK_TABLE = "CREATE TABLE " +
+            ProgramStageSectionProgramIndicatorLinkModel.TABLE + " (" +
+            ProgramStageSectionProgramIndicatorLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION + " TEXT NOT NULL," +
+            ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_INDICATOR + " TEXT NOT NULL," +
+            " FOREIGN KEY (" + ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION + ") " +
+            " REFERENCES " + ProgramStageSectionModel.TABLE + " (" + ProgramStageModel.Columns.UID + ")" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+            " FOREIGN KEY (" + ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_INDICATOR + ") " +
+            " REFERENCES " + ProgramIndicatorModel.TABLE + " (" + ProgramIndicatorModel.Columns.UID + ")" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
+            " UNIQUE (" + ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION + ", " +
+            ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_INDICATOR + ")" +
+            ");";
+
     /**
      * This method should be used only for testing purposes
      */
@@ -756,6 +780,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_ORGANISATION_UNIT_PROGRAM_LINK_TABLE);
         database.execSQL(CREATE_USER_ROLE_TABLE);
         database.execSQL(CREATE_USER_ROLE_PROGRAM_TABLE);
+        database.execSQL(CREATE_PROGRAM_STAGE_SECTION_PROGRAM_INDICATOR_LINK_TABLE);
 
         return database;
     }

@@ -40,5 +40,10 @@ public interface ProgramStageSectionStore {
             @Nullable Integer sortOrder, @Nullable String programStage
     );
 
-    void close();
+    int update(@NonNull String uid, @Nullable String code, @NonNull String name,
+               @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+               @Nullable Integer sortOrder, @Nullable String programStage,
+               @NonNull String whereProgramStageSectionUid);
+
+    int delete(String uid);
 }

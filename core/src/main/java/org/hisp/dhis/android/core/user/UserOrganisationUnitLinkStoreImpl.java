@@ -35,6 +35,9 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals"
+})
 public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLinkStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             UserOrganisationUnitLinkModel.TABLE + " (" +
@@ -76,7 +79,14 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
 
         bindArguments(insertStatement, user, organisationUnit, organisationUnitScope);
 
-        return databaseAdapter.executeInsert(UserOrganisationUnitLinkModel.TABLE, insertStatement);
+
+
+
+        Long insert = databaseAdapter.executeInsert(UserOrganisationUnitLinkModel.TABLE, insertStatement);
+        insertStatement.clearBindings();
+
+        return insert;
+
     }
 
     @Override
@@ -90,7 +100,10 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
         sqLiteBind(updateStatement, 4, whereUserUid);
         sqLiteBind(updateStatement, 5, whereOrganisationUnitUid);
 
-        return databaseAdapter.executeUpdateDelete(UserOrganisationUnitLinkModel.TABLE, updateStatement);
+        int update = databaseAdapter.executeUpdateDelete(UserOrganisationUnitLinkModel.TABLE, updateStatement);
+        updateStatement.clearBindings();
+
+        return update;
     }
 
     @Override
@@ -100,7 +113,12 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
         // bind the whereClause
         sqLiteBind(deleteStatement, 1, userUid);
         sqLiteBind(deleteStatement, 2, organisationUnitUid);
-        return databaseAdapter.executeUpdateDelete(UserOrganisationUnitLinkModel.TABLE, deleteStatement);
+
+
+        int delete = databaseAdapter.executeUpdateDelete(UserOrganisationUnitLinkModel.TABLE, deleteStatement);
+        deleteStatement.clearBindings();
+
+        return delete;
     }
 
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String user, @NonNull String organisationUnit,

@@ -51,5 +51,19 @@ public interface DataElementStore {
             @Nullable String optionSet
     );
 
-    void close();
+    int delete(String uid);
+
+    int update(
+            @NonNull String uid,
+            @Nullable String code,
+            @NonNull String name,
+            @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+            @Nullable String shortName, @Nullable String displayShortName,
+            @Nullable String description, @Nullable String displayDescription,
+            @NonNull ValueType valueType, @Nullable Boolean zeroIsSignificant,
+            @Nullable String aggregationOperator, @Nullable String formName,
+            @Nullable String numberType, @Nullable String domainType,
+            @Nullable String dimension, @Nullable String displayFormName,
+            @Nullable String optionSet, @NonNull String whereDataElementUid
+    );
 }

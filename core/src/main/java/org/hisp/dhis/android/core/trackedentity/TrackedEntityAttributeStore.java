@@ -40,12 +40,22 @@ public interface TrackedEntityAttributeStore {
                 @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
                 @Nullable String shortName, @Nullable String displayShortName,
                 @Nullable String description, @Nullable String displayDescription,
-                @Nullable String pattern, @Nullable String sortOrderInListNoProgram,
+                @Nullable String pattern, @Nullable Integer sortOrderInListNoProgram,
                 @Nullable String optionSet, @NonNull ValueType valueType, @Nullable String expression,
                 @Nullable TrackedEntityAttributeSearchScope searchScope, @Nullable Boolean programScope,
                 @Nullable Boolean displayInListNoProgram, @Nullable Boolean generated,
                 @Nullable Boolean displayOnVisitSchedule, @Nullable Boolean orgUnitScope,
                 @Nullable Boolean unique, @Nullable Boolean inherit);
+    int update(@NonNull String uid, @Nullable String code, @NonNull String name,
+               @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+               @Nullable String shortName, @Nullable String displayShortName,
+               @Nullable String description, @Nullable String displayDescription,
+               @Nullable String pattern, @Nullable Integer sortOrderInListNoProgram,
+               @Nullable String optionSet, @NonNull ValueType valueType, @Nullable String expression,
+               @Nullable TrackedEntityAttributeSearchScope searchScope, @Nullable Boolean programScope,
+               @Nullable Boolean displayInListNoProgram, @Nullable Boolean generated,
+               @Nullable Boolean displayOnVisitSchedule, @Nullable Boolean orgUnitScope,
+               @Nullable Boolean unique, @Nullable Boolean inherit, @NonNull String whereTrackedEntityAttributeUid);
 
-    void close();
+    int delete(String uid);
 }

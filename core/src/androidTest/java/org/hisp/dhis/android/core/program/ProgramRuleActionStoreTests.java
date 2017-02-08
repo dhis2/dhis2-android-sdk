@@ -113,8 +113,10 @@ public class ProgramRuleActionStoreTests extends AbsStoreTestCase {
         programRuleActionStore = new ProgramRuleActionStoreImpl(database());
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
+
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE_UID);
+
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
 
         database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
@@ -123,17 +125,22 @@ public class ProgramRuleActionStoreTests extends AbsStoreTestCase {
 
         ContentValues programRule = CreateProgramRuleUtils.createWithoutProgramStage(1L, PROGRAM_RULE, PROGRAM);
         database().insert(ProgramRuleModel.TABLE, null, programRule);
+
         //Nullable foreign keys:
         ContentValues trackedEntityAttribute = CreateTrackedEntityUtils.create(1L, TRACKED_ENTITY_ATTRIBUTE);
         database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
+
         ContentValues programStage = CreateProgramStageUtils.create(2L, PROGRAM_STAGE, PROGRAM);
         database().insert(ProgramStageModel.TABLE, null, programStage);
+
         ContentValues programStageSection = CreateProgramStageSectionUtils.create(1L,
                 PROGRAM_STAGE_SECTION, PROGRAM_STAGE);
         database().insert(ProgramStageSectionModel.TABLE, null, programStageSection);
+
         ContentValues dataElement = CreateDataElementUtils.create(1L, DATA_ELEMENT, null);
         database().insert(DataElementModel.TABLE, null, dataElement);
-        ContentValues programIndicator = CreateProgramIndicatorUtils.create(1L, PROGRAM_INDICATOR);
+
+        ContentValues programIndicator = CreateProgramIndicatorUtils.create(1L, PROGRAM_INDICATOR, PROGRAM);
         database().insert(ProgramIndicatorModel.TABLE, null, programIndicator);
     }
 
@@ -336,10 +343,4 @@ public class ProgramRuleActionStoreTests extends AbsStoreTestCase {
 
     // ToDo: consider introducing conflict resolution strategy
 
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        programRuleActionStore.close();
-
-        assertThat(database().isOpen()).isTrue();
-    }
 }

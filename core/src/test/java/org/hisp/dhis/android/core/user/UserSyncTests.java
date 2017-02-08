@@ -367,7 +367,7 @@ public class UserSyncTests {
 
     @Test
     public void call_shouldUpdateUserIfRequestSucceeds() throws Exception {
-        // insert user first to check the update mechanism
+        // insert user first to check the updateWithSection mechanism
         when(userStore.update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
@@ -410,7 +410,7 @@ public class UserSyncTests {
 
     @Test
     public void call_shouldUpdateUserCredentialsIfRequestSucceeds() throws Exception {
-        // insert userCredentials first to check the update mechanism
+        // insert userCredentials first to check the updateWithSection mechanism
         when(userCredentialsStore.update(anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString())).thenReturn(1);
 
@@ -430,7 +430,7 @@ public class UserSyncTests {
         transactionOrder.verify(sqLiteDatabase, times(1)).setTransactionSuccessful();
         transactionOrder.verify(sqLiteDatabase, times(1)).endTransaction();
 
-        // verify that update is called once
+        // verify that updateWithSection is called once
         verify(userCredentialsStore, times(1)).update(userCredentials.uid(), userCredentials.code(),
                 "new_user_credentials_name", "new_user_credentials_display_name",
                 userCredentials.created(), userCredentials.lastUpdated(), userCredentials.username(),
@@ -445,7 +445,7 @@ public class UserSyncTests {
 
     @Test
     public void call_shouldInsertUserRoleIfRequestSucceeds() throws Exception {
-        // doesn't exist in database thus we should insert not update
+        // doesn't exist in database thus we should insert not updateWithSection
         when(userRoleStore.update(anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class), anyString())).thenReturn(0);
 
@@ -463,7 +463,7 @@ public class UserSyncTests {
         verify(userRoleStore, times(1)).insert(anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class));
 
-        // verify that update was called once (Because we try to update before we can insert)
+        // verify that updateWithSection was called once (Because we try to updateWithSection before we can insert)
         verify(userRoleStore, times(1)).update(anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class), anyString());
 
@@ -516,7 +516,7 @@ public class UserSyncTests {
         // verify that insert is called once
         verify(userRoleProgramLinkStore, times(1)).insert(anyString(), anyString());
 
-        // verify that update is called once since we try to update before we insert
+        // verify that updateWithSection is called once since we try to updateWithSection before we insert
         verify(userRoleProgramLinkStore, times(1)).update(anyString(), anyString(), anyString(), anyString());
 
         // verify that delete is never called
@@ -540,7 +540,7 @@ public class UserSyncTests {
         transactionOrder.verify(sqLiteDatabase, times(1)).setTransactionSuccessful();
         transactionOrder.verify(sqLiteDatabase, times(1)).endTransaction();
 
-        // verify that update is called once
+        // verify that updateWithSection is called once
         verify(userRoleProgramLinkStore, times(1)).update(anyString(), anyString(), anyString(), anyString());
 
         // verify that insert and delete is never called
@@ -570,7 +570,7 @@ public class UserSyncTests {
                 anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), any(Integer.class));
 
-        // verify that update is called once since we update before we insert
+        // verify that updateWithSection is called once since we updateWithSection before we insert
         verify(organisationUnitStore, times(1)).update(anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class), anyString(), anyString(),
                 anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
@@ -596,7 +596,7 @@ public class UserSyncTests {
         transactionOrder.verify(sqLiteDatabase, times(1)).setTransactionSuccessful();
         transactionOrder.verify(sqLiteDatabase, times(1)).endTransaction();
 
-        // verify that update is called once
+        // verify that updateWithSection is called once
         verify(organisationUnitStore, times(1)).update(anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class), anyString(), anyString(),
                 anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
@@ -630,7 +630,7 @@ public class UserSyncTests {
         // verify that insert is called once
         verify(userOrganisationUnitLinkStore, times(1)).insert(anyString(), anyString(), anyString());
 
-        // verify that update is called once since we try to update before we insert
+        // verify that updateWithSection is called once since we try to updateWithSection before we insert
         verify(userOrganisationUnitLinkStore, times(1)).update(
                 anyString(), anyString(), anyString(), anyString(), anyString()
         );
@@ -652,7 +652,7 @@ public class UserSyncTests {
         transactionOrder.verify(sqLiteDatabase, times(1)).setTransactionSuccessful();
         transactionOrder.verify(sqLiteDatabase, times(1)).endTransaction();
 
-        // verify that update is called once
+        // verify that updateWithSection is called once
         verify(userOrganisationUnitLinkStore, times(1)).update(
                 anyString(), anyString(), anyString(), anyString(), anyString()
         );
@@ -676,7 +676,7 @@ public class UserSyncTests {
         // verify that delete is called once
         verify(organisationUnitStore, times(1)).delete(anyString());
 
-        // verify that update and insert is never called
+        // verify that updateWithSection and insert is never called
         verify(organisationUnitStore, never()).update(anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class), anyString(), anyString(),
                 anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
@@ -704,7 +704,7 @@ public class UserSyncTests {
         // verify that delete is called once
         verify(userRoleStore, times(1)).delete(anyString());
 
-        // verify that update and insert is never called
+        // verify that updateWithSection and insert is never called
         verify(userRoleStore, never()).update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString());
 
@@ -726,7 +726,7 @@ public class UserSyncTests {
 
         verify(userCredentialsStore, times(1)).delete(anyString());
 
-        // verify that insert and update is never called
+        // verify that insert and updateWithSection is never called
 
         verify(userCredentialsStore, never()).update(anyString(), anyString(),
                 anyString(), anyString(),
@@ -753,7 +753,7 @@ public class UserSyncTests {
         // verify that delete is called once
         verify(userStore, times(1)).delete(anyString());
 
-        // verify that insert and update is never called
+        // verify that insert and updateWithSection is never called
         verify(userStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
@@ -768,7 +768,7 @@ public class UserSyncTests {
     //TODO Figure out how to mock the response header so we can mock HeaderUtils.DATE
 //    @Test
 //    public void call_shouldUpdateIntoResourceStoreWhenUpdatingUser() throws Exception {
-//        when(userStore.update(anyString(), anyString(), anyString(), anyString(),
+//        when(userStore.updateWithSection(anyString(), anyString(), anyString(), anyString(),
 //                any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
 //                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
 //                anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(1);
@@ -776,7 +776,7 @@ public class UserSyncTests {
 //
 //        Date parsedServerDate = BaseIdentifiableObject.DATE_FORMAT.parse(HeaderUtils.DATE);
 //
-//        when(resourceStore.update(
+//        when(resourceStore.updateWithSection(
 //                User.class.getSimpleName(), parsedServerDate, User.class.getSimpleName())
 //        ).thenReturn(1);
 //
@@ -789,14 +789,14 @@ public class UserSyncTests {
 //        transactionOrder.verify(sqLiteDatabase, times(1)).setTransactionSuccessful();
 //        transactionOrder.verify(sqLiteDatabase, times(1)).endTransaction();
 //
-//        // verify that userStore.update() is called once
-//        verify(userStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
+//        // verify that userStore.updateWithSection() is called once
+//        verify(userStore, times(1)).updateWithSection(anyString(), anyString(), anyString(), anyString(),
 //                any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
 //                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
 //                anyString(), anyString(), anyString(), anyString(), anyString());
 //
 //        // verify that resource store is called once with User mime type
-//        verify(resourceStore, times(1)).update(
+//        verify(resourceStore, times(1)).updateWithSection(
 //                User.class.getSimpleName(), parsedServerDate, User.class.getSimpleName()
 //        );
 //

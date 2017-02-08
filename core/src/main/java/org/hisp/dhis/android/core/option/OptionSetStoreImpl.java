@@ -82,10 +82,13 @@ public class OptionSetStoreImpl implements OptionSetStore {
     public long insert(@NonNull String uid, @NonNull String code, @NonNull String name, @NonNull String displayName,
                        @NonNull Date created, @NonNull Date lastUpdated, @NonNull Integer version,
                        @NonNull ValueType valueType) {
-        insertStatement.clearBindings();
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, version, valueType);
 
-        return insertStatement.executeInsert();
+        // execute and clear bindings
+        Long insert = insertStatement.executeInsert();
+        insertStatement.clearBindings();
+
+        return insert;
     }
 
     @Override
@@ -93,24 +96,29 @@ public class OptionSetStoreImpl implements OptionSetStore {
                       @NonNull String displayName, @NonNull Date created,
                       @NonNull Date lastUpdated, @NonNull Integer version, @NonNull ValueType valueType,
                       @NonNull String whereUid) {
-        updateStatement.clearBindings();
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, version, valueType);
 
         // bind the where clause
         sqLiteBind(updateStatement, 9, whereUid);
 
 
-        return updateStatement.executeUpdateDelete();
+        int update = updateStatement.executeUpdateDelete();
+        updateStatement.clearBindings();
+
+        return update;
     }
 
     @Override
     public int delete(@NonNull String uid) {
-        deleteStatement.clearBindings();
 
         // bind the where clause
         sqLiteBind(deleteStatement, 1, uid);
 
-        return deleteStatement.executeUpdateDelete();
+        // execute and clear bindings
+        int delete = deleteStatement.executeUpdateDelete();
+        deleteStatement.clearBindings();
+
+        return delete;
     }
 
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid, @NonNull String code,

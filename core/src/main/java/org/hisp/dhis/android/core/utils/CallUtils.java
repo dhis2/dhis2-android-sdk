@@ -25,25 +25,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.utils;
 
-package org.hisp.dhis.android.core.trackedentity;
+import java.util.Collection;
+import java.util.Iterator;
 
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.Filter;
+public final class CallUtils {
 
-import java.util.Map;
+    private CallUtils() {}
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-import retrofit2.http.QueryMap;
+    /**
+     * Build an IN filter string, given a collection of values and the property name to filter on.
+     * Returns a string of the "propertyName:in:[value1,value2...]
+     *
+     * @param propertyName the name of the property to filter on
+     * @param values       a collection of the values
+     * @return
+     */
+    public static String buildInFilter(String propertyName, Collection<String> values) {
+        //TODO: Extend the filters to provide this and then come back & modify it here
 
-public interface TrackedEntityService {
-    //TODO: Replace @QueryMap with @Query("filter") String lastUpdated when available
-    @GET("trackedEntities")
-    Call<Payload<TrackedEntity>> trackedEntities(@Query("fields") @Fields Filter<TrackedEntity> filter,
-                                                 @QueryMap Map<String, String> queryMap,
-                                                 @Query("paging") boolean paging
-    );
+        //10 char for brackets..etc size of field name and 12 char for the uid + comma per uid:
+        StringBuilder stringBuilder = new StringBuilder(propertyName.length() + values.size() * 12 + 10);
+        stringBuilder.append(propertyName).append(":in:[");
+        Iterator<String> it = values.iterator();
+        while (it.hasNext()) {
+            stringBuilder.append(it.next());
+            if (it.hasNext()) {
+                stringBuilder.append(',');
+            }
+        }
+        stringBuilder.append(']');
+        return stringBuilder.toString();
+    }
 }

@@ -35,8 +35,8 @@ public class CreateTrackedEntityUtils {
     public static final String TEST_CODE = "test_code";
     public static final String TEST_NAME = "test_name";
     public static final String TEST_DISPLAY_NAME = "test_display_name";
-    public static final String TEST_CREATED = "test_created";
-    public static final String TEST_LAST_UPDATED = "test_last_updated";
+    public static final String TEST_CREATED = "2001-02-07T16:04:40.387";
+    public static final String TEST_LAST_UPDATED = "2001-02-07T16:04:40.387";
     public static final String TEST_SHORT_NAME = "test_short_name";
     public static final String TEST_DISPLAY_SHORT_NAME = "test_display_short_name";
     public static final String TEST_DESCRIPTION = "test_description";

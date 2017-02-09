@@ -131,7 +131,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                                                                     Map<String, String> queryMap) throws IOException {
         Filter<OrganisationUnit> filter = Filter.<OrganisationUnit>builder().fields(
                 OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
-                OrganisationUnit.displayName, OrganisationUnit.created,
+                OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
                 OrganisationUnit.shortName, OrganisationUnit.displayShortName,
                 OrganisationUnit.description, OrganisationUnit.displayDescription,
                 OrganisationUnit.displayDescription, OrganisationUnit.path, OrganisationUnit.openingDate,

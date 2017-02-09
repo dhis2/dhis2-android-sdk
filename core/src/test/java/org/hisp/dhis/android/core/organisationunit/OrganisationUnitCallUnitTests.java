@@ -196,7 +196,7 @@ public class OrganisationUnitCallUnitTests {
         assertThat(uidCaptor.getValue()).isEqualTo(organisationUnit.uid());
         assertThat(filterCaptor.getValue().fields()).contains(
                 OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
-                OrganisationUnit.displayName, OrganisationUnit.created,
+                OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
                 OrganisationUnit.shortName, OrganisationUnit.displayShortName,
                 OrganisationUnit.description, OrganisationUnit.displayDescription,
                 OrganisationUnit.displayDescription, OrganisationUnit.path, OrganisationUnit.openingDate,
@@ -230,7 +230,7 @@ public class OrganisationUnitCallUnitTests {
         assertThat(uidCaptor.getValue()).isEqualTo(organisationUnit.uid());
         assertThat(filterCaptor.getValue().fields()).contains(
                 OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
-                OrganisationUnit.displayName, OrganisationUnit.created,
+                OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
                 OrganisationUnit.shortName, OrganisationUnit.displayShortName,
                 OrganisationUnit.description, OrganisationUnit.displayDescription,
                 OrganisationUnit.displayDescription, OrganisationUnit.path, OrganisationUnit.openingDate,

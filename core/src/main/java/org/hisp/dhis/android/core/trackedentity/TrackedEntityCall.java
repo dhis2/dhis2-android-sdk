@@ -121,7 +121,7 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
     private Response<Payload<TrackedEntity>> getTrackedEntities(Map<String, String> queryMap) throws IOException {
         Filter<TrackedEntity> filter = Filter.<TrackedEntity>builder().fields(
                 TrackedEntity.uid, TrackedEntity.code, TrackedEntity.name,
-                TrackedEntity.displayName, TrackedEntity.created,
+                TrackedEntity.displayName, TrackedEntity.created, TrackedEntity.lastUpdated,
                 TrackedEntity.shortName, TrackedEntity.displayShortName,
                 TrackedEntity.description, TrackedEntity.displayDescription,
                 TrackedEntity.deleted

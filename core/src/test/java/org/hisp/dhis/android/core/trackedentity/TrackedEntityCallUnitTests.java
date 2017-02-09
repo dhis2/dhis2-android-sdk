@@ -153,7 +153,7 @@ public class TrackedEntityCallUnitTests {
 
         assertThat(filterCaptor.getValue().fields()).contains(
                 TrackedEntity.uid, TrackedEntity.code, TrackedEntity.name,
-                TrackedEntity.displayName, TrackedEntity.created,
+                TrackedEntity.displayName, TrackedEntity.created, TrackedEntity.lastUpdated,
                 TrackedEntity.shortName, TrackedEntity.displayShortName,
                 TrackedEntity.description, TrackedEntity.displayDescription,
                 TrackedEntity.displayDescription,
@@ -187,7 +187,7 @@ public class TrackedEntityCallUnitTests {
 
         assertThat(filterCaptor.getValue().fields()).contains(
                 TrackedEntity.uid, TrackedEntity.code, TrackedEntity.name,
-                TrackedEntity.displayName, TrackedEntity.created,
+                TrackedEntity.displayName, TrackedEntity.created, TrackedEntity.lastUpdated,
                 TrackedEntity.shortName, TrackedEntity.displayShortName,
                 TrackedEntity.description, TrackedEntity.displayDescription,
                 TrackedEntity.displayDescription,

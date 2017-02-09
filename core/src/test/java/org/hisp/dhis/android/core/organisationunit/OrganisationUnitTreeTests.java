@@ -63,7 +63,7 @@ public class OrganisationUnitTreeTests {
                     uids[i],
                     null, null, null, null, null, null, null, null, null, null,
                     paths[i],
-                    null, null, null, null, null
+                    null, null, null, null, false
             ));
         }
         Set<String> rootUids = OrganisationUnitTree.findRoots(orgUnits);
@@ -84,7 +84,7 @@ public class OrganisationUnitTreeTests {
                 uids[0],
                 null, null, null, null, null, null, null, null, null, null,
                 "RootOrgUnit/Level11",
-                null, null, null, null, null));
+                null, null, null, null, false));
 
         Set<String> rootUids = OrganisationUnitTree.findRoots(orgUnits);
         assertThat(rootUids.contains(UNASSIGNED_L12)).isFalse();
@@ -102,7 +102,7 @@ public class OrganisationUnitTreeTests {
                 uids[0],
                 null, null, null, null, null, null, null, null, null, null,
                 "//RootOrgUnit//Level11//",
-                null, null, null, null, null));
+                null, null, null, null, false));
 
         Set<String> rootUids = OrganisationUnitTree.findRoots(orgUnits);
         assertThat(rootUids.contains(UNASSIGNED_L12)).isFalse();
@@ -120,19 +120,7 @@ public class OrganisationUnitTreeTests {
                 uids[0],
                 null, null, null, null, null, null, null, null, null, null,
                 null, //<--passing null path
-                null, null, null, null, null));
-
-        OrganisationUnitTree.findRoots(orgUnits);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void exception_shouldReturnRootUids_EmptyPaths() {
-        List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
-        orgUnits.add(OrganisationUnit.create(
-                uids[0],
-                null, null, null, null, null, null, null, null, null, null,
-                "", //<--passing empty path
-                null, null, null, null, null));
+                null, null, null, null, false));
 
         OrganisationUnitTree.findRoots(orgUnits);
     }
@@ -143,6 +131,27 @@ public class OrganisationUnitTreeTests {
         assertThat(rootUids.isEmpty()).isTrue();
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void exception_shouldReturnRootUids_EmptyPaths() {
+        List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
+        orgUnits.add(OrganisationUnit.create(
+                uids[0],
+                null, null, null, null, null, null, null, null, null, null,
+                "", //<--passing empty path
+                null, null, null, null, false));
+
+        OrganisationUnitTree.findRoots(orgUnits);
+    }
+
+    @Test
+    public void getRootUids_shouldReturnRootUids_NotAssigned() {
+        List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
+        orgUnits.add(OrganisationUnit.create(
+                uids[0],
+                null, null, null, null, null, null, null, null, null, null,
+                "/RootOrgUnit//Level11/",
+                null, null, null, null, false));
+    }
     @Test
     public void findRoots_shouldReturnRootUids_NullList() {
         Set<String> rootUids = OrganisationUnitTree.findRoots(null);

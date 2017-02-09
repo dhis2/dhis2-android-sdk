@@ -49,6 +49,7 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
     private static final String ALLOW_PROVIDED_ELSEWHERE = "allowProvidedElsewhere";
     private static final String SORT_ORDER = "sortOrder";
     private static final String ALLOW_FUTURE_DATE = "allowFutureDate";
+    private static final String PROGRAM_STAGE = "programStage";
 
     public static final Field<ProgramStageDataElement, String> uid
             = Field.create(UID);
@@ -74,6 +75,8 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
             = Field.create(ALLOW_FUTURE_DATE);
     public static final NestedField<ProgramStageDataElement, DataElement> dataElement
             = NestedField.create(DATA_ELEMENT);
+    public static final NestedField<ProgramStageDataElement, ProgramStage> programStage
+            = NestedField.create(PROGRAM_STAGE);
     public static final Field<ProgramStageDataElement, Boolean> deleted
             = Field.create(DELETED);
 
@@ -101,6 +104,10 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
     @JsonProperty(DATA_ELEMENT)
     public abstract DataElement dataElement();
 
+    @Nullable
+    @JsonProperty(PROGRAM_STAGE)
+    public abstract ProgramStage programStage();
+
     @JsonCreator
     public static ProgramStageDataElement create(
             @JsonProperty(UID) String uid,
@@ -115,7 +122,8 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
             @JsonProperty(SORT_ORDER) Integer sortOrder,
             @JsonProperty(ALLOW_FUTURE_DATE) Boolean allowFutureDate,
             @JsonProperty(DATA_ELEMENT) DataElement dataElement,
-            @JsonProperty(DELETED) Boolean deleted
+            @JsonProperty(DELETED) Boolean deleted,
+            @JsonProperty(PROGRAM_STAGE) ProgramStage programStage
     ) {
 
         return new AutoValue_ProgramStageDataElement(
@@ -131,7 +139,10 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
                 allowProvidedElsewhere,
                 sortOrder,
                 allowFutureDate,
-                dataElement
+                dataElement,
+                programStage
         );
     }
+
+
 }

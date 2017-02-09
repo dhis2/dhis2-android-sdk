@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
@@ -72,10 +73,14 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
 
-    public TrackedEntityStoreImpl(SQLiteDatabase database) {
+    private final DatabaseAdapter database;
+
+    public TrackedEntityStoreImpl(DatabaseAdapter database) {
+        this.database = database;
         this.insertStatement = database.compileStatement(INSERT_STATEMENT);
         this.updateStatement = database.compileStatement(UPDATE_STATEMENT);
         this.deleteStatement = database.compileStatement(DELETE_STATEMENT);
+
     }
 
     @Override
@@ -98,9 +103,10 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
         sqLiteBind(insertStatement, 9, description);
         sqLiteBind(insertStatement, 10, displayDescription);
 
-        long rowId = insertStatement.executeInsert();
+        long rowId = database.executeInsert(TrackedEntityModel.TABLE, insertStatement);
         insertStatement.clearBindings();
         return rowId;
+
     }
 
     @Override
@@ -123,7 +129,7 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
         sqLiteBind(updateStatement, 10, displayDescription);
         sqLiteBind(updateStatement, 11, whereUid);
 
-        int rowId = updateStatement.executeUpdateDelete();
+        int rowId = database.executeUpdateDelete(TrackedEntityModel.TABLE, updateStatement);
         updateStatement.clearBindings();
         return rowId;
     }
@@ -134,7 +140,8 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
 
         sqLiteBind(deleteStatement, 1, uid);
 
-        int rowId = deleteStatement.executeUpdateDelete();
+        int rowId = database.delete(TrackedEntityModel.TABLE, null, null);
+        deleteStatement.executeUpdateDelete();
         deleteStatement.clearBindings();
         return rowId;
     }

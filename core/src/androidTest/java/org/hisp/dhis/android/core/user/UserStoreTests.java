@@ -106,7 +106,7 @@ public class UserStoreTests extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        userStore = new UserStoreImpl(database());
+        userStore = new UserStoreImpl(databaseAdapter());
     }
 
     @Test

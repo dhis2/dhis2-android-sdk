@@ -47,17 +47,12 @@ public abstract class ResourceModel extends BaseModel {
 
     public static class Columns extends BaseModel.Columns {
         public static final String RESOURCE_TYPE = "resourceType";
-        public static final String RESOURCE_UID = "uid";
         public static final String LAST_SYNCED = "lastSynced";
     }
 
     @Nullable
     @ColumnName(Columns.RESOURCE_TYPE)
     public abstract String resourceType();
-
-    @Nullable
-    @ColumnName(Columns.RESOURCE_UID)
-    public abstract String uid();
 
     @Nullable
     @ColumnName(Columns.LAST_SYNCED)
@@ -80,8 +75,6 @@ public abstract class ResourceModel extends BaseModel {
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
         public abstract Builder resourceType(@Nullable String resourceType);
-
-        public abstract Builder uid(@Nullable String uid);
 
         public abstract Builder lastSynced(@Nullable Date lastSynced);
 

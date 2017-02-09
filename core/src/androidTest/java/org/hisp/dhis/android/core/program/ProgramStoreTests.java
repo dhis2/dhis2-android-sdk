@@ -47,7 +47,6 @@ import java.io.IOException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.bouncycastle.asn1.x500.style.RFC4519Style.l;
 import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
@@ -138,7 +137,7 @@ public class ProgramStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        this.programStore = new ProgramStoreImpl(database());
+        this.programStore = new ProgramStoreImpl(databaseAdapter());
 
         //RelationshipType foreign key corresponds to table entry
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID, RELATIONSHIP_TYPE);
@@ -453,9 +452,4 @@ public class ProgramStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).isExhausted();
     }
 
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        programStore.close();
-        assertThat(database().isOpen()).isTrue();
-    }
 }

@@ -211,14 +211,14 @@ public class UserAuthenticateCallIntegrationTests extends AbsStoreTestCase {
 
         UserService userService = retrofit.create(UserService.class);
 
-        UserStore userStore = new UserStoreImpl(database());
-        UserCredentialsStore userCredentialsStore = new UserCredentialsStoreImpl(database());
-        OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(database());
-        AuthenticatedUserStore authenticatedUserStore = new AuthenticatedUserStoreImpl(database());
-        UserOrganisationUnitLinkStore userOrganisationUnitLinkStore = new UserOrganisationUnitLinkStoreImpl(database());
-        ResourceStore resourceStore = new ResourceStoreImpl(database());
+        UserStore userStore = new UserStoreImpl(databaseAdapter());
+        UserCredentialsStore userCredentialsStore = new UserCredentialsStoreImpl(databaseAdapter());
+        OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter());
+        AuthenticatedUserStore authenticatedUserStore = new AuthenticatedUserStoreImpl(databaseAdapter());
+        UserOrganisationUnitLinkStore userOrganisationUnitLinkStore = new UserOrganisationUnitLinkStoreImpl(databaseAdapter());
+        ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
-        authenticateUserCall = new UserAuthenticateCall(userService, database(), userStore,
+        authenticateUserCall = new UserAuthenticateCall(userService, databaseAdapter(), userStore,
                 userCredentialsStore, userOrganisationUnitLinkStore, resourceStore, authenticatedUserStore,
                 organisationUnitStore, "test_user", "test_password");
     }

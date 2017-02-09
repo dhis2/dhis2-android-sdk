@@ -76,7 +76,7 @@ public class TrackedEntityAttributeTests {
                 "    \"dimensionItemType\": \"PROGRAM_ATTRIBUTE\",\n" +
                 "    \"access\": {\n" +
                 "        \"read\": true,\n" +
-                "        \"update\": false,\n" +
+                "        \"updateWithSection\": false,\n" +
                 "        \"externalize\": false,\n" +
                 "        \"delete\": false,\n" +
                 "        \"write\": false,\n" +

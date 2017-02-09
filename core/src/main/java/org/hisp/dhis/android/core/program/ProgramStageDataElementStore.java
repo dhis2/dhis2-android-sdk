@@ -39,8 +39,27 @@ public interface ProgramStageDataElementStore {
             @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
             @NonNull Boolean displayInReports, @NonNull Boolean compulsory,
             @NonNull Boolean allowProvidedElsewhere, @Nullable Integer sortOrder,
-            @NonNull Boolean allowFutureDate, @NonNull String dataElement, @Nullable String programStageSection
+            @NonNull Boolean allowFutureDate, @NonNull String dataElement, @Nullable String programStageSection,
+            @Nullable String programStageUid
     );
 
-    void close();
+    int updateWithSection(@NonNull String uid, @Nullable String code, @Nullable String name,
+                          @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+                          @NonNull Boolean displayInReports, @NonNull Boolean compulsory,
+                          @NonNull Boolean allowProvidedElsewhere, @Nullable Integer sortOrder,
+                          @NonNull Boolean allowFutureDate, @NonNull String dataElement,
+                          @Nullable String programStageUid, @Nullable String programStageSection,
+                          @NonNull String whereProgramStageDataElementUid
+    );
+
+    int updateWithoutSection(@NonNull String uid, @Nullable String code, @Nullable String name,
+                          @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+                          @NonNull Boolean displayInReports, @NonNull Boolean compulsory,
+                          @NonNull Boolean allowProvidedElsewhere, @Nullable Integer sortOrder,
+                          @NonNull Boolean allowFutureDate, @NonNull String dataElement,
+                          @Nullable String programStageUid, @NonNull String whereProgramStageDataElementUid
+    );
+
+    int delete(@NonNull String uid);
+
 }

@@ -51,6 +51,7 @@ public abstract class ProgramStageDataElementModel extends BaseIdentifiableObjec
         public static final String ALLOW_FUTURE_DATE = "allowFutureDate";
         public static final String DATA_ELEMENT = "dataElement";
         public static final String PROGRAM_STAGE_SECTION = "programStageSection";
+        public static final String PROGRAM_STAGE = "programStage";
     }
 
     @Nullable

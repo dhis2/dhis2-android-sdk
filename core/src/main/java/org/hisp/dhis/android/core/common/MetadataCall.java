@@ -29,26 +29,31 @@ package org.hisp.dhis.android.core.common;
 
 import android.database.sqlite.SQLiteDatabase;
 
+import org.hisp.dhis.android.core.program.ProgramSyncCall;
 import org.hisp.dhis.android.core.user.UserSyncCall;
 
 public class MetadataCall {
     private final SQLiteDatabase sqLiteDatabase;
     private final UserSyncCall userSyncCall;
+    private final ProgramSyncCall programSyncCall;
 
     public MetadataCall(SQLiteDatabase sqLiteDatabase,
-                        UserSyncCall userSyncCall) {
+                        UserSyncCall userSyncCall,
+                        ProgramSyncCall programSyncCall) {
         this.sqLiteDatabase = sqLiteDatabase;
         this.userSyncCall = userSyncCall;
+        this.programSyncCall = programSyncCall;
     }
 
     public void execute() throws Exception {
         sqLiteDatabase.beginTransaction();
         try {
             userSyncCall.call();
+            programSyncCall.call();
 
 
             sqLiteDatabase.setTransactionSuccessful();
-        }finally {
+        } finally {
             sqLiteDatabase.endTransaction();
         }
     }

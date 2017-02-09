@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.program;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -62,6 +63,7 @@ public class ProgramIndicatorStoreTests extends AbsStoreTestCase {
     private static final String EXPRESSION = "test_expression";
     private static final String DIMENSION_ITEM = "test_dimension_item";
     private static final String FILTER = "test_filter";
+    private static final String PROGRAM = "test_program";
     private static final Integer DECIMALS = 3;
 
 
@@ -80,7 +82,8 @@ public class ProgramIndicatorStoreTests extends AbsStoreTestCase {
             ProgramIndicatorModel.Columns.EXPRESSION,
             ProgramIndicatorModel.Columns.DIMENSION_ITEM,
             ProgramIndicatorModel.Columns.FILTER,
-            ProgramIndicatorModel.Columns.DECIMALS
+            ProgramIndicatorModel.Columns.DECIMALS,
+            ProgramIndicatorModel.Columns.PROGRAM
     };
 
     private ProgramIndicatorStore programIndicatorStore;
@@ -90,11 +93,13 @@ public class ProgramIndicatorStoreTests extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        programIndicatorStore = new ProgramIndicatorStoreImpl(database());
+        programIndicatorStore = new ProgramIndicatorStoreImpl(databaseAdapter());
     }
 
     @Test
     public void insert_shouldPersistRowInDatabase() throws ParseException {
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, null, null, null);
+        database().insert(ProgramModel.TABLE, null, program);
 
         long rowId = programIndicatorStore.insert(
                 UID,
@@ -111,7 +116,8 @@ public class ProgramIndicatorStoreTests extends AbsStoreTestCase {
                 EXPRESSION,
                 DIMENSION_ITEM,
                 FILTER,
-                DECIMALS
+                DECIMALS,
+                PROGRAM
         );
 
         Cursor cursor = database().query(ProgramIndicatorModel.TABLE,
@@ -134,15 +140,11 @@ public class ProgramIndicatorStoreTests extends AbsStoreTestCase {
                         EXPRESSION,
                         DIMENSION_ITEM,
                         FILTER,
-                        DECIMALS)
+                        DECIMALS,
+                        PROGRAM)
                 .isExhausted();
     }
 
     // ToDo: consider introducing conflict resolution strategy
 
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        programIndicatorStore.close();
-        assertThat(database().isOpen()).isTrue();
-    }
 }

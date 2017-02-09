@@ -39,7 +39,18 @@ public interface ProgramRuleVariableModelStore {
                 @Nullable Boolean useCodeForOptionSet, @NonNull String program,
                 @Nullable String programStage, @Nullable String dataElement,
                 @Nullable String trackedEntityAttribute,
-                @Nullable ProgramRuleVariableSourceType programRuleVariableSourceType);
+                @Nullable ProgramRuleVariableSourceType programRuleVariableSourceType
+    );
 
-    void close();
+    int update(
+            @NonNull String uid, @Nullable String code, @NonNull String name,
+            @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+            @Nullable Boolean useCodeForOptionSet, @NonNull String program,
+            @Nullable String programStage, @Nullable String dataElement,
+            @Nullable String trackedEntityAttribute,
+            @Nullable ProgramRuleVariableSourceType programRuleVariableSourceType,
+            @NonNull String whereProgramRuleVariableUid
+    );
+
+    int delete(String uid);
 }

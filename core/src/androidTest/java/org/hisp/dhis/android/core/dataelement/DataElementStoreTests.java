@@ -109,7 +109,7 @@ public class DataElementStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.dataElementStore = new DataElementStoreImpl(database());
+        this.dataElementStore = new DataElementStoreImpl(databaseAdapter());
     }
 
     @Test
@@ -297,12 +297,6 @@ public class DataElementStoreTests extends AbsStoreTestCase {
 
         // checking that dataElement was deleted by option set on delete cascade
         assertThatCursor(cursor).isExhausted();
-    }
-
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        dataElementStore.close();
-        assertThat(database().isOpen()).isTrue();
     }
 
 }

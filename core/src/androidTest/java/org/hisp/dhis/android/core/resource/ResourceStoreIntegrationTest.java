@@ -35,7 +35,7 @@ public class ResourceStoreIntegrationTest extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.resourceStore = new ResourceStoreImpl(database());
+        this.resourceStore = new ResourceStoreImpl(databaseAdapter());
     }
 
     @Test

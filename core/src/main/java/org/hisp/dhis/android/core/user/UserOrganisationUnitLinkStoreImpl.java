@@ -28,12 +28,16 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals"
+})
 public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLinkStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             UserOrganisationUnitLinkModel.TABLE + " (" +
@@ -55,16 +59,16 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
             " WHERE " + UserOrganisationUnitLinkModel.Columns.USER + " =? AND " +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + " =?;";
 
-    private final SQLiteDatabase sqLiteDatabase;
+    private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
 
-    public UserOrganisationUnitLinkStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteDatabase = sqLiteDatabase;
-        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
-        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
-        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
+    public UserOrganisationUnitLinkStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -75,7 +79,10 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
 
         bindArguments(insertStatement, user, organisationUnit, organisationUnitScope);
 
-        return insertStatement.executeInsert();
+        Long insert = databaseAdapter.executeInsert(UserOrganisationUnitLinkModel.TABLE, insertStatement);
+        insertStatement.clearBindings();
+
+        return insert;
     }
 
     @Override
@@ -89,8 +96,10 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
         sqLiteBind(updateStatement, 4, whereUserUid);
         sqLiteBind(updateStatement, 5, whereOrganisationUnitUid);
 
+        int update = databaseAdapter.executeUpdateDelete(UserOrganisationUnitLinkModel.TABLE, updateStatement);
+        updateStatement.clearBindings();
 
-        return updateStatement.executeUpdateDelete();
+        return update;
     }
 
     @Override
@@ -101,7 +110,10 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
         sqLiteBind(deleteStatement, 1, userUid);
         sqLiteBind(deleteStatement, 2, organisationUnitUid);
 
-        return deleteStatement.executeUpdateDelete();
+        int delete = databaseAdapter.executeUpdateDelete(UserOrganisationUnitLinkModel.TABLE, deleteStatement);
+        deleteStatement.clearBindings();
+
+        return delete;
     }
 
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String user, @NonNull String organisationUnit,
@@ -113,7 +125,7 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
 
     @Override
     public int delete() {
-        return sqLiteDatabase.delete(UserOrganisationUnitLinkModel.TABLE, null, null);
+        return databaseAdapter.delete(UserOrganisationUnitLinkModel.TABLE, null, null);
     }
 
 }

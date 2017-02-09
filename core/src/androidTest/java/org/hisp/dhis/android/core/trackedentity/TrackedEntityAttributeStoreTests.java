@@ -87,7 +87,7 @@ public class TrackedEntityAttributeStoreTests extends AbsStoreTestCase {
     private static final String DESCRIPTION = "test_description";
     private static final String DISPLAY_DESCRIPTION = "test_display_description";
     private static final String PATTERN = "test_pattern";
-    private static final String SORT_ORDER_IN_LIST_NO_PROGRAM = "test_sort_order_in_list_no_program";
+    private static final Integer SORT_ORDER_IN_LIST_NO_PROGRAM = 2;
     private static final ValueType VALUE_TYPE = ValueType.BOOLEAN;
     private static final String EXPRESSION = "test_expression";
     private static final TrackedEntityAttributeSearchScope SEARCH_SCOPE =
@@ -115,7 +115,7 @@ public class TrackedEntityAttributeStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        trackedEntityAttributeStore = new TrackedEntityAttributeStoreImpl(database());
+        trackedEntityAttributeStore = new TrackedEntityAttributeStoreImpl(databaseAdapter());
         ContentValues optionSet = CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
         database().insert(OptionSetModel.TABLE, null, optionSet);
     }
@@ -236,9 +236,4 @@ public class TrackedEntityAttributeStoreTests extends AbsStoreTestCase {
     }
 
     // ToDo: consider introducing conflict resolution strategy
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        trackedEntityAttributeStore.close();
-        assertThat(database().isOpen()).isTrue();
-    }
 }

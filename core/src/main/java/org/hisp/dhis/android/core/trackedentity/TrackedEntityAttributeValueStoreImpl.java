@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
@@ -42,15 +42,17 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             TrackedEntityAttributeValueModel.TABLE + " (" +
             TrackedEntityAttributeValueModel.Columns.STATE + ", " +
-            TrackedEntityAttributeValueModel.Columns.VALUE  + ", " +
+            TrackedEntityAttributeValueModel.Columns.VALUE + ", " +
             TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ", " +
             TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + ") " +
             "VALUES (?, ?, ?, ?)";
 
     private final SQLiteStatement insertRowStatement;
+    private final DatabaseAdapter databaseAdapter;
 
-    public TrackedEntityAttributeValueStoreImpl(SQLiteDatabase database) {
-        this.insertRowStatement = database.compileStatement(INSERT_STATEMENT);
+    public TrackedEntityAttributeValueStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertRowStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
@@ -66,7 +68,7 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
         sqLiteBind(insertRowStatement, 3, trackedEntityAttribute);
         sqLiteBind(insertRowStatement, 4, trackedEntityInstance);
 
-        return insertRowStatement.executeInsert();
+        return databaseAdapter.executeInsert(TrackedEntityAttributeValueModel.TABLE, insertRowStatement);
     }
 
     @Override

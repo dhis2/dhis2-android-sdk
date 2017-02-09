@@ -34,7 +34,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
@@ -43,6 +42,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
+import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -304,15 +304,16 @@ public class UserSyncCallIntegrationTest extends AbsStoreTestCase {
 
         UserSyncService userSyncService = retrofit.create(UserSyncService.class);
 
-        OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(database());
-        UserOrganisationUnitLinkStore userOrganisationUnitStore = new UserOrganisationUnitLinkStoreImpl(database());
-        UserCredentialsStore userCredentialsStore = new UserCredentialsStoreImpl(database());
-        UserRoleStore userRoleStore = new UserRoleStoreImpl(database());
-        UserStore userStore = new UserStoreImpl(database());
-        UserRoleProgramLinkStore userRoleProgramLinkStore = new UserRoleProgramLinkStoreImpl(database());
-        ResourceStore resourceStore = new ResourceStoreImpl(database());
+        OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter());
+        UserOrganisationUnitLinkStore userOrganisationUnitStore =
+                new UserOrganisationUnitLinkStoreImpl(databaseAdapter());
+        UserCredentialsStore userCredentialsStore = new UserCredentialsStoreImpl(databaseAdapter());
+        UserRoleStore userRoleStore = new UserRoleStoreImpl(databaseAdapter());
+        UserStore userStore = new UserStoreImpl(databaseAdapter());
+        UserRoleProgramLinkStore userRoleProgramLinkStore = new UserRoleProgramLinkStoreImpl(databaseAdapter());
+        ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
-        userSyncCall = new UserSyncCall(userSyncService, database(), organisationUnitStore,
+        userSyncCall = new UserSyncCall(userSyncService, databaseAdapter(), organisationUnitStore,
                 userOrganisationUnitStore, userCredentialsStore, userRoleStore,
                 userStore, userRoleProgramLinkStore, resourceStore);
 
@@ -327,7 +328,7 @@ public class UserSyncCallIntegrationTest extends AbsStoreTestCase {
     // this test is commented out until we finish sync the program sub graph.
     // This test will break since we try to insert userRoleProgramLink without having programs.
 //    @Test
-    public void call_shouldPersistInDatabase() throws Exception {
+    public void call_shouldPersistInDatabase() throws Exception  {
         userSyncCall.call();
 
         Cursor userCursor = database().query(UserModel.TABLE, USER_PROJECTION, null, null, null, null, null);

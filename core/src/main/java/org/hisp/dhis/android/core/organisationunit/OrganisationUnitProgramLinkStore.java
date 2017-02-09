@@ -32,5 +32,4 @@ import android.support.annotation.NonNull;
 public interface OrganisationUnitProgramLinkStore {
     long insert(@NonNull String organisationUnitUid, @NonNull String programUid);
 
-    void close();
 }

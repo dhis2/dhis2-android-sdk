@@ -66,7 +66,7 @@ public class UserRoleProgramLinkStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        organisationUnitLinkStore = new UserRoleProgramLinkStoreImpl(database());
+        organisationUnitLinkStore = new UserRoleProgramLinkStoreImpl(databaseAdapter());
         ContentValues userRole = CreateUserRoleUtils.create(ID, USER_ROLE_UID);
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,

@@ -77,7 +77,7 @@ public class UserRoleStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        userRoleStore = new UserRoleStoreImpl(database());
+        userRoleStore = new UserRoleStoreImpl(databaseAdapter());
     }
 
     @Test

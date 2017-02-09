@@ -28,15 +28,19 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals"
+})
 public class ProgramStoreImpl implements ProgramStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + ProgramModel.TABLE + " (" +
             ProgramModel.Columns.UID + ", " +
@@ -73,10 +77,54 @@ public class ProgramStoreImpl implements ProgramStore {
             "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
             "?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-    private final SQLiteStatement sqLiteStatement;
+    private static final String UPDATE_STATEMENT = "UPDATE " + ProgramModel.TABLE + " SET " +
+            ProgramModel.Columns.UID + " =?, " +
+            ProgramModel.Columns.CODE + " =?, " +
+            ProgramModel.Columns.NAME + " =?, " +
+            ProgramModel.Columns.DISPLAY_NAME + " =?, " +
+            ProgramModel.Columns.CREATED + " =?, " +
+            ProgramModel.Columns.LAST_UPDATED + " =?, " +
+            ProgramModel.Columns.SHORT_NAME + " =?, " +
+            ProgramModel.Columns.DISPLAY_SHORT_NAME + " =?, " +
+            ProgramModel.Columns.DESCRIPTION + " =?, " +
+            ProgramModel.Columns.DISPLAY_DESCRIPTION + " =?, " +
+            ProgramModel.Columns.VERSION + " =?, " +
+            ProgramModel.Columns.ONLY_ENROLL_ONCE + " =?, " +
+            ProgramModel.Columns.ENROLLMENT_DATE_LABEL + " =?, " +
+            ProgramModel.Columns.DISPLAY_INCIDENT_DATE + " =?, " +
+            ProgramModel.Columns.INCIDENT_DATE_LABEL + " =?, " +
+            ProgramModel.Columns.REGISTRATION + " =?, " +
+            ProgramModel.Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE + " =?, " +
+            ProgramModel.Columns.DATA_ENTRY_METHOD + " =?, " +
+            ProgramModel.Columns.IGNORE_OVERDUE_EVENTS + " =?, " +
+            ProgramModel.Columns.RELATIONSHIP_FROM_A + " =?, " +
+            ProgramModel.Columns.SELECT_INCIDENT_DATES_IN_FUTURE + " =?, " +
+            ProgramModel.Columns.CAPTURE_COORDINATES + " =?, " +
+            ProgramModel.Columns.USE_FIRST_STAGE_DURING_REGISTRATION + " =?, " +
+            ProgramModel.Columns.DISPLAY_FRONT_PAGE_LIST + " =?, " +
+            ProgramModel.Columns.PROGRAM_TYPE + " =?, " +
+            ProgramModel.Columns.RELATIONSHIP_TYPE + " =?, " +
+            ProgramModel.Columns.RELATIONSHIP_TEXT + " =?, " +
+            ProgramModel.Columns.RELATED_PROGRAM + " =?, " +
+            ProgramModel.Columns.TRACKED_ENTITY + " =? " +
+            " WHERE " +
+            ProgramModel.Columns.UID + " = ?;";
 
-    public ProgramStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+
+    private static final String DELETE_STATEMENT = "DELETE FROM " + ProgramModel.TABLE + " WHERE " +
+            ProgramModel.Columns.UID + " =?;";
+
+    private final SQLiteStatement insertStatement;
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
+
+    private final DatabaseAdapter databaseAdapter;
+
+    public ProgramStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -114,8 +162,111 @@ public class ProgramStoreImpl implements ProgramStore {
 //            @NonNull CategoryCombo categoryCombo
     ) {
 
-        sqLiteStatement.clearBindings();
+        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
+                description, displayDescription, version, onlyEnrollOnce, enrollmentDateLabel, displayIncidentDate,
+                incidentDateLabel, registration, selectEnrollmentDatesInFuture, dataEntryMethod,
+                ignoreOverdueEvents, relationshipFromA, selectIncidentDatesInFuture, captureCoordinates,
+                useFirstStageDuringRegistration, displayInFrontPageList, programType,
+                relationshipType, relationshipText, relatedProgram, trackedEntity);
 
+        Long insert = databaseAdapter.executeInsert(ProgramModel.TABLE, insertStatement);
+        insertStatement.clearBindings();
+
+        return insert;
+    }
+
+    @Override
+    public int update(@NonNull String uid,
+                      @Nullable String code,
+                      @NonNull String name,
+                      @Nullable String displayName,
+                      @Nullable Date created,
+                      @Nullable Date lastUpdated,
+                      @Nullable String shortName,
+                      @Nullable String displayShortName,
+                      @Nullable String description,
+                      @Nullable String displayDescription,
+                      @Nullable Integer version,
+                      @Nullable Boolean onlyEnrollOnce,
+                      @Nullable String enrollmentDateLabel,
+                      @Nullable Boolean displayIncidentDate,
+                      @Nullable String incidentDateLabel,
+                      @Nullable Boolean registration,
+                      @Nullable Boolean selectEnrollmentDatesInFuture,
+                      @Nullable Boolean dataEntryMethod,
+                      @Nullable Boolean ignoreOverdueEvents,
+                      @Nullable Boolean relationshipFromA,
+                      @Nullable Boolean selectIncidentDatesInFuture,
+                      @Nullable Boolean captureCoordinates,
+                      @Nullable Boolean useFirstStageDuringRegistration,
+                      @Nullable Boolean displayInFrontPageList,
+                      @NonNull ProgramType programType,
+                      @Nullable String relationshipType,
+                      @Nullable String relationshipText,
+                      @Nullable String relatedProgram,
+                      @Nullable String trackedEntity,
+                      @NonNull String whereProgramUid) {
+
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
+                description, displayDescription, version, onlyEnrollOnce, enrollmentDateLabel, displayIncidentDate,
+                incidentDateLabel, registration, selectEnrollmentDatesInFuture, dataEntryMethod,
+                ignoreOverdueEvents, relationshipFromA, selectIncidentDatesInFuture, captureCoordinates,
+                useFirstStageDuringRegistration, displayInFrontPageList, programType,
+                relationshipType, relationshipText, relatedProgram, trackedEntity);
+
+        // bind the where argument
+        sqLiteBind(updateStatement, 30, whereProgramUid);
+
+        // execute and clear bindings
+        int update = databaseAdapter.executeUpdateDelete(ProgramModel.TABLE, updateStatement);
+        updateStatement.clearBindings();
+
+        return update;
+    }
+
+
+    @Override
+    public int delete(@NonNull String uid) {
+        // bind the where argument
+        sqLiteBind(deleteStatement, 1, uid);
+
+        // execute and clear bindings
+        int delete = databaseAdapter.executeUpdateDelete(ProgramModel.TABLE, deleteStatement);
+        deleteStatement.clearBindings();
+
+        return delete;
+    }
+
+    private void bindArguments(@NonNull SQLiteStatement sqLiteStatement,
+                               @NonNull String uid,
+                               @Nullable String code,
+                               @NonNull String name,
+                               @Nullable String displayName,
+                               @Nullable Date created,
+                               @Nullable Date lastUpdated,
+                               @Nullable String shortName,
+                               @Nullable String displayShortName,
+                               @Nullable String description,
+                               @Nullable String displayDescription,
+                               @Nullable Integer version,
+                               @Nullable Boolean onlyEnrollOnce,
+                               @Nullable String enrollmentDateLabel,
+                               @Nullable Boolean displayIncidentDate,
+                               @Nullable String incidentDateLabel,
+                               @Nullable Boolean registration,
+                               @Nullable Boolean selectEnrollmentDatesInFuture,
+                               @Nullable Boolean dataEntryMethod,
+                               @Nullable Boolean ignoreOverdueEvents,
+                               @Nullable Boolean relationshipFromA,
+                               @Nullable Boolean selectIncidentDatesInFuture,
+                               @Nullable Boolean captureCoordinates,
+                               @Nullable Boolean useFirstStageDuringRegistration,
+                               @Nullable Boolean displayInFrontPageList,
+                               @NonNull ProgramType programType,
+                               @Nullable String relationshipType,
+                               @Nullable String relationshipText,
+                               @Nullable String relatedProgram,
+                               @Nullable String trackedEntity) {
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);
@@ -145,12 +296,6 @@ public class ProgramStoreImpl implements ProgramStore {
         sqLiteBind(sqLiteStatement, 27, relationshipText);
         sqLiteBind(sqLiteStatement, 28, relatedProgram);
         sqLiteBind(sqLiteStatement, 29, trackedEntity);
-
-        return sqLiteStatement.executeInsert();
     }
 
-    @Override
-    public void close() {
-        sqLiteStatement.close();
-    }
 }

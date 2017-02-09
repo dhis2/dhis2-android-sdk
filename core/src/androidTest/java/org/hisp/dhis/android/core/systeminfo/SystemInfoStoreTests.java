@@ -65,7 +65,7 @@ public class SystemInfoStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.systemInfoStore = new SystemInfoStoreImpl(database());
+        this.systemInfoStore = new SystemInfoStoreImpl(databaseAdapter());
     }
 
     @Test

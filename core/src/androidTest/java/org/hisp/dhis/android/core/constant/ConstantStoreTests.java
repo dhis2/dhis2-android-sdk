@@ -62,7 +62,7 @@ public class ConstantStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        constantStore = new ConstantStoreImpl(database());
+        constantStore = new ConstantStoreImpl(databaseAdapter());
     }
 
     @Test

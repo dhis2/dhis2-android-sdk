@@ -123,7 +123,7 @@ public class ProgramStageStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        programStageStore = new ProgramStageStoreImpl(database());
+        programStageStore = new ProgramStageStoreImpl(databaseAdapter());
 
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
@@ -244,10 +244,4 @@ public class ProgramStageStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).isExhausted();
     }
 
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        programStageStore.close();
-
-        assertThat(database().isOpen()).isTrue();
-    }
 }

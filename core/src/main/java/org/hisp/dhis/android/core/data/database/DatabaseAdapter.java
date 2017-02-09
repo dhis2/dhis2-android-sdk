@@ -107,7 +107,7 @@ public interface DatabaseAdapter {
      *
      * @param table The affected table
      */
-    void deleteTable(String table);
+    void delete(String table);
 
     /**
      * Begins a transaction in EXCLUSIVE mode.

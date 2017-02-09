@@ -28,12 +28,12 @@
 package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
@@ -57,7 +57,7 @@ public class ProgramSyncCall implements Call<Response<Payload<Program>>> {
     private final ProgramService programService;
 
     // database and stores
-    private final SQLiteDatabase sqLiteDatabase;
+    private final DatabaseAdapter databaseAdapter;
 
     private final Set<String> assignedProgramUids;
     private final ResourceStore resourceStore;
@@ -66,11 +66,11 @@ public class ProgramSyncCall implements Call<Response<Payload<Program>>> {
 
 
     public ProgramSyncCall(ProgramService programService,
-                           SQLiteDatabase sqLiteDatabase,
+                           DatabaseAdapter databaseAdapter,
                            Set<String> assignedProgramUids, ResourceStore resourceStore,
                            ProgramHandler programHandler) {
         this.programService = programService;
-        this.sqLiteDatabase = sqLiteDatabase;
+        this.databaseAdapter = databaseAdapter;
         this.assignedProgramUids = assignedProgramUids;
 
         this.resourceStore = resourceStore;
@@ -107,7 +107,7 @@ public class ProgramSyncCall implements Call<Response<Payload<Program>>> {
     }
 
     private void applyChangesToDatabase(Response<Payload<Program>> programsByLastUpdated) {
-        sqLiteDatabase.beginTransaction();
+        databaseAdapter.beginTransaction();
 
         try {
             List<Program> programs = programsByLastUpdated.body().items();
@@ -131,9 +131,9 @@ public class ProgramSyncCall implements Call<Response<Payload<Program>>> {
                 );
             }
 
-            sqLiteDatabase.setTransactionSuccessful();
+            databaseAdapter.setTransactionSuccessful();
         } finally {
-            sqLiteDatabase.endTransaction();
+            databaseAdapter.endTransaction();
         }
     }
 
@@ -150,14 +150,13 @@ public class ProgramSyncCall implements Call<Response<Payload<Program>>> {
 
 
     private String getLastSyncedPrograms() {
-        String[] projection = {ResourceModel.Columns.LAST_SYNCED};
-        String whereClause = ResourceModel.Columns.RESOURCE_TYPE + " =?";
-        String[] selectionArgs = {ProgramModel.class.getSimpleName()};
         String dateString;
-        Cursor cursor = sqLiteDatabase.query(
-                ResourceModel.TABLE, projection, whereClause, selectionArgs, null, null, null
-        );
-
+        Cursor cursor = databaseAdapter.query(ResourceModel.TABLE,
+                "SELECT " + ResourceModel.Columns.LAST_SYNCED +
+                        " FROM " + ResourceModel.TABLE +
+                        " WHERE " + ResourceModel.Columns.RESOURCE_TYPE +
+                        " = " +
+                        ProgramModel.class.getSimpleName());
 
         try {
             cursor.moveToFirst();
@@ -264,6 +263,7 @@ public class ProgramSyncCall implements Call<Response<Payload<Program>>> {
                 )
         );
     }
+
     private NestedField<Program, ?> getProgramToProgramRuleFilters() {
         return Program.programRules.with(
                 ProgramRule.uid, ProgramRule.code, ProgramRule.name, ProgramRule.displayName,
@@ -357,6 +357,7 @@ public class ProgramSyncCall implements Call<Response<Payload<Program>>> {
                 )
         );
     }
+
     private NestedField<Program, ?> getProgramToRelationshipTypeFilters() {
         return Program.relationshipType.with(
                 RelationshipType.uid, RelationshipType.code, RelationshipType.name,

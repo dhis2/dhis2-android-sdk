@@ -54,6 +54,10 @@ public class ProgramHandler {
     }
 
     public void handleProgram(Program program) {
+        if (program == null) {
+            return;
+        }
+
         deleteOrPersistProgram(program);
 
         // programStageHandler will invoke programStageSectionHandler, programStageDataElementHandler,
@@ -110,6 +114,4 @@ public class ProgramHandler {
             }
         }
     }
-
-
 }

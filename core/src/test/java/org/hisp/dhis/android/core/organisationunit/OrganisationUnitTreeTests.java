@@ -125,6 +125,12 @@ public class OrganisationUnitTreeTests {
         OrganisationUnitTree.findRoots(orgUnits);
     }
 
+    @Test
+    public void findRoots_shouldReturnRootUids_EmptyList() {
+        Set<String> rootUids = OrganisationUnitTree.findRoots(new ArrayList<OrganisationUnit>());
+        assertThat(rootUids.isEmpty()).isTrue();
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void exception_shouldReturnRootUids_EmptyPaths() {
         List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);

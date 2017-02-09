@@ -28,12 +28,10 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-public class SqLiteDatabaseAdapter implements DatabaseAdapter {
+public class SqLiteDatabaseAdapter extends BaseDatabaseAdapter {
 
     private final DbOpenHelper dbOpenHelper;
 
@@ -44,47 +42,11 @@ public class SqLiteDatabaseAdapter implements DatabaseAdapter {
         this.dbOpenHelper = dbOpenHelper;
     }
 
-    @Override
-    public SQLiteStatement compileStatement(String sql) {
-        return database().compileStatement(sql);
-    }
-
-    @Override
-    public Cursor query(String sql, String... selectionArgs) {
-        return dbOpenHelper.getReadableDatabase().rawQuery(sql, selectionArgs);
-    }
-
-    @Override
-    public long executeInsert(String table, SQLiteStatement sqLiteStatement) {
-        return sqLiteStatement.executeInsert();
-    }
-
-    @Override
-    public int executeUpdateDelete(String table, SQLiteStatement sqLiteStatement) {
-        return sqLiteStatement.executeUpdateDelete();
-    }
-
-    @Override
-    public int delete(String table, String whereClause, String[] whereArgs) {
-        return database().delete(table, whereClause, whereArgs);
-    }
-
-    @Override
-    public void beginTransaction() {
-        database().beginTransaction();
-    }
-
-    @Override
-    public void setTransactionSuccessful() {
-        database().setTransactionSuccessful();
-    }
-
-    @Override
-    public void endTransaction() {
-        database().endTransaction();
-    }
-
-    private SQLiteDatabase database() {
+    protected SQLiteDatabase database() {
         return dbOpenHelper.getWritableDatabase();
+    }
+
+    protected SQLiteDatabase readableDatabase() {
+        return dbOpenHelper.getReadableDatabase();
     }
 }

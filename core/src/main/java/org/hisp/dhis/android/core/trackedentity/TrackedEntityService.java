@@ -32,13 +32,18 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 
+import java.util.Map;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 public interface TrackedEntityService {
-
+    //TODO: Replace @QueryMap with @Query("filter") String lastUpdated when available
     @GET("trackedEntities")
-    Call<Payload<TrackedEntity>> trackedEntities(@Query("paging") boolean paging,
-                                                 @Query("fields") @Fields Filter<TrackedEntity> filter);
+    Call<Payload<TrackedEntity>> trackedEntities(@Query("fields") @Fields Filter<TrackedEntity> filter,
+                                                 @QueryMap Map<String, String> queryMap,
+                                                 @Query("paging") boolean paging
+    );
 }

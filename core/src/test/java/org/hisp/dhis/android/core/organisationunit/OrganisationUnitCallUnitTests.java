@@ -46,6 +46,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
@@ -187,7 +188,7 @@ public class OrganisationUnitCallUnitTests {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldInvokeServerWithCorrectParameters() throws Exception {
+    public void call_shouldInvokeServer_withCorrectParameters() throws Exception {
         when(payload.items()).thenReturn(Collections.singletonList(organisationUnit));
 
         organisationUnitCall.call();
@@ -195,7 +196,7 @@ public class OrganisationUnitCallUnitTests {
         assertThat(uidCaptor.getValue()).isEqualTo(organisationUnit.uid());
         assertThat(filterCaptor.getValue().fields()).contains(
                 OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
-                OrganisationUnit.displayName, OrganisationUnit.created,
+                OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
                 OrganisationUnit.shortName, OrganisationUnit.displayShortName,
                 OrganisationUnit.description, OrganisationUnit.displayDescription,
                 OrganisationUnit.displayDescription, OrganisationUnit.path, OrganisationUnit.openingDate,
@@ -211,7 +212,7 @@ public class OrganisationUnitCallUnitTests {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldInvokeServerWithCorrectParametersWithLastUpdated() throws Exception {
+    public void call_shouldInvokeServer_withCorrectParameters_withLastUpdated() throws Exception {
         String key = OrganisationUnitModel.Columns.LAST_UPDATED;
         String date = "2014-11-25T09:37:53.358";
         String expectedValue = "lastUpdated:gt:" + date;
@@ -229,7 +230,7 @@ public class OrganisationUnitCallUnitTests {
         assertThat(uidCaptor.getValue()).isEqualTo(organisationUnit.uid());
         assertThat(filterCaptor.getValue().fields()).contains(
                 OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
-                OrganisationUnit.displayName, OrganisationUnit.created,
+                OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
                 OrganisationUnit.shortName, OrganisationUnit.displayShortName,
                 OrganisationUnit.description, OrganisationUnit.displayDescription,
                 OrganisationUnit.displayDescription, OrganisationUnit.path, OrganisationUnit.openingDate,
@@ -246,17 +247,18 @@ public class OrganisationUnitCallUnitTests {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldNotInvokeStoresOnException() throws Exception {
+    public void call_shouldNotInvokeStores_onException() throws Exception {
         when(retrofitCall.execute()).thenThrow(IOException.class);
 
         try {
             organisationUnitCall.call();
+            fail("Expecting an Exception");
         } catch (Exception e) {
             assertThat(IOException.class.isInstance(e)).isTrue();
 
-            InOrder inOrder = inOrder(database);
-            inOrder.verify(database, times(1)).beginTransaction();
-            inOrder.verify(database, times(1)).endTransaction();
+            InOrder ordered = Mockito.inOrder(database);
+            ordered.verify(database, times(1)).beginTransaction();
+            ordered.verify(database, times(1)).endTransaction();
             verify(database, never()).setTransactionSuccessful();
             verify(organisationUnitStore, never()).insert(anyString(), anyString(), anyString(),
                     anyString(), any(Date.class), any(Date.class), anyString(), anyString(),
@@ -270,7 +272,7 @@ public class OrganisationUnitCallUnitTests {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldNotInvokeStoresIfRequestFails() throws Exception {
+    public void call_shouldNotInvokeStores_ifRequestFails() throws Exception {
         when(retrofitCall.execute()).thenReturn(Response.<Payload<OrganisationUnit>>error(
                 HttpsURLConnection.HTTP_CLIENT_TIMEOUT,
                 ResponseBody.create(MediaType.parse("application/json"), "{}")));
@@ -290,7 +292,7 @@ public class OrganisationUnitCallUnitTests {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldInsertOrganisationUnitsIfRequestSucceeds() throws Exception {
+    public void call_shouldInsert_ifRequestSucceeds() throws Exception {
         when(userOrganisationUnitLinkStore.update(anyString(), anyString(), anyString(), anyString(),
                 anyString())).thenReturn(-1);
         when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(-1);
@@ -339,7 +341,7 @@ public class OrganisationUnitCallUnitTests {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldDeleteOrganisationUnitsIfRequestSucceeds() throws Exception {
+    public void call_shouldDelete_ifRequestSucceeds() throws Exception {
         when(organisationUnit.deleted()).thenReturn(true);
 
         Headers headers = new Headers.Builder().add("Date", lastUpdated.toString()).build();
@@ -355,12 +357,13 @@ public class OrganisationUnitCallUnitTests {
         inOrder.verify(database, times(1)).endTransaction();
 
         verify(organisationUnitStore, times(1)).delete("orgUnitUid1");
-        //TODO: UpdateInResourceStore tests:
+        verify(resourceStore, times(1)).update(anyString(), any(Date.class), anyString());
+        verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldUpdateOrganisationUnitsIfRequestSucceeds() throws Exception {
+    public void call_shouldUpdate_ifRequestSucceeds() throws Exception {
         when(userOrganisationUnitLinkStore.update(anyString(), anyString(), anyString(), anyString(),
                 anyString())).thenReturn(1);
         when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(1);
@@ -393,23 +396,15 @@ public class OrganisationUnitCallUnitTests {
                 "orgUnitUid1"
         );
 
-        //UserOrganisationUnitLinkRow Update tests:
-        verify(userOrganisationUnitLinkStore,
-                times(1)).update(anyString(), anyString(), anyString(), anyString(), anyString());
-
-        //UpdateInResourceStore tests:
+        verify(userOrganisationUnitLinkStore, times(1))
+                .update(anyString(), anyString(), anyString(), anyString(), anyString());
         verify(resourceStore, times(1)).update(anyString(), any(Date.class), anyString());
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldNotFailOnUserWithoutOrganisationUnits() {
+    public void call_shouldNotFail_onEmptyInput() {
         when(user.organisationUnits()).thenReturn(null); //no organisation units in user
-        when(organisationUnitStore.insert(any(String.class), any(String.class), any(String.class), any(String.class),
-                any(Date.class), any(Date.class), any(String.class), any(String.class), any(String.class),
-                any(String.class), any(String.class), any(Date.class), any(Date.class), any(String.class),
-                any(Integer.class))
-        ).thenThrow(IOException.class);
 
         try {
             organisationUnitCall.call();
@@ -423,11 +418,12 @@ public class OrganisationUnitCallUnitTests {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldThrowExceptionOnConsecutiveCalls() {
+    public void call_shouldThrowException_OnConsecutiveCalls() {
 
         try {
             organisationUnitCall.call();
             organisationUnitCall.call();
+            fail("Expecting an Exception on Consecutive calls");
         } catch (Exception e) {
             assertThat(IllegalStateException.class.isInstance(e)).isTrue();
         }
@@ -435,7 +431,7 @@ public class OrganisationUnitCallUnitTests {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldMarkCallAsExecutedOnSuccess() {
+    public void call_shouldMarkCallAsExecuted_onSuccess() {
         when(organisationUnitStore.insert(any(String.class), any(String.class), any(String.class), any(String.class),
                 any(Date.class), any(Date.class), any(String.class), any(String.class), any(String.class),
                 any(String.class), any(String.class), any(Date.class), any(Date.class), any(String.class),
@@ -453,7 +449,7 @@ public class OrganisationUnitCallUnitTests {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldMarkCallAsExecutedOnFailure() throws IOException {
+    public void call_shouldMarkCallAsExecuted_onFailure() throws IOException {
         when(retrofitCall.execute()).thenThrow(new IOException());
 
         try {

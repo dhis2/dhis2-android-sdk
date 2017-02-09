@@ -25,29 +25,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.utils;
 
-package org.hisp.dhis.android.core.trackedentity;
+import java.util.Collection;
+import java.util.Iterator;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+public final class
+CallUtils {
 
-import java.util.Date;
+    private CallUtils() {}
 
-public interface TrackedEntityStore {
+    /**
+     * Build an IN filter string, given a collection of values and the property name to filter on.
+     * Returns a string of the "propertyName:in:[value1,value2...]
+     *
+     * @param propertyName the name of the property to filter on
+     * @param values       a collection of the values
+     * @return
+     */
+    public static String buildInFilter(String propertyName, Collection<String> values) {
+        //TODO: Extend the filters to provide this and then come back & modify it here
 
-    long insert(@NonNull String uid, @Nullable String code, @Nullable String name,
-                @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
-                @Nullable String shortName, @Nullable String displayShortName,
-                @Nullable String description, @Nullable String displayDescription
-    );
-
-    int update(@NonNull String uid, @Nullable String code, @Nullable String name,
-                @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
-                @Nullable String shortName, @Nullable String displayShortName,
-                @Nullable String description, @Nullable String displayDescription, @NonNull String whereUid
-    );
-
-    int delete(@NonNull String uid);
-
-    void close();
+        //10 char for brackets..etc size of field name and 12 char for the uid + comma per uid:
+        StringBuilder stringBuilder = new StringBuilder(propertyName.length() + values.size() * 12 + 10);
+        stringBuilder.append(propertyName).append(":in:[");
+        Iterator<String> it = values.iterator();
+        while (it.hasNext()) {
+            stringBuilder.append(it.next());
+            if (it.hasNext()) {
+                stringBuilder.append(',');
+            }
+        }
+        stringBuilder.append(']');
+        return stringBuilder.toString();
+    }
 }

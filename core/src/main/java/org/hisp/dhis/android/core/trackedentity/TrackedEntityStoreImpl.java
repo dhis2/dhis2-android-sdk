@@ -32,13 +32,12 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class TrackedEntityStoreImpl implements TrackedEntityStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + TrackedEntityModel.TABLE + " (" +
             TrackedEntityModel.Columns.UID + ", " +
@@ -53,39 +52,102 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
             TrackedEntityModel.Columns.DISPLAY_DESCRIPTION +
             ") " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    private final SQLiteStatement insertRowStatement;
-    private final DatabaseAdapter databaseAdapter;
+    private static final String UPDATE_STATEMENT = "UPDATE " + TrackedEntityModel.TABLE + " SET " +
+            TrackedEntityModel.Columns.UID + "=?, " +
+            TrackedEntityModel.Columns.CODE + "=?, " +
+            TrackedEntityModel.Columns.NAME + "=?, " +
+            TrackedEntityModel.Columns.DISPLAY_NAME + "=?, " +
+            TrackedEntityModel.Columns.CREATED + "=?, " +
+            TrackedEntityModel.Columns.LAST_UPDATED + "=?, " +
+            TrackedEntityModel.Columns.SHORT_NAME + "=?, " +
+            TrackedEntityModel.Columns.DISPLAY_SHORT_NAME + "=?, " +
+            TrackedEntityModel.Columns.DESCRIPTION + "=?, " +
+            TrackedEntityModel.Columns.DISPLAY_DESCRIPTION + "=? " +
+            " WHERE " +
+            TrackedEntityModel.Columns.UID + " =?;";
 
-    public TrackedEntityStoreImpl(DatabaseAdapter databaseAdapter) {
-        this.databaseAdapter = databaseAdapter;
-        this.insertRowStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+    private static final String DELETE_STATEMENT = "DELETE FROM " + TrackedEntityModel.TABLE +
+            " WHERE " + TrackedEntityModel.Columns.UID + " =?;";
+
+    private final SQLiteStatement insertStatement;
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
+
+    private final DatabaseAdapter database;
+
+    public TrackedEntityStoreImpl(DatabaseAdapter database) {
+        this.database = database;
+        this.insertStatement = database.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = database.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = database.compileStatement(DELETE_STATEMENT);
+
     }
 
     @Override
-    public long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
-                       @Nullable String displayName, @NonNull Date created,
-                       @NonNull Date lastUpdated, @Nullable String shortName,
+    public long insert(@NonNull String uid, @Nullable String code, @Nullable String name,
+                       @Nullable String displayName, @Nullable Date created,
+                       @Nullable Date lastUpdated, @Nullable String shortName,
                        @Nullable String displayShortName, @Nullable String description,
-                       @Nullable String displayDescription) {
+                       @Nullable String displayDescription
+    ) {
+        insertStatement.clearBindings();
 
-        insertRowStatement.clearBindings();
+        sqLiteBind(insertStatement, 1, uid);
+        sqLiteBind(insertStatement, 2, code);
+        sqLiteBind(insertStatement, 3, name);
+        sqLiteBind(insertStatement, 4, displayName);
+        sqLiteBind(insertStatement, 5, created);
+        sqLiteBind(insertStatement, 6, lastUpdated);
+        sqLiteBind(insertStatement, 7, shortName);
+        sqLiteBind(insertStatement, 8, displayShortName);
+        sqLiteBind(insertStatement, 9, description);
+        sqLiteBind(insertStatement, 10, displayDescription);
 
-        sqLiteBind(insertRowStatement, 1, uid);
-        sqLiteBind(insertRowStatement, 2, code);
-        sqLiteBind(insertRowStatement, 3, name);
-        sqLiteBind(insertRowStatement, 4, displayName);
-        sqLiteBind(insertRowStatement, 5, BaseIdentifiableObject.DATE_FORMAT.format(created));
-        sqLiteBind(insertRowStatement, 6, BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated));
-        sqLiteBind(insertRowStatement, 7, shortName);
-        sqLiteBind(insertRowStatement, 8, displayShortName);
-        sqLiteBind(insertRowStatement, 9, description);
-        sqLiteBind(insertRowStatement, 10, displayDescription);
+        long rowId = database.executeInsert(TrackedEntityModel.TABLE, insertStatement);
+        insertStatement.clearBindings();
+        return rowId;
 
-        return databaseAdapter.executeInsert(TrackedEntityModel.TABLE, insertRowStatement);
+    }
+
+    @Override
+    public int update(@NonNull String uid, @Nullable String code, @Nullable String name,
+                      @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
+                      @Nullable String shortName, @Nullable String displayShortName, @Nullable String description,
+                      @Nullable String displayDescription, @NonNull String whereUid
+    ) {
+        updateStatement.clearBindings();
+
+        sqLiteBind(updateStatement, 1, uid);
+        sqLiteBind(updateStatement, 2, code);
+        sqLiteBind(updateStatement, 3, name);
+        sqLiteBind(updateStatement, 4, displayName);
+        sqLiteBind(updateStatement, 5, created);
+        sqLiteBind(updateStatement, 6, lastUpdated);
+        sqLiteBind(updateStatement, 7, shortName);
+        sqLiteBind(updateStatement, 8, displayShortName);
+        sqLiteBind(updateStatement, 9, description);
+        sqLiteBind(updateStatement, 10, displayDescription);
+        sqLiteBind(updateStatement, 11, whereUid);
+
+        int rowId = database.executeUpdateDelete(TrackedEntityModel.TABLE, updateStatement);
+        updateStatement.clearBindings();
+        return rowId;
+    }
+
+    @Override
+    public int delete(@NonNull String uid) {
+        deleteStatement.clearBindings();
+
+        sqLiteBind(deleteStatement, 1, uid);
+
+        int rowId = database.delete(TrackedEntityModel.TABLE, null, null);
+        deleteStatement.executeUpdateDelete();
+        deleteStatement.clearBindings();
+        return rowId;
     }
 
     @Override
     public void close() {
-        insertRowStatement.close();
+        insertStatement.close();
     }
 }

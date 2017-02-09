@@ -42,10 +42,12 @@ public class SqLiteDatabaseAdapter extends BaseDatabaseAdapter {
         this.dbOpenHelper = dbOpenHelper;
     }
 
+    @Override
     protected SQLiteDatabase database() {
         return dbOpenHelper.getWritableDatabase();
     }
 
+    @Override
     protected SQLiteDatabase readableDatabase() {
         return dbOpenHelper.getReadableDatabase();
     }

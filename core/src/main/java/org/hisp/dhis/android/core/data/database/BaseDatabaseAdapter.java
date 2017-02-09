@@ -60,6 +60,11 @@ abstract class BaseDatabaseAdapter implements DatabaseAdapter {
     }
 
     @Override
+    public void deleteTable(String table) {
+        database().delete(table, null, null);
+    }
+
+    @Override
     public void beginTransaction() {
         database().beginTransaction();
     }

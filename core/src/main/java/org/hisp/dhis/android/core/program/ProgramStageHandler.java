@@ -45,6 +45,10 @@ public class ProgramStageHandler {
     }
 
     public void handleProgramStage(String programUid, List<ProgramStage> programStages) {
+        if (programStages == null || programUid == null) {
+            return;
+        }
+
         deleteOrPersistProgramStages(programUid, programStages);
     }
 
@@ -55,11 +59,8 @@ public class ProgramStageHandler {
      * @param programStages
      */
     private void deleteOrPersistProgramStages(String programUid, List<ProgramStage> programStages) {
-        if (programStages == null || programUid == null) {
-            return;
-        }
-
         int size = programStages.size();
+
         for (int i = 0; i < size; i++) {
             ProgramStage programStage = programStages.get(i);
 

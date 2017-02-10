@@ -17,6 +17,6 @@ public class Version14MigrationSetTrackedEntityInstanceDataToUnsent extends Upda
 
     @Override
     public void onPreMigrate() {
-        set(Condition.column(TrackedEntityInstance$Table.FROMSERVER).eq(0)).where(Condition.column(TrackedEntityInstance$Table.FROMSERVER).eq(1));
+//        set(Condition.column(TrackedEntityInstance$Table.FROMSERVER).eq(0)).where(Condition.column(TrackedEntityInstance$Table.FROMSERVER).eq(1));
     }
 }

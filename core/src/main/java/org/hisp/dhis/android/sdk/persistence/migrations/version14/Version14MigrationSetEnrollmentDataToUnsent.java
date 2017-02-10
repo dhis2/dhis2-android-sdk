@@ -18,6 +18,6 @@ public class Version14MigrationSetEnrollmentDataToUnsent extends UpdateTableMigr
 
     @Override
     public void onPreMigrate() {
-        set(Condition.column(Enrollment$Table.FROMSERVER).eq(0)).where(Condition.column(Enrollment$Table.FROMSERVER).eq(1));
+//        set(Condition.column(Enrollment$Table.FROMSERVER).eq(0)).where(Condition.column(Enrollment$Table.FROMSERVER).eq(1));
     }
 }

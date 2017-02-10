@@ -26,7 +26,7 @@ public class Version14MigrationSetEventDataToUnsent extends UpdateTableMigration
 
     @Override
     public void onPreMigrate() {
-        set(Condition.column(Event$Table.FROMSERVER).eq(0)).where(Condition.column(Event$Table.FROMSERVER).eq(1));
+//        set(Condition.column(Event$Table.FROMSERVER).eq(0)).where(Condition.column(Event$Table.FROMSERVER).eq(1));
     }
 
 }

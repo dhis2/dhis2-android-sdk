@@ -25,25 +25,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.api;
 
-package org.hisp.dhis.android.core.trackedentity;
+import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Which;
-import org.hisp.dhis.android.core.data.api.Fields;
+import com.google.auto.value.AutoValue;
 
-import java.util.Map;
+import java.util.Arrays;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-import retrofit2.http.QueryMap;
+@AutoValue
+public abstract class FilterImpl implements Filter {
 
-public interface TrackedEntityService {
-    //TODO: Replace @QueryMap with @Query("fields") String lastUpdated when available
-    @GET("trackedEntities")
-    Call<Payload<TrackedEntity>> trackedEntities(@Query("fields") @Which Fields<TrackedEntity> fields,
-                                                 @QueryMap Map<String, String> queryMap,
-                                                 @Query("paging") boolean paging
-    );
+    public static FilterImpl create(@NonNull Field field, @NonNull String operator, @NonNull String... values) {
+        return new AutoValue_FilterImpl(field, operator, Arrays.asList(values));
+    }
 }

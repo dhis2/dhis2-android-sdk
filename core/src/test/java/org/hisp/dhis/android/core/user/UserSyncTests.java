@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
@@ -99,7 +99,7 @@ public class UserSyncTests {
     private Call<User> userCall;
 
     @Captor
-    private ArgumentCaptor<Filter<User>> filterCaptor;
+    private ArgumentCaptor<Fields<User>> filterCaptor;
 
     @Mock
     private OrganisationUnit organisationUnit;
@@ -193,7 +193,7 @@ public class UserSyncTests {
         when(user.userCredentials().userRoles()).thenReturn(Collections.singletonList(userRole));
         when(user.organisationUnits()).thenReturn(organisationUnits);
 
-        when(userSyncService.getUser(any(Filter.class))).thenReturn(userCall);
+        when(userSyncService.getUser(any(Fields.class))).thenReturn(userCall);
 
     }
 

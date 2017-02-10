@@ -32,7 +32,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.user.User;
@@ -104,7 +104,7 @@ public class OrganisationUnitCallUnitTests {
     private ArgumentCaptor<String> uidCaptor;
 
     @Captor
-    private ArgumentCaptor<Filter<OrganisationUnit>> filterCaptor;
+    private ArgumentCaptor<Fields<OrganisationUnit>> filterCaptor;
 
     @Captor
     private ArgumentCaptor<Map<String, String>> queryMapCaptor;

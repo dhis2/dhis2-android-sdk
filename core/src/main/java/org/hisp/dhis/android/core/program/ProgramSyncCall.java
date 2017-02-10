@@ -31,7 +31,7 @@ import android.database.Cursor;
 
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
@@ -170,7 +170,7 @@ public class ProgramSyncCall implements Call<Response<Payload<Program>>> {
         return dateString;
     }
 
-    //TODO Replace queryMap with proper Filter annotations with lastUpdated when available
+    //TODO Replace queryMap with proper Fields annotations with lastUpdated when available
     private Response<Payload<Program>> getProgramsByLastUpdated(Set<String> uids,
                                                                 String lastSynced) throws IOException {
         Map<String, String> queryMap = new HashMap<>();
@@ -185,8 +185,8 @@ public class ProgramSyncCall implements Call<Response<Payload<Program>>> {
         return programService.getPrograms(getFilters(), queryMap, Boolean.FALSE).execute();
     }
 
-    private Filter<Program> getFilters() {
-        return Filter.<Program>builder().fields(
+    private Fields<Program> getFilters() {
+        return Fields.<Program>builder().fields(
                 Program.uid, Program.code, Program.name, Program.displayName, Program.created,
                 Program.lastUpdated, Program.shortName, Program.displayShortName, Program.description,
                 Program.displayDescription, Program.version, Program.captureCoordinates, Program.dataEntryMethod,

@@ -37,7 +37,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
+import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.junit.After;
 import org.junit.Before;
@@ -195,7 +195,7 @@ public class OptionSetCallTests extends AbsStoreTestCase {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(mockWebServer.url("/"))
                 .addConverterFactory(JacksonConverterFactory.create(objectMapper))
-                .addConverterFactory(FilterConverterFactory.create())
+                .addConverterFactory(FieldsConverterFactory.create())
                 .build();
 
         OptionSetService optionSetService = retrofit.create(OptionSetService.class);

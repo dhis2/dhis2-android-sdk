@@ -25,40 +25,65 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.data.api;
+
+import org.hisp.dhis.android.core.common.Property;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 
 import retrofit2.Converter;
 
-public class FilterConverter implements Converter<Filter, String> {
+class FieldsConverter implements Converter<Fields, String> {
+    FieldsConverter() {
+        // explicit empty constructor
+    }
 
     @Override
-    public String convert(Filter filter) throws IOException {
+    @SuppressWarnings("unchecked")
+    public String convert(Fields fields) throws IOException {
         StringBuilder builder = new StringBuilder();
 
-        builder.append(filter.field().name())
-                .append(':')
-                .append(filter.operator())
-                .append(':');
-
-        if (filter.values().size() == 1) {
-            //single value:
-            builder.append(filter.values().get(0));
-        } else {
-            //a list of values:
-            Iterator<String> valuesIterator = filter.values().iterator();
-            builder.append('[');
-            while (valuesIterator.hasNext()) {
-                builder.append(valuesIterator.next());
-                if (valuesIterator.hasNext()) {
-                    builder.append(',');
-                }
-            }
-            builder.append(']');
-        }
+        // recursive function which processes
+        // properties and builds query string
+        append(builder, (List<Property>) fields.fields());
 
         return builder.toString();
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void append(StringBuilder builder, List<Property> properties) {
+        Iterator<Property> propertyIterator = properties.iterator();
+
+        while (propertyIterator.hasNext()) {
+            Property property = propertyIterator.next();
+
+            // we need to append property name first
+            builder.append(property.name());
+
+            if (property instanceof Field) {
+                if (propertyIterator.hasNext()) {
+                    builder.append(',');
+                }
+            } else if (property instanceof NestedField) {
+                List<Property> children = ((NestedField) property).children();
+
+                if (!children.isEmpty()) {
+                    // open property array
+                    builder.append('[');
+
+                    // recursive call to method
+                    append(builder, children);
+
+                    // close property array
+                    builder.append(']');
+                }
+            } else {
+                throw new IllegalArgumentException("Unsupported type of Property: " +
+                        property.getClass());
+            }
+        }
     }
 }

@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
+import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
@@ -299,7 +299,7 @@ public class UserSyncCallIntegrationTest extends AbsStoreTestCase {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(mockWebServer.url("/"))
                 .addConverterFactory(JacksonConverterFactory.create(objectMapper))
-                .addConverterFactory(FilterConverterFactory.create())
+                .addConverterFactory(FieldsConverterFactory.create())
                 .build();
 
         UserSyncService userSyncService = retrofit.create(UserSyncService.class);

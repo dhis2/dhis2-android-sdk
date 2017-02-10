@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.data.api.Which;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.Filter;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -36,6 +36,6 @@ import retrofit2.http.Query;
 
 public interface UserSyncService {
     @GET("me")
-    Call<User> getUser(@Query("fields") @Fields Filter<User> filter);
+    Call<User> getUser(@Query("fields") @Which Fields<User> fields);
 
 }

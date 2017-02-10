@@ -33,7 +33,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
@@ -119,14 +119,14 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
     }
 
     private Response<Payload<TrackedEntity>> getTrackedEntities(Map<String, String> queryMap) throws IOException {
-        Filter<TrackedEntity> filter = Filter.<TrackedEntity>builder().fields(
+        Fields<TrackedEntity> fields = Fields.<TrackedEntity>builder().fields(
                 TrackedEntity.uid, TrackedEntity.code, TrackedEntity.name,
                 TrackedEntity.displayName, TrackedEntity.created, TrackedEntity.lastUpdated,
                 TrackedEntity.shortName, TrackedEntity.displayShortName,
                 TrackedEntity.description, TrackedEntity.displayDescription,
                 TrackedEntity.deleted
         ).build();
-        retrofit2.Call<Payload<TrackedEntity>> call = service.trackedEntities(filter, queryMap, false);
+        retrofit2.Call<Payload<TrackedEntity>> call = service.trackedEntities(fields, queryMap, false);
         return call.execute();
     }
 

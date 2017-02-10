@@ -26,24 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.data.api;
 
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Which;
-import org.hisp.dhis.android.core.data.api.Fields;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 
-import java.util.Map;
+import retrofit2.Converter;
+import retrofit2.Retrofit;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-import retrofit2.http.QueryMap;
+public final class FieldsConverterFactory extends Converter.Factory {
+    public static FieldsConverterFactory create() {
+        return new FieldsConverterFactory();
+    }
 
-public interface TrackedEntityService {
-    //TODO: Replace @QueryMap with @Query("fields") String lastUpdated when available
-    @GET("trackedEntities")
-    Call<Payload<TrackedEntity>> trackedEntities(@Query("fields") @Which Fields<TrackedEntity> fields,
-                                                 @QueryMap Map<String, String> queryMap,
-                                                 @Query("paging") boolean paging
-    );
+    private FieldsConverterFactory() {
+        // private constructor
+    }
+
+    @Override
+    public Converter<?, String> stringConverter(Type typef,
+            Annotation[] annotations, Retrofit retrofit) {
+        for (Annotation annotation : annotations) {
+            if (annotation instanceof Which) {
+                return new FieldsConverter();
+            }
+        }
+
+        return null;
+    }
 }

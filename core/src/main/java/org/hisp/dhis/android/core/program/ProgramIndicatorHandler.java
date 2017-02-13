@@ -42,9 +42,13 @@ public class ProgramIndicatorHandler {
         this.programStageSectionProgramIndicatorLinkStore = programStageSectionProgramIndicatorLinkStore;
     }
 
-    public void handleProgramIndicator(String programStageSectionUid, List<ProgramIndicator> programIndicatorList) {
-        deleteOrPersistProgramIndicators(programStageSectionUid, programIndicatorList);
+    public void handleProgramIndicator(String programStageSectionUid, List<ProgramIndicator> programIndicators) {
+        if (programIndicators == null) {
+            return;
+        }
+        deleteOrPersistProgramIndicators(programStageSectionUid, programIndicators);
     }
+
     /**
      * This method deletes or persists program indicators and the link table between program stage sections
      * and program indicators
@@ -56,10 +60,6 @@ public class ProgramIndicatorHandler {
     //TODO: Morten should have implemented the link between program indicator and program stage section in March.
     private void deleteOrPersistProgramIndicators(String programStageSectionUid,
                                                   List<ProgramIndicator> programIndicators) {
-        if (programIndicators == null) {
-            return;
-        }
-
         int size = programIndicators.size();
 
         for (int i = 0; i < size; i++) {

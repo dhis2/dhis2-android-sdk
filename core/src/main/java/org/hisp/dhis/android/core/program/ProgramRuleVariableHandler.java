@@ -39,14 +39,14 @@ public class ProgramRuleVariableHandler {
     }
 
     public void handleProgramRuleVariables(List<ProgramRuleVariable> programRuleVariables) {
-        deleteOrPersistProgramRuleVariables(programRuleVariables);
-    }
-
-    private void deleteOrPersistProgramRuleVariables(List<ProgramRuleVariable> programRuleVariables) {
         if (programRuleVariables == null) {
             return;
         }
 
+        deleteOrPersistProgramRuleVariables(programRuleVariables);
+    }
+
+    private void deleteOrPersistProgramRuleVariables(List<ProgramRuleVariable> programRuleVariables) {
         int size = programRuleVariables.size();
 
         for (int i = 0; i < size; i++) {

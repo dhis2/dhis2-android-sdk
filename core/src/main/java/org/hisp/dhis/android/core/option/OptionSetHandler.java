@@ -31,9 +31,11 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class OptionSetHandler {
     private final OptionSetStore optionSetStore;
+    private final OptionHandler optionHandler;
 
-    public OptionSetHandler(OptionSetStore optionSetStore) {
+    public OptionSetHandler(OptionSetStore optionSetStore, OptionHandler optionHandler) {
         this.optionSetStore = optionSetStore;
+        this.optionHandler = optionHandler;
     }
 
     public void handleOptionSet(OptionSet optionSet) {
@@ -58,5 +60,7 @@ public class OptionSetHandler {
                         optionSet.created(), optionSet.lastUpdated(), optionSet.version(), optionSet.valueType());
             }
         }
+
+        optionHandler.handleOptions(optionSet.options());
     }
 }

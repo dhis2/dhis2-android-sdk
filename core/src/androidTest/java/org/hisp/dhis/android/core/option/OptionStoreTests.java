@@ -165,10 +165,4 @@ public class OptionStoreTests extends AbsStoreTestCase {
 
     }
 
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        optionStore.close();
-
-        assertThat(database().isOpen()).isTrue();
-    }
 }

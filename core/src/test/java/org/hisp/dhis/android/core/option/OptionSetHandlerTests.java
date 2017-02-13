@@ -53,13 +53,16 @@ public class OptionSetHandlerTests {
     @Mock
     private OptionSet optionSet;
 
+    @Mock
+    private OptionHandler optionHandler;
+
     // object to test
     private OptionSetHandler optionSetHandler;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        optionSetHandler = new OptionSetHandler(optionSetStore);
+        optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
         when(optionSet.uid()).thenReturn("test_option_set_uid");
     }
 

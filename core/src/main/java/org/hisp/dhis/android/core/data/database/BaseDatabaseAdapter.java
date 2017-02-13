@@ -28,24 +28,58 @@
 
 package org.hisp.dhis.android.core.data.database;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 
-public class TestDatabaseAdapter extends BaseDatabaseAdapter {
+abstract class BaseDatabaseAdapter implements DatabaseAdapter {
 
-    // memory-backed test database
-    private final SQLiteDatabase sqLiteDatabase;
-
-    public TestDatabaseAdapter(SQLiteDatabase database) {
-        this.sqLiteDatabase = database;
+    @Override
+    public SQLiteStatement compileStatement(String sql) {
+        return database().compileStatement(sql);
     }
 
     @Override
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
+    public Cursor query(String sql, String... selectionArgs) {
+        return readableDatabase().rawQuery(sql, selectionArgs);
     }
 
     @Override
-    protected SQLiteDatabase readableDatabase() {
-        return sqLiteDatabase;
+    public long executeInsert(String table, SQLiteStatement sqLiteStatement) {
+        return sqLiteStatement.executeInsert();
     }
+
+    @Override
+    public int executeUpdateDelete(String table, SQLiteStatement sqLiteStatement) {
+        return sqLiteStatement.executeUpdateDelete();
+    }
+
+    @Override
+    public int delete(String table, String whereClause, String[] whereArgs) {
+        return database().delete(table, whereClause, whereArgs);
+    }
+
+    @Override
+    public void delete(String table) {
+        delete(table, null, null);
+    }
+
+    @Override
+    public void beginTransaction() {
+        database().beginTransaction();
+    }
+
+    @Override
+    public void setTransactionSuccessful() {
+        database().setTransactionSuccessful();
+    }
+
+    @Override
+    public void endTransaction() {
+        database().endTransaction();
+    }
+
+    protected abstract SQLiteDatabase database();
+
+    protected abstract SQLiteDatabase readableDatabase();
 }

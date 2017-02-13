@@ -45,8 +45,12 @@ public class ProgramStageDataElementHandler {
 
     public void handleProgramStageDataElements(String programStageSectionUid,
                                                List<ProgramStageDataElement> programStageDataElements) {
+        if (programStageDataElements == null) {
+            return;
+        }
         deleteOrPersistProgramStageDataElements(programStageSectionUid, programStageDataElements);
     }
+
     /**
      * This method deletes or persists program stage data elements and applies the changes to database.
      * Method will call update with or without programStageSectionUid depending if it exists.
@@ -56,10 +60,6 @@ public class ProgramStageDataElementHandler {
      */
     private void deleteOrPersistProgramStageDataElements(String programStageSectionUid,
                                                          List<ProgramStageDataElement> programStageDataElements) {
-        if (programStageDataElements == null) {
-            return;
-        }
-
         int size = programStageDataElements.size();
         for (int i = 0; i < size; i++) {
             ProgramStageDataElement programStageDataElement = programStageDataElements.get(i);

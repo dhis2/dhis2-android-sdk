@@ -45,23 +45,22 @@ public class ProgramStageSectionHandler {
     }
 
     public void handleProgramStageSection(String programStageUid, List<ProgramStageSection> programStageSections) {
+        if (programStageUid == null || programStageSections == null) {
+            return;
+        }
+
         deleteOrPersistProgramStageSections(programStageUid, programStageSections);
     }
 
     /**
      * Deletes or persists program stage sections.
-     * Also has a nested call to delete or persist program stage data elements
+     * Also has a nested call to programStageDataElementHandler and programIndicatorHandler
      *
      * @param programStageUid
      * @param programStageSections
      */
     private void deleteOrPersistProgramStageSections(String programStageUid,
                                                      List<ProgramStageSection> programStageSections) {
-        if (programStageUid == null) {
-            return;
-        }
-
-
         int size = programStageSections.size();
         for (int i = 0; i < size; i++) {
             ProgramStageSection programStageSection = programStageSections.get(i);

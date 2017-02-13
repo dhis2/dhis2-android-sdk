@@ -56,18 +56,20 @@ public class ProgramSyncCall implements Call<Response<Payload<Program>>> {
     // retrofit service
     private final ProgramService programService;
 
-    // database and stores
+    // database adapter and stores
     private final DatabaseAdapter databaseAdapter;
-
-    private final Set<String> assignedProgramUids;
     private final ResourceStore resourceStore;
-    private boolean isExecuted;
+
+    // handler
     private final ProgramHandler programHandler;
 
+    private boolean isExecuted;
+    private final Set<String> assignedProgramUids;
 
     public ProgramSyncCall(ProgramService programService,
                            DatabaseAdapter databaseAdapter,
-                           Set<String> assignedProgramUids, ResourceStore resourceStore,
+                           Set<String> assignedProgramUids,
+                           ResourceStore resourceStore,
                            ProgramHandler programHandler) {
         this.programService = programService;
         this.databaseAdapter = databaseAdapter;
@@ -110,6 +112,7 @@ public class ProgramSyncCall implements Call<Response<Payload<Program>>> {
         databaseAdapter.beginTransaction();
 
         try {
+            Date serverDateTime = programsByLastUpdated.headers().getDate(HeaderUtils.DATE);
             List<Program> programs = programsByLastUpdated.body().items();
             int size = programs.size();
             for (int i = 0; i < size; i++) {
@@ -120,14 +123,14 @@ public class ProgramSyncCall implements Call<Response<Payload<Program>>> {
 
             int updatedResourceRow = updateInResourceStore(
                     Program.class.getSimpleName(),
-                    programsByLastUpdated.headers().getDate(HeaderUtils.DATE),
+                    serverDateTime,
                     Program.class.getSimpleName()
             );
 
             if (updatedResourceRow <= 0) {
                 insertIntoResourceStore(
                         Program.class.getSimpleName(),
-                        programsByLastUpdated.headers().getDate(HeaderUtils.DATE)
+                        serverDateTime
                 );
             }
 

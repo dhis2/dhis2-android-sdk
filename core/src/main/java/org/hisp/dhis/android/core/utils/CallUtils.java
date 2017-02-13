@@ -30,7 +30,8 @@ package org.hisp.dhis.android.core.utils;
 import java.util.Collection;
 import java.util.Iterator;
 
-public final class CallUtils {
+public final class
+CallUtils {
 
     private CallUtils() {}
 

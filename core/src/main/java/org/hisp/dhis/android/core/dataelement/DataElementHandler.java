@@ -42,6 +42,9 @@ public class DataElementHandler {
     }
 
     public void handleDataElement(DataElement dataElement) {
+        if (dataElement == null) {
+            return;
+        }
         deleteOrPersistDataElement(dataElement);
     }
 
@@ -52,10 +55,6 @@ public class DataElementHandler {
      * @param dataElement
      */
     private void deleteOrPersistDataElement(DataElement dataElement) {
-        if (dataElement == null) {
-            return;
-        }
-
         if (isDeleted(dataElement)) {
             dataElementStore.delete(dataElement.uid());
         } else {

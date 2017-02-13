@@ -101,6 +101,14 @@ public interface DatabaseAdapter {
      */
     int delete(String table, String whereClause, String[] whereArgs);
 
+
+    /**
+     * Convenience method for deleting all rows in a table.
+     *
+     * @param table The affected table
+     */
+    void delete(String table);
+
     /**
      * Begins a transaction in EXCLUSIVE mode.
      * <p>

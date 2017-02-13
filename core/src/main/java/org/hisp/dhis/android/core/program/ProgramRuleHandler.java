@@ -42,6 +42,10 @@ public class ProgramRuleHandler {
     }
 
     public void handleProgramRules(List<ProgramRule> programRules) {
+        if (programRules == null) {
+            return;
+        }
+
         deleteOrPersistProgramRules(programRules);
     }
 
@@ -52,10 +56,6 @@ public class ProgramRuleHandler {
      * @param programRules
      */
     private void deleteOrPersistProgramRules(List<ProgramRule> programRules) {
-        if (programRules == null) {
-            return;
-        }
-
         int size = programRules.size();
 
         for (int i = 0; i < size; i++) {

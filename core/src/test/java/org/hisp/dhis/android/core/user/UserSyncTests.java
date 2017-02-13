@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -52,7 +53,6 @@ import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
 import retrofit2.Response;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -96,7 +96,7 @@ public class UserSyncTests {
     private OrganisationUnitStore organisationUnitStore;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private Call<User> userCall;
+    private retrofit2.Call<User> userCall;
 
     @Captor
     private ArgumentCaptor<Fields<User>> filterCaptor;
@@ -122,9 +122,10 @@ public class UserSyncTests {
     @Mock
     private Date lastUpdated;
 
-    private org.hisp.dhis.android.core.common.Call<Response<User>> userSyncCall;
+    private Call<Response<User>> userSyncCall;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 

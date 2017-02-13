@@ -45,8 +45,11 @@ public class ProgramTrackedEntityAttributeHandler {
 
     public void handleProgramTrackedEntityAttributes(List<ProgramTrackedEntityAttribute>
                                                              programTrackedEntityAttributes) {
-        deleteOrPersistProgramTrackedEntityAttributes(programTrackedEntityAttributes);
+        if (programTrackedEntityAttributes == null) {
+            return;
+        }
 
+        deleteOrPersistProgramTrackedEntityAttributes(programTrackedEntityAttributes);
     }
 
     /**
@@ -57,10 +60,6 @@ public class ProgramTrackedEntityAttributeHandler {
      */
     private void deleteOrPersistProgramTrackedEntityAttributes(List<ProgramTrackedEntityAttribute>
                                                                        programTrackedEntityAttributes) {
-        if (programTrackedEntityAttributes == null) {
-            return;
-        }
-
         int size = programTrackedEntityAttributes.size();
 
         for (int i = 0; i < size; i++) {

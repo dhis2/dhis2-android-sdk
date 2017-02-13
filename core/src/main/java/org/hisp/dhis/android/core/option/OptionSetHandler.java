@@ -37,21 +37,15 @@ public class OptionSetHandler {
     }
 
     public void handleOptionSet(OptionSet optionSet) {
-        deleteOrPersistOptionSet(optionSet);
-    }
-
-
-    /**
-     * In this call we will only insert or update option sets with uid's.
-     * The options will be inserted/updated in the @see option.OptionSetCall#Call
-     *
-     * @param optionSet
-     */
-    private void deleteOrPersistOptionSet(OptionSet optionSet) {
         if (optionSet == null) {
             return;
         }
 
+        deleteOrPersistOptionSet(optionSet);
+    }
+
+
+    private void deleteOrPersistOptionSet(OptionSet optionSet) {
         if (isDeleted(optionSet)) {
             optionSetStore.delete(optionSet.uid());
         } else {

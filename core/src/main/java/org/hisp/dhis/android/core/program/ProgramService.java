@@ -29,20 +29,21 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.Where;
 import org.hisp.dhis.android.core.data.api.Which;
 
-import java.util.Map;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
-import retrofit2.http.QueryMap;
 
 public interface ProgramService {
-    //TODO: Replace @QueryMap with @Query("filter") String lastUpdated when available
     @GET("programs")
     Call<Payload<Program>> getPrograms(@Query("fields") @Which Fields<Program> fields,
-                                       @QueryMap Map<String, String> queryMap,
+                                       @Query("filter") @Where Filter<Program, String> lastUpdated,
+                                       @Query("filter") @Where Filter<Program, String> uids,
                                        @Query("paging") Boolean paging);
 
 }

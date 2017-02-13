@@ -29,8 +29,8 @@ package org.hisp.dhis.android.core.data.api;
 
 import java.util.List;
 
-public interface Filter {
-    Field field();
+public interface Filter<T, K> {
+    Field<T, K> field();
     String operator();
     List<String> values();
 }

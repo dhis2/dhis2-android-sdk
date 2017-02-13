@@ -34,9 +34,12 @@ import com.google.auto.value.AutoValue;
 import java.util.Arrays;
 
 @AutoValue
-public abstract class FilterImpl implements Filter {
+public abstract class FilterImpl<T, K> implements Filter<T, K> {
 
-    public static FilterImpl create(@NonNull Field field, @NonNull String operator, @NonNull String... values) {
-        return new AutoValue_FilterImpl(field, operator, Arrays.asList(values));
+    public static <T, K> FilterImpl<T, K> create(@NonNull Field<T, K> field,
+                                                 @NonNull String operator,
+                                                 @NonNull String... values) {
+
+        return new AutoValue_FilterImpl<>(field, operator, Arrays.asList(values));
     }
 }

@@ -37,11 +37,11 @@ import org.hisp.dhis.android.core.common.Property;
 @AutoValue
 public abstract class Field<Parent, Child> implements Property<Parent, Child> {
 
-    public Filter gt(String value) {
+    public Filter<Parent, Child> gt(String value) {
         return FilterImpl.create(this, "gt", value);
     }
 
-    public FilterImpl in(String... values) {
+    public Filter<Parent, Child> in(String... values) {
         return FilterImpl.create(this, "in", values);
     }
 

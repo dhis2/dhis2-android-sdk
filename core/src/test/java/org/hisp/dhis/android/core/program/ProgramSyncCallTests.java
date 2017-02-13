@@ -31,6 +31,7 @@ import android.database.Cursor;
 
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
@@ -98,7 +99,7 @@ public class ProgramSyncCallTests {
     private Program program;
 
     @Captor
-    private ArgumentCaptor<Filter<Program>> filterCaptor;
+    private ArgumentCaptor<Fields<Program>> filterCaptor;
 
     @Mock
     private Date date;
@@ -137,7 +138,7 @@ public class ProgramSyncCallTests {
         when(cursor.getString(cursor.getColumnIndex(ResourceModel.Columns.LAST_SYNCED))).thenReturn(null);
 
 
-        when(programService.getPrograms(any(Filter.class), any(Map.class), anyBoolean())
+        when(programService.getPrograms(any(Fields.class), any(Map.class), anyBoolean())
         ).thenReturn(programCall);
     }
 

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.io.IOException;
@@ -81,7 +81,7 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
     }
 
     private Response<Payload<OptionSet>> getOptionSets() throws IOException {
-        Filter<OptionSet> optionSetFilter = Filter.<OptionSet>builder().fields(OptionSet.uid,
+        Fields<OptionSet> optionSetFields = Fields.<OptionSet>builder().fields(OptionSet.uid,
                 OptionSet.code, OptionSet.name, OptionSet.displayName,
                 OptionSet.created, OptionSet.lastUpdated,
                 OptionSet.version, OptionSet.valueType,
@@ -90,7 +90,7 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
                         Option.lastUpdated)).build();
 
 
-        return optionSetService.optionSets(false, optionSetFilter).execute();
+        return optionSetService.optionSets(false, optionSetFields).execute();
     }
 
     private void saveOptionSets(List<OptionSet> optionSets) {

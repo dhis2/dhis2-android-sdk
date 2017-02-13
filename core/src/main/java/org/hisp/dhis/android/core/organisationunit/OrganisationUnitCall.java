@@ -33,7 +33,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.user.User;
@@ -129,7 +129,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
 
     private Response<Payload<OrganisationUnit>> getOrganisationUnit(@NonNull String uid,
                                                                     Map<String, String> queryMap) throws IOException {
-        Filter<OrganisationUnit> filter = Filter.<OrganisationUnit>builder().fields(
+        Fields<OrganisationUnit> fields = Fields.<OrganisationUnit>builder().fields(
                 OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
                 OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
                 OrganisationUnit.shortName, OrganisationUnit.displayShortName,
@@ -140,7 +140,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                 //TODO: find out if programs are relevant: can they be updated on their own ?
                 OrganisationUnit.programs
         ).build();
-        retrofit2.Call<Payload<OrganisationUnit>> call = organisationUnitService.getOrganisationUnits(uid, filter,
+        retrofit2.Call<Payload<OrganisationUnit>> call = organisationUnitService.getOrganisationUnits(uid, fields,
                 queryMap, true, false);
         return call.execute();
     }

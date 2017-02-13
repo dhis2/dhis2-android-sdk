@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.user;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.Call;
-import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
@@ -127,7 +127,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     }
 
     private Response<User> authenticate(String credentials) throws IOException {
-        return userService.authenticate(credentials, Filter.<User>builder().fields(
+        return userService.authenticate(credentials, Fields.<User>builder().fields(
                 User.uid, User.code, User.name, User.displayName,
                 User.created, User.lastUpdated, User.birthday, User.education,
                 User.gender, User.jobTitle, User.surname, User.firstName,

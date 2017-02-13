@@ -33,7 +33,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import org.assertj.core.util.Sets;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.junit.Before;
@@ -104,7 +104,7 @@ public class TrackedEntityCallUnitTests {
 
     //Captors for the service arguments:
     @Captor
-    private ArgumentCaptor<Filter<TrackedEntity>> filterCaptor;
+    private ArgumentCaptor<Fields<TrackedEntity>> filterCaptor;
 
     @Captor
     private ArgumentCaptor<Map<String, String>> queryMapCaptor;

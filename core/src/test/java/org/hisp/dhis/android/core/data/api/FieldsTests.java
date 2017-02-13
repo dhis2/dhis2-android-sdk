@@ -26,24 +26,54 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.data.api;
 
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Which;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import java.util.Map;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-import retrofit2.http.QueryMap;
+import static junit.framework.Assert.fail;
 
-public interface TrackedEntityService {
-    //TODO: Replace @QueryMap with @Query("fields") String lastUpdated when available
-    @GET("trackedEntities")
-    Call<Payload<TrackedEntity>> trackedEntities(@Query("fields") @Which Fields<TrackedEntity> fields,
-                                                 @QueryMap Map<String, String> queryMap,
-                                                 @Query("paging") boolean paging
-    );
+@RunWith(JUnit4.class)
+public class FieldsTests {
+
+    @Test
+    public void fields_shouldThrowExceptionOnNullArguments() {
+        try {
+            Fields.builder().fields().build();
+
+            fail("IllegalArgumentException was expected but was not thrown");
+        } catch (IllegalArgumentException illegalArgumentException) {
+            // swallow exception
+        }
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void filter_shouldBeImmutable() {
+        Fields fields = Fields.builder()
+                .fields(
+                        Field.create("one"),
+                        Field.create("two"),
+                        Field.create("three"))
+                .build();
+
+        try {
+            fields.fields().add(Field.create("four"));
+
+            fail("UnsupportedOperationException was expected but nothing was thrown");
+        } catch (UnsupportedOperationException unsupportedOperationException) {
+            // swallow exception
+        }
+    }
+
+    @Test
+    public void equals_shouldConformToContract() {
+        EqualsVerifier.forClass(Fields.builder().build().getClass())
+                .suppress(Warning.NULL_FIELDS)
+                .verify();
+    }
 }

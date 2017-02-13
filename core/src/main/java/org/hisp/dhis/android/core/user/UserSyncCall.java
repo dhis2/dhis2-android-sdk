@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Call;
-import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
@@ -107,7 +107,7 @@ public final class UserSyncCall implements Call<Response<User>> {
     }
 
     private Response<User> getUser() throws IOException {
-        Filter<User> filter = Filter.<User>builder().fields(
+        Fields<User> fields = Fields.<User>builder().fields(
                 User.uid, User.code, User.name, User.displayName,
                 User.created, User.lastUpdated, User.birthday, User.education,
                 User.gender, User.jobTitle, User.surname, User.firstName,
@@ -138,7 +138,7 @@ public final class UserSyncCall implements Call<Response<User>> {
                 )
         ).build();
 
-        return userSyncService.getUser(filter).execute();
+        return userSyncService.getUser(fields).execute();
     }
 
     private void deleteOrPersistUserGraph(Response<User> response) {

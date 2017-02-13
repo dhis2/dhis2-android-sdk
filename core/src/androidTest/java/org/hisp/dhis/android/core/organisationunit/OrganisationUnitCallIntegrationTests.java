@@ -37,7 +37,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
+import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
@@ -254,7 +254,7 @@ public class OrganisationUnitCallIntegrationTests extends AbsStoreTestCase {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(server.url("/")) //?
                 .addConverterFactory(JacksonConverterFactory.create(objectMapper))
-                .addConverterFactory(FilterConverterFactory.create())
+                .addConverterFactory(FieldsConverterFactory.create())
                 .build();
 
         List<OrganisationUnit> organisationUnits = Collections.singletonList(OrganisationUnit.create("O6uvpzGd5pu",

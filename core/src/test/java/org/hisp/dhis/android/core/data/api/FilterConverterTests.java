@@ -27,5 +27,62 @@
  */
 package org.hisp.dhis.android.core.data.api;
 
+import org.junit.Test;
+
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+
+import okhttp3.ResponseBody;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
+import retrofit2.Converter;
+import retrofit2.Retrofit;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
+
+import static org.assertj.core.api.Java6Assertions.assertThat;
+
 public class FilterConverterTests {
+
+    interface TestService {
+        @GET("api")
+        retrofit2.Call<ResponseBody> test(@Query("filter") @Where Filter filter);
+    }
+
+    @Test
+    public void retrofit_shouldRespectFilter() throws IOException, InterruptedException {
+        MockWebServer server = new MockWebServer();
+        server.start();
+
+        server.enqueue(new MockResponse());
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(server.url("/"))
+                .addConverterFactory(FilterConverterFactory.create())
+                .build();
+
+        TestService service = retrofit.create(TestService.class);
+        service.test(FilterImpl.create(Field.create("id"), "in", "uid1", "uid2")).execute();
+
+        RecordedRequest request = server.takeRequest();
+
+        assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1,uid2]");
+        server.shutdown();
+    }
+
+    @Test
+    public void converterFactory_shouldReturnConverterOnSpecificAnnotation() {
+        Converter.Factory converterFactory = FilterConverterFactory.create();
+
+        Converter<?, String> converter = converterFactory
+                .stringConverter(null, new Annotation[]{new Where() {
+                    @Override
+                    public Class<? extends Annotation> annotationType() {
+                        return Where.class;
+                    }
+                }}, null);
+
+        assertThat(converter).isInstanceOf(FilterConverter.class);
+    }
 }

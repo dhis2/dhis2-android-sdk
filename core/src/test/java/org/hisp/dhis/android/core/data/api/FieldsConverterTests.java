@@ -50,6 +50,17 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 @RunWith(JUnit4.class)
 public class FieldsConverterTests {
     private Converter<Fields, String> fieldsConverter;
+
+    interface TestService {
+        @GET("api/")
+        retrofit2.Call<ResponseBody> test(@Query("fields") @Which Fields<String> fields);
+    }
+
+    @Before
+    public void setUp() {
+        fieldsConverter = new FieldsConverter();
+    }
+
     @Test
     public void retrofit_shouldRespectConverter() throws IOException, InterruptedException {
         MockWebServer mockWebServer = new MockWebServer();
@@ -77,16 +88,6 @@ public class FieldsConverterTests {
                 "/api/?fields=property_one,property_two,nested_property[nested_property_one]");
 
         mockWebServer.shutdown();
-    }
-
-    interface TestService {
-        @GET("api/")
-        retrofit2.Call<ResponseBody> test(@Query("fields") @Which Fields<String> fields);
-    }
-
-    @Before
-    public void setUp() {
-        fieldsConverter = new FieldsConverter();
     }
 
     @Test

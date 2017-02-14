@@ -45,7 +45,7 @@ import java.util.Date;
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
-public class OptionSetModelStoreTests extends AbsStoreTestCase {
+public class OptionSetStoreTests extends AbsStoreTestCase {
 
     private static final String UID = "test_uid";
     private static final String CODE = "test_code";
@@ -177,7 +177,7 @@ public class OptionSetModelStoreTests extends AbsStoreTestCase {
         // checking that optionSet was successfully updated
         assertThatCursor(cursor).hasRow("new_uid", NAME, DISPLAY_NAME).isExhausted();
 
-        // deletes the optionset
+        // deletes the option set
         optionSetStore.delete("new_uid");
 
         cursor = database().query(OptionSetModel.TABLE, projection, null, null, null, null, null);

@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.option.OptionModel.Columns;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Captor;
 
 import java.io.IOException;
 import java.util.Date;
@@ -165,4 +166,51 @@ public class OptionStoreTests extends AbsStoreTestCase {
 
     }
 
+    @Test
+    public void update_shouldUpdateOption() throws Exception {
+        ContentValues optionSet = CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
+        database().insert(OptionSetModel.TABLE, null, optionSet);
+
+        long insert = optionStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID);
+        assertThat(insert).isEqualTo(1L);
+
+        String[] projection = {Columns.UID, Columns.CODE, Columns.OPTION_SET};
+
+        Cursor cursor = database().query(OptionModel.TABLE, projection, null, null, null, null, null);
+
+        // check that option was successfully inserted into database
+        assertThatCursor(cursor).hasRow(UID, CODE, OPTION_SET_UID);
+
+        String newCode = "abc123";
+        optionStore.update(UID, newCode, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID, UID);
+
+
+        cursor = database().query(OptionModel.TABLE, projection, null, null, null, null, null);
+
+        assertThatCursor(cursor).hasRow(UID, newCode, OPTION_SET_UID).isExhausted();
+
+    }
+
+    @Test
+    public void delete_shouldDeleteOption() throws Exception {
+        ContentValues optionSet = CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
+        database().insert(OptionSetModel.TABLE, null, optionSet);
+
+        long insert = optionStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID);
+        assertThat(insert).isEqualTo(1L);
+
+        String[] projection = {Columns.UID, Columns.CODE, Columns.OPTION_SET};
+
+        Cursor cursor = database().query(OptionModel.TABLE, projection, null, null, null, null, null);
+
+        // check that option was successfully inserted into database
+        assertThatCursor(cursor).hasRow(UID, CODE, OPTION_SET_UID);
+
+        // delete option
+        optionStore.delete(UID);
+        cursor = database().query(OptionModel.TABLE, projection, null, null, null, null, null);
+
+        // check that option is deleted
+        assertThatCursor(cursor).isExhausted();
+    }
 }

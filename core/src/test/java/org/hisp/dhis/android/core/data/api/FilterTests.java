@@ -39,9 +39,10 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 @RunWith(JUnit4.class)
 public class FilterTests {
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void fieldFilterConstructor_shouldThrowExceptionOnNullName() {
-        FilterImpl.create(null, null, (String[]) null);
+        Filter<String, String> filter = FilterImpl.create(null, null, (String[]) null);
+        assertThat(filter).isNull();
     }
 
     @Test
@@ -55,7 +56,7 @@ public class FilterTests {
 
     @Test
     public void fieldFilterEquals_shouldConformToContract() {
-        EqualsVerifier.forClass(FilterImpl.create(Field.create(""),"","").getClass())
+        EqualsVerifier.forClass(FilterImpl.create(Field.create(""), "", "a").getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();
     }

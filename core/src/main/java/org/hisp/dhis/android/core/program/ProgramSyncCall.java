@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
-import org.hisp.dhis.android.core.data.api.FilterImpl;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
@@ -47,9 +46,7 @@ import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import retrofit2.Response;
@@ -188,7 +185,7 @@ public class ProgramSyncCall implements Call<Response<Payload<Program>>> {
     }
 
     private Filter<Program, String> getIdInFilter(Set<String> uids) {
-        return Program.uid.in(uids.toArray(new String[uids.size()]));
+        return Program.uid.in(uids);
     }
 
     private Fields<Program> getFields() {

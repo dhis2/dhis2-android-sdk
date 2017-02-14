@@ -41,7 +41,7 @@ public class FilterTests {
 
     @Test(expected = NullPointerException.class)
     public void fieldFilterConstructor_shouldThrowExceptionOnNullName() {
-        FilterImpl.create(null, null, null);
+        FilterImpl.create(null, null, (String[]) null);
     }
 
     @Test

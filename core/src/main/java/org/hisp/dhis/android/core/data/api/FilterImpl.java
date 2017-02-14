@@ -33,10 +33,10 @@ import android.support.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 @AutoValue
 public abstract class FilterImpl<T, K> implements Filter<T, K> {
-
     public static <T, K> FilterImpl<T, K> create(@NonNull Field<T, K> field,
                                                  @NonNull String operator,
                                                  @Nullable String... values) {
@@ -45,5 +45,15 @@ public abstract class FilterImpl<T, K> implements Filter<T, K> {
             return null;
         }
         return new AutoValue_FilterImpl<>(field, operator, Arrays.asList(values));
+    }
+
+    public static <T, K> FilterImpl<T, K> create(@NonNull Field<T, K> field,
+                                                 @NonNull String operator,
+                                                 @Nullable Collection<String> values) {
+        //If the filter is incomplete, returning null, tells Retrofit that this filter should not be included.
+        if (values == null || values.isEmpty()) {
+            return null;
+        }
+        return new AutoValue_FilterImpl<>(field, operator, Arrays.asList(values.toArray(new String[values.size()])));
     }
 }

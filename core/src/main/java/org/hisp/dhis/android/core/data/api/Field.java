@@ -34,6 +34,8 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.Property;
 
+import java.util.Collection;
+
 @AutoValue
 public abstract class Field<Parent, Child> implements Property<Parent, Child> {
 
@@ -41,7 +43,7 @@ public abstract class Field<Parent, Child> implements Property<Parent, Child> {
         return FilterImpl.create(this, "gt", value);
     }
 
-    public Filter<Parent, Child> in(String... values) {
+    public Filter<Parent, Child> in(Collection<String> values) {
         return FilterImpl.create(this, "in", values);
     }
 

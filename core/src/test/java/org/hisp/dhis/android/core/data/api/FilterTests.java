@@ -45,7 +45,7 @@ public class FilterTests {
     }
 
     @Test
-    public void fieldFilterOperator_shouldReturnCorrectValues() {
+    public void filter_shouldReturnCorrectValues() {
         Field field = Field.create("test_field_name");
         Filter filter = field.gt("test_field_filter_operator");
 

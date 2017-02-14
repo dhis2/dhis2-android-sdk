@@ -47,7 +47,8 @@ public class FilterConverterTests {
 
     interface TestService {
         @GET("api")
-        retrofit2.Call<ResponseBody> test(@Query("filter") @Where Filter filter);
+        retrofit2.Call<ResponseBody> test(@Query("filter") @Where Filter idFilter,
+                                          @Query("filter") @Where Filter lastUpdatedFilter);
     }
 
     @Test
@@ -63,13 +64,66 @@ public class FilterConverterTests {
                 .build();
 
         TestService service = retrofit.create(TestService.class);
-        service.test(FilterImpl.create(Field.create("id"), "in", "uid1", "uid2")).execute();
+        service.test(
+                FilterImpl.create(Field.create("id"), "in", "uid1", "uid2"),
+                FilterImpl.create(Field.create("lastUpdated"), "gt", "updatedDate")
+        ).execute();
+
+        RecordedRequest request = server.takeRequest();
+
+        assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1,uid2]&filter=lastUpdated:gt:updatedDate");
+        server.shutdown();
+    }
+
+    @Test
+    public void retrofit_shouldIgnoreNullFilter() throws IOException, InterruptedException {
+        MockWebServer server = new MockWebServer();
+        server.start();
+
+        server.enqueue(new MockResponse());
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(server.url("/"))
+                .addConverterFactory(FilterConverterFactory.create())
+                .build();
+
+        TestService service = retrofit.create(TestService.class);
+        service.test(
+                FilterImpl.create(Field.create("id"), "in", "uid1", "uid2"),
+                FilterImpl.create(Field.create("lastUpdated"), "gt", (String[]) null) //Creating filter with null
+        ).execute();
 
         RecordedRequest request = server.takeRequest();
 
         assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1,uid2]");
         server.shutdown();
     }
+
+    @Test
+    public void retrofit_shouldIgnoreEmptyStringFilter() throws IOException, InterruptedException {
+        MockWebServer server = new MockWebServer();
+        server.start();
+
+        server.enqueue(new MockResponse());
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(server.url("/"))
+                .addConverterFactory(FilterConverterFactory.create())
+                .build();
+
+        TestService service = retrofit.create(TestService.class);
+        service.test(
+                FilterImpl.create(Field.create("id"), "in", "uid1", "uid2"),
+                FilterImpl.create(Field.create("lastUpdated"), "gt", "") //Creating a filter with an empty string
+        ).execute();
+
+        RecordedRequest request = server.takeRequest();
+
+        assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1,uid2]");
+        server.shutdown();
+    }
+
+    //TODO: test Filter for null input and empty string.
 
     @Test
     public void converterFactory_shouldReturnConverterOnSpecificAnnotation() {

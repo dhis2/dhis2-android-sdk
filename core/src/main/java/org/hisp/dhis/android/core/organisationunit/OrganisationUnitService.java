@@ -29,23 +29,23 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.Where;
 import org.hisp.dhis.android.core.data.api.Which;
-
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-import retrofit2.http.QueryMap;
 
 public interface OrganisationUnitService {
-    //TODO: Replace @QueryMap with @Query("filter") String lastUpdated when available
+
     @GET("organisationUnits/{uid}")
-    Call<Payload<OrganisationUnit>> getOrganisationUnits(@Path("uid") String organisationUnitUid,
-                                                         @Query("fields") @Which Fields<OrganisationUnit> fields,
-                                                         @QueryMap Map<String, String> queryMap,
-                                                         @Query("includeDescendants") Boolean descendants,
-                                                         @Query("paging") Boolean paging
+    Call<Payload<OrganisationUnit>> getOrganisationUnits(
+            @Path("uid") String organisationUnitUid,
+            @Query("fields") @Which Fields<OrganisationUnit> fields,
+            @Query("filter") @Where Filter<OrganisationUnit, String> lastUpdated,
+            @Query("includeDescendants") Boolean descendants,
+            @Query("paging") Boolean paging
     );
 }

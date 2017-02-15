@@ -30,10 +30,12 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
@@ -41,13 +43,9 @@ import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import retrofit2.Response;
-
-import static org.hisp.dhis.android.core.utils.CallUtils.buildInFilter;
 
 public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>> {
 
@@ -55,16 +53,16 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
     private final SQLiteDatabase database;
     private final TrackedEntityStore store;
     private final ResourceStore resourceStore;
-    private final Set<String> uids;
+    private final Set<String> uidSet;
     private Boolean isExecuted = false;
 
-    public TrackedEntityCall(@NonNull Set<String> uids,
+    public TrackedEntityCall(@Nullable Set<String> uidSet,
                              @NonNull SQLiteDatabase database,
                              @NonNull TrackedEntityStore store,
                              @NonNull ResourceStore resourceStore,
                              @NonNull TrackedEntityService service
     ) {
-        this.uids = uids;
+        this.uidSet = uidSet;
         this.database = database;
         this.store = store;
         this.resourceStore = resourceStore;
@@ -86,23 +84,19 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
             }
             isExecuted = true;
         }
-        if (uids == null || uids.isEmpty()) {
-            return null;
-        }
+        //TODO: uid will be null if we want all uids. Still make the call ! + Test for it !
+
         Response<Payload<TrackedEntity>> response = null;
         database.beginTransaction();
         try {
-            Map<String, String> queryMap = new HashMap<>();
-            //TODO: test the resultant url after adding these to the map:
-            queryMap.put("id", buildInFilter("id", uids));
-            //TODO: abstract this for all calls into utility class ? :
-            String updatedDate = getLastUpdated(OrganisationUnit.class.getSimpleName());
-            if (updatedDate != null && !updatedDate.isEmpty()) {
-                queryMap.put(TrackedEntityModel.Columns.LAST_UPDATED,
-                        TrackedEntityModel.Columns.LAST_UPDATED + ":gt:" + updatedDate);
+            Filter<TrackedEntity, String> idFilter = null;
+            if (uidSet != null) {
+                idFilter = TrackedEntity.uid.in(uidSet);
             }
+            Filter<TrackedEntity, String> lastUpdatedFilter = TrackedEntity.lastUpdated.gt(
+                    getLastUpdated(OrganisationUnit.class.getSimpleName()));
 
-            response = getTrackedEntities(queryMap);
+            response = getTrackedEntities(idFilter, lastUpdatedFilter);
 
             if (response != null && response.isSuccessful()) {
                 for (TrackedEntity trackedEntity : response.body().items()) {
@@ -118,7 +112,10 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
         return response;
     }
 
-    private Response<Payload<TrackedEntity>> getTrackedEntities(Map<String, String> queryMap) throws IOException {
+    private Response<Payload<TrackedEntity>> getTrackedEntities(Filter<TrackedEntity, String> idFilter,
+                                                                Filter<TrackedEntity, String> lastUpdatedFilter
+    ) throws IOException {
+
         Fields<TrackedEntity> fields = Fields.<TrackedEntity>builder().fields(
                 TrackedEntity.uid, TrackedEntity.code, TrackedEntity.name,
                 TrackedEntity.displayName, TrackedEntity.created, TrackedEntity.lastUpdated,
@@ -126,7 +123,9 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
                 TrackedEntity.description, TrackedEntity.displayDescription,
                 TrackedEntity.deleted
         ).build();
-        retrofit2.Call<Payload<TrackedEntity>> call = service.trackedEntities(fields, queryMap, false);
+
+        retrofit2.Call<Payload<TrackedEntity>> call = service.trackedEntities(fields, idFilter,
+                lastUpdatedFilter, false);
         return call.execute();
     }
 

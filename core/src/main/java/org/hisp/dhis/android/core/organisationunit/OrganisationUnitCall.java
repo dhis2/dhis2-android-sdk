@@ -30,10 +30,12 @@ package org.hisp.dhis.android.core.organisationunit;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.user.User;
@@ -42,9 +44,7 @@ import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import retrofit2.Response;
@@ -98,15 +98,10 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         try {
             Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
             Date serverDate = null;
-            Map<String, String> queryMap = new HashMap<>();
-            String updatedDate = getLastUpdated();
-            if (updatedDate != null && !updatedDate.isEmpty()) {
-                queryMap.put(OrganisationUnitModel.Columns.LAST_UPDATED,
-                        OrganisationUnitModel.Columns.LAST_UPDATED + ":gt:" + updatedDate);
-            }
+            Filter<OrganisationUnit, String> lastUpdatedFilter = OrganisationUnit.lastUpdated.gt(getLastUpdated());
             // Call OrganisationUnitService for each tree root & try to persist sub-tree:
             for (String uid : rootOrgUnitUids) {
-                response = getOrganisationUnit(uid, queryMap);
+                response = getOrganisationUnit(uid, lastUpdatedFilter);
                 if (response.isSuccessful()) {
                     if (serverDate == null) {//only get the very first date-time for the entire call.
                         serverDate = response.headers().getDate(HeaderUtils.DATE);
@@ -127,8 +122,10 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         return response;
     }
 
-    private Response<Payload<OrganisationUnit>> getOrganisationUnit(@NonNull String uid,
-                                                                    Map<String, String> queryMap) throws IOException {
+    private Response<Payload<OrganisationUnit>> getOrganisationUnit(
+            @NonNull String uid,
+            @Nullable Filter<OrganisationUnit, String> lastUpdatedFilter) throws IOException {
+
         Fields<OrganisationUnit> fields = Fields.<OrganisationUnit>builder().fields(
                 OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
                 OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
@@ -141,7 +138,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                 OrganisationUnit.programs
         ).build();
         retrofit2.Call<Payload<OrganisationUnit>> call = organisationUnitService.getOrganisationUnits(uid, fields,
-                queryMap, true, false);
+                lastUpdatedFilter, true, false);
         return call.execute();
     }
 

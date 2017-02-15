@@ -33,6 +33,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.user.User;
@@ -53,7 +54,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -104,10 +104,10 @@ public class OrganisationUnitCallUnitTests {
     private ArgumentCaptor<String> uidCaptor;
 
     @Captor
-    private ArgumentCaptor<Fields<OrganisationUnit>> filterCaptor;
+    private ArgumentCaptor<Fields<OrganisationUnit>> fieldsCaptor;
 
     @Captor
-    private ArgumentCaptor<Map<String, String>> queryMapCaptor;
+    private ArgumentCaptor<Filter<OrganisationUnit, String>> filterCaptor;
 
     @Captor
     private ArgumentCaptor<Boolean> descendantsCaptor;
@@ -180,7 +180,7 @@ public class OrganisationUnitCallUnitTests {
 
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
         when(organisationUnitService.getOrganisationUnits(
-                uidCaptor.capture(), filterCaptor.capture(), queryMapCaptor.capture(), descendantsCaptor.capture(),
+                uidCaptor.capture(), fieldsCaptor.capture(), filterCaptor.capture(), descendantsCaptor.capture(),
                 pagingCaptor.capture()
         )).thenReturn(retrofitCall);
         when(retrofitCall.execute()).thenReturn(Response.success(payload));
@@ -194,7 +194,7 @@ public class OrganisationUnitCallUnitTests {
         organisationUnitCall.call();
 
         assertThat(uidCaptor.getValue()).isEqualTo(organisationUnit.uid());
-        assertThat(filterCaptor.getValue().fields()).contains(
+        assertThat(fieldsCaptor.getValue().fields()).contains(
                 OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
                 OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
                 OrganisationUnit.shortName, OrganisationUnit.displayShortName,
@@ -204,8 +204,8 @@ public class OrganisationUnitCallUnitTests {
                 OrganisationUnit.parent,
                 OrganisationUnit.programs
         );
-        assertThat(queryMapCaptor.getValue().containsKey("filter")).isFalse();
-        assertThat(queryMapCaptor.getValue().isEmpty()).isTrue();
+
+        assertThat(filterCaptor.getValue()).isNull();
         assertThat(descendantsCaptor.getValue()).isTrue();
         assertThat(pagingCaptor.getValue()).isFalse();
     }
@@ -228,7 +228,7 @@ public class OrganisationUnitCallUnitTests {
         organisationUnitCall.call();
 
         assertThat(uidCaptor.getValue()).isEqualTo(organisationUnit.uid());
-        assertThat(filterCaptor.getValue().fields()).contains(
+        assertThat(fieldsCaptor.getValue().fields()).contains(
                 OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
                 OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
                 OrganisationUnit.shortName, OrganisationUnit.displayShortName,
@@ -238,9 +238,11 @@ public class OrganisationUnitCallUnitTests {
                 OrganisationUnit.parent,
                 OrganisationUnit.programs
         );
-
-        assertThat(queryMapCaptor.getValue().containsKey(key)).isTrue();
-        assertThat(queryMapCaptor.getValue().get(key)).isEqualTo(expectedValue);
+        Filter<OrganisationUnit, String> filter = filterCaptor.getValue();
+        assertThat(filter.field().name()).isEqualTo(OrganisationUnit.lastUpdated.name());
+        assertThat(filter.operator()).isEqualTo("gt");
+        assertThat(filter.values().size()).isEqualTo(1);
+        assertThat(filter.values()).contains(date);
         assertThat(descendantsCaptor.getValue()).isTrue();
         assertThat(pagingCaptor.getValue()).isFalse();
     }

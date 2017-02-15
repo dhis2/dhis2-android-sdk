@@ -27,34 +27,38 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import android.database.sqlite.SQLiteDatabase;
-
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.option.OptionSetCall;
 import org.hisp.dhis.android.core.program.ProgramSyncCall;
 import org.hisp.dhis.android.core.user.UserSyncCall;
 
 public class MetadataCall {
-    private final SQLiteDatabase sqLiteDatabase;
+    private final DatabaseAdapter databaseAdapter;
     private final UserSyncCall userSyncCall;
     private final ProgramSyncCall programSyncCall;
+    private final OptionSetCall optionSetCall;
 
-    public MetadataCall(SQLiteDatabase sqLiteDatabase,
+    public MetadataCall(DatabaseAdapter databaseAdapter,
                         UserSyncCall userSyncCall,
-                        ProgramSyncCall programSyncCall) {
-        this.sqLiteDatabase = sqLiteDatabase;
+                        ProgramSyncCall programSyncCall,
+                        OptionSetCall optionSetCall) {
+        this.databaseAdapter = databaseAdapter;
         this.userSyncCall = userSyncCall;
         this.programSyncCall = programSyncCall;
+        this.optionSetCall = optionSetCall;
     }
 
     public void execute() throws Exception {
-        sqLiteDatabase.beginTransaction();
+        databaseAdapter.beginTransaction();
         try {
             userSyncCall.call();
             programSyncCall.call();
+            optionSetCall.call();
 
 
-            sqLiteDatabase.setTransactionSuccessful();
+            databaseAdapter.setTransactionSuccessful();
         } finally {
-            sqLiteDatabase.endTransaction();
+            databaseAdapter.endTransaction();
         }
     }
 }

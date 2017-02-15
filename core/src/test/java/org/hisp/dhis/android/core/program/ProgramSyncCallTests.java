@@ -56,7 +56,7 @@ import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Set;
 
 import okhttp3.MediaType;
@@ -98,19 +98,25 @@ public class ProgramSyncCallTests {
     private Program program;
 
     @Captor
-    private ArgumentCaptor<Fields<Program>> filterCaptor;
+    private ArgumentCaptor<Fields<Program>> fieldsCaptor;
+
+    @Captor
+    private ArgumentCaptor<Filter<Program, String>> lastUpdatedFilter;
+
+    @Captor
+    private ArgumentCaptor<Filter<Program, String>> idInFilter;
 
     @Mock
     private Date date;
 
-    @Mock
-    private Set<String> assignedProgramUids;
 
     @Mock
     private Payload<Program> payload;
 
     @Mock
     Cursor cursor;
+
+    private Set<String> assignedProgramUids;
 
     // the call we are testing
     private Call<Response<Payload<Program>>> programSyncCall;
@@ -137,8 +143,13 @@ public class ProgramSyncCallTests {
         when(cursor.getString(cursor.getColumnIndex(ResourceModel.Columns.LAST_SYNCED))).thenReturn(null);
 
 
-        when(programService.getPrograms(any(Fields.class), any(Map.class), anyBoolean())
+        when(programService.getPrograms(any(Fields.class), any(Filter.class), any(Filter.class), anyBoolean())
         ).thenReturn(programCall);
+
+        assignedProgramUids = new HashSet<>();
+        assignedProgramUids.add("test_program_uid");
+        assignedProgramUids.add("test_program1_uid");
+
     }
 
     @Test
@@ -147,13 +158,13 @@ public class ProgramSyncCallTests {
         when(programCall.execute()).thenReturn(Response.success(payload));
 
         when(programService.getPrograms(
-                filterCaptor.capture(), any(Map.class), anyBoolean())
+                fieldsCaptor.capture(), lastUpdatedFilter.capture(), idInFilter.capture(), anyBoolean())
         ).thenReturn(programCall);
 
 
         programSyncCall.call();
 
-        assertThat(filterCaptor.getValue().fields()).contains(
+        assertThat(fieldsCaptor.getValue().fields()).contains(
                 Program.uid, Program.code, Program.name, Program.displayName, Program.created,
                 Program.lastUpdated, Program.shortName, Program.displayShortName, Program.description,
                 Program.displayDescription, Program.version, Program.captureCoordinates, Program.dataEntryMethod,
@@ -432,8 +443,7 @@ public class ProgramSyncCallTests {
 
         try {
             programSyncCall.call();
-        }
-        catch (IOException ioe) {
+        } catch (IOException ioe) {
             // do nothing
         }
 

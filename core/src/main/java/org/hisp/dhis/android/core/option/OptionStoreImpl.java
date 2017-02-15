@@ -106,6 +106,9 @@ public class OptionStoreImpl implements OptionStore {
                       @NonNull String whereOptionUid) {
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, optionSet);
 
+        // bind the where argument
+        sqLiteBind(updateStatement, 8, whereOptionUid);
+
         // execute and clear bindings
         int update = databaseAdapter.executeUpdateDelete(OptionModel.TABLE, updateStatement);
         updateStatement.clearBindings();

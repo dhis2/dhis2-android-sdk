@@ -32,6 +32,7 @@ import android.database.Cursor;
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
@@ -45,9 +46,7 @@ import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import retrofit2.Response;
@@ -173,22 +172,23 @@ public class ProgramSyncCall implements Call<Response<Payload<Program>>> {
         return dateString;
     }
 
-    //TODO Replace queryMap with proper Fields annotations with lastUpdated when available
     private Response<Payload<Program>> getProgramsByLastUpdated(Set<String> uids,
                                                                 String lastSynced) throws IOException {
-        Map<String, String> queryMap = new HashMap<>();
-        String lastUpdatedQuery = "lastUpdated:gt:" + lastSynced;
-
-        if (lastSynced != null) {
-            queryMap.put("filter", lastUpdatedQuery);
-        }
-
-        queryMap.put("filter", "id:in:" + uids.toString().trim());
-
-        return programService.getPrograms(getFilters(), queryMap, Boolean.FALSE).execute();
+        return programService.getPrograms(
+                getFields(), getLastUpdatedFilter(lastSynced), getIdInFilter(uids), Boolean.FALSE
+        ).execute();
     }
 
-    private Fields<Program> getFilters() {
+    private Filter<Program, String> getLastUpdatedFilter(String lastSynced) {
+        return Program.lastUpdated.gt(lastSynced);
+
+    }
+
+    private Filter<Program, String> getIdInFilter(Set<String> uids) {
+        return Program.uid.in(uids);
+    }
+
+    private Fields<Program> getFields() {
         return Fields.<Program>builder().fields(
                 Program.uid, Program.code, Program.name, Program.displayName, Program.created,
                 Program.lastUpdated, Program.shortName, Program.displayShortName, Program.description,

@@ -34,6 +34,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.program.ProgramIndicatorModel.Columns;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,22 +69,22 @@ public class ProgramIndicatorStoreTests extends AbsStoreTestCase {
 
 
     public static final String[] PROGRAM_INDICATOR_PROJECTION = {
-            ProgramIndicatorModel.Columns.UID,
-            ProgramIndicatorModel.Columns.CODE,
-            ProgramIndicatorModel.Columns.NAME,
-            ProgramIndicatorModel.Columns.DISPLAY_NAME,
-            ProgramIndicatorModel.Columns.CREATED,
-            ProgramIndicatorModel.Columns.LAST_UPDATED,
-            ProgramIndicatorModel.Columns.SHORT_NAME,
-            ProgramIndicatorModel.Columns.DISPLAY_SHORT_NAME,
-            ProgramIndicatorModel.Columns.DESCRIPTION,
-            ProgramIndicatorModel.Columns.DISPLAY_DESCRIPTION,
-            ProgramIndicatorModel.Columns.DISPLAY_IN_FORM,
-            ProgramIndicatorModel.Columns.EXPRESSION,
-            ProgramIndicatorModel.Columns.DIMENSION_ITEM,
-            ProgramIndicatorModel.Columns.FILTER,
-            ProgramIndicatorModel.Columns.DECIMALS,
-            ProgramIndicatorModel.Columns.PROGRAM
+            Columns.UID,
+            Columns.CODE,
+            Columns.NAME,
+            Columns.DISPLAY_NAME,
+            Columns.CREATED,
+            Columns.LAST_UPDATED,
+            Columns.SHORT_NAME,
+            Columns.DISPLAY_SHORT_NAME,
+            Columns.DESCRIPTION,
+            Columns.DISPLAY_DESCRIPTION,
+            Columns.DISPLAY_IN_FORM,
+            Columns.EXPRESSION,
+            Columns.DIMENSION_ITEM,
+            Columns.FILTER,
+            Columns.DECIMALS,
+            Columns.PROGRAM
     };
 
     private ProgramIndicatorStore programIndicatorStore;
@@ -147,4 +148,91 @@ public class ProgramIndicatorStoreTests extends AbsStoreTestCase {
 
     // ToDo: consider introducing conflict resolution strategy
 
+
+    @Test
+    public void update_shouldUpdateProgramIndicator() throws Exception {
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, null, null, null);
+        database().insert(ProgramModel.TABLE, null, program);
+
+        ContentValues programIndicator = new ContentValues();
+        programIndicator.put(Columns.UID, UID);
+        programIndicator.put(Columns.DECIMALS, DECIMALS);
+        programIndicator.put(Columns.DISPLAY_IN_FORM, DISPLAY_IN_FORM);
+        programIndicator.put(Columns.PROGRAM, PROGRAM);
+        database().insert(ProgramIndicatorModel.TABLE, null, programIndicator);
+
+        String[] projection = {Columns.UID, Columns.DECIMALS, Columns.DISPLAY_IN_FORM};
+        Cursor cursor = database().query(ProgramIndicatorModel.TABLE, projection, null, null, null, null, null);
+
+        assertThatCursor(cursor).hasRow(UID, DECIMALS, 1); // DISPLAY_IN_FORM ==  Boolean.TRUE == 1 in database
+        int updatedDecimals = 5;
+        boolean updatedDisplayInForm = Boolean.FALSE; // Boolean.FALSE == 0 in database
+
+        // update the program indicator
+        int update = programIndicatorStore.update(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED,
+                SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, updatedDisplayInForm, EXPRESSION,
+                DIMENSION_ITEM, FILTER, updatedDecimals, PROGRAM, UID);
+
+        // check that store returns 1 after successful update
+        assertThat(update).isEqualTo(1);
+
+        cursor = database().query(ProgramIndicatorModel.TABLE, projection, null, null, null, null, null);
+
+        assertThatCursor(cursor).hasRow(UID, updatedDecimals, 0); // 0 == Boolean.FALSE
+    }
+
+    @Test
+    public void delete_shouldDeleteProgramIndicator() throws Exception {
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, null, null, null);
+        database().insert(ProgramModel.TABLE, null, program);
+
+        ContentValues programIndicator = new ContentValues();
+        programIndicator.put(Columns.UID, UID);
+        programIndicator.put(Columns.PROGRAM, PROGRAM);
+        database().insert(ProgramIndicatorModel.TABLE, null, programIndicator);
+
+        String[] projection = {Columns.UID};
+
+        Cursor cursor = database().query(ProgramIndicatorModel.TABLE, projection, null, null, null, null, null);
+        // check that program indicator was successfully inserted into database
+        assertThatCursor(cursor).hasRow(UID);
+
+        // delete the program indicator
+        int delete = programIndicatorStore.delete(UID);
+
+        // check that store returns 1 when successfully deleting
+        assertThat(delete).isEqualTo(1);
+
+        cursor = database().query(ProgramIndicatorModel.TABLE, projection, null, null, null, null, null);
+
+        // check that program indicator is deleted in database
+        assertThatCursor(cursor).isExhausted();
+
+    }
+
+    @Test
+    public void delete_shouldDeleteProgramIndicatorWhenDeletingProgram() throws Exception {
+
+        ContentValues program = CreateProgramUtils.create(1L, PROGRAM, null, null, null);
+        database().insert(ProgramModel.TABLE, null, program);
+
+        ContentValues programIndicator = new ContentValues();
+        programIndicator.put(Columns.UID, UID);
+        programIndicator.put(Columns.PROGRAM, PROGRAM);
+        database().insert(ProgramIndicatorModel.TABLE, null, programIndicator);
+
+        String[] projection = {Columns.UID};
+
+        Cursor cursor = database().query(ProgramIndicatorModel.TABLE, projection, null, null, null, null, null);
+
+        // check that program indicator was successfully inserted into database
+        assertThatCursor(cursor).hasRow(UID);
+
+        database().delete(ProgramModel.TABLE, ProgramModel.Columns.UID + " =?", new String[]{PROGRAM});
+
+        cursor = database().query(ProgramIndicatorModel.TABLE, projection, null, null, null, null, null);
+
+        // check that program indicator was deleted on cascade from program
+        assertThatCursor(cursor).isExhausted();
+    }
 }

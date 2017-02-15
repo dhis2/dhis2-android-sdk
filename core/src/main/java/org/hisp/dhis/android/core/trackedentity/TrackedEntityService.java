@@ -28,22 +28,26 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Which;
-import org.hisp.dhis.android.core.data.api.Fields;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import java.util.Map;
+import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.Where;
+import org.hisp.dhis.android.core.data.api.Which;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
-import retrofit2.http.QueryMap;
 
 public interface TrackedEntityService {
-    //TODO: Replace @QueryMap with @Query("fields") String lastUpdated when available
+
     @GET("trackedEntities")
-    Call<Payload<TrackedEntity>> trackedEntities(@Query("fields") @Which Fields<TrackedEntity> fields,
-                                                 @QueryMap Map<String, String> queryMap,
-                                                 @Query("paging") boolean paging
+    Call<Payload<TrackedEntity>> trackedEntities(
+            @NonNull @Query("fields") @Which Fields<TrackedEntity> fields,
+            @NonNull @Query("filter") @Where Filter<TrackedEntity, String> idFilter,
+            @Nullable @Query("filter") @Where Filter<TrackedEntity, String> lastUpdated,
+            @NonNull @Query("paging") boolean paging
     );
 }

@@ -36,6 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
@@ -144,6 +145,7 @@ public class UserSyncCallIntegrationTest extends AbsStoreTestCase {
 
     private MockWebServer mockWebServer;
     private UserSyncCall userSyncCall;
+    private OrganisationUnitHandler organisationUnitHandler;
 
     @Override
     @Before
@@ -313,8 +315,10 @@ public class UserSyncCallIntegrationTest extends AbsStoreTestCase {
         UserRoleProgramLinkStore userRoleProgramLinkStore = new UserRoleProgramLinkStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
-        userSyncCall = new UserSyncCall(userSyncService, databaseAdapter(), organisationUnitStore,
-                userOrganisationUnitStore, userCredentialsStore, userRoleStore,
+        organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore, userOrganisationUnitStore);
+
+        userSyncCall = new UserSyncCall(userSyncService, databaseAdapter(), organisationUnitHandler,
+                userCredentialsStore, userRoleStore,
                 userStore, userRoleProgramLinkStore, resourceStore);
 
     }

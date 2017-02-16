@@ -244,4 +244,65 @@ public class ProgramStageStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).isExhausted();
     }
 
+    @Test
+    public void update_shouldUpdateProgramStage() throws Exception {
+
+        // insertion of foreign key happens in the setUp method
+        ContentValues programStage = new ContentValues();
+        programStage.put(Columns.UID, UID);
+        programStage.put(Columns.CODE, CODE);
+        programStage.put(Columns.PROGRAM, PROGRAM);
+
+        database().insert(ProgramStageModel.TABLE, null, programStage);
+
+        String[] projection = {Columns.UID, Columns.CODE};
+        Cursor cursor = database().query(ProgramStageModel.TABLE, projection, null, null, null, null, null);
+
+        // check that program stage was successfully inserted into database
+        assertThatCursor(cursor).hasRow(UID, CODE);
+        String updatedCode = "123_new_code_321";
+        // updating program stage with updatedCode
+        int update = programStageStore.update(
+                UID, updatedCode, NAME, DISPLAY_NAME, date, date, null,
+                Boolean.FALSE, Boolean.TRUE, null, Boolean.FALSE, Boolean.TRUE,
+                Boolean.FALSE, FormType.DEFAULT, Boolean.FALSE, Boolean.TRUE,
+                Boolean.FALSE, 1, Boolean.TRUE, Boolean.FALSE, 4, 3, PROGRAM, UID
+        );
+
+        // check that store returns 1 on successful update
+        assertThat(update).isEqualTo(1);
+
+        cursor = database().query(ProgramStageModel.TABLE, projection, null, null, null, null, null);
+
+        assertThatCursor(cursor).hasRow(UID, updatedCode);
+    }
+
+    @Test
+    public void delete_shouldDeleteProgramStage() throws Exception {
+        // insertion of foreign key happens in the setUp method
+        ContentValues programStage = new ContentValues();
+        programStage.put(Columns.UID, UID);
+        programStage.put(Columns.CODE, CODE);
+        programStage.put(Columns.PROGRAM, PROGRAM);
+
+        database().insert(ProgramStageModel.TABLE, null, programStage);
+
+        String[] projection = {Columns.UID};
+
+        Cursor cursor = database().query(ProgramStageModel.TABLE, projection, null, null, null, null, null);
+
+        // check that program stage was successfully inserted
+        assertThatCursor(cursor).hasRow(UID);
+
+        // delete the program stage
+        int delete = programStageStore.delete(UID);
+
+        // check that store returns 1 on successful delete
+        assertThat(delete).isEqualTo(1);
+
+        cursor = database().query(ProgramStageModel.TABLE, projection, null, null, null, null, null);
+
+        // check that program stage doesn't exist in database
+        assertThatCursor(cursor).isExhausted();
+    }
 }

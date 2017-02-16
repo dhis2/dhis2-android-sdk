@@ -408,4 +408,150 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).isExhausted();
     }
 
+    @Test
+    public void update_shouldUpdateProgramStageDataElementWithoutProgramStageSection() throws Exception {
+        // inserting mandatory and nested foreign keys
+        ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
+        database().insert(DataElementModel.TABLE, null, dataElement);
+
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null, null);
+        database().insert(ProgramModel.TABLE, null, program);
+
+        ContentValues programStage = CreateProgramStageUtils.create(ID, PROGRAM_STAGE, PROGRAM);
+        database().insert(ProgramStageModel.TABLE, null, programStage);
+
+        ContentValues programStageDataElement = new ContentValues();
+        programStageDataElement.put(Columns.UID, UID);
+        programStageDataElement.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
+        programStageDataElement.put(Columns.COMPULSORY, COMPULSORY);
+        programStageDataElement.put(Columns.DATA_ELEMENT, DATA_ELEMENT);
+        programStageDataElement.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+
+        database().insert(ProgramStageDataElementModel.TABLE, null, programStageDataElement);
+
+        String[] projection = {Columns.UID, Columns.DISPLAY_NAME, Columns.COMPULSORY};
+
+        Cursor cursor = database().query(ProgramStageDataElementModel.TABLE, projection,
+                null, null, null, null, null);
+
+        // checking that psde was successfully inserted
+        assertThatCursor(cursor).hasRow(UID, DISPLAY_NAME, 0); // 0 == Boolean.FALSE
+        String updatedDisplayName = "updatedDisplayName";
+        Boolean updatedCompulsory = Boolean.TRUE;
+
+        int update = programStageDataElementStore.updateWithoutSection(
+                UID, CODE, NAME,
+                updatedDisplayName, date, date,
+                DISPLAY_IN_REPORTS, updatedCompulsory,
+                ALLOW_PROVIDED_ELSEWHERE,
+                SORT_ORDER,
+                ALLOW_FUTURE_DATE,
+                DATA_ELEMENT,
+                PROGRAM_STAGE,
+                UID);
+
+        // checking that store returns 1 when update was successful
+        assertThat(update).isEqualTo(1);
+
+        cursor = database().query(ProgramStageDataElementModel.TABLE, projection,
+                null, null, null, null, null);
+
+        // checking that row was updated
+        assertThatCursor(cursor).hasRow(UID, updatedDisplayName, 1); // 1 == Boolean.TRUE
+
+    }
+
+    @Test
+    public void update_shouldUpdateProgramStageDataElementWithProgramStageSection() throws Exception {
+        ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
+        database().insert(DataElementModel.TABLE, null, dataElement);
+
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null, null);
+        database().insert(ProgramModel.TABLE, null, program);
+
+        ContentValues programStage = CreateProgramStageUtils.create(ID, PROGRAM_STAGE, PROGRAM);
+        database().insert(ProgramStageModel.TABLE, null, programStage);
+
+        ContentValues programStageSection = CreateProgramStageSectionUtils.create(
+                ID, PROGRAM_STAGE_SECTION, PROGRAM_STAGE
+        );
+        database().insert(ProgramStageSectionModel.TABLE, null, programStageSection);
+
+        ContentValues programStageDataElement = new ContentValues();
+        programStageDataElement.put(Columns.UID, UID);
+        programStageDataElement.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
+        programStageDataElement.put(Columns.DISPLAY_IN_REPORTS, DISPLAY_IN_REPORTS);
+        programStageDataElement.put(Columns.DATA_ELEMENT, DATA_ELEMENT);
+        programStageDataElement.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+        programStageDataElement.put(Columns.PROGRAM_STAGE_SECTION, PROGRAM_STAGE_SECTION);
+
+        database().insert(ProgramStageDataElementModel.TABLE, null, programStageDataElement);
+
+        String[] projection = {Columns.UID, Columns.DISPLAY_NAME, Columns.DISPLAY_IN_REPORTS};
+
+        Cursor cursor = database().query(ProgramStageDataElementModel.TABLE, projection,
+                null, null, null, null, null);
+
+        // checking that psde was successfully inserted
+        assertThatCursor(cursor).hasRow(UID, DISPLAY_NAME, 1); // 1 == Boolean.TRUE
+        String updatedDisplayName = "updatedDisplayName";
+        Boolean updatedDisplayInReports = Boolean.FALSE;
+
+        int update = programStageDataElementStore.updateWithSection(
+                UID, CODE, NAME,
+                updatedDisplayName, date, date,
+                updatedDisplayInReports, COMPULSORY,
+                ALLOW_PROVIDED_ELSEWHERE,
+                SORT_ORDER,
+                ALLOW_FUTURE_DATE,
+                DATA_ELEMENT,
+                PROGRAM_STAGE,
+                PROGRAM_STAGE_SECTION,
+                UID);
+
+        // checking that store returns 1 when update was successful
+        assertThat(update).isEqualTo(1);
+
+        cursor = database().query(ProgramStageDataElementModel.TABLE, projection,
+                null, null, null, null, null);
+
+        // checking that row was updated
+        assertThatCursor(cursor).hasRow(UID, updatedDisplayName, 0); // 0 == Boolean.FALSE
+
+    }
+
+    @Test
+    public void delete_shouldDeleteProgramStageDataElement() throws Exception {
+        // inserting necessary foreign keys
+        ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
+        database().insert(DataElementModel.TABLE, null, dataElement);
+
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null, null);
+        database().insert(ProgramModel.TABLE, null, program);
+
+        ContentValues programStage = CreateProgramStageUtils.create(ID, PROGRAM_STAGE, PROGRAM);
+        database().insert(ProgramStageModel.TABLE, null, programStage);
+
+        ContentValues programStageDataElement = new ContentValues();
+        programStageDataElement.put(Columns.UID, UID);
+        programStageDataElement.put(Columns.DATA_ELEMENT, DATA_ELEMENT);
+        programStageDataElement.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+
+        database().insert(ProgramStageDataElementModel.TABLE, null, programStageDataElement);
+
+        String[] projection = {Columns.UID};
+
+        Cursor cursor = database().query(ProgramStageDataElementModel.TABLE, projection, null, null, null, null, null);
+        // checking that psde was successfully inserted
+        assertThatCursor(cursor).hasRow(UID);
+
+        int delete = programStageDataElementStore.delete(UID);
+
+        // checking that store returns 1 when successful delete
+        assertThat(delete).isEqualTo(1);
+
+        cursor = database().query(ProgramStageDataElementModel.TABLE, projection, null, null, null, null, null);
+
+        assertThatCursor(cursor).isExhausted();
+    }
 }

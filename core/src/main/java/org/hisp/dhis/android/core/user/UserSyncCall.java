@@ -32,8 +32,8 @@ import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
@@ -50,8 +50,7 @@ public final class UserSyncCall implements Call<Response<User>> {
 
     // databaseAdapter and stores
     private final DatabaseAdapter databaseAdapter;
-    private final OrganisationUnitStore organisationUnitStore;
-    private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
+    private final OrganisationUnitHandler organisationUnitHandler;
     private final UserCredentialsStore userCredentialsStore;
     private final UserRoleStore userRoleStore;
     private final UserStore userStore;
@@ -62,8 +61,7 @@ public final class UserSyncCall implements Call<Response<User>> {
 
     public UserSyncCall(UserSyncService userSyncService,
                         DatabaseAdapter databaseAdapter,
-                        OrganisationUnitStore organisationUnitStore,
-                        UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
+                        OrganisationUnitHandler organisationUnitHandler,
                         UserCredentialsStore userCredentialsStore,
                         UserRoleStore userRoleStore,
                         UserStore userStore,
@@ -71,8 +69,7 @@ public final class UserSyncCall implements Call<Response<User>> {
                         ResourceStore resourceStore) {
         this.userSyncService = userSyncService;
         this.databaseAdapter = databaseAdapter;
-        this.organisationUnitStore = organisationUnitStore;
-        this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
+        this.organisationUnitHandler = organisationUnitHandler;
         this.userCredentialsStore = userCredentialsStore;
         this.userRoleStore = userRoleStore;
         this.userStore = userStore;
@@ -159,13 +156,13 @@ public final class UserSyncCall implements Call<Response<User>> {
 
             deleteOrPersistUserRoles(userRoles, serverDateTime);
 
-            deleteOrPersistOrganisationUnits(
-                    user.organisationUnits(), OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user, serverDateTime
+            organisationUnitHandler.handleOrganisationUnits(user.organisationUnits(),
+                    OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
+                    user.uid()
             );
 
-            deleteOrPersistOrganisationUnits(
-                    user.teiSearchOrganisationUnits(),
-                    OrganisationUnitModel.Scope.SCOPE_TEI_SEARCH, user, serverDateTime
+            organisationUnitHandler.handleOrganisationUnits(user.teiSearchOrganisationUnits(),
+                    OrganisationUnitModel.Scope.SCOPE_TEI_SEARCH, user.uid()
             );
 
 
@@ -297,100 +294,6 @@ public final class UserSyncCall implements Call<Response<User>> {
                 userRoleProgramLinkStore.insert(userRole.uid(), program.uid());
             }
         }
-    }
-
-    private void deleteOrPersistOrganisationUnits(List<OrganisationUnit> organisationUnits,
-                                                  OrganisationUnitModel.Scope organisationUnitScope,
-                                                  User user,
-                                                  Date serverDateTime) {
-        if (organisationUnits == null) {
-            return;
-        }
-
-        String organisationUnitSimpleName = OrganisationUnit.class.getSimpleName();
-        int size = organisationUnits.size();
-        for (int i = 0; i < size; i++) {
-            OrganisationUnit organisationUnit = organisationUnits.get(i);
-
-            if (isDeleted(organisationUnit)) {
-                deleteOrganisationUnit(organisationUnit);
-
-            } else {
-                updateOrInsertOrganisationUnits(
-                        organisationUnitScope, user, serverDateTime,
-                        organisationUnitSimpleName, organisationUnit);
-            }
-        }
-
-    }
-
-    private void updateOrInsertOrganisationUnits(OrganisationUnitModel.Scope organisationUnitScope, User user,
-                                                 Date serverDateTime, String organisationUnitSimpleName,
-                                                 OrganisationUnit organisationUnit) {
-        int updatedRow = organisationUnitStore.update(organisationUnit.uid(),
-                organisationUnit.code(),
-                organisationUnit.name(),
-                organisationUnit.displayName(),
-                organisationUnit.created(),
-                organisationUnit.lastUpdated(),
-                organisationUnit.shortName(),
-                organisationUnit.displayShortName(),
-                organisationUnit.description(),
-                organisationUnit.displayDescription(),
-                organisationUnit.path(),
-                organisationUnit.openingDate(),
-                organisationUnit.closedDate(),
-                organisationUnit.parent() == null ? null : organisationUnit.parent().uid(),
-                organisationUnit.level(), organisationUnit.uid());
-
-        if (updatedRow <= 0) {
-            organisationUnitStore.insert(
-                    organisationUnit.uid(),
-                    organisationUnit.code(),
-                    organisationUnit.name(),
-                    organisationUnit.displayName(),
-                    organisationUnit.created(),
-                    organisationUnit.lastUpdated(),
-                    organisationUnit.shortName(),
-                    organisationUnit.displayShortName(),
-                    organisationUnit.description(),
-                    organisationUnit.displayDescription(),
-                    organisationUnit.path(),
-                    organisationUnit.openingDate(),
-                    organisationUnit.closedDate(),
-                    organisationUnit.parent() == null ? null : organisationUnit.parent().uid(),
-                    organisationUnit.level()
-            );
-
-            int updatedResourceRow = updateInResourceStore(organisationUnitSimpleName,
-                    serverDateTime, organisationUnitSimpleName);
-
-            if (updatedResourceRow <= 0) {
-                insertIntoResourceStore(
-                        organisationUnitSimpleName, serverDateTime
-                );
-            }
-
-            // maintain link between user and organisation unit
-            int updatedUserOrganisationUnitLinkRow = userOrganisationUnitLinkStore.update(
-                    user.uid(), organisationUnit.uid(),
-                    organisationUnitScope.name(),
-                    user.uid(), organisationUnit.uid()
-            );
-
-            if (updatedUserOrganisationUnitLinkRow <= 0) {
-                userOrganisationUnitLinkStore.insert(
-                        user.uid(), organisationUnit.uid(),
-                        organisationUnitScope.name()
-                );
-            }
-
-        }
-    }
-
-    private void deleteOrganisationUnit(final OrganisationUnit organisationUnit) {
-        organisationUnitStore.delete(organisationUnit.uid());
-        deleteInResourceStore(organisationUnit.uid());
     }
 
     private int updateInResourceStore(final String className,

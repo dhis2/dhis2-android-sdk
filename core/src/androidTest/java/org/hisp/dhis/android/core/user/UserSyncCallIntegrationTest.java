@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
@@ -315,11 +316,14 @@ public class UserSyncCallIntegrationTest extends AbsStoreTestCase {
         UserRoleProgramLinkStore userRoleProgramLinkStore = new UserRoleProgramLinkStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
+        UserHandler userHandler = new UserHandler(userStore);
+        UserCredentialsHandler userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
+        UserRoleHandler userRoleHandler = new UserRoleHandler(userRoleStore, userRoleProgramLinkStore);
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore, userOrganisationUnitStore);
 
         userSyncCall = new UserSyncCall(userSyncService, databaseAdapter(), organisationUnitHandler,
-                userCredentialsStore, userRoleStore,
-                userStore, userRoleProgramLinkStore, resourceStore);
+                userHandler, userCredentialsHandler, userRoleHandler, resourceHandler);
 
     }
 
@@ -332,7 +336,7 @@ public class UserSyncCallIntegrationTest extends AbsStoreTestCase {
     // this test is commented out until we finish sync the program sub graph.
     // This test will break since we try to insert userRoleProgramLink without having programs.
 //    @Test
-    public void call_shouldPersistInDatabase() throws Exception  {
+    public void call_shouldPersistInDatabase() throws Exception {
         userSyncCall.call();
 
         Cursor userCursor = database().query(UserModel.TABLE, USER_PROJECTION, null, null, null, null, null);

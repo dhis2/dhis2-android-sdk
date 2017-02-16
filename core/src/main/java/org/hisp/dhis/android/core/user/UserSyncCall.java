@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -35,7 +34,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
@@ -48,33 +47,31 @@ public final class UserSyncCall implements Call<Response<User>> {
     // retrofit service
     private final UserSyncService userSyncService;
 
-    // databaseAdapter and stores
+    // databaseAdapter and handlers
     private final DatabaseAdapter databaseAdapter;
     private final OrganisationUnitHandler organisationUnitHandler;
-    private final UserCredentialsStore userCredentialsStore;
-    private final UserRoleStore userRoleStore;
-    private final UserStore userStore;
-    private final UserRoleProgramLinkStore userRoleProgramLinkStore;
-    private final ResourceStore resourceStore;
+    private final UserCredentialsHandler userCredentialsHandler;
+    private final UserRoleHandler userRoleHandler;
+    private final UserHandler userHandler;
+
+    private final ResourceHandler resourceHandler;
 
     private boolean isExecuted;
 
     public UserSyncCall(UserSyncService userSyncService,
                         DatabaseAdapter databaseAdapter,
                         OrganisationUnitHandler organisationUnitHandler,
-                        UserCredentialsStore userCredentialsStore,
-                        UserRoleStore userRoleStore,
-                        UserStore userStore,
-                        UserRoleProgramLinkStore userRoleProgramLinkStore,
-                        ResourceStore resourceStore) {
+                        UserHandler userHandler,
+                        UserCredentialsHandler userCredentialsHandler,
+                        UserRoleHandler userRoleHandler,
+                        ResourceHandler resourceHandler) {
         this.userSyncService = userSyncService;
         this.databaseAdapter = databaseAdapter;
         this.organisationUnitHandler = organisationUnitHandler;
-        this.userCredentialsStore = userCredentialsStore;
-        this.userRoleStore = userRoleStore;
-        this.userStore = userStore;
-        this.userRoleProgramLinkStore = userRoleProgramLinkStore;
-        this.resourceStore = resourceStore;
+        this.userCredentialsHandler = userCredentialsHandler;
+        this.userRoleHandler = userRoleHandler;
+        this.userHandler = userHandler;
+        this.resourceHandler = resourceHandler;
     }
 
     @Override
@@ -145,16 +142,17 @@ public final class UserSyncCall implements Call<Response<User>> {
             User user = response.body();
             // TODO: check that this is user is authenticated and is persisted in db
             Date serverDateTime = response.headers().getDate(HeaderUtils.DATE);
+            String userClassName = User.class.getSimpleName();
 
-            deleteOrPersistUser(user, serverDateTime);
+            userHandler.handleUser(user);
 
             UserCredentials userCredentials = user.userCredentials();
 
-            deleteOrPersistUserCredentials(user, serverDateTime, userCredentials);
+            userCredentialsHandler.handleUserCredentials(userCredentials, user);
 
             List<UserRole> userRoles = userCredentials.userRoles();
 
-            deleteOrPersistUserRoles(userRoles, serverDateTime);
+            userRoleHandler.handleUserRoles(userRoles);
 
             organisationUnitHandler.handleOrganisationUnits(user.organisationUnits(),
                     OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
@@ -166,152 +164,12 @@ public final class UserSyncCall implements Call<Response<User>> {
             );
 
 
+            resourceHandler.handleResource(userClassName, serverDateTime);
+
             databaseAdapter.setTransactionSuccessful();
         } finally {
             databaseAdapter.endTransaction();
         }
 
-    }
-
-    private void deleteOrPersistUser(User user, Date serverDateTime) {
-        String userClassName = User.class.getSimpleName();
-        if (isDeleted(user)) {
-            userStore.delete(user.uid());
-            deleteInResourceStore(user.uid());
-        } else {
-            int updatedRow = userStore.update(user.uid(), user.code(), user.name(), user.displayName(),
-                    user.created(), user.lastUpdated(), user.birthday(), user.education(),
-                    user.gender(), user.jobTitle(), user.surname(), user.firstName(),
-                    user.introduction(), user.employer(), user.interests(), user.languages(),
-                    user.email(), user.phoneNumber(), user.nationality(), user.uid());
-
-            // TODO: Does this make sense?
-            // if user object was not updated, it means that it wasn't found in databaseAdapter. Insert it.
-            if (updatedRow <= 0) {
-                userStore.insert(user.uid(), user.code(), user.name(), user.displayName(), user.created(),
-                        user.lastUpdated(), user.birthday(), user.education(),
-                        user.gender(), user.jobTitle(), user.surname(), user.firstName(),
-                        user.introduction(), user.employer(), user.interests(), user.languages(),
-                        user.email(), user.phoneNumber(), user.nationality());
-            }
-
-            // updateWithSection the resource table
-            int updatedResourceRow = updateInResourceStore(
-                    userClassName, serverDateTime, userClassName
-            );
-
-            if (updatedResourceRow <= 0) {
-                insertIntoResourceStore(
-                        userClassName, serverDateTime
-                );
-            }
-        }
-    }
-
-    private void deleteOrPersistUserCredentials(User user, Date serverDateTime, UserCredentials userCredentials) {
-        String userCredentialsClassName = UserCredentials.class.getSimpleName();
-        if (isDeleted(userCredentials)) {
-            userCredentialsStore.delete(userCredentials.uid());
-            deleteInResourceStore(userCredentials.uid());
-        } else {
-            int updatedRow = userCredentialsStore.update(userCredentials.uid(), userCredentials.code(),
-                    userCredentials.name(), userCredentials.displayName(), userCredentials.created(),
-                    userCredentials.lastUpdated(), userCredentials.username(), user.uid(), userCredentials.uid()
-            );
-
-            if (updatedRow <= 0) {
-                userCredentialsStore.insert(
-                        userCredentials.uid(), userCredentials.code(), userCredentials.name(),
-                        userCredentials.displayName(), userCredentials.created(), userCredentials.lastUpdated(),
-                        userCredentials.username(), user.uid()
-                );
-            }
-            int updatedResourceRow = updateInResourceStore(
-                    userCredentialsClassName,
-                    serverDateTime, userCredentialsClassName
-            );
-            if (updatedResourceRow <= 0) {
-                insertIntoResourceStore(
-                        userCredentialsClassName, serverDateTime
-                );
-            }
-        }
-    }
-
-    private void deleteOrPersistUserRoles(List<UserRole> userRoles, Date serverDate) {
-        if (userRoles == null) {
-            return;
-        }
-        String userRoleClassName = UserRole.class.getSimpleName();
-
-        int size = userRoles.size();
-        for (int i = 0; i < size; i++) {
-            UserRole userRole = userRoles.get(i);
-
-            if (isDeleted(userRole)) {
-                userRoleStore.delete(userRole.uid());
-                deleteInResourceStore(userRole.uid());
-            } else {
-                int updatedRow = userRoleStore.update(userRole.uid(), userRole.code(),
-                        userRole.name(), userRole.displayName(), userRole.created(),
-                        userRole.lastUpdated(), userRole.uid());
-                if (updatedRow <= 0) {
-                    userRoleStore.insert(userRole.uid(), userRole.code(),
-                            userRole.name(), userRole.displayName(), userRole.created(),
-                            userRole.lastUpdated());
-                }
-
-                int updatedResourceRow = updateInResourceStore(
-                        userRoleClassName, serverDate, userRoleClassName
-                );
-
-                if (updatedResourceRow <= 0) {
-                    insertIntoResourceStore(userRoleClassName, serverDate);
-                }
-
-                List<Program> programs = userRole.programs();
-
-                insertOrUpdateUserRoleProgramLink(userRole, programs);
-
-
-            }
-        }
-    }
-
-    private void insertOrUpdateUserRoleProgramLink(UserRole userRole, List<Program> programs) {
-        if (programs == null) {
-            return;
-        }
-
-        int programSize = programs.size();
-        for (int i = 0; i < programSize; i++) {
-
-            Program program = programs.get(i);
-            int updatedLinkRow = userRoleProgramLinkStore.update(
-                    userRole.uid(), program.uid(), userRole.uid(), program.uid());
-
-            if (updatedLinkRow <= 0) {
-                userRoleProgramLinkStore.insert(userRole.uid(), program.uid());
-            }
-        }
-    }
-
-    private int updateInResourceStore(final String className,
-                                      final Date serverDate,
-                                      final String whereClassName) {
-        return resourceStore.update(className, serverDate, whereClassName);
-    }
-
-    private long insertIntoResourceStore(final String className,
-                                         final Date serverDate) {
-        return resourceStore.insert(className, serverDate);
-    }
-
-    private int deleteInResourceStore(final String resourceType) {
-        return resourceStore.delete(resourceType);
-    }
-
-    private <T extends BaseIdentifiableObject> boolean isDeleted(final T object) {
-        return object.deleted() != null && object.deleted();
     }
 }

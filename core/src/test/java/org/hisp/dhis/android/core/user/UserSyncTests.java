@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +42,6 @@ import org.junit.runners.JUnit4;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -61,7 +60,6 @@ import static org.assertj.core.api.Java6Assertions.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -77,19 +75,16 @@ public class UserSyncTests {
     private DatabaseAdapter databaseAdapter;
 
     @Mock
-    private UserStore userStore;
+    private UserHandler userHandler;
 
     @Mock
-    private UserCredentialsStore userCredentialsStore;
+    private UserCredentialsHandler userCredentialsHandler;
 
     @Mock
-    private ResourceStore resourceStore;
+    private ResourceHandler resourceHandler;
 
     @Mock
-    private UserRoleStore userRoleStore;
-
-    @Mock
-    private UserRoleProgramLinkStore userRoleProgramLinkStore;
+    private UserRoleHandler userRoleHandler;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<User> userCall;
@@ -121,6 +116,9 @@ public class UserSyncTests {
     @Mock
     private Date lastUpdated;
 
+    @Mock
+    private Date serverDate;
+
     private Call<Response<User>> userSyncCall;
 
     @Before
@@ -129,8 +127,8 @@ public class UserSyncTests {
         MockitoAnnotations.initMocks(this);
 
         userSyncCall = new UserSyncCall(
-                userSyncService, databaseAdapter, organisationUnitHandler, userCredentialsStore,
-                userRoleStore, userStore, userRoleProgramLinkStore, resourceStore
+                userSyncService, databaseAdapter, organisationUnitHandler,
+                userHandler, userCredentialsHandler, userRoleHandler, resourceHandler
         );
 
         when(userCredentials.uid()).thenReturn("user_credentials_uid");
@@ -168,7 +166,6 @@ public class UserSyncTests {
         when(organisationUnit.parent()).thenReturn(null);
 
         List<OrganisationUnit> organisationUnits = Collections.singletonList(organisationUnit);
-
         when(user.uid()).thenReturn("user_uid");
         when(user.code()).thenReturn("user_code");
         when(user.name()).thenReturn("user_name");
@@ -246,42 +243,19 @@ public class UserSyncTests {
             fail("Exception was not thrown");
         } catch (Exception ex) {
 
-            // verify that database was not touched
+            // verify that handlers was not touched
             verify(databaseAdapter, never()).beginTransaction();
             verify(databaseAdapter, never()).setTransactionSuccessful();
             verify(databaseAdapter, never()).endTransaction();
 
-            // verify that nothing was inserted into stores
+            verify(userHandler, never()).handleUser(any(User.class));
 
-            verify(userStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                    any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                    anyString(), anyString(), anyString(), anyString());
+            verify(userCredentialsHandler, never()).handleUserCredentials(
+                    any(UserCredentials.class), any(User.class)
+            );
 
-            verify(userCredentialsStore, never()).insert(anyString(), anyString(), anyString(),
-                    anyString(), any(Date.class), any(Date.class), anyString(), anyString());
+            verify(userRoleHandler, never()).handleUserRoles(anyListOf(UserRole.class));
 
-            verify(userRoleStore, never()).insert(anyString(), anyString(), anyString(),
-                    anyString(), any(Date.class), any(Date.class));
-
-            verify(userRoleProgramLinkStore, never()).insert(anyString(), anyString());
-
-            // verify that nothing was updated into stores
-
-            verify(userStore, never()).update(anyString(), anyString(), anyString(), anyString(),
-                    any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                    anyString(), anyString(), anyString(), anyString(), anyString());
-
-            verify(userCredentialsStore, never()).update(anyString(), anyString(), anyString(),
-                    anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString());
-
-            verify(userRoleStore, never()).update(anyString(), anyString(), anyString(),
-                    anyString(), any(Date.class), any(Date.class), anyString());
-
-            verify(userRoleProgramLinkStore, never()).update(anyString(), anyString(), anyString(), anyString());
-
-            // verify that handlers was not touched
             verify(organisationUnitHandler, never()).handleOrganisationUnits(anyListOf(OrganisationUnit.class),
                     any(OrganisationUnitModel.Scope.class), anyString());
         }
@@ -303,35 +277,21 @@ public class UserSyncTests {
         verify(databaseAdapter, never()).setTransactionSuccessful();
         verify(databaseAdapter, never()).endTransaction();
 
-        // verify that nothing was inserted into stores
+        // verify that handlers was not touched
+        verify(databaseAdapter, never()).beginTransaction();
+        verify(databaseAdapter, never()).setTransactionSuccessful();
+        verify(databaseAdapter, never()).endTransaction();
 
-        verify(userStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString());
+        verify(userHandler, never()).handleUser(any(User.class));
 
-        verify(userCredentialsStore, never()).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString());
+        verify(userCredentialsHandler, never()).handleUserCredentials(
+                any(UserCredentials.class), any(User.class)
+        );
 
-        verify(userRoleStore, never()).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class));
+        verify(userRoleHandler, never()).handleUserRoles(anyListOf(UserRole.class));
 
-        verify(userRoleProgramLinkStore, never()).insert(anyString(), anyString());
-
-        // verify that nothing was updated into stores
-
-        verify(userStore, never()).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString());
-
-        verify(userCredentialsStore, never()).update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString());
-
-        verify(userRoleStore, never()).update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString());
-
-        verify(userRoleProgramLinkStore, never()).update(anyString(), anyString(), anyString(), anyString());
+        verify(organisationUnitHandler, never()).handleOrganisationUnits(anyListOf(OrganisationUnit.class),
+                any(OrganisationUnitModel.Scope.class), anyString());
 
         // verify that handlers was not touched
         verify(organisationUnitHandler, never()).handleOrganisationUnits(anyListOf(OrganisationUnit.class),
@@ -339,264 +299,6 @@ public class UserSyncTests {
 
     }
 
-    @Test
-    public void call_shouldUpdateUserIfRequestSucceeds() throws Exception {
-        // insert user first to check the updateWithSection mechanism
-        when(userStore.update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(1);
-
-        User updatedUser = User.create(
-                user.uid(), user.code(), user.name(), user.displayName(), created, lastUpdated,
-                user.birthday(), user.education(), "transgender",
-                user.jobTitle(), user.surname(), user.firstName(), user.introduction(),
-                user.employer(), user.interests(), user.languages(), "superuser@email.com", "81549300",
-                user.nationality(), user.userCredentials(),
-                user.organisationUnits(), user.teiSearchOrganisationUnits(), user.dataViewOrganisationUnits(), false);
-
-
-        when(userCall.execute()).thenReturn(Response.success(updatedUser));
-
-        userSyncCall.call();
-
-        InOrder transactionOrder = inOrder(databaseAdapter);
-
-        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
-        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
-
-        verify(userStore, times(1)).update(user.uid(), user.code(), user.name(), user.displayName(), user.created(),
-                user.lastUpdated(), user.birthday(), user.education(), "transgender", user.jobTitle(),
-                user.surname(), user.firstName(), user.introduction(), user.employer(),
-                user.interests(), user.languages(), "superuser@email.com", "81549300",
-                user.nationality(), user.uid());
-
-        // user should have been updated and thus not inserted
-        verify(userStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString());
-
-        // user should not have been deleted
-        verify(userStore, never()).delete(anyString());
-    }
-
-    @Test
-    public void call_shouldUpdateUserCredentialsIfRequestSucceeds() throws Exception {
-        // insert userCredentials first to check the updateWithSection mechanism
-        when(userCredentialsStore.update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString())).thenReturn(1);
-
-        UserCredentials updatedUserCredentials = UserCredentials.create(userCredentials.uid(),
-                userCredentials.code(), "new_user_credentials_name", "new_user_credentials_display_name",
-                userCredentials.created(), userCredentials.lastUpdated(),
-                userCredentials.username(), userCredentials.userRoles(), Boolean.FALSE);
-        when(user.userCredentials()).thenReturn(updatedUserCredentials);
-
-        when(userCall.execute()).thenReturn(Response.success(user));
-
-        userSyncCall.call();
-
-        InOrder transactionOrder = inOrder(databaseAdapter);
-
-        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
-        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
-
-        // verify that updateWithSection is called once
-        verify(userCredentialsStore, times(1)).update(userCredentials.uid(), userCredentials.code(),
-                "new_user_credentials_name", "new_user_credentials_display_name",
-                userCredentials.created(), userCredentials.lastUpdated(), userCredentials.username(),
-                user.uid(), userCredentials.uid());
-
-        // verify that insert and delete is never called
-        verify(userCredentialsStore, never()).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString());
-
-        verify(userCredentialsStore, never()).delete(anyString());
-    }
-
-    @Test
-    public void call_shouldInsertUserRoleIfRequestSucceeds() throws Exception {
-        // doesn't exist in database thus we should insert not updateWithSection
-        when(userRoleStore.update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString())).thenReturn(0);
-
-        when(userCall.execute()).thenReturn(Response.success(user));
-
-        userSyncCall.call();
-
-        InOrder transactionOrder = inOrder(databaseAdapter);
-
-        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
-        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
-
-        // verify that userRoleStore was called once with insert
-        verify(userRoleStore, times(1)).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class));
-
-        // verify that updateWithSection was called once (Because we try to updateWithSection before we can insert)
-        verify(userRoleStore, times(1)).update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString());
-
-        // verify that delete was not called
-        verify(userRoleStore, never()).delete(anyString());
-    }
-
-    @Test
-    public void call_shouldUpdateUserRoleIfRequestSucceeds() throws Exception {
-        UserRole updatedUserRole = UserRole.create(userRole.uid(), userRole.code(), "new_user_role_name",
-                "new_user_role_display_name", userRole.created(), userRole.lastUpdated(),
-                userRole.programs(), Boolean.FALSE);
-        when(user.userCredentials().userRoles()).thenReturn(Collections.singletonList(updatedUserRole));
-
-        when(userRoleStore.update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString())).thenReturn(1);
-
-        when(userCall.execute()).thenReturn(Response.success(user));
-
-        userSyncCall.call();
-
-        InOrder transactionOrder = inOrder(databaseAdapter);
-
-        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
-        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
-
-        verify(userRoleStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString());
-
-        verify(userRoleStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class));
-
-        verify(userRoleStore, never()).delete(anyString());
-    }
-
-    @Test
-    public void call_shouldInsertUserRoleProgramLinkIfRequestSucceeds() throws Exception {
-        when(userRoleProgramLinkStore.update(anyString(), anyString(), anyString(), anyString())).thenReturn(0);
-        when(userCall.execute()).thenReturn(Response.success(user));
-
-        userSyncCall.call();
-
-        InOrder transactionOrder = inOrder(databaseAdapter);
-
-        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
-        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
-
-        // verify that insert is called once
-        verify(userRoleProgramLinkStore, times(1)).insert(anyString(), anyString());
-
-        // verify that updateWithSection is called once since we try to updateWithSection before we insert
-        verify(userRoleProgramLinkStore, times(1)).update(anyString(), anyString(), anyString(), anyString());
-
-        // verify that delete is never called
-        verify(userRoleProgramLinkStore, never()).delete(anyString(), anyString());
-    }
-
-    @Test
-    public void call_shouldUpdateUserRoleProgramLinkIfRequestSucceeds() throws Exception {
-        when(userRole.uid()).thenReturn("new_user_role_uid");
-        when(program.uid()).thenReturn("new_program_uid");
-
-        when(userRoleProgramLinkStore.update(anyString(), anyString(), anyString(), anyString())).thenReturn(1);
-
-        when(userCall.execute()).thenReturn(Response.success(user));
-
-        userSyncCall.call();
-
-        InOrder transactionOrder = inOrder(databaseAdapter);
-
-        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
-        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
-
-        // verify that updateWithSection is called once
-        verify(userRoleProgramLinkStore, times(1)).update(anyString(), anyString(), anyString(), anyString());
-
-        // verify that insert and delete is never called
-        verify(userRoleProgramLinkStore, never()).insert(anyString(), anyString());
-        verify(userRoleProgramLinkStore, never()).delete(anyString(), anyString());
-    }
-
-    @Test
-    public void call_shouldDeleteUserRoleIfMarkedAsDeleted() throws Exception {
-        when(userRole.deleted()).thenReturn(Boolean.TRUE);
-        when(userCall.execute()).thenReturn(Response.success(user));
-
-        userSyncCall.call();
-        InOrder transactionOrder = inOrder(databaseAdapter);
-
-        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
-        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
-
-        // verify that delete is called once
-        verify(userRoleStore, times(1)).delete(anyString());
-
-        // verify that updateWithSection and insert is never called
-        verify(userRoleStore, never()).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString());
-
-        verify(userRoleStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class));
-    }
-
-    @Test
-    public void call_shouldDeleteUserCredentialsIfMarkedAsDeleted() throws Exception {
-        when(userCredentials.deleted()).thenReturn(Boolean.TRUE);
-        when(userCall.execute()).thenReturn(Response.success(user));
-
-        userSyncCall.call();
-        InOrder transactionOrder = inOrder(databaseAdapter);
-
-        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
-        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
-
-        verify(userCredentialsStore, times(1)).delete(anyString());
-
-        // verify that insert and updateWithSection is never called
-
-        verify(userCredentialsStore, never()).update(anyString(), anyString(),
-                anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(),
-                anyString(), anyString());
-
-        verify(userCredentialsStore, never()).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString());
-
-    }
-
-    @Test
-    public void call_shouldDeleteUserIfMarkedAsDeleted() throws Exception {
-        when(user.deleted()).thenReturn(Boolean.TRUE);
-        when(userCall.execute()).thenReturn(Response.success(user));
-
-        userSyncCall.call();
-        InOrder transactionOrder = inOrder(databaseAdapter);
-
-        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
-        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
-        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
-
-        // verify that delete is called once
-        verify(userStore, times(1)).delete(anyString());
-
-        // verify that insert and updateWithSection is never called
-        verify(userStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString());
-
-        verify(userStore, never()).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString());
-    }
 
     //TODO Figure out how to mock the response header so we can mock HeaderUtils.DATE
 //    @Test
@@ -681,5 +383,24 @@ public class UserSyncTests {
         } catch (Exception exception) {
             // ignore exception
         }
+    }
+
+    @Test
+    public void call_shouldInvokeHandlersOnSuccess() throws Exception {
+        when(userCall.execute()).thenReturn(Response.success(user));
+
+        userSyncCall.call();
+
+        verify(userHandler, times(1)).handleUser(user);
+        verify(userCredentialsHandler, times(1)).handleUserCredentials(user.userCredentials(), user);
+        verify(userRoleHandler, times(1)).handleUserRoles(user.userCredentials().userRoles());
+        verify(organisationUnitHandler, times(1)).handleOrganisationUnits(user.organisationUnits(),
+                OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user.uid());
+        verify(organisationUnitHandler, times(1)).handleOrganisationUnits(user.teiSearchOrganisationUnits(),
+                OrganisationUnitModel.Scope.SCOPE_TEI_SEARCH, user.uid());
+
+        //TODO : test that date is retrieved from headers
+        verify(resourceHandler, times(1)).handleResource(anyString(), any(Date.class));
+
     }
 }

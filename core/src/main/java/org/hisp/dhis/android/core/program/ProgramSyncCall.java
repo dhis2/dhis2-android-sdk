@@ -38,8 +38,8 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
@@ -57,7 +57,7 @@ public class ProgramSyncCall implements Call<Response<Payload<Program>>> {
 
     // database adapter and stores
     private final DatabaseAdapter databaseAdapter;
-    private final ResourceStore resourceStore;
+    private final ResourceHandler resourceHandler;
 
     // handler
     private final ProgramHandler programHandler;
@@ -67,14 +67,14 @@ public class ProgramSyncCall implements Call<Response<Payload<Program>>> {
 
     public ProgramSyncCall(ProgramService programService,
                            DatabaseAdapter databaseAdapter,
+                           ResourceHandler resourceHandler,
                            Set<String> assignedProgramUids,
-                           ResourceStore resourceStore,
                            ProgramHandler programHandler) {
         this.programService = programService;
         this.databaseAdapter = databaseAdapter;
+        this.resourceHandler = resourceHandler;
         this.assignedProgramUids = assignedProgramUids;
 
-        this.resourceStore = resourceStore;
         this.programHandler = programHandler;
     }
 
@@ -120,36 +120,13 @@ public class ProgramSyncCall implements Call<Response<Payload<Program>>> {
                 programHandler.handleProgram(program);
             }
 
-            int updatedResourceRow = updateInResourceStore(
-                    Program.class.getSimpleName(),
-                    serverDateTime,
-                    Program.class.getSimpleName()
-            );
-
-            if (updatedResourceRow <= 0) {
-                insertIntoResourceStore(
-                        Program.class.getSimpleName(),
-                        serverDateTime
-                );
-            }
+            resourceHandler.handleResource(Program.class.getSimpleName(), serverDateTime);
 
             databaseAdapter.setTransactionSuccessful();
         } finally {
             databaseAdapter.endTransaction();
         }
     }
-
-    private int updateInResourceStore(final String className,
-                                      final Date serverDate,
-                                      final String whereClassName) {
-        return resourceStore.update(className, serverDate, whereClassName);
-    }
-
-    private long insertIntoResourceStore(final String className,
-                                         final Date serverDate) {
-        return resourceStore.insert(className, serverDate);
-    }
-
 
     private String getLastSyncedPrograms() {
         String dateString;

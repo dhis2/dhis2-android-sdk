@@ -37,8 +37,8 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.junit.Before;
@@ -90,7 +90,7 @@ public class ProgramSyncCallTests {
     private ProgramHandler programHandler;
 
     @Mock
-    private ResourceStore resourceStore;
+    private ResourceHandler resourceHandler;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<Payload<Program>> programCall;
@@ -128,7 +128,7 @@ public class ProgramSyncCallTests {
         MockitoAnnotations.initMocks(this);
 
         programSyncCall = new ProgramSyncCall(programService, databaseAdapter,
-                assignedProgramUids, resourceStore, programHandler);
+                resourceHandler, assignedProgramUids, programHandler);
 
         when(program.uid()).thenReturn("test_program_uid");
 
@@ -332,16 +332,13 @@ public class ProgramSyncCallTests {
 
         // verify that ProgramHandler is never called
         verify(programHandler, never()).handleProgram(any(Program.class));
-        verify(resourceStore, never()).update(anyString(), any(Date.class), anyString());
-        verify(resourceStore, never()).insert(anyString(), any(Date.class));
-
+        verify(resourceHandler, never()).handleResource(anyString(), any(Date.class));
     }
 
     @Test
     public void call_shouldInvokeProgramHandlerAndUpdateResourceTableIfRequestSucceeds() throws Exception {
         when(programCall.execute()).thenReturn(Response.success(payload));
         when(payload.items()).thenReturn(Arrays.asList(program, program, program));
-        when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(1);
 
         programSyncCall.call();
 
@@ -359,7 +356,7 @@ public class ProgramSyncCallTests {
         assertThat(payload.items().size()).isEqualTo(3);
         verify(programHandler, times(3)).handleProgram(any(Program.class));
 
-        verify(resourceStore, times(1)).update(anyString(), any(Date.class), anyString());
+        verify(resourceHandler, times(1)).handleResource(anyString(), any(Date.class));
 
     }
 
@@ -367,7 +364,6 @@ public class ProgramSyncCallTests {
     public void call_shouldInvokeProgramHandlerAndInsertIntoResourceTableIfRequestSucceeds() throws Exception {
         when(programCall.execute()).thenReturn(Response.success(payload));
         when(payload.items()).thenReturn(Arrays.asList(program, program, program));
-        when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(0);
 
         programSyncCall.call();
 
@@ -385,12 +381,8 @@ public class ProgramSyncCallTests {
         assertThat(payload.items().size()).isEqualTo(3);
         verify(programHandler, times(3)).handleProgram(any(Program.class));
 
-        // we need to verify that update is called once since we are updating before inserting
-        verify(resourceStore, times(1)).update(anyString(), any(Date.class), anyString());
-
-        // check that insert was called once
-        verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
-
+        // we need to verify that resource handler is invoked
+        verify(resourceHandler, times(1)).handleResource(anyString(), any(Date.class));
     }
 
     @Test

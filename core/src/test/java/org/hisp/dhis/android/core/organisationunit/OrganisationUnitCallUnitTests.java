@@ -81,6 +81,7 @@ public class OrganisationUnitCallUnitTests {
     private Cursor cursor;
 
     @Mock
+    @SuppressWarnings("CannotMockFinalClass")
     private SQLiteDatabase database;
 
     @Mock

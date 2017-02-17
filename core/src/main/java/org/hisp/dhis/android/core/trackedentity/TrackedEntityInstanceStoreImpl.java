@@ -39,7 +39,7 @@ import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public class TrackedEntityInstanceModelStoreImpl implements TrackedEntityInstanceModelStore {
+public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             TrackedEntityInstanceModel.TABLE + " (" +
             TrackedEntityInstanceModel.Columns.UID + ", " +
@@ -52,7 +52,7 @@ public class TrackedEntityInstanceModelStoreImpl implements TrackedEntityInstanc
     private final SQLiteStatement insertRowStatement;
     private final DatabaseAdapter databaseAdapter;
 
-    public TrackedEntityInstanceModelStoreImpl(DatabaseAdapter databaseAdapter) {
+    public TrackedEntityInstanceStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
         this.insertRowStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }

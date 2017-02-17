@@ -32,8 +32,11 @@ import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Response;
@@ -45,14 +48,18 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
     // database adapter and handler
     private final OptionSetHandler optionSetHandler;
     private final DatabaseAdapter databaseAdapter;
+    private final ResourceHandler resourceHandler;
 
     private boolean isExecuted;
 
     public OptionSetCall(OptionSetService optionSetService,
-                         OptionSetHandler optionSetHandler, DatabaseAdapter databaseAdapter) {
+                         OptionSetHandler optionSetHandler,
+                         DatabaseAdapter databaseAdapter,
+                         ResourceHandler resourceHandler) {
         this.optionSetService = optionSetService;
         this.optionSetHandler = optionSetHandler;
         this.databaseAdapter = databaseAdapter;
+        this.resourceHandler = resourceHandler;
     }
 
 
@@ -75,7 +82,7 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
         Response<Payload<OptionSet>> response = getOptionSets();
 
         if (response.isSuccessful()) {
-            saveOptionSets(response.body().items());
+            saveOptionSets(response);
         }
         return response;
     }
@@ -93,16 +100,21 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
         return optionSetService.optionSets(false, optionSetFields).execute();
     }
 
-    private void saveOptionSets(List<OptionSet> optionSets) {
+    private void saveOptionSets(Response<Payload<OptionSet>> response) {
+        List<OptionSet> optionSets = response.body().items();
         if (optionSets != null && !optionSets.isEmpty()) {
             databaseAdapter.beginTransaction();
             int size = optionSets.size();
 
             try {
+                Date serverDateTime = response.headers().getDate(HeaderUtils.DATE);
+
                 for (int i = 0; i < size; i++) {
                     OptionSet optionSet = optionSets.get(i);
                     optionSetHandler.handleOptionSet(optionSet);
                 }
+                resourceHandler.handleResource(OptionSet.class.getSimpleName(), serverDateTime);
+
                 databaseAdapter.setTransactionSuccessful();
             } finally {
                 databaseAdapter.endTransaction();

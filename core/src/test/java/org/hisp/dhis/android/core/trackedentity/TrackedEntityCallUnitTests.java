@@ -74,6 +74,7 @@ public class TrackedEntityCallUnitTests {
     private Cursor cursor;
 
     @Mock
+    @SuppressWarnings("CannotMockFinalClass")
     private SQLiteDatabase database;
 
     @Mock

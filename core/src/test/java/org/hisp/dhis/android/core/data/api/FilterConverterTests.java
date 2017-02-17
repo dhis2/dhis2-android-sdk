@@ -126,6 +126,7 @@ public class FilterConverterTests {
     //TODO: test Filter for null input and empty string.
 
     @Test
+    @SuppressWarnings("BadAnnotationImplementation")
     public void converterFactory_shouldReturnConverterOnSpecificAnnotation() {
         Converter.Factory converterFactory = FilterConverterFactory.create();
 

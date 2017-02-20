@@ -712,15 +712,6 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             UserRoleProgramLinkModel.Columns.PROGRAM + ")" +
             ");";
 
-    /**
-     * This method should be used only for testing purposes
-     */
-    // ToDo: Revise usage of this method
-    @VisibleForTesting
-    static SQLiteDatabase create() {
-        return create(SQLiteDatabase.create(null));
-    }
-
     private static SQLiteDatabase create(SQLiteDatabase database) {
         database.execSQL(CREATE_CONFIGURATION_TABLE);
         database.execSQL(CREATE_USER_TABLE);

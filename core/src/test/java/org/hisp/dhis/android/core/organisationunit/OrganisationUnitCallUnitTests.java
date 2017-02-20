@@ -214,16 +214,9 @@ public class OrganisationUnitCallUnitTests {
     @Test
     @SuppressWarnings("unchecked")
     public void call_shouldInvokeServer_withCorrectParameters_withLastUpdated() throws Exception {
-        String key = OrganisationUnitModel.Columns.LAST_UPDATED;
         String date = "2014-11-25T09:37:53.358";
-        String expectedValue = "lastUpdated:gt:" + date;
 
-        when(database.query(eq(ResourceModel.TABLE), any(String[].class), anyString(), any(String[].class),
-                anyString(), anyString(), anyString())).thenReturn(cursor);
-
-        when(cursor.getCount()).thenReturn(1);
-        when(cursor.getString(anyInt())).thenReturn(date);
-
+        when(resourceStore.getLastUpdated(anyString())).thenReturn(date);
         when(payload.items()).thenReturn(Collections.singletonList(organisationUnit));
 
         organisationUnitCall.call();
@@ -240,8 +233,8 @@ public class OrganisationUnitCallUnitTests {
                 OrganisationUnit.programs
         );
         Filter<OrganisationUnit, String> filter = filterCaptor.getValue();
-        assertThat(filter.field().name()).isEqualTo(OrganisationUnit.lastUpdated.name());
         assertThat(filter.operator()).isEqualTo("gt");
+        assertThat(filter.field().name()).isEqualTo(OrganisationUnit.lastUpdated.name());
         assertThat(filter.values().size()).isEqualTo(1);
         assertThat(filter.values()).contains(date);
         assertThat(descendantsCaptor.getValue()).isTrue();

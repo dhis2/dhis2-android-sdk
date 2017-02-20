@@ -41,16 +41,18 @@ public class ResourceHandler {
         if (className == null || serverDate == null) {
             return;
         }
-
-        insertOrUpdateResource(className, serverDate);
-    }
-
-    private void insertOrUpdateResource(String className, Date serverDate) {
-
         int updatedResourceRow = resourceStore.update(className, serverDate, className);
-
         if (updatedResourceRow <= 0) {
             resourceStore.insert(className, serverDate);
         }
+    }
+
+    /**
+     * A wrapper to expose resourceStore.getLastUpdated(str).
+     * @param className
+     * @return
+     */
+    public String getLastUpdated(String className) {
+        return resourceStore.getLastUpdated(className);
     }
 }

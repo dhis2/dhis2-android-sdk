@@ -27,24 +27,19 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import android.database.Cursor;
-
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -94,16 +89,16 @@ public class ProgramSyncCall implements Call<Response<Payload<Program>>> {
 
             isExecuted = true;
         }
+        String lastSyncedPrograms = resourceHandler.getLastUpdated(ProgramModel.class.getSimpleName());
 
-        String lastSyncedPrograms = getLastSyncedPrograms();
         Response<Payload<Program>> programsByLastUpdated =
-                getProgramsByLastUpdated(assignedProgramUids, lastSyncedPrograms);
+                programService.getPrograms(getFields(), Program.lastUpdated.gt(lastSyncedPrograms),
+                        Program.uid.in(assignedProgramUids), Boolean.FALSE
+                ).execute();
 
         if (programsByLastUpdated.isSuccessful()) {
             applyChangesToDatabase(programsByLastUpdated);
         }
-
-
         return programsByLastUpdated;
     }
 
@@ -126,43 +121,6 @@ public class ProgramSyncCall implements Call<Response<Payload<Program>>> {
         } finally {
             databaseAdapter.endTransaction();
         }
-    }
-
-    private String getLastSyncedPrograms() {
-        String dateString;
-        Cursor cursor = databaseAdapter.query(ResourceModel.TABLE,
-                "SELECT " + ResourceModel.Columns.LAST_SYNCED +
-                        " FROM " + ResourceModel.TABLE +
-                        " WHERE " + ResourceModel.Columns.RESOURCE_TYPE +
-                        " = " +
-                        ProgramModel.class.getSimpleName());
-
-        try {
-            cursor.moveToFirst();
-
-            dateString = cursor.getString(cursor.getColumnIndex(ResourceModel.Columns.LAST_SYNCED));
-
-        } finally {
-            cursor.close();
-        }
-
-        return dateString;
-    }
-
-    private Response<Payload<Program>> getProgramsByLastUpdated(Set<String> uids,
-                                                                String lastSynced) throws IOException {
-        return programService.getPrograms(
-                getFields(), getLastUpdatedFilter(lastSynced), getIdInFilter(uids), Boolean.FALSE
-        ).execute();
-    }
-
-    private Filter<Program, String> getLastUpdatedFilter(String lastSynced) {
-        return Program.lastUpdated.gt(lastSynced);
-
-    }
-
-    private Filter<Program, String> getIdInFilter(Set<String> uids) {
-        return Program.uid.in(uids);
     }
 
     private Fields<Program> getFields() {

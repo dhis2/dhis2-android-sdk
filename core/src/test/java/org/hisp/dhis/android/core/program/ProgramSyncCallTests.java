@@ -348,10 +348,6 @@ public class ProgramSyncCallTests {
         transactionMethodsOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
         transactionMethodsOrder.verify(databaseAdapter, times(1)).endTransaction();
 
-        // verify that cursor tries to find the lastSyncedDate
-        verify(cursor, times(1)).moveToFirst();
-        verify(cursor, times(1)).close();
-
         // assert that payload contains 3 times and all is handled by ProgramHandler
         assertThat(payload.items().size()).isEqualTo(3);
         verify(programHandler, times(3)).handleProgram(any(Program.class));
@@ -372,10 +368,6 @@ public class ProgramSyncCallTests {
         transactionMethodsOrder.verify(databaseAdapter, times(1)).beginTransaction();
         transactionMethodsOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
         transactionMethodsOrder.verify(databaseAdapter, times(1)).endTransaction();
-
-        // verify that cursor tries to find the lastSyncedDate
-        verify(cursor, times(1)).moveToFirst();
-        verify(cursor, times(1)).close();
 
         // assert that payload contains 3 times and all is handled by ProgramHandler
         assertThat(payload.items().size()).isEqualTo(3);
@@ -398,10 +390,6 @@ public class ProgramSyncCallTests {
         transactionMethodsOrder.verify(databaseAdapter, times(1)).beginTransaction();
         transactionMethodsOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
         transactionMethodsOrder.verify(databaseAdapter, times(1)).endTransaction();
-
-        // verify that cursor tries to find the lastSyncedDate
-        verify(cursor, times(1)).moveToFirst();
-        verify(cursor, times(1)).close();
 
         // cursor.getString is also getting called if insert and update into resource store is invoked
         verify(cursor, atLeastOnce()).getString(cursor.getColumnIndex(ResourceModel.Columns.LAST_SYNCED));

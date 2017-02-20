@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -36,7 +35,6 @@ import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
@@ -98,7 +96,9 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         try {
             Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
             Date serverDate = null;
-            Filter<OrganisationUnit, String> lastUpdatedFilter = OrganisationUnit.lastUpdated.gt(getLastUpdated());
+            Filter<OrganisationUnit, String> lastUpdatedFilter = OrganisationUnit.lastUpdated.gt(
+                    resourceStore.getLastUpdated(OrganisationUnit.class.getSimpleName()));
+
             // Call OrganisationUnitService for each tree root & try to persist sub-tree:
             for (String uid : rootOrgUnitUids) {
                 response = getOrganisationUnit(uid, lastUpdatedFilter);
@@ -224,24 +224,5 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         if (rowId <= 0) {
             resourceStore.insert(OrganisationUnit.class.getSimpleName(), serverDate);
         }
-    }
-
-    private String getLastUpdated() {
-        String lastUpdated = null;
-        Cursor cursor = database.query(
-                ResourceModel.TABLE,
-                new String[]{ResourceModel.Columns.LAST_SYNCED},
-                ResourceModel.Columns.RESOURCE_TYPE + "=?",
-                new String[]{OrganisationUnit.class.getSimpleName()},
-                null, null, null
-        );
-        if (cursor != null) {
-            cursor.moveToFirst();
-            if(cursor.getCount() > 0) {
-                lastUpdated = cursor.getString(cursor.getColumnIndex(ResourceModel.Columns.LAST_SYNCED));
-            }
-            cursor.close();
-        }
-        return lastUpdated;
     }
 }

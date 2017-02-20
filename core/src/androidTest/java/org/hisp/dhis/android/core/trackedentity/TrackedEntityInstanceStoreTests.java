@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -76,7 +76,7 @@ public class TrackedEntityInstanceStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        trackedEntityInstanceStore = new TrackedEntityInstanceModelStoreImpl(database());
+        trackedEntityInstanceStore = new TrackedEntityInstanceModelStoreImpl(databaseAdapter());
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
     }

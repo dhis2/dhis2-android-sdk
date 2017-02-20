@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -108,7 +108,7 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.programStageDataElementStore = new ProgramStageDataElementStoreImpl(database());
+        this.programStageDataElementStore = new ProgramStageDataElementStoreImpl(databaseAdapter());
     }
 
     @Test
@@ -170,7 +170,7 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
                 deferredProgramStageSectionUid
         );
         ContentValues dataElement = CreateDataElementUtils.create(ID, deferredDataElementUid, null);
-        ContentValues programStage = CreateProgramStageUtils.create(1L , PROGRAM_STAGE, PROGRAM);
+        ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
         ContentValues programStageSection = CreateProgramStageSectionUtils.create(
                 ID, deferredProgramStageSectionUid, PROGRAM_STAGE);
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);

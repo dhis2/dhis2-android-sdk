@@ -26,19 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel.Columns;
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;

@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.data.database;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -62,8 +62,7 @@ public final class DbDateColumnAdapter implements ColumnTypeAdapter<Date> {
     @Override
     public void toContentValues(ContentValues contentValues, String columnName, Date date) {
         if (date != null) {
-            contentValues.put(columnName,
-                    BaseIdentifiableObject.DATE_FORMAT.format(date));
+            contentValues.put(columnName, BaseIdentifiableObject.DATE_FORMAT.format(date));
         }
     }
 }

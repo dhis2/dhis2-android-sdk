@@ -29,14 +29,13 @@
 package org.hisp.dhis.android.core.user;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.DbUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
@@ -65,16 +64,17 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
         insertRowStatement.clearBindings();
         sqLiteBind(insertRowStatement, 1, userUid);
         sqLiteBind(insertRowStatement, 2, credentials);
-        return insertRowStatement.executeInsert();
+        return databaseAdapter.executeInsert(AuthenticatedUserModel.TABLE, insertRowStatement);
     }
 
     @NonNull
     @Override
     public List<AuthenticatedUserModel> query() {
         List<AuthenticatedUserModel> rows = new ArrayList<>();
-        String sql = "SELECT " + Arrays.toString(PROJECTION) + " FROM " + AuthenticatedUserModel.TABLE;
 
-        Cursor queryCursor = databaseAdapter.query(AuthenticatedUserModel.TABLE, sql);
+        String sql = "SELECT " + DbUtils.projectionToSqlString(PROJECTION) + " FROM " + AuthenticatedUserModel.TABLE;
+
+        Cursor queryCursor = databaseAdapter.query(sql);
 
         if (queryCursor == null) {
             return rows;

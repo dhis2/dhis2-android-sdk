@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.systeminfo;
 
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
@@ -65,7 +65,7 @@ public class SystemInfoStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.systemInfoStore = new SystemInfoStoreImpl(database());
+        this.systemInfoStore = new SystemInfoStoreImpl(databaseAdapter());
     }
 
     @Test

@@ -26,36 +26,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.configuration;
 
-import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+
 public class ConfigurationStoreImpl implements ConfigurationStore {
+
     private static final long CONFIGURATION_ID = 1L;
+
+    public static final String INSERT_STATEMENT = "INSERT INTO " + ConfigurationModel.CONFIGURATION
+            + " (" + ConfigurationModel.Columns.ID + ", " +
+            ConfigurationModel.Columns.SERVER_URL + ") " +
+            "VALUES(?,?);";
+
     private static final String[] PROJECTION = {
             ConfigurationModel.Columns.ID,
             ConfigurationModel.Columns.SERVER_URL
     };
 
-    private final SQLiteDatabase sqLiteDatabase;
+    private final DatabaseAdapter databaseAdapter;
+    private final SQLiteStatement insertStatement;
 
-    public ConfigurationStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteDatabase = sqLiteDatabase;
+
+    public ConfigurationStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
     public long save(@NonNull String serverUrl) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(ConfigurationModel.Columns.SERVER_URL, serverUrl);
 
-        int updatedRows = update(contentValues);
-        if (updatedRows <= 0) {
-            insert(contentValues);
-        }
+        delete(); // Delete all rows from table. We only allow one row.
+        insertStatement.clearBindings();
+        sqLiteBind(insertStatement, 1, CONFIGURATION_ID);
+        sqLiteBind(insertStatement, 2, serverUrl);
+        databaseAdapter.executeInsert(ConfigurationModel.CONFIGURATION, insertStatement);
 
         return 1;
     }
@@ -63,10 +76,12 @@ public class ConfigurationStoreImpl implements ConfigurationStore {
     @Nullable
     @Override
     public ConfigurationModel query() {
-        Cursor queryCursor = sqLiteDatabase.query(ConfigurationModel.CONFIGURATION,
-                PROJECTION, ConfigurationModel.Columns.ID + " = ?", new String[]{
-                        String.valueOf(CONFIGURATION_ID)
-                }, null, null, null);
+
+        String sqlQuery = SQLiteQueryBuilder.buildQueryString(false, ConfigurationModel.CONFIGURATION,
+                PROJECTION, ConfigurationModel.Columns.ID + " = " + CONFIGURATION_ID,
+                null, null, null, null);
+
+        Cursor queryCursor = databaseAdapter.query(sqlQuery);
 
         ConfigurationModel configuration = null;
 
@@ -87,18 +102,6 @@ public class ConfigurationStoreImpl implements ConfigurationStore {
 
     @Override
     public int delete() {
-        return sqLiteDatabase.delete(ConfigurationModel.CONFIGURATION, null, null);
-    }
-
-    private int update(@NonNull ContentValues contentValues) {
-        return sqLiteDatabase.update(ConfigurationModel.CONFIGURATION, contentValues,
-                ConfigurationModel.Columns.ID + " = ?", new String[]{
-                        String.valueOf(CONFIGURATION_ID)
-                });
-    }
-
-    private long insert(@NonNull ContentValues contentValues) {
-        return sqLiteDatabase.insertWithOnConflict(ConfigurationModel.CONFIGURATION, null,
-                contentValues, SQLiteDatabase.CONFLICT_FAIL);
+        return databaseAdapter.delete(ConfigurationModel.CONFIGURATION, null, null);
     }
 }

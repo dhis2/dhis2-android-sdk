@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
@@ -90,7 +90,7 @@ public class ProgramIndicatorStoreTests extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        programIndicatorStore = new ProgramIndicatorStoreImpl(database());
+        programIndicatorStore = new ProgramIndicatorStoreImpl(databaseAdapter());
     }
 
     @Test

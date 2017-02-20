@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -50,7 +50,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -91,7 +90,7 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
 
     private TrackedEntityDataValueStore trackedEntityDataValueStore;
 
-    public TrackedEntityDataValueStoreTests()  {
+    public TrackedEntityDataValueStoreTests() {
         this.date = new Date();
         this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
@@ -100,7 +99,7 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl(database());
+        trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl(databaseAdapter());
 
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
@@ -182,7 +181,7 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistNullableRowInDatabase()  {
+    public void insert_shouldPersistNullableRowInDatabase() {
         long rowId = trackedEntityDataValueStore.insert(EVENT, null, null, null, null, null, null);
 
         Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE,
@@ -206,7 +205,7 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteTrackedEntityDataValueWhenDeletingEventForeignKey()  {
+    public void delete_shouldDeleteTrackedEntityDataValueWhenDeletingEventForeignKey() {
         trackedEntityDataValueStore.insert(
                 EVENT,
                 date,
@@ -224,7 +223,7 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistTrackedEntityDataValueWithInvalidEventForeignKey()  {
+    public void exception_persistTrackedEntityDataValueWithInvalidEventForeignKey() {
         trackedEntityDataValueStore.insert(
                 "wrong",
                 date,

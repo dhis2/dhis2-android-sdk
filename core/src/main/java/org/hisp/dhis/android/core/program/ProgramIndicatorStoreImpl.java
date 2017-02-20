@@ -26,12 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
@@ -57,9 +58,11 @@ public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
             ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private final SQLiteStatement insertRowStatement;
+    private final DatabaseAdapter databaseAdapter;
 
-    public ProgramIndicatorStoreImpl(SQLiteDatabase database) {
-        this.insertRowStatement = database.compileStatement(INSERT_STATEMENT);
+    public ProgramIndicatorStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertRowStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
@@ -88,7 +91,7 @@ public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
         sqLiteBind(insertRowStatement, 14, filter);
         sqLiteBind(insertRowStatement, 15, decimals);
 
-        return insertRowStatement.executeInsert();
+        return databaseAdapter.executeInsert(ProgramIndicatorModel.TABLE, insertRowStatement);
     }
 
     @Override

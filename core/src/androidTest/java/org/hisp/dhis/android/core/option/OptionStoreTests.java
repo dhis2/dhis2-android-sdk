@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -77,7 +77,7 @@ public class OptionStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.optionStore = new OptionStoreImpl(database());
+        this.optionStore = new OptionStoreImpl(databaseAdapter());
     }
 
     @Test

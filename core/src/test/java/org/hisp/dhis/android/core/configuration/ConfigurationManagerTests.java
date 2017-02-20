@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.configuration;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -35,9 +35,13 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import okhttp3.HttpUrl;
+
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -54,34 +58,23 @@ public class ConfigurationManagerTests {
         MockitoAnnotations.initMocks(this);
 
         configurationManager = new ConfigurationManagerImpl(configurationStore);
-
     }
 
     @Test
     public void save_shouldCallStoreWithCorrectArguments() {
-        when(configurationStore.save("test_server_url")).thenReturn(1L);
-        ConfigurationModel savedConfiguration = configurationManager.save("test_server_url");
+        HttpUrl httpUrl = HttpUrl.parse("http://testserver.org/");
+        when(configurationStore.save("http://testserver.org/api/")).thenReturn(1L);
+        ConfigurationModel savedConfiguration = configurationManager.configure(httpUrl);
 
-        verify(configurationStore).save("test_server_url");
+        verify(configurationStore).save("http://testserver.org/api/");
         assertThat(savedConfiguration.id()).isEqualTo(1L);
-        assertThat(savedConfiguration.serverUrl()).isEqualTo("test_server_url");
+        assertThat(savedConfiguration.serverUrl().toString()).isEqualTo("http://testserver.org/api/");
     }
 
     @Test
     public void save_shouldFailOnNullArgument() {
         try {
-            configurationManager.save(null);
-
-            fail("IllegalArgumentException was not thrown");
-        } catch (IllegalArgumentException illegalArgumentException) {
-            // swallow exception
-        }
-    }
-
-    @Test
-    public void save_shouldFailOnMalformedServerUrl() {
-        try {
-            configurationManager.save("");
+            configurationManager.configure(null);
 
             fail("IllegalArgumentException was not thrown");
         } catch (IllegalArgumentException illegalArgumentException) {
@@ -124,5 +117,30 @@ public class ConfigurationManagerTests {
 
         verify(configurationStore).delete();
         assertThat(removed).isEqualTo(0);
+    }
+
+    @Test
+    public void save_shouldThrowException_ifUrlIsNotCanonized() {
+        HttpUrl baseUrlWithoutTrailingSlash = HttpUrl.parse("https://play.dhis2.org/demo");
+
+        try {
+            configurationManager.configure(baseUrlWithoutTrailingSlash);
+
+            fail("illegalArgumentException was expected but nothing was thrown");
+        } catch (IllegalArgumentException illegalArgumentException) {
+            verify(configurationStore, never()).save(anyString());
+        }
+    }
+
+    @Test
+    public void saveShouldReturnConfigurationModelWithApiAppended() {
+        HttpUrl baseUrl = HttpUrl.parse("https://play.dhis2.org/demo/");
+
+        ConfigurationModel configurationModel = configurationManager.configure(baseUrl);
+
+        assertThat(configurationModel.serverUrl().toString())
+                .isEqualTo("https://play.dhis2.org/demo/api/");
+
+        verify(configurationStore).save("https://play.dhis2.org/demo/api/");
     }
 }

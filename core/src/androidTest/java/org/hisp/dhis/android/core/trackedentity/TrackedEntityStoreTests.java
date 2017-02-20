@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
@@ -73,13 +73,14 @@ public class TrackedEntityStoreTests extends AbsStoreTestCase {
         this.date = new Date();
         this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
+
     private TrackedEntityStore trackedEntityStore;
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        trackedEntityStore = new TrackedEntityStoreImpl(database());
+        trackedEntityStore = new TrackedEntityStoreImpl(databaseAdapter());
     }
 
     @Test

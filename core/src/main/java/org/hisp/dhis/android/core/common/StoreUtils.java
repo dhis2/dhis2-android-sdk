@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.common;
 
 import android.database.sqlite.SQLiteStatement;
 
@@ -135,6 +135,22 @@ public final class StoreUtils {
             sqLiteStatement.bindNull(index);
         } else {
             sqLiteStatement.bindDouble(index, arg);
+        }
+    }
+
+    /**
+     * Handle if Long argument is null and bind it using .bindNull() if so.
+     * A helper function to abstract/clean up boilerplate if/else bloat..
+     *
+     * @param sqLiteStatement
+     * @param index
+     * @param arg
+     */
+    public static void sqLiteBind(SQLiteStatement sqLiteStatement, int index, Long arg) {
+        if (arg == null) {
+            sqLiteStatement.bindNull(index);
+        } else {
+            sqLiteStatement.bindLong(index, arg);
         }
     }
 }

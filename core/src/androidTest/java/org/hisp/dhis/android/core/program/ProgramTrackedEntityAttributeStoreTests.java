@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -103,7 +103,7 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        programTrackedEntityAttributeStore = new ProgramTrackedEntityAttributeStoreImpl(database());
+        programTrackedEntityAttributeStore = new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter());
         // insert test OptionSet to comply with foreign key constraint of TrackedEntityAttribute
         ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null, null);
         database().insert(ProgramModel.TABLE, null, program);

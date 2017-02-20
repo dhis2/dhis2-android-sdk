@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.dataelement;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -109,7 +109,7 @@ public class DataElementStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.dataElementStore = new DataElementStoreImpl(database());
+        this.dataElementStore = new DataElementStoreImpl(databaseAdapter());
     }
 
     @Test

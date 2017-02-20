@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship;
 
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
@@ -75,7 +75,7 @@ public class RelationshipTypeStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        this.relationshipTypeStore = new RelationshipTypeStoreImpl(database());
+        this.relationshipTypeStore = new RelationshipTypeStoreImpl(databaseAdapter());
     }
 
     @Test

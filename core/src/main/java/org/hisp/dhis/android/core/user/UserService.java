@@ -26,10 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Filter;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

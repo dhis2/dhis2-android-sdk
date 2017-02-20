@@ -26,12 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
@@ -52,9 +53,11 @@ public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 
     private final SQLiteStatement sqLiteStatement;
+    private final DatabaseAdapter databaseAdapter;
 
-    public ProgramStageSectionStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+    public ProgramStageSectionStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.sqLiteStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
@@ -73,7 +76,7 @@ public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
         sqLiteBind(sqLiteStatement, 7, sortOrder);
         sqLiteBind(sqLiteStatement, 8, programStage);
 
-        return sqLiteStatement.executeInsert();
+        return databaseAdapter.executeInsert(ProgramStageSectionModel.TABLE, sqLiteStatement);
     }
 
     @Override

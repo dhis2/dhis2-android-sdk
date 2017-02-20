@@ -26,28 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.configuration;
 
 import org.junit.Test;
-
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
 
 import static junit.framework.Assert.fail;
 
 public class ConfigurationTests {
-
-    @Test
-    public void equals_shouldConformToContract() {
-        ConfigurationModel configurationModel = ConfigurationModel.builder()
-                .serverUrl("").build();
-
-        // ToDo: report issue in EqualsVerifier library, which fails the test even
-        // ToDo: though NULL_FIELDS warning is suppressed
-//        EqualsVerifier.forClass(configurationModel.getClass())
-//                .suppress(Warning.NULL_FIELDS)
-//                .verify();
-    }
 
     @Test
     public void build_shouldFailOnNullServerUrl() {

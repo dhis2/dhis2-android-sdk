@@ -59,7 +59,7 @@ public class OrganisationUnitProgramLinkModelStoreIntegrationTest extends AbsSto
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        organisationUnitProgramLinkStore = new OrganisationUnitProgramLinkStoreImpl(database());
+        organisationUnitProgramLinkStore = new OrganisationUnitProgramLinkStoreImpl(databaseAdapter());
     }
 
     @Test

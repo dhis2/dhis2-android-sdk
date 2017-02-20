@@ -28,15 +28,17 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class UserCredentialsStoreImpl implements UserCredentialsStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + UserCredentialsModel.TABLE + " (" +
             UserCredentialsModel.Columns.UID + ", " +
@@ -63,16 +65,16 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
     private static final String DELETE_STATEMENT = "DELETE FROM " + UserCredentialsModel.TABLE +
             " WHERE " + UserCredentialsModel.Columns.UID + " =?;";
 
-    private final SQLiteDatabase sqLiteDatabase;
+    private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
 
-    public UserCredentialsStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteDatabase = sqLiteDatabase;
-        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
-        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
-        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
+    public UserCredentialsStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -84,7 +86,7 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
 
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, username, user);
 
-        return insertStatement.executeInsert();
+        return databaseAdapter.executeInsert(UserCredentialsModel.TABLE, insertStatement);
     }
 
     @Override
@@ -98,7 +100,7 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
         // bind the where clause
         sqLiteBind(updateStatement, 9, whereUid);
 
-        return updateStatement.executeUpdateDelete();
+        return databaseAdapter.executeUpdateDelete(UserCredentialsModel.TABLE, updateStatement);
     }
 
     @Override
@@ -108,12 +110,12 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
         // bind the where clause
         sqLiteBind(deleteStatement, 1, uid);
 
-        return deleteStatement.executeUpdateDelete();
+        return databaseAdapter.executeUpdateDelete(UserCredentialsModel.TABLE, deleteStatement);
     }
 
     @Override
     public int delete() {
-        return sqLiteDatabase.delete(UserCredentialsModel.TABLE, null, null);
+        return databaseAdapter.delete(UserCredentialsModel.TABLE, null, null);
     }
 
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,

@@ -26,11 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.configuration;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class ConfigurationManagerFactory {
 
@@ -39,13 +39,13 @@ public final class ConfigurationManagerFactory {
     }
 
     @NonNull
-    public static ConfigurationManager create(@NonNull DbOpenHelper dbOpenHelper) {
-        if (dbOpenHelper == null) {
-            throw new IllegalArgumentException("dbOpenHelper == null");
+    public static ConfigurationManager create(@NonNull DatabaseAdapter databaseAdapter) {
+        if (databaseAdapter == null) {
+            throw new IllegalArgumentException("databaseAdapter == null");
         }
 
         ConfigurationStore configurationStore = new ConfigurationStoreImpl(
-                dbOpenHelper.getWritableDatabase());
+                databaseAdapter);
         return new ConfigurationManagerImpl(configurationStore);
     }
 }

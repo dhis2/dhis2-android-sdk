@@ -28,59 +28,24 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
 
-public class TestDatabaseAdapter implements DatabaseAdapter {
+public class TestDatabaseAdapter extends BaseDatabaseAdapter {
 
     // memory-backed test database
     private final SQLiteDatabase sqLiteDatabase;
 
-    public TestDatabaseAdapter() {
-        this.sqLiteDatabase = SQLiteDatabase.create(null);
-        sqLiteDatabase.execSQL("PRAGMA foreign_keys = ON;");
+    public TestDatabaseAdapter(SQLiteDatabase database) {
+        this.sqLiteDatabase = database;
     }
 
     @Override
-    public SQLiteStatement compileStatement(String sql) {
-        return sqLiteDatabase.compileStatement(sql);
+    protected SQLiteDatabase database() {
+        return sqLiteDatabase;
     }
 
     @Override
-    public Cursor query(String sql, String... selectionArgs) {
-        return sqLiteDatabase.rawQuery(sql, selectionArgs);
-    }
-
-    @Override
-    public long executeInsert(String table, SQLiteStatement sqLiteStatement) {
-        return sqLiteStatement.executeInsert();
-    }
-
-    @Override
-    public int executeUpdateDelete(String table, SQLiteStatement sqLiteStatement) {
-        return sqLiteStatement.executeUpdateDelete();
-    }
-
-    @Override
-    public int delete(String table, String whereClause, String[] whereArgs) {
-        return sqLiteDatabase.delete(table, whereClause, whereArgs);
-    }
-
-    @Override
-    public void beginTransaction() {
-        sqLiteDatabase.beginTransaction();
-    }
-
-    @Override
-    public void setTransactionSuccessful() {
-        sqLiteDatabase.setTransactionSuccessful();
-    }
-
-    @Override
-    public void endTransaction() {
-        sqLiteDatabase.endTransaction();
+    protected SQLiteDatabase readableDatabase() {
+        return sqLiteDatabase;
     }
 }

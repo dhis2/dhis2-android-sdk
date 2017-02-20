@@ -106,7 +106,7 @@ public class UserStoreTests extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        userStore = new UserStoreImpl(database());
+        userStore = new UserStoreImpl(databaseAdapter());
     }
 
     @Test
@@ -208,8 +208,8 @@ public class UserStoreTests extends AbsStoreTestCase {
         );
 
         cursor = database().query(UserModel.TABLE, projection, null, null, null, null, null);
-        Long replacedId = ID + 1L;
-        assertThatCursor(cursor).hasRow(replacedId, UID, CODE, newName, newDisplayName).isExhausted();
+
+        assertThatCursor(cursor).hasRow(ID, UID, CODE, newName, newDisplayName).isExhausted();
 
     }
 

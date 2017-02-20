@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.resource;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.resource.ResourceModel.Columns;
 
 import java.util.Date;
@@ -48,20 +48,22 @@ public class ResourceStoreImpl implements ResourceStore {
     private static final String UPDATE_STATEMENT = "UPDATE " + ResourceModel.TABLE + " SET " +
             Columns.RESOURCE_TYPE + " =?, " +
             Columns.RESOURCE_UID + "=?, " +
-            Columns.LAST_SYNCED + "=?, " + " WHERE " +
+            Columns.LAST_SYNCED + "=? " + " WHERE " +
             Columns.RESOURCE_UID + " = ?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + ResourceModel.TABLE +
-            " WHERE " + Columns.RESOURCE_UID+ " =?;";
+            " WHERE " + Columns.RESOURCE_UID + " =?;";
 
+    private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
 
-    public ResourceStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
-        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
-        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
+    public ResourceStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -72,7 +74,7 @@ public class ResourceStoreImpl implements ResourceStore {
         sqLiteBind(insertStatement, 2, resourceUid);
         sqLiteBind(insertStatement, 3, lastSynced);
 
-        return insertStatement.executeInsert();
+        return databaseAdapter.executeInsert(ResourceModel.TABLE, insertStatement);
     }
 
     @Override
@@ -87,7 +89,7 @@ public class ResourceStoreImpl implements ResourceStore {
         // bind the where clause
         sqLiteBind(updateStatement, 4, whereUid);
 
-        return updateStatement.executeUpdateDelete();
+        return databaseAdapter.executeUpdateDelete(ResourceModel.TABLE, updateStatement);
     }
 
     @Override
@@ -95,7 +97,7 @@ public class ResourceStoreImpl implements ResourceStore {
         deleteStatement.clearBindings();
         sqLiteBind(updateStatement, 1, resourceUid);
 
-        return deleteStatement.executeUpdateDelete();
+        return databaseAdapter.executeUpdateDelete(ResourceModel.TABLE, deleteStatement);
     }
 
 }

@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.event;
+package org.hisp.dhis.android.core.event;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.event.EventModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;

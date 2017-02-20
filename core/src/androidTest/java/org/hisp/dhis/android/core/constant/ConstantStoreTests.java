@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.constant;
+package org.hisp.dhis.android.core.constant;
 
 import android.database.Cursor;
 
@@ -62,7 +62,7 @@ public class ConstantStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        constantStore = new ConstantStoreImpl(database());
+        constantStore = new ConstantStoreImpl(databaseAdapter());
     }
 
     @Test

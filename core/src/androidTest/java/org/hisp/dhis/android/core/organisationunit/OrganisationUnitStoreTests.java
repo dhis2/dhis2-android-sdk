@@ -87,7 +87,7 @@ public class OrganisationUnitStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        organisationUnitStore = new OrganisationUnitStoreImpl(database());
+        organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter());
     }
 
     @Test

@@ -28,16 +28,17 @@
 
 package org.hisp.dhis.android.core.option;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class OptionSetStoreImpl implements OptionSetStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + OptionSetModel.TABLE + " (" +
             OptionSetModel.Columns.UID + ", " +
@@ -68,11 +69,13 @@ public class OptionSetStoreImpl implements OptionSetStore {
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
     private final SQLiteStatement insertStatement;
+    private final DatabaseAdapter databaseAdapter;
 
-    public OptionSetStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
-        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
-        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
+    public OptionSetStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -82,7 +85,7 @@ public class OptionSetStoreImpl implements OptionSetStore {
         insertStatement.clearBindings();
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, version, valueType);
 
-        return insertStatement.executeInsert();
+        return databaseAdapter.executeInsert(OptionSetModel.TABLE, insertStatement);
     }
 
     @Override
@@ -97,7 +100,7 @@ public class OptionSetStoreImpl implements OptionSetStore {
         sqLiteBind(updateStatement, 9, whereUid);
 
 
-        return updateStatement.executeUpdateDelete();
+        return databaseAdapter.executeUpdateDelete(OptionSetModel.TABLE, updateStatement);
     }
 
     @Override
@@ -107,7 +110,7 @@ public class OptionSetStoreImpl implements OptionSetStore {
         // bind the where clause
         sqLiteBind(deleteStatement, 1, uid);
 
-        return deleteStatement.executeUpdateDelete();
+        return databaseAdapter.executeUpdateDelete(OptionSetModel.TABLE, deleteStatement);
     }
 
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid, @NonNull String code,

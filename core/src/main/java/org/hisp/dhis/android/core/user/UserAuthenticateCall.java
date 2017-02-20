@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.HeaderUtils;
 import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
@@ -54,8 +54,8 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     // retrofit service
     private final UserService userService;
 
-    // stores and database related dependencies
-    private final SQLiteDatabase database;
+    // stores and databaseAdapter related dependencies
+    private final DatabaseAdapter databaseAdapter;
     private final UserStore userStore;
     private final UserCredentialsStore userCredentialsStore;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
@@ -71,7 +71,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
 
     public UserAuthenticateCall(
             @NonNull UserService userService,
-            @NonNull SQLiteDatabase database,
+            @NonNull DatabaseAdapter databaseAdapter,
             @NonNull UserStore userStore,
             @NonNull UserCredentialsStore userCredentialsStore,
             @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
@@ -82,7 +82,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
             @NonNull String password) {
         this.userService = userService;
 
-        this.database = database;
+        this.databaseAdapter = databaseAdapter;
         this.userStore = userStore;
         this.userCredentialsStore = userCredentialsStore;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
@@ -162,12 +162,12 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     }
 
     private Long saveUser(Response<User> response) {
-        database.beginTransaction();
+        databaseAdapter.beginTransaction();
 
         Long userId;
 
         // enclosing transaction in try-finally block in
-        // order to make sure that database transaction won't be leaked
+        // order to make sure that databaseAdapter transaction won't be leaked
         try {
             User user = response.body();
             Date serverDateTime = response.headers().getDate(HeaderUtils.DATE);
@@ -233,9 +233,9 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                 }
             }
 
-            database.setTransactionSuccessful();
+            databaseAdapter.setTransactionSuccessful();
         } finally {
-            database.endTransaction();
+            databaseAdapter.endTransaction();
         }
 
         return userId;

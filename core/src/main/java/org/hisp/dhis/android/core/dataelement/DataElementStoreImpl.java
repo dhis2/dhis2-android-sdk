@@ -26,14 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.dataelement;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
@@ -63,21 +63,23 @@ public class DataElementStoreImpl implements DataElementStore {
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private final SQLiteStatement sqLiteStatement;
+    private final DatabaseAdapter databaseAdapter;
 
-    public DataElementStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+    public DataElementStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.sqLiteStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
     public long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
-            @NonNull String displayName, @NonNull Date created,
-            @NonNull Date lastUpdated, @Nullable String shortName,
-            @Nullable String displayShortName, @Nullable String description,
-            @Nullable String displayDescription, @NonNull ValueType valueType,
-            @Nullable Boolean zeroIsSignificant, @Nullable String aggregationOperator,
-            @Nullable String formName, @Nullable String numberType,
-            @Nullable String domainType, @Nullable String dimension,
-            @Nullable String displayFormName, @Nullable String optionSet) {
+                       @NonNull String displayName, @NonNull Date created,
+                       @NonNull Date lastUpdated, @Nullable String shortName,
+                       @Nullable String displayShortName, @Nullable String description,
+                       @Nullable String displayDescription, @NonNull ValueType valueType,
+                       @Nullable Boolean zeroIsSignificant, @Nullable String aggregationOperator,
+                       @Nullable String formName, @Nullable String numberType,
+                       @Nullable String domainType, @Nullable String dimension,
+                       @Nullable String displayFormName, @Nullable String optionSet) {
         sqLiteStatement.clearBindings();
 
         sqLiteBind(sqLiteStatement, 1, uid);
@@ -100,7 +102,7 @@ public class DataElementStoreImpl implements DataElementStore {
         sqLiteBind(sqLiteStatement, 18, displayFormName);
         sqLiteBind(sqLiteStatement, 19, optionSet);
 
-        return sqLiteStatement.executeInsert();
+        return databaseAdapter.executeInsert(DataElementModel.TABLE, sqLiteStatement);
     }
 
     @Override

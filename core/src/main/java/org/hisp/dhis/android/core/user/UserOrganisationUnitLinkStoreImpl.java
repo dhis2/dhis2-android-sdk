@@ -28,9 +28,10 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
 
@@ -45,26 +46,26 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
     private static final String UPDATE_STATEMENT = "UPDATE " + UserOrganisationUnitLinkModel.TABLE + " SET " +
             UserOrganisationUnitLinkModel.Columns.USER + " =?, " +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + "=?, " +
-            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + "=?, " +
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + "=? " +
             " WHERE " +
-            UserOrganisationUnitLinkModel.Columns.USER + " = ?, " +
+            UserOrganisationUnitLinkModel.Columns.USER + " = ? AND " +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + " = ?;";
 
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + UserOrganisationUnitLinkModel.TABLE +
-            " WHERE " + UserOrganisationUnitLinkModel.Columns.USER + " =?, " +
+            " WHERE " + UserOrganisationUnitLinkModel.Columns.USER + " =? AND " +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + " =?;";
 
-    private final SQLiteDatabase sqLiteDatabase;
+    private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
 
-    public UserOrganisationUnitLinkStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteDatabase = sqLiteDatabase;
-        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
-        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
-        this.deleteStatement = sqLiteDatabase.compileStatement(DELETE_STATEMENT);
+    public UserOrganisationUnitLinkStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -75,7 +76,7 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
 
         bindArguments(insertStatement, user, organisationUnit, organisationUnitScope);
 
-        return insertStatement.executeInsert();
+        return databaseAdapter.executeInsert(UserOrganisationUnitLinkModel.TABLE, insertStatement);
     }
 
     @Override
@@ -89,8 +90,7 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
         sqLiteBind(updateStatement, 4, whereUserUid);
         sqLiteBind(updateStatement, 5, whereOrganisationUnitUid);
 
-
-        return updateStatement.executeUpdateDelete();
+        return databaseAdapter.executeUpdateDelete(UserOrganisationUnitLinkModel.TABLE, updateStatement);
     }
 
     @Override
@@ -100,8 +100,7 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
         // bind the whereClause
         sqLiteBind(deleteStatement, 1, userUid);
         sqLiteBind(deleteStatement, 2, organisationUnitUid);
-
-        return deleteStatement.executeUpdateDelete();
+        return databaseAdapter.executeUpdateDelete(UserOrganisationUnitLinkModel.TABLE, deleteStatement);
     }
 
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String user, @NonNull String organisationUnit,
@@ -113,7 +112,7 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
 
     @Override
     public int delete() {
-        return sqLiteDatabase.delete(UserOrganisationUnitLinkModel.TABLE, null, null);
+        return databaseAdapter.delete(UserOrganisationUnitLinkModel.TABLE, null, null);
     }
 
 }

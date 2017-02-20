@@ -26,14 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.event;
+package org.hisp.dhis.android.core.event;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.event.EventModel.Columns;
 
 import java.util.Date;
@@ -60,9 +60,11 @@ public class EventStoreImpl implements EventStore {
             "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private final SQLiteStatement sqLiteStatement;
+    private final DatabaseAdapter databaseAdapter;
 
-    public EventStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+    public EventStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.sqLiteStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
@@ -90,7 +92,7 @@ public class EventStoreImpl implements EventStore {
         sqLiteBind(sqLiteStatement, 13, dueDate);
         sqLiteBind(sqLiteStatement, 14, state);
 
-        return sqLiteStatement.executeInsert();
+        return databaseAdapter.executeInsert(EventModel.TABLE, sqLiteStatement);
     }
 
     @Override

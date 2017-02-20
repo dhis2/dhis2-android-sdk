@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -47,7 +47,6 @@ import java.io.IOException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.bouncycastle.asn1.x500.style.RFC4519Style.l;
 import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
@@ -138,7 +137,7 @@ public class ProgramStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        this.programStore = new ProgramStoreImpl(database());
+        this.programStore = new ProgramStoreImpl(databaseAdapter());
 
         //RelationshipType foreign key corresponds to table entry
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID, RELATIONSHIP_TYPE);

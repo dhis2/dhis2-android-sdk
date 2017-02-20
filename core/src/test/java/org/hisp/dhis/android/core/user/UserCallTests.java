@@ -66,10 +66,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class UserSyncTests {
+public class UserCallTests {
 
     @Mock
-    private UserSyncService userSyncService;
+    private UserService userService;
 
     @Mock
     private DatabaseAdapter databaseAdapter;
@@ -126,8 +126,8 @@ public class UserSyncTests {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        userSyncCall = new UserSyncCall(
-                userSyncService, databaseAdapter, organisationUnitHandler,
+        userSyncCall = new UserCall(
+                userService, databaseAdapter, organisationUnitHandler,
                 userHandler, userCredentialsHandler, userRoleHandler, resourceHandler
         );
 
@@ -189,7 +189,7 @@ public class UserSyncTests {
         when(user.userCredentials().userRoles()).thenReturn(Collections.singletonList(userRole));
         when(user.organisationUnits()).thenReturn(organisationUnits);
 
-        when(userSyncService.getUser(any(Fields.class))).thenReturn(userCall);
+        when(userService.getUser(any(Fields.class))).thenReturn(userCall);
 
     }
 
@@ -197,7 +197,7 @@ public class UserSyncTests {
     @SuppressWarnings("unchecked")
     public void call_shouldInvokeServerWithCorrectParameters() throws Exception {
         when(userCall.execute()).thenReturn(Response.success(user));
-        when(userSyncService.getUser(filterCaptor.capture())).thenReturn(userCall);
+        when(userService.getUser(filterCaptor.capture())).thenReturn(userCall);
 
         // fake call to api
         userSyncCall.call();

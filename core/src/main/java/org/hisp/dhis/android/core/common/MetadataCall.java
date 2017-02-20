@@ -29,30 +29,30 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.option.OptionSetCall;
-import org.hisp.dhis.android.core.program.ProgramSyncCall;
-import org.hisp.dhis.android.core.user.UserSyncCall;
+import org.hisp.dhis.android.core.program.ProgramCall;
+import org.hisp.dhis.android.core.user.UserCall;
 
 public class MetadataCall {
     private final DatabaseAdapter databaseAdapter;
-    private final UserSyncCall userSyncCall;
-    private final ProgramSyncCall programSyncCall;
+    private final UserCall userCall;
+    private final ProgramCall programCall;
     private final OptionSetCall optionSetCall;
 
     public MetadataCall(DatabaseAdapter databaseAdapter,
-                        UserSyncCall userSyncCall,
-                        ProgramSyncCall programSyncCall,
+                        UserCall userCall,
+                        ProgramCall programCall,
                         OptionSetCall optionSetCall) {
         this.databaseAdapter = databaseAdapter;
-        this.userSyncCall = userSyncCall;
-        this.programSyncCall = programSyncCall;
+        this.userCall = userCall;
+        this.programCall = programCall;
         this.optionSetCall = optionSetCall;
     }
 
     public void execute() throws Exception {
         databaseAdapter.beginTransaction();
         try {
-            userSyncCall.call();
-            programSyncCall.call();
+            userCall.call();
+            programCall.call();
             optionSetCall.call();
 
 

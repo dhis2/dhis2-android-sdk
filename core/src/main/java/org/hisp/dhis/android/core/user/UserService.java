@@ -41,4 +41,8 @@ public interface UserService {
     @GET("me")
     Call<User> authenticate(@Header("Authorization") String credentials,
             @Query("fields") @Which Fields<User> fields);
+
+    @GET("me")
+    Call<User> getUser(@Query("fields") @Which Fields<User> fields);
+
 }

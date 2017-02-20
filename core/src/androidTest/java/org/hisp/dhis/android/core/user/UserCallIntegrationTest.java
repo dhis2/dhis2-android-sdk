@@ -61,7 +61,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
-public class UserSyncCallIntegrationTest extends AbsStoreTestCase {
+public class UserCallIntegrationTest extends AbsStoreTestCase {
     private static final String[] USER_PROJECTION = {
             UserModel.Columns.ID,
             UserModel.Columns.UID,
@@ -145,7 +145,7 @@ public class UserSyncCallIntegrationTest extends AbsStoreTestCase {
     };
 
     private MockWebServer mockWebServer;
-    private UserSyncCall userSyncCall;
+    private UserCall userCall;
     private OrganisationUnitHandler organisationUnitHandler;
 
     @Override
@@ -305,7 +305,7 @@ public class UserSyncCallIntegrationTest extends AbsStoreTestCase {
                 .addConverterFactory(FieldsConverterFactory.create())
                 .build();
 
-        UserSyncService userSyncService = retrofit.create(UserSyncService.class);
+        UserService userService = retrofit.create(UserService.class);
 
         OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter());
         UserOrganisationUnitLinkStore userOrganisationUnitStore =
@@ -322,7 +322,7 @@ public class UserSyncCallIntegrationTest extends AbsStoreTestCase {
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore, userOrganisationUnitStore);
 
-        userSyncCall = new UserSyncCall(userSyncService, databaseAdapter(), organisationUnitHandler,
+        userCall = new UserCall(userService, databaseAdapter(), organisationUnitHandler,
                 userHandler, userCredentialsHandler, userRoleHandler, resourceHandler);
 
     }
@@ -337,7 +337,7 @@ public class UserSyncCallIntegrationTest extends AbsStoreTestCase {
     // This test will break since we try to insert userRoleProgramLink without having programs.
 //    @Test
     public void call_shouldPersistInDatabase() throws Exception {
-        userSyncCall.call();
+        userCall.call();
 
         Cursor userCursor = database().query(UserModel.TABLE, USER_PROJECTION, null, null, null, null, null);
         Cursor userCredentialsCursor = database().query(UserCredentialsModel.TABLE, USER_CREDENTIALS_PROJECTION,

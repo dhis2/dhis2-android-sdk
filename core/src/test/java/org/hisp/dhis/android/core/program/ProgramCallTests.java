@@ -78,7 +78,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class ProgramSyncCallTests {
+public class ProgramCallTests {
 
     @Mock
     private ProgramService programService;
@@ -127,7 +127,7 @@ public class ProgramSyncCallTests {
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
 
-        programSyncCall = new ProgramSyncCall(programService, databaseAdapter,
+        programSyncCall = new ProgramCall(programService, databaseAdapter,
                 resourceHandler, assignedProgramUids, programHandler);
 
         when(program.uid()).thenReturn("test_program_uid");

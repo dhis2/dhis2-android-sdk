@@ -46,7 +46,7 @@ import java.util.Set;
 
 import retrofit2.Response;
 
-public class ProgramSyncCall implements Call<Response<Payload<Program>>> {
+public class ProgramCall implements Call<Response<Payload<Program>>> {
     // retrofit service
     private final ProgramService programService;
 
@@ -60,11 +60,11 @@ public class ProgramSyncCall implements Call<Response<Payload<Program>>> {
     private boolean isExecuted;
     private final Set<String> assignedProgramUids;
 
-    public ProgramSyncCall(ProgramService programService,
-                           DatabaseAdapter databaseAdapter,
-                           ResourceHandler resourceHandler,
-                           Set<String> assignedProgramUids,
-                           ProgramHandler programHandler) {
+    public ProgramCall(ProgramService programService,
+                       DatabaseAdapter databaseAdapter,
+                       ResourceHandler resourceHandler,
+                       Set<String> assignedProgramUids,
+                       ProgramHandler programHandler) {
         this.programService = programService;
         this.databaseAdapter = databaseAdapter;
         this.resourceHandler = resourceHandler;

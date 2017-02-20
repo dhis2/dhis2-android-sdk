@@ -43,9 +43,9 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public final class UserSyncCall implements Call<Response<User>> {
+public final class UserCall implements Call<Response<User>> {
     // retrofit service
-    private final UserSyncService userSyncService;
+    private final UserService userService;
 
     // databaseAdapter and handlers
     private final DatabaseAdapter databaseAdapter;
@@ -58,14 +58,14 @@ public final class UserSyncCall implements Call<Response<User>> {
 
     private boolean isExecuted;
 
-    public UserSyncCall(UserSyncService userSyncService,
-                        DatabaseAdapter databaseAdapter,
-                        OrganisationUnitHandler organisationUnitHandler,
-                        UserHandler userHandler,
-                        UserCredentialsHandler userCredentialsHandler,
-                        UserRoleHandler userRoleHandler,
-                        ResourceHandler resourceHandler) {
-        this.userSyncService = userSyncService;
+    public UserCall(UserService userService,
+                    DatabaseAdapter databaseAdapter,
+                    OrganisationUnitHandler organisationUnitHandler,
+                    UserHandler userHandler,
+                    UserCredentialsHandler userCredentialsHandler,
+                    UserRoleHandler userRoleHandler,
+                    ResourceHandler resourceHandler) {
+        this.userService = userService;
         this.databaseAdapter = databaseAdapter;
         this.organisationUnitHandler = organisationUnitHandler;
         this.userCredentialsHandler = userCredentialsHandler;
@@ -132,7 +132,7 @@ public final class UserSyncCall implements Call<Response<User>> {
                 )
         ).build();
 
-        return userSyncService.getUser(fields).execute();
+        return userService.getUser(fields).execute();
     }
 
     private void deleteOrPersistUserGraph(Response<User> response) {

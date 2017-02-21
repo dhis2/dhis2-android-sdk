@@ -71,20 +71,7 @@ public class SqLiteDatabaseAdapterTests {
 
     @Test
     public void transactionIsStartedOnWritableDatabase() throws Exception {
-        sqLiteDatabaseAdapter.beginTransaction();
+        sqLiteDatabaseAdapter.beginNewTransaction();
         verify(writableDatabase).beginTransaction();
     }
-
-    @Test
-    public void transactionSuccessfulIsSetOnWritableDatabase() throws Exception {
-        sqLiteDatabaseAdapter.setTransactionSuccessful();
-        verify(writableDatabase).setTransactionSuccessful();
-    }
-
-    @Test
-    public void transactionIsEndedOnWritableDatabase() throws Exception {
-        sqLiteDatabaseAdapter.endTransaction();
-        verify(writableDatabase).endTransaction();
-    }
-
 }

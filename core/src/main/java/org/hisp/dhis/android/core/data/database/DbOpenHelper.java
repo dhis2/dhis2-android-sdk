@@ -32,6 +32,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
@@ -750,7 +751,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
         return database;
     }
 
-    public DbOpenHelper(@NonNull Context context, @NonNull String databaseName) {
+    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
         super(context, databaseName, null, VERSION);
     }
 

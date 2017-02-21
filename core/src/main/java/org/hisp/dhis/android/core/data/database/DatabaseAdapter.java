@@ -109,43 +109,10 @@ public interface DatabaseAdapter {
      */
     void delete(String table);
 
-    /**
-     * Begins a transaction in EXCLUSIVE mode.
-     * <p>
-     * Transactions can be nested.
-     * When the outer transaction is ended all of
-     * the work done in that transaction and all of the nested transactions will be committed or
-     * rolled back. The changes will be rolled back if any transaction is ended without being
-     * marked as clean (by calling setTransactionSuccessful). Otherwise they will be committed.
-     * </p>
-     * <p>Here is the standard idiom for transactions:
-     * <p>
-     * <pre>
-     *   db.beginTransaction();
-     *   try {
-     *     ...
-     *     db.setTransactionSuccessful();
-     *   } finally {
-     *     db.endTransaction();
-     *   }
-     * </pre>
-     */
-    void beginTransaction();
 
     /**
-     * Marks the current transaction as successful. Do not do any more database work between
-     * calling this and calling endTransaction. Do as little non-database work as possible in that
-     * situation too. If any errors are encountered between this and endTransaction the transaction
-     * will still be committed.
-     *
-     * @throws IllegalStateException if the current thread is not in a transaction or the
-     *                               transaction is already marked as successful.
+     * @return A newly started {@link org.hisp.dhis.android.core.data.database.Transaction}
      */
-    void setTransactionSuccessful();
+    Transaction beginNewTransaction();
 
-    /**
-     * End a transaction. See beginTransaction for notes about how to use this and when transactions
-     * are committed and rolled back.
-     */
-    void endTransaction();
 }

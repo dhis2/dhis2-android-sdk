@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.user;
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
@@ -76,6 +77,9 @@ public class UserCallTests {
 
     @Mock
     private UserHandler userHandler;
+
+    @Mock
+    private Transaction transaction;
 
     @Mock
     private UserCredentialsHandler userCredentialsHandler;
@@ -189,6 +193,8 @@ public class UserCallTests {
         when(user.userCredentials().userRoles()).thenReturn(Collections.singletonList(userRole));
         when(user.organisationUnits()).thenReturn(organisationUnits);
 
+        when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
+
         when(userService.getUser(any(Fields.class))).thenReturn(userCall);
 
     }
@@ -244,9 +250,9 @@ public class UserCallTests {
         } catch (Exception ex) {
 
             // verify that handlers was not touched
-            verify(databaseAdapter, never()).beginTransaction();
-            verify(databaseAdapter, never()).setTransactionSuccessful();
-            verify(databaseAdapter, never()).endTransaction();
+            verify(databaseAdapter, never()).beginNewTransaction();
+            verify(transaction, never()).setSuccessful();
+            verify(transaction, never()).end();
 
             verify(userHandler, never()).handleUser(any(User.class));
 
@@ -273,14 +279,9 @@ public class UserCallTests {
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_UNAUTHORIZED);
 
         // verify that database was not touched
-        verify(databaseAdapter, never()).beginTransaction();
-        verify(databaseAdapter, never()).setTransactionSuccessful();
-        verify(databaseAdapter, never()).endTransaction();
-
-        // verify that handlers was not touched
-        verify(databaseAdapter, never()).beginTransaction();
-        verify(databaseAdapter, never()).setTransactionSuccessful();
-        verify(databaseAdapter, never()).endTransaction();
+        verify(databaseAdapter, never()).beginNewTransaction();
+        verify(transaction, never()).setSuccessful();
+        verify(transaction, never()).end();
 
         verify(userHandler, never()).handleUser(any(User.class));
 

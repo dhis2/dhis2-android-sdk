@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
@@ -110,12 +111,14 @@ public class ProgramCallTests {
     @Mock
     private Date date;
 
+    @Mock
+    private Transaction transaction;
 
     @Mock
     private Payload<Program> payload;
 
     @Mock
-    Cursor cursor;
+    private Cursor cursor;
 
     private Set<String> assignedProgramUids;
 
@@ -150,6 +153,8 @@ public class ProgramCallTests {
         assignedProgramUids = new HashSet<>();
         assignedProgramUids.add("test_program_uid");
         assignedProgramUids.add("test_program1_uid");
+
+        when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 
     }
 
@@ -326,9 +331,9 @@ public class ProgramCallTests {
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_UNAUTHORIZED);
 
         // verify that no transactions is created
-        verify(databaseAdapter, never()).beginTransaction();
-        verify(databaseAdapter, never()).setTransactionSuccessful();
-        verify(databaseAdapter, never()).endTransaction();
+        verify(databaseAdapter, never()).beginNewTransaction();
+        verify(transaction, never()).setSuccessful();
+        verify(transaction, never()).end();
 
         // verify that ProgramHandler is never called
         verify(programHandler, never()).handleProgram(any(Program.class));
@@ -343,10 +348,10 @@ public class ProgramCallTests {
         programSyncCall.call();
 
         // verify that transactions is created also in the correct order
-        InOrder transactionMethodsOrder = inOrder(databaseAdapter);
-        transactionMethodsOrder.verify(databaseAdapter, times(1)).beginTransaction();
-        transactionMethodsOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
-        transactionMethodsOrder.verify(databaseAdapter, times(1)).endTransaction();
+        verify(databaseAdapter, times(1)).beginNewTransaction();
+        InOrder transactionMethodsOrder = inOrder(transaction);
+        transactionMethodsOrder.verify(transaction, times(1)).setSuccessful();
+        transactionMethodsOrder.verify(transaction, times(1)).end();
 
         // assert that payload contains 3 times and all is handled by ProgramHandler
         assertThat(payload.items().size()).isEqualTo(3);
@@ -364,10 +369,10 @@ public class ProgramCallTests {
         programSyncCall.call();
 
         // verify that transactions is created also in the correct order
-        InOrder transactionMethodsOrder = inOrder(databaseAdapter);
-        transactionMethodsOrder.verify(databaseAdapter, times(1)).beginTransaction();
-        transactionMethodsOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
-        transactionMethodsOrder.verify(databaseAdapter, times(1)).endTransaction();
+        verify(databaseAdapter, times(1)).beginNewTransaction();
+        InOrder transactionMethodsOrder = inOrder(transaction);
+        transactionMethodsOrder.verify(transaction, times(1)).setSuccessful();
+        transactionMethodsOrder.verify(transaction, times(1)).end();
 
         // assert that payload contains 3 times and all is handled by ProgramHandler
         assertThat(payload.items().size()).isEqualTo(3);
@@ -386,10 +391,11 @@ public class ProgramCallTests {
         programSyncCall.call();
 
         // verify that transactions is created also in the correct order
-        InOrder transactionMethodsOrder = inOrder(databaseAdapter);
-        transactionMethodsOrder.verify(databaseAdapter, times(1)).beginTransaction();
-        transactionMethodsOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
-        transactionMethodsOrder.verify(databaseAdapter, times(1)).endTransaction();
+
+        verify(databaseAdapter, times(1)).beginNewTransaction();
+        InOrder transactionMethodsOrder = inOrder(transaction);
+        transactionMethodsOrder.verify(transaction, times(1)).setSuccessful();
+        transactionMethodsOrder.verify(transaction, times(1)).end();
 
         // cursor.getString is also getting called if insert and update into resource store is invoked
         verify(cursor, atLeastOnce()).getString(cursor.getColumnIndex(ResourceModel.Columns.LAST_SYNCED));

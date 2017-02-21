@@ -30,7 +30,10 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.SqLiteTransaction;
+import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
@@ -45,6 +48,8 @@ import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -77,6 +82,9 @@ public class UserAuthenticateCallUnitTests {
 
     @Mock
     private DatabaseAdapter databaseAdapter;
+
+    @Mock
+    private SqLiteTransaction sqLiteTransaction;
 
     @Mock
     private UserStore userStore;
@@ -185,7 +193,17 @@ public class UserAuthenticateCallUnitTests {
         when(user.userCredentials()).thenReturn(userCredentials);
         when(user.organisationUnits()).thenReturn(organisationUnits);
 
+
         when(userService.authenticate(any(String.class), any(Fields.class))).thenReturn(userCall);
+
+        when(databaseAdapter.beginNewTransaction()).then(new Answer<Transaction>() {
+            @Override
+            public Transaction answer(InvocationOnMock invocation) throws Throwable {
+                sqLiteTransaction.begin();
+                return sqLiteTransaction;
+            }
+        });
+
     }
 
     @Test
@@ -244,9 +262,10 @@ public class UserAuthenticateCallUnitTests {
             fail("Expected exception was not thrown");
         } catch (Exception exception) {
             // ensure that transaction is not created
-            verify(databaseAdapter, never()).beginTransaction();
-            verify(databaseAdapter, never()).setTransactionSuccessful();
-            verify(databaseAdapter, never()).endTransaction();
+            verify(databaseAdapter, never()).beginNewTransaction();
+            verify(sqLiteTransaction, never()).begin();
+            verify(sqLiteTransaction, never()).setSuccessful();
+            verify(sqLiteTransaction, never()).end();
 
             // stores must not be invoked
             verify(authenticatedUserStore, never()).insert(anyString(), anyString());
@@ -276,9 +295,10 @@ public class UserAuthenticateCallUnitTests {
         assertThat(userResponse.code()).isEqualTo(HttpURLConnection.HTTP_UNAUTHORIZED);
 
         // ensure that transaction is not created
-        verify(databaseAdapter, never()).beginTransaction();
-        verify(databaseAdapter, never()).setTransactionSuccessful();
-        verify(databaseAdapter, never()).endTransaction();
+        verify(databaseAdapter, never()).beginNewTransaction();
+        verify(sqLiteTransaction, never()).begin();
+        verify(sqLiteTransaction, never()).setSuccessful();
+        verify(sqLiteTransaction, never()).end();
 
         // stores must not be invoked
         verify(authenticatedUserStore, never()).insert(anyString(), anyString());
@@ -303,9 +323,10 @@ public class UserAuthenticateCallUnitTests {
         userAuthenticateCall.call();
 
         InOrder transactionMethodsOrder = inOrder(databaseAdapter);
-        transactionMethodsOrder.verify(databaseAdapter, times(1)).beginTransaction();
-        transactionMethodsOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
-        transactionMethodsOrder.verify(databaseAdapter, times(1)).endTransaction();
+        transactionMethodsOrder.verify(databaseAdapter).beginNewTransaction();
+        verify(sqLiteTransaction).begin();
+        verify(sqLiteTransaction).setSuccessful();
+        verify(sqLiteTransaction).end();
 
         verify(authenticatedUserStore, times(1)).insert(
                 "test_user_uid", base64("test_user_name", "test_user_password"));
@@ -358,10 +379,11 @@ public class UserAuthenticateCallUnitTests {
 
         userAuthenticateCall.call();
 
-        // ensure that transaction is not created
-        verify(databaseAdapter, times(1)).beginTransaction();
-        verify(databaseAdapter, times(1)).setTransactionSuccessful();
-        verify(databaseAdapter, times(1)).endTransaction();
+        // ensure that transaction is created
+        verify(databaseAdapter).beginNewTransaction();
+        verify(sqLiteTransaction).begin();
+        verify(sqLiteTransaction).setSuccessful();
+        verify(sqLiteTransaction).end();
 
         // stores must not be invoked
         verify(authenticatedUserStore, times(1)).insert(anyString(), anyString());

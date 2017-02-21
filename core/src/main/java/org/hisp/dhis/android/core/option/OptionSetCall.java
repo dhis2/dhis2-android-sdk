@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 
@@ -103,7 +104,7 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
     private void saveOptionSets(Response<Payload<OptionSet>> response) {
         List<OptionSet> optionSets = response.body().items();
         if (optionSets != null && !optionSets.isEmpty()) {
-            databaseAdapter.beginTransaction();
+            Transaction transaction = databaseAdapter.beginNewTransaction();
             int size = optionSets.size();
 
             try {
@@ -115,9 +116,9 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
                 }
                 resourceHandler.handleResource(OptionSet.class.getSimpleName(), serverDateTime);
 
-                databaseAdapter.setTransactionSuccessful();
+                transaction.setSuccessful();
             } finally {
-                databaseAdapter.endTransaction();
+                transaction.end();
             }
         }
     }

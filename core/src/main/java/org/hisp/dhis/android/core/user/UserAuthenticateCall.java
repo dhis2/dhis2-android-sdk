@@ -33,6 +33,7 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
@@ -162,7 +163,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     }
 
     private Long saveUser(Response<User> response) {
-        databaseAdapter.beginTransaction();
+        Transaction transaction = databaseAdapter.beginNewTransaction();
 
         Long userId;
 
@@ -233,9 +234,9 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                 }
             }
 
-            databaseAdapter.setTransactionSuccessful();
+            transaction.setSuccessful();
         } finally {
-            databaseAdapter.endTransaction();
+            transaction.end();
         }
 
         return userId;

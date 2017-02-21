@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.option.OptionSetCall;
 import org.hisp.dhis.android.core.program.ProgramCall;
 import org.hisp.dhis.android.core.user.UserCall;
@@ -49,16 +50,16 @@ public class MetadataCall {
     }
 
     public void execute() throws Exception {
-        databaseAdapter.beginTransaction();
+        Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
             userCall.call();
             programCall.call();
             optionSetCall.call();
 
 
-            databaseAdapter.setTransactionSuccessful();
+            transaction.setSuccessful();
         } finally {
-            databaseAdapter.endTransaction();
+            transaction.end();
         }
     }
 }

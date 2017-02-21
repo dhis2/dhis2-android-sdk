@@ -95,7 +95,11 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
                 OptionSet.version, OptionSet.valueType,
                 OptionSet.options.with(Option.uid, Option.code, Option.created,
                         Option.name, Option.displayName, Option.created,
-                        Option.lastUpdated)).build();
+                        Option.lastUpdated,
+                        Option.optionSet.with(
+                                OptionSet.uid
+                        )
+                )).build();
 
 
         return optionSetService.optionSets(false, optionSetFields).execute();

@@ -27,17 +27,18 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
+import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,7 +66,6 @@ import retrofit2.Response;
 import static junit.framework.Assert.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.inOrder;
@@ -81,8 +81,13 @@ public class OrganisationUnitCallUnitTests {
     private Cursor cursor;
 
     @Mock
-    @SuppressWarnings("CannotMockFinalClass")
-    private SQLiteDatabase database;
+    private DatabaseAdapter database;
+
+    @Mock
+    private ResourceHandler resourceHandler;
+
+    @Mock
+    private OrganisationUnitHandler organisationUnitHandler;
 
     @Mock
     private OrganisationUnitStore organisationUnitStore;
@@ -116,8 +121,12 @@ public class OrganisationUnitCallUnitTests {
     @Captor
     private ArgumentCaptor<Boolean> pagingCaptor;
 
+
     @Mock
     private OrganisationUnit organisationUnit;
+
+    @Mock
+    private OrganisationUnit organisationUnit2;
 
     @Mock
     private Payload<OrganisationUnit> payload;
@@ -137,6 +146,7 @@ public class OrganisationUnitCallUnitTests {
     @Before
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
+        lastUpdated = new Date();
 
         //TODO: evaluate if only one org unit would suffice for the testing:
         when(organisationUnit.uid()).thenReturn("orgUnitUid1");
@@ -177,9 +187,13 @@ public class OrganisationUnitCallUnitTests {
         when(user.nationality()).thenReturn("user_nationality");
 
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, database,
-                organisationUnitStore, userOrganisationUnitLinkStore, resourceStore);
+                organisationUnitHandler,
+                resourceHandler
+        );
 
+        //Return only one organisationUnit.
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
+
         when(organisationUnitService.getOrganisationUnits(
                 uidCaptor.capture(), fieldsCaptor.capture(), filterCaptor.capture(), descendantsCaptor.capture(),
                 pagingCaptor.capture()
@@ -200,12 +214,10 @@ public class OrganisationUnitCallUnitTests {
                 OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
                 OrganisationUnit.shortName, OrganisationUnit.displayShortName,
                 OrganisationUnit.description, OrganisationUnit.displayDescription,
-                OrganisationUnit.displayDescription, OrganisationUnit.path, OrganisationUnit.openingDate,
+                OrganisationUnit.path, OrganisationUnit.openingDate,
                 OrganisationUnit.closedDate, OrganisationUnit.level, OrganisationUnit.deleted,
-                OrganisationUnit.parent,
-                OrganisationUnit.programs
+                OrganisationUnit.parent.with(OrganisationUnit.uid), OrganisationUnit.programs.with(Program.uid)
         );
-
         assertThat(filterCaptor.getValue()).isNull();
         assertThat(descendantsCaptor.getValue()).isTrue();
         assertThat(pagingCaptor.getValue()).isFalse();
@@ -215,8 +227,7 @@ public class OrganisationUnitCallUnitTests {
     @SuppressWarnings("unchecked")
     public void call_shouldInvokeServer_withCorrectParameters_withLastUpdated() throws Exception {
         String date = "2014-11-25T09:37:53.358";
-
-        when(resourceStore.getLastUpdated(anyString())).thenReturn(date);
+        when(resourceHandler.getLastUpdated(anyString())).thenReturn(date);
         when(payload.items()).thenReturn(Collections.singletonList(organisationUnit));
 
         organisationUnitCall.call();
@@ -227,10 +238,10 @@ public class OrganisationUnitCallUnitTests {
                 OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
                 OrganisationUnit.shortName, OrganisationUnit.displayShortName,
                 OrganisationUnit.description, OrganisationUnit.displayDescription,
-                OrganisationUnit.displayDescription, OrganisationUnit.path, OrganisationUnit.openingDate,
+                OrganisationUnit.path, OrganisationUnit.openingDate,
                 OrganisationUnit.closedDate, OrganisationUnit.level, OrganisationUnit.deleted,
-                OrganisationUnit.parent,
-                OrganisationUnit.programs
+                OrganisationUnit.parent.with(OrganisationUnit.uid),
+                OrganisationUnit.programs.with(Program.uid)
         );
         Filter<OrganisationUnit, String> filter = filterCaptor.getValue();
         assertThat(filter.operator()).isEqualTo("gt");
@@ -243,9 +254,8 @@ public class OrganisationUnitCallUnitTests {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldNotInvokeStores_onException() throws Exception {
+    public void call_shouldNotMarkTransactionSuccessful_onException() throws Exception {
         when(retrofitCall.execute()).thenThrow(IOException.class);
-
         try {
             organisationUnitCall.call();
             fail("Expecting an Exception");
@@ -256,19 +266,12 @@ public class OrganisationUnitCallUnitTests {
             ordered.verify(database, times(1)).beginTransaction();
             ordered.verify(database, times(1)).endTransaction();
             verify(database, never()).setTransactionSuccessful();
-            verify(organisationUnitStore, never()).insert(anyString(), anyString(), anyString(),
-                    anyString(), any(Date.class), any(Date.class), anyString(), anyString(),
-                    anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                    anyString(), any(Integer.class));
-            verify(userOrganisationUnitLinkStore, never()).insert(
-                    anyString(), anyString(), anyString());
-            verify(database, never()).insert(anyString(), anyString(), any(ContentValues.class));
         }
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldNotInvokeStores_ifRequestFails() throws Exception {
+    public void call_shouldNotMarkTransactionSuccessful_ifRequestFails() throws Exception {
         when(retrofitCall.execute()).thenReturn(Response.<Payload<OrganisationUnit>>error(
                 HttpsURLConnection.HTTP_CLIENT_TIMEOUT,
                 ResponseBody.create(MediaType.parse("application/json"), "{}")));
@@ -276,32 +279,19 @@ public class OrganisationUnitCallUnitTests {
         Response<Payload<OrganisationUnit>> response = organisationUnitCall.call();
 
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
+        InOrder ordered = Mockito.inOrder(database);
+        ordered.verify(database, times(1)).beginTransaction();
+        ordered.verify(database, times(1)).endTransaction();
         verify(database, never()).setTransactionSuccessful();
-        verify(organisationUnitStore, never()).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(),
-                anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                anyString(), any(Integer.class));
-        verify(userOrganisationUnitLinkStore, never()).insert(
-                anyString(), anyString(), anyString());
-        verify(database, never()).insert(anyString(), anyString(), any(ContentValues.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldInsert_ifRequestSucceeds() throws Exception {
-        when(userOrganisationUnitLinkStore.update(anyString(), anyString(), anyString(), anyString(),
-                anyString())).thenReturn(-1);
-        when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(-1);
-
-        Headers headers = new Headers.Builder().add("Date", lastUpdated.toString()).build();
+    public void call_shouldInvokeHandler_ifRequestSucceeds() throws Exception {
+        Headers headers = new Headers.Builder().add(HeaderUtils.DATE, lastUpdated.toString()).build();
         when(payload.items()).thenReturn(Collections.singletonList(organisationUnit));
         Response<Payload<OrganisationUnit>> response = Response.success(payload, headers);
         when(retrofitCall.execute()).thenReturn(response);
-
-        when(organisationUnitStore.update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(),
-                anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                anyString(), any(Integer.class), anyString())).thenReturn(-1);
 
         organisationUnitCall.call();
 
@@ -310,98 +300,18 @@ public class OrganisationUnitCallUnitTests {
         inOrder.verify(database, times(1)).setTransactionSuccessful();
         inOrder.verify(database, times(1)).endTransaction();
 
-        verify(organisationUnitStore, times(1)).insert(
-                "orgUnitUid1",
-                "organisation_unit_code",
-                "organisation_unit_name",
-                "organisation_unit_display_name",
-                created, lastUpdated,
-                "organisation_unit_short_name",
-                "organisation_unit_display_short_name",
-                "organisation_unit_description",
-                "organisation_unit_display_description",
-                "/root/orgUnitUid1",
-                created, lastUpdated, null, 4
+        verify(organisationUnitHandler, times(1)).handleOrganisationUnits(
+                eq(Collections.singletonList(organisationUnit)),
+                eq(OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE),
+                eq("user_uid")
         );
-
-        //UserOrganisationUnitLinkRow Update tests! :
-        verify(userOrganisationUnitLinkStore,
-                times(1)).update(anyString(), anyString(), anyString(), anyString(), anyString());
-        verify(userOrganisationUnitLinkStore,
-                times(1)).insert(anyString(), anyString(), anyString());
-
-        //UpdateInResourceStore tests:
-        verify(resourceStore, times(1)).update(anyString(), any(Date.class), anyString());
-        verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void call_shouldDelete_ifRequestSucceeds() throws Exception {
-        when(organisationUnit.deleted()).thenReturn(true);
-
-        Headers headers = new Headers.Builder().add("Date", lastUpdated.toString()).build();
-        when(payload.items()).thenReturn(Collections.singletonList(organisationUnit));
-        Response<Payload<OrganisationUnit>> response = Response.success(payload, headers);
-        when(retrofitCall.execute()).thenReturn(response);
-
-        organisationUnitCall.call();
-
-        InOrder inOrder = inOrder(database);
-        inOrder.verify(database, times(1)).beginTransaction();
-        inOrder.verify(database, times(1)).setTransactionSuccessful();
-        inOrder.verify(database, times(1)).endTransaction();
-
-        verify(organisationUnitStore, times(1)).delete("orgUnitUid1");
-        verify(resourceStore, times(1)).update(anyString(), any(Date.class), anyString());
-        verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void call_shouldUpdate_ifRequestSucceeds() throws Exception {
-        when(userOrganisationUnitLinkStore.update(anyString(), anyString(), anyString(), anyString(),
-                anyString())).thenReturn(1);
-        when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(1);
-
-        Headers headers = new Headers.Builder().add("Date", lastUpdated.toString()).build();
-        when(payload.items()).thenReturn(Collections.singletonList(organisationUnit));
-        Response<Payload<OrganisationUnit>> response = Response.success(payload, headers);
-        when(retrofitCall.execute()).thenReturn(response);
-
-        organisationUnitCall.call();
-
-        //TODO: maybe remove the times, since many transactions are open & closed ?
-        InOrder inOrder = inOrder(database);
-        inOrder.verify(database, times(1)).beginTransaction();
-        inOrder.verify(database, times(1)).setTransactionSuccessful();
-        inOrder.verify(database, times(1)).endTransaction();
-
-        verify(organisationUnitStore, times(1)).update(
-                "orgUnitUid1",
-                "organisation_unit_code",
-                "organisation_unit_name",
-                "organisation_unit_display_name",
-                created, lastUpdated,
-                "organisation_unit_short_name",
-                "organisation_unit_display_short_name",
-                "organisation_unit_description",
-                "organisation_unit_display_description",
-                "/root/orgUnitUid1",
-                created, lastUpdated, null, 4,
-                "orgUnitUid1"
-        );
-
-        verify(userOrganisationUnitLinkStore, times(1))
-                .update(anyString(), anyString(), anyString(), anyString(), anyString());
-        verify(resourceStore, times(1)).update(anyString(), any(Date.class), anyString());
+        verify(resourceHandler, times(1)).handleResource(eq(OrganisationUnit.class.getSimpleName()), any(Date.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void call_shouldNotFail_onEmptyInput() {
         when(user.organisationUnits()).thenReturn(null); //no organisation units in user
-
         try {
             organisationUnitCall.call();
         } catch (Exception e) {
@@ -415,7 +325,6 @@ public class OrganisationUnitCallUnitTests {
     @Test
     @SuppressWarnings("unchecked")
     public void call_shouldThrowException_OnConsecutiveCalls() {
-
         try {
             organisationUnitCall.call();
             organisationUnitCall.call();
@@ -447,7 +356,6 @@ public class OrganisationUnitCallUnitTests {
     @SuppressWarnings("unchecked")
     public void call_shouldMarkCallAsExecuted_onFailure() throws IOException {
         when(retrofitCall.execute()).thenThrow(new IOException());
-
         try {
             organisationUnitCall.call();
             fail("IOException should be thrown");

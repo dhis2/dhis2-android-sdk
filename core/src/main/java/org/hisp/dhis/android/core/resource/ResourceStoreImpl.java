@@ -104,11 +104,13 @@ public class ResourceStoreImpl implements ResourceStore {
                 " WHERE " + ResourceModel.Columns.RESOURCE_TYPE +
                 " = '" + className + "'"
         );
-        cursor.moveToFirst();
-        if (cursor.getCount() > 0) {
-            lastUpdated = cursor.getString(cursor.getColumnIndex(ResourceModel.Columns.LAST_SYNCED));
+        if(cursor != null) {
+            cursor.moveToFirst();
+            if (cursor.getCount() > 0) {
+                lastUpdated = cursor.getString(cursor.getColumnIndex(ResourceModel.Columns.LAST_SYNCED));
+            }
+            cursor.close();
         }
-        cursor.close();
         return lastUpdated;
     }
 }

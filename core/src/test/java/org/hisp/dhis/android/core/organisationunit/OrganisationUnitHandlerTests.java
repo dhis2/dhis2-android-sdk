@@ -87,27 +87,10 @@ public class OrganisationUnitHandlerTests {
         scope = OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE;
     }
 
-    @Test
+    @Test (expected = NullPointerException.class)
     public void doNothing_doNothingWhenPassingInNullOrganisationUnits() throws Exception {
         organisationUnitHandler.handleOrganisationUnits(
                 null, scope, user.uid()
-        );
-        // verify that organisation unit store is never invoked
-        verify(organisationUnitStore, never()).delete(anyString());
-        verify(organisationUnitStore, never()).update(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt(), anyString()
-        );
-        verify(organisationUnitStore, never()).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt());
-
-        // verify that link store is never invoked
-        verify(userOrganisationUnitLinkStore, never()).insert(anyString(), anyString(), anyString());
-        verify(userOrganisationUnitLinkStore, never()).update(
-                anyString(), anyString(), anyString(), anyString(), anyString()
         );
     }
 

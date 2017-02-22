@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -30,22 +30,49 @@ package org.hisp.dhis.android.core.data.database;
 
 import android.database.sqlite.SQLiteDatabase;
 
-public class TestDatabaseAdapter extends BaseDatabaseAdapter {
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-    // memory-backed test database
-    private final SQLiteDatabase sqLiteDatabase;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-    public TestDatabaseAdapter(SQLiteDatabase database) {
-        this.sqLiteDatabase = database;
+public class SqLiteTransactionTests {
+
+    @Mock
+    DbOpenHelper dbOpenHelper;
+
+    @Mock
+    SQLiteDatabase database;
+
+    private SqLiteTransaction transaction; // The class we are testing
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+
+        when(dbOpenHelper.getWritableDatabase()).thenReturn(database);
+
+        transaction = new SqLiteTransaction(dbOpenHelper);
     }
 
-    @Override
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
+    @Test
+    public void beginTransactionIsRunOnSqlDatabase() throws Exception {
+        transaction.begin();
+        verify(database).beginTransaction();
     }
 
-    @Override
-    protected SQLiteDatabase readableDatabase() {
-        return sqLiteDatabase;
+    @Test
+    public void transactionSuccessfulIsSetOnSqlDatabase() throws Exception {
+        transaction.setSuccessful();
+        verify(database).setTransactionSuccessful();
     }
+
+    @Test
+    public void endTransactionIsRunOnSqlDatabase() throws Exception {
+        transaction.end();
+        verify(database).endTransaction();
+    }
+
 }

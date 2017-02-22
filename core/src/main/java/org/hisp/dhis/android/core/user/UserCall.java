@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.user;
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
@@ -136,7 +137,7 @@ public final class UserCall implements Call<Response<User>> {
     }
 
     private void deleteOrPersistUserGraph(Response<User> response) {
-        databaseAdapter.beginTransaction();
+        Transaction transaction = databaseAdapter.beginNewTransaction();
 
         try {
             User user = response.body();
@@ -166,9 +167,9 @@ public final class UserCall implements Call<Response<User>> {
 
             resourceHandler.handleResource(userClassName, serverDateTime);
 
-            databaseAdapter.setTransactionSuccessful();
+            transaction.setSuccessful();
         } finally {
-            databaseAdapter.endTransaction();
+            transaction.end();
         }
 
     }

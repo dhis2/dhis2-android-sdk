@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
@@ -103,7 +104,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
     }
 
     private void applyChangesToDatabase(Response<Payload<Program>> programsByLastUpdated) {
-        databaseAdapter.beginTransaction();
+        Transaction transaction = databaseAdapter.beginNewTransaction();
 
         try {
             Date serverDateTime = programsByLastUpdated.headers().getDate(HeaderUtils.DATE);
@@ -117,9 +118,9 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
 
             resourceHandler.handleResource(Program.class.getSimpleName(), serverDateTime);
 
-            databaseAdapter.setTransactionSuccessful();
+            transaction.setSuccessful();
         } finally {
-            databaseAdapter.endTransaction();
+            transaction.end();
         }
     }
 

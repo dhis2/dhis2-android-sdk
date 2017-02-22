@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
@@ -82,6 +83,9 @@ public class OrganisationUnitCallUnitTests {
 
     @Mock
     private DatabaseAdapter database;
+
+    @Mock
+    private Transaction transaction;
 
     @Mock
     private ResourceHandler resourceHandler;
@@ -186,6 +190,8 @@ public class OrganisationUnitCallUnitTests {
         when(user.phoneNumber()).thenReturn("user_phone_number");
         when(user.nationality()).thenReturn("user_nationality");
 
+        when(database.beginNewTransaction()).thenReturn(transaction);
+
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, database,
                 organisationUnitHandler,
                 resourceHandler
@@ -262,10 +268,9 @@ public class OrganisationUnitCallUnitTests {
         } catch (Exception e) {
             assertThat(IOException.class.isInstance(e)).isTrue();
 
-            InOrder ordered = Mockito.inOrder(database);
-            ordered.verify(database, times(1)).beginTransaction();
-            ordered.verify(database, times(1)).endTransaction();
-            verify(database, never()).setTransactionSuccessful();
+            verify(database, times(1)).beginNewTransaction();
+            verify(transaction, times(1)).end();
+            verify(transaction, never()).setSuccessful();
         }
     }
 
@@ -279,10 +284,9 @@ public class OrganisationUnitCallUnitTests {
         Response<Payload<OrganisationUnit>> response = organisationUnitCall.call();
 
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
-        InOrder ordered = Mockito.inOrder(database);
-        ordered.verify(database, times(1)).beginTransaction();
-        ordered.verify(database, times(1)).endTransaction();
-        verify(database, never()).setTransactionSuccessful();
+        verify(database, times(1)).beginNewTransaction();
+        verify(transaction, times(1)).end();
+        verify(transaction, never()).setSuccessful();
     }
 
     @Test
@@ -295,10 +299,9 @@ public class OrganisationUnitCallUnitTests {
 
         organisationUnitCall.call();
 
-        InOrder inOrder = inOrder(database);
-        inOrder.verify(database, times(1)).beginTransaction();
-        inOrder.verify(database, times(1)).setTransactionSuccessful();
-        inOrder.verify(database, times(1)).endTransaction();
+        verify(database, times(1)).beginNewTransaction();
+        verify(transaction, times(1)).setSuccessful();
+        verify(transaction, times(1)).end();
 
         verify(organisationUnitHandler, times(1)).handleOrganisationUnits(
                 eq(Collections.singletonList(organisationUnit)),

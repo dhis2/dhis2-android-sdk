@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.user.User;
@@ -87,7 +88,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         }
         Date serverDate = null;
         Response<Payload<OrganisationUnit>> response = null;
-        database.beginTransaction();
+        Transaction transaction = database.beginNewTransaction();
         try {
             Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
             Filter<OrganisationUnit, String> lastUpdatedFilter = OrganisationUnit.lastUpdated.gt(
@@ -110,10 +111,10 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
             }
             if (response != null && response.isSuccessful()) {
                 resourceHandler.handleResource(OrganisationUnit.class.getSimpleName(), serverDate);
-                database.setTransactionSuccessful();
+                transaction.setSuccessful();
             }
         } finally {
-            database.endTransaction();
+            transaction.end();
         }
         return response;
     }

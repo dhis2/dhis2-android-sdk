@@ -37,7 +37,7 @@ public class ResourceHandler {
     }
 
     public void handleResource(String className, Date serverDate) {
-        if (className == null) {
+        if (className == null || serverDate == null) {
             return;
         }
         int updatedResourceRow = resourceStore.update(className, serverDate, className);

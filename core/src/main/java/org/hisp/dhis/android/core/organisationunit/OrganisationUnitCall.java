@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -35,14 +34,15 @@ import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
-import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 import retrofit2.Response;
@@ -53,25 +53,22 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
 
     private final User user;
     private final OrganisationUnitService organisationUnitService;
-    private final SQLiteDatabase database;
-    private final OrganisationUnitStore organisationUnitStore;
-    private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
-    private final ResourceStore resourceStore;
+    private final DatabaseAdapter database;
+    private final OrganisationUnitHandler organisationUnitHandler;
+    private final ResourceHandler resourceHandler;
     private boolean isExecuted;
 
     public OrganisationUnitCall(@NonNull User user,
                                 @NonNull OrganisationUnitService organisationUnitService,
-                                @NonNull SQLiteDatabase sqLiteDatabase,
-                                @NonNull OrganisationUnitStore organisationUnitStore,
-                                @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
-                                @NonNull ResourceStore resourceStore
+                                @NonNull DatabaseAdapter database,
+                                @NonNull OrganisationUnitHandler organisationUnitHandler,
+                                @NonNull ResourceHandler resourceHandler
     ) {
         this.user = user;
         this.organisationUnitService = organisationUnitService;
-        this.database = sqLiteDatabase;
-        this.organisationUnitStore = organisationUnitStore;
-        this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
-        this.resourceStore = resourceStore;
+        this.database = database;
+        this.organisationUnitHandler = organisationUnitHandler;
+        this.resourceHandler = resourceHandler;
     }
 
     @Override
@@ -83,22 +80,19 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
 
     @Override
     public Response<Payload<OrganisationUnit>> call() throws Exception {
-
         synchronized (this) {
             if (isExecuted) {
                 throw new IllegalStateException("AlreadyExecuted");
             }
             isExecuted = true;
         }
+        Date serverDate = null;
         Response<Payload<OrganisationUnit>> response = null;
-
-        database.beginTransaction();
+        Transaction transaction = database.beginNewTransaction();
         try {
             Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
-            Date serverDate = null;
             Filter<OrganisationUnit, String> lastUpdatedFilter = OrganisationUnit.lastUpdated.gt(
-                    resourceStore.getLastUpdated(OrganisationUnit.class.getSimpleName()));
-
+                    resourceHandler.getLastUpdated(OrganisationUnit.class.getSimpleName()));
             // Call OrganisationUnitService for each tree root & try to persist sub-tree:
             for (String uid : rootOrgUnitUids) {
                 response = getOrganisationUnit(uid, lastUpdatedFilter);
@@ -106,18 +100,21 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                     if (serverDate == null) {//only get the very first date-time for the entire call.
                         serverDate = response.headers().getDate(HeaderUtils.DATE);
                     }
-                    persistOrganisationUnits(response.body().items(), OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE);
+                    organisationUnitHandler.handleOrganisationUnits(
+                            response.body().items(),
+                            OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
+                            user.uid()
+                    );
                 } else {
                     break; //stop early unsuccessful:
                 }
-
             }
             if (response != null && response.isSuccessful()) {
-                updateInResourceStore(serverDate);
-                database.setTransactionSuccessful();
+                resourceHandler.handleResource(OrganisationUnit.class.getSimpleName(), serverDate);
+                transaction.setSuccessful();
             }
         } finally {
-            database.endTransaction();
+            transaction.end();
         }
         return response;
     }
@@ -133,96 +130,12 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                 OrganisationUnit.description, OrganisationUnit.displayDescription,
                 OrganisationUnit.displayDescription, OrganisationUnit.path, OrganisationUnit.openingDate,
                 OrganisationUnit.closedDate, OrganisationUnit.level, OrganisationUnit.deleted,
-                OrganisationUnit.parent,
+                OrganisationUnit.parent.with(OrganisationUnit.uid),
                 //TODO: find out if programs are relevant: can they be updated on their own ?
-                OrganisationUnit.programs
+                OrganisationUnit.programs.with(Program.uid)
         ).build();
         retrofit2.Call<Payload<OrganisationUnit>> call = organisationUnitService.getOrganisationUnits(uid, fields,
                 lastUpdatedFilter, true, false);
         return call.execute();
-    }
-
-    private void persistOrganisationUnits(@NonNull List<OrganisationUnit> organisationUnits,
-                                          OrganisationUnitModel.Scope organisationUnitScope) {
-
-        for (int i = 0, size = organisationUnits.size(); i < size; i++) {
-            OrganisationUnit organisationUnit = organisationUnits.get(i);
-            if (organisationUnit.deleted()) {
-                organisationUnitStore.delete(organisationUnit.uid());
-            } else {
-                insertOrUpdate(organisationUnit, organisationUnitScope);
-            }
-
-        }
-    }
-
-    private void insertOrUpdate(@NonNull OrganisationUnit organisationUnit,
-                                OrganisationUnitModel.Scope organisationUnitScope) {
-
-        String parentUid = null;
-        if (organisationUnit.parent() != null) {
-            parentUid = organisationUnit.parent().uid();
-        }
-
-        int updatedRow = organisationUnitStore.update(
-                organisationUnit.uid(),
-                organisationUnit.code(),
-                organisationUnit.name(),
-                organisationUnit.displayName(),
-                organisationUnit.created(),
-                organisationUnit.lastUpdated(),
-                organisationUnit.shortName(),
-                organisationUnit.displayShortName(),
-                organisationUnit.description(),
-                organisationUnit.displayDescription(),
-                organisationUnit.path(),
-                organisationUnit.openingDate(),
-                organisationUnit.closedDate(),
-                parentUid,
-                organisationUnit.level(),
-                organisationUnit.uid()
-        );
-
-        if (updatedRow <= 0) {
-            organisationUnitStore.insert(
-                    organisationUnit.uid(),
-                    organisationUnit.code(),
-                    organisationUnit.name(),
-                    organisationUnit.displayName(),
-                    organisationUnit.created(),
-                    organisationUnit.lastUpdated(),
-                    organisationUnit.shortName(),
-                    organisationUnit.displayShortName(),
-                    organisationUnit.description(),
-                    organisationUnit.displayDescription(),
-                    organisationUnit.path(),
-                    organisationUnit.openingDate(),
-                    organisationUnit.closedDate(),
-                    parentUid,
-                    organisationUnit.level()
-            );
-        }
-
-        // maintain link between user and organisation unit
-        int updatedUserOrganisationUnitLinkRow = userOrganisationUnitLinkStore.update(
-                user.uid(), organisationUnit.uid(),
-                organisationUnitScope.name(),
-                user.uid(), organisationUnit.uid()
-        );
-
-        if (updatedUserOrganisationUnitLinkRow <= 0) {
-            userOrganisationUnitLinkStore.insert(
-                    user.uid(), organisationUnit.uid(),
-                    organisationUnitScope.name()
-            );
-        }
-    }
-
-    private void updateInResourceStore(Date serverDate) {
-        int rowId = resourceStore.update(OrganisationUnit.class.getSimpleName(), serverDate,
-                OrganisationUnit.class.getSimpleName());
-        if (rowId <= 0) {
-            resourceStore.insert(OrganisationUnit.class.getSimpleName(), serverDate);
-        }
     }
 }

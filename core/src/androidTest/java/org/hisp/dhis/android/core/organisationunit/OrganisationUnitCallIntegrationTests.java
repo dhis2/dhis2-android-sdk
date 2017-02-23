@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
@@ -55,7 +56,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -111,7 +111,8 @@ public class OrganisationUnitCallIntegrationTests extends AbsStoreTestCase {
 
         //TODO: Consider moving the json out to a separate file:
         MockResponse response = new MockResponse();
-        response.setHeader(HeaderUtils.DATE, Calendar.getInstance().getTime());
+        response.setHeader(HeaderUtils.DATE, "Tue, 21 Feb 2017 15:44:46 GMT");
+        response.setResponseCode(200);
         response.setBody("{\n" +
                 "  \"organisationUnits\": [\n" +
                 "    {\n" +
@@ -247,6 +248,7 @@ public class OrganisationUnitCallIntegrationTests extends AbsStoreTestCase {
                 "}");
         server.enqueue(response);
 
+
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw());
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -267,8 +269,12 @@ public class OrganisationUnitCallIntegrationTests extends AbsStoreTestCase {
         OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter());
         UserOrganisationUnitLinkStore userOrganisationUnitLinkStore =
                 new UserOrganisationUnitLinkStoreImpl(databaseAdapter());
-
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
+
+        OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore,
+                userOrganisationUnitLinkStore);
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
+
         // Create a user with the root as assigned organisation unit (for the test):
         User user = User.create("user_uid", "code", "name", "display_name", new Date(), new Date(), "birthday",
                 "education", "gender", "job_title", "surname", "firstName", "introduction", "employer", "interests",
@@ -283,9 +289,8 @@ public class OrganisationUnitCallIntegrationTests extends AbsStoreTestCase {
         userContentValues.put(UserModel.Columns.ID, "user_uid");
         database().insert(UserModel.TABLE, null, userContentValues);
 
-        organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, database(),
-                organisationUnitStore,
-                userOrganisationUnitLinkStore, resourceStore);
+        organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, databaseAdapter(),
+                organisationUnitHandler, resourceHandler);
     }
 
     @Test
@@ -349,9 +354,8 @@ public class OrganisationUnitCallIntegrationTests extends AbsStoreTestCase {
         assertThatCursor(userOrganisationUnitCursor).hasRow("user_uid", "EFTcruJcNmZ");
         assertThatCursor(userOrganisationUnitCursor).hasRow("user_uid", "tZxqVn3xNrA");
 
-        String dateString = server.takeRequest().getHeader(HeaderUtils.DATE);
-
-        assertThatCursor(resourceCursor).hasRow(OrganisationUnit.class.getSimpleName(), dateString);
+        //TODO: make sure this date is correctly formated:
+        assertThatCursor(resourceCursor).hasRow(OrganisationUnit.class.getSimpleName(), "2017-02-21T16:44:46.000");
     }
 
     @After

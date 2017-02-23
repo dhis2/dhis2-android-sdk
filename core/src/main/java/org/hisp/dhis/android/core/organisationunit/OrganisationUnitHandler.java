@@ -27,6 +27,9 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
 import java.util.List;
@@ -43,28 +46,20 @@ public class OrganisationUnitHandler {
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
     }
 
-
-    public void handleOrganisationUnits(List<OrganisationUnit> organisationUnits,
-                                        OrganisationUnitModel.Scope scope,
-                                        String userUid) {
-        if (organisationUnits == null) {
-            return;
-        }
-
-        deleteOrPersistOrganisationUnits(organisationUnits, scope, userUid);
-    }
-
-    private void deleteOrPersistOrganisationUnits(List<OrganisationUnit> organisationUnits,
-                                                  OrganisationUnitModel.Scope organisationUnitScope,
-                                                  String userUid) {
+    public void handleOrganisationUnits(@NonNull List<OrganisationUnit> organisationUnits,
+                                        @Nullable OrganisationUnitModel.Scope scope,
+                                        @NonNull String userUid) {
         int size = organisationUnits.size();
         for (int i = 0; i < size; i++) {
             OrganisationUnit organisationUnit = organisationUnits.get(i);
 
             if (isDeleted(organisationUnit)) {
                 organisationUnitStore.delete(organisationUnit.uid());
-
             } else {
+                String uid = null;
+                if (organisationUnit.parent() != null) {
+                    uid = organisationUnit.parent().uid();
+                }
                 int updatedRow = organisationUnitStore.update(organisationUnit.uid(),
                         organisationUnit.code(),
                         organisationUnit.name(),
@@ -78,9 +73,8 @@ public class OrganisationUnitHandler {
                         organisationUnit.path(),
                         organisationUnit.openingDate(),
                         organisationUnit.closedDate(),
-                        organisationUnit.parent() == null ? null : organisationUnit.parent().uid(),
+                        uid,
                         organisationUnit.level(), organisationUnit.uid());
-
                 if (updatedRow <= 0) {
                     organisationUnitStore.insert(
                             organisationUnit.uid(),
@@ -96,21 +90,17 @@ public class OrganisationUnitHandler {
                             organisationUnit.path(),
                             organisationUnit.openingDate(),
                             organisationUnit.closedDate(),
-                            organisationUnit.parent() == null ? null : organisationUnit.parent().uid(),
+                            uid,
                             organisationUnit.level()
                     );
                 }
-
-                if (userUid != null && organisationUnitScope != null) {
+                if(scope != null) {
                     int updatedLinkRow = userOrganisationUnitLinkStore.update(
-                            userUid, organisationUnit.uid(), organisationUnitScope.name(),
-                            userUid, organisationUnit.uid()
+                            userUid, organisationUnit.uid(),
+                            scope.name(), userUid, organisationUnit.uid()
                     );
-
                     if (updatedLinkRow <= 0) {
-                        userOrganisationUnitLinkStore.insert(
-                                userUid, organisationUnit.uid(), organisationUnitScope.name()
-                        );
+                        userOrganisationUnitLinkStore.insert(userUid, organisationUnit.uid(), scope.name());
                     }
                 }
             }

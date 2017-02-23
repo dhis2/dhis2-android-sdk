@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.resource;
 import java.util.Date;
 
 public class ResourceHandler {
-
     private final ResourceStore resourceStore;
 
     public ResourceHandler(ResourceStore resourceStore) {
@@ -49,8 +48,8 @@ public class ResourceHandler {
 
     /**
      * A wrapper to expose resourceStore.getLastUpdated(str).
-     * @param className
-     * @return
+     * @param className Name of the resource.
+     * @return a string representing the last synched date
      */
     public String getLastUpdated(String className) {
         return resourceStore.getLastUpdated(className);

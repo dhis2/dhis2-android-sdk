@@ -135,6 +135,9 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                 Program.relationshipFromA, Program.relationshipText,
                 Program.selectEnrollmentDatesInFuture, Program.selectIncidentDatesInFuture,
                 Program.useFirstStageDuringRegistration,
+                Program.relatedProgram.with(
+                        Program.uid
+                ),
 
                 getProgramToProgramStageFilters(),
 
@@ -207,12 +210,23 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
         return Program.programRules.with(
                 ProgramRule.uid, ProgramRule.code, ProgramRule.name, ProgramRule.displayName,
                 ProgramRule.created, ProgramRule.lastUpdated, ProgramRule.deleted,
-                ProgramRule.priority, ProgramRule.condition, ProgramRule.programRuleActions.with(
+                ProgramRule.priority, ProgramRule.condition,
+                ProgramRule.program.with(
+                        Program.uid
+                ),
+                ProgramRule.programStage.with(
+                        ProgramStage.uid
+                ),
+                ProgramRule.programRuleActions.with(
                         ProgramRuleAction.uid, ProgramRuleAction.code, ProgramRuleAction.name,
                         ProgramRuleAction.displayName, ProgramRuleAction.created,
                         ProgramRuleAction.lastUpdated, ProgramRuleAction.content, ProgramRuleAction.data,
                         ProgramRuleAction.deleted, ProgramRuleAction.location,
-                        ProgramRuleAction.programRuleActionType, ProgramRuleAction.dataElement.with(
+                        ProgramRuleAction.programRuleActionType,
+                        ProgramRuleAction.programRule.with(
+                                ProgramRule.uid
+                        ),
+                        ProgramRuleAction.dataElement.with(
                                 DataElement.uid
                         ),
                         ProgramRuleAction.programIndicator.with(
@@ -277,6 +291,9 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                 ProgramTrackedEntityAttribute.allowFutureDate, ProgramTrackedEntityAttribute.deleted,
                 ProgramTrackedEntityAttribute.displayInList, ProgramTrackedEntityAttribute.mandatory,
                 ProgramTrackedEntityAttribute.valueType,
+                ProgramTrackedEntityAttribute.program.with(
+                        Program.uid
+                ),
                 ProgramTrackedEntityAttribute.trackedEntityAttribute.with(
                         TrackedEntityAttribute.uid, TrackedEntityAttribute.code,
                         TrackedEntityAttribute.created, TrackedEntityAttribute.lastUpdated,

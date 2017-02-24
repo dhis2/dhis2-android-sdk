@@ -27,9 +27,10 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
@@ -53,9 +54,9 @@ public class ProgramStageSectionProgramIndicatorLinkStoreImpl implements Program
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
 
-    public ProgramStageSectionProgramIndicatorLinkStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.insertStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
-        this.updateStatement = sqLiteDatabase.compileStatement(UPDATE_STATEMENT);
+    public ProgramStageSectionProgramIndicatorLinkStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
     }
 
     @Override

@@ -25,37 +25,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.relationship;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
-import java.util.Date;
+public class RelationshipTypeHandler {
+    private final RelationshipTypeStore relationshipTypeStore;
 
-public interface RelationshipTypeStore {
+    public RelationshipTypeHandler(RelationshipTypeStore relationshipTypeStore) {
+        this.relationshipTypeStore = relationshipTypeStore;
+    }
 
-    long insert(
-            @NonNull String uid,
-            @Nullable String code,
-            @NonNull String name,
-            @Nullable String displayName,
-            @Nullable Date created,
-            @Nullable Date lastUpdated,
-            @NonNull String aIsToB,
-            @NonNull String bIsToA);
+    public void handleRelationshipType(RelationshipType relationshipType) {
+        if (relationshipType == null) {
+            return;
+        }
 
-    int update(
-            @NonNull String uid,
-            @Nullable String code,
-            @NonNull String name,
-            @Nullable String displayName,
-            @Nullable Date created,
-            @Nullable Date lastUpdated,
-            @NonNull String aIsToB,
-            @NonNull String bIsToA,
-            @NonNull String whereRelationshipTypeUid
-    );
+        if (isDeleted(relationshipType)) {
+            relationshipTypeStore.delete(relationshipType.uid());
+        } else {
+            int update = relationshipTypeStore.update(
+                    relationshipType.uid(),
+                    relationshipType.code(),
+                    relationshipType.name(),
+                    relationshipType.displayName(),
+                    relationshipType.created(),
+                    relationshipType.lastUpdated(),
+                    relationshipType.aIsToB(),
+                    relationshipType.bIsToA(),
+                    relationshipType.uid());
 
-    int delete(@NonNull String uid);
+            if (update <= 0) {
+                relationshipTypeStore.insert(
+                        relationshipType.uid(),
+                        relationshipType.code(),
+                        relationshipType.name(),
+                        relationshipType.displayName(),
+                        relationshipType.created(),
+                        relationshipType.lastUpdated(),
+                        relationshipType.aIsToB(),
+                        relationshipType.bIsToA());
+            }
+        }
+    }
 }

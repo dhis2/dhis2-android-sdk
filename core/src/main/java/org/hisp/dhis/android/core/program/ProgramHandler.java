@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
+
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class ProgramHandler {
@@ -38,19 +40,22 @@ public class ProgramHandler {
     private final ProgramIndicatorHandler programIndicatorHandler;
     private final ProgramRuleHandler programRuleHandler;
     private final ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler;
+    private final RelationshipTypeHandler relationshipHandler;
 
     public ProgramHandler(ProgramStore programStore,
                           ProgramRuleVariableHandler programRuleVariableHandler,
                           ProgramStageHandler programStageHandler,
                           ProgramIndicatorHandler programIndicatorHandler,
                           ProgramRuleHandler programRuleHandler,
-                          ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler) {
+                          ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler,
+                          RelationshipTypeHandler relationshipHandler) {
         this.programStore = programStore;
         this.programRuleVariableHandler = programRuleVariableHandler;
         this.programStageHandler = programStageHandler;
         this.programIndicatorHandler = programIndicatorHandler;
         this.programRuleHandler = programRuleHandler;
         this.programTrackedEntityAttributeHandler = programTrackedEntityAttributeHandler;
+        this.relationshipHandler = relationshipHandler;
     }
 
     public void handleProgram(Program program) {
@@ -78,6 +83,8 @@ public class ProgramHandler {
 
         programRuleVariableHandler.handleProgramRuleVariables(program.programRuleVariables());
 
+        relationshipHandler.handleRelationshipType(program.relationshipType());
+
         // TODO: delete or persist categoryCombos
     }
 
@@ -86,6 +93,17 @@ public class ProgramHandler {
         if (isDeleted(program)) {
             programStore.delete(program.uid());
         } else {
+            String relatedProgramUid = null;
+
+            if (program.relatedProgram() != null) {
+                relatedProgramUid = program.relatedProgram().uid();
+            }
+
+            String trackedEntityUid = null;
+            if (program.trackedEntity() != null) {
+                trackedEntityUid = program.trackedEntity().uid();
+            }
+
             int updatedRow = programStore.update(
                     program.uid(), program.code(), program.name(), program.displayName(), program.created(),
                     program.lastUpdated(), program.shortName(), program.displayShortName(), program.description(),
@@ -96,7 +114,7 @@ public class ProgramHandler {
                     program.selectIncidentDatesInFuture(), program.captureCoordinates(),
                     program.useFirstStageDuringRegistration(), program.displayFrontPageList(),
                     program.programType(), program.relationshipText(), program.relationshipText(),
-                    program.relatedProgram().uid(), program.trackedEntity().uid(), program.uid());
+                    relatedProgramUid, trackedEntityUid, program.uid());
 
             if (updatedRow <= 0) {
                 programStore.insert(
@@ -109,7 +127,7 @@ public class ProgramHandler {
                         program.selectIncidentDatesInFuture(), program.captureCoordinates(),
                         program.useFirstStageDuringRegistration(), program.displayFrontPageList(),
                         program.programType(), program.relationshipText(), program.relationshipText(),
-                        program.relatedProgram().uid(), program.trackedEntity().uid()
+                        relatedProgramUid, trackedEntityUid
                 );
             }
         }

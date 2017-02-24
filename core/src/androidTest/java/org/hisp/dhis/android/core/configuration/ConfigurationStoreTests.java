@@ -53,7 +53,7 @@ public class ConfigurationStoreTests extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        configurationStore = new ConfigurationStoreImpl(database());
+        configurationStore = new ConfigurationStoreImpl(databaseAdapter());
     }
 
     @Test

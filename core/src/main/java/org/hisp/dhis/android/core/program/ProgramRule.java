@@ -57,6 +57,10 @@ public abstract class ProgramRule extends BaseIdentifiableObject {
             = Field.create(NAME);
     public static final Field<ProgramRule, String> displayName
             = Field.create(DISPLAY_NAME);
+    public static final Field<ProgramRule, String> created =
+            Field.create(CREATED);
+    public static final Field<ProgramRule, String> lastUpdated =
+            Field.create(LAST_UPDATED);
     public static final Field<ProgramRule, Integer> priority
             = Field.create(PRIORITY);
     public static final Field<ProgramRule, String> condition
@@ -67,6 +71,8 @@ public abstract class ProgramRule extends BaseIdentifiableObject {
             = NestedField.create(PROGRAM_STAGE);
     public static final NestedField<ProgramRule, ProgramRuleAction> programRuleActions
             = NestedField.create(PROGRAM_RULE_ACTIONS);
+    public static final Field<ProgramRule, Boolean> deleted
+            = Field.create(DELETED);
 
 
     @Nullable
@@ -91,19 +97,20 @@ public abstract class ProgramRule extends BaseIdentifiableObject {
 
     @JsonCreator
     public static ProgramRule create(@JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(PRIORITY) Integer priority,
-            @JsonProperty(CONDITION) String condition,
-            @JsonProperty(PROGRAM) Program program,
-            @JsonProperty(PROGRAM_STAGE) ProgramStage programStage,
-            @JsonProperty(PROGRAM_RULE_ACTIONS) List<ProgramRuleAction> programRuleActions) {
+                                     @JsonProperty(CODE) String code,
+                                     @JsonProperty(NAME) String name,
+                                     @JsonProperty(DISPLAY_NAME) String displayName,
+                                     @JsonProperty(CREATED) Date created,
+                                     @JsonProperty(LAST_UPDATED) Date lastUpdated,
+                                     @JsonProperty(PRIORITY) Integer priority,
+                                     @JsonProperty(CONDITION) String condition,
+                                     @JsonProperty(PROGRAM) Program program,
+                                     @JsonProperty(PROGRAM_STAGE) ProgramStage programStage,
+                                     @JsonProperty(PROGRAM_RULE_ACTIONS) List<ProgramRuleAction> programRuleActions,
+                                     @JsonProperty(DELETED) Boolean deleted) {
         return new AutoValue_ProgramRule(
                 uid, code, name, displayName,
-                created, lastUpdated, priority, condition,
+                created, lastUpdated, deleted, priority, condition,
                 program, programStage, programRuleActions);
     }
 }

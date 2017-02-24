@@ -103,7 +103,7 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        programTrackedEntityAttributeStore = new ProgramTrackedEntityAttributeStoreImpl(database());
+        programTrackedEntityAttributeStore = new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter());
         // insert test OptionSet to comply with foreign key constraint of TrackedEntityAttribute
         ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null, null);
         database().insert(ProgramModel.TABLE, null, program);
@@ -269,10 +269,65 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).isExhausted();
     }
 
-    // ToDo: consider introducing conflict resolution strategy
     @Test
-    public void close_shouldNotCloseDatabase() {
-        programTrackedEntityAttributeStore.close();
-        assertThat(database().isOpen()).isTrue();
+    public void update_shouldUpdateProgramTrackedEntityAttribute() throws Exception {
+        ContentValues programTrackedEntityAttribute = new ContentValues();
+        programTrackedEntityAttribute.put(Columns.UID, UID);
+        programTrackedEntityAttribute.put(Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
+        programTrackedEntityAttribute.put(Columns.PROGRAM, PROGRAM);
+        programTrackedEntityAttribute.put(Columns.TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_ATTRIBUTE);
+
+        database().insert(ProgramTrackedEntityAttributeModel.TABLE, null, programTrackedEntityAttribute);
+
+        String[] projection = {Columns.UID, Columns.DISPLAY_SHORT_NAME};
+
+        Cursor cursor = database().query(ProgramTrackedEntityAttributeModel.TABLE, projection,
+                null, null, null, null, null);
+        assertThatCursor(cursor).hasRow(UID, DISPLAY_SHORT_NAME);
+
+        String updatedDisplayShortName = "updated_display_short_name";
+
+        int update = programTrackedEntityAttributeStore.update(
+                UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, updatedDisplayShortName,
+                DESCRIPTION, DISPLAY_DESCRIPTION, MANDATORY, TRACKED_ENTITY_ATTRIBUTE, VALUE_TYPE,
+                ALLOW_FUTURE_DATES, DISPLAY_IN_LIST, PROGRAM, UID
+        );
+        // check that store returns 1 on successful update
+        assertThat(update).isEqualTo(1);
+
+        cursor = database().query(ProgramTrackedEntityAttributeModel.TABLE, projection,
+                null, null, null, null, null);
+
+        assertThatCursor(cursor).hasRow(UID, updatedDisplayShortName).isExhausted();
     }
+
+    @Test
+    public void delete_shouldDeleteProgramTrackedEntityAttribute() throws Exception {
+        ContentValues programTrackedEntityAttribute = new ContentValues();
+        programTrackedEntityAttribute.put(Columns.UID, UID);
+        programTrackedEntityAttribute.put(Columns.PROGRAM, PROGRAM);
+        programTrackedEntityAttribute.put(Columns.TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_ATTRIBUTE);
+
+        database().insert(ProgramTrackedEntityAttributeModel.TABLE, null, programTrackedEntityAttribute);
+
+        String[] projection = {Columns.UID};
+
+        Cursor cursor = database().query(ProgramTrackedEntityAttributeModel.TABLE, projection,
+                null, null, null, null, null);
+        assertThatCursor(cursor).hasRow(UID);
+
+        // delete the program tracked entity attribute
+        int delete = programTrackedEntityAttributeStore.delete(UID);
+
+        // check that store returns 1 on successful delete
+        assertThat(delete).isEqualTo(1);
+
+        cursor = database().query(ProgramTrackedEntityAttributeModel.TABLE, projection,
+                null, null, null, null, null);
+
+        // check that program tracked entity attribute doesn't exist in database
+        assertThatCursor(cursor).isExhausted();
+    }
+
+    // ToDo: consider introducing conflict resolution strategy
 }

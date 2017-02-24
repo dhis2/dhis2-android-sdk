@@ -44,5 +44,14 @@ public interface ProgramTrackedEntityAttributeStore {
                 @Nullable ValueType valueType, @Nullable Boolean allowFutureDates,
                 @Nullable Boolean displayInList, @NonNull String program);
 
-    void close();
+    int update(@NonNull String uid, @Nullable String code, @NonNull String name,
+               @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+               @Nullable String shortName, @Nullable String displayShortName,
+               @Nullable String description, @Nullable String displayDescription,
+               @Nullable Boolean mandatory, @NonNull String trackedEntityAttribute,
+               @Nullable ValueType valueType, @Nullable Boolean allowFutureDates,
+               @Nullable Boolean displayInList, @NonNull String program,
+               @NonNull String whereProgramTrackedEntityAttributeUid);
+
+    int delete(String uid);
 }

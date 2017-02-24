@@ -35,6 +35,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.program.ProgramModel.Columns;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
@@ -47,7 +48,6 @@ import java.io.IOException;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.bouncycastle.asn1.x500.style.RFC4519Style.l;
 import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
@@ -55,35 +55,35 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 public class ProgramStoreTests extends AbsStoreTestCase {
 
     private static final String[] PROGRAM_PROJECTION = {
-            ProgramModel.Columns.UID,
-            ProgramModel.Columns.CODE,
-            ProgramModel.Columns.NAME,
-            ProgramModel.Columns.DISPLAY_NAME,
-            ProgramModel.Columns.CREATED,
-            ProgramModel.Columns.LAST_UPDATED,
-            ProgramModel.Columns.SHORT_NAME,
-            ProgramModel.Columns.DISPLAY_SHORT_NAME,
-            ProgramModel.Columns.DESCRIPTION,
-            ProgramModel.Columns.DISPLAY_DESCRIPTION,
-            ProgramModel.Columns.VERSION,
-            ProgramModel.Columns.ONLY_ENROLL_ONCE,
-            ProgramModel.Columns.ENROLLMENT_DATE_LABEL,
-            ProgramModel.Columns.DISPLAY_INCIDENT_DATE,
-            ProgramModel.Columns.INCIDENT_DATE_LABEL,
-            ProgramModel.Columns.REGISTRATION,
-            ProgramModel.Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE,
-            ProgramModel.Columns.DATA_ENTRY_METHOD,
-            ProgramModel.Columns.IGNORE_OVERDUE_EVENTS,
-            ProgramModel.Columns.RELATIONSHIP_FROM_A,
-            ProgramModel.Columns.SELECT_INCIDENT_DATES_IN_FUTURE,
-            ProgramModel.Columns.CAPTURE_COORDINATES,
-            ProgramModel.Columns.USE_FIRST_STAGE_DURING_REGISTRATION,
-            ProgramModel.Columns.DISPLAY_FRONT_PAGE_LIST,
-            ProgramModel.Columns.PROGRAM_TYPE,
-            ProgramModel.Columns.RELATIONSHIP_TYPE,
-            ProgramModel.Columns.RELATIONSHIP_TEXT,
-            ProgramModel.Columns.RELATED_PROGRAM,
-            ProgramModel.Columns.TRACKED_ENTITY
+            Columns.UID,
+            Columns.CODE,
+            Columns.NAME,
+            Columns.DISPLAY_NAME,
+            Columns.CREATED,
+            Columns.LAST_UPDATED,
+            Columns.SHORT_NAME,
+            Columns.DISPLAY_SHORT_NAME,
+            Columns.DESCRIPTION,
+            Columns.DISPLAY_DESCRIPTION,
+            Columns.VERSION,
+            Columns.ONLY_ENROLL_ONCE,
+            Columns.ENROLLMENT_DATE_LABEL,
+            Columns.DISPLAY_INCIDENT_DATE,
+            Columns.INCIDENT_DATE_LABEL,
+            Columns.REGISTRATION,
+            Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE,
+            Columns.DATA_ENTRY_METHOD,
+            Columns.IGNORE_OVERDUE_EVENTS,
+            Columns.RELATIONSHIP_FROM_A,
+            Columns.SELECT_INCIDENT_DATES_IN_FUTURE,
+            Columns.CAPTURE_COORDINATES,
+            Columns.USE_FIRST_STAGE_DURING_REGISTRATION,
+            Columns.DISPLAY_FRONT_PAGE_LIST,
+            Columns.PROGRAM_TYPE,
+            Columns.RELATIONSHIP_TYPE,
+            Columns.RELATIONSHIP_TEXT,
+            Columns.RELATED_PROGRAM,
+            Columns.TRACKED_ENTITY
     };
 
     //BaseIdentifiableModel attributes:
@@ -138,7 +138,7 @@ public class ProgramStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        this.programStore = new ProgramStoreImpl(database());
+        this.programStore = new ProgramStoreImpl(databaseAdapter());
 
         //RelationshipType foreign key corresponds to table entry
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID, RELATIONSHIP_TYPE);
@@ -318,7 +318,7 @@ public class ProgramStoreTests extends AbsStoreTestCase {
         database().setTransactionSuccessful();
         database().endTransaction();
 
-        database().delete(ProgramModel.TABLE, ProgramModel.Columns.UID + "=?", new String[]{UID});
+        database().delete(ProgramModel.TABLE, Columns.UID + "=?", new String[]{UID});
 
         Cursor cursor = database().query(ProgramModel.TABLE, PROGRAM_PROJECTION, null, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
@@ -454,8 +454,68 @@ public class ProgramStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void close_shouldNotCloseDatabase() {
-        programStore.close();
-        assertThat(database().isOpen()).isTrue();
+    public void update_shouldUpdateProgram() throws Exception {
+        // insert program into database
+        ContentValues program = new ContentValues();
+        program.put(Columns.UID, UID);
+        program.put(Columns.CODE, CODE);
+        program.put(Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
+
+        database().insert(ProgramModel.TABLE, null, program);
+
+        String[] projection = {Columns.UID, Columns.CODE, Columns.DISPLAY_SHORT_NAME};
+        Cursor cursor = database().query(ProgramModel.TABLE, projection, null, null, null, null, null);
+
+        // check that program was successfully inserted
+        assertThatCursor(cursor).hasRow(UID, CODE, DISPLAY_SHORT_NAME);
+
+        String updatedCode = "updated_program_code";
+        String updatedDisplayShortName = "updated_program_display_short_name";
+        // update the program with updatedCode and updatedDisplayShortName
+        int update = programStore.update(
+                UID, updatedCode, NAME, DISPLAY_NAME, date, date,
+                SHORT_NAME, updatedDisplayShortName, DESCRIPTION,
+                DISPLAY_DESCRIPTION, VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL,
+                DISPLAY_INCIDENT_DATE, INCIDENT_DATE_LABEL, REGISTRATION,
+                SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD, IGNORE_OVERDUE_EVENTS,
+                RELATIONSHIP_FROM_A, SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES,
+                USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE,
+                null, null, null, null, UID
+        );
+
+        // check that store returns 1 when successfully update
+        assertThat(update).isEqualTo(1);
+
+        cursor = database().query(ProgramModel.TABLE, projection, null, null, null, null, null);
+
+        // check that program is updated in database
+        assertThatCursor(cursor).hasRow(UID, updatedCode, updatedDisplayShortName).isExhausted();
+
+    }
+
+    @Test
+    public void delete_shouldDeleteProgram() throws Exception {
+        // insert program into database
+        ContentValues program = new ContentValues();
+        program.put(Columns.UID, UID);
+        database().insert(ProgramModel.TABLE, null, program);
+
+        String[] projection = {Columns.UID};
+
+        Cursor cursor = database().query(ProgramModel.TABLE, projection, null, null, null, null, null);
+
+        // check that program was successfully inserted into database
+        assertThatCursor(cursor).hasRow(UID);
+
+        // delete the program
+        int delete = programStore.delete(UID);
+
+        // check that store returns 1 on successful delete
+        assertThat(delete).isEqualTo(1);
+
+        cursor = database().query(ProgramModel.TABLE, projection, null, null, null, null, null);
+
+        // check that program doesn't exist in database
+        assertThatCursor(cursor).isExhausted();
     }
 }

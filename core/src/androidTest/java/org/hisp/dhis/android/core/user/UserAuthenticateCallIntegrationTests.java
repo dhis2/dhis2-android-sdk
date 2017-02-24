@@ -34,19 +34,25 @@ import android.support.test.runner.AndroidJUnit4;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Call;
-import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
+import org.hisp.dhis.android.core.utils.HeaderUtils;
+import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.Calendar;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -131,6 +137,12 @@ public class UserAuthenticateCallIntegrationTests extends AbsStoreTestCase {
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE,
     };
 
+    private static String[] RESOURCE_PROJECTION = {
+            ResourceModel.Columns.ID,
+            ResourceModel.Columns.RESOURCE_TYPE,
+            ResourceModel.Columns.LAST_SYNCED
+    };
+
     private MockWebServer mockWebServer;
     private Call<Response<User>> authenticateUserCall;
 
@@ -143,6 +155,7 @@ public class UserAuthenticateCallIntegrationTests extends AbsStoreTestCase {
         mockWebServer.start();
 
         MockResponse mockResponse = new MockResponse();
+        mockResponse.setHeader(HeaderUtils.DATE, Calendar.getInstance().getTime());
         mockResponse.setBody("{\n" +
                 "\n" +
                 "    \"created\": \"2015-03-31T13:31:09.324\",\n" +
@@ -193,19 +206,20 @@ public class UserAuthenticateCallIntegrationTests extends AbsStoreTestCase {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(mockWebServer.url("/"))
                 .addConverterFactory(JacksonConverterFactory.create(objectMapper))
-                .addConverterFactory(FilterConverterFactory.create())
+                .addConverterFactory(FieldsConverterFactory.create())
                 .build();
 
         UserService userService = retrofit.create(UserService.class);
 
-        UserStore userStore = new UserStoreImpl(database());
-        UserCredentialsStore userCredentialsStore = new UserCredentialsStoreImpl(database());
-        OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(database());
-        AuthenticatedUserStore authenticatedUserStore = new AuthenticatedUserStoreImpl(database());
-        UserOrganisationUnitLinkStore userOrganisationUnitLinkStore = new UserOrganisationUnitLinkStoreImpl(database());
+        UserStore userStore = new UserStoreImpl(databaseAdapter());
+        UserCredentialsStore userCredentialsStore = new UserCredentialsStoreImpl(databaseAdapter());
+        OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter());
+        AuthenticatedUserStore authenticatedUserStore = new AuthenticatedUserStoreImpl(databaseAdapter());
+        UserOrganisationUnitLinkStore userOrganisationUnitLinkStore = new UserOrganisationUnitLinkStoreImpl(databaseAdapter());
+        ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
-        authenticateUserCall = new UserAuthenticateCall(userService, database(), userStore,
-                userCredentialsStore, userOrganisationUnitLinkStore, authenticatedUserStore,
+        authenticateUserCall = new UserAuthenticateCall(userService, databaseAdapter(), userStore,
+                userCredentialsStore, userOrganisationUnitLinkStore, resourceStore, authenticatedUserStore,
                 organisationUnitStore, "test_user", "test_password");
     }
 
@@ -224,6 +238,9 @@ public class UserAuthenticateCallIntegrationTests extends AbsStoreTestCase {
                 AUTHENTICATED_USERS_PROJECTION, null, null, null, null, null);
         Cursor userOrganisationUnitLinks = database().query(UserOrganisationUnitLinkModel.TABLE,
                 USER_ORGANISATION_UNIT_PROJECTION, null, null, null, null, null);
+
+        Cursor resource = database().query(ResourceModel.TABLE, RESOURCE_PROJECTION,
+                null, null, null, null, null);
 
         assertThatCursor(userCursor)
                 .hasRow(
@@ -298,9 +315,33 @@ public class UserAuthenticateCallIntegrationTests extends AbsStoreTestCase {
                         1L, // id
                         "DXyJmlo9rge", // user
                         "DiszpKrYNg8", // organisation unit
-                        OrganisationUnitModel.SCOPE_DATA_CAPTURE // scope
+                        OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE // scope
                 )
                 .isExhausted();
+
+        String dateString = mockWebServer.takeRequest().getHeader(HeaderUtils.DATE);
+
+        assertThatCursor(resource)
+                .hasRow(
+                        1L,
+                        User.class.getSimpleName(),
+                        dateString
+                );
+
+        assertThatCursor(resource)
+                .hasRow(
+                        2L,
+                        UserCredentials.class.getSimpleName(),
+                        dateString
+                );
+
+        assertThatCursor(resource)
+                .hasRow(
+                        3L,
+                        OrganisationUnit.class.getSimpleName(),
+                        dateString
+                ).isExhausted();
+
     }
 
     @Test

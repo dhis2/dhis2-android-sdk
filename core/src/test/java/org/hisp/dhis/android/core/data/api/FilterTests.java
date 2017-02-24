@@ -25,7 +25,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.data.api;
 
 import org.junit.Test;
@@ -35,44 +34,29 @@ import org.junit.runners.JUnit4;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
-import static junit.framework.Assert.fail;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(JUnit4.class)
 public class FilterTests {
 
     @Test
-    public void fields_shouldThrowExceptionOnNullArguments() {
-        try {
-            Filter.builder().fields().build();
-
-            fail("IllegalArgumentException was expected but was not thrown");
-        } catch (IllegalArgumentException illegalArgumentException) {
-            // swallow exception
-        }
+    public void fieldFilterConstructor_shouldThrowExceptionOnNullName() {
+        Filter<String, String> filter = FilterImpl.create(null, null, (String[]) null);
+        assertThat(filter).isNull();
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void filter_shouldBeImmutable() {
-        Filter filter = Filter.builder()
-                .fields(
-                        Field.create("one"),
-                        Field.create("two"),
-                        Field.create("three"))
-                .build();
+    public void filter_shouldReturnCorrectValues() {
+        Field field = Field.create("test_field_name");
+        Filter filter = field.gt("test_field_filter_operator");
 
-        try {
-            filter.fields().add(Field.create("four"));
-
-            fail("UnsupportedOperationException was expected but nothing was thrown");
-        } catch (UnsupportedOperationException unsupportedOperationException) {
-            // swallow exception
-        }
+        assertThat(filter.operator()).isEqualTo("gt");
+        assertThat(filter.values().contains("test_field_filter_operator")).isTrue();
     }
 
     @Test
-    public void equals_shouldConformToContract() {
-        EqualsVerifier.forClass(Filter.builder().build().getClass())
+    public void fieldFilterEquals_shouldConformToContract() {
+        EqualsVerifier.forClass(FilterImpl.create(Field.create(""), "", "a").getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();
     }

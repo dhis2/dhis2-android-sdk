@@ -41,5 +41,15 @@ public interface UserRoleStore {
             @Nullable Date created,
             @Nullable Date lastUpdated);
 
-    void close();
+    int update(
+            @NonNull String uid,
+            @Nullable String code,
+            @Nullable String name,
+            @Nullable String displayName,
+            @Nullable Date created,
+            @Nullable Date lastUpdated,
+            @NonNull String whereUid);
+
+    int delete(@NonNull String uid);
+
 }

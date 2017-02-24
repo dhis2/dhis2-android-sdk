@@ -91,7 +91,7 @@ public class ProgramStageSectionStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.programStageSectionStore = new ProgramStageSectionStoreImpl(database());
+        this.programStageSectionStore = new ProgramStageSectionStoreImpl(databaseAdapter());
 
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
@@ -200,8 +200,64 @@ public class ProgramStageSectionStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void close_shouldNotCloseDatabase() {
-        programStageSectionStore.close();
-        assertThat(database().isOpen()).isTrue();
+    public void update_shouldUpdateProgramStageSection() throws Exception {
+        // insertion of foreign key: program stage happens in the setUp method
+
+
+        // insert program stage section into database
+        ContentValues programStageSection = new ContentValues();
+        programStageSection.put(Columns.UID, UID);
+        programStageSection.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
+        programStageSection.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+        database().insert(ProgramStageSectionModel.TABLE, null, programStageSection);
+
+        String[] projection = {Columns.UID, Columns.DISPLAY_NAME};
+        Cursor cursor = database().query(ProgramStageSectionModel.TABLE, projection, null, null, null, null, null);
+
+        // check that row was successfully inserted into database
+        assertThatCursor(cursor).hasRow(UID, DISPLAY_NAME);
+        String updatedDisplayName = "updated_display_name";
+
+        // update program stage section with new display name
+        int update = programStageSectionStore.update(
+                UID, CODE, NAME, updatedDisplayName,
+                date, date, SORT_ORDER, PROGRAM_STAGE, UID
+        );
+
+        // check that store returns 1 after successful update
+        assertThat(update).isEqualTo(1);
+        cursor = database().query(ProgramStageSectionModel.TABLE, projection, null, null, null, null, null);
+
+        // check that row was updated
+        assertThatCursor(cursor).hasRow(UID, updatedDisplayName);
+    }
+
+    @Test
+    public void delete_shouldDeleteProgramStageSection() throws Exception {
+        // insertion of foreign key: program stage happens in the setUp method
+
+        // insert program stage section into database
+        ContentValues programStageSection = new ContentValues();
+        programStageSection.put(Columns.UID, UID);
+        programStageSection.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
+        programStageSection.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+        database().insert(ProgramStageSectionModel.TABLE, null, programStageSection);
+
+        String[] projection = {Columns.UID};
+
+        Cursor cursor = database().query(ProgramStageSectionModel.TABLE, projection, null, null, null, null, null);
+        // check that program stage section was successfully inserted
+        assertThatCursor(cursor).hasRow(UID);
+
+        // delete program stage section
+        int delete = programStageSectionStore.delete(UID);
+
+        // check that store returns 1 (deletion happen)
+        assertThat(delete).isEqualTo(1);
+
+        cursor = database().query(ProgramStageSectionModel.TABLE, projection, null, null, null, null, null);
+
+        // check that row doesn't exist in database
+        assertThatCursor(cursor).isExhausted();
     }
 }

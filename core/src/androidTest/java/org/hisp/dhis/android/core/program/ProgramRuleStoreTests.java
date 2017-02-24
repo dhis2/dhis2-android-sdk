@@ -96,7 +96,7 @@ public class ProgramRuleStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.programRuleStore = new ProgramRuleStoreImpl(database());
+        this.programRuleStore = new ProgramRuleStoreImpl(databaseAdapter());
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
@@ -239,8 +239,61 @@ public class ProgramRuleStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void close_shouldNotCloseDatabase() {
-        programRuleStore.close();
-        assertThat(database().isOpen()).isTrue();
+    public void update_shouldUpdateProgramRule() throws Exception {
+        ContentValues programRule = new ContentValues();
+        programRule.put(Columns.UID, UID);
+        programRule.put(Columns.CONDITION, CONDITION);
+        programRule.put(Columns.PROGRAM, PROGRAM);
+        programRule.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+
+        database().insert(ProgramRuleModel.TABLE, null, programRule);
+
+        String[] projection = {Columns.UID, Columns.CONDITION};
+        Cursor cursor = database().query(ProgramRuleModel.TABLE, projection, null, null, null, null, null);
+
+        // check that program rule was successfully inserted
+        assertThatCursor(cursor).hasRow(UID, CONDITION);
+
+        String updatedCondition = "updated_program_rule_condition";
+        int update = programRuleStore.update(
+                UID, CODE, NAME, DISPLAY_NAME,
+                date, date, PRIORITY, updatedCondition,
+                PROGRAM, PROGRAM_STAGE, UID
+        );
+
+        // check that store returns 1 on successful update
+        assertThat(update).isEqualTo(1);
+        cursor = database().query(ProgramRuleModel.TABLE, projection, null, null, null, null, null);
+
+        // check that program rule has been updated in database
+        assertThatCursor(cursor).hasRow(UID, updatedCondition).isExhausted();
+
+    }
+
+    @Test
+    public void delete_shouldDeleteProgramRule() throws Exception {
+        ContentValues programRule = new ContentValues();
+        programRule.put(Columns.UID, UID);
+        programRule.put(Columns.PROGRAM, PROGRAM);
+        programRule.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+
+        database().insert(ProgramRuleModel.TABLE, null, programRule);
+
+        String[] projection = {Columns.UID};
+        Cursor cursor = database().query(ProgramRuleModel.TABLE, projection, null, null, null, null, null);
+
+        // check that program rule was successfully inserted
+        assertThatCursor(cursor).hasRow(UID);
+
+        // delete the program rule
+        int delete = programRuleStore.delete(UID);
+
+        assertThat(delete).isEqualTo(1);
+
+        cursor = database().query(ProgramRuleModel.TABLE, projection, null, null, null, null, null);
+
+        // check that program rule doesn't exist in database
+        assertThatCursor(cursor).isExhausted();
+
     }
 }

@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.data.database;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.support.test.InstrumentationRegistry;
 
 import org.junit.After;
 import org.junit.Before;
@@ -39,11 +40,14 @@ import static com.google.common.truth.Truth.assertThat;
 
 public abstract class AbsStoreTestCase {
     private SQLiteDatabase sqLiteDatabase;
+    private DatabaseAdapter databaseAdapter;
 
     @Before
     public void setUp() throws IOException {
-        sqLiteDatabase = DbOpenHelper.create();
-        sqLiteDatabase.execSQL("PRAGMA foreign_keys = ON;");
+        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
+                , null);
+        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
+        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
     }
 
     @After
@@ -54,5 +58,9 @@ public abstract class AbsStoreTestCase {
 
     protected SQLiteDatabase database() {
         return sqLiteDatabase;
+    }
+
+    protected DatabaseAdapter databaseAdapter() {
+        return databaseAdapter;
     }
 }

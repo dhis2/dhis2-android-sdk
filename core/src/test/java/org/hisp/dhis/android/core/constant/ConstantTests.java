@@ -64,7 +64,7 @@ public class ConstantTests {
                 "\"value\":3.14," +
                 "\"access\":{" +
                 "\"read\":true," +
-                "\"update\":false," +
+                "\"updateWithSection\":false," +
                 "\"externalize\":false," +
                 "\"delete\":false," +
                 "\"write\":false," +

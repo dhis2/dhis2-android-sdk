@@ -27,13 +27,13 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel.Columns;
 
-import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
@@ -42,24 +42,68 @@ public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
             Columns.PROGRAM + ") " +
             "VALUES (?, ?);";
 
-    private final SQLiteStatement sqLiteStatement;
+    private static final String UPDATE_STATEMENT = "UPDATE " + UserRoleProgramLinkModel.TABLE +
+            " SET " + Columns.USER_ROLE + "=?," + Columns.PROGRAM + "=?" +
+            " WHERE " + Columns.USER_ROLE + "=?" + " AND " + Columns.PROGRAM + "=?;";
 
-    public UserRoleProgramLinkStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+    private static final String DELETE_STATEMENT = "DELETE FROM " + UserRoleProgramLinkModel.TABLE +
+            " WHERE " + Columns.USER_ROLE + " =?" + " AND " + Columns.PROGRAM + "=?;";
+
+    private final SQLiteStatement insertStatement;
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
+
+    private final DatabaseAdapter databaseAdapter;
+
+    public UserRoleProgramLinkStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
     public long insert(@NonNull String userRole, @NonNull String program) {
-        sqLiteStatement.clearBindings();
+        insertStatement.clearBindings();
 
-        sqLiteBind(sqLiteStatement, 1, userRole);
-        sqLiteBind(sqLiteStatement, 2, program);
+        sqLiteBind(insertStatement, 1, userRole);
+        sqLiteBind(insertStatement, 2, program);
 
-        return sqLiteStatement.executeInsert();
+        Long insert = insertStatement.executeInsert();
+        insertStatement.clearBindings();
+
+        return insert;
     }
 
     @Override
-    public void close() {
-        sqLiteStatement.close();
+    public int update(@NonNull String userRoleUid, @NonNull String programUid,
+                      @NonNull String whereUserRoleUid, @NonNull String whereProgramUid) {
+        updateStatement.clearBindings();
+
+        sqLiteBind(updateStatement, 1, userRoleUid);
+        sqLiteBind(updateStatement, 2, programUid);
+
+        // bind whereClause
+
+        sqLiteBind(updateStatement, 3, whereUserRoleUid);
+        sqLiteBind(updateStatement, 4, whereProgramUid);
+
+        int update = databaseAdapter.executeUpdateDelete(UserRoleProgramLinkModel.TABLE, updateStatement);
+        updateStatement.clearBindings();
+
+        return update;
     }
+
+    @Override
+    public int delete(@NonNull String userRoleUid, @NonNull String programUid) {
+        deleteStatement.clearBindings();
+
+        sqLiteBind(deleteStatement, 1, userRoleUid);
+        sqLiteBind(deleteStatement, 2, programUid);
+
+        int delete = databaseAdapter.executeUpdateDelete(UserRoleProgramLinkModel.TABLE, deleteStatement);
+        deleteStatement.clearBindings();
+        return delete;
+    }
+
 }

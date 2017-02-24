@@ -33,6 +33,7 @@ import android.database.Cursor;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,6 +42,8 @@ import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
+import static org.hisp.dhis.android.core.user.UserCredentialsStoreTests.USER_UID;
+import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE;
 
 public class OrganisationUnitStoreTests extends AbsStoreTestCase {
     public static final String[] PROJECTION = {
@@ -87,7 +90,7 @@ public class OrganisationUnitStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        organisationUnitStore = new OrganisationUnitStoreImpl(database());
+        organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter());
     }
 
     @Test
@@ -128,9 +131,14 @@ public class OrganisationUnitStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void close_shouldNotCloseDatabase() {
-        organisationUnitStore.close();
-        assertThat(database().isOpen()).isTrue();
+    public void delete_shouldDeleteRow() {
+        database().insert(OrganisationUnitModel.TABLE, null, CreateOrganisationUnitUtils.createOrgUnit(2L, UID));
+        int returnValue = organisationUnitStore.delete(UID);
+
+        Cursor cursor = database().query(OrganisationUnitModel.TABLE, PROJECTION, null, null, null, null, null);
+
+        assertThat(returnValue).isEqualTo(1);
+        assertThatCursor(cursor).isExhausted();
     }
 
     @Test

@@ -28,16 +28,20 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.Call;
-import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Response;
@@ -51,11 +55,12 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     // retrofit service
     private final UserService userService;
 
-    // stores and database related dependencies
-    private final SQLiteDatabase database;
+    // stores and databaseAdapter related dependencies
+    private final DatabaseAdapter databaseAdapter;
     private final UserStore userStore;
     private final UserCredentialsStore userCredentialsStore;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
+    private final ResourceStore resourceStore;
     private final AuthenticatedUserStore authenticatedUserStore;
     private final OrganisationUnitStore organisationUnitStore;
 
@@ -67,20 +72,22 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
 
     public UserAuthenticateCall(
             @NonNull UserService userService,
-            @NonNull SQLiteDatabase database,
+            @NonNull DatabaseAdapter databaseAdapter,
             @NonNull UserStore userStore,
             @NonNull UserCredentialsStore userCredentialsStore,
             @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
+            @NonNull ResourceStore resourceStore,
             @NonNull AuthenticatedUserStore authenticatedUserStore,
             @NonNull OrganisationUnitStore organisationUnitStore,
             @NonNull String username,
             @NonNull String password) {
         this.userService = userService;
 
-        this.database = database;
+        this.databaseAdapter = databaseAdapter;
         this.userStore = userStore;
         this.userCredentialsStore = userCredentialsStore;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
+        this.resourceStore = resourceStore;
         this.authenticatedUserStore = authenticatedUserStore;
         this.organisationUnitStore = organisationUnitStore;
 
@@ -107,7 +114,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
 
         Response<User> response = authenticate(basic(username, password));
         if (response.isSuccessful()) {
-            saveUser(response.body());
+            saveUser(response);
         }
 
         return response;
@@ -121,7 +128,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     }
 
     private Response<User> authenticate(String credentials) throws IOException {
-        return userService.authenticate(credentials, Filter.<User>builder().fields(
+        return userService.authenticate(credentials, Fields.<User>builder().fields(
                 User.uid, User.code, User.name, User.displayName,
                 User.created, User.lastUpdated, User.birthday, User.education,
                 User.gender, User.jobTitle, User.surname, User.firstName,
@@ -155,14 +162,16 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         ).build()).execute();
     }
 
-    private Long saveUser(User user) {
-        database.beginTransaction();
+    private Long saveUser(Response<User> response) {
+        Transaction transaction = databaseAdapter.beginNewTransaction();
 
         Long userId;
 
         // enclosing transaction in try-finally block in
-        // order to make sure that database transaction won't be leaked
+        // order to make sure that databaseAdapter transaction won't be leaked
         try {
+            User user = response.body();
+            Date serverDateTime = response.headers().getDate(HeaderUtils.DATE);
             // insert user model into user table
             userId = userStore.insert(
                     user.uid(), user.code(), user.name(), user.displayName(), user.created(),
@@ -172,6 +181,9 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                     user.email(), user.phoneNumber(), user.nationality()
             );
 
+            resourceStore.insert(User.class.getSimpleName(), serverDateTime);
+
+
             // insert user credentials
             UserCredentials userCredentials = user.userCredentials();
             userCredentialsStore.insert(
@@ -180,11 +192,19 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                     userCredentials.username(), user.uid()
             );
 
+            resourceStore.insert(
+                    UserCredentials.class.getSimpleName(), serverDateTime
+            );
+
             // insert user as authenticated entity
             authenticatedUserStore.insert(user.uid(), base64(username, password));
 
             if (user.organisationUnits() != null) {
-                for (OrganisationUnit organisationUnit : user.organisationUnits()) {
+                String organisationUnitSimpleName = OrganisationUnit.class.getSimpleName();
+                int size = user.organisationUnits().size();
+                for (int i = 0; i < size; i++) {
+                    OrganisationUnit organisationUnit = user.organisationUnits().get(i);
+
                     organisationUnitStore.insert(
                             organisationUnit.uid(),
                             organisationUnit.code(),
@@ -203,16 +223,20 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                             organisationUnit.level()
                     );
 
+                    resourceStore.insert(
+                            organisationUnitSimpleName, serverDateTime
+                    );
+
                     // insert link between user and organisation unit
                     userOrganisationUnitLinkStore.insert(
-                            user.uid(), organisationUnit.uid(), OrganisationUnitModel.SCOPE_DATA_CAPTURE
+                            user.uid(), organisationUnit.uid(), OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE.name()
                     );
                 }
             }
 
-            database.setTransactionSuccessful();
+            transaction.setSuccessful();
         } finally {
-            database.endTransaction();
+            transaction.end();
         }
 
         return userId;

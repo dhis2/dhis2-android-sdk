@@ -56,7 +56,7 @@ public class ProgramRuleTests {
                 "\"condition\": \"#{apgarscore} >= 0 && #{apgarscore} < 4 && #{apgarcomment} == ''\",\n" +
                 "\"access\": {\n" +
                 "\"read\": true,\n" +
-                "\"update\": true,\n" +
+                "\"updateWithSection\": true,\n" +
                 "\"externalize\": false,\n" +
                 "\"delete\": true,\n" +
                 "\"write\": true,\n" +

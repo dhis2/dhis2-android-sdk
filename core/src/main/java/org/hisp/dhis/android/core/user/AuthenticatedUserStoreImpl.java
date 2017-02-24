@@ -29,14 +29,16 @@
 package org.hisp.dhis.android.core.user;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.DbUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
     private static final String[] PROJECTION = new String[]{
@@ -49,12 +51,12 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
             " (" + AuthenticatedUserModel.Columns.USER + ", " + AuthenticatedUserModel.Columns.CREDENTIALS + ")" +
             " VALUES (?, ?);";
 
-    private final SQLiteDatabase sqLiteDatabase;
     private final SQLiteStatement insertRowStatement;
+    private final DatabaseAdapter databaseAdapter;
 
-    public AuthenticatedUserStoreImpl(@NonNull SQLiteDatabase database) {
-        this.sqLiteDatabase = database;
-        this.insertRowStatement = database.compileStatement(INSERT_STATEMENT);
+    public AuthenticatedUserStoreImpl(@NonNull DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertRowStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
@@ -62,7 +64,7 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
         insertRowStatement.clearBindings();
         sqLiteBind(insertRowStatement, 1, userUid);
         sqLiteBind(insertRowStatement, 2, credentials);
-        return insertRowStatement.executeInsert();
+        return databaseAdapter.executeInsert(AuthenticatedUserModel.TABLE, insertRowStatement);
     }
 
     @NonNull
@@ -70,8 +72,9 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
     public List<AuthenticatedUserModel> query() {
         List<AuthenticatedUserModel> rows = new ArrayList<>();
 
-        Cursor queryCursor = sqLiteDatabase.query(AuthenticatedUserModel.TABLE,
-                PROJECTION, null, null, null, null, null);
+        String sql = "SELECT " + DbUtils.projectionToSqlString(PROJECTION) + " FROM " + AuthenticatedUserModel.TABLE;
+
+        Cursor queryCursor = databaseAdapter.query(sql);
 
         if (queryCursor == null) {
             return rows;
@@ -94,7 +97,7 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
 
     @Override
     public int delete() {
-        return sqLiteDatabase.delete(AuthenticatedUserModel.TABLE, null, null);
+        return databaseAdapter.delete(AuthenticatedUserModel.TABLE, null, null);
     }
 
     @Override

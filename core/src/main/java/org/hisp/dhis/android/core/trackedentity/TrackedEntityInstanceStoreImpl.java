@@ -28,18 +28,18 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public class TrackedEntityInstanceModelStoreImpl implements TrackedEntityInstanceModelStore {
+public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             TrackedEntityInstanceModel.TABLE + " (" +
             TrackedEntityInstanceModel.Columns.UID + ", " +
@@ -49,12 +49,12 @@ public class TrackedEntityInstanceModelStoreImpl implements TrackedEntityInstanc
             TrackedEntityInstanceModel.Columns.STATE +
             ") " + "VALUES (?, ?, ?, ?, ?)";
 
-    private final SQLiteDatabase sqLiteDatabase;
     private final SQLiteStatement insertRowStatement;
+    private final DatabaseAdapter databaseAdapter;
 
-    public TrackedEntityInstanceModelStoreImpl(SQLiteDatabase database) {
-        this.sqLiteDatabase = database;
-        this.insertRowStatement = database.compileStatement(INSERT_STATEMENT);
+    public TrackedEntityInstanceStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertRowStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
@@ -68,12 +68,12 @@ public class TrackedEntityInstanceModelStoreImpl implements TrackedEntityInstanc
         sqLiteBind(insertRowStatement, 4, organisationUnit);
         sqLiteBind(insertRowStatement, 5, state);
 
-        return insertRowStatement.executeInsert();
+        return databaseAdapter.executeInsert(TrackedEntityInstanceModel.TABLE, insertRowStatement);
     }
 
     @Override
     public int delete() {
-        return sqLiteDatabase.delete(TrackedEntityInstanceModel.TABLE, null, null);
+        return databaseAdapter.delete(TrackedEntityInstanceModel.TABLE, null, null);
     }
 
     @Override

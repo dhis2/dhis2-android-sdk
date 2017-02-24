@@ -39,5 +39,11 @@ public interface OptionStore {
             @NonNull String optionSet
     );
 
-    void close();
+    int update(
+            @NonNull String uid, @NonNull String code, @NonNull String name,
+            @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+            @NonNull String optionSet, @NonNull String whereOptionUid
+    );
+
+    int delete(@NonNull String uid);
 }

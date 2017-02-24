@@ -50,6 +50,7 @@ public abstract class RelationshipType extends BaseIdentifiableObject {
     public static final Field<RelationshipType, String> displayName = Field.create(DISPLAY_NAME);
     public static final Field<RelationshipType, String> created = Field.create(CREATED);
     public static final Field<RelationshipType, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<RelationshipType, Boolean> deleted = Field.create(DELETED);
     public static final Field<RelationshipType, String> bIsToA = Field.create(B_TO_A);
     public static final Field<RelationshipType, String> aIsToB = Field.create(A_TO_B);
 
@@ -70,7 +71,8 @@ public abstract class RelationshipType extends BaseIdentifiableObject {
             @JsonProperty(CREATED) Date created,
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
             @JsonProperty(B_TO_A) String bIsToA,
-            @JsonProperty(A_TO_B) String aIsToB) {
+            @JsonProperty(A_TO_B) String aIsToB,
+            @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_RelationshipType(
                 uid,
@@ -79,6 +81,7 @@ public abstract class RelationshipType extends BaseIdentifiableObject {
                 displayName,
                 created,
                 lastUpdated,
+                deleted,
                 bIsToA,
                 aIsToB);
     }

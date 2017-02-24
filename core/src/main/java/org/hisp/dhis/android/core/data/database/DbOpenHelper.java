@@ -32,6 +32,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
@@ -42,6 +43,7 @@ import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.option.OptionModel;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkModel;
 import org.hisp.dhis.android.core.program.ProgramIndicatorModel;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.program.ProgramRuleActionModel;
@@ -50,9 +52,11 @@ import org.hisp.dhis.android.core.program.ProgramRuleVariableModel;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementModel;
 import org.hisp.dhis.android.core.program.ProgramStageModel;
 import org.hisp.dhis.android.core.program.ProgramStageSectionModel;
+import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkModel;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.relationship.RelationshipModel;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
@@ -189,8 +193,8 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             OptionModel.Columns.LAST_UPDATED + " TEXT," +
             OptionModel.Columns.OPTION_SET + " TEXT NOT NULL," +
             " FOREIGN KEY (" + OptionModel.Columns.OPTION_SET + ") " +
-            " REFERENCES " + OptionSetModel.TABLE + " (" + OptionSetModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+            " REFERENCES " + OptionSetModel.TABLE +
+            " (" + OptionSetModel.Columns.UID + ") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED " +
             ");";
 
     private static final String CREATE_PROGRAM_TABLE = "CREATE TABLE " + ProgramModel.TABLE + " (" +
@@ -291,7 +295,11 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ProgramStageDataElementModel.Columns.SORT_ORDER + " INTEGER," +
             ProgramStageDataElementModel.Columns.ALLOW_FUTURE_DATE + " INTEGER," +
             ProgramStageDataElementModel.Columns.DATA_ELEMENT + " TEXT NOT NULL," +
+            ProgramStageDataElementModel.Columns.PROGRAM_STAGE + " TEXT NOT NULL," +
             ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION + " TEXT," +
+            " FOREIGN KEY (" + ProgramStageDataElementModel.Columns.PROGRAM_STAGE + ")" +
+            " REFERENCES " + ProgramStageModel.TABLE + " (" + ProgramStageModel.Columns.UID + ")" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
             " FOREIGN KEY (" + ProgramStageDataElementModel.Columns.DATA_ELEMENT + ")" +
             " REFERENCES " + DataElementModel.TABLE + " (" + DataElementModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
@@ -514,7 +522,11 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ProgramIndicatorModel.Columns.EXPRESSION + " TEXT," +
             ProgramIndicatorModel.Columns.DIMENSION_ITEM + " TEXT," +
             ProgramIndicatorModel.Columns.FILTER + " TEXT," +
-            ProgramIndicatorModel.Columns.DECIMALS + " INTEGER" +
+            ProgramIndicatorModel.Columns.DECIMALS + " INTEGER," +
+            ProgramIndicatorModel.Columns.PROGRAM + " TEXT NOT NULL," +
+            " FOREIGN KEY (" + ProgramIndicatorModel.Columns.PROGRAM + ")" +
+            " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED " +
             ");";
 
     private static final String CREATE_PROGRAM_RULE_ACTION_TABLE = "CREATE TABLE " +
@@ -667,6 +679,24 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             ");";
 
+    private static final String CREATE_RESOURCE_TABLE = "CREATE TABLE " + ResourceModel.TABLE + " (" +
+            ResourceModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ResourceModel.Columns.RESOURCE_TYPE + " TEXT NOT NULL," +
+            ResourceModel.Columns.LAST_SYNCED + " TEXT" + ");";
+
+    private static final String CREATE_ORGANISATION_UNIT_PROGRAM_LINK_TABLE = "CREATE TABLE " +
+            OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK + " (" +
+            OrganisationUnitProgramLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
+            OrganisationUnitProgramLinkModel.Columns.PROGRAM + " TEXT NOT NULL," +
+            " FOREIGN KEY (" + OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT + ")" +
+            " REFERENCES " + OrganisationUnitModel.TABLE + " (" + OrganisationUnitModel.Columns.UID + ")" +
+            " ON DELETE CASCADE," +
+            " FOREIGN KEY (" + OrganisationUnitProgramLinkModel.Columns.PROGRAM + ")" +
+            " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" + " ON DELETE CASCADE," +
+            " UNIQUE (" + OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT + ", " +
+            OrganisationUnitProgramLinkModel.Columns.PROGRAM + ")" +
+            ");";
 
     private static final String CREATE_USER_ROLE_TABLE = "CREATE TABLE " + UserRoleModel.TABLE + " (" +
             UserRoleModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -692,6 +722,22 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             " UNIQUE (" + UserRoleProgramLinkModel.Columns.USER_ROLE + ", " +
             UserRoleProgramLinkModel.Columns.PROGRAM + ")" +
             ");";
+
+    private static final String CREATE_PROGRAM_STAGE_SECTION_PROGRAM_INDICATOR_LINK_TABLE = "CREATE TABLE " +
+            ProgramStageSectionProgramIndicatorLinkModel.TABLE + " (" +
+            ProgramStageSectionProgramIndicatorLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION + " TEXT NOT NULL," +
+            ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_INDICATOR + " TEXT NOT NULL," +
+            " FOREIGN KEY (" + ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION + ") " +
+            " REFERENCES " + ProgramStageSectionModel.TABLE + " (" + ProgramStageModel.Columns.UID + ")" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+            " FOREIGN KEY (" + ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_INDICATOR + ") " +
+            " REFERENCES " + ProgramIndicatorModel.TABLE + " (" + ProgramIndicatorModel.Columns.UID + ")" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
+            " UNIQUE (" + ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION + ", " +
+            ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_INDICATOR + ")" +
+            ");";
+
     /**
      * This method should be used only for testing purposes
      */
@@ -700,6 +746,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
     static SQLiteDatabase create() {
         return create(SQLiteDatabase.create(null));
     }
+
 
     private static SQLiteDatabase create(SQLiteDatabase database) {
         database.execSQL(CREATE_CONFIGURATION_TABLE);
@@ -731,13 +778,16 @@ public class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_EVENT_TABLE);
         database.execSQL(CREATE_TRACKED_ENTITY_INSTANCE_TABLE);
         database.execSQL(CREATE_ENROLLMENT_TABLE);
+        database.execSQL(CREATE_RESOURCE_TABLE);
+        database.execSQL(CREATE_ORGANISATION_UNIT_PROGRAM_LINK_TABLE);
         database.execSQL(CREATE_USER_ROLE_TABLE);
         database.execSQL(CREATE_USER_ROLE_PROGRAM_TABLE);
+        database.execSQL(CREATE_PROGRAM_STAGE_SECTION_PROGRAM_INDICATOR_LINK_TABLE);
 
         return database;
     }
 
-    public DbOpenHelper(@NonNull Context context, @NonNull String databaseName) {
+    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
         super(context, databaseName, null, VERSION);
     }
 

@@ -109,7 +109,7 @@ public class DataElementStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.dataElementStore = new DataElementStoreImpl(database());
+        this.dataElementStore = new DataElementStoreImpl(databaseAdapter());
     }
 
     @Test
@@ -300,9 +300,67 @@ public class DataElementStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void close_shouldNotCloseDatabase() {
-        dataElementStore.close();
-        assertThat(database().isOpen()).isTrue();
+    public void update_shouldUpdateDataElement() throws Exception {
+        // insert dataElement into database
+        ContentValues dataElement = new ContentValues();
+        dataElement.put(Columns.UID, UID);
+        dataElement.put(Columns.CODE, CODE);
+        dataElement.put(Columns.NAME, NAME);
+        database().insert(DataElementModel.TABLE, null, dataElement);
+
+        String[] projection = {Columns.UID, Columns.CODE, Columns.NAME};
+
+        Cursor cursor = database().query(DataElementModel.TABLE, projection, null, null, null, null, null);
+
+        // checking if data element was successfully inserted
+        assertThatCursor(cursor).hasRow(UID, CODE, NAME).isExhausted();
+
+        String updatedName = "new_updated_data_element_name";
+        int update = dataElementStore.update(UID, CODE, updatedName, DISPLAY_NAME, date, date, null, null,
+                DESCRIPTION,
+                DISPLAY_DESCRIPTION,
+                VALUE_TYPE,
+                ZERO_IS_SIGNIFICANT,
+                AGGREGATION_OPERATOR,
+                FORM_NAME,
+                NUMBER_TYPE,
+                DOMAIN_TYPE,
+                DIMENSION,
+                DISPLAY_FORM_NAME,
+                null, // null OptionSetUid
+                UID);
+
+        // checking that update was successful
+        assertThat(update).isEqualTo(1);
+
+        cursor = database().query(DataElementModel.TABLE, projection, null, null, null, null, null);
+
+        // checking that row was updated
+        assertThatCursor(cursor).hasRow(UID, CODE, updatedName).isExhausted();
+
     }
 
+    @Test
+    public void delete_shouldDeleteDataElement() throws Exception {
+
+        // insert dataElement into database
+        ContentValues dataElement = new ContentValues();
+        dataElement.put(Columns.UID, UID);
+        database().insert(DataElementModel.TABLE, null, dataElement);
+
+        String[] projection = {Columns.UID};
+
+        Cursor cursor = database().query(DataElementModel.TABLE, projection, null, null, null, null, null);
+
+        // checking if data element was successfully inserted
+        assertThatCursor(cursor).hasRow(UID).isExhausted();
+
+        int delete = dataElementStore.delete(UID);
+        // checking that store returns 1 (deletion happens)
+        assertThat(delete).isEqualTo(1);
+        cursor = database().query(DataElementModel.TABLE, projection, null, null, null, null, null);
+
+        // check that row is deleted
+        assertThatCursor(cursor).isExhausted();
+    }
 }

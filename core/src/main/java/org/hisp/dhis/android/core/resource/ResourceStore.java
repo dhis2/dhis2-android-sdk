@@ -25,35 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.resource;
 
-package org.hisp.dhis.android.core.common;
-
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Date;
 
-/**
- * A collection of utility abstractions
- */
-public final class Utils {
+public interface ResourceStore {
+    long insert(@NonNull String resourceType, @Nullable Date lastSynced);
 
-    private Utils() {
-        // no instances
-    }
+    int update(
+            @NonNull String resourceType, @Nullable Date lastSynced,
+            @NonNull String whereResourceUid
+    );
 
-    /**
-     * A Null-safe safeUnmodifiableList.
-     *
-     * @param list
-     * @return
-     */
-    @Nullable
-    public static <T> List<T> safeUnmodifiableList(@Nullable List<T> list) {
-        if (list != null) {
-            return Collections.unmodifiableList(list);
-        }
+    int delete(@NonNull String resourceType);
 
-        return null;
-    }
+    String getLastUpdated(String className);
 }

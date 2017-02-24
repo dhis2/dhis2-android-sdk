@@ -27,23 +27,18 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class OrganisationUnitStructureTests {
-
+public class OrganisationUnitTreeTests {
     //Assigned uid's:
     private final String ASSIGNED_L11 = "Level11";
-    private final String ASSIGNED_L24 = "Level24";
-    private final String ASSIGNED_L13 = "Level13";
     //Not assigned uid's:
     private final String UNASSIGNED_L12 = "Level12";
     private final String UNASSIGNED_L23 = "Level23";
@@ -53,38 +48,14 @@ public class OrganisationUnitStructureTests {
             "/RootOrgUnit/Level11/",
             "/RootOrgUnit/Level11/Level21",
             "/RootOrgUnit/Level11/Level22",
-            "/RootOrgUnit/Level12/Level23",
             "/RootOrgUnit/Level12/Level24",
             "/RootOrgUnit/Level13"
     };
-
-    private List<String> userAccessibleOrgUnits = Arrays.asList(
-            ASSIGNED_L11,
-            ASSIGNED_L24,
-            ASSIGNED_L13
-    );
-
-    private String[] uids = {
-            "Level11",
-            "Level21",
-            "Level22",
-            "Level23",
-            "Level24",
-            "Level13"
-    };
-
+    private String[] uids = {"Level11", "Level21", "Level22", "Level24", "Level13"};
     private String[] expectedResult = {"Level11", "Level13", "Level24"};
 
-    private final Date date;
-    private final String dateString;
-
-    public OrganisationUnitStructureTests() {
-        this.date = new Date();
-        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
-    }
-
     @Test
-    public void getRootUids_shouldReturnAllRootUids() {
+    public void findRoots_shouldReturnAllRootUids() {
         //create a bunch of dummy Organisation units from the strings:
         List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
         for (int i = 0, size = uids.length; i < size; i++) {
@@ -92,11 +63,10 @@ public class OrganisationUnitStructureTests {
                     uids[i],
                     null, null, null, null, null, null, null, null, null, null,
                     paths[i],
-                    null, null, null, null
+                    null, null, null, null, false
             ));
         }
-
-        Set<String> rootUids = OrganisationUnitStructure.getRootUids(orgUnits, userAccessibleOrgUnits);
+        Set<String> rootUids = OrganisationUnitTree.findRoots(orgUnits);
         //assert that: returned uid list does not contain unassigned & root.
         assertThat(rootUids.contains(UNASSIGNED_L12)).isFalse();
         assertThat(rootUids.contains(UNASSIGNED_L23)).isFalse();
@@ -108,15 +78,15 @@ public class OrganisationUnitStructureTests {
     }
 
     @Test
-    public void getRootUids_shouldReturnRootUids_missingSlashes() {
+    public void findRoots_shouldReturnRootUids_missingSlashes() {
         List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
         orgUnits.add(OrganisationUnit.create(
                 uids[0],
                 null, null, null, null, null, null, null, null, null, null,
                 "RootOrgUnit/Level11",
-                null, null, null, null));
+                null, null, null, null, false));
 
-        Set<String> rootUids = OrganisationUnitStructure.getRootUids(orgUnits, userAccessibleOrgUnits);
+        Set<String> rootUids = OrganisationUnitTree.findRoots(orgUnits);
         assertThat(rootUids.contains(UNASSIGNED_L12)).isFalse();
         assertThat(rootUids.contains(UNASSIGNED_L23)).isFalse();
         assertThat(rootUids.contains(UNASIGNED_ROOT)).isFalse();
@@ -126,15 +96,15 @@ public class OrganisationUnitStructureTests {
     }
 
     @Test
-    public void getRootUids_shouldReturnRootUids_doubleSlashes() {
+    public void findRoots_shouldReturnRootUids_doubleSlashes() {
         List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
         orgUnits.add(OrganisationUnit.create(
                 uids[0],
                 null, null, null, null, null, null, null, null, null, null,
                 "//RootOrgUnit//Level11//",
-                null, null, null, null));
+                null, null, null, null, false));
 
-        Set<String> rootUids = OrganisationUnitStructure.getRootUids(orgUnits, userAccessibleOrgUnits);
+        Set<String> rootUids = OrganisationUnitTree.findRoots(orgUnits);
         assertThat(rootUids.contains(UNASSIGNED_L12)).isFalse();
         assertThat(rootUids.contains(UNASSIGNED_L23)).isFalse();
         assertThat(rootUids.contains(UNASIGNED_ROOT)).isFalse();
@@ -144,27 +114,33 @@ public class OrganisationUnitStructureTests {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void exception_shouldReturnRootUids_Null_paths() {
+    public void exception_shouldReturnRootUids_NullPaths() {
         List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
         orgUnits.add(OrganisationUnit.create(
                 uids[0],
                 null, null, null, null, null, null, null, null, null, null,
                 null, //<--passing null path
-                null, null, null, null));
+                null, null, null, null, false));
 
-        OrganisationUnitStructure.getRootUids(orgUnits, userAccessibleOrgUnits);
+        OrganisationUnitTree.findRoots(orgUnits);
+    }
+
+    @Test
+    public void findRoots_shouldReturnRootUids_EmptyList() {
+        Set<String> rootUids = OrganisationUnitTree.findRoots(new ArrayList<OrganisationUnit>());
+        assertThat(rootUids.isEmpty()).isTrue();
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void exception_shouldReturnRootUids_empty_paths() {
+    public void exception_shouldReturnRootUids_EmptyPaths() {
         List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
         orgUnits.add(OrganisationUnit.create(
                 uids[0],
                 null, null, null, null, null, null, null, null, null, null,
                 "", //<--passing empty path
-                null, null, null, null));
+                null, null, null, null, false));
 
-        OrganisationUnitStructure.getRootUids(orgUnits, userAccessibleOrgUnits);
+        OrganisationUnitTree.findRoots(orgUnits);
     }
 
     @Test
@@ -174,9 +150,11 @@ public class OrganisationUnitStructureTests {
                 uids[0],
                 null, null, null, null, null, null, null, null, null, null,
                 "/RootOrgUnit//Level11/",
-                null, null, null, null));
-
-        Set<String> rootUids = OrganisationUnitStructure.getRootUids(orgUnits, new ArrayList<String>());
+                null, null, null, null, false));
+    }
+    @Test
+    public void findRoots_shouldReturnRootUids_NullList() {
+        Set<String> rootUids = OrganisationUnitTree.findRoots(null);
         assertThat(rootUids.isEmpty()).isTrue();
     }
 }

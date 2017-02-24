@@ -27,11 +27,13 @@
  */
 package org.hisp.dhis.android.core.user;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.user.UserRoleModel.Columns;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,15 +48,16 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 public class UserRoleStoreTests extends AbsStoreTestCase {
 
     private static final String[] PROJECTION = {
-            UserModel.Columns.UID,
-            UserModel.Columns.CODE,
-            UserModel.Columns.NAME,
-            UserModel.Columns.DISPLAY_NAME,
-            UserModel.Columns.CREATED,
-            UserModel.Columns.LAST_UPDATED
+            Columns.UID,
+            Columns.CODE,
+            Columns.NAME,
+            Columns.DISPLAY_NAME,
+            Columns.CREATED,
+            Columns.LAST_UPDATED
     };
 
     //BaseIdentifiableModel attributes:
+    private static final Long ID = 1L;
     private static final String UID = "test_uid";
     private static final String CODE = "test_code";
     private static final String NAME = "test_name";
@@ -74,7 +77,7 @@ public class UserRoleStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        userRoleStore = new UserRoleStoreImpl(database());
+        userRoleStore = new UserRoleStoreImpl(databaseAdapter());
     }
 
     @Test
@@ -84,13 +87,50 @@ public class UserRoleStoreTests extends AbsStoreTestCase {
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, CODE, NAME, DISPLAY_NAME, dateString, dateString).isExhausted();
-
-        cursor.close();
     }
 
     @Test
-    public void close_shouldNotCloseDatabase() {
-        userRoleStore.close();
-        assertThat(database().isOpen()).isTrue();
+    public void update_shouldUpdateRowInDatabase() throws Exception {
+        ContentValues userRole = new ContentValues();
+        userRole.put(Columns.ID, ID);
+        userRole.put(Columns.UID, UID);
+        userRole.put(Columns.CODE, CODE);
+        database().insert(UserRoleModel.TABLE, null, userRole);
+
+        String[] projection = {Columns.ID, Columns.UID, Columns.CODE};
+        Cursor cursor = database().query(UserRoleModel.TABLE, projection, null, null, null, null, null);
+
+        // checking that userRole was successfully inserted
+        assertThatCursor(cursor).hasRow(ID, UID, CODE).isExhausted();
+
+        int updatedRow = userRoleStore.update(UID, "new code", NAME, DISPLAY_NAME, date, date, UID);
+
+        cursor = database().query(UserRoleModel.TABLE, projection, null, null, null, null, null);
+        // checking that code property is successfully updated for userRole
+        assertThat(updatedRow).isEqualTo(1);
+        assertThatCursor(cursor).hasRow(ID, UID, "new code").isExhausted();
+    }
+
+    @Test
+    public void delete_shouldDeleteRowInDatabase() throws Exception {
+        ContentValues userRole = new ContentValues();
+        userRole.put(Columns.ID, ID);
+        userRole.put(Columns.UID, UID);
+        userRole.put(Columns.CODE, CODE);
+        database().insert(UserRoleModel.TABLE, null, userRole);
+
+        String[] projection = {Columns.ID, Columns.UID, Columns.CODE};
+        Cursor cursor = database().query(UserRoleModel.TABLE, projection, null, null, null, null, null);
+
+        // checking that userRole was successfully inserted
+        assertThatCursor(cursor).hasRow(ID, UID, CODE).isExhausted();
+
+        int deletedRow = userRoleStore.delete(UID);
+
+        cursor = database().query(UserRoleModel.TABLE, projection, null, null, null, null, null);
+        // checking that userRole was deleted
+        assertThat(deletedRow).isEqualTo(1);
+        assertThatCursor(cursor).isExhausted();
+
     }
 }

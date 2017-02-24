@@ -28,14 +28,15 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
 
@@ -52,9 +53,11 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
             "VALUES (" + "?, ?, ?, ?, ?, ?, ?, ?" + ");";
 
     private final SQLiteStatement sqLiteStatement;
+    private final DatabaseAdapter databaseAdapter;
 
-    RelationshipTypeStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+    RelationshipTypeStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.sqLiteStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
@@ -79,7 +82,7 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
         sqLiteBind(sqLiteStatement, 7, aIsToB);
         sqLiteBind(sqLiteStatement, 8, bIsToA);
 
-        return sqLiteStatement.executeInsert();
+        return databaseAdapter.executeInsert(RelationshipTypeModel.TABLE, sqLiteStatement);
     }
 
     @Override

@@ -110,11 +110,13 @@ public class ProgramRuleActionStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        programRuleActionStore = new ProgramRuleActionStoreImpl(database());
+        programRuleActionStore = new ProgramRuleActionStoreImpl(databaseAdapter());
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
+
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE_UID);
+
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
 
         database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
@@ -123,17 +125,22 @@ public class ProgramRuleActionStoreTests extends AbsStoreTestCase {
 
         ContentValues programRule = CreateProgramRuleUtils.createWithoutProgramStage(1L, PROGRAM_RULE, PROGRAM);
         database().insert(ProgramRuleModel.TABLE, null, programRule);
+
         //Nullable foreign keys:
         ContentValues trackedEntityAttribute = CreateTrackedEntityUtils.create(1L, TRACKED_ENTITY_ATTRIBUTE);
         database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
+
         ContentValues programStage = CreateProgramStageUtils.create(2L, PROGRAM_STAGE, PROGRAM);
         database().insert(ProgramStageModel.TABLE, null, programStage);
+
         ContentValues programStageSection = CreateProgramStageSectionUtils.create(1L,
                 PROGRAM_STAGE_SECTION, PROGRAM_STAGE);
         database().insert(ProgramStageSectionModel.TABLE, null, programStageSection);
+
         ContentValues dataElement = CreateDataElementUtils.create(1L, DATA_ELEMENT, null);
         database().insert(DataElementModel.TABLE, null, dataElement);
-        ContentValues programIndicator = CreateProgramIndicatorUtils.create(1L, PROGRAM_INDICATOR);
+
+        ContentValues programIndicator = CreateProgramIndicatorUtils.create(1L, PROGRAM_INDICATOR, PROGRAM);
         database().insert(ProgramIndicatorModel.TABLE, null, programIndicator);
     }
 
@@ -334,12 +341,71 @@ public class ProgramRuleActionStoreTests extends AbsStoreTestCase {
 
     }
 
-    // ToDo: consider introducing conflict resolution strategy
+    @Test
+    public void update_shouldUpdateProgramRuleAction() throws Exception {
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null, null);
+        database().insert(ProgramModel.TABLE, null, program);
+
+        ContentValues programRule = CreateProgramRuleUtils.createWithoutProgramStage(ID, PROGRAM_RULE, PROGRAM);
+        database().insert(ProgramRuleModel.TABLE, null, programRule);
+
+        ContentValues programRuleAction = new ContentValues();
+        programRuleAction.put(Columns.UID, UID);
+        programRuleAction.put(Columns.LOCATION, LOCATION);
+        programRuleAction.put(Columns.PROGRAM_RULE, PROGRAM_RULE);
+        database().insert(ProgramRuleActionModel.TABLE, null, programRuleAction);
+
+        String[] projection = {Columns.UID, Columns.LOCATION};
+
+        Cursor cursor = database().query(ProgramRuleActionModel.TABLE, projection, null, null, null, null, null);
+        // check that program rule action was successfully inserted into database
+        assertThatCursor(cursor).hasRow(UID, LOCATION);
+        String updatedLocation = "updated_location_program_rule_action";
+        int update = programRuleActionStore.update(
+                UID, CODE, NAME, DISPLAY_NAME, date, date,
+                DATA, CONTENT, updatedLocation, null, null, null,
+                PROGRAM_RULE_ACTION_TYPE, null, null, PROGRAM_RULE, UID);
+
+        // check that store returns 1 on successful update
+        assertThat(update).isEqualTo(1);
+
+        cursor = database().query(ProgramRuleActionModel.TABLE, projection, null, null, null, null, null);
+
+        // check that program rule action is updated in database
+        assertThatCursor(cursor).hasRow(UID, updatedLocation).isExhausted();
+    }
 
     @Test
-    public void close_shouldNotCloseDatabase() {
-        programRuleActionStore.close();
+    public void delete_shouldDeleteProgramRuleAction() throws Exception {
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null, null);
+        database().insert(ProgramModel.TABLE, null, program);
 
-        assertThat(database().isOpen()).isTrue();
+        ContentValues programRule = CreateProgramRuleUtils.createWithoutProgramStage(ID, PROGRAM_RULE, PROGRAM);
+        database().insert(ProgramRuleModel.TABLE, null, programRule);
+
+        ContentValues programRuleAction = new ContentValues();
+        programRuleAction.put(Columns.UID, UID);
+        programRuleAction.put(Columns.PROGRAM_RULE, PROGRAM_RULE);
+        database().insert(ProgramRuleActionModel.TABLE, null, programRuleAction);
+
+        String[] projection = {Columns.UID};
+
+        Cursor cursor = database().query(ProgramRuleActionModel.TABLE, projection, null, null, null, null, null);
+        // check that program rule action was successfully inserted into database
+        assertThatCursor(cursor).hasRow(UID);
+
+        // Delete program rule action
+        int delete = programRuleActionStore.delete(UID);
+
+        // check that store returns 1 on successful delete
+        assertThat(delete).isEqualTo(1);
+
+        cursor = database().query(ProgramRuleActionModel.TABLE, projection, null, null, null, null, null);
+
+        // check that program rule action is deleted in database
+        assertThatCursor(cursor).isExhausted();
     }
+
+    // ToDo: consider introducing conflict resolution strategy
+
 }

@@ -57,7 +57,7 @@ public class TrackedEntityInstanceStoreTests extends AbsStoreTestCase {
     private final Date date;
     private final String dateString;
 
-    private TrackedEntityInstanceModelStore trackedEntityInstanceStore;
+    private TrackedEntityInstanceStore trackedEntityInstanceStore;
 
     public TrackedEntityInstanceStoreTests() {
         this.date = new Date();
@@ -76,7 +76,7 @@ public class TrackedEntityInstanceStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        trackedEntityInstanceStore = new TrackedEntityInstanceModelStoreImpl(database());
+        trackedEntityInstanceStore = new TrackedEntityInstanceStoreImpl(databaseAdapter());
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
     }
@@ -109,6 +109,17 @@ public class TrackedEntityInstanceStoreTests extends AbsStoreTestCase {
         Cursor cursor = database().query(TrackedEntityInstanceModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, null, null, ORGANISATION_UNIT, null).isExhausted();
+    }
+
+    @Test
+    public void delete_shouldRemoveAllRows() {
+        database().insert(TrackedEntityInstanceModel.TABLE, null,
+                CreateTrackedEntityInstanceUtils.createWithOrgUnit(UID, ORGANISATION_UNIT));
+
+        trackedEntityInstanceStore.delete();
+
+        Cursor cursor = database().query(TrackedEntityInstanceModel.TABLE, PROJECTION, null, null, null, null, null);
+        assertThatCursor(cursor).isExhausted();
     }
 
     @Test

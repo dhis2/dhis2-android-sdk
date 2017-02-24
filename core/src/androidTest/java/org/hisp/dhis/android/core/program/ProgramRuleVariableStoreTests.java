@@ -33,7 +33,6 @@ import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
@@ -103,7 +102,7 @@ public class ProgramRuleVariableStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        programRuleVariableModelStore = new ProgramRuleVariableModelStoreImpl(database());
+        programRuleVariableModelStore = new ProgramRuleVariableModelStoreImpl(databaseAdapter());
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
@@ -335,9 +334,57 @@ public class ProgramRuleVariableStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void close_shouldNotCloseDatabase() {
-        programRuleVariableModelStore.close();
-        assertThat(database().isOpen()).isTrue();
+    public void update_shouldUpdateProgramRuleVariable() throws Exception {
+        ContentValues programRuleVariable = new ContentValues();
+        programRuleVariable.put(Columns.UID, UID);
+        programRuleVariable.put(Columns.USE_CODE_FOR_OPTION_SET, USE_CODE_FOR_OPTION_SET);
+        programRuleVariable.put(Columns.PROGRAM, PROGRAM);
+
+        database().insert(ProgramRuleVariableModel.TABLE, null, programRuleVariable);
+
+        String[] projection = {Columns.UID, Columns.USE_CODE_FOR_OPTION_SET};
+
+        Cursor cursor = database().query(ProgramRuleVariableModel.TABLE, projection, null, null, null, null, null);
+
+        // check that program rule variable was successfully inserted
+        assertThatCursor(cursor).hasRow(UID, 1); // 1 == Boolean.TRUE
+        boolean updatedUseCodeForOptionSet = Boolean.FALSE;
+
+        int update = programRuleVariableModelStore.update(
+                UID, CODE, NAME, DISPLAY_NAME, date, date, updatedUseCodeForOptionSet,
+                PROGRAM, null, null, null, PROGRAM_RULE_VARIABLE_SOURCE_TYPE, UID
+        );
+
+        assertThat(update).isEqualTo(1);
+
+        cursor = database().query(ProgramRuleVariableModel.TABLE, projection, null, null, null, null, null);
+
+        assertThatCursor(cursor).hasRow(UID, 0).isExhausted(); // 0 == Boolean.FALSE
+    }
+
+    @Test
+    public void delete_shouldDeleteProgramRuleVariable() throws Exception {
+        ContentValues programRuleVariable = new ContentValues();
+        programRuleVariable.put(Columns.UID, UID);
+        programRuleVariable.put(Columns.PROGRAM, PROGRAM);
+
+        database().insert(ProgramRuleVariableModel.TABLE, null, programRuleVariable);
+
+        String[] projection = {Columns.UID};
+
+        Cursor cursor = database().query(ProgramRuleVariableModel.TABLE, projection, null, null, null, null, null);
+
+        // check that program rule variable was successfully inserted
+        assertThatCursor(cursor).hasRow(UID);
+
+        int delete = programRuleVariableModelStore.delete(UID);
+
+        // check that store returns 1 on successful delete
+        assertThat(delete).isEqualTo(1);
+
+        cursor = database().query(ProgramRuleVariableModel.TABLE, projection, null, null, null, null, null);
+        // check that program rule variable is not in database
+        assertThatCursor(cursor).isExhausted();
     }
 }
 

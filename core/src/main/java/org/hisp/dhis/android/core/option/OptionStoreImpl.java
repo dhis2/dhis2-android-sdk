@@ -28,14 +28,16 @@
 
 package org.hisp.dhis.android.core.option;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class OptionStoreImpl implements OptionStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + OptionModel.TABLE + " (" +
@@ -48,10 +50,32 @@ public class OptionStoreImpl implements OptionStore {
             OptionModel.Columns.OPTION_SET + ")" +
             "VALUES (?, ?, ?, ?, ?, ?, ?);";
 
-    private final SQLiteStatement sqLiteStatement;
+    private static final String UPDATE_STATEMENT = "UPDATE " + OptionModel.TABLE + " SET " +
+            OptionModel.Columns.UID + " =?, " +
+            OptionModel.Columns.CODE + " =?, " +
+            OptionModel.Columns.NAME + " =?, " +
+            OptionModel.Columns.DISPLAY_NAME + " =?, " +
+            OptionModel.Columns.CREATED + " =?, " +
+            OptionModel.Columns.LAST_UPDATED + " =?, " +
+            OptionModel.Columns.OPTION_SET + " =? " +
+            " WHERE " +
+            OptionModel.Columns.UID + " =?;";
 
-    public OptionStoreImpl(SQLiteDatabase sqLiteDatabase) {
-        this.sqLiteStatement = sqLiteDatabase.compileStatement(INSERT_STATEMENT);
+    private static final String DELETE_STATEMENT = "DELETE FROM " + OptionModel.TABLE +
+            " WHERE " +
+            OptionModel.Columns.UID + " =?;";
+
+    private final SQLiteStatement insertStatement;
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
+
+    private final DatabaseAdapter databaseAdapter;
+
+    public OptionStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -62,21 +86,59 @@ public class OptionStoreImpl implements OptionStore {
                        @NonNull Date created,
                        @NonNull Date lastUpdated,
                        @NonNull String optionSet) {
-        sqLiteStatement.clearBindings();
+        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, optionSet);
 
-        sqLiteBind(sqLiteStatement, 1, uid);
-        sqLiteBind(sqLiteStatement, 2, code);
-        sqLiteBind(sqLiteStatement, 3, name);
-        sqLiteBind(sqLiteStatement, 4, displayName);
-        sqLiteBind(sqLiteStatement, 5, created);
-        sqLiteBind(sqLiteStatement, 6, lastUpdated);
-        sqLiteBind(sqLiteStatement, 7, optionSet);
+        // execute and clear bindings
+        Long insert = databaseAdapter.executeInsert(OptionModel.TABLE, insertStatement);
+        insertStatement.clearBindings();
 
-        return sqLiteStatement.executeInsert();
+        return insert;
     }
 
     @Override
-    public void close() {
-        sqLiteStatement.close();
+    public int update(@NonNull String uid,
+                      @NonNull String code,
+                      @NonNull String name,
+                      @NonNull String displayName,
+                      @NonNull Date created,
+                      @NonNull Date lastUpdated,
+                      @NonNull String optionSet,
+                      @NonNull String whereOptionUid) {
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, optionSet);
+
+        // bind the where argument
+        sqLiteBind(updateStatement, 8, whereOptionUid);
+
+        // execute and clear bindings
+        int update = databaseAdapter.executeUpdateDelete(OptionModel.TABLE, updateStatement);
+        updateStatement.clearBindings();
+
+        return update;
+    }
+
+    @Override
+    public int delete(@NonNull String uid) {
+        sqLiteBind(deleteStatement, 1, uid);
+
+        int delete = databaseAdapter.executeUpdateDelete(OptionModel.TABLE, deleteStatement);
+        deleteStatement.clearBindings();
+        return delete;
+    }
+
+    private void bindArguments(@NonNull SQLiteStatement sqliteStatement,
+                               @NonNull String uid,
+                               @NonNull String code,
+                               @NonNull String name,
+                               @NonNull String displayName,
+                               @NonNull Date created,
+                               @NonNull Date lastUpdated,
+                               @NonNull String optionSet) {
+        sqLiteBind(sqliteStatement, 1, uid);
+        sqLiteBind(sqliteStatement, 2, code);
+        sqLiteBind(sqliteStatement, 3, name);
+        sqLiteBind(sqliteStatement, 4, displayName);
+        sqLiteBind(sqliteStatement, 5, created);
+        sqLiteBind(sqliteStatement, 6, lastUpdated);
+        sqLiteBind(sqliteStatement, 7, optionSet);
     }
 }

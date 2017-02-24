@@ -70,7 +70,7 @@ import static org.assertj.core.api.Java6Assertions.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
@@ -354,7 +354,7 @@ public class ProgramCallTests {
 
         // verify that ProgramHandler is never called
         verify(programHandler, never()).handleProgram(any(Program.class));
-        verify(resourceHandler, never()).handleResource(anyString(), any(Date.class));
+        verify(resourceHandler, never()).handleResource(eq(ResourceHandler.Type.PROGRAM), any(Date.class));
     }
 
     @Test
@@ -374,7 +374,7 @@ public class ProgramCallTests {
         assertThat(payload.items().size()).isEqualTo(3);
         verify(programHandler, times(3)).handleProgram(any(Program.class));
 
-        verify(resourceHandler, times(1)).handleResource(anyString(), any(Date.class));
+        verify(resourceHandler, times(1)).handleResource(eq(ResourceHandler.Type.PROGRAM), any(Date.class));
 
     }
 
@@ -396,7 +396,7 @@ public class ProgramCallTests {
         verify(programHandler, times(3)).handleProgram(any(Program.class));
 
         // we need to verify that resource handler is invoked
-        verify(resourceHandler, times(1)).handleResource(anyString(), any(Date.class));
+        verify(resourceHandler, times(1)).handleResource(eq(ResourceHandler.Type.PROGRAM), any(Date.class));
     }
 
     @Test

@@ -143,7 +143,6 @@ public final class UserCall implements Call<Response<User>> {
             User user = response.body();
             // TODO: check that this is user is authenticated and is persisted in db
             Date serverDateTime = response.headers().getDate(HeaderUtils.DATE);
-            String userClassName = User.class.getSimpleName();
 
             userHandler.handleUser(user);
 
@@ -165,7 +164,7 @@ public final class UserCall implements Call<Response<User>> {
             );
 
 
-            resourceHandler.handleResource(userClassName, serverDateTime);
+            resourceHandler.handleResource(ResourceHandler.Type.USER, serverDateTime);
 
             transaction.setSuccessful();
         } finally {

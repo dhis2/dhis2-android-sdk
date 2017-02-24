@@ -99,7 +99,7 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
                     handler.handleTrackedEntity(trackedEntity);
                 }
                 resourceHandler.handleResource(
-                        TrackedEntity.class.getSimpleName(),
+                        ResourceHandler.Type.TRACKED_ENTITY,
                         response.headers().getDate(HeaderUtils.DATE)
                 );
                 transaction.setSuccessful();

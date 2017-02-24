@@ -32,17 +32,20 @@ import java.util.Date;
 public class ResourceHandler {
     private final ResourceStore resourceStore;
 
+    public enum Type {USER, ORGANISATION_UNIT, PROGRAM, OPTION_SET, TRACKED_ENTITY};
+
     public ResourceHandler(ResourceStore resourceStore) {
         this.resourceStore = resourceStore;
     }
 
-    public void handleResource(String className, Date serverDate) {
-        if (className == null || serverDate == null) {
+    public void handleResource(ResourceHandler.Type ResourceType, Date serverDate) {
+        if (ResourceType == null || serverDate == null) {
             return;
         }
-        int updatedResourceRow = resourceStore.update(className, serverDate, className);
+//        ResourceHandler.Type.USER
+        int updatedResourceRow = resourceStore.update(ResourceType.name(), serverDate, ResourceType.name());
         if (updatedResourceRow <= 0) {
-            resourceStore.insert(className, serverDate);
+            resourceStore.insert(ResourceType.name(), serverDate);
         }
     }
 

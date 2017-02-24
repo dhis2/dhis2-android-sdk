@@ -92,7 +92,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         try {
             Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
             Filter<OrganisationUnit, String> lastUpdatedFilter = OrganisationUnit.lastUpdated.gt(
-                    resourceHandler.getLastUpdated(OrganisationUnit.class.getSimpleName()));
+                    resourceHandler.getLastUpdated(ResourceHandler.Type.ORGANISATION_UNIT.name()));
             // Call OrganisationUnitService for each tree root & try to handleTrackedEntity sub-tree:
             for (String uid : rootOrgUnitUids) {
                 response = getOrganisationUnit(uid, lastUpdatedFilter);
@@ -110,7 +110,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                 }
             }
             if (response != null && response.isSuccessful()) {
-                resourceHandler.handleResource(OrganisationUnit.class.getSimpleName(), serverDate);
+                resourceHandler.handleResource(ResourceHandler.Type.ORGANISATION_UNIT, serverDate);
                 transaction.setSuccessful();
             }
         } finally {

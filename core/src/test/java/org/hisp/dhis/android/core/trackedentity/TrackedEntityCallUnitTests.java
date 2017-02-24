@@ -214,7 +214,7 @@ public class TrackedEntityCallUnitTests {
         verify(handler, times(1)).handleTrackedEntity(eq(trackedEntity));
         //TODO: after implementing the SystemInfoCall, tests..etc modify this to actually check the date:
         //Right now it only checks if: (Date) null is an instance of Date.class, not a terribly useful:
-        verify(resourceHandler, times(1)).handleResource(eq(TrackedEntity.class.getSimpleName()), any(Date.class));
+        verify(resourceHandler, times(1)).handleResource(eq(ResourceHandler.Type.TRACKED_ENTITY), any(Date.class));
     }
 
 

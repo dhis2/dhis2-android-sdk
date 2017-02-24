@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.annotation.NonNull;
 
+import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+
 public class TrackedEntityHandler {
 
     private final TrackedEntityStore store;
@@ -38,7 +40,7 @@ public class TrackedEntityHandler {
     }
 
     public void handleTrackedEntity(@NonNull TrackedEntity trackedEntity) {
-        if (trackedEntity.deleted()) {
+        if (isDeleted(trackedEntity)) {
             store.delete(trackedEntity.uid());
         } else {
             int updatedRow = store.update(

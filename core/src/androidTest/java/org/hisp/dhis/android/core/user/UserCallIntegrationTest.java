@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.user;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -40,8 +41,9 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
+import org.hisp.dhis.android.core.program.CreateProgramUtils;
+import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
@@ -83,65 +85,6 @@ public class UserCallIntegrationTest extends AbsStoreTestCase {
             UserModel.Columns.EMAIL,
             UserModel.Columns.PHONE_NUMBER,
             UserModel.Columns.NATIONALITY
-    };
-
-    private static final String[] USER_CREDENTIALS_PROJECTION = {
-            UserCredentialsModel.Columns.ID,
-            UserCredentialsModel.Columns.UID,
-            UserCredentialsModel.Columns.CODE,
-            UserCredentialsModel.Columns.NAME,
-            UserCredentialsModel.Columns.DISPLAY_NAME,
-            UserCredentialsModel.Columns.CREATED,
-            UserCredentialsModel.Columns.LAST_UPDATED,
-            UserCredentialsModel.Columns.USERNAME,
-            UserCredentialsModel.Columns.USER,
-    };
-
-    // using table as a prefix in order to avoid ambiguity in queries against joined tables
-    private static final String[] ORGANISATION_UNIT_PROJECTION = {
-            OrganisationUnitModel.Columns.ID,
-            OrganisationUnitModel.Columns.UID,
-            OrganisationUnitModel.Columns.CODE,
-            OrganisationUnitModel.Columns.NAME,
-            OrganisationUnitModel.Columns.DISPLAY_NAME,
-            OrganisationUnitModel.Columns.CREATED,
-            OrganisationUnitModel.Columns.LAST_UPDATED,
-            OrganisationUnitModel.Columns.SHORT_NAME,
-            OrganisationUnitModel.Columns.DISPLAY_SHORT_NAME,
-            OrganisationUnitModel.Columns.DESCRIPTION,
-            OrganisationUnitModel.Columns.DISPLAY_DESCRIPTION,
-            OrganisationUnitModel.Columns.PATH,
-            OrganisationUnitModel.Columns.OPENING_DATE,
-            OrganisationUnitModel.Columns.CLOSED_DATE,
-            OrganisationUnitModel.Columns.PARENT,
-            OrganisationUnitModel.Columns.LEVEL
-    };
-
-    private static final String[] USER_ROLE_PROGRAM_LINK_PROJECTION = {
-            UserRoleProgramLinkModel.Columns.USER_ROLE,
-            UserRoleProgramLinkModel.Columns.PROGRAM
-    };
-
-    private static String[] USER_ORGANISATION_UNIT_PROJECTION = {
-            UserOrganisationUnitLinkModel.Columns.ID,
-            UserOrganisationUnitLinkModel.Columns.USER,
-            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT,
-            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE,
-    };
-
-    private static String[] RESOURCE_PROJECTION = {
-            ResourceModel.Columns.ID,
-            ResourceModel.Columns.RESOURCE_TYPE,
-            ResourceModel.Columns.LAST_SYNCED
-    };
-
-    private static final String[] USER_ROLE_PROJECTION = {
-            UserRoleModel.Columns.UID,
-            UserRoleModel.Columns.CODE,
-            UserRoleModel.Columns.NAME,
-            UserRoleModel.Columns.DISPLAY_NAME,
-            UserRoleModel.Columns.CREATED,
-            UserRoleModel.Columns.LAST_UPDATED
     };
 
     private MockWebServer mockWebServer;
@@ -186,22 +129,7 @@ public class UserCallIntegrationTest extends AbsStoreTestCase {
                 "                \"id\": \"Ufph3mGRmMo\",\n" +
                 "                \"programs\": [\n" +
                 "                    {\n" +
-                "                        \"id\": \"uy2gU8kT1jF\"\n" +
-                "                    },\n" +
-                "                    {\n" +
-                "                        \"id\": \"q04UBOqq3rp\"\n" +
-                "                    },\n" +
-                "                    {\n" +
-                "                        \"id\": \"VBqh0ynB2wv\"\n" +
-                "                    },\n" +
-                "                    {\n" +
                 "                        \"id\": \"eBAyeGv0exc\"\n" +
-                "                    },\n" +
-                "                    {\n" +
-                "                        \"id\": \"kla3mAPgvCH\"\n" +
-                "                    },\n" +
-                "                    {\n" +
-                "                        \"id\": \"lxAQ7Zs9VYR\"\n" +
                 "                    },\n" +
                 "                    {\n" +
                 "                        \"id\": \"IpHINAT79UW\"\n" +
@@ -211,9 +139,6 @@ public class UserCallIntegrationTest extends AbsStoreTestCase {
                 "                    },\n" +
                 "                    {\n" +
                 "                        \"id\": \"ur1Edk5Oe2n\"\n" +
-                "                    },\n" +
-                "                    {\n" +
-                "                        \"id\": \"fDd25txQckK\"\n" +
                 "                    }\n" +
                 "                ]\n" +
                 "            },\n" +
@@ -257,22 +182,7 @@ public class UserCallIntegrationTest extends AbsStoreTestCase {
                 "            \"id\": \"DiszpKrYNg8\",\n" +
                 "            \"programs\": [\n" +
                 "                {\n" +
-                "                    \"id\": \"uy2gU8kT1jF\"\n" +
-                "                },\n" +
-                "                {\n" +
-                "                    \"id\": \"q04UBOqq3rp\"\n" +
-                "                },\n" +
-                "                {\n" +
-                "                    \"id\": \"VBqh0ynB2wv\"\n" +
-                "                },\n" +
-                "                {\n" +
                 "                    \"id\": \"eBAyeGv0exc\"\n" +
-                "                },\n" +
-                "                {\n" +
-                "                    \"id\": \"kla3mAPgvCH\"\n" +
-                "                },\n" +
-                "                {\n" +
-                "                    \"id\": \"lxAQ7Zs9VYR\"\n" +
                 "                },\n" +
                 "                {\n" +
                 "                    \"id\": \"IpHINAT79UW\"\n" +
@@ -325,37 +235,26 @@ public class UserCallIntegrationTest extends AbsStoreTestCase {
         userCall = new UserCall(userService, databaseAdapter(), organisationUnitHandler,
                 userHandler, userCredentialsHandler, userRoleHandler, resourceHandler);
 
+        ContentValues program1 = CreateProgramUtils.create(1L, "eBAyeGv0exc", null, null, null);
+        ContentValues program2 = CreateProgramUtils.create(2L, "ur1Edk5Oe2n", null, null, null);
+        ContentValues program3 = CreateProgramUtils.create(3L, "fDd25txQckK", null, null, null);
+        ContentValues program4 = CreateProgramUtils.create(4L, "WSGAb5XwJ3Y", null, null, null);
+        ContentValues program5 = CreateProgramUtils.create(5L, "IpHINAT79UW", null, null, null);
+
+        database().insert(ProgramModel.TABLE, null, program1);
+        database().insert(ProgramModel.TABLE, null, program2);
+        database().insert(ProgramModel.TABLE, null, program3);
+        database().insert(ProgramModel.TABLE, null, program4);
+        database().insert(ProgramModel.TABLE, null, program5);
+
+
     }
 
     @Test
-    public void stub_test() throws Exception {
-        // dummy test
-
-    }
-
-    // this test is commented out until we finish sync the program sub graph.
-    // This test will break since we try to insert userRoleProgramLink without having programs.
-//    @Test
-    public void call_shouldPersistInDatabase() throws Exception {
+    public void call_shouldPersistUserInDatabase() throws Exception {
         userCall.call();
 
         Cursor userCursor = database().query(UserModel.TABLE, USER_PROJECTION, null, null, null, null, null);
-        Cursor userCredentialsCursor = database().query(UserCredentialsModel.TABLE, USER_CREDENTIALS_PROJECTION,
-                null, null, null, null, null);
-        Cursor userRoleCursor = database().query(UserRoleModel.TABLE, USER_ROLE_PROJECTION,
-                null, null, null, null, null);
-        Cursor organisationUnitCursor = database().query(OrganisationUnitModel.TABLE, ORGANISATION_UNIT_PROJECTION,
-                null, null, null, null, null);
-        Cursor userOrganisationUnitCursor = database().query(
-                UserOrganisationUnitLinkModel.TABLE, USER_ORGANISATION_UNIT_PROJECTION, null, null, null, null, null
-        );
-
-        Cursor userRoleProgramCursor = database().query(
-                UserRoleProgramLinkModel.TABLE, USER_ROLE_PROGRAM_LINK_PROJECTION, null, null, null, null, null
-        );
-
-        Cursor resourceProjection = database().query(ResourceModel.TABLE, RESOURCE_PROJECTION,
-                null, null, null, null, null);
 
         assertThatCursor(userCursor).hasRow(
                 1L,
@@ -378,6 +277,131 @@ public class UserCallIntegrationTest extends AbsStoreTestCase {
                 "john@hmail.com",
                 null,
                 null
+        ).isExhausted();
+    }
+
+    @Test
+    public void call_shouldPersistUserCredentialsInDatabase() throws Exception {
+        userCall.call();
+
+        String[] projection = {
+                UserCredentialsModel.Columns.UID,
+                UserCredentialsModel.Columns.CODE,
+                UserCredentialsModel.Columns.NAME,
+                UserCredentialsModel.Columns.DISPLAY_NAME,
+                UserCredentialsModel.Columns.CREATED,
+                UserCredentialsModel.Columns.LAST_UPDATED,
+                UserCredentialsModel.Columns.USERNAME,
+                UserCredentialsModel.Columns.USER,
+        };
+
+
+        Cursor userCredentialsCursor = database().query(UserCredentialsModel.TABLE, projection,
+                null, null, null, null, null);
+
+        assertThatCursor(userCredentialsCursor).hasRow(
+                "M0fCOxtkURr",
+                "android",
+                "John Traore",
+                "John Traore",
+                "2015-03-31T13:31:09.206",
+                "2017-02-01T14:31:54.370",
+                "android",
+                "DXyJmlo9rge"
+        ).isExhausted();
+    }
+
+    @Test
+    public void call_shouldPersistUserRolesInDatabase() throws Exception {
+        userCall.call();
+
+        String[] userRoleProjection = {
+                UserRoleModel.Columns.UID,
+                UserRoleModel.Columns.CODE,
+                UserRoleModel.Columns.NAME,
+                UserRoleModel.Columns.DISPLAY_NAME,
+                UserRoleModel.Columns.CREATED,
+                UserRoleModel.Columns.LAST_UPDATED
+        };
+
+        String[] userRoleProgramLinkModelProjection = {
+                UserRoleProgramLinkModel.Columns.USER_ROLE,
+                UserRoleProgramLinkModel.Columns.PROGRAM
+        };
+
+        Cursor userRoleCursor = database().query(UserRoleModel.TABLE, userRoleProjection,
+                UserRoleModel.Columns.UID + "=?", new String[]{"cUlTcejWree"}, null, null, null);
+
+        assertThatCursor(userRoleCursor).hasRow(
+                "cUlTcejWree",
+                null,
+                null,
+                null,
+                null,
+                null
+        ).isExhausted();
+
+        Cursor linkModelCursor = database().query(UserRoleProgramLinkModel.TABLE, userRoleProgramLinkModelProjection,
+                UserRoleProgramLinkModel.Columns.USER_ROLE + "=?" +
+                        " AND " +
+                        UserRoleProgramLinkModel.Columns.PROGRAM + "=?", new String[]{"cUlTcejWree", "ur1Edk5Oe2n"},
+                null, null, null);
+
+        assertThatCursor(linkModelCursor).hasRow(
+                "cUlTcejWree",
+                "ur1Edk5Oe2n"
+        ).isExhausted();
+    }
+
+    @Test
+    public void call_shouldPersistDataCaptureOrganisationUnits() throws Exception {
+        userCall.call();
+        String[] projection = {OrganisationUnitModel.Columns.UID};
+        Cursor dataCaptureOrganisationUnitCursor = database().query(OrganisationUnitModel.TABLE, projection,
+                OrganisationUnitModel.Columns.UID + "=?", new String[]{"DiszpKrYNg8"}, null, null, null);
+
+        assertThatCursor(dataCaptureOrganisationUnitCursor).hasRow(
+                "DiszpKrYNg8"
+        ).isExhausted();
+
+        String[] linkModelProjection = {
+                UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT,
+                UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE
+        };
+
+        Cursor userOrganisationUnitLinkCursor = database().query(UserOrganisationUnitLinkModel.TABLE,
+                linkModelProjection, UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + "=?",
+                new String[]{"DiszpKrYNg8"}, null, null, null);
+
+        assertThatCursor(userOrganisationUnitLinkCursor).hasRow(
+                "DiszpKrYNg8",
+                "SCOPE_DATA_CAPTURE"
+        ).isExhausted();
+    }
+
+    @Test
+    public void call_shouldPersistTeiSearchOrganisationUnits() throws Exception {
+        userCall.call();
+        String[] projection = {OrganisationUnitModel.Columns.UID};
+        Cursor dataCaptureOrganisationUnitCursor = database().query(OrganisationUnitModel.TABLE, projection,
+                OrganisationUnitModel.Columns.UID + "=?", new String[]{"WAjjFMDJKcx"}, null, null, null);
+
+        assertThatCursor(dataCaptureOrganisationUnitCursor).hasRow(
+                "WAjjFMDJKcx"
+        ).isExhausted();
+
+        String[] linkModelProjection = {
+                UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT,
+                UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE
+        };
+
+        Cursor userOrganisationUnitLinkCursor = database().query(UserOrganisationUnitLinkModel.TABLE,
+                linkModelProjection, UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + "=?",
+                new String[]{"WAjjFMDJKcx"}, null, null, null);
+
+        assertThatCursor(userOrganisationUnitLinkCursor).hasRow(
+                "WAjjFMDJKcx",
+                "SCOPE_TEI_SEARCH"
         ).isExhausted();
 
     }

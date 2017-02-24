@@ -93,7 +93,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
             Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
             Filter<OrganisationUnit, String> lastUpdatedFilter = OrganisationUnit.lastUpdated.gt(
                     resourceHandler.getLastUpdated(OrganisationUnit.class.getSimpleName()));
-            // Call OrganisationUnitService for each tree root & try to persist sub-tree:
+            // Call OrganisationUnitService for each tree root & try to handleTrackedEntity sub-tree:
             for (String uid : rootOrgUnitUids) {
                 response = getOrganisationUnit(uid, lastUpdatedFilter);
                 if (response.isSuccessful()) {

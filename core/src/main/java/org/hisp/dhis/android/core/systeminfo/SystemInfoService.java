@@ -25,30 +25,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.systeminfo;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Which;
 
-import java.util.Date;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-public interface SystemInfoStore {
-
-    long insert(
-            @NonNull Date serverDate,
-            @NonNull String dateFormat,
-            @NonNull String version,
-            @NonNull String contextPath
-    );
-
-    int update(
-            @NonNull Date serverDate,
-            @NonNull String dateFormat,
-            @NonNull String version,
-            @NonNull String contextPath,
-            @NonNull String whereContextPath
-    );
-
-    int delete(@NonNull String contextPath);
-
+public interface SystemInfoService {
+    @GET("system/info")
+    Call<SystemInfo> getSystemInfo(@Query("fields") @Which Fields<SystemInfo> fields);
 }

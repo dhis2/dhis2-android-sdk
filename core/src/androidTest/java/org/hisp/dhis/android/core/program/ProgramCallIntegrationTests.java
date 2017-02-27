@@ -50,9 +50,6 @@ import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
 import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.option.OptionStoreImpl;
-import org.hisp.dhis.android.core.relationship.RelationshipStore;
-import org.hisp.dhis.android.core.relationship.RelationshipStoreImpl;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
@@ -1888,6 +1885,7 @@ public class ProgramCallIntegrationTests extends AbsStoreTestCase {
     /**
      * Relationship type doesn't exist for the program in the payload. Therefore we'll need to check that it doesn't
      * exist in the database
+     *
      * @throws Exception
      */
     @Test

@@ -42,29 +42,82 @@ public class SystemInfoStoreImpl implements SystemInfoStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + SystemInfoModel.TABLE + " (" +
             Columns.SERVER_DATE + ", " +
-            Columns.DATE_FORMAT + ") " +
-            "VALUES (?, ?);";
+            Columns.DATE_FORMAT + ", " +
+            Columns.VERSION + ", " +
+            Columns.CONTEXT_PATH + ") " +
+            "VALUES (?, ?, ?, ?);";
+    private static final String UPDATE_STATEMENT = "UPDATE " + SystemInfoModel.TABLE + " SET " +
+            Columns.SERVER_DATE + " =?, " +
+            Columns.DATE_FORMAT + " =?, " +
+            Columns.VERSION + " =?, " +
+            Columns.CONTEXT_PATH + " =? " +
+            " WHERE " +
+            Columns.CONTEXT_PATH + " =?;";
 
-    private final SQLiteStatement sqLiteStatement;
+    private static final String DELETE_STATEMENT = "DELETE FROM " + SystemInfoModel.TABLE +
+            " WHERE " +
+            Columns.CONTEXT_PATH + " =?;";
+
+    private final SQLiteStatement insertStatement;
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
     private final DatabaseAdapter databaseAdapter;
 
     public SystemInfoStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
-        this.sqLiteStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
-    public long insert(@NonNull Date serverDate, @NonNull String dateFormat) {
-        sqLiteStatement.clearBindings();
+    public long insert(@NonNull Date serverDate,
+                       @NonNull String dateFormat,
+                       @NonNull String version,
+                       @NonNull String contextPath) {
+        insertStatement.clearBindings();
 
+        bindArguments(insertStatement, serverDate, dateFormat, version, contextPath);
+
+        long insert = databaseAdapter.executeInsert(SystemInfoModel.TABLE, insertStatement);
+        insertStatement.clearBindings();
+
+        return insert;
+    }
+
+    @Override
+    public int update(@NonNull Date serverDate,
+                      @NonNull String dateFormat,
+                      @NonNull String version,
+                      @NonNull String contextPath,
+                      @NonNull String whereContextPath) {
+        bindArguments(updateStatement, serverDate, dateFormat, version, contextPath);
+
+        sqLiteBind(updateStatement, 5, whereContextPath);
+
+        int update = databaseAdapter.executeUpdateDelete(SystemInfoModel.TABLE, updateStatement);
+        updateStatement.clearBindings();
+
+        return update;
+    }
+
+    @Override
+    public int delete(@NonNull String contextPath) {
+        sqLiteBind(deleteStatement, 1, contextPath);
+        int delete = databaseAdapter.executeUpdateDelete(SystemInfoModel.TABLE, deleteStatement);
+        deleteStatement.clearBindings();
+
+        return delete;
+    }
+
+    private void bindArguments(@NonNull SQLiteStatement sqLiteStatement,
+                               @NonNull Date serverDate,
+                               @NonNull String dateFormat,
+                               @NonNull String version,
+                               @NonNull String contextPath) {
         sqLiteBind(sqLiteStatement, 1, serverDate);
         sqLiteBind(sqLiteStatement, 2, dateFormat);
-
-        return databaseAdapter.executeInsert(SystemInfoModel.TABLE, sqLiteStatement);
-    }
-
-    @Override
-    public void close() {
-        sqLiteStatement.close();
+        sqLiteBind(sqLiteStatement, 3, version);
+        sqLiteBind(sqLiteStatement, 4, contextPath);
     }
 }

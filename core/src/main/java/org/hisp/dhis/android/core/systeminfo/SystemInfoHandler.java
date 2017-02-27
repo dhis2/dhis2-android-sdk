@@ -25,30 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.systeminfo;
 
-import android.support.annotation.NonNull;
+public class SystemInfoHandler {
+    private final SystemInfoStore systemInfoStore;
 
-import java.util.Date;
+    public SystemInfoHandler(SystemInfoStore systemInfoStore) {
+        this.systemInfoStore = systemInfoStore;
+    }
 
-public interface SystemInfoStore {
+    public void handleSystemInfo(SystemInfo systemInfo) {
+        if (systemInfo == null) {
+            return;
+        }
 
-    long insert(
-            @NonNull Date serverDate,
-            @NonNull String dateFormat,
-            @NonNull String version,
-            @NonNull String contextPath
-    );
+        int update = systemInfoStore.update(
+                systemInfo.serverDate(), systemInfo.dateFormat(),
+                systemInfo.version(), systemInfo.contextPath(), systemInfo.contextPath()
+        );
 
-    int update(
-            @NonNull Date serverDate,
-            @NonNull String dateFormat,
-            @NonNull String version,
-            @NonNull String contextPath,
-            @NonNull String whereContextPath
-    );
-
-    int delete(@NonNull String contextPath);
-
+        if (update <= 0) {
+            systemInfoStore.insert(
+                    systemInfo.serverDate(), systemInfo.dateFormat(),
+                    systemInfo.version(), systemInfo.contextPath()
+            );
+        }
+    }
 }

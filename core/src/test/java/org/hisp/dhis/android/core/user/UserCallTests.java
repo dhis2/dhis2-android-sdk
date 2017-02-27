@@ -61,6 +61,7 @@ import static org.assertj.core.api.Java6Assertions.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -401,7 +402,7 @@ public class UserCallTests {
                 OrganisationUnitModel.Scope.SCOPE_TEI_SEARCH, user.uid());
 
         //TODO : test that date is retrieved from headers
-        verify(resourceHandler, times(1)).handleResource(anyString(), any(Date.class));
+        verify(resourceHandler, times(1)).handleResource(eq(ResourceHandler.Type.USER), any(Date.class));
 
     }
 }

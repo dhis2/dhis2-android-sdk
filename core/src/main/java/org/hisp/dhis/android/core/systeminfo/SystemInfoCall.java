@@ -89,7 +89,7 @@ public class SystemInfoCall implements Call<Response<SystemInfo>> {
                 SystemInfo systemInfo = response.body();
                 systemInfoHandler.handleSystemInfo(systemInfo);
 
-                resourceHandler.handleResource(SystemInfo.class.getSimpleName(), systemInfo.serverDate());
+                resourceHandler.handleResource(ResourceHandler.Type.SYSTEM_INFO, systemInfo.serverDate());
             }
 
             transaction.setSuccessful();

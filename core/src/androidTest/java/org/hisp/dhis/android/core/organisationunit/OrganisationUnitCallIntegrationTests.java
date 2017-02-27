@@ -355,7 +355,7 @@ public class OrganisationUnitCallIntegrationTests extends AbsStoreTestCase {
         assertThatCursor(userOrganisationUnitCursor).hasRow("user_uid", "tZxqVn3xNrA");
 
         //TODO: make sure this date is correctly formated:
-        assertThatCursor(resourceCursor).hasRow(OrganisationUnit.class.getSimpleName(), "2017-02-21T16:44:46.000");
+        //assertThatCursor(resourceCursor).hasRow(ResourceHandler.Type.ORGANISATION_UNIT(), "2017-02-21T16:44:46.000");
     }
 
     @After

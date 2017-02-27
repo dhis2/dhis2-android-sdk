@@ -116,7 +116,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                 programHandler.handleProgram(program);
             }
 
-            resourceHandler.handleResource(Program.class.getSimpleName(), serverDateTime);
+            resourceHandler.handleResource(ResourceHandler.Type.PROGRAM, serverDateTime);
 
             transaction.setSuccessful();
         } finally {

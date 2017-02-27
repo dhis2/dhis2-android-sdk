@@ -32,22 +32,27 @@ import java.util.Date;
 public class ResourceHandler {
     private final ResourceStore resourceStore;
 
+    //TODO move to ResourceModel
+    public enum Type {SYSTEM_INFO, USER, ORGANISATION_UNIT, PROGRAM, OPTION_SET, TRACKED_ENTITY}
+
     public ResourceHandler(ResourceStore resourceStore) {
         this.resourceStore = resourceStore;
     }
 
-    public void handleResource(String className, Date serverDate) {
-        if (className == null || serverDate == null) {
+    public void handleResource(ResourceHandler.Type resourceType, Date serverDate) {
+        if (resourceType == null || serverDate == null) {
             return;
         }
-        int updatedResourceRow = resourceStore.update(className, serverDate, className);
+//        ResourceHandler.Type.USER
+        int updatedResourceRow = resourceStore.update(resourceType.name(), serverDate, resourceType.name());
         if (updatedResourceRow <= 0) {
-            resourceStore.insert(className, serverDate);
+            resourceStore.insert(resourceType.name(), serverDate);
         }
     }
 
     /**
      * A wrapper to expose resourceStore.getLastUpdated(str).
+     *
      * @param className Name of the resource.
      * @return a string representing the last synched date
      */

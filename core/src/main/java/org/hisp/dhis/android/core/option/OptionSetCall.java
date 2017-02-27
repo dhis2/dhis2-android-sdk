@@ -118,7 +118,7 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
                     OptionSet optionSet = optionSets.get(i);
                     optionSetHandler.handleOptionSet(optionSet);
                 }
-                resourceHandler.handleResource(OptionSet.class.getSimpleName(), serverDateTime);
+                resourceHandler.handleResource(ResourceHandler.Type.OPTION_SET, serverDateTime);
 
                 transaction.setSuccessful();
             } finally {

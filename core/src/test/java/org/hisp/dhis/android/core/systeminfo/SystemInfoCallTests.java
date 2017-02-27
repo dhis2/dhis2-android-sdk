@@ -140,7 +140,7 @@ public class SystemInfoCallTests {
             verify(transaction, never()).end();
 
             verify(systemInfoHandler, never()).handleSystemInfo(any(SystemInfo.class));
-            verify(resourceHandler, never()).handleResource(anyString(), any(Date.class));
+            verify(resourceHandler, never()).handleResource(any(ResourceHandler.Type.class), any(Date.class));
 
         }
     }
@@ -162,7 +162,7 @@ public class SystemInfoCallTests {
         verify(transaction, never()).setSuccessful();
 
         verify(systemInfoHandler, never()).handleSystemInfo(any(SystemInfo.class));
-        verify(resourceHandler, never()).handleResource(anyString(), any(Date.class));
+        verify(resourceHandler, never()).handleResource(any(ResourceHandler.Type.class), any(Date.class));
 
     }
 
@@ -210,7 +210,7 @@ public class SystemInfoCallTests {
         systemInfoSyncCall.call();
 
         verify(systemInfoHandler, times(1)).handleSystemInfo(systemInfo);
-        verify(resourceHandler, times(1)).handleResource(anyString(), any(Date.class));
+        verify(resourceHandler, times(1)).handleResource(any(ResourceHandler.Type.class), any(Date.class));
 
     }
 }

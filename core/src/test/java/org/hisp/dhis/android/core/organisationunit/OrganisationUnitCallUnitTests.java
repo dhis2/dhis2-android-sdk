@@ -47,9 +47,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
@@ -69,7 +67,6 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -308,7 +305,7 @@ public class OrganisationUnitCallUnitTests {
                 eq(OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE),
                 eq("user_uid")
         );
-        verify(resourceHandler, times(1)).handleResource(eq(OrganisationUnit.class.getSimpleName()), any(Date.class));
+        verify(resourceHandler, times(1)).handleResource(eq(ResourceHandler.Type.ORGANISATION_UNIT), any(Date.class));
     }
 
     @Test

@@ -182,10 +182,11 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
             @JsonProperty(DISPLAY_ON_VISIT_SCHEDULE) boolean displayOnVisitSchedule,
             @JsonProperty(ORG_UNIT_SCOPE) boolean orgUnitScope,
             @JsonProperty(UNIQUE) boolean unique,
-            @JsonProperty(INHERIT) boolean inherit
+            @JsonProperty(INHERIT) boolean inherit,
+            @JsonProperty(DELETED) Boolean deleted
     ) {
         return new AutoValue_TrackedEntityAttribute(
-                uid, code, name, displayName, created, lastUpdated,
+                uid, code, name, displayName, created, lastUpdated, deleted,
                 shortName, displayShortName, description, displayDescription,
                 pattern, sortOrderInListNoProgram, optionSet, valueType, expression, searchScope,
                 programScope, displayInListNoProgram, generated, displayOnVisitSchedule,

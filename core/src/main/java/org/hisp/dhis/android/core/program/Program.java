@@ -40,12 +40,11 @@ import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.dataelement.CategoryCombo;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
 import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
+import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 @AutoValue
 public abstract class Program extends BaseNameableObject {
@@ -87,6 +86,8 @@ public abstract class Program extends BaseNameableObject {
             = Field.create(CREATED);
     public static final Field<Program, String> lastUpdated
             = Field.create(LAST_UPDATED);
+    public static final Field<Program, Boolean> deleted
+            = Field.create(DELETED);
     public static final Field<Program, String> shortName
             = Field.create(SHORT_NAME);
     public static final Field<Program, String> displayShortName
@@ -129,7 +130,7 @@ public abstract class Program extends BaseNameableObject {
             = Field.create(RELATIONSHIP_TEXT);
     public static final NestedField<Program, RelationshipType> relationshipType
             = NestedField.create(RELATIONSHIP_TYPE);
-    public static final NestedField<Program, TrackedEntityAttribute> programTrackedEntityAttributes
+    public static final NestedField<Program, ProgramTrackedEntityAttribute> programTrackedEntityAttributes
             = NestedField.create(PROGRAM_TRACKED_ENTITY_ATTRIBUTES);
     public static final NestedField<Program, Program> relatedProgram
             = NestedField.create(RELATED_PROGRAM);
@@ -282,7 +283,8 @@ public abstract class Program extends BaseNameableObject {
             @JsonProperty(PROGRAM_INDICATORS) List<ProgramIndicator> programIndicators,
             @JsonProperty(PROGRAM_STAGES) List<ProgramStage> programStages,
             @JsonProperty(PROGRAM_RULES) List<ProgramRule> programRules,
-            @JsonProperty(PROGRAM_RULE_VARIABLES) List<ProgramRuleVariable> programRuleVariables) {
+            @JsonProperty(PROGRAM_RULE_VARIABLES) List<ProgramRuleVariable> programRuleVariables,
+            @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_Program(
                 uid,
@@ -291,6 +293,7 @@ public abstract class Program extends BaseNameableObject {
                 displayName,
                 created,
                 lastUpdated,
+                deleted,
                 shortName,
                 displayShortName,
                 description,

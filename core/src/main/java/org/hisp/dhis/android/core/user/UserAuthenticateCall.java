@@ -31,14 +31,14 @@ package org.hisp.dhis.android.core.user;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.Call;
-import org.hisp.dhis.android.core.common.HeaderUtils;
-import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
 import java.util.Date;
@@ -128,7 +128,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     }
 
     private Response<User> authenticate(String credentials) throws IOException {
-        return userService.authenticate(credentials, Filter.<User>builder().fields(
+        return userService.authenticate(credentials, Fields.<User>builder().fields(
                 User.uid, User.code, User.name, User.displayName,
                 User.created, User.lastUpdated, User.birthday, User.education,
                 User.gender, User.jobTitle, User.surname, User.firstName,
@@ -181,7 +181,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                     user.email(), user.phoneNumber(), user.nationality()
             );
 
-            resourceStore.insert(User.class.getSimpleName(), user.uid(), serverDateTime);
+            resourceStore.insert(User.class.getSimpleName(), serverDateTime);
 
 
             // insert user credentials
@@ -193,7 +193,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
             );
 
             resourceStore.insert(
-                    UserCredentials.class.getSimpleName(), userCredentials.uid(), serverDateTime
+                    UserCredentials.class.getSimpleName(), serverDateTime
             );
 
             // insert user as authenticated entity
@@ -224,7 +224,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                     );
 
                     resourceStore.insert(
-                            organisationUnitSimpleName, organisationUnit.uid(), serverDateTime
+                            organisationUnitSimpleName, serverDateTime
                     );
 
                     // insert link between user and organisation unit

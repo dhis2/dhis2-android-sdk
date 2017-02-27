@@ -37,8 +37,11 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals"
+})
 public class ProgramStageStoreImpl implements ProgramStageStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + ProgramStageModel.TABLE + " (" +
             ProgramStageModel.Columns.UID + ", " +
@@ -66,12 +69,46 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
             ProgramStageModel.Columns.PROGRAM + ") " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-    private final SQLiteStatement sqLiteStatement;
+    private static final String UPDATE_STATEMENT = "UPDATE " + ProgramStageModel.TABLE + " SET " +
+            ProgramStageModel.Columns.UID + " =?, " +
+            ProgramStageModel.Columns.CODE + " =?, " +
+            ProgramStageModel.Columns.NAME + " =?, " +
+            ProgramStageModel.Columns.DISPLAY_NAME + " =?, " +
+            ProgramStageModel.Columns.CREATED + " =?, " +
+            ProgramStageModel.Columns.LAST_UPDATED + " =?, " +
+            ProgramStageModel.Columns.EXECUTION_DATE_LABEL + " =?, " +
+            ProgramStageModel.Columns.ALLOW_GENERATE_NEXT_VISIT + " =?, " +
+            ProgramStageModel.Columns.VALID_COMPLETE_ONLY + " =?, " +
+            ProgramStageModel.Columns.REPORT_DATE_TO_USE + " =?, " +
+            ProgramStageModel.Columns.OPEN_AFTER_ENROLLMENT + " =?, " +
+            ProgramStageModel.Columns.REPEATABLE + " =?, " +
+            ProgramStageModel.Columns.CAPTURE_COORDINATES + " =?, " +
+            ProgramStageModel.Columns.FORM_TYPE + " =?, " +
+            ProgramStageModel.Columns.DISPLAY_GENERATE_EVENT_BOX + " =?, " +
+            ProgramStageModel.Columns.GENERATED_BY_ENROLMENT_DATE + " =?, " +
+            ProgramStageModel.Columns.AUTO_GENERATE_EVENT + " =?, " +
+            ProgramStageModel.Columns.SORT_ORDER + " =?, " +
+            ProgramStageModel.Columns.HIDE_DUE_DATE + " =?, " +
+            ProgramStageModel.Columns.BLOCK_ENTRY_FORM + " =?, " +
+            ProgramStageModel.Columns.MIN_DAYS_FROM_START + " =?, " +
+            ProgramStageModel.Columns.STANDARD_INTERVAL + " =?, " +
+            ProgramStageModel.Columns.PROGRAM + " =? " +
+            " WHERE " +
+            ProgramStageModel.Columns.UID + " =?;";
+    private static final String DELETE_STATEMENT = "DELETE FROM " + ProgramStageModel.TABLE + " WHERE " +
+            ProgramStageModel.Columns.UID + " =?;";
+
+    private final SQLiteStatement insertStatement;
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
+
     private final DatabaseAdapter databaseAdapter;
 
     public ProgramStageStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
-        this.sqLiteStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -98,8 +135,67 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
                        @NonNull Integer minDaysFromStart,
                        @NonNull Integer standardInterval,
                        @NonNull String program) {
-        sqLiteStatement.clearBindings();
+        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, executionDateLabel,
+                allowGenerateNextVisit, validCompleteOnly, reportDateToUse, openAfterEnrollment, repeatable,
+                captureCoordinates, formType, displayGenerateEventBox, generatedByEnrollmentDate, autoGenerateEvent,
+                sortOrder, hideDueDate, blockEntryForm, minDaysFromStart, standardInterval, program);
 
+        Long insert = databaseAdapter.executeInsert(ProgramStageModel.TABLE, insertStatement);
+
+        insertStatement.clearBindings();
+        return insert;
+    }
+
+    @Override
+    public int update(@NonNull String uid, @Nullable String code, @NonNull String name, @NonNull String displayName,
+                      @NonNull Date created, @NonNull Date lastUpdated, @Nullable String executionDateLabel,
+                      @NonNull Boolean allowGenerateNextVisit, @NonNull Boolean validCompleteOnly,
+                      @Nullable String reportDateToUse, @NonNull Boolean openAfterEnrollment,
+                      @NonNull Boolean repeatable, @NonNull Boolean captureCoordinates,
+                      @NonNull FormType formType, @NonNull Boolean displayGenerateEventBox,
+                      @NonNull Boolean generatedByEnrollmentDate, @NonNull Boolean autoGenerateEvent,
+                      @NonNull Integer sortOrder, @NonNull Boolean hideDueDate, @NonNull Boolean blockEntryForm,
+                      @NonNull Integer minDaysFromStart, @NonNull Integer standardInterval,
+                      @NonNull String program, @NonNull String whereProgramStageUid) {
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, executionDateLabel,
+                allowGenerateNextVisit, validCompleteOnly, reportDateToUse, openAfterEnrollment, repeatable,
+                captureCoordinates, formType, displayGenerateEventBox, generatedByEnrollmentDate,
+                autoGenerateEvent, sortOrder, hideDueDate, blockEntryForm,
+                minDaysFromStart, standardInterval, program);
+
+        // bind the where argument
+        sqLiteBind(updateStatement, 24, whereProgramStageUid);
+
+        // execute and clear bindings
+        int update = databaseAdapter.executeUpdateDelete(ProgramStageModel.TABLE, updateStatement);
+        updateStatement.clearBindings();
+
+        return update;
+    }
+
+    @Override
+    public int delete(@NonNull String uid) {
+        // bind the where argument
+        sqLiteBind(deleteStatement, 1, uid);
+
+        // execute and clear bindings
+        int delete = databaseAdapter.executeUpdateDelete(ProgramStageModel.TABLE, deleteStatement);
+        deleteStatement.clearBindings();
+
+        return delete;
+    }
+
+    private void bindArguments(@NonNull SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,
+                               @NonNull String name, @NonNull String displayName,
+                               @NonNull Date created, @NonNull Date lastUpdated, @Nullable String executionDateLabel,
+                               @NonNull Boolean allowGenerateNextVisit, @NonNull Boolean validCompleteOnly,
+                               @Nullable String reportDateToUse, @NonNull Boolean openAfterEnrollment,
+                               @NonNull Boolean repeatable, @NonNull Boolean captureCoordinates,
+                               @NonNull FormType formType, @NonNull Boolean displayGenerateEventBox,
+                               @NonNull Boolean generatedByEnrollmentDate, @NonNull Boolean autoGenerateEvent,
+                               @NonNull Integer sortOrder, @NonNull Boolean hideDueDate,
+                               @NonNull Boolean blockEntryForm, @NonNull Integer minDaysFromStart,
+                               @NonNull Integer standardInterval, @NonNull String program) {
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);
@@ -123,12 +219,6 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
         sqLiteBind(sqLiteStatement, 21, minDaysFromStart);
         sqLiteBind(sqLiteStatement, 22, standardInterval);
         sqLiteBind(sqLiteStatement, 23, program);
-
-        return databaseAdapter.executeInsert(ProgramStageModel.TABLE, sqLiteStatement);
     }
 
-    @Override
-    public void close() {
-        sqLiteStatement.close();
-    }
 }

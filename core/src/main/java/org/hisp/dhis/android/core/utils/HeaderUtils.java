@@ -25,18 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.utils;
 
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.Filter;
-import org.hisp.dhis.android.core.user.User;
+public final class HeaderUtils {
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+    public static final String CONNECTION = "Connection";
+    public static final String CONTENT_TYPE = "Content-Type";
+    public static final String CONTENT_ENCODING = "Content-Encoding";
+    public static final String DATE = "Date";
+    public static final String SERVER = "Server";
+    public static final String TRANSER_ENCODING = "Transfer-Encoding";
+    public static final String X_CONTENT_TYPE_OPTIONS = "X-Content-Type-Options";
+    public static final String X_FRAME_OPTIONS = "X-Frame-Options";
+    public static final String X_XSS_PROTECTION = "X-XSS-Protection";
 
-public interface AssignedOrganisationUnitService {
-    @GET("me")
-    Call<User> getAssignedOrganisationUnits(@Query("fields") @Fields Filter<User> filter);
+    private HeaderUtils() {
+        // no instances
+    }
 
 }

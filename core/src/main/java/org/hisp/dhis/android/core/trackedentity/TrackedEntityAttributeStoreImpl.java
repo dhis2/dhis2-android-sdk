@@ -37,8 +37,11 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals"
+})
 public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             TrackedEntityAttributeModel.TABLE + " (" +
@@ -67,13 +70,49 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
             TrackedEntityAttributeModel.Columns.INHERIT +
 
             ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    private static final String UPDATE_STATEMENT = "UPDATE " + TrackedEntityAttributeModel.TABLE +
+            " SET " +
+            TrackedEntityAttributeModel.Columns.UID + " =?, " +
+            TrackedEntityAttributeModel.Columns.CODE + " =?, " +
+            TrackedEntityAttributeModel.Columns.NAME + " =?, " +
+            TrackedEntityAttributeModel.Columns.DISPLAY_NAME + " =?, " +
+            TrackedEntityAttributeModel.Columns.CREATED + " =?, " +
+            TrackedEntityAttributeModel.Columns.LAST_UPDATED + " =?, " +
+            TrackedEntityAttributeModel.Columns.SHORT_NAME + " =?, " +
+            TrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME + " =?, " +
+            TrackedEntityAttributeModel.Columns.DESCRIPTION + " =?, " +
+            TrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION + " =?, " +
+            TrackedEntityAttributeModel.Columns.PATTERN + " =?, " +
+            TrackedEntityAttributeModel.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM + " =?, " +
+            TrackedEntityAttributeModel.Columns.OPTION_SET + " =?, " +
+            TrackedEntityAttributeModel.Columns.VALUE_TYPE + " =?, " +
+            TrackedEntityAttributeModel.Columns.EXPRESSION + " =?, " +
+            TrackedEntityAttributeModel.Columns.SEARCH_SCOPE + " =?, " +
+            TrackedEntityAttributeModel.Columns.PROGRAM_SCOPE + " =?, " +
+            TrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST_NO_PROGRAM + " =?, " +
+            TrackedEntityAttributeModel.Columns.GENERATED + " =?, " +
+            TrackedEntityAttributeModel.Columns.DISPLAY_ON_VISIT_SCHEDULE + " =?, " +
+            TrackedEntityAttributeModel.Columns.ORG_UNIT_SCOPE + " =?, " +
+            TrackedEntityAttributeModel.Columns.UNIQUE + " =?, " +
+            TrackedEntityAttributeModel.Columns.INHERIT + " =? " +
+            " WHERE " +
+            TrackedEntityAttributeModel.Columns.UID + " =?;";
 
-    private final SQLiteStatement insertRowStatement;
+    private static final String DELETE_STATEMENT = "DELETE FROM " + TrackedEntityAttributeModel.TABLE +
+            " WHERE " +
+            TrackedEntityAttributeModel.Columns.UID + " =?;";
+
+    private final SQLiteStatement insertStatement;
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
+
     private final DatabaseAdapter databaseAdapter;
 
     public TrackedEntityAttributeStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
-        this.insertRowStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -82,7 +121,7 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
                        @NonNull Date lastUpdated, @Nullable String shortName,
                        @Nullable String displayShortName, @Nullable String description,
                        @Nullable String displayDescription, @Nullable String pattern,
-                       @Nullable String sortOrderInListNoProgram, @Nullable String optionSet,
+                       @Nullable Integer sortOrderInListNoProgram, @Nullable String optionSet,
                        @NonNull ValueType valueType, @Nullable String expression,
                        @Nullable TrackedEntityAttributeSearchScope searchScope,
                        @Nullable Boolean programScope, @Nullable Boolean displayInListNoProgram,
@@ -90,37 +129,93 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
                        @Nullable Boolean orgUnitScope, @Nullable Boolean unique,
                        @Nullable Boolean inherit) {
 
-        insertRowStatement.clearBindings();
+        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, shortName,
+                displayShortName, description, displayDescription, pattern, sortOrderInListNoProgram, optionSet,
+                valueType, expression, searchScope, programScope, displayInListNoProgram,
+                generated, displayOnVisitSchedule, orgUnitScope, unique, inherit);
 
-        sqLiteBind(insertRowStatement, 1, uid);
-        sqLiteBind(insertRowStatement, 2, code);
-        sqLiteBind(insertRowStatement, 3, name);
-        sqLiteBind(insertRowStatement, 4, displayName);
-        sqLiteBind(insertRowStatement, 5, created);
-        sqLiteBind(insertRowStatement, 6, lastUpdated);
-        sqLiteBind(insertRowStatement, 7, shortName);
-        sqLiteBind(insertRowStatement, 8, displayShortName);
-        sqLiteBind(insertRowStatement, 9, description);
-        sqLiteBind(insertRowStatement, 10, displayDescription);
-        sqLiteBind(insertRowStatement, 11, pattern);
-        sqLiteBind(insertRowStatement, 12, sortOrderInListNoProgram);
-        sqLiteBind(insertRowStatement, 13, optionSet);
-        sqLiteBind(insertRowStatement, 14, valueType);
-        sqLiteBind(insertRowStatement, 15, expression);
-        sqLiteBind(insertRowStatement, 16, searchScope);
-        sqLiteBind(insertRowStatement, 17, programScope);
-        sqLiteBind(insertRowStatement, 18, displayInListNoProgram);
-        sqLiteBind(insertRowStatement, 19, generated);
-        sqLiteBind(insertRowStatement, 20, displayOnVisitSchedule);
-        sqLiteBind(insertRowStatement, 21, orgUnitScope);
-        sqLiteBind(insertRowStatement, 22, unique);
-        sqLiteBind(insertRowStatement, 23, inherit);
+        // execute and clear bindings
+        Long insert = databaseAdapter.executeInsert(TrackedEntityAttributeModel.TABLE, insertStatement);
+        insertStatement.clearBindings();
 
-        return databaseAdapter.executeInsert(TrackedEntityAttributeModel.TABLE, insertRowStatement);
+        return insert;
     }
 
     @Override
-    public void close() {
-        insertRowStatement.close();
+    public int update(@NonNull String uid, @Nullable String code, @NonNull String name, @Nullable String displayName,
+                      @NonNull Date created, @NonNull Date lastUpdated, @Nullable String shortName,
+                      @Nullable String displayShortName, @Nullable String description,
+                      @Nullable String displayDescription, @Nullable String pattern,
+                      @Nullable Integer sortOrderInListNoProgram, @Nullable String optionSet,
+                      @NonNull ValueType valueType, @Nullable String expression,
+                      @Nullable TrackedEntityAttributeSearchScope searchScope, @Nullable Boolean programScope,
+                      @Nullable Boolean displayInListNoProgram, @Nullable Boolean generated,
+                      @Nullable Boolean displayOnVisitSchedule, @Nullable Boolean orgUnitScope,
+                      @Nullable Boolean unique, @Nullable Boolean inherit,
+                      @NonNull String whereTrackedEntityAttributeUid) {
+
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, shortName,
+                displayShortName, description, displayDescription, pattern, sortOrderInListNoProgram, optionSet,
+                valueType, expression, searchScope, programScope, displayInListNoProgram,
+                generated, displayOnVisitSchedule, orgUnitScope, unique, inherit);
+
+        // bind the where argument
+        sqLiteBind(updateStatement, 24, whereTrackedEntityAttributeUid);
+
+        // execute and clear bindings
+        int update = databaseAdapter.executeUpdateDelete(TrackedEntityAttributeModel.TABLE, updateStatement);
+        updateStatement.clearBindings();
+
+        return update;
     }
+
+    @Override
+    public int delete(String uid) {
+        // bind the where argument
+        sqLiteBind(deleteStatement, 1, uid);
+
+        // execute and clear bindings
+        int delete = databaseAdapter.executeUpdateDelete(TrackedEntityAttributeModel.TABLE, deleteStatement);
+        deleteStatement.clearBindings();
+
+        return delete;
+    }
+
+    private void bindArguments(@NonNull SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,
+                               @NonNull String name, @Nullable String displayName, @NonNull Date created,
+                               @NonNull Date lastUpdated, @Nullable String shortName,
+                               @Nullable String displayShortName, @Nullable String description,
+                               @Nullable String displayDescription, @Nullable String pattern,
+                               @Nullable Integer sortOrderInListNoProgram, @Nullable String optionSet,
+                               @NonNull ValueType valueType, @Nullable String expression,
+                               @Nullable TrackedEntityAttributeSearchScope searchScope,
+                               @Nullable Boolean programScope, @Nullable Boolean displayInListNoProgram,
+                               @Nullable Boolean generated, @Nullable Boolean displayOnVisitSchedule,
+                               @Nullable Boolean orgUnitScope, @Nullable Boolean unique,
+                               @Nullable Boolean inherit) {
+        sqLiteBind(sqLiteStatement, 1, uid);
+        sqLiteBind(sqLiteStatement, 2, code);
+        sqLiteBind(sqLiteStatement, 3, name);
+        sqLiteBind(sqLiteStatement, 4, displayName);
+        sqLiteBind(sqLiteStatement, 5, created);
+        sqLiteBind(sqLiteStatement, 6, lastUpdated);
+        sqLiteBind(sqLiteStatement, 7, shortName);
+        sqLiteBind(sqLiteStatement, 8, displayShortName);
+        sqLiteBind(sqLiteStatement, 9, description);
+        sqLiteBind(sqLiteStatement, 10, displayDescription);
+        sqLiteBind(sqLiteStatement, 11, pattern);
+        sqLiteBind(sqLiteStatement, 12, sortOrderInListNoProgram);
+        sqLiteBind(sqLiteStatement, 13, optionSet);
+        sqLiteBind(sqLiteStatement, 14, valueType);
+        sqLiteBind(sqLiteStatement, 15, expression);
+        sqLiteBind(sqLiteStatement, 16, searchScope);
+        sqLiteBind(sqLiteStatement, 17, programScope);
+        sqLiteBind(sqLiteStatement, 18, displayInListNoProgram);
+        sqLiteBind(sqLiteStatement, 19, generated);
+        sqLiteBind(sqLiteStatement, 20, displayOnVisitSchedule);
+        sqLiteBind(sqLiteStatement, 21, orgUnitScope);
+        sqLiteBind(sqLiteStatement, 22, unique);
+        sqLiteBind(sqLiteStatement, 23, inherit);
+    }
+
 }

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.resource;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -36,24 +37,22 @@ import org.hisp.dhis.android.core.resource.ResourceModel.Columns;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class ResourceStoreImpl implements ResourceStore {
     public static final String INSERT_STATEMENT = "INSERT INTO " + ResourceModel.TABLE + " (" +
             Columns.RESOURCE_TYPE + ", " +
-            Columns.RESOURCE_UID + ", " +
             Columns.LAST_SYNCED + ") " +
-            "VALUES(?, ?, ?);";
+            "VALUES(?, ?);";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + ResourceModel.TABLE + " SET " +
             Columns.RESOURCE_TYPE + " =?, " +
-            Columns.RESOURCE_UID + "=?, " +
             Columns.LAST_SYNCED + "=? " + " WHERE " +
-            Columns.RESOURCE_UID + " = ?;";
+            Columns.RESOURCE_TYPE + " = ?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + ResourceModel.TABLE +
-            " WHERE " + Columns.RESOURCE_UID + " =?;";
-
+            " WHERE " + Columns.RESOURCE_TYPE + " =?;";
+    
     private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -67,37 +66,51 @@ public class ResourceStoreImpl implements ResourceStore {
     }
 
     @Override
-    public long insert(@NonNull String resourceType, @NonNull String resourceUid, @Nullable Date lastSynced) {
-        insertStatement.clearBindings();
-
+    public long insert(@NonNull String resourceType, @Nullable Date lastSynced) {
         sqLiteBind(insertStatement, 1, resourceType);
-        sqLiteBind(insertStatement, 2, resourceUid);
-        sqLiteBind(insertStatement, 3, lastSynced);
+        sqLiteBind(insertStatement, 2, lastSynced);
 
-        return databaseAdapter.executeInsert(ResourceModel.TABLE, insertStatement);
+        long returnValue = databaseAdapter.executeInsert(ResourceModel.TABLE, insertStatement);
+        insertStatement.clearBindings();
+        return returnValue;
     }
 
     @Override
-    public int update(@NonNull String resourceType, @NonNull String resourceUid, @Nullable Date lastSynced,
-                      @NonNull String whereUid) {
-        updateStatement.clearBindings();
-
+    public int update(@NonNull String resourceType, @Nullable Date lastSynced,
+                      @NonNull String whereResourceType) {
         sqLiteBind(updateStatement, 1, resourceType);
-        sqLiteBind(updateStatement, 2, resourceUid);
-        sqLiteBind(updateStatement, 3, lastSynced);
+        sqLiteBind(updateStatement, 2, lastSynced);
+        sqLiteBind(updateStatement, 3, whereResourceType);
 
-        // bind the where clause
-        sqLiteBind(updateStatement, 4, whereUid);
-
-        return databaseAdapter.executeUpdateDelete(ResourceModel.TABLE, updateStatement);
+        int returnValue = databaseAdapter.executeUpdateDelete(ResourceModel.TABLE, updateStatement);
+        updateStatement.clearBindings();
+        return returnValue;
     }
 
     @Override
-    public int delete(@NonNull String resourceUid) {
-        deleteStatement.clearBindings();
-        sqLiteBind(updateStatement, 1, resourceUid);
+    public int delete(@NonNull String resourceType) {
+        sqLiteBind(deleteStatement, 1, resourceType);
 
-        return databaseAdapter.executeUpdateDelete(ResourceModel.TABLE, deleteStatement);
+        int returnValue = databaseAdapter.executeUpdateDelete(ResourceModel.TABLE, deleteStatement);
+        deleteStatement.clearBindings();
+        return returnValue;
     }
 
+    @Override
+    public String getLastUpdated(String className) {
+        String lastUpdated = null;
+        Cursor cursor = databaseAdapter.query("SELECT " + ResourceModel.Columns.LAST_SYNCED +
+                " FROM " + ResourceModel.TABLE +
+                " WHERE " + ResourceModel.Columns.RESOURCE_TYPE +
+                " = '" + className + "'"
+        );
+        if(cursor != null) {
+            cursor.moveToFirst();
+            if (cursor.getCount() > 0) {
+                lastUpdated = cursor.getString(cursor.getColumnIndex(ResourceModel.Columns.LAST_SYNCED));
+            }
+            cursor.close();
+        }
+        return lastUpdated;
+    }
 }

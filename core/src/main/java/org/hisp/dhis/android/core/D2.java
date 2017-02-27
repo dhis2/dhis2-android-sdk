@@ -37,7 +37,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
-import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
+import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
@@ -193,7 +193,7 @@ public final class D2 {
             Converter.Factory jsonConverterFactory
                     = JacksonConverterFactory.create(objectMapper);
             Converter.Factory filterConverterFactory
-                    = FilterConverterFactory.create();
+                    = FieldsConverterFactory.create();
 
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(configuration.serverUrl())

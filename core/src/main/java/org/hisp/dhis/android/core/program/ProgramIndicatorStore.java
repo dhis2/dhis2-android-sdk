@@ -40,7 +40,16 @@ public interface ProgramIndicatorStore {
                 @Nullable String description, @Nullable String displayDescription,
                 @Nullable Boolean displayInForm, @Nullable String expression,
                 @Nullable String dimensionItem, @Nullable String filter,
-                @Nullable Integer decimals);
+                @Nullable Integer decimals, @Nullable String program);
 
-    void close();
+    int update(@NonNull String uid, @Nullable String code, @NonNull String name,
+               @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+               @Nullable String shortName, @Nullable String displayShortName,
+               @Nullable String description, @Nullable String displayDescription,
+               @Nullable Boolean displayInForm, @Nullable String expression,
+               @Nullable String dimensionItem, @Nullable String filter,
+               @Nullable Integer decimals, @Nullable String program, @NonNull String whereProgramIndicatorUid
+    );
+
+    int delete(String uid);
 }

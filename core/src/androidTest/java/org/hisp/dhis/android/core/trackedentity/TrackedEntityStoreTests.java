@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -112,6 +113,70 @@ public class TrackedEntityStoreTests extends AbsStoreTestCase {
                 DESCRIPTION,
                 DISPLAY_DESCRIPTION
         ).isExhausted();
+    }
+
+    @Test
+    public void update_shouldUpdateRowInDatabase() {
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, UID);
+
+        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+
+        Cursor cursor1 = database().query(TrackedEntityModel.TABLE, PROJECTION, null, null, null, null, null);
+
+        assertThatCursor(cursor1).hasRow(
+                UID,
+                "test_code",
+                "test_name",
+                "test_display_name",
+                "2001-02-07T16:04:40.387",
+                "2001-02-07T16:04:40.387",
+                "test_short_name",
+                "test_display_short_name",
+                "test_description",
+                "test_display_description"
+        ).isExhausted();
+
+        assertThat(date != null).isTrue();
+        trackedEntityStore.update(
+                UID,
+                CODE,
+                NAME,
+                DISPLAY_NAME,
+                date,
+                date,
+                SHORT_NAME,
+                DISPLAY_SHORT_NAME,
+                DESCRIPTION,
+                DISPLAY_DESCRIPTION,
+                UID
+        );
+        Cursor cursor = database().query(TrackedEntityModel.TABLE, PROJECTION, null, null, null, null, null);
+
+        assertThatCursor(cursor).hasRow(
+                UID,
+                CODE,
+                NAME,
+                DISPLAY_NAME,
+                dateString,
+                dateString,
+                SHORT_NAME,
+                DISPLAY_SHORT_NAME,
+                DESCRIPTION,
+                DISPLAY_DESCRIPTION
+        ).isExhausted();
+    }
+
+    @Test
+    public void delete_shouldDeleteRowInDatabase() {
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, UID);
+
+        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+
+        int deleted = trackedEntityStore.delete(UID);
+        Cursor cursor = database().query(TrackedEntityModel.TABLE, null, null, null, null, null, null);
+
+        assertThat(deleted).isEqualTo(1L);
+        assertThatCursor(cursor).isExhausted();
     }
 
     // ToDo: consider introducing conflict resolution strategy

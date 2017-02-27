@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.data.api.Which;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.Filter;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -40,5 +40,9 @@ public interface UserService {
 
     @GET("me")
     Call<User> authenticate(@Header("Authorization") String credentials,
-            @Query("fields") @Fields Filter<User> filter);
+            @Query("fields") @Which Fields<User> fields);
+
+    @GET("me")
+    Call<User> getUser(@Query("fields") @Which Fields<User> fields);
+
 }

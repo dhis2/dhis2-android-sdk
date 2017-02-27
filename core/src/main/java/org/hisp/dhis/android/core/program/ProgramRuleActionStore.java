@@ -43,5 +43,16 @@ public interface ProgramRuleActionStore {
                 @Nullable String programStage, @Nullable String dataElement,
                 @Nullable String programRule);
 
-    void close();
+    int update(
+            @NonNull String uid, @Nullable String code, @NonNull String name,
+            @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+            @Nullable String data, @Nullable String content, @Nullable String location,
+            @Nullable String trackedEntityAttribute, @Nullable String programIndicator,
+            @Nullable String programStageSection,
+            @NonNull ProgramRuleActionType programRuleActionType,
+            @Nullable String programStage, @Nullable String dataElement,
+            @Nullable String programRule, @NonNull String whereProgramRuleActionUid
+    );
+
+    int delete(String uid);
 }

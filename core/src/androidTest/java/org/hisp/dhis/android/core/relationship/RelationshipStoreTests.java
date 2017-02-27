@@ -163,9 +163,4 @@ public class RelationshipStoreTests extends AbsStoreTestCase {
         );
     }
 
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        relationshipStore.close();
-        assertThat(database().isOpen()).isTrue();
-    }
 }

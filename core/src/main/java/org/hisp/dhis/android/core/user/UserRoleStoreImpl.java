@@ -36,8 +36,11 @@ import org.hisp.dhis.android.core.user.UserRoleModel.Columns;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals"
+})
 public class UserRoleStoreImpl implements UserRoleStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + UserRoleModel.TABLE + "( " +
@@ -49,12 +52,30 @@ public class UserRoleStoreImpl implements UserRoleStore {
             Columns.LAST_UPDATED +
             ") VALUES (?, ?, ?, ?, ?, ?)";
 
+    private static final String UPDATE_STATEMENT = "UPDATE " + UserRoleModel.TABLE + " SET " +
+            Columns.UID + " =?, " +
+            Columns.CODE + "=?, " +
+            Columns.NAME + "=?, " +
+            Columns.DISPLAY_NAME + "=?, " +
+            Columns.CREATED + "=?, " +
+            Columns.LAST_UPDATED + "=? " +
+            " WHERE " +
+            Columns.UID + " = ?;";
+
+    private static final String DELETE_STATEMENT = "DELETE FROM " + UserRoleModel.TABLE +
+            " WHERE " + UserRoleModel.Columns.UID + " =?;";
+
     private final SQLiteStatement insertStatement;
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
+
     private final DatabaseAdapter databaseAdapter;
 
     public UserRoleStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
         this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -66,20 +87,58 @@ public class UserRoleStoreImpl implements UserRoleStore {
             @Nullable Date created,
             @Nullable Date lastUpdated) {
 
+        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated);
+
+        Long insert = databaseAdapter.executeInsert(UserRoleModel.TABLE, insertStatement);
         insertStatement.clearBindings();
 
-        sqLiteBind(insertStatement, 1, uid);
-        sqLiteBind(insertStatement, 2, code);
-        sqLiteBind(insertStatement, 3, name);
-        sqLiteBind(insertStatement, 4, displayName);
-        sqLiteBind(insertStatement, 5, created);
-        sqLiteBind(insertStatement, 6, lastUpdated);
-
-        return databaseAdapter.executeInsert(UserRoleModel.TABLE, insertStatement);
+        return insert;
     }
 
     @Override
-    public void close() {
-        insertStatement.close();
+    public int update(@NonNull String uid,
+                      @Nullable String code,
+                      @Nullable String name,
+                      @Nullable String displayName,
+                      @Nullable Date created,
+                      @Nullable Date lastUpdated,
+                      @NonNull String whereUid) {
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated);
+
+        // bind the whereClause
+        sqLiteBind(updateStatement, 7, whereUid);
+
+        int update = databaseAdapter.executeUpdateDelete(UserRoleModel.TABLE, updateStatement);
+        updateStatement.clearBindings();
+
+        return update;
     }
+
+    @Override
+    public int delete(@NonNull String uid) {
+        deleteStatement.clearBindings();
+        // bind the whereClause
+        sqLiteBind(deleteStatement, 1, uid);
+
+        int delete = databaseAdapter.executeUpdateDelete(UserRoleModel.TABLE, deleteStatement);
+        deleteStatement.clearBindings();
+        return delete;
+    }
+
+    private void bindArguments(SQLiteStatement sqLiteStatement,
+                               @NonNull String uid,
+                               @Nullable String code,
+                               @Nullable String name,
+                               @Nullable String displayName,
+                               @Nullable Date created,
+                               @Nullable Date lastUpdated) {
+        sqLiteBind(sqLiteStatement, 1, uid);
+        sqLiteBind(sqLiteStatement, 2, code);
+        sqLiteBind(sqLiteStatement, 3, name);
+        sqLiteBind(sqLiteStatement, 4, displayName);
+        sqLiteBind(sqLiteStatement, 5, created);
+        sqLiteBind(sqLiteStatement, 6, lastUpdated);
+
+    }
+
 }

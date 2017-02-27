@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.data.database.DbUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
     private static final String[] PROJECTION = new String[]{

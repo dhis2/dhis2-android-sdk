@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.program.Program;
 import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
+import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 // TODO: Tests
 @AutoValue
@@ -56,6 +56,7 @@ public abstract class UserRole extends BaseIdentifiableObject {
     public static final Field<UserRole, String> displayName = Field.create(DISPLAY_NAME);
     public static final Field<UserRole, String> created = Field.create(CREATED);
     public static final Field<UserRole, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<UserRole, Boolean> deleted = Field.create(DELETED);
     public static final NestedField<UserRole, Program> programs = NestedField.create(PROGRAMS);
 
     @Nullable
@@ -70,9 +71,10 @@ public abstract class UserRole extends BaseIdentifiableObject {
             @JsonProperty(DISPLAY_NAME) String displayName,
             @JsonProperty(CREATED) Date created,
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(PROGRAMS) List<Program> programs) {
+            @JsonProperty(PROGRAMS) List<Program> programs,
+            @JsonProperty(DELETED) Boolean deleted) {
 
-        return new AutoValue_UserRole(uid, code, name, displayName, created, lastUpdated,
+        return new AutoValue_UserRole(uid, code, name, displayName, created, lastUpdated, deleted,
                 safeUnmodifiableList(programs)
         );
     }

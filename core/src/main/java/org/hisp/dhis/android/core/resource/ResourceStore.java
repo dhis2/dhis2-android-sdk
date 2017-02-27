@@ -33,13 +33,14 @@ import android.support.annotation.Nullable;
 import java.util.Date;
 
 public interface ResourceStore {
-    long insert(@NonNull String resourceType, @NonNull String resourceUid, @Nullable Date lastSynced);
+    long insert(@NonNull String resourceType, @Nullable Date lastSynced);
 
     int update(
-            @NonNull String resourceType, @NonNull String resourceUid, @Nullable Date lastSynced,
+            @NonNull String resourceType, @Nullable Date lastSynced,
             @NonNull String whereResourceUid
     );
 
-    int delete(@NonNull String resourceUid);
+    int delete(@NonNull String resourceType);
 
+    String getLastUpdated(String className);
 }

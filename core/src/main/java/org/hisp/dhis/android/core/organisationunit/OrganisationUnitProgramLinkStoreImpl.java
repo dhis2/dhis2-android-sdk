@@ -32,7 +32,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitProgramLinkStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
@@ -58,10 +58,5 @@ public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitPro
 
         return databaseAdapter.executeInsert(
                 OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK, sqLiteStatement);
-    }
-
-    @Override
-    public void close() {
-        sqLiteStatement.close();
     }
 }

@@ -87,7 +87,7 @@ public class TrackedEntityAttributeStoreTests extends AbsStoreTestCase {
     private static final String DESCRIPTION = "test_description";
     private static final String DISPLAY_DESCRIPTION = "test_display_description";
     private static final String PATTERN = "test_pattern";
-    private static final String SORT_ORDER_IN_LIST_NO_PROGRAM = "test_sort_order_in_list_no_program";
+    private static final Integer SORT_ORDER_IN_LIST_NO_PROGRAM = 2;
     private static final ValueType VALUE_TYPE = ValueType.BOOLEAN;
     private static final String EXPRESSION = "test_expression";
     private static final TrackedEntityAttributeSearchScope SEARCH_SCOPE =
@@ -235,10 +235,61 @@ public class TrackedEntityAttributeStoreTests extends AbsStoreTestCase {
 
     }
 
-    // ToDo: consider introducing conflict resolution strategy
     @Test
-    public void close_shouldNotCloseDatabase() {
-        trackedEntityAttributeStore.close();
-        assertThat(database().isOpen()).isTrue();
+    public void update_shouldUpdateTrackedEntityAttribute() throws Exception {
+        ContentValues trackedEntityAttribute = new ContentValues();
+        trackedEntityAttribute.put(Columns.UID, UID);
+        trackedEntityAttribute.put(Columns.EXPRESSION, EXPRESSION);
+        trackedEntityAttribute.put(Columns.OPTION_SET, OPTION_SET_UID);
+
+        database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
+
+        String[] projection = {Columns.UID, Columns.EXPRESSION};
+        Cursor cursor = database().query(TrackedEntityAttributeModel.TABLE, projection, null, null, null, null, null);
+
+        // check that tracked entity attribute was successfully inserted into database
+        assertThatCursor(cursor).hasRow(UID, EXPRESSION);
+
+        String updatedExpression = "updated_expression";
+
+        int update = trackedEntityAttributeStore.update(
+                UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
+                DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, PATTERN, SORT_ORDER_IN_LIST_NO_PROGRAM,
+                OPTION_SET_UID, VALUE_TYPE, updatedExpression, SEARCH_SCOPE, PROGRAM_SCOPE, DISPLAY_IN_LIST_NO_PROGRAM,
+                GENERATED, DISPLAY_ON_VISIT_SCHEDULE, ORG_UNIT_SCOPE, UNIQUE, INHERIT, UID
+        );
+
+        // check that store returns 1 on successful update
+        assertThat(update).isEqualTo(1);
+
+        cursor = database().query(TrackedEntityAttributeModel.TABLE, projection, null, null, null, null, null);
+
+        // check that tracked entity attribute is updated in database
+        assertThatCursor(cursor).hasRow(UID, updatedExpression).isExhausted();
     }
+
+    @Test
+    public void delete_shouldDeleteTrackedEntityAttribute() throws Exception {
+        ContentValues trackedEntityAttribute = new ContentValues();
+        trackedEntityAttribute.put(Columns.UID, UID);
+
+        database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
+
+        String[] projection = {Columns.UID};
+        Cursor cursor = database().query(TrackedEntityAttributeModel.TABLE, projection, null, null, null, null, null);
+
+        // check that tracked entity attribute was successfully inserted into database
+        assertThatCursor(cursor).hasRow(UID);
+
+        int delete = trackedEntityAttributeStore.delete(UID);
+
+        assertThat(delete).isEqualTo(1);
+
+        cursor = database().query(TrackedEntityAttributeModel.TABLE, projection, null, null, null, null, null);
+
+        // check that tracked entity attribute doesn't exist in database
+        assertThatCursor(cursor).isExhausted();
+    }
+
+    // ToDo: consider introducing conflict resolution strategy
 }

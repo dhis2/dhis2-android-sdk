@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.program.Program;
 import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
+import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 @AutoValue
 public abstract class OrganisationUnit extends BaseNameableObject {
@@ -53,7 +53,6 @@ public abstract class OrganisationUnit extends BaseNameableObject {
     private static final String CLOSED_DATE = "closedDate";
     private static final String LEVEL = "level";
     private static final String PROGRAMS = "programs";
-    private static final String DELETED = "deleted";
 
     public static final Field<OrganisationUnit, String> uid = Field.create(BaseIdentifiableObject.UID);
     public static final Field<OrganisationUnit, String> code = Field.create(BaseIdentifiableObject.CODE);
@@ -97,10 +96,6 @@ public abstract class OrganisationUnit extends BaseNameableObject {
     @JsonProperty(PROGRAMS)
     public abstract List<Program> programs();
 
-    @Nullable
-    @JsonProperty(DELETED)
-    public abstract Boolean deleted();
-
     @JsonCreator
     public static OrganisationUnit create(
             @JsonProperty(UID) String uid,
@@ -120,8 +115,8 @@ public abstract class OrganisationUnit extends BaseNameableObject {
             @JsonProperty(LEVEL) Integer level,
             @JsonProperty(PROGRAMS) List<Program> programs,
             @JsonProperty(DELETED) Boolean deleted) {
-        return new AutoValue_OrganisationUnit(uid, code, name, displayName, created, lastUpdated,
+        return new AutoValue_OrganisationUnit(uid, code, name, displayName, created, lastUpdated, deleted,
                 shortName, displayShortName, description, displayDescription, parent, path, openingDate,
-                closedDate, level, safeUnmodifiableList(programs), deleted);
+                closedDate, level, safeUnmodifiableList(programs));
     }
 }

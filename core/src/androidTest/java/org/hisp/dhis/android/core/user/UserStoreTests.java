@@ -164,27 +164,33 @@ public class UserStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void insertAndReplace_shouldReplaceRowInDatabase() throws Exception {
+    public void update_shouldUpdateRowInDatabase() throws Exception {
+        Date date = new Date();
         ContentValues user = new ContentValues();
         user.put(UserModel.Columns.ID, ID);
         user.put(UserModel.Columns.UID, UID);
         user.put(UserModel.Columns.CODE, CODE);
         user.put(UserModel.Columns.NAME, NAME);
         user.put(UserModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
+        user.put(UserModel.Columns.CREATED, BaseIdentifiableObject.DATE_FORMAT.format(date));
+        user.put(UserModel.Columns.LAST_UPDATED, BaseIdentifiableObject.DATE_FORMAT.format(date));
 
         database().insert(UserModel.TABLE, null, user);
         String[] projection = {
                 UserModel.Columns.ID, UserModel.Columns.UID,
                 UserModel.Columns.CODE, UserModel.Columns.NAME,
-                UserModel.Columns.DISPLAY_NAME
+                UserModel.Columns.DISPLAY_NAME,
+                UserModel.Columns.CREATED,
+                UserModel.Columns.LAST_UPDATED
         };
 
         Cursor cursor = database().query(UserModel.TABLE, projection, null, null, null, null, null);
 
         // checking that the user was successfully inserted
-        assertThatCursor(cursor).hasRow(ID, UID, CODE, NAME, DISPLAY_NAME);
+        assertThatCursor(cursor).hasRow(ID, UID, CODE, NAME, DISPLAY_NAME,
+                BaseIdentifiableObject.DATE_FORMAT.format(date),
+                BaseIdentifiableObject.DATE_FORMAT.format(date));
 
-        Date date = new Date();
 
         String newName = "test_new_name";
         String newDisplayName = "test_new_display_name";
@@ -209,8 +215,40 @@ public class UserStoreTests extends AbsStoreTestCase {
 
         cursor = database().query(UserModel.TABLE, projection, null, null, null, null, null);
 
-        assertThatCursor(cursor).hasRow(ID, UID, CODE, newName, newDisplayName).isExhausted();
+        assertThatCursor(cursor).hasRow(ID, UID, CODE, newName, newDisplayName,
+                BaseIdentifiableObject.DATE_FORMAT.format(date),
+                BaseIdentifiableObject.DATE_FORMAT.format(date)
+        ).isExhausted();
 
+    }
+
+    @Test
+    public void delete_shouldDeleteUserObject() throws Exception {
+        ContentValues user = new ContentValues();
+        user.put(UserModel.Columns.ID, ID);
+        user.put(UserModel.Columns.UID, UID);
+        user.put(UserModel.Columns.CODE, CODE);
+        user.put(UserModel.Columns.NAME, NAME);
+        user.put(UserModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
+
+        database().insert(UserModel.TABLE, null, user);
+        String[] projection = {
+                UserModel.Columns.ID, UserModel.Columns.UID,
+                UserModel.Columns.CODE, UserModel.Columns.NAME,
+                UserModel.Columns.DISPLAY_NAME
+        };
+
+        Cursor cursor = database().query(UserModel.TABLE, projection, null, null, null, null, null);
+
+        // checking that the user was successfully inserted
+        assertThatCursor(cursor).hasRow(ID, UID, CODE, NAME, DISPLAY_NAME);
+
+        // delete the user
+        userStore.delete(UID);
+
+        cursor = database().query(UserModel.TABLE, projection, null, null, null, null, null);
+        // checking that user was successfully deleted
+        assertThatCursor(cursor).isExhausted();
     }
 
     @Test

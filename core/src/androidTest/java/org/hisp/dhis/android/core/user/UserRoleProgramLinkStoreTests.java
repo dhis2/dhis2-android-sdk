@@ -48,7 +48,8 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 public class UserRoleProgramLinkStoreTests extends AbsStoreTestCase {
-    private static final String[] PROJECTION = {Columns.USER_ROLE, Columns.PROGRAM,};
+    private static final String[] PROJECTION = {Columns.USER_ROLE, Columns.PROGRAM};
+
     public static final long ID = 1L;
     private static final String USER_ROLE_UID = "test_user_role_uid";
     private static final String PROGRAM_UID = "test_program_uid";
@@ -107,6 +108,53 @@ public class UserRoleProgramLinkStoreTests extends AbsStoreTestCase {
     }
 
     @Test
+    public void update_shouldNotInsert() {
+        long rowId = organisationUnitLinkStore.update(USER_ROLE_UID, PROGRAM_UID, USER_ROLE_UID, PROGRAM_UID);
+        Cursor cursor = database().query(UserRoleProgramLinkModel.TABLE, PROJECTION, null, null, null, null, null);
+        assertThat(rowId).isEqualTo(0);
+        assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test
+    public void update_shouldUpdateExisting() {
+        final String oldUserRoleUid = "oldUserRoleUid";
+        final String oldProgramUid = "oldProgramUid";
+        //insert old foreign key tables:
+        ContentValues userRole = CreateUserRoleUtils.create(3L, oldUserRoleUid);
+        ContentValues program = CreateProgramUtils.create(3L, oldProgramUid,
+                RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
+        database().insert(UserRoleModel.TABLE, null, userRole);
+        database().insert(ProgramModel.TABLE, null, program);
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Columns.USER_ROLE, oldUserRoleUid);
+        contentValues.put(Columns.PROGRAM, oldProgramUid);
+        database().insert(UserRoleProgramLinkModel.TABLE, null, contentValues);
+
+        long returnValue = organisationUnitLinkStore.update(USER_ROLE_UID, PROGRAM_UID, oldUserRoleUid, oldProgramUid);
+
+        Cursor cursor = database().query(UserRoleProgramLinkModel.TABLE, PROJECTION, null, null, null, null, null);
+
+        assertThat(returnValue).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(USER_ROLE_UID, PROGRAM_UID).isExhausted();
+    }
+
+    @Test
+    public void delete_shouldDeleteRow() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Columns.USER_ROLE, USER_ROLE_UID);
+        contentValues.put(Columns.PROGRAM, PROGRAM_UID);
+
+        database().insert(UserRoleProgramLinkModel.TABLE, null, contentValues);
+        int returnValue = organisationUnitLinkStore.delete(USER_ROLE_UID, PROGRAM_UID);
+
+        Cursor cursor = database().query(UserRoleProgramLinkModel.TABLE, PROJECTION, null, null, null, null, null);
+
+        assertThat(returnValue).isEqualTo(1);
+        assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test
     public void delete_shouldDeleteUserRoleProgramLinkWhenDeletingUserRoleForeignKey() {
         organisationUnitLinkStore.insert(USER_ROLE_UID, PROGRAM_UID);
         database().delete(UserRoleModel.TABLE, UserRoleModel.Columns.UID + "=?", new String[]{USER_ROLE_UID});
@@ -132,9 +180,4 @@ public class UserRoleProgramLinkStoreTests extends AbsStoreTestCase {
         organisationUnitLinkStore.insert(USER_ROLE_UID, "wrong");
     }
 
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        organisationUnitLinkStore.close();
-        assertThat(database().isOpen()).isTrue();
-    }
 }

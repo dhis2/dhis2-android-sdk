@@ -25,22 +25,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.option;
 
-public final class HeaderUtils {
+import java.util.List;
 
-    public static final String CONNECTION = "Connection";
-    public static final String CONTENT_TYPE = "Content-Type";
-    public static final String CONTENT_ENCODING = "Content-Encoding";
-    public static final String DATE = "Date";
-    public static final String SERVER = "Server";
-    public static final String TRANSER_ENCODING = "Transfer-Encoding";
-    public static final String X_CONTENT_TYPE_OPTIONS = "X-Content-Type-Options";
-    public static final String X_FRAME_OPTIONS = "X-Frame-Options";
-    public static final String X_XSS_PROTECTION = "X-XSS-Protection";
+import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
-    private HeaderUtils() {
-        // no instances
+public class OptionHandler {
+    private final OptionStore optionStore;
+
+    public OptionHandler(OptionStore optionStore) {
+        this.optionStore = optionStore;
     }
 
+    public void handleOptions(List<Option> options) {
+        if (options == null) {
+            return;
+        }
+
+        deleteOrPersistOptions(options);
+    }
+
+    private void deleteOrPersistOptions(List<Option> options) {
+        int size = options.size();
+
+        for (int i = 0; i < size; i++) {
+            Option option = options.get(i);
+
+            if (isDeleted(option)) {
+                optionStore.delete(option.uid());
+            } else {
+                int updatedRow = optionStore.update(option.uid(), option.code(), option.name(), option.displayName(),
+                        option.created(), option.lastUpdated(), option.optionSet().uid(), option.uid());
+
+                if (updatedRow <= 0) {
+                    optionStore.insert(option.uid(), option.code(), option.name(), option.displayName(),
+                            option.created(), option.lastUpdated(), option.optionSet().uid());
+                }
+            }
+        }
+    }
 }

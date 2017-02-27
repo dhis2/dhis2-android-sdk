@@ -28,13 +28,16 @@
 
 package org.hisp.dhis.android.core.option;
 
-import android.database.sqlite.SQLiteDatabase;
-
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Response;
@@ -43,21 +46,21 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
     // retrofit service
     private final OptionSetService optionSetService;
 
-    // databases and stores
-    private final SQLiteDatabase database;
-    private final OptionSetStore optionSetStore;
-    private final OptionStore optionStore;
+    // database adapter and handler
+    private final OptionSetHandler optionSetHandler;
+    private final DatabaseAdapter databaseAdapter;
+    private final ResourceHandler resourceHandler;
 
     private boolean isExecuted;
 
     public OptionSetCall(OptionSetService optionSetService,
-            SQLiteDatabase database,
-            OptionSetStore optionSetStore,
-            OptionStore optionStore) {
+                         OptionSetHandler optionSetHandler,
+                         DatabaseAdapter databaseAdapter,
+                         ResourceHandler resourceHandler) {
         this.optionSetService = optionSetService;
-        this.database = database;
-        this.optionSetStore = optionSetStore;
-        this.optionStore = optionStore;
+        this.optionSetHandler = optionSetHandler;
+        this.databaseAdapter = databaseAdapter;
+        this.resourceHandler = resourceHandler;
     }
 
 
@@ -80,54 +83,46 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
         Response<Payload<OptionSet>> response = getOptionSets();
 
         if (response.isSuccessful()) {
-            saveOptionSets(response.body().items());
+            saveOptionSets(response);
         }
         return response;
     }
 
     private Response<Payload<OptionSet>> getOptionSets() throws IOException {
-        Filter<OptionSet> optionSetFilter = Filter.<OptionSet>builder().fields(OptionSet.uid,
+        Fields<OptionSet> optionSetFields = Fields.<OptionSet>builder().fields(OptionSet.uid,
                 OptionSet.code, OptionSet.name, OptionSet.displayName,
                 OptionSet.created, OptionSet.lastUpdated,
                 OptionSet.version, OptionSet.valueType,
                 OptionSet.options.with(Option.uid, Option.code, Option.created,
                         Option.name, Option.displayName, Option.created,
-                        Option.lastUpdated)).build();
+                        Option.lastUpdated,
+                        Option.optionSet.with(
+                                OptionSet.uid
+                        )
+                )).build();
 
 
-        return optionSetService.optionSets(false, optionSetFilter).execute();
+        return optionSetService.optionSets(false, optionSetFields).execute();
     }
 
-    private void saveOptionSets(List<OptionSet> optionSetList) {
-        if (optionSetList != null && !optionSetList.isEmpty()) {
-            database.beginTransaction();
+    private void saveOptionSets(Response<Payload<OptionSet>> response) {
+        List<OptionSet> optionSets = response.body().items();
+        if (optionSets != null && !optionSets.isEmpty()) {
+            Transaction transaction = databaseAdapter.beginNewTransaction();
+            int size = optionSets.size();
 
-            for (OptionSet optionSet : optionSetList) {
-                try {
+            try {
+                Date serverDateTime = response.headers().getDate(HeaderUtils.DATE);
 
-                    // insert optionSet model into option set table
-                    optionSetStore.insert(
-                            optionSet.uid(), optionSet.code(), optionSet.name(),
-                            optionSet.displayName(), optionSet.created(),
-                            optionSet.lastUpdated(), optionSet.version(),
-                            optionSet.valueType()
-                    );
-
-                    List<Option> options = optionSet.options();
-
-                    if (options != null && !options.isEmpty()) {
-                        for (Option option : options) {
-                            optionStore.insert(option.uid(), option.code(),
-                                    option.name(), option.displayName(),
-                                    option.created(), option.lastUpdated(),
-                                    optionSet.uid());
-                        }
-                    }
-
-                    database.setTransactionSuccessful();
-                } finally {
-                    database.endTransaction();
+                for (int i = 0; i < size; i++) {
+                    OptionSet optionSet = optionSets.get(i);
+                    optionSetHandler.handleOptionSet(optionSet);
                 }
+                resourceHandler.handleResource(OptionSet.class.getSimpleName(), serverDateTime);
+
+                transaction.setSuccessful();
+            } finally {
+                transaction.end();
             }
         }
     }

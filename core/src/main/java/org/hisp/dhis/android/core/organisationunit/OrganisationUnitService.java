@@ -25,22 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.organisationunit;
 
-package org.hisp.dhis.android.core.trackedentity;
+import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.Where;
+import org.hisp.dhis.android.core.data.api.Which;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
-import org.hisp.dhis.android.core.common.State;
+public interface OrganisationUnitService {
 
-import java.util.Date;
-
-public interface TrackedEntityInstanceModelStore {
-    long insert(
-            @NonNull String uid, @Nullable Date created, @Nullable Date lastUpdated,
-            @NonNull String organisationUnit, @Nullable State state);
-
-    int delete();
-
-    void close();
+    @GET("organisationUnits/{uid}")
+    Call<Payload<OrganisationUnit>> getOrganisationUnits(
+            @Path("uid") String organisationUnitUid,
+            @Query("fields") @Which Fields<OrganisationUnit> fields,
+            @Query("filter") @Where Filter<OrganisationUnit, String> lastUpdated,
+            @Query("includeDescendants") Boolean descendants,
+            @Query("paging") Boolean paging
+    );
 }

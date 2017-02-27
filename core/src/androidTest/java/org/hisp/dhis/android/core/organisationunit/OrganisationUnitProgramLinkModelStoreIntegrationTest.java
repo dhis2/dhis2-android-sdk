@@ -156,10 +156,4 @@ public class OrganisationUnitProgramLinkModelStoreIntegrationTest extends AbsSto
 
         assertThatCursor(cursor).hasRow(ID, ORGANISATION_UNIT_UID, PROGRAM_UID).isExhausted();
     }
-
-    @Test
-    public void close_shouldNotCloseDatabase() throws Exception {
-        organisationUnitProgramLinkStore.close();
-        assertThat(database().isOpen()).isTrue();
-    }
 }

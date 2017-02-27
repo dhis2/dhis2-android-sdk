@@ -25,13 +25,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.data.api;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -47,47 +43,87 @@ import retrofit2.http.Query;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-@RunWith(JUnit4.class)
 public class FilterConverterTests {
-    private Converter<Filter, String> fieldsConverter;
-    @Test
-    public void retrofit_shouldRespectConverter() throws IOException, InterruptedException {
-        MockWebServer mockWebServer = new MockWebServer();
-        mockWebServer.start();
 
-        mockWebServer.enqueue(new MockResponse());
+    interface TestService {
+        @GET("api")
+        retrofit2.Call<ResponseBody> test(@Query("filter") @Where Filter idFilter,
+                                          @Query("filter") @Where Filter lastUpdatedFilter);
+    }
+
+    @Test
+    public void retrofit_shouldRespectFilter() throws IOException, InterruptedException {
+        MockWebServer server = new MockWebServer();
+        server.start();
+
+        server.enqueue(new MockResponse());
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(mockWebServer.url("/"))
+                .baseUrl(server.url("/"))
                 .addConverterFactory(FilterConverterFactory.create())
                 .build();
 
-        TestService testService = retrofit.create(TestService.class);
-        testService.test(Filter.<String>builder()
-                .fields(
-                        Field.<String, String>create("property_one"),
-                        Field.<String, String>create("property_two"),
-                        NestedField.<String, String>create("nested_property").with(
-                                Field.<String, String>create("nested_property_one")))
-                .build())
-                .execute();
+        TestService service = retrofit.create(TestService.class);
+        service.test(
+                FilterImpl.create(Field.create("id"), "in", "uid1", "uid2"),
+                FilterImpl.create(Field.create("lastUpdated"), "gt", "updatedDate")
+        ).execute();
 
-        RecordedRequest recordedRequest = mockWebServer.takeRequest();
-        assertThat(recordedRequest.getPath()).isEqualTo(
-                "/api/?fields=property_one,property_two,nested_property[nested_property_one]");
+        RecordedRequest request = server.takeRequest();
 
-        mockWebServer.shutdown();
+        assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1,uid2]&filter=lastUpdated:gt:updatedDate");
+        server.shutdown();
     }
 
-    interface TestService {
-        @GET("api/")
-        retrofit2.Call<ResponseBody> test(@Query("fields") @Fields Filter<String> filter);
+    @Test
+    public void retrofit_shouldIgnoreNullFilter() throws IOException, InterruptedException {
+        MockWebServer server = new MockWebServer();
+        server.start();
+
+        server.enqueue(new MockResponse());
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(server.url("/"))
+                .addConverterFactory(FilterConverterFactory.create())
+                .build();
+
+        TestService service = retrofit.create(TestService.class);
+        service.test(
+                FilterImpl.create(Field.create("id"), "in", "uid1", "uid2"),
+                FilterImpl.create(Field.create("lastUpdated"), "gt", (String[]) null) //Creating filter with null
+        ).execute();
+
+        RecordedRequest request = server.takeRequest();
+
+        assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1,uid2]");
+        server.shutdown();
     }
 
-    @Before
-    public void setUp() {
-        fieldsConverter = new FilterConverter();
+    @Test
+    public void retrofit_shouldIgnoreEmptyStringFilter() throws IOException, InterruptedException {
+        MockWebServer server = new MockWebServer();
+        server.start();
+
+        server.enqueue(new MockResponse());
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(server.url("/"))
+                .addConverterFactory(FilterConverterFactory.create())
+                .build();
+
+        TestService service = retrofit.create(TestService.class);
+        service.test(
+                FilterImpl.create(Field.create("id"), "in", "uid1", "uid2"),
+                FilterImpl.create(Field.create("lastUpdated"), "gt", "") //Creating a filter with an empty string
+        ).execute();
+
+        RecordedRequest request = server.takeRequest();
+
+        assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1,uid2]");
+        server.shutdown();
     }
+
+    //TODO: test Filter for null input and empty string.
 
     @Test
     @SuppressWarnings("BadAnnotationImplementation")
@@ -95,53 +131,13 @@ public class FilterConverterTests {
         Converter.Factory converterFactory = FilterConverterFactory.create();
 
         Converter<?, String> converter = converterFactory
-                .stringConverter(null, new Annotation[]{new Fields() {
+                .stringConverter(null, new Annotation[]{new Where() {
                     @Override
                     public Class<? extends Annotation> annotationType() {
-                        return Fields.class;
+                        return Where.class;
                     }
                 }}, null);
 
         assertThat(converter).isInstanceOf(FilterConverter.class);
-    }
-
-    @Test
-    public void converter_shouldRespectFields() throws IOException {
-        String queryStringOne = fieldsConverter.convert(
-                Filter.builder().fields(Field.create("")).build());
-        String queryStringTwo = fieldsConverter.convert(
-                Filter.builder().fields(Field.create("*")).build());
-        String queryStringThree = fieldsConverter.convert(
-                Filter.builder().fields(
-                        Field.create("name"),
-                        Field.create("displayName"),
-                        Field.create("created"),
-                        Field.create("lastUpdated")
-                ).build());
-
-        assertThat(queryStringOne).isEqualTo("");
-        assertThat(queryStringTwo).isEqualTo("*");
-        assertThat(queryStringThree).isEqualTo("name,displayName,created,lastUpdated");
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void converter_shouldRespectNestedFields() throws IOException {
-        Field id = Field.create("id");
-        Field displayName = Field.create("displayName");
-        NestedField programs = NestedField.create("programs");
-        NestedField programsWithChildren = programs.with(id, displayName);
-
-        String queryStringOne = fieldsConverter.convert(
-                Filter.builder().fields(
-                        id, displayName, programs
-                ).build());
-        String queryStringTwo = fieldsConverter.convert(
-                Filter.builder().fields(
-                        id, displayName, programsWithChildren
-                ).build());
-
-        assertThat(queryStringOne).isEqualTo("id,displayName,programs");
-        assertThat(queryStringTwo).isEqualTo("id,displayName,programs[id,displayName]");
     }
 }

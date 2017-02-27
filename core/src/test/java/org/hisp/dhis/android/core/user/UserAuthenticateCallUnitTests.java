@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.common.Call;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.SqLiteTransaction;
@@ -110,7 +111,7 @@ public class UserAuthenticateCallUnitTests {
     private ArgumentCaptor<String> credentialsCaptor;
 
     @Captor
-    private ArgumentCaptor<Filter<User>> filterCaptor;
+    private ArgumentCaptor<Fields<User>> filterCaptor;
 
     @Mock
     private OrganisationUnit organisationUnit;
@@ -192,7 +193,8 @@ public class UserAuthenticateCallUnitTests {
         when(user.userCredentials()).thenReturn(userCredentials);
         when(user.organisationUnits()).thenReturn(organisationUnits);
 
-        when(userService.authenticate(any(String.class), any(Filter.class))).thenReturn(userCall);
+
+        when(userService.authenticate(any(String.class), any(Fields.class))).thenReturn(userCall);
 
         when(databaseAdapter.beginNewTransaction()).then(new Answer<Transaction>() {
             @Override
@@ -201,6 +203,7 @@ public class UserAuthenticateCallUnitTests {
                 return sqLiteTransaction;
             }
         });
+
     }
 
     @Test

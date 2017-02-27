@@ -34,10 +34,20 @@ import android.support.annotation.Nullable;
 import java.util.Date;
 
 public interface TrackedEntityStore {
-    long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
-                @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+
+    long insert(@NonNull String uid, @Nullable String code, @Nullable String name,
+                @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
                 @Nullable String shortName, @Nullable String displayShortName,
-                @Nullable String description, @Nullable String displayDescription);
+                @Nullable String description, @Nullable String displayDescription
+    );
+
+    int update(@NonNull String uid, @Nullable String code, @Nullable String name,
+                @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
+                @Nullable String shortName, @Nullable String displayShortName,
+                @Nullable String description, @Nullable String displayDescription, @NonNull String whereUid
+    );
+
+    int delete(@NonNull String uid);
 
     void close();
 }

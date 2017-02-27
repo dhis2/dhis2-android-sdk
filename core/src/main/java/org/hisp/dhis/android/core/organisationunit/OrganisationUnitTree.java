@@ -27,15 +27,16 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public final class OrganisationUnitStructure {
+public final class OrganisationUnitTree {
 
     public static final String DELIMITER = "/";
 
-    private OrganisationUnitStructure() {}
+    private OrganisationUnitTree() {}
 
     /**
      * Extract a set of root uid's of OrganisationUnits, accessible by the user,
@@ -43,15 +44,17 @@ public final class OrganisationUnitStructure {
      * Based on the paths of the OrganisationUnits from the list.
      *
      * @param organisationUnits
-     * @param assignedOrganisationUnits
      * @return set of root uid's
      */
-    public static Set<String> getRootUids(List<OrganisationUnit> organisationUnits,
-                                          List<String> assignedOrganisationUnits) throws IllegalArgumentException {
-
+    public static Set<String> findRoots(List<OrganisationUnit> organisationUnits) throws IllegalArgumentException {
         Set<String> rootNodes = new HashSet<>();
-        if (assignedOrganisationUnits.isEmpty()) {
+        if (organisationUnits == null || organisationUnits.isEmpty()) {
             return rootNodes; //no assigned uid's, so don't waste time & quit early
+        }
+        //extract a list of the uid's:
+        List<String> organisationUnitUids = new ArrayList<>(organisationUnits.size());
+        for (OrganisationUnit orgUnit : organisationUnits) {
+            organisationUnitUids.add(orgUnit.uid());
         }
 
         for (int i = 0, size = organisationUnits.size(); i < size; i++) {
@@ -60,16 +63,21 @@ public final class OrganisationUnitStructure {
             if (path == null || path.isEmpty()) { //path shouldn't be empty or null.
                 throw new IllegalArgumentException("OrganisationUnit's path should not be null or empty!");
             } else {
-                String[] result = path.split(DELIMITER);
-                for (int j = 0, rSize = result.length; j < rSize; j++) {
-                    if (rootNodes.contains(result[j])) {
-                        break; //already in root nodes stop iterating.
-                    } else if (assignedOrganisationUnits.contains(result[j])) {
-                        rootNodes.add(result[j]);
-                    }
-                }
+                getRootFromPath(rootNodes, organisationUnitUids, path);
             }
         }
         return rootNodes;
+    }
+
+    private static void getRootFromPath(Set<String> rootNodes, List<String> organisationUnitUids, String path) {
+        String[] result = path.split(DELIMITER);
+        for (int j = 0, rSize = result.length; j < rSize; j++) {
+            if (rootNodes.contains(result[j])) {
+                break; //already in root nodes stop iterating.
+            } else if (organisationUnitUids.contains(result[j])) {
+                rootNodes.add(result[j]);
+                break;
+            }
+        }
     }
 }

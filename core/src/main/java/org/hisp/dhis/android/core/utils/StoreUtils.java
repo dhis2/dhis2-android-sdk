@@ -26,9 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.utils;
 
 import android.database.sqlite.SQLiteStatement;
+
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 
 import java.util.Date;
 

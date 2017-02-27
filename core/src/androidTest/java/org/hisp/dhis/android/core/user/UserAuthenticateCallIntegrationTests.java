@@ -36,8 +36,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Call;
-import org.hisp.dhis.android.core.common.HeaderUtils;
-import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
+import org.hisp.dhis.android.core.utils.HeaderUtils;
+import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
@@ -140,7 +140,6 @@ public class UserAuthenticateCallIntegrationTests extends AbsStoreTestCase {
     private static String[] RESOURCE_PROJECTION = {
             ResourceModel.Columns.ID,
             ResourceModel.Columns.RESOURCE_TYPE,
-            ResourceModel.Columns.RESOURCE_UID,
             ResourceModel.Columns.LAST_SYNCED
     };
 
@@ -207,7 +206,7 @@ public class UserAuthenticateCallIntegrationTests extends AbsStoreTestCase {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(mockWebServer.url("/"))
                 .addConverterFactory(JacksonConverterFactory.create(objectMapper))
-                .addConverterFactory(FilterConverterFactory.create())
+                .addConverterFactory(FieldsConverterFactory.create())
                 .build();
 
         UserService userService = retrofit.create(UserService.class);
@@ -326,7 +325,6 @@ public class UserAuthenticateCallIntegrationTests extends AbsStoreTestCase {
                 .hasRow(
                         1L,
                         User.class.getSimpleName(),
-                        "DXyJmlo9rge", // user uid
                         dateString
                 );
 
@@ -334,7 +332,6 @@ public class UserAuthenticateCallIntegrationTests extends AbsStoreTestCase {
                 .hasRow(
                         2L,
                         UserCredentials.class.getSimpleName(),
-                        "M0fCOxtkURr", // user credentials uid
                         dateString
                 );
 
@@ -342,7 +339,6 @@ public class UserAuthenticateCallIntegrationTests extends AbsStoreTestCase {
                 .hasRow(
                         3L,
                         OrganisationUnit.class.getSimpleName(),
-                        "DiszpKrYNg8", // organisation unit uid
                         dateString
                 ).isExhausted();
 

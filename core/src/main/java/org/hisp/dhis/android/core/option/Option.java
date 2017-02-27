@@ -50,6 +50,7 @@ public abstract class Option extends BaseIdentifiableObject {
     public static final Field<Option, String> displayName = Field.create(DISPLAY_NAME);
     public static final Field<Option, String> created = Field.create(CREATED);
     public static final Field<Option, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<Option, Boolean> deleted = Field.create(DELETED);
     public static final NestedField<Option, OptionSet> optionSet = NestedField.create(OPTION_SET);
 
     @Nullable
@@ -64,8 +65,9 @@ public abstract class Option extends BaseIdentifiableObject {
             @JsonProperty(DISPLAY_NAME) String displayName,
             @JsonProperty(CREATED) Date created,
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(OPTION_SET) OptionSet optionSet) {
-        return new AutoValue_Option(uid, code, name, displayName, created, lastUpdated, optionSet);
+            @JsonProperty(OPTION_SET) OptionSet optionSet,
+            @JsonProperty(DELETED) Boolean deleted) {
+        return new AutoValue_Option(uid, code, name, displayName, created, lastUpdated, deleted, optionSet);
     }
 
 }

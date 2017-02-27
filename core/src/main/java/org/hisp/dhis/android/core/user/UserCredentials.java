@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.data.api.NestedField;
 import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.common.Utils.safeUnmodifiableList;
+import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 @AutoValue
 public abstract class UserCredentials extends BaseIdentifiableObject {
@@ -52,11 +52,11 @@ public abstract class UserCredentials extends BaseIdentifiableObject {
     public static final Field<UserCredentials, String> uid = Field.create(UID);
     public static final Field<UserCredentials, String> code = Field.create(CODE);
     public static final Field<UserCredentials, String> name = Field.create(NAME);
-    public static final Field<UserCredentials, String> deleted = Field.create(DELETED);
     public static final Field<UserCredentials, String> displayName = Field.create(DISPLAY_NAME);
     public static final Field<UserCredentials, String> created = Field.create(CREATED);
     public static final Field<UserCredentials, String> lastUpdated = Field.create(LAST_UPDATED);
     public static final Field<UserCredentials, String> username = Field.create(USERNAME);
+    public static final Field<UserCredentials, Boolean> deleted = Field.create(DELETED);
     public static final NestedField<UserCredentials, UserRole> userRoles = NestedField.create(USER_ROLES);
 
     @Nullable
@@ -67,9 +67,6 @@ public abstract class UserCredentials extends BaseIdentifiableObject {
     @JsonProperty(USER_ROLES)
     public abstract List<UserRole> userRoles();
 
-    @Nullable
-    @JsonProperty(DELETED)
-    public abstract Boolean deleted();
 
     @JsonCreator
     public static UserCredentials create(
@@ -82,8 +79,8 @@ public abstract class UserCredentials extends BaseIdentifiableObject {
             @JsonProperty(USERNAME) String username,
             @JsonProperty(USER_ROLES) List<UserRole> userRoles,
             @JsonProperty(DELETED) Boolean deleted) {
-        return new AutoValue_UserCredentials(uid, code, name, displayName, created, lastUpdated, username,
-                safeUnmodifiableList(userRoles), deleted
+        return new AutoValue_UserCredentials(uid, code, name, displayName, created, lastUpdated, deleted, username,
+                safeUnmodifiableList(userRoles)
         );
     }
 }

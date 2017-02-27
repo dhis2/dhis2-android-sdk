@@ -36,8 +36,11 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals"
+})
 public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + ProgramIndicatorModel.TABLE + " (" +
             ProgramIndicatorModel.Columns.UID + ", " +
@@ -54,15 +57,47 @@ public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
             ProgramIndicatorModel.Columns.EXPRESSION + ", " +
             ProgramIndicatorModel.Columns.DIMENSION_ITEM + ", " +
             ProgramIndicatorModel.Columns.FILTER + ", " +
-            ProgramIndicatorModel.Columns.DECIMALS +
-            ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            ProgramIndicatorModel.Columns.DECIMALS + ", " +
+            ProgramIndicatorModel.Columns.PROGRAM + ") "
+            + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+    private static final String UPDATE_STATEMENT = "UPDATE " + ProgramIndicatorModel.TABLE + " SET " +
+            ProgramIndicatorModel.Columns.UID + " =?, " +
+            ProgramIndicatorModel.Columns.CODE + " =?, " +
+            ProgramIndicatorModel.Columns.NAME + " =?, " +
+            ProgramIndicatorModel.Columns.DISPLAY_NAME + " =?, " +
+            ProgramIndicatorModel.Columns.CREATED + " =?, " +
+            ProgramIndicatorModel.Columns.LAST_UPDATED + " =?, " +
+            ProgramIndicatorModel.Columns.SHORT_NAME + " =?, " +
+            ProgramIndicatorModel.Columns.DISPLAY_SHORT_NAME + " =?, " +
+            ProgramIndicatorModel.Columns.DESCRIPTION + " =?, " +
+            ProgramIndicatorModel.Columns.DISPLAY_DESCRIPTION + " =?, " +
+            ProgramIndicatorModel.Columns.DISPLAY_IN_FORM + " =?, " +
+            ProgramIndicatorModel.Columns.EXPRESSION + " =?, " +
+            ProgramIndicatorModel.Columns.DIMENSION_ITEM + " =?, " +
+            ProgramIndicatorModel.Columns.FILTER + " =?, " +
+            ProgramIndicatorModel.Columns.DECIMALS + " =?, " +
+            ProgramIndicatorModel.Columns.PROGRAM + " =? " +
+            " WHERE " +
+            ProgramIndicatorModel.Columns.UID + " =?;";
+
+    private static final String DELETE_STATEMENT = "DELETE FROM " + ProgramIndicatorModel.TABLE +
+            " WHERE " +
+            ProgramIndicatorModel.Columns.UID + " =?;";
 
     private final SQLiteStatement insertRowStatement;
+
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
+
+
     private final DatabaseAdapter databaseAdapter;
 
     public ProgramIndicatorStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
         this.insertRowStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -72,30 +107,77 @@ public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
                        @Nullable String displayShortName, @Nullable String description,
                        @Nullable String displayDescription, @Nullable Boolean displayInForm,
                        @Nullable String expression, @Nullable String dimensionItem,
-                       @Nullable String filter, @Nullable Integer decimals) {
+                       @Nullable String filter, @Nullable Integer decimals,
+                       @Nullable String program) {
+
+        bindArguments(insertRowStatement, uid, code, name, displayName, created, lastUpdated, shortName,
+                displayShortName, description, displayDescription, displayInForm, expression, dimensionItem,
+                filter, decimals, program);
+
+        // execute and clear bindings
+        Long insert = databaseAdapter.executeInsert(ProgramIndicatorModel.TABLE, insertRowStatement);
         insertRowStatement.clearBindings();
 
-        sqLiteBind(insertRowStatement, 1, uid);
-        sqLiteBind(insertRowStatement, 2, code);
-        sqLiteBind(insertRowStatement, 3, name);
-        sqLiteBind(insertRowStatement, 4, displayName);
-        sqLiteBind(insertRowStatement, 5, created);
-        sqLiteBind(insertRowStatement, 6, lastUpdated);
-        sqLiteBind(insertRowStatement, 7, shortName);
-        sqLiteBind(insertRowStatement, 8, displayShortName);
-        sqLiteBind(insertRowStatement, 9, description);
-        sqLiteBind(insertRowStatement, 10, displayDescription);
-        sqLiteBind(insertRowStatement, 11, displayInForm);
-        sqLiteBind(insertRowStatement, 12, expression);
-        sqLiteBind(insertRowStatement, 13, dimensionItem);
-        sqLiteBind(insertRowStatement, 14, filter);
-        sqLiteBind(insertRowStatement, 15, decimals);
+        return insert;
+    }
 
-        return databaseAdapter.executeInsert(ProgramIndicatorModel.TABLE, insertRowStatement);
+
+    @Override
+    public int update(@NonNull String uid, @Nullable String code, @NonNull String name, @Nullable String displayName,
+                      @NonNull Date created, @NonNull Date lastUpdated, @Nullable String shortName,
+                      @Nullable String displayShortName, @Nullable String description,
+                      @Nullable String displayDescription, @Nullable Boolean displayInForm,
+                      @Nullable String expression, @Nullable String dimensionItem, @Nullable String filter,
+                      @Nullable Integer decimals, @Nullable String program,
+                      @NonNull String whereProgramIndicatorUid) {
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
+                description, displayDescription, displayInForm, expression, dimensionItem, filter, decimals, program);
+
+        // bind the where argument
+        sqLiteBind(updateStatement, 17, whereProgramIndicatorUid);
+
+        // execute and clear bindings
+        int update = databaseAdapter.executeUpdateDelete(ProgramIndicatorModel.TABLE, updateStatement);
+        updateStatement.clearBindings();
+
+        return update;
     }
 
     @Override
-    public void close() {
-        insertRowStatement.close();
+    public int delete(String uid) {
+        // bind the where argument
+        sqLiteBind(deleteStatement, 1, uid);
+
+        // execute and clear bindings
+        int delete = databaseAdapter.executeUpdateDelete(ProgramIndicatorModel.TABLE, deleteStatement);
+        deleteStatement.clearBindings();
+
+        return delete;
+    }
+
+    private void bindArguments(@NonNull SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,
+                               @NonNull String name, @Nullable String displayName, @NonNull Date created,
+                               @NonNull Date lastUpdated, @Nullable String shortName,
+                               @Nullable String displayShortName, @Nullable String description,
+                               @Nullable String displayDescription, @Nullable Boolean displayInForm,
+                               @Nullable String expression, @Nullable String dimensionItem,
+                               @Nullable String filter, @Nullable Integer decimals,
+                               @Nullable String program) {
+        sqLiteBind(sqLiteStatement, 1, uid);
+        sqLiteBind(sqLiteStatement, 2, code);
+        sqLiteBind(sqLiteStatement, 3, name);
+        sqLiteBind(sqLiteStatement, 4, displayName);
+        sqLiteBind(sqLiteStatement, 5, created);
+        sqLiteBind(sqLiteStatement, 6, lastUpdated);
+        sqLiteBind(sqLiteStatement, 7, shortName);
+        sqLiteBind(sqLiteStatement, 8, displayShortName);
+        sqLiteBind(sqLiteStatement, 9, description);
+        sqLiteBind(sqLiteStatement, 10, displayDescription);
+        sqLiteBind(sqLiteStatement, 11, displayInForm);
+        sqLiteBind(sqLiteStatement, 12, expression);
+        sqLiteBind(sqLiteStatement, 13, dimensionItem);
+        sqLiteBind(sqLiteStatement, 14, filter);
+        sqLiteBind(sqLiteStatement, 15, decimals);
+        sqLiteBind(sqLiteStatement, 16, program);
     }
 }

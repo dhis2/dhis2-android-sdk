@@ -48,6 +48,7 @@ public abstract class ProgramIndicatorModel extends BaseNameableObjectModel {
         public static final String DIMENSION_ITEM = "dimensionItem";
         public static final String FILTER = "filter";
         public static final String DECIMALS = "decimals";
+        public static final String PROGRAM = "program";
     }
 
     @NonNull
@@ -80,6 +81,10 @@ public abstract class ProgramIndicatorModel extends BaseNameableObjectModel {
     @ColumnName(Columns.DECIMALS)
     public abstract Integer decimals();
 
+    @Nullable
+    @ColumnName(Columns.PROGRAM)
+    public abstract String program();
+
     @NonNull
     public abstract ContentValues toContentValues();
 
@@ -100,6 +105,9 @@ public abstract class ProgramIndicatorModel extends BaseNameableObjectModel {
 
         @ColumnName(Columns.DECIMALS)
         public abstract Builder decimals(@Nullable Integer decimals);
+
+        @ColumnName(Columns.PROGRAM)
+        public abstract Builder program(@Nullable String program);
 
         abstract ProgramIndicatorModel build();
     }

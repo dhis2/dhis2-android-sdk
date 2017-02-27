@@ -50,7 +50,7 @@ public class SqLiteDatabaseAdapterTests {
     @Test
     public void queryIsRunOnReadableDatabase() throws Exception {
         String sql = "SELECT * FROM TABLE";
-        sqLiteDatabaseAdapter.query(sql, null);
+        sqLiteDatabaseAdapter.query(sql, (String[]) null);
         verify(readableDatabase).rawQuery(sql, null);
     }
 

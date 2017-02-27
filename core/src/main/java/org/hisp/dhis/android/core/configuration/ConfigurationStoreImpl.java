@@ -36,7 +36,7 @@ import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import static org.hisp.dhis.android.core.common.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class ConfigurationStoreImpl implements ConfigurationStore {
 

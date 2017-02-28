@@ -30,32 +30,46 @@ package org.hisp.dhis.android.core.common;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.option.OptionSetCall;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
 import org.hisp.dhis.android.core.program.ProgramCall;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityCall;
 import org.hisp.dhis.android.core.user.UserCall;
 
 public class MetadataCall {
     private final DatabaseAdapter databaseAdapter;
+    private final SystemInfoCall systemInfoCall;
     private final UserCall userCall;
     private final ProgramCall programCall;
     private final OptionSetCall optionSetCall;
+    private final OrganisationUnitCall organisationUnitCall;
+    private final TrackedEntityCall trackedEntityCall;
 
     public MetadataCall(DatabaseAdapter databaseAdapter,
+                        SystemInfoCall systemInfoCall,
                         UserCall userCall,
                         ProgramCall programCall,
-                        OptionSetCall optionSetCall) {
+                        OptionSetCall optionSetCall,
+                        OrganisationUnitCall organisationUnitCall,
+                        TrackedEntityCall trackedEntityCall) {
         this.databaseAdapter = databaseAdapter;
+        this.systemInfoCall = systemInfoCall;
         this.userCall = userCall;
         this.programCall = programCall;
         this.optionSetCall = optionSetCall;
+        this.organisationUnitCall = organisationUnitCall;
+        this.trackedEntityCall = trackedEntityCall;
     }
 
     public void execute() throws Exception {
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
+            systemInfoCall.call();
             userCall.call();
+            organisationUnitCall.call();
             programCall.call();
+            trackedEntityCall.call();
             optionSetCall.call();
-
 
             transaction.setSuccessful();
         } finally {

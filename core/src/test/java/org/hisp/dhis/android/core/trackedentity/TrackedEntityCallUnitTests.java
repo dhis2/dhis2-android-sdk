@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -214,7 +215,7 @@ public class TrackedEntityCallUnitTests {
         verify(handler, times(1)).handleTrackedEntity(eq(trackedEntity));
         //TODO: after implementing the SystemInfoCall, tests..etc modify this to actually check the date:
         //Right now it only checks if: (Date) null is an instance of Date.class, not a terribly useful:
-        verify(resourceHandler, times(1)).handleResource(eq(ResourceHandler.Type.TRACKED_ENTITY), any(Date.class));
+        verify(resourceHandler, times(1)).handleResource(eq(ResourceModel.Type.TRACKED_ENTITY), any(Date.class));
     }
 
 

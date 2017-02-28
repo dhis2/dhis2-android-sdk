@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
@@ -305,7 +306,7 @@ public class OrganisationUnitCallUnitTests {
                 eq(OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE),
                 eq("user_uid")
         );
-        verify(resourceHandler, times(1)).handleResource(eq(ResourceHandler.Type.ORGANISATION_UNIT), any(Date.class));
+        verify(resourceHandler, times(1)).handleResource(eq(ResourceModel.Type.ORGANISATION_UNIT), any(Date.class));
     }
 
     @Test

@@ -32,14 +32,11 @@ import java.util.Date;
 public class ResourceHandler {
     private final ResourceStore resourceStore;
 
-    //TODO move to ResourceModel
-    public enum Type {SYSTEM_INFO, USER, ORGANISATION_UNIT, PROGRAM, OPTION_SET, TRACKED_ENTITY}
-
     public ResourceHandler(ResourceStore resourceStore) {
         this.resourceStore = resourceStore;
     }
 
-    public void handleResource(ResourceHandler.Type resourceType, Date serverDate) {
+    public void handleResource(ResourceModel.Type resourceType, Date serverDate) {
         if (resourceType == null || serverDate == null) {
             return;
         }

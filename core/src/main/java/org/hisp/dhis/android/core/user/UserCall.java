@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
@@ -164,7 +165,7 @@ public final class UserCall implements Call<Response<User>> {
             );
 
 
-            resourceHandler.handleResource(ResourceHandler.Type.USER, serverDateTime);
+            resourceHandler.handleResource(ResourceModel.Type.USER, serverDateTime);
 
             transaction.setSuccessful();
         } finally {

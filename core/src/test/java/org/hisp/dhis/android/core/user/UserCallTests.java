@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -402,7 +403,7 @@ public class UserCallTests {
                 OrganisationUnitModel.Scope.SCOPE_TEI_SEARCH, user.uid());
 
         //TODO : test that date is retrieved from headers
-        verify(resourceHandler, times(1)).handleResource(eq(ResourceHandler.Type.USER), any(Date.class));
+        verify(resourceHandler, times(1)).handleResource(eq(ResourceModel.Type.USER), any(Date.class));
 
     }
 }

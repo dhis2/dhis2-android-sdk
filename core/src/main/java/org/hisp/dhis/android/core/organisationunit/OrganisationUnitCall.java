@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 
@@ -92,7 +93,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         try {
             Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
             Filter<OrganisationUnit, String> lastUpdatedFilter = OrganisationUnit.lastUpdated.gt(
-                    resourceHandler.getLastUpdated(ResourceHandler.Type.ORGANISATION_UNIT.name()));
+                    resourceHandler.getLastUpdated(ResourceModel.Type.ORGANISATION_UNIT.name()));
             // Call OrganisationUnitService for each tree root & try to handleTrackedEntity sub-tree:
             for (String uid : rootOrgUnitUids) {
                 response = getOrganisationUnit(uid, lastUpdatedFilter);
@@ -110,7 +111,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                 }
             }
             if (response != null && response.isSuccessful()) {
-                resourceHandler.handleResource(ResourceHandler.Type.ORGANISATION_UNIT, serverDate);
+                resourceHandler.handleResource(ResourceModel.Type.ORGANISATION_UNIT, serverDate);
                 transaction.setSuccessful();
             }
         } finally {

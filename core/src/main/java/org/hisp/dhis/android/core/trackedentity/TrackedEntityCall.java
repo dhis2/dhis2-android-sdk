@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.util.Set;
@@ -99,7 +100,7 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
                     handler.handleTrackedEntity(trackedEntity);
                 }
                 resourceHandler.handleResource(
-                        ResourceHandler.Type.TRACKED_ENTITY,
+                        ResourceModel.Type.TRACKED_ENTITY,
                         response.headers().getDate(HeaderUtils.DATE)
                 );
                 transaction.setSuccessful();

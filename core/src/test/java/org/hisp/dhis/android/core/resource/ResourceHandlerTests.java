@@ -73,7 +73,7 @@ public class ResourceHandlerTests {
 
     @Test
     public void doNothing_shouldDoNothingWhenPassingNullServerDate() throws Exception {
-        resourceHandler.handleResource(ResourceHandler.Type.PROGRAM, null);
+        resourceHandler.handleResource(ResourceModel.Type.PROGRAM, null);
 
         // verify that store is never called
         verify(resourceStore, never()).insert(anyString(), any(Date.class));
@@ -84,7 +84,7 @@ public class ResourceHandlerTests {
     public void update_shouldUpdateResource() throws Exception {
         when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(1);
 
-        resourceHandler.handleResource(ResourceHandler.Type.PROGRAM, serverDate);
+        resourceHandler.handleResource(ResourceModel.Type.PROGRAM, serverDate);
 
         verify(resourceStore, times(1)).update(anyString(), any(Date.class), anyString());
 
@@ -96,7 +96,7 @@ public class ResourceHandlerTests {
     public void insert_shouldInsertResource() throws Exception {
         when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(0);
 
-        resourceHandler.handleResource(ResourceHandler.Type.PROGRAM, serverDate);
+        resourceHandler.handleResource(ResourceModel.Type.PROGRAM, serverDate);
 
         // verify that insert is called once
         verify(resourceStore, times(1)).insert(anyString(), any(Date.class));

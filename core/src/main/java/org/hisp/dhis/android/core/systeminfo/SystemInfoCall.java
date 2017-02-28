@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.io.IOException;
 
@@ -89,7 +90,7 @@ public class SystemInfoCall implements Call<Response<SystemInfo>> {
                 SystemInfo systemInfo = response.body();
                 systemInfoHandler.handleSystemInfo(systemInfo);
 
-                resourceHandler.handleResource(ResourceHandler.Type.SYSTEM_INFO, systemInfo.serverDate());
+                resourceHandler.handleResource(ResourceModel.Type.SYSTEM_INFO, systemInfo.serverDate());
             }
 
             transaction.setSuccessful();

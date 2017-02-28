@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
@@ -116,7 +117,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                 programHandler.handleProgram(program);
             }
 
-            resourceHandler.handleResource(ResourceHandler.Type.PROGRAM, serverDateTime);
+            resourceHandler.handleResource(ResourceModel.Type.PROGRAM, serverDateTime);
 
             transaction.setSuccessful();
         } finally {

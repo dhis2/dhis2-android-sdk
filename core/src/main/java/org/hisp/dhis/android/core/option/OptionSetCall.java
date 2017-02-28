@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
@@ -118,7 +119,7 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
                     OptionSet optionSet = optionSets.get(i);
                     optionSetHandler.handleOptionSet(optionSet);
                 }
-                resourceHandler.handleResource(ResourceHandler.Type.OPTION_SET, serverDateTime);
+                resourceHandler.handleResource(ResourceModel.Type.OPTION_SET, serverDateTime);
 
                 transaction.setSuccessful();
             } finally {

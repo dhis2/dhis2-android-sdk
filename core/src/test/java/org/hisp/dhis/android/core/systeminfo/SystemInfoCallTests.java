@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -140,7 +141,7 @@ public class SystemInfoCallTests {
             verify(transaction, never()).end();
 
             verify(systemInfoHandler, never()).handleSystemInfo(any(SystemInfo.class));
-            verify(resourceHandler, never()).handleResource(any(ResourceHandler.Type.class), any(Date.class));
+            verify(resourceHandler, never()).handleResource(any(ResourceModel.Type.class), any(Date.class));
 
         }
     }
@@ -162,7 +163,7 @@ public class SystemInfoCallTests {
         verify(transaction, never()).setSuccessful();
 
         verify(systemInfoHandler, never()).handleSystemInfo(any(SystemInfo.class));
-        verify(resourceHandler, never()).handleResource(any(ResourceHandler.Type.class), any(Date.class));
+        verify(resourceHandler, never()).handleResource(any(ResourceModel.Type.class), any(Date.class));
 
     }
 
@@ -210,7 +211,7 @@ public class SystemInfoCallTests {
         systemInfoSyncCall.call();
 
         verify(systemInfoHandler, times(1)).handleSystemInfo(systemInfo);
-        verify(resourceHandler, times(1)).handleResource(any(ResourceHandler.Type.class), any(Date.class));
+        verify(resourceHandler, times(1)).handleResource(any(ResourceModel.Type.class), any(Date.class));
 
     }
 }

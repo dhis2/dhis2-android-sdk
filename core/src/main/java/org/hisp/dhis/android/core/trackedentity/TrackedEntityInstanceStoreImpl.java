@@ -73,7 +73,7 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
 
     @Override
     public int delete() {
-        return databaseAdapter.delete(TrackedEntityInstanceModel.TABLE, null, null);
+        return databaseAdapter.delete(TrackedEntityInstanceModel.TABLE);
     }
 
     @Override

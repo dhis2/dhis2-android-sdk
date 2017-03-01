@@ -192,7 +192,7 @@ public class UserStoreImpl implements UserStore {
 
     @Override
     public int delete() {
-        return databaseAdapter.delete(UserModel.TABLE, null, null);
+        return databaseAdapter.delete(UserModel.TABLE);
     }
 
 }

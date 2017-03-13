@@ -48,7 +48,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -209,7 +212,13 @@ public class OptionSetCallTests extends AbsStoreTestCase {
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
-        optionSetCall = new OptionSetCall(optionSetService, optionSetHandler, databaseAdapter(), resourceHandler);
+        Set<String> uids = new HashSet<>();
+        uids.add("POc7DkGU3QU");
+
+
+        optionSetCall = new OptionSetCall(
+                optionSetService, optionSetHandler, databaseAdapter(), resourceHandler, uids, new Date()
+        );
 
     }
 

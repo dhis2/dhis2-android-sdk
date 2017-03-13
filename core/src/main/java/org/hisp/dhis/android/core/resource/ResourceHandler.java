@@ -50,10 +50,10 @@ public class ResourceHandler {
     /**
      * A wrapper to expose resourceStore.getLastUpdated(str).
      *
-     * @param className Name of the resource.
+     * @param type Type of the resource.
      * @return a string representing the last synched date
      */
-    public String getLastUpdated(String className) {
-        return resourceStore.getLastUpdated(className);
+    public String getLastUpdated(ResourceModel.Type type) {
+        return resourceStore.getLastUpdated(type);
     }
 }

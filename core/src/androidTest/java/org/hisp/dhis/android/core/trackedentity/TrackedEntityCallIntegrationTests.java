@@ -50,6 +50,7 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 
 import okhttp3.mockwebserver.MockResponse;
@@ -134,7 +135,9 @@ public class TrackedEntityCallIntegrationTests extends AbsStoreTestCase {
         TrackedEntityHandler handler = new TrackedEntityHandler(new TrackedEntityStoreImpl(databaseAdapter()));
         ResourceHandler resourceHandler = new ResourceHandler(new ResourceStoreImpl(databaseAdapter()));
 
-        trackedEntityCall = new TrackedEntityCall(uids, databaseAdapter(), handler, resourceHandler, service);
+        trackedEntityCall = new TrackedEntityCall(
+                uids, databaseAdapter(), handler, resourceHandler, service, new Date()
+        );
     }
 
     @Test

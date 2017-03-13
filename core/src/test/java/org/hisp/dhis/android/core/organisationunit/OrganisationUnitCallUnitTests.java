@@ -66,7 +66,6 @@ import retrofit2.Response;
 import static junit.framework.Assert.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -142,6 +141,9 @@ public class OrganisationUnitCallUnitTests {
     @Mock
     private Date lastUpdated;
 
+    @Mock
+    private Date serverDate;
+
     //the call we are testing:
     private OrganisationUnitCall organisationUnitCall;
 
@@ -188,12 +190,13 @@ public class OrganisationUnitCallUnitTests {
         when(user.phoneNumber()).thenReturn("user_phone_number");
         when(user.nationality()).thenReturn("user_nationality");
 
+
         when(database.beginNewTransaction()).thenReturn(transaction);
 
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, database,
                 organisationUnitHandler,
-                resourceHandler
-        );
+                resourceHandler,
+                serverDate);
 
         //Return only one organisationUnit.
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
@@ -231,7 +234,7 @@ public class OrganisationUnitCallUnitTests {
     @SuppressWarnings("unchecked")
     public void call_shouldInvokeServer_withCorrectParameters_withLastUpdated() throws Exception {
         String date = "2014-11-25T09:37:53.358";
-        when(resourceHandler.getLastUpdated(anyString())).thenReturn(date);
+        when(resourceHandler.getLastUpdated(any(ResourceModel.Type.class))).thenReturn(date);
         when(payload.items()).thenReturn(Collections.singletonList(organisationUnit));
 
         organisationUnitCall.call();

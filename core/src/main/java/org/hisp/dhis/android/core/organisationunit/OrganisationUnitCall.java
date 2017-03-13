@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
 import java.util.Date;
@@ -57,19 +56,22 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
     private final DatabaseAdapter database;
     private final OrganisationUnitHandler organisationUnitHandler;
     private final ResourceHandler resourceHandler;
+
+    private final Date serverDate;
     private boolean isExecuted;
 
     public OrganisationUnitCall(@NonNull User user,
                                 @NonNull OrganisationUnitService organisationUnitService,
                                 @NonNull DatabaseAdapter database,
                                 @NonNull OrganisationUnitHandler organisationUnitHandler,
-                                @NonNull ResourceHandler resourceHandler
-    ) {
+                                @NonNull ResourceHandler resourceHandler,
+                                Date serverDate) {
         this.user = user;
         this.organisationUnitService = organisationUnitService;
         this.database = database;
         this.organisationUnitHandler = organisationUnitHandler;
         this.resourceHandler = resourceHandler;
+        this.serverDate = new Date(serverDate.getTime());
     }
 
     @Override
@@ -87,20 +89,17 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
             }
             isExecuted = true;
         }
-        Date serverDate = null;
         Response<Payload<OrganisationUnit>> response = null;
         Transaction transaction = database.beginNewTransaction();
         try {
             Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
             Filter<OrganisationUnit, String> lastUpdatedFilter = OrganisationUnit.lastUpdated.gt(
-                    resourceHandler.getLastUpdated(ResourceModel.Type.ORGANISATION_UNIT.name()));
+                    resourceHandler.getLastUpdated(ResourceModel.Type.ORGANISATION_UNIT)
+            );
             // Call OrganisationUnitService for each tree root & try to handleTrackedEntity sub-tree:
             for (String uid : rootOrgUnitUids) {
                 response = getOrganisationUnit(uid, lastUpdatedFilter);
                 if (response.isSuccessful()) {
-                    if (serverDate == null) {//only get the very first date-time for the entire call.
-                        serverDate = response.headers().getDate(HeaderUtils.DATE);
-                    }
                     organisationUnitHandler.handleOrganisationUnits(
                             response.body().items(),
                             OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
@@ -135,8 +134,6 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                 //TODO: find out if programs are relevant: can they be updated on their own ?
                 OrganisationUnit.programs.with(Program.uid)
         ).build();
-        retrofit2.Call<Payload<OrganisationUnit>> call = organisationUnitService.getOrganisationUnits(uid, fields,
-                lastUpdatedFilter, true, false);
-        return call.execute();
+        return organisationUnitService.getOrganisationUnits(uid, fields, lastUpdatedFilter, true, false).execute();
     }
 }

@@ -54,6 +54,7 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Date;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -233,7 +234,8 @@ public class UserCallIntegrationTest extends AbsStoreTestCase {
         organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore, userOrganisationUnitStore);
 
         userCall = new UserCall(userService, databaseAdapter(), organisationUnitHandler,
-                userHandler, userCredentialsHandler, userRoleHandler, resourceHandler);
+                userHandler, userCredentialsHandler, userRoleHandler, resourceHandler, new Date()
+        );
 
         ContentValues program1 = CreateProgramUtils.create(1L, "eBAyeGv0exc", null, null, null);
         ContentValues program2 = CreateProgramUtils.create(2L, "ur1Edk5Oe2n", null, null, null);

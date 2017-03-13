@@ -290,7 +290,7 @@ public class OrganisationUnitCallIntegrationTests extends AbsStoreTestCase {
         database().insert(UserModel.TABLE, null, userContentValues);
 
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, databaseAdapter(),
-                organisationUnitHandler, resourceHandler);
+                organisationUnitHandler, resourceHandler, new Date());
     }
 
     @Test

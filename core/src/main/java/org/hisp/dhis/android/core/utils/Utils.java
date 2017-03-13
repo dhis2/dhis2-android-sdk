@@ -60,7 +60,8 @@ public final class Utils {
         return null;
     }
 
-    public static  <T extends BaseIdentifiableObject> boolean isDeleted(@NonNull T object) {
+    public static <T extends BaseIdentifiableObject> boolean isDeleted(@NonNull T object) {
         return object.deleted() != null && object.deleted();
     }
+
 }

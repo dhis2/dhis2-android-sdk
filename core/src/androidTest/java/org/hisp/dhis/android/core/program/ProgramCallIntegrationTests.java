@@ -71,6 +71,7 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -1370,7 +1371,9 @@ public class ProgramCallIntegrationTests extends AbsStoreTestCase {
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
         database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
 
-        programCall = new ProgramCall(programService, databaseAdapter(), resourceHandler, uids, programHandler);
+        programCall = new ProgramCall(
+                programService, databaseAdapter(), resourceHandler, uids, programHandler, new Date()
+        );
     }
 
     @Test

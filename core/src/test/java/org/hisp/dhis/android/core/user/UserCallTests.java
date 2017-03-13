@@ -134,8 +134,8 @@ public class UserCallTests {
 
         userSyncCall = new UserCall(
                 userService, databaseAdapter, organisationUnitHandler,
-                userHandler, userCredentialsHandler, userRoleHandler, resourceHandler
-        );
+                userHandler, userCredentialsHandler, userRoleHandler, resourceHandler,
+                serverDate);
 
         when(userCredentials.uid()).thenReturn("user_credentials_uid");
         when(userCredentials.code()).thenReturn("user_credentials_code");

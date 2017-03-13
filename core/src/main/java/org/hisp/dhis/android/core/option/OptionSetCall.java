@@ -35,11 +35,11 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import retrofit2.Response;
 
@@ -51,17 +51,22 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
     private final OptionSetHandler optionSetHandler;
     private final DatabaseAdapter databaseAdapter;
     private final ResourceHandler resourceHandler;
-
+    private final Date serverDate;
+    private final Set<String> uids;
     private boolean isExecuted;
 
     public OptionSetCall(OptionSetService optionSetService,
                          OptionSetHandler optionSetHandler,
                          DatabaseAdapter databaseAdapter,
-                         ResourceHandler resourceHandler) {
+                         ResourceHandler resourceHandler,
+                         Set<String> uids,
+                         Date serverDate) {
         this.optionSetService = optionSetService;
         this.optionSetHandler = optionSetHandler;
         this.databaseAdapter = databaseAdapter;
         this.resourceHandler = resourceHandler;
+        this.uids = uids;
+        this.serverDate = new Date(serverDate.getTime());
     }
 
 
@@ -81,29 +86,36 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
 
             isExecuted = true;
         }
-        Response<Payload<OptionSet>> response = getOptionSets();
 
-        if (response.isSuccessful()) {
+        if (uids.size() > MAX_UIDS) {
+            throw new IllegalArgumentException(
+                    "Can't handle the amount of option sets: " + uids.size() + ". " + "Max size is: " + MAX_UIDS);
+
+        }
+        Response<Payload<OptionSet>> response = getOptionSets(uids);
+
+        if (response != null && response.isSuccessful()) {
             saveOptionSets(response);
         }
         return response;
     }
 
-    private Response<Payload<OptionSet>> getOptionSets() throws IOException {
-        Fields<OptionSet> optionSetFields = Fields.<OptionSet>builder().fields(OptionSet.uid,
-                OptionSet.code, OptionSet.name, OptionSet.displayName,
-                OptionSet.created, OptionSet.lastUpdated,
-                OptionSet.version, OptionSet.valueType,
+    private Response<Payload<OptionSet>> getOptionSets(Set<String> uids) throws IOException {
+        Fields<OptionSet> optionSetFields = Fields.<OptionSet>builder().fields(
+                OptionSet.uid, OptionSet.code, OptionSet.name,
+                OptionSet.displayName, OptionSet.created,
+                OptionSet.lastUpdated, OptionSet.version,
+                OptionSet.valueType,
                 OptionSet.options.with(Option.uid, Option.code, Option.created,
                         Option.name, Option.displayName, Option.created,
                         Option.lastUpdated,
                         Option.optionSet.with(
                                 OptionSet.uid
                         )
-                )).build();
+                )
+        ).build();
 
-
-        return optionSetService.optionSets(false, optionSetFields).execute();
+        return optionSetService.optionSets(false, optionSetFields, OptionSet.uid.in(uids)).execute();
     }
 
     private void saveOptionSets(Response<Payload<OptionSet>> response) {
@@ -113,13 +125,11 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
             int size = optionSets.size();
 
             try {
-                Date serverDateTime = response.headers().getDate(HeaderUtils.DATE);
-
                 for (int i = 0; i < size; i++) {
                     OptionSet optionSet = optionSets.get(i);
                     optionSetHandler.handleOptionSet(optionSet);
                 }
-                resourceHandler.handleResource(ResourceModel.Type.OPTION_SET, serverDateTime);
+                resourceHandler.handleResource(ResourceModel.Type.OPTION_SET, serverDate);
 
                 transaction.setSuccessful();
             } finally {

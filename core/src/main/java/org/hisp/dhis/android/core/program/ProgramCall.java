@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -60,19 +59,22 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
     private final ProgramHandler programHandler;
 
     private boolean isExecuted;
-    private final Set<String> assignedProgramUids;
+    private final Set<String> uids;
+    private final Date serverDate;
 
     public ProgramCall(ProgramService programService,
                        DatabaseAdapter databaseAdapter,
                        ResourceHandler resourceHandler,
-                       Set<String> assignedProgramUids,
-                       ProgramHandler programHandler) {
+                       Set<String> uids,
+                       ProgramHandler programHandler,
+                       Date serverDate) {
         this.programService = programService;
         this.databaseAdapter = databaseAdapter;
         this.resourceHandler = resourceHandler;
-        this.assignedProgramUids = assignedProgramUids;
+        this.uids = uids;
 
         this.programHandler = programHandler;
+        this.serverDate = new Date(serverDate.getTime());
     }
 
     @Override
@@ -91,11 +93,17 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
 
             isExecuted = true;
         }
-        String lastSyncedPrograms = resourceHandler.getLastUpdated(ProgramModel.class.getSimpleName());
+
+        if (uids.size() > MAX_UIDS) {
+            throw new IllegalArgumentException("Can't handle the amount of programs: " + uids.size() + ". " +
+                    "Max size is: " + MAX_UIDS);
+        }
+
+        String lastSyncedPrograms = resourceHandler.getLastUpdated(ResourceModel.Type.PROGRAM);
 
         Response<Payload<Program>> programsByLastUpdated =
                 programService.getPrograms(getFields(), Program.lastUpdated.gt(lastSyncedPrograms),
-                        Program.uid.in(assignedProgramUids), Boolean.FALSE
+                        Program.uid.in(uids), Boolean.FALSE
                 ).execute();
 
         if (programsByLastUpdated.isSuccessful()) {
@@ -108,7 +116,6 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
         Transaction transaction = databaseAdapter.beginNewTransaction();
 
         try {
-            Date serverDateTime = programsByLastUpdated.headers().getDate(HeaderUtils.DATE);
             List<Program> programs = programsByLastUpdated.body().items();
             int size = programs.size();
             for (int i = 0; i < size; i++) {
@@ -117,7 +124,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                 programHandler.handleProgram(program);
             }
 
-            resourceHandler.handleResource(ResourceModel.Type.PROGRAM, serverDateTime);
+            resourceHandler.handleResource(ResourceModel.Type.PROGRAM, serverDate);
 
             transaction.setSuccessful();
         } finally {

@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
 import java.util.Date;
@@ -58,6 +57,9 @@ public final class UserCall implements Call<Response<User>> {
 
     private final ResourceHandler resourceHandler;
 
+    // server date time
+    private final Date serverDate;
+
     private boolean isExecuted;
 
     public UserCall(UserService userService,
@@ -66,7 +68,8 @@ public final class UserCall implements Call<Response<User>> {
                     UserHandler userHandler,
                     UserCredentialsHandler userCredentialsHandler,
                     UserRoleHandler userRoleHandler,
-                    ResourceHandler resourceHandler) {
+                    ResourceHandler resourceHandler,
+                    Date serverDate) {
         this.userService = userService;
         this.databaseAdapter = databaseAdapter;
         this.organisationUnitHandler = organisationUnitHandler;
@@ -74,6 +77,7 @@ public final class UserCall implements Call<Response<User>> {
         this.userRoleHandler = userRoleHandler;
         this.userHandler = userHandler;
         this.resourceHandler = resourceHandler;
+        this.serverDate = new Date(serverDate.getTime());
     }
 
     @Override
@@ -143,7 +147,6 @@ public final class UserCall implements Call<Response<User>> {
         try {
             User user = response.body();
             // TODO: check that this is user is authenticated and is persisted in db
-            Date serverDateTime = response.headers().getDate(HeaderUtils.DATE);
 
             userHandler.handleUser(user);
 
@@ -165,7 +168,7 @@ public final class UserCall implements Call<Response<User>> {
             );
 
 
-            resourceHandler.handleResource(ResourceModel.Type.USER, serverDateTime);
+            resourceHandler.handleResource(ResourceModel.Type.USER, serverDate);
 
             transaction.setSuccessful();
         } finally {

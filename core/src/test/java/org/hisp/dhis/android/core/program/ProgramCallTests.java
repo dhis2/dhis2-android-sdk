@@ -120,7 +120,10 @@ public class ProgramCallTests {
     @Mock
     private Cursor cursor;
 
-    private Set<String> assignedProgramUids;
+    @Mock
+    private Date serverDate;
+
+    private Set<String> uids;
 
     // the call we are testing
     private Call<Response<Payload<Program>>> programSyncCall;
@@ -130,8 +133,12 @@ public class ProgramCallTests {
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
 
+        uids = new HashSet<>();
+        uids.add("test_program_uid");
+        uids.add("test_program1_uid");
+
         programSyncCall = new ProgramCall(programService, databaseAdapter,
-                resourceHandler, assignedProgramUids, programHandler);
+                resourceHandler, uids, programHandler, serverDate);
 
         when(program.uid()).thenReturn("test_program_uid");
 
@@ -149,10 +156,6 @@ public class ProgramCallTests {
 
         when(programService.getPrograms(any(Fields.class), any(Filter.class), any(Filter.class), anyBoolean())
         ).thenReturn(programCall);
-
-        assignedProgramUids = new HashSet<>();
-        assignedProgramUids.add("test_program_uid");
-        assignedProgramUids.add("test_program1_uid");
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 

@@ -37,8 +37,10 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.utils.HeaderUtils;
 
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import retrofit2.Response;
@@ -46,22 +48,26 @@ import retrofit2.Response;
 public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>> {
 
     private final TrackedEntityService service;
-    private final DatabaseAdapter database;
+    private final DatabaseAdapter databaseAdapter;
     private final TrackedEntityHandler handler;
     private final ResourceHandler resourceHandler;
     private final Set<String> uidSet;
+    private final Date serverDate;
+    private final ResourceModel.Type resourceType = ResourceModel.Type.TRACKED_ENTITY;
     private Boolean isExecuted = false;
 
     public TrackedEntityCall(@Nullable Set<String> uidSet,
-                             @NonNull DatabaseAdapter database,
+                             @NonNull DatabaseAdapter databaseAdapter,
                              @NonNull TrackedEntityHandler handler,
                              @NonNull ResourceHandler resourceHandler,
-                             @NonNull TrackedEntityService service) {
+                             @NonNull TrackedEntityService service,
+                             @NonNull Date serverDate) {
         this.uidSet = uidSet;
-        this.database = database;
+        this.databaseAdapter = databaseAdapter;
         this.handler = handler;
         this.resourceHandler = resourceHandler;
         this.service = service;
+        this.serverDate = new Date(serverDate.getTime());
     }
 
     @Override
@@ -75,33 +81,32 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
     public Response<Payload<TrackedEntity>> call() throws Exception {
         synchronized (this) {
             if (isExecuted) {
-                throw new IllegalStateException("AlreadyExecuted");
+                throw new IllegalStateException("Already executed");
             }
             isExecuted = true;
         }
-        Response<Payload<TrackedEntity>> response = null;
-        Transaction transaction = database.beginNewTransaction();
+
+        if(uidSet.size() > MAX_UIDS) {
+            throw new IllegalArgumentException("Can't handle the amount of tracked entities: " + uidSet.size() + ". " +
+                    "Max size is: " + MAX_UIDS);
+        }
+        Response<Payload<TrackedEntity>> response = getTrackedEntities();
+
+        Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
-            response = service.trackedEntities(
-                    Fields.<TrackedEntity>builder().fields(
-                            TrackedEntity.uid, TrackedEntity.code, TrackedEntity.name,
-                            TrackedEntity.displayName, TrackedEntity.created, TrackedEntity.lastUpdated,
-                            TrackedEntity.shortName, TrackedEntity.displayShortName,
-                            TrackedEntity.description, TrackedEntity.displayDescription,
-                            TrackedEntity.deleted
-                    ).build(),
-                    TrackedEntity.uid.in(uidSet),
-                    TrackedEntity.lastUpdated.gt(resourceHandler.getLastUpdated(TrackedEntity.class.getSimpleName())),
-                    false
-            ).execute();
 
             if (response != null && response.isSuccessful()) {
-                for (TrackedEntity trackedEntity : response.body().items()) {
+                List<TrackedEntity> trackedEntities = response.body().items();
+                int size = trackedEntities.size();
+
+                for (int i = 0; i < size; i++) {
+                    TrackedEntity trackedEntity = trackedEntities.get(i);
+
                     handler.handleTrackedEntity(trackedEntity);
                 }
                 resourceHandler.handleResource(
-                        ResourceModel.Type.TRACKED_ENTITY,
-                        response.headers().getDate(HeaderUtils.DATE)
+                        resourceType,
+                        serverDate
                 );
                 transaction.setSuccessful();
             }
@@ -109,5 +114,20 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
             transaction.end();
         }
         return response;
+    }
+
+    private Response<Payload<TrackedEntity>> getTrackedEntities() throws IOException {
+         return service.trackedEntities(
+                Fields.<TrackedEntity>builder().fields(
+                        TrackedEntity.uid, TrackedEntity.code, TrackedEntity.name,
+                        TrackedEntity.displayName, TrackedEntity.created, TrackedEntity.lastUpdated,
+                        TrackedEntity.shortName, TrackedEntity.displayShortName,
+                        TrackedEntity.description, TrackedEntity.displayDescription,
+                        TrackedEntity.deleted
+                ).build(),
+                TrackedEntity.uid.in(uidSet),
+                TrackedEntity.lastUpdated.gt(resourceHandler.getLastUpdated(resourceType)),
+                false
+        ).execute();
     }
 }

@@ -112,6 +112,9 @@ public class TrackedEntityCallUnitTests {
     @Captor
     private ArgumentCaptor<Boolean> pagingCaptor;
 
+    @Mock
+    private Date serverDate;
+
     //the call we are testing:
     private TrackedEntityCall call;
 
@@ -131,7 +134,7 @@ public class TrackedEntityCallUnitTests {
         when(trackedEntity.displayDescription()).thenReturn("display_description");
 
         call = new TrackedEntityCall(Sets.newLinkedHashSet(trackedEntity.uid()), database,
-                handler, resourceHandler, service);
+                handler, resourceHandler, service, serverDate);
 
         when(database.beginNewTransaction()).thenReturn(transaction);
         when(service.trackedEntities(
@@ -167,7 +170,7 @@ public class TrackedEntityCallUnitTests {
     @SuppressWarnings("unchecked")
     public void call_shouldInvokeServer_withCorrectParameters_withLastUpdated() throws Exception {
         String date = "2014-11-25T09:37:53.358";
-        when(resourceHandler.getLastUpdated(eq(TrackedEntity.class.getSimpleName()))).thenReturn(date);
+        when(resourceHandler.getLastUpdated(eq(ResourceModel.Type.TRACKED_ENTITY))).thenReturn(date);
         when(payload.items()).thenReturn(Collections.singletonList(trackedEntity));
 
         call.call();
@@ -193,8 +196,8 @@ public class TrackedEntityCallUnitTests {
             call.call();
             fail("expected Exception to be thrown, but isn't ");
         } catch (Exception e) {
-            verify(database, times(1)).beginNewTransaction();
-            verify(transaction, times(1)).end();
+            verify(database, never()).beginNewTransaction();
+            verify(transaction, never()).end();
             verify(transaction, never()).setSuccessful();
         }
     }
@@ -223,7 +226,7 @@ public class TrackedEntityCallUnitTests {
     @SuppressWarnings("unchecked")
     public void call_shouldNotFail_onEmptyInput() throws IOException {
         TrackedEntityCall call = new TrackedEntityCall(new HashSet<String>(), database,
-                handler, resourceHandler, service);
+                handler, resourceHandler, service, serverDate);
         when(service.trackedEntities(
                 fieldsCaptor.capture(),
                 idFilterCaptor.capture(),

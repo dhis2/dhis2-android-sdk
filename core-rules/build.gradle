@@ -1,4 +1,8 @@
-apply plugin: 'java'
+apply plugin: "java"
+apply from: rootProject.file("plugins/java-checkstyle.gradle")
+apply from: rootProject.file("plugins/java-findbugs.gradle")
+apply from: rootProject.file("plugins/java-pmd.gradle")
+apply from: rootProject.file("plugins/errorprone.gradle")
 
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7"

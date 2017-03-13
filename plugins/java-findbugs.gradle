@@ -1,0 +1,28 @@
+apply plugin: "findbugs"
+
+afterEvaluate {
+    tasks.withType(FindBugs) {
+        // task meta-data
+        group = "verification"
+        description = "Run FindBugs"
+
+        // Fail early.
+        ignoreFailures = false
+
+        // Aggressive inspection.
+        effort = "max"
+
+        // Fail build on high priority warnings.
+        reportLevel = "low"
+
+        // Only html reports.
+        reports {
+            html.enabled = true
+            xml.enabled = false
+        }
+
+        excludeFilter = rootProject.file(
+                "plugins/findbugs-filter.xml"
+        )
+    }
+}

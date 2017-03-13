@@ -97,7 +97,7 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
 
     @Override
     public int delete() {
-        return databaseAdapter.delete(AuthenticatedUserModel.TABLE, null, null);
+        return databaseAdapter.delete(AuthenticatedUserModel.TABLE);
     }
 
     @Override

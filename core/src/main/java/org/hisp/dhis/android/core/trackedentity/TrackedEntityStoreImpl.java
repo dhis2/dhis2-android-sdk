@@ -137,11 +137,8 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
     @Override
     public int delete(@NonNull String uid) {
         deleteStatement.clearBindings();
-
         sqLiteBind(deleteStatement, 1, uid);
-
-        int rowId = database.delete(TrackedEntityModel.TABLE, null, null);
-        deleteStatement.executeUpdateDelete();
+        int rowId = deleteStatement.executeUpdateDelete();
         deleteStatement.clearBindings();
         return rowId;
     }

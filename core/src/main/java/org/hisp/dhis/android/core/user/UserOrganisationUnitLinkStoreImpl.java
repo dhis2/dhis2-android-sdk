@@ -125,7 +125,7 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
 
     @Override
     public int delete() {
-        return databaseAdapter.delete(UserOrganisationUnitLinkModel.TABLE, null, null);
+        return databaseAdapter.delete(UserOrganisationUnitLinkModel.TABLE);
     }
 
 }

@@ -77,8 +77,8 @@ public class SqLiteDatabaseAdapter implements DatabaseAdapter {
     }
 
     @Override
-    public void delete(String table) {
-        delete(table, null, null);
+    public int delete(String table) {
+        return delete(table, "1", null);
     }
 
     private SQLiteDatabase database() {

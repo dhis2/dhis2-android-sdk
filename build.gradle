@@ -48,6 +48,9 @@ buildscript {
         // semantic, static analysis of the source code
         classpath "net.ltgt.gradle:gradle-errorprone-plugin:0.0.8"
 
+        // apt plugin for java
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
+
         // enables cloud features of gradle plugin
         classpath "com.gradle:build-scan-plugin:1.3"
     }

@@ -34,6 +34,12 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityInstanceUtils;
+import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -44,16 +50,15 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class RelationshipStoreTests extends AbsStoreTestCase {
+    // relationship attributes:
+    private static final String TRACKED_ENTITY_INSTANCE_A = "test_tei_a_uid";
+    private static final String TRACKED_ENTITY_INSTANCE_B = "test_tei_b_uid";
 
-    //Relationship attributes:
-    private static final String TRACKED_ENTITY_INSTANCE_A = "Tei A uid";
-    private static final String TRACKED_ENTITY_INSTANCE_B = "Tei B uid";
-
-    //RelationshipType (foreign key):
+    // relationshipType (foreign key):
     private static final long RELATIONSHIP_TYPE_ID = 3L;
-    private static final String RELATIONSHIP_TYPE = "test relationshipType uid";
+    private static final String RELATIONSHIP_TYPE = "test_relationship_type_uid";
 
-    //Relationship projection:
+    // relationship projection:
     private static final String[] RELATIONSHIP_PROJECTION = {
             RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A,
             RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B,
@@ -65,12 +70,27 @@ public class RelationshipStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
+
         relationshipStore = new RelationshipStoreImpl(databaseAdapter());
-        //Insert RelationshipType in RelationshipType table, such that it can be used as foreign key:
+
+        // Insert RelationshipType in RelationshipType table, such that it can be used as foreign key:
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(
                 RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE
         );
+
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, "test_tracked_entity_uid");
+        ContentValues orgUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, "test_organisation_unit_uid");
+
+        ContentValues trackedEntityInstanceA = CreateTrackedEntityInstanceUtils.create(
+                TRACKED_ENTITY_INSTANCE_A, "test_organisation_unit_uid", "test_tracked_entity_uid");
+        ContentValues trackedEntityInstanceB = CreateTrackedEntityInstanceUtils.create(
+                TRACKED_ENTITY_INSTANCE_B, "test_organisation_unit_uid", "test_tracked_entity_uid");
+
+        database().insert(OrganisationUnitModel.TABLE, null, orgUnit);
+        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstanceA);
+        database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstanceB);
         database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
     }
 
@@ -82,11 +102,8 @@ public class RelationshipStoreTests extends AbsStoreTestCase {
                 RELATIONSHIP_TYPE
         );
 
-        Cursor cursor = database().query(
-                RelationshipModel.TABLE,
-                RELATIONSHIP_PROJECTION,
-                null, null, null, null, null, null
-        );
+        Cursor cursor = database().query(RelationshipModel.TABLE,
+                RELATIONSHIP_PROJECTION, null, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(
@@ -106,6 +123,7 @@ public class RelationshipStoreTests extends AbsStoreTestCase {
                 TRACKED_ENTITY_INSTANCE_B,
                 deferredRelationshipType
         );
+
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(2L, deferredRelationshipType);
         database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
         database().setTransactionSuccessful();
@@ -116,6 +134,7 @@ public class RelationshipStoreTests extends AbsStoreTestCase {
                 RELATIONSHIP_PROJECTION,
                 null, null, null, null, null, null
         );
+
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(
                 TRACKED_ENTITY_INSTANCE_A,
@@ -124,8 +143,8 @@ public class RelationshipStoreTests extends AbsStoreTestCase {
         ).isExhausted();
     }
 
-    @Test
-    public void insert_shouldPersistRelationshipNullableInDatabase() {
+    @Test(expected = SQLiteConstraintException.class)
+    public void insert_shouldNotPersistRelationshipNullableInDatabase() {
         //Insert foreign keys in their respective tables:
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(
                 RELATIONSHIP_TYPE_ID,
@@ -148,19 +167,53 @@ public class RelationshipStoreTests extends AbsStoreTestCase {
                 TRACKED_ENTITY_INSTANCE_B,
                 RELATIONSHIP_TYPE
         );
-        database().delete(RelationshipTypeModel.TABLE,
-                RelationshipTypeModel.Columns.UID + "=?", new String[]{RELATIONSHIP_TYPE});
 
+        database().delete(RelationshipTypeModel.TABLE, RelationshipTypeModel.Columns.UID + "=?",
+                new String[]{RELATIONSHIP_TYPE});
+
+        Cursor cursor = database().query(RelationshipModel.TABLE, RELATIONSHIP_PROJECTION,
+                null, null, null, null, null);
+        assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test
+    public void delete_shouldDeleteRelationshipWhenDeletingTeiA() {
+        relationshipStore.insert(
+                TRACKED_ENTITY_INSTANCE_A,
+                TRACKED_ENTITY_INSTANCE_B,
+                RELATIONSHIP_TYPE
+        );
+
+        database().delete(TrackedEntityInstanceModel.TABLE, TrackedEntityInstanceModel.Columns.UID + "=?",
+                new String[]{TRACKED_ENTITY_INSTANCE_A});
+
+        Cursor cursor = database().query(RelationshipModel.TABLE, RELATIONSHIP_PROJECTION,
+                null, null, null, null, null);
+        assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test
+    public void delete_shouldDeleteRelationshipWhenDeletingTeiB() {
+        relationshipStore.insert(
+                TRACKED_ENTITY_INSTANCE_A,
+                TRACKED_ENTITY_INSTANCE_B,
+                RELATIONSHIP_TYPE
+        );
+
+        database().delete(TrackedEntityInstanceModel.TABLE, TrackedEntityInstanceModel.Columns.UID + "=?",
+                new String[]{TRACKED_ENTITY_INSTANCE_B});
+
+        Cursor cursor = database().query(RelationshipModel.TABLE, RELATIONSHIP_PROJECTION,
+                null, null, null, null, null);
+        assertThatCursor(cursor).isExhausted();
     }
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistRelationshipWithInvalidRelationshipTypeForeignKey() {
-        String WRONG_UID = "wrong";
         relationshipStore.insert(
                 TRACKED_ENTITY_INSTANCE_A,
                 TRACKED_ENTITY_INSTANCE_B,
-                WRONG_UID //supply the wrong uid
+                "wrong" //supply the wrong uid
         );
     }
-
 }

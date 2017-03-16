@@ -88,7 +88,8 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
     private static final String LATITUDE = "10.832152";
     private static final String LONGITUDE = "59.345231";
     private static final State STATE = State.TO_UPDATE;
-    //foreign keys to program:
+
+    // foreign keys to program:
     private static final long TRACKED_ENTITY_ID = 1L;
     private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
     private static final long RELATIONSHIP_TYPE_ID = 3L;
@@ -117,8 +118,9 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
         database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
         database().insert(ProgramModel.TABLE, null, program);
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
-        ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.createWithOrgUnit(
-                TRACKED_ENTITY_INSTANCE, ORGANISATION_UNIT);
+        // ContentValues trackedEntity = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
+        ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(
+                TRACKED_ENTITY_INSTANCE, ORGANISATION_UNIT, TRACKED_ENTITY_UID);
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
     }
@@ -179,8 +181,8 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
                 RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
         database().insert(ProgramModel.TABLE, null, program);
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(11L, deferredOrganisationUnit);
-        ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.createWithOrgUnit(
-                deferredTrackedEntityInstance, ORGANISATION_UNIT);
+        ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(
+                deferredTrackedEntityInstance, ORGANISATION_UNIT, TRACKED_ENTITY_UID);
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
         database().setTransactionSuccessful();
@@ -199,7 +201,6 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistNullableInDatabase() {
-
         long rowId = enrollmentStore.insert(UID, null, null, ORGANISATION_UNIT, PROGRAM, null, null, null, null,
                 TRACKED_ENTITY_INSTANCE, null, null, null);
         Cursor cursor = database().query(TABLE, PROJECTION, null, null, null, null, null);

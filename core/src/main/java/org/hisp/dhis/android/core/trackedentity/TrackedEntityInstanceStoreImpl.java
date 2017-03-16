@@ -39,34 +39,36 @@ import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
+class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             TrackedEntityInstanceModel.TABLE + " (" +
             TrackedEntityInstanceModel.Columns.UID + ", " +
             TrackedEntityInstanceModel.Columns.CREATED + ", " +
             TrackedEntityInstanceModel.Columns.LAST_UPDATED + ", " +
             TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT + ", " +
+            TrackedEntityInstanceModel.Columns.TRACKED_ENTITY + ", " +
             TrackedEntityInstanceModel.Columns.STATE +
-            ") " + "VALUES (?, ?, ?, ?, ?)";
+            ") " + "VALUES (?, ?, ?, ?, ?, ?)";
 
     private final SQLiteStatement insertRowStatement;
     private final DatabaseAdapter databaseAdapter;
 
-    public TrackedEntityInstanceStoreImpl(DatabaseAdapter databaseAdapter) {
+    TrackedEntityInstanceStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
         this.insertRowStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
     public long insert(@NonNull String uid, @Nullable Date created, @Nullable Date lastUpdated,
-                       @NonNull String organisationUnit, @Nullable State state) {
+            @NonNull String organisationUnit, @NonNull String trackedEntity, @Nullable State state) {
         insertRowStatement.clearBindings();
 
         sqLiteBind(insertRowStatement, 1, uid);
         sqLiteBind(insertRowStatement, 2, created);
         sqLiteBind(insertRowStatement, 3, lastUpdated);
         sqLiteBind(insertRowStatement, 4, organisationUnit);
-        sqLiteBind(insertRowStatement, 5, state);
+        sqLiteBind(insertRowStatement, 5, trackedEntity);
+        sqLiteBind(insertRowStatement, 6, state);
 
         return databaseAdapter.executeInsert(TrackedEntityInstanceModel.TABLE, insertRowStatement);
     }

@@ -47,6 +47,7 @@ public class TrackedEntityInstanceModelTests {
     private static final long ID = 11L;
     private static final String UID = "test_uid";
     private static final String ORGANISATION_UNIT = "test_organisationUnit";
+    private static final String TRACKED_ENTITY = "test_trackedEntity";
     private static final State STATE = State.ERROR;
 
     private final Date date;
@@ -65,9 +66,12 @@ public class TrackedEntityInstanceModelTests {
                 Columns.CREATED,
                 Columns.LAST_UPDATED,
                 Columns.ORGANISATION_UNIT,
+                Columns.TRACKED_ENTITY,
                 Columns.STATE
         });
-        cursor.addRow(new Object[]{ID, UID, dateString, dateString, ORGANISATION_UNIT, STATE});
+        cursor.addRow(new Object[]{
+                ID, UID, dateString, dateString, ORGANISATION_UNIT, TRACKED_ENTITY, STATE
+        });
         cursor.moveToFirst();
 
         TrackedEntityInstanceModel model = TrackedEntityInstanceModel.create(cursor);
@@ -78,6 +82,8 @@ public class TrackedEntityInstanceModelTests {
         assertThat(model.created()).isEqualTo(date);
         assertThat(model.lastUpdated()).isEqualTo(date);
         assertThat(model.organisationUnit()).isEqualTo(ORGANISATION_UNIT);
+        assertThat(model.trackedEntity()).isEqualTo(TRACKED_ENTITY);
+        assertThat(model.state()).isEqualTo(STATE);
     }
 
     @Test
@@ -88,6 +94,7 @@ public class TrackedEntityInstanceModelTests {
                 .created(date)
                 .lastUpdated(date)
                 .organisationUnit(ORGANISATION_UNIT)
+                .trackedEntity(TRACKED_ENTITY)
                 .state(STATE)
                 .build();
         ContentValues contentValues = model.toContentValues();
@@ -97,6 +104,7 @@ public class TrackedEntityInstanceModelTests {
         assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(Columns.ORGANISATION_UNIT)).isEqualTo(ORGANISATION_UNIT);
+        assertThat(contentValues.getAsString(Columns.TRACKED_ENTITY)).isEqualTo(TRACKED_ENTITY);
         assertThat(contentValues.getAsString(Columns.STATE)).isEqualTo(STATE.name());
     }
 }

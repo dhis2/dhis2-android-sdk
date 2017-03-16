@@ -238,6 +238,7 @@ public class TrackedEntityInstanceTests {
 
         assertThat(trackedEntityInstance.uid()).isEqualTo("CVUuL8RIpPI");
         assertThat(trackedEntityInstance.organisationUnit()).isEqualTo("DiszpKrYNg8");
+        assertThat(trackedEntityInstance.trackedEntity()).isEqualTo("nEenWmSyUEp");
         assertThat(trackedEntityInstance.relationships()).isEmpty();
 
         assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(0).trackedEntityAttribute()).isEqualTo("ruQQnf6rswq");

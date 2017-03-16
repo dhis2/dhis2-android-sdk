@@ -143,6 +143,4 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
                 programStage
         );
     }
-
-
 }

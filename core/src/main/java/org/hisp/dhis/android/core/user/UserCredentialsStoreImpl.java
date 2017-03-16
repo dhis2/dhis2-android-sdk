@@ -115,7 +115,7 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
 
     @Override
     public int delete() {
-        return databaseAdapter.delete(UserCredentialsModel.TABLE, null, null);
+        return databaseAdapter.delete(UserCredentialsModel.TABLE);
     }
 
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,

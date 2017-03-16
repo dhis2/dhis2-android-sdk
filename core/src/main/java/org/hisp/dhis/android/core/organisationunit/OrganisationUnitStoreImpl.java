@@ -153,7 +153,7 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
 
     @Override
     public int delete() {
-        return databaseAdapter.delete(OrganisationUnitModel.TABLE, null, null);
+        return databaseAdapter.delete(OrganisationUnitModel.TABLE);
     }
 
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid,

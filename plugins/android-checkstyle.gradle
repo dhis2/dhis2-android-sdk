@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -25,4 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- $($PACKAGE)
+
+apply plugin: "checkstyle"
+
+afterEvaluate {
+    android.libraryVariants.each { variant ->
+        def checkstyleTask = tasks.create("checkstyle${variant.name.capitalize()}", Checkstyle)
+
+        checkstyleTask.group = "verification"
+        checkstyleTask.description = "Run Checkstyle for the ${variant.name}"
+
+        // Fail early.
+        checkstyleTask.ignoreFailures = false
+
+        // Do not output results into console.
+        checkstyleTask.showViolations = false
+
+        checkstyleTask.configFile = rootProject.file(
+                "plugins/android-checkstyle-style.xml"
+        )
+
+        checkstyleTask.include(
+                "**/*.java"
+        )
+
+        checkstyleTask.exclude(
+                "**/R.java", "**/BuildConfig.java"
+        )
+
+        def compileTask = variant.javaCompile
+        checkstyleTask.source = compileTask.source
+        checkstyleTask.classpath = compileTask.classpath.plus(project.files(android.bootClasspath))
+        checkstyleTask.dependsOn(compileTask)
+
+        def checkTask = tasks.getByName("check")
+        checkTask.dependsOn(checkstyleTask)
+    }
+}

@@ -38,7 +38,7 @@ import java.util.Date;
 public interface TrackedEntityInstanceStore {
     long insert(
             @NonNull String uid, @Nullable Date created, @Nullable Date lastUpdated,
-            @NonNull String organisationUnit, @Nullable State state);
+            @NonNull String organisationUnit, @NonNull String trackedEntity, @Nullable State state);
 
     int delete();
 

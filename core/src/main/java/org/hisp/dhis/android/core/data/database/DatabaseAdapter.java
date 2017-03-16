@@ -107,7 +107,7 @@ public interface DatabaseAdapter {
      *
      * @param table The affected table
      */
-    void delete(String table);
+    int delete(String table);
 
 
     /**

@@ -643,11 +643,14 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             TrackedEntityInstanceModel.Columns.CREATED + " TEXT," +
             TrackedEntityInstanceModel.Columns.LAST_UPDATED + " TEXT," +
             TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
+            TrackedEntityInstanceModel.Columns.TRACKED_ENTITY + " TEXT NOT NULL," +
             TrackedEntityInstanceModel.Columns.STATE + " TEXT," +
             " FOREIGN KEY (" + TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT + ")" +
             " REFERENCES " + OrganisationUnitModel.TABLE +
-            " (" + OrganisationUnitModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+            " (" + OrganisationUnitModel.Columns.UID + ")" + " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+            " FOREIGN KEY (" + TrackedEntityInstanceModel.Columns.TRACKED_ENTITY + ")" +
+            " REFERENCES " + TrackedEntityModel.TABLE +
+            " (" + TrackedEntityModel.Columns.UID + ")" + " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             ");";
 
     private static final String CREATE_ENROLLMENT_TABLE = "CREATE TABLE " + EnrollmentModel.TABLE + " (" +

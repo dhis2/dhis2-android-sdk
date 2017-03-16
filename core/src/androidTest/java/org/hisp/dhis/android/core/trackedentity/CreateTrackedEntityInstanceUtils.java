@@ -33,20 +33,18 @@ import android.content.ContentValues;
 import org.hisp.dhis.android.core.common.State;
 
 public class CreateTrackedEntityInstanceUtils {
-
-    private static final long ID = 11L;
     private static final State STATE = State.ERROR;
 
     // used for timestamps
     private static final String DATE = "2011-12-24T12:24:25.203";
 
-    public static ContentValues createWithOrgUnit(String uid, String organisationUnit) {
+    public static ContentValues create(String uid, String organisationUnit, String trackedEntity) {
         ContentValues trackedEntityInstance = new ContentValues();
-//        trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.ID, ID);
         trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.UID, uid);
         trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.CREATED, DATE);
         trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.LAST_UPDATED, DATE);
         trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT, organisationUnit);
+        trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.TRACKED_ENTITY, trackedEntity);
         trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.STATE, STATE.name());
         return trackedEntityInstance;
     }

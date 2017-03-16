@@ -38,21 +38,15 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableDataModel;
 
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel.Columns.UID;
-
 @AutoValue
 public abstract class TrackedEntityInstanceModel extends BaseIdentifiableDataModel {
-
     public static final String TABLE = "TrackedEntityInstance";
 
     public static class Columns extends BaseIdentifiableDataModel.Columns {
         public static final String UID = "uid";
         public static final String ORGANISATION_UNIT = "organisationUnit";
+        public static final String TRACKED_ENTITY = "trackedEntity";
     }
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @NonNull
     public static TrackedEntityInstanceModel.Builder builder() {
@@ -64,17 +58,28 @@ public abstract class TrackedEntityInstanceModel extends BaseIdentifiableDataMod
         return AutoValue_TrackedEntityInstanceModel.createFromCursor(cursor);
     }
 
-    @ColumnName(UID)
+    @NonNull
+    public abstract ContentValues toContentValues();
+
+    @Nullable
+    @ColumnName(Columns.UID)
     public abstract String uid();
 
-    @ColumnName(ORGANISATION_UNIT)
+    @Nullable
+    @ColumnName(Columns.ORGANISATION_UNIT)
     public abstract String organisationUnit();
+
+    @Nullable
+    @ColumnName(Columns.TRACKED_ENTITY)
+    public abstract String trackedEntity();
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableDataModel.Builder<Builder> {
-        public abstract Builder uid(@Nullable String uid);
+        public abstract Builder uid(String uid);
 
-        public abstract Builder organisationUnit(@Nullable String organisationUnit);
+        public abstract Builder organisationUnit(String organisationUnit);
+
+        public abstract Builder trackedEntity(String trackedEntity);
 
         public abstract TrackedEntityInstanceModel build();
     }

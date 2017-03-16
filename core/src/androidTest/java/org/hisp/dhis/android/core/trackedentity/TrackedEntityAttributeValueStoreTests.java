@@ -52,10 +52,11 @@ public class TrackedEntityAttributeValueStoreTests extends AbsStoreTestCase {
     private static final State STATE = State.SYNCED;
 
     //TrackedEntityAttributeValueModel:
-    private static final String VALUE = "TestValue";
-    private static final String TRACKED_ENTITY_ATTRIBUTE = "TestTrackedEntityAttributeUid";
-    private static final String TRACKED_ENTITY_INSTANCE = "TestTrackedEntityInstanceUid";
-    private static final String ORGANIZATION_UNIT = "TestOrganizationUnitUid";
+    private static final String VALUE = "test_value";
+    private static final String TRACKED_ENTITY_ATTRIBUTE = "test_trackedEntityAttributeUid";
+    private static final String TRACKED_ENTITY_INSTANCE = "test_trackedEntityInstanceUid";
+    private static final String ORGANIZATION_UNIT = "test_organizationUnitUid";
+    private static final String TRACKED_ENTITY = "test_trackedEntity";
 
     private static final String[] PROJECTION = {
             TrackedEntityAttributeValueModel.Columns.STATE,
@@ -72,24 +73,24 @@ public class TrackedEntityAttributeValueStoreTests extends AbsStoreTestCase {
         this.store = new TrackedEntityAttributeValueStoreImpl(databaseAdapter());
 
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANIZATION_UNIT);
-        ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.createWithOrgUnit(
-                TRACKED_ENTITY_INSTANCE, ORGANIZATION_UNIT);
-        ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.create(1L, TRACKED_ENTITY_ATTRIBUTE,
-                null);
+        ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, TRACKED_ENTITY);
+        ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(
+                TRACKED_ENTITY_INSTANCE, ORGANIZATION_UNIT, TRACKED_ENTITY);
+        ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils
+                .create(1L, TRACKED_ENTITY_ATTRIBUTE, null);
 
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
+        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
         database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
     }
 
     @Test
     public void insert_shouldPersistTrackedEntityAttributeValueInDatabase() {
-
         long rowId = store.insert(STATE, VALUE, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE);
 
         Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
-                PROJECTION,
-                null, null, null, null, null);
+                PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(STATE, VALUE, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE)
@@ -103,8 +104,8 @@ public class TrackedEntityAttributeValueStoreTests extends AbsStoreTestCase {
 
         database().beginTransaction();
         long rowId = store.insert(STATE, VALUE, deferredTrackedEntityAttribute, deferredTrackedEntityInstance);
-        ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.createWithOrgUnit(
-                deferredTrackedEntityInstance, ORGANIZATION_UNIT);
+        ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(
+                deferredTrackedEntityInstance, ORGANIZATION_UNIT, TRACKED_ENTITY);
         ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.create(3L,
                 deferredTrackedEntityAttribute, null);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);

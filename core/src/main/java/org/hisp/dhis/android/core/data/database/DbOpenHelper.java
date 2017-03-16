@@ -308,16 +308,21 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             ");";
 
-    private static final String CREATE_RELATIONSHIP_TABLE =
-            "CREATE TABLE " + RelationshipModel.TABLE + " (" +
-                    RelationshipModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A + " TEXT," +
-                    RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B + " TEXT," +
-                    RelationshipModel.Columns.RELATIONSHIP_TYPE + " TEXT NOT NULL," +
-                    " FOREIGN KEY (" + RelationshipModel.Columns.RELATIONSHIP_TYPE + ") " +
-                    " REFERENCES " + RelationshipTypeModel.TABLE + " (" + RelationshipTypeModel.Columns.UID + ")" +
-                    " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
-                    ");";
+    private static final String CREATE_RELATIONSHIP_TABLE = "CREATE TABLE " + RelationshipModel.TABLE + " (" +
+            RelationshipModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A + " TEXT NOT NULL," +
+            RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B + " TEXT NOT NULL," +
+            RelationshipModel.Columns.RELATIONSHIP_TYPE + " TEXT NOT NULL," +
+            " FOREIGN KEY (" + RelationshipModel.Columns.RELATIONSHIP_TYPE + ") " +
+            " REFERENCES " + RelationshipTypeModel.TABLE + " (" + RelationshipTypeModel.Columns.UID + ")" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+            " FOREIGN KEY (" + RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A + ") " +
+            " REFERENCES " + TrackedEntityInstanceModel.TABLE + " (" + TrackedEntityInstanceModel.Columns.UID + ")" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+            " FOREIGN KEY (" + RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B + ") " +
+            " REFERENCES " + TrackedEntityInstanceModel.TABLE + " (" + TrackedEntityInstanceModel.Columns.UID + ")" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+            ");";
 
     private static final String CREATE_RELATIONSHIP_TYPE_TABLE = "CREATE TABLE " +
             RelationshipTypeModel.TABLE + " (" +
@@ -646,11 +651,11 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             TrackedEntityInstanceModel.Columns.TRACKED_ENTITY + " TEXT NOT NULL," +
             TrackedEntityInstanceModel.Columns.STATE + " TEXT," +
             " FOREIGN KEY (" + TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT + ")" +
-            " REFERENCES " + OrganisationUnitModel.TABLE +
-            " (" + OrganisationUnitModel.Columns.UID + ")" + " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+            " REFERENCES " + OrganisationUnitModel.TABLE + " (" + OrganisationUnitModel.Columns.UID + ")" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             " FOREIGN KEY (" + TrackedEntityInstanceModel.Columns.TRACKED_ENTITY + ")" +
-            " REFERENCES " + TrackedEntityModel.TABLE +
-            " (" + TrackedEntityModel.Columns.UID + ")" + " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+            " REFERENCES " + TrackedEntityModel.TABLE + " (" + TrackedEntityModel.Columns.UID + ")" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             ");";
 
     private static final String CREATE_ENROLLMENT_TABLE = "CREATE TABLE " + EnrollmentModel.TABLE + " (" +

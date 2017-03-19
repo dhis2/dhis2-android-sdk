@@ -2,7 +2,9 @@ package org.hisp.dhis.android.rules;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
 
@@ -15,7 +17,7 @@ public final class RuleEngine {
     private final List<ProgramRuleVariable> programRuleVariables;
     private final List<Event> events;
 
-    public RuleEngine(ExpressionEvaluator evaluator,
+    RuleEngine(ExpressionEvaluator evaluator,
             List<ProgramRule> programRules,
             List<ProgramRuleVariable> programRuleVariables,
             List<Event> events) {
@@ -49,12 +51,12 @@ public final class RuleEngine {
     }
 
     @Nonnull
-    public List<RuleEffect> calculate(@Nonnull Event currentEvent) {
+    public Callable<List<RuleEffect>> calculate(@Nonnull Event currentEvent) {
         if (currentEvent == null) {
             throw new IllegalArgumentException("currentEvent == null");
         }
 
-        return new ArrayList<>();
+        return new RuleExecution(new HashMap<String, ProgramRuleVariableValue>());
     }
 
     public static class Builder {

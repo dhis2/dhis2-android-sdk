@@ -39,7 +39,6 @@ import java.util.Date;
 
 @AutoValue
 public abstract class TrackedEntity extends BaseNameableObject {
-
     public static final Field<TrackedEntity, String> uid = Field.create(UID);
     public static final Field<TrackedEntity, String> code = Field.create(CODE);
     public static final Field<TrackedEntity, String> name = Field.create(NAME);

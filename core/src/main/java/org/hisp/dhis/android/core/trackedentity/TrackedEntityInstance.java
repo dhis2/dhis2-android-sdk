@@ -51,6 +51,7 @@ public abstract class TrackedEntityInstance {
     private static final String ORGANISATION_UNIT = "orgUnit";
     private static final String TRACKED_ENTITY_ATTRIBUTES = "attributes";
     private static final String RELATIONSHIPS = "relationships";
+    private static final String TRACKED_ENTITY = "trackedEntity";
 
     public static final Field<TrackedEntityInstance, String> uid = Field.create(UID);
     public static final Field<TrackedEntityInstance, Date> created = Field.create(CREATED);
@@ -73,9 +74,15 @@ public abstract class TrackedEntityInstance {
     @JsonProperty(LAST_UPDATED)
     public abstract Date lastUpdated();
 
+    @Nullable
     @JsonProperty(ORGANISATION_UNIT)
     public abstract String organisationUnit();
 
+    @Nullable
+    @JsonProperty(TRACKED_ENTITY)
+    public abstract String trackedEntity();
+
+    @Nullable
     @JsonProperty(TRACKED_ENTITY_ATTRIBUTES)
     public abstract List<TrackedEntityAttributeValue> trackedEntityAttributeValues();
 
@@ -89,11 +96,11 @@ public abstract class TrackedEntityInstance {
             @JsonProperty(CREATED) Date created,
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
             @JsonProperty(ORGANISATION_UNIT) String organisationUnit,
+            @JsonProperty(TRACKED_ENTITY) String trackedEntity,
             @JsonProperty(TRACKED_ENTITY_ATTRIBUTES) List<TrackedEntityAttributeValue> trackedEntityAttributeValues,
             @JsonProperty(RELATIONSHIPS) List<Relationship> relationships) {
-        return new AutoValue_TrackedEntityInstance(uid, created, lastUpdated, organisationUnit,
+        return new AutoValue_TrackedEntityInstance(uid, created, lastUpdated, organisationUnit, trackedEntity,
                 safeUnmodifiableList(trackedEntityAttributeValues),
                 safeUnmodifiableList(relationships));
     }
-
 }

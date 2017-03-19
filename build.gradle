@@ -92,6 +92,10 @@ ext {
             retrofit        : "2.1.0",
             okhttp          : "3.5.0",
 
+            // @NonNull, @Nullable
+            // annotations for java modules
+            jsr305          : "3.0.1",
+
             // test dependencies
             junit           : "4.12",
             assertj         : "3.5.2",

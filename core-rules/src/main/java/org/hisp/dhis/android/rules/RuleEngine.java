@@ -6,18 +6,23 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import static java.util.Collections.unmodifiableList;
+
 
 public final class RuleEngine {
     private final ExpressionEvaluator evaluator;
     private final List<ProgramRule> programRules;
     private final List<ProgramRuleVariable> programRuleVariables;
+    private final List<Event> events;
 
-    private RuleEngine(ExpressionEvaluator evaluator,
+    public RuleEngine(ExpressionEvaluator evaluator,
             List<ProgramRule> programRules,
-            List<ProgramRuleVariable> programRuleVariables) {
+            List<ProgramRuleVariable> programRuleVariables,
+            List<Event> events) {
         this.evaluator = evaluator;
         this.programRules = programRules;
         this.programRuleVariables = programRuleVariables;
+        this.events = events;
     }
 
     public static Builder builder(@Nonnull ExpressionEvaluator evaluator) {
@@ -38,10 +43,25 @@ public final class RuleEngine {
         return programRuleVariables;
     }
 
+    @Nonnull
+    public List<Event> events() {
+        return events;
+    }
+
+    @Nonnull
+    public List<RuleEffect> calculate(@Nonnull Event currentEvent) {
+        if (currentEvent == null) {
+            throw new IllegalArgumentException("currentEvent == null");
+        }
+
+        return new ArrayList<>();
+    }
+
     public static class Builder {
         private final ExpressionEvaluator evaluator;
         private List<ProgramRule> programRules;
         private List<ProgramRuleVariable> programRuleVariables;
+        private List<Event> events;
 
         Builder(@Nonnull ExpressionEvaluator evaluator) {
             this.evaluator = evaluator;
@@ -52,7 +72,7 @@ public final class RuleEngine {
                 throw new IllegalArgumentException("programRules == null");
             }
 
-            this.programRules = Collections.unmodifiableList(new ArrayList<>(programRules));
+            this.programRules = unmodifiableList(new ArrayList<>(programRules));
             return this;
         }
 
@@ -62,12 +82,25 @@ public final class RuleEngine {
                 throw new IllegalArgumentException("programRuleVariables == null");
             }
 
-            this.programRuleVariables = Collections.unmodifiableList(new ArrayList<>(programRuleVariables));
+            this.programRuleVariables = unmodifiableList(new ArrayList<>(programRuleVariables));
             return this;
         }
 
+        public Builder events(@Nonnull List<Event> events) {
+            if (events != null) {
+                this.events = Collections.unmodifiableList(new ArrayList<>(events));
+            }
+            return this;
+        }
+
+
         public RuleEngine build() {
-            return new RuleEngine(evaluator, programRules, programRuleVariables);
+            // avoiding null collections
+            if (events == null) {
+                events = Collections.unmodifiableList(new ArrayList<Event>());
+            }
+
+            return new RuleEngine(evaluator, programRules, programRuleVariables, events);
         }
     }
 }

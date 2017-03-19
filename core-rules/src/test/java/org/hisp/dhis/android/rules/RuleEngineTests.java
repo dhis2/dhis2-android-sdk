@@ -15,6 +15,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(JUnit4.class)
 public class RuleEngineTests {
+
     @Mock
     private ExpressionEvaluator evaluator;
 
@@ -23,6 +24,9 @@ public class RuleEngineTests {
 
     @Mock
     private ProgramRuleVariable programRuleVariable;
+
+    @Mock
+    private Event event;
 
     @Before
     public void setUp() throws Exception {
@@ -99,6 +103,23 @@ public class RuleEngineTests {
     }
 
     @Test
+    public void eventsShouldBeCopiedWithinBuilder() {
+        List<Event> events = new ArrayList<>();
+        events.add(event);
+
+        RuleEngine.Builder builder = RuleEngine.builder(evaluator)
+                .events(events)
+                .programRules(new ArrayList<ProgramRule>())
+                .programRuleVariables(new ArrayList<ProgramRuleVariable>());
+
+        events.clear();
+        RuleEngine ruleEngine = builder.build();
+
+        assertThat(ruleEngine.events().size()).isEqualTo(1);
+        assertThat(ruleEngine.events()).contains(event);
+    }
+
+    @Test
     public void programRulesShouldBeImmutable() {
         List<ProgramRule> programRules = new ArrayList<>();
         programRules.add(programRule);
@@ -131,6 +152,58 @@ public class RuleEngineTests {
             fail("UnsupportedOperationException expected, but nothing was thrown");
         } catch (UnsupportedOperationException exception) {
             // noop
+        }
+    }
+
+    @Test
+    public void eventsShouldBeImmutable() {
+        List<Event> events = new ArrayList<>();
+        events.add(event);
+
+        RuleEngine ruleEngine = RuleEngine.builder(evaluator)
+                .events(events)
+                .programRules(new ArrayList<ProgramRule>())
+                .programRuleVariables(new ArrayList<ProgramRuleVariable>())
+                .build();
+
+        try {
+            ruleEngine.events().add(event);
+            fail("UnsupportedOperationException expected, but nothing was thrown");
+        } catch (UnsupportedOperationException exception) {
+            // noop
+        }
+    }
+
+    @Test
+    public void builderShouldSupplyImmutableEmptyEventList() {
+        RuleEngine ruleEngine = RuleEngine.builder(evaluator)
+                .programRules(new ArrayList<ProgramRule>())
+                .programRuleVariables(new ArrayList<ProgramRuleVariable>())
+                .build();
+
+        assertThat(ruleEngine.events()).isNotNull();
+        assertThat(ruleEngine.events()).isEmpty();
+
+        try {
+            ruleEngine.events().add(event);
+            fail("UnsupportedOperationException expected, but nothing was thrown");
+        } catch (UnsupportedOperationException exception) {
+            // noop
+        }
+    }
+
+    @Test
+    public void calculateShouldThrowIfNull() {
+        RuleEngine ruleEngine = RuleEngine.builder(evaluator)
+                .programRules(new ArrayList<ProgramRule>())
+                .programRuleVariables(new ArrayList<ProgramRuleVariable>())
+                .build();
+
+        try {
+            ruleEngine.calculate(null);
+            fail("IllegalArgumentException expected, but nothing was thrown");
+        } catch (IllegalArgumentException exception) {
+            assertThat(exception.getMessage()).isEqualTo("currentEvent == null");
         }
     }
 }

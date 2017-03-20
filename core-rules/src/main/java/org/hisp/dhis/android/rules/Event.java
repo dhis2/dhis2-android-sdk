@@ -48,7 +48,7 @@ public abstract class Event {
 
         @Override
         public int compare(Event first, Event second) {
-            return second.eventDate().compareTo(first.eventDate());
+            return first.eventDate().compareTo(second.eventDate());
         }
     }
 }

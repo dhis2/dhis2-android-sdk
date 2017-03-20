@@ -4,6 +4,7 @@ import com.google.auto.value.AutoValue;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import javax.annotation.Nonnull;
 
 @AutoValue
 public abstract class Event {
+    public static final Comparator<Event> EVENT_DATE_COMPARATOR = new EventDateComparator();
 
     @Nonnull
     public abstract String event();
@@ -40,5 +42,13 @@ public abstract class Event {
             @Nonnull List<DataValue> dataValues) {
         return new AutoValue_Event(event, status, programStage, eventDate, dueDate,
                 Collections.unmodifiableList(new ArrayList<>(dataValues)));
+    }
+
+    private static class EventDateComparator implements Comparator<Event> {
+
+        @Override
+        public int compare(Event first, Event second) {
+            return second.eventDate().compareTo(first.eventDate());
+        }
     }
 }

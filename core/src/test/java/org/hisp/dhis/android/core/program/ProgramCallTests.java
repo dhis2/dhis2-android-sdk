@@ -290,7 +290,6 @@ public class ProgramCallTests {
                         ProgramTrackedEntityAttribute.description, ProgramTrackedEntityAttribute.displayDescription,
                         ProgramTrackedEntityAttribute.allowFutureDate, ProgramTrackedEntityAttribute.deleted,
                         ProgramTrackedEntityAttribute.displayInList, ProgramTrackedEntityAttribute.mandatory,
-                        ProgramTrackedEntityAttribute.valueType,
                         ProgramTrackedEntityAttribute.trackedEntityAttribute.with(
                                 TrackedEntityAttribute.uid, TrackedEntityAttribute.code,
                                 TrackedEntityAttribute.created, TrackedEntityAttribute.lastUpdated,

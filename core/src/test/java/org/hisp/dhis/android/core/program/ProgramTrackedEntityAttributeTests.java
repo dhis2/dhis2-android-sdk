@@ -32,7 +32,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.ValueType;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -94,7 +93,6 @@ public class ProgramTrackedEntityAttributeTests {
         assertThat(programTrackedEntityAttribute.mandatory()).isEqualTo(false);
         assertThat(programTrackedEntityAttribute.trackedEntityAttribute().uid()).isEqualTo("cejWyOfXge6");
         assertThat(programTrackedEntityAttribute.program().uid()).isEqualTo("IpHINAT79UW");
-        assertThat(programTrackedEntityAttribute.valueType()).isEqualTo(ValueType.TEXT);
         assertThat(programTrackedEntityAttribute.allowFutureDate()).isEqualTo(false);
         assertThat(programTrackedEntityAttribute.displayInList()).isEqualTo(false);
     }

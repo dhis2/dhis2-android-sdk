@@ -33,7 +33,6 @@ import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,7 +55,6 @@ public class ProgramTrackedEntityAttributeModelTests {
     private static final String DISPLAY_DESCRIPTION = "test_display_description";
     private static final Boolean MANDATORY = true;
     private static final String TRACKED_ENTITY_ATTRIBUTE = "test_tracked_entity_attribute";
-    private static final ValueType VALUE_TYPE = ValueType.BOOLEAN;
     private static final Boolean ALLOW_FUTURE_DATES = false;
     private static final Boolean DISPLAY_IN_LIST = true;
 
@@ -71,27 +69,26 @@ public class ProgramTrackedEntityAttributeModelTests {
     @Test
     public void create_shouldConvertToModel() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
-               Columns.ID,
-               Columns.UID,
-               Columns.CODE,
-               Columns.NAME,
-               Columns.DISPLAY_NAME,
-               Columns.CREATED,
-               Columns.LAST_UPDATED,
-               Columns.SHORT_NAME,
-               Columns.DISPLAY_SHORT_NAME,
-               Columns.DESCRIPTION,
-               Columns.DISPLAY_DESCRIPTION,
-               Columns.MANDATORY,
-               Columns.TRACKED_ENTITY_ATTRIBUTE,
-               Columns.VALUE_TYPE,
-               Columns.ALLOW_FUTURE_DATES,
-               Columns.DISPLAY_IN_LIST
+                Columns.ID,
+                Columns.UID,
+                Columns.CODE,
+                Columns.NAME,
+                Columns.DISPLAY_NAME,
+                Columns.CREATED,
+                Columns.LAST_UPDATED,
+                Columns.SHORT_NAME,
+                Columns.DISPLAY_SHORT_NAME,
+                Columns.DESCRIPTION,
+                Columns.DISPLAY_DESCRIPTION,
+                Columns.MANDATORY,
+                Columns.TRACKED_ENTITY_ATTRIBUTE,
+                Columns.ALLOW_FUTURE_DATES,
+                Columns.DISPLAY_IN_LIST
         });
         cursor.addRow(new Object[]{
                 ID, UID, CODE, NAME, DISPLAY_NAME, dateString, dateString,
                 SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION,
-                toInteger(MANDATORY), TRACKED_ENTITY_ATTRIBUTE, VALUE_TYPE,
+                toInteger(MANDATORY), TRACKED_ENTITY_ATTRIBUTE,
                 toInteger(ALLOW_FUTURE_DATES), toInteger(DISPLAY_IN_LIST)
         });
         cursor.moveToFirst();
@@ -112,7 +109,6 @@ public class ProgramTrackedEntityAttributeModelTests {
         assertThat(model.displayDescription()).isEqualTo(DISPLAY_DESCRIPTION);
         assertThat(model.mandatory()).isEqualTo(MANDATORY);
         assertThat(model.trackedEntityAttribute()).isEqualTo(TRACKED_ENTITY_ATTRIBUTE);
-        assertThat(model.valueType()).isEqualTo(VALUE_TYPE);
         assertThat(model.allowFutureDates()).isEqualTo(ALLOW_FUTURE_DATES);
         assertThat(model.displayInList()).isEqualTo(DISPLAY_IN_LIST);
     }
@@ -133,7 +129,6 @@ public class ProgramTrackedEntityAttributeModelTests {
                 .displayDescription(DISPLAY_DESCRIPTION)
                 .mandatory(MANDATORY)
                 .trackedEntityAttribute(TRACKED_ENTITY_ATTRIBUTE)
-                .valueType(VALUE_TYPE)
                 .allowFutureDates(ALLOW_FUTURE_DATES)
                 .displayInList(DISPLAY_IN_LIST)
                 .build();
@@ -152,7 +147,6 @@ public class ProgramTrackedEntityAttributeModelTests {
         assertThat(contentValues.getAsString(Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
         assertThat(contentValues.getAsBoolean(Columns.MANDATORY)).isEqualTo(MANDATORY);
         assertThat(contentValues.getAsString(Columns.TRACKED_ENTITY_ATTRIBUTE)).isEqualTo(TRACKED_ENTITY_ATTRIBUTE);
-        assertThat(ValueType.valueOf(contentValues.getAsString(Columns.VALUE_TYPE))).isEqualTo(VALUE_TYPE);
         assertThat(contentValues.getAsBoolean(Columns.ALLOW_FUTURE_DATES)).isEqualTo(ALLOW_FUTURE_DATES);
         assertThat(contentValues.getAsBoolean(Columns.DISPLAY_IN_LIST)).isEqualTo(DISPLAY_IN_LIST);
     }

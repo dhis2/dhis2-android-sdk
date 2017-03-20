@@ -459,7 +459,6 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ProgramTrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION + " TEXT," +
             ProgramTrackedEntityAttributeModel.Columns.MANDATORY + " INTEGER," +
             ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT NOT NULL," +
-            ProgramTrackedEntityAttributeModel.Columns.VALUE_TYPE + " TEXT," +
             ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATES + " INTEGER," +
             ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST + " INTEGER," +
             ProgramTrackedEntityAttributeModel.Columns.PROGRAM + " TEXT NOT NULL," +

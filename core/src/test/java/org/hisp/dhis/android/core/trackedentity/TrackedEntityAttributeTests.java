@@ -43,7 +43,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class TrackedEntityAttributeTests {
 
     @Test
-    public void trackedEntity_shouldMapFromJsonString() throws IOException, ParseException {
+    public void trackedEntityAttribute_shouldMapFromJsonString() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
         TrackedEntityAttribute trackedEntityAttribute = objectMapper.readValue("{\n" +
                 "\n" +
@@ -87,8 +87,10 @@ public class TrackedEntityAttributeTests {
                 "    },\n" +
                 "    \"translations\": [ ],\n" +
                 "    \"userGroupAccesses\": [ ],\n" +
-                "    \"attributeValues\": [ ]\n" +
-                "\n" +
+                "    \"attributeValues\": [ ],\n" +
+                "    \"optionSet\": {\n" +
+                "        \"id\": \"xjA5E9MimMU\"\n" +
+                "     }\n" +
                 "}", TrackedEntityAttribute.class);
 
         assertThat(trackedEntityAttribute.lastUpdated()).isEqualTo(
@@ -106,6 +108,7 @@ public class TrackedEntityAttributeTests {
         assertThat(trackedEntityAttribute.displayOnVisitSchedule()).isFalse();
         assertThat(trackedEntityAttribute.generated()).isFalse();
         assertThat(trackedEntityAttribute.inherit()).isFalse();
+        assertThat(trackedEntityAttribute.optionSet().uid()).isEqualTo("xjA5E9MimMU");
         assertThat(trackedEntityAttribute.orgUnitScope()).isFalse();
         assertThat(trackedEntityAttribute.searchScope()).isEqualTo(TrackedEntityAttributeSearchScope.SEARCH_ORG_UNITS);
         assertThat(trackedEntityAttribute.programScope()).isFalse();

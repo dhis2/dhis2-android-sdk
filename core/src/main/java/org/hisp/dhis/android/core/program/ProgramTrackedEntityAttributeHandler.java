@@ -77,7 +77,7 @@ public class ProgramTrackedEntityAttributeHandler {
                         programTrackedEntityAttribute.displayDescription(),
                         programTrackedEntityAttribute.mandatory(),
                         programTrackedEntityAttribute.trackedEntityAttribute().uid(),
-                        programTrackedEntityAttribute.valueType(), programTrackedEntityAttribute.allowFutureDate(),
+                        programTrackedEntityAttribute.allowFutureDate(),
                         programTrackedEntityAttribute.displayInList(),
                         programTrackedEntityAttribute.program().uid(), programTrackedEntityAttribute.uid());
 
@@ -92,7 +92,6 @@ public class ProgramTrackedEntityAttributeHandler {
                             programTrackedEntityAttribute.displayDescription(),
                             programTrackedEntityAttribute.mandatory(),
                             programTrackedEntityAttribute.trackedEntityAttribute().uid(),
-                            programTrackedEntityAttribute.valueType(),
                             programTrackedEntityAttribute.allowFutureDate(),
                             programTrackedEntityAttribute.displayInList(),
                             programTrackedEntityAttribute.program().uid()

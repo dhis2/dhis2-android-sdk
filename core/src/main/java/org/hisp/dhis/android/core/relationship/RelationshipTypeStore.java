@@ -45,5 +45,17 @@ public interface RelationshipTypeStore {
             @NonNull String aIsToB,
             @NonNull String bIsToA);
 
-    void close();
+    int update(
+            @NonNull String uid,
+            @Nullable String code,
+            @NonNull String name,
+            @Nullable String displayName,
+            @Nullable Date created,
+            @Nullable Date lastUpdated,
+            @NonNull String aIsToB,
+            @NonNull String bIsToA,
+            @NonNull String whereRelationshipTypeUid
+    );
+
+    int delete(@NonNull String uid);
 }

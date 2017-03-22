@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.After;
@@ -48,7 +47,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -204,12 +206,15 @@ public class OptionSetCallTests extends AbsStoreTestCase {
         OptionSetService optionSetService = retrofit.create(OptionSetService.class);
         OptionSetStore optionSetStore = new OptionSetStoreImpl(databaseAdapter());
         OptionStore optionStore = new OptionStoreImpl(databaseAdapter());
-        OptionHandler optionHandler = new OptionHandler(optionStore);
-        OptionSetHandler optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
-        optionSetCall = new OptionSetCall(optionSetService, optionSetHandler, databaseAdapter(), resourceHandler);
+        Set<String> uids = new HashSet<>();
+        uids.add("POc7DkGU3QU");
+
+
+        optionSetCall = new OptionSetCall(
+                optionSetService, optionSetStore, databaseAdapter(), resourceStore, uids, new Date(),
+                optionStore);
 
     }
 

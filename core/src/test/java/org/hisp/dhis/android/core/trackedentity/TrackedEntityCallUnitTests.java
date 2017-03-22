@@ -27,14 +27,14 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 import org.assertj.core.util.Sets;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.junit.Before;
@@ -44,13 +44,13 @@ import org.junit.runners.JUnit4;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 
 import okhttp3.Headers;
 import retrofit2.Response;
@@ -58,10 +58,8 @@ import retrofit2.Response;
 import static junit.framework.Assert.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -75,13 +73,16 @@ public class TrackedEntityCallUnitTests {
 
     @Mock
     @SuppressWarnings("CannotMockFinalClass")
-    private SQLiteDatabase database;
+    private DatabaseAdapter database;
 
     @Mock
-    private TrackedEntityStore store;
+    private TrackedEntityStore trackedEntityStore;
 
     @Mock
     private ResourceStore resourceStore;
+
+    @Mock
+    private Transaction transaction;
 
     @Mock
     private TrackedEntityService service;
@@ -97,17 +98,11 @@ public class TrackedEntityCallUnitTests {
     private TrackedEntity trackedEntity;
 
     @Mock
-    private Date created;
-
-    @Mock
-    private Date lastUpdated;
+    private Date created, lastUpdated;
 
     //Captors for the service arguments:
     @Captor
-    private ArgumentCaptor<Fields<TrackedEntity>> filterCaptor;
-
-//    @Captor
-//    private ArgumentCaptor<Map<String, String>> queryMapCaptor;
+    private ArgumentCaptor<Fields<TrackedEntity>> fieldsCaptor;
 
     @Captor
     private ArgumentCaptor<Filter<TrackedEntity, String>> idFilterCaptor;
@@ -118,14 +113,15 @@ public class TrackedEntityCallUnitTests {
     @Captor
     private ArgumentCaptor<Boolean> pagingCaptor;
 
+    @Mock
+    private Date serverDate;
+
     //the call we are testing:
     private TrackedEntityCall call;
 
     @Before
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
-
-        //TODO: evaluate if only one org unit would suffice for the testing:
         when(trackedEntity.uid()).thenReturn("uid1");
         when(trackedEntity.code()).thenReturn("code");
         when(trackedEntity.name()).thenReturn("name");
@@ -139,15 +135,15 @@ public class TrackedEntityCallUnitTests {
         when(trackedEntity.displayDescription()).thenReturn("display_description");
 
         call = new TrackedEntityCall(Sets.newLinkedHashSet(trackedEntity.uid()), database,
-                store, resourceStore, service);
+                trackedEntityStore, resourceStore, service, serverDate);
 
+        when(database.beginNewTransaction()).thenReturn(transaction);
         when(service.trackedEntities(
-                filterCaptor.capture(),
+                fieldsCaptor.capture(),
                 idFilterCaptor.capture(),
                 lastUpdatedFilterCaptor.capture(),
                 pagingCaptor.capture()
         )).thenReturn(retrofitCall);
-
         when(retrofitCall.execute()).thenReturn(Response.success(payload));
     }
 
@@ -158,7 +154,7 @@ public class TrackedEntityCallUnitTests {
 
         call.call();
 
-        assertThat(filterCaptor.getValue().fields()).contains(
+        assertThat(fieldsCaptor.getValue().fields()).contains(
                 TrackedEntity.uid, TrackedEntity.code, TrackedEntity.name,
                 TrackedEntity.displayName, TrackedEntity.created, TrackedEntity.lastUpdated,
                 TrackedEntity.shortName, TrackedEntity.displayShortName,
@@ -166,14 +162,7 @@ public class TrackedEntityCallUnitTests {
                 TrackedEntity.displayDescription,
                 TrackedEntity.deleted
         );
-
-        // Assert that id filter is correct:
-        Filter<TrackedEntity, String> idFilter = idFilterCaptor.getValue();
-        assertThat(idFilter.field()).isEqualTo(TrackedEntity.uid);
-        assertThat(idFilter.operator()).isEqualTo("in");
-        assertThat(idFilter.values().size()).isEqualTo(1);
-        assertThat(idFilter.values()).contains(trackedEntity.uid());
-        // Assert that lastUpdated filter is correct:
+        assertThat(idFilterCaptor.getValue().values()).contains(trackedEntity.uid());
         assertThat(lastUpdatedFilterCaptor.getValue()).isNull();
         assertThat(pagingCaptor.getValue()).isFalse();
     }
@@ -181,21 +170,13 @@ public class TrackedEntityCallUnitTests {
     @Test
     @SuppressWarnings("unchecked")
     public void call_shouldInvokeServer_withCorrectParameters_withLastUpdated() throws Exception {
-        String key = TrackedEntityModel.Columns.LAST_UPDATED;
         String date = "2014-11-25T09:37:53.358";
-        String expectedValue = "lastUpdated:gt:" + date;
-
-        when(database.query(eq(ResourceModel.TABLE), any(String[].class), anyString(), any(String[].class),
-                anyString(), anyString(), anyString())).thenReturn(cursor);
-
-        when(cursor.getCount()).thenReturn(1);
-        when(cursor.getString(anyInt())).thenReturn(date);
-
-        when(payload.items()).thenReturn(Collections.singletonList(trackedEntity)); //TODO: test with list of two?
+        when(resourceStore.getLastUpdated(eq(ResourceModel.Type.TRACKED_ENTITY))).thenReturn(date);
+        when(payload.items()).thenReturn(Collections.singletonList(trackedEntity));
 
         call.call();
 
-        assertThat(filterCaptor.getValue().fields()).contains(
+        assertThat(fieldsCaptor.getValue().fields()).contains(
                 TrackedEntity.uid, TrackedEntity.code, TrackedEntity.name,
                 TrackedEntity.displayName, TrackedEntity.created, TrackedEntity.lastUpdated,
                 TrackedEntity.shortName, TrackedEntity.displayShortName,
@@ -203,144 +184,56 @@ public class TrackedEntityCallUnitTests {
                 TrackedEntity.displayDescription,
                 TrackedEntity.deleted
         );
-
-        //TODO Assert that the filters are there ?:
-//        assertThat(queryMapCaptor.getValue().containsKey(key)).isTrue(); //last updated filter existence check
-//        assertThat(queryMapCaptor.getValue().get(key)).isEqualTo(expectedValue); //last updated filter correctness
-// check
+        assertThat(idFilterCaptor.getValue().values()).contains(trackedEntity.uid());
+        assertThat(lastUpdatedFilterCaptor.getValue().values()).contains(date);
         assertThat(pagingCaptor.getValue()).isFalse();
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldNotInvoke_storesOnException() throws Exception {
+    public void call_shouldNotMarkTransactionSuccessful_storesOnException() throws Exception {
         when(retrofitCall.execute()).thenThrow(Exception.class);
-
         try {
             call.call();
             fail("expected Exception to be thrown, but isn't ");
         } catch (Exception e) {
-
-            InOrder ordered = inOrder(database);
-            ordered.verify(database, times(1)).beginTransaction();
-            ordered.verify(database, times(1)).endTransaction();
-            ordered.verify(database, never()).setTransactionSuccessful();
-            verify(store, never()).insert(anyString(), anyString(), anyString(),
-                    anyString(), any(Date.class), any(Date.class), anyString(), anyString(),
-                    anyString(), anyString());
-            verify(database, never()).insert(anyString(), anyString(), any(ContentValues.class));
+            verify(database, never()).beginNewTransaction();
+            verify(transaction, never()).end();
+            verify(transaction, never()).setSuccessful();
         }
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void call_shouldInsert_ifRequestSucceeds() throws Exception {
-        when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(-1);
-
         Headers headers = new Headers.Builder().add("Date", lastUpdated.toString()).build();
         when(payload.items()).thenReturn(Collections.singletonList(trackedEntity));
         Response<Payload<TrackedEntity>> response = Response.success(payload, headers);
         when(retrofitCall.execute()).thenReturn(response);
 
-        when(store.update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(),
-                anyString(), anyString(), anyString())).thenReturn(-1);
-
         call.call();
 
-        InOrder inOrder = inOrder(database);
-        inOrder.verify(database, times(1)).beginTransaction();
-        inOrder.verify(database, times(1)).
-                setTransactionSuccessful();
-        inOrder.verify(database, times(1)).endTransaction();
-
-        verify(store, times(1)).insert(
-                "uid1",
-                "code",
-                "name",
-                "display_name",
-                created,
-                lastUpdated,
-                "short_name",
-                "display_short_name",
-                "description",
-                "display_description"
-        );
-        //TODO: consider weather this could be tested in the resourceStore tests:
-        verify(resourceStore, times(1)).update(anyString(), any(Date.class), anyString());
+        verify(database, times(1)).beginNewTransaction();
+        verify(transaction, times(1)).setSuccessful();
+        verify(transaction, times(1)).end();
+        verify(trackedEntityStore, times(1)).insert(
+                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(), anyString(), anyString());
+        //TODO: after implementing the SystemInfoCall, tests..etc modify this to actually check the date:
+        //Right now it only checks if: (Date) null is an instance of Date.class, not a terribly useful:
         verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
     }
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void call_shouldDelete_ifRequestSucceeds() throws Exception {
-        when(trackedEntity.deleted()).thenReturn(true);
-
-        Headers headers = new Headers.Builder().add("Date", lastUpdated.toString()).build();
-        when(payload.items()).thenReturn(Collections.singletonList(trackedEntity));
-        Response<Payload<TrackedEntity>> response = Response.success(payload, headers);
-        when(retrofitCall.execute()).thenReturn(response);
-
-        call.call();
-
-        InOrder inOrder = inOrder(database);
-        inOrder.verify(database, times(1)).beginTransaction();
-        inOrder.verify(database, times(1)).setTransactionSuccessful();
-        inOrder.verify(database, times(1)).endTransaction();
-
-        verify(store, times(1)).delete("uid1");
-        verify(resourceStore, times(1)).update(anyString(), any(Date.class), anyString());
-        verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void call_shouldUpdateOrganisationUnits_ifRequestSucceeds() throws Exception {
-        when(store.update(anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(), anyString(), anyString(), anyString())
-        ).thenReturn(1);
-        when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(1);
-
-        Headers headers = new Headers.Builder().add("Date", lastUpdated.toString()).build();
-        when(payload.items()).thenReturn(Collections.singletonList(trackedEntity));
-        Response<Payload<TrackedEntity>> response = Response.success(payload, headers);
-        when(retrofitCall.execute()).thenReturn(response);
-
-        call.call();
-
-        //TODO: maybe remove the times, since many transactions are open & closed ?
-        InOrder inOrder = inOrder(database);
-        inOrder.verify(database, times(1)).beginTransaction();
-        inOrder.verify(database, times(1)).setTransactionSuccessful();
-        inOrder.verify(database, times(1)).endTransaction();
-
-        verify(store, times(1)).update(
-                "uid1",
-                "code",
-                "name",
-                "display_name",
-                created,
-                lastUpdated,
-                "short_name",
-                "display_short_name",
-                "description",
-                "display_description",
-                "uid1"
-        );
-
-        //UpdateInResourceStore tests:
-        verify(resourceStore, times(1)).update(anyString(), any(Date.class), anyString());
-    }
 
     @Test
     @SuppressWarnings("unchecked")
     public void call_shouldNotFail_onEmptyInput() throws IOException {
-/* TODO:
-        TrackedEntityCall call = new TrackedEntityCall(new HashSet<String>(), database, store, resourceStore, service);
-
+        TrackedEntityCall call = new TrackedEntityCall(new HashSet<String>(), database,
+                trackedEntityStore, resourceStore, service, serverDate);
         when(service.trackedEntities(
-                filterCaptor.capture(),
-                queryMapCaptor.capture(),
+                fieldsCaptor.capture(),
+                idFilterCaptor.capture(),
+                lastUpdatedFilterCaptor.capture(),
                 pagingCaptor.capture()
         )).thenReturn(retrofitCall);
         when(retrofitCall.execute()).thenReturn(Response.success(payload));
@@ -352,7 +245,7 @@ public class TrackedEntityCallUnitTests {
             fail("Exception should not be thrown.");
         } finally {
             assertThat(call.isExecuted()).isTrue();
-        }*/
+        }
     }
 
     @Test
@@ -370,11 +263,6 @@ public class TrackedEntityCallUnitTests {
     @Test
     @SuppressWarnings("unchecked")
     public void call_shouldMarkCallAsExecuted_onSuccess() {
-        when(store.insert(any(String.class), any(String.class), any(String.class), any(String.class),
-                any(Date.class), any(Date.class), any(String.class), any(String.class), any(String.class),
-                any(String.class))
-        ).thenThrow(IOException.class);
-
         try {
             call.call();
         } catch (Exception e) {
@@ -388,7 +276,6 @@ public class TrackedEntityCallUnitTests {
     @SuppressWarnings("unchecked")
     public void call_shouldMarkCallAsExecuted_onFailure() throws IOException {
         when(retrofitCall.execute()).thenThrow(new IOException());
-
         try {
             call.call();
             fail("IOException should be thrown");

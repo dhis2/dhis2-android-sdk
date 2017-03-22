@@ -34,6 +34,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.data.api.Field;
+
 import java.util.Date;
 
 @AutoValue
@@ -41,6 +43,13 @@ import java.util.Date;
 public abstract class SystemInfo {
     private static final String SERVER_DATE_TIME = "serverDate";
     private static final String DATE_FORMAT = "dateFormat";
+    private static final String VERSION = "version";
+    private static final String CONTEXT_PATH = "contextPath";
+
+    public static final Field<SystemInfo, String> serverDateTime = Field.create(SERVER_DATE_TIME);
+    public static final Field<SystemInfo, String> dateFormat = Field.create(DATE_FORMAT);
+    public static final Field<SystemInfo, String> version = Field.create(VERSION);
+    public static final Field<SystemInfo, String> contextPath = Field.create(CONTEXT_PATH);
 
     @Nullable
     @JsonProperty(SERVER_DATE_TIME)
@@ -50,6 +59,14 @@ public abstract class SystemInfo {
     @JsonProperty(DATE_FORMAT)
     public abstract String dateFormat();
 
+    @Nullable
+    @JsonProperty(VERSION)
+    public abstract String version();
+
+    @Nullable
+    @JsonProperty(CONTEXT_PATH)
+    public abstract String contextPath();
+
     @AutoValue.Builder
     public static abstract class Builder {
 
@@ -58,6 +75,12 @@ public abstract class SystemInfo {
 
         @JsonProperty(DATE_FORMAT)
         public abstract Builder dateFormat(@Nullable String dateFormat);
+
+        @JsonProperty(VERSION)
+        public abstract Builder version(@Nullable String version);
+
+        @JsonProperty(CONTEXT_PATH)
+        public abstract Builder contextPath(@Nullable String contextPath);
 
         public abstract SystemInfo build();
     }

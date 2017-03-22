@@ -21,7 +21,7 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class ResourceStoreTests extends AbsStoreTestCase {
-    private static final String RESOURCE_TYPE = "TestClassName";
+    private static final ResourceModel.Type RESOURCE_TYPE = ResourceModel.Type.OPTION_SET;
 
     private static final String[] PROJECTION = {Columns.RESOURCE_TYPE, Columns.LAST_SYNCED};
 
@@ -47,7 +47,7 @@ public class ResourceStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistResourceInDatabase() {
-        long rowId = resourceStore.insert(RESOURCE_TYPE, date);
+        long rowId = resourceStore.insert(RESOURCE_TYPE.name(), date);
         Cursor cursor = database().query(ResourceModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(RESOURCE_TYPE, dateString).isExhausted();
@@ -55,7 +55,7 @@ public class ResourceStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistResourceInDatabaseWithoutLastSynced() {
-        long rowId = resourceStore.insert(RESOURCE_TYPE, null);
+        long rowId = resourceStore.insert(RESOURCE_TYPE.name(), null);
         Cursor cursor = database().query(ResourceModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(RESOURCE_TYPE, null).isExhausted();
@@ -68,9 +68,9 @@ public class ResourceStoreTests extends AbsStoreTestCase {
 
     @Test
     public void update_shouldUpdateExisting() {
-        database().insert(ResourceModel.TABLE, null, createResource(RESOURCE_TYPE, dateString2));
+        database().insert(ResourceModel.TABLE, null, createResource(RESOURCE_TYPE.name(), dateString2));
 
-        int returnValue = resourceStore.update(RESOURCE_TYPE, date, RESOURCE_TYPE);
+        int returnValue = resourceStore.update(RESOURCE_TYPE.name(), date, RESOURCE_TYPE.name());
 
         Cursor cursor = database().query(ResourceModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThat(returnValue).isNotNull();
@@ -80,7 +80,7 @@ public class ResourceStoreTests extends AbsStoreTestCase {
 
     @Test
     public void update_shouldNotInsert() {
-        int returnValue = resourceStore.update(RESOURCE_TYPE, date, RESOURCE_TYPE);
+        int returnValue = resourceStore.update(RESOURCE_TYPE.name(), date, RESOURCE_TYPE.name());
 
         Cursor cursor = database().query(ResourceModel.TABLE, PROJECTION, null, null, null, null, null);
 
@@ -90,9 +90,9 @@ public class ResourceStoreTests extends AbsStoreTestCase {
 
     @Test
     public void update_shouldNotUpdate_WithoutWhere() {
-        database().insert(ResourceModel.TABLE, null, createResource(RESOURCE_TYPE, dateString));
+        database().insert(ResourceModel.TABLE, null, createResource(RESOURCE_TYPE.name(), dateString));
 
-        int returnValue = resourceStore.update(RESOURCE_TYPE, date, null);
+        int returnValue = resourceStore.update(RESOURCE_TYPE.name(), date, null);
 
         Cursor cursor = database().query(ResourceModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThat(returnValue).isNotNull();
@@ -102,14 +102,14 @@ public class ResourceStoreTests extends AbsStoreTestCase {
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_update_ShouldNotPersist_WithoutResourceType() {
-        database().insert(ResourceModel.TABLE, null, createResource(RESOURCE_TYPE, dateString));
-        resourceStore.update(null, date, RESOURCE_TYPE);
+        database().insert(ResourceModel.TABLE, null, createResource(RESOURCE_TYPE.name(), dateString));
+        resourceStore.update(null, date, RESOURCE_TYPE.name());
     }
 
     @Test
     public void delete_shouldDeleteRow() {
-        database().insert(ResourceModel.TABLE, null, createResource(RESOURCE_TYPE, dateString));
-        int returnValue = resourceStore.delete(RESOURCE_TYPE);
+        database().insert(ResourceModel.TABLE, null, createResource(RESOURCE_TYPE.name(), dateString));
+        int returnValue = resourceStore.delete(RESOURCE_TYPE.name());
 
         Cursor cursor = database().query(ResourceModel.TABLE, PROJECTION, null, null, null, null, null);
 
@@ -119,7 +119,7 @@ public class ResourceStoreTests extends AbsStoreTestCase {
 
     @Test
     public void getLastUpdated_shouldReturnCorrectLastUpdated() {
-        database().insert(ResourceModel.TABLE, null, createResource(RESOURCE_TYPE, dateString));
+        database().insert(ResourceModel.TABLE, null, createResource(RESOURCE_TYPE.name(), dateString));
 
         String lastUpdated = resourceStore.getLastUpdated(RESOURCE_TYPE);
 

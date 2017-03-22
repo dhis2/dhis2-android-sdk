@@ -25,23 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo;
 
-package org.hisp.dhis.android.core.option;
+public class SystemInfoHandler {
+    private final SystemInfoStore systemInfoStore;
 
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Filter;
-import org.hisp.dhis.android.core.data.api.Where;
-import org.hisp.dhis.android.core.data.api.Which;
-import org.hisp.dhis.android.core.data.api.Fields;
+    public SystemInfoHandler(SystemInfoStore systemInfoStore) {
+        this.systemInfoStore = systemInfoStore;
+    }
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+    public void handleSystemInfo(SystemInfo systemInfo) {
+        if (systemInfo == null) {
+            return;
+        }
 
-public interface OptionSetService {
+        int update = systemInfoStore.update(
+                systemInfo.serverDate(), systemInfo.dateFormat(),
+                systemInfo.version(), systemInfo.contextPath(), systemInfo.contextPath()
+        );
 
-    @GET("optionSets")
-    Call<Payload<OptionSet>> optionSets(@Query("paging") boolean paging,
-                                        @Query("fields") @Which Fields<OptionSet> fields,
-                                        @Query("filter") @Where Filter<OptionSet, String> filter);
+        if (update <= 0) {
+            systemInfoStore.insert(
+                    systemInfo.serverDate(), systemInfo.dateFormat(),
+                    systemInfo.version(), systemInfo.contextPath()
+            );
+        }
+    }
 }

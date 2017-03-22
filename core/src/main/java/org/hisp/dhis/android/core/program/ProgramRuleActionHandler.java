@@ -60,27 +60,69 @@ public class ProgramRuleActionHandler {
             if (isDeleted(programRuleAction)) {
                 programRuleActionStore.delete(programRuleAction.uid());
             } else {
+                String trackedEntityAttributeUid = null;
+                if(programRuleAction.trackedEntityAttribute() != null) {
+                    trackedEntityAttributeUid = programRuleAction.trackedEntityAttribute().uid();
+                }
+
+                String dataElementUid = null;
+                if(programRuleAction.dataElement() != null) {
+                    dataElementUid = programRuleAction.dataElement().uid();
+                }
+
+                String programIndicatorUid = null;
+                if(programRuleAction.programIndicator() != null) {
+                    programIndicatorUid = programRuleAction.programIndicator().uid();
+                }
+
+                String programStageSectionUid = null;
+                if(programRuleAction.programStageSection() != null) {
+                    programStageSectionUid = programRuleAction.programStageSection().uid();
+                }
+
+                String programStageUid = null;
+                if(programRuleAction.programStage() != null) {
+                    programStageUid = programRuleAction.programStage().uid();
+                }
+
                 int updatedRow = programRuleActionStore.update(
-                        programRuleAction.uid(), programRuleAction.code(),
-                        programRuleAction.name(), programRuleAction.displayName(),
-                        programRuleAction.created(), programRuleAction.lastUpdated(),
-                        programRuleAction.data(), programRuleAction.content(), programRuleAction.location(),
-                        programRuleAction.trackedEntityAttribute().uid(),
-                        programRuleAction.programIndicator().uid(), programRuleAction.programStageSection().uid(),
-                        programRuleAction.programRuleActionType(), programRuleAction.programStage().uid(),
-                        programRuleAction.dataElement().uid(), programRuleAction.programRule().uid(),
+                        programRuleAction.uid(),
+                        programRuleAction.code(),
+                        programRuleAction.name(),
+                        programRuleAction.displayName(),
+                        programRuleAction.created(),
+                        programRuleAction.lastUpdated(),
+                        programRuleAction.data(),
+                        programRuleAction.content(),
+                        programRuleAction.location(),
+                        trackedEntityAttributeUid,
+                        programIndicatorUid,
+                        programStageSectionUid,
+                        programRuleAction.programRuleActionType(),
+                        programStageUid,
+                        dataElementUid,
+                        programRuleAction.programRule().uid(),
                         programRuleAction.uid()
                 );
 
                 if (updatedRow <= 0) {
-                    programRuleActionStore.insert(programRuleAction.uid(), programRuleAction.code(),
-                            programRuleAction.name(), programRuleAction.displayName(),
-                            programRuleAction.created(), programRuleAction.lastUpdated(),
-                            programRuleAction.data(), programRuleAction.content(), programRuleAction.location(),
-                            programRuleAction.trackedEntityAttribute().uid(),
-                            programRuleAction.programIndicator().uid(), programRuleAction.programStageSection().uid(),
-                            programRuleAction.programRuleActionType(), programRuleAction.programStage().uid(),
-                            programRuleAction.dataElement().uid(), programRuleAction.programRule().uid()
+                    programRuleActionStore.insert(
+                            programRuleAction.uid(),
+                            programRuleAction.code(),
+                            programRuleAction.name(),
+                            programRuleAction.displayName(),
+                            programRuleAction.created(),
+                            programRuleAction.lastUpdated(),
+                            programRuleAction.data(),
+                            programRuleAction.content(),
+                            programRuleAction.location(),
+                            trackedEntityAttributeUid,
+                            programIndicatorUid,
+                            programStageSectionUid,
+                            programRuleAction.programRuleActionType(),
+                            programStageUid,
+                            dataElementUid,
+                            programRuleAction.programRule().uid()
                     );
 
                 }

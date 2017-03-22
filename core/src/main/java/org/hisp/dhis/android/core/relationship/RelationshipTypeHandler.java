@@ -25,35 +25,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.resource;
+package org.hisp.dhis.android.core.relationship;
 
-import java.util.Date;
+import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
-public class ResourceHandler {
-    private final ResourceStore resourceStore;
+public class RelationshipTypeHandler {
+    private final RelationshipTypeStore relationshipTypeStore;
 
-    public ResourceHandler(ResourceStore resourceStore) {
-        this.resourceStore = resourceStore;
+    public RelationshipTypeHandler(RelationshipTypeStore relationshipTypeStore) {
+        this.relationshipTypeStore = relationshipTypeStore;
     }
 
-    public void handleResource(ResourceModel.Type resourceType, Date serverDate) {
-        if (resourceType == null || serverDate == null) {
+    public void handleRelationshipType(RelationshipType relationshipType) {
+        if (relationshipType == null) {
             return;
         }
-//        ResourceHandler.Type.USER
-        int updatedResourceRow = resourceStore.update(resourceType.name(), serverDate, resourceType.name());
-        if (updatedResourceRow <= 0) {
-            resourceStore.insert(resourceType.name(), serverDate);
-        }
-    }
 
-    /**
-     * A wrapper to expose resourceStore.getLastUpdated(str).
-     *
-     * @param type Type of the resource.
-     * @return a string representing the last synched date
-     */
-    public String getLastUpdated(ResourceModel.Type type) {
-        return resourceStore.getLastUpdated(type);
+        if (isDeleted(relationshipType)) {
+            relationshipTypeStore.delete(relationshipType.uid());
+        } else {
+            int update = relationshipTypeStore.update(
+                    relationshipType.uid(),
+                    relationshipType.code(),
+                    relationshipType.name(),
+                    relationshipType.displayName(),
+                    relationshipType.created(),
+                    relationshipType.lastUpdated(),
+                    relationshipType.aIsToB(),
+                    relationshipType.bIsToA(),
+                    relationshipType.uid());
+
+            if (update <= 0) {
+                relationshipTypeStore.insert(
+                        relationshipType.uid(),
+                        relationshipType.code(),
+                        relationshipType.name(),
+                        relationshipType.displayName(),
+                        relationshipType.created(),
+                        relationshipType.lastUpdated(),
+                        relationshipType.aIsToB(),
+                        relationshipType.bIsToA());
+            }
+        }
     }
 }

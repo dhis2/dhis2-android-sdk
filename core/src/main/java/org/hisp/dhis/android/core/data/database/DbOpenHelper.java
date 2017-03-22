@@ -507,7 +507,9 @@ public class DbOpenHelper extends SQLiteOpenHelper {
     private static final String CREATE_SYSTEM_INFO_TABLE = "CREATE TABLE " + SystemInfoModel.TABLE + " (" +
             SystemInfoModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             SystemInfoModel.Columns.SERVER_DATE + " TEXT," +
-            SystemInfoModel.Columns.DATE_FORMAT + " TEXT" +
+            SystemInfoModel.Columns.DATE_FORMAT + " TEXT," +
+            SystemInfoModel.Columns.VERSION + " TEXT," +
+            SystemInfoModel.Columns.CONTEXT_PATH + " TEXT" +
             ");";
 
     private static final String CREATE_PROGRAM_INDICATOR_TABLE = "CREATE TABLE " +

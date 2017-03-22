@@ -42,5 +42,5 @@ public interface ResourceStore {
 
     int delete(@NonNull String resourceType);
 
-    String getLastUpdated(String className);
+    String getLastUpdated(ResourceModel.Type type);
 }

@@ -1372,7 +1372,11 @@ public class ProgramCallIntegrationTests extends AbsStoreTestCase {
         database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
 
         programCall = new ProgramCall(
-                programService, databaseAdapter(), resourceHandler, uids, programHandler, new Date()
+                programService, databaseAdapter(), resourceStore, uids, programStore, new Date(),
+                trackedEntityAttributeStore, programTrackedEntityAttributeStore, programRuleVariableStore,
+                programIndicatorStore, programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
+                programRuleStore, optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
+                programStageSectionStore, programStageStore, relationshipStore
         );
     }
 

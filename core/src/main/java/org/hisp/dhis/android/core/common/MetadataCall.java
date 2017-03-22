@@ -27,97 +27,56 @@
  */
 package org.hisp.dhis.android.core.common;
 
+import android.support.annotation.Nullable;
+
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.dataelement.DataElementHandler;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
-import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
-import org.hisp.dhis.android.core.option.OptionHandler;
+import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetCall;
-import org.hisp.dhis.android.core.option.OptionSetHandler;
 import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.option.OptionSetStore;
-import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
 import org.hisp.dhis.android.core.option.OptionStore;
-import org.hisp.dhis.android.core.option.OptionStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramCall;
-import org.hisp.dhis.android.core.program.ProgramHandler;
-import org.hisp.dhis.android.core.program.ProgramIndicatorHandler;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
-import org.hisp.dhis.android.core.program.ProgramIndicatorStoreImpl;
-import org.hisp.dhis.android.core.program.ProgramRuleActionHandler;
 import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
-import org.hisp.dhis.android.core.program.ProgramRuleActionStoreImpl;
-import org.hisp.dhis.android.core.program.ProgramRuleHandler;
 import org.hisp.dhis.android.core.program.ProgramRuleStore;
-import org.hisp.dhis.android.core.program.ProgramRuleStoreImpl;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableHandler;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableModelStore;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableModelStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramService;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
-import org.hisp.dhis.android.core.program.ProgramStageDataElementHandler;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementStore;
-import org.hisp.dhis.android.core.program.ProgramStageDataElementStoreImpl;
-import org.hisp.dhis.android.core.program.ProgramStageHandler;
-import org.hisp.dhis.android.core.program.ProgramStageSectionHandler;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStore;
-import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageSectionStore;
-import org.hisp.dhis.android.core.program.ProgramStageSectionStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageStore;
-import org.hisp.dhis.android.core.program.ProgramStageStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStore;
-import org.hisp.dhis.android.core.program.ProgramStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeHandler;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStoreImpl;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeStoreImpl;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeHandler;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityCall;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityService;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityStoreImpl;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
-import org.hisp.dhis.android.core.user.UserCredentialsHandler;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
-import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
-import org.hisp.dhis.android.core.user.UserHandler;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreImpl;
 import org.hisp.dhis.android.core.user.UserRole;
-import org.hisp.dhis.android.core.user.UserRoleHandler;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
-import org.hisp.dhis.android.core.user.UserRoleProgramLinkStoreImpl;
 import org.hisp.dhis.android.core.user.UserRoleStore;
-import org.hisp.dhis.android.core.user.UserRoleStoreImpl;
 import org.hisp.dhis.android.core.user.UserService;
 import org.hisp.dhis.android.core.user.UserStore;
-import org.hisp.dhis.android.core.user.UserStoreImpl;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -125,122 +84,258 @@ import java.util.List;
 import java.util.Set;
 
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
-@SuppressWarnings("PMD.ExcessiveImports")
-public class MetadataCall {
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
+public class MetadataCall implements Call<Response> {
     private final DatabaseAdapter databaseAdapter;
-    private final Retrofit retrofit;
+    private final SystemInfoService systemInfoService;
+    private final UserService userService;
+    private final ProgramService programService;
+    private final OrganisationUnitService organisationUnitService;
+    private final TrackedEntityService trackedEntityService;
+    private final OptionSetService optionSetService;
+    private final SystemInfoStore systemInfoStore;
+    private final ResourceStore resourceStore;
+    private final UserStore userStore;
+    private final UserCredentialsStore userCredentialsStore;
+    private final UserRoleStore userRoleStore;
+    private final UserRoleProgramLinkStore userRoleProgramLinkStore;
+    private final OrganisationUnitStore organisationUnitStore;
+    private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
+    private final ProgramStore programStore;
+    private final TrackedEntityAttributeStore trackedEntityAttributeStore;
+    private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
+    private final ProgramRuleVariableModelStore programRuleVariableStore;
+    private final ProgramIndicatorStore programIndicatorStore;
+    private final ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
+    private final ProgramRuleActionStore programRuleActionStore;
+    private final ProgramRuleStore programRuleStore;
+    private final OptionStore optionStore;
+    private final OptionSetStore optionSetStore;
+    private final DataElementStore dataElementStore;
+    private final ProgramStageDataElementStore programStageDataElementStore;
+    private final ProgramStageSectionStore programStageSectionStore;
+    private final ProgramStageStore programStageStore;
+    private final RelationshipTypeStore relationshipStore;
+    private final TrackedEntityStore trackedEntityStore;
 
-
-    public MetadataCall(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
+    public MetadataCall(DatabaseAdapter databaseAdapter,
+                        SystemInfoService systemInfoService,
+                        UserService userService,
+                        ProgramService programService,
+                        OrganisationUnitService organisationUnitService,
+                        TrackedEntityService trackedEntityService,
+                        OptionSetService optionSetService,
+                        SystemInfoStore systemInfoStore,
+                        ResourceStore resourceStore,
+                        UserStore userStore,
+                        UserCredentialsStore userCredentialsStore,
+                        UserRoleStore userRoleStore,
+                        UserRoleProgramLinkStore userRoleProgramLinkStore,
+                        OrganisationUnitStore organisationUnitStore,
+                        UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
+                        ProgramStore programStore,
+                        TrackedEntityAttributeStore trackedEntityAttributeStore,
+                        ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
+                        ProgramRuleVariableModelStore programRuleVariableStore,
+                        ProgramIndicatorStore programIndicatorStore,
+                        ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore,
+                        ProgramRuleActionStore programRuleActionStore,
+                        ProgramRuleStore programRuleStore,
+                        OptionStore optionStore,
+                        OptionSetStore optionSetStore,
+                        DataElementStore dataElementStore,
+                        ProgramStageDataElementStore programStageDataElementStore,
+                        ProgramStageSectionStore programStageSectionStore,
+                        ProgramStageStore programStageStore,
+                        RelationshipTypeStore relationshipStore,
+                        TrackedEntityStore trackedEntityStore) {
         this.databaseAdapter = databaseAdapter;
-        this.retrofit = retrofit;
+        this.systemInfoService = systemInfoService;
+        this.userService = userService;
+        this.programService = programService;
+        this.organisationUnitService = organisationUnitService;
+        this.trackedEntityService = trackedEntityService;
+        this.optionSetService = optionSetService;
+        this.systemInfoStore = systemInfoStore;
+        this.resourceStore = resourceStore;
+        this.userStore = userStore;
+        this.userCredentialsStore = userCredentialsStore;
+        this.userRoleStore = userRoleStore;
+        this.userRoleProgramLinkStore = userRoleProgramLinkStore;
+        this.organisationUnitStore = organisationUnitStore;
+        this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
+        this.programStore = programStore;
+        this.trackedEntityAttributeStore = trackedEntityAttributeStore;
+        this.programTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
+        this.programRuleVariableStore = programRuleVariableStore;
+        this.programIndicatorStore = programIndicatorStore;
+        this.programStageSectionProgramIndicatorLinkStore = programStageSectionProgramIndicatorLinkStore;
+        this.programRuleActionStore = programRuleActionStore;
+        this.programRuleStore = programRuleStore;
+        this.optionStore = optionStore;
+        this.optionSetStore = optionSetStore;
+        this.dataElementStore = dataElementStore;
+        this.programStageDataElementStore = programStageDataElementStore;
+        this.programStageSectionStore = programStageSectionStore;
+        this.programStageStore = programStageStore;
+        this.relationshipStore = relationshipStore;
+        this.trackedEntityStore = trackedEntityStore;
     }
 
-    public void call() throws Exception {
-        ResourceHandler resourceHandler = initializeResourceHandler();
-        OrganisationUnitHandler organisationUnitHandler = initializeOrganisationUnitHandler();
+    @Override
+    public boolean isExecuted() {
+        return false;
+    }
 
+    @Override
+    public Response call() throws Exception {
+        Response response = null;
         Transaction transaction = databaseAdapter.beginNewTransaction();
 
         try {
-            // initialize SystemInfoCall and call the api
-            SystemInfoCall systemInfoCall = initializeSystemInfoCall();
-            Response<SystemInfo> systemInfoResponse = systemInfoCall.call();
-            SystemInfo systemInfo = systemInfoResponse.body();
-            Date serverDate = systemInfo.serverDate();
+            response = makeCalls(transaction);
 
-            // initialize userCall and call the api
-            UserCall userCall = initializeUserCall(organisationUnitHandler, resourceHandler, serverDate);
-            Response<User> userResponse = userCall.call();
-            User user = userResponse.body();
-
-            // get assigned program uids from user roles and user's data capture organisation units
-            Set<String> programUids = new HashSet<>();
-            if (user.userCredentials() != null && user.userCredentials().userRoles() != null &&
-                    user.organisationUnits() != null) {
-
-                programUids = getAssignedProgramUids(
-                        user.userCredentials().userRoles(), user.organisationUnits()
-                );
-            }
-
-            OrganisationUnitCall organisationUnitCall = initializeOrganisationUnitCall(
-                    organisationUnitHandler, resourceHandler, user, serverDate
-            );
-
-            organisationUnitCall.call();
-
-            ProgramCall programCall = initializeProgramCall(programUids, resourceHandler, serverDate);
-            Response<Payload<Program>> programResponse = programCall.call();
-            List<Program> programs = programResponse.body().items;
-
-            Set<String> trackedEntityUids = new HashSet<>();
-            Set<String> optionSetUids = new HashSet<>();
-
-            // get assigned tracked entity uids and option set uids
-            if (programs != null) {
-                trackedEntityUids = getAssignedTrackedEntityUids(programs);
-                optionSetUids = getAssignedOptionSetUids(programs);
-            }
-
-            TrackedEntityCall trackedEntityCall = initializeTrackedEntityCall(
-                    trackedEntityUids, resourceHandler, serverDate
-            );
-
-            trackedEntityCall.call();
-
-            OptionSetCall optionSetCall = initializeOptionSetCall(resourceHandler, optionSetUids, serverDate);
-            optionSetCall.call();
-
-            transaction.setSuccessful();
         } finally {
             transaction.end();
         }
+
+        return response;
+    }
+
+    @Nullable
+    private Response makeCalls(Transaction transaction) throws Exception {
+        // initialize SystemInfoCall and call the api
+        Response<SystemInfo> systemInfoResponse = makeSystemInfoCall();
+
+        // if not successful, return response and close transaction
+        if (!systemInfoResponse.isSuccessful()) {
+            transaction.end();
+            return systemInfoResponse;
+        }
+
+        SystemInfo systemInfo = systemInfoResponse.body();
+        Date serverDate = systemInfo.serverDate();
+
+        // initialize userCall and call the api
+        Response<User> userResponse = makeUserCall(serverDate);
+
+        // if userResponse is not successful, return the response
+        if (!userResponse.isSuccessful()) {
+            transaction.end();
+            return userResponse;
+        }
+
+        User user = userResponse.body();
+
+
+        Response<Payload<OrganisationUnit>> organisationUnitResponse = makeOrganisationUnitCall(user, serverDate);
+
+        // if organisationUnitResponse is not successful, return the response
+        if (!organisationUnitResponse.isSuccessful()) {
+            transaction.end();
+            return organisationUnitResponse;
+        }
+
+        // get assigned program uids from user roles and user's data capture organisation units
+        Set<String> programUids = getAssignedProgramUids(user);
+
+        Response<Payload<Program>> programResponse = makeProgramCall(programUids, serverDate);
+
+        if (!programResponse.isSuccessful()) {
+            transaction.end();
+            return programResponse;
+        }
+
+        List<Program> programs = programResponse.body().items();
+
+        // get assigned tracked entity uids and option set uids
+        Set<String> trackedEntityUids = getAssignedTrackedEntityUids(programs);
+
+
+        Response<Payload<TrackedEntity>> trackedEntityResponse = makeTrackedEntityCall(trackedEntityUids, serverDate);
+
+        // if trackedEntityResponse is not successful, return the response
+        if (!trackedEntityResponse.isSuccessful()) {
+            transaction.end();
+            return trackedEntityResponse;
+        }
+
+        Set<String> optionSetUids = getAssignedOptionSetUids(programs);
+
+        Response<Payload<OptionSet>> optionSetResponse = makeOptionSetCall(optionSetUids, serverDate);
+
+        // if optionSetResponse is not successful, return the response
+        if (!optionSetResponse.isSuccessful()) {
+            transaction.end();
+            return optionSetResponse;
+        }
+
+        transaction.setSuccessful();
+
+
+        //TODO: Review what is correct to return here. Now returning last response.
+        return optionSetResponse;
     }
 
     private Set<String> getAssignedOptionSetUids(List<Program> programs) {
+        if (programs == null) {
+            return null;
+        }
+
         Set<String> uids = new HashSet<>();
+
         int size = programs.size();
         for (int i = 0; i < size; i++) {
             Program program = programs.get(i);
-            int programTrackedEntityAttributeSize = program.programTrackedEntityAttributes().size();
-            List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
-                    program.programTrackedEntityAttributes();
 
-            for (int j = 0; j < programTrackedEntityAttributeSize; j++) {
-                ProgramTrackedEntityAttribute programTrackedEntityAttribute = programTrackedEntityAttributes.get(j);
-
-                if (programTrackedEntityAttribute.trackedEntityAttribute() != null &&
-                        programTrackedEntityAttribute.trackedEntityAttribute().optionSet() != null) {
-                    uids.add(programTrackedEntityAttribute.trackedEntityAttribute().optionSet().uid());
-                }
-            }
-
-            List<ProgramStage> programStages = program.programStages();
-            int programStagesSize = programStages.size();
-
-            for (int j = 0; j < programStagesSize; j++) {
-                ProgramStage programStage = programStages.get(j);
-                List<ProgramStageDataElement> programStageDataElements = programStage.programStageDataElements();
-                int programStageDataElementSize = programStageDataElements.size();
-
-                for (int k = 0; k < programStageDataElementSize; k++) {
-                    ProgramStageDataElement programStageDataElement = programStageDataElements.get(k);
-
-                    if (programStageDataElement.dataElement() != null &&
-                            programStageDataElement.dataElement().optionSet() != null) {
-                        uids.add(programStageDataElement.dataElement().optionSet().uid());
-                    }
-                }
-            }
+            getOptionSetUidsForAttributes(uids, program);
+            getOptionSetUidsForDataElements(uids, program);
         }
 
         return uids;
     }
 
+    private void getOptionSetUidsForDataElements(Set<String> uids, Program program) {
+        List<ProgramStage> programStages = program.programStages();
+        int programStagesSize = programStages.size();
+
+        for (int j = 0; j < programStagesSize; j++) {
+            ProgramStage programStage = programStages.get(j);
+            List<ProgramStageDataElement> programStageDataElements = programStage.programStageDataElements();
+            int programStageDataElementSize = programStageDataElements.size();
+
+            for (int k = 0; k < programStageDataElementSize; k++) {
+                ProgramStageDataElement programStageDataElement = programStageDataElements.get(k);
+
+                if (programStageDataElement.dataElement() != null &&
+                        programStageDataElement.dataElement().optionSet() != null) {
+                    uids.add(programStageDataElement.dataElement().optionSet().uid());
+                }
+            }
+        }
+    }
+
+    private void getOptionSetUidsForAttributes(Set<String> uids, Program program) {
+        int programTrackedEntityAttributeSize = program.programTrackedEntityAttributes().size();
+        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
+                program.programTrackedEntityAttributes();
+
+        for (int j = 0; j < programTrackedEntityAttributeSize; j++) {
+            ProgramTrackedEntityAttribute programTrackedEntityAttribute = programTrackedEntityAttributes.get(j);
+
+            if (programTrackedEntityAttribute.trackedEntityAttribute() != null &&
+                    programTrackedEntityAttribute.trackedEntityAttribute().optionSet() != null) {
+                uids.add(programTrackedEntityAttribute.trackedEntityAttribute().optionSet().uid());
+            }
+        }
+    }
+
     private Set<String> getAssignedTrackedEntityUids(List<Program> programs) {
+        if (programs == null) {
+            return null;
+        }
+
         Set<String> uids = new HashSet<>();
 
         int size = programs.size();
@@ -254,22 +349,21 @@ public class MetadataCall {
         return uids;
     }
 
-    private Set<String> getAssignedProgramUids(List<UserRole> userRoles, List<OrganisationUnit> organisationUnits) {
+    private Set<String> getAssignedProgramUids(User user) {
+        if (user == null || user.userCredentials() == null || user.userCredentials().userRoles() == null) {
+            return null;
+        }
+
         Set<String> programUids = new HashSet<>();
 
-        if (userRoles != null) {
-            int size = userRoles.size();
-            for (int i = 0; i < size; i++) {
-                UserRole userRole = userRoles.get(i);
+        getProgramUidsFromUserRoles(user, programUids);
+        getProgramUidsFromOrganisationUnits(user, programUids);
 
-                int programSize = userRole.programs().size();
-                for (int j = 0; j < programSize; j++) {
-                    Program program = userRole.programs().get(j);
+        return programUids;
+    }
 
-                    programUids.add(program.uid());
-                }
-            }
-        }
+    private void getProgramUidsFromOrganisationUnits(User user, Set<String> programUids) {
+        List<OrganisationUnit> organisationUnits = user.organisationUnits();
 
         if (organisationUnits != null) {
             int size = organisationUnits.size();
@@ -284,178 +378,70 @@ public class MetadataCall {
                 }
             }
         }
-
-        return programUids;
     }
 
-    private ResourceHandler initializeResourceHandler() {
-        ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter);
-        return new ResourceHandler(resourceStore);
+    private void getProgramUidsFromUserRoles(User user, Set<String> programUids) {
+        List<UserRole> userRoles = user.userCredentials().userRoles();
+        if (userRoles != null) {
+            int size = userRoles.size();
+            for (int i = 0; i < size; i++) {
+                UserRole userRole = userRoles.get(i);
+
+                int programSize = userRole.programs().size();
+                for (int j = 0; j < programSize; j++) {
+                    Program program = userRole.programs().get(j);
+
+                    programUids.add(program.uid());
+                }
+            }
+        }
     }
 
-    private OrganisationUnitHandler initializeOrganisationUnitHandler() {
-        OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter);
-        UserOrganisationUnitLinkStore userOrganisationUnitStore =
-                new UserOrganisationUnitLinkStoreImpl(databaseAdapter);
-
-        return new OrganisationUnitHandler(
-                organisationUnitStore, userOrganisationUnitStore
-        );
-    }
-
-
-    private SystemInfoCall initializeSystemInfoCall() {
-        SystemInfoService systemInfoService = retrofit.create(SystemInfoService.class);
-        SystemInfoStore systemInfoStore = new SystemInfoStoreImpl(databaseAdapter);
-        SystemInfoHandler systemInfoHandler = new SystemInfoHandler(systemInfoStore);
-        ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter);
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
+    private Response<SystemInfo> makeSystemInfoCall() throws Exception {
 
         return new SystemInfoCall(
-                databaseAdapter, systemInfoHandler, systemInfoService, resourceHandler
-        );
+                databaseAdapter, systemInfoStore, systemInfoService, resourceStore
+        ).call();
     }
 
 
-    private UserCall initializeUserCall(OrganisationUnitHandler organisationUnitHandler,
-                                        ResourceHandler resourceHandler,
-                                        Date serverDate) {
-        UserService userService = retrofit.create(UserService.class);
-
-        UserCredentialsStore userCredentialsStore = new UserCredentialsStoreImpl(databaseAdapter);
-        UserRoleStore userRoleStore = new UserRoleStoreImpl(databaseAdapter);
-        UserStore userStore = new UserStoreImpl(databaseAdapter);
-        UserRoleProgramLinkStore userRoleProgramLinkStore = new UserRoleProgramLinkStoreImpl(databaseAdapter);
-
-
-        UserHandler userHandler = new UserHandler(userStore);
-        UserCredentialsHandler userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
-        UserRoleHandler userRoleHandler = new UserRoleHandler(userRoleStore, userRoleProgramLinkStore);
-
-
-        return new UserCall(userService, databaseAdapter, organisationUnitHandler,
-                userHandler, userCredentialsHandler, userRoleHandler, resourceHandler, serverDate);
+    private Response<User> makeUserCall(Date serverDate) throws Exception {
+        return new UserCall(
+                userService, databaseAdapter, organisationUnitStore,
+                userStore, userCredentialsStore, userRoleStore, resourceStore, serverDate,
+                userRoleProgramLinkStore, userOrganisationUnitLinkStore).call();
     }
 
-    private OrganisationUnitCall initializeOrganisationUnitCall(OrganisationUnitHandler organisationUnitHandler,
-                                                                ResourceHandler resourceHandler,
-                                                                User user,
-                                                                Date serverDate) {
-        OrganisationUnitService organisationUnitService = retrofit.create(OrganisationUnitService.class);
-
-
+    private Response<Payload<OrganisationUnit>> makeOrganisationUnitCall(
+            User user,
+            Date serverDate) throws Exception {
         return new OrganisationUnitCall(user, organisationUnitService, databaseAdapter,
-                organisationUnitHandler, resourceHandler, serverDate);
+                organisationUnitStore, resourceStore, serverDate, userOrganisationUnitLinkStore).call();
     }
 
-    private ProgramCall initializeProgramCall(Set<String> uids, ResourceHandler resourceHandler, Date serverDate) {
-        TrackedEntityAttributeStore trackedEntityAttributeStore =
-                new TrackedEntityAttributeStoreImpl(databaseAdapter);
-        TrackedEntityAttributeHandler trackedEntityAttributeHandler =
-                new TrackedEntityAttributeHandler(trackedEntityAttributeStore);
-
-        ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore =
-                new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter);
-
-        ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler =
-                new ProgramTrackedEntityAttributeHandler(
-                        programTrackedEntityAttributeStore,
-                        trackedEntityAttributeHandler
-                );
-
-        ProgramRuleVariableModelStore programRuleVariableStore =
-                new ProgramRuleVariableModelStoreImpl(databaseAdapter);
-        ProgramRuleVariableHandler programRuleVariableHandler =
-                new ProgramRuleVariableHandler(programRuleVariableStore);
-
-        ProgramIndicatorStore programIndicatorStore = new ProgramIndicatorStoreImpl(databaseAdapter);
-        ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore =
-                new ProgramStageSectionProgramIndicatorLinkStoreImpl(databaseAdapter);
-        ProgramIndicatorHandler programIndicatorHandler = new ProgramIndicatorHandler(
-                programIndicatorStore,
-                programStageSectionProgramIndicatorLinkStore
-        );
-
-        ProgramRuleActionStore programRuleActionStore = new ProgramRuleActionStoreImpl(databaseAdapter);
-        ProgramRuleActionHandler programRuleActionHandler = new ProgramRuleActionHandler(programRuleActionStore);
-        ProgramRuleStore programRuleStore = new ProgramRuleStoreImpl(databaseAdapter);
-        ProgramRuleHandler programRuleHandler = new ProgramRuleHandler(programRuleStore, programRuleActionHandler);
-
-        OptionStore optionStore = new OptionStoreImpl(databaseAdapter);
-        OptionHandler optionHandler = new OptionHandler(optionStore);
-
-        OptionSetStore optionSetStore = new OptionSetStoreImpl(databaseAdapter);
-        OptionSetHandler optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
-
-
-        DataElementStore dataElementStore = new DataElementStoreImpl(databaseAdapter);
-        DataElementHandler dataElementHandler = new DataElementHandler(dataElementStore, optionSetHandler);
-        ProgramStageDataElementStore programStageDataElementStore =
-                new ProgramStageDataElementStoreImpl(databaseAdapter);
-
-        ProgramStageDataElementHandler programStageDataElementHandler = new ProgramStageDataElementHandler(
-                programStageDataElementStore, dataElementHandler
-        );
-
-
-        ProgramStageSectionStore programStageSectionStore = new ProgramStageSectionStoreImpl(databaseAdapter);
-        ProgramStageSectionHandler programStageSectionHandler = new ProgramStageSectionHandler(
-                programStageSectionStore,
-                programStageDataElementHandler,
-                programIndicatorHandler
-
-        );
-
-        ProgramStageStore programStageStore = new ProgramStageStoreImpl(databaseAdapter);
-        ProgramStageHandler programStageHandler = new ProgramStageHandler(
-                programStageStore,
-                programStageSectionHandler,
-                programStageDataElementHandler
-        );
-
-        RelationshipTypeStore relationshipStore = new RelationshipTypeStoreImpl(databaseAdapter);
-        RelationshipTypeHandler relationshipTypeHandler = new RelationshipTypeHandler(relationshipStore);
-        ProgramService programService = retrofit.create(ProgramService.class);
-        ProgramStore programStore = new ProgramStoreImpl(databaseAdapter);
-
-
-        ProgramHandler programHandler = new ProgramHandler(
-                programStore,
-                programRuleVariableHandler,
-                programStageHandler,
-                programIndicatorHandler,
-                programRuleHandler,
-                programTrackedEntityAttributeHandler,
-                relationshipTypeHandler);
-
-
+    private Response<Payload<Program>> makeProgramCall(Set<String> uids,
+                                                       Date serverDate) throws Exception {
         return new ProgramCall(
-                programService, databaseAdapter, resourceHandler, uids, programHandler, serverDate
-        );
+                programService, databaseAdapter, resourceStore, uids, programStore, serverDate,
+                trackedEntityAttributeStore, programTrackedEntityAttributeStore, programRuleVariableStore,
+                programIndicatorStore, programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
+                programRuleStore, optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
+                programStageSectionStore, programStageStore, relationshipStore
+        ).call();
     }
 
-    private TrackedEntityCall initializeTrackedEntityCall(Set<String> uids,
-                                                          ResourceHandler resourceHandler,
-                                                          Date serverDate) {
-        TrackedEntityService service = retrofit.create(TrackedEntityService.class);
-        TrackedEntityStore trackedEntityStore = new TrackedEntityStoreImpl(databaseAdapter);
-        TrackedEntityHandler trackedEntityHandler = new TrackedEntityHandler(trackedEntityStore);
-
+    private Response<Payload<TrackedEntity>> makeTrackedEntityCall(Set<String> uids,
+                                                                   Date serverDate) throws Exception {
         return new TrackedEntityCall(
-                uids, databaseAdapter, trackedEntityHandler, resourceHandler, service, serverDate
-        );
+                uids, databaseAdapter, trackedEntityStore, resourceStore, trackedEntityService, serverDate
+        ).call();
     }
 
-    private OptionSetCall initializeOptionSetCall(ResourceHandler resourceHandler, Set<String> uids, Date serverDate) {
-        OptionSetService optionSetService = retrofit.create(OptionSetService.class);
-        OptionSetStore optionSetStore = new OptionSetStoreImpl(databaseAdapter);
-        OptionStore optionStore = new OptionStoreImpl(databaseAdapter);
-        OptionHandler optionHandler = new OptionHandler(optionStore);
-        OptionSetHandler optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
-
+    private Response<Payload<OptionSet>> makeOptionSetCall(Set<String> uids,
+                                                           Date serverDate) throws Exception {
         return new OptionSetCall(
-                optionSetService, optionSetHandler, databaseAdapter, resourceHandler, uids, serverDate
-        );
+                optionSetService, optionSetStore, databaseAdapter, resourceStore, uids, serverDate,
+                optionStore).call();
     }
 
 

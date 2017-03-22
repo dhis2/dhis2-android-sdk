@@ -31,8 +31,7 @@ import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,10 +69,10 @@ public class SystemInfoCallTests {
     private DatabaseAdapter databaseAdapter;
 
     @Mock
-    private SystemInfoHandler systemInfoHandler;
+    private SystemInfoStore systemInfoStore;
 
     @Mock
-    private ResourceHandler resourceHandler;
+    private ResourceStore resourceStore;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<SystemInfo> systemInfoCall;
@@ -98,7 +97,7 @@ public class SystemInfoCallTests {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         systemInfoSyncCall = new SystemInfoCall(
-                databaseAdapter, systemInfoHandler, systemInfoService, resourceHandler
+                databaseAdapter, systemInfoStore, systemInfoService, resourceStore
         );
 
         when(systemInfo.version()).thenReturn("test.version-SNAPSHOT");
@@ -128,7 +127,7 @@ public class SystemInfoCallTests {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldNotInvokeHandlersOnException() throws Exception {
+    public void call_shouldNotInvokeStoresOnException() throws Exception {
         when(systemInfoCall.execute()).thenThrow(IOException.class);
 
         try {
@@ -140,8 +139,10 @@ public class SystemInfoCallTests {
             verify(transaction, never()).setSuccessful();
             verify(transaction, never()).end();
 
-            verify(systemInfoHandler, never()).handleSystemInfo(any(SystemInfo.class));
-            verify(resourceHandler, never()).handleResource(any(ResourceModel.Type.class), any(Date.class));
+            verify(systemInfoStore, never()).insert(any(Date.class), anyString(), anyString(), anyString());
+            verify(resourceStore, never()).insert(anyString(), any(Date.class));
+            verify(resourceStore, never()).update(anyString(), any(Date.class), anyString());
+            verify(resourceStore, never()).delete(anyString());
 
         }
     }
@@ -162,8 +163,10 @@ public class SystemInfoCallTests {
         verify(transaction, never()).end();
         verify(transaction, never()).setSuccessful();
 
-        verify(systemInfoHandler, never()).handleSystemInfo(any(SystemInfo.class));
-        verify(resourceHandler, never()).handleResource(any(ResourceModel.Type.class), any(Date.class));
+        verify(systemInfoStore, never()).insert(any(Date.class), anyString(), anyString(), anyString());
+        verify(resourceStore, never()).insert(anyString(), any(Date.class));
+        verify(resourceStore, never()).update(anyString(), any(Date.class), anyString());
+        verify(resourceStore, never()).delete(anyString());
 
     }
 
@@ -205,13 +208,13 @@ public class SystemInfoCallTests {
     }
 
     @Test
-    public void call_shouldInvokeHandlersOnSuccess() throws Exception {
+    public void call_shouldInvokeStoresOnSuccess() throws Exception {
         when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));
 
         systemInfoSyncCall.call();
 
-        verify(systemInfoHandler, times(1)).handleSystemInfo(systemInfo);
-        verify(resourceHandler, times(1)).handleResource(any(ResourceModel.Type.class), any(Date.class));
+        verify(systemInfoStore, times(1)).insert(any(Date.class), anyString(), anyString(), anyString());
+        verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
 
     }
 }

@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.ResourceStore;
 
 import java.io.IOException;
 import java.util.Date;
@@ -49,8 +50,8 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
 
     private final TrackedEntityService service;
     private final DatabaseAdapter databaseAdapter;
-    private final TrackedEntityHandler handler;
-    private final ResourceHandler resourceHandler;
+    private final TrackedEntityStore trackedEntityStore;
+    private final ResourceStore resourceStore;
     private final Set<String> uidSet;
     private final Date serverDate;
     private final ResourceModel.Type resourceType = ResourceModel.Type.TRACKED_ENTITY;
@@ -58,14 +59,14 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
 
     public TrackedEntityCall(@Nullable Set<String> uidSet,
                              @NonNull DatabaseAdapter databaseAdapter,
-                             @NonNull TrackedEntityHandler handler,
-                             @NonNull ResourceHandler resourceHandler,
+                             @NonNull TrackedEntityStore trackedEntityStore,
+                             @NonNull ResourceStore resourceStore,
                              @NonNull TrackedEntityService service,
                              @NonNull Date serverDate) {
         this.uidSet = uidSet;
         this.databaseAdapter = databaseAdapter;
-        this.handler = handler;
-        this.resourceHandler = resourceHandler;
+        this.trackedEntityStore = trackedEntityStore;
+        this.resourceStore = resourceStore;
         this.service = service;
         this.serverDate = new Date(serverDate.getTime());
     }
@@ -86,12 +87,16 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
             isExecuted = true;
         }
 
-        if(uidSet.size() > MAX_UIDS) {
+        if (uidSet.size() > MAX_UIDS) {
             throw new IllegalArgumentException("Can't handle the amount of tracked entities: " + uidSet.size() + ". " +
                     "Max size is: " + MAX_UIDS);
         }
-        Response<Payload<TrackedEntity>> response = getTrackedEntities();
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
+        String lastUpdated = resourceHandler.getLastUpdated(resourceType);
+        Response<Payload<TrackedEntity>> response = getTrackedEntities(lastUpdated);
+
+        TrackedEntityHandler trackedEntityHandler = new TrackedEntityHandler(trackedEntityStore);
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
 
@@ -102,7 +107,7 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
                 for (int i = 0; i < size; i++) {
                     TrackedEntity trackedEntity = trackedEntities.get(i);
 
-                    handler.handleTrackedEntity(trackedEntity);
+                    trackedEntityHandler.handleTrackedEntity(trackedEntity);
                 }
                 resourceHandler.handleResource(
                         resourceType,
@@ -116,8 +121,8 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
         return response;
     }
 
-    private Response<Payload<TrackedEntity>> getTrackedEntities() throws IOException {
-         return service.trackedEntities(
+    private Response<Payload<TrackedEntity>> getTrackedEntities(String lastUpdated) throws IOException {
+        return service.trackedEntities(
                 Fields.<TrackedEntity>builder().fields(
                         TrackedEntity.uid, TrackedEntity.code, TrackedEntity.name,
                         TrackedEntity.displayName, TrackedEntity.created, TrackedEntity.lastUpdated,
@@ -126,7 +131,7 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
                         TrackedEntity.deleted
                 ).build(),
                 TrackedEntity.uid.in(uidSet),
-                TrackedEntity.lastUpdated.gt(resourceHandler.getLastUpdated(resourceType)),
+                TrackedEntity.lastUpdated.gt(lastUpdated),
                 false
         ).execute();
     }

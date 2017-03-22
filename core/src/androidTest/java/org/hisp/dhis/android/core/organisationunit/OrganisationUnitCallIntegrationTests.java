@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
@@ -271,10 +270,6 @@ public class OrganisationUnitCallIntegrationTests extends AbsStoreTestCase {
                 new UserOrganisationUnitLinkStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
-        OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore,
-                userOrganisationUnitLinkStore);
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
-
         // Create a user with the root as assigned organisation unit (for the test):
         User user = User.create("user_uid", "code", "name", "display_name", new Date(), new Date(), "birthday",
                 "education", "gender", "job_title", "surname", "firstName", "introduction", "employer", "interests",
@@ -290,7 +285,7 @@ public class OrganisationUnitCallIntegrationTests extends AbsStoreTestCase {
         database().insert(UserModel.TABLE, null, userContentValues);
 
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, databaseAdapter(),
-                organisationUnitHandler, resourceHandler, new Date());
+                organisationUnitStore, resourceStore, new Date(), userOrganisationUnitLinkStore);
     }
 
     @Test

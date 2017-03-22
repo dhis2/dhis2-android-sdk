@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.ResourceStore;
 
 import java.io.IOException;
 
@@ -40,19 +41,19 @@ import retrofit2.Response;
 
 public class SystemInfoCall implements Call<Response<SystemInfo>> {
     private final DatabaseAdapter databaseAdapter;
-    private final SystemInfoHandler systemInfoHandler;
+    private final SystemInfoStore systemInfoStore;
     private final SystemInfoService systemInfoService;
-    private final ResourceHandler resourceHandler;
+    private final ResourceStore resourceStore;
     private boolean isExecuted;
 
     public SystemInfoCall(DatabaseAdapter databaseAdapter,
-                          SystemInfoHandler systemInfoHandler,
+                          SystemInfoStore systemInfoStore,
                           SystemInfoService systemInfoService,
-                          ResourceHandler resourceHandler) {
+                          ResourceStore resourceStore) {
         this.databaseAdapter = databaseAdapter;
-        this.systemInfoHandler = systemInfoHandler;
+        this.systemInfoStore = systemInfoStore;
         this.systemInfoService = systemInfoService;
-        this.resourceHandler = resourceHandler;
+        this.resourceStore = resourceStore;
     }
 
 
@@ -84,6 +85,9 @@ public class SystemInfoCall implements Call<Response<SystemInfo>> {
     }
 
     private void insertOrUpdateSystemInfo(Response<SystemInfo> response) {
+        SystemInfoHandler systemInfoHandler = new SystemInfoHandler(systemInfoStore);
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
+
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
             if (response.body() != null) {

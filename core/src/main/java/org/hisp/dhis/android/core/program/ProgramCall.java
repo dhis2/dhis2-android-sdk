@@ -34,12 +34,23 @@ import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementHandler;
+import org.hisp.dhis.android.core.dataelement.DataElementStore;
+import org.hisp.dhis.android.core.option.OptionHandler;
 import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.option.OptionSetHandler;
+import org.hisp.dhis.android.core.option.OptionSetStore;
+import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeHandler;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 
 import java.util.Date;
 import java.util.List;
@@ -47,34 +58,77 @@ import java.util.Set;
 
 import retrofit2.Response;
 
+@SuppressWarnings("PMD.TooManyFields")
 public class ProgramCall implements Call<Response<Payload<Program>>> {
     // retrofit service
     private final ProgramService programService;
 
     // database adapter and stores
     private final DatabaseAdapter databaseAdapter;
-    private final ResourceHandler resourceHandler;
+    private final ResourceStore resourceStore;
 
     // handler
-    private final ProgramHandler programHandler;
+    private final ProgramStore programStore;
 
     private boolean isExecuted;
     private final Set<String> uids;
     private final Date serverDate;
+    private final TrackedEntityAttributeStore trackedEntityAttributeStore;
+    private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
+    private final ProgramRuleVariableModelStore programRuleVariableStore;
+    private final ProgramIndicatorStore programIndicatorStore;
+    private final ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
+    private final ProgramRuleActionStore programRuleActionStore;
+    private final ProgramRuleStore programRuleStore;
+    private final OptionStore optionStore;
+    private final OptionSetStore optionSetStore;
+    private final DataElementStore dataElementStore;
+    private final ProgramStageDataElementStore programStageDataElementStore;
+    private final ProgramStageSectionStore programStageSectionStore;
+    private final ProgramStageStore programStageStore;
+    private final RelationshipTypeStore relationshipStore;
 
     public ProgramCall(ProgramService programService,
                        DatabaseAdapter databaseAdapter,
-                       ResourceHandler resourceHandler,
+                       ResourceStore resourceStore,
                        Set<String> uids,
-                       ProgramHandler programHandler,
-                       Date serverDate) {
+                       ProgramStore programStore,
+                       Date serverDate,
+                       TrackedEntityAttributeStore trackedEntityAttributeStore,
+                       ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
+                       ProgramRuleVariableModelStore programRuleVariableStore,
+                       ProgramIndicatorStore programIndicatorStore,
+                       ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore,
+                       ProgramRuleActionStore programRuleActionStore,
+                       ProgramRuleStore programRuleStore,
+                       OptionStore optionStore,
+                       OptionSetStore optionSetStore,
+                       DataElementStore dataElementStore,
+                       ProgramStageDataElementStore programStageDataElementStore,
+                       ProgramStageSectionStore programStageSectionStore,
+                       ProgramStageStore programStageStore,
+                       RelationshipTypeStore relationshipStore) {
         this.programService = programService;
         this.databaseAdapter = databaseAdapter;
-        this.resourceHandler = resourceHandler;
+        this.resourceStore = resourceStore;
         this.uids = uids;
 
-        this.programHandler = programHandler;
+        this.programStore = programStore;
         this.serverDate = new Date(serverDate.getTime());
+        this.trackedEntityAttributeStore = trackedEntityAttributeStore;
+        this.programTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
+        this.programRuleVariableStore = programRuleVariableStore;
+        this.programIndicatorStore = programIndicatorStore;
+        this.programStageSectionProgramIndicatorLinkStore = programStageSectionProgramIndicatorLinkStore;
+        this.programRuleActionStore = programRuleActionStore;
+        this.programRuleStore = programRuleStore;
+        this.optionStore = optionStore;
+        this.optionSetStore = optionSetStore;
+        this.dataElementStore = dataElementStore;
+        this.programStageDataElementStore = programStageDataElementStore;
+        this.programStageSectionStore = programStageSectionStore;
+        this.programStageStore = programStageStore;
+        this.relationshipStore = relationshipStore;
     }
 
     @Override
@@ -99,6 +153,8 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                     "Max size is: " + MAX_UIDS);
         }
 
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
+
         String lastSyncedPrograms = resourceHandler.getLastUpdated(ResourceModel.Type.PROGRAM);
 
         Response<Payload<Program>> programsByLastUpdated =
@@ -107,12 +163,14 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                 ).execute();
 
         if (programsByLastUpdated.isSuccessful()) {
-            applyChangesToDatabase(programsByLastUpdated);
+            applyChangesToDatabase(resourceHandler, programsByLastUpdated);
         }
         return programsByLastUpdated;
     }
 
-    private void applyChangesToDatabase(Response<Payload<Program>> programsByLastUpdated) {
+    private void applyChangesToDatabase(ResourceHandler resourceHandler,
+                                        Response<Payload<Program>> programsByLastUpdated) {
+        ProgramHandler programHandler = initializeProgramHandler();
         Transaction transaction = databaseAdapter.beginNewTransaction();
 
         try {
@@ -130,6 +188,65 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
         } finally {
             transaction.end();
         }
+    }
+
+    private ProgramHandler initializeProgramHandler() {
+        TrackedEntityAttributeHandler trackedEntityAttributeHandler =
+                new TrackedEntityAttributeHandler(trackedEntityAttributeStore);
+
+
+        ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler =
+                new ProgramTrackedEntityAttributeHandler(
+                        programTrackedEntityAttributeStore,
+                        trackedEntityAttributeHandler
+                );
+
+        ProgramRuleVariableHandler programRuleVariableHandler =
+                new ProgramRuleVariableHandler(programRuleVariableStore);
+
+        ProgramIndicatorHandler programIndicatorHandler = new ProgramIndicatorHandler(
+                programIndicatorStore,
+                programStageSectionProgramIndicatorLinkStore
+        );
+
+        ProgramRuleActionHandler programRuleActionHandler = new ProgramRuleActionHandler(programRuleActionStore);
+        ProgramRuleHandler programRuleHandler = new ProgramRuleHandler(programRuleStore, programRuleActionHandler);
+
+        OptionHandler optionHandler = new OptionHandler(optionStore);
+
+        OptionSetHandler optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
+
+
+        DataElementHandler dataElementHandler = new DataElementHandler(dataElementStore, optionSetHandler);
+
+        ProgramStageDataElementHandler programStageDataElementHandler = new ProgramStageDataElementHandler(
+                programStageDataElementStore, dataElementHandler
+        );
+
+        ProgramStageSectionHandler programStageSectionHandler = new ProgramStageSectionHandler(
+                programStageSectionStore,
+                programStageDataElementHandler,
+                programIndicatorHandler
+
+        );
+
+        ProgramStageHandler programStageHandler = new ProgramStageHandler(
+                programStageStore,
+                programStageSectionHandler,
+                programStageDataElementHandler
+        );
+
+        RelationshipTypeHandler relationshipTypeHandler = new RelationshipTypeHandler(relationshipStore);
+
+
+        return new ProgramHandler(
+                programStore,
+                programRuleVariableHandler,
+                programStageHandler,
+                programIndicatorHandler,
+                programRuleHandler,
+                programTrackedEntityAttributeHandler,
+                relationshipTypeHandler);
     }
 
     private Fields<Program> getFields() {

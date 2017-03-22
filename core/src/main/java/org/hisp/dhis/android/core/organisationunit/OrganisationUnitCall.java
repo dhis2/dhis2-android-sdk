@@ -39,7 +39,9 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
 import java.io.IOException;
 import java.util.Date;
@@ -54,8 +56,9 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
     private final User user;
     private final OrganisationUnitService organisationUnitService;
     private final DatabaseAdapter database;
-    private final OrganisationUnitHandler organisationUnitHandler;
-    private final ResourceHandler resourceHandler;
+    private final OrganisationUnitStore organisationUnitStore;
+    private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
+    private final ResourceStore resourceStore;
 
     private final Date serverDate;
     private boolean isExecuted;
@@ -63,15 +66,17 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
     public OrganisationUnitCall(@NonNull User user,
                                 @NonNull OrganisationUnitService organisationUnitService,
                                 @NonNull DatabaseAdapter database,
-                                @NonNull OrganisationUnitHandler organisationUnitHandler,
-                                @NonNull ResourceHandler resourceHandler,
-                                Date serverDate) {
+                                @NonNull OrganisationUnitStore organisationUnitStore,
+                                @NonNull ResourceStore resourceStore,
+                                @NonNull Date serverDate,
+                                @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore) {
         this.user = user;
         this.organisationUnitService = organisationUnitService;
         this.database = database;
-        this.organisationUnitHandler = organisationUnitHandler;
-        this.resourceHandler = resourceHandler;
+        this.organisationUnitStore = organisationUnitStore;
+        this.resourceStore = resourceStore;
         this.serverDate = new Date(serverDate.getTime());
+        this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
     }
 
     @Override
@@ -90,6 +95,12 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
             isExecuted = true;
         }
         Response<Payload<OrganisationUnit>> response = null;
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
+
+        OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
+                organisationUnitStore, userOrganisationUnitLinkStore
+        );
+
         Transaction transaction = database.beginNewTransaction();
         try {
             Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());

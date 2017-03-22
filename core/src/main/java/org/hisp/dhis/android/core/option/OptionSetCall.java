@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.ResourceStore;
 
 import java.io.IOException;
 import java.util.Date;
@@ -48,25 +49,27 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
     private final OptionSetService optionSetService;
 
     // database adapter and handler
-    private final OptionSetHandler optionSetHandler;
+    private final OptionSetStore optionSetStore;
+    private final OptionStore optionStore;
     private final DatabaseAdapter databaseAdapter;
-    private final ResourceHandler resourceHandler;
+    private final ResourceStore resourceStore;
     private final Date serverDate;
     private final Set<String> uids;
     private boolean isExecuted;
 
     public OptionSetCall(OptionSetService optionSetService,
-                         OptionSetHandler optionSetHandler,
+                         OptionSetStore optionSetStore,
                          DatabaseAdapter databaseAdapter,
-                         ResourceHandler resourceHandler,
+                         ResourceStore resourceStore,
                          Set<String> uids,
-                         Date serverDate) {
+                         Date serverDate, OptionStore optionStore) {
         this.optionSetService = optionSetService;
-        this.optionSetHandler = optionSetHandler;
+        this.optionSetStore = optionSetStore;
         this.databaseAdapter = databaseAdapter;
-        this.resourceHandler = resourceHandler;
+        this.resourceStore = resourceStore;
         this.uids = uids;
         this.serverDate = new Date(serverDate.getTime());
+        this.optionStore = optionStore;
     }
 
 
@@ -121,6 +124,10 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
     private void saveOptionSets(Response<Payload<OptionSet>> response) {
         List<OptionSet> optionSets = response.body().items();
         if (optionSets != null && !optionSets.isEmpty()) {
+            OptionHandler optionHandler = new OptionHandler(optionStore);
+            OptionSetHandler optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
+            ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
+
             Transaction transaction = databaseAdapter.beginNewTransaction();
             int size = optionSets.size();
 

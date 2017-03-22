@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.After;
@@ -119,12 +118,10 @@ public class SystemInfoCallIntegrationTest extends AbsStoreTestCase {
 
         SystemInfoService systemInfoService = retrofit.create(SystemInfoService.class);
         SystemInfoStore systemInfoStore = new SystemInfoStoreImpl(databaseAdapter());
-        SystemInfoHandler systemInfoHandler = new SystemInfoHandler(systemInfoStore);
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
         systeminfoCall = new SystemInfoCall(
-                databaseAdapter(), systemInfoHandler, systemInfoService, resourceHandler
+                databaseAdapter(), systemInfoStore, systemInfoService, resourceStore
         );
     }
 

@@ -66,6 +66,8 @@ import retrofit2.Response;
 import static junit.framework.Assert.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -84,8 +86,6 @@ public class OrganisationUnitCallUnitTests {
     @Mock
     private Transaction transaction;
 
-    @Mock
-    private ResourceHandler resourceHandler;
 
     @Mock
     private OrganisationUnitHandler organisationUnitHandler;
@@ -194,9 +194,9 @@ public class OrganisationUnitCallUnitTests {
         when(database.beginNewTransaction()).thenReturn(transaction);
 
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, database,
-                organisationUnitHandler,
-                resourceHandler,
-                serverDate);
+                organisationUnitStore,
+                resourceStore,
+                serverDate, userOrganisationUnitLinkStore);
 
         //Return only one organisationUnit.
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
@@ -234,7 +234,7 @@ public class OrganisationUnitCallUnitTests {
     @SuppressWarnings("unchecked")
     public void call_shouldInvokeServer_withCorrectParameters_withLastUpdated() throws Exception {
         String date = "2014-11-25T09:37:53.358";
-        when(resourceHandler.getLastUpdated(any(ResourceModel.Type.class))).thenReturn(date);
+        when(resourceStore.getLastUpdated(any(ResourceModel.Type.class))).thenReturn(date);
         when(payload.items()).thenReturn(Collections.singletonList(organisationUnit));
 
         organisationUnitCall.call();
@@ -292,7 +292,7 @@ public class OrganisationUnitCallUnitTests {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldInvokeHandler_ifRequestSucceeds() throws Exception {
+    public void call_shouldInvokeStore_ifRequestSucceeds() throws Exception {
         Headers headers = new Headers.Builder().add(HeaderUtils.DATE, lastUpdated.toString()).build();
         when(payload.items()).thenReturn(Collections.singletonList(organisationUnit));
         Response<Payload<OrganisationUnit>> response = Response.success(payload, headers);
@@ -304,12 +304,12 @@ public class OrganisationUnitCallUnitTests {
         verify(transaction, times(1)).setSuccessful();
         verify(transaction, times(1)).end();
 
-        verify(organisationUnitHandler, times(1)).handleOrganisationUnits(
-                eq(Collections.singletonList(organisationUnit)),
-                eq(OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE),
-                eq("user_uid")
+        verify(organisationUnitStore, times(1)).insert(
+                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(), anyString(), anyString(), anyString(),
+                any(Date.class), any(Date.class), anyString(), anyInt()
         );
-        verify(resourceHandler, times(1)).handleResource(eq(ResourceModel.Type.ORGANISATION_UNIT), any(Date.class));
+        verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
     }
 
     @Test

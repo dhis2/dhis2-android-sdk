@@ -39,8 +39,8 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.junit.After;
@@ -132,11 +132,11 @@ public class TrackedEntityCallIntegrationTests extends AbsStoreTestCase {
         TrackedEntityService service = retrofit.create(TrackedEntityService.class);
 
         HashSet<String> uids = new HashSet<>(Arrays.asList("kIeke8tAQnd", "nEenWmSyUEp"));
-        TrackedEntityHandler handler = new TrackedEntityHandler(new TrackedEntityStoreImpl(databaseAdapter()));
-        ResourceHandler resourceHandler = new ResourceHandler(new ResourceStoreImpl(databaseAdapter()));
+        TrackedEntityStore trackedEntityStore = new TrackedEntityStoreImpl(databaseAdapter());
+        ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
         trackedEntityCall = new TrackedEntityCall(
-                uids, databaseAdapter(), handler, resourceHandler, service, new Date()
+                uids, databaseAdapter(), trackedEntityStore, resourceStore, service, new Date()
         );
     }
 

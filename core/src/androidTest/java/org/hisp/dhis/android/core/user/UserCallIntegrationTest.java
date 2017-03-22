@@ -43,7 +43,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
 import org.hisp.dhis.android.core.program.ProgramModel;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
@@ -227,15 +226,11 @@ public class UserCallIntegrationTest extends AbsStoreTestCase {
         UserRoleProgramLinkStore userRoleProgramLinkStore = new UserRoleProgramLinkStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
-        UserHandler userHandler = new UserHandler(userStore);
-        UserCredentialsHandler userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
-        UserRoleHandler userRoleHandler = new UserRoleHandler(userRoleStore, userRoleProgramLinkStore);
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore, userOrganisationUnitStore);
 
-        userCall = new UserCall(userService, databaseAdapter(), organisationUnitHandler,
-                userHandler, userCredentialsHandler, userRoleHandler, resourceHandler, new Date()
-        );
+        userCall = new UserCall(userService, databaseAdapter(), organisationUnitStore,
+                userStore, userCredentialsStore, userRoleStore, resourceStore, new Date(),
+                userRoleProgramLinkStore, userOrganisationUnitStore);
 
         ContentValues program1 = CreateProgramUtils.create(1L, "eBAyeGv0exc", null, null, null);
         ContentValues program2 = CreateProgramUtils.create(2L, "ur1Edk5Oe2n", null, null, null);

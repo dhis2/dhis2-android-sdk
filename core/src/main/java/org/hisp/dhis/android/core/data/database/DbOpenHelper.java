@@ -583,12 +583,16 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             TrackedEntityDataValueModel.TABLE + " (" +
             TrackedEntityDataValueModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             TrackedEntityDataValueModel.Columns.EVENT + " TEXT NOT NULL," +
-            TrackedEntityDataValueModel.Columns.DATA_ELEMENT + " TEXT," +
+            TrackedEntityDataValueModel.Columns.DATA_ELEMENT + " TEXT NOT NULL," +
             TrackedEntityDataValueModel.Columns.STORED_BY + " TEXT," +
             TrackedEntityDataValueModel.Columns.VALUE + " TEXT," +
             TrackedEntityDataValueModel.Columns.CREATED + " TEXT," +
             TrackedEntityDataValueModel.Columns.LAST_UPDATED + " TEXT," +
             TrackedEntityDataValueModel.Columns.PROVIDED_ELSEWHERE + " INTEGER," +
+            " FOREIGN KEY (" + TrackedEntityDataValueModel.Columns.DATA_ELEMENT + ")" +
+            " REFERENCES " + DataElementModel.TABLE +
+            " (" + DataElementModel.Columns.UID + ")" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
             " FOREIGN KEY (" + TrackedEntityDataValueModel.Columns.EVENT + ")" +
             " REFERENCES " + EventModel.TABLE + " (" + EventModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +

@@ -1671,10 +1671,10 @@ public class ProgramCallIntegrationTests extends AbsStoreTestCase {
                 ProgramTrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION,
                 ProgramTrackedEntityAttributeModel.Columns.MANDATORY,
                 ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                ProgramTrackedEntityAttributeModel.Columns.VALUE_TYPE,
                 ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATES,
                 ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST,
-                ProgramTrackedEntityAttributeModel.Columns.PROGRAM
+                ProgramTrackedEntityAttributeModel.Columns.PROGRAM,
+                ProgramTrackedEntityAttributeModel.Columns.SORT_ORDER
         };
 
         Cursor programTrackedEntityAttributeCursor = database().query(ProgramTrackedEntityAttributeModel.TABLE,
@@ -1696,10 +1696,10 @@ public class ProgramCallIntegrationTests extends AbsStoreTestCase {
                 null,
                 0, // false
                 "w75KJ2mc4zz",
-                "TEXT",
                 0, // false
                 1, // true
-                "IpHINAT79UW"
+                "IpHINAT79UW",
+                99
         ).isExhausted();
     }
 

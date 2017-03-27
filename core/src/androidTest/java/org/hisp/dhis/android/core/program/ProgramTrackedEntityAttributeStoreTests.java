@@ -68,7 +68,8 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
             Columns.TRACKED_ENTITY_ATTRIBUTE,
             Columns.ALLOW_FUTURE_DATES,
             Columns.DISPLAY_IN_LIST,
-            Columns.PROGRAM
+            Columns.PROGRAM,
+            Columns.SORT_ORDER
     };
     private static final String UID = "test_uid";
     private static final String CODE = "test_code";
@@ -85,6 +86,7 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
     private static final long TRACKED_ENTITY_ATTRIBUTE_ID = 1L;
     private static final Long ID = 2L;
     private static final String PROGRAM = "test_program_uid";
+    private static final Integer SORT_ORDER = 99;
     private static final String OPTION_SET = "test_option_set_uid";
     private ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
 
@@ -129,7 +131,8 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
                 TRACKED_ENTITY_ATTRIBUTE,
                 ALLOW_FUTURE_DATES,
                 DISPLAY_IN_LIST,
-                PROGRAM
+                PROGRAM,
+                SORT_ORDER
         );
         Cursor cursor = database().query(ProgramTrackedEntityAttributeModel.TABLE,
                 PROJECTION, null, null, null, null, null);
@@ -150,7 +153,8 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
                 TRACKED_ENTITY_ATTRIBUTE,
                 toInteger(ALLOW_FUTURE_DATES),
                 toInteger(DISPLAY_IN_LIST),
-                PROGRAM
+                PROGRAM,
+                SORT_ORDER
         ).isExhausted();
     }
 
@@ -164,7 +168,7 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
                 SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, MANDATORY,
                 deferredTrackedEntityAttribute,
                 ALLOW_FUTURE_DATES, DISPLAY_IN_LIST,
-                deferredProgram
+                deferredProgram, SORT_ORDER
         );
         ContentValues program = CreateProgramUtils.create(3L, deferredProgram, null, null, null);
         database().insert(ProgramModel.TABLE, null, program);
@@ -182,7 +186,7 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
                 DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, toInteger(MANDATORY),
                 deferredTrackedEntityAttribute,
                 toInteger(ALLOW_FUTURE_DATES), toInteger(DISPLAY_IN_LIST),
-                deferredProgram
+                deferredProgram, SORT_ORDER
         ).isExhausted();
     }
 
@@ -191,7 +195,7 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
         programTrackedEntityAttributeStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
                 DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, MANDATORY,
                 "wrong",
-                ALLOW_FUTURE_DATES, DISPLAY_IN_LIST, PROGRAM
+                ALLOW_FUTURE_DATES, DISPLAY_IN_LIST, PROGRAM, SORT_ORDER
         );
     }
 
@@ -200,7 +204,7 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
         programTrackedEntityAttributeStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
                 DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, MANDATORY, TRACKED_ENTITY_ATTRIBUTE,
                 ALLOW_FUTURE_DATES, DISPLAY_IN_LIST,
-                "wrong"
+                "wrong", SORT_ORDER
         );
     }
 
@@ -285,7 +289,7 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
         int update = programTrackedEntityAttributeStore.update(
                 UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, updatedDisplayShortName,
                 DESCRIPTION, DISPLAY_DESCRIPTION, MANDATORY, TRACKED_ENTITY_ATTRIBUTE,
-                ALLOW_FUTURE_DATES, DISPLAY_IN_LIST, PROGRAM, UID
+                ALLOW_FUTURE_DATES, DISPLAY_IN_LIST, PROGRAM, SORT_ORDER, UID
         );
         // check that store returns 1 on successful update
         assertThat(update).isEqualTo(1);

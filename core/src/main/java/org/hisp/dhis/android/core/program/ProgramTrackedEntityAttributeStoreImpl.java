@@ -58,7 +58,7 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
             ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ", " +
             ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATES + ", " +
             ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST + ", " +
-            ProgramTrackedEntityAttributeModel.Columns.PROGRAM +
+            ProgramTrackedEntityAttributeModel.Columns.PROGRAM + ", " +
             ProgramTrackedEntityAttributeModel.Columns.SORT_ORDER +
             ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
@@ -78,7 +78,7 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
             ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " =?, " +
             ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATES + " =?, " +
             ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST + " =?, " +
-            ProgramTrackedEntityAttributeModel.Columns.PROGRAM + " =? " +
+            ProgramTrackedEntityAttributeModel.Columns.PROGRAM + " =?, " +
             ProgramTrackedEntityAttributeModel.Columns.SORT_ORDER + " =? " +
             " WHERE " +
             ProgramTrackedEntityAttributeModel.Columns.UID + " =?;";
@@ -131,7 +131,7 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
                 allowFutureDates, displayInList, program, sortOrder);
 
         // bind the where argument
-        sqLiteBind(updateStatement, 16, whereProgramTrackedEntityAttributeUid);
+        sqLiteBind(updateStatement, 17, whereProgramTrackedEntityAttributeUid);
 
         // execute and clear bindings
         int update = databaseAdapter.executeUpdateDelete(ProgramTrackedEntityAttributeModel.TABLE, updateStatement);

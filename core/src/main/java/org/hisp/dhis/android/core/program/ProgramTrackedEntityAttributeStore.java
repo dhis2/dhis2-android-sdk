@@ -39,7 +39,8 @@ public interface ProgramTrackedEntityAttributeStore {
                 @Nullable String shortName, @Nullable String displayShortName,
                 @Nullable String description, @Nullable String displayDescription,
                 @Nullable Boolean mandatory, @NonNull String trackedEntityAttribute,
-                @Nullable Boolean allowFutureDates, @Nullable Boolean displayInList, @NonNull String program);
+                @Nullable Boolean allowFutureDates, @Nullable Boolean displayInList, @NonNull String program,
+                @Nullable Integer sortOrder);
 
     int update(@NonNull String uid, @Nullable String code, @NonNull String name,
                @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
@@ -47,7 +48,7 @@ public interface ProgramTrackedEntityAttributeStore {
                @Nullable String description, @Nullable String displayDescription,
                @Nullable Boolean mandatory, @NonNull String trackedEntityAttribute,
                @Nullable Boolean allowFutureDates, @Nullable Boolean displayInList, @NonNull String program,
-               @NonNull String whereProgramTrackedEntityAttributeUid);
+               @Nullable Integer sortOrder, @NonNull String whereProgramTrackedEntityAttributeUid);
 
     int delete(String uid);
 }

@@ -59,8 +59,8 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
             ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATES + ", " +
             ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST + ", " +
             ProgramTrackedEntityAttributeModel.Columns.PROGRAM +
-
-            ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            ProgramTrackedEntityAttributeModel.Columns.SORT_ORDER +
+            ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + ProgramTrackedEntityAttributeModel.TABLE +
             " SET " +
@@ -79,6 +79,7 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
             ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATES + " =?, " +
             ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST + " =?, " +
             ProgramTrackedEntityAttributeModel.Columns.PROGRAM + " =? " +
+            ProgramTrackedEntityAttributeModel.Columns.SORT_ORDER + " =? " +
             " WHERE " +
             ProgramTrackedEntityAttributeModel.Columns.UID + " =?;";
 
@@ -106,10 +107,10 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
                        @Nullable String displayShortName, @Nullable String description,
                        @Nullable String displayDescription, @Nullable Boolean mandatory,
                        @NonNull String trackedEntityAttribute, @Nullable Boolean allowFutureDates,
-                       @Nullable Boolean displayInList, @NonNull String program) {
+                       @Nullable Boolean displayInList, @NonNull String program, @Nullable Integer sortOrder) {
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, shortName,
                 displayShortName, description, displayDescription, mandatory, trackedEntityAttribute,
-                allowFutureDates, displayInList, program);
+                allowFutureDates, displayInList, program, sortOrder);
 
         Long insert = databaseAdapter.executeInsert(ProgramTrackedEntityAttributeModel.TABLE, insertStatement);
         insertStatement.clearBindings();
@@ -123,11 +124,11 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
                       @Nullable String displayShortName, @Nullable String description,
                       @Nullable String displayDescription, @Nullable Boolean mandatory,
                       @NonNull String trackedEntityAttribute, @Nullable Boolean allowFutureDates,
-                      @Nullable Boolean displayInList, @NonNull String program,
+                      @Nullable Boolean displayInList, @NonNull String program, @Nullable Integer sortOrder,
                       @NonNull String whereProgramTrackedEntityAttributeUid) {
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, shortName,
                 displayShortName, description, displayDescription, mandatory, trackedEntityAttribute,
-                allowFutureDates, displayInList, program);
+                allowFutureDates, displayInList, program, sortOrder);
 
         // bind the where argument
         sqLiteBind(updateStatement, 16, whereProgramTrackedEntityAttributeUid);
@@ -157,8 +158,7 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
                                @Nullable String displayShortName, @Nullable String description,
                                @Nullable String displayDescription, @Nullable Boolean mandatory,
                                @NonNull String trackedEntityAttribute, @Nullable Boolean allowFutureDates,
-                               @Nullable Boolean displayInList,
-                               @NonNull String program) {
+                               @Nullable Boolean displayInList, @NonNull String program, @Nullable Integer sortOrder) {
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);
@@ -174,6 +174,7 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
         sqLiteBind(sqLiteStatement, 13, allowFutureDates);
         sqLiteBind(sqLiteStatement, 14, displayInList);
         sqLiteBind(sqLiteStatement, 15, program);
+        sqLiteBind(sqLiteStatement, 16, sortOrder);
     }
 
 }

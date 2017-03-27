@@ -207,6 +207,7 @@ public class ProgramCallIntegrationTests extends AbsStoreTestCase {
                 "                    \"displayShortName\": \"Child Programme First name\",\n" +
                 "                    \"displayInList\": true,\n" +
                 "                    \"valueType\": \"TEXT\",\n" +
+                "                    \"sortOrder\": 99,\n" +
                 "                    \"allowFutureDate\": false,\n" +
                 "                    \"program\": {\n" +
                 "                        \"id\": \"IpHINAT79UW\"\n" +
@@ -246,6 +247,7 @@ public class ProgramCallIntegrationTests extends AbsStoreTestCase {
                 "                    \"displayShortName\": \"Child Programme Last name\",\n" +
                 "                    \"displayInList\": true,\n" +
                 "                    \"valueType\": \"TEXT\",\n" +
+                "                    \"sortOrder\": 99,\n" +
                 "                    \"allowFutureDate\": false,\n" +
                 "                    \"program\": {\n" +
                 "                        \"id\": \"IpHINAT79UW\"\n" +
@@ -284,6 +286,7 @@ public class ProgramCallIntegrationTests extends AbsStoreTestCase {
                 "                    \"displayShortName\": \"Child Programme Gender\",\n" +
                 "                    \"displayInList\": false,\n" +
                 "                    \"valueType\": \"TEXT\",\n" +
+                "                    \"sortOrder\": 99,\n" +
                 "                    \"allowFutureDate\": false,\n" +
                 "                    \"program\": {\n" +
                 "                        \"id\": \"IpHINAT79UW\"\n" +

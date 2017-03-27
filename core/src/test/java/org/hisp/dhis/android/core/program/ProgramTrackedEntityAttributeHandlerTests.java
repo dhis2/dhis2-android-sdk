@@ -42,6 +42,7 @@ import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -99,10 +100,10 @@ public class ProgramTrackedEntityAttributeHandlerTests {
         verify(programTrackedEntityAttributeStore, never()).delete(anyString());
         verify(programTrackedEntityAttributeStore, never()).update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(),
-                anyString(), anyBoolean(), anyBoolean(), anyString(), anyString());
+                anyString(), anyBoolean(), anyBoolean(), anyString(), anyInt(), anyString());
         verify(programTrackedEntityAttributeStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(),
-                anyString(), anyBoolean(), anyBoolean(), anyString());
+                anyString(), anyBoolean(), anyBoolean(), anyString(), anyInt());
 
         // verify that tracked entity attribute handler is never called
         verify(trackedEntityAttributeHandler, never()).handleTrackedEntityAttribute(any(TrackedEntityAttribute.class));
@@ -121,11 +122,11 @@ public class ProgramTrackedEntityAttributeHandlerTests {
         // verify that update and insert is never called
         verify(programTrackedEntityAttributeStore, never()).update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(),
-                anyString(), anyBoolean(), anyBoolean(), anyString(), anyString());
+                anyString(), anyBoolean(), anyBoolean(), anyString(), anyInt(), anyString());
 
         verify(programTrackedEntityAttributeStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(),
-                anyString(), anyBoolean(), anyBoolean(), anyString());
+                anyString(), anyBoolean(), anyBoolean(), anyString(), anyInt());
 
         // verify that tracked entity attribute handler is called once
         verify(trackedEntityAttributeHandler, times(1)).handleTrackedEntityAttribute(
@@ -140,7 +141,7 @@ public class ProgramTrackedEntityAttributeHandlerTests {
                 anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(), anyString(), anyString(), anyBoolean(),
                 anyString(), anyBoolean(), anyBoolean(),
-                anyString(), anyString())
+                anyString(), anyInt(), anyString())
         ).thenReturn(1);
 
         programTrackedEntityAttributeHandler.handleProgramTrackedEntityAttributes(programTrackedEntityAttributes);
@@ -148,12 +149,12 @@ public class ProgramTrackedEntityAttributeHandlerTests {
         // verify that update is called once
         verify(programTrackedEntityAttributeStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(),
-                anyString(), anyBoolean(), anyBoolean(), anyString(), anyString());
+                anyString(), anyBoolean(), anyBoolean(), anyString(), anyInt(), anyString());
 
         // verify that insert and delete is never called
         verify(programTrackedEntityAttributeStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(),
-                anyString(), anyBoolean(), anyBoolean(), anyString());
+                anyString(), anyBoolean(), anyBoolean(), anyString(), anyInt());
 
         verify(programTrackedEntityAttributeStore, never()).delete(anyString());
 
@@ -170,7 +171,7 @@ public class ProgramTrackedEntityAttributeHandlerTests {
                 anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(), anyString(), anyString(), anyBoolean(),
                 anyString(), anyBoolean(), anyBoolean(),
-                anyString(), anyString())
+                anyString(), anyInt(), anyString())
         ).thenReturn(0);
 
         programTrackedEntityAttributeHandler.handleProgramTrackedEntityAttributes(programTrackedEntityAttributes);
@@ -180,14 +181,14 @@ public class ProgramTrackedEntityAttributeHandlerTests {
                 anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(), anyString(), anyString(), anyBoolean(),
                 anyString(), anyBoolean(), anyBoolean(),
-                anyString());
+                anyString(), anyInt());
 
         // verify that update is called once since we try to update before we insert
         verify(programTrackedEntityAttributeStore, times(1)).update(
                 anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(), anyString(), anyString(), anyBoolean(),
                 anyString(), anyBoolean(), anyBoolean(),
-                anyString(), anyString());
+                anyString(), anyInt(), anyString());
 
         // verify that delete is never called
         verify(programTrackedEntityAttributeStore, never()).delete(anyString());

@@ -59,6 +59,7 @@ public class ProgramTrackedEntityAttributeTests {
                 "\"allowFutureDate\": false,\n" +
                 "\"dimensionItem\": \"IpHINAT79UW.cejWyOfXge6\",\n" +
                 "\"displayInList\": false,\n" +
+                "\"sortOrder\": 1,\n" +
                 "\"dimensionItemType\": \"PROGRAM_ATTRIBUTE\",\n" +
                 "\"access\": {\n" +
                 "\"read\": true,\n" +
@@ -95,5 +96,6 @@ public class ProgramTrackedEntityAttributeTests {
         assertThat(programTrackedEntityAttribute.program().uid()).isEqualTo("IpHINAT79UW");
         assertThat(programTrackedEntityAttribute.allowFutureDate()).isEqualTo(false);
         assertThat(programTrackedEntityAttribute.displayInList()).isEqualTo(false);
+        assertThat(programTrackedEntityAttribute.sortOrder()).isEqualTo(1);
     }
 }

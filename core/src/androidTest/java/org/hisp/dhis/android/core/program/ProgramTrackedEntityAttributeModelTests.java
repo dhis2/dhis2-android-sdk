@@ -57,6 +57,7 @@ public class ProgramTrackedEntityAttributeModelTests {
     private static final String TRACKED_ENTITY_ATTRIBUTE = "test_tracked_entity_attribute";
     private static final Boolean ALLOW_FUTURE_DATES = false;
     private static final Boolean DISPLAY_IN_LIST = true;
+    private static final Integer SORT_ORDER = 99;
 
     private final Date date;
     private final String dateString;
@@ -83,13 +84,14 @@ public class ProgramTrackedEntityAttributeModelTests {
                 Columns.MANDATORY,
                 Columns.TRACKED_ENTITY_ATTRIBUTE,
                 Columns.ALLOW_FUTURE_DATES,
-                Columns.DISPLAY_IN_LIST
+                Columns.DISPLAY_IN_LIST,
+                Columns.SORT_ORDER
         });
         cursor.addRow(new Object[]{
                 ID, UID, CODE, NAME, DISPLAY_NAME, dateString, dateString,
                 SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION,
                 toInteger(MANDATORY), TRACKED_ENTITY_ATTRIBUTE,
-                toInteger(ALLOW_FUTURE_DATES), toInteger(DISPLAY_IN_LIST)
+                toInteger(ALLOW_FUTURE_DATES), toInteger(DISPLAY_IN_LIST), SORT_ORDER
         });
         cursor.moveToFirst();
 
@@ -111,6 +113,7 @@ public class ProgramTrackedEntityAttributeModelTests {
         assertThat(model.trackedEntityAttribute()).isEqualTo(TRACKED_ENTITY_ATTRIBUTE);
         assertThat(model.allowFutureDates()).isEqualTo(ALLOW_FUTURE_DATES);
         assertThat(model.displayInList()).isEqualTo(DISPLAY_IN_LIST);
+        assertThat(model.sortOrder()).isEqualTo(SORT_ORDER);
     }
 
     @Test
@@ -131,6 +134,7 @@ public class ProgramTrackedEntityAttributeModelTests {
                 .trackedEntityAttribute(TRACKED_ENTITY_ATTRIBUTE)
                 .allowFutureDates(ALLOW_FUTURE_DATES)
                 .displayInList(DISPLAY_IN_LIST)
+                .sortOrder(SORT_ORDER)
                 .build();
         ContentValues contentValues = model.toContentValues();
 
@@ -149,5 +153,6 @@ public class ProgramTrackedEntityAttributeModelTests {
         assertThat(contentValues.getAsString(Columns.TRACKED_ENTITY_ATTRIBUTE)).isEqualTo(TRACKED_ENTITY_ATTRIBUTE);
         assertThat(contentValues.getAsBoolean(Columns.ALLOW_FUTURE_DATES)).isEqualTo(ALLOW_FUTURE_DATES);
         assertThat(contentValues.getAsBoolean(Columns.DISPLAY_IN_LIST)).isEqualTo(DISPLAY_IN_LIST);
+        assertThat(contentValues.getAsInteger(Columns.SORT_ORDER)).isEqualTo(SORT_ORDER);
     }
 }

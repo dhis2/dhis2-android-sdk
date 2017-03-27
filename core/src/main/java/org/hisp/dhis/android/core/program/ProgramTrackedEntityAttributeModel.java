@@ -49,6 +49,7 @@ public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObj
         public static final String ALLOW_FUTURE_DATES = "allowFutureDate";
         public static final String DISPLAY_IN_LIST = "displayInList";
         public static final String PROGRAM = "program";
+        public static final String SORT_ORDER = "sortOrder";
     }
 
     @NonNull
@@ -77,6 +78,10 @@ public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObj
     @ColumnName(Columns.DISPLAY_IN_LIST)
     public abstract Boolean displayInList();
 
+    @Nullable
+    @ColumnName(Columns.SORT_ORDER)
+    public abstract Integer sortOrder();
+
     @NonNull
     public abstract ContentValues toContentValues();
 
@@ -90,6 +95,8 @@ public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObj
         public abstract Builder allowFutureDates(@Nullable Boolean allowFutureFate);
 
         public abstract Builder displayInList(@Nullable Boolean displayInList);
+
+        public abstract Builder sortOrder(@Nullable Integer sortOrder);
 
         abstract ProgramTrackedEntityAttributeModel build();
     }

@@ -48,6 +48,7 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
     private static final String ALLOW_FUTURE_DATE = "allowFutureDate";
     private static final String DISPLAY_IN_LIST = "displayInList";
     private static final String PROGRAM = "program";
+    private static final String SORT_ORDER = "sortOrder";
 
     public static final Field<ProgramTrackedEntityAttribute, String> uid
             = Field.create(UID);
@@ -81,6 +82,8 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
             = Field.create(DISPLAY_IN_LIST);
     public static final Field<ProgramTrackedEntityAttribute, Boolean> deleted
             = Field.create(DELETED);
+    public static final Field<ProgramTrackedEntityAttribute, Integer> sortOrder
+            = Field.create(SORT_ORDER);
 
     @Nullable
     @JsonProperty(MANDATORY)
@@ -102,6 +105,10 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
     @JsonProperty(PROGRAM)
     public abstract Program program();
 
+    @Nullable
+    @JsonProperty(SORT_ORDER)
+    public abstract Integer sortOrder();
+
     @JsonCreator
     public static ProgramTrackedEntityAttribute create(
             @JsonProperty(UID) String uid,
@@ -119,12 +126,14 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
             @JsonProperty(ALLOW_FUTURE_DATE) Boolean allowFutureDate,
             @JsonProperty(DISPLAY_IN_LIST) Boolean displayInList,
             @JsonProperty(PROGRAM) Program program,
+            @JsonProperty(SORT_ORDER) Integer sortOrder,
             @JsonProperty(DELETED) Boolean deleted
     ) {
         return new AutoValue_ProgramTrackedEntityAttribute(
                 uid, code, name, displayName, created, lastUpdated, deleted,
                 shortName, displayShortName, description, displayDescription,
-                mandatory, trackedEntityAttribute, allowFutureDate, displayInList, program);
+                mandatory, trackedEntityAttribute, allowFutureDate, displayInList, program,
+                sortOrder);
     }
 
 }

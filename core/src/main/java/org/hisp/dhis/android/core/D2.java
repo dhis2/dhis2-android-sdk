@@ -36,13 +36,53 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Call;
+import org.hisp.dhis.android.core.common.MetadataCall;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElementStore;
+import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
+import org.hisp.dhis.android.core.option.OptionSetService;
+import org.hisp.dhis.android.core.option.OptionSetStore;
+import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
+import org.hisp.dhis.android.core.option.OptionStore;
+import org.hisp.dhis.android.core.option.OptionStoreImpl;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
+import org.hisp.dhis.android.core.program.ProgramIndicatorStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
+import org.hisp.dhis.android.core.program.ProgramRuleActionStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramRuleStore;
+import org.hisp.dhis.android.core.program.ProgramRuleStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableModelStore;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableModelStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramService;
+import org.hisp.dhis.android.core.program.ProgramStageDataElementStore;
+import org.hisp.dhis.android.core.program.ProgramStageDataElementStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStore;
+import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramStageSectionStore;
+import org.hisp.dhis.android.core.program.ProgramStageSectionStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramStageStore;
+import org.hisp.dhis.android.core.program.ProgramStageStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramStore;
+import org.hisp.dhis.android.core.program.ProgramStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStoreImpl;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeStoreImpl;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityService;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityStoreImpl;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStoreImpl;
 import org.hisp.dhis.android.core.user.IsUserLoggedInCallable;
@@ -53,6 +93,10 @@ import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreImpl;
+import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
+import org.hisp.dhis.android.core.user.UserRoleProgramLinkStoreImpl;
+import org.hisp.dhis.android.core.user.UserRoleStore;
+import org.hisp.dhis.android.core.user.UserRoleStoreImpl;
 import org.hisp.dhis.android.core.user.UserService;
 import org.hisp.dhis.android.core.user.UserStore;
 import org.hisp.dhis.android.core.user.UserStoreImpl;
@@ -66,13 +110,18 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 // ToDo: handle corner cases when user initially has been signed in, but later was locked (or password has changed)
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
 public final class D2 {
     private final Retrofit retrofit;
     private final DatabaseAdapter databaseAdapter;
 
     // services
     private final UserService userService;
+    private final SystemInfoService systemInfoService;
+    private final ProgramService programService;
+    private final OrganisationUnitService organisationUnitService;
+    private final TrackedEntityService trackedEntityService;
+    private final OptionSetService optionSetService;
 
     // stores
     private final UserStore userStore;
@@ -81,6 +130,25 @@ public final class D2 {
     private final AuthenticatedUserStore authenticatedUserStore;
     private final OrganisationUnitStore organisationUnitStore;
     private final ResourceStore resourceStore;
+    private final SystemInfoStore systemInfoStore;
+    private final UserRoleStore userRoleStore;
+    private final UserRoleProgramLinkStore userRoleProgramLinkStore;
+    private final ProgramStore programStore;
+    private final TrackedEntityAttributeStore trackedEntityAttributeStore;
+    private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
+    private final ProgramRuleVariableModelStore programRuleVariableStore;
+    private final ProgramIndicatorStore programIndicatorStore;
+    private final ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
+    private final ProgramRuleActionStore programRuleActionStore;
+    private final ProgramRuleStore programRuleStore;
+    private final OptionStore optionStore;
+    private final OptionSetStore optionSetStore;
+    private final DataElementStore dataElementStore;
+    private final ProgramStageDataElementStore programStageDataElementStore;
+    private final ProgramStageSectionStore programStageSectionStore;
+    private final ProgramStageStore programStageStore;
+    private final RelationshipTypeStore relationshipStore;
+    private final TrackedEntityStore trackedEntityStore;
 
     @VisibleForTesting
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter) {
@@ -89,6 +157,11 @@ public final class D2 {
 
         // services
         this.userService = retrofit.create(UserService.class);
+        this.systemInfoService = retrofit.create(SystemInfoService.class);
+        this.programService = retrofit.create(ProgramService.class);
+        this.organisationUnitService = retrofit.create(OrganisationUnitService.class);
+        this.trackedEntityService = retrofit.create(TrackedEntityService.class);
+        this.optionSetService = retrofit.create(OptionSetService.class);
 
         // stores
         this.userStore =
@@ -103,6 +176,44 @@ public final class D2 {
                 new OrganisationUnitStoreImpl(databaseAdapter);
         this.resourceStore =
                 new ResourceStoreImpl(databaseAdapter);
+        this.systemInfoStore =
+                new SystemInfoStoreImpl(databaseAdapter);
+        this.userRoleStore =
+                new UserRoleStoreImpl(databaseAdapter);
+        this.userRoleProgramLinkStore =
+                new UserRoleProgramLinkStoreImpl(databaseAdapter);
+        this.programStore =
+                new ProgramStoreImpl(databaseAdapter);
+        this.trackedEntityAttributeStore =
+                new TrackedEntityAttributeStoreImpl(databaseAdapter);
+        this.programTrackedEntityAttributeStore =
+                new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter);
+        this.programRuleVariableStore =
+                new ProgramRuleVariableModelStoreImpl(databaseAdapter);
+        this.programIndicatorStore =
+                new ProgramIndicatorStoreImpl(databaseAdapter);
+        this.programStageSectionProgramIndicatorLinkStore =
+                new ProgramStageSectionProgramIndicatorLinkStoreImpl(databaseAdapter);
+        this.programRuleActionStore =
+                new ProgramRuleActionStoreImpl(databaseAdapter);
+        this.programRuleStore =
+                new ProgramRuleStoreImpl(databaseAdapter);
+        this.optionStore =
+                new OptionStoreImpl(databaseAdapter);
+        this.optionSetStore =
+                new OptionSetStoreImpl(databaseAdapter);
+        this.dataElementStore =
+                new DataElementStoreImpl(databaseAdapter);
+        this.programStageDataElementStore =
+                new ProgramStageDataElementStoreImpl(databaseAdapter);
+        this.programStageSectionStore =
+                new ProgramStageSectionStoreImpl(databaseAdapter);
+        this.programStageStore =
+                new ProgramStageStoreImpl(databaseAdapter);
+        this.relationshipStore =
+                new RelationshipTypeStoreImpl(databaseAdapter);
+        this.trackedEntityStore =
+                new TrackedEntityStoreImpl(databaseAdapter);
     }
 
     @NonNull
@@ -144,6 +255,19 @@ public final class D2 {
                 userStore, userCredentialsStore, userOrganisationUnitLinkStore,
                 authenticatedUserStore, organisationUnitStore
         );
+    }
+
+    @NonNull
+    public Call<Response> syncMetaData() {
+        return new MetadataCall(
+                databaseAdapter, systemInfoService, userService, programService, organisationUnitService,
+                trackedEntityService, optionSetService, systemInfoStore, resourceStore, userStore,
+                userCredentialsStore, userRoleStore, userRoleProgramLinkStore, organisationUnitStore,
+                userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
+                programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
+                programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore, optionStore,
+                optionSetStore, dataElementStore, programStageDataElementStore, programStageSectionStore,
+                programStageStore, relationshipStore, trackedEntityStore);
     }
 
     public static class Builder {

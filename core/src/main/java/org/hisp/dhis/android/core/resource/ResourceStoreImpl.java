@@ -97,12 +97,12 @@ public class ResourceStoreImpl implements ResourceStore {
     }
 
     @Override
-    public String getLastUpdated(String className) {
+    public String getLastUpdated(ResourceModel.Type type) {
         String lastUpdated = null;
         Cursor cursor = databaseAdapter.query("SELECT " + ResourceModel.Columns.LAST_SYNCED +
                 " FROM " + ResourceModel.TABLE +
                 " WHERE " + ResourceModel.Columns.RESOURCE_TYPE +
-                " = '" + className + "'"
+                " = '" + type.name() + "'"
         );
         if(cursor != null) {
             cursor.moveToFirst();

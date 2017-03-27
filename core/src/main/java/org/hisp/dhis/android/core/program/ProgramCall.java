@@ -34,12 +34,23 @@ import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementHandler;
+import org.hisp.dhis.android.core.dataelement.DataElementStore;
+import org.hisp.dhis.android.core.option.OptionHandler;
 import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.option.OptionSetHandler;
+import org.hisp.dhis.android.core.option.OptionSetStore;
+import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.utils.HeaderUtils;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeHandler;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 
 import java.util.Date;
 import java.util.List;
@@ -47,31 +58,77 @@ import java.util.Set;
 
 import retrofit2.Response;
 
+@SuppressWarnings("PMD.TooManyFields")
 public class ProgramCall implements Call<Response<Payload<Program>>> {
     // retrofit service
     private final ProgramService programService;
 
     // database adapter and stores
     private final DatabaseAdapter databaseAdapter;
-    private final ResourceHandler resourceHandler;
+    private final ResourceStore resourceStore;
 
     // handler
-    private final ProgramHandler programHandler;
+    private final ProgramStore programStore;
 
     private boolean isExecuted;
-    private final Set<String> assignedProgramUids;
+    private final Set<String> uids;
+    private final Date serverDate;
+    private final TrackedEntityAttributeStore trackedEntityAttributeStore;
+    private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
+    private final ProgramRuleVariableModelStore programRuleVariableStore;
+    private final ProgramIndicatorStore programIndicatorStore;
+    private final ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
+    private final ProgramRuleActionStore programRuleActionStore;
+    private final ProgramRuleStore programRuleStore;
+    private final OptionStore optionStore;
+    private final OptionSetStore optionSetStore;
+    private final DataElementStore dataElementStore;
+    private final ProgramStageDataElementStore programStageDataElementStore;
+    private final ProgramStageSectionStore programStageSectionStore;
+    private final ProgramStageStore programStageStore;
+    private final RelationshipTypeStore relationshipStore;
 
     public ProgramCall(ProgramService programService,
                        DatabaseAdapter databaseAdapter,
-                       ResourceHandler resourceHandler,
-                       Set<String> assignedProgramUids,
-                       ProgramHandler programHandler) {
+                       ResourceStore resourceStore,
+                       Set<String> uids,
+                       ProgramStore programStore,
+                       Date serverDate,
+                       TrackedEntityAttributeStore trackedEntityAttributeStore,
+                       ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
+                       ProgramRuleVariableModelStore programRuleVariableStore,
+                       ProgramIndicatorStore programIndicatorStore,
+                       ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore,
+                       ProgramRuleActionStore programRuleActionStore,
+                       ProgramRuleStore programRuleStore,
+                       OptionStore optionStore,
+                       OptionSetStore optionSetStore,
+                       DataElementStore dataElementStore,
+                       ProgramStageDataElementStore programStageDataElementStore,
+                       ProgramStageSectionStore programStageSectionStore,
+                       ProgramStageStore programStageStore,
+                       RelationshipTypeStore relationshipStore) {
         this.programService = programService;
         this.databaseAdapter = databaseAdapter;
-        this.resourceHandler = resourceHandler;
-        this.assignedProgramUids = assignedProgramUids;
+        this.resourceStore = resourceStore;
+        this.uids = uids;
 
-        this.programHandler = programHandler;
+        this.programStore = programStore;
+        this.serverDate = new Date(serverDate.getTime());
+        this.trackedEntityAttributeStore = trackedEntityAttributeStore;
+        this.programTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
+        this.programRuleVariableStore = programRuleVariableStore;
+        this.programIndicatorStore = programIndicatorStore;
+        this.programStageSectionProgramIndicatorLinkStore = programStageSectionProgramIndicatorLinkStore;
+        this.programRuleActionStore = programRuleActionStore;
+        this.programRuleStore = programRuleStore;
+        this.optionStore = optionStore;
+        this.optionSetStore = optionSetStore;
+        this.dataElementStore = dataElementStore;
+        this.programStageDataElementStore = programStageDataElementStore;
+        this.programStageSectionStore = programStageSectionStore;
+        this.programStageStore = programStageStore;
+        this.relationshipStore = relationshipStore;
     }
 
     @Override
@@ -90,24 +147,33 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
 
             isExecuted = true;
         }
-        String lastSyncedPrograms = resourceHandler.getLastUpdated(ProgramModel.class.getSimpleName());
+
+        if (uids.size() > MAX_UIDS) {
+            throw new IllegalArgumentException("Can't handle the amount of programs: " + uids.size() + ". " +
+                    "Max size is: " + MAX_UIDS);
+        }
+
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
+
+        String lastSyncedPrograms = resourceHandler.getLastUpdated(ResourceModel.Type.PROGRAM);
 
         Response<Payload<Program>> programsByLastUpdated =
                 programService.getPrograms(getFields(), Program.lastUpdated.gt(lastSyncedPrograms),
-                        Program.uid.in(assignedProgramUids), Boolean.FALSE
+                        Program.uid.in(uids), Boolean.FALSE
                 ).execute();
 
         if (programsByLastUpdated.isSuccessful()) {
-            applyChangesToDatabase(programsByLastUpdated);
+            applyChangesToDatabase(resourceHandler, programsByLastUpdated);
         }
         return programsByLastUpdated;
     }
 
-    private void applyChangesToDatabase(Response<Payload<Program>> programsByLastUpdated) {
+    private void applyChangesToDatabase(ResourceHandler resourceHandler,
+                                        Response<Payload<Program>> programsByLastUpdated) {
+        ProgramHandler programHandler = initializeProgramHandler();
         Transaction transaction = databaseAdapter.beginNewTransaction();
 
         try {
-            Date serverDateTime = programsByLastUpdated.headers().getDate(HeaderUtils.DATE);
             List<Program> programs = programsByLastUpdated.body().items();
             int size = programs.size();
             for (int i = 0; i < size; i++) {
@@ -116,12 +182,71 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                 programHandler.handleProgram(program);
             }
 
-            resourceHandler.handleResource(Program.class.getSimpleName(), serverDateTime);
+            resourceHandler.handleResource(ResourceModel.Type.PROGRAM, serverDate);
 
             transaction.setSuccessful();
         } finally {
             transaction.end();
         }
+    }
+
+    private ProgramHandler initializeProgramHandler() {
+        TrackedEntityAttributeHandler trackedEntityAttributeHandler =
+                new TrackedEntityAttributeHandler(trackedEntityAttributeStore);
+
+
+        ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler =
+                new ProgramTrackedEntityAttributeHandler(
+                        programTrackedEntityAttributeStore,
+                        trackedEntityAttributeHandler
+                );
+
+        ProgramRuleVariableHandler programRuleVariableHandler =
+                new ProgramRuleVariableHandler(programRuleVariableStore);
+
+        ProgramIndicatorHandler programIndicatorHandler = new ProgramIndicatorHandler(
+                programIndicatorStore,
+                programStageSectionProgramIndicatorLinkStore
+        );
+
+        ProgramRuleActionHandler programRuleActionHandler = new ProgramRuleActionHandler(programRuleActionStore);
+        ProgramRuleHandler programRuleHandler = new ProgramRuleHandler(programRuleStore, programRuleActionHandler);
+
+        OptionHandler optionHandler = new OptionHandler(optionStore);
+
+        OptionSetHandler optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
+
+
+        DataElementHandler dataElementHandler = new DataElementHandler(dataElementStore, optionSetHandler);
+
+        ProgramStageDataElementHandler programStageDataElementHandler = new ProgramStageDataElementHandler(
+                programStageDataElementStore, dataElementHandler
+        );
+
+        ProgramStageSectionHandler programStageSectionHandler = new ProgramStageSectionHandler(
+                programStageSectionStore,
+                programStageDataElementHandler,
+                programIndicatorHandler
+
+        );
+
+        ProgramStageHandler programStageHandler = new ProgramStageHandler(
+                programStageStore,
+                programStageSectionHandler,
+                programStageDataElementHandler
+        );
+
+        RelationshipTypeHandler relationshipTypeHandler = new RelationshipTypeHandler(relationshipStore);
+
+
+        return new ProgramHandler(
+                programStore,
+                programRuleVariableHandler,
+                programStageHandler,
+                programIndicatorHandler,
+                programRuleHandler,
+                programTrackedEntityAttributeHandler,
+                relationshipTypeHandler);
     }
 
     private Fields<Program> getFields() {
@@ -135,6 +260,9 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                 Program.relationshipFromA, Program.relationshipText,
                 Program.selectEnrollmentDatesInFuture, Program.selectIncidentDatesInFuture,
                 Program.useFirstStageDuringRegistration,
+                Program.relatedProgram.with(
+                        Program.uid
+                ),
 
                 getProgramToProgramStageFilters(),
 
@@ -207,12 +335,23 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
         return Program.programRules.with(
                 ProgramRule.uid, ProgramRule.code, ProgramRule.name, ProgramRule.displayName,
                 ProgramRule.created, ProgramRule.lastUpdated, ProgramRule.deleted,
-                ProgramRule.priority, ProgramRule.condition, ProgramRule.programRuleActions.with(
+                ProgramRule.priority, ProgramRule.condition,
+                ProgramRule.program.with(
+                        Program.uid
+                ),
+                ProgramRule.programStage.with(
+                        ProgramStage.uid
+                ),
+                ProgramRule.programRuleActions.with(
                         ProgramRuleAction.uid, ProgramRuleAction.code, ProgramRuleAction.name,
                         ProgramRuleAction.displayName, ProgramRuleAction.created,
                         ProgramRuleAction.lastUpdated, ProgramRuleAction.content, ProgramRuleAction.data,
                         ProgramRuleAction.deleted, ProgramRuleAction.location,
-                        ProgramRuleAction.programRuleActionType, ProgramRuleAction.dataElement.with(
+                        ProgramRuleAction.programRuleActionType,
+                        ProgramRuleAction.programRule.with(
+                                ProgramRule.uid
+                        ),
+                        ProgramRuleAction.dataElement.with(
                                 DataElement.uid
                         ),
                         ProgramRuleAction.programIndicator.with(
@@ -276,6 +415,9 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                 ProgramTrackedEntityAttribute.description, ProgramTrackedEntityAttribute.displayDescription,
                 ProgramTrackedEntityAttribute.allowFutureDate, ProgramTrackedEntityAttribute.deleted,
                 ProgramTrackedEntityAttribute.displayInList, ProgramTrackedEntityAttribute.mandatory,
+                ProgramTrackedEntityAttribute.program.with(
+                        Program.uid
+                ),
                 ProgramTrackedEntityAttribute.trackedEntityAttribute.with(
                         TrackedEntityAttribute.uid, TrackedEntityAttribute.code,
                         TrackedEntityAttribute.created, TrackedEntityAttribute.lastUpdated,

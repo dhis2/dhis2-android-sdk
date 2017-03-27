@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -50,10 +51,14 @@ public class SystemInfoStoreTests extends AbsStoreTestCase {
 
     private static final long ID = 1L;
     private static final String DATE_FORMAT = "testDateFormat";
+    private static final String VERSION = "test.version-snapshot";
+    private static final String CONTEXT_PATH = "https://test.context.com/path";
 
     private static final String[] SYSTEM_INFO_PROJECTION = {
             Columns.SERVER_DATE,
-            Columns.DATE_FORMAT
+            Columns.DATE_FORMAT,
+            Columns.VERSION,
+            Columns.CONTEXT_PATH
     };
 
     // timestamp
@@ -72,7 +77,7 @@ public class SystemInfoStoreTests extends AbsStoreTestCase {
     public void insert_shouldPersistSystemInfoInDatabase() throws ParseException {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
-        long rowId = systemInfoStore.insert(date, DATE_FORMAT);
+        long rowId = systemInfoStore.insert(date, DATE_FORMAT, VERSION, CONTEXT_PATH);
         Cursor cursor = database().query(
                 SystemInfoModel.TABLE,
                 SYSTEM_INFO_PROJECTION,
@@ -81,13 +86,58 @@ public class SystemInfoStoreTests extends AbsStoreTestCase {
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(
                 BaseIdentifiableObject.DATE_FORMAT.format(date),
-                DATE_FORMAT
+                DATE_FORMAT,
+                VERSION,
+                CONTEXT_PATH
         ).isExhausted();
     }
 
     @Test
-    public void close_shouldNotCloseDatabase() {
-        systemInfoStore.close();
-        assertThat(database().isOpen()).isTrue();
+    public void update_shouldUpdateSystemInfo() throws Exception {
+        ContentValues systemInfo = new ContentValues();
+        systemInfo.put(Columns.SERVER_DATE, DATE);
+        systemInfo.put(Columns.DATE_FORMAT, DATE_FORMAT);
+        systemInfo.put(Columns.VERSION, VERSION);
+        systemInfo.put(Columns.CONTEXT_PATH, CONTEXT_PATH);
+
+        database().insert(SystemInfoModel.TABLE, null, systemInfo);
+
+        Cursor cursor = database().query(SystemInfoModel.TABLE, SYSTEM_INFO_PROJECTION, null, null, null, null, null);
+        assertThatCursor(cursor).hasRow(DATE, DATE_FORMAT, VERSION, CONTEXT_PATH);
+
+        Date newDate = BaseIdentifiableObject.DATE_FORMAT.parse("2017-02-24T13:37:00.007");
+        int update = systemInfoStore.update(newDate, DATE_FORMAT, VERSION, CONTEXT_PATH, CONTEXT_PATH);
+
+        assertThat(update).isEqualTo(1);
+        cursor = database().query(SystemInfoModel.TABLE, SYSTEM_INFO_PROJECTION, null, null, null, null, null);
+
+        assertThatCursor(cursor).hasRow(
+                BaseIdentifiableObject.DATE_FORMAT.format(newDate),
+                DATE_FORMAT,
+                VERSION,
+                CONTEXT_PATH
+        );
+    }
+
+    @Test
+    public void delete_shouldDeleteSystemInfo() throws Exception {
+        ContentValues systemInfo = new ContentValues();
+        systemInfo.put(Columns.SERVER_DATE, DATE);
+        systemInfo.put(Columns.DATE_FORMAT, DATE_FORMAT);
+        systemInfo.put(Columns.VERSION, VERSION);
+        systemInfo.put(Columns.CONTEXT_PATH, CONTEXT_PATH);
+
+        database().insert(SystemInfoModel.TABLE, null, systemInfo);
+
+        Cursor cursor = database().query(SystemInfoModel.TABLE, SYSTEM_INFO_PROJECTION, null, null, null, null, null);
+        assertThatCursor(cursor).hasRow(DATE, DATE_FORMAT, VERSION, CONTEXT_PATH);
+
+        int delete = systemInfoStore.delete(CONTEXT_PATH);
+        assertThat(delete).isEqualTo(1);
+
+        cursor = database().query(SystemInfoModel.TABLE, SYSTEM_INFO_PROJECTION, null, null, null, null, null);
+
+        assertThatCursor(cursor).isExhausted();
+
     }
 }

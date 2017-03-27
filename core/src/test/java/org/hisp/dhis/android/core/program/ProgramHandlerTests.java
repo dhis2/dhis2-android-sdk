@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.junit.Before;
 import org.junit.Test;
@@ -82,6 +83,9 @@ public class ProgramHandlerTests {
     @Mock
     private TrackedEntity trackedEntity;
 
+    @Mock
+    private RelationshipTypeHandler relationshipTypeHandler;
+
     // object to test
     private ProgramHandler programHandler;
 
@@ -92,8 +96,8 @@ public class ProgramHandlerTests {
         programHandler = new ProgramHandler(
                 programStore, programRuleVariableHandler,
                 programStageHandler, programIndicatorHandler,
-                programRuleHandler, programTrackedEntityAttributeHandler
-        );
+                programRuleHandler, programTrackedEntityAttributeHandler,
+                relationshipTypeHandler);
         when(relationshipType.uid()).thenReturn("relationshipTypeUid");
 
         when(program.uid()).thenReturn("test_program_uid");

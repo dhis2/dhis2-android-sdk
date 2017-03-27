@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.resource;
+package org.hisp.dhis.android.core.systeminfo;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -44,64 +44,64 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class ResourceHandlerTests {
+public class SystemInfoHandlerTests {
 
     @Mock
-    private ResourceStore resourceStore;
+    private SystemInfo systemInfo;
 
     @Mock
-    private Date serverDate;
+    private SystemInfoStore systemInfoStore;
 
     // object to test
-    private ResourceHandler resourceHandler;
+    private SystemInfoHandler systemInfoHandler;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+        systemInfoHandler = new SystemInfoHandler(systemInfoStore);
 
-        resourceHandler = new ResourceHandler(resourceStore);
     }
 
     @Test
-    public void doNothing_shouldDoNothingWhenPassingNullResource() throws Exception {
-        resourceHandler.handleResource(null, serverDate);
+    public void update_shouldUpdateSystemInfo() throws Exception {
+        when(systemInfoStore.update(
+                any(Date.class), anyString(), anyString(), anyString(), anyString())
+        ).thenReturn(1);
 
-        // verify that store is never called
-        verify(resourceStore, never()).insert(anyString(), any(Date.class));
-        verify(resourceStore, never()).update(anyString(), any(Date.class), anyString());
-    }
+        systemInfoHandler.handleSystemInfo(systemInfo);
 
-    @Test
-    public void doNothing_shouldDoNothingWhenPassingNullServerDate() throws Exception {
-        resourceHandler.handleResource(ResourceModel.Type.PROGRAM, null);
-
-        // verify that store is never called
-        verify(resourceStore, never()).insert(anyString(), any(Date.class));
-        verify(resourceStore, never()).update(anyString(), any(Date.class), anyString());
-    }
-
-    @Test
-    public void update_shouldUpdateResource() throws Exception {
-        when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(1);
-
-        resourceHandler.handleResource(ResourceModel.Type.PROGRAM, serverDate);
-
-        verify(resourceStore, times(1)).update(anyString(), any(Date.class), anyString());
+        // verify that update is called once
+        verify(systemInfoStore, times(1)).update(any(Date.class), anyString(), anyString(), anyString(), anyString());
 
         // verify that insert is never called
-        verify(resourceStore, never()).insert(anyString(), any(Date.class));
+        verify(systemInfoStore, never()).insert(any(Date.class), anyString(), anyString(), anyString());
+
     }
 
     @Test
-    public void insert_shouldInsertResource() throws Exception {
-        when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(0);
+    public void insert_shouldInsertSystemInfo() throws Exception {
+        when(systemInfoStore.update(
+                any(Date.class), anyString(), anyString(), anyString(), anyString())
+        ).thenReturn(0);
 
-        resourceHandler.handleResource(ResourceModel.Type.PROGRAM, serverDate);
+        systemInfoHandler.handleSystemInfo(systemInfo);
 
         // verify that insert is called once
-        verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
+        verify(systemInfoStore, times(1)).insert(any(Date.class), anyString(), anyString(), anyString());
 
-        // verify that update is called since we try to update before we insert
-        verify(resourceStore, times(1)).update(anyString(), any(Date.class), anyString());
+        // verify that update is called once since we try to update before we insert
+        verify(systemInfoStore, times(1)).update(any(Date.class), anyString(), anyString(), anyString(), anyString());
+
+    }
+
+    @Test
+    public void doNothing_shouldDoNothingWhenPassingInNullArgument() throws Exception {
+        systemInfoHandler.handleSystemInfo(null);
+
+        // verify that store is never touched
+        verify(systemInfoStore, never()).update(any(Date.class), anyString(), anyString(), anyString(), anyString());
+        verify(systemInfoStore, never()).insert(any(Date.class), anyString(), anyString(), anyString());
+        verify(systemInfoStore, never()).delete(anyString());
+
     }
 }

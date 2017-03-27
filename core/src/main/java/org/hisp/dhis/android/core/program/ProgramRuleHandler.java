@@ -64,17 +64,21 @@ public class ProgramRuleHandler {
             if (isDeleted(programRule)) {
                 programRuleStore.delete(programRule.uid());
             } else {
+                String programStageUid = null;
+                if (programRule.programStage() != null) {
+                    programStageUid = programRule.programStage().uid();
+                }
                 int updatedRow = programRuleStore.update(programRule.uid(), programRule.code(), programRule.name(),
                         programRule.displayName(), programRule.created(), programRule.lastUpdated(),
                         programRule.priority(), programRule.condition(), programRule.program().uid(),
-                        programRule.programStage().uid(), programRule.uid());
+                        programStageUid, programRule.uid());
 
                 if (updatedRow <= 0) {
                     programRuleStore.insert(
                             programRule.uid(), programRule.code(), programRule.name(),
                             programRule.displayName(), programRule.created(), programRule.lastUpdated(),
                             programRule.priority(), programRule.condition(), programRule.program().uid(),
-                            programRule.programStage().uid());
+                            programStageUid);
                 }
             }
 

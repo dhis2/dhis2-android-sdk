@@ -34,9 +34,11 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.utils.HeaderUtils;
+import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.ResourceStore;
 
 import java.io.IOException;
 import java.util.Date;
@@ -50,29 +52,40 @@ public final class UserCall implements Call<Response<User>> {
 
     // databaseAdapter and handlers
     private final DatabaseAdapter databaseAdapter;
-    private final OrganisationUnitHandler organisationUnitHandler;
-    private final UserCredentialsHandler userCredentialsHandler;
-    private final UserRoleHandler userRoleHandler;
-    private final UserHandler userHandler;
+    private final OrganisationUnitStore organisationUnitStore;
+    private final UserCredentialsStore userCredentialsStore;
+    private final UserRoleStore userRoleStore;
+    private final UserStore userStore;
+    private final UserRoleProgramLinkStore userRoleProgramLinkStore;
+    private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
 
-    private final ResourceHandler resourceHandler;
+    private final ResourceStore resourceStore;
+
+    // server date time
+    private final Date serverDate;
 
     private boolean isExecuted;
 
     public UserCall(UserService userService,
                     DatabaseAdapter databaseAdapter,
-                    OrganisationUnitHandler organisationUnitHandler,
-                    UserHandler userHandler,
-                    UserCredentialsHandler userCredentialsHandler,
-                    UserRoleHandler userRoleHandler,
-                    ResourceHandler resourceHandler) {
+                    OrganisationUnitStore organisationUnitStore,
+                    UserStore userStore,
+                    UserCredentialsStore userCredentialsStore,
+                    UserRoleStore userRoleStore,
+                    ResourceStore resourceStore,
+                    Date serverDate,
+                    UserRoleProgramLinkStore userRoleProgramLinkStore,
+                    UserOrganisationUnitLinkStore userOrganisationUnitLinkStore) {
         this.userService = userService;
         this.databaseAdapter = databaseAdapter;
-        this.organisationUnitHandler = organisationUnitHandler;
-        this.userCredentialsHandler = userCredentialsHandler;
-        this.userRoleHandler = userRoleHandler;
-        this.userHandler = userHandler;
-        this.resourceHandler = resourceHandler;
+        this.organisationUnitStore = organisationUnitStore;
+        this.userCredentialsStore = userCredentialsStore;
+        this.userRoleStore = userRoleStore;
+        this.userStore = userStore;
+        this.resourceStore = resourceStore;
+        this.serverDate = new Date(serverDate.getTime());
+        this.userRoleProgramLinkStore = userRoleProgramLinkStore;
+        this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
     }
 
     @Override
@@ -137,13 +150,19 @@ public final class UserCall implements Call<Response<User>> {
     }
 
     private void deleteOrPersistUserGraph(Response<User> response) {
+        UserHandler userHandler = new UserHandler(userStore);
+        UserCredentialsHandler userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
+        UserRoleHandler userRoleHandler = new UserRoleHandler(userRoleStore, userRoleProgramLinkStore);
+        OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
+                organisationUnitStore, userOrganisationUnitLinkStore
+        );
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
+
         Transaction transaction = databaseAdapter.beginNewTransaction();
 
         try {
             User user = response.body();
             // TODO: check that this is user is authenticated and is persisted in db
-            Date serverDateTime = response.headers().getDate(HeaderUtils.DATE);
-            String userClassName = User.class.getSimpleName();
 
             userHandler.handleUser(user);
 
@@ -165,7 +184,7 @@ public final class UserCall implements Call<Response<User>> {
             );
 
 
-            resourceHandler.handleResource(userClassName, serverDateTime);
+            resourceHandler.handleResource(ResourceModel.Type.USER, serverDate);
 
             transaction.setSuccessful();
         } finally {

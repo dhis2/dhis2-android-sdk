@@ -38,6 +38,9 @@ import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals"
+})
 public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
@@ -52,12 +55,33 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
             RelationshipTypeModel.Columns.B_IS_TO_A + ") " +
             "VALUES (" + "?, ?, ?, ?, ?, ?, ?, ?" + ");";
 
-    private final SQLiteStatement sqLiteStatement;
+    private static final String UPDATE_STATEMENT = "UPDATE " + RelationshipTypeModel.TABLE + " SET " +
+            RelationshipTypeModel.Columns.UID + " =?, " +
+            RelationshipTypeModel.Columns.CODE + " =?, " +
+            RelationshipTypeModel.Columns.NAME + " =?, " +
+            RelationshipTypeModel.Columns.DISPLAY_NAME + " =?, " +
+            RelationshipTypeModel.Columns.CREATED + " =?, " +
+            RelationshipTypeModel.Columns.LAST_UPDATED + " =?, " +
+            RelationshipTypeModel.Columns.A_IS_TO_B + " =?, " +
+            RelationshipTypeModel.Columns.B_IS_TO_A + " =? " +
+            " WHERE " +
+            RelationshipTypeModel.Columns.UID + " =?;";
+
+    private static final String DELETE_STATEMENT = "DELETE FROM " + RelationshipTypeModel.TABLE +
+            " WHERE " +
+            RelationshipTypeModel.Columns.UID + " =?;";
+
+    private final SQLiteStatement insertStatement;
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
+
     private final DatabaseAdapter databaseAdapter;
 
-    RelationshipTypeStoreImpl(DatabaseAdapter databaseAdapter) {
+    public RelationshipTypeStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
-        this.sqLiteStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
@@ -71,8 +95,52 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
             @NonNull String aIsToB,
             @NonNull String bIsToA
     ) {
-        sqLiteStatement.clearBindings();
+        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, aIsToB, bIsToA);
+        long insert = databaseAdapter.executeInsert(RelationshipTypeModel.TABLE, insertStatement);
 
+        insertStatement.clearBindings();
+        return insert;
+    }
+
+    @Override
+    public int update(@NonNull String uid,
+                      @Nullable String code,
+                      @NonNull String name,
+                      @Nullable String displayName,
+                      @Nullable Date created,
+                      @Nullable Date lastUpdated,
+                      @NonNull String aIsToB,
+                      @NonNull String bIsToA,
+                      @NonNull String whereRelationshipTypeUid) {
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, aIsToB, bIsToA);
+
+        sqLiteBind(updateStatement, 9, whereRelationshipTypeUid);
+
+        int update = updateStatement.executeUpdateDelete();
+        updateStatement.clearBindings();
+
+        return update;
+    }
+
+    @Override
+    public int delete(@NonNull String uid) {
+        sqLiteBind(deleteStatement, 1, uid);
+
+        int delete = deleteStatement.executeUpdateDelete();
+        deleteStatement.clearBindings();
+
+        return delete;
+    }
+
+    private void bindArguments(@NonNull SQLiteStatement sqLiteStatement,
+                               @NonNull String uid,
+                               @Nullable String code,
+                               @NonNull String name,
+                               @Nullable String displayName,
+                               @Nullable Date created,
+                               @Nullable Date lastUpdated,
+                               @NonNull String aIsToB,
+                               @NonNull String bIsToA) {
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);
@@ -81,12 +149,6 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
         sqLiteBind(sqLiteStatement, 6, lastUpdated);
         sqLiteBind(sqLiteStatement, 7, aIsToB);
         sqLiteBind(sqLiteStatement, 8, bIsToA);
-
-        return databaseAdapter.executeInsert(RelationshipTypeModel.TABLE, sqLiteStatement);
     }
 
-    @Override
-    public void close() {
-        sqLiteStatement.close();
-    }
 }

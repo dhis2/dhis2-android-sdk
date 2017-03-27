@@ -33,13 +33,10 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 
 @AutoValue
 public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObjectModel {
@@ -49,10 +46,10 @@ public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObj
     public static class Columns extends BaseNameableObjectModel.Columns {
         public static final String MANDATORY = "mandatory";
         public static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
-        public static final String VALUE_TYPE = "valueType";
         public static final String ALLOW_FUTURE_DATES = "allowFutureDate";
         public static final String DISPLAY_IN_LIST = "displayInList";
         public static final String PROGRAM = "program";
+        public static final String SORT_ORDER = "sortOrder";
     }
 
     @NonNull
@@ -74,17 +71,16 @@ public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObj
     public abstract String trackedEntityAttribute();
 
     @Nullable
-    @ColumnName(Columns.VALUE_TYPE)
-    @ColumnAdapter(DbValueTypeColumnAdapter.class)
-    public abstract ValueType valueType();
-
-    @Nullable
     @ColumnName(Columns.ALLOW_FUTURE_DATES)
     public abstract Boolean allowFutureDates();
 
     @Nullable
     @ColumnName(Columns.DISPLAY_IN_LIST)
     public abstract Boolean displayInList();
+
+    @Nullable
+    @ColumnName(Columns.SORT_ORDER)
+    public abstract Integer sortOrder();
 
     @NonNull
     public abstract ContentValues toContentValues();
@@ -96,11 +92,11 @@ public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObj
 
         public abstract Builder trackedEntityAttribute(@NonNull String trackedEntityAttribute);
 
-        public abstract Builder valueType(@Nullable ValueType valueType);
-
         public abstract Builder allowFutureDates(@Nullable Boolean allowFutureFate);
 
         public abstract Builder displayInList(@Nullable Boolean displayInList);
+
+        public abstract Builder sortOrder(@Nullable Integer sortOrder);
 
         abstract ProgramTrackedEntityAttributeModel build();
     }

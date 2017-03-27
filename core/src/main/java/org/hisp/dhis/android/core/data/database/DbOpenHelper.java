@@ -459,9 +459,9 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ProgramTrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION + " TEXT," +
             ProgramTrackedEntityAttributeModel.Columns.MANDATORY + " INTEGER," +
             ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT NOT NULL," +
-            ProgramTrackedEntityAttributeModel.Columns.VALUE_TYPE + " TEXT," +
             ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATES + " INTEGER," +
             ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST + " INTEGER," +
+            ProgramTrackedEntityAttributeModel.Columns.SORT_ORDER + " INTEGER," +
             ProgramTrackedEntityAttributeModel.Columns.PROGRAM + " TEXT NOT NULL," +
             " FOREIGN KEY (" + ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ")" +
             " REFERENCES " + TrackedEntityAttributeModel.TABLE +
@@ -585,12 +585,16 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             TrackedEntityDataValueModel.TABLE + " (" +
             TrackedEntityDataValueModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             TrackedEntityDataValueModel.Columns.EVENT + " TEXT NOT NULL," +
-            TrackedEntityDataValueModel.Columns.DATA_ELEMENT + " TEXT," +
+            TrackedEntityDataValueModel.Columns.DATA_ELEMENT + " TEXT NOT NULL," +
             TrackedEntityDataValueModel.Columns.STORED_BY + " TEXT," +
             TrackedEntityDataValueModel.Columns.VALUE + " TEXT," +
             TrackedEntityDataValueModel.Columns.CREATED + " TEXT," +
             TrackedEntityDataValueModel.Columns.LAST_UPDATED + " TEXT," +
             TrackedEntityDataValueModel.Columns.PROVIDED_ELSEWHERE + " INTEGER," +
+            " FOREIGN KEY (" + TrackedEntityDataValueModel.Columns.DATA_ELEMENT + ")" +
+            " REFERENCES " + DataElementModel.TABLE +
+            " (" + DataElementModel.Columns.UID + ")" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
             " FOREIGN KEY (" + TrackedEntityDataValueModel.Columns.EVENT + ")" +
             " REFERENCES " + EventModel.TABLE + " (" + EventModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +

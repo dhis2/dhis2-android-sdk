@@ -32,7 +32,6 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
@@ -57,11 +56,10 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
             ProgramTrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION + ", " +
             ProgramTrackedEntityAttributeModel.Columns.MANDATORY + ", " +
             ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ", " +
-            ProgramTrackedEntityAttributeModel.Columns.VALUE_TYPE + ", " +
             ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATES + ", " +
             ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST + ", " +
-            ProgramTrackedEntityAttributeModel.Columns.PROGRAM +
-
+            ProgramTrackedEntityAttributeModel.Columns.PROGRAM + ", " +
+            ProgramTrackedEntityAttributeModel.Columns.SORT_ORDER +
             ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + ProgramTrackedEntityAttributeModel.TABLE +
@@ -78,10 +76,10 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
             ProgramTrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION + " =?, " +
             ProgramTrackedEntityAttributeModel.Columns.MANDATORY + " =?, " +
             ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " =?, " +
-            ProgramTrackedEntityAttributeModel.Columns.VALUE_TYPE + " =?, " +
             ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATES + " =?, " +
             ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST + " =?, " +
-            ProgramTrackedEntityAttributeModel.Columns.PROGRAM + " =? " +
+            ProgramTrackedEntityAttributeModel.Columns.PROGRAM + " =?, " +
+            ProgramTrackedEntityAttributeModel.Columns.SORT_ORDER + " =? " +
             " WHERE " +
             ProgramTrackedEntityAttributeModel.Columns.UID + " =?;";
 
@@ -108,12 +106,11 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
                        @NonNull Date lastUpdated, @Nullable String shortName,
                        @Nullable String displayShortName, @Nullable String description,
                        @Nullable String displayDescription, @Nullable Boolean mandatory,
-                       @NonNull String trackedEntityAttribute, @Nullable ValueType valueType,
-                       @Nullable Boolean allowFutureDates, @Nullable Boolean displayInList,
-                       @NonNull String program) {
+                       @NonNull String trackedEntityAttribute, @Nullable Boolean allowFutureDates,
+                       @Nullable Boolean displayInList, @NonNull String program, @Nullable Integer sortOrder) {
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, shortName,
-                displayShortName, description, displayDescription, mandatory, trackedEntityAttribute, valueType,
-                allowFutureDates, displayInList, program);
+                displayShortName, description, displayDescription, mandatory, trackedEntityAttribute,
+                allowFutureDates, displayInList, program, sortOrder);
 
         Long insert = databaseAdapter.executeInsert(ProgramTrackedEntityAttributeModel.TABLE, insertStatement);
         insertStatement.clearBindings();
@@ -126,12 +123,12 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
                       @NonNull Date created, @NonNull Date lastUpdated, @Nullable String shortName,
                       @Nullable String displayShortName, @Nullable String description,
                       @Nullable String displayDescription, @Nullable Boolean mandatory,
-                      @NonNull String trackedEntityAttribute, @Nullable ValueType valueType,
-                      @Nullable Boolean allowFutureDates, @Nullable Boolean displayInList,
-                      @NonNull String program, @NonNull String whereProgramTrackedEntityAttributeUid) {
+                      @NonNull String trackedEntityAttribute, @Nullable Boolean allowFutureDates,
+                      @Nullable Boolean displayInList, @NonNull String program, @Nullable Integer sortOrder,
+                      @NonNull String whereProgramTrackedEntityAttributeUid) {
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, shortName,
-                displayShortName, description, displayDescription, mandatory, trackedEntityAttribute, valueType,
-                allowFutureDates, displayInList, program);
+                displayShortName, description, displayDescription, mandatory, trackedEntityAttribute,
+                allowFutureDates, displayInList, program, sortOrder);
 
         // bind the where argument
         sqLiteBind(updateStatement, 17, whereProgramTrackedEntityAttributeUid);
@@ -160,9 +157,8 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
                                @NonNull Date lastUpdated, @Nullable String shortName,
                                @Nullable String displayShortName, @Nullable String description,
                                @Nullable String displayDescription, @Nullable Boolean mandatory,
-                               @NonNull String trackedEntityAttribute, @Nullable ValueType valueType,
-                               @Nullable Boolean allowFutureDates, @Nullable Boolean displayInList,
-                               @NonNull String program) {
+                               @NonNull String trackedEntityAttribute, @Nullable Boolean allowFutureDates,
+                               @Nullable Boolean displayInList, @NonNull String program, @Nullable Integer sortOrder) {
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);
@@ -175,10 +171,10 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
         sqLiteBind(sqLiteStatement, 10, displayDescription);
         sqLiteBind(sqLiteStatement, 11, mandatory);
         sqLiteBind(sqLiteStatement, 12, trackedEntityAttribute);
-        sqLiteBind(sqLiteStatement, 13, valueType);
-        sqLiteBind(sqLiteStatement, 14, allowFutureDates);
-        sqLiteBind(sqLiteStatement, 15, displayInList);
-        sqLiteBind(sqLiteStatement, 16, program);
+        sqLiteBind(sqLiteStatement, 13, allowFutureDates);
+        sqLiteBind(sqLiteStatement, 14, displayInList);
+        sqLiteBind(sqLiteStatement, 15, program);
+        sqLiteBind(sqLiteStatement, 16, sortOrder);
     }
 
 }

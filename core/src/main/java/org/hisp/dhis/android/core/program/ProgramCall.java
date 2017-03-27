@@ -415,7 +415,6 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                 ProgramTrackedEntityAttribute.description, ProgramTrackedEntityAttribute.displayDescription,
                 ProgramTrackedEntityAttribute.allowFutureDate, ProgramTrackedEntityAttribute.deleted,
                 ProgramTrackedEntityAttribute.displayInList, ProgramTrackedEntityAttribute.mandatory,
-                ProgramTrackedEntityAttribute.valueType,
                 ProgramTrackedEntityAttribute.program.with(
                         Program.uid
                 ),

@@ -77,9 +77,10 @@ public class ProgramTrackedEntityAttributeHandler {
                         programTrackedEntityAttribute.displayDescription(),
                         programTrackedEntityAttribute.mandatory(),
                         programTrackedEntityAttribute.trackedEntityAttribute().uid(),
-                        programTrackedEntityAttribute.valueType(), programTrackedEntityAttribute.allowFutureDate(),
+                        programTrackedEntityAttribute.allowFutureDate(),
                         programTrackedEntityAttribute.displayInList(),
-                        programTrackedEntityAttribute.program().uid(), programTrackedEntityAttribute.uid());
+                        programTrackedEntityAttribute.program().uid(), programTrackedEntityAttribute.sortOrder(),
+                        programTrackedEntityAttribute.uid());
 
                 if (update <= 0) {
                     programTrackedEntityAttributeStore.insert(
@@ -92,10 +93,10 @@ public class ProgramTrackedEntityAttributeHandler {
                             programTrackedEntityAttribute.displayDescription(),
                             programTrackedEntityAttribute.mandatory(),
                             programTrackedEntityAttribute.trackedEntityAttribute().uid(),
-                            programTrackedEntityAttribute.valueType(),
                             programTrackedEntityAttribute.allowFutureDate(),
                             programTrackedEntityAttribute.displayInList(),
-                            programTrackedEntityAttribute.program().uid()
+                            programTrackedEntityAttribute.program().uid(),
+                            programTrackedEntityAttribute.sortOrder()
                     );
 
                 }

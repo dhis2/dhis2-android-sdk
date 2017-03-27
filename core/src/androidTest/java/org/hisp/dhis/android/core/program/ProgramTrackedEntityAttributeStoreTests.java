@@ -34,7 +34,6 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.option.CreateOptionSetUtils;
 import org.hisp.dhis.android.core.option.OptionSetModel;
@@ -67,10 +66,10 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
             Columns.DISPLAY_DESCRIPTION,
             Columns.MANDATORY,
             Columns.TRACKED_ENTITY_ATTRIBUTE,
-            Columns.VALUE_TYPE,
             Columns.ALLOW_FUTURE_DATES,
             Columns.DISPLAY_IN_LIST,
-            Columns.PROGRAM
+            Columns.PROGRAM,
+            Columns.SORT_ORDER
     };
     private static final String UID = "test_uid";
     private static final String CODE = "test_code";
@@ -82,12 +81,12 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
     private static final String DISPLAY_DESCRIPTION = "test_display_description";
     private static final Boolean MANDATORY = true;
     private static final String TRACKED_ENTITY_ATTRIBUTE = "test_tracked_entity_attribute_uid";
-    private static final ValueType VALUE_TYPE = ValueType.BOOLEAN;
     private static final Boolean ALLOW_FUTURE_DATES = false;
     private static final Boolean DISPLAY_IN_LIST = true;
     private static final long TRACKED_ENTITY_ATTRIBUTE_ID = 1L;
     private static final Long ID = 2L;
     private static final String PROGRAM = "test_program_uid";
+    private static final Integer SORT_ORDER = 99;
     private static final String OPTION_SET = "test_option_set_uid";
     private ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
 
@@ -130,10 +129,10 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
                 DISPLAY_DESCRIPTION,
                 MANDATORY,
                 TRACKED_ENTITY_ATTRIBUTE,
-                VALUE_TYPE,
                 ALLOW_FUTURE_DATES,
                 DISPLAY_IN_LIST,
-                PROGRAM
+                PROGRAM,
+                SORT_ORDER
         );
         Cursor cursor = database().query(ProgramTrackedEntityAttributeModel.TABLE,
                 PROJECTION, null, null, null, null, null);
@@ -152,10 +151,10 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
                 DISPLAY_DESCRIPTION,
                 toInteger(MANDATORY),
                 TRACKED_ENTITY_ATTRIBUTE,
-                VALUE_TYPE,
                 toInteger(ALLOW_FUTURE_DATES),
                 toInteger(DISPLAY_IN_LIST),
-                PROGRAM
+                PROGRAM,
+                SORT_ORDER
         ).isExhausted();
     }
 
@@ -168,8 +167,8 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
         long rowId = programTrackedEntityAttributeStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date,
                 SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, MANDATORY,
                 deferredTrackedEntityAttribute,
-                VALUE_TYPE, ALLOW_FUTURE_DATES, DISPLAY_IN_LIST,
-                deferredProgram
+                ALLOW_FUTURE_DATES, DISPLAY_IN_LIST,
+                deferredProgram, SORT_ORDER
         );
         ContentValues program = CreateProgramUtils.create(3L, deferredProgram, null, null, null);
         database().insert(ProgramModel.TABLE, null, program);
@@ -186,8 +185,8 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, SHORT_NAME,
                 DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, toInteger(MANDATORY),
                 deferredTrackedEntityAttribute,
-                VALUE_TYPE, toInteger(ALLOW_FUTURE_DATES), toInteger(DISPLAY_IN_LIST),
-                deferredProgram
+                toInteger(ALLOW_FUTURE_DATES), toInteger(DISPLAY_IN_LIST),
+                deferredProgram, SORT_ORDER
         ).isExhausted();
     }
 
@@ -196,7 +195,7 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
         programTrackedEntityAttributeStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
                 DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, MANDATORY,
                 "wrong",
-                VALUE_TYPE, ALLOW_FUTURE_DATES, DISPLAY_IN_LIST, PROGRAM
+                ALLOW_FUTURE_DATES, DISPLAY_IN_LIST, PROGRAM, SORT_ORDER
         );
     }
 
@@ -204,8 +203,8 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
     public void insertWithoutProgramForeignKey_shouldThrowException() {
         programTrackedEntityAttributeStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
                 DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, MANDATORY, TRACKED_ENTITY_ATTRIBUTE,
-                VALUE_TYPE, ALLOW_FUTURE_DATES, DISPLAY_IN_LIST,
-                "wrong"
+                ALLOW_FUTURE_DATES, DISPLAY_IN_LIST,
+                "wrong", SORT_ORDER
         );
     }
 
@@ -289,8 +288,8 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
 
         int update = programTrackedEntityAttributeStore.update(
                 UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, updatedDisplayShortName,
-                DESCRIPTION, DISPLAY_DESCRIPTION, MANDATORY, TRACKED_ENTITY_ATTRIBUTE, VALUE_TYPE,
-                ALLOW_FUTURE_DATES, DISPLAY_IN_LIST, PROGRAM, UID
+                DESCRIPTION, DISPLAY_DESCRIPTION, MANDATORY, TRACKED_ENTITY_ATTRIBUTE,
+                ALLOW_FUTURE_DATES, DISPLAY_IN_LIST, PROGRAM, SORT_ORDER, UID
         );
         // check that store returns 1 on successful update
         assertThat(update).isEqualTo(1);

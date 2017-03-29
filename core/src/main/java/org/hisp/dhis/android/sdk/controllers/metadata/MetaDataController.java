@@ -120,7 +120,7 @@ import static org.hisp.dhis.android.sdk.utils.NetworkUtils.unwrapResponse;
  */
 public final class MetaDataController extends ResourceController {
     private final static String CLASS_TAG = "MetaDataController";
-    private final static long TRACKED_ENTITY_ATTRITBUTE_GENERATED_VALUE_THRESHOLD = 200;
+    private final static long TRACKED_ENTITY_ATTRITBUTE_GENERATED_VALUE_THRESHOLD = 100;
 
     private MetaDataController() {
     }

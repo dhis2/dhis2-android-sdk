@@ -35,7 +35,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
-import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
@@ -46,10 +45,10 @@ import java.util.Date;
 public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
     private static final String MANDATORY = "mandatory";
     private static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
-    private static final String VALUE_TYPE = "valueType";
     private static final String ALLOW_FUTURE_DATE = "allowFutureDate";
     private static final String DISPLAY_IN_LIST = "displayInList";
     private static final String PROGRAM = "program";
+    private static final String SORT_ORDER = "sortOrder";
 
     public static final Field<ProgramTrackedEntityAttribute, String> uid
             = Field.create(UID);
@@ -77,14 +76,14 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
             = NestedField.create(TRACKED_ENTITY_ATTRIBUTE);
     public static final NestedField<ProgramTrackedEntityAttribute, Program> program
             = NestedField.create(PROGRAM);
-    public static final Field<ProgramTrackedEntityAttribute, ValueType> valueType
-            = Field.create(VALUE_TYPE);
     public static final Field<ProgramTrackedEntityAttribute, Boolean> allowFutureDate
             = Field.create(ALLOW_FUTURE_DATE);
     public static final Field<ProgramTrackedEntityAttribute, Boolean> displayInList
             = Field.create(DISPLAY_IN_LIST);
     public static final Field<ProgramTrackedEntityAttribute, Boolean> deleted
             = Field.create(DELETED);
+    public static final Field<ProgramTrackedEntityAttribute, Integer> sortOrder
+            = Field.create(SORT_ORDER);
 
     @Nullable
     @JsonProperty(MANDATORY)
@@ -93,10 +92,6 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
     @Nullable
     @JsonProperty(TRACKED_ENTITY_ATTRIBUTE)
     public abstract TrackedEntityAttribute trackedEntityAttribute();
-
-    @Nullable
-    @JsonProperty(VALUE_TYPE)
-    public abstract ValueType valueType();
 
     @Nullable
     @JsonProperty(ALLOW_FUTURE_DATE)
@@ -109,6 +104,10 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
     @Nullable
     @JsonProperty(PROGRAM)
     public abstract Program program();
+
+    @Nullable
+    @JsonProperty(SORT_ORDER)
+    public abstract Integer sortOrder();
 
     @JsonCreator
     public static ProgramTrackedEntityAttribute create(
@@ -124,16 +123,17 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
             @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
             @JsonProperty(MANDATORY) Boolean mandatory,
             @JsonProperty(TRACKED_ENTITY_ATTRIBUTE) TrackedEntityAttribute trackedEntityAttribute,
-            @JsonProperty(VALUE_TYPE) ValueType valueType,
             @JsonProperty(ALLOW_FUTURE_DATE) Boolean allowFutureDate,
             @JsonProperty(DISPLAY_IN_LIST) Boolean displayInList,
             @JsonProperty(PROGRAM) Program program,
+            @JsonProperty(SORT_ORDER) Integer sortOrder,
             @JsonProperty(DELETED) Boolean deleted
     ) {
         return new AutoValue_ProgramTrackedEntityAttribute(
                 uid, code, name, displayName, created, lastUpdated, deleted,
                 shortName, displayShortName, description, displayDescription,
-                mandatory, trackedEntityAttribute, valueType, allowFutureDate, displayInList, program);
+                mandatory, trackedEntityAttribute, allowFutureDate, displayInList, program,
+                sortOrder);
     }
 
 }

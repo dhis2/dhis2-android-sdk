@@ -31,8 +31,6 @@ package org.hisp.dhis.android.core.program;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.ValueType;
-
 import java.util.Date;
 
 public interface ProgramTrackedEntityAttributeStore {
@@ -41,17 +39,16 @@ public interface ProgramTrackedEntityAttributeStore {
                 @Nullable String shortName, @Nullable String displayShortName,
                 @Nullable String description, @Nullable String displayDescription,
                 @Nullable Boolean mandatory, @NonNull String trackedEntityAttribute,
-                @Nullable ValueType valueType, @Nullable Boolean allowFutureDates,
-                @Nullable Boolean displayInList, @NonNull String program);
+                @Nullable Boolean allowFutureDates, @Nullable Boolean displayInList, @NonNull String program,
+                @Nullable Integer sortOrder);
 
     int update(@NonNull String uid, @Nullable String code, @NonNull String name,
                @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
                @Nullable String shortName, @Nullable String displayShortName,
                @Nullable String description, @Nullable String displayDescription,
                @Nullable Boolean mandatory, @NonNull String trackedEntityAttribute,
-               @Nullable ValueType valueType, @Nullable Boolean allowFutureDates,
-               @Nullable Boolean displayInList, @NonNull String program,
-               @NonNull String whereProgramTrackedEntityAttributeUid);
+               @Nullable Boolean allowFutureDates, @Nullable Boolean displayInList, @NonNull String program,
+               @Nullable Integer sortOrder, @NonNull String whereProgramTrackedEntityAttributeUid);
 
     int delete(String uid);
 }

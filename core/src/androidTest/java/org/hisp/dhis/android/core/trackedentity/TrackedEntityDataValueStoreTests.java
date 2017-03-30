@@ -35,6 +35,8 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils;
+import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.event.CreateEventUtils;
 import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
@@ -114,6 +116,7 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
         ContentValues event = CreateEventUtils.create(EVENT, PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT);
+        ContentValues dataElement = CreateDataElementUtils.create(1L, DATA_ELEMENT, null);
 
         database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
         database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
@@ -121,6 +124,7 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
         database().insert(ProgramStageModel.TABLE, null, programStage);
         database().insert(EventModel.TABLE, null, event);
+        database().insert(DataElementModel.TABLE, null, dataElement);
     }
 
     @Test
@@ -149,7 +153,7 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistDeferrableRowInDatabase() {
+    public void insert_shouldPersistDeferrableEventInDatabase() {
         final String deferredEvent = "deferredEvent";
         database().beginTransaction();
         long rowId = trackedEntityDataValueStore.insert(
@@ -181,23 +185,68 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
     }
 
     @Test
+    public void insert_shouldPersistDeferrableDataElementInDatabase() {
+        final String deferredDataElement = "deferredDataElement";
+        database().beginTransaction();
+        long rowId = trackedEntityDataValueStore.insert(
+                EVENT,
+                date,
+                date,
+                deferredDataElement,
+                STORED_BY,
+                VALUE,
+                PROVIDED_ELSEWHERE
+        );
+        ContentValues dataElement = CreateDataElementUtils.create(2L, deferredDataElement, null);
+        database().insert(DataElementModel.TABLE, null, dataElement);
+
+        database().setTransactionSuccessful();
+        database().endTransaction();
+
+        Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE, PROJECTION, null, null, null, null, null);
+        assertThat(rowId).isEqualTo(1L);
+        assertThatCursor(cursor).hasRow(
+                EVENT,
+                dateString,
+                dateString,
+                deferredDataElement,
+                STORED_BY,
+                VALUE,
+                toInteger(PROVIDED_ELSEWHERE)
+        ).isExhausted();
+    }
+
+    @Test
     public void insert_shouldPersistNullableRowInDatabase() {
-        long rowId = trackedEntityDataValueStore.insert(EVENT, null, null, null, null, null, null);
+        long rowId = trackedEntityDataValueStore.insert(EVENT, null, null, DATA_ELEMENT, null, null, null);
 
         Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE,
                 PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor).hasRow(EVENT, null, null, null, null, null, null).isExhausted();
+        assertThatCursor(cursor).hasRow(EVENT, null, null, DATA_ELEMENT, null, null, null).isExhausted();
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void insertWithoutForeignKey_shouldThrowException() {
+    public void insertWithoutEvent_shouldThrowException() {
         trackedEntityDataValueStore.insert(
                 null,
                 date,
                 date,
                 DATA_ELEMENT,
+                STORED_BY,
+                VALUE,
+                PROVIDED_ELSEWHERE
+        );
+    }
+
+    @Test(expected = SQLiteConstraintException.class)
+    public void insertWithoutDataElement_shouldThrowException() {
+        trackedEntityDataValueStore.insert(
+                EVENT,
+                date,
+                date,
+                null,
                 STORED_BY,
                 VALUE,
                 PROVIDED_ELSEWHERE
@@ -222,13 +271,45 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).isExhausted();
     }
 
+    @Test
+    public void delete_shouldDeleteTrackedEntityDataValueWhenDeletingDataElementForeignKey() {
+        trackedEntityDataValueStore.insert(
+                EVENT,
+                date,
+                date,
+                DATA_ELEMENT,
+                STORED_BY,
+                VALUE,
+                PROVIDED_ELSEWHERE
+        );
+        database().delete(DataElementModel.TABLE, DataElementModel.Columns.UID + "=?", new String[]{DATA_ELEMENT});
+
+        Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE,
+                PROJECTION, null, null, null, null, null);
+        assertThatCursor(cursor).isExhausted();
+    }
+
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistTrackedEntityDataValueWithInvalidEventForeignKey() {
+    public void exception_persistTrackedEntityDataValueWithInvalidEvent() {
         trackedEntityDataValueStore.insert(
                 "wrong",
                 date,
                 date,
                 DATA_ELEMENT,
+                STORED_BY,
+                VALUE,
+                PROVIDED_ELSEWHERE
+        );
+    }
+
+
+    @Test(expected = SQLiteConstraintException.class)
+    public void exception_persistTrackedEntityDataValueWithInvalidDataElement() {
+        trackedEntityDataValueStore.insert(
+                EVENT,
+                date,
+                date,
+                "wrong",
                 STORED_BY,
                 VALUE,
                 PROVIDED_ELSEWHERE

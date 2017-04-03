@@ -237,6 +237,7 @@ public class UserCallTests {
                         ),
                         User.organisationUnits.with(
                                 OrganisationUnit.uid,
+                                OrganisationUnit.path,
                                 OrganisationUnit.programs.with(
                                         Program.uid
                                 )

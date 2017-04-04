@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.common.Call;
+import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -50,6 +51,8 @@ import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;

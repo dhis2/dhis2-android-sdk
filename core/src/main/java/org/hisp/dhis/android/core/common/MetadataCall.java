@@ -251,7 +251,6 @@ public class MetadataCall implements Call<Response> {
         List<Program> programs = ((Response<Payload<Program>>) response).body().items();
         Set<String> trackedEntityUids = getAssignedTrackedEntityUids(programs);
 
-        //TODO: double check: this is never used ??
         response = new TrackedEntityCall(
                 trackedEntityUids, databaseAdapter, trackedEntityStore,
                 resourceStore, trackedEntityService, serverDate

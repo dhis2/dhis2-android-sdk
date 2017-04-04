@@ -96,7 +96,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atMost;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -336,84 +335,90 @@ public class MetadataCallTests {
     @Test
     @SuppressWarnings("unchecked")
     public void call_shouldNotMarkTransactionSuccessful_ifSystemInfoCall_Fails() throws Exception {
+        final int expectedTransactions = 1;
         when(systemInfoCall.execute()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();
 
         assertThat(response).isEqualTo(errorResponse);
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
-        verify(databaseAdapter, times(1)).beginNewTransaction();
-        verify(transaction, times(1)).end();
-        verify(transaction, never()).setSuccessful();
+        verify(databaseAdapter, times(expectedTransactions)).beginNewTransaction();
+        verify(transaction, times(expectedTransactions)).end();
+        verify(transaction, times(expectedTransactions - 1)).setSuccessful();
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void call_shouldNotMarkTransactionSuccessful_ifUserCall_Fails() throws Exception {
+        final int expectedTransactions = 2;
         when(userCall.execute()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();
 
         assertThat(response).isEqualTo(errorResponse);
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
-        verify(databaseAdapter, times(2)).beginNewTransaction();
-        verify(transaction, times(2)).end();
-        verify(transaction, atMost(1)).setSuccessful();//ie last one is not marked as success...
+        verify(databaseAdapter, times(expectedTransactions)).beginNewTransaction();
+        verify(transaction, times(expectedTransactions)).end();
+        verify(transaction, atMost(expectedTransactions - 1)).setSuccessful();//ie last one is not marked as success...
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void call_shouldNotMarkTransactionSuccessful_ifOrganisationUnitCall_Fails() throws Exception {
+        final int expectedTransactions = 4;
         when(organisationUnitCall.execute()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();
 
         assertThat(response).isEqualTo(errorResponse);
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
-        verify(databaseAdapter, times(4)).beginNewTransaction();
-        verify(transaction, times(4)).end();
-        verify(transaction, atMost(2)).setSuccessful(); //taking in account the sub-transactions
+        verify(databaseAdapter, times(expectedTransactions)).beginNewTransaction();
+        verify(transaction, times(expectedTransactions)).end();
+        verify(transaction, atMost(expectedTransactions - 1)).setSuccessful(); //taking in account the sub-transactions
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void call_shouldNotMarkTransactionSuccessful_ifProgramCall_Fails() throws Exception {
+        final int expectedTransactions = 4;
         when(programCall.execute()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();
 
         assertThat(response).isEqualTo(errorResponse);
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
-        verify(databaseAdapter, times(4)).beginNewTransaction();
-        verify(transaction, times(4)).end();
-        verify(transaction, atMost(3)).setSuccessful();
+        verify(databaseAdapter, times(expectedTransactions)).beginNewTransaction();
+        verify(transaction, times(expectedTransactions)).end();
+        verify(transaction, atMost(expectedTransactions - 1)).setSuccessful();
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void call_shouldNotMarkTransactionSuccessful_ifTrackedEntityCall_Fails() throws Exception {
+        final int expectedTransactions = 6;
         when(trackedEntityCall.execute()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();
 
         assertThat(response).isEqualTo(errorResponse);
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
-        verify(databaseAdapter, times(6)).beginNewTransaction();
-        verify(transaction, times(6)).end();
-        verify(transaction, atMost(4)).setSuccessful();
+        verify(databaseAdapter, times(expectedTransactions)).beginNewTransaction();
+        verify(transaction, times(expectedTransactions)).end();
+        verify(transaction, atMost(expectedTransactions - 1)).setSuccessful();
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void call_shouldNotMarkTransactionSuccessful_ifOptionSet_Fails() throws Exception {
+        final int expectedTransactions = 6;
         when(optionSetCall.execute()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();
 
         assertThat(response).isEqualTo(errorResponse);
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
-        verify(databaseAdapter, times(6)).beginNewTransaction();
-        verify(transaction, times(6)).end();
-        verify(transaction, atMost(5)).setSuccessful();
+        verify(databaseAdapter, times(expectedTransactions)).beginNewTransaction();
+        verify(transaction, times(expectedTransactions)).end();
+        verify(transaction, atMost(expectedTransactions - 1)).setSuccessful();
     }
 }

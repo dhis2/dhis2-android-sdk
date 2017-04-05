@@ -34,7 +34,6 @@ import retrofit2.Converter;
 import retrofit2.Retrofit;
 
 public final class FilterConverterFactory extends Converter.Factory {
-    //TODO: implement this ...
     public static FilterConverterFactory create() {
         return new FilterConverterFactory();
     }

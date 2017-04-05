@@ -104,7 +104,6 @@ import org.hisp.dhis.android.core.user.UserStoreImpl;
 import java.util.concurrent.Callable;
 
 import okhttp3.OkHttpClient;
-import retrofit2.Converter;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -314,16 +313,12 @@ public final class D2 {
                     .setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw())
                     .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-            Converter.Factory jsonConverterFactory
-                    = JacksonConverterFactory.create(objectMapper);
-            Converter.Factory filterConverterFactory
-                    = FieldsConverterFactory.create();
-
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(configuration.serverUrl())
                     .client(okHttpClient)
-                    .addConverterFactory(jsonConverterFactory)
-                    .addConverterFactory(filterConverterFactory)
+                    .addConverterFactory(JacksonConverterFactory.create(objectMapper))
+                    .addConverterFactory(FieldsConverterFactory.create())
+                    .addConverterFactory(FieldsConverterFactory.create())
                     .validateEagerly(true)
                     .build();
 

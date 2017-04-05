@@ -51,6 +51,14 @@ public class FilterConverterTests {
                                           @Query("filter") @Where Filter lastUpdatedFilter);
     }
 
+    interface MixedTestService {
+        @GET("api")
+        retrofit2.Call<ResponseBody> test(
+                @Query("field") @Which Fields fields,
+                @Query("filter") @Where Filter idFilter,
+                @Query("filter") @Where Filter lastUpdatedFilter);
+    }
+
     @Test
     public void retrofit_shouldRespectFilter() throws IOException, InterruptedException {
         MockWebServer server = new MockWebServer();
@@ -72,6 +80,36 @@ public class FilterConverterTests {
         RecordedRequest request = server.takeRequest();
 
         assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1,uid2]&filter=lastUpdated:gt:updatedDate");
+        server.shutdown();
+    }
+
+    @Test
+    public void retrofit_shouldRespectFieldAndFilterMixing() throws IOException, InterruptedException {
+        MockWebServer server = new MockWebServer();
+        server.start();
+
+        server.enqueue(new MockResponse());
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(server.url("/"))
+                .addConverterFactory(FieldsConverterFactory.create())
+                .addConverterFactory(FilterConverterFactory.create())
+                .build();
+
+        MixedTestService service = retrofit.create(MixedTestService.class);
+        service.test(
+                Fields.builder().fields(
+                        Field.create("id"), Field.create("code"),
+                        Field.create("name"), Field.create("displayName")
+                ).build(),
+                FilterImpl.create(Field.create("id"), "in", "uid1", "uid2"),
+                FilterImpl.create(Field.create("lastUpdated"), "gt", "updatedDate")
+        ).execute();
+
+        RecordedRequest request = server.takeRequest();
+
+        assertThat(request.getPath()).isEqualTo(
+                "/api?field=id,code,name,displayName&filter=id:in:[uid1,uid2]&filter=lastUpdated:gt:updatedDate");
         server.shutdown();
     }
 

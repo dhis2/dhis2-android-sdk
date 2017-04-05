@@ -62,7 +62,11 @@ public enum ValueType {
 
     // TODO: Implement later
     ORGANISATION_UNIT(OrganisationUnit.class),
-    TRACKER_ASSOCIATE(TrackedEntityInstance.class);
+    TRACKER_ASSOCIATE(TrackedEntityInstance.class),
+
+    //New values:
+    AGE(Date.class),
+    URL(String.class);
 
     private static final Set<ValueType> INTEGER_TYPES = new HashSet<>(Arrays.asList(INTEGER,
             INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE));

@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.MetadataCall;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
+import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
@@ -104,7 +105,6 @@ import org.hisp.dhis.android.core.user.UserStoreImpl;
 import java.util.concurrent.Callable;
 
 import okhttp3.OkHttpClient;
-import retrofit2.Converter;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -314,16 +314,12 @@ public final class D2 {
                     .setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw())
                     .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-            Converter.Factory jsonConverterFactory
-                    = JacksonConverterFactory.create(objectMapper);
-            Converter.Factory filterConverterFactory
-                    = FieldsConverterFactory.create();
-
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(configuration.serverUrl())
                     .client(okHttpClient)
-                    .addConverterFactory(jsonConverterFactory)
-                    .addConverterFactory(filterConverterFactory)
+                    .addConverterFactory(JacksonConverterFactory.create(objectMapper))
+                    .addConverterFactory(FieldsConverterFactory.create())
+                    .addConverterFactory(FilterConverterFactory.create())
                     .validateEagerly(true)
                     .build();
 

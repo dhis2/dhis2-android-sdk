@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.MetadataCall;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
+import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
@@ -318,7 +319,7 @@ public final class D2 {
                     .client(okHttpClient)
                     .addConverterFactory(JacksonConverterFactory.create(objectMapper))
                     .addConverterFactory(FieldsConverterFactory.create())
-                    .addConverterFactory(FieldsConverterFactory.create())
+                    .addConverterFactory(FilterConverterFactory.create())
                     .validateEagerly(true)
                     .build();
 

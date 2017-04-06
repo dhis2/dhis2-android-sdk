@@ -37,30 +37,19 @@ public class FilterConverter implements Converter<Filter, String> {
     @Override
     public String convert(Filter filter) throws IOException {
         StringBuilder builder = new StringBuilder();
-
         builder.append(filter.field().name())
                 .append(':')
                 .append(filter.operator())
-                .append(':');
-
-        if (filter.values().size() == 1) {
-            //single value:
-            builder.append('[');
-            builder.append(filter.values().get(0));
-            builder.append(']');
-        } else {
-            //a list of values:
-            Iterator<String> valuesIterator = filter.values().iterator();
-            builder.append('[');
-            while (valuesIterator.hasNext()) {
-                builder.append(valuesIterator.next());
-                if (valuesIterator.hasNext()) {
-                    builder.append(',');
-                }
+                .append(":[");
+        //a list of values:
+        Iterator<String> valuesIterator = filter.values().iterator();
+        while (valuesIterator.hasNext()) {
+            builder.append(valuesIterator.next());
+            if (valuesIterator.hasNext()) {
+                builder.append(',');
             }
-            builder.append(']');
         }
-
+        builder.append(']');
         return builder.toString();
     }
 }

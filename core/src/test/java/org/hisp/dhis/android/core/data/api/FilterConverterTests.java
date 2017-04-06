@@ -79,7 +79,7 @@ public class FilterConverterTests {
 
         RecordedRequest request = server.takeRequest();
 
-        assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1,uid2]&filter=lastUpdated:gt:updatedDate");
+        assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1,uid2]&filter=lastUpdated:gt:[updatedDate]");
         server.shutdown();
     }
 
@@ -133,7 +133,7 @@ public class FilterConverterTests {
         RecordedRequest request = server.takeRequest();
 
         assertThat(request.getPath()).isEqualTo(
-                "/api?field=id,code,name,displayName&filter=id:in:[uid1,uid2]&filter=lastUpdated:gt:updatedDate");
+                "/api?field=id,code,name,displayName&filter=id:in:[uid1,uid2]&filter=lastUpdated:gt:[updatedDate]");
         server.shutdown();
     }
 

@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import android.support.annotation.Nullable;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
@@ -190,88 +188,72 @@ public class MetadataCall implements Call<Response> {
     public Response call() throws Exception {
         Response response = null;
         Transaction transaction = databaseAdapter.beginNewTransaction();
-
         try {
-            response = makeCalls(transaction);
+            response = new SystemInfoCall(
+                    databaseAdapter, systemInfoStore,
+                    systemInfoService, resourceStore
+            ).call();
+            if (!response.isSuccessful()) {
+                return response;
+            }
 
+            SystemInfo systemInfo = (SystemInfo) response.body();
+            Date serverDate = systemInfo.serverDate();
+            response = new UserCall(
+                    userService, databaseAdapter, organisationUnitStore, userStore,
+                    userCredentialsStore, userRoleStore, resourceStore, serverDate,
+                    userRoleProgramLinkStore, userOrganisationUnitLinkStore
+            ).call();
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
+            User user = (User) response.body();
+            response = new OrganisationUnitCall(
+                    user, organisationUnitService, databaseAdapter, organisationUnitStore,
+                    resourceStore, serverDate, userOrganisationUnitLinkStore
+            ).call();
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
+            Set<String> programUids = getAssignedProgramUids(user);
+            response = new ProgramCall(
+                    programService, databaseAdapter, resourceStore, programUids, programStore, serverDate,
+                    trackedEntityAttributeStore, programTrackedEntityAttributeStore, programRuleVariableStore,
+                    programIndicatorStore, programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
+                    programRuleStore, optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
+                    programStageSectionStore, programStageStore, relationshipStore
+            ).call();
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
+            List<Program> programs = ((Response<Payload<Program>>) response).body().items();
+            Set<String> trackedEntityUids = getAssignedTrackedEntityUids(programs);
+            response = new TrackedEntityCall(
+                    trackedEntityUids, databaseAdapter, trackedEntityStore,
+                    resourceStore, trackedEntityService, serverDate
+            ).call();
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
+            Set<String> optionSetUids = getAssignedOptionSetUids(programs);
+            response = new OptionSetCall(
+                    optionSetService, optionSetStore, databaseAdapter, resourceStore,
+                    optionSetUids, serverDate, optionStore
+            ).call();
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
+            transaction.setSuccessful();
+            return response;
         } finally {
             transaction.end();
         }
-
-        return response;
-    }
-
-    @Nullable
-    private Response makeCalls(Transaction transaction) throws Exception {
-
-        Response response = new SystemInfoCall(
-                databaseAdapter, systemInfoStore,
-                systemInfoService, resourceStore
-        ).call();
-
-        if (!response.isSuccessful()) {
-            return response;
-        }
-        SystemInfo systemInfo = (SystemInfo) response.body();
-        Date serverDate = systemInfo.serverDate();
-
-        response = new UserCall(
-                userService, databaseAdapter, organisationUnitStore, userStore,
-                userCredentialsStore, userRoleStore, resourceStore, serverDate,
-                userRoleProgramLinkStore, userOrganisationUnitLinkStore
-        ).call();
-
-        if (!response.isSuccessful()) {
-            return response;
-        }
-        User user = (User) response.body();
-
-        response = new OrganisationUnitCall(
-                user, organisationUnitService, databaseAdapter, organisationUnitStore,
-                resourceStore, serverDate, userOrganisationUnitLinkStore
-        ).call();
-
-        if (!response.isSuccessful()) {
-            return response;
-        }
-        Set<String> programUids = getAssignedProgramUids(user);
-
-        response = new ProgramCall(
-                programService, databaseAdapter, resourceStore, programUids, programStore, serverDate,
-                trackedEntityAttributeStore, programTrackedEntityAttributeStore, programRuleVariableStore,
-                programIndicatorStore, programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                programRuleStore, optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
-                programStageSectionStore, programStageStore, relationshipStore
-        ).call();
-
-        if (!response.isSuccessful()) {
-            return response;
-        }
-
-        List<Program> programs = ((Response<Payload<Program>>) response).body().items();
-        Set<String> trackedEntityUids = getAssignedTrackedEntityUids(programs);
-
-        response = new TrackedEntityCall(
-                trackedEntityUids, databaseAdapter, trackedEntityStore,
-                resourceStore, trackedEntityService, serverDate
-        ).call();
-
-        if (!response.isSuccessful()) {
-            return response;
-        }
-
-        Set<String> optionSetUids = getAssignedOptionSetUids(programs);
-        response = new OptionSetCall(
-                optionSetService, optionSetStore, databaseAdapter, resourceStore,
-                optionSetUids, serverDate, optionStore
-        ).call();
-        if (!response.isSuccessful()) {
-            return response;
-        }
-
-        transaction.setSuccessful();
-        //TODO: Review what is correct to return here. Now returning last response.
-        return response;
     }
 
     /// Utilty methods:
@@ -279,9 +261,7 @@ public class MetadataCall implements Call<Response> {
         if (programs == null) {
             return null;
         }
-
         Set<String> uids = new HashSet<>();
-
         int size = programs.size();
         for (int i = 0; i < size; i++) {
             Program program = programs.get(i);
@@ -289,7 +269,6 @@ public class MetadataCall implements Call<Response> {
             getOptionSetUidsForAttributes(uids, program);
             getOptionSetUidsForDataElements(uids, program);
         }
-
         return uids;
     }
 

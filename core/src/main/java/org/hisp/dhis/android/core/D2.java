@@ -164,56 +164,32 @@ public final class D2 {
         this.optionSetService = retrofit.create(OptionSetService.class);
 
         // stores
-        this.userStore =
-                new UserStoreImpl(databaseAdapter);
-        this.userCredentialsStore =
-                new UserCredentialsStoreImpl(databaseAdapter);
-        this.userOrganisationUnitLinkStore =
-                new UserOrganisationUnitLinkStoreImpl(databaseAdapter);
-        this.authenticatedUserStore =
-                new AuthenticatedUserStoreImpl(databaseAdapter);
-        this.organisationUnitStore =
-                new OrganisationUnitStoreImpl(databaseAdapter);
-        this.resourceStore =
-                new ResourceStoreImpl(databaseAdapter);
-        this.systemInfoStore =
-                new SystemInfoStoreImpl(databaseAdapter);
-        this.userRoleStore =
-                new UserRoleStoreImpl(databaseAdapter);
-        this.userRoleProgramLinkStore =
-                new UserRoleProgramLinkStoreImpl(databaseAdapter);
-        this.programStore =
-                new ProgramStoreImpl(databaseAdapter);
-        this.trackedEntityAttributeStore =
-                new TrackedEntityAttributeStoreImpl(databaseAdapter);
-        this.programTrackedEntityAttributeStore =
-                new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter);
-        this.programRuleVariableStore =
-                new ProgramRuleVariableModelStoreImpl(databaseAdapter);
-        this.programIndicatorStore =
-                new ProgramIndicatorStoreImpl(databaseAdapter);
-        this.programStageSectionProgramIndicatorLinkStore =
-                new ProgramStageSectionProgramIndicatorLinkStoreImpl(databaseAdapter);
-        this.programRuleActionStore =
-                new ProgramRuleActionStoreImpl(databaseAdapter);
-        this.programRuleStore =
-                new ProgramRuleStoreImpl(databaseAdapter);
-        this.optionStore =
-                new OptionStoreImpl(databaseAdapter);
-        this.optionSetStore =
-                new OptionSetStoreImpl(databaseAdapter);
-        this.dataElementStore =
-                new DataElementStoreImpl(databaseAdapter);
-        this.programStageDataElementStore =
-                new ProgramStageDataElementStoreImpl(databaseAdapter);
-        this.programStageSectionStore =
-                new ProgramStageSectionStoreImpl(databaseAdapter);
-        this.programStageStore =
-                new ProgramStageStoreImpl(databaseAdapter);
-        this.relationshipStore =
-                new RelationshipTypeStoreImpl(databaseAdapter);
-        this.trackedEntityStore =
-                new TrackedEntityStoreImpl(databaseAdapter);
+        this.userStore = new UserStoreImpl(databaseAdapter);
+        this.userCredentialsStore = new UserCredentialsStoreImpl(databaseAdapter);
+        this.userOrganisationUnitLinkStore = new UserOrganisationUnitLinkStoreImpl(databaseAdapter);
+        this.authenticatedUserStore = new AuthenticatedUserStoreImpl(databaseAdapter);
+        this.organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter);
+        this.resourceStore = new ResourceStoreImpl(databaseAdapter);
+        this.systemInfoStore = new SystemInfoStoreImpl(databaseAdapter);
+        this.userRoleStore = new UserRoleStoreImpl(databaseAdapter);
+        this.userRoleProgramLinkStore = new UserRoleProgramLinkStoreImpl(databaseAdapter);
+        this.programStore = new ProgramStoreImpl(databaseAdapter);
+        this.trackedEntityAttributeStore = new TrackedEntityAttributeStoreImpl(databaseAdapter);
+        this.programTrackedEntityAttributeStore = new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter);
+        this.programRuleVariableStore = new ProgramRuleVariableModelStoreImpl(databaseAdapter);
+        this.programIndicatorStore = new ProgramIndicatorStoreImpl(databaseAdapter);
+        this.programStageSectionProgramIndicatorLinkStore = new ProgramStageSectionProgramIndicatorLinkStoreImpl(
+                databaseAdapter);
+        this.programRuleActionStore = new ProgramRuleActionStoreImpl(databaseAdapter);
+        this.programRuleStore = new ProgramRuleStoreImpl(databaseAdapter);
+        this.optionStore = new OptionStoreImpl(databaseAdapter);
+        this.optionSetStore = new OptionSetStoreImpl(databaseAdapter);
+        this.dataElementStore = new DataElementStoreImpl(databaseAdapter);
+        this.programStageDataElementStore = new ProgramStageDataElementStoreImpl(databaseAdapter);
+        this.programStageSectionStore = new ProgramStageSectionStoreImpl(databaseAdapter);
+        this.programStageStore = new ProgramStageStoreImpl(databaseAdapter);
+        this.relationshipStore = new RelationshipTypeStoreImpl(databaseAdapter);
+        this.trackedEntityStore = new TrackedEntityStoreImpl(databaseAdapter);
     }
 
     @NonNull

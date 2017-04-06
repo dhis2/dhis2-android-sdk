@@ -18,7 +18,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class ProgramRuleVariableValueTests {
 
     @Mock
-    private DataValue dataValue;
+    private TrackedEntityDataValue dataValue;
 
     @Before
     public void setUp() throws Exception {

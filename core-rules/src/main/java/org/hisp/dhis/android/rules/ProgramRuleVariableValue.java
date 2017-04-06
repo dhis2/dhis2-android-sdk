@@ -28,6 +28,8 @@ abstract class ProgramRuleVariableValue {
     @Nonnull
     abstract Boolean hasValue();
 
+    // ToDo: put in event date
+
     @Nonnull
     ProgramRuleVariableValue assignValue(@Nonnull String dataValue) {
         return create(dataValue, valueType(), true);

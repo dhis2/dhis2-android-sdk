@@ -24,7 +24,7 @@ public class EventTests {
     private static final String DATE_PATTERN = "yyyy-MM-dd";
 
     @Mock
-    private DataValue dataValue;
+    private TrackedEntityDataValue dataValue;
 
     @Before
     public void setUp() throws Exception {
@@ -35,7 +35,7 @@ public class EventTests {
     public void createShouldThrowExceptionIfEventIsNull() {
         try {
             Event.create(null, EventStatus.ACTIVE, "test_stage_uid",
-                    new Date(), new Date(), Arrays.<DataValue>asList());
+                    new Date(), new Date(), Arrays.<TrackedEntityDataValue>asList());
             fail("NullPointerException was expected, but nothing was thrown");
         } catch (NullPointerException exception) {
             // noop
@@ -44,7 +44,7 @@ public class EventTests {
 
     @Test
     public void dataValuesShouldBeImmutable() {
-        List<DataValue> dataValues = new ArrayList<>();
+        List<TrackedEntityDataValue> dataValues = new ArrayList<>();
         dataValues.add(dataValue);
 
         try {
@@ -66,7 +66,7 @@ public class EventTests {
 
     @Test
     public void allValuesShouldBePropagatedCorrectly() {
-        List<DataValue> dataValues = new ArrayList<>();
+        List<TrackedEntityDataValue> dataValues = new ArrayList<>();
         dataValues.add(dataValue);
 
         Date eventDate = new Date();
@@ -90,15 +90,14 @@ public class EventTests {
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_PATTERN, Locale.US);
         List<Event> events = Arrays.asList(
                 Event.create("test_event_one", EventStatus.ACTIVE, "test_program_stage_one",
-                        dateFormat.parse("2014-02-11"), dateFormat.parse("2014-02-11"), new ArrayList<DataValue>()),
+                        dateFormat.parse("2014-02-11"), dateFormat.parse("2014-02-11"), new ArrayList<TrackedEntityDataValue>()),
                 Event.create("test_event_two", EventStatus.ACTIVE, "test_program_stage_two",
-                        dateFormat.parse("2017-03-22"), dateFormat.parse("2017-03-22"), new ArrayList<DataValue>()));
+                        dateFormat.parse("2017-03-22"), dateFormat.parse("2017-03-22"), new ArrayList<TrackedEntityDataValue>()));
 
         Collections.sort(events, Event.EVENT_DATE_COMPARATOR);
 
         assertThat(events.get(0).event()).isEqualTo("test_event_one");
         assertThat(events.get(1).event()).isEqualTo("test_event_two");
-
     }
 
 //    ToDo

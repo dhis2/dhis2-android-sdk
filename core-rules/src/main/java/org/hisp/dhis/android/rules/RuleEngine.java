@@ -2,7 +2,7 @@ package org.hisp.dhis.android.rules;
 
 import org.hisp.dhis.android.rules.models.Event;
 import org.hisp.dhis.android.rules.models.ProgramRule;
-import org.hisp.dhis.android.rules.models.RuleVariable;
+import org.hisp.dhis.android.rules.models.variables.RuleVariable;
 
 import java.util.ArrayList;
 import java.util.Collections;

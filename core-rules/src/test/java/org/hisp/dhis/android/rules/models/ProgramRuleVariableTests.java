@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.rules.models;
 
+import org.hisp.dhis.android.rules.models.variables.RuleVariable;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

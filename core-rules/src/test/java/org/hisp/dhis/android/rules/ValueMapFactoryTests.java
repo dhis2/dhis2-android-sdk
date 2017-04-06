@@ -3,7 +3,7 @@ package org.hisp.dhis.android.rules;
 import org.hisp.dhis.android.rules.models.Event;
 import org.hisp.dhis.android.rules.models.EventStatus;
 import org.hisp.dhis.android.rules.models.Option;
-import org.hisp.dhis.android.rules.models.RuleVariable;
+import org.hisp.dhis.android.rules.models.variables.RuleVariable;
 import org.hisp.dhis.android.rules.models.ProgramRuleVariableSourceType;
 import org.hisp.dhis.android.rules.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.rules.models.TrackedEntityDataValue;

@@ -1,6 +1,10 @@
-package org.hisp.dhis.android.rules.models;
+package org.hisp.dhis.android.rules.models.variables;
 
 import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.rules.models.Option;
+import org.hisp.dhis.android.rules.models.ProgramRuleVariableSourceType;
+import org.hisp.dhis.android.rules.models.ValueType;
 
 import java.util.ArrayList;
 import java.util.List;

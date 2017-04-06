@@ -109,7 +109,6 @@ final class ValueMapFactory {
         return create(variable.dataElementValueType());
     }
 
-    // ToDo: tests
     @Nonnull
     private static ProgramRuleVariableValue dataElementNewestEvent(
             @Nonnull ProgramRuleVariable variable,
@@ -122,8 +121,6 @@ final class ValueMapFactory {
             if (!dataValues.isEmpty()) {
                 // this data value corresponds to the data value within
                 // latest / newest event for given data element
-
-                // ToDo: pass in a list of all candidates as well
                 TrackedEntityDataValue latestDataValue = dataValues.get(0);
                 return create(latestDataValue.value(), transformDataValues(dataValues),
                         variable.dataElementValueType(), true);
@@ -189,7 +186,7 @@ final class ValueMapFactory {
      * and value is the list of data values from given events
      *
      * @param currentEvent Current event
-     * @param allEvents List of events
+     * @param allEvents    List of events
      * @return Map of data elements to list of all data values
      */
     @Nonnull

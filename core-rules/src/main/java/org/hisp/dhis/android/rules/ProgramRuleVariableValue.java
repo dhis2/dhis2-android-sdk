@@ -15,22 +15,31 @@ import static java.util.Collections.unmodifiableList;
 @AutoValue
 abstract class ProgramRuleVariableValue {
 
-    // current value of the ProgramRuleVariable instance
+    /**
+     * @return current value of the ProgramRuleVariable instance
+     */
     @Nonnull
     abstract String value();
 
-    // all the value candidates for this variable
+    /**
+     * @return all the value candidates for this variable
+     */
     @Nonnull
     abstract List<String> valueCandidates();
 
-    @Nonnull
-    abstract ValueType valueType();
-
-    // true if the value has been set explicitly
+    /**
+     * @return true if the value has been set explicitly
+     */
     @Nonnull
     abstract Boolean hasValue();
 
-    // ToDo: put in event date
+    /**
+     * @return value type of the variable
+     */
+    @Nonnull
+    abstract ValueType valueType();
+
+    // ToDo: put in event date (to sort events?)
 
     @Nonnull
     ProgramRuleVariableValue assignValue(@Nonnull String dataValue) {
@@ -60,7 +69,7 @@ abstract class ProgramRuleVariableValue {
     @Nonnull
     static ProgramRuleVariableValue create(@Nonnull String dataValue, @Nonnull List<String> candidates,
             @Nonnull ValueType valueType, @Nonnull Boolean hasValue) {
-        return new AutoValue_ProgramRuleVariableValue(dataValue,
-                unmodifiableList(new ArrayList<>(candidates)), valueType, hasValue);
+        return new AutoValue_ProgramRuleVariableValue(dataValue, unmodifiableList(
+                new ArrayList<>(candidates)), hasValue, valueType);
     }
 }

@@ -64,17 +64,23 @@ final class ValueMapFactory {
         for (ProgramRuleVariable variable : programRuleVariables) {
             switch (variable.sourceType()) {
                 case DATAELEMENT_CURRENT_EVENT: {
-                    valueMap.put(variable.name(), dataElementCurrentEvent(variable, currentEventValues));
+                    valueMap.put(variable.name(),
+                            dataElementCurrentEvent(variable, currentEventValues));
                     break;
                 }
                 case DATAELEMENT_NEWEST_EVENT_PROGRAM: {
-                    valueMap.put(variable.name(), dataElementNewestEvent(variable, eventsValues));
+                    valueMap.put(variable.name(),
+                            dataElementNewestEventProgram(variable, eventsValues));
                     break;
                 }
-                case DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE:
+                case DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE: {
+                    valueMap.put(variable.name(),
+                            dataElementNewestEventProgramStage(variable, eventsValues));
                     break;
-                case DATAELEMENT_PREVIOUS_EVENT:
+                }
+                case DATAELEMENT_PREVIOUS_EVENT: {
                     break;
+                }
                 case TEI_ATTRIBUTE: {
                     valueMap.put(variable.name(), trackedEntityAttribute(variable, teiValues));
                     break;
@@ -98,23 +104,21 @@ final class ValueMapFactory {
     private static ProgramRuleVariableValue dataElementCurrentEvent(
             @Nonnull ProgramRuleVariable variable,
             @Nonnull Map<String, TrackedEntityDataValue> valueMap) {
-        assert variable.dataElement() != null : variable.dataElementValueType() != null;
-
         if (valueMap.containsKey(variable.dataElement())) {
             TrackedEntityDataValue dataValue = valueMap.get(variable.dataElement());
-            return create(dataValue.value(),
-                    variable.dataElementValueType(), true);
+            return create(dataValue.value(), variable.dataElementValueType(), true);
         }
 
         return create(variable.dataElementValueType());
     }
 
+    // Note: we assume that we are operating in the scope of one program. Hence, we don't check
+    // if event actually belongs to the given program. This is something what can be improved or
+    // communicated through documentation.
     @Nonnull
-    private static ProgramRuleVariableValue dataElementNewestEvent(
+    private static ProgramRuleVariableValue dataElementNewestEventProgram(
             @Nonnull ProgramRuleVariable variable,
             @Nonnull Map<String, List<TrackedEntityDataValue>> valueMap) {
-        assert variable.dataElement() != null : variable.dataElementValueType() != null;
-
         if (valueMap.containsKey(variable.dataElement())) {
             List<TrackedEntityDataValue> dataValues = valueMap.get(variable.dataElement());
 
@@ -130,14 +134,30 @@ final class ValueMapFactory {
         return create(variable.dataElementValueType());
     }
 
+    @Nonnull
+    private static ProgramRuleVariableValue dataElementNewestEventProgramStage(
+            @Nonnull ProgramRuleVariable variable,
+            @Nonnull Map<String, List<TrackedEntityDataValue>> valueMap) {
+        if (valueMap.containsKey(variable.dataElement())) {
+            List<TrackedEntityDataValue> dataValues = valueMap.get(variable.dataElement());
+
+            for (TrackedEntityDataValue dataValue : dataValues) {
+                // found best candidate
+                if (dataValue.programStage().equals(variable.programStage())) {
+                    return create(dataValue.value(), transformDataValues(dataValues),
+                            variable.dataElementValueType(), true);
+                }
+            }
+        }
+
+        return create(variable.dataElementValueType());
+    }
+
     // ToDo: tests
     @Nonnull
     private static ProgramRuleVariableValue trackedEntityAttribute(
             @Nonnull ProgramRuleVariable variable,
             @Nonnull Map<String, TrackedEntityAttributeValue> valueMap) {
-        assert variable.trackedEntityAttribute() != null
-                : variable.trackedEntityAttributeType() != null;
-
         if (valueMap.containsKey(variable.trackedEntityAttribute())) {
             TrackedEntityAttributeValue attributeValue
                     = valueMap.get(variable.trackedEntityAttribute());

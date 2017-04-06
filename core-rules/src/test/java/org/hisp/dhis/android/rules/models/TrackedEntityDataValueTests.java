@@ -36,7 +36,7 @@ public class TrackedEntityDataValueTests {
     @Test
     public void shouldThrowOnNullDataElement() {
         try {
-            TrackedEntityDataValue.create(event, null, "test_value");
+            TrackedEntityDataValue.create("test_program_stage_uid", null, "test_value");
             fail("NullPointerException is expected, but nothing was thrown");
         } catch (NullPointerException exception) {
             // noop
@@ -46,7 +46,7 @@ public class TrackedEntityDataValueTests {
     @Test
     public void shouldThrowOnNullValue() {
         try {
-            TrackedEntityDataValue.create(event, "test_dataelement", null);
+            TrackedEntityDataValue.create("test_program_stage_uid", "test_dataelement", null);
             fail("NullPointerException is expected, but nothing was thrown");
         } catch (NullPointerException exception) {
             // noop
@@ -56,9 +56,9 @@ public class TrackedEntityDataValueTests {
     @Test
     public void shouldPropagateValuesCorrectly() {
         TrackedEntityDataValue dataValue = TrackedEntityDataValue.create(
-                event, "test_dataelement", "test_value");
+                "test_program_stage_uid", "test_dataelement", "test_value");
 
-        assertThat(dataValue.event()).isEqualTo(event);
+        assertThat(dataValue.programStage()).isEqualTo("test_program_stage_uid");
         assertThat(dataValue.dataElement()).isEqualTo("test_dataelement");
         assertThat(dataValue.value()).isEqualTo("test_value");
     }

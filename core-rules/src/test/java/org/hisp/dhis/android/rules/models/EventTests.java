@@ -99,8 +99,8 @@ public class EventTests {
 
         Collections.sort(events, Event.EVENT_DATE_COMPARATOR);
 
-        assertThat(events.get(0).event()).isEqualTo("test_event_one");
-        assertThat(events.get(1).event()).isEqualTo("test_event_two");
+        assertThat(events.get(0).event()).isEqualTo("test_event_two");
+        assertThat(events.get(1).event()).isEqualTo("test_event_one");
     }
 
 //    ToDo

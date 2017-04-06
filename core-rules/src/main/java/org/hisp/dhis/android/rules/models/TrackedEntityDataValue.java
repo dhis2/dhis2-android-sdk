@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 public abstract class TrackedEntityDataValue {
 
     @Nonnull
-    public abstract Event event();
+    public abstract String programStage();
 
     @Nonnull
     public abstract String dataElement();
@@ -16,8 +16,8 @@ public abstract class TrackedEntityDataValue {
     @Nonnull
     public abstract String value();
 
-    public static TrackedEntityDataValue create(@Nonnull Event event,
+    public static TrackedEntityDataValue create(@Nonnull String programStage,
             @Nonnull String dataelement, @Nonnull String value) {
-        return new AutoValue_TrackedEntityDataValue(event, dataelement, value);
+        return new AutoValue_TrackedEntityDataValue(programStage, dataelement, value);
     }
 }

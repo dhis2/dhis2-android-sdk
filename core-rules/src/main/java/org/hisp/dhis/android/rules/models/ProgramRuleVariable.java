@@ -10,7 +10,6 @@ import javax.annotation.Nullable;
 
 import static java.util.Collections.unmodifiableList;
 
-// ToDo: possibility to link Constants to ProgramRuleVariables
 @AutoValue
 public abstract class ProgramRuleVariable {
 

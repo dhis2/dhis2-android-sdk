@@ -78,7 +78,7 @@ public class ValueMapFactoryTests {
     }
 
     @Test
-    public void dataElementCurrentEventSourceTypeShouldBeHandledCorrectly() {
+    public void deCurrentEventSourceTypeShouldBeHandledCorrectly() {
         ProgramRuleVariable ruleVariableOne = ProgramRuleVariable.forDataElement(
                 "test_variable_one", "test_program_stage", "test_dataelement_one", ValueType.TEXT,
                 false, ProgramRuleVariableSourceType.DATAELEMENT_CURRENT_EVENT, new ArrayList<Option>());
@@ -88,8 +88,8 @@ public class ValueMapFactoryTests {
 
         Event currentEvent = Event.create("test_event_uid", EventStatus.ACTIVE,
                 "test_program_stage", new Date(), new Date(), Arrays.asList(
-                        TrackedEntityDataValue.create(event, "test_dataelement_one", "test_value_one"),
-                        TrackedEntityDataValue.create(event, "test_dataelement_two", "test_value_two")
+                        TrackedEntityDataValue.create("test_program_stage", "test_dataelement_one", "test_value_one"),
+                        TrackedEntityDataValue.create("test_program_stage", "test_dataelement_two", "test_value_two")
                 ));
 
         ValueMapFactory valueMapFactory = new ValueMapFactory(
@@ -116,7 +116,7 @@ public class ValueMapFactoryTests {
     }
 
     @Test
-    public void dataElementNewestEventSourceTypeShouldRespectDatesOfExistingEvents() throws ParseException {
+    public void deNewestEventProgramShouldRespectDatesOfExistingEvents() throws ParseException {
         ProgramRuleVariable ruleVariableOne = ProgramRuleVariable.forDataElement(
                 "test_variable_one", "test_program_stage", "test_dataelement_one", ValueType.TEXT,
                 false, ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM, new ArrayList<Option>());
@@ -127,27 +127,27 @@ public class ValueMapFactoryTests {
         Event oldestEvent = Event.create("test_event_uid_oldest", EventStatus.COMPLETED,
                 "test_program_stage", dateFormat.parse("2013-01-01"), dateFormat.parse("2013-01-01"),
                 Arrays.asList(
-                        TrackedEntityDataValue.create(event,
+                        TrackedEntityDataValue.create("test_program_stage",
                                 "test_dataelement_one", "test_value_one_oldest"),
-                        TrackedEntityDataValue.create(event,
+                        TrackedEntityDataValue.create("test_program_stage",
                                 "test_dataelement_two", "test_value_two_oldest")
                 ));
 
         Event newestEvent = Event.create("test_event_uid_newest", EventStatus.ACTIVE,
                 "test_program_stage", dateFormat.parse("2017-01-01"), dateFormat.parse("2017-01-01"),
                 Arrays.asList(
-                        TrackedEntityDataValue.create(event,
+                        TrackedEntityDataValue.create("test_program_stage",
                                 "test_dataelement_one", "test_value_one_newest"),
-                        TrackedEntityDataValue.create(event,
+                        TrackedEntityDataValue.create("test_program_stage",
                                 "test_dataelement_two", "test_value_two_newest")
                 ));
 
         Event currentEvent = Event.create("test_event_uid_current", EventStatus.ACTIVE,
                 "test_program_stage", dateFormat.parse("2015-01-01"), dateFormat.parse("2015-01-01"),
                 Arrays.asList(
-                        TrackedEntityDataValue.create(event,
+                        TrackedEntityDataValue.create("test_program_stage",
                                 "test_dataelement_one", "test_value_one_current"),
-                        TrackedEntityDataValue.create(event,
+                        TrackedEntityDataValue.create("test_program_stage",
                                 "test_dataelement_two", "test_value_two_current")
                 ));
 
@@ -186,7 +186,7 @@ public class ValueMapFactoryTests {
     }
 
     @Test
-    public void dataElementNewestEventSourceTypeShouldReturnValuesFromCurrentEvent() throws ParseException {
+    public void deNewestEventProgramShouldReturnValuesFromCurrentEvent() throws ParseException {
         ProgramRuleVariable ruleVariableOne = ProgramRuleVariable.forDataElement(
                 "test_variable_one", "test_program_stage", "test_dataelement_one", ValueType.TEXT,
                 false, ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM, new ArrayList<Option>());
@@ -197,27 +197,27 @@ public class ValueMapFactoryTests {
         Event firstEvent = Event.create("test_event_uid_oldest", EventStatus.COMPLETED,
                 "test_program_stage", dateFormat.parse("2013-01-01"), dateFormat.parse("2013-01-01"),
                 Arrays.asList(
-                        TrackedEntityDataValue.create(event,
+                        TrackedEntityDataValue.create("test_program_stage",
                                 "test_dataelement_one", "test_value_one_first"),
-                        TrackedEntityDataValue.create(event,
+                        TrackedEntityDataValue.create("test_program_stage",
                                 "test_dataelement_two", "test_value_two_first")
                 ));
 
         Event secondEvent = Event.create("test_event_uid_newest", EventStatus.ACTIVE,
                 "test_program_stage", dateFormat.parse("2014-01-01"), dateFormat.parse("2014-01-01"),
                 Arrays.asList(
-                        TrackedEntityDataValue.create(event,
+                        TrackedEntityDataValue.create("test_program_stage",
                                 "test_dataelement_one", "test_value_one_second"),
-                        TrackedEntityDataValue.create(event,
+                        TrackedEntityDataValue.create("test_program_stage",
                                 "test_dataelement_two", "test_value_two_second")
                 ));
 
         Event currentEvent = Event.create("test_event_uid_current", EventStatus.ACTIVE,
                 "test_program_stage", dateFormat.parse("2016-01-01"), dateFormat.parse("2016-01-01"),
                 Arrays.asList(
-                        TrackedEntityDataValue.create(event,
+                        TrackedEntityDataValue.create("test_program_stage",
                                 "test_dataelement_one", "test_value_one_current"),
-                        TrackedEntityDataValue.create(event,
+                        TrackedEntityDataValue.create("test_program_stage",
                                 "test_dataelement_two", "test_value_two_current")
                 ));
 
@@ -253,5 +253,61 @@ public class ValueMapFactoryTests {
         assertThat(variableValueTwo.valueCandidates().get(0)).isEqualTo("test_value_two_current");
         assertThat(variableValueTwo.valueCandidates().get(1)).isEqualTo("test_value_two_second");
         assertThat(variableValueTwo.valueCandidates().get(2)).isEqualTo("test_value_two_first");
+    }
+
+    // ToDo: implement different models for different program rule variable types
+
+    @Test
+    public void deNewestEventStageShouldRespectDatesOfExistingEvents() throws ParseException {
+        ProgramRuleVariable ruleVariable = ProgramRuleVariable.forDataElement(
+                "test_variable", "test_program_stage_one", "test_dataelement", ValueType.TEXT,
+                false, ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE,
+                new ArrayList<Option>());
+
+        Event eventOne = Event.create("test_event_uid_one", EventStatus.ACTIVE,
+                "test_program_stage_one", dateFormat.parse("2014-02-03"),
+                dateFormat.parse("2014-02-03"), Arrays.asList(
+                        TrackedEntityDataValue.create("test_program_stage_one",
+                                "test_dataelement", "test_value_one")
+                ));
+        Event eventTwo = Event.create("test_event_uid_two", EventStatus.ACTIVE,
+                "test_program_stage_two", dateFormat.parse("2014-03-03"),
+                dateFormat.parse("2014-03-03"), Arrays.asList(
+                        TrackedEntityDataValue.create("test_program_stage_two",
+                                "test_dataelement", "test_value_two")
+                ));
+        Event eventThree = Event.create("test_event_uid_three", EventStatus.ACTIVE,
+                "test_program_stage_two", dateFormat.parse("2015-02-03"),
+                dateFormat.parse("2015-02-03"), Arrays.asList(
+                        TrackedEntityDataValue.create("test_program_stage_two",
+                                "test_dataelement", "test_value_three")
+                ));
+        Event currentEvent = Event.create("test_event_uid_current", EventStatus.ACTIVE,
+                "test_program_stage_one", dateFormat.parse("2011-02-03"),
+                dateFormat.parse("2011-02-03"), Arrays.asList(
+                        TrackedEntityDataValue.create("test_program_stage_one",
+                                "test_dataelement", "test_value_current")
+                ));
+
+        ValueMapFactory valueMapFactory = new ValueMapFactory(Arrays.asList(ruleVariable),
+                new ArrayList<TrackedEntityAttributeValue>(), Arrays.asList(
+                        eventOne, eventTwo, eventThree
+        ));
+
+        Map<String, ProgramRuleVariableValue> valueMap = valueMapFactory.build(currentEvent);
+
+        // 1 value is coming from ruleVariable, while 2 others from environment variables
+        assertThat(valueMap.size()).isEqualTo(3);
+
+        ProgramRuleVariableValue variableValue = valueMap.get("test_variable");
+        assertThat(variableValue.value()).isEqualTo("test_value_one");
+        assertThat(variableValue.hasValue()).isEqualTo(true);
+        assertThat(variableValue.valueType()).isEqualTo(ValueType.TEXT);
+
+        // check candidates as well
+        // ToDo: candidates currently are not filtered out
+//        assertThat(variableValue.valueCandidates().size()).isEqualTo(2);
+//        assertThat(variableValue.valueCandidates().get(0)).isEqualTo("test_value_one");
+//        assertThat(variableValue.valueCandidates().get(1)).isEqualTo("test_value_current");
     }
 }

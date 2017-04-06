@@ -84,6 +84,30 @@ public class FilterConverterTests {
     }
 
     @Test
+    public void filterConverter_shouldConvertSingleValueFilterCorrectly() throws IOException, InterruptedException {
+        MockWebServer server = new MockWebServer();
+        server.start();
+
+        server.enqueue(new MockResponse());
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(server.url("/"))
+                .addConverterFactory(FilterConverterFactory.create())
+                .build();
+
+        TestService service = retrofit.create(TestService.class);
+        service.test(
+                FilterImpl.create(Field.create("id"), "in", "uid1"),
+                FilterImpl.create(Field.create("lastUpdated"), "gt", "updatedDate")
+        ).execute();
+
+        RecordedRequest request = server.takeRequest();
+
+        assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1]&filter=lastUpdated:gt:[updatedDate]");
+        server.shutdown();
+    }
+
+    @Test
     public void retrofit_shouldRespectFieldAndFilterMixing() throws IOException, InterruptedException {
         MockWebServer server = new MockWebServer();
         server.start();

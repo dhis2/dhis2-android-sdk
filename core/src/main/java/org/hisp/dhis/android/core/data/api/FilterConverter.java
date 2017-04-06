@@ -45,7 +45,9 @@ public class FilterConverter implements Converter<Filter, String> {
 
         if (filter.values().size() == 1) {
             //single value:
+            builder.append('[');
             builder.append(filter.values().get(0));
+            builder.append(']');
         } else {
             //a list of values:
             Iterator<String> valuesIterator = filter.values().iterator();

@@ -21,5 +21,5 @@ public abstract class Enrollment {
     public abstract List<Event> events();
 
     // @NonNull
-    public abstract List<DataValue> trackedEntityAttributeValues();
+    public abstract List<TrackedEntityDataValue> trackedEntityAttributeValues();
 }

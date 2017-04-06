@@ -30,7 +30,7 @@ public abstract class Event {
     public abstract Date dueDate();
 
     @Nonnull
-    public abstract List<DataValue> dataValues();
+    public abstract List<TrackedEntityDataValue> dataValues();
 
     @Nonnull
     public static Event create(
@@ -39,7 +39,7 @@ public abstract class Event {
             @Nonnull String programStage,
             @Nonnull Date eventDate,
             @Nonnull Date dueDate,
-            @Nonnull List<DataValue> dataValues) {
+            @Nonnull List<TrackedEntityDataValue> dataValues) {
         return new AutoValue_Event(event, status, programStage, eventDate, dueDate,
                 Collections.unmodifiableList(new ArrayList<>(dataValues)));
     }

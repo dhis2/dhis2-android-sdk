@@ -1,5 +1,11 @@
 package org.hisp.dhis.android.rules;
 
+import org.hisp.dhis.android.rules.models.Event;
+import org.hisp.dhis.android.rules.models.ProgramRuleVariable;
+import org.hisp.dhis.android.rules.models.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.rules.models.TrackedEntityDataValue;
+import org.hisp.dhis.android.rules.models.ValueType;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -101,11 +107,11 @@ final class ValueMapFactory {
 
         if (valueMap.containsKey(variable.dataElement())) {
             TrackedEntityDataValue dataValue = valueMap.get(variable.dataElement());
-            return ProgramRuleVariableValue.create(dataValue.value(),
+            return create(dataValue.value(),
                     variable.dataElementValueType(), true);
         }
 
-        return ProgramRuleVariableValue.create(variable.dataElementValueType());
+        return create(variable.dataElementValueType());
     }
 
     // ToDo: tests
@@ -122,12 +128,12 @@ final class ValueMapFactory {
                 // this data value corresponds to the data value within
                 // latest / newest event for given data element
                 TrackedEntityDataValue latestDataValue = dataValues.get(dataValues.size() - 1);
-                return ProgramRuleVariableValue.create(latestDataValue.value(),
+                return create(latestDataValue.value(),
                         variable.dataElementValueType(), true);
             }
         }
 
-        return ProgramRuleVariableValue.create(variable.dataElementValueType());
+        return create(variable.dataElementValueType());
     }
 
     // ToDo: tests
@@ -141,11 +147,11 @@ final class ValueMapFactory {
         if (valueMap.containsKey(variable.trackedEntityAttribute())) {
             TrackedEntityAttributeValue attributeValue
                     = valueMap.get(variable.trackedEntityAttribute());
-            return ProgramRuleVariableValue.create(attributeValue.value(),
+            return create(attributeValue.value(),
                     variable.trackedEntityAttributeType(), true);
         }
 
-        return ProgramRuleVariableValue.create(variable.trackedEntityAttributeType());
+        return create(variable.trackedEntityAttributeType());
     }
 
     /**

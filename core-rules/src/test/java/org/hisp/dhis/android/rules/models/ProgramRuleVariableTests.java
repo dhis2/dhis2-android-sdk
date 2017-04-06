@@ -1,5 +1,9 @@
-package org.hisp.dhis.android.rules;
+package org.hisp.dhis.android.rules.models;
 
+import org.hisp.dhis.android.rules.models.Option;
+import org.hisp.dhis.android.rules.models.ProgramRuleVariable;
+import org.hisp.dhis.android.rules.models.ProgramRuleVariableSourceType;
+import org.hisp.dhis.android.rules.models.ValueType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

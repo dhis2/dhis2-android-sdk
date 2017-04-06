@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.rules;
+package org.hisp.dhis.android.rules.models;
 
 import java.util.Arrays;
 import java.util.Date;

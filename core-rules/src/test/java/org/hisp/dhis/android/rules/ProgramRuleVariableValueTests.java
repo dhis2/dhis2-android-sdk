@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.rules;
 
+import org.hisp.dhis.android.rules.models.TrackedEntityDataValue;
+import org.hisp.dhis.android.rules.models.ValueType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

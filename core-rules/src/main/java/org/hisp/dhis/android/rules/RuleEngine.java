@@ -1,5 +1,9 @@
 package org.hisp.dhis.android.rules;
 
+import org.hisp.dhis.android.rules.models.Event;
+import org.hisp.dhis.android.rules.models.ProgramRule;
+import org.hisp.dhis.android.rules.models.ProgramRuleVariable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;

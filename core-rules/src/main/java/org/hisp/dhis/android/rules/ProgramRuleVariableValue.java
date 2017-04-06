@@ -2,6 +2,8 @@ package org.hisp.dhis.android.rules;
 
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.rules.models.ValueType;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

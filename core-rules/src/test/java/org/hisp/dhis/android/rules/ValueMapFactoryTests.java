@@ -1,5 +1,13 @@
 package org.hisp.dhis.android.rules;
 
+import org.hisp.dhis.android.rules.models.Event;
+import org.hisp.dhis.android.rules.models.EventStatus;
+import org.hisp.dhis.android.rules.models.Option;
+import org.hisp.dhis.android.rules.models.ProgramRuleVariable;
+import org.hisp.dhis.android.rules.models.ProgramRuleVariableSourceType;
+import org.hisp.dhis.android.rules.models.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.rules.models.TrackedEntityDataValue;
+import org.hisp.dhis.android.rules.models.ValueType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +49,7 @@ public class ValueMapFactoryTests {
     public void buildShouldReturnImmutableMap() {
         ValueMapFactory valueMapFactory = new ValueMapFactory(
                 new ArrayList<ProgramRuleVariable>(),
-                new ArrayList<TrackedEntityDataValue>(),
+                new ArrayList<TrackedEntityAttributeValue>(),
                 new ArrayList<Event>()
         );
 
@@ -57,7 +65,7 @@ public class ValueMapFactoryTests {
     public void buildShouldReturnMapWithEnvVariables() throws ParseException {
         ValueMapFactory valueMapFactory = new ValueMapFactory(
                 new ArrayList<ProgramRuleVariable>(),
-                new ArrayList<TrackedEntityDataValue>(),
+                new ArrayList<TrackedEntityAttributeValue>(),
                 new ArrayList<Event>()
         );
 
@@ -85,7 +93,8 @@ public class ValueMapFactoryTests {
                 ));
 
         ValueMapFactory valueMapFactory = new ValueMapFactory(
-                Arrays.asList(ruleVariableOne, ruleVariableTwo), new ArrayList<TrackedEntityDataValue>(), new ArrayList<Event>()
+                Arrays.asList(ruleVariableOne, ruleVariableTwo),
+                new ArrayList<TrackedEntityAttributeValue>(), new ArrayList<Event>()
         );
 
         // here we will expect correct values to be returned
@@ -123,8 +132,8 @@ public class ValueMapFactoryTests {
 
         ValueMapFactory valueMapFactory = new ValueMapFactory(
                 Arrays.asList(ruleVariableOne, ruleVariableTwo),
-                new ArrayList<TrackedEntityDataValue>(),
-                Arrays.<Event>asList());
+                new ArrayList<TrackedEntityAttributeValue>(),
+                new ArrayList<Event>());
 
         //
         Map<String, ProgramRuleVariableValue> valueMap = valueMapFactory.build(currentEvent);

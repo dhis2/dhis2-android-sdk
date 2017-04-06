@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.rules;
+package org.hisp.dhis.android.rules.models;
 
 import com.google.auto.value.AutoValue;
 

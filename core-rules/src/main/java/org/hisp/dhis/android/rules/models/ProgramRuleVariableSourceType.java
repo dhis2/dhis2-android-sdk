@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.rules;
+package org.hisp.dhis.android.rules.models;
 
 public enum ProgramRuleVariableSourceType {
     DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE,

@@ -16,7 +16,7 @@ import static java.util.Collections.unmodifiableList;
 abstract class ProgramRuleVariableValue {
 
     /**
-     * @return current value of the ProgramRuleVariable instance
+     * @return current value of the RuleVariable instance
      */
     @Nonnull
     abstract String value();

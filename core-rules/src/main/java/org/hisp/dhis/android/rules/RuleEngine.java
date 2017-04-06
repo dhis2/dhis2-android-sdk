@@ -2,7 +2,7 @@ package org.hisp.dhis.android.rules;
 
 import org.hisp.dhis.android.rules.models.Event;
 import org.hisp.dhis.android.rules.models.ProgramRule;
-import org.hisp.dhis.android.rules.models.ProgramRuleVariable;
+import org.hisp.dhis.android.rules.models.RuleVariable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,16 +18,16 @@ import static java.util.Collections.unmodifiableList;
 public final class RuleEngine {
     private final ExpressionEvaluator evaluator;
     private final List<ProgramRule> programRules;
-    private final List<ProgramRuleVariable> programRuleVariables;
+    private final List<RuleVariable> ruleVariables;
     private final List<Event> events;
 
     RuleEngine(ExpressionEvaluator evaluator,
             List<ProgramRule> programRules,
-            List<ProgramRuleVariable> programRuleVariables,
+            List<RuleVariable> ruleVariables,
             List<Event> events) {
         this.evaluator = evaluator;
         this.programRules = programRules;
-        this.programRuleVariables = programRuleVariables;
+        this.ruleVariables = ruleVariables;
         this.events = events;
     }
 
@@ -45,8 +45,8 @@ public final class RuleEngine {
     }
 
     @Nonnull
-    public List<ProgramRuleVariable> programRuleVariables() {
-        return programRuleVariables;
+    public List<RuleVariable> programRuleVariables() {
+        return ruleVariables;
     }
 
     @Nonnull
@@ -66,7 +66,7 @@ public final class RuleEngine {
     public static class Builder {
         private final ExpressionEvaluator evaluator;
         private List<ProgramRule> programRules;
-        private List<ProgramRuleVariable> programRuleVariables;
+        private List<RuleVariable> ruleVariables;
         private List<Event> events;
 
         Builder(@Nonnull ExpressionEvaluator evaluator) {
@@ -83,12 +83,12 @@ public final class RuleEngine {
         }
 
         // ToDo: Is there a use case where program rules do not contain any variables?
-        public Builder programRuleVariables(@Nonnull List<ProgramRuleVariable> programRuleVariables) {
-            if (programRuleVariables == null) {
-                throw new IllegalArgumentException("programRuleVariables == null");
+        public Builder programRuleVariables(@Nonnull List<RuleVariable> ruleVariables) {
+            if (ruleVariables == null) {
+                throw new IllegalArgumentException("ruleVariables == null");
             }
 
-            this.programRuleVariables = unmodifiableList(new ArrayList<>(programRuleVariables));
+            this.ruleVariables = unmodifiableList(new ArrayList<>(ruleVariables));
             return this;
         }
 
@@ -106,7 +106,7 @@ public final class RuleEngine {
                 events = Collections.unmodifiableList(new ArrayList<Event>());
             }
 
-            return new RuleEngine(evaluator, programRules, programRuleVariables, events);
+            return new RuleEngine(evaluator, programRules, ruleVariables, events);
         }
     }
 }

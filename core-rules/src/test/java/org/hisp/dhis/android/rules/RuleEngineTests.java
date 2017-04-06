@@ -2,7 +2,7 @@ package org.hisp.dhis.android.rules;
 
 import org.hisp.dhis.android.rules.models.Event;
 import org.hisp.dhis.android.rules.models.ProgramRule;
-import org.hisp.dhis.android.rules.models.ProgramRuleVariable;
+import org.hisp.dhis.android.rules.models.RuleVariable;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +26,7 @@ public class RuleEngineTests {
     private ProgramRule programRule;
 
     @Mock
-    private ProgramRuleVariable programRuleVariable;
+    private RuleVariable ruleVariable;
 
     @Mock
     private Event event;
@@ -52,7 +52,7 @@ public class RuleEngineTests {
         try {
             RuleEngine.builder(evaluator)
                     .programRules(null)
-                    .programRuleVariables(new ArrayList<ProgramRuleVariable>());
+                    .programRuleVariables(new ArrayList<RuleVariable>());
 
             fail("IllegalArgumentException was expected, but nothing was thrown");
         } catch (IllegalArgumentException exception) {
@@ -80,7 +80,7 @@ public class RuleEngineTests {
 
         RuleEngine.Builder builder = RuleEngine.builder(evaluator)
                 .programRules(programRules)
-                .programRuleVariables(new ArrayList<ProgramRuleVariable>());
+                .programRuleVariables(new ArrayList<RuleVariable>());
 
         programRules.clear();
         RuleEngine ruleEngine = builder.build();
@@ -91,18 +91,18 @@ public class RuleEngineTests {
 
     @Test
     public void programRuleVariablesShouldBeCopiedWithinBuilder() {
-        List<ProgramRuleVariable> programRuleVariables = new ArrayList<>();
-        programRuleVariables.add(programRuleVariable);
+        List<RuleVariable> ruleVariables = new ArrayList<>();
+        ruleVariables.add(ruleVariable);
 
         RuleEngine.Builder builder = RuleEngine.builder(evaluator)
                 .programRules(new ArrayList<ProgramRule>())
-                .programRuleVariables(programRuleVariables);
+                .programRuleVariables(ruleVariables);
 
-        programRuleVariables.clear();
+        ruleVariables.clear();
         RuleEngine ruleEngine = builder.build();
 
         assertThat(ruleEngine.programRuleVariables().size()).isEqualTo(1);
-        assertThat(ruleEngine.programRuleVariables()).contains(programRuleVariable);
+        assertThat(ruleEngine.programRuleVariables()).contains(ruleVariable);
     }
 
     @Test
@@ -113,7 +113,7 @@ public class RuleEngineTests {
         RuleEngine.Builder builder = RuleEngine.builder(evaluator)
                 .events(events)
                 .programRules(new ArrayList<ProgramRule>())
-                .programRuleVariables(new ArrayList<ProgramRuleVariable>());
+                .programRuleVariables(new ArrayList<RuleVariable>());
 
         events.clear();
         RuleEngine ruleEngine = builder.build();
@@ -129,7 +129,7 @@ public class RuleEngineTests {
 
         RuleEngine ruleEngine = RuleEngine.builder(evaluator)
                 .programRules(programRules)
-                .programRuleVariables(new ArrayList<ProgramRuleVariable>())
+                .programRuleVariables(new ArrayList<RuleVariable>())
                 .build();
 
         try {
@@ -142,16 +142,16 @@ public class RuleEngineTests {
 
     @Test
     public void programRuleVariablesShouldBeImmutable() {
-        List<ProgramRuleVariable> programRuleVariables = new ArrayList<>();
-        programRuleVariables.add(programRuleVariable);
+        List<RuleVariable> ruleVariables = new ArrayList<>();
+        ruleVariables.add(ruleVariable);
 
         RuleEngine ruleEngine = RuleEngine.builder(evaluator)
                 .programRules(new ArrayList<ProgramRule>())
-                .programRuleVariables(programRuleVariables)
+                .programRuleVariables(ruleVariables)
                 .build();
 
         try {
-            ruleEngine.programRuleVariables().add(programRuleVariable);
+            ruleEngine.programRuleVariables().add(ruleVariable);
             fail("UnsupportedOperationException expected, but nothing was thrown");
         } catch (UnsupportedOperationException exception) {
             // noop
@@ -166,7 +166,7 @@ public class RuleEngineTests {
         RuleEngine ruleEngine = RuleEngine.builder(evaluator)
                 .events(events)
                 .programRules(new ArrayList<ProgramRule>())
-                .programRuleVariables(new ArrayList<ProgramRuleVariable>())
+                .programRuleVariables(new ArrayList<RuleVariable>())
                 .build();
 
         try {
@@ -181,7 +181,7 @@ public class RuleEngineTests {
     public void builderShouldSupplyImmutableEmptyEventList() {
         RuleEngine ruleEngine = RuleEngine.builder(evaluator)
                 .programRules(new ArrayList<ProgramRule>())
-                .programRuleVariables(new ArrayList<ProgramRuleVariable>())
+                .programRuleVariables(new ArrayList<RuleVariable>())
                 .build();
 
         assertThat(ruleEngine.events()).isNotNull();
@@ -199,7 +199,7 @@ public class RuleEngineTests {
     public void calculateShouldThrowIfNull() {
         RuleEngine ruleEngine = RuleEngine.builder(evaluator)
                 .programRules(new ArrayList<ProgramRule>())
-                .programRuleVariables(new ArrayList<ProgramRuleVariable>())
+                .programRuleVariables(new ArrayList<RuleVariable>())
                 .build();
 
         try {

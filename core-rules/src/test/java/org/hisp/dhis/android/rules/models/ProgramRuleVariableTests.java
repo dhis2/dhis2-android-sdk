@@ -1,9 +1,5 @@
 package org.hisp.dhis.android.rules.models;
 
-import org.hisp.dhis.android.rules.models.Option;
-import org.hisp.dhis.android.rules.models.ProgramRuleVariable;
-import org.hisp.dhis.android.rules.models.ProgramRuleVariableSourceType;
-import org.hisp.dhis.android.rules.models.ValueType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,21 +27,21 @@ public class ProgramRuleVariableTests {
 
     @Test
     public void forDataElementShouldPropagatePropertiesCorrectly() {
-        ProgramRuleVariable programRuleVariable = ProgramRuleVariable.forDataElement(
+        RuleVariable ruleVariable = RuleVariable.forDataElement(
                 "test_variable_name", "test_program_stage", "test_data_element", ValueType.TEXT,
                 false, ProgramRuleVariableSourceType.DATAELEMENT_CURRENT_EVENT, Arrays.asList(option)
         );
 
-        assertThat(programRuleVariable.name()).isEqualTo("test_variable_name");
-        assertThat(programRuleVariable.programStage()).isEqualTo("test_program_stage");
-        assertThat(programRuleVariable.dataElement()).isEqualTo("test_data_element");
-        assertThat(programRuleVariable.dataElementValueType()).isEqualTo(ValueType.TEXT);
-        assertThat(programRuleVariable.trackedEntityAttribute()).isNull();
-        assertThat(programRuleVariable.trackedEntityAttributeType()).isNull();
-        assertThat(programRuleVariable.useCodeForOptionSet()).isEqualTo(false);
-        assertThat(programRuleVariable.sourceType())
+        assertThat(ruleVariable.name()).isEqualTo("test_variable_name");
+        assertThat(ruleVariable.programStage()).isEqualTo("test_program_stage");
+        assertThat(ruleVariable.dataElement()).isEqualTo("test_data_element");
+        assertThat(ruleVariable.dataElementValueType()).isEqualTo(ValueType.TEXT);
+        assertThat(ruleVariable.trackedEntityAttribute()).isNull();
+        assertThat(ruleVariable.trackedEntityAttributeType()).isNull();
+        assertThat(ruleVariable.useCodeForOptionSet()).isEqualTo(false);
+        assertThat(ruleVariable.sourceType())
                 .isEqualTo(ProgramRuleVariableSourceType.DATAELEMENT_CURRENT_EVENT);
-        assertThat(programRuleVariable.options().get(0)).isEqualTo(option);
+        assertThat(ruleVariable.options().get(0)).isEqualTo(option);
     }
 
     @Test
@@ -53,18 +49,18 @@ public class ProgramRuleVariableTests {
         List<Option> options = new ArrayList<>();
         options.add(option);
 
-        ProgramRuleVariable programRuleVariable = ProgramRuleVariable.forDataElement(
+        RuleVariable ruleVariable = RuleVariable.forDataElement(
                 "test_variable_name", "test_program_stage", "test_data_element", ValueType.TEXT,
                 false, ProgramRuleVariableSourceType.DATAELEMENT_CURRENT_EVENT, options
         );
 
         options.clear();
 
-        assertThat(programRuleVariable.options().size()).isEqualTo(1);
-        assertThat(programRuleVariable.options().get(0)).isEqualTo(option);
+        assertThat(ruleVariable.options().size()).isEqualTo(1);
+        assertThat(ruleVariable.options().get(0)).isEqualTo(option);
 
         try {
-            programRuleVariable.options().clear();
+            ruleVariable.options().clear();
             fail("UnsupportedOperationException expected, but nothing was thrown");
         } catch (UnsupportedOperationException exception) {
             // noop
@@ -73,21 +69,21 @@ public class ProgramRuleVariableTests {
 
     @Test
     public void forAttributeShouldPropagatePropertiesCorrectly() {
-        ProgramRuleVariable programRuleVariable = ProgramRuleVariable.forAttribute(
+        RuleVariable ruleVariable = RuleVariable.forAttribute(
                 "test_variable_name", "test_program_stage", "test_attribute", ValueType.TEXT,
                 false, ProgramRuleVariableSourceType.DATAELEMENT_CURRENT_EVENT, Arrays.asList(option)
         );
 
-        assertThat(programRuleVariable.name()).isEqualTo("test_variable_name");
-        assertThat(programRuleVariable.programStage()).isEqualTo("test_program_stage");
-        assertThat(programRuleVariable.dataElement()).isNull();
-        assertThat(programRuleVariable.dataElementValueType()).isNull();
-        assertThat(programRuleVariable.trackedEntityAttribute()).isEqualTo("test_attribute");
-        assertThat(programRuleVariable.trackedEntityAttributeType()).isEqualTo(ValueType.TEXT);
-        assertThat(programRuleVariable.useCodeForOptionSet()).isEqualTo(false);
-        assertThat(programRuleVariable.sourceType())
+        assertThat(ruleVariable.name()).isEqualTo("test_variable_name");
+        assertThat(ruleVariable.programStage()).isEqualTo("test_program_stage");
+        assertThat(ruleVariable.dataElement()).isNull();
+        assertThat(ruleVariable.dataElementValueType()).isNull();
+        assertThat(ruleVariable.trackedEntityAttribute()).isEqualTo("test_attribute");
+        assertThat(ruleVariable.trackedEntityAttributeType()).isEqualTo(ValueType.TEXT);
+        assertThat(ruleVariable.useCodeForOptionSet()).isEqualTo(false);
+        assertThat(ruleVariable.sourceType())
                 .isEqualTo(ProgramRuleVariableSourceType.DATAELEMENT_CURRENT_EVENT);
-        assertThat(programRuleVariable.options().get(0)).isEqualTo(option);
+        assertThat(ruleVariable.options().get(0)).isEqualTo(option);
     }
 
     @Test
@@ -95,18 +91,18 @@ public class ProgramRuleVariableTests {
         List<Option> options = new ArrayList<>();
         options.add(option);
 
-        ProgramRuleVariable programRuleVariable = ProgramRuleVariable.forAttribute(
+        RuleVariable ruleVariable = RuleVariable.forAttribute(
                 "test_variable_name", "test_program_stage", "test_attribute", ValueType.TEXT,
                 false, ProgramRuleVariableSourceType.DATAELEMENT_CURRENT_EVENT, options
         );
 
         options.clear();
 
-        assertThat(programRuleVariable.options().size()).isEqualTo(1);
-        assertThat(programRuleVariable.options().get(0)).isEqualTo(option);
+        assertThat(ruleVariable.options().size()).isEqualTo(1);
+        assertThat(ruleVariable.options().get(0)).isEqualTo(option);
 
         try {
-            programRuleVariable.options().clear();
+            ruleVariable.options().clear();
             fail("UnsupportedOperationException expected, but nothing was thrown");
         } catch (UnsupportedOperationException exception) {
             // noop

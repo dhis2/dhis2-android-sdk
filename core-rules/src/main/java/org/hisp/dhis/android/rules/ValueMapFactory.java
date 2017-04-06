@@ -1,7 +1,7 @@
 package org.hisp.dhis.android.rules;
 
 import org.hisp.dhis.android.rules.models.Event;
-import org.hisp.dhis.android.rules.models.ProgramRuleVariable;
+import org.hisp.dhis.android.rules.models.RuleVariable;
 import org.hisp.dhis.android.rules.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.rules.models.TrackedEntityDataValue;
 import org.hisp.dhis.android.rules.models.ValueType;
@@ -30,15 +30,15 @@ final class ValueMapFactory {
     private final SimpleDateFormat dateFormat;
 
     // context for execution
-    private final List<ProgramRuleVariable> programRuleVariables;
+    private final List<RuleVariable> ruleVariables;
     private final List<TrackedEntityAttributeValue> teAttributeValues;
     private final List<Event> events;
 
-    ValueMapFactory(List<ProgramRuleVariable> variables,
+    ValueMapFactory(List<RuleVariable> variables,
             List<TrackedEntityAttributeValue> teAttributeValues,
             List<Event> events) {
         this.dateFormat = new SimpleDateFormat(DATE_PATTERN, Locale.US);
-        this.programRuleVariables = variables;
+        this.ruleVariables = variables;
         this.teAttributeValues = teAttributeValues;
         this.events = events;
     }
@@ -61,7 +61,7 @@ final class ValueMapFactory {
                 = mapDeToAllValues(currentEvent, events);
 
         // iterate over variables and collect values
-        for (ProgramRuleVariable variable : programRuleVariables) {
+        for (RuleVariable variable : ruleVariables) {
             switch (variable.sourceType()) {
                 case DATAELEMENT_CURRENT_EVENT: {
                     valueMap.put(variable.name(),
@@ -102,7 +102,7 @@ final class ValueMapFactory {
 
     @Nonnull
     private static ProgramRuleVariableValue dataElementCurrentEvent(
-            @Nonnull ProgramRuleVariable variable,
+            @Nonnull RuleVariable variable,
             @Nonnull Map<String, TrackedEntityDataValue> valueMap) {
         if (valueMap.containsKey(variable.dataElement())) {
             TrackedEntityDataValue dataValue = valueMap.get(variable.dataElement());
@@ -117,7 +117,7 @@ final class ValueMapFactory {
     // communicated through documentation.
     @Nonnull
     private static ProgramRuleVariableValue dataElementNewestEventProgram(
-            @Nonnull ProgramRuleVariable variable,
+            @Nonnull RuleVariable variable,
             @Nonnull Map<String, List<TrackedEntityDataValue>> valueMap) {
         if (valueMap.containsKey(variable.dataElement())) {
             List<TrackedEntityDataValue> dataValues = valueMap.get(variable.dataElement());
@@ -136,7 +136,7 @@ final class ValueMapFactory {
 
     @Nonnull
     private static ProgramRuleVariableValue dataElementNewestEventProgramStage(
-            @Nonnull ProgramRuleVariable variable,
+            @Nonnull RuleVariable variable,
             @Nonnull Map<String, List<TrackedEntityDataValue>> valueMap) {
         if (valueMap.containsKey(variable.dataElement())) {
             List<TrackedEntityDataValue> dataValues = valueMap.get(variable.dataElement());
@@ -156,7 +156,7 @@ final class ValueMapFactory {
     // ToDo: tests
     @Nonnull
     private static ProgramRuleVariableValue trackedEntityAttribute(
-            @Nonnull ProgramRuleVariable variable,
+            @Nonnull RuleVariable variable,
             @Nonnull Map<String, TrackedEntityAttributeValue> valueMap) {
         if (valueMap.containsKey(variable.trackedEntityAttribute())) {
             TrackedEntityAttributeValue attributeValue

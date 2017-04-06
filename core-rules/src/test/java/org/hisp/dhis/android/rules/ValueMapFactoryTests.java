@@ -3,7 +3,7 @@ package org.hisp.dhis.android.rules;
 import org.hisp.dhis.android.rules.models.Event;
 import org.hisp.dhis.android.rules.models.EventStatus;
 import org.hisp.dhis.android.rules.models.Option;
-import org.hisp.dhis.android.rules.models.ProgramRuleVariable;
+import org.hisp.dhis.android.rules.models.RuleVariable;
 import org.hisp.dhis.android.rules.models.ProgramRuleVariableSourceType;
 import org.hisp.dhis.android.rules.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.rules.models.TrackedEntityDataValue;
@@ -48,7 +48,7 @@ public class ValueMapFactoryTests {
     @Test
     public void buildShouldReturnImmutableMap() {
         ValueMapFactory valueMapFactory = new ValueMapFactory(
-                new ArrayList<ProgramRuleVariable>(),
+                new ArrayList<RuleVariable>(),
                 new ArrayList<TrackedEntityAttributeValue>(),
                 new ArrayList<Event>()
         );
@@ -64,7 +64,7 @@ public class ValueMapFactoryTests {
     @Test
     public void buildShouldReturnMapWithEnvVariables() throws ParseException {
         ValueMapFactory valueMapFactory = new ValueMapFactory(
-                new ArrayList<ProgramRuleVariable>(),
+                new ArrayList<RuleVariable>(),
                 new ArrayList<TrackedEntityAttributeValue>(),
                 new ArrayList<Event>()
         );
@@ -79,10 +79,10 @@ public class ValueMapFactoryTests {
 
     @Test
     public void deCurrentEventSourceTypeShouldBeHandledCorrectly() {
-        ProgramRuleVariable ruleVariableOne = ProgramRuleVariable.forDataElement(
+        RuleVariable ruleVariableOne = RuleVariable.forDataElement(
                 "test_variable_one", "test_program_stage", "test_dataelement_one", ValueType.TEXT,
                 false, ProgramRuleVariableSourceType.DATAELEMENT_CURRENT_EVENT, new ArrayList<Option>());
-        ProgramRuleVariable ruleVariableTwo = ProgramRuleVariable.forDataElement(
+        RuleVariable ruleVariableTwo = RuleVariable.forDataElement(
                 "test_variable_two", "test_program_stage", "test_dataelement_two", ValueType.TEXT,
                 false, ProgramRuleVariableSourceType.DATAELEMENT_CURRENT_EVENT, new ArrayList<Option>());
 
@@ -117,10 +117,10 @@ public class ValueMapFactoryTests {
 
     @Test
     public void deNewestEventProgramShouldRespectDatesOfExistingEvents() throws ParseException {
-        ProgramRuleVariable ruleVariableOne = ProgramRuleVariable.forDataElement(
+        RuleVariable ruleVariableOne = RuleVariable.forDataElement(
                 "test_variable_one", "test_program_stage", "test_dataelement_one", ValueType.TEXT,
                 false, ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM, new ArrayList<Option>());
-        ProgramRuleVariable ruleVariableTwo = ProgramRuleVariable.forDataElement(
+        RuleVariable ruleVariableTwo = RuleVariable.forDataElement(
                 "test_variable_two", "test_program_stage", "test_dataelement_two", ValueType.TEXT,
                 false, ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM, new ArrayList<Option>());
 
@@ -187,10 +187,10 @@ public class ValueMapFactoryTests {
 
     @Test
     public void deNewestEventProgramShouldReturnValuesFromCurrentEvent() throws ParseException {
-        ProgramRuleVariable ruleVariableOne = ProgramRuleVariable.forDataElement(
+        RuleVariable ruleVariableOne = RuleVariable.forDataElement(
                 "test_variable_one", "test_program_stage", "test_dataelement_one", ValueType.TEXT,
                 false, ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM, new ArrayList<Option>());
-        ProgramRuleVariable ruleVariableTwo = ProgramRuleVariable.forDataElement(
+        RuleVariable ruleVariableTwo = RuleVariable.forDataElement(
                 "test_variable_two", "test_program_stage", "test_dataelement_two", ValueType.TEXT,
                 false, ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM, new ArrayList<Option>());
 
@@ -259,7 +259,7 @@ public class ValueMapFactoryTests {
 
     @Test
     public void deNewestEventStageShouldRespectDatesOfExistingEvents() throws ParseException {
-        ProgramRuleVariable ruleVariable = ProgramRuleVariable.forDataElement(
+        RuleVariable ruleVariable = RuleVariable.forDataElement(
                 "test_variable", "test_program_stage_one", "test_dataelement", ValueType.TEXT,
                 false, ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE,
                 new ArrayList<Option>());

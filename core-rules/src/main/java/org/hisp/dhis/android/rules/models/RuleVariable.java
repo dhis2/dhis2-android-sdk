@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 import static java.util.Collections.unmodifiableList;
 
 @AutoValue
-public abstract class ProgramRuleVariable {
+public abstract class RuleVariable {
 
     @Nonnull
     public abstract String name();
@@ -40,7 +40,7 @@ public abstract class ProgramRuleVariable {
     @Nonnull
     public abstract List<Option> options();
 
-    public static ProgramRuleVariable forDataElement(
+    public static RuleVariable forDataElement(
             @Nonnull String name,
             @Nullable String programStage,
             @Nullable String dataElement,
@@ -48,11 +48,11 @@ public abstract class ProgramRuleVariable {
             @Nonnull Boolean useCodeForOptionSet,
             @Nonnull ProgramRuleVariableSourceType sourceType,
             @Nonnull List<Option> options) {
-        return new AutoValue_ProgramRuleVariable(name, programStage, dataElement, valueType, null, null,
+        return new AutoValue_RuleVariable(name, programStage, dataElement, valueType, null, null,
                 useCodeForOptionSet, sourceType, unmodifiableList(new ArrayList<>(options)));
     }
 
-    public static ProgramRuleVariable forAttribute(
+    public static RuleVariable forAttribute(
             @Nonnull String name,
             @Nullable String programStage,
             @Nullable String trackedEntityAttribute,
@@ -60,7 +60,7 @@ public abstract class ProgramRuleVariable {
             @Nonnull Boolean useCodeForOptionSet,
             @Nonnull ProgramRuleVariableSourceType sourceType,
             @Nonnull List<Option> options) {
-        return new AutoValue_ProgramRuleVariable(name, programStage, null, null, trackedEntityAttribute,
+        return new AutoValue_RuleVariable(name, programStage, null, null, trackedEntityAttribute,
                 valueType, useCodeForOptionSet, sourceType, unmodifiableList(new ArrayList<>(options)));
     }
 }

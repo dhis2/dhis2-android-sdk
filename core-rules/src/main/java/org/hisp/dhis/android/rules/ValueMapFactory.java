@@ -58,45 +58,40 @@ final class ValueMapFactory {
         Map<String, TrackedEntityAttributeValue> teiValues
                 = mapTeaToSingleValue(teAttributeValues);
         Map<String, List<TrackedEntityDataValue>> eventsValues
-                = mapDeToAllValues(events);
+                = mapDeToAllValues(currentEvent, events);
 
         // iterate over variables and collect values
-        for (ProgramRuleVariable programRuleVariable : programRuleVariables) {
-            ProgramRuleVariableValue programRuleVariableValue
-                    = match(programRuleVariable, teiValues, currentEventValues, eventsValues);
-            valueMap.put(programRuleVariable.name(), programRuleVariableValue);
+        for (ProgramRuleVariable variable : programRuleVariables) {
+            switch (variable.sourceType()) {
+                case DATAELEMENT_CURRENT_EVENT: {
+                    valueMap.put(variable.name(), dataElementCurrentEvent(variable, currentEventValues));
+                    break;
+                }
+                case DATAELEMENT_NEWEST_EVENT_PROGRAM: {
+                    valueMap.put(variable.name(), dataElementNewestEvent(variable, eventsValues));
+                    break;
+                }
+                case DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE:
+                    break;
+                case DATAELEMENT_PREVIOUS_EVENT:
+                    break;
+                case TEI_ATTRIBUTE: {
+                    valueMap.put(variable.name(), trackedEntityAttribute(variable, teiValues));
+                    break;
+                }
+                case CALCULATED_VALUE: {
+                    // Do nothing - ASSIGN actions will populate these values
+                    break;
+                }
+                default: {
+                    throw new IllegalArgumentException(String.format(Locale.US,
+                            "sourceType %s is not supported", variable.sourceType()));
+                }
+            }
         }
 
         // do not let outer world to alter variable value map
         return Collections.unmodifiableMap(valueMap);
-    }
-
-    @Nonnull
-    private static ProgramRuleVariableValue match(@Nonnull ProgramRuleVariable variable,
-            @Nonnull Map<String, TrackedEntityAttributeValue> attributeValues,
-            @Nonnull Map<String, TrackedEntityDataValue> currentEventValues,
-            @Nonnull Map<String, List<TrackedEntityDataValue>> eventsValues) {
-        switch (variable.sourceType()) {
-            case DATAELEMENT_CURRENT_EVENT:
-                return dataElementCurrentEvent(variable, currentEventValues);
-            case DATAELEMENT_NEWEST_EVENT_PROGRAM:
-                return dataElementNewestEvent(variable, eventsValues);
-            case DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE:
-                return null;
-            case DATAELEMENT_PREVIOUS_EVENT:
-                return null;
-            case TEI_ATTRIBUTE:
-                return trackedEntityAttribute(variable, attributeValues);
-            case CALCULATED_VALUE:
-                // Do nothing - ASSIGN actions will populate these values
-                break;
-            default: {
-                throw new IllegalArgumentException(String.format(Locale.US,
-                        "sourceType %s is not supported", variable.sourceType()));
-            }
-        }
-
-        return null;
     }
 
     @Nonnull
@@ -127,8 +122,10 @@ final class ValueMapFactory {
             if (!dataValues.isEmpty()) {
                 // this data value corresponds to the data value within
                 // latest / newest event for given data element
-                TrackedEntityDataValue latestDataValue = dataValues.get(dataValues.size() - 1);
-                return create(latestDataValue.value(),
+
+                // ToDo: pass in a list of all candidates as well
+                TrackedEntityDataValue latestDataValue = dataValues.get(0);
+                return create(latestDataValue.value(), transformDataValues(dataValues),
                         variable.dataElementValueType(), true);
             }
         }
@@ -147,8 +144,7 @@ final class ValueMapFactory {
         if (valueMap.containsKey(variable.trackedEntityAttribute())) {
             TrackedEntityAttributeValue attributeValue
                     = valueMap.get(variable.trackedEntityAttribute());
-            return create(attributeValue.value(),
-                    variable.trackedEntityAttributeType(), true);
+            return create(attributeValue.value(), variable.trackedEntityAttributeType(), true);
         }
 
         return create(variable.trackedEntityAttributeType());
@@ -192,25 +188,28 @@ final class ValueMapFactory {
      * Returns a map where the key is uid of DataElement
      * and value is the list of data values from given events
      *
-     * @param events List of events
+     * @param currentEvent Current event
+     * @param allEvents List of events
      * @return Map of data elements to list of all data values
      */
     @Nonnull
     private static Map<String, List<TrackedEntityDataValue>> mapDeToAllValues(
-            @Nonnull List<Event> events) {
-        if (events.isEmpty()) {
-            return new HashMap<>();
-        }
+            @Nonnull Event currentEvent, @Nonnull List<Event> allEvents) {
 
-        // using one event to predict size of the map based on amount of data values.
-        // this helps to improve performance, since map doesn't have to resize
-        // during iteration.
-        Event firstEvent = events.get(0);
+        // avoid list resizing
+        List<Event> events = new ArrayList<>(allEvents.size() + 1);
+        events.addAll(allEvents);
 
-        // since keys in the map are data elements, we can approximately set the size of
-        // the map based on data values in event
+        // add current event to list by hand,
+        // in order not to lose values
+        events.add(currentEvent);
+
+        // using current event to predict size of the map based on amount of data values.
+        // this helps to improve performance, since map doesn't have to resize during iteration.
+        // Since keys in the map are data elements, we can approximately
+        // set the size of the map based on data values in event
         Map<String, List<TrackedEntityDataValue>> valueMap
-                = new HashMap<>(firstEvent.dataValues().size());
+                = new HashMap<>(currentEvent.dataValues().size());
 
         // sort events by event date:
         Collections.sort(events, Event.EVENT_DATE_COMPARATOR);
@@ -230,6 +229,15 @@ final class ValueMapFactory {
             }
         }
 
-        return new HashMap<>();
+        return valueMap;
+    }
+
+    @Nonnull
+    private static List<String> transformDataValues(@Nonnull List<TrackedEntityDataValue> dataValues) {
+        List<String> values = new ArrayList<>(dataValues.size());
+        for (TrackedEntityDataValue dataValue : dataValues) {
+            values.add(dataValue.value());
+        }
+        return values;
     }
 }

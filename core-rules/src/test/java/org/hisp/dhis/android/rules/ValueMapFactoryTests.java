@@ -184,4 +184,74 @@ public class ValueMapFactoryTests {
         assertThat(variableValueTwo.valueCandidates().get(1)).isEqualTo("test_value_two_current");
         assertThat(variableValueTwo.valueCandidates().get(2)).isEqualTo("test_value_two_oldest");
     }
+
+    @Test
+    public void dataElementNewestEventSourceTypeShouldReturnValuesFromCurrentEvent() throws ParseException {
+        ProgramRuleVariable ruleVariableOne = ProgramRuleVariable.forDataElement(
+                "test_variable_one", "test_program_stage", "test_dataelement_one", ValueType.TEXT,
+                false, ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM, new ArrayList<Option>());
+        ProgramRuleVariable ruleVariableTwo = ProgramRuleVariable.forDataElement(
+                "test_variable_two", "test_program_stage", "test_dataelement_two", ValueType.TEXT,
+                false, ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM, new ArrayList<Option>());
+
+        Event firstEvent = Event.create("test_event_uid_oldest", EventStatus.COMPLETED,
+                "test_program_stage", dateFormat.parse("2013-01-01"), dateFormat.parse("2013-01-01"),
+                Arrays.asList(
+                        TrackedEntityDataValue.create(event,
+                                "test_dataelement_one", "test_value_one_first"),
+                        TrackedEntityDataValue.create(event,
+                                "test_dataelement_two", "test_value_two_first")
+                ));
+
+        Event secondEvent = Event.create("test_event_uid_newest", EventStatus.ACTIVE,
+                "test_program_stage", dateFormat.parse("2014-01-01"), dateFormat.parse("2014-01-01"),
+                Arrays.asList(
+                        TrackedEntityDataValue.create(event,
+                                "test_dataelement_one", "test_value_one_second"),
+                        TrackedEntityDataValue.create(event,
+                                "test_dataelement_two", "test_value_two_second")
+                ));
+
+        Event currentEvent = Event.create("test_event_uid_current", EventStatus.ACTIVE,
+                "test_program_stage", dateFormat.parse("2016-01-01"), dateFormat.parse("2016-01-01"),
+                Arrays.asList(
+                        TrackedEntityDataValue.create(event,
+                                "test_dataelement_one", "test_value_one_current"),
+                        TrackedEntityDataValue.create(event,
+                                "test_dataelement_two", "test_value_two_current")
+                ));
+
+        ValueMapFactory valueMapFactory = new ValueMapFactory(
+                Arrays.asList(ruleVariableOne, ruleVariableTwo),
+                new ArrayList<TrackedEntityAttributeValue>(),
+                Arrays.asList(firstEvent, secondEvent)
+        );
+
+        Map<String, ProgramRuleVariableValue> valueMap = valueMapFactory.build(currentEvent);
+
+        // 2 values are coming from ruleVariableOne and ruleVariableTwo,
+        // while 2 others from environment variables
+        assertThat(valueMap.size()).isEqualTo(4);
+
+        ProgramRuleVariableValue variableValueOne = valueMap.get("test_variable_one");
+        ProgramRuleVariableValue variableValueTwo = valueMap.get("test_variable_two");
+
+        // variable one
+        assertThat(variableValueOne.value()).isEqualTo("test_value_one_current");
+        assertThat(variableValueOne.hasValue()).isEqualTo(true);
+        assertThat(variableValueOne.valueType()).isEqualTo(ValueType.TEXT);
+        assertThat(variableValueOne.valueCandidates().size()).isEqualTo(3);
+        assertThat(variableValueOne.valueCandidates().get(0)).isEqualTo("test_value_one_current");
+        assertThat(variableValueOne.valueCandidates().get(1)).isEqualTo("test_value_one_second");
+        assertThat(variableValueOne.valueCandidates().get(2)).isEqualTo("test_value_one_first");
+
+        // variable two
+        assertThat(variableValueTwo.value()).isEqualTo("test_value_two_current");
+        assertThat(variableValueTwo.hasValue()).isEqualTo(true);
+        assertThat(variableValueTwo.valueType()).isEqualTo(ValueType.TEXT);
+        assertThat(variableValueTwo.valueCandidates().size()).isEqualTo(3);
+        assertThat(variableValueTwo.valueCandidates().get(0)).isEqualTo("test_value_two_current");
+        assertThat(variableValueTwo.valueCandidates().get(1)).isEqualTo("test_value_two_second");
+        assertThat(variableValueTwo.valueCandidates().get(2)).isEqualTo("test_value_two_first");
+    }
 }

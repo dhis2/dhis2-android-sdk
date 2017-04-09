@@ -1,13 +1,14 @@
-package org.hisp.dhis.android.rules.models.variables;
+package org.hisp.dhis.android.rules;
 
 import javax.annotation.Nonnull;
 
-public enum ValueType {
+public enum RuleValueType {
     TEXT("''"), NUMERIC("0"), BOOLEAN("false");
 
+    @Nonnull
     private final String defaultValue;
 
-    ValueType(String defaultValue) {
+    RuleValueType(@Nonnull String defaultValue) {
         this.defaultValue = defaultValue;
     }
 

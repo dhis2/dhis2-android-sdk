@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.rules.models;
+package org.hisp.dhis.android.rules;
 
 import com.google.auto.value.AutoValue;
 
@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
-public abstract class Enrollment {
+public abstract class RuleEnrollment {
 
     // @NonNull
     public abstract Date dateOfEnrollment();
@@ -18,8 +18,8 @@ public abstract class Enrollment {
     public abstract String status();
 
     // @NonNull
-    public abstract List<Event> events();
+    public abstract List<RuleEvent> events();
 
     // @NonNull
-    public abstract List<TrackedEntityDataValue> trackedEntityAttributeValues();
+    public abstract List<RuleDataValue> trackedEntityAttributeValues();
 }

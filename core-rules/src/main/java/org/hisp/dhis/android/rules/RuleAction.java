@@ -1,9 +1,9 @@
-package org.hisp.dhis.android.rules.models;
+package org.hisp.dhis.android.rules;
 
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class ProgramRuleAction {
+public abstract class RuleAction {
 
     // @NonNull
     // enum ProgramRuleActionType

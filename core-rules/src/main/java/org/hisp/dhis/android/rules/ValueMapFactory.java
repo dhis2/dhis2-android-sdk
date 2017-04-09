@@ -61,111 +61,111 @@ final class ValueMapFactory {
                 = mapDeToAllValues(currentEvent, events);
 
         // iterate over variables and collect values
-        for (RuleVariable variable : ruleVariables) {
-            switch (variable.sourceType()) {
-                case DATAELEMENT_CURRENT_EVENT: {
-                    valueMap.put(variable.name(),
-                            dataElementCurrentEvent(variable, currentEventValues));
-                    break;
-                }
-                case DATAELEMENT_NEWEST_EVENT_PROGRAM: {
-                    valueMap.put(variable.name(),
-                            dataElementNewestEventProgram(variable, eventsValues));
-                    break;
-                }
-                case DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE: {
-                    valueMap.put(variable.name(),
-                            dataElementNewestEventProgramStage(variable, eventsValues));
-                    break;
-                }
-                case DATAELEMENT_PREVIOUS_EVENT: {
-                    break;
-                }
-                case TEI_ATTRIBUTE: {
-                    valueMap.put(variable.name(), trackedEntityAttribute(variable, teiValues));
-                    break;
-                }
-                case CALCULATED_VALUE: {
-                    // Do nothing - ASSIGN actions will populate these values
-                    break;
-                }
-                default: {
-                    throw new IllegalArgumentException(String.format(Locale.US,
-                            "sourceType %s is not supported", variable.sourceType()));
-                }
-            }
-        }
+//        for (RuleVariable variable : ruleVariables) {
+//            switch (variable.sourceType()) {
+//                case DATAELEMENT_CURRENT_EVENT: {
+//                    valueMap.put(variable.name(),
+//                            dataElementCurrentEvent(variable, currentEventValues));
+//                    break;
+//                }
+//                case DATAELEMENT_NEWEST_EVENT_PROGRAM: {
+//                    valueMap.put(variable.name(),
+//                            dataElementNewestEventProgram(variable, eventsValues));
+//                    break;
+//                }
+//                case DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE: {
+//                    valueMap.put(variable.name(),
+//                            dataElementNewestEventProgramStage(variable, eventsValues));
+//                    break;
+//                }
+//                case DATAELEMENT_PREVIOUS_EVENT: {
+//                    break;
+//                }
+//                case TEI_ATTRIBUTE: {
+//                    valueMap.put(variable.name(), trackedEntityAttribute(variable, teiValues));
+//                    break;
+//                }
+//                case CALCULATED_VALUE: {
+//                    // Do nothing - ASSIGN actions will populate these values
+//                    break;
+//                }
+//                default: {
+//                    throw new IllegalArgumentException(String.format(Locale.US,
+//                            "sourceType %s is not supported", variable.sourceType()));
+//                }
+//            }
+//        }
 
         // do not let outer world to alter variable value map
         return Collections.unmodifiableMap(valueMap);
     }
-
-    @Nonnull
-    private static ProgramRuleVariableValue dataElementCurrentEvent(
-            @Nonnull RuleVariable variable,
-            @Nonnull Map<String, TrackedEntityDataValue> valueMap) {
-        if (valueMap.containsKey(variable.dataElement())) {
-            TrackedEntityDataValue dataValue = valueMap.get(variable.dataElement());
-            return create(dataValue.value(), variable.dataElementValueType(), true);
-        }
-
-        return create(variable.dataElementValueType());
-    }
-
-    // Note: we assume that we are operating in the scope of one program. Hence, we don't check
-    // if event actually belongs to the given program. This is something what can be improved or
-    // communicated through documentation.
-    @Nonnull
-    private static ProgramRuleVariableValue dataElementNewestEventProgram(
-            @Nonnull RuleVariable variable,
-            @Nonnull Map<String, List<TrackedEntityDataValue>> valueMap) {
-        if (valueMap.containsKey(variable.dataElement())) {
-            List<TrackedEntityDataValue> dataValues = valueMap.get(variable.dataElement());
-
-            if (!dataValues.isEmpty()) {
-                // this data value corresponds to the data value within
-                // latest / newest event for given data element
-                TrackedEntityDataValue latestDataValue = dataValues.get(0);
-                return create(latestDataValue.value(), transformDataValues(dataValues),
-                        variable.dataElementValueType(), true);
-            }
-        }
-
-        return create(variable.dataElementValueType());
-    }
-
-    @Nonnull
-    private static ProgramRuleVariableValue dataElementNewestEventProgramStage(
-            @Nonnull RuleVariable variable,
-            @Nonnull Map<String, List<TrackedEntityDataValue>> valueMap) {
-        if (valueMap.containsKey(variable.dataElement())) {
-            List<TrackedEntityDataValue> dataValues = valueMap.get(variable.dataElement());
-
-            for (TrackedEntityDataValue dataValue : dataValues) {
-                // found best candidate
-                if (dataValue.programStage().equals(variable.programStage())) {
-                    return create(dataValue.value(), transformDataValues(dataValues),
-                            variable.dataElementValueType(), true);
-                }
-            }
-        }
-
-        return create(variable.dataElementValueType());
-    }
-
-    // ToDo: tests
-    @Nonnull
-    private static ProgramRuleVariableValue trackedEntityAttribute(
-            @Nonnull RuleVariable variable,
-            @Nonnull Map<String, TrackedEntityAttributeValue> valueMap) {
-        if (valueMap.containsKey(variable.trackedEntityAttribute())) {
-            TrackedEntityAttributeValue attributeValue
-                    = valueMap.get(variable.trackedEntityAttribute());
-            return create(attributeValue.value(), variable.trackedEntityAttributeType(), true);
-        }
-
-        return create(variable.trackedEntityAttributeType());
-    }
+//
+//    @Nonnull
+//    private static ProgramRuleVariableValue dataElementCurrentEvent(
+//            @Nonnull RuleVariable variable,
+//            @Nonnull Map<String, DataValue> valueMap) {
+//        if (valueMap.containsKey(variable.dataElement())) {
+//            DataValue dataValue = valueMap.get(variable.dataElement());
+//            return create(dataValue.value(), variable.dataElementValueType(), true);
+//        }
+//
+//        return create(variable.dataElementValueType());
+//    }
+//
+//    // Note: we assume that we are operating in the scope of one program. Hence, we don't check
+//    // if event actually belongs to the given program. This is something what can be improved or
+//    // communicated through documentation.
+//    @Nonnull
+//    private static ProgramRuleVariableValue dataElementNewestEventProgram(
+//            @Nonnull RuleVariable variable,
+//            @Nonnull Map<String, List<DataValue>> valueMap) {
+//        if (valueMap.containsKey(variable.dataElement())) {
+//            List<DataValue> dataValues = valueMap.get(variable.dataElement());
+//
+//            if (!dataValues.isEmpty()) {
+//                // this data value corresponds to the data value within
+//                // latest / newest event for given data element
+//                DataValue latestDataValue = dataValues.get(0);
+//                return create(latestDataValue.value(), transformDataValues(dataValues),
+//                        variable.dataElementValueType(), true);
+//            }
+//        }
+//
+//        return create(variable.dataElementValueType());
+//    }
+//
+//    @Nonnull
+//    private static ProgramRuleVariableValue dataElementNewestEventProgramStage(
+//            @Nonnull RuleVariable variable,
+//            @Nonnull Map<String, List<DataValue>> valueMap) {
+//        if (valueMap.containsKey(variable.dataElement())) {
+//            List<DataValue> dataValues = valueMap.get(variable.dataElement());
+//
+//            for (DataValue dataValue : dataValues) {
+//                // found best candidate
+//                if (dataValue.programStage().equals(variable.programStage())) {
+//                    return create(dataValue.value(), transformDataValues(dataValues),
+//                            variable.dataElementValueType(), true);
+//                }
+//            }
+//        }
+//
+//        return create(variable.dataElementValueType());
+//    }
+//
+//    // ToDo: tests
+//    @Nonnull
+//    private static ProgramRuleVariableValue trackedEntityAttribute(
+//            @Nonnull RuleVariable variable,
+//            @Nonnull Map<String, TrackedEntityAttributeValue> valueMap) {
+//        if (valueMap.containsKey(variable.trackedEntityAttribute())) {
+//            TrackedEntityAttributeValue attributeValue
+//                    = valueMap.get(variable.trackedEntityAttribute());
+//            return create(attributeValue.value(), variable.trackedEntityAttributeType(), true);
+//        }
+//
+//        return create(variable.trackedEntityAttributeType());
+//    }
 
     /**
      * Returns a map where the key is uid of TrackedEntityAttribute
@@ -186,7 +186,7 @@ final class ValueMapFactory {
 
     /**
      * Returns a map where the key is uid of DataElement
-     * and value is the actual TrackedEntityDataValue.
+     * and value is the actual DataValue.
      *
      * @param dataValues List of data values
      * @return Map of data elements to data values

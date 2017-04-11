@@ -19,6 +19,9 @@ abstract class RuleVariableValue {
     abstract RuleValueType valueType();
 
     @Nonnull
+    abstract List<String> candidates();
+
+    @Nonnull
     static RuleVariableValue create(@Nonnull RuleValueType ruleValueType) {
         return new AutoValue_RuleVariableValue(null, ruleValueType);
     }

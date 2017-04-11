@@ -2,47 +2,31 @@ package org.hisp.dhis.android.rules;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
-
-import static java.util.Collections.unmodifiableList;
+import javax.annotation.Nullable;
 
 
 public final class RuleEngine {
-    private final RuleExpressionEvaluator evaluator;
-    private final List<Rule> rules;
-    private final List<RuleVariable> ruleVariables;
+
+    @Nonnull
+    private final RuleEngineContext ruleEngineContext;
+
+    @Nonnull
     private final List<RuleEvent> ruleEvents;
 
-    RuleEngine(RuleExpressionEvaluator evaluator,
-            List<Rule> rules,
-            List<RuleVariable> ruleVariables,
-            List<RuleEvent> ruleEvents) {
-        this.evaluator = evaluator;
-        this.rules = rules;
-        this.ruleVariables = ruleVariables;
+    @Nullable
+    private final RuleEnrollment ruleEnrollment;
+
+    RuleEngine(@Nonnull RuleEngineContext ruleEngineContext,
+            @Nonnull List<RuleEvent> ruleEvents,
+            @Nullable RuleEnrollment ruleEnrollment) {
+        this.ruleEngineContext = ruleEngineContext;
         this.ruleEvents = ruleEvents;
-    }
-
-    public static Builder builder(@Nonnull RuleExpressionEvaluator evaluator) {
-        if (evaluator == null) {
-            throw new IllegalArgumentException("evaluator == null");
-        }
-
-        return new Builder(evaluator);
-    }
-
-    @Nonnull
-    public List<Rule> programRules() {
-        return rules;
-    }
-
-    @Nonnull
-    public List<RuleVariable> programRuleVariables() {
-        return ruleVariables;
+        this.ruleEnrollment = ruleEnrollment;
     }
 
     @Nonnull
@@ -50,59 +34,83 @@ public final class RuleEngine {
         return ruleEvents;
     }
 
+    @Nullable
+    public RuleEnrollment enrollment() {
+        return ruleEnrollment;
+    }
+
     @Nonnull
-    public Callable<List<RuleEffect>> calculate(@Nonnull RuleEvent currentRuleEvent) {
-        if (currentRuleEvent == null) {
-            throw new IllegalArgumentException("currentRuleEvent == null");
+    public RuleEngineContext executionContext() {
+        return ruleEngineContext;
+    }
+
+    @Nonnull
+    public Callable<List<RuleEffect>> calculate(@Nonnull RuleEvent ruleEvent) {
+        if (ruleEvent == null) {
+            throw new IllegalArgumentException("ruleEvent == null");
         }
 
-        return new RuleExecution(new HashMap<String, RuleVariableValue>());
+        for (RuleEvent contextualEvent : ruleEvents) {
+            if (contextualEvent.event().equals(ruleEvent.event())) {
+                throw new IllegalStateException(String.format(Locale.US, "Event '%s' is already " +
+                        "set as a part of execution context.", contextualEvent.event()));
+            }
+        }
+
+        throw new UnsupportedOperationException();
+    }
+
+    @Nonnull
+    public Callable<List<RuleEffect>> calculate(@Nonnull RuleEnrollment ruleEnrollment) {
+        if (ruleEnrollment == null) {
+            throw new IllegalArgumentException("ruleEnrollment == null");
+        }
+
+        if (this.ruleEnrollment != null) {
+            throw new IllegalStateException(String.format(Locale.US, "Enrollment '%s' is already " +
+                    "set as a part of execution context.", this.ruleEnrollment.enrollment()));
+        }
+
+        throw new UnsupportedOperationException();
     }
 
     public static class Builder {
-        private final RuleExpressionEvaluator evaluator;
-        private List<Rule> rules;
-        private List<RuleVariable> ruleVariables;
+
+        @Nonnull
+        private final RuleEngineContext ruleEngineContext;
+
+        @Nullable
         private List<RuleEvent> ruleEvents;
 
-        Builder(@Nonnull RuleExpressionEvaluator evaluator) {
-            this.evaluator = evaluator;
+        @Nullable
+        private RuleEnrollment ruleEnrollment;
+
+        Builder(@Nonnull RuleEngineContext ruleEngineContext) {
+            this.ruleEngineContext = ruleEngineContext;
         }
 
-        public Builder programRules(@Nonnull List<Rule> rules) {
-            if (rules == null) {
-                throw new IllegalArgumentException("rules == null");
-            }
-
-            this.rules = unmodifiableList(new ArrayList<>(rules));
-            return this;
-        }
-
-        // ToDo: Is there a use case where program rules do not contain any ruleVariables?
-        public Builder programRuleVariables(@Nonnull List<RuleVariable> ruleVariables) {
-            if (ruleVariables == null) {
-                throw new IllegalArgumentException("ruleVariables == null");
-            }
-
-            this.ruleVariables = unmodifiableList(new ArrayList<>(ruleVariables));
-            return this;
-        }
-
+        @Nonnull
         public Builder events(@Nonnull List<RuleEvent> ruleEvents) {
             if (ruleEvents != null) {
                 this.ruleEvents = Collections.unmodifiableList(new ArrayList<>(ruleEvents));
             }
+
             return this;
         }
 
+        @Nonnull
+        public Builder enrollment(@Nonnull RuleEnrollment ruleEnrollment) {
+            this.ruleEnrollment = ruleEnrollment;
+            return this;
+        }
 
+        @Nonnull
         public RuleEngine build() {
-            // avoiding null collections
             if (ruleEvents == null) {
                 ruleEvents = Collections.unmodifiableList(new ArrayList<RuleEvent>());
             }
 
-            return new RuleEngine(evaluator, rules, ruleVariables, ruleEvents);
+            return new RuleEngine(ruleEngineContext, ruleEvents, ruleEnrollment);
         }
     }
 }

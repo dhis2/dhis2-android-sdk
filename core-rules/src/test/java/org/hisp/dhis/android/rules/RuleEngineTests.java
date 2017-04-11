@@ -203,7 +203,7 @@ public class RuleEngineTests {
             ruleEngine.calculate(null);
             fail("IllegalArgumentException expected, but nothing was thrown");
         } catch (IllegalArgumentException exception) {
-            assertThat(exception.getMessage()).isEqualTo("currentRuleEvent == null");
+            assertThat(exception.getMessage()).isEqualTo("event == null");
         }
     }
 }

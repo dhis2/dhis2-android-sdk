@@ -25,41 +25,46 @@ final class RuleVariableValueMapFactory {
 
     // context for execution
     private final List<RuleVariable> ruleVariables;
-    private final List<RuleAttributeValue> teRuleAttributeValues;
+    private final List<RuleAttributeValue> ruleAttributeValues;
     private final List<RuleEvent> ruleEvents;
 
     RuleVariableValueMapFactory(List<RuleVariable> ruleVariables,
-            List<RuleAttributeValue> teRuleAttributeValues,
+            List<RuleAttributeValue> ruleAttributeValues,
             List<RuleEvent> ruleEvents) {
-        this.dateFormat = new SimpleDateFormat(DATE_PATTERN, Locale.US);
         this.ruleVariables = ruleVariables;
-        this.teRuleAttributeValues = teRuleAttributeValues;
         this.ruleEvents = ruleEvents;
+        this.ruleAttributeValues = ruleAttributeValues;
+        this.dateFormat = new SimpleDateFormat(DATE_PATTERN, Locale.US);
     }
 
     @Nonnull
-    Map<String, RuleVariableValue> build(@Nonnull RuleEvent currentRuleEvent) {
+    Map<String, RuleVariableValue> build(@Nonnull RuleEvent currentEvent) {
         Map<String, RuleVariableValue> valueMap = new HashMap<>();
 
         // add environment ruleVariables
         valueMap.put(VAR_CURRENT_DATE, create(dateFormat.format(new Date()), RuleValueType.TEXT));
-        valueMap.put(VAR_EVENT_DATE, create(dateFormat.format(currentRuleEvent.eventDate()), RuleValueType.TEXT));
+        valueMap.put(VAR_EVENT_DATE, create(dateFormat.format(currentEvent.eventDate()), RuleValueType.TEXT));
 
-        Map<String, RuleAttributeValue> teiValues = mapTeaToSingleValue(teRuleAttributeValues);
-        Map<String, RuleDataValue> currentEventValues = mapDeToSingleValue(currentRuleEvent.dataValues());
-        Map<String, List<RuleDataValue>> eventsValues = mapDeToAllValues(currentRuleEvent, ruleEvents);
+        Map<String, RuleDataValue> currentEventDataValues = mapDeToSingleValue(currentEvent);
+        Map<String, RuleAttributeValue> trackedEntityAttributeValues = mapTeaToSingleValue();
+        Map<String, List<RuleDataValue>> eventsValues = mapDeToAllValues(currentEvent);
 
         for (RuleVariable ruleVariable : ruleVariables) {
             if (ruleVariable instanceof RuleVariableAttribute) {
-                valueMap.put(ruleVariable.name(), ((RuleVariableAttribute) ruleVariable).value(teiValues));
+                valueMap.put(ruleVariable.name(), ((RuleVariableAttribute)
+                        ruleVariable).value(trackedEntityAttributeValues));
             } else if (ruleVariable instanceof RuleVariableCurrentEvent) {
-                valueMap.put(ruleVariable.name(), ((RuleVariableCurrentEvent) ruleVariable).value(currentEventValues));
+                valueMap.put(ruleVariable.name(), ((RuleVariableCurrentEvent)
+                        ruleVariable).value(currentEventDataValues));
             } else if (ruleVariable instanceof RuleVariableNewestEvent) {
-                valueMap.put(ruleVariable.name(), ((RuleVariableNewestEvent) ruleVariable).value(eventsValues));
+                valueMap.put(ruleVariable.name(), ((RuleVariableNewestEvent)
+                        ruleVariable).value(eventsValues));
             } else if (ruleVariable instanceof RuleVariableNewestStageEvent) {
-                valueMap.put(ruleVariable.name(), ((RuleVariableNewestStageEvent) ruleVariable).value(eventsValues));
+                valueMap.put(ruleVariable.name(), ((RuleVariableNewestStageEvent)
+                        ruleVariable).value(eventsValues));
             } else if (ruleVariable instanceof RuleVariablePreviousEvent) {
-                valueMap.put(ruleVariable.name(), ((RuleVariablePreviousEvent) ruleVariable).value(currentRuleEvent, eventsValues));
+                valueMap.put(ruleVariable.name(), ((RuleVariablePreviousEvent)
+                        ruleVariable).value(currentEvent, eventsValues));
             } else {
                 throw new IllegalArgumentException("Unsupported RuleVariable type: " + ruleVariable.getClass());
             }
@@ -73,14 +78,12 @@ final class RuleVariableValueMapFactory {
      * Returns a map where the key is uid of TrackedEntityAttribute
      * and value is the actual RuleAttributeValue.
      *
-     * @param values List of attribute values
      * @return Map of tracked entity attributes to data values
      */
     @Nonnull
-    private static Map<String, RuleAttributeValue> mapTeaToSingleValue(
-            @Nonnull List<RuleAttributeValue> values) {
-        Map<String, RuleAttributeValue> valueMap = new HashMap<>(values.size());
-        for (RuleAttributeValue ruleAttributeValue : values) {
+    private Map<String, RuleAttributeValue> mapTeaToSingleValue() {
+        Map<String, RuleAttributeValue> valueMap = new HashMap<>(ruleAttributeValues.size());
+        for (RuleAttributeValue ruleAttributeValue : ruleAttributeValues) {
             valueMap.put(ruleAttributeValue.trackedEntityAttribute(), ruleAttributeValue);
         }
         return valueMap;
@@ -90,14 +93,12 @@ final class RuleVariableValueMapFactory {
      * Returns a map where the key is uid of DataElement
      * and value is the actual RuleDataValue.
      *
-     * @param ruleDataValues List of data values
      * @return Map of data elements to data values
      */
     @Nonnull
-    private static Map<String, RuleDataValue> mapDeToSingleValue(
-            @Nonnull List<RuleDataValue> ruleDataValues) {
-        Map<String, RuleDataValue> valueMap = new HashMap<>(ruleDataValues.size());
-        for (RuleDataValue ruleDataValue : ruleDataValues) {
+    private Map<String, RuleDataValue> mapDeToSingleValue(@Nonnull RuleEvent event) {
+        Map<String, RuleDataValue> valueMap = new HashMap<>(event.dataValues().size());
+        for (RuleDataValue ruleDataValue : event.dataValues()) {
             valueMap.put(ruleDataValue.dataElement(), ruleDataValue);
         }
         return valueMap;
@@ -107,40 +108,37 @@ final class RuleVariableValueMapFactory {
      * Returns a map where the key is uid of DataElement
      * and value is the list of data values from given ruleEvents
      *
-     * @param currentRuleEvent Current event
-     * @param allRuleEvents    List of ruleEvents
+     * @param event Current event
      * @return Map of data elements to list of all data values
      */
     @Nonnull
-    private static Map<String, List<RuleDataValue>> mapDeToAllValues(
-            @Nonnull RuleEvent currentRuleEvent, @Nonnull List<RuleEvent> allRuleEvents) {
-
-        // avoid list resizing
-        List<RuleEvent> ruleEvents = new ArrayList<>(allRuleEvents.size() + 1);
-        ruleEvents.addAll(allRuleEvents);
+    private Map<String, List<RuleDataValue>> mapDeToAllValues(@Nonnull RuleEvent event) {
+        // try to avoid resizing list
+        List<RuleEvent> events = new ArrayList<>(ruleEvents.size() + 1);
+        events.addAll(ruleEvents);
 
         // add current event to list by hand,
         // in order not to lose values
-        ruleEvents.add(currentRuleEvent);
+        events.add(event);
 
         // using current event to predict size of the map based on amount of data values.
         // this helps to improve performance, since map doesn't have to resize during iteration.
         // Since keys in the map are data elements, we can approximately
         // set the size of the map based on data values in event
         Map<String, List<RuleDataValue>> valueMap
-                = new HashMap<>(currentRuleEvent.dataValues().size());
+                = new HashMap<>(event.dataValues().size());
 
         // sort ruleEvents by event date:
-        Collections.sort(ruleEvents, RuleEvent.EVENT_DATE_COMPARATOR);
+        Collections.sort(events, RuleEvent.EVENT_DATE_COMPARATOR);
 
         // build the value map
-        for (RuleEvent ruleEvent : ruleEvents) {
+        for (RuleEvent ruleEvent : events) {
             for (RuleDataValue ruleDataValue : ruleEvent.dataValues()) {
                 // push new list if it is not there
                 // for the given data element
                 if (!valueMap.containsKey(ruleDataValue.dataElement())) {
                     valueMap.put(ruleDataValue.dataElement(),
-                            new ArrayList<RuleDataValue>(ruleEvents.size()));
+                            new ArrayList<RuleDataValue>(events.size()));
                 }
 
                 // append data value to the list

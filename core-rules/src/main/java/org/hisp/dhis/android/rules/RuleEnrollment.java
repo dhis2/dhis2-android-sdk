@@ -5,21 +5,23 @@ import com.google.auto.value.AutoValue;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 @AutoValue
 public abstract class RuleEnrollment {
 
-    // @NonNull
+    @Nonnull
+    public abstract String enrollment();
+
+    @Nonnull
     public abstract Date dateOfEnrollment();
 
-    // @Nullable
+    @Nonnull
     public abstract Date dateOfIncident();
 
     // enum // @NonNull
     public abstract String status();
 
-    // @NonNull
-    public abstract List<RuleEvent> events();
-
-    // @NonNull
-    public abstract List<RuleDataValue> trackedEntityAttributeValues();
+    @Nonnull
+    public abstract List<RuleAttributeValue> trackedEntityAttributeValues();
 }

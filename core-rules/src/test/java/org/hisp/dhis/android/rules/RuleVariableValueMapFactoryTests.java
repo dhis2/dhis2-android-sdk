@@ -1,5 +1,8 @@
 package org.hisp.dhis.android.rules;
 
+import org.hisp.dhis.android.rules.models.RuleAttributeValue;
+import org.hisp.dhis.android.rules.models.RuleEvent;
+import org.hisp.dhis.android.rules.models.RuleVariable;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,7 +13,6 @@ import org.mockito.MockitoAnnotations;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;

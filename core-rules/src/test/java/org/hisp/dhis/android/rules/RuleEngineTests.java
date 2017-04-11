@@ -1,5 +1,8 @@
 package org.hisp.dhis.android.rules;
 
+import org.hisp.dhis.android.rules.models.Rule;
+import org.hisp.dhis.android.rules.models.RuleEvent;
+import org.hisp.dhis.android.rules.models.RuleVariable;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

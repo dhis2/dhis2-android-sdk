@@ -1,5 +1,8 @@
 package org.hisp.dhis.android.rules;
 
+import org.hisp.dhis.android.rules.models.Rule;
+import org.hisp.dhis.android.rules.models.RuleVariable;
+
 import java.util.ArrayList;
 import java.util.List;
 

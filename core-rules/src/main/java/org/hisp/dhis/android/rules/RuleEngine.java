@@ -1,5 +1,9 @@
 package org.hisp.dhis.android.rules;
 
+import org.hisp.dhis.android.rules.models.RuleEffect;
+import org.hisp.dhis.android.rules.models.RuleEnrollment;
+import org.hisp.dhis.android.rules.models.RuleEvent;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

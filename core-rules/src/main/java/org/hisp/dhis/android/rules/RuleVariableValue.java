@@ -2,8 +2,9 @@ package org.hisp.dhis.android.rules;
 
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.rules.models.RuleValueType;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -23,11 +24,11 @@ abstract class RuleVariableValue {
 
     @Nonnull
     static RuleVariableValue create(@Nonnull RuleValueType ruleValueType) {
-        return new AutoValue_RuleVariableValue(null, ruleValueType);
+        return new AutoValue_RuleVariableValue(null, ruleValueType, new ArrayList<String>());
     }
 
     @Nonnull
     static RuleVariableValue create(@Nonnull String value, @Nonnull RuleValueType ruleValueType) {
-        return new AutoValue_RuleVariableValue(value, ruleValueType);
+        return new AutoValue_RuleVariableValue(value, ruleValueType, new ArrayList<String>());
     }
 }

@@ -1,5 +1,16 @@
 package org.hisp.dhis.android.rules;
 
+import org.hisp.dhis.android.rules.models.RuleAttributeValue;
+import org.hisp.dhis.android.rules.models.RuleDataValue;
+import org.hisp.dhis.android.rules.models.RuleEvent;
+import org.hisp.dhis.android.rules.models.RuleValueType;
+import org.hisp.dhis.android.rules.models.RuleVariable;
+import org.hisp.dhis.android.rules.models.RuleVariableAttribute;
+import org.hisp.dhis.android.rules.models.RuleVariableCurrentEvent;
+import org.hisp.dhis.android.rules.models.RuleVariableNewestEvent;
+import org.hisp.dhis.android.rules.models.RuleVariableNewestStageEvent;
+import org.hisp.dhis.android.rules.models.RuleVariablePreviousEvent;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,26 +60,27 @@ final class RuleVariableValueMapFactory {
         Map<String, RuleAttributeValue> trackedEntityAttributeValues = mapTeaToSingleValue();
         Map<String, List<RuleDataValue>> eventsValues = mapDeToAllValues(currentEvent);
 
-        for (RuleVariable ruleVariable : ruleVariables) {
-            if (ruleVariable instanceof RuleVariableAttribute) {
-                valueMap.put(ruleVariable.name(), ((RuleVariableAttribute)
-                        ruleVariable).value(trackedEntityAttributeValues));
-            } else if (ruleVariable instanceof RuleVariableCurrentEvent) {
-                valueMap.put(ruleVariable.name(), ((RuleVariableCurrentEvent)
-                        ruleVariable).value(currentEventDataValues));
-            } else if (ruleVariable instanceof RuleVariableNewestEvent) {
-                valueMap.put(ruleVariable.name(), ((RuleVariableNewestEvent)
-                        ruleVariable).value(eventsValues));
-            } else if (ruleVariable instanceof RuleVariableNewestStageEvent) {
-                valueMap.put(ruleVariable.name(), ((RuleVariableNewestStageEvent)
-                        ruleVariable).value(eventsValues));
-            } else if (ruleVariable instanceof RuleVariablePreviousEvent) {
-                valueMap.put(ruleVariable.name(), ((RuleVariablePreviousEvent)
-                        ruleVariable).value(currentEvent, eventsValues));
-            } else {
-                throw new IllegalArgumentException("Unsupported RuleVariable type: " + ruleVariable.getClass());
-            }
-        }
+//        for (RuleVariable ruleVariable : ruleVariables) {
+//            if (ruleVariable instanceof RuleVariableAttribute) {
+//
+//                valueMap.put(ruleVariable.name(), ((RuleVariableAttribute)
+//                        ruleVariable).value(trackedEntityAttributeValues));
+//            } else if (ruleVariable instanceof RuleVariableCurrentEvent) {
+//                valueMap.put(ruleVariable.name(), ((RuleVariableCurrentEvent)
+//                        ruleVariable).value(currentEventDataValues));
+//            } else if (ruleVariable instanceof RuleVariableNewestEvent) {
+//                valueMap.put(ruleVariable.name(), ((RuleVariableNewestEvent)
+//                        ruleVariable).value(eventsValues));
+//            } else if (ruleVariable instanceof RuleVariableNewestStageEvent) {
+//                valueMap.put(ruleVariable.name(), ((RuleVariableNewestStageEvent)
+//                        ruleVariable).value(eventsValues));
+//            } else if (ruleVariable instanceof RuleVariablePreviousEvent) {
+//                valueMap.put(ruleVariable.name(), ((RuleVariablePreviousEvent)
+//                        ruleVariable).value(currentEvent, eventsValues));
+//            } else {
+//                throw new IllegalArgumentException("Unsupported RuleVariable type: " + ruleVariable.getClass());
+//            }
+//        }
 
         // do not let outer world to alter variable value map
         return Collections.unmodifiableMap(valueMap);
@@ -76,7 +88,7 @@ final class RuleVariableValueMapFactory {
 
     /**
      * Returns a map where the key is uid of TrackedEntityAttribute
-     * and value is the actual RuleAttributeValue.
+     * and value is the RuleAttributeValue.
      *
      * @return Map of tracked entity attributes to data values
      */

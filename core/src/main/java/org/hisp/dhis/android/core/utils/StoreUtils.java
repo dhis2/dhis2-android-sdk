@@ -120,7 +120,7 @@ public final class StoreUtils {
         if (arg == null) {
             sqLiteStatement.bindNull(index);
         } else {
-            sqLiteStatement.bindString(index, arg.toString());
+            sqLiteStatement.bindString(index, arg.name());
         }
     }
 

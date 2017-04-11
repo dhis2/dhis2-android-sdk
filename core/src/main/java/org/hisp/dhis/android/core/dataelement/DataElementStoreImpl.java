@@ -179,7 +179,7 @@ public class DataElementStoreImpl implements DataElementStore {
         sqLiteBind(sqLiteStatement, 8, displayShortName);
         sqLiteBind(sqLiteStatement, 9, description);
         sqLiteBind(sqLiteStatement, 10, displayDescription);
-        sqLiteBind(sqLiteStatement, 11, valueType.name());
+        sqLiteBind(sqLiteStatement, 11, valueType);
         sqLiteBind(sqLiteStatement, 12, zeroIsSignificant);
         sqLiteBind(sqLiteStatement, 13, aggregationOperator);
         sqLiteBind(sqLiteStatement, 14, formName);

@@ -200,7 +200,6 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                         programTrackedEntityAttributeStore,
                         trackedEntityAttributeHandler
                 );
-
         ProgramRuleVariableHandler programRuleVariableHandler =
                 new ProgramRuleVariableHandler(programRuleVariableStore);
 
@@ -311,7 +310,6 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                                 DataElement.optionSet.with(
                                         OptionSet.uid, OptionSet.version
                                 )
-
                         )
                 ),
                 ProgramStage.programStageSections.with(
@@ -319,7 +317,8 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                         ProgramStageSection.displayName, ProgramStageSection.created,
                         ProgramStageSection.lastUpdated, ProgramStageSection.sortOrder,
                         ProgramStageSection.deleted, ProgramStageSection.programStageDataElements.with(
-                                ProgramStageDataElement.uid
+                                ProgramStageDataElement.uid, ProgramStageDataElement.dataElement.with(DataElement.uid),
+                                ProgramStageDataElement.programStage.with(ProgramStage.uid)
                         ),
                         ProgramStageSection.programIndicators.with(
                                 ProgramIndicator.uid,

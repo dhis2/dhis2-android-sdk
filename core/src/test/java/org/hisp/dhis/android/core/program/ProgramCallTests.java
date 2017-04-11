@@ -276,7 +276,8 @@ public class ProgramCallTests {
                                 ProgramStageSection.displayName, ProgramStageSection.created,
                                 ProgramStageSection.lastUpdated, ProgramStageSection.sortOrder,
                                 ProgramStageSection.deleted, ProgramStageSection.programStageDataElements.with(
-                                        ProgramStageDataElement.uid
+                                        ProgramStageDataElement.uid, ProgramStageDataElement.dataElement.with(DataElement.uid),
+                                        ProgramStageDataElement.programStage.with(ProgramStage.uid)
                                 ),
                                 ProgramStageSection.programIndicators.with(
                                         ProgramIndicator.uid,

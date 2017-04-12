@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.rules;
+package org.hisp.dhis.android.rules.models;
 
 import org.hisp.dhis.android.rules.models.RuleDataValue;
 import org.hisp.dhis.android.rules.models.RuleEvent;

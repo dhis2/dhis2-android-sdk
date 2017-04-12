@@ -5,11 +5,6 @@ import org.hisp.dhis.android.rules.models.RuleDataValue;
 import org.hisp.dhis.android.rules.models.RuleEvent;
 import org.hisp.dhis.android.rules.models.RuleValueType;
 import org.hisp.dhis.android.rules.models.RuleVariable;
-import org.hisp.dhis.android.rules.models.RuleVariableAttribute;
-import org.hisp.dhis.android.rules.models.RuleVariableCurrentEvent;
-import org.hisp.dhis.android.rules.models.RuleVariableNewestEvent;
-import org.hisp.dhis.android.rules.models.RuleVariableNewestStageEvent;
-import org.hisp.dhis.android.rules.models.RuleVariablePreviousEvent;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,6 +54,8 @@ final class RuleVariableValueMapFactory {
         Map<String, RuleDataValue> currentEventDataValues = mapDeToSingleValue(currentEvent);
         Map<String, RuleAttributeValue> trackedEntityAttributeValues = mapTeaToSingleValue();
         Map<String, List<RuleDataValue>> eventsValues = mapDeToAllValues(currentEvent);
+
+        // ToDo: can assign rule set values in another event or enrollment?
 
 //        for (RuleVariable ruleVariable : ruleVariables) {
 //            if (ruleVariable instanceof RuleVariableAttribute) {

@@ -9,6 +9,9 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import static junit.framework.TestCase.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
@@ -26,11 +29,16 @@ public class RuleVariableValueTests {
     @Test
     public void valuesShouldBePropagatedCorrectly() {
         RuleVariableValue variableValue = RuleVariableValue.create(
-                "test_value", RuleValueType.TEXT
+                "test_value", RuleValueType.TEXT, Arrays.asList(
+                        "test_value_candidate_one", "test_value_candidate_two"
+                )
         );
 
         assertThat(variableValue.value()).isEqualTo("test_value");
         assertThat(variableValue.valueType()).isEqualTo(RuleValueType.TEXT);
+        assertThat(variableValue.candidates().size()).isEqualTo(2);
+        assertThat(variableValue.candidates().get(0)).isEqualTo("test_value_candidate_one");
+        assertThat(variableValue.candidates().get(1)).isEqualTo("test_value_candidate_two");
     }
 
     @Test
@@ -41,5 +49,20 @@ public class RuleVariableValueTests {
         } catch (NullPointerException exception) {
             // noop
         }
+    }
+
+    @Test
+    public void createShouldThrowOnNullCandidateList() {
+        try {
+            RuleVariableValue.create("test_value", RuleValueType.TEXT, null);
+            fail("NullPointerException was expected, but nothing was thrown");
+        } catch (NullPointerException exception) {
+            // noop
+        }
+    }
+
+    @Test
+    public void createShouldReturnValueWithImmutableCandidates() {
+
     }
 }

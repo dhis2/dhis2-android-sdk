@@ -36,6 +36,11 @@ public class RuleEngineTests {
         MockitoAnnotations.initMocks(this);
     }
 
+    @Test
+    public void placeholder() {
+
+    }
+
 //    @Test
 //    public void builderShouldThrowException() {
 //        try {

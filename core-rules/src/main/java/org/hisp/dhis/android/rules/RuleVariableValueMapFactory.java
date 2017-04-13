@@ -5,9 +5,11 @@ import org.hisp.dhis.android.rules.models.RuleDataValue;
 import org.hisp.dhis.android.rules.models.RuleEvent;
 import org.hisp.dhis.android.rules.models.RuleValueType;
 import org.hisp.dhis.android.rules.models.RuleVariable;
+import org.hisp.dhis.android.rules.models.RuleVariableCurrentEvent;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -47,19 +49,26 @@ final class RuleVariableValueMapFactory {
     Map<String, RuleVariableValue> build(@Nonnull RuleEvent currentEvent) {
         Map<String, RuleVariableValue> valueMap = new HashMap<>();
 
-        // add environment ruleVariables
-        valueMap.put(VAR_CURRENT_DATE, create(dateFormat.format(new Date()), RuleValueType.TEXT));
-        valueMap.put(VAR_EVENT_DATE, create(dateFormat.format(currentEvent.eventDate()), RuleValueType.TEXT));
+        // set environment variables which can be used by rules
+        addEnvironmentVariables(valueMap, currentEvent);
 
-        Map<String, RuleDataValue> currentEventDataValues = mapDeToSingleValue(currentEvent);
-        Map<String, RuleAttributeValue> trackedEntityAttributeValues = mapTeaToSingleValue();
-        Map<String, List<RuleDataValue>> eventsValues = mapDeToAllValues(currentEvent);
+        // flatten out all values from events and enrollments into maps
+        Map<String, RuleDataValue> currentDataValues
+                = dataElementsToTrackedEntityDataValue(currentEvent);
+        Map<String, List<RuleDataValue>> allDataValues
+                = dataElementsToTrackedEntityDataValues(currentEvent);
+        Map<String, RuleAttributeValue> attributeValues
+                = attributesToTrackedEntityAttributeValues(ruleAttributeValues);
 
-        // ToDo: can assign rule set values in another event or enrollment?
-
-//        for (RuleVariable ruleVariable : ruleVariables) {
+        // split values into variables
+        for (RuleVariable ruleVariable : ruleVariables) {
+            if (ruleVariable instanceof RuleVariableCurrentEvent) {
+                RuleVariableCurrentEvent currentEventVariable =
+                        (RuleVariableCurrentEvent) ruleVariable;
+                valueMap.put(currentEventVariable.name(), createCurrentEventVariableValue(
+                        currentDataValues, currentEventVariable));
+            }
 //            if (ruleVariable instanceof RuleVariableAttribute) {
-//
 //                valueMap.put(ruleVariable.name(), ((RuleVariableAttribute)
 //                        ruleVariable).value(trackedEntityAttributeValues));
 //            } else if (ruleVariable instanceof RuleVariableCurrentEvent) {
@@ -77,10 +86,32 @@ final class RuleVariableValueMapFactory {
 //            } else {
 //                throw new IllegalArgumentException("Unsupported RuleVariable type: " + ruleVariable.getClass());
 //            }
-//        }
+        }
 
         // do not let outer world to alter variable value map
         return Collections.unmodifiableMap(valueMap);
+    }
+
+    private void addEnvironmentVariables(
+            @Nonnull Map<String, RuleVariableValue> valueMap,
+            @Nonnull RuleEvent currentEvent) {
+        valueMap.put(VAR_CURRENT_DATE, create(dateFormat.format(
+                new Date()), RuleValueType.TEXT, new ArrayList<String>()));
+        valueMap.put(VAR_EVENT_DATE, create(dateFormat.format(
+                currentEvent.eventDate()), RuleValueType.TEXT, new ArrayList<String>()));
+    }
+
+    @Nonnull
+    private RuleVariableValue createCurrentEventVariableValue(
+            @Nonnull Map<String, RuleDataValue> valueMap,
+            @Nonnull RuleVariableCurrentEvent variable) {
+
+        if (valueMap.containsKey(variable.dataElement())) {
+            RuleDataValue value = valueMap.get(variable.dataElement());
+            return create(value.value(), variable.dataElementType(), Arrays.asList(value.value()));
+        }
+
+        return create(variable.dataElementType());
     }
 
     /**
@@ -90,9 +121,14 @@ final class RuleVariableValueMapFactory {
      * @return Map of tracked entity attributes to data values
      */
     @Nonnull
-    private Map<String, RuleAttributeValue> mapTeaToSingleValue() {
-        Map<String, RuleAttributeValue> valueMap = new HashMap<>(ruleAttributeValues.size());
-        for (RuleAttributeValue ruleAttributeValue : ruleAttributeValues) {
+    private static Map<String, RuleAttributeValue> attributesToTrackedEntityAttributeValues(
+            @Nonnull List<RuleAttributeValue> ruleAttributeValues) {
+//        List<RuleAttributeValue> ruleAttributeValues
+//                = ruleEnrollment.trackedEntityAttributeValues();
+        Map<String, RuleAttributeValue> valueMap
+                = new HashMap<>(ruleAttributeValues.size());
+        for (int index = 0; index < ruleAttributeValues.size(); index++) {
+            RuleAttributeValue ruleAttributeValue = ruleAttributeValues.get(index);
             valueMap.put(ruleAttributeValue.trackedEntityAttribute(), ruleAttributeValue);
         }
         return valueMap;
@@ -105,9 +141,11 @@ final class RuleVariableValueMapFactory {
      * @return Map of data elements to data values
      */
     @Nonnull
-    private Map<String, RuleDataValue> mapDeToSingleValue(@Nonnull RuleEvent event) {
+    private static Map<String, RuleDataValue> dataElementsToTrackedEntityDataValue(
+            @Nonnull RuleEvent event) {
         Map<String, RuleDataValue> valueMap = new HashMap<>(event.dataValues().size());
-        for (RuleDataValue ruleDataValue : event.dataValues()) {
+        for (int index = 0; index < event.dataValues().size(); index++) {
+            RuleDataValue ruleDataValue = event.dataValues().get(index);
             valueMap.put(ruleDataValue.dataElement(), ruleDataValue);
         }
         return valueMap;
@@ -121,7 +159,8 @@ final class RuleVariableValueMapFactory {
      * @return Map of data elements to list of all data values
      */
     @Nonnull
-    private Map<String, List<RuleDataValue>> mapDeToAllValues(@Nonnull RuleEvent event) {
+    private Map<String, List<RuleDataValue>> dataElementsToTrackedEntityDataValues(
+            @Nonnull RuleEvent event) {
         // try to avoid resizing list
         List<RuleEvent> events = new ArrayList<>(ruleEvents.size() + 1);
         events.addAll(ruleEvents);
@@ -141,10 +180,13 @@ final class RuleVariableValueMapFactory {
         Collections.sort(events, RuleEvent.EVENT_DATE_COMPARATOR);
 
         // build the value map
-        for (RuleEvent ruleEvent : events) {
-            for (RuleDataValue ruleDataValue : ruleEvent.dataValues()) {
-                // push new list if it is not there
-                // for the given data element
+        for (int i = 0; i < events.size(); i++) {
+            RuleEvent ruleEvent = events.get(i);
+
+            for (int j = 0; j < ruleEvent.dataValues().size(); j++) {
+                RuleDataValue ruleDataValue = ruleEvent.dataValues().get(j);
+
+                // push new list if it is not there for the given data element
                 if (!valueMap.containsKey(ruleDataValue.dataElement())) {
                     valueMap.put(ruleDataValue.dataElement(),
                             new ArrayList<RuleDataValue>(events.size()));

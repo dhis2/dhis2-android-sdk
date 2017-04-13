@@ -1,8 +1,11 @@
 package org.hisp.dhis.android.rules;
 
 import org.hisp.dhis.android.rules.models.RuleAttributeValue;
+import org.hisp.dhis.android.rules.models.RuleDataValue;
 import org.hisp.dhis.android.rules.models.RuleEvent;
+import org.hisp.dhis.android.rules.models.RuleValueType;
 import org.hisp.dhis.android.rules.models.RuleVariable;
+import org.hisp.dhis.android.rules.models.RuleVariableCurrentEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
@@ -68,44 +72,59 @@ public class RuleVariableValueMapFactoryTests {
         assertThat(valueMap.get("event_date").value()).isEqualTo("1994-02-03");
         assertThat(valueMap.get("current_date").value()).isEqualTo(dateFormat.format(new Date()));
     }
-//
-//    @Test
-//    public void deCurrentEventSourceTypeShouldBeHandledCorrectly() {
-//        RuleVariable ruleVariableOne = RuleVariable.forDataElement(
-//                "test_variable_one", "test_program_stage", "test_dataelement_one", RuleValueType.TEXT,
-//                false, ProgramRuleVariableSourceType.DATAELEMENT_CURRENT_EVENT, new ArrayList<Option>());
-//        RuleVariable ruleVariableTwo = RuleVariable.forDataElement(
-//                "test_variable_two", "test_program_stage", "test_dataelement_two", RuleValueType.TEXT,
-//                false, ProgramRuleVariableSourceType.DATAELEMENT_CURRENT_EVENT, new ArrayList<Option>());
-//
-//        RuleEvent currentRuleEvent = RuleEvent.create("test_event_uid", EventStatus.ACTIVE,
-//                "test_program_stage", new Date(), new Date(), Arrays.asList(
-//                        RuleDataValue.create("test_program_stage", "test_dataelement_one", "test_value_one"),
-//                        RuleDataValue.create("test_program_stage", "test_dataelement_two", "test_value_two")
-//                ));
-//
-//        RuleVariableValueMapFactory ruleVariableValueMapFactory = new RuleVariableValueMapFactory(
-//                Arrays.asList(ruleVariableOne, ruleVariableTwo),
-//                new ArrayList<RuleAttributeValue>(), new ArrayList<RuleEvent>()
-//        );
-//
-//        // here we will expect correct values to be returned
-//        Map<String, ProgramRuleVariableValue> valueMap = ruleVariableValueMapFactory.build(currentRuleEvent);
-//
-//        // 2 values are coming from ruleVariableOne and ruleVariableTwo,
-//        // while 2 others from environment variables
-//        assertThat(valueMap.size()).isEqualTo(4);
-//
-//        // first variable
-//        assertThat(valueMap.get("test_variable_one").value()).isEqualTo("test_value_one");
-//        assertThat(valueMap.get("test_variable_one").hasValue()).isEqualTo(true);
-//        assertThat(valueMap.get("test_variable_one").valueType()).isEqualTo(RuleValueType.TEXT);
-//
-//        // second variable
-//        assertThat(valueMap.get("test_variable_two").value()).isEqualTo("test_value_two");
-//        assertThat(valueMap.get("test_variable_two").hasValue()).isEqualTo(true);
-//        assertThat(valueMap.get("test_variable_two").valueType()).isEqualTo(RuleValueType.TEXT);
-//    }
+
+    @Test
+    public void currentEventVariableShouldBeHandledCorrectly() {
+        RuleVariable ruleVariableOne = RuleVariableCurrentEvent.create(
+                "test_variable_one", "test_dataelement_one", RuleValueType.TEXT);
+        RuleVariable ruleVariableTwo = RuleVariableCurrentEvent.create(
+                "test_variable_two", "test_dataelement_two", RuleValueType.TEXT);
+
+        Date eventDate = new Date();
+
+        // values from context events should be ignored
+        RuleEvent contextEventOne = RuleEvent.create("test_context_event_one", RuleEvent.Status.ACTIVE,
+                "test_program_stage", eventDate, new Date(), Arrays.asList(
+                        RuleDataValue.create(eventDate, "test_program_stage", "test_dataelement_one", "test_context_value_one"),
+                        RuleDataValue.create(eventDate, "test_program_stage", "test_dataelement_one", "test_context_value_two")
+                ));
+        RuleEvent contextEventTwo = RuleEvent.create("test_context_event_two", RuleEvent.Status.ACTIVE,
+                "test_program_stage", eventDate, new Date(), Arrays.asList(
+                        RuleDataValue.create(eventDate, "test_program_stage", "test_dataelement_one", "test_context_value_three"),
+                        RuleDataValue.create(eventDate, "test_program_stage", "test_dataelement_one", "test_context_value_four")
+                ));
+        // values from current event should be propagated to the variable values
+        RuleEvent currentEvent = RuleEvent.create("test_event_uid", RuleEvent.Status.ACTIVE,
+                "test_program_stage", eventDate, new Date(), Arrays.asList(
+                        RuleDataValue.create(eventDate, "test_program_stage", "test_dataelement_one", "test_value_one"),
+                        RuleDataValue.create(eventDate, "test_program_stage", "test_dataelement_two", "test_value_two")
+                ));
+
+        RuleVariableValueMapFactory ruleVariableValueMapFactory = new RuleVariableValueMapFactory(
+                Arrays.asList(ruleVariableOne, ruleVariableTwo),
+                new ArrayList<RuleAttributeValue>(), Arrays.asList(contextEventOne, contextEventTwo)
+        );
+
+        // here we will expect correct values to be returned
+        Map<String, RuleVariableValue> valueMap = ruleVariableValueMapFactory.build(currentEvent);
+
+        // 2 variables defined within test + 2 environment variables
+        assertThat(valueMap.size()).isEqualTo(4);
+        assertThat(valueMap.get("event_date").value()).isEqualTo(dateFormat.format(eventDate));
+        assertThat(valueMap.get("current_date")).isNotNull();
+
+        // first variable
+        assertThat(valueMap.get("test_variable_one").value()).isEqualTo("test_value_one");
+        assertThat(valueMap.get("test_variable_one").valueType()).isEqualTo(RuleValueType.TEXT);
+        assertThat(valueMap.get("test_variable_one").candidates().size()).isEqualTo(1);
+        assertThat(valueMap.get("test_variable_one").candidates().get(0)).isEqualTo("test_value_one");
+
+        // second variable
+        assertThat(valueMap.get("test_variable_two").value()).isEqualTo("test_value_two");
+        assertThat(valueMap.get("test_variable_two").valueType()).isEqualTo(RuleValueType.TEXT);
+        assertThat(valueMap.get("test_variable_two").candidates().size()).isEqualTo(1);
+        assertThat(valueMap.get("test_variable_two").candidates().get(0)).isEqualTo("test_value_two");
+    }
 //
 //    @Test
 //    public void deNewestEventProgramShouldRespectDatesOfExistingEvents() throws ParseException {
@@ -246,8 +265,6 @@ public class RuleVariableValueMapFactoryTests {
 //        assertThat(variableValueTwo.valueCandidates().get(1)).isEqualTo("test_value_two_second");
 //        assertThat(variableValueTwo.valueCandidates().get(2)).isEqualTo("test_value_two_first");
 //    }
-//
-//    // ToDo: implement different models for different program rule variable types
 //
 //    @Test
 //    public void deNewestEventStageShouldRespectDatesOfExistingEvents() throws ParseException {

@@ -5,6 +5,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.rules.models.RuleValueType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -24,11 +25,21 @@ abstract class RuleVariableValue {
 
     @Nonnull
     static RuleVariableValue create(@Nonnull RuleValueType ruleValueType) {
-        return new AutoValue_RuleVariableValue(null, ruleValueType, new ArrayList<String>());
+        return new AutoValue_RuleVariableValue(null, ruleValueType,
+                Collections.unmodifiableList(new ArrayList<String>()));
     }
 
     @Nonnull
-    static RuleVariableValue create(@Nonnull String value, @Nonnull RuleValueType ruleValueType) {
-        return new AutoValue_RuleVariableValue(value, ruleValueType, new ArrayList<String>());
+    static RuleVariableValue create(@Nonnull String value,
+            @Nonnull RuleValueType ruleValueType) {
+        return new AutoValue_RuleVariableValue(value, ruleValueType,
+                Collections.unmodifiableList(new ArrayList<String>()));
+    }
+
+    @Nonnull
+    static RuleVariableValue create(@Nonnull String value,
+            @Nonnull RuleValueType ruleValueType, @Nonnull List<String> candidates) {
+        return new AutoValue_RuleVariableValue(value, ruleValueType,
+                Collections.unmodifiableList(candidates));
     }
 }

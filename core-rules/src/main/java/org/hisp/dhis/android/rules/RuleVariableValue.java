@@ -18,7 +18,7 @@ abstract class RuleVariableValue {
     abstract String value();
 
     @Nonnull
-    abstract RuleValueType valueType();
+    abstract RuleValueType type();
 
     @Nonnull
     abstract List<String> candidates();

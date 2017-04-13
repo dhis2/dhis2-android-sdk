@@ -9,7 +9,6 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import static junit.framework.TestCase.fail;
@@ -35,7 +34,7 @@ public class RuleVariableValueTests {
         );
 
         assertThat(variableValue.value()).isEqualTo("test_value");
-        assertThat(variableValue.valueType()).isEqualTo(RuleValueType.TEXT);
+        assertThat(variableValue.type()).isEqualTo(RuleValueType.TEXT);
         assertThat(variableValue.candidates().size()).isEqualTo(2);
         assertThat(variableValue.candidates().get(0)).isEqualTo("test_value_candidate_one");
         assertThat(variableValue.candidates().get(1)).isEqualTo("test_value_candidate_two");

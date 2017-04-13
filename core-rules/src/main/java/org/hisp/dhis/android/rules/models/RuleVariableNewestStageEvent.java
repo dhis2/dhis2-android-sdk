@@ -8,21 +8,12 @@ import javax.annotation.Nonnull;
 public abstract class RuleVariableNewestStageEvent extends RuleVariableDataElement {
 
     @Nonnull
-    abstract String programStage();
+    public abstract String programStage();
 
-//    @Nonnull
-//    RuleVariableValue value(@Nonnull Map<String, List<RuleDataValue>> valueMap) {
-//        List<RuleDataValue> ruleDataValues = valueMap.get(dataElement());
-//        if (ruleDataValues != null && !ruleDataValues.isEmpty()) {
-//            // Iterate over all candidates and find the one which
-//            // matches to program stage in variable.
-//            for (RuleDataValue ruleDataValue : ruleDataValues) {
-//                if (programStage().equals(ruleDataValue.programStage())) {
-//                    return RuleVariableValue.create(ruleDataValue.value(), dataElementType());
-//                }
-//            }
-//        }
-//
-//        return RuleVariableValue.create(dataElementType());
-//    }
+    @Nonnull
+    public static RuleVariableNewestStageEvent create(@Nonnull String name, @Nonnull String dataElement,
+            @Nonnull String programStage, @Nonnull RuleValueType dataElementType) {
+        return new AutoValue_RuleVariableNewestStageEvent(name, dataElement,
+                dataElementType, programStage);
+    }
 }

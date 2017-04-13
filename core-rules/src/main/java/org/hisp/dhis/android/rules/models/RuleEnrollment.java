@@ -14,14 +14,26 @@ public abstract class RuleEnrollment {
     public abstract String enrollment();
 
     @Nonnull
-    public abstract Date dateOfEnrollment();
+    public abstract Date incidentDate();
 
     @Nonnull
-    public abstract Date dateOfIncident();
-
-    // enum // @NonNull
-    public abstract String status();
+    public abstract Date enrollmentDate();
 
     @Nonnull
-    public abstract List<RuleAttributeValue> trackedEntityAttributeValues();
+    public abstract Status status();
+
+    @Nonnull
+    public abstract List<RuleAttributeValue> attributeValues();
+
+    public enum Status {
+        ACTIVE, COMPLETED, CANCELLED
+    }
+
+    @Nonnull
+    public static RuleEnrollment create(@Nonnull String enrollment, @Nonnull Date incidentDate,
+            @Nonnull Date enrollmentDate, @Nonnull Status status,
+            @Nonnull List<RuleAttributeValue> attributeValues) {
+        return new AutoValue_RuleEnrollment(enrollment, incidentDate,
+                enrollmentDate, status, attributeValues);
+    }
 }

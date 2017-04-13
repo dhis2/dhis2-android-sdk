@@ -15,17 +15,7 @@ public abstract class RuleVariableAttribute extends RuleVariable {
 
     @Nonnull
     public static RuleVariableAttribute create(@Nonnull String name,
-            @Nonnull String trackedEntityAttribute, @Nonnull RuleValueType trackedEntityAttributeType) {
-        return new AutoValue_RuleVariableAttribute(name, trackedEntityAttribute, trackedEntityAttributeType);
+            @Nonnull String attribute, @Nonnull RuleValueType attributeType) {
+        return new AutoValue_RuleVariableAttribute(name, attribute, attributeType);
     }
-//
-//    @Nonnull
-//    RuleVariableValue value(@Nonnull Map<String, RuleAttributeValue> valueMap) {
-//        if (valueMap.containsKey(trackedEntityAttribute())) {
-//            RuleAttributeValue value = valueMap.get(trackedEntityAttribute());
-//            return RuleVariableValue.create(value.value(), trackedEntityAttributeType());
-//        }
-//
-//        return RuleVariableValue.create(trackedEntityAttributeType());
-//    }
 }

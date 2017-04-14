@@ -32,12 +32,14 @@ final class RuleVariableValueMapBuilder {
     private static final String DATE_PATTERN = "yyyy-MM-dd";
     private static final String ENV_VAR_CURRENT_DATE = "current_date";
     private static final String ENV_VAR_EVENT_DATE = "event_date";
+    private static final String ENV_VAR_EVENT_COUNT = "event_count";
+    private static final String ENV_VAR_DUE_DATE = "due_date";
+    private static final String ENV_VAR_EVENT_ID = "event_id";
     private static final String ENV_VAR_ENROLLMENT_DATE = "enrollment_date";
     private static final String ENV_VAR_ENROLLMENT_ID = "enrollment_id";
     private static final String ENV_VAR_ENROLLMENT_COUNT = "enrollment_count";
     private static final String ENV_VAR_INCIDENT_DATE = "incident_date";
     private static final String ENV_VAR_TEI_COUNT = "tei_count";
-    private static final String ENV_VAR_EVENT_COUNT = "event_count";
 
     @Nonnull
     private final SimpleDateFormat dateFormat;
@@ -144,7 +146,6 @@ final class RuleVariableValueMapBuilder {
         return Collections.unmodifiableMap(valueMap);
     }
 
-    // ToDo: add tests to make sure that map is constructed even if there is no target event
     private void buildCurrentEventValues() {
         if (ruleEvent != null) {
             for (int index = 0; index < ruleEvent.dataValues().size(); index++) {
@@ -154,7 +155,6 @@ final class RuleVariableValueMapBuilder {
         }
     }
 
-    // ToDo: add tests to make sure that map is constructed even if there is no target enrollment
     private void buildCurrentEnrollmentValues() {
         if (ruleEnrollment != null) {
             List<RuleAttributeValue> ruleAttributeValues = ruleEnrollment.attributeValues();
@@ -165,20 +165,21 @@ final class RuleVariableValueMapBuilder {
         }
     }
 
-    // ToDo: add tests to check that the same event is not added twice to the list
     private void buildAllEventValues() {
+        List<RuleEvent> events = new ArrayList<>(ruleEvents);
+
         if (ruleEvent != null) {
             // target event should be among the list of all
             // events in order to achieve correct behavior
-            ruleEvents.add(ruleEvent);
+            events.add(ruleEvent);
         }
 
         // sort list of events by eventDate:
-        Collections.sort(ruleEvents, RuleEvent.EVENT_DATE_COMPARATOR);
+        Collections.sort(events, RuleEvent.EVENT_DATE_COMPARATOR);
 
         // aggregating values by data element uid
-        for (int i = 0; i < ruleEvents.size(); i++) {
-            RuleEvent ruleEvent = ruleEvents.get(i);
+        for (int i = 0; i < events.size(); i++) {
+            RuleEvent ruleEvent = events.get(i);
 
             for (int j = 0; j < ruleEvent.dataValues().size(); j++) {
                 RuleDataValue ruleDataValue = ruleEvent.dataValues().get(j);
@@ -186,7 +187,7 @@ final class RuleVariableValueMapBuilder {
                 // push new list if it is not there for the given data element
                 if (!allEventsValues.containsKey(ruleDataValue.dataElement())) {
                     allEventsValues.put(ruleDataValue.dataElement(),
-                            new ArrayList<RuleDataValue>(ruleEvents.size()));
+                            new ArrayList<RuleDataValue>(events.size()));
                 }
 
                 // append data value to the list
@@ -194,21 +195,6 @@ final class RuleVariableValueMapBuilder {
             }
         }
     }
-
-//    current enrollment variables
-//    variables = pushVariable(variables, 'enrollment_date', selectedEnrollment ? selectedEnrollment.enrollmentDate : '', null, 'DATE', selectedEnrollment ? true : false, 'V', '', false );
-//    variables = pushVariable(variables, 'enrollment_id', selectedEnrollment ? selectedEnrollment.enrollment : '', null, 'TEXT',  selectedEnrollment ? true : false, 'V', '', false );
-//    variables = pushVariable(variables, 'enrollment_count', selectedEnrollment ? 1 : 0, null, 'INTEGER', true, 'V', '', false);
-//    variables = pushVariable(variables, 'incident_date', selectedEnrollment ? selectedEnrollment.incidentDate : '', null, 'DATE',  selectedEnrollment ? true : false, 'V', '', false);
-//    variables = pushVariable(variables, 'tei_count', selectedEnrollment ? 1 : 0, null, 'INTEGER', true, 'V', '', false);
-
-//    general variables
-//    variables = pushVariable(variables, 'current_date', DateUtils.getToday(), null, 'DATE', true, 'V', '', false );
-//    variables = pushVariable(variables, 'event_count', evs ? evs.all.length : 0, null, 'INTEGER', true, 'V', '', false );
-
-//    variables = pushVariable(variables, 'event_id', executingEvent ? executingEvent.event : '', null, 'TEXT',  executingEvent ? true : false, 'V', executingEvent ? executingEvent.eventDate : false, false);
-//    variables = pushVariable(variables, 'event_date', executingEvent.eventDate, null, 'DATE', true, 'V', '', false );
-//    variables = pushVariable(variables, 'due_date', executingEvent.dueDate, null, 'DATE', true, 'V', '' );
 
     private void buildEnvironmentVariables(@Nonnull Map<String, RuleVariableValue> valueMap) {
         String currentDate = dateFormat.format(new Date());
@@ -242,11 +228,16 @@ final class RuleVariableValueMapBuilder {
             valueMap.put(ENV_VAR_EVENT_DATE, create(eventDate, RuleValueType.TEXT,
                     Arrays.asList(eventDate)));
 
-            // ToDo: add tests first
+            String dueDate = dateFormat.format(ruleEvent.dueDate());
+            valueMap.put(ENV_VAR_DUE_DATE, create(dueDate, RuleValueType.TEXT,
+                    Arrays.asList(dueDate)));
+
             // override value of event count
-//            String eventCount = String.valueOf(ruleEvents.size() + 1);
-//            valueMap.put(ENV_VAR_EVENT_COUNT, create(eventCount,
-//                    RuleValueType.NUMERIC, Arrays.asList(eventCount)));
+            String eventCount = String.valueOf(ruleEvents.size() + 1);
+            valueMap.put(ENV_VAR_EVENT_COUNT, create(eventCount,
+                    RuleValueType.NUMERIC, Arrays.asList(eventCount)));
+            valueMap.put(ENV_VAR_EVENT_ID, create(ruleEvent.event(),
+                    RuleValueType.TEXT, Arrays.asList(ruleEvent.event())));
         }
     }
 
@@ -309,7 +300,6 @@ final class RuleVariableValueMapBuilder {
         return RuleVariableValue.create(variable.trackedEntityAttributeType());
     }
 
-    // ToDo: don't bother adding this variable when there is no current event
     @Nonnull
     private RuleVariableValue createCurrentEventVariableValue(
             @Nonnull RuleVariableCurrentEvent variable) {
@@ -327,8 +317,6 @@ final class RuleVariableValueMapBuilder {
         return create(variable.dataElementType());
     }
 
-    // ToDo: figure out correct behaviour for cases when we hit
-    // ToDo: previousEventVariable and there is no current event.
     @Nonnull
     private RuleVariableValue createPreviousEventVariableValue(
             @Nonnull RuleVariablePreviousEvent variable) {

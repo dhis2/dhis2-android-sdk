@@ -1,7 +1,5 @@
 package org.hisp.dhis.android.rules.models;
 
-import org.hisp.dhis.android.rules.models.RuleDataValue;
-import org.hisp.dhis.android.rules.models.RuleEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +34,7 @@ public class RuleEventTests {
     @Test
     public void createShouldThrowExceptionIfEventIsNull() {
         try {
-            RuleEvent.create(null, RuleEvent.Status.ACTIVE, "test_stage_uid",
+            RuleEvent.create(null, "test_stage_uid", RuleEvent.Status.ACTIVE,
                     new Date(), new Date(), Arrays.<RuleDataValue>asList());
             fail("NullPointerException was expected, but nothing was thrown");
         } catch (NullPointerException exception) {
@@ -50,8 +48,8 @@ public class RuleEventTests {
         ruleDataValues.add(ruleDataValue);
 
         try {
-            RuleEvent ruleEvent = RuleEvent.create("test_event_uid", RuleEvent.Status.ACTIVE, "test_stage_uid",
-                    new Date(), new Date(), ruleDataValues);
+            RuleEvent ruleEvent = RuleEvent.create("test_event_uid", "test_stage_uid",
+                    RuleEvent.Status.ACTIVE, new Date(), new Date(), ruleDataValues);
 
             // add another data value
             ruleDataValues.add(ruleDataValue);
@@ -74,8 +72,8 @@ public class RuleEventTests {
         Date eventDate = new Date();
         Date dueDate = new Date();
 
-        RuleEvent ruleEvent = RuleEvent.create("test_event_uid", RuleEvent.Status.ACTIVE,
-                "test_stage_uid", eventDate, dueDate, ruleDataValues);
+        RuleEvent ruleEvent = RuleEvent.create("test_event_uid", "test_stage_uid",
+                RuleEvent.Status.ACTIVE, eventDate, dueDate, ruleDataValues);
 
         assertThat(ruleEvent.event()).isEqualTo("test_event_uid");
         assertThat(ruleEvent.status()).isEqualTo(RuleEvent.Status.ACTIVE);
@@ -91,9 +89,9 @@ public class RuleEventTests {
     public void eventDateComparatorTest() throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_PATTERN, Locale.US);
         List<RuleEvent> ruleEvents = Arrays.asList(
-                RuleEvent.create("test_event_one", RuleEvent.Status.ACTIVE, "test_program_stage_one",
+                RuleEvent.create("test_event_one", "test_program_stage_one", RuleEvent.Status.ACTIVE,
                         dateFormat.parse("2014-02-11"), dateFormat.parse("2014-02-11"), new ArrayList<RuleDataValue>()),
-                RuleEvent.create("test_event_two", RuleEvent.Status.ACTIVE, "test_program_stage_two",
+                RuleEvent.create("test_event_two", "test_program_stage_two", RuleEvent.Status.ACTIVE,
                         dateFormat.parse("2017-03-22"), dateFormat.parse("2017-03-22"), new ArrayList<RuleDataValue>()));
 
         Collections.sort(ruleEvents, RuleEvent.EVENT_DATE_COMPARATOR);

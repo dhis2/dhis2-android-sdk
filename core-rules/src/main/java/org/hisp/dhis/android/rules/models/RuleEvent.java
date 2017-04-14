@@ -18,10 +18,10 @@ public abstract class RuleEvent {
     public abstract String event();
 
     @Nonnull
-    public abstract Status status();
+    public abstract String programStage();
 
     @Nonnull
-    public abstract String programStage();
+    public abstract Status status();
 
     @Nonnull
     public abstract Date eventDate();
@@ -35,12 +35,12 @@ public abstract class RuleEvent {
     @Nonnull
     public static RuleEvent create(
             @Nonnull String event,
-            @Nonnull Status status,
             @Nonnull String programStage,
+            @Nonnull Status status,
             @Nonnull Date eventDate,
             @Nonnull Date dueDate,
             @Nonnull List<RuleDataValue> ruleDataValues) {
-        return new AutoValue_RuleEvent(event, status, programStage, eventDate, dueDate,
+        return new AutoValue_RuleEvent(event, programStage, status, eventDate, dueDate,
                 Collections.unmodifiableList(new ArrayList<>(ruleDataValues)));
     }
 

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
@@ -74,6 +75,11 @@ public final class RuleEngine {
             throw new IllegalStateException(String.format(Locale.US, "Enrollment '%s' is already " +
                     "set as a part of execution context.", this.ruleEnrollment.enrollment()));
         }
+
+        Map<String, RuleVariableValue> valueMap = RuleVariableValueMapBuilder.target(ruleEnrollment)
+                .ruleVariables(ruleEngineContext.variables())
+                .ruleEvents(ruleEvents)
+                .build();
 
         throw new UnsupportedOperationException();
     }

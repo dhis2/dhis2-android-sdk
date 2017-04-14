@@ -44,14 +44,10 @@ public class RuleVariableValueMapFactoryTests {
         RuleEvent ruleEvent = mock(RuleEvent.class);
         when(ruleEvent.eventDate()).thenReturn(dateFormat.parse("1994-02-03"));
 
-        RuleVariableValueMapFactory ruleVariableValueMapFactory = new RuleVariableValueMapFactory(
-                new ArrayList<RuleVariable>(),
-                new ArrayList<RuleAttributeValue>(),
-                new ArrayList<RuleEvent>()
-        );
-
         try {
-            ruleVariableValueMapFactory.build(ruleEvent).clear();
+            RuleVariableValueMapBuilder.target(ruleEvent)
+                    .ruleVariables(new ArrayList<RuleVariable>())
+                    .build().clear();
             fail("UnsupportedOperationException expected, but nothing was thrown");
         } catch (UnsupportedOperationException exception) {
             // noop
@@ -63,13 +59,9 @@ public class RuleVariableValueMapFactoryTests {
         RuleEvent ruleEvent = mock(RuleEvent.class);
         when(ruleEvent.eventDate()).thenReturn(dateFormat.parse("1994-02-03"));
 
-        RuleVariableValueMapFactory ruleVariableValueMapFactory = new RuleVariableValueMapFactory(
-                new ArrayList<RuleVariable>(),
-                new ArrayList<RuleAttributeValue>(),
-                new ArrayList<RuleEvent>()
-        );
-
-        Map<String, RuleVariableValue> valueMap = ruleVariableValueMapFactory.build(ruleEvent);
+        Map<String, RuleVariableValue> valueMap = RuleVariableValueMapBuilder.target(ruleEvent)
+                .ruleVariables(new ArrayList<RuleVariable>())
+                .build();
 
         assertThat(valueMap.get("event_date").value()).isEqualTo("1994-02-03");
         assertThat(valueMap.get("current_date").value()).isEqualTo(dateFormat.format(new Date()));
@@ -84,7 +76,7 @@ public class RuleVariableValueMapFactoryTests {
 
         Date eventDate = dateFormat.parse("2015-01-01");
 
-        // values from context events should be ignored
+        // values from context ruleEvents should be ignored
         RuleEvent contextEventOne = RuleEvent.create("test_context_event_one", RuleEvent.Status.ACTIVE,
                 "test_program_stage", eventDate, new Date(), Arrays.asList(
                         RuleDataValue.create(eventDate, "test_program_stage",
@@ -97,7 +89,7 @@ public class RuleVariableValueMapFactoryTests {
                                 "test_dataelement_one", "test_context_value_three"),
                         RuleDataValue.create(eventDate, "test_program_stage",
                                 "test_dataelement_two", "test_context_value_four")));
-        // values from current event should be propagated to the variable values
+        // values from current ruleEvent should be propagated to the variable values
         RuleEvent currentEvent = RuleEvent.create("test_event_uid", RuleEvent.Status.ACTIVE,
                 "test_program_stage", eventDate, new Date(), Arrays.asList(
                         RuleDataValue.create(eventDate, "test_program_stage",
@@ -105,15 +97,12 @@ public class RuleVariableValueMapFactoryTests {
                         RuleDataValue.create(eventDate, "test_program_stage",
                                 "test_dataelement_two", "test_value_two")));
 
-        RuleVariableValueMapFactory ruleVariableValueMapFactory = new RuleVariableValueMapFactory(
-                Arrays.asList(ruleVariableOne, ruleVariableTwo),
-                new ArrayList<RuleAttributeValue>(), Arrays.asList(contextEventOne, contextEventTwo)
-        );
+        Map<String, RuleVariableValue> valueMap = RuleVariableValueMapBuilder.target(currentEvent)
+                .ruleVariables(Arrays.asList(ruleVariableOne, ruleVariableTwo))
+                .ruleEvents(Arrays.asList(contextEventOne, contextEventTwo))
+                .build();
 
-        // here we will expect correct values to be returned
-        Map<String, RuleVariableValue> valueMap = ruleVariableValueMapFactory.build(currentEvent);
-
-        // 2 variables defined within test + 2 environment variables
+        // 2 ruleVariables defined within test + 2 environment ruleVariables
         assertThat(valueMap.size()).isEqualTo(4);
         assertThat(valueMap.get("event_date").value()).isEqualTo(dateFormat.format(eventDate));
         assertThat(valueMap.get("current_date")).isNotNull();
@@ -161,14 +150,12 @@ public class RuleVariableValueMapFactoryTests {
                         RuleDataValue.create(currentEventDate, "test_program_stage",
                                 "test_dataelement_two", "test_value_two_current")));
 
-        RuleVariableValueMapFactory ruleVariableValueMapFactory = new RuleVariableValueMapFactory(
-                Arrays.asList(ruleVariableOne, ruleVariableTwo), new ArrayList<RuleAttributeValue>(),
-                Arrays.asList(oldestRuleEvent, newestRuleEvent)
-        );
+        Map<String, RuleVariableValue> valueMap = RuleVariableValueMapBuilder.target(currentEvent)
+                .ruleVariables(Arrays.asList(ruleVariableOne, ruleVariableTwo))
+                .ruleEvents(Arrays.asList(oldestRuleEvent, newestRuleEvent))
+                .build();
 
-        Map<String, RuleVariableValue> valueMap = ruleVariableValueMapFactory.build(currentEvent);
-
-        // 2 variables defined within test + 2 environment variables
+        // 2 ruleVariables defined within test + 2 environment ruleVariables
         assertThat(valueMap.size()).isEqualTo(4);
 
         RuleVariableValue variableValueOne = valueMap.get("test_variable_one");
@@ -221,14 +208,12 @@ public class RuleVariableValueMapFactoryTests {
                         RuleDataValue.create(currentEventDate, "test_program_stage",
                                 "test_dataelement_two", "test_value_dataelement_two_current")));
 
-        RuleVariableValueMapFactory ruleVariableValueMapFactory = new RuleVariableValueMapFactory(
-                Arrays.asList(ruleVariableOne, ruleVariableTwo), new ArrayList<RuleAttributeValue>(),
-                Arrays.asList(firstRuleEvent, secondRuleEvent)
-        );
+        Map<String, RuleVariableValue> valueMap = RuleVariableValueMapBuilder.target(currentEvent)
+                .ruleVariables(Arrays.asList(ruleVariableOne, ruleVariableTwo))
+                .ruleEvents(Arrays.asList(firstRuleEvent, secondRuleEvent))
+                .build();
 
-        Map<String, RuleVariableValue> valueMap = ruleVariableValueMapFactory.build(currentEvent);
-
-        // 2 variables defined within test + 2 environment variables
+        // 2 ruleVariables defined within test + 2 environment ruleVariables
         assertThat(valueMap.size()).isEqualTo(4);
 
         RuleVariableValue variableValueOne = valueMap.get("test_variable_one");
@@ -261,31 +246,29 @@ public class RuleVariableValueMapFactoryTests {
         Date dateEventThree = dateFormat.parse("2015-02-03");
         Date dateEventCurrent = dateFormat.parse("2011-02-03");
 
-        RuleEvent ruleEventOne = RuleEvent.create("test_event_uid_one", RuleEvent.Status.ACTIVE,
+        RuleEvent eventOne = RuleEvent.create("test_event_uid_one", RuleEvent.Status.ACTIVE,
                 "test_program_stage_one", dateEventOne, dateEventOne, Arrays.asList(
                         RuleDataValue.create(dateEventOne, "test_program_stage_one",
                                 "test_dataelement", "test_value_one")));
-        RuleEvent ruleEventTwo = RuleEvent.create("test_event_uid_two", RuleEvent.Status.ACTIVE,
+        RuleEvent eventTwo = RuleEvent.create("test_event_uid_two", RuleEvent.Status.ACTIVE,
                 "test_program_stage_two", dateEventTwo, dateEventTwo, Arrays.asList(
                         RuleDataValue.create(dateEventTwo, "test_program_stage_two",
                                 "test_dataelement", "test_value_two")));
-        RuleEvent ruleEventThree = RuleEvent.create("test_event_uid_three", RuleEvent.Status.ACTIVE,
+        RuleEvent eventThree = RuleEvent.create("test_event_uid_three", RuleEvent.Status.ACTIVE,
                 "test_program_stage_two", dateEventThree, dateEventThree, Arrays.asList(
                         RuleDataValue.create(dateEventThree, "test_program_stage_two",
                                 "test_dataelement", "test_value_three")));
-        RuleEvent ruleEventCurrent = RuleEvent.create("test_event_uid_current", RuleEvent.Status.ACTIVE,
+        RuleEvent eventCurrent = RuleEvent.create("test_event_uid_current", RuleEvent.Status.ACTIVE,
                 "test_program_stage_one", dateEventCurrent, dateEventCurrent, Arrays.asList(
                         RuleDataValue.create(dateEventCurrent, "test_program_stage_one",
                                 "test_dataelement", "test_value_current")));
 
-        RuleVariableValueMapFactory ruleVariableValueMapFactory = new RuleVariableValueMapFactory(
-                Arrays.asList(ruleVariable), new ArrayList<RuleAttributeValue>(),
-                Arrays.asList(ruleEventOne, ruleEventTwo, ruleEventThree)
-        );
+        Map<String, RuleVariableValue> valueMap = RuleVariableValueMapBuilder.target(eventCurrent)
+                .ruleVariables(Arrays.asList(ruleVariable))
+                .ruleEvents(Arrays.asList(eventOne, eventTwo, eventThree))
+                .build();
 
-        Map<String, RuleVariableValue> valueMap = ruleVariableValueMapFactory.build(ruleEventCurrent);
-
-        // 1 variable defined within test + 2 environment variables
+        // 1 variable defined within test + 2 environment ruleVariables
         assertThat(valueMap.size()).isEqualTo(3);
 
         RuleVariableValue variableValue = valueMap.get("test_variable");
@@ -313,14 +296,12 @@ public class RuleVariableValueMapFactoryTests {
                         RuleDataValue.create(dateEventThree, "test_program_stage_two",
                                 "test_dataelement", "test_value_two")));
 
-        RuleVariableValueMapFactory ruleVariableValueMapFactory = new RuleVariableValueMapFactory(
-                Arrays.asList(ruleVariable), new ArrayList<RuleAttributeValue>(),
-                Arrays.asList(ruleEventOne, ruleEventTwo)
-        );
+        Map<String, RuleVariableValue> valueMap = RuleVariableValueMapBuilder.target(ruleEventTwo)
+                .ruleVariables(Arrays.asList(ruleVariable))
+                .ruleEvents(Arrays.asList(ruleEventOne, ruleEventTwo))
+                .build();
 
-        Map<String, RuleVariableValue> valueMap = ruleVariableValueMapFactory.build(ruleEventTwo);
-
-        // 1 variable defined within test + 2 environment variables
+        // 1 variable defined within test + 2 environment ruleVariables
         assertThat(valueMap.size()).isEqualTo(3);
 
         RuleVariableValue variableValue = valueMap.get("test_variable");
@@ -339,13 +320,13 @@ public class RuleVariableValueMapFactoryTests {
         Date eventDate = dateFormat.parse("2015-01-01");
         Date enrollmentDate = dateFormat.parse("2014-03-01");
 
-        // values from ruleEnrollment should end up in variables
+        // values from ruleEnrollment should end up in ruleVariables
         RuleEnrollment ruleEnrollment = RuleEnrollment.create("test_enrollment",
                 enrollmentDate, enrollmentDate, RuleEnrollment.Status.ACTIVE, Arrays.asList(
                         RuleAttributeValue.create("test_attribute_one", "test_attribute_value_one"),
                         RuleAttributeValue.create("test_attribute_two", "test_attribute_value_two")));
 
-        // values from context events should be ignored
+        // values from context ruleEvents should be ignored
         RuleEvent contextEvent = RuleEvent.create("test_context_event_one", RuleEvent.Status.ACTIVE,
                 "test_program_stage", eventDate, new Date(), Arrays.asList(
                         RuleDataValue.create(eventDate, "test_program_stage",
@@ -359,15 +340,14 @@ public class RuleVariableValueMapFactoryTests {
                         RuleDataValue.create(eventDate, "test_program_stage",
                                 "test_dataelement_two", "test_value_two")));
 
-        RuleVariableValueMapFactory ruleVariableValueMapFactory = new RuleVariableValueMapFactory(
-                Arrays.asList(ruleVariableOne, ruleVariableTwo), ruleEnrollment.attributeValues(),
-                Arrays.asList(contextEvent)
-        );
-
         // here we will expect correct values to be returned
-        Map<String, RuleVariableValue> valueMap = ruleVariableValueMapFactory.build(currentEvent);
+        Map<String, RuleVariableValue> valueMap = RuleVariableValueMapBuilder.target(currentEvent)
+                .ruleEnrollment(ruleEnrollment)
+                .ruleVariables(Arrays.asList(ruleVariableOne, ruleVariableTwo))
+                .ruleEvents(Arrays.asList(contextEvent))
+                .build();
 
-        // 2 variables defined within test + 2 environment variables
+        // 2 ruleVariables defined within test + 2 environment ruleVariables
         assertThat(valueMap.size()).isEqualTo(4);
 
         RuleVariableValue variableValueOne = valueMap.get("test_variable_one");
@@ -413,14 +393,12 @@ public class RuleVariableValueMapFactoryTests {
                         RuleDataValue.create(dateEventCurrent, "test_program_stage_one",
                                 "test_dataelement", "test_value_current")));
 
-        RuleVariableValueMapFactory ruleVariableValueMapFactory = new RuleVariableValueMapFactory(
-                Arrays.asList(ruleVariable), new ArrayList<RuleAttributeValue>(),
-                Arrays.asList(ruleEventOne, ruleEventTwo, ruleEventThree)
-        );
+        Map<String, RuleVariableValue> valueMap = RuleVariableValueMapBuilder.target(ruleEventCurrent)
+                .ruleVariables(Arrays.asList(ruleVariable))
+                .ruleEvents(Arrays.asList(ruleEventOne, ruleEventTwo, ruleEventThree))
+                .build();
 
-        Map<String, RuleVariableValue> valueMap = ruleVariableValueMapFactory.build(ruleEventCurrent);
-
-        // 1 variable defined within test + 2 environment variables
+        // 1 variable defined within test + 2 environment ruleVariables
         assertThat(valueMap.size()).isEqualTo(3);
 
         RuleVariableValue variableValue = valueMap.get("test_variable");

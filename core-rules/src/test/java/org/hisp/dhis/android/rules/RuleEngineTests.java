@@ -116,15 +116,15 @@ public class RuleEngineTests {
 //        ruleEvents.add(ruleEvent);
 //
 //        RuleEngine.Builder builder = RuleEngine.builder(evaluator)
-//                .events(ruleEvents)
+//                .ruleEvents(ruleEvents)
 //                .programRules(new ArrayList<Rule>())
 //                .programRuleVariables(new ArrayList<RuleVariable>());
 //
 //        ruleEvents.clear();
 //        RuleEngine ruleEngine = builder.build();
 //
-//        assertThat(ruleEngine.events().size()).isEqualTo(1);
-//        assertThat(ruleEngine.events()).contains(ruleEvent);
+//        assertThat(ruleEngine.ruleEvents().size()).isEqualTo(1);
+//        assertThat(ruleEngine.ruleEvents()).contains(ruleEvent);
 //    }
 //
 //    @Test
@@ -169,13 +169,13 @@ public class RuleEngineTests {
 //        ruleEvents.add(ruleEvent);
 //
 //        RuleEngine ruleEngine = RuleEngine.builder(evaluator)
-//                .events(ruleEvents)
+//                .ruleEvents(ruleEvents)
 //                .programRules(new ArrayList<Rule>())
 //                .programRuleVariables(new ArrayList<RuleVariable>())
 //                .build();
 //
 //        try {
-//            ruleEngine.events().add(ruleEvent);
+//            ruleEngine.ruleEvents().add(ruleEvent);
 //            fail("UnsupportedOperationException expected, but nothing was thrown");
 //        } catch (UnsupportedOperationException exception) {
 //            // noop
@@ -189,11 +189,11 @@ public class RuleEngineTests {
 //                .programRuleVariables(new ArrayList<RuleVariable>())
 //                .build();
 //
-//        assertThat(ruleEngine.events()).isNotNull();
-//        assertThat(ruleEngine.events()).isEmpty();
+//        assertThat(ruleEngine.ruleEvents()).isNotNull();
+//        assertThat(ruleEngine.ruleEvents()).isEmpty();
 //
 //        try {
-//            ruleEngine.events().add(ruleEvent);
+//            ruleEngine.ruleEvents().add(ruleEvent);
 //            fail("UnsupportedOperationException expected, but nothing was thrown");
 //        } catch (UnsupportedOperationException exception) {
 //            // noop
@@ -211,7 +211,7 @@ public class RuleEngineTests {
 //            ruleEngine.calculate(null);
 //            fail("IllegalArgumentException expected, but nothing was thrown");
 //        } catch (IllegalArgumentException exception) {
-//            assertThat(exception.getMessage()).isEqualTo("event == null");
+//            assertThat(exception.getMessage()).isEqualTo("ruleEvent == null");
 //        }
 //    }
 }

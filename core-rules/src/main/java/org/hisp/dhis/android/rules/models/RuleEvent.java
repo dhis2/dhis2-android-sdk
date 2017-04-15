@@ -2,6 +2,7 @@ package org.hisp.dhis.android.rules.models;
 
 import com.google.auto.value.AutoValue;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -48,7 +49,8 @@ public abstract class RuleEvent {
         ACTIVE, COMPLETED, SCHEDULE, SKIPPED
     }
 
-    private static class EventDateComparator implements Comparator<RuleEvent> {
+    private static class EventDateComparator implements Comparator<RuleEvent>, Serializable {
+        private static final long serialVersionUID = 2394142518753625334L;
 
         @Override
         public int compare(RuleEvent first, RuleEvent second) {

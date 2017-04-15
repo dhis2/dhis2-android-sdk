@@ -1,7 +1,5 @@
 package org.hisp.dhis.android.rules.models;
 
-import org.hisp.dhis.android.rules.models.RuleDataValue;
-import org.hisp.dhis.android.rules.models.RuleEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +24,7 @@ public class RuleDataValueTests {
     }
 
     @Test
-    public void shouldThrowOnNullDate() {
+    public void createShouldThrowOnNullDate() {
         try {
             RuleDataValue.create(null, "test_program_stage_uid", "test_field", "test_value");
             fail("NullPointerException is expected, but nothing was thrown");
@@ -36,7 +34,7 @@ public class RuleDataValueTests {
     }
 
     @Test
-    public void shouldThrowOnNullEvent() {
+    public void createShouldThrowOnNullEvent() {
         try {
             RuleDataValue.create(new Date(), null, "test_field", "test_value");
             fail("NullPointerException is expected, but nothing was thrown");
@@ -46,7 +44,7 @@ public class RuleDataValueTests {
     }
 
     @Test
-    public void shouldThrowOnNullDataElement() {
+    public void createShouldThrowOnNullDataElement() {
         try {
             RuleDataValue.create(new Date(), "test_program_stage_uid", null, "test_value");
             fail("NullPointerException is expected, but nothing was thrown");
@@ -56,7 +54,7 @@ public class RuleDataValueTests {
     }
 
     @Test
-    public void shouldThrowOnNullValue() {
+    public void createShouldThrowOnNullValue() {
         try {
             RuleDataValue.create(new Date(), "test_program_stage_uid", "test_dataelement", null);
             fail("NullPointerException is expected, but nothing was thrown");
@@ -66,7 +64,7 @@ public class RuleDataValueTests {
     }
 
     @Test
-    public void shouldPropagateValuesCorrectly() {
+    public void createShouldPropagateValuesCorrectly() {
         Date eventDate = new Date();
         RuleDataValue ruleDataValue = RuleDataValue.create(eventDate,
                 "test_program_stage_uid", "test_dataelement", "test_value");

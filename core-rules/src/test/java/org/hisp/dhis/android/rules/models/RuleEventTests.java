@@ -1,11 +1,8 @@
 package org.hisp.dhis.android.rules.models;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,23 +15,16 @@ import java.util.Locale;
 
 import static junit.framework.TestCase.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 @RunWith(JUnit4.class)
 public class RuleEventTests {
     private static final String DATE_PATTERN = "yyyy-MM-dd";
 
-    @Mock
-    private RuleDataValue ruleDataValue;
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-    }
-
     @Test
     public void createShouldThrowExceptionIfEventIsNull() {
         try {
-            RuleEvent.create(null, "test_stage_uid", RuleEvent.Status.ACTIVE,
+            RuleEvent.create(null, "test_programstage", RuleEvent.Status.ACTIVE,
                     new Date(), new Date(), Arrays.<RuleDataValue>asList());
             fail("NullPointerException was expected, but nothing was thrown");
         } catch (NullPointerException exception) {
@@ -43,21 +33,78 @@ public class RuleEventTests {
     }
 
     @Test
-    public void dataValuesShouldBeImmutable() {
+    public void createShouldThrowExceptionIfProgramStageIsNull() {
+        try {
+            RuleEvent.create("test_event", null, RuleEvent.Status.ACTIVE,
+                    new Date(), new Date(), Arrays.<RuleDataValue>asList());
+            fail("NullPointerException was expected, but nothing was thrown");
+        } catch (NullPointerException exception) {
+            // noop
+        }
+    }
+
+    @Test
+    public void createShouldThrowExceptionIfStatusIsNull() {
+        try {
+            RuleEvent.create("test_event", "test_programstage", null,
+                    new Date(), new Date(), Arrays.<RuleDataValue>asList());
+            fail("NullPointerException was expected, but nothing was thrown");
+        } catch (NullPointerException exception) {
+            // noop
+        }
+    }
+
+    @Test
+    public void createShouldThrowExceptionIfEventDateIsNull() {
+        try {
+            RuleEvent.create("test_event", "test_programstage", RuleEvent.Status.ACTIVE,
+                    null, new Date(), Arrays.<RuleDataValue>asList());
+            fail("NullPointerException was expected, but nothing was thrown");
+        } catch (NullPointerException exception) {
+            // noop
+        }
+    }
+
+    @Test
+    public void createShouldThrowExceptionIfDueDateIsNull() {
+        try {
+            RuleEvent.create("test_event", "test_programstage", RuleEvent.Status.ACTIVE,
+                    new Date(), null, Arrays.<RuleDataValue>asList());
+            fail("NullPointerException was expected, but nothing was thrown");
+        } catch (NullPointerException exception) {
+            // noop
+        }
+    }
+
+    @Test
+    public void createShouldThrowExceptionIfListOfDataValuesIsNull() {
+        try {
+            RuleEvent.create("test_event", "test_programstage", RuleEvent.Status.ACTIVE,
+                    new Date(), new Date(), null);
+            fail("NullPointerException was expected, but nothing was thrown");
+        } catch (NullPointerException exception) {
+            // noop
+        }
+    }
+
+    @Test
+    public void createShouldPropagateImmutableList() {
+        RuleDataValue ruleDataValue = mock(RuleDataValue.class);
+
         List<RuleDataValue> ruleDataValues = new ArrayList<>();
         ruleDataValues.add(ruleDataValue);
 
+        RuleEvent ruleEvent = RuleEvent.create("test_event_uid", "test_stage_uid",
+                RuleEvent.Status.ACTIVE, new Date(), new Date(), ruleDataValues);
+
+        // add another data value
+        ruleDataValues.add(ruleDataValue);
+
+        assertThat(ruleEvent.dataValues().size()).isEqualTo(1);
+        assertThat(ruleEvent.dataValues().get(0)).isEqualTo(ruleDataValue);
+
         try {
-            RuleEvent ruleEvent = RuleEvent.create("test_event_uid", "test_stage_uid",
-                    RuleEvent.Status.ACTIVE, new Date(), new Date(), ruleDataValues);
-
-            // add another data value
-            ruleDataValues.add(ruleDataValue);
-
-            assertThat(ruleEvent.dataValues().size()).isEqualTo(1);
-            assertThat(ruleEvent.dataValues().contains(ruleDataValue)).isTrue();
             ruleEvent.dataValues().add(ruleDataValue);
-
             fail("UnsupportedOperationException was expected, but nothing was thrown");
         } catch (UnsupportedOperationException exception) {
             // noop
@@ -65,7 +112,9 @@ public class RuleEventTests {
     }
 
     @Test
-    public void allValuesShouldBePropagatedCorrectly() {
+    public void createShouldPropagateValuesCorrectly() {
+        RuleDataValue ruleDataValue = mock(RuleDataValue.class);
+
         List<RuleDataValue> ruleDataValues = new ArrayList<>();
         ruleDataValues.add(ruleDataValue);
 

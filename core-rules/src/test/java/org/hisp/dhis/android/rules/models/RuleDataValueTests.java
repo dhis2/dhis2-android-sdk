@@ -67,9 +67,11 @@ public class RuleDataValueTests {
 
     @Test
     public void shouldPropagateValuesCorrectly() {
-        RuleDataValue ruleDataValue = RuleDataValue.create(new Date(),
+        Date eventDate = new Date();
+        RuleDataValue ruleDataValue = RuleDataValue.create(eventDate,
                 "test_program_stage_uid", "test_dataelement", "test_value");
 
+        assertThat(ruleDataValue.eventDate()).isEqualTo(eventDate);
         assertThat(ruleDataValue.programStage()).isEqualTo("test_program_stage_uid");
         assertThat(ruleDataValue.dataElement()).isEqualTo("test_dataelement");
         assertThat(ruleDataValue.value()).isEqualTo("test_value");

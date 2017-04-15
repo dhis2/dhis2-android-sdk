@@ -30,6 +30,8 @@ import static org.hisp.dhis.android.rules.RuleVariableValueAssert.assertThatVari
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+// ToDo: add tests to check that the same event is not added twice to the list
+// ToDo: test for concurrent modification exceptions
 @RunWith(JUnit4.class)
 public class RuleVariableValueMapFactoryTests {
     private static final String DATE_PATTERN = "yyyy-MM-dd";
@@ -512,7 +514,4 @@ public class RuleVariableValueMapFactoryTests {
         assertThat(variableValueTwo.candidates().size()).isEqualTo(1);
         assertThat(variableValueTwo.candidates().get(0)).isEqualTo("test_attribute_value_two");
     }
-
-    // ToDo: add test case when current event is set in the context of events: event_count should reflect this
-    // ToDo: add tests to check that the same event is not added twice to the list
 }

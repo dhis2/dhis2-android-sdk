@@ -1,22 +1,25 @@
 apply plugin: "checkstyle"
 
-afterEvaluate {
-    tasks.withType(Checkstyle) {
-        // task meta-data
-        group = "verification"
-        description = "Run Checkstyle"
+checkstyle {
+    // inspect only main source set
+    sourceSets = [
+            sourceSets.main
+    ]
 
-        // Fail early.
-        ignoreFailures = false
+    // Fail early.
+    ignoreFailures = false
 
-        // Do not output results into console.
-        showViolations = false
+    // Do not output results into console.
+    showViolations = false
 
-        // inspect only java sources
-        include("**/*.java")
+    configFile = rootProject.file(
+            "plugins/checkstyle-style.xml"
+    )
+}
 
-        configFile = rootProject.file(
-                "plugins/checkstyle-style.xml"
-        )
+tasks.withType(Checkstyle) {
+    reports {
+        html.enabled = true
+        xml.enabled = false
     }
 }

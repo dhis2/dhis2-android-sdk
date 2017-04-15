@@ -30,8 +30,6 @@ import static org.hisp.dhis.android.rules.RuleVariableValueAssert.assertThatVari
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-// ToDo: add tests to check that the same event is not added twice to the list
-// ToDo: tests for concurrent modification exceptions
 @RunWith(JUnit4.class)
 public class RuleVariableValueMapBuilderTests {
     private static final String DATE_PATTERN = "yyyy-MM-dd";

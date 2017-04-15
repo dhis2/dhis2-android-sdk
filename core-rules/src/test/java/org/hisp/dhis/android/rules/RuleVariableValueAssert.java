@@ -3,6 +3,7 @@ package org.hisp.dhis.android.rules;
 import org.hisp.dhis.android.rules.models.RuleValueType;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
@@ -19,7 +20,7 @@ final class RuleVariableValueAssert {
     }
 
     @Nonnull
-    RuleVariableValueAssert hasValue(@Nonnull String value) {
+    RuleVariableValueAssert hasValue(@Nullable String value) {
         assertThat(variableValue.value()).isEqualTo(value);
         return this;
     }

@@ -66,10 +66,8 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject {
     public static final Field<ProgramRuleAction, String> location = Field.create(LOCATION);
     public static final Field<ProgramRuleAction, Boolean> deleted = Field.create(DELETED);
 
-    /**
-     * Program rule uid is only exposed in the api, so we cannot set this as a nested field
-     */
-    public static final Field<ProgramRuleAction, String> programRule = Field.create(PROGRAM_RULE);
+
+    public static final NestedField<ProgramRuleAction, ProgramRule> programRule = NestedField.create(PROGRAM_RULE);
 
     public static final NestedField<ProgramRuleAction, TrackedEntityAttribute> trackedEntityAttribute =
             NestedField.create(TRACKED_ENTITY_ATTRIBUTE);

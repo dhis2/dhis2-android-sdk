@@ -103,10 +103,13 @@ public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
     public long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
                        @Nullable String displayName, @NonNull Date created,
                        @NonNull Date lastUpdated, @Nullable String data, @Nullable String content,
-                       @Nullable String location, @Nullable String trackedEntityAttribute,
-                       @Nullable String programIndicator, @Nullable String programStageSection,
+                       @Nullable String location,
+                       @Nullable String trackedEntityAttribute,
+                       @Nullable String programIndicator,
+                       @Nullable String programStageSection,
                        @NonNull ProgramRuleActionType programRuleActionType,
-                       @Nullable String programStage, @Nullable String dataElement,
+                       @Nullable String programStage,
+                       @Nullable String dataElement,
                        @Nullable String programRule) {
 
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, data,
@@ -125,12 +128,17 @@ public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
     @Override
     public int update(@NonNull String uid, @Nullable String code, @NonNull String name, @Nullable String displayName,
                       @NonNull Date created, @NonNull Date lastUpdated, @Nullable String data,
-                      @Nullable String content, @Nullable String location, @Nullable String trackedEntityAttribute,
-                      @Nullable String programIndicator, @Nullable String programStageSection,
-                      @NonNull ProgramRuleActionType programRuleActionType, @Nullable String programStage,
-                      @Nullable String dataElement, @Nullable String programRule,
+                      @Nullable String content, @Nullable String location,
+                      @Nullable String trackedEntityAttribute,
+                      @Nullable String programIndicator,
+                      @Nullable String programStageSection,
+                      @NonNull ProgramRuleActionType programRuleActionType,
+                      @Nullable String programStage,
+                      @Nullable String dataElement,
+                      @Nullable String programRule,
                       @NonNull String whereProgramRuleActionUid) {
-        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, data,
+        bindArguments(updateStatement,
+                uid, code, name, displayName, created, lastUpdated, data,
                 content, location, trackedEntityAttribute, programIndicator, programStageSection,
                 programRuleActionType, programStage, dataElement, programRule);
 
@@ -160,10 +168,13 @@ public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
                                @NonNull String uid, @Nullable String code, @NonNull String name,
                                @Nullable String displayName, @NonNull Date created,
                                @NonNull Date lastUpdated, @Nullable String data, @Nullable String content,
-                               @Nullable String location, @Nullable String trackedEntityAttribute,
-                               @Nullable String programIndicator, @Nullable String programStageSection,
+                               @Nullable String location,
+                               @Nullable String trackedEntityAttribute,
+                               @Nullable String programIndicator,
+                               @Nullable String programStageSection,
                                @NonNull ProgramRuleActionType programRuleActionType,
-                               @Nullable String programStage, @Nullable String dataElement,
+                               @Nullable String programStage,
+                               @Nullable String dataElement,
                                @Nullable String programRule) {
 
         sqLiteBind(sqLiteStatement, 1, uid);

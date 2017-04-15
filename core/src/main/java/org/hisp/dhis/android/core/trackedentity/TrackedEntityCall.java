@@ -27,22 +27,21 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.Filter;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
-import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import retrofit2.Response;
@@ -50,23 +49,26 @@ import retrofit2.Response;
 public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>> {
 
     private final TrackedEntityService service;
-    private final SQLiteDatabase database;
-    private final TrackedEntityStore store;
+    private final DatabaseAdapter databaseAdapter;
+    private final TrackedEntityStore trackedEntityStore;
     private final ResourceStore resourceStore;
     private final Set<String> uidSet;
+    private final Date serverDate;
+    private final ResourceModel.Type resourceType = ResourceModel.Type.TRACKED_ENTITY;
     private Boolean isExecuted = false;
 
     public TrackedEntityCall(@Nullable Set<String> uidSet,
-                             @NonNull SQLiteDatabase database,
-                             @NonNull TrackedEntityStore store,
+                             @NonNull DatabaseAdapter databaseAdapter,
+                             @NonNull TrackedEntityStore trackedEntityStore,
                              @NonNull ResourceStore resourceStore,
-                             @NonNull TrackedEntityService service
-    ) {
+                             @NonNull TrackedEntityService service,
+                             @NonNull Date serverDate) {
         this.uidSet = uidSet;
-        this.database = database;
-        this.store = store;
+        this.databaseAdapter = databaseAdapter;
+        this.trackedEntityStore = trackedEntityStore;
         this.resourceStore = resourceStore;
         this.service = service;
+        this.serverDate = new Date(serverDate.getTime());
     }
 
     @Override
@@ -80,114 +82,57 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
     public Response<Payload<TrackedEntity>> call() throws Exception {
         synchronized (this) {
             if (isExecuted) {
-                throw new IllegalStateException("AlreadyExecuted");
+                throw new IllegalStateException("Already executed");
             }
             isExecuted = true;
         }
-        //TODO: uid will be null if we want all uids. Still make the call ! + Test for it !
 
-        Response<Payload<TrackedEntity>> response = null;
-        database.beginTransaction();
+        if (uidSet.size() > MAX_UIDS) {
+            throw new IllegalArgumentException("Can't handle the amount of tracked entities: " + uidSet.size() + ". " +
+                    "Max size is: " + MAX_UIDS);
+        }
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
+
+        String lastUpdated = resourceHandler.getLastUpdated(resourceType);
+        Response<Payload<TrackedEntity>> response = getTrackedEntities(lastUpdated);
+
+        TrackedEntityHandler trackedEntityHandler = new TrackedEntityHandler(trackedEntityStore);
+        Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
-            Filter<TrackedEntity, String> idFilter = null;
-            if (uidSet != null) {
-                idFilter = TrackedEntity.uid.in(uidSet);
-            }
-            Filter<TrackedEntity, String> lastUpdatedFilter = TrackedEntity.lastUpdated.gt(
-                    getLastUpdated(OrganisationUnit.class.getSimpleName()));
-
-            response = getTrackedEntities(idFilter, lastUpdatedFilter);
 
             if (response != null && response.isSuccessful()) {
-                for (TrackedEntity trackedEntity : response.body().items()) {
-                    persistTrackedEntities(trackedEntity);
+                List<TrackedEntity> trackedEntities = response.body().items();
+                int size = trackedEntities.size();
+
+                for (int i = 0; i < size; i++) {
+                    TrackedEntity trackedEntity = trackedEntities.get(i);
+
+                    trackedEntityHandler.handleTrackedEntity(trackedEntity);
                 }
-                updateInResourceStore(response.headers().getDate(HeaderUtils.DATE),
-                        OrganisationUnit.class.getSimpleName());
-                database.setTransactionSuccessful();
+                resourceHandler.handleResource(
+                        resourceType,
+                        serverDate
+                );
+                transaction.setSuccessful();
             }
         } finally {
-            database.endTransaction();
+            transaction.end();
         }
         return response;
     }
 
-    private Response<Payload<TrackedEntity>> getTrackedEntities(Filter<TrackedEntity, String> idFilter,
-                                                                Filter<TrackedEntity, String> lastUpdatedFilter
-    ) throws IOException {
-
-        Fields<TrackedEntity> fields = Fields.<TrackedEntity>builder().fields(
-                TrackedEntity.uid, TrackedEntity.code, TrackedEntity.name,
-                TrackedEntity.displayName, TrackedEntity.created, TrackedEntity.lastUpdated,
-                TrackedEntity.shortName, TrackedEntity.displayShortName,
-                TrackedEntity.description, TrackedEntity.displayDescription,
-                TrackedEntity.deleted
-        ).build();
-
-        retrofit2.Call<Payload<TrackedEntity>> call = service.trackedEntities(fields, idFilter,
-                lastUpdatedFilter, false);
-        return call.execute();
-    }
-
-    private void persistTrackedEntities(TrackedEntity trackedEntity) {
-        if (trackedEntity.deleted()) {
-            store.delete(trackedEntity.uid());
-        } else {
-            int updatedRow = store.update(
-                    trackedEntity.uid(),
-                    trackedEntity.code(),
-                    trackedEntity.name(),
-                    trackedEntity.displayName(),
-                    trackedEntity.created(),
-                    trackedEntity.lastUpdated(),
-                    trackedEntity.shortName(),
-                    trackedEntity.displayShortName(),
-                    trackedEntity.description(),
-                    trackedEntity.displayDescription(),
-                    trackedEntity.uid()
-            );
-            if (updatedRow <= 0) {
-                store.insert(
-                        trackedEntity.uid(),
-                        trackedEntity.code(),
-                        trackedEntity.name(),
-                        trackedEntity.displayName(),
-                        trackedEntity.created(),
-                        trackedEntity.lastUpdated(),
-                        trackedEntity.shortName(),
-                        trackedEntity.displayShortName(),
-                        trackedEntity.description(),
-                        trackedEntity.displayDescription()
-                );
-            }
-        }
-    }
-
-    //TODO: use these from the stores when implemented:
-    private void updateInResourceStore(Date serverDate, String className) {
-        int rowId = resourceStore.update(className, serverDate,
-                OrganisationUnit.class.getSimpleName());
-        if (rowId <= 0) {
-            resourceStore.insert(OrganisationUnit.class.getSimpleName(), serverDate);
-        }
-    }
-
-    private String getLastUpdated(String className) {
-        String lastUpdated = null;
-        Cursor cursor = database.query(
-                ResourceModel.TABLE,
-                new String[]{ResourceModel.Columns.LAST_SYNCED},
-                ResourceModel.Columns.RESOURCE_TYPE + "=?",
-                new String[]{className},
-                null, null, null
-        );
-        if (cursor != null) {
-            cursor.moveToFirst();
-            if (cursor.getCount() > 0) {
-                lastUpdated = cursor.getString(cursor.getColumnIndex(ResourceModel.Columns.LAST_SYNCED));
-            }
-            cursor.close();
-        }
-        return lastUpdated;
+    private Response<Payload<TrackedEntity>> getTrackedEntities(String lastUpdated) throws IOException {
+        return service.trackedEntities(
+                Fields.<TrackedEntity>builder().fields(
+                        TrackedEntity.uid, TrackedEntity.code, TrackedEntity.name,
+                        TrackedEntity.displayName, TrackedEntity.created, TrackedEntity.lastUpdated,
+                        TrackedEntity.shortName, TrackedEntity.displayShortName,
+                        TrackedEntity.description, TrackedEntity.displayDescription,
+                        TrackedEntity.deleted
+                ).build(),
+                TrackedEntity.uid.in(uidSet),
+                TrackedEntity.lastUpdated.gt(lastUpdated),
+                false
+        ).execute();
     }
 }

@@ -25,30 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo;
 
-package org.hisp.dhis.android.core.program;
+public class SystemInfoHandler {
+    private final SystemInfoStore systemInfoStore;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+    public SystemInfoHandler(SystemInfoStore systemInfoStore) {
+        this.systemInfoStore = systemInfoStore;
+    }
 
-import java.util.Date;
+    public void handleSystemInfo(SystemInfo systemInfo) {
+        if (systemInfo == null) {
+            return;
+        }
 
-public interface ProgramTrackedEntityAttributeStore {
-    long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
-                @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-                @Nullable String shortName, @Nullable String displayShortName,
-                @Nullable String description, @Nullable String displayDescription,
-                @Nullable Boolean mandatory, @NonNull String trackedEntityAttribute,
-                @Nullable Boolean allowFutureDates, @Nullable Boolean displayInList, @NonNull String program,
-                @Nullable Integer sortOrder);
+        int update = systemInfoStore.update(
+                systemInfo.serverDate(), systemInfo.dateFormat(),
+                systemInfo.version(), systemInfo.contextPath(), systemInfo.contextPath()
+        );
 
-    int update(@NonNull String uid, @Nullable String code, @NonNull String name,
-               @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-               @Nullable String shortName, @Nullable String displayShortName,
-               @Nullable String description, @Nullable String displayDescription,
-               @Nullable Boolean mandatory, @NonNull String trackedEntityAttribute,
-               @Nullable Boolean allowFutureDates, @Nullable Boolean displayInList, @NonNull String program,
-               @Nullable Integer sortOrder, @NonNull String whereProgramTrackedEntityAttributeUid);
-
-    int delete(String uid);
+        if (update <= 0) {
+            systemInfoStore.insert(
+                    systemInfo.serverDate(), systemInfo.dateFormat(),
+                    systemInfo.version(), systemInfo.contextPath()
+            );
+        }
+    }
 }

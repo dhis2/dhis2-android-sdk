@@ -47,7 +47,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
 
     private static final String PATTERN = "pattern";
     private static final String SORT_ORDER_IN_LIST_NO_PROGRAM = "sortOrderInListNoProgram";
-    private static final String OPTION_SET = "optionSetoptionSet";
+    private static final String OPTION_SET = "optionSet";
     private static final String VALUE_TYPE = "valueType";
     private static final String EXPRESSION = "expression";
     private static final String SEARCH_SCOPE = "searchScope";

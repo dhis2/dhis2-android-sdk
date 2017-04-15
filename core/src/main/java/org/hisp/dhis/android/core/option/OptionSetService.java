@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.Where;
 import org.hisp.dhis.android.core.data.api.Which;
 import org.hisp.dhis.android.core.data.api.Fields;
 
@@ -40,5 +42,6 @@ public interface OptionSetService {
 
     @GET("optionSets")
     Call<Payload<OptionSet>> optionSets(@Query("paging") boolean paging,
-                                        @Query("fields") @Which Fields<OptionSet> fields);
+                                        @Query("fields") @Which Fields<OptionSet> fields,
+                                        @Query("filter") @Where Filter<OptionSet, String> filter);
 }

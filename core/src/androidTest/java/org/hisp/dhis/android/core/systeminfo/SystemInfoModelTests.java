@@ -33,6 +33,7 @@ import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,6 +46,8 @@ import static com.google.common.truth.Truth.assertThat;
 public class SystemInfoModelTests {
     private static final long ID = 1L;
     private static final String DATE_FORMAT = "testDateFormat";
+    private static final String VERSION = "test.version-SNAPSHOT";
+    private static final String CONTEXT_PATH = "https://test.context.com/path";
 
     private final Date date;
     private final String dateString;
@@ -59,9 +62,11 @@ public class SystemInfoModelTests {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID,
                 Columns.SERVER_DATE,
-                Columns.DATE_FORMAT
+                Columns.DATE_FORMAT,
+                Columns.VERSION,
+                Columns.CONTEXT_PATH
         });
-        cursor.addRow(new Object[]{ID, dateString, DATE_FORMAT});
+        cursor.addRow(new Object[]{ID, dateString, DATE_FORMAT, VERSION, CONTEXT_PATH});
         cursor.moveToFirst();
 
         SystemInfoModel systemInfoModel = SystemInfoModel.create(cursor);
@@ -70,6 +75,8 @@ public class SystemInfoModelTests {
         assertThat(systemInfoModel.id()).isEqualTo(ID);
         assertThat(systemInfoModel.serverDate()).isEqualTo(date);
         assertThat(systemInfoModel.dateFormat()).isEqualTo(DATE_FORMAT);
+        assertThat(systemInfoModel.version()).isEqualTo(VERSION);
+        assertThat(systemInfoModel.contextPath()).isEqualTo(CONTEXT_PATH);
     }
 
     @Test
@@ -78,11 +85,15 @@ public class SystemInfoModelTests {
                 .id(ID)
                 .serverDate(date)
                 .dateFormat(DATE_FORMAT)
+                .version(VERSION)
+                .contextPath(CONTEXT_PATH)
                 .build();
 
         ContentValues contentValues = model.toContentValues();
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
         assertThat(contentValues.getAsString(Columns.SERVER_DATE)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(Columns.DATE_FORMAT)).isEqualTo(DATE_FORMAT);
+        assertThat(contentValues.getAsString(Columns.CONTEXT_PATH)).isEqualTo(CONTEXT_PATH);
+        assertThat(contentValues.getAsString(Columns.VERSION)).isEqualTo(VERSION);
     }
 }

@@ -119,6 +119,11 @@ final class RuleVariableValueMapBuilder {
 
     @Nonnull
     RuleVariableValueMapBuilder ruleEvents(@Nonnull List<RuleEvent> ruleEvents) {
+        if (isEventInList(ruleEvents, ruleEvent)) {
+            throw new IllegalStateException(String.format(Locale.US, "ruleEvent %s is already set " +
+                    "as a target, but also present in the context: ruleEvents list", ruleEvent.event()));
+        }
+
         this.ruleEvents.addAll(ruleEvents);
         return this;
     }
@@ -144,6 +149,21 @@ final class RuleVariableValueMapBuilder {
 
         // do not let outer world to alter variable value map
         return Collections.unmodifiableMap(valueMap);
+    }
+
+    private static boolean isEventInList(@Nonnull List<RuleEvent> ruleEvents,
+            @Nullable RuleEvent ruleEvent) {
+        if (ruleEvent != null) {
+            for (int i = 0; i < ruleEvents.size(); i++) {
+                RuleEvent event = ruleEvents.get(i);
+
+                if (event.event().equals(ruleEvent.event())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private void buildCurrentEventValues() {

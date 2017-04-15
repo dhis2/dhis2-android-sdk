@@ -537,4 +537,21 @@ public class RuleVariableValueMapBuilderTests {
         assertThatVariable(valueMap.get("test_variable_two")).isTypeOf(RuleValueType.TEXT)
                 .hasValue("test_attribute_value_two").hasCandidates("test_attribute_value_two");
     }
+
+    @Test
+    public void buildShouldThrowOnDuplicateEvent() {
+        RuleEvent ruleEvent = RuleEvent.create("test_event_two", "test_program_stage",
+                RuleEvent.Status.ACTIVE, new Date(), new Date(), new ArrayList<RuleDataValue>());
+
+        try {
+            RuleVariableValueMapBuilder.target(ruleEvent)
+                    .ruleVariables(new ArrayList<RuleVariable>())
+                    .ruleEvents(Arrays.asList(ruleEvent))
+                    .build();
+
+            fail("IllegalStateException was expected, but nothing was thrown.");
+        } catch (IllegalStateException illegalStateException) {
+            // noop
+        }
+    }
 }

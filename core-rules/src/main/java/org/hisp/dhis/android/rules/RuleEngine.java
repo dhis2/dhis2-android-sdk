@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
@@ -50,7 +49,7 @@ public final class RuleEngine {
     }
 
     @Nonnull
-    public Callable<List<RuleEffect>> calculate(@Nonnull RuleEvent ruleEvent) {
+    public Callable<List<RuleEffect>> evaluate(@Nonnull RuleEvent ruleEvent) {
         if (ruleEvent == null) {
             throw new IllegalArgumentException("ruleEvent == null");
         }
@@ -66,7 +65,7 @@ public final class RuleEngine {
     }
 
     @Nonnull
-    public Callable<List<RuleEffect>> calculate(@Nonnull RuleEnrollment ruleEnrollment) {
+    public Callable<List<RuleEffect>> evaluate(@Nonnull RuleEnrollment ruleEnrollment) {
         if (ruleEnrollment == null) {
             throw new IllegalArgumentException("ruleEnrollment == null");
         }
@@ -75,11 +74,6 @@ public final class RuleEngine {
             throw new IllegalStateException(String.format(Locale.US, "Enrollment '%s' is already " +
                     "set as a part of execution context.", this.ruleEnrollment.enrollment()));
         }
-
-        Map<String, RuleVariableValue> valueMap = RuleVariableValueMapBuilder.target(ruleEnrollment)
-                .ruleVariables(ruleEngineContext.variables())
-                .ruleEvents(ruleEvents)
-                .build();
 
         throw new UnsupportedOperationException();
     }
@@ -101,15 +95,20 @@ public final class RuleEngine {
 
         @Nonnull
         public Builder events(@Nonnull List<RuleEvent> ruleEvents) {
-            if (ruleEvents != null) {
-                this.ruleEvents = Collections.unmodifiableList(new ArrayList<>(ruleEvents));
+            if (ruleEvents == null) {
+                throw new IllegalArgumentException("ruleEvents == null");
             }
 
+            this.ruleEvents = Collections.unmodifiableList(new ArrayList<>(ruleEvents));
             return this;
         }
 
         @Nonnull
         public Builder enrollment(@Nonnull RuleEnrollment ruleEnrollment) {
+            if (ruleEnrollment == null) {
+                throw new IllegalArgumentException("ruleEnrollment == null");
+            }
+
             this.ruleEnrollment = ruleEnrollment;
             return this;
         }

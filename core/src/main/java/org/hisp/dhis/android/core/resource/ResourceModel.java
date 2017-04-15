@@ -50,6 +50,8 @@ public abstract class ResourceModel extends BaseModel {
         public static final String LAST_SYNCED = "lastSynced";
     }
 
+    public enum Type {SYSTEM_INFO, USER, ORGANISATION_UNIT, PROGRAM, OPTION_SET, TRACKED_ENTITY}
+
     @Nullable
     @ColumnName(Columns.RESOURCE_TYPE)
     public abstract String resourceType();

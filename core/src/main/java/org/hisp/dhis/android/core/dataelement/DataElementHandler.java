@@ -58,13 +58,19 @@ public class DataElementHandler {
         if (isDeleted(dataElement)) {
             dataElementStore.delete(dataElement.uid());
         } else {
+            String optionSetUid = null;
+
+            if (dataElement.optionSet() != null) {
+                optionSetUid = dataElement.optionSet().uid();
+            }
+
             int updatedRow = dataElementStore.update(dataElement.uid(), dataElement.code(), dataElement.name(),
                     dataElement.displayName(), dataElement.created(), dataElement.lastUpdated(),
                     dataElement.shortName(), dataElement.displayShortName(), dataElement.description(),
                     dataElement.displayDescription(), dataElement.valueType(),
                     dataElement.zeroIsSignificant(), dataElement.aggregationType(), dataElement.formName(),
                     dataElement.numberType(), dataElement.domainType(), dataElement.dimension(),
-                    dataElement.displayFormName(), dataElement.optionSet().uid(), dataElement.uid());
+                    dataElement.displayFormName(), optionSetUid, dataElement.uid());
 
             if (updatedRow <= 0) {
                 dataElementStore.insert(dataElement.uid(), dataElement.code(), dataElement.name(),
@@ -73,7 +79,7 @@ public class DataElementHandler {
                         dataElement.displayDescription(), dataElement.valueType(),
                         dataElement.zeroIsSignificant(), dataElement.aggregationType(), dataElement.formName(),
                         dataElement.numberType(), dataElement.domainType(), dataElement.dimension(),
-                        dataElement.displayFormName(), dataElement.optionSet().uid());
+                        dataElement.displayFormName(), optionSetUid);
             }
         }
 

@@ -32,10 +32,9 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,7 +58,7 @@ import retrofit2.Response;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -76,19 +75,19 @@ public class UserCallTests {
     private DatabaseAdapter databaseAdapter;
 
     @Mock
-    private UserHandler userHandler;
+    private UserStore userStore;
 
     @Mock
     private Transaction transaction;
 
     @Mock
-    private UserCredentialsHandler userCredentialsHandler;
+    private UserCredentialsStore userCredentialsStore;
 
     @Mock
-    private ResourceHandler resourceHandler;
+    private ResourceStore resourceStore;
 
     @Mock
-    private UserRoleHandler userRoleHandler;
+    private UserRoleStore userRoleStore;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<User> userCall;
@@ -103,7 +102,7 @@ public class UserCallTests {
     private UserCredentials userCredentials;
 
     @Mock
-    private OrganisationUnitHandler organisationUnitHandler;
+    private OrganisationUnitStore organisationUnitStore;
 
     @Mock
     private User user;
@@ -125,14 +124,21 @@ public class UserCallTests {
 
     private Call<Response<User>> userSyncCall;
 
+    @Mock
+    private UserRoleProgramLinkStore userRoleProgramLinkStore;
+
+    @Mock
+    private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
         userSyncCall = new UserCall(
-                userService, databaseAdapter, organisationUnitHandler,
-                userHandler, userCredentialsHandler, userRoleHandler, resourceHandler
+                userService, databaseAdapter, organisationUnitStore,
+                userStore, userCredentialsStore, userRoleStore, resourceStore,
+                serverDate, userRoleProgramLinkStore, userOrganisationUnitLinkStore
         );
 
         when(userCredentials.uid()).thenReturn("user_credentials_uid");
@@ -192,6 +198,7 @@ public class UserCallTests {
         when(user.userCredentials()).thenReturn(userCredentials);
         when(user.userCredentials().userRoles()).thenReturn(Collections.singletonList(userRole));
         when(user.organisationUnits()).thenReturn(organisationUnits);
+        when(user.teiSearchOrganisationUnits()).thenReturn(organisationUnits);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 
@@ -230,6 +237,7 @@ public class UserCallTests {
                         ),
                         User.organisationUnits.with(
                                 OrganisationUnit.uid,
+                                OrganisationUnit.path,
                                 OrganisationUnit.programs.with(
                                         Program.uid
                                 )
@@ -254,16 +262,48 @@ public class UserCallTests {
             verify(transaction, never()).setSuccessful();
             verify(transaction, never()).end();
 
-            verify(userHandler, never()).handleUser(any(User.class));
+            verify(userStore, never()).insert(
+                    anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
+                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
+                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
+            verify(userStore, never()).update(
+                    anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
+                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
+                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
+            verify(userStore, never()).delete(anyString());
 
-            verify(userCredentialsHandler, never()).handleUserCredentials(
-                    any(UserCredentials.class), any(User.class)
+            verify(userCredentialsStore, never()).insert(
+                    anyString(), anyString(), anyString(), anyString(),
+                    any(Date.class), any(Date.class), anyString(), anyString()
+            );
+            verify(userCredentialsStore, never()).update(
+                    anyString(), anyString(), anyString(), anyString(),
+                    any(Date.class), any(Date.class), anyString(), anyString(), anyString()
             );
 
-            verify(userRoleHandler, never()).handleUserRoles(anyListOf(UserRole.class));
+            verify(userCredentialsStore, never()).delete(anyString());
 
-            verify(organisationUnitHandler, never()).handleOrganisationUnits(anyListOf(OrganisationUnit.class),
-                    any(OrganisationUnitModel.Scope.class), anyString());
+            verify(userRoleStore, never()).insert(
+                    anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class)
+            );
+            verify(userRoleStore, never()).update(
+                    anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class), anyString()
+            );
+            verify(userRoleStore, never()).delete(anyString());
+
+            verify(organisationUnitStore, never()).insert(
+                    anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
+                    anyString(), anyString(), anyString(), anyString(), anyString(),
+                    any(Date.class), any(Date.class), anyString(), anyInt()
+            );
+
+            verify(organisationUnitStore, never()).update(
+                    anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
+                    anyString(), anyString(), anyString(), anyString(), anyString(),
+                    any(Date.class), any(Date.class), anyString(), anyInt(), anyString()
+            );
+
+            verify(organisationUnitStore, never()).delete(anyString());
         }
     }
 
@@ -283,69 +323,50 @@ public class UserCallTests {
         verify(transaction, never()).setSuccessful();
         verify(transaction, never()).end();
 
-        verify(userHandler, never()).handleUser(any(User.class));
+        verify(userStore, never()).insert(
+                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
+                anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
+        verify(userStore, never()).update(
+                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
+                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
+        verify(userStore, never()).delete(anyString());
 
-        verify(userCredentialsHandler, never()).handleUserCredentials(
-                any(UserCredentials.class), any(User.class)
+        verify(userCredentialsStore, never()).insert(
+                anyString(), anyString(), anyString(), anyString(),
+                any(Date.class), any(Date.class), anyString(), anyString()
+        );
+        verify(userCredentialsStore, never()).update(
+                anyString(), anyString(), anyString(), anyString(),
+                any(Date.class), any(Date.class), anyString(), anyString(), anyString()
         );
 
-        verify(userRoleHandler, never()).handleUserRoles(anyListOf(UserRole.class));
+        verify(userCredentialsStore, never()).delete(anyString());
 
-        verify(organisationUnitHandler, never()).handleOrganisationUnits(anyListOf(OrganisationUnit.class),
-                any(OrganisationUnitModel.Scope.class), anyString());
+        verify(userRoleStore, never()).insert(
+                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class)
+        );
+        verify(userRoleStore, never()).update(
+                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class), anyString()
+        );
+        verify(userRoleStore, never()).delete(anyString());
 
-        // verify that handlers was not touched
-        verify(organisationUnitHandler, never()).handleOrganisationUnits(anyListOf(OrganisationUnit.class),
-                any(OrganisationUnitModel.Scope.class), anyString());
+        verify(organisationUnitStore, never()).insert(
+                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(), anyString(), anyString(), anyString(),
+                any(Date.class), any(Date.class), anyString(), anyInt()
+        );
+
+        verify(organisationUnitStore, never()).update(
+                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(), anyString(), anyString(), anyString(),
+                any(Date.class), any(Date.class), anyString(), anyInt(), anyString()
+        );
+
+        verify(organisationUnitStore, never()).delete(anyString());
 
     }
-
-
-    //TODO Figure out how to mock the response header so we can mock HeaderUtils.DATE
-//    @Test
-//    public void call_shouldUpdateIntoResourceStoreWhenUpdatingUser() throws Exception {
-//        when(userStore.updateWithSection(anyString(), anyString(), anyString(), anyString(),
-//                any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-//                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-//                anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(1);
-//        when(userSyncCall.call()).
-//
-//        Date parsedServerDate = BaseIdentifiableObject.DATE_FORMAT.parse(HeaderUtils.DATE);
-//
-//        when(resourceStore.updateWithSection(
-//                User.class.getSimpleName(), parsedServerDate, User.class.getSimpleName())
-//        ).thenReturn(1);
-//
-//        when(userCall.execute()).thenReturn(Response.success(user));
-//
-//        userSyncCall.call();
-//        InOrder transactionOrder = inOrder(databaseAdapter);
-//
-//        transactionOrder.verify(databaseAdapter, times(1)).beginTransaction();
-//        transactionOrder.verify(databaseAdapter, times(1)).setTransactionSuccessful();
-//        transactionOrder.verify(databaseAdapter, times(1)).endTransaction();
-//
-//        // verify that userStore.updateWithSection() is called once
-//        verify(userStore, times(1)).updateWithSection(anyString(), anyString(), anyString(), anyString(),
-//                any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-//                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-//                anyString(), anyString(), anyString(), anyString(), anyString());
-//
-//        // verify that resource store is called once with User mime type
-//        verify(resourceStore, times(1)).updateWithSection(
-//                User.class.getSimpleName(), parsedServerDate, User.class.getSimpleName()
-//        );
-//
-//        // verify that userStore.insert() and userStore.delete() is never called
-//        verify(userStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-//                any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-//                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-//                anyString(), anyString(), anyString(), anyString());
-//
-//        verify(userStore, never()).delete(anyString());
-//
-//
-//    }
 
     @Test
     public void call_shouldMarkCallAsExecutedOnSuccess() throws Exception {
@@ -392,16 +413,31 @@ public class UserCallTests {
 
         userSyncCall.call();
 
-        verify(userHandler, times(1)).handleUser(user);
-        verify(userCredentialsHandler, times(1)).handleUserCredentials(user.userCredentials(), user);
-        verify(userRoleHandler, times(1)).handleUserRoles(user.userCredentials().userRoles());
-        verify(organisationUnitHandler, times(1)).handleOrganisationUnits(user.organisationUnits(),
-                OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user.uid());
-        verify(organisationUnitHandler, times(1)).handleOrganisationUnits(user.teiSearchOrganisationUnits(),
-                OrganisationUnitModel.Scope.SCOPE_TEI_SEARCH, user.uid());
+        verify(userStore, times(1)).insert(
+                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
+                anyString(), anyString(), anyString(), anyString(), anyString(), anyString()
+        );
 
-        //TODO : test that date is retrieved from headers
-        verify(resourceHandler, times(1)).handleResource(anyString(), any(Date.class));
+        verify(userCredentialsStore, times(1)).insert(
+                anyString(), anyString(), anyString(), anyString(),
+                any(Date.class), any(Date.class), anyString(), anyString()
+        );
+
+        verify(userRoleStore, times(1)).insert(
+                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class)
+        );
+
+        verify(userRoleProgramLinkStore, times(1)).insert(anyString(), anyString());
+
+        // check that it is invoked twice; once for assigned orgunits and once for teiSearchOrgUnits
+        verify(organisationUnitStore, times(2)).insert(
+                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(), anyString(), anyString(), anyString(),
+                any(Date.class), any(Date.class), anyString(), anyInt()
+        );
+
+        verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
 
     }
 }

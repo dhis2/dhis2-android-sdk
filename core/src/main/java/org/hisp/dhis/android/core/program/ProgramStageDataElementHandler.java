@@ -86,8 +86,8 @@ public class ProgramStageDataElementHandler {
                             programStageDataElement.lastUpdated(), programStageDataElement.displayInReports(),
                             programStageDataElement.compulsory(), programStageDataElement.allowProvidedElsewhere(),
                             programStageDataElement.sortOrder(), programStageDataElement.allowFutureDate(),
-                            programStageDataElement.dataElement().uid(), programStageSectionUid,
-                            programStageDataElement.programStage().uid(), programStageDataElement.uid()
+                            programStageDataElement.dataElement().uid(), programStageDataElement.programStage().uid(),
+                            programStageSectionUid, programStageDataElement.uid()
                     );
                 }
 
@@ -99,8 +99,8 @@ public class ProgramStageDataElementHandler {
                             programStageDataElement.displayInReports(), programStageDataElement.compulsory(),
                             programStageDataElement.allowProvidedElsewhere(), programStageDataElement.sortOrder(),
                             programStageDataElement.allowFutureDate(), programStageDataElement.dataElement().uid(),
-                            programStageSectionUid, programStageDataElement.programStage().uid()
-                    );
+                            programStageDataElement.programStage().uid(), programStageSectionUid
+                            );
                 }
             }
             dataElementHandler.handleDataElement(programStageDataElement.dataElement());

@@ -34,7 +34,21 @@ import java.util.Date;
 
 public interface SystemInfoStore {
 
-    long insert(@NonNull Date serverDate, @NonNull String dateFormat);
+    long insert(
+            @NonNull Date serverDate,
+            @NonNull String dateFormat,
+            @NonNull String version,
+            @NonNull String contextPath
+    );
 
-    void close();
+    int update(
+            @NonNull Date serverDate,
+            @NonNull String dateFormat,
+            @NonNull String version,
+            @NonNull String contextPath,
+            @NonNull String whereContextPath
+    );
+
+    int delete(@NonNull String contextPath);
+
 }

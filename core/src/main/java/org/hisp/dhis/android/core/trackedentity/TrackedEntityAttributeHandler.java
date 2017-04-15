@@ -49,6 +49,11 @@ public class TrackedEntityAttributeHandler {
         if (isDeleted(trackedEntityAttribute)) {
             trackedEntityAttributeStore.delete(trackedEntityAttribute.uid());
         } else {
+            String optionSetUid = null;
+            if (trackedEntityAttribute.optionSet() != null) {
+                optionSetUid = trackedEntityAttribute.optionSet().uid();
+            }
+
             int updatedRow = trackedEntityAttributeStore.update(
                     trackedEntityAttribute.uid(), trackedEntityAttribute.code(),
                     trackedEntityAttribute.name(), trackedEntityAttribute.displayName(),
@@ -56,7 +61,7 @@ public class TrackedEntityAttributeHandler {
                     trackedEntityAttribute.shortName(), trackedEntityAttribute.displayShortName(),
                     trackedEntityAttribute.description(), trackedEntityAttribute.displayDescription(),
                     trackedEntityAttribute.pattern(), trackedEntityAttribute.sortOrderInListNoProgram(),
-                    trackedEntityAttribute.optionSet().uid(),
+                    optionSetUid,
                     trackedEntityAttribute.valueType(), trackedEntityAttribute.expression(),
                     trackedEntityAttribute.searchScope(),
                     trackedEntityAttribute.programScope(), trackedEntityAttribute.displayInListNoProgram(),
@@ -72,7 +77,7 @@ public class TrackedEntityAttributeHandler {
                         trackedEntityAttribute.shortName(), trackedEntityAttribute.displayShortName(),
                         trackedEntityAttribute.description(), trackedEntityAttribute.displayDescription(),
                         trackedEntityAttribute.pattern(), trackedEntityAttribute.sortOrderInListNoProgram(),
-                        trackedEntityAttribute.optionSet().uid(),
+                        optionSetUid,
                         trackedEntityAttribute.valueType(), trackedEntityAttribute.expression(),
                         trackedEntityAttribute.searchScope(), trackedEntityAttribute.programScope(),
                         trackedEntityAttribute.displayInListNoProgram(),

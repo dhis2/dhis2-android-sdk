@@ -36,12 +36,17 @@ import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.option.OptionSetStore;
+import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -88,10 +93,52 @@ public class ProgramCallTests {
     private DatabaseAdapter databaseAdapter;
 
     @Mock
-    private ProgramHandler programHandler;
+    private ProgramStore programStore;
 
     @Mock
-    private ResourceHandler resourceHandler;
+    private TrackedEntityAttributeStore trackedEntityAttributeStore;
+
+    @Mock
+    private ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
+
+    @Mock
+    private ProgramRuleVariableModelStore programRuleVariableStore;
+
+    @Mock
+    private ProgramIndicatorStore programIndicatorStore;
+
+    @Mock
+    private ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
+
+    @Mock
+    private ProgramRuleActionStore programRuleActionStore;
+
+    @Mock
+    private ProgramRuleStore programRuleStore;
+
+    @Mock
+    private OptionStore optionStore;
+
+    @Mock
+    private OptionSetStore optionSetStore;
+
+    @Mock
+    private DataElementStore dataElementStore;
+
+    @Mock
+    private ProgramStageDataElementStore programStageDataElementStore;
+
+    @Mock
+    private ProgramStageSectionStore programStageSectionStore;
+
+    @Mock
+    private ProgramStageStore programStageStore;
+
+    @Mock
+    private RelationshipTypeStore relationshipStore;
+
+    @Mock
+    private ResourceStore resourceStore;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<Payload<Program>> programCall;
@@ -120,18 +167,31 @@ public class ProgramCallTests {
     @Mock
     private Cursor cursor;
 
-    private Set<String> assignedProgramUids;
+    @Mock
+    private Date serverDate;
+
+    private Set<String> uids;
 
     // the call we are testing
     private Call<Response<Payload<Program>>> programSyncCall;
+
 
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
 
+        uids = new HashSet<>();
+        uids.add("test_program_uid");
+        uids.add("test_program1_uid");
+
         programSyncCall = new ProgramCall(programService, databaseAdapter,
-                resourceHandler, assignedProgramUids, programHandler);
+                resourceStore, uids, programStore, serverDate, trackedEntityAttributeStore,
+                programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
+                programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore,
+                optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
+                programStageSectionStore, programStageStore, relationshipStore
+        );
 
         when(program.uid()).thenReturn("test_program_uid");
 
@@ -149,10 +209,6 @@ public class ProgramCallTests {
 
         when(programService.getPrograms(any(Fields.class), any(Filter.class), any(Filter.class), anyBoolean())
         ).thenReturn(programCall);
-
-        assignedProgramUids = new HashSet<>();
-        assignedProgramUids.add("test_program_uid");
-        assignedProgramUids.add("test_program1_uid");
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 
@@ -180,6 +236,9 @@ public class ProgramCallTests {
                 Program.relationshipFromA, Program.relationshipText,
                 Program.selectEnrollmentDatesInFuture, Program.selectIncidentDatesInFuture,
                 Program.useFirstStageDuringRegistration,
+                Program.relatedProgram.with(
+                        Program.uid
+                ),
                 Program.programStages.with(
                         ProgramStage.uid, ProgramStage.code, ProgramStage.name, ProgramStage.displayName,
                         ProgramStage.created, ProgramStage.lastUpdated, ProgramStage.allowGenerateNextVisit,
@@ -230,12 +289,23 @@ public class ProgramCallTests {
                 Program.programRules.with(
                         ProgramRule.uid, ProgramRule.code, ProgramRule.name, ProgramRule.displayName,
                         ProgramRule.created, ProgramRule.lastUpdated, ProgramRule.deleted,
-                        ProgramRule.priority, ProgramRule.condition, ProgramRule.programRuleActions.with(
+                        ProgramRule.priority, ProgramRule.condition,
+                        ProgramRule.program.with(
+                                Program.uid
+                        ),
+                        ProgramRule.programStage.with(
+                                ProgramStage.uid
+                        ),
+                        ProgramRule.programRuleActions.with(
                                 ProgramRuleAction.uid, ProgramRuleAction.code, ProgramRuleAction.name,
                                 ProgramRuleAction.displayName, ProgramRuleAction.created,
                                 ProgramRuleAction.lastUpdated, ProgramRuleAction.content, ProgramRuleAction.data,
                                 ProgramRuleAction.deleted, ProgramRuleAction.location,
-                                ProgramRuleAction.programRuleActionType, ProgramRuleAction.dataElement.with(
+                                ProgramRuleAction.programRuleActionType,
+                                ProgramRuleAction.programRule.with(
+                                        ProgramRule.uid
+                                ),
+                                ProgramRuleAction.dataElement.with(
                                         DataElement.uid
                                 ),
                                 ProgramRuleAction.programIndicator.with(
@@ -290,7 +360,9 @@ public class ProgramCallTests {
                         ProgramTrackedEntityAttribute.description, ProgramTrackedEntityAttribute.displayDescription,
                         ProgramTrackedEntityAttribute.allowFutureDate, ProgramTrackedEntityAttribute.deleted,
                         ProgramTrackedEntityAttribute.displayInList, ProgramTrackedEntityAttribute.mandatory,
-                        ProgramTrackedEntityAttribute.valueType,
+                        ProgramTrackedEntityAttribute.program.with(
+                                Program.uid
+                        ),
                         ProgramTrackedEntityAttribute.trackedEntityAttribute.with(
                                 TrackedEntityAttribute.uid, TrackedEntityAttribute.code,
                                 TrackedEntityAttribute.created, TrackedEntityAttribute.lastUpdated,
@@ -322,7 +394,7 @@ public class ProgramCallTests {
     }
 
     @Test
-    public void call_shouldNotInvokeHandlerIfRequestFail() throws Exception {
+    public void call_shouldNotInvokeProgramStoreIfRequestFail() throws Exception {
         when(programCall.execute()).thenReturn(Response.<Payload<Program>>error(HttpURLConnection.HTTP_UNAUTHORIZED,
                 ResponseBody.create(MediaType.parse("application/json"), "{}")));
 
@@ -335,15 +407,31 @@ public class ProgramCallTests {
         verify(transaction, never()).setSuccessful();
         verify(transaction, never()).end();
 
-        // verify that ProgramHandler is never called
-        verify(programHandler, never()).handleProgram(any(Program.class));
-        verify(resourceHandler, never()).handleResource(anyString(), any(Date.class));
+        // verify that program store is never called
+        verify(programStore, never()).insert(anyString(), anyString(), anyString(), anyString(), any(Date.class),
+                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyInt(),
+                anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(), anyBoolean(), anyBoolean(),
+                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
+                any(ProgramType.class), anyString(), anyString(), anyString(), anyString());
+
+        verify(programStore, never()).update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
+                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyInt(),
+                anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(), anyBoolean(), anyBoolean(),
+                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
+                any(ProgramType.class), anyString(), anyString(), anyString(), anyString(), anyString());
+
+        verify(programStore, never()).delete(anyString());
+
+        verify(resourceStore, never()).insert(anyString(), any(Date.class));
+        verify(resourceStore, never()).update(anyString(), any(Date.class), anyString());
+        verify(resourceStore, never()).delete(anyString());
     }
 
     @Test
     public void call_shouldInvokeProgramHandlerAndUpdateResourceTableIfRequestSucceeds() throws Exception {
         when(programCall.execute()).thenReturn(Response.success(payload));
         when(payload.items()).thenReturn(Arrays.asList(program, program, program));
+        when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(1);
 
         programSyncCall.call();
 
@@ -355,16 +443,24 @@ public class ProgramCallTests {
 
         // assert that payload contains 3 times and all is handled by ProgramHandler
         assertThat(payload.items().size()).isEqualTo(3);
-        verify(programHandler, times(3)).handleProgram(any(Program.class));
 
-        verify(resourceHandler, times(1)).handleResource(anyString(), any(Date.class));
+        verify(programStore, times(3)).insert(anyString(), anyString(), anyString(), anyString(), any(Date.class),
+                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyInt(),
+                anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(), anyBoolean(), anyBoolean(),
+                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
+                any(ProgramType.class), anyString(), anyString(), anyString(), anyString());
 
+        verify(resourceStore, times(1)).update(anyString(), any(Date.class), anyString());
+
+        // verify that nothing is inserted into resourceStore
+        verify(resourceStore, never()).insert(anyString(), any(Date.class));
     }
 
     @Test
     public void call_shouldInvokeProgramHandlerAndInsertIntoResourceTableIfRequestSucceeds() throws Exception {
         when(programCall.execute()).thenReturn(Response.success(payload));
         when(payload.items()).thenReturn(Arrays.asList(program, program, program));
+        when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(0);
 
         programSyncCall.call();
 
@@ -376,10 +472,19 @@ public class ProgramCallTests {
 
         // assert that payload contains 3 times and all is handled by ProgramHandler
         assertThat(payload.items().size()).isEqualTo(3);
-        verify(programHandler, times(3)).handleProgram(any(Program.class));
 
-        // we need to verify that resource handler is invoked
-        verify(resourceHandler, times(1)).handleResource(anyString(), any(Date.class));
+        // verify that insert is called 3 times in program store
+        verify(programStore, times(3)).insert(anyString(), anyString(), anyString(), anyString(), any(Date.class),
+                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyInt(),
+                anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(), anyBoolean(), anyBoolean(),
+                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
+                any(ProgramType.class), anyString(), anyString(), anyString(), anyString());
+
+        // we need to verify that resource store is invoked with update since we update before we insert
+        verify(resourceStore, times(1)).update(anyString(), any(Date.class), anyString());
+
+        // check that insert is called once
+        verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
     }
 
     @Test
@@ -404,8 +509,12 @@ public class ProgramCallTests {
         // only 1 program in payload (See setUp method)
         assertThat(payload.items().size()).isEqualTo(1);
 
-        verify(programHandler, times(1)).handleProgram(any(Program.class));
-
+        // verify that insert is called once in program store
+        verify(programStore, times(1)).insert(anyString(), anyString(), anyString(), anyString(), any(Date.class),
+                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyInt(),
+                anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(), anyBoolean(), anyBoolean(),
+                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
+                any(ProgramType.class), anyString(), anyString(), anyString(), anyString());
     }
 
     @Test

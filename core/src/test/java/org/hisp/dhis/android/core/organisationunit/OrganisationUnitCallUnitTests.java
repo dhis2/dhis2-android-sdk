@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
@@ -47,9 +48,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
@@ -67,9 +66,9 @@ import retrofit2.Response;
 import static junit.framework.Assert.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -87,8 +86,6 @@ public class OrganisationUnitCallUnitTests {
     @Mock
     private Transaction transaction;
 
-    @Mock
-    private ResourceHandler resourceHandler;
 
     @Mock
     private OrganisationUnitHandler organisationUnitHandler;
@@ -144,6 +141,9 @@ public class OrganisationUnitCallUnitTests {
     @Mock
     private Date lastUpdated;
 
+    @Mock
+    private Date serverDate;
+
     //the call we are testing:
     private OrganisationUnitCall organisationUnitCall;
 
@@ -190,12 +190,13 @@ public class OrganisationUnitCallUnitTests {
         when(user.phoneNumber()).thenReturn("user_phone_number");
         when(user.nationality()).thenReturn("user_nationality");
 
+
         when(database.beginNewTransaction()).thenReturn(transaction);
 
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, database,
-                organisationUnitHandler,
-                resourceHandler
-        );
+                organisationUnitStore,
+                resourceStore,
+                serverDate, userOrganisationUnitLinkStore);
 
         //Return only one organisationUnit.
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
@@ -233,7 +234,7 @@ public class OrganisationUnitCallUnitTests {
     @SuppressWarnings("unchecked")
     public void call_shouldInvokeServer_withCorrectParameters_withLastUpdated() throws Exception {
         String date = "2014-11-25T09:37:53.358";
-        when(resourceHandler.getLastUpdated(anyString())).thenReturn(date);
+        when(resourceStore.getLastUpdated(any(ResourceModel.Type.class))).thenReturn(date);
         when(payload.items()).thenReturn(Collections.singletonList(organisationUnit));
 
         organisationUnitCall.call();
@@ -291,7 +292,7 @@ public class OrganisationUnitCallUnitTests {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldInvokeHandler_ifRequestSucceeds() throws Exception {
+    public void call_shouldInvokeStore_ifRequestSucceeds() throws Exception {
         Headers headers = new Headers.Builder().add(HeaderUtils.DATE, lastUpdated.toString()).build();
         when(payload.items()).thenReturn(Collections.singletonList(organisationUnit));
         Response<Payload<OrganisationUnit>> response = Response.success(payload, headers);
@@ -303,12 +304,12 @@ public class OrganisationUnitCallUnitTests {
         verify(transaction, times(1)).setSuccessful();
         verify(transaction, times(1)).end();
 
-        verify(organisationUnitHandler, times(1)).handleOrganisationUnits(
-                eq(Collections.singletonList(organisationUnit)),
-                eq(OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE),
-                eq("user_uid")
+        verify(organisationUnitStore, times(1)).insert(
+                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(), anyString(), anyString(), anyString(),
+                any(Date.class), any(Date.class), anyString(), anyInt()
         );
-        verify(resourceHandler, times(1)).handleResource(eq(OrganisationUnit.class.getSimpleName()), any(Date.class));
+        verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
     }
 
     @Test

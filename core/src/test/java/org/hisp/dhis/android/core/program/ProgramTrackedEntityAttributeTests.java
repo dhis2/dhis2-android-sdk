@@ -32,7 +32,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.ValueType;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -43,7 +42,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class ProgramTrackedEntityAttributeTests {
 
     @Test
-    public void programIndicator_shouldMapFromJsonString() throws IOException, ParseException {
+    public void programTrackedEntityAttribute_shouldMapFromJsonString() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
         ProgramTrackedEntityAttribute programTrackedEntityAttribute = objectMapper.readValue("{\n" +
                 "\"lastUpdated\": \"2016-10-11T10:41:40.401\",\n" +
@@ -60,6 +59,7 @@ public class ProgramTrackedEntityAttributeTests {
                 "\"allowFutureDate\": false,\n" +
                 "\"dimensionItem\": \"IpHINAT79UW.cejWyOfXge6\",\n" +
                 "\"displayInList\": false,\n" +
+                "\"sortOrder\": 1,\n" +
                 "\"dimensionItemType\": \"PROGRAM_ATTRIBUTE\",\n" +
                 "\"access\": {\n" +
                 "\"read\": true,\n" +
@@ -94,8 +94,8 @@ public class ProgramTrackedEntityAttributeTests {
         assertThat(programTrackedEntityAttribute.mandatory()).isEqualTo(false);
         assertThat(programTrackedEntityAttribute.trackedEntityAttribute().uid()).isEqualTo("cejWyOfXge6");
         assertThat(programTrackedEntityAttribute.program().uid()).isEqualTo("IpHINAT79UW");
-        assertThat(programTrackedEntityAttribute.valueType()).isEqualTo(ValueType.TEXT);
         assertThat(programTrackedEntityAttribute.allowFutureDate()).isEqualTo(false);
         assertThat(programTrackedEntityAttribute.displayInList()).isEqualTo(false);
+        assertThat(programTrackedEntityAttribute.sortOrder()).isEqualTo(1);
     }
 }

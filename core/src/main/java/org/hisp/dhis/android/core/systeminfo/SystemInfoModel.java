@@ -50,6 +50,8 @@ public abstract class SystemInfoModel extends BaseModel {
     public static class Columns extends BaseModel.Columns {
         public static final String SERVER_DATE = "serverDate";
         public static final String DATE_FORMAT = "dateFormat";
+        public static final String VERSION = "version";
+        public static final String CONTEXT_PATH = "contextPath";
     }
 
     public static SystemInfoModel create(Cursor cursor) {
@@ -72,12 +74,24 @@ public abstract class SystemInfoModel extends BaseModel {
     @ColumnName(Columns.DATE_FORMAT)
     public abstract String dateFormat();
 
+    @Nullable
+    @ColumnName(Columns.VERSION)
+    public abstract String version();
+
+    @Nullable
+    @ColumnName(Columns.CONTEXT_PATH)
+    public abstract String contextPath();
+
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
 
         public abstract Builder serverDate(@Nullable Date serverDate);
 
         public abstract Builder dateFormat(@Nullable String dateFormat);
+
+        public abstract Builder version(@Nullable String version);
+
+        public abstract Builder contextPath(@Nullable String contextPath);
 
         public abstract SystemInfoModel build();
     }

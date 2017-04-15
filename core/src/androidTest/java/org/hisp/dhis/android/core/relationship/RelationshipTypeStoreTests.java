@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.relationship;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -37,6 +38,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.security.cert.CRLException;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -142,8 +144,51 @@ public class RelationshipTypeStoreTests extends AbsStoreTestCase {
     }
 
     @Test
-    public void close_shouldNotCloseDatabase() {
-        relationshipTypeStore.close();
-        assertThat(database().isOpen()).isTrue();
+    public void update_shouldUpdateRelationshipType() throws Exception {
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(1L, UID);
+        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
+
+        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
+
+        String[] projection = {RelationshipTypeModel.Columns.UID};
+        Cursor cursor = database().query(RelationshipTypeModel.TABLE, projection,
+                null, null, null, null, null);
+
+        // check that relationshipType was successfully inserted in database
+        assertThatCursor(cursor).hasRow(UID).isExhausted();
+
+        int update = relationshipTypeStore.update(UID, CODE, NAME, DISPLAY_NAME, date, date, A_IS_TO_B, B_IS_TO_A, UID);
+
+        // check that update returns 1
+        assertThat(update).isEqualTo(1);
+
+        cursor = database().query(RelationshipTypeModel.TABLE, projection,
+                null, null, null, null, null);
+
+        // check that row exists in database
+        assertThatCursor(cursor).hasRow(UID).isExhausted();
+    }
+
+    @Test
+    public void delete_shouldDeleteRelationshipType() throws Exception {
+        ContentValues relationshipType = CreateRelationshipTypeUtils.create(1L, UID);
+        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
+
+        String[] projection = {RelationshipTypeModel.Columns.UID};
+        Cursor cursor = database().query(RelationshipTypeModel.TABLE, projection,
+                null, null, null, null, null);
+        // check that relationshipType was successfully inserted in database
+        assertThatCursor(cursor).hasRow(UID).isExhausted();
+
+        int delete = relationshipTypeStore.delete(UID);
+        assertThat(delete).isEqualTo(1);
+
+        cursor = database().query(RelationshipTypeModel.TABLE, projection,
+                null, null, null, null, null);
+
+        assertThatCursor(cursor).isExhausted();
+
+
+
     }
 }

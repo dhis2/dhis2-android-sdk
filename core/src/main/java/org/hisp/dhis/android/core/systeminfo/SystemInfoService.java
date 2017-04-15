@@ -25,30 +25,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo;
 
-package org.hisp.dhis.android.core.program;
+import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Which;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-import java.util.Date;
-
-public interface ProgramTrackedEntityAttributeStore {
-    long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
-                @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-                @Nullable String shortName, @Nullable String displayShortName,
-                @Nullable String description, @Nullable String displayDescription,
-                @Nullable Boolean mandatory, @NonNull String trackedEntityAttribute,
-                @Nullable Boolean allowFutureDates, @Nullable Boolean displayInList, @NonNull String program,
-                @Nullable Integer sortOrder);
-
-    int update(@NonNull String uid, @Nullable String code, @NonNull String name,
-               @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-               @Nullable String shortName, @Nullable String displayShortName,
-               @Nullable String description, @Nullable String displayDescription,
-               @Nullable Boolean mandatory, @NonNull String trackedEntityAttribute,
-               @Nullable Boolean allowFutureDates, @Nullable Boolean displayInList, @NonNull String program,
-               @Nullable Integer sortOrder, @NonNull String whereProgramTrackedEntityAttributeUid);
-
-    int delete(String uid);
+public interface SystemInfoService {
+    @GET("system/info")
+    Call<SystemInfo> getSystemInfo(@Query("fields") @Which Fields<SystemInfo> fields);
 }

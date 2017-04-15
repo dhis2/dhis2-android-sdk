@@ -2,6 +2,8 @@ package org.hisp.dhis.android.rules.models;
 
 import com.google.auto.value.AutoValue;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -25,17 +27,7 @@ public abstract class Rule {
     @Nonnull
     public static Rule create(@Nullable String programStage, @Nullable Integer priority,
             @Nonnull String condition, @Nonnull List<RuleAction> actions) {
-        return new AutoValue_Rule(programStage, priority, condition, actions);
-    }
-
-    @Nonnull
-    public static Rule create(@Nullable Integer priority, @Nonnull String condition,
-            @Nonnull List<RuleAction> actions) {
-        return new AutoValue_Rule(null, priority, condition, actions);
-    }
-
-    @Nonnull
-    public static Rule create(@Nonnull String condition, @Nonnull List<RuleAction> actions) {
-        return new AutoValue_Rule(null, null, condition, actions);
+        return new AutoValue_Rule(programStage, priority, condition,
+                Collections.unmodifiableList(new ArrayList<>(actions)));
     }
 }

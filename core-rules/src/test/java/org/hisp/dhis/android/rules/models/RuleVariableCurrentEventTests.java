@@ -33,7 +33,7 @@ public class RuleVariableCurrentEventTests {
     @Test
     public void createShouldThrowOnNullDataElementType() {
         try {
-            RuleVariableCurrentEvent.create("test_variable", "test_attribute", null);
+            RuleVariableCurrentEvent.create("test_variable", "test_dataelement", null);
             fail("NullPointerException is expected, but nothing was thrown");
         } catch (NullPointerException exception) {
             // noop
@@ -43,10 +43,10 @@ public class RuleVariableCurrentEventTests {
     @Test
     public void createShouldPropagatePropertiesCorrectly() {
         RuleVariableCurrentEvent ruleVariableCurrentEvent = RuleVariableCurrentEvent.create(
-                "test_variable", "test_attribute", RuleValueType.NUMERIC);
+                "test_variable", "test_dataelement", RuleValueType.NUMERIC);
 
         assertThat(ruleVariableCurrentEvent.name()).isEqualTo("test_variable");
-        assertThat(ruleVariableCurrentEvent.dataElement()).isEqualTo("test_attribute");
+        assertThat(ruleVariableCurrentEvent.dataElement()).isEqualTo("test_dataelement");
         assertThat(ruleVariableCurrentEvent.dataElementType()).isEqualTo(RuleValueType.NUMERIC);
     }
 }

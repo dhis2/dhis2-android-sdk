@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 
 import static org.hisp.dhis.android.rules.RuleVariableValue.create;
 
+@SuppressWarnings("PMD.GodClass")
 final class RuleVariableValueMapBuilder {
     private static final String DATE_PATTERN = "yyyy-MM-dd";
     private static final String ENV_VAR_CURRENT_DATE = "current_date";
@@ -206,7 +207,7 @@ final class RuleVariableValueMapBuilder {
                 // push new list if it is not there for the given data element
                 if (!allEventsValues.containsKey(ruleDataValue.dataElement())) {
                     allEventsValues.put(ruleDataValue.dataElement(),
-                            new ArrayList<RuleDataValue>(events.size()));
+                            new ArrayList<RuleDataValue>(events.size())); //NOPMD
                 }
 
                 // append data value to the list
@@ -261,39 +262,27 @@ final class RuleVariableValueMapBuilder {
     }
 
     private void buildRuleVariableValues(@Nonnull Map<String, RuleVariableValue> valueMap) {
-        // split values into ruleVariables
         for (RuleVariable ruleVariable : ruleVariables) {
             if (ruleVariable instanceof RuleVariableAttribute) {
-                if (ruleEnrollment != null) {
-                    RuleVariableAttribute ruleVariableAttribute
-                            = (RuleVariableAttribute) ruleVariable;
-                    valueMap.put(ruleVariable.name(),
-                            createAttributeVariableValue(ruleVariableAttribute));
-                }
+                RuleVariableAttribute ruleVariableAttribute
+                        = (RuleVariableAttribute) ruleVariable;
+                createAttributeVariableValue(valueMap, ruleVariableAttribute);
             } else if (ruleVariable instanceof RuleVariableCurrentEvent) {
-                if (ruleEvent != null) {
-                    RuleVariableCurrentEvent currentEventVariable
-                            = (RuleVariableCurrentEvent) ruleVariable;
-                    valueMap.put(currentEventVariable.name(),
-                            createCurrentEventVariableValue(currentEventVariable));
-                }
+                RuleVariableCurrentEvent currentEventVariable
+                        = (RuleVariableCurrentEvent) ruleVariable;
+                createCurrentEventVariableValue(valueMap, currentEventVariable);
             } else if (ruleVariable instanceof RuleVariablePreviousEvent) {
-                if (ruleEvent != null) {
-                    RuleVariablePreviousEvent ruleVariablePreviousEvent
-                            = (RuleVariablePreviousEvent) ruleVariable;
-                    valueMap.put(ruleVariable.name(),
-                            createPreviousEventVariableValue(ruleVariablePreviousEvent));
-                }
+                RuleVariablePreviousEvent ruleVariablePreviousEvent
+                        = (RuleVariablePreviousEvent) ruleVariable;
+                createPreviousEventVariableValue(valueMap, ruleVariablePreviousEvent);
             } else if (ruleVariable instanceof RuleVariableNewestEvent) {
                 RuleVariableNewestEvent ruleVariableNewestEvent
                         = (RuleVariableNewestEvent) ruleVariable;
-                valueMap.put(ruleVariableNewestEvent.name(),
-                        createNewestEventVariableValue(ruleVariableNewestEvent));
+                createNewestEventVariableValue(valueMap, ruleVariableNewestEvent);
             } else if (ruleVariable instanceof RuleVariableNewestStageEvent) {
                 RuleVariableNewestStageEvent ruleVariableNewestEvent
                         = (RuleVariableNewestStageEvent) ruleVariable;
-                valueMap.put(ruleVariableNewestEvent.name(),
-                        createNewestStageEventVariableValue(ruleVariableNewestEvent));
+                createNewestStageEventVariableValue(valueMap, ruleVariableNewestEvent);
             } else {
                 throw new IllegalArgumentException("Unsupported RuleVariable type: " +
                         ruleVariable.getClass());
@@ -301,82 +290,94 @@ final class RuleVariableValueMapBuilder {
         }
     }
 
-    @Nonnull
-    private RuleVariableValue createAttributeVariableValue(
+    private void createAttributeVariableValue(
+            @Nonnull Map<String, RuleVariableValue> valueMap,
             @Nonnull RuleVariableAttribute variable) {
         if (ruleEnrollment == null) {
-            // there is no way to calculate variable value
-            // for current enrollment if it is not present
-            throw new IllegalStateException();
+            return;
         }
+
+        RuleVariableValue variableValue;
         if (currentEnrollmentValues.containsKey(variable.trackedEntityAttribute())) {
             RuleAttributeValue value = currentEnrollmentValues
                     .get(variable.trackedEntityAttribute());
-            return create(value.value(), variable.trackedEntityAttributeType(),
+            variableValue = create(value.value(), variable.trackedEntityAttributeType(),
                     Arrays.asList(value.value()));
+        } else {
+            variableValue = create(variable.trackedEntityAttributeType());
         }
 
-        return RuleVariableValue.create(variable.trackedEntityAttributeType());
+        valueMap.put(variable.name(), variableValue);
     }
 
-    @Nonnull
-    private RuleVariableValue createCurrentEventVariableValue(
+    private void createCurrentEventVariableValue(
+            @Nonnull Map<String, RuleVariableValue> valueMap,
             @Nonnull RuleVariableCurrentEvent variable) {
         if (ruleEvent == null) {
-            // there is no way to calculate variable value
-            // for current event if it is not present
-            throw new IllegalStateException();
+            return;
         }
+
+        RuleVariableValue variableValue;
         if (currentEventValues.containsKey(variable.dataElement())) {
             RuleDataValue value = currentEventValues.get(variable.dataElement());
-            return create(value.value(), variable.dataElementType(),
+            variableValue = create(value.value(), variable.dataElementType(),
                     Arrays.asList(value.value()));
+        } else {
+            variableValue = create(variable.dataElementType());
         }
 
-        return create(variable.dataElementType());
+        valueMap.put(variable.name(), variableValue);
     }
 
-    @Nonnull
-    private RuleVariableValue createPreviousEventVariableValue(
+    private void createPreviousEventVariableValue(
+            @Nonnull Map<String, RuleVariableValue> valueMap,
             @Nonnull RuleVariablePreviousEvent variable) {
         if (ruleEvent == null) {
-            // we can't calculate correct value if event is not present
-            throw new IllegalStateException();
+            return;
         }
 
+        RuleVariableValue variableValue = null;
         List<RuleDataValue> ruleDataValues = allEventsValues.get(variable.dataElement());
         if (ruleDataValues != null && !ruleDataValues.isEmpty()) {
             for (RuleDataValue ruleDataValue : ruleDataValues) {
                 // We found preceding value to the current currentEventValues,
                 // which is assumed to be best candidate.
                 if (ruleEvent.eventDate().compareTo(ruleDataValue.eventDate()) > 0) {
-                    return create(ruleDataValue.value(), variable.dataElementType(),
+                    variableValue = create(ruleDataValue.value(), variable.dataElementType(),
                             Utils.values(ruleDataValues));
+                    break;
                 }
             }
         }
 
-        return create(variable.dataElementType());
-    }
-
-    @Nonnull
-    private RuleVariableValue createNewestEventVariableValue(
-            @Nonnull RuleVariableNewestEvent variable) {
-        List<RuleDataValue> ruleDataValues = allEventsValues.get(variable.dataElement());
-        if (ruleDataValues != null && !ruleDataValues.isEmpty()) {
-            return create(ruleDataValues.get(0).value(),
-                    variable.dataElementType(), Utils.values(ruleDataValues));
+        if (variableValue == null) {
+            variableValue = create(variable.dataElementType());
         }
 
-        return create(variable.dataElementType());
+        valueMap.put(variable.name(), variableValue);
     }
 
-    @Nonnull
-    private RuleVariableValue createNewestStageEventVariableValue(
+    private void createNewestEventVariableValue(
+            @Nonnull Map<String, RuleVariableValue> valueMap,
+            @Nonnull RuleVariableNewestEvent variable) {
+
+        List<RuleDataValue> ruleDataValues = allEventsValues.get(variable.dataElement());
+        if (ruleDataValues == null || ruleDataValues.isEmpty()) {
+            valueMap.put(variable.name(), create(variable.dataElementType()));
+        } else {
+            valueMap.put(variable.name(), create(ruleDataValues.get(0).value(),
+                    variable.dataElementType(), Utils.values(ruleDataValues)));
+        }
+    }
+
+    private void createNewestStageEventVariableValue(
+            @Nonnull Map<String, RuleVariableValue> valueMap,
             @Nonnull RuleVariableNewestStageEvent variable) {
+
         List<RuleDataValue> stageRuleDataValues = new ArrayList<>();
         List<RuleDataValue> sourceRuleDataValues = allEventsValues.get(variable.dataElement());
         if (sourceRuleDataValues != null && !sourceRuleDataValues.isEmpty()) {
+
             // filter data values based on program stage
             for (int i = 0; i < sourceRuleDataValues.size(); i++) {
                 RuleDataValue ruleDataValue = sourceRuleDataValues.get(i);
@@ -386,11 +387,11 @@ final class RuleVariableValueMapBuilder {
             }
         }
 
-        if (!stageRuleDataValues.isEmpty()) {
-            return create(stageRuleDataValues.get(0).value(),
-                    variable.dataElementType(), Utils.values(stageRuleDataValues));
+        if (stageRuleDataValues.isEmpty()) {
+            valueMap.put(variable.name(), create(variable.dataElementType()));
+        } else {
+            valueMap.put(variable.name(), create(stageRuleDataValues.get(0).value(),
+                    variable.dataElementType(), Utils.values(stageRuleDataValues)));
         }
-
-        return create(variable.dataElementType());
     }
 }

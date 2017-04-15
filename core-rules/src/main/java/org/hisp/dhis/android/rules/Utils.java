@@ -10,6 +10,10 @@ import javax.annotation.Nonnull;
 
 final class Utils {
 
+    private Utils() {
+        // no instances
+    }
+
     @Nonnull
     static List<String> values(@Nonnull List<RuleDataValue> ruleDataValues) {
         List<String> values = new ArrayList<>(ruleDataValues.size());

@@ -35,7 +35,7 @@ public final class RuleEngineContext {
     }
 
     @Nonnull
-    public List<RuleVariable> variables() {
+    public List<RuleVariable> ruleVariables() {
         return ruleVariables;
     }
 
@@ -84,7 +84,7 @@ public final class RuleEngineContext {
         }
 
         @Nonnull
-        public Builder variables(@Nonnull List<RuleVariable> ruleVariables) {
+        public Builder ruleVariables(@Nonnull List<RuleVariable> ruleVariables) {
             if (ruleVariables == null) {
                 throw new IllegalArgumentException("ruleVariables == null");
             }

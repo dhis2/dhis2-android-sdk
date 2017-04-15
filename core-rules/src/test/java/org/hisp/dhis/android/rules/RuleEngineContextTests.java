@@ -43,7 +43,7 @@ public class RuleEngineContextTests {
         try {
             RuleEngineContext.builder(ruleExpressionEvaluator)
                     .rules(new ArrayList<Rule>())
-                    .variables(null);
+                    .ruleVariables(null);
             fail("IllegalArgumentException was expected, but nothing was thrown.");
         } catch (IllegalArgumentException illegalArgumentException) {
             // noop
@@ -54,8 +54,8 @@ public class RuleEngineContextTests {
     public void builderShouldThrowOnNullRulesList() {
         try {
             RuleEngineContext.builder(ruleExpressionEvaluator)
-                    .variables(new ArrayList<RuleVariable>())
-                    .variables(null);
+                    .ruleVariables(new ArrayList<RuleVariable>())
+                    .ruleVariables(null);
             fail("IllegalArgumentException was expected, but nothing was thrown.");
         } catch (IllegalArgumentException illegalArgumentException) {
             // noop
@@ -77,7 +77,7 @@ public class RuleEngineContextTests {
         rules.add(ruleOne);
 
         RuleEngineContext ruleEngineContext = RuleEngineContext.builder(ruleExpressionEvaluator)
-                .variables(ruleVariables)
+                .ruleVariables(ruleVariables)
                 .rules(rules)
                 .build();
 
@@ -85,14 +85,14 @@ public class RuleEngineContextTests {
         rules.add(ruleTwo);
 
         assertThat(ruleEngineContext.expressionEvaluator()).isEqualTo(ruleExpressionEvaluator);
-        assertThat(ruleEngineContext.variables().size()).isEqualTo(1);
-        assertThat(ruleEngineContext.variables().get(0)).isEqualTo(ruleVariableOne);
+        assertThat(ruleEngineContext.ruleVariables().size()).isEqualTo(1);
+        assertThat(ruleEngineContext.ruleVariables().get(0)).isEqualTo(ruleVariableOne);
 
         assertThat(ruleEngineContext.rules().size()).isEqualTo(1);
         assertThat(ruleEngineContext.rules().get(0)).isEqualTo(ruleOne);
 
         try {
-            ruleEngineContext.variables().clear();
+            ruleEngineContext.ruleVariables().clear();
             fail("UnsupportedOperationException was expected, but nothing was thrown.");
         } catch (UnsupportedOperationException unsupportedOperationException) {
             // noop
@@ -121,7 +121,7 @@ public class RuleEngineContextTests {
     @Test
     public void toEngineBuilderShouldReturnNewInstances() {
         RuleEngineContext ruleEngineContext = RuleEngineContext.builder(ruleExpressionEvaluator)
-                .variables(Arrays.asList(mock(RuleVariable.class)))
+                .ruleVariables(Arrays.asList(mock(RuleVariable.class)))
                 .rules(Arrays.asList(mock(Rule.class)))
                 .build();
 

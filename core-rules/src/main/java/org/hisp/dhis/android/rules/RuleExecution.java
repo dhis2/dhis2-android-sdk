@@ -9,10 +9,10 @@ import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 
 final class RuleExecution implements Callable<List<RuleEffect>> {
-    private final Map<String, RuleVariableValue> valueMap;
+    // private final Map<String, RuleVariableValue> valueMap;
 
     RuleExecution(@Nonnull Map<String, RuleVariableValue> valueMap) {
-        this.valueMap = valueMap;
+        // this.valueMap = valueMap;
     }
 
     @Override

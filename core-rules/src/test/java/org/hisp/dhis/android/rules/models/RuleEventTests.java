@@ -139,9 +139,11 @@ public class RuleEventTests {
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_PATTERN, Locale.US);
         List<RuleEvent> ruleEvents = Arrays.asList(
                 RuleEvent.create("test_event_one", "test_program_stage_one", RuleEvent.Status.ACTIVE,
-                        dateFormat.parse("2014-02-11"), dateFormat.parse("2014-02-11"), new ArrayList<RuleDataValue>()),
+                        dateFormat.parse("2014-02-11"), dateFormat.parse("2014-02-11"),
+                        new ArrayList<RuleDataValue>()),
                 RuleEvent.create("test_event_two", "test_program_stage_two", RuleEvent.Status.ACTIVE,
-                        dateFormat.parse("2017-03-22"), dateFormat.parse("2017-03-22"), new ArrayList<RuleDataValue>()));
+                        dateFormat.parse("2017-03-22"), dateFormat.parse("2017-03-22"),
+                        new ArrayList<RuleDataValue>()));
 
         Collections.sort(ruleEvents, RuleEvent.EVENT_DATE_COMPARATOR);
 

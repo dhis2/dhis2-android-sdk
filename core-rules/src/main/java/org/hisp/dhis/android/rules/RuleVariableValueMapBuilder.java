@@ -27,7 +27,6 @@ import javax.annotation.Nullable;
 
 import static org.hisp.dhis.android.rules.RuleVariableValue.create;
 
-// ToDo: ensure that injected collections are not prone to concurrent bugs
 final class RuleVariableValueMapBuilder {
     private static final String DATE_PATTERN = "yyyy-MM-dd";
     private static final String ENV_VAR_CURRENT_DATE = "current_date";

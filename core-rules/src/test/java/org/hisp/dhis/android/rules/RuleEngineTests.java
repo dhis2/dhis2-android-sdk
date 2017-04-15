@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static junit.framework.TestCase.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -175,5 +177,50 @@ public class RuleEngineTests {
         } catch (IllegalArgumentException illegalArgumentException) {
             // noop
         }
+    }
+
+    @Test
+    public void concurrentIterationOverRulesListShouldNotFail() throws InterruptedException {
+        final RuleEngine ruleEngine = RuleEngineContext.builder(mock(RuleExpressionEvaluator.class))
+                .rules(Arrays.asList(mock(Rule.class), mock(Rule.class)))
+                .build().toEngineBuilder().build();
+
+        final CountDownLatch threadOneLatch = new CountDownLatch(1);
+        final CountDownLatch threadTwoLatch = new CountDownLatch(1);
+
+        new Thread() {
+            @Override
+            public void run() {
+                for (Rule rule : ruleEngine.executionContext().rules()) {
+
+                    try {
+                        threadTwoLatch.await();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    threadOneLatch.countDown();
+                }
+            }
+        }.start();
+
+        new Thread() {
+            @Override
+            public void run() {
+                for (Rule rule : ruleEngine.executionContext().rules()) {
+                    threadTwoLatch.countDown();
+
+                    try {
+                        threadOneLatch.await();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
+
+
+        assertThat(threadOneLatch.await(4, TimeUnit.SECONDS)).isTrue();
+        assertThat(threadTwoLatch.await(4, TimeUnit.SECONDS)).isTrue();
     }
 }

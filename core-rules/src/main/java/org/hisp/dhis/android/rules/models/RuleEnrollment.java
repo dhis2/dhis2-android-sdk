@@ -2,6 +2,8 @@ package org.hisp.dhis.android.rules.models;
 
 import com.google.auto.value.AutoValue;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -33,7 +35,7 @@ public abstract class RuleEnrollment {
     public static RuleEnrollment create(@Nonnull String enrollment, @Nonnull Date incidentDate,
             @Nonnull Date enrollmentDate, @Nonnull Status status,
             @Nonnull List<RuleAttributeValue> attributeValues) {
-        return new AutoValue_RuleEnrollment(enrollment, incidentDate,
-                enrollmentDate, status, attributeValues);
+        return new AutoValue_RuleEnrollment(enrollment, incidentDate, enrollmentDate, status,
+                Collections.unmodifiableList(new ArrayList<>(attributeValues)));
     }
 }

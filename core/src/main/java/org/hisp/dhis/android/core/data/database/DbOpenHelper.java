@@ -360,13 +360,11 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ProgramStageSectionDataElementLinkModel.Columns.ID + " INTEGER PRIMARY KEY NOT NULL, " +
             ProgramStageSectionDataElementLinkModel.Columns.PROGRAM_STAGE_SECTION + " TEXT NOT NULL, " +
             ProgramStageSectionDataElementLinkModel.Columns.DATA_ELEMENT + " TEXT NOT NULL, " +
-            " CONSTRAINT ProgramStageSection_fk " +
             " FOREIGN KEY (" +
             ProgramStageSectionDataElementLinkModel.Columns.PROGRAM_STAGE_SECTION + ")" +
             " REFERENCES " +
             ProgramStageSectionModel.TABLE + " (" + ProgramStageSectionModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
-            " CONSTRAINT DataElement_fk " +
             " FOREIGN KEY (" + ProgramStageSectionDataElementLinkModel.Columns.DATA_ELEMENT + ") " +
             " REFERENCES " + DataElementModel.TABLE + " (" + DataElementModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +

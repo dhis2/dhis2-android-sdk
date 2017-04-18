@@ -12,16 +12,11 @@ final class RuleExpressionBinder {
     private final String ruleExpressionTemplate;
 
     @Nonnull
-    private final RuleExpression ruleExpression;
-
-    @Nonnull
     private final Map<String, String> ruleVariableValues;
 
     RuleExpressionBinder(@Nonnull String ruleExpressionTemplate,
-            @Nonnull RuleExpression ruleExpression,
             @Nonnull Map<String, String> ruleVariableValues) {
         this.ruleExpressionTemplate = ruleExpressionTemplate;
-        this.ruleExpression = ruleExpression;
         this.ruleVariableValues = ruleVariableValues;
     }
 
@@ -70,7 +65,6 @@ final class RuleExpressionBinder {
         String expressionTemplate = ruleExpression.expression()
                 .replaceAll(RuleExpression.VARIABLE_PATTERN, "%s");
 
-        return new RuleExpressionBinder(expressionTemplate,
-                ruleExpression, ruleVariablePlaceholders);
+        return new RuleExpressionBinder(expressionTemplate, ruleVariablePlaceholders);
     }
 }

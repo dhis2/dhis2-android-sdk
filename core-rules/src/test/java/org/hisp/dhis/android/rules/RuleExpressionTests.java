@@ -72,6 +72,12 @@ public class RuleExpressionTests {
     }
 
     @Test
+    public void fromShouldPropagateExpressionToTheModel() {
+        RuleExpression ruleExpression = RuleExpression.from("test_expression");
+        assertThat(ruleExpression.expression()).isEqualTo("test_expression");
+    }
+
+    @Test
     public void fromShouldThrowOnNullExpression() {
         try {
             RuleExpression.from(null);

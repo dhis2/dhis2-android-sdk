@@ -12,7 +12,11 @@ import javax.annotation.Nonnull;
 
 @AutoValue
 abstract class RuleExpression {
-    private static final Pattern VARIABLE_PATTERN = Pattern.compile("[A#CV]\\{(\\w+.?\\w*)\\}");
+    static final String VARIABLE_PATTERN = "[A#CV]\\{(\\w+.?\\w*)\\}";
+    static final Pattern VARIABLE_PATTERN_COMPILED = Pattern.compile(VARIABLE_PATTERN);
+
+    @Nonnull
+    public abstract String expression();
 
     @Nonnull
     public abstract List<String> variables();
@@ -26,11 +30,11 @@ abstract class RuleExpression {
         List<String> variables = new ArrayList<>();
 
         // iterate over matched values and aggregate them
-        Matcher matcher = VARIABLE_PATTERN.matcher(expression);
+        Matcher matcher = VARIABLE_PATTERN_COMPILED.matcher(expression);
         while (matcher.find()) {
             variables.add(matcher.group());
         }
 
-        return new AutoValue_RuleExpression(Collections.unmodifiableList(variables));
+        return new AutoValue_RuleExpression(expression, Collections.unmodifiableList(variables));
     }
 }

@@ -1,0 +1,15 @@
+package org.hisp.dhis.android.rules.models;
+
+public enum RuleActionType {
+    DISPLAYTEXT,
+    DISPLAYKEYVALUEPAIR,
+    HIDEFIELD,
+    HIDESECTION,
+    ASSIGN,
+    SHOWWARNING,
+    WARNINGONCOMPLETE,
+    SHOWERROR,
+    ERRORONCOMPLETE,
+    CREATEEVENT,
+    HIDEPROGRAMSTAGE
+}

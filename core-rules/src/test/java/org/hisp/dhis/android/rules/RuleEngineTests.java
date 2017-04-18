@@ -1,7 +1,9 @@
 package org.hisp.dhis.android.rules;
 
-import org.hisp.dhis.android.rules.models.Event;
-import org.hisp.dhis.android.rules.models.ProgramRule;
+import org.hisp.dhis.android.rules.models.Rule;
+import org.hisp.dhis.android.rules.models.RuleDataValue;
+import org.hisp.dhis.android.rules.models.RuleEnrollment;
+import org.hisp.dhis.android.rules.models.RuleEvent;
 import org.hisp.dhis.android.rules.models.RuleVariable;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,202 +13,214 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static junit.framework.TestCase.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 @RunWith(JUnit4.class)
 public class RuleEngineTests {
 
     @Mock
-    private ExpressionEvaluator evaluator;
+    private RuleExpressionEvaluator evaluator;
 
     @Mock
-    private ProgramRule programRule;
+    private Rule rule;
 
     @Mock
     private RuleVariable ruleVariable;
 
     @Mock
-    private Event event;
+    private RuleEvent ruleEvent;
+
+    private RuleEngineContext ruleEngineContext;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+
+        ruleEngineContext = RuleEngineContext.builder(evaluator)
+                .ruleVariables(Arrays.asList(mock(RuleVariable.class)))
+                .rules(Arrays.asList(mock(Rule.class)))
+                .build();
     }
 
     @Test
-    public void builderShouldThrowException() {
+    public void builderShouldThrowOnNullEnrollment() {
         try {
-            RuleEngine.builder(null);
-
-            fail("IllegalArgumentException was expected, but nothing was thrown");
-        } catch (IllegalArgumentException exception) {
-            assertThat(exception.getMessage()).isEqualTo("evaluator == null");
+            ruleEngineContext.toEngineBuilder()
+                    .enrollment(null)
+                    .events(new ArrayList<RuleEvent>())
+                    .build();
+            fail("IllegalArgumentException was expected, but nothing was thrown.");
+        } catch (IllegalArgumentException illegalArgumentException) {
+            // noop
         }
     }
 
     @Test
-    public void builderShouldThrowExceptionIfNoRules() {
+    public void builderShouldThrowOnNullEvents() {
         try {
-            RuleEngine.builder(evaluator)
-                    .programRules(null)
-                    .programRuleVariables(new ArrayList<RuleVariable>());
-
-            fail("IllegalArgumentException was expected, but nothing was thrown");
-        } catch (IllegalArgumentException exception) {
-            assertThat(exception.getMessage()).isEqualTo("programRules == null");
+            ruleEngineContext.toEngineBuilder()
+                    .enrollment(null)
+                    .events(null)
+                    .build();
+            fail("IllegalArgumentException was expected, but nothing was thrown.");
+        } catch (IllegalArgumentException illegalArgumentException) {
+            // noop
         }
     }
 
     @Test
-    public void builderShouldThrowExceptionIfNoVariables() {
-        try {
-            RuleEngine.builder(evaluator)
-                    .programRules(new ArrayList<ProgramRule>())
-                    .programRuleVariables(null);
+    public void builderShouldPropagateImmutableEventsList() {
+        RuleEvent ruleEventOne = mock(RuleEvent.class);
+        RuleEvent ruleEventTwo = mock(RuleEvent.class);
 
-            fail("IllegalArgumentException was expected, but nothing was thrown");
-        } catch (IllegalArgumentException exception) {
-            assertThat(exception.getMessage()).isEqualTo("programRuleVariables == null");
-        }
-    }
+        List<RuleEvent> ruleEvents = new ArrayList<>();
+        ruleEvents.add(ruleEventOne);
 
-    @Test
-    public void programRulesShouldBeCopiedWithinBuilder() {
-        List<ProgramRule> programRules = new ArrayList<>();
-        programRules.add(programRule);
+        RuleEngine ruleEngine = ruleEngineContext.toEngineBuilder()
+                .events(ruleEvents)
+                .build();
 
-        RuleEngine.Builder builder = RuleEngine.builder(evaluator)
-                .programRules(programRules)
-                .programRuleVariables(new ArrayList<RuleVariable>());
-
-        programRules.clear();
-        RuleEngine ruleEngine = builder.build();
-
-        assertThat(ruleEngine.programRules().size()).isEqualTo(1);
-        assertThat(ruleEngine.programRules()).contains(programRule);
-    }
-
-    @Test
-    public void programRuleVariablesShouldBeCopiedWithinBuilder() {
-        List<RuleVariable> ruleVariables = new ArrayList<>();
-        ruleVariables.add(ruleVariable);
-
-        RuleEngine.Builder builder = RuleEngine.builder(evaluator)
-                .programRules(new ArrayList<ProgramRule>())
-                .programRuleVariables(ruleVariables);
-
-        ruleVariables.clear();
-        RuleEngine ruleEngine = builder.build();
-
-        assertThat(ruleEngine.programRuleVariables().size()).isEqualTo(1);
-        assertThat(ruleEngine.programRuleVariables()).contains(ruleVariable);
-    }
-
-    @Test
-    public void eventsShouldBeCopiedWithinBuilder() {
-        List<Event> events = new ArrayList<>();
-        events.add(event);
-
-        RuleEngine.Builder builder = RuleEngine.builder(evaluator)
-                .events(events)
-                .programRules(new ArrayList<ProgramRule>())
-                .programRuleVariables(new ArrayList<RuleVariable>());
-
-        events.clear();
-        RuleEngine ruleEngine = builder.build();
+        ruleEvents.add(ruleEventTwo);
 
         assertThat(ruleEngine.events().size()).isEqualTo(1);
-        assertThat(ruleEngine.events()).contains(event);
-    }
-
-    @Test
-    public void programRulesShouldBeImmutable() {
-        List<ProgramRule> programRules = new ArrayList<>();
-        programRules.add(programRule);
-
-        RuleEngine ruleEngine = RuleEngine.builder(evaluator)
-                .programRules(programRules)
-                .programRuleVariables(new ArrayList<RuleVariable>())
-                .build();
+        assertThat(ruleEngine.events().get(0)).isEqualTo(ruleEventOne);
 
         try {
-            ruleEngine.programRules().add(programRule);
-            fail("UnsupportedOperationException expected, but nothing was thrown");
-        } catch (UnsupportedOperationException exception) {
+            ruleEngine.events().clear();
+            fail("UnsupportedOperationException was expected, but nothing was thrown.");
+        } catch (UnsupportedOperationException unsupportedOperationException) {
             // noop
         }
     }
 
     @Test
-    public void programRuleVariablesShouldBeImmutable() {
-        List<RuleVariable> ruleVariables = new ArrayList<>();
-        ruleVariables.add(ruleVariable);
+    public void builderShouldPropagateImmutableEmptyListIfNoEventsProvided() {
+        RuleEngine ruleEngine = ruleEngineContext.toEngineBuilder().build();
 
-        RuleEngine ruleEngine = RuleEngine.builder(evaluator)
-                .programRules(new ArrayList<ProgramRule>())
-                .programRuleVariables(ruleVariables)
-                .build();
+        assertThat(ruleEngine.events().size()).isEqualTo(0);
 
         try {
-            ruleEngine.programRuleVariables().add(ruleVariable);
-            fail("UnsupportedOperationException expected, but nothing was thrown");
-        } catch (UnsupportedOperationException exception) {
+            ruleEngine.events().clear();
+            fail("UnsupportedOperationException was expected, but nothing was thrown.");
+        } catch (UnsupportedOperationException unsupportedOperationException) {
             // noop
         }
     }
 
     @Test
-    public void eventsShouldBeImmutable() {
-        List<Event> events = new ArrayList<>();
-        events.add(event);
+    public void builderShouldPropagateRuleEngineContext() {
+        RuleEngine ruleEngine = ruleEngineContext.toEngineBuilder().build();
+        assertThat(ruleEngine.executionContext()).isEqualTo(ruleEngineContext);
+    }
 
-        RuleEngine ruleEngine = RuleEngine.builder(evaluator)
-                .events(events)
-                .programRules(new ArrayList<ProgramRule>())
-                .programRuleVariables(new ArrayList<RuleVariable>())
-                .build();
-
+    @Test
+    public void evaluateShouldThrowOnNullEvent() {
         try {
-            ruleEngine.events().add(event);
-            fail("UnsupportedOperationException expected, but nothing was thrown");
-        } catch (UnsupportedOperationException exception) {
+            RuleEvent ruleEvent = null;
+            ruleEngineContext.toEngineBuilder().build().evaluate(ruleEvent);
+            fail("IllegalArgumentException was expected, but nothing was thrown.");
+        } catch (IllegalArgumentException illegalArgumentException) {
             // noop
         }
     }
 
     @Test
-    public void builderShouldSupplyImmutableEmptyEventList() {
-        RuleEngine ruleEngine = RuleEngine.builder(evaluator)
-                .programRules(new ArrayList<ProgramRule>())
-                .programRuleVariables(new ArrayList<RuleVariable>())
+    public void evaluateShouldThrowIfEventIsAlreadyInContext() {
+        RuleEvent ruleEvent = RuleEvent.create("test_event", "test_programstage",
+                RuleEvent.Status.ACTIVE, new Date(), new Date(), new ArrayList<RuleDataValue>());
+
+        List<RuleEvent> ruleEvents = new ArrayList<>();
+        ruleEvents.add(ruleEvent);
+
+        RuleEngine ruleEngine = ruleEngineContext.toEngineBuilder()
+                .events(ruleEvents)
                 .build();
 
-        assertThat(ruleEngine.events()).isNotNull();
-        assertThat(ruleEngine.events()).isEmpty();
-
         try {
-            ruleEngine.events().add(event);
-            fail("UnsupportedOperationException expected, but nothing was thrown");
-        } catch (UnsupportedOperationException exception) {
+            ruleEngine.evaluate(ruleEvent);
+            fail("IllegalStateException was expected, but nothing was thrown.");
+        } catch (IllegalStateException illegalStateException) {
             // noop
         }
     }
 
     @Test
-    public void calculateShouldThrowIfNull() {
-        RuleEngine ruleEngine = RuleEngine.builder(evaluator)
-                .programRules(new ArrayList<ProgramRule>())
-                .programRuleVariables(new ArrayList<RuleVariable>())
+    public void evaluateShouldThrowIfEnrollmentIsAlreadyInContext() {
+        RuleEnrollment ruleEnrollment = mock(RuleEnrollment.class);
+
+        RuleEngine ruleEngine = ruleEngineContext.toEngineBuilder()
+                .enrollment(ruleEnrollment)
                 .build();
 
         try {
-            ruleEngine.calculate(null);
-            fail("IllegalArgumentException expected, but nothing was thrown");
-        } catch (IllegalArgumentException exception) {
-            assertThat(exception.getMessage()).isEqualTo("currentEvent == null");
+            ruleEngine.evaluate(ruleEnrollment);
+            fail("IllegalStateException was expected, but nothing was thrown.");
+        } catch (IllegalStateException illegalStateException) {
+            // noop
         }
+    }
+
+    @Test
+    public void evaluateShouldThrowOnNullEnrollment() {
+        try {
+            RuleEnrollment ruleEnrollment = null;
+            ruleEngineContext.toEngineBuilder().build().evaluate(ruleEnrollment);
+            fail("IllegalArgumentException was expected, but nothing was thrown.");
+        } catch (IllegalArgumentException illegalArgumentException) {
+            // noop
+        }
+    }
+
+    @Test
+    public void concurrentIterationOverRulesListShouldNotFail() throws InterruptedException {
+        final RuleEngine ruleEngine = RuleEngineContext.builder(mock(RuleExpressionEvaluator.class))
+                .rules(Arrays.asList(mock(Rule.class), mock(Rule.class)))
+                .build().toEngineBuilder().build();
+
+        final CountDownLatch threadOneLatch = new CountDownLatch(1);
+        final CountDownLatch threadTwoLatch = new CountDownLatch(1);
+
+        new Thread() {
+            @Override
+            public void run() {
+                for (Rule rule : ruleEngine.executionContext().rules()) {
+
+                    try {
+                        threadTwoLatch.await();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    threadOneLatch.countDown();
+                }
+            }
+        }.start();
+
+        new Thread() {
+            @Override
+            public void run() {
+                for (Rule rule : ruleEngine.executionContext().rules()) {
+                    threadTwoLatch.countDown();
+
+                    try {
+                        threadOneLatch.await();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
+
+
+        assertThat(threadOneLatch.await(4, TimeUnit.SECONDS)).isTrue();
+        assertThat(threadTwoLatch.await(4, TimeUnit.SECONDS)).isTrue();
     }
 }

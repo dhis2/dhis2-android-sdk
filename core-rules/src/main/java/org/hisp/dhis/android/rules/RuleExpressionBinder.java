@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-final class RuleExpressionProcessor {
+final class RuleExpressionBinder {
 
     @Nonnull
     private final String ruleExpressionTemplate;
@@ -17,7 +17,7 @@ final class RuleExpressionProcessor {
     @Nonnull
     private final Map<String, String> ruleVariableValues;
 
-    RuleExpressionProcessor(@Nonnull String ruleExpressionTemplate,
+    RuleExpressionBinder(@Nonnull String ruleExpressionTemplate,
             @Nonnull RuleExpression ruleExpression,
             @Nonnull Map<String, String> ruleVariableValues) {
         this.ruleExpressionTemplate = ruleExpressionTemplate;
@@ -25,7 +25,7 @@ final class RuleExpressionProcessor {
         this.ruleVariableValues = ruleVariableValues;
     }
 
-    RuleExpressionProcessor bind(@Nonnull String variable, @Nonnull String value) {
+    RuleExpressionBinder bind(@Nonnull String variable, @Nonnull String value) {
         if (!ruleVariableValues.containsKey(variable)) {
             throw new IllegalArgumentException("Non-existing variable: " + variable);
         }
@@ -53,7 +53,7 @@ final class RuleExpressionProcessor {
     }
 
     @Nonnull
-    static RuleExpressionProcessor from(@Nonnull RuleExpression ruleExpression) {
+    static RuleExpressionBinder from(@Nonnull RuleExpression ruleExpression) {
         // Using linked hash map to preserve order of variables. This is very important
         // since we will rely on order when replacing variables with values.
         Map<String, String> ruleVariablePlaceholders =
@@ -70,7 +70,7 @@ final class RuleExpressionProcessor {
         String expressionTemplate = ruleExpression.expression()
                 .replaceAll(RuleExpression.VARIABLE_PATTERN, "%s");
 
-        return new RuleExpressionProcessor(expressionTemplate,
+        return new RuleExpressionBinder(expressionTemplate,
                 ruleExpression, ruleVariablePlaceholders);
     }
 }

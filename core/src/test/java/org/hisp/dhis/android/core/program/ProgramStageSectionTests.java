@@ -54,8 +54,8 @@ public class ProgramStageSectionTests {
     @Test
     public void programStageSection_shouldMapFromJsonString() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
+        //Json (modified) from: https://play.dhis2.org/dev/api/programStageSections/bbjzL5gp0NZ.json
         ProgramStageSection programStageSection = objectMapper.readValue("{\n" +
-                "\n" +
                 "    \"created\": \"2015-01-26T13:14:09.957\",\n" +
                 "    \"lastUpdated\": \"2015-10-14T13:37:29.904\",\n" +
                 "    \"name\": \"Care at Birth\",\n" +
@@ -78,76 +78,12 @@ public class ProgramStageSectionTests {
                 "    \"userGroupAccesses\": [ ],\n" +
                 "    \"attributeValues\": [ ],\n" +
                 "    \"programIndicators\": [ ],\n" +
-                "    \"programStageDataElements\": [\n" +
-                "        {\n" +
-                "            \"id\": \"mNXtw47lMLW\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"Va8xtfuPX1u\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"zjxvVN18Qus\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"IWrTFi5pWRy\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"jQCTAPgN8HX\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"De4ZlZy7TbF\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"Te4Z5287Osc\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"PlnFiS1txNO\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"yXzfUiuZZXI\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"eqfd3ASkxGV\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"qVXGGtpjEgh\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"wRs9Fa01zGf\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"tChBdOVHz8D\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"BpUCdOZJLz1\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"zOEy7uhyDGz\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"irTn0Agjzz2\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"vvYxuplCyfx\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"pbQrNUaPT2Z\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"pyD3sW0qBQl\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"rJYL0ogcG8H\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"qVo72Oe3Jb5\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"ISufoESNnZ3\"\n" +
-                "        }\n" +
-                "    ],\n" +
+                "    \"dataElements\": [\n" +
+                "        {\n" + "\"id\": \"Itl05OEupgQ\"\n" + "},\n" +
+                "        {\n" + "\"id\": \"Mfq2Y9N21KZ\"\n" + "},\n" +
+                "        {\n" + "\"id\": \"mGHBXrtqSut\"\n" + "}\n" +
+                "    ]," +
                 "    \"translations\": [ ]\n" +
-                "\n" +
                 "}", ProgramStageSection.class);
 
         assertThat(programStageSection.lastUpdated()).isEqualTo(
@@ -160,27 +96,8 @@ public class ProgramStageSectionTests {
         assertThat(programStageSection.sortOrder()).isEqualTo(0);
         assertThat(programStageSection.programIndicators()).isEmpty();
 
-        assertThat(programStageSection.programStageDataElements().get(0).uid()).isEqualTo("mNXtw47lMLW");
-        assertThat(programStageSection.programStageDataElements().get(1).uid()).isEqualTo("Va8xtfuPX1u");
-        assertThat(programStageSection.programStageDataElements().get(2).uid()).isEqualTo("zjxvVN18Qus");
-        assertThat(programStageSection.programStageDataElements().get(3).uid()).isEqualTo("IWrTFi5pWRy");
-        assertThat(programStageSection.programStageDataElements().get(4).uid()).isEqualTo("jQCTAPgN8HX");
-        assertThat(programStageSection.programStageDataElements().get(5).uid()).isEqualTo("De4ZlZy7TbF");
-        assertThat(programStageSection.programStageDataElements().get(6).uid()).isEqualTo("Te4Z5287Osc");
-        assertThat(programStageSection.programStageDataElements().get(7).uid()).isEqualTo("PlnFiS1txNO");
-        assertThat(programStageSection.programStageDataElements().get(8).uid()).isEqualTo("yXzfUiuZZXI");
-        assertThat(programStageSection.programStageDataElements().get(9).uid()).isEqualTo("eqfd3ASkxGV");
-        assertThat(programStageSection.programStageDataElements().get(10).uid()).isEqualTo("qVXGGtpjEgh");
-        assertThat(programStageSection.programStageDataElements().get(11).uid()).isEqualTo("wRs9Fa01zGf");
-        assertThat(programStageSection.programStageDataElements().get(12).uid()).isEqualTo("tChBdOVHz8D");
-        assertThat(programStageSection.programStageDataElements().get(13).uid()).isEqualTo("BpUCdOZJLz1");
-        assertThat(programStageSection.programStageDataElements().get(14).uid()).isEqualTo("zOEy7uhyDGz");
-        assertThat(programStageSection.programStageDataElements().get(15).uid()).isEqualTo("irTn0Agjzz2");
-        assertThat(programStageSection.programStageDataElements().get(16).uid()).isEqualTo("vvYxuplCyfx");
-        assertThat(programStageSection.programStageDataElements().get(17).uid()).isEqualTo("pbQrNUaPT2Z");
-        assertThat(programStageSection.programStageDataElements().get(18).uid()).isEqualTo("pyD3sW0qBQl");
-        assertThat(programStageSection.programStageDataElements().get(19).uid()).isEqualTo("rJYL0ogcG8H");
-        assertThat(programStageSection.programStageDataElements().get(20).uid()).isEqualTo("qVo72Oe3Jb5");
-        assertThat(programStageSection.programStageDataElements().get(21).uid()).isEqualTo("ISufoESNnZ3");
+        assertThat(programStageSection.dataElements().get(0).uid()).isEqualTo("Itl05OEupgQ");
+        assertThat(programStageSection.dataElements().get(1).uid()).isEqualTo("Mfq2Y9N21KZ");
+        assertThat(programStageSection.dataElements().get(2).uid()).isEqualTo("mGHBXrtqSut");
     }
 }

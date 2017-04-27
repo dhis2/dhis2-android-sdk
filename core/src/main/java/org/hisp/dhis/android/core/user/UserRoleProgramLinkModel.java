@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.common.BaseModel;
 
 @AutoValue
 public abstract class UserRoleProgramLinkModel extends BaseModel {
-    public static final String TABLE = "userRoleProgramLink";
+    public static final String TABLE = "UserRoleProgramLink";
 
     public static class Columns extends BaseModel.Columns {
         public static final String USER_ROLE = "userRole";

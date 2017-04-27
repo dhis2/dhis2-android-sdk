@@ -36,6 +36,8 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.enrollment.CreateEnrollmentUtils;
+import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.event.EventModel.Columns;
 import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
@@ -45,7 +47,9 @@ import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.program.ProgramStageModel;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
+import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityInstanceUtils;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -119,9 +123,18 @@ public class EventStoreTests extends AbsStoreTestCase {
 
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
+        String trackedEntityInstanceUid = "trackedEntityInstanceUid";
+        ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(trackedEntityInstanceUid,
+                ORGANISATION_UNIT, TRACKED_ENTITY_UID);
+        ContentValues enrollment = CreateEnrollmentUtils.create(
+                ENROLLMENT_UID, PROGRAM, ORGANISATION_UNIT, trackedEntityInstanceUid
+        );
+
 
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
         database().insert(ProgramStageModel.TABLE, null, programStage);
+        database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
+        database().insert(EnrollmentModel.TABLE, null, enrollment);
     }
 
     @Test
@@ -355,6 +368,26 @@ public class EventStoreTests extends AbsStoreTestCase {
                 PROGRAM,
                 PROGRAM_STAGE,
                 WRONG_UID, //supply wrong uid
+                date,
+                date,
+                date,
+                STATE
+        );
+    }
+
+    @Test(expected = SQLiteConstraintException.class)
+    public void exception_persistEventWithInvalidEnrollmentForeignKey() {
+        eventStore.insert(
+                EVENT_UID,
+                WRONG_UID, // supply wrong uid
+                date,
+                date,
+                STATUS,
+                LATITUDE,
+                LONGITUDE,
+                PROGRAM,
+                PROGRAM_STAGE,
+                ORGANISATION_UNIT,
                 date,
                 date,
                 date,

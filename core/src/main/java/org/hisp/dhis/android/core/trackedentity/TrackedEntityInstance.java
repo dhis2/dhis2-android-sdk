@@ -36,6 +36,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.relationship.Relationship;
 
 import java.util.Date;
@@ -49,17 +50,20 @@ public abstract class TrackedEntityInstance {
     private static final String CREATED = "created";
     private static final String LAST_UPDATED = "lastUpdated";
     private static final String ORGANISATION_UNIT = "orgUnit";
-    private static final String TRACKED_ENTITY_ATTRIBUTES = "attributes";
+    private static final String TRACKED_ENTITY_ATTRIBUTE_VALUES = "attributes";
     private static final String RELATIONSHIPS = "relationships";
     private static final String TRACKED_ENTITY = "trackedEntity";
+    private static final String ENROLLMENTS = "enrollments";
 
     public static final Field<TrackedEntityInstance, String> uid = Field.create(UID);
     public static final Field<TrackedEntityInstance, Date> created = Field.create(CREATED);
     public static final Field<TrackedEntityInstance, Date> lastUpdated = Field.create(LAST_UPDATED);
     public static final Field<TrackedEntityInstance, String> organisationUnit = Field.create(ORGANISATION_UNIT);
 
-    public static final NestedField<TrackedEntityInstance, TrackedEntityAttribute> trackedEntityAttributes
-            = NestedField.create(TRACKED_ENTITY_ATTRIBUTES);
+    public static final NestedField<TrackedEntityInstance, Enrollment> enrollment
+            = NestedField.create(ENROLLMENTS);
+    public static final NestedField<TrackedEntityInstance, TrackedEntityAttributeValue> trackedEntityAttributeValues
+            = NestedField.create(TRACKED_ENTITY_ATTRIBUTE_VALUES);
     public static final NestedField<TrackedEntityInstance, Relationship> relationships
             = NestedField.create(RELATIONSHIPS);
 
@@ -83,12 +87,16 @@ public abstract class TrackedEntityInstance {
     public abstract String trackedEntity();
 
     @Nullable
-    @JsonProperty(TRACKED_ENTITY_ATTRIBUTES)
+    @JsonProperty(TRACKED_ENTITY_ATTRIBUTE_VALUES)
     public abstract List<TrackedEntityAttributeValue> trackedEntityAttributeValues();
 
     @Nullable
     @JsonProperty(RELATIONSHIPS)
     public abstract List<Relationship> relationships();
+
+    @Nullable
+    @JsonProperty(ENROLLMENTS)
+    public abstract List<Enrollment> enrollments();
 
     @JsonCreator
     public static TrackedEntityInstance create(
@@ -97,10 +105,12 @@ public abstract class TrackedEntityInstance {
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
             @JsonProperty(ORGANISATION_UNIT) String organisationUnit,
             @JsonProperty(TRACKED_ENTITY) String trackedEntity,
-            @JsonProperty(TRACKED_ENTITY_ATTRIBUTES) List<TrackedEntityAttributeValue> trackedEntityAttributeValues,
-            @JsonProperty(RELATIONSHIPS) List<Relationship> relationships) {
+            @JsonProperty(TRACKED_ENTITY_ATTRIBUTE_VALUES)
+                    List<TrackedEntityAttributeValue> trackedEntityAttributeValues,
+            @JsonProperty(RELATIONSHIPS) List<Relationship> relationships,
+            @JsonProperty(ENROLLMENTS) List<Enrollment> enrollments) {
         return new AutoValue_TrackedEntityInstance(uid, created, lastUpdated, organisationUnit, trackedEntity,
                 safeUnmodifiableList(trackedEntityAttributeValues),
-                safeUnmodifiableList(relationships));
+                safeUnmodifiableList(relationships), safeUnmodifiableList(enrollments));
     }
 }

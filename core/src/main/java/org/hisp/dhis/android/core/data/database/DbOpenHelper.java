@@ -641,6 +641,10 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             " REFERENCES " + ProgramStageModel.TABLE +
             " (" + ProgramStageModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+            "FOREIGN KEY (" + EventModel.Columns.ENROLLMENT_UID + ")" +
+            " REFERENCES " + EnrollmentModel.TABLE +
+            " (" + EnrollmentModel.Columns.UID + ")" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
             " FOREIGN KEY (" + EventModel.Columns.ORGANISATION_UNIT + ")" +
             " REFERENCES " + OrganisationUnitModel.TABLE +
             " (" + OrganisationUnitModel.Columns.UID + ")" +

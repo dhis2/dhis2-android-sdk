@@ -35,6 +35,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
 import java.util.Date;
@@ -44,7 +46,7 @@ import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 @AutoValue
 public abstract class Event {
-    private static final String EVENT_UID = "event";
+    private static final String UID = "event";
     private static final String ENROLLMENT_UID = "enrollment";
     private static final String CREATED = "created";
     private static final String LAST_UPDATED = "lastUpdated";
@@ -58,7 +60,23 @@ public abstract class Event {
     private static final String DUE_DATE = "dueDate";
     private static final String TRACKED_ENTITY_DATA_VALUES = "dataValues";
 
-    @JsonProperty(EVENT_UID)
+    public static final Field<Event, String> uid = Field.create(UID);
+    public static final Field<Event, String> enrollment = Field.create(ENROLLMENT_UID);
+    public static final Field<Event, String> created = Field.create(CREATED);
+    public static final Field<Event, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<Event, EventStatus> eventStatus = Field.create(STATUS);
+    public static final Field<Event, Coordinates> coordinates = Field.create(COORDINATE);
+    public static final Field<Event, String> program = Field.create(PROGRAM);
+    public static final Field<Event, String> programStage = Field.create(PROGRAM_STAGE);
+    public static final Field<Event, String> organisationUnit = Field.create(ORGANISATION_UNIT);
+    public static final Field<Event, String> eventDate = Field.create(EVENT_DATE);
+    public static final Field<Event, String> completeDate = Field.create(COMPLETE_DATE);
+    public static final Field<Event, String> dueDate = Field.create(DUE_DATE);
+
+    public static final NestedField<Event, TrackedEntityDataValue> trackedEntityDataValues
+            = NestedField.create(TRACKED_ENTITY_DATA_VALUES);
+
+    @JsonProperty(UID)
     public abstract String uid();
 
     @Nullable
@@ -111,7 +129,7 @@ public abstract class Event {
 
     @JsonCreator
     public static Event create(
-            @JsonProperty(EVENT_UID) String uid,
+            @JsonProperty(UID) String uid,
             @JsonProperty(ENROLLMENT_UID) String enrollmentUid,
             @JsonProperty(CREATED) Date created,
             @JsonProperty(LAST_UPDATED) Date lastUpdated,

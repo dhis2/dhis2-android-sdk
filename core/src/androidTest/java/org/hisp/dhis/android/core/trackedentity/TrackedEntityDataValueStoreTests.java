@@ -115,7 +115,7 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
 
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
-        ContentValues event = CreateEventUtils.create(EVENT, PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT);
+        ContentValues event = CreateEventUtils.create(EVENT, PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT, null);
         ContentValues dataElement = CreateDataElementUtils.create(1L, DATA_ELEMENT, null);
 
         database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
@@ -165,7 +165,7 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
                 VALUE,
                 PROVIDED_ELSEWHERE
         );
-        ContentValues event = CreateEventUtils.create(deferredEvent, PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT);
+        ContentValues event = CreateEventUtils.create(deferredEvent, PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT, null);
         database().insert(EventModel.TABLE, null, event);
 
         database().setTransactionSuccessful();

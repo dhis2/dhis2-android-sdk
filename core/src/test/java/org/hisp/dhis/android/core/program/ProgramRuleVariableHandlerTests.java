@@ -51,7 +51,7 @@ import static org.mockito.Mockito.when;
 @RunWith(JUnit4.class)
 public class ProgramRuleVariableHandlerTests {
     @Mock
-    private ProgramRuleVariableModelStore programRuleVariableModelStore;
+    private ProgramRuleVariableStore programRuleVariableStore;
 
     @Mock
     private ProgramRuleVariable programRuleVariable;
@@ -77,7 +77,7 @@ public class ProgramRuleVariableHandlerTests {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        programRuleVariableHandler = new ProgramRuleVariableHandler(programRuleVariableModelStore);
+        programRuleVariableHandler = new ProgramRuleVariableHandler(programRuleVariableStore);
 
         when(programRuleVariable.uid()).thenReturn("test_program_rule_variable_uid");
         when(programRuleVariable.program()).thenReturn(program);
@@ -94,15 +94,15 @@ public class ProgramRuleVariableHandlerTests {
         programRuleVariableHandler.handleProgramRuleVariables(null);
 
         // verify that store is never called
-        verify(programRuleVariableModelStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
+        verify(programRuleVariableStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
                 any(ProgramRuleVariableSourceType.class));
 
-        verify(programRuleVariableModelStore, never()).update(anyString(), anyString(), anyString(), anyString(),
+        verify(programRuleVariableStore, never()).update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
                 any(ProgramRuleVariableSourceType.class), anyString());
 
-        verify(programRuleVariableModelStore, never()).delete(anyString());
+        verify(programRuleVariableStore, never()).delete(anyString());
 
     }
 
@@ -113,14 +113,14 @@ public class ProgramRuleVariableHandlerTests {
         programRuleVariableHandler.handleProgramRuleVariables(programRuleVariables);
 
         // verify that delete is called once
-        verify(programRuleVariableModelStore, times(1)).delete(anyString());
+        verify(programRuleVariableStore, times(1)).delete(anyString());
 
         // verify that update and insert is never called
-        verify(programRuleVariableModelStore, never()).update(anyString(), anyString(), anyString(), anyString(),
+        verify(programRuleVariableStore, never()).update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
                 any(ProgramRuleVariableSourceType.class), anyString());
 
-        verify(programRuleVariableModelStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
+        verify(programRuleVariableStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
                 any(ProgramRuleVariableSourceType.class));
 
@@ -128,46 +128,46 @@ public class ProgramRuleVariableHandlerTests {
 
     @Test
     public void update_shouldUpdateProgramRuleVariable() throws Exception {
-        when(programRuleVariableModelStore.update(anyString(), anyString(), anyString(), anyString(),
+        when(programRuleVariableStore.update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
                 any(ProgramRuleVariableSourceType.class), anyString())).thenReturn(1);
 
         programRuleVariableHandler.handleProgramRuleVariables(programRuleVariables);
 
         // verify that update is called once
-        verify(programRuleVariableModelStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
+        verify(programRuleVariableStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
                 any(ProgramRuleVariableSourceType.class), anyString());
 
         // verify that insert and delete is never called
-        verify(programRuleVariableModelStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
+        verify(programRuleVariableStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
                 any(ProgramRuleVariableSourceType.class));
 
-        verify(programRuleVariableModelStore, never()).delete(anyString());
+        verify(programRuleVariableStore, never()).delete(anyString());
 
     }
 
     @Test
     public void insert_shouldInsertProgramRuleVariable() throws Exception {
-        when(programRuleVariableModelStore.update(anyString(), anyString(), anyString(), anyString(),
+        when(programRuleVariableStore.update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
                 any(ProgramRuleVariableSourceType.class), anyString())).thenReturn(0);
 
         programRuleVariableHandler.handleProgramRuleVariables(programRuleVariables);
 
         // verify that insert is called once
-        verify(programRuleVariableModelStore, times(1)).insert(anyString(), anyString(), anyString(), anyString(),
+        verify(programRuleVariableStore, times(1)).insert(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
                 any(ProgramRuleVariableSourceType.class));
 
         // verify that update is called once since we try to update before we insert
-        verify(programRuleVariableModelStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
+        verify(programRuleVariableStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
                 any(ProgramRuleVariableSourceType.class), anyString());
 
         // verify that delete is never called
-        verify(programRuleVariableModelStore, never()).delete(anyString());
+        verify(programRuleVariableStore, never()).delete(anyString());
 
     }
 }

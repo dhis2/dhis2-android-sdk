@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.user.UserRoleModel.Columns;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings({
@@ -79,19 +80,18 @@ public class UserRoleStoreImpl implements UserRoleStore {
     }
 
     @Override
-    public long insert(
-            @NonNull String uid,
-            @Nullable String code,
-            @Nullable String name,
-            @Nullable String displayName,
-            @Nullable Date created,
-            @Nullable Date lastUpdated) {
+    public long insert(@NonNull String uid,
+                       @Nullable String code,
+                       @Nullable String name,
+                       @Nullable String displayName,
+                       @Nullable Date created,
+                       @Nullable Date lastUpdated) {
 
+        nonNull(uid);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated);
 
         Long insert = databaseAdapter.executeInsert(UserRoleModel.TABLE, insertStatement);
         insertStatement.clearBindings();
-
         return insert;
     }
 
@@ -103,21 +103,19 @@ public class UserRoleStoreImpl implements UserRoleStore {
                       @Nullable Date created,
                       @Nullable Date lastUpdated,
                       @NonNull String whereUid) {
+        nonNull(uid);
+        nonNull(whereUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated);
-
-        // bind the whereClause
         sqLiteBind(updateStatement, 7, whereUid);
 
         int update = databaseAdapter.executeUpdateDelete(UserRoleModel.TABLE, updateStatement);
         updateStatement.clearBindings();
-
         return update;
     }
 
     @Override
     public int delete(@NonNull String uid) {
-        deleteStatement.clearBindings();
-        // bind the whereClause
+        nonNull(uid);
         sqLiteBind(deleteStatement, 1, uid);
 
         int delete = databaseAdapter.executeUpdateDelete(UserRoleModel.TABLE, deleteStatement);
@@ -138,7 +136,6 @@ public class UserRoleStoreImpl implements UserRoleStore {
         sqLiteBind(sqLiteStatement, 4, displayName);
         sqLiteBind(sqLiteStatement, 5, created);
         sqLiteBind(sqLiteStatement, 6, lastUpdated);
-
     }
 
 }

@@ -33,7 +33,7 @@ import android.support.annotation.Nullable;
 
 import java.util.Date;
 
-public interface ProgramRuleVariableModelStore {
+public interface ProgramRuleVariableStore {
     long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
                 @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
                 @Nullable Boolean useCodeForOptionSet, @NonNull String program,

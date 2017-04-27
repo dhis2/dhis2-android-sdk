@@ -27,6 +27,9 @@
  */
 package org.hisp.dhis.android.core.user;
 
+import android.database.sqlite.SQLiteConstraintException;
+import android.util.Log;
+
 import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -49,7 +52,6 @@ import retrofit2.Response;
 public final class UserCall implements Call<Response<User>> {
     // retrofit service
     private final UserService userService;
-
     // databaseAdapter and handlers
     private final DatabaseAdapter databaseAdapter;
     private final OrganisationUnitStore organisationUnitStore;
@@ -58,12 +60,9 @@ public final class UserCall implements Call<Response<User>> {
     private final UserStore userStore;
     private final UserRoleProgramLinkStore userRoleProgramLinkStore;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
-
     private final ResourceStore resourceStore;
-
     // server date time
     private final Date serverDate;
-
     private boolean isExecuted;
 
     public UserCall(UserService userService,
@@ -101,16 +100,44 @@ public final class UserCall implements Call<Response<User>> {
             if (isExecuted) {
                 throw new IllegalStateException("Already executed");
             }
-
             isExecuted = true;
         }
-
         Response<User> response = getUser();
         if (response.isSuccessful()) {
-            deleteOrPersistUserGraph(response);
+            UserHandler userHandler = new UserHandler(userStore);
+            UserCredentialsHandler userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
+            UserRoleHandler userRoleHandler = new UserRoleHandler(userRoleStore, userRoleProgramLinkStore);
+            OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore,
+                    userOrganisationUnitLinkStore);
+            ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
+
+            Transaction transaction = databaseAdapter.beginNewTransaction();
+            try {
+                User user = response.body();
+                // TODO: check that this is user is authenticated and is persisted in db
+                userHandler.handleUser(user);
+                UserCredentials userCredentials = user.userCredentials();
+                userCredentialsHandler.handleUserCredentials(userCredentials, user);
+
+                List<UserRole> userRoles = userCredentials.userRoles();
+                userRoleHandler.handleUserRoles(userRoles);
+
+                organisationUnitHandler.handleOrganisationUnits(user.organisationUnits(),
+                        OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user.uid());
+
+                organisationUnitHandler.handleOrganisationUnits(user.teiSearchOrganisationUnits(),
+                        OrganisationUnitModel.Scope.SCOPE_TEI_SEARCH, user.uid());
+
+                resourceHandler.handleResource(ResourceModel.Type.USER, serverDate);
+
+                transaction.setSuccessful();
+            } catch (SQLiteConstraintException constraintException) {
+                //constraintException.printStackTrace();
+                Log.d("CAll", "call: constraintException");
+            } finally {
+                transaction.end();
+            }
         }
-
-
         return response;
     }
 
@@ -129,68 +156,16 @@ public final class UserCall implements Call<Response<User>> {
                         UserCredentials.created,
                         UserCredentials.lastUpdated,
                         UserCredentials.username,
-                        UserCredentials.userRoles.with(
-                                UserRole.uid, UserRole.programs.with(
-                                        Program.uid
-                                )
-                        )
+                        UserCredentials.userRoles.with(UserRole.uid, UserRole.programs.with(Program.uid))
                 ),
                 User.organisationUnits.with(
                         OrganisationUnit.uid,
                         OrganisationUnit.path,
-                        OrganisationUnit.programs.with(
-                                Program.uid
-                        )
+                        OrganisationUnit.programs.with(Program.uid)
                 ),
-                User.teiSearchOrganisationUnits.with(
-                        OrganisationUnit.uid
-                )
+                User.teiSearchOrganisationUnits.with(OrganisationUnit.uid)
         ).build();
-
         return userService.getUser(fields).execute();
     }
 
-    private void deleteOrPersistUserGraph(Response<User> response) {
-        UserHandler userHandler = new UserHandler(userStore);
-        UserCredentialsHandler userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
-        UserRoleHandler userRoleHandler = new UserRoleHandler(userRoleStore, userRoleProgramLinkStore);
-        OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
-                organisationUnitStore, userOrganisationUnitLinkStore
-        );
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
-
-        Transaction transaction = databaseAdapter.beginNewTransaction();
-
-        try {
-            User user = response.body();
-            // TODO: check that this is user is authenticated and is persisted in db
-
-            userHandler.handleUser(user);
-
-            UserCredentials userCredentials = user.userCredentials();
-
-            userCredentialsHandler.handleUserCredentials(userCredentials, user);
-
-            List<UserRole> userRoles = userCredentials.userRoles();
-
-            userRoleHandler.handleUserRoles(userRoles);
-
-            organisationUnitHandler.handleOrganisationUnits(user.organisationUnits(),
-                    OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
-                    user.uid()
-            );
-
-            organisationUnitHandler.handleOrganisationUnits(user.teiSearchOrganisationUnits(),
-                    OrganisationUnitModel.Scope.SCOPE_TEI_SEARCH, user.uid()
-            );
-
-
-            resourceHandler.handleResource(ResourceModel.Type.USER, serverDate);
-
-            transaction.setSuccessful();
-        } finally {
-            transaction.end();
-        }
-
-    }
 }

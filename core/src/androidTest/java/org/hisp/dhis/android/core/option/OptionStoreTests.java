@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.option.OptionModel.Columns;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Captor;
 
 import java.io.IOException;
 import java.util.Date;
@@ -72,13 +71,13 @@ public class OptionStoreTests extends AbsStoreTestCase {
         this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
 
-    private OptionStore optionStore;
+    private OptionStore store;
 
     @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.optionStore = new OptionStoreImpl(databaseAdapter());
+        this.store = new OptionStoreImpl(databaseAdapter());
     }
 
     @Test
@@ -89,7 +88,7 @@ public class OptionStoreTests extends AbsStoreTestCase {
 
         database().insert(OptionSetModel.TABLE, null, optionSet);
 
-        long rowId = optionStore.insert(
+        long rowId = store.insert(
                 UID, CODE, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID
         );
 
@@ -110,7 +109,7 @@ public class OptionStoreTests extends AbsStoreTestCase {
     public void insert_shouldPersistDeferrableOptionInDatabase() {
 
         database().beginTransaction();
-        long rowId = optionStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID);
+        long rowId = store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID);
         ContentValues optionSet = CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
         database().insert(OptionSetModel.TABLE, null, optionSet);
         database().setTransactionSuccessful();
@@ -128,7 +127,7 @@ public class OptionStoreTests extends AbsStoreTestCase {
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_shouldNotPersistOptionWithoutForeignKey() {
-        optionStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID);
+        store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID);
     }
 
     @Test
@@ -171,7 +170,7 @@ public class OptionStoreTests extends AbsStoreTestCase {
         ContentValues optionSet = CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
         database().insert(OptionSetModel.TABLE, null, optionSet);
 
-        long insert = optionStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID);
+        long insert = store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID);
         assertThat(insert).isEqualTo(1L);
 
         String[] projection = {Columns.UID, Columns.CODE, Columns.OPTION_SET};
@@ -182,8 +181,7 @@ public class OptionStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(UID, CODE, OPTION_SET_UID);
 
         String newCode = "abc123";
-        optionStore.update(UID, newCode, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID, UID);
-
+        store.update(UID, newCode, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID, UID);
 
         cursor = database().query(OptionModel.TABLE, projection, null, null, null, null, null);
 
@@ -196,7 +194,7 @@ public class OptionStoreTests extends AbsStoreTestCase {
         ContentValues optionSet = CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
         database().insert(OptionSetModel.TABLE, null, optionSet);
 
-        long insert = optionStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID);
+        long insert = store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID);
         assertThat(insert).isEqualTo(1L);
 
         String[] projection = {Columns.UID, Columns.CODE, Columns.OPTION_SET};
@@ -207,10 +205,40 @@ public class OptionStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(UID, CODE, OPTION_SET_UID);
 
         // delete option
-        optionStore.delete(UID);
+        store.delete(UID);
         cursor = database().query(OptionModel.TABLE, projection, null, null, null, null, null);
 
         // check that option is deleted
         assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_optionSet() {
+        store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_uid() {
+        store.update(null, CODE, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_OptionSet() {
+        store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, null, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_whereUid() {
+        store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, OPTION_SET_UID, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_null_uid() {
+        store.delete(null);
     }
 }

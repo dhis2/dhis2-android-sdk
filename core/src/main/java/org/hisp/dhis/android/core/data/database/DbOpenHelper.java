@@ -354,7 +354,6 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             ");";
 
-    //TODO: see how the other link tables are done:
     private static final String CREATE_PROGRAM_STAGE_SECTION_DATA_ELEMENT_LINK_TABLE = "CREATE TABLE " +
             ProgramStageSectionDataElementLinkModel.TABLE + "( " +
             ProgramStageSectionDataElementLinkModel.Columns.ID + " INTEGER PRIMARY KEY NOT NULL, " +

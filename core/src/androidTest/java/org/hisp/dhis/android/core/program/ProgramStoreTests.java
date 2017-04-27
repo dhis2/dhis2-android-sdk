@@ -127,7 +127,7 @@ public class ProgramStoreTests extends AbsStoreTestCase {
     private final Date date;
     private final String dateString;
 
-    private ProgramStore programStore;
+    private ProgramStore store;
 
     public ProgramStoreTests() {
         this.date = new Date();
@@ -138,7 +138,7 @@ public class ProgramStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        this.programStore = new ProgramStoreImpl(databaseAdapter());
+        this.store = new ProgramStoreImpl(databaseAdapter());
 
         //RelationshipType foreign key corresponds to table entry
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID, RELATIONSHIP_TYPE);
@@ -151,7 +151,7 @@ public class ProgramStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistProgramInDatabase() {
-        long rowId = programStore.insert(
+        long rowId = store.insert(
                 UID,
                 CODE,
                 NAME,
@@ -225,7 +225,7 @@ public class ProgramStoreTests extends AbsStoreTestCase {
         final String deferredTrackedEntityUid = "deferredTrackedEntityUid";
 
         database().beginTransaction();
-        long rowId = programStore.insert(
+        long rowId = store.insert(
                 UID,
                 CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
                 DISPLAY_DESCRIPTION, VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE,
@@ -243,7 +243,7 @@ public class ProgramStoreTests extends AbsStoreTestCase {
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(2L, deferredTrackedEntityUid);
         database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
 
-        long rowId2 = programStore.insert(
+        long rowId2 = store.insert(
                 UID2,
                 CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
                 DISPLAY_DESCRIPTION, VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE,
@@ -293,7 +293,7 @@ public class ProgramStoreTests extends AbsStoreTestCase {
     @Test
     public void delete_shouldDeleteProgramWhenDeletingRelatedProgramForeignKey() {
         database().beginTransaction();
-        programStore.insert(
+        store.insert(
                 UID,
                 CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
                 DISPLAY_DESCRIPTION, VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE,
@@ -304,7 +304,7 @@ public class ProgramStoreTests extends AbsStoreTestCase {
                 UID2,
                 TRACKED_ENTITY
         );
-        programStore.insert(
+        store.insert(
                 UID2,
                 CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
                 DISPLAY_DESCRIPTION, VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE,
@@ -327,7 +327,7 @@ public class ProgramStoreTests extends AbsStoreTestCase {
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistProgramWithInvalidRelatedProgramForeignKey() {
         database().beginTransaction();
-        programStore.insert(
+        store.insert(
                 UID,
                 CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
                 DISPLAY_DESCRIPTION, VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE,
@@ -344,21 +344,21 @@ public class ProgramStoreTests extends AbsStoreTestCase {
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistProgramWithInvalidRelationshipTypeForeignKey() {
-        programStore.insert(UID, null, NAME, null, null, null, null, null, null, null, null, null, null, null,
+        store.insert(UID, null, NAME, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, RELATIONSHIP_FROM_A, null, null, null, null, PROGRAM_TYPE,
                 "wrong", null, null, TRACKED_ENTITY);
     }
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistProgramWithInvalidTrackedEntityForeignKey() {
-        programStore.insert(UID, null, NAME, null, null, null, null, null, null, null, null, null, null, null,
+        store.insert(UID, null, NAME, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, RELATIONSHIP_FROM_A, null, null, null, null, PROGRAM_TYPE,
                 RELATIONSHIP_TYPE, null, null, "wrong");
     }
 
     @Test
     public void insert_shouldPersistProgramNullableInDatabase() {
-        long rowId = programStore.insert(
+        long rowId = store.insert(
                 UID, null, NAME, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, RELATIONSHIP_FROM_A, null,
                 null, null, null, PROGRAM_TYPE, null, null, null, null);
@@ -373,7 +373,7 @@ public class ProgramStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteProgramWhenDeletingRelationshipTypeForeignKey() {
-        programStore.insert(
+        store.insert(
                 UID,
                 CODE,
                 NAME,
@@ -414,7 +414,7 @@ public class ProgramStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteProgramWhenDeletingTrackedEntityForeignKey() {
-        programStore.insert(
+        store.insert(
                 UID,
                 CODE,
                 NAME,
@@ -472,7 +472,7 @@ public class ProgramStoreTests extends AbsStoreTestCase {
         String updatedCode = "updated_program_code";
         String updatedDisplayShortName = "updated_program_display_short_name";
         // update the program with updatedCode and updatedDisplayShortName
-        int update = programStore.update(
+        int update = store.update(
                 UID, updatedCode, NAME, DISPLAY_NAME, date, date,
                 SHORT_NAME, updatedDisplayShortName, DESCRIPTION,
                 DISPLAY_DESCRIPTION, VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL,
@@ -508,7 +508,7 @@ public class ProgramStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(UID);
 
         // delete the program
-        int delete = programStore.delete(UID);
+        int delete = store.delete(UID);
 
         // check that store returns 1 on successful delete
         assertThat(delete).isEqualTo(1);
@@ -518,4 +518,40 @@ public class ProgramStoreTests extends AbsStoreTestCase {
         // check that program doesn't exist in database
         assertThatCursor(cursor).isExhausted();
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
+                DISPLAY_DESCRIPTION, VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE,
+                INCIDENT_DATE_LABEL, REGISTRATION, SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD,
+                IGNORE_OVERDUE_EVENTS, RELATIONSHIP_FROM_A, SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES,
+                USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE, RELATIONSHIP_TYPE,
+                RELATIONSHIP_TEXT, null, TRACKED_ENTITY);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_uid() {
+        store.update(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
+                DISPLAY_DESCRIPTION, VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE,
+                INCIDENT_DATE_LABEL, REGISTRATION, SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD,
+                IGNORE_OVERDUE_EVENTS, RELATIONSHIP_FROM_A, SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES,
+                USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE, RELATIONSHIP_TYPE,
+                RELATIONSHIP_TEXT, null, TRACKED_ENTITY, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_whereUid() {
+        store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
+                DISPLAY_DESCRIPTION, VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE,
+                INCIDENT_DATE_LABEL, REGISTRATION, SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD,
+                IGNORE_OVERDUE_EVENTS, RELATIONSHIP_FROM_A, SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES,
+                USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE, RELATIONSHIP_TYPE,
+                RELATIONSHIP_TEXT, null, TRACKED_ENTITY, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_null_uid() {
+        store.delete(null);
+    }
+
 }

@@ -43,7 +43,7 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 public class ConstantStoreTests extends AbsStoreTestCase {
 
-    private ConstantStore constantStore;
+    private ConstantStore store;
 
     private static final String UID = "test_uid";
     private static final String CODE = "test_code";
@@ -62,17 +62,22 @@ public class ConstantStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        constantStore = new ConstantStoreImpl(databaseAdapter());
+        store = new ConstantStoreImpl(databaseAdapter());
     }
 
     @Test
     public void insert_shouldPersistRowInDatabase() {
-        long rowId = constantStore.insert(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, VALUE);
+        long rowId = store.insert(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, VALUE);
         Cursor cursor = database().query(ConstantModel.TABLE, CONSTANT_PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isNotEqualTo(-1L); // Checks that the insert was successful (row ID would otherwise be -1)
 
         assertThatCursor(cursor).hasRow(UID, CODE, NAME, DISPLAY_NAME, BaseIdentifiableObject.DATE_FORMAT.format(CREATED), BaseIdentifiableObject.DATE_FORMAT.format(LAST_UPDATED), VALUE);
         assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        store.insert(null, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, VALUE);
     }
 }

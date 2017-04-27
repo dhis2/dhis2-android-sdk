@@ -155,4 +155,13 @@ public final class StoreUtils {
             sqLiteStatement.bindLong(index, arg);
         }
     }
+
+    /**
+     * abstract the silly if null then throw IllegalArgumentException ? or just NullPointerException ?
+     */
+    public static void nonNull(Object argument) {
+        if (argument == null) {
+            throw new IllegalArgumentException("Null argument for @NotNull defined parameters.");
+        }
+    }
 }

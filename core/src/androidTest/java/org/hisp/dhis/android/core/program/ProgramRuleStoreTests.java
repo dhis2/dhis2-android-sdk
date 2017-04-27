@@ -66,7 +66,7 @@ public class ProgramRuleStoreTests extends AbsStoreTestCase {
             Columns.PROGRAM_STAGE
     };
 
-    private ProgramRuleStore programRuleStore;
+    private ProgramRuleStore store;
 
     private static final Long ID = 1L;
     private static final String UID = "test_uid";
@@ -96,7 +96,7 @@ public class ProgramRuleStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.programRuleStore = new ProgramRuleStoreImpl(databaseAdapter());
+        this.store = new ProgramRuleStoreImpl(databaseAdapter());
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
@@ -113,7 +113,7 @@ public class ProgramRuleStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistProgramRuleInDatabase() {
-        long rowId = programRuleStore.insert(
+        long rowId = store.insert(
                 UID, CODE, NAME, DISPLAY_NAME,
                 date, date, PRIORITY,
                 CONDITION, PROGRAM, PROGRAM_STAGE
@@ -137,7 +137,7 @@ public class ProgramRuleStoreTests extends AbsStoreTestCase {
         final String deferrableProgramStage = "deferrableProgramStage";
 
         database().beginTransaction();
-        long rowId = programRuleStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, PRIORITY, CONDITION,
+        long rowId = store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, PRIORITY, CONDITION,
                 deferrableProgram,
                 deferrableProgramStage
         );
@@ -160,7 +160,7 @@ public class ProgramRuleStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistProgramRuleInDatabaseWithoutProgramStageForeignKey() {
-        long rowId = programRuleStore.insert(
+        long rowId = store.insert(
                 UID, CODE, NAME, DISPLAY_NAME,
                 date, date, PRIORITY,
                 CONDITION, PROGRAM, null);
@@ -183,14 +183,14 @@ public class ProgramRuleStoreTests extends AbsStoreTestCase {
     @Test(expected = SQLiteConstraintException.class)
     public void exception_shouldNotPersistProgramRuleInDatabaseWithoutProgram() {
         String wrongProgramUid = "wrong";
-        programRuleStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, PRIORITY, CONDITION,
+        store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, PRIORITY, CONDITION,
                 wrongProgramUid, null);
     }
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_shouldNotPersistProgramRuleInDatabaseWithWrongProgramStageForeignKey() {
         String wrongProgramStageUid = "wrong";
-        programRuleStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, PRIORITY, CONDITION,
+        store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, PRIORITY, CONDITION,
                 PROGRAM, wrongProgramStageUid);
     }
 
@@ -255,7 +255,7 @@ public class ProgramRuleStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(UID, CONDITION);
 
         String updatedCondition = "updated_program_rule_condition";
-        int update = programRuleStore.update(
+        int update = store.update(
                 UID, CODE, NAME, DISPLAY_NAME,
                 date, date, PRIORITY, updatedCondition,
                 PROGRAM, PROGRAM_STAGE, UID
@@ -286,7 +286,7 @@ public class ProgramRuleStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(UID);
 
         // delete the program rule
-        int delete = programRuleStore.delete(UID);
+        int delete = store.delete(UID);
 
         assertThat(delete).isEqualTo(1);
 
@@ -295,5 +295,35 @@ public class ProgramRuleStoreTests extends AbsStoreTestCase {
         // check that program rule doesn't exist in database
         assertThatCursor(cursor).isExhausted();
 
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, PRIORITY, CONDITION, PROGRAM, PROGRAM_STAGE);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_program() {
+        store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, PRIORITY, CONDITION, null, PROGRAM_STAGE);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_uid() {
+        store.update(null, CODE, NAME, DISPLAY_NAME, date, date, PRIORITY, CONDITION, PROGRAM, PROGRAM_STAGE, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_program() {
+        store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, PRIORITY, CONDITION, null, PROGRAM_STAGE, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_whereUid() {
+        store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, PRIORITY, CONDITION, PROGRAM, PROGRAM_STAGE, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_null_uid() {
+        store.delete(null);
     }
 }

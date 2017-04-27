@@ -227,32 +227,6 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(EVENT, null, null, DATA_ELEMENT, null, null, null).isExhausted();
     }
 
-    @Test(expected = SQLiteConstraintException.class)
-    public void insertWithoutEvent_shouldThrowException() {
-        trackedEntityDataValueStore.insert(
-                null,
-                date,
-                date,
-                DATA_ELEMENT,
-                STORED_BY,
-                VALUE,
-                PROVIDED_ELSEWHERE
-        );
-    }
-
-    @Test(expected = SQLiteConstraintException.class)
-    public void insertWithoutDataElement_shouldThrowException() {
-        trackedEntityDataValueStore.insert(
-                EVENT,
-                date,
-                date,
-                null,
-                STORED_BY,
-                VALUE,
-                PROVIDED_ELSEWHERE
-        );
-    }
-
     @Test
     public void delete_shouldDeleteTrackedEntityDataValueWhenDeletingEventForeignKey() {
         trackedEntityDataValueStore.insert(
@@ -302,7 +276,6 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
         );
     }
 
-
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistTrackedEntityDataValueWithInvalidDataElement() {
         trackedEntityDataValueStore.insert(
@@ -317,10 +290,19 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
     }
 
     // ToDo: consider introducing conflict resolution strategy
-
     @Test
     public void close_shouldNotCloseDatabase() {
         trackedEntityDataValueStore.close();
         assertThat(database().isOpen()).isTrue();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        trackedEntityDataValueStore.insert(null, date, date, DATA_ELEMENT, STORED_BY, VALUE, PROVIDED_ELSEWHERE);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_dataElement() {
+        trackedEntityDataValueStore.insert(EVENT, date, date, null, STORED_BY, VALUE, PROVIDED_ELSEWHERE);
     }
 }

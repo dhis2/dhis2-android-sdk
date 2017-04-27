@@ -102,7 +102,7 @@ public class ProgramCallTests {
     private ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
 
     @Mock
-    private ProgramRuleVariableModelStore programRuleVariableStore;
+    private ProgramRuleVariableStore programRuleVariableStore;
 
     @Mock
     private ProgramIndicatorStore programIndicatorStore;

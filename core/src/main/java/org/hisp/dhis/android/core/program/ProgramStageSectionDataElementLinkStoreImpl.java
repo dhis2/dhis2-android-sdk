@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLinkModel.Columns;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class ProgramStageSectionDataElementLinkStoreImpl implements ProgramStageSectionDataElementLinkStore {
@@ -32,6 +33,8 @@ public class ProgramStageSectionDataElementLinkStoreImpl implements ProgramStage
     @Override
     public Long insert(@NonNull String programStageSection, @NonNull String dataElement) {
 
+        nonNull(programStageSection);
+        nonNull(dataElement);
         sqLiteBind(insertStatement, 1, programStageSection);
         sqLiteBind(insertStatement, 2, dataElement);
 
@@ -42,8 +45,13 @@ public class ProgramStageSectionDataElementLinkStoreImpl implements ProgramStage
 
 
     @Override
-    public int update(@NonNull String programStageSection, @NonNull String dataElement, @NonNull String
-            whereProgramStageSection, @NonNull String whereDataElement) {
+    public int update(@NonNull String programStageSection, @NonNull String dataElement,
+                      @NonNull String whereProgramStageSection, @NonNull String whereDataElement) {
+
+        nonNull(programStageSection);
+        nonNull(dataElement);
+        nonNull(whereProgramStageSection);
+        nonNull(whereDataElement);
 
         sqLiteBind(updateStatement, 1, programStageSection);
         sqLiteBind(updateStatement, 2, dataElement);

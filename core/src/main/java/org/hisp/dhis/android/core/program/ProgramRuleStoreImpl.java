@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.program.ProgramRuleModel.Columns;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings({
@@ -94,6 +95,8 @@ public class ProgramRuleStoreImpl implements ProgramRuleStore {
                        @NonNull Date lastUpdated, @Nullable Integer priority,
                        @Nullable String condition, @NonNull String program,
                        @Nullable String programStage) {
+        nonNull(uid);
+        nonNull(program);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, priority,
                 condition, program, programStage);
 
@@ -108,6 +111,9 @@ public class ProgramRuleStoreImpl implements ProgramRuleStore {
                       @NonNull Date created, @NonNull Date lastUpdated, @Nullable Integer priority,
                       @Nullable String condition, @NonNull String program, @Nullable String programStage,
                       @NonNull String whereProgramRuleUid) {
+        nonNull(uid);
+        nonNull(program);
+        nonNull(whereProgramRuleUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, priority,
                 condition, program, programStage);
 
@@ -122,6 +128,7 @@ public class ProgramRuleStoreImpl implements ProgramRuleStore {
 
     @Override
     public int delete(String uid) {
+        nonNull(uid);
         // bind the where argument
         sqLiteBind(deleteStatement, 1, uid);
 

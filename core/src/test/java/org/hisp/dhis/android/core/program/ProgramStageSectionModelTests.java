@@ -42,7 +42,7 @@ import nl.jqno.equalsverifier.Warning;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class ProgramStageSectionTests {
+public class ProgramStageSectionModelTests {
 
     @Test
     public void equals_shouldConformToContract() {

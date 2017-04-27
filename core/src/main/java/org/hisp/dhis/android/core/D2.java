@@ -57,8 +57,8 @@ import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
 import org.hisp.dhis.android.core.program.ProgramRuleActionStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramRuleStore;
 import org.hisp.dhis.android.core.program.ProgramRuleStoreImpl;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableModelStore;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableModelStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableStore;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramService;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementStore;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementStoreImpl;
@@ -136,7 +136,7 @@ public final class D2 {
     private final ProgramStore programStore;
     private final TrackedEntityAttributeStore trackedEntityAttributeStore;
     private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
-    private final ProgramRuleVariableModelStore programRuleVariableStore;
+    private final ProgramRuleVariableStore programRuleVariableStore;
     private final ProgramIndicatorStore programIndicatorStore;
     private final ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
     private final ProgramRuleActionStore programRuleActionStore;
@@ -176,7 +176,7 @@ public final class D2 {
         this.programStore = new ProgramStoreImpl(databaseAdapter);
         this.trackedEntityAttributeStore = new TrackedEntityAttributeStoreImpl(databaseAdapter);
         this.programTrackedEntityAttributeStore = new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter);
-        this.programRuleVariableStore = new ProgramRuleVariableModelStoreImpl(databaseAdapter);
+        this.programRuleVariableStore = new ProgramRuleVariableStoreImpl(databaseAdapter);
         this.programIndicatorStore = new ProgramIndicatorStoreImpl(databaseAdapter);
         this.programStageSectionProgramIndicatorLinkStore = new ProgramStageSectionProgramIndicatorLinkStoreImpl(
                 databaseAdapter);

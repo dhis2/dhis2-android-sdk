@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class TrackedEntityStoreImpl implements TrackedEntityStore {
@@ -90,8 +91,7 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
                        @Nullable String displayShortName, @Nullable String description,
                        @Nullable String displayDescription
     ) {
-        insertStatement.clearBindings();
-
+        nonNull(uid);
         sqLiteBind(insertStatement, 1, uid);
         sqLiteBind(insertStatement, 2, code);
         sqLiteBind(insertStatement, 3, name);
@@ -115,8 +115,8 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
                       @Nullable String shortName, @Nullable String displayShortName, @Nullable String description,
                       @Nullable String displayDescription, @NonNull String whereUid
     ) {
-        updateStatement.clearBindings();
-
+        nonNull(uid);
+        nonNull(whereUid);
         sqLiteBind(updateStatement, 1, uid);
         sqLiteBind(updateStatement, 2, code);
         sqLiteBind(updateStatement, 3, name);
@@ -136,7 +136,7 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
 
     @Override
     public int delete(@NonNull String uid) {
-        deleteStatement.clearBindings();
+        nonNull(uid);
         sqLiteBind(deleteStatement, 1, uid);
         int rowId = deleteStatement.executeUpdateDelete();
         deleteStatement.clearBindings();

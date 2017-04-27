@@ -78,7 +78,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                        Date serverDate,
                        TrackedEntityAttributeStore trackedEntityAttributeStore,
                        ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
-                       ProgramRuleVariableModelStore programRuleVariableStore,
+                       ProgramRuleVariableStore programRuleVariableStore,
                        ProgramIndicatorStore programIndicatorStore,
                        ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore,
                        ProgramRuleActionStore programRuleActionStore,
@@ -212,7 +212,6 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                                 ProgramStageSection.displayName, ProgramStageSection.created,
                                 ProgramStageSection.lastUpdated, ProgramStageSection.sortOrder,
                                 ProgramStageSection.deleted,
-                                //TODO: double check this:
                                 ProgramStageSection.dataElements.with(DataElement.uid),
                                 ProgramStageSection.programIndicators.with(ProgramIndicator.uid,
                                         ProgramIndicator.program.with(Program.uid)

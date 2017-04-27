@@ -67,7 +67,11 @@ android {
 
     buildTypes {
         debug {
-            testCoverageEnabled = true
+            // a fix for the debugger not being able to find local scope variables
+            testCoverageEnabled = false
+            jackOptions {
+                enabled false
+            }
         }
     }
 }

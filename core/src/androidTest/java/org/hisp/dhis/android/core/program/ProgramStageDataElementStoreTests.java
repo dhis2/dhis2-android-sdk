@@ -95,7 +95,7 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
     private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
     private static final String PROGRAM_STAGE = "stageUid";
 
-    private ProgramStageDataElementStore programStageDataElementStore;
+    private ProgramStageDataElementStore store;
 
     private final Date date;
     private final String dateString;
@@ -109,7 +109,7 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.programStageDataElementStore = new ProgramStageDataElementStoreImpl(databaseAdapter());
+        this.store = new ProgramStageDataElementStoreImpl(databaseAdapter());
     }
 
     @Test
@@ -124,8 +124,7 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
         ContentValues programStage = CreateProgramStageUtils.create(ID, PROGRAM_STAGE, PROGRAM);
         database().insert(ProgramStageModel.TABLE, null, programStage);
 
-
-        long rowId = programStageDataElementStore.insert(
+        long rowId = store.insert(
                 UID,
                 CODE,
                 NAME,
@@ -144,7 +143,6 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
 
         Cursor cursor = database().query(ProgramStageDataElementModel.TABLE, PROJECTION,
                 null, null, null, null, null);
-
 
         // Checking if rowId == 1.
         // If it is 1, then it means it is first successful insert into db
@@ -176,7 +174,7 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
         final String deferredProgramStageSectionUid = "deferredProgramStageSectionUid";
 
         database().beginTransaction();
-        long rowId = programStageDataElementStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date,
+        long rowId = store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date,
                 DISPLAY_IN_REPORTS, COMPULSORY, ALLOW_PROVIDED_ELSEWHERE, SORT_ORDER, ALLOW_FUTURE_DATE,
                 deferredDataElementUid,
                 deferredProgramStageUid,
@@ -224,7 +222,7 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
         ContentValues programStage = CreateProgramStageUtils.create(ID, PROGRAM_STAGE, PROGRAM);
         database().insert(ProgramStageModel.TABLE, null, programStage);
 
-        long rowId = programStageDataElementStore.insert(
+        long rowId = store.insert(
                 UID,
                 CODE,
                 NAME,
@@ -243,7 +241,6 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
 
         Cursor cursor = database().query(ProgramStageDataElementModel.TABLE, PROJECTION,
                 null, null, null, null, null);
-
 
         // Checking if rowId == 1.
         // If it is 1, then it means it is first successful insert into db
@@ -270,7 +267,7 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistProgramStageDataElementWithInvalidForeignKey() {
         String fakeDataElementId = "fake_data_element_id";
-        programStageDataElementStore.insert(
+        store.insert(
                 UID,
                 CODE,
                 NAME,
@@ -439,7 +436,7 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
         String updatedDisplayName = "updatedDisplayName";
         Boolean updatedCompulsory = Boolean.TRUE;
 
-        int update = programStageDataElementStore.updateWithoutSection(
+        int update = store.updateWithoutSection(
                 UID, CODE, NAME,
                 updatedDisplayName, date, date,
                 DISPLAY_IN_REPORTS, updatedCompulsory,
@@ -497,7 +494,7 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
         String updatedDisplayName = "updatedDisplayName";
         Boolean updatedDisplayInReports = Boolean.FALSE;
 
-        int update = programStageDataElementStore.updateWithSection(
+        int update = store.updateWithSection(
                 UID, CODE, NAME,
                 updatedDisplayName, date, date,
                 updatedDisplayInReports, COMPULSORY,
@@ -545,7 +542,7 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
         // checking that psde was successfully inserted
         assertThatCursor(cursor).hasRow(UID);
 
-        int delete = programStageDataElementStore.delete(UID);
+        int delete = store.delete(UID);
 
         // checking that store returns 1 when successful delete
         assertThat(delete).isEqualTo(1);
@@ -553,5 +550,76 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
         cursor = database().query(ProgramStageDataElementModel.TABLE, projection, null, null, null, null, null);
 
         assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, DISPLAY_IN_REPORTS, COMPULSORY,
+                ALLOW_PROVIDED_ELSEWHERE, SORT_ORDER, ALLOW_FUTURE_DATE, DATA_ELEMENT, PROGRAM_STAGE, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_dataElement() {
+        store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, DISPLAY_IN_REPORTS, COMPULSORY,
+                ALLOW_PROVIDED_ELSEWHERE, SORT_ORDER, ALLOW_FUTURE_DATE, null, PROGRAM_STAGE, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_programStageUid() {
+        store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, DISPLAY_IN_REPORTS, COMPULSORY,
+                ALLOW_PROVIDED_ELSEWHERE, SORT_ORDER, ALLOW_FUTURE_DATE, DATA_ELEMENT, null, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void updateWithSection_null_uid() {
+        store.updateWithSection(null, CODE, NAME, DISPLAY_NAME, date, date, DISPLAY_IN_REPORTS, COMPULSORY,
+                ALLOW_PROVIDED_ELSEWHERE, SORT_ORDER, ALLOW_FUTURE_DATE, DATA_ELEMENT, PROGRAM_STAGE, null, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void updateWithSection_null_dataElement() {
+        store.updateWithSection(UID, CODE, NAME, DISPLAY_NAME, date, date, DISPLAY_IN_REPORTS, COMPULSORY,
+                ALLOW_PROVIDED_ELSEWHERE, SORT_ORDER, ALLOW_FUTURE_DATE, null, PROGRAM_STAGE, null, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void updateWithSection_null_programStageUid() {
+        store.updateWithSection(UID, CODE, NAME, DISPLAY_NAME, date, date, DISPLAY_IN_REPORTS, COMPULSORY,
+                ALLOW_PROVIDED_ELSEWHERE, SORT_ORDER, ALLOW_FUTURE_DATE, DATA_ELEMENT, null, null, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void updateWithSection_null_whereUid() {
+        store.updateWithSection(UID, CODE, NAME, DISPLAY_NAME, date, date, DISPLAY_IN_REPORTS, COMPULSORY,
+                ALLOW_PROVIDED_ELSEWHERE, SORT_ORDER, ALLOW_FUTURE_DATE, DATA_ELEMENT, PROGRAM_STAGE, null, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void updateWithoutSection_null_uid() {
+        store.updateWithoutSection(null, CODE, NAME, DISPLAY_NAME, date, date, DISPLAY_IN_REPORTS, COMPULSORY,
+                ALLOW_PROVIDED_ELSEWHERE, SORT_ORDER, ALLOW_FUTURE_DATE, DATA_ELEMENT, PROGRAM_STAGE, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void updateWithoutSection_null_dataElement() {
+        store.updateWithoutSection(UID, CODE, NAME, DISPLAY_NAME, date, date, DISPLAY_IN_REPORTS, COMPULSORY,
+                ALLOW_PROVIDED_ELSEWHERE, SORT_ORDER, ALLOW_FUTURE_DATE, null, PROGRAM_STAGE , UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void updateWithoutSection_null_programStageUid() {
+        store.updateWithoutSection(UID, CODE, NAME, DISPLAY_NAME, date, date, DISPLAY_IN_REPORTS, COMPULSORY,
+                ALLOW_PROVIDED_ELSEWHERE, SORT_ORDER, ALLOW_FUTURE_DATE, DATA_ELEMENT, null, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void updateWithoutSection_null_whereUid() {
+        store.updateWithoutSection(UID, CODE, NAME, DISPLAY_NAME, date, date, DISPLAY_IN_REPORTS, COMPULSORY,
+                ALLOW_PROVIDED_ELSEWHERE, SORT_ORDER, ALLOW_FUTURE_DATE, DATA_ELEMENT, PROGRAM_STAGE, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_null_whereUid() {
+        store.delete(null);
     }
 }

@@ -157,8 +157,8 @@ public class ProgramCallIntegrationTests extends AbsStoreTestCase {
                         trackedEntityAttributeHandler
                 );
 
-        ProgramRuleVariableModelStore programRuleVariableStore =
-                new ProgramRuleVariableModelStoreImpl(databaseAdapter());
+        ProgramRuleVariableStore programRuleVariableStore =
+                new ProgramRuleVariableStoreImpl(databaseAdapter());
         ProgramRuleVariableHandler programRuleVariableHandler =
                 new ProgramRuleVariableHandler(programRuleVariableStore);
 

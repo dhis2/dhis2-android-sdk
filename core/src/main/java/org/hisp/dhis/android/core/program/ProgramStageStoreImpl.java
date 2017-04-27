@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings({
@@ -135,6 +136,8 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
                        @NonNull Integer minDaysFromStart,
                        @NonNull Integer standardInterval,
                        @NonNull String program) {
+        nonNull(uid);
+        nonNull(program);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, executionDateLabel,
                 allowGenerateNextVisit, validCompleteOnly, reportDateToUse, openAfterEnrollment, repeatable,
                 captureCoordinates, formType, displayGenerateEventBox, generatedByEnrollmentDate, autoGenerateEvent,
@@ -157,6 +160,9 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
                       @NonNull Integer sortOrder, @NonNull Boolean hideDueDate, @NonNull Boolean blockEntryForm,
                       @NonNull Integer minDaysFromStart, @NonNull Integer standardInterval,
                       @NonNull String program, @NonNull String whereProgramStageUid) {
+        nonNull(uid);
+        nonNull(program);
+        nonNull(whereProgramStageUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, executionDateLabel,
                 allowGenerateNextVisit, validCompleteOnly, reportDateToUse, openAfterEnrollment, repeatable,
                 captureCoordinates, formType, displayGenerateEventBox, generatedByEnrollmentDate,
@@ -175,6 +181,7 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
 
     @Override
     public int delete(@NonNull String uid) {
+        nonNull(uid);
         // bind the where argument
         sqLiteBind(deleteStatement, 1, uid);
 

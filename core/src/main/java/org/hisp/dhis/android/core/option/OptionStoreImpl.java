@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -58,12 +59,10 @@ public class OptionStoreImpl implements OptionStore {
             OptionModel.Columns.CREATED + " =?, " +
             OptionModel.Columns.LAST_UPDATED + " =?, " +
             OptionModel.Columns.OPTION_SET + " =? " +
-            " WHERE " +
-            OptionModel.Columns.UID + " =?;";
+            " WHERE " + OptionModel.Columns.UID + " =?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + OptionModel.TABLE +
-            " WHERE " +
-            OptionModel.Columns.UID + " =?;";
+            " WHERE " + OptionModel.Columns.UID + " =?;";
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -86,6 +85,8 @@ public class OptionStoreImpl implements OptionStore {
                        @NonNull Date created,
                        @NonNull Date lastUpdated,
                        @NonNull String optionSet) {
+        nonNull(uid);
+        nonNull(optionSet);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, optionSet);
 
         // execute and clear bindings
@@ -104,6 +105,9 @@ public class OptionStoreImpl implements OptionStore {
                       @NonNull Date lastUpdated,
                       @NonNull String optionSet,
                       @NonNull String whereOptionUid) {
+        nonNull(uid);
+        nonNull(optionSet);
+        nonNull(whereOptionUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, optionSet);
 
         // bind the where argument
@@ -118,6 +122,7 @@ public class OptionStoreImpl implements OptionStore {
 
     @Override
     public int delete(@NonNull String uid) {
+        nonNull(uid);
         sqLiteBind(deleteStatement, 1, uid);
 
         int delete = databaseAdapter.executeUpdateDelete(OptionModel.TABLE, deleteStatement);

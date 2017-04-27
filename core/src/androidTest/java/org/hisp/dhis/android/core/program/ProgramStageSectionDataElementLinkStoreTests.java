@@ -1,6 +1,5 @@
 package org.hisp.dhis.android.core.program;
 
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
@@ -104,16 +103,6 @@ public class ProgramStageSectionDataElementLinkStoreTests extends AbsStoreTestCa
         store.insert(PROGRAM_STAGE_SECTION, "wrong");
     }
 
-    @Test(expected = SQLiteConstraintException.class)
-    public void insert_null_programStageSection() {
-        store.insert(null, DATA_ELEMENT);
-    }
-
-    @Test(expected = SQLiteConstraintException.class)
-    public void insert_null_dataElement() {
-        store.insert(PROGRAM_STAGE_SECTION, null);
-    }
-
     @Test
     public void update_ProgramStageSection() {
         final String UPDATED_UID = "updatedUid";
@@ -149,4 +138,33 @@ public class ProgramStageSectionDataElementLinkStoreTests extends AbsStoreTestCa
         assertThatCursor(cursor).hasRow(PROGRAM_STAGE_SECTION, UPDATED_UID);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_program() {
+        store.insert(null, DATA_ELEMENT);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_dataElement() {
+        store.insert(PROGRAM, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_program() {
+        store.update(null, DATA_ELEMENT, PROGRAM, DATA_ELEMENT);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_dataElement() {
+        store.update(PROGRAM, null, PROGRAM, DATA_ELEMENT);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_whereProgram() {
+        store.update(PROGRAM, DATA_ELEMENT, null, DATA_ELEMENT);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_whereDataElement() {
+        store.update(PROGRAM, DATA_ELEMENT, PROGRAM, null);
+    }
 }

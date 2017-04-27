@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings({
@@ -68,10 +69,9 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
             TrackedEntityAttributeModel.Columns.ORG_UNIT_SCOPE + ", " +
             TrackedEntityAttributeModel.Columns.UNIQUE + ", " +
             TrackedEntityAttributeModel.Columns.INHERIT +
-
             ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-    private static final String UPDATE_STATEMENT = "UPDATE " + TrackedEntityAttributeModel.TABLE +
-            " SET " +
+
+    private static final String UPDATE_STATEMENT = "UPDATE " + TrackedEntityAttributeModel.TABLE + " SET " +
             TrackedEntityAttributeModel.Columns.UID + " =?, " +
             TrackedEntityAttributeModel.Columns.CODE + " =?, " +
             TrackedEntityAttributeModel.Columns.NAME + " =?, " +
@@ -95,12 +95,10 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
             TrackedEntityAttributeModel.Columns.ORG_UNIT_SCOPE + " =?, " +
             TrackedEntityAttributeModel.Columns.UNIQUE + " =?, " +
             TrackedEntityAttributeModel.Columns.INHERIT + " =? " +
-            " WHERE " +
-            TrackedEntityAttributeModel.Columns.UID + " =?;";
+            " WHERE " + TrackedEntityAttributeModel.Columns.UID + " =?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + TrackedEntityAttributeModel.TABLE +
-            " WHERE " +
-            TrackedEntityAttributeModel.Columns.UID + " =?;";
+            " WHERE " + TrackedEntityAttributeModel.Columns.UID + " =?;";
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -116,28 +114,26 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
     }
 
     @Override
-    public long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
-                       @Nullable String displayName, @NonNull Date created,
-                       @NonNull Date lastUpdated, @Nullable String shortName,
+    public long insert(@NonNull String uid, @Nullable String code, @Nullable String name,
+                       @Nullable String displayName, @Nullable Date created,
+                       @Nullable Date lastUpdated, @Nullable String shortName,
                        @Nullable String displayShortName, @Nullable String description,
                        @Nullable String displayDescription, @Nullable String pattern,
                        @Nullable Integer sortOrderInListNoProgram, @Nullable String optionSet,
-                       @NonNull ValueType valueType, @Nullable String expression,
+                       @Nullable ValueType valueType, @Nullable String expression,
                        @Nullable TrackedEntityAttributeSearchScope searchScope,
                        @Nullable Boolean programScope, @Nullable Boolean displayInListNoProgram,
                        @Nullable Boolean generated, @Nullable Boolean displayOnVisitSchedule,
                        @Nullable Boolean orgUnitScope, @Nullable Boolean unique,
                        @Nullable Boolean inherit) {
-
+        nonNull(uid);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, shortName,
                 displayShortName, description, displayDescription, pattern, sortOrderInListNoProgram, optionSet,
                 valueType, expression, searchScope, programScope, displayInListNoProgram,
                 generated, displayOnVisitSchedule, orgUnitScope, unique, inherit);
 
-        // execute and clear bindings
         Long insert = databaseAdapter.executeInsert(TrackedEntityAttributeModel.TABLE, insertStatement);
         insertStatement.clearBindings();
-
         return insert;
     }
 
@@ -152,32 +148,27 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
                       @Nullable Boolean displayInListNoProgram, @Nullable Boolean generated,
                       @Nullable Boolean displayOnVisitSchedule, @Nullable Boolean orgUnitScope,
                       @Nullable Boolean unique, @Nullable Boolean inherit,
-                      @NonNull String whereTrackedEntityAttributeUid) {
-
+                      @NonNull String whereUid) {
+        nonNull(uid);
+        nonNull(whereUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, shortName,
                 displayShortName, description, displayDescription, pattern, sortOrderInListNoProgram, optionSet,
                 valueType, expression, searchScope, programScope, displayInListNoProgram,
                 generated, displayOnVisitSchedule, orgUnitScope, unique, inherit);
+        sqLiteBind(updateStatement, 24, whereUid);
 
-        // bind the where argument
-        sqLiteBind(updateStatement, 24, whereTrackedEntityAttributeUid);
-
-        // execute and clear bindings
         int update = databaseAdapter.executeUpdateDelete(TrackedEntityAttributeModel.TABLE, updateStatement);
         updateStatement.clearBindings();
-
         return update;
     }
 
     @Override
-    public int delete(String uid) {
-        // bind the where argument
+    public int delete(@NonNull String uid) {
+        nonNull(uid);
         sqLiteBind(deleteStatement, 1, uid);
 
-        // execute and clear bindings
         int delete = databaseAdapter.executeUpdateDelete(TrackedEntityAttributeModel.TABLE, deleteStatement);
         deleteStatement.clearBindings();
-
         return delete;
     }
 
@@ -217,5 +208,4 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
         sqLiteBind(sqLiteStatement, 22, unique);
         sqLiteBind(sqLiteStatement, 23, inherit);
     }
-
 }

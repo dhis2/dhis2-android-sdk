@@ -14,7 +14,6 @@ import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-
 public final class RuleEngine {
 
     @Nonnull
@@ -68,7 +67,8 @@ public final class RuleEngine {
                 .ruleEvents(ruleEvents)
                 .build();
 
-        return new RuleEngineExecution(ruleEngineContext.rules(), valueMap);
+        return new RuleEngineExecution(ruleEngineContext.expressionEvaluator(),
+                ruleEngineContext.rules(), valueMap);
     }
 
     @Nonnull

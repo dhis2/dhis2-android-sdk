@@ -107,7 +107,7 @@ final class RuleVariableValueMapBuilder {
     }
 
     @Nonnull
-    RuleVariableValueMapBuilder ruleEnrollment(@Nonnull RuleEnrollment ruleEnrollment) {
+    RuleVariableValueMapBuilder ruleEnrollment(@Nullable RuleEnrollment ruleEnrollment) {
         if (this.ruleEnrollment != null) {
             throw new IllegalStateException("It seems that enrollment has been set as target " +
                     "already. It can't be used as a part of execution context.");

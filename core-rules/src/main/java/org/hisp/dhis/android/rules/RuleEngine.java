@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 
 public final class RuleEngine {
 
@@ -61,7 +61,14 @@ public final class RuleEngine {
             }
         }
 
-        throw new UnsupportedOperationException();
+        Map<String, RuleVariableValue> valueMap = RuleVariableValueMapBuilder.target(ruleEvent)
+                .ruleVariables(ruleEngineContext.ruleVariables())
+                .ruleEnrollment(ruleEnrollment)
+                .ruleEvents(ruleEvents)
+                .build();
+
+        return new RuleEngineExecution(ruleEngineContext.expressionEvaluator(),
+                ruleEngineContext.rules(), valueMap);
     }
 
     @Nonnull

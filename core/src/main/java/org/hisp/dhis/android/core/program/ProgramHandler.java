@@ -73,6 +73,10 @@ public class ProgramHandler {
             if (program.trackedEntity() != null) {
                 trackedEntityUid = program.trackedEntity().uid();
             }
+            String relationshipTypeUid = null;
+            if (program.relationshipType() != null) {
+                relationshipTypeUid = program.relationshipType().uid();
+            }
 
             int updatedRow = programStore.update(
                     program.uid(), program.code(), program.name(), program.displayName(), program.created(),
@@ -83,7 +87,7 @@ public class ProgramHandler {
                     program.dataEntryMethod(), program.ignoreOverdueEvents(), program.relationshipFromA(),
                     program.selectIncidentDatesInFuture(), program.captureCoordinates(),
                     program.useFirstStageDuringRegistration(), program.displayFrontPageList(),
-                    program.programType(), program.relationshipText(), program.relationshipText(),
+                    program.programType(), relationshipTypeUid, program.relationshipText(),
                     relatedProgramUid, trackedEntityUid, program.uid());
 
             if (updatedRow <= 0) {
@@ -96,7 +100,7 @@ public class ProgramHandler {
                         program.dataEntryMethod(), program.ignoreOverdueEvents(), program.relationshipFromA(),
                         program.selectIncidentDatesInFuture(), program.captureCoordinates(),
                         program.useFirstStageDuringRegistration(), program.displayFrontPageList(),
-                        program.programType(), program.relationshipText(), program.relationshipText(),
+                        program.programType(), relationshipTypeUid, program.relationshipText(),
                         relatedProgramUid, trackedEntityUid);
             }
         }

@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.event.EventModel.Columns;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class EventStoreImpl implements EventStore {
@@ -75,7 +76,10 @@ public class EventStoreImpl implements EventStore {
                        @NonNull String programStage, @NonNull String organisationUnit,
                        @Nullable Date eventDate, @Nullable Date completedDate,
                        @Nullable Date dueDate, @Nullable State state) {
-        sqLiteStatement.clearBindings();
+        nonNull(uid);
+        nonNull(program);
+        nonNull(programStage);
+        nonNull(organisationUnit);
 
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, enrollmentUid);
@@ -92,7 +96,9 @@ public class EventStoreImpl implements EventStore {
         sqLiteBind(sqLiteStatement, 13, dueDate);
         sqLiteBind(sqLiteStatement, 14, state);
 
-        return databaseAdapter.executeInsert(EventModel.TABLE, sqLiteStatement);
+        long ret = databaseAdapter.executeInsert(EventModel.TABLE, sqLiteStatement);
+        sqLiteStatement.clearBindings();
+        return ret;
     }
 
     @Override

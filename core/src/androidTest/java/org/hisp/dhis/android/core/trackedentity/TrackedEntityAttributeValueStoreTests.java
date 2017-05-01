@@ -176,4 +176,19 @@ public class TrackedEntityAttributeValueStoreTests extends AbsStoreTestCase {
         store.close();
         assertThat(database().isOpen()).isTrue();
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        store.insert(null, VALUE, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_trackedEntity() {
+        store.insert(STATE, VALUE, null, TRACKED_ENTITY_INSTANCE);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_trackedEntityInstance() {
+        store.insert(STATE, VALUE, TRACKED_ENTITY_ATTRIBUTE, null);
+    }
 }

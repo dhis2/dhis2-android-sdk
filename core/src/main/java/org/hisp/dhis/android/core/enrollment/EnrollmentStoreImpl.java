@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentModel.Columns;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class EnrollmentStoreImpl implements EnrollmentStore {
@@ -66,15 +67,17 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
         this.sqLiteStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
-
     @Override
     public long insert(@NonNull String uid, @Nullable Date created, @Nullable Date lastUpdated,
                        @NonNull String organisationUnit, @NonNull String program, @Nullable Date dateOfEnrollment,
                        @Nullable Date dateOfIncident, @Nullable Boolean followUp,
                        @Nullable EnrollmentStatus enrollmentStatus, @NonNull String trackedEntityInstance,
                        @Nullable String latitude, @Nullable String longitude, @Nullable State state) {
-        sqLiteStatement.clearBindings();
 
+        nonNull(uid);
+        nonNull(organisationUnit);
+        nonNull(program);
+        nonNull(trackedEntityInstance);
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, created);
         sqLiteBind(sqLiteStatement, 3, lastUpdated);
@@ -89,7 +92,9 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
         sqLiteBind(sqLiteStatement, 12, longitude);
         sqLiteBind(sqLiteStatement, 13, state);
 
-        return databaseAdapter.executeInsert(EnrollmentModel.TABLE, sqLiteStatement);
+        long ret = databaseAdapter.executeInsert(EnrollmentModel.TABLE, sqLiteStatement);
+        sqLiteStatement.clearBindings();
+        return ret;
     }
 
     @Override

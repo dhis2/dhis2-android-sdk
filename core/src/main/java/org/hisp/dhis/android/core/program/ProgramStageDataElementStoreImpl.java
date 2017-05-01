@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings({
@@ -124,6 +125,9 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
                        @Nullable Integer sortOrder, @NonNull Boolean allowFutureDate,
                        @NonNull String dataElement, @Nullable String programStageUid,
                        @Nullable String programStageSection) {
+        nonNull(uid);
+        nonNull(dataElement);
+        nonNull(programStageUid);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, displayInReports, compulsory,
                 allowProvidedElsewhere, sortOrder, allowFutureDate, dataElement, programStageUid);
 
@@ -146,10 +150,13 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
                                  @NonNull Boolean allowFutureDate, @NonNull String dataElement,
                                  @Nullable String programStageUid, @Nullable String programStageSection,
                                  @NonNull String whereProgramStageDataElementUid) {
+        nonNull(uid);
+        nonNull(dataElement);
+        nonNull(programStageUid);
+        nonNull(whereProgramStageDataElementUid);
         bindArguments(updateWithSectionStatement, uid, code, name, displayName, created, lastUpdated,
                 displayInReports, compulsory, allowProvidedElsewhere, sortOrder, allowFutureDate, dataElement,
                 programStageUid);
-
         // bind the optional argument program stage section
         sqLiteBind(updateWithSectionStatement, 14, programStageSection);
 
@@ -157,14 +164,11 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
         sqLiteBind(updateWithSectionStatement, 15, whereProgramStageDataElementUid);
 
         // execute and clear bindings
-        int update =
-                databaseAdapter.executeUpdateDelete(ProgramStageDataElementModel.TABLE, updateWithSectionStatement);
-
+        int update = databaseAdapter.executeUpdateDelete(ProgramStageDataElementModel.TABLE,
+                updateWithSectionStatement);
         updateWithSectionStatement.clearBindings();
-
         return update;
     }
-
 
     @Override
     public int updateWithoutSection(@NonNull String uid, @Nullable String code, @Nullable String name,
@@ -173,6 +177,10 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
                                     @NonNull Boolean allowProvidedElsewhere, @Nullable Integer sortOrder,
                                     @NonNull Boolean allowFutureDate, @NonNull String dataElement,
                                     @Nullable String programStageUid, @NonNull String whereProgramStageDataElementUid) {
+        nonNull(uid);
+        nonNull(dataElement);
+        nonNull(programStageUid);
+        nonNull(whereProgramStageDataElementUid);
         bindArguments(updateWithoutSectionStatement, uid, code, name, displayName, created, lastUpdated,
                 displayInReports, compulsory, allowProvidedElsewhere, sortOrder,
                 allowFutureDate, dataElement, programStageUid);
@@ -191,6 +199,7 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
 
     @Override
     public int delete(@NonNull String uid) {
+        nonNull(uid);
         // bind the where argument
         sqLiteBind(deleteStatement, 1, uid);
 

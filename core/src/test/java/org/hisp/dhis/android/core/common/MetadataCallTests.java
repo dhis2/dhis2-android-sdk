@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
 import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
 import org.hisp.dhis.android.core.program.ProgramRuleStore;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableModelStore;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableStore;
 import org.hisp.dhis.android.core.program.ProgramService;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementStore;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStore;
@@ -169,7 +169,7 @@ public class MetadataCallTests {
     private ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
 
     @Mock
-    private ProgramRuleVariableModelStore programRuleVariableStore;
+    private ProgramRuleVariableStore programRuleVariableStore;
 
     @Mock
     private ProgramIndicatorStore programIndicatorStore;

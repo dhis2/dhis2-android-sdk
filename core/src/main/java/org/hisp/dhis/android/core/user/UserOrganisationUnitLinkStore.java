@@ -32,21 +32,20 @@ import android.support.annotation.NonNull;
 
 public interface UserOrganisationUnitLinkStore {
 
-    long insert(
-            @NonNull String user,
-            @NonNull String organisationUnit,
-            @NonNull String organisationUnitScope
+    long insert(@NonNull String user,
+                @NonNull String organisationUnit,
+                @NonNull String organisationUnitScope
     );
 
-    int update(
-            @NonNull String user,
-            @NonNull String organisationUnit,
-            @NonNull String organisationUnitScope,
-            @NonNull String whereUserUid,
-            @NonNull String whereOrganisationUnitUid
+    int update(@NonNull String user,
+               @NonNull String organisationUnit,
+               @NonNull String organisationUnitScope,
+               @NonNull String whereUserUid,
+               @NonNull String whereOrganisationUnitUid,
+               @NonNull String whereOrganisationUnitScope
     );
 
-    int delete(String userUid, String organisationUnitUid);
+    int delete(@NonNull String userUid, @NonNull String organisationUnitUid, @NonNull String organisationUnitScope);
 
     int delete();
 

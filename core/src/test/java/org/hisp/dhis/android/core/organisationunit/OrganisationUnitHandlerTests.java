@@ -117,7 +117,7 @@ public class OrganisationUnitHandlerTests {
         // verify that link store is never invoked
         verify(userOrganisationUnitLinkStore, never()).insert(anyString(), anyString(), anyString());
         verify(userOrganisationUnitLinkStore, never()).update(
-                anyString(), anyString(), anyString(), anyString(), anyString()
+                anyString(), anyString(), anyString(), anyString(), anyString(), anyString()
         );
     }
 
@@ -128,7 +128,7 @@ public class OrganisationUnitHandlerTests {
                 any(Date.class), any(Date.class), anyString(), anyInt(), anyString())).thenReturn(1);
 
         when(userOrganisationUnitLinkStore.update(
-                anyString(), anyString(), anyString(), anyString(), anyString())
+                anyString(), anyString(), anyString(), anyString(), anyString(), anyString())
         ).thenReturn(1);
 
         organisationUnitHandler.handleOrganisationUnits(organisationUnits, scope, user.uid());
@@ -151,7 +151,7 @@ public class OrganisationUnitHandlerTests {
 
         // verify that link store #update method is called once
         verify(userOrganisationUnitLinkStore, times(1)).update(
-                anyString(), anyString(), anyString(), anyString(),anyString()
+                anyString(), anyString(), anyString(), anyString(),anyString(), anyString()
         );
 
         // verify that insert in link store is never called
@@ -185,7 +185,7 @@ public class OrganisationUnitHandlerTests {
 
         // verify that link store #update method is called once
         verify(userOrganisationUnitLinkStore, never()).update(
-                anyString(), anyString(), anyString(), anyString(),anyString()
+                anyString(), anyString(), anyString(), anyString(),anyString(), anyString()
         );
 
         // verify that insert in link store is never called
@@ -199,7 +199,7 @@ public class OrganisationUnitHandlerTests {
                 any(Date.class), any(Date.class), anyString(), anyInt(), anyString())).thenReturn(0);
 
         when(userOrganisationUnitLinkStore.update(
-                anyString(), anyString(), anyString(), anyString(), anyString())
+                anyString(), anyString(), anyString(), anyString(), anyString(), anyString())
         ).thenReturn(0);
 
         organisationUnitHandler.handleOrganisationUnits(organisationUnits, scope, user.uid());
@@ -227,7 +227,7 @@ public class OrganisationUnitHandlerTests {
 
         // verify that link store #update method is called once since we try to update before inserting
         verify(userOrganisationUnitLinkStore, times(1)).update(
-                anyString(), anyString(), anyString(), anyString(),anyString()
+                anyString(), anyString(), anyString(), anyString(),anyString(), anyString()
         );
     }
 
@@ -261,7 +261,7 @@ public class OrganisationUnitHandlerTests {
         verify(userOrganisationUnitLinkStore, never()).insert(anyString(), anyString(), anyString());
 
         verify(userOrganisationUnitLinkStore, never()).update(
-                anyString(), anyString(), anyString(), anyString(),anyString()
+                anyString(), anyString(), anyString(), anyString(),anyString(), anyString()
         );
     }
 }

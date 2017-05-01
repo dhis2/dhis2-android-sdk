@@ -63,21 +63,25 @@ public class SystemInfoStoreTests extends AbsStoreTestCase {
 
     // timestamp
     private static final String DATE = "2014-03-20T13:37:00.007";
+    private final Date date;
 
-    private SystemInfoStore systemInfoStore;
+    private SystemInfoStore store;
+
+    public SystemInfoStoreTests() throws ParseException {
+        this.date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
+    }
 
     @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.systemInfoStore = new SystemInfoStoreImpl(databaseAdapter());
+        this.store = new SystemInfoStoreImpl(databaseAdapter());
     }
 
     @Test
     public void insert_shouldPersistSystemInfoInDatabase() throws ParseException {
-        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
-        long rowId = systemInfoStore.insert(date, DATE_FORMAT, VERSION, CONTEXT_PATH);
+        long rowId = store.insert(date, DATE_FORMAT, VERSION, CONTEXT_PATH);
         Cursor cursor = database().query(
                 SystemInfoModel.TABLE,
                 SYSTEM_INFO_PROJECTION,
@@ -106,7 +110,7 @@ public class SystemInfoStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(DATE, DATE_FORMAT, VERSION, CONTEXT_PATH);
 
         Date newDate = BaseIdentifiableObject.DATE_FORMAT.parse("2017-02-24T13:37:00.007");
-        int update = systemInfoStore.update(newDate, DATE_FORMAT, VERSION, CONTEXT_PATH, CONTEXT_PATH);
+        int update = store.update(newDate, DATE_FORMAT, VERSION, CONTEXT_PATH, CONTEXT_PATH);
 
         assertThat(update).isEqualTo(1);
         cursor = database().query(SystemInfoModel.TABLE, SYSTEM_INFO_PROJECTION, null, null, null, null, null);
@@ -132,12 +136,62 @@ public class SystemInfoStoreTests extends AbsStoreTestCase {
         Cursor cursor = database().query(SystemInfoModel.TABLE, SYSTEM_INFO_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).hasRow(DATE, DATE_FORMAT, VERSION, CONTEXT_PATH);
 
-        int delete = systemInfoStore.delete(CONTEXT_PATH);
+        int delete = store.delete(CONTEXT_PATH);
         assertThat(delete).isEqualTo(1);
 
         cursor = database().query(SystemInfoModel.TABLE, SYSTEM_INFO_PROJECTION, null, null, null, null, null);
 
         assertThatCursor(cursor).isExhausted();
-
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_date() {
+        store.insert(null, DATE_FORMAT, VERSION, CONTEXT_PATH);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_dateFormat() {
+        store.insert(date, null, VERSION, CONTEXT_PATH);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_version() {
+        store.insert(date, DATE_FORMAT, null, CONTEXT_PATH);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_contextPath() {
+        store.insert(date, DATE_FORMAT, VERSION, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_date() {
+        store.update(null, DATE_FORMAT, VERSION, CONTEXT_PATH, CONTEXT_PATH);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_dateFormat() {
+        store.update(date, null, VERSION, CONTEXT_PATH, CONTEXT_PATH);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_version() {
+        store.update(date, DATE_FORMAT, null, CONTEXT_PATH, CONTEXT_PATH);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_contextPath() {
+        store.update(date, DATE_FORMAT, VERSION, null, CONTEXT_PATH);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_whereContextPath() {
+        store.update(date, DATE_FORMAT, VERSION, CONTEXT_PATH, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_null_ContextPath() {
+        store.delete(null);
+    }
+
 }

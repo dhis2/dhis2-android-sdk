@@ -37,6 +37,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 
 import java.util.Date;
 import java.util.List;
@@ -47,7 +48,7 @@ import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 public abstract class ProgramStageSection extends BaseIdentifiableObject {
     private static final String SORT_ORDER = "sortOrder";
     private static final String PROGRAM_INDICATORS = "programIndicators";
-    private static final String PROGRAM_STAGE_DATA_ELEMENTS = "programStageDataElements";
+    private static final String DATA_ELEMENTS = "dataElements";
 
     public static final Field<ProgramStageSection, String> uid = Field.create(UID);
     public static final Field<ProgramStageSection, String> code = Field.create(CODE);
@@ -61,8 +62,7 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject {
     public static final NestedField<ProgramStageSection, ProgramIndicator> programIndicators =
             NestedField.create(PROGRAM_INDICATORS);
 
-    public static final NestedField<ProgramStageSection, ProgramStageDataElement> programStageDataElements =
-            NestedField.create(PROGRAM_STAGE_DATA_ELEMENTS);
+    public static final NestedField<ProgramStageSection, DataElement> dataElements = NestedField.create(DATA_ELEMENTS);
 
     @Nullable
     @JsonProperty(SORT_ORDER)
@@ -73,8 +73,8 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject {
     public abstract List<ProgramIndicator> programIndicators();
 
     @Nullable
-    @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS)
-    public abstract List<ProgramStageDataElement> programStageDataElements();
+    @JsonProperty(DATA_ELEMENTS)
+    public abstract List<DataElement> dataElements();
 
     @JsonCreator
     public static ProgramStageSection create(
@@ -86,13 +86,13 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject {
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
             @JsonProperty(SORT_ORDER) Integer sortOrder,
             @JsonProperty(PROGRAM_INDICATORS) List<ProgramIndicator> programIndicators,
-            @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS) List<ProgramStageDataElement> programStageDataElements,
+            @JsonProperty(DATA_ELEMENTS) List<DataElement> dataElements,
             @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_ProgramStageSection(
                 uid, code, name, displayName, created, lastUpdated, deleted, sortOrder,
                 safeUnmodifiableList(programIndicators),
-                safeUnmodifiableList(programStageDataElements)
+                safeUnmodifiableList(dataElements)
         );
     }
 }

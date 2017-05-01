@@ -56,6 +56,7 @@ public class OptionSetStoreTests extends AbsStoreTestCase {
 
     // timestamp
     private static final String DATE = "2016-12-20T16:26:00.007";
+    private final Date date;
 
     private static final String[] OPTION_SET_PROJECTION = {
             Columns.UID, Columns.CODE, Columns.NAME,
@@ -63,19 +64,22 @@ public class OptionSetStoreTests extends AbsStoreTestCase {
             Columns.LAST_UPDATED, Columns.VERSION, Columns.VALUE_TYPE
     };
 
-    private OptionSetStore optionSetStore;
+    private OptionSetStore store;
+
+    public OptionSetStoreTests() throws ParseException {
+        this.date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
+    }
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        this.optionSetStore = new OptionSetStoreImpl(databaseAdapter());
+        this.store = new OptionSetStoreImpl(databaseAdapter());
     }
 
     @Test
     public void insert_shouldPersistOptionSetInDatabase() throws ParseException {
-        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-        long rowId = optionSetStore.insert(
+        long rowId = store.insert(
                 UID, CODE, NAME, DISPLAY_NAME, date, date, VERSION, VALUE_TYPE);
 
         Cursor cursor = database().query(OptionSetModel.TABLE, OPTION_SET_PROJECTION,
@@ -93,8 +97,6 @@ public class OptionSetStoreTests extends AbsStoreTestCase {
 
     @Test
     public void update_shouldUpdateOptionSetInDatabase() throws Exception {
-        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-
         ContentValues optionSet = new ContentValues();
         optionSet.put(Columns.ID, 1L);
         optionSet.put(Columns.UID, UID);
@@ -110,7 +112,7 @@ public class OptionSetStoreTests extends AbsStoreTestCase {
         // checking that option set is successfully inserted
         assertThatCursor(cursor).hasRow(UID, NAME, DISPLAY_NAME).isExhausted();
 
-        int updatedRow = optionSetStore.update(
+        int updatedRow = store.update(
                 UID, CODE, "new_name", "new_display_name", date, date, 5, VALUE_TYPE, UID
         );
 
@@ -141,7 +143,7 @@ public class OptionSetStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(UID, NAME, DISPLAY_NAME).isExhausted();
 
         // deleting the optionSet
-        optionSetStore.delete(UID);
+        store.delete(UID);
 
         cursor = database().query(OptionSetModel.TABLE, projection, null, null, null, null, null);
 
@@ -151,8 +153,6 @@ public class OptionSetStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteAnUpdatedOptionSet() throws Exception {
-        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
-
         ContentValues optionSet = new ContentValues();
         optionSet.put(Columns.ID, 1L);
         optionSet.put(Columns.UID, UID);
@@ -168,7 +168,7 @@ public class OptionSetStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(UID, NAME, DISPLAY_NAME).isExhausted();
 
         // updates the option set with new uid
-        optionSetStore.update(
+        store.update(
                 "new_uid", CODE, NAME, DISPLAY_NAME, date, date, 5, VALUE_TYPE, UID
         );
 
@@ -178,13 +178,33 @@ public class OptionSetStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow("new_uid", NAME, DISPLAY_NAME).isExhausted();
 
         // deletes the option set
-        optionSetStore.delete("new_uid");
+        store.delete("new_uid");
 
         cursor = database().query(OptionSetModel.TABLE, projection, null, null, null, null, null);
 
         // checking that the option set was successfully deleted
         assertThatCursor(cursor).isExhausted();
 
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, VERSION, VALUE_TYPE);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_uid() {
+        store.update(null, CODE, NAME, DISPLAY_NAME, date, date, VERSION, VALUE_TYPE, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_whereUid() {
+        store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, VERSION, VALUE_TYPE, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_null_uid() {
+        store.delete(null);
     }
 
     //    @Test
@@ -235,7 +255,8 @@ public class OptionSetStoreTests extends AbsStoreTestCase {
 //        String newOptionSetName = "newOptionSetName";
 //        String newOptionSetDisplayName = "newOptionSetDisplayName";
 //
-//        optionSetStore.insertOrReplace(UID, CODE, newOptionSetName, newOptionSetDisplayName, date, date, VERSION, VALUE_TYPE);
+//        store.insertOrReplace(UID, CODE, newOptionSetName, newOptionSetDisplayName, date, date, VERSION,
+// VALUE_TYPE);
 //
 //        cursor = database().query(OptionSetModel.TABLE, projection, null, null, null, null, null);
 //

@@ -51,6 +51,7 @@ import org.hisp.dhis.android.core.program.ProgramRuleModel;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableModel;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementModel;
 import org.hisp.dhis.android.core.program.ProgramStageModel;
+import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLinkModel;
 import org.hisp.dhis.android.core.program.ProgramStageSectionModel;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkModel;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel;
@@ -231,9 +232,6 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             " FOREIGN KEY (" + ProgramModel.Columns.RELATIONSHIP_TYPE + ")" +
             " REFERENCES " + RelationshipTypeModel.TABLE + " (" + RelationshipTypeModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
-            " FOREIGN KEY (" + ProgramModel.Columns.RELATED_PROGRAM + ") " +
-            " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
             " FOREIGN KEY (" + ProgramModel.Columns.TRACKED_ENTITY + ")" +
             " REFERENCES " + TrackedEntityModel.TABLE + " (" + TrackedEntityModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
@@ -352,6 +350,21 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             " REFERENCES " + ProgramStageModel.TABLE + " (" + ProgramStageModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             ");";
+
+    private static final String CREATE_PROGRAM_STAGE_SECTION_DATA_ELEMENT_LINK_TABLE = "CREATE TABLE " +
+            ProgramStageSectionDataElementLinkModel.TABLE + "( " +
+            ProgramStageSectionDataElementLinkModel.Columns.ID + " INTEGER PRIMARY KEY NOT NULL, " +
+            ProgramStageSectionDataElementLinkModel.Columns.PROGRAM_STAGE_SECTION + " TEXT NOT NULL, " +
+            ProgramStageSectionDataElementLinkModel.Columns.DATA_ELEMENT + " TEXT NOT NULL, " +
+            " FOREIGN KEY (" +
+            ProgramStageSectionDataElementLinkModel.Columns.PROGRAM_STAGE_SECTION + ")" +
+            " REFERENCES " +
+            ProgramStageSectionModel.TABLE + " (" + ProgramStageSectionModel.Columns.UID + ")" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
+            " FOREIGN KEY (" + ProgramStageSectionDataElementLinkModel.Columns.DATA_ELEMENT + ") " +
+            " REFERENCES " + DataElementModel.TABLE + " (" + DataElementModel.Columns.UID + ")" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+            ")";
 
     private static final String CREATE_PROGRAM_STAGE_TABLE = "CREATE TABLE " +
             ProgramStageModel.TABLE + " (" +
@@ -778,6 +791,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_RELATIONSHIP_TABLE);
         database.execSQL(CREATE_RELATIONSHIP_TYPE_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_SECTION_TABLE);
+        database.execSQL(CREATE_PROGRAM_STAGE_SECTION_DATA_ELEMENT_LINK_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_TABLE);
         database.execSQL(CREATE_PROGRAM_RULE_VARIABLE_TABLE);
         database.execSQL(CREATE_TRACKED_ENTITY_ATTRIBUTE_TABLE);
@@ -797,7 +811,6 @@ public class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_USER_ROLE_TABLE);
         database.execSQL(CREATE_USER_ROLE_PROGRAM_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_SECTION_PROGRAM_INDICATOR_LINK_TABLE);
-
         return database;
     }
 

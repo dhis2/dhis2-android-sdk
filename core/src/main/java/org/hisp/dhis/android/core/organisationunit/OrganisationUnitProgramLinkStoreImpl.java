@@ -32,6 +32,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitProgramLinkStore {
@@ -41,22 +42,25 @@ public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitPro
             OrganisationUnitProgramLinkModel.Columns.PROGRAM + ") " +
             "VALUES(?,?);";
 
-    private final SQLiteStatement sqLiteStatement;
+    private final SQLiteStatement insertStatement;
     private final DatabaseAdapter databaseAdapter;
 
     public OrganisationUnitProgramLinkStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
-        this.sqLiteStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
     public long insert(@NonNull String organisationUnitUid, @NonNull String programUid) {
-        sqLiteStatement.clearBindings();
 
-        sqLiteBind(sqLiteStatement, 1, organisationUnitUid);
-        sqLiteBind(sqLiteStatement, 2, programUid);
+        nonNull(organisationUnitUid);
+        nonNull(programUid);
+        sqLiteBind(insertStatement, 1, organisationUnitUid);
+        sqLiteBind(insertStatement, 2, programUid);
 
-        return databaseAdapter.executeInsert(
-                OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK, sqLiteStatement);
+        long ret = databaseAdapter.executeInsert(OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK,
+                insertStatement);
+        insertStatement.clearBindings();
+        return ret;
     }
 }

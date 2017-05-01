@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
@@ -50,36 +51,36 @@ class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
             TrackedEntityInstanceModel.Columns.STATE +
             ") " + "VALUES (?, ?, ?, ?, ?, ?)";
 
-    private final SQLiteStatement insertRowStatement;
+    private final SQLiteStatement insertStatement;
     private final DatabaseAdapter databaseAdapter;
 
     TrackedEntityInstanceStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
-        this.insertRowStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
     public long insert(@NonNull String uid, @Nullable Date created, @Nullable Date lastUpdated,
             @NonNull String organisationUnit, @NonNull String trackedEntity, @Nullable State state) {
-        insertRowStatement.clearBindings();
 
-        sqLiteBind(insertRowStatement, 1, uid);
-        sqLiteBind(insertRowStatement, 2, created);
-        sqLiteBind(insertRowStatement, 3, lastUpdated);
-        sqLiteBind(insertRowStatement, 4, organisationUnit);
-        sqLiteBind(insertRowStatement, 5, trackedEntity);
-        sqLiteBind(insertRowStatement, 6, state);
+        nonNull(uid);
+        nonNull(organisationUnit);
+        nonNull(trackedEntity);
 
-        return databaseAdapter.executeInsert(TrackedEntityInstanceModel.TABLE, insertRowStatement);
+        sqLiteBind(insertStatement, 1, uid);
+        sqLiteBind(insertStatement, 2, created);
+        sqLiteBind(insertStatement, 3, lastUpdated);
+        sqLiteBind(insertStatement, 4, organisationUnit);
+        sqLiteBind(insertStatement, 5, trackedEntity);
+        sqLiteBind(insertStatement, 6, state);
+
+        long returnValue = databaseAdapter.executeInsert(TrackedEntityInstanceModel.TABLE, insertStatement);
+        insertStatement.clearBindings();
+        return returnValue;
     }
 
     @Override
     public int delete() {
         return databaseAdapter.delete(TrackedEntityInstanceModel.TABLE);
-    }
-
-    @Override
-    public void close() {
-        insertRowStatement.close();
     }
 }

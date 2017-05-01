@@ -95,7 +95,7 @@ public class DataElementStoreTests extends AbsStoreTestCase {
     private static final String DISPLAY_FORM_NAME = "test_displayFormName";
     private static final String OPTION_SET = "test_optionSet";
 
-    private DataElementStore dataElementStore;
+    private DataElementStore store;
 
     private final Date date;
     private final String dateString;
@@ -109,7 +109,7 @@ public class DataElementStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.dataElementStore = new DataElementStoreImpl(databaseAdapter());
+        this.store = new DataElementStoreImpl(databaseAdapter());
     }
 
     @Test
@@ -117,7 +117,7 @@ public class DataElementStoreTests extends AbsStoreTestCase {
         ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
         database().insert(OptionSetModel.TABLE, null, optionSet);
 
-        long rowId = dataElementStore.insert(
+        long rowId = store.insert(
                 UID,
                 CODE,
                 NAME,
@@ -172,7 +172,7 @@ public class DataElementStoreTests extends AbsStoreTestCase {
         final String deferredOptionSetUid = "deferredOptionSetUid";
 
         database().beginTransaction();
-        long rowId = dataElementStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
+        long rowId = store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
                 DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, VALUE_TYPE, ZERO_IS_SIGNIFICANT,
                 AGGREGATION_OPERATOR, FORM_NAME, NUMBER_TYPE, DOMAIN_TYPE, DIMENSION, DISPLAY_FORM_NAME,
                 deferredOptionSetUid
@@ -193,7 +193,7 @@ public class DataElementStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistDataElementInDatabaseWithoutOptionSet() {
-        long rowId = dataElementStore.insert(
+        long rowId = store.insert(
                 UID,
                 CODE,
                 NAME,
@@ -248,7 +248,7 @@ public class DataElementStoreTests extends AbsStoreTestCase {
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistDataElementWithInvalidForeignKey() {
         String fakeOptionSetUid = "fake_option_set_uid";
-        dataElementStore.insert(
+        store.insert(
                 UID,
                 CODE,
                 NAME,
@@ -316,7 +316,7 @@ public class DataElementStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(UID, CODE, NAME).isExhausted();
 
         String updatedName = "new_updated_data_element_name";
-        int update = dataElementStore.update(UID, CODE, updatedName, DISPLAY_NAME, date, date, null, null,
+        int update = store.update(UID, CODE, updatedName, DISPLAY_NAME, date, date, null, null,
                 DESCRIPTION,
                 DISPLAY_DESCRIPTION,
                 VALUE_TYPE,
@@ -355,12 +355,38 @@ public class DataElementStoreTests extends AbsStoreTestCase {
         // checking if data element was successfully inserted
         assertThatCursor(cursor).hasRow(UID).isExhausted();
 
-        int delete = dataElementStore.delete(UID);
+        int delete = store.delete(UID);
         // checking that store returns 1 (deletion happens)
         assertThat(delete).isEqualTo(1);
         cursor = database().query(DataElementModel.TABLE, projection, null, null, null, null, null);
 
         // check that row is deleted
         assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
+                DISPLAY_DESCRIPTION, VALUE_TYPE, ZERO_IS_SIGNIFICANT, AGGREGATION_OPERATOR, FORM_NAME, NUMBER_TYPE,
+                DOMAIN_TYPE, DIMENSION, DISPLAY_FORM_NAME, OPTION_SET);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_uid() {
+        store.update(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
+                DISPLAY_DESCRIPTION, VALUE_TYPE, ZERO_IS_SIGNIFICANT, AGGREGATION_OPERATOR, FORM_NAME, NUMBER_TYPE,
+                DOMAIN_TYPE, DIMENSION, DISPLAY_FORM_NAME, OPTION_SET, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_whereUid() {
+        store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
+                DISPLAY_DESCRIPTION, VALUE_TYPE, ZERO_IS_SIGNIFICANT, AGGREGATION_OPERATOR, FORM_NAME, NUMBER_TYPE,
+                DOMAIN_TYPE, DIMENSION, DISPLAY_FORM_NAME, OPTION_SET, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_null_uid() {
+        store.delete(null);
     }
 }

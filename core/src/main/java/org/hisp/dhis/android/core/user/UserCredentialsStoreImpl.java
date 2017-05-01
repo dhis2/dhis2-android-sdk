@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -78,39 +79,43 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
     }
 
     @Override
-    public long insert(
-            @NonNull String uid, @Nullable String code, @Nullable String name,
-            @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
-            @Nullable String username, @NonNull String user) {
-        insertStatement.clearBindings();
+    public long insert(@NonNull String uid, @Nullable String code, @Nullable String name,
+                       @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
+                       @Nullable String username, @NonNull String user) {
 
+        nonNull(uid);
+        nonNull(user);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, username, user);
 
-        return databaseAdapter.executeInsert(UserCredentialsModel.TABLE, insertStatement);
+        long returnValue = databaseAdapter.executeInsert(UserCredentialsModel.TABLE, insertStatement);
+        insertStatement.clearBindings();
+        return returnValue;
     }
 
     @Override
     public int update(@NonNull String uid, @Nullable String code, @Nullable String name,
                       @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
                       @Nullable String username, @NonNull String user, @NonNull String whereUid) {
-        updateStatement.clearBindings();
 
+        nonNull(uid);
+        nonNull(user);
+        nonNull(whereUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, username, user);
-
-        // bind the where clause
         sqLiteBind(updateStatement, 9, whereUid);
 
-        return databaseAdapter.executeUpdateDelete(UserCredentialsModel.TABLE, updateStatement);
+        int returnValue = databaseAdapter.executeUpdateDelete(UserCredentialsModel.TABLE, updateStatement);
+        updateStatement.clearBindings();
+        return returnValue;
     }
 
     @Override
     public int delete(@NonNull String uid) {
-        deleteStatement.clearBindings();
-
-        // bind the where clause
+        nonNull(uid);
         sqLiteBind(deleteStatement, 1, uid);
 
-        return databaseAdapter.executeUpdateDelete(UserCredentialsModel.TABLE, deleteStatement);
+        int returnValue = databaseAdapter.executeUpdateDelete(UserCredentialsModel.TABLE, deleteStatement);
+        deleteStatement.clearBindings();
+        return returnValue;
     }
 
     @Override

@@ -95,10 +95,8 @@ public class OrganisationUnitHandler {
                     );
                 }
                 if(scope != null) {
-                    int updatedLinkRow = userOrganisationUnitLinkStore.update(
-                            userUid, organisationUnit.uid(),
-                            scope.name(), userUid, organisationUnit.uid()
-                    );
+                    int updatedLinkRow = userOrganisationUnitLinkStore.update(userUid, organisationUnit.uid(),
+                            scope.name(), userUid, organisationUnit.uid(), scope.name());
                     if (updatedLinkRow <= 0) {
                         userOrganisationUnitLinkStore.insert(userUid, organisationUnit.uid(), scope.name());
                     }

@@ -27,20 +27,22 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.dataelement.DataElement;
+
 import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class ProgramStageSectionHandler {
     private final ProgramStageSectionStore programStageSectionStore;
-    private final ProgramStageDataElementHandler programStageDataElementHandler;
+    private final ProgramStageSectionDataElementLinkStore programStageSectionDataElementLinkStore;
     private final ProgramIndicatorHandler programIndicatorHandler;
 
     public ProgramStageSectionHandler(ProgramStageSectionStore programStageSectionStore,
-                                      ProgramStageDataElementHandler programStageDataElementHandler,
+                                      ProgramStageSectionDataElementLinkStore programStageSectionDataElementLinkStore,
                                       ProgramIndicatorHandler programIndicatorHandler) {
         this.programStageSectionStore = programStageSectionStore;
-        this.programStageDataElementHandler = programStageDataElementHandler;
+        this.programStageSectionDataElementLinkStore = programStageSectionDataElementLinkStore;
         this.programIndicatorHandler = programIndicatorHandler;
     }
 
@@ -48,21 +50,7 @@ public class ProgramStageSectionHandler {
         if (programStageUid == null || programStageSections == null) {
             return;
         }
-
-        deleteOrPersistProgramStageSections(programStageUid, programStageSections);
-    }
-
-    /**
-     * Deletes or persists program stage sections.
-     * Also has a nested call to programStageDataElementHandler and programIndicatorHandler
-     *
-     * @param programStageUid
-     * @param programStageSections
-     */
-    private void deleteOrPersistProgramStageSections(String programStageUid,
-                                                     List<ProgramStageSection> programStageSections) {
-        int size = programStageSections.size();
-        for (int i = 0; i < size; i++) {
+        for (int i = 0, size = programStageSections.size(); i < size; i++) {
             ProgramStageSection programStageSection = programStageSections.get(i);
 
             if (isDeleted(programStageSection)) {
@@ -84,14 +72,21 @@ public class ProgramStageSectionHandler {
                     );
                 }
             }
-            programStageDataElementHandler.handleProgramStageDataElements(
-                    programStageSection.uid(), programStageSection.programStageDataElements()
-            );
-
-            programIndicatorHandler.handleProgramIndicator(
-                    programStageSection.uid(), programStageSection.programIndicators()
-            );
+            //Loop over the list and add all entries
+            String pssUid = programStageSection.uid();
+            List<DataElement> dataElements = programStageSection.dataElements();
+            for(int j = 0, deSize = dataElements.size(); j < deSize; j++) {
+                String deUid = dataElements.get(j).uid();
+                //TODO: figure out a way to handle deletions. Maybe dump all pssUid entries and re-insert all ?
+                //TODO: double check if this is right: (Problem is with the fact that neither pssUid, nor deUid are
+                // defined as unique in the table (and should not be).
+                int updated = programStageSectionDataElementLinkStore.update(pssUid, deUid, pssUid, deUid);
+                if(updated <= 0) {
+                    programStageSectionDataElementLinkStore.insert(pssUid, deUid);
+                }
+            }
+            programIndicatorHandler.handleProgramIndicator(programStageSection.uid(),
+                    programStageSection.programIndicators());
         }
-
     }
 }

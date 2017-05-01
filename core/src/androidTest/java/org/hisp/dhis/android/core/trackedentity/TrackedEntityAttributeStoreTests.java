@@ -101,7 +101,7 @@ public class TrackedEntityAttributeStoreTests extends AbsStoreTestCase {
     private static final Boolean INHERIT = true;
     private static final long OPTION_SET_ID = 99L;
     private static final String OPTION_SET_UID = "test_option_set_uid";
-    private TrackedEntityAttributeStore trackedEntityAttributeStore;
+    private TrackedEntityAttributeStore store;
 
     private final Date date;
     private final String dateString;
@@ -115,14 +115,14 @@ public class TrackedEntityAttributeStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        trackedEntityAttributeStore = new TrackedEntityAttributeStoreImpl(databaseAdapter());
+        store = new TrackedEntityAttributeStoreImpl(databaseAdapter());
         ContentValues optionSet = CreateOptionSetUtils.create(OPTION_SET_ID, OPTION_SET_UID);
         database().insert(OptionSetModel.TABLE, null, optionSet);
     }
 
     @Test
     public void insert_shouldPersistRowInDatabase() {
-        long rowId = trackedEntityAttributeStore.insert(
+        long rowId = store.insert(
                 UID,
                 CODE,
                 NAME,
@@ -181,7 +181,7 @@ public class TrackedEntityAttributeStoreTests extends AbsStoreTestCase {
     public void insert_shouldPersistDeferrableRowInDatabase() {
         final String deferredOptionSet = "deferredOptionSet";
         database().beginTransaction();
-        long rowId = trackedEntityAttributeStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
+        long rowId = store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
                 DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, PATTERN, SORT_ORDER_IN_LIST_NO_PROGRAM,
                 deferredOptionSet,
                 VALUE_TYPE, EXPRESSION, SEARCH_SCOPE, PROGRAM_SCOPE, DISPLAY_IN_LIST_NO_PROGRAM, GENERATED,
@@ -205,7 +205,7 @@ public class TrackedEntityAttributeStoreTests extends AbsStoreTestCase {
 
     @Test(expected = SQLiteConstraintException.class)
     public void insertWithoutForeignKey_shouldThrowException() throws ParseException {
-        trackedEntityAttributeStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME,
+        store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME,
                 DESCRIPTION, DISPLAY_DESCRIPTION, PATTERN, SORT_ORDER_IN_LIST_NO_PROGRAM,
                 "wrong",
                 VALUE_TYPE, EXPRESSION, SEARCH_SCOPE, PROGRAM_SCOPE, DISPLAY_IN_LIST_NO_PROGRAM, GENERATED,
@@ -252,7 +252,7 @@ public class TrackedEntityAttributeStoreTests extends AbsStoreTestCase {
 
         String updatedExpression = "updated_expression";
 
-        int update = trackedEntityAttributeStore.update(
+        int update = store.update(
                 UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
                 DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, PATTERN, SORT_ORDER_IN_LIST_NO_PROGRAM,
                 OPTION_SET_UID, VALUE_TYPE, updatedExpression, SEARCH_SCOPE, PROGRAM_SCOPE, DISPLAY_IN_LIST_NO_PROGRAM,
@@ -281,7 +281,7 @@ public class TrackedEntityAttributeStoreTests extends AbsStoreTestCase {
         // check that tracked entity attribute was successfully inserted into database
         assertThatCursor(cursor).hasRow(UID);
 
-        int delete = trackedEntityAttributeStore.delete(UID);
+        int delete = store.delete(UID);
 
         assertThat(delete).isEqualTo(1);
 
@@ -292,4 +292,38 @@ public class TrackedEntityAttributeStoreTests extends AbsStoreTestCase {
     }
 
     // ToDo: consider introducing conflict resolution strategy
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME,
+                DESCRIPTION, DISPLAY_DESCRIPTION, PATTERN, SORT_ORDER_IN_LIST_NO_PROGRAM, OPTION_SET_UID, VALUE_TYPE,
+                EXPRESSION, SEARCH_SCOPE, PROGRAM_SCOPE, DISPLAY_IN_LIST_NO_PROGRAM, GENERATED,
+                DISPLAY_ON_VISIT_SCHEDULE, ORG_UNIT_SCOPE, UNIQUE, INHERIT
+        );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_uid() {
+        store.update(
+                null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
+                DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, PATTERN, SORT_ORDER_IN_LIST_NO_PROGRAM,
+                OPTION_SET_UID, VALUE_TYPE, EXPRESSION, SEARCH_SCOPE, PROGRAM_SCOPE, DISPLAY_IN_LIST_NO_PROGRAM,
+                GENERATED, DISPLAY_ON_VISIT_SCHEDULE, ORG_UNIT_SCOPE, UNIQUE, INHERIT, UID
+        );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_whereUid() {
+        store.update(
+                UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
+                DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, PATTERN, SORT_ORDER_IN_LIST_NO_PROGRAM,
+                OPTION_SET_UID, VALUE_TYPE, EXPRESSION, SEARCH_SCOPE, PROGRAM_SCOPE, DISPLAY_IN_LIST_NO_PROGRAM,
+                GENERATED, DISPLAY_ON_VISIT_SCHEDULE, ORG_UNIT_SCOPE, UNIQUE, INHERIT, null
+        );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_null_uid() {
+        store.delete(null);
+    }
 }

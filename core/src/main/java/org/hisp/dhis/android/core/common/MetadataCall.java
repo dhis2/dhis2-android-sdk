@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.program.ProgramCall;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
 import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
 import org.hisp.dhis.android.core.program.ProgramRuleStore;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableModelStore;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableStore;
 import org.hisp.dhis.android.core.program.ProgramService;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
@@ -101,7 +101,7 @@ public class MetadataCall implements Call<Response> {
     private final ProgramStore programStore;
     private final TrackedEntityAttributeStore trackedEntityAttributeStore;
     private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
-    private final ProgramRuleVariableModelStore programRuleVariableStore;
+    private final ProgramRuleVariableStore programRuleVariableStore;
     private final ProgramIndicatorStore programIndicatorStore;
     private final ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
     private final ProgramRuleActionStore programRuleActionStore;
@@ -133,7 +133,7 @@ public class MetadataCall implements Call<Response> {
                         ProgramStore programStore,
                         TrackedEntityAttributeStore trackedEntityAttributeStore,
                         ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
-                        ProgramRuleVariableModelStore programRuleVariableStore,
+                        ProgramRuleVariableStore programRuleVariableStore,
                         ProgramIndicatorStore programIndicatorStore,
                         ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore,
                         ProgramRuleActionStore programRuleActionStore,
@@ -196,15 +196,14 @@ public class MetadataCall implements Call<Response> {
             if (!response.isSuccessful()) {
                 return response;
             }
-
             SystemInfo systemInfo = (SystemInfo) response.body();
             Date serverDate = systemInfo.serverDate();
+
             response = new UserCall(
                     userService, databaseAdapter, organisationUnitStore, userStore,
                     userCredentialsStore, userRoleStore, resourceStore, serverDate,
                     userRoleProgramLinkStore, userOrganisationUnitLinkStore
             ).call();
-
             if (!response.isSuccessful()) {
                 return response;
             }
@@ -248,7 +247,6 @@ public class MetadataCall implements Call<Response> {
             if (!response.isSuccessful()) {
                 return response;
             }
-
             transaction.setSuccessful();
             return response;
         } finally {

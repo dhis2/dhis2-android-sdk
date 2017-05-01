@@ -35,6 +35,7 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttributeValueStore {
@@ -60,15 +61,17 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
                        @Nullable String value,
                        @NonNull String trackedEntityAttribute,
                        @NonNull String trackedEntityInstance) {
-
-        insertRowStatement.clearBindings();
-
+        nonNull(state);
+        nonNull(trackedEntityAttribute);
+        nonNull(trackedEntityInstance);
         sqLiteBind(insertRowStatement, 1, state);
         sqLiteBind(insertRowStatement, 2, value);
         sqLiteBind(insertRowStatement, 3, trackedEntityAttribute);
         sqLiteBind(insertRowStatement, 4, trackedEntityInstance);
 
-        return databaseAdapter.executeInsert(TrackedEntityAttributeValueModel.TABLE, insertRowStatement);
+        long returnValue = databaseAdapter.executeInsert(TrackedEntityAttributeValueModel.TABLE, insertRowStatement);
+        insertRowStatement.clearBindings();
+        return returnValue;
     }
 
     @Override

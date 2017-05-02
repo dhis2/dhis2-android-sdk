@@ -33,4 +33,5 @@ public interface Filter<T, K> {
     Field<T, K> field();
     String operator();
     List<String> values();
+    String generateString();
 }

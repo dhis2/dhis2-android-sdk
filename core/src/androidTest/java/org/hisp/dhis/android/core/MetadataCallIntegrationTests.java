@@ -65,8 +65,18 @@ public class MetadataCallIntegrationTests extends AbsStoreTestCase {
     public void metadataSyncTest() throws Exception {
         retrofit2.Response response = null;
         response = d2.logIn("android", "Android123").call();
+        assertThat(response.isSuccessful()).isTrue();
+
         response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
+
+      /*  response = d2.syncMetaData().call();
+        assertThat(response.isSuccessful()).isTrue();*/
+        //TODO: add aditional sync + break point.
+        //when debugger stops at the new break point manually change metadata online & resume.
+        //This way I can make sure that additive (updates) work as well.
+        //The changes could be to one of the programs, adding stuff to it.
+        // adding a new program..etc.
     }
 
     @Test

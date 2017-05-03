@@ -200,9 +200,9 @@ public class MetadataCall implements Call<Response> {
             Date serverDate = systemInfo.serverDate();
 
             response = new UserCall(
-                    userService, databaseAdapter, organisationUnitStore, userStore,
+                    userService, databaseAdapter, userStore,
                     userCredentialsStore, userRoleStore, resourceStore, serverDate,
-                    userRoleProgramLinkStore, userOrganisationUnitLinkStore
+                    userRoleProgramLinkStore
             ).call();
             if (!response.isSuccessful()) {
                 return response;

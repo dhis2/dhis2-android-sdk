@@ -28,12 +28,10 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.common.Call;
-import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.junit.Before;
@@ -52,8 +50,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import javax.net.ssl.HttpsURLConnection;
-
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
@@ -61,7 +57,6 @@ import retrofit2.Response;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -105,9 +100,6 @@ public class UserCallTests {
     private UserCredentials userCredentials;
 
     @Mock
-    private OrganisationUnitStore organisationUnitStore;
-
-    @Mock
     private User user;
 
     @Mock
@@ -130,18 +122,15 @@ public class UserCallTests {
     @Mock
     private UserRoleProgramLinkStore userRoleProgramLinkStore;
 
-    @Mock
-    private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
-
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
         userSyncCall = new UserCall(
-                userService, databaseAdapter, organisationUnitStore,
+                userService, databaseAdapter,
                 userStore, userCredentialsStore, userRoleStore, resourceStore,
-                serverDate, userRoleProgramLinkStore, userOrganisationUnitLinkStore
+                serverDate, userRoleProgramLinkStore
         );
 
         when(userCredentials.uid()).thenReturn("user_credentials_uid");
@@ -293,20 +282,6 @@ public class UserCallTests {
                     anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class), anyString()
             );
             verify(userRoleStore, never()).delete(anyString());
-
-            verify(organisationUnitStore, never()).insert(
-                    anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                    anyString(), anyString(), anyString(), anyString(), anyString(),
-                    any(Date.class), any(Date.class), anyString(), anyInt()
-            );
-
-            verify(organisationUnitStore, never()).update(
-                    anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                    anyString(), anyString(), anyString(), anyString(), anyString(),
-                    any(Date.class), any(Date.class), anyString(), anyInt(), anyString()
-            );
-
-            verify(organisationUnitStore, never()).delete(anyString());
         }
     }
 
@@ -354,21 +329,6 @@ public class UserCallTests {
                 anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class), anyString()
         );
         verify(userRoleStore, never()).delete(anyString());
-
-        verify(organisationUnitStore, never()).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt()
-        );
-
-        verify(organisationUnitStore, never()).update(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt(), anyString()
-        );
-
-        verify(organisationUnitStore, never()).delete(anyString());
-
     }
 
     @Test
@@ -432,13 +392,6 @@ public class UserCallTests {
         );
 
         verify(userRoleProgramLinkStore, times(1)).insert(anyString(), anyString());
-
-        // check that it is invoked twice; once for assigned orgunits and once for teiSearchOrgUnits
-        verify(organisationUnitStore, times(2)).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt()
-        );
 
         verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
 

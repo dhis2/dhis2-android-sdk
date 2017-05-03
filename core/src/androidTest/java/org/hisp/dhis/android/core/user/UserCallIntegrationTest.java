@@ -228,9 +228,9 @@ public class UserCallIntegrationTest extends AbsStoreTestCase {
 
         organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore, userOrganisationUnitStore);
 
-        userCall = new UserCall(userService, databaseAdapter(), organisationUnitStore,
+        userCall = new UserCall(userService, databaseAdapter(),
                 userStore, userCredentialsStore, userRoleStore, resourceStore, new Date(),
-                userRoleProgramLinkStore, userOrganisationUnitStore);
+                userRoleProgramLinkStore);
 
         ContentValues program1 = CreateProgramUtils.create(1L, "eBAyeGv0exc", null, null, null);
         ContentValues program2 = CreateProgramUtils.create(2L, "ur1Edk5Oe2n", null, null, null);
@@ -348,59 +348,6 @@ public class UserCallIntegrationTest extends AbsStoreTestCase {
                 "cUlTcejWree",
                 "ur1Edk5Oe2n"
         ).isExhausted();
-    }
-
-    @Test
-    public void call_shouldPersistDataCaptureOrganisationUnits() throws Exception {
-        userCall.call();
-        String[] projection = {OrganisationUnitModel.Columns.UID};
-        Cursor dataCaptureOrganisationUnitCursor = database().query(OrganisationUnitModel.TABLE, projection,
-                OrganisationUnitModel.Columns.UID + "=?", new String[]{"DiszpKrYNg8"}, null, null, null);
-
-        assertThatCursor(dataCaptureOrganisationUnitCursor).hasRow(
-                "DiszpKrYNg8"
-        ).isExhausted();
-
-        String[] linkModelProjection = {
-                UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT,
-                UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE
-        };
-
-        Cursor userOrganisationUnitLinkCursor = database().query(UserOrganisationUnitLinkModel.TABLE,
-                linkModelProjection, UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + "=?",
-                new String[]{"DiszpKrYNg8"}, null, null, null);
-
-        assertThatCursor(userOrganisationUnitLinkCursor).hasRow(
-                "DiszpKrYNg8",
-                "SCOPE_DATA_CAPTURE"
-        ).isExhausted();
-    }
-
-    @Test
-    public void call_shouldPersistTeiSearchOrganisationUnits() throws Exception {
-        userCall.call();
-        String[] projection = {OrganisationUnitModel.Columns.UID};
-        Cursor dataCaptureOrganisationUnitCursor = database().query(OrganisationUnitModel.TABLE, projection,
-                OrganisationUnitModel.Columns.UID + "=?", new String[]{"WAjjFMDJKcx"}, null, null, null);
-
-        assertThatCursor(dataCaptureOrganisationUnitCursor).hasRow(
-                "WAjjFMDJKcx"
-        ).isExhausted();
-
-        String[] linkModelProjection = {
-                UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT,
-                UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE
-        };
-
-        Cursor userOrganisationUnitLinkCursor = database().query(UserOrganisationUnitLinkModel.TABLE,
-                linkModelProjection, UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + "=?",
-                new String[]{"WAjjFMDJKcx"}, null, null, null);
-
-        assertThatCursor(userOrganisationUnitLinkCursor).hasRow(
-                "WAjjFMDJKcx",
-                "SCOPE_TEI_SEARCH"
-        ).isExhausted();
-
     }
 
     @After

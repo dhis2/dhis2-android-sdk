@@ -75,8 +75,7 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
             OrganisationUnitModel.Columns.CLOSED_DATE + "=?, " +
             OrganisationUnitModel.Columns.LEVEL + "=?, " +
             OrganisationUnitModel.Columns.PARENT + "=? " +
-            " WHERE " +
-            OrganisationUnitModel.Columns.UID + " = ?;";
+            " WHERE " + OrganisationUnitModel.Columns.UID + " = ?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + OrganisationUnitModel.TABLE +
             " WHERE " + OrganisationUnitModel.Columns.UID + " =?;";

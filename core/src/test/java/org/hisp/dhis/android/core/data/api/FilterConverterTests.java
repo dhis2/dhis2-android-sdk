@@ -31,6 +31,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 
 import okhttp3.ResponseBody;
 import okhttp3.mockwebserver.MockResponse;
@@ -61,6 +62,9 @@ public class FilterConverterTests {
 
     @Test
     public void retrofit_shouldRespectFilter() throws IOException, InterruptedException {
+        ArrayList<String> values = new ArrayList(2);
+        values.add("uid1");
+        values.add("uid2");
         MockWebServer server = new MockWebServer();
         server.start();
 
@@ -73,18 +77,21 @@ public class FilterConverterTests {
 
         TestService service = retrofit.create(TestService.class);
         service.test(
-                FilterImpl.create(Field.create("id"), "in", "uid1", "uid2"),
-                FilterImpl.create(Field.create("lastUpdated"), "gt", "updatedDate")
+                InFilter.create(Field.create("id"), values),
+                GtFilter.create(Field.create("lastUpdated"), "updatedDate")
         ).execute();
 
         RecordedRequest request = server.takeRequest();
 
-        assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1,uid2]&filter=lastUpdated:gt:[updatedDate]");
+        assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1,uid2]&filter=lastUpdated:gt:updatedDate");
         server.shutdown();
     }
 
     @Test
     public void filterConverter_shouldConvertSingleValueFilterCorrectly() throws IOException, InterruptedException {
+        ArrayList<String> values = new ArrayList(2);
+        values.add("uid1");
+
         MockWebServer server = new MockWebServer();
         server.start();
 
@@ -97,18 +104,21 @@ public class FilterConverterTests {
 
         TestService service = retrofit.create(TestService.class);
         service.test(
-                FilterImpl.create(Field.create("id"), "in", "uid1"),
-                FilterImpl.create(Field.create("lastUpdated"), "gt", "updatedDate")
+                InFilter.create(Field.create("id"), values),
+                GtFilter.create(Field.create("lastUpdated"), "updatedDate")
         ).execute();
 
         RecordedRequest request = server.takeRequest();
 
-        assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1]&filter=lastUpdated:gt:[updatedDate]");
+        assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[uid1]&filter=lastUpdated:gt:updatedDate");
         server.shutdown();
     }
 
     @Test
     public void retrofit_shouldRespectFieldAndFilterMixing() throws IOException, InterruptedException {
+        ArrayList<String> values = new ArrayList(2);
+        values.add("uid1");
+        values.add("uid2");
         MockWebServer server = new MockWebServer();
         server.start();
 
@@ -126,19 +136,22 @@ public class FilterConverterTests {
                         Field.create("id"), Field.create("code"),
                         Field.create("name"), Field.create("displayName")
                 ).build(),
-                FilterImpl.create(Field.create("id"), "in", "uid1", "uid2"),
-                FilterImpl.create(Field.create("lastUpdated"), "gt", "updatedDate")
+                InFilter.create(Field.create("id"), values),
+                GtFilter.create(Field.create("lastUpdated"), "updatedDate")
         ).execute();
 
         RecordedRequest request = server.takeRequest();
 
         assertThat(request.getPath()).isEqualTo(
-                "/api?field=id,code,name,displayName&filter=id:in:[uid1,uid2]&filter=lastUpdated:gt:[updatedDate]");
+                "/api?field=id,code,name,displayName&filter=id:in:[uid1,uid2]&filter=lastUpdated:gt:updatedDate");
         server.shutdown();
     }
 
     @Test
     public void retrofit_shouldIgnoreNullFilter() throws IOException, InterruptedException {
+        ArrayList<String> values = new ArrayList(2);
+        values.add("uid1");
+        values.add("uid2");
         MockWebServer server = new MockWebServer();
         server.start();
 
@@ -151,8 +164,8 @@ public class FilterConverterTests {
 
         TestService service = retrofit.create(TestService.class);
         service.test(
-                FilterImpl.create(Field.create("id"), "in", "uid1", "uid2"),
-                FilterImpl.create(Field.create("lastUpdated"), "gt", (String[]) null) //Creating filter with null
+                InFilter.create(Field.create("id"), values),
+                GtFilter.create(Field.create("lastUpdated"), null)
         ).execute();
 
         RecordedRequest request = server.takeRequest();
@@ -163,6 +176,9 @@ public class FilterConverterTests {
 
     @Test
     public void retrofit_shouldIgnoreEmptyStringFilter() throws IOException, InterruptedException {
+        ArrayList<String> values = new ArrayList(2);
+        values.add("uid1");
+        values.add("uid2");
         MockWebServer server = new MockWebServer();
         server.start();
 
@@ -175,8 +191,8 @@ public class FilterConverterTests {
 
         TestService service = retrofit.create(TestService.class);
         service.test(
-                FilterImpl.create(Field.create("id"), "in", "uid1", "uid2"),
-                FilterImpl.create(Field.create("lastUpdated"), "gt", "") //Creating a filter with an empty string
+                InFilter.create(Field.create("id"), values),
+                GtFilter.create(Field.create("lastUpdated"), "")
         ).execute();
 
         RecordedRequest request = server.takeRequest();

@@ -73,8 +73,8 @@ ext {
             buildToolsVersion: "25.0.2",
             minSdkVersion    : 15,
             targetSdkVersion : 25,
-            versionCode      : 16,
-            versionName      : "0.1.6-SNAPSHOT"
+            versionCode      : 17,
+            versionName      : "0.1.7-SNAPSHOT"
     ]
 
     libraries = [

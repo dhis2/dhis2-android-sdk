@@ -75,6 +75,7 @@ ext {
             targetSdkVersion : 25,
             versionCode      : 18,
             versionName      : "0.1.8-SNAPSHOT"
+
     ]
 
     libraries = [

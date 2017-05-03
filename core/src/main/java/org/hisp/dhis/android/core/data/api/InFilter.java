@@ -5,8 +5,8 @@ import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 
 @AutoValue
@@ -18,7 +18,7 @@ public abstract class InFilter<T, K> implements Filter<T, K> {
         if (values == null || values.isEmpty()) {
             return null;
         }
-        return new AutoValue_InFilter<>(field, "in", Arrays.asList(values.toArray(new String[values.size()])));
+        return new AutoValue_InFilter<>(field, "in", Collections.unmodifiableCollection(values));
     }
 
     @Override

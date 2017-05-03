@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 
 @AutoValue
@@ -15,7 +15,8 @@ public abstract class GtFilter<T, K> implements Filter<T, K> {
         if (value == null || value.equals("")) {
             return null;
         }
-        return new AutoValue_GtFilter<>(field, "gt", Arrays.asList(value));
+        return new AutoValue_GtFilter<>(field, "gt",
+                Collections.unmodifiableCollection(Collections.singletonList(value)));
     }
 
     @Override
@@ -25,14 +26,9 @@ public abstract class GtFilter<T, K> implements Filter<T, K> {
                 .append(':')
                 .append(operator())
                 .append(':');
-        //a list of values:
+
         Iterator<String> valuesIterator = values().iterator();
-        while (valuesIterator.hasNext()) {
-            builder.append(valuesIterator.next());
-            if (valuesIterator.hasNext()) {
-                builder.append(',');
-            }
-        }
+        builder.append(valuesIterator.next());
         return builder.toString();
     }
 }

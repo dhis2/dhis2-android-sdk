@@ -27,11 +27,13 @@
  */
 package org.hisp.dhis.android.core.data.api;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface Filter<T, K> {
+
     Field<T, K> field();
     String operator();
-    List<String> values();
+
+    Collection<String> values();
     String generateString();
 }

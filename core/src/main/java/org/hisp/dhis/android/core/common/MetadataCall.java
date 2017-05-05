@@ -118,6 +118,7 @@ public class MetadataCall implements Call<Response> {
     private final ProgramStageStore programStageStore;
     private final RelationshipTypeStore relationshipStore;
     private final TrackedEntityStore trackedEntityStore;
+    private boolean isExecuted;
 
     public MetadataCall(DatabaseAdapter databaseAdapter,
                         SystemInfoService systemInfoService,
@@ -185,11 +186,21 @@ public class MetadataCall implements Call<Response> {
 
     @Override
     public boolean isExecuted() {
-        return false;
+        synchronized (this) {
+            return isExecuted;
+        }
     }
 
     @Override
     public Response call() throws Exception {
+        synchronized (this) {
+            if (isExecuted) {
+                throw new IllegalStateException("Already executed");
+            }
+
+            isExecuted = true;
+        }
+
         Response response = null;
         Transaction transaction = databaseAdapter.beginNewTransaction();
 

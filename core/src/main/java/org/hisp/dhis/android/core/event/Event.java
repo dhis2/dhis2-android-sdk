@@ -58,6 +58,7 @@ public abstract class Event {
     private static final String EVENT_DATE = "eventDate";
     private static final String COMPLETE_DATE = "completedDate";
     private static final String DUE_DATE = "dueDate";
+    private static final String DELETED = "deleted";
     private static final String TRACKED_ENTITY_DATA_VALUES = "dataValues";
 
     public static final Field<Event, String> uid = Field.create(UID);
@@ -71,6 +72,7 @@ public abstract class Event {
     public static final Field<Event, String> organisationUnit = Field.create(ORGANISATION_UNIT);
     public static final Field<Event, String> eventDate = Field.create(EVENT_DATE);
     public static final Field<Event, String> completeDate = Field.create(COMPLETE_DATE);
+    public static final Field<Event, Boolean> deleted = Field.create(DELETED);
     public static final Field<Event, String> dueDate = Field.create(DUE_DATE);
 
     public static final NestedField<Event, TrackedEntityDataValue> trackedEntityDataValues
@@ -124,6 +126,10 @@ public abstract class Event {
     public abstract Date dueDate();
 
     @Nullable
+    @JsonProperty(DELETED)
+    public abstract Boolean deleted();
+
+    @Nullable
     @JsonProperty(TRACKED_ENTITY_DATA_VALUES)
     public abstract List<TrackedEntityDataValue> trackedEntityDataValues();
 
@@ -141,9 +147,10 @@ public abstract class Event {
             @JsonProperty(COORDINATE) Coordinates coordinates,
             @JsonProperty(COMPLETE_DATE) Date completedDate,
             @JsonProperty(DUE_DATE) Date dueDate,
+            @JsonProperty(DELETED) Boolean deleted,
             @JsonProperty(TRACKED_ENTITY_DATA_VALUES) List<TrackedEntityDataValue> dataValues) {
         return new AutoValue_Event(uid, enrollmentUid, created, lastUpdated, program, programStage,
-                organisationUnit, eventDate, eventStatus, coordinates, completedDate, dueDate,
+                organisationUnit, eventDate, eventStatus, coordinates, completedDate, dueDate, deleted,
                 safeUnmodifiableList(dataValues));
     }
 }

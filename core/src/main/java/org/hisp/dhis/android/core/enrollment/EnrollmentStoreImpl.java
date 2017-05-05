@@ -58,12 +58,37 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
             Columns.STATE + ") " +
             "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?);";
 
-    private final SQLiteStatement sqLiteStatement;
+    private static final String UPDATE_STATEMENT = "UPDATE " + EnrollmentModel.TABLE + " SET " +
+            Columns.UID + " =?, " +
+            Columns.CREATED + " =?, " +
+            Columns.LAST_UPDATED + " =?, " +
+            Columns.ORGANISATION_UNIT + " =?, " +
+            Columns.PROGRAM + " =?, " +
+            Columns.DATE_OF_ENROLLMENT + " =?, " +
+            Columns.DATE_OF_INCIDENT + " =?, " +
+            Columns.FOLLOW_UP + " =?, " +
+            Columns.ENROLLMENT_STATUS + " =?, " +
+            Columns.TRACKED_ENTITY_INSTANCE + " =?, " +
+            Columns.LATITUDE + " =?, " +
+            Columns.LONGITUDE + " =?, " +
+            Columns.STATE + " =? " +
+            " WHERE " +
+            Columns.UID + " =?;";
+
+    private static final String DELETE_STATEMENT = "DELETE FROM " +
+            EnrollmentModel.TABLE + " WHERE " +
+            Columns.UID + " =?;";
+
+    private final SQLiteStatement insertStatement;
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
     private final DatabaseAdapter databaseAdapter;
 
     public EnrollmentStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
-        this.sqLiteStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
 
@@ -73,27 +98,65 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
                        @Nullable Date dateOfIncident, @Nullable Boolean followUp,
                        @Nullable EnrollmentStatus enrollmentStatus, @NonNull String trackedEntityInstance,
                        @Nullable String latitude, @Nullable String longitude, @Nullable State state) {
-        sqLiteStatement.clearBindings();
+        insertStatement.clearBindings();
 
-        sqLiteBind(sqLiteStatement, 1, uid);
-        sqLiteBind(sqLiteStatement, 2, created);
-        sqLiteBind(sqLiteStatement, 3, lastUpdated);
-        sqLiteBind(sqLiteStatement, 4, organisationUnit);
-        sqLiteBind(sqLiteStatement, 5, program);
-        sqLiteBind(sqLiteStatement, 6, dateOfEnrollment);
-        sqLiteBind(sqLiteStatement, 7, dateOfIncident);
-        sqLiteBind(sqLiteStatement, 8, followUp);
-        sqLiteBind(sqLiteStatement, 9, enrollmentStatus);
-        sqLiteBind(sqLiteStatement, 10, trackedEntityInstance);
-        sqLiteBind(sqLiteStatement, 11, latitude);
-        sqLiteBind(sqLiteStatement, 12, longitude);
-        sqLiteBind(sqLiteStatement, 13, state);
+        sqLiteBind(insertStatement, 1, uid);
+        sqLiteBind(insertStatement, 2, created);
+        sqLiteBind(insertStatement, 3, lastUpdated);
+        sqLiteBind(insertStatement, 4, organisationUnit);
+        sqLiteBind(insertStatement, 5, program);
+        sqLiteBind(insertStatement, 6, dateOfEnrollment);
+        sqLiteBind(insertStatement, 7, dateOfIncident);
+        sqLiteBind(insertStatement, 8, followUp);
+        sqLiteBind(insertStatement, 9, enrollmentStatus);
+        sqLiteBind(insertStatement, 10, trackedEntityInstance);
+        sqLiteBind(insertStatement, 11, latitude);
+        sqLiteBind(insertStatement, 12, longitude);
+        sqLiteBind(insertStatement, 13, state);
 
-        return databaseAdapter.executeInsert(EnrollmentModel.TABLE, sqLiteStatement);
+        return databaseAdapter.executeInsert(EnrollmentModel.TABLE, insertStatement);
     }
 
     @Override
-    public void close() {
-        sqLiteStatement.close();
+    public int delete(@NonNull String uid) {
+        deleteStatement.clearBindings();
+        sqLiteBind(deleteStatement, 1, uid);
+
+        int rowId = deleteStatement.executeUpdateDelete();
+        deleteStatement.clearBindings();
+
+        return rowId;
+    }
+
+    @Override
+    public int update(@NonNull String uid, @NonNull Date created, @NonNull Date lastUpdated,
+                      @NonNull String organisationUnit, @NonNull String program,
+                      @NonNull Date dateOfEnrollment, @Nullable Date dateOfIncident,
+                      @Nullable Boolean followUp, @NonNull EnrollmentStatus enrollmentStatus,
+                      @NonNull String trackedEntityInstance, @Nullable String latitude,
+                      @Nullable String longitude, @NonNull State state, @NonNull String whereEnrollmentUid) {
+        updateStatement.clearBindings();
+
+        sqLiteBind(updateStatement, 1, uid);
+        sqLiteBind(updateStatement, 2, created);
+        sqLiteBind(updateStatement, 3, lastUpdated);
+        sqLiteBind(updateStatement, 4, organisationUnit);
+        sqLiteBind(updateStatement, 5, program);
+        sqLiteBind(updateStatement, 6, dateOfEnrollment);
+        sqLiteBind(updateStatement, 7, dateOfIncident);
+        sqLiteBind(updateStatement, 8, followUp);
+        sqLiteBind(updateStatement, 9, enrollmentStatus);
+        sqLiteBind(updateStatement, 10, trackedEntityInstance);
+        sqLiteBind(updateStatement, 11, latitude);
+        sqLiteBind(updateStatement, 12, longitude);
+        sqLiteBind(updateStatement, 13, state);
+
+        // bind the where clause
+        sqLiteBind(updateStatement, 14, whereEnrollmentUid);
+
+        int rowId = databaseAdapter.executeUpdateDelete(EnrollmentModel.TABLE, updateStatement);
+        updateStatement.clearBindings();
+
+        return rowId;
     }
 }

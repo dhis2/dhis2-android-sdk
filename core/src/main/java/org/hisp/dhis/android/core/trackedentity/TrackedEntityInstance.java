@@ -53,12 +53,14 @@ public abstract class TrackedEntityInstance {
     private static final String TRACKED_ENTITY_ATTRIBUTE_VALUES = "attributes";
     private static final String RELATIONSHIPS = "relationships";
     private static final String TRACKED_ENTITY = "trackedEntity";
+    private static final String DELETED = "deleted";
     private static final String ENROLLMENTS = "enrollments";
 
     public static final Field<TrackedEntityInstance, String> uid = Field.create(UID);
     public static final Field<TrackedEntityInstance, Date> created = Field.create(CREATED);
     public static final Field<TrackedEntityInstance, Date> lastUpdated = Field.create(LAST_UPDATED);
     public static final Field<TrackedEntityInstance, String> organisationUnit = Field.create(ORGANISATION_UNIT);
+    public static final Field<TrackedEntityInstance, Boolean> deleted = Field.create(DELETED);
 
     public static final NestedField<TrackedEntityInstance, Enrollment> enrollment
             = NestedField.create(ENROLLMENTS);
@@ -87,6 +89,10 @@ public abstract class TrackedEntityInstance {
     public abstract String trackedEntity();
 
     @Nullable
+    @JsonProperty(DELETED)
+    public abstract Boolean deleted();
+
+    @Nullable
     @JsonProperty(TRACKED_ENTITY_ATTRIBUTE_VALUES)
     public abstract List<TrackedEntityAttributeValue> trackedEntityAttributeValues();
 
@@ -105,11 +111,12 @@ public abstract class TrackedEntityInstance {
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
             @JsonProperty(ORGANISATION_UNIT) String organisationUnit,
             @JsonProperty(TRACKED_ENTITY) String trackedEntity,
+            @JsonProperty(DELETED) Boolean deleted,
             @JsonProperty(TRACKED_ENTITY_ATTRIBUTE_VALUES)
                     List<TrackedEntityAttributeValue> trackedEntityAttributeValues,
             @JsonProperty(RELATIONSHIPS) List<Relationship> relationships,
             @JsonProperty(ENROLLMENTS) List<Enrollment> enrollments) {
-        return new AutoValue_TrackedEntityInstance(uid, created, lastUpdated, organisationUnit, trackedEntity,
+        return new AutoValue_TrackedEntityInstance(uid, created, lastUpdated, organisationUnit, trackedEntity, deleted,
                 safeUnmodifiableList(trackedEntityAttributeValues),
                 safeUnmodifiableList(relationships), safeUnmodifiableList(enrollments));
     }

@@ -118,7 +118,6 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
         database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
         database().insert(ProgramModel.TABLE, null, program);
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
-        // ContentValues trackedEntity = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(
                 TRACKED_ENTITY_INSTANCE, ORGANISATION_UNIT, TRACKED_ENTITY_UID);
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
@@ -207,6 +206,60 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, null, null, ORGANISATION_UNIT, PROGRAM, null, null, null, null,
                 TRACKED_ENTITY_INSTANCE, null, null, null).isExhausted();
+    }
+
+    @Test
+    public void update_shouldUpdateEnrollment() throws Exception {
+        ContentValues enrollment = new ContentValues();
+        enrollment.put(EnrollmentModel.Columns.UID, UID);
+        enrollment.put(EnrollmentModel.Columns.ENROLLMENT_STATUS, ENROLLMENT_STATUS.name());
+        enrollment.put(EnrollmentModel.Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
+        enrollment.put(EnrollmentModel.Columns.PROGRAM, PROGRAM);
+        enrollment.put(EnrollmentModel.Columns.TRACKED_ENTITY_INSTANCE, TRACKED_ENTITY_INSTANCE);
+        database().insert(EnrollmentModel.TABLE, null, enrollment);
+
+        String[] projection = {EnrollmentModel.Columns.UID, EnrollmentModel.Columns.ENROLLMENT_STATUS};
+        Cursor cursor = database().query(TABLE, projection, null, null, null, null, null);
+
+        // check that enrollment was successfully inserted into database
+        assertThatCursor(cursor).hasRow(UID, ENROLLMENT_STATUS.name()).isExhausted();
+
+        EnrollmentStatus updatedStatus = EnrollmentStatus.CANCELLED;
+        enrollmentStore.update(UID, null, null,
+                ORGANISATION_UNIT,
+                PROGRAM,
+                null, null, null, updatedStatus,
+                TRACKED_ENTITY_INSTANCE,
+                null, null, null, UID);
+
+        cursor = database().query(TABLE, projection, null, null, null, null, null);
+
+        // check that enrollment was successfully updated
+        assertThatCursor(cursor).hasRow(UID, updatedStatus.name()).isExhausted();
+
+    }
+
+    @Test
+    public void delete_shouldDeleteEnrollment() throws Exception {
+        ContentValues enrollment = new ContentValues();
+        enrollment.put(EnrollmentModel.Columns.UID, UID);
+        enrollment.put(EnrollmentModel.Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
+        enrollment.put(EnrollmentModel.Columns.PROGRAM, PROGRAM);
+        enrollment.put(EnrollmentModel.Columns.TRACKED_ENTITY_INSTANCE, TRACKED_ENTITY_INSTANCE);
+        database().insert(EnrollmentModel.TABLE, null, enrollment);
+
+        String[] projection = {EnrollmentModel.Columns.UID};
+        Cursor cursor = database().query(TABLE, projection, null, null, null, null, null);
+
+        // check that enrollment was successfully inserted into database
+        assertThatCursor(cursor).hasRow(UID).isExhausted();
+
+        enrollmentStore.delete(UID);
+
+        cursor = database().query(TABLE, projection, null, null, null, null, null);
+
+        // check that enrollment is deleted
+        assertThatCursor(cursor).isExhausted();
     }
 
     @Test
@@ -341,11 +394,4 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
                 STATE
         );
     }
-
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        enrollmentStore.close();
-        assertThat(database().isOpen()).isTrue();
-    }
-
 }

@@ -315,6 +315,58 @@ public class EventStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).isExhausted();
     }
 
+    @Test
+    public void update_shouldUpdateEvent() throws Exception {
+        ContentValues event = new ContentValues();
+        event.put(Columns.UID, EVENT_UID);
+        event.put(Columns.EVENT_DATE, dateString);
+        event.put(Columns.PROGRAM, PROGRAM);
+        event.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+        event.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
+        database().insert(EventModel.TABLE, null, event);
+
+        String[] projection = {Columns.UID, Columns.EVENT_DATE};
+        Cursor cursor = database().query(EventModel.TABLE, projection, null, null, null, null, null);
+
+        // check that event was successfully inserted into database
+        assertThatCursor(cursor).hasRow(EVENT_UID, dateString).isExhausted();
+
+        Date updatedDate = new Date();
+
+        eventStore.update(EVENT_UID, null, null, null, null, null, null, PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT,
+                updatedDate, null, null, null, EVENT_UID);
+
+        cursor = database().query(EventModel.TABLE, projection, null, null, null, null, null);
+
+        String updatedDateString = BaseIdentifiableObject.DATE_FORMAT.format(updatedDate);
+
+        // check that event was updated with updatedDateString
+        assertThatCursor(cursor).hasRow(EVENT_UID, updatedDateString).isExhausted();
+    }
+
+    @Test
+    public void delete_shouldDeleteEvent() throws Exception {
+        ContentValues event = new ContentValues();
+        event.put(Columns.UID, EVENT_UID);
+        event.put(Columns.PROGRAM, PROGRAM);
+        event.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+        event.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
+        database().insert(EventModel.TABLE, null, event);
+
+        String[] projection = {Columns.UID};
+        Cursor cursor = database().query(EventModel.TABLE, projection, null, null, null, null, null);
+
+        // check that event was successfully inserted into database
+        assertThatCursor(cursor).hasRow(EVENT_UID).isExhausted();
+
+        eventStore.delete(EVENT_UID);
+
+        cursor = database().query(EventModel.TABLE, projection, null, null, null, null, null);
+
+        // check that event is deleted
+        assertThatCursor(cursor).isExhausted();
+    }
+
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistEventWithInvalidProgramForeignKey() {
         eventStore.insert(
@@ -395,9 +447,4 @@ public class EventStoreTests extends AbsStoreTestCase {
         );
     }
 
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        eventStore.close();
-        assertThat(database().isOpen()).isTrue();
-    }
 }

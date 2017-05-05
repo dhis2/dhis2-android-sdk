@@ -50,17 +50,36 @@ class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
             TrackedEntityInstanceModel.Columns.STATE +
             ") " + "VALUES (?, ?, ?, ?, ?, ?)";
 
+    private static final String UPDATE_STATEMENT = "UPDATE " + TrackedEntityInstanceModel.TABLE + " SET " +
+            TrackedEntityInstanceModel.Columns.UID + " =?, " +
+            TrackedEntityInstanceModel.Columns.CREATED + " =?, " +
+            TrackedEntityInstanceModel.Columns.LAST_UPDATED + " =?, " +
+            TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT + " =?, " +
+            TrackedEntityInstanceModel.Columns.TRACKED_ENTITY + " =?, " +
+            TrackedEntityInstanceModel.Columns.STATE + " =? " +
+            " WHERE " +
+            TrackedEntityInstanceModel.Columns.UID + " =?;";
+
+    private static final String DELETE_STATEMENT = "DELETE FROM " +
+            TrackedEntityInstanceModel.TABLE +
+            " WHERE " +
+            TrackedEntityInstanceModel.Columns.UID + " =?;";
+
     private final SQLiteStatement insertRowStatement;
+    private final SQLiteStatement updateStatement;
+    private final SQLiteStatement deleteStatement;
     private final DatabaseAdapter databaseAdapter;
 
     TrackedEntityInstanceStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
         this.insertRowStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
     public long insert(@NonNull String uid, @Nullable Date created, @Nullable Date lastUpdated,
-            @NonNull String organisationUnit, @NonNull String trackedEntity, @Nullable State state) {
+                       @NonNull String organisationUnit, @NonNull String trackedEntity, @Nullable State state) {
         insertRowStatement.clearBindings();
 
         sqLiteBind(insertRowStatement, 1, uid);
@@ -79,7 +98,33 @@ class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
     }
 
     @Override
-    public void close() {
-        insertRowStatement.close();
+    public int update(@NonNull String uid, @NonNull Date created, @NonNull Date lastUpdated,
+                      @NonNull String organisationUnit, @NonNull String trackedEntity,
+                      @NonNull State state, @NonNull String whereTrackedEntityInstanceUid) {
+        sqLiteBind(updateStatement, 1, uid);
+        sqLiteBind(updateStatement, 2, created);
+        sqLiteBind(updateStatement, 3, lastUpdated);
+        sqLiteBind(updateStatement, 4, organisationUnit);
+        sqLiteBind(updateStatement, 5, trackedEntity);
+        sqLiteBind(updateStatement, 6, state);
+
+        // bind the where clause
+        sqLiteBind(updateStatement, 7, whereTrackedEntityInstanceUid);
+
+        int rowId = databaseAdapter.executeUpdateDelete(TrackedEntityInstanceModel.TABLE, updateStatement);
+        updateStatement.clearBindings();
+
+        return rowId;
+    }
+
+    @Override
+    public int delete(@NonNull String uid) {
+        deleteStatement.clearBindings();
+        sqLiteBind(deleteStatement, 1, uid);
+
+        int rowId = deleteStatement.executeUpdateDelete();
+        deleteStatement.clearBindings();
+
+        return rowId;
     }
 }

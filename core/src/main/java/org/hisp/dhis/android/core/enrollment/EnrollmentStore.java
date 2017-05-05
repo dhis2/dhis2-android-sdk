@@ -51,5 +51,20 @@ public interface EnrollmentStore {
                 @Nullable State state
     );
 
-    void close();
+    int delete(@NonNull String uid);
+
+    int update(@NonNull String uid,
+               @NonNull Date created,
+               @NonNull Date lastUpdated,
+               @NonNull String organisationUnit,
+               @NonNull String program,
+               @NonNull Date dateOfEnrollment,
+               @Nullable Date dateOfIncident,
+               @Nullable Boolean followUp,
+               @NonNull EnrollmentStatus enrollmentStatus,
+               @NonNull String trackedEntityInstance,
+               @Nullable String latitude,
+               @Nullable String longitude,
+               @NonNull State state,
+               @NonNull String whereEnrollmentUid);
 }

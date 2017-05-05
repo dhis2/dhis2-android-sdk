@@ -132,6 +132,56 @@ public class TrackedEntityInstanceStoreTests extends AbsStoreTestCase {
     }
 
     @Test
+    public void update_shouldUpdateTrackedEntityInstance() throws Exception {
+        ContentValues trackedEntityInstance = new ContentValues();
+        trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.UID, UID);
+        trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.TRACKED_ENTITY, TRACKED_ENTITY);
+        trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
+        trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.LAST_UPDATED, dateString);
+        database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
+
+        String[] projection = {TrackedEntityInstanceModel.Columns.UID, TrackedEntityInstanceModel.Columns.LAST_UPDATED};
+        Cursor cursor = database().query(TrackedEntityInstanceModel.TABLE, projection, null, null, null, null, null);
+
+        // check that tracked entity instance was successfully inserted
+        assertThatCursor(cursor).hasRow(UID, dateString).isExhausted();
+
+        Date newLastUpdated = new Date();
+
+        trackedEntityInstanceStore.update(UID, null, newLastUpdated,
+                ORGANISATION_UNIT, TRACKED_ENTITY, null, UID);
+
+        String newLastUpdatedString = BaseIdentifiableObject.DATE_FORMAT.format(newLastUpdated);
+        cursor = database().query(TrackedEntityInstanceModel.TABLE, projection, null, null, null, null, null);
+
+        // check that tracked entity instance was successfully updated
+        assertThatCursor(cursor).hasRow(UID, newLastUpdatedString).isExhausted();
+
+    }
+
+    @Test
+    public void delete_shouldDeleteTrackedEntityInstance() throws Exception {
+        ContentValues trackedEntityInstance = new ContentValues();
+        trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.UID, UID);
+        trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.TRACKED_ENTITY, TRACKED_ENTITY);
+        trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
+        database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
+
+        String[] projection = {TrackedEntityInstanceModel.Columns.UID};
+        Cursor cursor = database().query(TrackedEntityInstanceModel.TABLE, projection, null, null, null, null, null);
+
+        // check that tracked entity instance was successfully inserted
+        assertThatCursor(cursor).hasRow(UID).isExhausted();
+
+        trackedEntityInstanceStore.delete(UID);
+
+        cursor = database().query(TrackedEntityInstanceModel.TABLE, projection, null, null, null, null, null);
+
+        // check that tracked entity instance is deleted
+        assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test
     public void delete_shouldRemoveAllRows() {
         database().insert(TrackedEntityInstanceModel.TABLE, null,
                 CreateTrackedEntityInstanceUtils.create(UID, ORGANISATION_UNIT, TRACKED_ENTITY));
@@ -170,10 +220,4 @@ public class TrackedEntityInstanceStoreTests extends AbsStoreTestCase {
         trackedEntityInstanceStore.insert(UID, date, date, ORGANISATION_UNIT, "wrong", STATE);
     }
 
-    // ToDo: consider introducing conflict resolution strategy
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        trackedEntityInstanceStore.close();
-        assertThat(database().isOpen()).isTrue();
-    }
 }

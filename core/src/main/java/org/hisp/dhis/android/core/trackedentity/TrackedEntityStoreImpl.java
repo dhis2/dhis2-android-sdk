@@ -143,8 +143,4 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
         return rowId;
     }
 
-    @Override
-    public void close() {
-        insertStatement.close();
-    }
 }

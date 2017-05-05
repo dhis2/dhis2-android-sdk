@@ -57,6 +57,7 @@ public abstract class Enrollment {
     private static final String ENROLLMENT_STATUS = "status";
     private static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
     private static final String COORDINATE = "coordinate";
+    private static final String DELETED = "deleted";
     private static final String EVENTS = "events";
 
     public static final Field<Enrollment, String> uid = Field.create(UID);
@@ -68,6 +69,7 @@ public abstract class Enrollment {
     public static final Field<Enrollment, String> dateOfIncident = Field.create(DATE_OF_INCIDENT);
     public static final Field<Enrollment, String> followUp = Field.create(FOLLOW_UP);
     public static final Field<Enrollment, String> enrollmentStatus = Field.create(ENROLLMENT_STATUS);
+    public static final Field<Enrollment, Boolean> deleted = Field.create(DELETED);
     public static final Field<Enrollment, String> trackedEntityInstance = Field.create(TRACKED_ENTITY_INSTANCE);
     public static final Field<Enrollment, Coordinates> coordinate = Field.create(COORDINATE);
 
@@ -117,6 +119,10 @@ public abstract class Enrollment {
     public abstract Coordinates coordinate();
 
     @Nullable
+    @JsonProperty(DELETED)
+    public abstract Boolean deleted();
+
+    @Nullable
     @JsonProperty(EVENTS)
     public abstract List<Event> events();
 
@@ -133,9 +139,10 @@ public abstract class Enrollment {
             @JsonProperty(ENROLLMENT_STATUS) EnrollmentStatus enrollmentStatus,
             @JsonProperty(TRACKED_ENTITY_INSTANCE) String trackedEntityInstance,
             @JsonProperty(COORDINATE) Coordinates coordinate,
+            @JsonProperty(DELETED) Boolean deleted,
             @JsonProperty(EVENTS) List<Event> events) {
         return new AutoValue_Enrollment(uid, created, lastUpdated, organisationUnit, program,
                 dateOfEnrollment, dateOfIncident, followUp, enrollmentStatus, trackedEntityInstance,
-                coordinate, safeUnmodifiableList(events));
+                coordinate, deleted, safeUnmodifiableList(events));
     }
 }

@@ -39,10 +39,10 @@ public abstract class Coordinates {
     private final static String JSON_PROPERTY_LONGITUDE = "longitude";
 
     @JsonProperty(JSON_PROPERTY_LATITUDE)
-    public abstract Double latitude();
+    public abstract String latitude();
 
     @JsonProperty(JSON_PROPERTY_LONGITUDE)
-    public abstract Double longitude();
+    public abstract String longitude();
 
     public static Builder builder() {
         return new AutoValue_Coordinates.Builder();
@@ -51,10 +51,10 @@ public abstract class Coordinates {
     @AutoValue.Builder
     public static abstract class Builder {
         @JsonProperty(JSON_PROPERTY_LATITUDE)
-        public abstract Builder latitude(Double latitude);
+        public abstract Builder latitude(String latitude);
 
         @JsonProperty(JSON_PROPERTY_LONGITUDE)
-        public abstract Builder longitude(Double longitude);
+        public abstract Builder longitude(String longitude);
 
         public abstract Coordinates build();
     }

@@ -178,12 +178,4 @@ public class TrackedEntityStoreTests extends AbsStoreTestCase {
         assertThat(deleted).isEqualTo(1L);
         assertThatCursor(cursor).isExhausted();
     }
-
-    // ToDo: consider introducing conflict resolution strategy
-
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        trackedEntityStore.close();
-        assertThat(database().isOpen()).isTrue();
-    }
 }

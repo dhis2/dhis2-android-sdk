@@ -58,7 +58,7 @@ public abstract class EventModel extends BaseDataModel {
         public static final String LONGITUDE = "longitude";
         public static final String PROGRAM = "program";
         public static final String PROGRAM_STAGE = "programStage";
-        public static final String ORGANISATION_UNIT = "orgUnit";
+        public static final String ORGANISATION_UNIT = "organisationUnit";
         public static final String EVENT_DATE = "eventDate";
         public static final String COMPLETE_DATE = "completedDate";
         public static final String DUE_DATE = "dueDate";

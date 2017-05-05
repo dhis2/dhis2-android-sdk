@@ -60,13 +60,13 @@ public class UserRoleProgramLinkStoreTests extends AbsStoreTestCase {
 
     private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
 
-    private UserRoleProgramLinkStore organisationUnitLinkStore;
+    private UserRoleProgramLinkStore store;
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        organisationUnitLinkStore = new UserRoleProgramLinkStoreImpl(databaseAdapter());
+        store = new UserRoleProgramLinkStoreImpl(databaseAdapter());
         ContentValues userRole = CreateUserRoleUtils.create(ID, USER_ROLE_UID);
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
@@ -81,7 +81,7 @@ public class UserRoleProgramLinkStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistRowInDatabase() {
-        long rowId = organisationUnitLinkStore.insert(USER_ROLE_UID, PROGRAM_UID);
+        long rowId = store.insert(USER_ROLE_UID, PROGRAM_UID);
         Cursor cursor = database().query(UserRoleProgramLinkModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(USER_ROLE_UID, PROGRAM_UID).isExhausted();
@@ -93,7 +93,7 @@ public class UserRoleProgramLinkStoreTests extends AbsStoreTestCase {
         final String deferredProgram = "deferredProgram";
 
         database().beginTransaction();
-        long rowId = organisationUnitLinkStore.insert(deferredUserRole, deferredProgram);
+        long rowId = store.insert(deferredUserRole, deferredProgram);
         ContentValues userRole = CreateUserRoleUtils.create(3L, deferredUserRole);
         ContentValues program = CreateProgramUtils.create(3L, deferredProgram,
                 RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
@@ -109,7 +109,7 @@ public class UserRoleProgramLinkStoreTests extends AbsStoreTestCase {
 
     @Test
     public void update_shouldNotInsert() {
-        long rowId = organisationUnitLinkStore.update(USER_ROLE_UID, PROGRAM_UID, USER_ROLE_UID, PROGRAM_UID);
+        long rowId = store.update(USER_ROLE_UID, PROGRAM_UID, USER_ROLE_UID, PROGRAM_UID);
         Cursor cursor = database().query(UserRoleProgramLinkModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(0);
         assertThatCursor(cursor).isExhausted();
@@ -131,7 +131,7 @@ public class UserRoleProgramLinkStoreTests extends AbsStoreTestCase {
         contentValues.put(Columns.PROGRAM, oldProgramUid);
         database().insert(UserRoleProgramLinkModel.TABLE, null, contentValues);
 
-        long returnValue = organisationUnitLinkStore.update(USER_ROLE_UID, PROGRAM_UID, oldUserRoleUid, oldProgramUid);
+        long returnValue = store.update(USER_ROLE_UID, PROGRAM_UID, oldUserRoleUid, oldProgramUid);
 
         Cursor cursor = database().query(UserRoleProgramLinkModel.TABLE, PROJECTION, null, null, null, null, null);
 
@@ -146,7 +146,7 @@ public class UserRoleProgramLinkStoreTests extends AbsStoreTestCase {
         contentValues.put(Columns.PROGRAM, PROGRAM_UID);
 
         database().insert(UserRoleProgramLinkModel.TABLE, null, contentValues);
-        int returnValue = organisationUnitLinkStore.delete(USER_ROLE_UID, PROGRAM_UID);
+        int returnValue = store.delete(USER_ROLE_UID, PROGRAM_UID);
 
         Cursor cursor = database().query(UserRoleProgramLinkModel.TABLE, PROJECTION, null, null, null, null, null);
 
@@ -156,7 +156,7 @@ public class UserRoleProgramLinkStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteUserRoleProgramLinkWhenDeletingUserRoleForeignKey() {
-        organisationUnitLinkStore.insert(USER_ROLE_UID, PROGRAM_UID);
+        store.insert(USER_ROLE_UID, PROGRAM_UID);
         database().delete(UserRoleModel.TABLE, UserRoleModel.Columns.UID + "=?", new String[]{USER_ROLE_UID});
         Cursor cursor = database().query(UserRoleProgramLinkModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
@@ -164,7 +164,7 @@ public class UserRoleProgramLinkStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteUserRoleProgramLinkWhenDeletingProgramForeignKey() {
-        organisationUnitLinkStore.insert(USER_ROLE_UID, PROGRAM_UID);
+        store.insert(USER_ROLE_UID, PROGRAM_UID);
         database().delete(ProgramModel.TABLE, ProgramModel.Columns.UID + "=?", new String[]{PROGRAM_UID});
         Cursor cursor = database().query(UserRoleProgramLinkModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
@@ -172,12 +172,52 @@ public class UserRoleProgramLinkStoreTests extends AbsStoreTestCase {
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistUserRoleProgramLinkWithInvalidUserForeignKey() {
-        organisationUnitLinkStore.insert("wrong", PROGRAM_UID);
+        store.insert("wrong", PROGRAM_UID);
     }
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistUserRoleProgramLinkWithInvalidOrganisationUnitForeignKey() {
-        organisationUnitLinkStore.insert(USER_ROLE_UID, "wrong");
+        store.insert(USER_ROLE_UID, "wrong");
     }
 
+    @Test(expected = IllegalArgumentException.class)
+
+    public void insert_null_uid_arg() {
+        store.insert(null, PROGRAM_UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_program_arg() {
+        store.insert(USER_ROLE_UID, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_userRole_arg() {
+        store.update(null, PROGRAM_UID, USER_ROLE_UID, PROGRAM_UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_program_arg() {
+        store.update(USER_ROLE_UID, null, USER_ROLE_UID, PROGRAM_UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_whereUserRole_arg() {
+        store.update(USER_ROLE_UID, PROGRAM_UID, null, PROGRAM_UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_whereProgram_arg() {
+        store.update( USER_ROLE_UID, PROGRAM_UID, USER_ROLE_UID, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_userRole_arg() {
+        store.delete(null, PROGRAM_UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_program_arg() {
+        store.delete(USER_ROLE_UID, null);
+    }
 }

@@ -95,7 +95,7 @@ public class EventStoreTests extends AbsStoreTestCase {
     private final String dateString;
     private final String WRONG_UID = "wrong";
 
-    private EventStore eventStore;
+    private EventStore store;
 
     public EventStoreTests() throws ParseException {
         this.date = new Date();
@@ -106,7 +106,7 @@ public class EventStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.eventStore = new EventStoreImpl(databaseAdapter());
+        this.store = new EventStoreImpl(databaseAdapter());
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
@@ -126,7 +126,7 @@ public class EventStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistEventInDatabase() {
-        long rowId = eventStore.insert(
+        long rowId = store.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
                 date, // created
@@ -170,7 +170,7 @@ public class EventStoreTests extends AbsStoreTestCase {
         final String deferredOrganisationUnit = "deferredOrganisationUnit";
 
         database().beginTransaction();
-        long rowId = eventStore.insert(
+        long rowId = store.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
                 date, // created
@@ -220,7 +220,7 @@ public class EventStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistEventNullableInDatabase() {
-        long rowId = eventStore.insert(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, PROGRAM,
+        long rowId = store.insert(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, PROGRAM,
                 PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null);
         Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
@@ -230,7 +230,7 @@ public class EventStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteEventWhenDeletingProgramForeignKey() {
-        eventStore.insert(
+        store.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
                 date,
@@ -254,7 +254,7 @@ public class EventStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteEventWhenDeletingProgramStageForeignKey() {
-        eventStore.insert(
+        store.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
                 date,
@@ -278,7 +278,7 @@ public class EventStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteEventWhenDeletingOrganisationUnitForeignKey() {
-        eventStore.insert(
+        store.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
                 date,
@@ -304,7 +304,7 @@ public class EventStoreTests extends AbsStoreTestCase {
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistEventWithInvalidProgramForeignKey() {
-        eventStore.insert(
+        store.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
                 date,
@@ -324,7 +324,7 @@ public class EventStoreTests extends AbsStoreTestCase {
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistEventWithInvalidProgramStageForeignKey() throws ParseException {
-        eventStore.insert(
+        store.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
                 date,
@@ -344,7 +344,7 @@ public class EventStoreTests extends AbsStoreTestCase {
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistEventWithInvalidOrganisationUnitForeignKey() {
-        eventStore.insert(
+        store.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
                 date,
@@ -364,7 +364,31 @@ public class EventStoreTests extends AbsStoreTestCase {
 
     @Test
     public void close_shouldNotCloseDatabase() {
-        eventStore.close();
+        store.close();
         assertThat(database().isOpen()).isTrue();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        store.insert(null, ENROLLMENT_UID, date, date, STATUS, LATITUDE, LONGITUDE, PROGRAM, PROGRAM_STAGE,
+                ORGANISATION_UNIT, date, date, date, STATE);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_program() {
+        store.insert(EVENT_UID, ENROLLMENT_UID, date, date, STATUS, LATITUDE, LONGITUDE, null, PROGRAM_STAGE,
+                ORGANISATION_UNIT, date, date, date, STATE);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_programStage() {
+        store.insert(EVENT_UID, ENROLLMENT_UID, date, date, STATUS, LATITUDE, LONGITUDE, PROGRAM, null,
+                ORGANISATION_UNIT, date, date, date, STATE);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_organisationUnit() {
+        store.insert(EVENT_UID, ENROLLMENT_UID, date, date, STATUS, LATITUDE, LONGITUDE, PROGRAM, PROGRAM_STAGE,
+                null, date, date, date, STATE);
     }
 }

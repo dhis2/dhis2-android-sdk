@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueStore {
@@ -62,8 +63,9 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
     public long insert(@NonNull String event, @Nullable Date created, @Nullable Date lastUpdated,
                        @Nullable String dataElement, @Nullable String storedBy,
                        @Nullable String value, @Nullable Boolean providedElsewhere) {
-        insertRowStatement.clearBindings();
 
+        nonNull(event);
+        nonNull(dataElement);
         sqLiteBind(insertRowStatement, 1, event);
         sqLiteBind(insertRowStatement, 2, created);
         sqLiteBind(insertRowStatement, 3, lastUpdated);
@@ -72,7 +74,9 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
         sqLiteBind(insertRowStatement, 6, value);
         sqLiteBind(insertRowStatement, 7, providedElsewhere);
 
-        return databaseAdapter.executeInsert(TrackedEntityDataValueModel.TABLE, insertRowStatement);
+        long ret = databaseAdapter.executeInsert(TrackedEntityDataValueModel.TABLE, insertRowStatement);
+        insertRowStatement.clearBindings();
+        return ret;
     }
 
     @Override

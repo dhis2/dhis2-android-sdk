@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.MetadataCall;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
+import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
@@ -56,8 +57,8 @@ import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
 import org.hisp.dhis.android.core.program.ProgramRuleActionStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramRuleStore;
 import org.hisp.dhis.android.core.program.ProgramRuleStoreImpl;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableModelStore;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableModelStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableStore;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramService;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementStore;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementStoreImpl;
@@ -104,7 +105,6 @@ import org.hisp.dhis.android.core.user.UserStoreImpl;
 import java.util.concurrent.Callable;
 
 import okhttp3.OkHttpClient;
-import retrofit2.Converter;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -136,7 +136,7 @@ public final class D2 {
     private final ProgramStore programStore;
     private final TrackedEntityAttributeStore trackedEntityAttributeStore;
     private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
-    private final ProgramRuleVariableModelStore programRuleVariableStore;
+    private final ProgramRuleVariableStore programRuleVariableStore;
     private final ProgramIndicatorStore programIndicatorStore;
     private final ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
     private final ProgramRuleActionStore programRuleActionStore;
@@ -164,56 +164,32 @@ public final class D2 {
         this.optionSetService = retrofit.create(OptionSetService.class);
 
         // stores
-        this.userStore =
-                new UserStoreImpl(databaseAdapter);
-        this.userCredentialsStore =
-                new UserCredentialsStoreImpl(databaseAdapter);
-        this.userOrganisationUnitLinkStore =
-                new UserOrganisationUnitLinkStoreImpl(databaseAdapter);
-        this.authenticatedUserStore =
-                new AuthenticatedUserStoreImpl(databaseAdapter);
-        this.organisationUnitStore =
-                new OrganisationUnitStoreImpl(databaseAdapter);
-        this.resourceStore =
-                new ResourceStoreImpl(databaseAdapter);
-        this.systemInfoStore =
-                new SystemInfoStoreImpl(databaseAdapter);
-        this.userRoleStore =
-                new UserRoleStoreImpl(databaseAdapter);
-        this.userRoleProgramLinkStore =
-                new UserRoleProgramLinkStoreImpl(databaseAdapter);
-        this.programStore =
-                new ProgramStoreImpl(databaseAdapter);
-        this.trackedEntityAttributeStore =
-                new TrackedEntityAttributeStoreImpl(databaseAdapter);
-        this.programTrackedEntityAttributeStore =
-                new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter);
-        this.programRuleVariableStore =
-                new ProgramRuleVariableModelStoreImpl(databaseAdapter);
-        this.programIndicatorStore =
-                new ProgramIndicatorStoreImpl(databaseAdapter);
-        this.programStageSectionProgramIndicatorLinkStore =
-                new ProgramStageSectionProgramIndicatorLinkStoreImpl(databaseAdapter);
-        this.programRuleActionStore =
-                new ProgramRuleActionStoreImpl(databaseAdapter);
-        this.programRuleStore =
-                new ProgramRuleStoreImpl(databaseAdapter);
-        this.optionStore =
-                new OptionStoreImpl(databaseAdapter);
-        this.optionSetStore =
-                new OptionSetStoreImpl(databaseAdapter);
-        this.dataElementStore =
-                new DataElementStoreImpl(databaseAdapter);
-        this.programStageDataElementStore =
-                new ProgramStageDataElementStoreImpl(databaseAdapter);
-        this.programStageSectionStore =
-                new ProgramStageSectionStoreImpl(databaseAdapter);
-        this.programStageStore =
-                new ProgramStageStoreImpl(databaseAdapter);
-        this.relationshipStore =
-                new RelationshipTypeStoreImpl(databaseAdapter);
-        this.trackedEntityStore =
-                new TrackedEntityStoreImpl(databaseAdapter);
+        this.userStore = new UserStoreImpl(databaseAdapter);
+        this.userCredentialsStore = new UserCredentialsStoreImpl(databaseAdapter);
+        this.userOrganisationUnitLinkStore = new UserOrganisationUnitLinkStoreImpl(databaseAdapter);
+        this.authenticatedUserStore = new AuthenticatedUserStoreImpl(databaseAdapter);
+        this.organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter);
+        this.resourceStore = new ResourceStoreImpl(databaseAdapter);
+        this.systemInfoStore = new SystemInfoStoreImpl(databaseAdapter);
+        this.userRoleStore = new UserRoleStoreImpl(databaseAdapter);
+        this.userRoleProgramLinkStore = new UserRoleProgramLinkStoreImpl(databaseAdapter);
+        this.programStore = new ProgramStoreImpl(databaseAdapter);
+        this.trackedEntityAttributeStore = new TrackedEntityAttributeStoreImpl(databaseAdapter);
+        this.programTrackedEntityAttributeStore = new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter);
+        this.programRuleVariableStore = new ProgramRuleVariableStoreImpl(databaseAdapter);
+        this.programIndicatorStore = new ProgramIndicatorStoreImpl(databaseAdapter);
+        this.programStageSectionProgramIndicatorLinkStore = new ProgramStageSectionProgramIndicatorLinkStoreImpl(
+                databaseAdapter);
+        this.programRuleActionStore = new ProgramRuleActionStoreImpl(databaseAdapter);
+        this.programRuleStore = new ProgramRuleStoreImpl(databaseAdapter);
+        this.optionStore = new OptionStoreImpl(databaseAdapter);
+        this.optionSetStore = new OptionSetStoreImpl(databaseAdapter);
+        this.dataElementStore = new DataElementStoreImpl(databaseAdapter);
+        this.programStageDataElementStore = new ProgramStageDataElementStoreImpl(databaseAdapter);
+        this.programStageSectionStore = new ProgramStageSectionStoreImpl(databaseAdapter);
+        this.programStageStore = new ProgramStageStoreImpl(databaseAdapter);
+        this.relationshipStore = new RelationshipTypeStoreImpl(databaseAdapter);
+        this.trackedEntityStore = new TrackedEntityStoreImpl(databaseAdapter);
     }
 
     @NonNull
@@ -314,16 +290,12 @@ public final class D2 {
                     .setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw())
                     .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-            Converter.Factory jsonConverterFactory
-                    = JacksonConverterFactory.create(objectMapper);
-            Converter.Factory filterConverterFactory
-                    = FieldsConverterFactory.create();
-
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(configuration.serverUrl())
                     .client(okHttpClient)
-                    .addConverterFactory(jsonConverterFactory)
-                    .addConverterFactory(filterConverterFactory)
+                    .addConverterFactory(JacksonConverterFactory.create(objectMapper))
+                    .addConverterFactory(FilterConverterFactory.create())
+                    .addConverterFactory(FieldsConverterFactory.create())
                     .validateEagerly(true)
                     .build();
 

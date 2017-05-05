@@ -112,7 +112,7 @@ public class ProgramStageStoreTests extends AbsStoreTestCase {
     private final Date date;
     private final String dateString;
 
-    private ProgramStageStore programStageStore;
+    private ProgramStageStore store;
 
     public ProgramStageStoreTests() {
         this.date = new Date();
@@ -123,7 +123,7 @@ public class ProgramStageStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        programStageStore = new ProgramStageStoreImpl(databaseAdapter());
+        store = new ProgramStageStoreImpl(databaseAdapter());
 
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
@@ -139,7 +139,7 @@ public class ProgramStageStoreTests extends AbsStoreTestCase {
     @Test
     public void insert_shouldPersistRowInDatabase() {
 
-        long rowId = programStageStore.insert(
+        long rowId = store.insert(
                 UID, CODE, NAME, DISPLAY_NAME,
                 date, date, EXECUTION_DATE_LABEL, ALLOW_GENERATE_NEXT_VISIT,
                 VALID_COMPLETE_ONLY, REPORT_DATE_TO_USE, OPEN_AFTER_ENROLLMENT,
@@ -185,7 +185,7 @@ public class ProgramStageStoreTests extends AbsStoreTestCase {
     public void insert_shouldPersistDeferrableRowInDatabase() {
         final String deferredProgram = "deferredProgram";
         database().beginTransaction();
-        long rowId = programStageStore.insert(
+        long rowId = store.insert(
                 UID, CODE, NAME, DISPLAY_NAME,
                 date, date, EXECUTION_DATE_LABEL, ALLOW_GENERATE_NEXT_VISIT,
                 VALID_COMPLETE_ONLY, REPORT_DATE_TO_USE, OPEN_AFTER_ENROLLMENT,
@@ -206,19 +206,6 @@ public class ProgramStageStoreTests extends AbsStoreTestCase {
                 0, 0, REPORT_DATE_TO_USE, 0, 1, 1, FORM_TYPE, 0, 1, 0, SORT_ORDER, 1, 0, MIN_DAYS_FROM_START,
                 STANDARD_INTERVAL, deferredProgram
         ).isExhausted();
-    }
-
-    @Test(expected = SQLiteConstraintException.class)
-    public void insert_shouldNotPersistProgramStageInDatabaseWithoutProgram() {
-        programStageStore.insert(
-                UID, CODE, NAME, DISPLAY_NAME,
-                date, date, EXECUTION_DATE_LABEL, ALLOW_GENERATE_NEXT_VISIT,
-                VALID_COMPLETE_ONLY, REPORT_DATE_TO_USE, OPEN_AFTER_ENROLLMENT,
-                REPEATABLE, CAPTURE_COORDINATES, FORM_TYPE, DISPLAY_GENERATE_EVENT_BOX,
-                GENERATED_BY_ENROLMENT_DATE, AUTO_GENERATE_EVENT, SORT_ORDER,
-                HIDE_DUE_DATE, BLOCK_ENTRY_FORM, MIN_DAYS_FROM_START, STANDARD_INTERVAL,
-                null
-        );
     }
 
     @Test
@@ -262,7 +249,7 @@ public class ProgramStageStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(UID, CODE);
         String updatedCode = "123_new_code_321";
         // updating program stage with updatedCode
-        int update = programStageStore.update(
+        int update = store.update(
                 UID, updatedCode, NAME, DISPLAY_NAME, date, date, null,
                 Boolean.FALSE, Boolean.TRUE, null, Boolean.FALSE, Boolean.TRUE,
                 Boolean.FALSE, FormType.DEFAULT, Boolean.FALSE, Boolean.TRUE,
@@ -295,7 +282,7 @@ public class ProgramStageStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(UID);
 
         // delete the program stage
-        int delete = programStageStore.delete(UID);
+        int delete = store.delete(UID);
 
         // check that store returns 1 on successful delete
         assertThat(delete).isEqualTo(1);
@@ -304,5 +291,65 @@ public class ProgramStageStoreTests extends AbsStoreTestCase {
 
         // check that program stage doesn't exist in database
         assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        store.insert(null, CODE, NAME, DISPLAY_NAME,
+                date, date, EXECUTION_DATE_LABEL, ALLOW_GENERATE_NEXT_VISIT,
+                VALID_COMPLETE_ONLY, REPORT_DATE_TO_USE, OPEN_AFTER_ENROLLMENT,
+                REPEATABLE, CAPTURE_COORDINATES, FORM_TYPE, DISPLAY_GENERATE_EVENT_BOX,
+                GENERATED_BY_ENROLMENT_DATE, AUTO_GENERATE_EVENT, SORT_ORDER,
+                HIDE_DUE_DATE, BLOCK_ENTRY_FORM, MIN_DAYS_FROM_START, STANDARD_INTERVAL,
+                PROGRAM);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_program() {
+        store.insert(UID, CODE, NAME, DISPLAY_NAME,
+                date, date, EXECUTION_DATE_LABEL, ALLOW_GENERATE_NEXT_VISIT,
+                VALID_COMPLETE_ONLY, REPORT_DATE_TO_USE, OPEN_AFTER_ENROLLMENT,
+                REPEATABLE, CAPTURE_COORDINATES, FORM_TYPE, DISPLAY_GENERATE_EVENT_BOX,
+                GENERATED_BY_ENROLMENT_DATE, AUTO_GENERATE_EVENT, SORT_ORDER,
+                HIDE_DUE_DATE, BLOCK_ENTRY_FORM, MIN_DAYS_FROM_START, STANDARD_INTERVAL,
+                null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_uid() {
+        store.update(null, CODE, NAME, DISPLAY_NAME,
+                date, date, EXECUTION_DATE_LABEL, ALLOW_GENERATE_NEXT_VISIT,
+                VALID_COMPLETE_ONLY, REPORT_DATE_TO_USE, OPEN_AFTER_ENROLLMENT,
+                REPEATABLE, CAPTURE_COORDINATES, FORM_TYPE, DISPLAY_GENERATE_EVENT_BOX,
+                GENERATED_BY_ENROLMENT_DATE, AUTO_GENERATE_EVENT, SORT_ORDER,
+                HIDE_DUE_DATE, BLOCK_ENTRY_FORM, MIN_DAYS_FROM_START, STANDARD_INTERVAL,
+                PROGRAM, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_program() {
+        store.update(UID, CODE, NAME, DISPLAY_NAME,
+                date, date, EXECUTION_DATE_LABEL, ALLOW_GENERATE_NEXT_VISIT,
+                VALID_COMPLETE_ONLY, REPORT_DATE_TO_USE, OPEN_AFTER_ENROLLMENT,
+                REPEATABLE, CAPTURE_COORDINATES, FORM_TYPE, DISPLAY_GENERATE_EVENT_BOX,
+                GENERATED_BY_ENROLMENT_DATE, AUTO_GENERATE_EVENT, SORT_ORDER,
+                HIDE_DUE_DATE, BLOCK_ENTRY_FORM, MIN_DAYS_FROM_START, STANDARD_INTERVAL,
+                null, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_whereUid() {
+        store.update(UID, CODE, NAME, DISPLAY_NAME,
+                date, date, EXECUTION_DATE_LABEL, ALLOW_GENERATE_NEXT_VISIT,
+                VALID_COMPLETE_ONLY, REPORT_DATE_TO_USE, OPEN_AFTER_ENROLLMENT,
+                REPEATABLE, CAPTURE_COORDINATES, FORM_TYPE, DISPLAY_GENERATE_EVENT_BOX,
+                GENERATED_BY_ENROLMENT_DATE, AUTO_GENERATE_EVENT, SORT_ORDER,
+                HIDE_DUE_DATE, BLOCK_ENTRY_FORM, MIN_DAYS_FROM_START, STANDARD_INTERVAL,
+                PROGRAM, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_null_uid() {
+        store.delete(null);
     }
 }

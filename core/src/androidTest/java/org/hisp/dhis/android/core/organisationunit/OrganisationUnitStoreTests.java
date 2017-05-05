@@ -33,7 +33,6 @@ import android.database.Cursor;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,8 +41,6 @@ import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
-import static org.hisp.dhis.android.core.user.UserCredentialsStoreTests.USER_UID;
-import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE;
 
 public class OrganisationUnitStoreTests extends AbsStoreTestCase {
     public static final String[] PROJECTION = {
@@ -75,9 +72,8 @@ public class OrganisationUnitStoreTests extends AbsStoreTestCase {
     private static final String PATH = "organisation_unit_path";
     private static final int LEVEL = 11;
 
-    private OrganisationUnitStore organisationUnitStore;
+    private OrganisationUnitStore store;
 
-    // timestamp
     private final Date date;
     private final String dateString;
 
@@ -90,12 +86,12 @@ public class OrganisationUnitStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter());
+        store = new OrganisationUnitStoreImpl(databaseAdapter());
     }
 
     @Test
     public void insert_shouldPersistRowInDatabase() {
-        long rowId = organisationUnitStore.insert(
+        long rowId = store.insert(
                 UID,
                 CODE,
                 NAME,
@@ -131,9 +127,34 @@ public class OrganisationUnitStoreTests extends AbsStoreTestCase {
     }
 
     @Test
+    public void update_row() {
+        database().insert(OrganisationUnitModel.TABLE, null, CreateOrganisationUnitUtils.createOrgUnit(1L,UID));
+        int updateReturn = store.update("updated", CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
+                DISPLAY_SHORT_NAME,
+                DESCRIPTION,
+                DISPLAY_DESCRIPTION, PATH, date, date, null, LEVEL, UID);
+
+        Cursor cursor = database().query(OrganisationUnitModel.TABLE, PROJECTION, null, null, null, null, null);
+
+        //TODO: fix this !
+        assertThatCursor(cursor).hasRow("updated", CODE, NAME, DISPLAY_NAME, dateString, dateString, SHORT_NAME,
+                DISPLAY_SHORT_NAME, DESCRIPTION,
+                DISPLAY_DESCRIPTION, PATH, dateString, dateString, null, LEVEL);
+        assertThat(updateReturn).isEqualTo(1);
+    }
+
+    @Test
+    public void update_notExisting() {
+        int updateReturn = store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME,
+                DESCRIPTION,
+                DISPLAY_DESCRIPTION, PATH, date, date, null, LEVEL, UID);
+        assertThat(updateReturn).isEqualTo(0);
+    }
+
+    @Test
     public void delete_shouldDeleteRow() {
         database().insert(OrganisationUnitModel.TABLE, null, CreateOrganisationUnitUtils.createOrgUnit(2L, UID));
-        int returnValue = organisationUnitStore.delete(UID);
+        int returnValue = store.delete(UID);
 
         Cursor cursor = database().query(OrganisationUnitModel.TABLE, PROJECTION, null, null, null, null, null);
 
@@ -149,10 +170,36 @@ public class OrganisationUnitStoreTests extends AbsStoreTestCase {
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnitOne);
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnitTwo);
 
-        int deleted = organisationUnitStore.delete();
+        int deleted = store.delete();
         Cursor cursor = database().query(OrganisationUnitModel.TABLE, null, null, null, null, null, null);
 
         assertThat(deleted).isEqualTo(2);
         assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
+                DISPLAY_DESCRIPTION, PATH, date, date, null, LEVEL
+        );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_uid() {
+        store.update(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
+                DISPLAY_DESCRIPTION, PATH, date, date, null, LEVEL, UID
+        );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_whereUid() {
+        store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
+                DISPLAY_DESCRIPTION, PATH, date, date, null, LEVEL, null
+        );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_null_uid() {
+        store.delete(null);
     }
 }

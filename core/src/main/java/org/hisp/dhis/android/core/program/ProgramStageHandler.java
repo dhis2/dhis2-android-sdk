@@ -48,26 +48,11 @@ public class ProgramStageHandler {
         if (programStages == null || programUid == null) {
             return;
         }
-
-        deleteOrPersistProgramStages(programUid, programStages);
-    }
-
-    /**
-     * Deletes or persists program stages. Also has a nested call to deleteOrPersistProgramStageSections
-     *
-     * @param programUid
-     * @param programStages
-     */
-    private void deleteOrPersistProgramStages(String programUid, List<ProgramStage> programStages) {
-        int size = programStages.size();
-
-        for (int i = 0; i < size; i++) {
+        for (int i = 0, size = programStages.size(); i < size; i++) {
             ProgramStage programStage = programStages.get(i);
-
             if (isDeleted(programStage)) {
                 programStageStore.delete(programStage.uid());
             } else {
-
                 int updatedRow = programStageStore.update(
                         programStage.uid(), programStage.code(), programStage.name(),
                         programStage.displayName(), programStage.created(), programStage.lastUpdated(),
@@ -81,7 +66,6 @@ public class ProgramStageHandler {
                         programStage.blockEntryForm(), programStage.minDaysFromStart(),
                         programStage.standardInterval(), programUid, programStage.uid()
                 );
-
                 if (updatedRow <= 0) {
                     programStageStore.insert(programStage.uid(), programStage.code(), programStage.name(),
                             programStage.displayName(), programStage.created(), programStage.lastUpdated(),
@@ -96,17 +80,12 @@ public class ProgramStageHandler {
                             programStage.standardInterval(), programUid);
                 }
             }
-
-            programStageSectionHandler.handleProgramStageSection(
-                    programStage.uid(), programStage.programStageSections()
-            );
-
+            programStageSectionHandler.handleProgramStageSection(programStage.uid(),
+                    programStage.programStageSections());
             // programStageDataElements has already been saved through saving of programStageSections, however,
             // only with uids. The full object is being persisted in the method call below (See api call).
-            programStageDataElementHandler.handleProgramStageDataElements(
-                    null, programStage.programStageDataElements()
-            );
-
+            programStageDataElementHandler.handleProgramStageDataElements(null,
+                    programStage.programStageDataElements());
         }
     }
 }

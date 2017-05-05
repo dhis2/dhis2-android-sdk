@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.data.api;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 import retrofit2.Converter;
 
@@ -36,29 +35,7 @@ public class FilterConverter implements Converter<Filter, String> {
 
     @Override
     public String convert(Filter filter) throws IOException {
-        StringBuilder builder = new StringBuilder();
-
-        builder.append(filter.field().name())
-                .append(':')
-                .append(filter.operator())
-                .append(':');
-
-        if (filter.values().size() == 1) {
-            //single value:
-            builder.append(filter.values().get(0));
-        } else {
-            //a list of values:
-            Iterator<String> valuesIterator = filter.values().iterator();
-            builder.append('[');
-            while (valuesIterator.hasNext()) {
-                builder.append(valuesIterator.next());
-                if (valuesIterator.hasNext()) {
-                    builder.append(',');
-                }
-            }
-            builder.append(']');
-        }
-
-        return builder.toString();
+        //the convert logic is actually in the Filter implementations.
+        return filter.generateString();
     }
 }

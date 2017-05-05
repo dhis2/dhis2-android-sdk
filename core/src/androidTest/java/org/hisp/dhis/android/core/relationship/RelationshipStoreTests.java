@@ -65,13 +65,13 @@ public class RelationshipStoreTests extends AbsStoreTestCase {
             RelationshipModel.Columns.RELATIONSHIP_TYPE
     };
 
-    private RelationshipStore relationshipStore;
+    private RelationshipStore store;
 
     @Override
     public void setUp() throws IOException {
         super.setUp();
 
-        relationshipStore = new RelationshipStoreImpl(databaseAdapter());
+        store = new RelationshipStoreImpl(databaseAdapter());
 
         // Insert RelationshipType in RelationshipType table, such that it can be used as foreign key:
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(
@@ -96,7 +96,7 @@ public class RelationshipStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistRelationshipInDatabase() {
-        long rowId = relationshipStore.insert(
+        long rowId = store.insert(
                 TRACKED_ENTITY_INSTANCE_A,
                 TRACKED_ENTITY_INSTANCE_B,
                 RELATIONSHIP_TYPE
@@ -118,7 +118,7 @@ public class RelationshipStoreTests extends AbsStoreTestCase {
         final String deferredRelationshipType = "deferredRelationshipType";
 
         database().beginTransaction();
-        long rowId = relationshipStore.insert(
+        long rowId = store.insert(
                 TRACKED_ENTITY_INSTANCE_A,
                 TRACKED_ENTITY_INSTANCE_B,
                 deferredRelationshipType
@@ -152,7 +152,7 @@ public class RelationshipStoreTests extends AbsStoreTestCase {
         );
         database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
 
-        long rowId = relationshipStore.insert(null, null, RELATIONSHIP_TYPE);
+        long rowId = store.insert(null, null, RELATIONSHIP_TYPE);
         Cursor cursor = database().query(RelationshipModel.TABLE, RELATIONSHIP_PROJECTION,
                 null, null, null, null, null, null);
 
@@ -162,7 +162,7 @@ public class RelationshipStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteRelationshipWhenDeletingRelationshipType() {
-        relationshipStore.insert(
+        store.insert(
                 TRACKED_ENTITY_INSTANCE_A,
                 TRACKED_ENTITY_INSTANCE_B,
                 RELATIONSHIP_TYPE
@@ -178,7 +178,7 @@ public class RelationshipStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteRelationshipWhenDeletingTeiA() {
-        relationshipStore.insert(
+        store.insert(
                 TRACKED_ENTITY_INSTANCE_A,
                 TRACKED_ENTITY_INSTANCE_B,
                 RELATIONSHIP_TYPE
@@ -194,7 +194,7 @@ public class RelationshipStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteRelationshipWhenDeletingTeiB() {
-        relationshipStore.insert(
+        store.insert(
                 TRACKED_ENTITY_INSTANCE_A,
                 TRACKED_ENTITY_INSTANCE_B,
                 RELATIONSHIP_TYPE
@@ -210,10 +210,15 @@ public class RelationshipStoreTests extends AbsStoreTestCase {
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistRelationshipWithInvalidRelationshipTypeForeignKey() {
-        relationshipStore.insert(
+        store.insert(
                 TRACKED_ENTITY_INSTANCE_A,
                 TRACKED_ENTITY_INSTANCE_B,
                 "wrong" //supply the wrong uid
         );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_relationshipType() {
+        store.insert(TRACKED_ENTITY_INSTANCE_A, TRACKED_ENTITY_INSTANCE_B, null);
     }
 }

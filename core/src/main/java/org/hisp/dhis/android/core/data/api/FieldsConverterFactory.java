@@ -39,9 +39,7 @@ public final class FieldsConverterFactory extends Converter.Factory {
         return new FieldsConverterFactory();
     }
 
-    private FieldsConverterFactory() {
-        // private constructor
-    }
+    private FieldsConverterFactory() {}
 
     @Override
     public Converter<?, String> stringConverter(Type typef,
@@ -51,7 +49,6 @@ public final class FieldsConverterFactory extends Converter.Factory {
                 return new FieldsConverter();
             }
         }
-
         return null;
     }
 }

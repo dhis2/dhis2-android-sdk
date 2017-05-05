@@ -102,7 +102,7 @@ public class ProgramCallTests {
     private ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
 
     @Mock
-    private ProgramRuleVariableModelStore programRuleVariableStore;
+    private ProgramRuleVariableStore programRuleVariableStore;
 
     @Mock
     private ProgramIndicatorStore programIndicatorStore;
@@ -275,9 +275,7 @@ public class ProgramCallTests {
                                 ProgramStageSection.uid, ProgramStageSection.code, ProgramStageSection.name,
                                 ProgramStageSection.displayName, ProgramStageSection.created,
                                 ProgramStageSection.lastUpdated, ProgramStageSection.sortOrder,
-                                ProgramStageSection.deleted, ProgramStageSection.programStageDataElements.with(
-                                        ProgramStageDataElement.uid
-                                ),
+                                ProgramStageSection.deleted, ProgramStageSection.dataElements.with(DataElement.uid),
                                 ProgramStageSection.programIndicators.with(
                                         ProgramIndicator.uid,
                                         ProgramIndicator.program.with(

@@ -33,6 +33,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings({
@@ -52,12 +53,13 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + "=? " +
             " WHERE " +
             UserOrganisationUnitLinkModel.Columns.USER + " = ? AND " +
-            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + " = ?;";
-
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + " = ? AND " +
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + " =?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + UserOrganisationUnitLinkModel.TABLE +
             " WHERE " + UserOrganisationUnitLinkModel.Columns.USER + " =? AND " +
-            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + " =?;";
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + " =? AND " +
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + " =?;";
 
     private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
@@ -72,47 +74,50 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
     }
 
     @Override
-    public long insert(@NonNull String user, @NonNull String organisationUnit,
-                       @NonNull String organisationUnitScope) {
-
-        insertStatement.clearBindings();
+    public long insert(@NonNull String user, @NonNull String organisationUnit, @NonNull String organisationUnitScope) {
+        nonNull(user);
+        nonNull(organisationUnit);
+        nonNull(organisationUnitScope);
 
         bindArguments(insertStatement, user, organisationUnit, organisationUnitScope);
 
         Long insert = databaseAdapter.executeInsert(UserOrganisationUnitLinkModel.TABLE, insertStatement);
         insertStatement.clearBindings();
-
         return insert;
     }
 
     @Override
     public int update(@NonNull String user, @NonNull String organisationUnit, @NonNull String organisationUnitScope,
-                      @NonNull String whereUserUid, @NonNull String whereOrganisationUnitUid) {
-        updateStatement.clearBindings();
+                      @NonNull String whereUserUid, @NonNull String whereOrganisationUnitUid,
+                      @NonNull String whereOrganisationUnitScope) {
+        nonNull(user);
+        nonNull(organisationUnit);
+        nonNull(organisationUnitScope);
+        nonNull(whereUserUid);
+        nonNull(whereOrganisationUnitUid);
+        nonNull(whereOrganisationUnitScope);
 
         bindArguments(updateStatement, user, organisationUnit, organisationUnitScope);
-
-        // bind the whereClause
         sqLiteBind(updateStatement, 4, whereUserUid);
         sqLiteBind(updateStatement, 5, whereOrganisationUnitUid);
+        sqLiteBind(updateStatement, 6, whereOrganisationUnitScope);
 
         int update = databaseAdapter.executeUpdateDelete(UserOrganisationUnitLinkModel.TABLE, updateStatement);
         updateStatement.clearBindings();
-
         return update;
     }
 
     @Override
-    public int delete(String userUid, String organisationUnitUid) {
-        deleteStatement.clearBindings();
+    public int delete(@NonNull String userUid, @NonNull String organisationUnitUid,
+                      @NonNull String organisationUnitScope) {
+        nonNull(userUid);
+        nonNull(organisationUnitUid);
+        nonNull(organisationUnitScope);
 
-        // bind the whereClause
-        sqLiteBind(deleteStatement, 1, userUid);
-        sqLiteBind(deleteStatement, 2, organisationUnitUid);
+        bindArguments(deleteStatement, userUid, organisationUnitUid, organisationUnitScope);
 
         int delete = databaseAdapter.executeUpdateDelete(UserOrganisationUnitLinkModel.TABLE, deleteStatement);
         deleteStatement.clearBindings();
-
         return delete;
     }
 

@@ -74,7 +74,7 @@ public class UserCredentialsStoreTests extends AbsStoreTestCase {
             UserCredentialsModel.Columns.USER,
     };
 
-    private UserCredentialsStore userCredentialsStore;
+    private UserCredentialsStore store;
 
     public final Date date;
     public final String dateString;
@@ -88,7 +88,7 @@ public class UserCredentialsStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        userCredentialsStore = new UserCredentialsStoreImpl(databaseAdapter());
+        store = new UserCredentialsStoreImpl(databaseAdapter());
 
         // row which will be referenced
         ContentValues userRow = UserStoreTests.create(1L, USER_UID);
@@ -97,7 +97,7 @@ public class UserCredentialsStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistRowInDatabase() {
-        long rowId = userCredentialsStore.insert(
+        long rowId = store.insert(
                 UID,
                 USER_CREDENTIALS_CODE,
                 USER_CREDENTIALS_NAME,
@@ -128,7 +128,7 @@ public class UserCredentialsStoreTests extends AbsStoreTestCase {
 
         database().beginTransaction();
 
-        long rowId = userCredentialsStore.insert(
+        long rowId = store.insert(
                 UID,
                 USER_CREDENTIALS_CODE,
                 USER_CREDENTIALS_NAME,
@@ -160,7 +160,7 @@ public class UserCredentialsStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistNullableRowInDatabase() {
-        long rowId = userCredentialsStore.insert(
+        long rowId = store.insert(
                 UID,
                 null,
                 null,
@@ -186,7 +186,7 @@ public class UserCredentialsStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteUserCredentialsWhenDeletingUserForeignKey() {
-        userCredentialsStore.insert(
+        store.insert(
                 UID,
                 USER_CREDENTIALS_CODE,
                 USER_CREDENTIALS_NAME,
@@ -226,7 +226,7 @@ public class UserCredentialsStoreTests extends AbsStoreTestCase {
 
         Date date = new Date();
 
-        int updatedRow = userCredentialsStore.update(
+        int updatedRow = store.update(
                 UID, CODE, "new name", DISPLAY_NAME, date, date, USER_CREDENTIALS_USERNAME, USER_UID, UID
         );
 
@@ -262,7 +262,7 @@ public class UserCredentialsStoreTests extends AbsStoreTestCase {
         // checking that userCredentials was successfully inserted into database
         assertThatCursor(cursor).hasRow(ID, UID, NAME, USER_UID);
 
-        int deletedRow = userCredentialsStore.delete(UID);
+        int deletedRow = store.delete(UID);
 
         cursor = database().query(UserCredentialsModel.TABLE, projection, null, null, null, null, null);
 
@@ -273,7 +273,7 @@ public class UserCredentialsStoreTests extends AbsStoreTestCase {
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistUserCredentialsWithInvalidUserForeignKey() {
-        userCredentialsStore.insert(
+        store.insert(
                 UID,
                 USER_CREDENTIALS_CODE,
                 USER_CREDENTIALS_NAME,
@@ -288,11 +288,42 @@ public class UserCredentialsStoreTests extends AbsStoreTestCase {
         ContentValues userCredentials = CreateUserCredentialsUtils.create(ID, UID, USER_UID);
         database().insert(UserCredentialsModel.TABLE, null, userCredentials);
 
-        int deleted = userCredentialsStore.delete();
+        int deleted = store.delete();
 
         Cursor cursor = database().query(UserCredentialsModel.TABLE, null, null, null, null, null, null);
         assertThat(deleted).isEqualTo(1);
         assertThatCursor(cursor).isExhausted();
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid_arg() {
+        store.insert(null, USER_CREDENTIALS_CODE, USER_CREDENTIALS_NAME, USER_CREDENTIALS_DISPLAY_NAME,
+                date, date, USER_CREDENTIALS_USERNAME, USER_UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_user_uid_arg() {
+        store.insert(UID, USER_CREDENTIALS_CODE, USER_CREDENTIALS_NAME, USER_CREDENTIALS_DISPLAY_NAME,
+                date, date, USER_CREDENTIALS_USERNAME, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_uid_arg() {
+        store.update(null, CODE, "new name", DISPLAY_NAME, date, date, USER_CREDENTIALS_USERNAME, USER_UID, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_User_uid_arg() {
+        store.update(UID, CODE, "new name", DISPLAY_NAME, date, date, USER_CREDENTIALS_USERNAME, null, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_where_arg() {
+        store.update(UID, CODE, "new name", DISPLAY_NAME, date, date, USER_CREDENTIALS_USERNAME, USER_UID, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_null_uid_arg() {
+        store.delete(null);
+    }
 }

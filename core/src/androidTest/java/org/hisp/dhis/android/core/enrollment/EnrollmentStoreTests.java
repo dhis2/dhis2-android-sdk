@@ -77,7 +77,7 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
             EnrollmentModel.Columns.STATE
     };
 
-    private EnrollmentStore enrollmentStore;
+    private EnrollmentStore store;
 
     private static final String UID = "test_uid";
     private static final String ORGANISATION_UNIT = "test_orgUnit";
@@ -108,7 +108,7 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.enrollmentStore = new EnrollmentStoreImpl(databaseAdapter());
+        this.store = new EnrollmentStoreImpl(databaseAdapter());
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
@@ -127,7 +127,7 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistInDatabase() {
-        long rowId = enrollmentStore.insert(
+        long rowId = store.insert(
                 UID,
                 date,
                 date,
@@ -170,7 +170,7 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
         final String deferredTrackedEntityInstance = "deferredTrackedEntityInstance";
 
         database().beginTransaction();
-        long rowId = enrollmentStore.insert(UID, date, date,
+        long rowId = store.insert(UID, date, date,
                 deferredOrganisationUnit,
                 deferredProgram,
                 date, date, FOLLOW_UP, ENROLLMENT_STATUS,
@@ -201,7 +201,7 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistNullableInDatabase() {
-        long rowId = enrollmentStore.insert(UID, null, null, ORGANISATION_UNIT, PROGRAM, null, null, null, null,
+        long rowId = store.insert(UID, null, null, ORGANISATION_UNIT, PROGRAM, null, null, null, null,
                 TRACKED_ENTITY_INSTANCE, null, null, null);
         Cursor cursor = database().query(TABLE, PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
@@ -211,7 +211,7 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteEnrollmentWhenDeletingOrgUnit() {
-        enrollmentStore.insert(
+        store.insert(
                 UID,
                 date,
                 date,
@@ -237,7 +237,7 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
     @Test
     public void delete_shouldDeleteEnrollmentWhenDeletingProgram() {
 
-        enrollmentStore.insert(
+        store.insert(
                 UID,
                 date,
                 date,
@@ -262,7 +262,7 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteEnrollmentWhenDeletingTrackedEntityInstance() {
-        enrollmentStore.insert(
+        store.insert(
                 UID,
                 date,
                 date,
@@ -287,7 +287,7 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistEnrollWithInvalidOrgUnitForeignKey() {
-        enrollmentStore.insert(
+        store.insert(
                 UID,
                 date,
                 date,
@@ -306,7 +306,7 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistEnrollWithInvalidProgramForeignKey() {
-        enrollmentStore.insert(
+        store.insert(
                 UID,
                 date,
                 date,
@@ -325,7 +325,7 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistEnrollWithInvalidTrackedEntityInstanceForeignKey() {
-        enrollmentStore.insert(
+        store.insert(
                 UID,
                 date,
                 date,
@@ -344,8 +344,31 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
 
     @Test
     public void close_shouldNotCloseDatabase() {
-        enrollmentStore.close();
+        store.close();
         assertThat(database().isOpen()).isTrue();
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        store.insert(null, date, date, ORGANISATION_UNIT, PROGRAM, date, date, FOLLOW_UP, ENROLLMENT_STATUS,
+                TRACKED_ENTITY_INSTANCE, LATITUDE, LONGITUDE, STATE);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_organisationUnit() {
+        store.insert(UID, date, date, null, PROGRAM, date, date, FOLLOW_UP, ENROLLMENT_STATUS,
+                TRACKED_ENTITY_INSTANCE, LATITUDE, LONGITUDE, STATE);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_program() {
+        store.insert(UID, date, date, ORGANISATION_UNIT, null, date, date, FOLLOW_UP, ENROLLMENT_STATUS,
+                TRACKED_ENTITY_INSTANCE, LATITUDE, LONGITUDE, STATE);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_trackedEntityInstance() {
+        store.insert(UID, date, date, ORGANISATION_UNIT, PROGRAM, date, date, FOLLOW_UP, ENROLLMENT_STATUS,
+                null, LATITUDE, LONGITUDE, STATE);
+    }
 }

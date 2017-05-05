@@ -88,7 +88,7 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
     private static final String PROGRAM = "test_program_uid";
     private static final Integer SORT_ORDER = 99;
     private static final String OPTION_SET = "test_option_set_uid";
-    private ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
+    private ProgramTrackedEntityAttributeStore store;
 
     private final Date date;
     private final String dateString;
@@ -102,7 +102,7 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        programTrackedEntityAttributeStore = new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter());
+        store = new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter());
         // insert test OptionSet to comply with foreign key constraint of TrackedEntityAttribute
         ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null, null);
         database().insert(ProgramModel.TABLE, null, program);
@@ -116,7 +116,7 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistRowInDatabase() {
-        long rowId = programTrackedEntityAttributeStore.insert(
+        long rowId = store.insert(
                 UID,
                 CODE,
                 NAME,
@@ -164,7 +164,7 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
         final String deferredProgram = "deferredProgram";
 
         database().beginTransaction();
-        long rowId = programTrackedEntityAttributeStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date,
+        long rowId = store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date,
                 SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, MANDATORY,
                 deferredTrackedEntityAttribute,
                 ALLOW_FUTURE_DATES, DISPLAY_IN_LIST,
@@ -192,7 +192,7 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
 
     @Test(expected = SQLiteConstraintException.class)
     public void insertWithoutTrackedEntityAttributeForeignKey_shouldThrowException() {
-        programTrackedEntityAttributeStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
+        store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
                 DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, MANDATORY,
                 "wrong",
                 ALLOW_FUTURE_DATES, DISPLAY_IN_LIST, PROGRAM, SORT_ORDER
@@ -201,7 +201,7 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
 
     @Test(expected = SQLiteConstraintException.class)
     public void insertWithoutProgramForeignKey_shouldThrowException() {
-        programTrackedEntityAttributeStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
+        store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
                 DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, MANDATORY, TRACKED_ENTITY_ATTRIBUTE,
                 ALLOW_FUTURE_DATES, DISPLAY_IN_LIST,
                 "wrong", SORT_ORDER
@@ -286,7 +286,7 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
 
         String updatedDisplayShortName = "updated_display_short_name";
 
-        int update = programTrackedEntityAttributeStore.update(
+        int update = store.update(
                 UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, updatedDisplayShortName,
                 DESCRIPTION, DISPLAY_DESCRIPTION, MANDATORY, TRACKED_ENTITY_ATTRIBUTE,
                 ALLOW_FUTURE_DATES, DISPLAY_IN_LIST, PROGRAM, SORT_ORDER, UID
@@ -316,7 +316,7 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(UID);
 
         // delete the program tracked entity attribute
-        int delete = programTrackedEntityAttributeStore.delete(UID);
+        int delete = store.delete(UID);
 
         // check that store returns 1 on successful delete
         assertThat(delete).isEqualTo(1);
@@ -329,4 +329,58 @@ public class ProgramTrackedEntityAttributeStoreTests extends AbsStoreTestCase {
     }
 
     // ToDo: consider introducing conflict resolution strategy
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
+                DISPLAY_DESCRIPTION, MANDATORY, TRACKED_ENTITY_ATTRIBUTE, ALLOW_FUTURE_DATES, DISPLAY_IN_LIST,
+                PROGRAM, SORT_ORDER);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_trackedEnityAttribute() {
+        store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
+                DISPLAY_DESCRIPTION, MANDATORY, null, ALLOW_FUTURE_DATES, DISPLAY_IN_LIST,
+                PROGRAM, SORT_ORDER);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_program() {
+        store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
+                DISPLAY_DESCRIPTION, MANDATORY, TRACKED_ENTITY_ATTRIBUTE, ALLOW_FUTURE_DATES, DISPLAY_IN_LIST,
+                null, SORT_ORDER);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_uid() {
+        store.update(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
+                DISPLAY_DESCRIPTION, MANDATORY, TRACKED_ENTITY_ATTRIBUTE, ALLOW_FUTURE_DATES, DISPLAY_IN_LIST,
+                PROGRAM, SORT_ORDER, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_trackedEntity() {
+        store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
+                DISPLAY_DESCRIPTION, MANDATORY, null, ALLOW_FUTURE_DATES, DISPLAY_IN_LIST,
+                PROGRAM, SORT_ORDER, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_program() {
+        store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
+                DISPLAY_DESCRIPTION, MANDATORY, TRACKED_ENTITY_ATTRIBUTE, ALLOW_FUTURE_DATES, DISPLAY_IN_LIST,
+                null, SORT_ORDER, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_whereUid() {
+        store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
+                DISPLAY_DESCRIPTION, MANDATORY, TRACKED_ENTITY_ATTRIBUTE, ALLOW_FUTURE_DATES, DISPLAY_IN_LIST,
+                PROGRAM, SORT_ORDER, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_null_uid() {
+        store.delete(null);
+    }
 }

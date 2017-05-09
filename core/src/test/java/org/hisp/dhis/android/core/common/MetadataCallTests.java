@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.common;
 
+import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;

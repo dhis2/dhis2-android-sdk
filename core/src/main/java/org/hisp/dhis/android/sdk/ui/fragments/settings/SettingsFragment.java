@@ -31,11 +31,13 @@ package org.hisp.dhis.android.sdk.ui.fragments.settings;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.Preference;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -57,10 +59,15 @@ import org.hisp.dhis.android.sdk.controllers.DhisService;
 import org.hisp.dhis.android.sdk.controllers.PeriodicSynchronizerController;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.events.UiEvent;
+import org.hisp.dhis.android.sdk.export.ExportData;
 import org.hisp.dhis.android.sdk.network.Session;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis.android.sdk.persistence.preferences.AppPreferences;
+import org.hisp.dhis.android.sdk.ui.views.FontButton;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
+
+import java.io.IOException;
 
 /**
  * Basic settings Fragment giving users options to change update frequency to the server,
@@ -123,7 +130,29 @@ public class SettingsFragment extends Fragment
             //setSummaryFromLastSync in syncTextView
             //syncTextView.setText(DhisController.getLastSynchronizationSummary());
         }
+        FontButton exportDataButton = (FontButton) view.findViewById(R.id.settings_export_data);
+        exportDataButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onExportDataClick();
+            }
+        });
     }
+
+
+    public void onExportDataClick() {
+        ExportData exportData = new ExportData();
+        Intent emailIntent = null;
+        try {
+            emailIntent = exportData.dumpAndSendToAIntent(getActivity());
+        } catch (IOException e) {
+            Toast.makeText(getContext(), R.string.error_exporting_data, Toast.LENGTH_LONG).show();
+        }
+        if (emailIntent != null) {
+            startActivity(emailIntent);
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         if (menuItem.getItemId() == android.R.id.home) {

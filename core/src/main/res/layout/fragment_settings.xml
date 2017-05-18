@@ -95,6 +95,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/sync_settings_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/settings_sync_wrap_layout">
@@ -106,7 +107,7 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textSize="@dimen/medium_text_size"
                     android:layout_gravity="center_horizontal"/>
-                </LinearLayout>
+            </LinearLayout>
 
 
             <org.hisp.dhis.android.sdk.ui.views.FontButton
@@ -121,6 +122,52 @@
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="6dp"
                 app:font="@string/medium_font_name" />
+            <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="6dp"
+            android:layout_above="@+id/settings_logout_button"
+            android:layout_below="@id/sync_settings_container"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical" >
+
+                <org.hisp.dhis.android.sdk.ui.views.FontTextView
+                android:id="@+id/developer_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:text="@string/developers_settings"
+                android:textColor="@color/darker_grey"
+                android:textSize="@dimen/medium_text_size"
+                app:font="@string/light_font_name" />
+
+
+                <org.hisp.dhis.android.sdk.ui.views.FontCheckBox
+                    android:id="@+id/checkbox_developers_options"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/developer_title"
+                    android:layout_marginBottom="6dp"
+                    android:padding="6dp"
+                    android:text="@string/developer_option_title"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/medium_text_size"
+                    app:font="@string/medium_font_name" />
+            <org.hisp.dhis.android.sdk.ui.views.FontButton
+                android:id="@+id/settings_export_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="6dp"
+                android:background="@drawable/button_blue_selector"
+                android:visibility="gone"
+                android:padding="6dp"
+                android:text="@string/export_data_name"
+                android:textColor="@color/white"
+                android:textSize="@dimen/medium_text_size"
+                app:font="@string/medium_font_name" />
+
+        </LinearLayout>
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>

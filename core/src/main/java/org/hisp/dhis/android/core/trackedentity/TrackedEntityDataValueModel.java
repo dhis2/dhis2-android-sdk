@@ -44,7 +44,6 @@ import java.util.Date;
 
 @AutoValue
 public abstract class TrackedEntityDataValueModel extends BaseModel {
-
     public static final String TABLE = "TrackedEntityDataValue";
 
     public static class Columns extends BaseModel.Columns {
@@ -102,7 +101,6 @@ public abstract class TrackedEntityDataValueModel extends BaseModel {
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
-
         public abstract Builder created(@Nullable Date created);
 
         public abstract Builder lastUpdated(@Nullable Date lastUpdated);

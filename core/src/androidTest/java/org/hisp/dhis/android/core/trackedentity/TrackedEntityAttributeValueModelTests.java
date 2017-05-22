@@ -32,9 +32,14 @@ import android.content.ContentValues;
 import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel.Columns;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -49,24 +54,37 @@ public class TrackedEntityAttributeValueModelTests {
     private static final String TRACKED_ENTITY_ATTRIBUTE = "TestAttribute";
     private static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
 
+    private Date date;
+    private String dateString;
+
+    @Before
+    public void setup() {
+        date = new Date();
+        dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
+    }
+
     @Test
     public void create_shouldConvertToModel() {
-
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 TrackedEntityAttributeValueModel.Columns.ID,
-                TrackedEntityAttributeValueModel.Columns.STATE,
+                TrackedEntityAttributeValueModel.Columns.CREATED,
+                TrackedEntityAttributeValueModel.Columns.LAST_UPDATED,
                 TrackedEntityAttributeValueModel.Columns.VALUE,
                 TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE,
                 TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE
         });
-        cursor.addRow(new Object[]{ID, STATE, VALUE, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE});
+
+        cursor.addRow(new Object[]{
+                ID, dateString, dateString, VALUE, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE
+        });
         cursor.moveToFirst();
 
         TrackedEntityAttributeValueModel model = TrackedEntityAttributeValueModel.create(cursor);
         cursor.close();
 
         assertThat(model.id()).isEqualTo(ID);
-        assertThat(model.state()).isEqualTo(STATE);
+        assertThat(model.created()).isEqualTo(date);
+        assertThat(model.lastUpdated()).isEqualTo(date);
         assertThat(model.value()).isEqualTo(VALUE);
         assertThat(model.trackedEntityAttribute()).isEqualTo(TRACKED_ENTITY_ATTRIBUTE);
         assertThat(model.trackedEntityInstance()).isEqualTo(TRACKED_ENTITY_INSTANCE);
@@ -76,20 +94,20 @@ public class TrackedEntityAttributeValueModelTests {
     public void toContentValues_shouldConvertToContentValues() {
         TrackedEntityAttributeValueModel model = TrackedEntityAttributeValueModel.builder()
                 .id(ID)
-                .state(STATE)
+                .created(date)
+                .lastUpdated(date)
                 .trackedEntityAttribute(TRACKED_ENTITY_ATTRIBUTE)
                 .trackedEntityInstance(TRACKED_ENTITY_INSTANCE)
                 .value(VALUE)
                 .build();
         ContentValues contentValues = model.toContentValues();
 
-        assertThat(contentValues.getAsLong(TrackedEntityAttributeValueModel.Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(TrackedEntityAttributeValueModel.Columns.STATE)).isEqualTo(STATE.name());
-        assertThat(contentValues.getAsString(TrackedEntityAttributeValueModel.Columns.VALUE)).isEqualTo(VALUE);
-        assertThat(contentValues.getAsString(TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE))
-                .isEqualTo(TRACKED_ENTITY_ATTRIBUTE);
-        assertThat(contentValues.getAsString(TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE))
-                .isEqualTo(TRACKED_ENTITY_INSTANCE);
+        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(Columns.VALUE)).isEqualTo(VALUE);
+        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(Columns.TRACKED_ENTITY_ATTRIBUTE)).isEqualTo(TRACKED_ENTITY_ATTRIBUTE);
+        assertThat(contentValues.getAsString(Columns.TRACKED_ENTITY_INSTANCE)).isEqualTo(TRACKED_ENTITY_INSTANCE);
     }
 }
 

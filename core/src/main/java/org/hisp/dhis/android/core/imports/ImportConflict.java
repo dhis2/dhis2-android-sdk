@@ -4,9 +4,11 @@ import android.support.annotation.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
+@JsonRootName("conflicts")
 public abstract class ImportConflict {
     private static final String OBJECT = "object";
     private static final String VALUE = "value";

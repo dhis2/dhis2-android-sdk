@@ -57,8 +57,10 @@ public class TrackedEntityInstanceHandlerTest {
         // verify that tracked entity instance store is never called
         verify(trackedEntityInstanceStore, never()).delete(anyString());
         verify(trackedEntityInstanceStore, never()).update(anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(),
                 anyString(), anyString(), any(State.class), anyString());
         verify(trackedEntityInstanceStore, never()).insert(anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(),
                 anyString(), anyString(), any(State.class));
 
         verify(enrollmentHandler, never()).handle(any(Enrollment.class));
@@ -74,8 +76,10 @@ public class TrackedEntityInstanceHandlerTest {
         verify(trackedEntityInstanceStore, times(1)).delete(anyString());
 
         verify(trackedEntityInstanceStore, never()).update(anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(),
                 anyString(), anyString(), any(State.class), anyString());
         verify(trackedEntityInstanceStore, never()).insert(anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(),
                 anyString(), anyString(), any(State.class));
 
         // verify that enrollment handler is never called
@@ -85,6 +89,7 @@ public class TrackedEntityInstanceHandlerTest {
     @Test
     public void update_shouldUpdateTrackedEntityInstance() throws Exception {
         when(trackedEntityInstanceStore.update(anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(),
                 anyString(), anyString(), any(State.class), anyString())).thenReturn(1);
 
         trackedEntityInstanceHandler.handle(trackedEntityInstance);
@@ -92,10 +97,12 @@ public class TrackedEntityInstanceHandlerTest {
 
         // verify that tracked entity instance store is only called with update
         verify(trackedEntityInstanceStore, times(1)).update(anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(),
                 anyString(), anyString(), any(State.class), anyString());
 
 
         verify(trackedEntityInstanceStore, never()).insert(anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(),
                 anyString(), anyString(), any(State.class));
         verify(trackedEntityInstanceStore, never()).delete(anyString());
 
@@ -107,17 +114,20 @@ public class TrackedEntityInstanceHandlerTest {
     @Test
     public void insert_shouldInsertTrackedEntityInstance() throws Exception {
         when(trackedEntityInstanceStore.update(anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(),
                 anyString(), anyString(), any(State.class), anyString())).thenReturn(0);
 
         trackedEntityInstanceHandler.handle(trackedEntityInstance);
 
         // verify that tracked entity instance store is called with insert
         verify(trackedEntityInstanceStore, times(1)).insert(anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(),
                 anyString(), anyString(), any(State.class));
 
         // update is also invoked since we're trying to update before we insert
 
         verify(trackedEntityInstanceStore, times(1)).update(anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(),
                 anyString(), anyString(), any(State.class), anyString());
 
         // check that delete is never invoked

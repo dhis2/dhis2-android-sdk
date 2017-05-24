@@ -69,6 +69,8 @@ public class EventStoreTests extends AbsStoreTestCase {
             Columns.ENROLLMENT_UID,
             Columns.CREATED, // created
             Columns.LAST_UPDATED, // lastUpdated
+            Columns.CREATED_AT_CLIENT,
+            Columns.LAST_UPDATED_AT_CLIENT,
             Columns.STATUS,
             Columns.LATITUDE,
             Columns.LONGITUDE,
@@ -89,6 +91,9 @@ public class EventStoreTests extends AbsStoreTestCase {
     private static final String PROGRAM_STAGE = "test_programStage";
     private static final String ORGANISATION_UNIT = "test_orgUnit";
     private static final State STATE = State.TO_POST;
+    private static final String CREATED_AT_CLIENT = "2016-04-28T23:44:28.126";
+    private static final String LAST_UPDATED_AT_CLIENT = "2016-04-28T23:44:28.126";
+
     //foreign keys to program:
     private static final long TRACKED_ENTITY_ID = 1L;
     private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
@@ -144,6 +149,8 @@ public class EventStoreTests extends AbsStoreTestCase {
                 ENROLLMENT_UID,
                 date, // created
                 date, // lastUpdated
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 STATUS,
                 LATITUDE,
                 LONGITUDE,
@@ -163,6 +170,8 @@ public class EventStoreTests extends AbsStoreTestCase {
                 ENROLLMENT_UID,
                 dateString, // created
                 dateString, // lastUpdated
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 STATUS,
                 LATITUDE,
                 LONGITUDE,
@@ -188,6 +197,8 @@ public class EventStoreTests extends AbsStoreTestCase {
                 ENROLLMENT_UID,
                 date, // created
                 date, // lastUpdated
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 STATUS,
                 LATITUDE,
                 LONGITUDE,
@@ -218,6 +229,8 @@ public class EventStoreTests extends AbsStoreTestCase {
                 ENROLLMENT_UID,
                 dateString, // created
                 dateString, // lastUpdated
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 STATUS,
                 LATITUDE,
                 LONGITUDE,
@@ -233,11 +246,11 @@ public class EventStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistEventNullableInDatabase() {
-        long rowId = eventStore.insert(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, PROGRAM,
+        long rowId = eventStore.insert(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, null, null, PROGRAM,
                 PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null);
         Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor).hasRow(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, PROGRAM,
+        assertThatCursor(cursor).hasRow(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, null, null, PROGRAM,
                 PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null).isExhausted();
     }
 
@@ -248,6 +261,8 @@ public class EventStoreTests extends AbsStoreTestCase {
                 ENROLLMENT_UID,
                 date,
                 date,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 STATUS,
                 LATITUDE,
                 LONGITUDE,
@@ -272,6 +287,8 @@ public class EventStoreTests extends AbsStoreTestCase {
                 ENROLLMENT_UID,
                 date,
                 date,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 STATUS,
                 LATITUDE,
                 LONGITUDE,
@@ -296,6 +313,8 @@ public class EventStoreTests extends AbsStoreTestCase {
                 ENROLLMENT_UID,
                 date,
                 date,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 STATUS,
                 LATITUDE,
                 LONGITUDE,
@@ -333,8 +352,8 @@ public class EventStoreTests extends AbsStoreTestCase {
 
         Date updatedDate = new Date();
 
-        eventStore.update(EVENT_UID, null, null, null, null, null, null, PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT,
-                updatedDate, null, null, null, EVENT_UID);
+        eventStore.update(EVENT_UID, null, null, null, null, null, null, null, null,
+                PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT, updatedDate, null, null, null, EVENT_UID);
 
         cursor = database().query(EventModel.TABLE, projection, null, null, null, null, null);
 
@@ -374,6 +393,8 @@ public class EventStoreTests extends AbsStoreTestCase {
                 ENROLLMENT_UID,
                 date,
                 date,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 STATUS,
                 LATITUDE,
                 LONGITUDE,
@@ -394,6 +415,8 @@ public class EventStoreTests extends AbsStoreTestCase {
                 ENROLLMENT_UID,
                 date,
                 date,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 STATUS,
                 LATITUDE,
                 LONGITUDE,
@@ -414,6 +437,8 @@ public class EventStoreTests extends AbsStoreTestCase {
                 ENROLLMENT_UID,
                 date,
                 date,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 STATUS,
                 LATITUDE,
                 LONGITUDE,
@@ -434,6 +459,8 @@ public class EventStoreTests extends AbsStoreTestCase {
                 WRONG_UID, // supply wrong uid
                 date,
                 date,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 STATUS,
                 LATITUDE,
                 LONGITUDE,

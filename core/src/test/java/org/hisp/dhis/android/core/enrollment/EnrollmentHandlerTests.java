@@ -54,13 +54,13 @@ public class EnrollmentHandlerTests {
         // verify that store or event handler is never called
         verify(enrollmentStore, never()).delete(anyString());
         verify(enrollmentStore, never()).update(
-                anyString(), any(Date.class), any(Date.class), anyString(),
+                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class), anyBoolean(),
                 any(EnrollmentStatus.class), anyString(), anyString(),
                 anyString(), any(State.class), anyString()
         );
         verify(enrollmentStore, never()).insert(
-                anyString(), any(Date.class), any(Date.class), anyString(),
+                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class), anyBoolean(),
                 any(EnrollmentStatus.class), anyString(), anyString(),
                 anyString(), any(State.class)
@@ -80,13 +80,13 @@ public class EnrollmentHandlerTests {
 
 
         verify(enrollmentStore, never()).update(
-                anyString(), any(Date.class), any(Date.class), anyString(),
+                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class), anyBoolean(),
                 any(EnrollmentStatus.class), anyString(), anyString(),
                 anyString(), any(State.class), anyString()
         );
         verify(enrollmentStore, never()).insert(
-                anyString(), any(Date.class), any(Date.class), anyString(),
+                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class), anyBoolean(),
                 any(EnrollmentStatus.class), anyString(), anyString(),
                 anyString(), any(State.class)
@@ -98,8 +98,8 @@ public class EnrollmentHandlerTests {
 
     @Test
     public void update_shouldUpdateEnrollment() throws Exception {
-        when(enrollmentStore.update(anyString(), any(Date.class), any(Date.class), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyBoolean(),
+        when(enrollmentStore.update(anyString(), any(Date.class), any(Date.class), anyString(), anyString(),
+                anyString(), anyString(), any(Date.class), any(Date.class), anyBoolean(),
                 any(EnrollmentStatus.class), anyString(), anyString(),
                 anyString(), any(State.class), anyString())
         ).thenReturn(1);
@@ -108,7 +108,7 @@ public class EnrollmentHandlerTests {
 
         // verify that enrollment store is only invoked with update
         verify(enrollmentStore, times(1)).update(
-                anyString(), any(Date.class), any(Date.class), anyString(),
+                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class), anyBoolean(),
                 any(EnrollmentStatus.class), anyString(), anyString(),
                 anyString(), any(State.class), anyString()
@@ -117,7 +117,7 @@ public class EnrollmentHandlerTests {
         verify(enrollmentStore, never()).delete(anyString());
 
         verify(enrollmentStore, never()).insert(
-                anyString(), any(Date.class), any(Date.class), anyString(),
+                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class), anyBoolean(),
                 any(EnrollmentStatus.class), anyString(), anyString(),
                 anyString(), any(State.class)
@@ -129,8 +129,8 @@ public class EnrollmentHandlerTests {
 
     @Test
     public void insert_shouldInsertEnrollment() throws Exception {
-        when(enrollmentStore.update(anyString(), any(Date.class), any(Date.class), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyBoolean(),
+        when(enrollmentStore.update(anyString(), any(Date.class), any(Date.class), anyString(), anyString(),
+                anyString(), anyString(), any(Date.class), any(Date.class), anyBoolean(),
                 any(EnrollmentStatus.class), anyString(), anyString(),
                 anyString(), any(State.class), anyString())
         ).thenReturn(0);
@@ -139,7 +139,7 @@ public class EnrollmentHandlerTests {
 
         // verify that enrollment store is only invoked with insert
         verify(enrollmentStore, times(1)).insert(
-                anyString(), any(Date.class), any(Date.class), anyString(),
+                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class), anyBoolean(),
                 any(EnrollmentStatus.class), anyString(), anyString(),
                 anyString(), any(State.class)
@@ -147,7 +147,7 @@ public class EnrollmentHandlerTests {
 
         // verify that update is also invoked since we're trying to update before we insert
         verify(enrollmentStore, times(1)).update(
-                anyString(), any(Date.class), any(Date.class), anyString(),
+                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class), anyBoolean(),
                 any(EnrollmentStatus.class), anyString(), anyString(),
                 anyString(), any(State.class), anyString()

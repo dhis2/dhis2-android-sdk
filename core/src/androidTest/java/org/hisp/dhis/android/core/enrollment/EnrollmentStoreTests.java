@@ -65,6 +65,8 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
             EnrollmentModel.Columns.UID,
             EnrollmentModel.Columns.CREATED,
             EnrollmentModel.Columns.LAST_UPDATED,
+            EnrollmentModel.Columns.CREATED_AT_CLIENT,
+            EnrollmentModel.Columns.LAST_UPDATED_AT_CLIENT,
             EnrollmentModel.Columns.ORGANISATION_UNIT,
             EnrollmentModel.Columns.PROGRAM,
             EnrollmentModel.Columns.DATE_OF_ENROLLMENT,
@@ -87,6 +89,8 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
     private static final String TRACKED_ENTITY_INSTANCE = "test_trackedEntityInstance";
     private static final String LATITUDE = "10.832152";
     private static final String LONGITUDE = "59.345231";
+    private static final String CREATED_AT_CLIENT = "2016-04-28T23:44:28.126";
+    private static final String LAST_UPDATED_AT_CLIENT = "2016-04-28T23:44:28.126";
     private static final State STATE = State.TO_UPDATE;
 
     // foreign keys to program:
@@ -130,6 +134,8 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
                 UID,
                 date,
                 date,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 ORGANISATION_UNIT,
                 PROGRAM,
                 date,
@@ -149,6 +155,8 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
                 UID,
                 dateString,
                 dateString,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 ORGANISATION_UNIT,
                 PROGRAM,
                 dateString,
@@ -169,12 +177,22 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
         final String deferredTrackedEntityInstance = "deferredTrackedEntityInstance";
 
         database().beginTransaction();
-        long rowId = enrollmentStore.insert(UID, date, date,
+        long rowId = enrollmentStore.insert(
+                UID,
+                date,
+                date,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 deferredOrganisationUnit,
                 deferredProgram,
-                date, date, FOLLOW_UP, ENROLLMENT_STATUS,
+                date,
+                date,
+                FOLLOW_UP,
+                ENROLLMENT_STATUS,
                 deferredTrackedEntityInstance,
-                LATITUDE, LONGITUDE, STATE
+                LATITUDE,
+                LONGITUDE,
+                STATE
         );
         ContentValues program = CreateProgramUtils.create(11L, deferredProgram,
                 RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
@@ -189,23 +207,33 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
 
         Cursor cursor = database().query(TABLE, PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor).hasRow(UID, dateString, dateString,
+        assertThatCursor(cursor).hasRow(
+                UID,
+                dateString,
+                dateString,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 deferredOrganisationUnit,
                 deferredProgram,
-                dateString, dateString, AndroidTestUtils.toInteger(FOLLOW_UP), ENROLLMENT_STATUS,
+                dateString,
+                dateString,
+                AndroidTestUtils.toInteger(FOLLOW_UP),
+                ENROLLMENT_STATUS,
                 deferredTrackedEntityInstance,
-                LATITUDE, LONGITUDE, STATE
+                LATITUDE,
+                LONGITUDE,
+                STATE
         ).isExhausted();
     }
 
     @Test
     public void insert_shouldPersistNullableInDatabase() {
-        long rowId = enrollmentStore.insert(UID, null, null, ORGANISATION_UNIT, PROGRAM, null, null, null, null,
-                TRACKED_ENTITY_INSTANCE, null, null, null);
+        long rowId = enrollmentStore.insert(UID, null, null, null, null, ORGANISATION_UNIT, PROGRAM,
+                null, null, null, null, TRACKED_ENTITY_INSTANCE, null, null, null);
         Cursor cursor = database().query(TABLE, PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor).hasRow(UID, null, null, ORGANISATION_UNIT, PROGRAM, null, null, null, null,
-                TRACKED_ENTITY_INSTANCE, null, null, null).isExhausted();
+        assertThatCursor(cursor).hasRow(UID, null, null, null, null, ORGANISATION_UNIT, PROGRAM,
+                null, null, null, null, TRACKED_ENTITY_INSTANCE, null, null, null).isExhausted();
     }
 
     @Test
@@ -225,7 +253,7 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(UID, ENROLLMENT_STATUS.name()).isExhausted();
 
         EnrollmentStatus updatedStatus = EnrollmentStatus.CANCELLED;
-        enrollmentStore.update(UID, null, null,
+        enrollmentStore.update(UID, null, null, null, null,
                 ORGANISATION_UNIT,
                 PROGRAM,
                 null, null, null, updatedStatus,
@@ -268,6 +296,8 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
                 UID,
                 date,
                 date,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 ORGANISATION_UNIT,
                 PROGRAM,
                 date,
@@ -294,6 +324,8 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
                 UID,
                 date,
                 date,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 ORGANISATION_UNIT,
                 PROGRAM,
                 date,
@@ -319,6 +351,8 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
                 UID,
                 date,
                 date,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 ORGANISATION_UNIT,
                 PROGRAM,
                 date,
@@ -344,6 +378,8 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
                 UID,
                 date,
                 date,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 WRONG_UID, //supply wrong uid
                 PROGRAM,
                 date,
@@ -363,6 +399,8 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
                 UID,
                 date,
                 date,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 ORGANISATION_UNIT,
                 WRONG_UID, //supply wrong uid
                 date,
@@ -382,6 +420,8 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
                 UID,
                 date,
                 date,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 ORGANISATION_UNIT,
                 PROGRAM,
                 date,

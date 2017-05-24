@@ -45,9 +45,12 @@ public class EventHandlerTest {
         // verify that store is never invoked
         verify(eventStore, never()).delete(anyString());
         verify(eventStore, never()).update(anyString(), anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(),
                 any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString());
+
         verify(eventStore, never()).insert(anyString(), anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(),
                 any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), any(Date.class), any(State.class));
     }
@@ -63,9 +66,11 @@ public class EventHandlerTest {
 
         // verify that update and insert is never invoked
         verify(eventStore, never()).update(anyString(), anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(),
                 any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString());
         verify(eventStore, never()).insert(anyString(), anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(),
                 any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), any(Date.class), any(State.class));
     }
@@ -73,6 +78,7 @@ public class EventHandlerTest {
     @Test
     public void update_shouldUpdateEvent() throws Exception {
         when(eventStore.update(anyString(), anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(),
                 any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString())
         ).thenReturn(1);
@@ -81,11 +87,13 @@ public class EventHandlerTest {
 
         // verify that update is invoked once
         verify(eventStore, times(1)).update(anyString(), anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(),
                 any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString());
 
         // verify that insert and delete is never invoked
         verify(eventStore, never()).insert(anyString(), anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(),
                 any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), any(Date.class), any(State.class));
         verify(eventStore, never()).delete(anyString());
@@ -94,6 +102,7 @@ public class EventHandlerTest {
     @Test
     public void insert_shouldInsertEvent() throws Exception {
         when(eventStore.update(anyString(), anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(),
                 any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString())
         ).thenReturn(0);
@@ -102,10 +111,12 @@ public class EventHandlerTest {
 
         // verify that update and insert is invoked, since we're updating before inserting
         verify(eventStore, times(1)).insert(anyString(), anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(),
                 any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), any(Date.class), any(State.class));
 
         verify(eventStore, times(1)).update(anyString(), anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(),
                 any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString());
 

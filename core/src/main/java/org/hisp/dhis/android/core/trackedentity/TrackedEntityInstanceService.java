@@ -5,6 +5,7 @@ import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.data.api.Where;
 import org.hisp.dhis.android.core.data.api.Which;
+import org.hisp.dhis.android.core.imports.ImportSummaries;
 
 import java.util.Date;
 import java.util.List;
@@ -24,6 +25,6 @@ public interface TrackedEntityInstanceService {
             @Query("includeDeleted") Boolean includeDeleted);
 
     @POST("trackedEntityInstances")
-    Call<List<TrackedEntityInstance>> postTrackedEntityInstances(
+    Call<ImportSummaries> postTrackedEntityInstances(
             @Body List<TrackedEntityInstance> trackedEntityInstances);
 }

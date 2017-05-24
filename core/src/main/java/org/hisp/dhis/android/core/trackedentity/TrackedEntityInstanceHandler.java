@@ -29,13 +29,17 @@ public class TrackedEntityInstanceHandler {
         if (isDeleted(trackedEntityInstance)) {
             trackedEntityInstanceStore.delete(trackedEntityInstance.uid());
         } else {
-            int updatedRow = trackedEntityInstanceStore.update(trackedEntityInstance.uid(), trackedEntityInstance.created(),
-                    trackedEntityInstance.lastUpdated(), trackedEntityInstance.organisationUnit(),
-                    trackedEntityInstance.trackedEntity(), State.SYNCED, trackedEntityInstance.uid());
+            int updatedRow = trackedEntityInstanceStore.update(
+                    trackedEntityInstance.uid(), trackedEntityInstance.created(), trackedEntityInstance.lastUpdated(),
+                    trackedEntityInstance.createdAtClient(), trackedEntityInstance.lastUpdatedAtClient(),
+                    trackedEntityInstance.organisationUnit(), trackedEntityInstance.trackedEntity(),
+                    State.SYNCED, trackedEntityInstance.uid());
 
             if (updatedRow <= 0) {
-                trackedEntityInstanceStore.insert(trackedEntityInstance.uid(), trackedEntityInstance.created(),
-                        trackedEntityInstance.lastUpdated(), trackedEntityInstance.organisationUnit(),
+                trackedEntityInstanceStore.insert(
+                        trackedEntityInstance.uid(), trackedEntityInstance.created(),
+                        trackedEntityInstance.lastUpdated(), trackedEntityInstance.createdAtClient(),
+                        trackedEntityInstance.lastUpdatedAtClient(), trackedEntityInstance.organisationUnit(),
                         trackedEntityInstance.trackedEntity(), State.SYNCED);
             }
 

@@ -47,6 +47,8 @@ import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 @AutoValue
 public abstract class TrackedEntityInstance {
     private static final String UID = "trackedEntityInstance";
+    private static final String CREATED_AT_CLIENT = "createdAtClient";
+    private static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
     private static final String CREATED = "created";
     private static final String LAST_UPDATED = "lastUpdated";
     private static final String ORGANISATION_UNIT = "orgUnit";
@@ -59,6 +61,8 @@ public abstract class TrackedEntityInstance {
     public static final Field<TrackedEntityInstance, String> uid = Field.create(UID);
     public static final Field<TrackedEntityInstance, Date> created = Field.create(CREATED);
     public static final Field<TrackedEntityInstance, Date> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<TrackedEntityInstance, String> createdAtClient = Field.create(CREATED_AT_CLIENT);
+    public static final Field<TrackedEntityInstance, String> lastUpdatedAtClient = Field.create(LAST_UPDATED_AT_CLIENT);
     public static final Field<TrackedEntityInstance, String> organisationUnit = Field.create(ORGANISATION_UNIT);
     public static final Field<TrackedEntityInstance, Boolean> deleted = Field.create(DELETED);
 
@@ -79,6 +83,14 @@ public abstract class TrackedEntityInstance {
     @Nullable
     @JsonProperty(LAST_UPDATED)
     public abstract Date lastUpdated();
+
+    @Nullable
+    @JsonProperty(CREATED_AT_CLIENT)
+    public abstract String createdAtClient();
+
+    @Nullable
+    @JsonProperty(LAST_UPDATED_AT_CLIENT)
+    public abstract String lastUpdatedAtClient();
 
     @Nullable
     @JsonProperty(ORGANISATION_UNIT)
@@ -109,6 +121,8 @@ public abstract class TrackedEntityInstance {
             @JsonProperty(UID) String uid,
             @JsonProperty(CREATED) Date created,
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(CREATED_AT_CLIENT) String createdAtClient,
+            @JsonProperty(LAST_UPDATED_AT_CLIENT) String lastUpdatedAtClient,
             @JsonProperty(ORGANISATION_UNIT) String organisationUnit,
             @JsonProperty(TRACKED_ENTITY) String trackedEntity,
             @JsonProperty(DELETED) Boolean deleted,
@@ -116,7 +130,8 @@ public abstract class TrackedEntityInstance {
                     List<TrackedEntityAttributeValue> trackedEntityAttributeValues,
             @JsonProperty(RELATIONSHIPS) List<Relationship> relationships,
             @JsonProperty(ENROLLMENTS) List<Enrollment> enrollments) {
-        return new AutoValue_TrackedEntityInstance(uid, created, lastUpdated, organisationUnit, trackedEntity, deleted,
+        return new AutoValue_TrackedEntityInstance(uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
+                organisationUnit, trackedEntity, deleted,
                 safeUnmodifiableList(trackedEntityAttributeValues),
                 safeUnmodifiableList(relationships), safeUnmodifiableList(enrollments));
     }

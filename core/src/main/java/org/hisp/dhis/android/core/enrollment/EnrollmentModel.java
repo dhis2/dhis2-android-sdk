@@ -62,6 +62,8 @@ public abstract class EnrollmentModel extends BaseDataModel {
         public static final String UID = "enrollment";
         public static final String CREATED = "created";
         public static final String LAST_UPDATED = "lastUpdated";
+        public static final String CREATED_AT_CLIENT = "createdAtClient";
+        public static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
         public static final String ORGANISATION_UNIT = "orgUnit";
         public static final String PROGRAM = "program";
         public static final String DATE_OF_ENROLLMENT = "enrollmentDate";
@@ -87,6 +89,14 @@ public abstract class EnrollmentModel extends BaseDataModel {
     @ColumnName(Columns.LAST_UPDATED)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
+
+    @Nullable
+    @ColumnName(Columns.CREATED_AT_CLIENT)
+    public abstract String createdAtClient();
+
+    @Nullable
+    @ColumnName(Columns.LAST_UPDATED_AT_CLIENT)
+    public abstract String lastUpdatedAtClient();
 
     @Nullable
     @ColumnName(Columns.ORGANISATION_UNIT)
@@ -135,6 +145,10 @@ public abstract class EnrollmentModel extends BaseDataModel {
         public abstract Builder created(@Nullable Date created);
 
         public abstract Builder lastUpdated(@Nullable Date lastUpdated);
+
+        public abstract Builder createdAtClient(@Nullable String createdAtClient);
+
+        public abstract Builder lastUpdatedAtClient(@Nullable String lastUpdatedAtClient);
 
         public abstract Builder organisationUnit(@Nullable String orgUnit);
 

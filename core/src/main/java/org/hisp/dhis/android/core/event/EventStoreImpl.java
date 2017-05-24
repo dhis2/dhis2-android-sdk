@@ -47,6 +47,8 @@ public class EventStoreImpl implements EventStore {
             Columns.ENROLLMENT_UID + ", " +
             Columns.CREATED + ", " +
             Columns.LAST_UPDATED + ", " +
+            Columns.CREATED_AT_CLIENT + ", " +
+            Columns.LAST_UPDATED_AT_CLIENT + ", " +
             Columns.STATUS + ", " +
             Columns.LATITUDE + ", " +
             Columns.LONGITUDE + ", " +
@@ -57,13 +59,15 @@ public class EventStoreImpl implements EventStore {
             Columns.COMPLETE_DATE + ", " +
             Columns.DUE_DATE + ", " +
             Columns.STATE + ") " +
-            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + EventModel.TABLE + " SET " +
             Columns.UID + " =? , " +
             Columns.ENROLLMENT_UID + " =? , " +
             Columns.CREATED + " =? , " +
             Columns.LAST_UPDATED + " =? ," +
+            Columns.CREATED_AT_CLIENT + " =? , " +
+            Columns.LAST_UPDATED_AT_CLIENT + " =? , " +
             Columns.STATUS + " =? ," +
             Columns.LATITUDE + " =? ," +
             Columns.LONGITUDE + " =? ," +
@@ -96,6 +100,7 @@ public class EventStoreImpl implements EventStore {
     @Override
     public long insert(@NonNull String uid, @Nullable String enrollmentUid,
                        @Nullable Date created, @Nullable Date lastUpdated,
+                       @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
                        @Nullable EventStatus status, @Nullable String latitude,
                        @Nullable String longitude, @NonNull String program,
                        @NonNull String programStage, @NonNull String organisationUnit,
@@ -107,16 +112,18 @@ public class EventStoreImpl implements EventStore {
         sqLiteBind(insertStatement, 2, enrollmentUid);
         sqLiteBind(insertStatement, 3, created);
         sqLiteBind(insertStatement, 4, lastUpdated);
-        sqLiteBind(insertStatement, 5, status);
-        sqLiteBind(insertStatement, 6, latitude);
-        sqLiteBind(insertStatement, 7, longitude);
-        sqLiteBind(insertStatement, 8, program);
-        sqLiteBind(insertStatement, 9, programStage);
-        sqLiteBind(insertStatement, 10, organisationUnit);
-        sqLiteBind(insertStatement, 11, eventDate);
-        sqLiteBind(insertStatement, 12, completedDate);
-        sqLiteBind(insertStatement, 13, dueDate);
-        sqLiteBind(insertStatement, 14, state);
+        sqLiteBind(insertStatement, 5, createdAtClient);
+        sqLiteBind(insertStatement, 6, lastUpdatedAtClient);
+        sqLiteBind(insertStatement, 7, status);
+        sqLiteBind(insertStatement, 8, latitude);
+        sqLiteBind(insertStatement, 9, longitude);
+        sqLiteBind(insertStatement, 10, program);
+        sqLiteBind(insertStatement, 11, programStage);
+        sqLiteBind(insertStatement, 12, organisationUnit);
+        sqLiteBind(insertStatement, 13, eventDate);
+        sqLiteBind(insertStatement, 14, completedDate);
+        sqLiteBind(insertStatement, 15, dueDate);
+        sqLiteBind(insertStatement, 16, state);
 
         return databaseAdapter.executeInsert(EventModel.TABLE, insertStatement);
     }
@@ -124,6 +131,7 @@ public class EventStoreImpl implements EventStore {
     @Override
     public int update(@NonNull String uid, @Nullable String enrollmentUid,
                       @NonNull Date created, @NonNull Date lastUpdated,
+                      @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
                       @NonNull EventStatus eventStatus, @Nullable String latitude,
                       @Nullable String longitude, @NonNull String program,
                       @NonNull String programStage, @NonNull String organisationUnit,
@@ -136,19 +144,21 @@ public class EventStoreImpl implements EventStore {
         sqLiteBind(updateStatement, 2, enrollmentUid);
         sqLiteBind(updateStatement, 3, created);
         sqLiteBind(updateStatement, 4, lastUpdated);
-        sqLiteBind(updateStatement, 5, eventStatus);
-        sqLiteBind(updateStatement, 6, latitude);
-        sqLiteBind(updateStatement, 7, longitude);
-        sqLiteBind(updateStatement, 8, program);
-        sqLiteBind(updateStatement, 9, programStage);
-        sqLiteBind(updateStatement, 10, organisationUnit);
-        sqLiteBind(updateStatement, 11, eventDate);
-        sqLiteBind(updateStatement, 12, completedDate);
-        sqLiteBind(updateStatement, 13, dueDate);
-        sqLiteBind(updateStatement, 14, state);
+        sqLiteBind(updateStatement, 5, createdAtClient);
+        sqLiteBind(updateStatement, 6, lastUpdatedAtClient);
+        sqLiteBind(updateStatement, 7, eventStatus);
+        sqLiteBind(updateStatement, 8, latitude);
+        sqLiteBind(updateStatement, 9, longitude);
+        sqLiteBind(updateStatement, 10, program);
+        sqLiteBind(updateStatement, 11, programStage);
+        sqLiteBind(updateStatement, 12, organisationUnit);
+        sqLiteBind(updateStatement, 13, eventDate);
+        sqLiteBind(updateStatement, 14, completedDate);
+        sqLiteBind(updateStatement, 15, dueDate);
+        sqLiteBind(updateStatement, 16, state);
 
         // bind the where clause
-        sqLiteBind(updateStatement, 15, whereEventUid);
+        sqLiteBind(updateStatement, 17, whereEventUid);
 
         int rowId = databaseAdapter.executeUpdateDelete(EventModel.TABLE, updateStatement);
         updateStatement.clearBindings();

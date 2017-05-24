@@ -45,15 +45,19 @@ class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
             TrackedEntityInstanceModel.Columns.UID + ", " +
             TrackedEntityInstanceModel.Columns.CREATED + ", " +
             TrackedEntityInstanceModel.Columns.LAST_UPDATED + ", " +
+            TrackedEntityInstanceModel.Columns.CREATED_AT_CLIENT + ", " +
+            TrackedEntityInstanceModel.Columns.LAST_UPDATED_AT_CLIENT + ", " +
             TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT + ", " +
             TrackedEntityInstanceModel.Columns.TRACKED_ENTITY + ", " +
             TrackedEntityInstanceModel.Columns.STATE +
-            ") " + "VALUES (?, ?, ?, ?, ?, ?)";
+            ") " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + TrackedEntityInstanceModel.TABLE + " SET " +
             TrackedEntityInstanceModel.Columns.UID + " =?, " +
             TrackedEntityInstanceModel.Columns.CREATED + " =?, " +
             TrackedEntityInstanceModel.Columns.LAST_UPDATED + " =?, " +
+            TrackedEntityInstanceModel.Columns.CREATED_AT_CLIENT + " =? , " +
+            TrackedEntityInstanceModel.Columns.LAST_UPDATED_AT_CLIENT + " =? , " +
             TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT + " =?, " +
             TrackedEntityInstanceModel.Columns.TRACKED_ENTITY + " =?, " +
             TrackedEntityInstanceModel.Columns.STATE + " =? " +
@@ -79,15 +83,18 @@ class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
 
     @Override
     public long insert(@NonNull String uid, @Nullable Date created, @Nullable Date lastUpdated,
+                       @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
                        @NonNull String organisationUnit, @NonNull String trackedEntity, @Nullable State state) {
         insertRowStatement.clearBindings();
 
         sqLiteBind(insertRowStatement, 1, uid);
         sqLiteBind(insertRowStatement, 2, created);
         sqLiteBind(insertRowStatement, 3, lastUpdated);
-        sqLiteBind(insertRowStatement, 4, organisationUnit);
-        sqLiteBind(insertRowStatement, 5, trackedEntity);
-        sqLiteBind(insertRowStatement, 6, state);
+        sqLiteBind(insertRowStatement, 4, createdAtClient);
+        sqLiteBind(insertRowStatement, 5, lastUpdatedAtClient);
+        sqLiteBind(insertRowStatement, 6, organisationUnit);
+        sqLiteBind(insertRowStatement, 7, trackedEntity);
+        sqLiteBind(insertRowStatement, 8, state);
 
         return databaseAdapter.executeInsert(TrackedEntityInstanceModel.TABLE, insertRowStatement);
     }
@@ -99,17 +106,20 @@ class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
 
     @Override
     public int update(@NonNull String uid, @NonNull Date created, @NonNull Date lastUpdated,
+                      @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
                       @NonNull String organisationUnit, @NonNull String trackedEntity,
                       @NonNull State state, @NonNull String whereTrackedEntityInstanceUid) {
         sqLiteBind(updateStatement, 1, uid);
         sqLiteBind(updateStatement, 2, created);
         sqLiteBind(updateStatement, 3, lastUpdated);
-        sqLiteBind(updateStatement, 4, organisationUnit);
-        sqLiteBind(updateStatement, 5, trackedEntity);
-        sqLiteBind(updateStatement, 6, state);
+        sqLiteBind(updateStatement, 4, createdAtClient);
+        sqLiteBind(updateStatement, 5, lastUpdatedAtClient);
+        sqLiteBind(updateStatement, 6, organisationUnit);
+        sqLiteBind(updateStatement, 7, trackedEntity);
+        sqLiteBind(updateStatement, 8, state);
 
         // bind the where clause
-        sqLiteBind(updateStatement, 7, whereTrackedEntityInstanceUid);
+        sqLiteBind(updateStatement, 9, whereTrackedEntityInstanceUid);
 
         int rowId = databaseAdapter.executeUpdateDelete(TrackedEntityInstanceModel.TABLE, updateStatement);
         updateStatement.clearBindings();

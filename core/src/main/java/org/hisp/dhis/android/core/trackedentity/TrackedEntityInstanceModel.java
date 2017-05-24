@@ -44,6 +44,8 @@ public abstract class TrackedEntityInstanceModel extends BaseIdentifiableDataMod
 
     public static class Columns extends BaseIdentifiableDataModel.Columns {
         public static final String UID = "uid";
+        public static final String CREATED_AT_CLIENT = "createdAtClient";
+        public static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
         public static final String ORGANISATION_UNIT = "organisationUnit";
         public static final String TRACKED_ENTITY = "trackedEntity";
     }
@@ -66,6 +68,14 @@ public abstract class TrackedEntityInstanceModel extends BaseIdentifiableDataMod
     public abstract String uid();
 
     @Nullable
+    @ColumnName(Columns.CREATED_AT_CLIENT)
+    public abstract String createdAtClient();
+
+    @Nullable
+    @ColumnName(Columns.LAST_UPDATED_AT_CLIENT)
+    public abstract String lastUpdatedAtClient();
+
+    @Nullable
     @ColumnName(Columns.ORGANISATION_UNIT)
     public abstract String organisationUnit();
 
@@ -75,11 +85,15 @@ public abstract class TrackedEntityInstanceModel extends BaseIdentifiableDataMod
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableDataModel.Builder<Builder> {
-        public abstract Builder uid(String uid);
+        public abstract Builder uid(@NonNull String uid);
 
-        public abstract Builder organisationUnit(String organisationUnit);
+        public abstract Builder createdAtClient(@Nullable String createdAtClient);
 
-        public abstract Builder trackedEntity(String trackedEntity);
+        public abstract Builder lastUpdatedAtClient(@Nullable String lastUpdatedAtClient);
+
+        public abstract Builder organisationUnit(@Nullable String organisationUnit);
+
+        public abstract Builder trackedEntity(@Nullable String trackedEntity);
 
         public abstract TrackedEntityInstanceModel build();
     }

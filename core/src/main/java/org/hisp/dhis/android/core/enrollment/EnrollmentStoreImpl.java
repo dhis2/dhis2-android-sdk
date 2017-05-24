@@ -46,6 +46,8 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
             Columns.UID + ", " +
             Columns.CREATED + ", " +
             Columns.LAST_UPDATED + ", " +
+            Columns.CREATED_AT_CLIENT + ", " +
+            Columns.LAST_UPDATED_AT_CLIENT + ", " +
             Columns.ORGANISATION_UNIT + ", " +
             Columns.PROGRAM + ", " +
             Columns.DATE_OF_ENROLLMENT + ", " +
@@ -56,12 +58,14 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
             Columns.LATITUDE + ", " +
             Columns.LONGITUDE + ", " +
             Columns.STATE + ") " +
-            "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?);";
+            "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + EnrollmentModel.TABLE + " SET " +
             Columns.UID + " =?, " +
             Columns.CREATED + " =?, " +
             Columns.LAST_UPDATED + " =?, " +
+            Columns.CREATED_AT_CLIENT + " =? , " +
+            Columns.LAST_UPDATED_AT_CLIENT + " =? , " +
             Columns.ORGANISATION_UNIT + " =?, " +
             Columns.PROGRAM + " =?, " +
             Columns.DATE_OF_ENROLLMENT + " =?, " +
@@ -94,6 +98,7 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
 
     @Override
     public long insert(@NonNull String uid, @Nullable Date created, @Nullable Date lastUpdated,
+                       @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
                        @NonNull String organisationUnit, @NonNull String program, @Nullable Date dateOfEnrollment,
                        @Nullable Date dateOfIncident, @Nullable Boolean followUp,
                        @Nullable EnrollmentStatus enrollmentStatus, @NonNull String trackedEntityInstance,
@@ -103,16 +108,18 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
         sqLiteBind(insertStatement, 1, uid);
         sqLiteBind(insertStatement, 2, created);
         sqLiteBind(insertStatement, 3, lastUpdated);
-        sqLiteBind(insertStatement, 4, organisationUnit);
-        sqLiteBind(insertStatement, 5, program);
-        sqLiteBind(insertStatement, 6, dateOfEnrollment);
-        sqLiteBind(insertStatement, 7, dateOfIncident);
-        sqLiteBind(insertStatement, 8, followUp);
-        sqLiteBind(insertStatement, 9, enrollmentStatus);
-        sqLiteBind(insertStatement, 10, trackedEntityInstance);
-        sqLiteBind(insertStatement, 11, latitude);
-        sqLiteBind(insertStatement, 12, longitude);
-        sqLiteBind(insertStatement, 13, state);
+        sqLiteBind(insertStatement, 4, createdAtClient);
+        sqLiteBind(insertStatement, 5, lastUpdatedAtClient);
+        sqLiteBind(insertStatement, 6, organisationUnit);
+        sqLiteBind(insertStatement, 7, program);
+        sqLiteBind(insertStatement, 8, dateOfEnrollment);
+        sqLiteBind(insertStatement, 9, dateOfIncident);
+        sqLiteBind(insertStatement, 10, followUp);
+        sqLiteBind(insertStatement, 11, enrollmentStatus);
+        sqLiteBind(insertStatement, 12, trackedEntityInstance);
+        sqLiteBind(insertStatement, 13, latitude);
+        sqLiteBind(insertStatement, 14, longitude);
+        sqLiteBind(insertStatement, 15, state);
 
         return databaseAdapter.executeInsert(EnrollmentModel.TABLE, insertStatement);
     }
@@ -130,6 +137,7 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
 
     @Override
     public int update(@NonNull String uid, @NonNull Date created, @NonNull Date lastUpdated,
+                      @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
                       @NonNull String organisationUnit, @NonNull String program,
                       @NonNull Date dateOfEnrollment, @Nullable Date dateOfIncident,
                       @Nullable Boolean followUp, @NonNull EnrollmentStatus enrollmentStatus,
@@ -140,19 +148,21 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
         sqLiteBind(updateStatement, 1, uid);
         sqLiteBind(updateStatement, 2, created);
         sqLiteBind(updateStatement, 3, lastUpdated);
-        sqLiteBind(updateStatement, 4, organisationUnit);
-        sqLiteBind(updateStatement, 5, program);
-        sqLiteBind(updateStatement, 6, dateOfEnrollment);
-        sqLiteBind(updateStatement, 7, dateOfIncident);
-        sqLiteBind(updateStatement, 8, followUp);
-        sqLiteBind(updateStatement, 9, enrollmentStatus);
-        sqLiteBind(updateStatement, 10, trackedEntityInstance);
-        sqLiteBind(updateStatement, 11, latitude);
-        sqLiteBind(updateStatement, 12, longitude);
-        sqLiteBind(updateStatement, 13, state);
+        sqLiteBind(updateStatement, 4, createdAtClient);
+        sqLiteBind(updateStatement, 5, lastUpdatedAtClient);
+        sqLiteBind(updateStatement, 6, organisationUnit);
+        sqLiteBind(updateStatement, 7, program);
+        sqLiteBind(updateStatement, 8, dateOfEnrollment);
+        sqLiteBind(updateStatement, 9, dateOfIncident);
+        sqLiteBind(updateStatement, 10, followUp);
+        sqLiteBind(updateStatement, 11, enrollmentStatus);
+        sqLiteBind(updateStatement, 12, trackedEntityInstance);
+        sqLiteBind(updateStatement, 13, latitude);
+        sqLiteBind(updateStatement, 14, longitude);
+        sqLiteBind(updateStatement, 15, state);
 
         // bind the where clause
-        sqLiteBind(updateStatement, 14, whereEnrollmentUid);
+        sqLiteBind(updateStatement, 16, whereEnrollmentUid);
 
         int rowId = databaseAdapter.executeUpdateDelete(EnrollmentModel.TABLE, updateStatement);
         updateStatement.clearBindings();

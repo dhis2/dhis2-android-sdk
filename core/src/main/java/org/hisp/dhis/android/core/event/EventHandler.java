@@ -31,12 +31,14 @@ public class EventHandler {
 
 
             int updatedRow = eventStore.update(event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
+                    event.createdAtClient(), event.lastUpdatedAtClient(),
                     event.status(), latitude, longitude, event.program(), event.programStage(),
                     event.organisationUnit(), event.eventDate(), event.completedDate(),
                     event.dueDate(), State.SYNCED, event.uid());
 
             if (updatedRow <= 0) {
                 eventStore.insert(event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
+                        event.createdAtClient(), event.lastUpdatedAtClient(),
                         event.status(), latitude, longitude, event.program(), event.programStage(),
                         event.organisationUnit(), event.eventDate(), event.completedDate(),
                         event.dueDate(), State.SYNCED);

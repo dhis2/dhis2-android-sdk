@@ -49,6 +49,8 @@ public abstract class Enrollment {
     private static final String UID = "enrollment";
     private static final String CREATED = "created";
     private static final String LAST_UPDATED = "lastUpdated";
+    private static final String CREATED_AT_CLIENT = "createdAtClient";
+    private static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
     private static final String ORGANISATION_UNIT = "orgUnit";
     private static final String PROGRAM = "program";
     private static final String DATE_OF_ENROLLMENT = "enrollmentDate";
@@ -63,6 +65,8 @@ public abstract class Enrollment {
     public static final Field<Enrollment, String> uid = Field.create(UID);
     public static final Field<Enrollment, String> created = Field.create(CREATED);
     public static final Field<Enrollment, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<Enrollment, String> createdAtClient = Field.create(CREATED_AT_CLIENT);
+    public static final Field<Enrollment, String> lastUpdatedAtClient = Field.create(LAST_UPDATED_AT_CLIENT);
     public static final Field<Enrollment, String> organisationUnit = Field.create(ORGANISATION_UNIT);
     public static final Field<Enrollment, String> program = Field.create(PROGRAM);
     public static final Field<Enrollment, String> dateOfEnrollment = Field.create(DATE_OF_ENROLLMENT);
@@ -85,6 +89,14 @@ public abstract class Enrollment {
     @Nullable
     @JsonProperty(LAST_UPDATED)
     public abstract Date lastUpdated();
+
+    @Nullable
+    @JsonProperty(CREATED_AT_CLIENT)
+    public abstract String createdAtClient();
+
+    @Nullable
+    @JsonProperty(LAST_UPDATED_AT_CLIENT)
+    public abstract String lastUpdatedAtClient();
 
     @Nullable
     @JsonProperty(ORGANISATION_UNIT)
@@ -131,6 +143,8 @@ public abstract class Enrollment {
             @JsonProperty(UID) String uid,
             @JsonProperty(CREATED) Date created,
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(CREATED_AT_CLIENT) String createdAtClient,
+            @JsonProperty(LAST_UPDATED_AT_CLIENT) String lastUpdatedAtClient,
             @JsonProperty(ORGANISATION_UNIT) String organisationUnit,
             @JsonProperty(PROGRAM) String program,
             @JsonProperty(DATE_OF_ENROLLMENT) Date dateOfEnrollment,
@@ -141,8 +155,8 @@ public abstract class Enrollment {
             @JsonProperty(COORDINATE) Coordinates coordinate,
             @JsonProperty(DELETED) Boolean deleted,
             @JsonProperty(EVENTS) List<Event> events) {
-        return new AutoValue_Enrollment(uid, created, lastUpdated, organisationUnit, program,
-                dateOfEnrollment, dateOfIncident, followUp, enrollmentStatus, trackedEntityInstance,
-                coordinate, deleted, safeUnmodifiableList(events));
+        return new AutoValue_Enrollment(uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
+                organisationUnit, program, dateOfEnrollment, dateOfIncident, followUp, enrollmentStatus,
+                trackedEntityInstance, coordinate, deleted, safeUnmodifiableList(events));
     }
 }

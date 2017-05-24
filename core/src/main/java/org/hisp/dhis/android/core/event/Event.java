@@ -50,6 +50,8 @@ public abstract class Event {
     private static final String ENROLLMENT_UID = "enrollment";
     private static final String CREATED = "created";
     private static final String LAST_UPDATED = "lastUpdated";
+    private static final String CREATED_AT_CLIENT = "createdAtClient";
+    private static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
     private static final String STATUS = "status";
     private static final String COORDINATE = "coordinate";
     private static final String PROGRAM = "program";
@@ -65,6 +67,8 @@ public abstract class Event {
     public static final Field<Event, String> enrollment = Field.create(ENROLLMENT_UID);
     public static final Field<Event, String> created = Field.create(CREATED);
     public static final Field<Event, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<Event, String> createdAtClient = Field.create(CREATED_AT_CLIENT);
+    public static final Field<Event, String> lastUpdatedAtClient = Field.create(LAST_UPDATED_AT_CLIENT);
     public static final Field<Event, EventStatus> eventStatus = Field.create(STATUS);
     public static final Field<Event, Coordinates> coordinates = Field.create(COORDINATE);
     public static final Field<Event, String> program = Field.create(PROGRAM);
@@ -92,6 +96,14 @@ public abstract class Event {
     @Nullable
     @JsonProperty(LAST_UPDATED)
     public abstract Date lastUpdated();
+
+    @Nullable
+    @JsonProperty(CREATED_AT_CLIENT)
+    public abstract String createdAtClient();
+
+    @Nullable
+    @JsonProperty(LAST_UPDATED_AT_CLIENT)
+    public abstract String lastUpdatedAtClient();
 
     @Nullable
     @JsonProperty(PROGRAM)
@@ -139,6 +151,8 @@ public abstract class Event {
             @JsonProperty(ENROLLMENT_UID) String enrollmentUid,
             @JsonProperty(CREATED) Date created,
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(CREATED_AT_CLIENT) String createdAtClient,
+            @JsonProperty(LAST_UPDATED_AT_CLIENT) String lastUpdatedAtClient,
             @JsonProperty(PROGRAM) String program,
             @JsonProperty(PROGRAM_STAGE) String programStage,
             @JsonProperty(ORGANISATION_UNIT) String organisationUnit,
@@ -149,8 +163,8 @@ public abstract class Event {
             @JsonProperty(DUE_DATE) Date dueDate,
             @JsonProperty(DELETED) Boolean deleted,
             @JsonProperty(TRACKED_ENTITY_DATA_VALUES) List<TrackedEntityDataValue> dataValues) {
-        return new AutoValue_Event(uid, enrollmentUid, created, lastUpdated, program, programStage,
-                organisationUnit, eventDate, eventStatus, coordinates, completedDate, dueDate, deleted,
-                safeUnmodifiableList(dataValues));
+        return new AutoValue_Event(uid, enrollmentUid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
+                program, programStage, organisationUnit, eventDate, eventStatus, coordinates,
+                completedDate, dueDate, deleted, safeUnmodifiableList(dataValues));
     }
 }

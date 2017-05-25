@@ -33,18 +33,23 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+
+import java.util.Date;
 
 @AutoValue
-public abstract class TrackedEntityAttributeValueModel extends BaseDataModel {
-
+public abstract class TrackedEntityAttributeValueModel extends BaseModel {
     public static final String TABLE = "TrackedEntityAttributeValue";
 
-    public static class Columns extends BaseDataModel.Columns {
+    public static class Columns extends BaseModel.Columns {
         public static final String VALUE = "value";
+        public static final String CREATED = "created";
+        public static final String LAST_UPDATED = "lastUpdated";
         public static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
         public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
     }
@@ -65,6 +70,16 @@ public abstract class TrackedEntityAttributeValueModel extends BaseDataModel {
     public abstract String value();
 
     @Nullable
+    @ColumnName(Columns.CREATED)
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date created();
+
+    @Nullable
+    @ColumnName(Columns.LAST_UPDATED)
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date lastUpdated();
+
+    @Nullable
     @ColumnName(Columns.TRACKED_ENTITY_ATTRIBUTE)
     public abstract String trackedEntityAttribute();
 
@@ -73,9 +88,12 @@ public abstract class TrackedEntityAttributeValueModel extends BaseDataModel {
     public abstract String trackedEntityInstance();
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseDataModel.Builder<Builder> {
-
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
         public abstract Builder value(String value);
+
+        public abstract Builder created(Date created);
+
+        public abstract Builder lastUpdated(Date lastUpdated);
 
         public abstract Builder trackedEntityAttribute(String trackedEntityAttribute);
 

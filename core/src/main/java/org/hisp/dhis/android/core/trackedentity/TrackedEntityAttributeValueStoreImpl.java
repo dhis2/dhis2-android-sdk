@@ -32,7 +32,6 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
@@ -42,11 +41,12 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             TrackedEntityAttributeValueModel.TABLE + " (" +
-            TrackedEntityAttributeValueModel.Columns.STATE + ", " +
             TrackedEntityAttributeValueModel.Columns.VALUE + ", " +
+            TrackedEntityAttributeValueModel.Columns.CREATED + ", " +
+            TrackedEntityAttributeValueModel.Columns.LAST_UPDATED + ", " +
             TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ", " +
             TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + ") " +
-            "VALUES (?, ?, ?, ?)";
+            "VALUES (?, ?, ?, ?, ?)";
 
     private final SQLiteStatement insertRowStatement;
     private final DatabaseAdapter databaseAdapter;
@@ -57,19 +57,20 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
     }
 
     @Override
-    public long insert(@NonNull State state,
-                       @Nullable String value,
-                       @NonNull String trackedEntityAttribute,
-                       @NonNull String trackedEntityInstance) {
-        nonNull(state);
+    public long insert(@Nullable String value, @Nullable String created,
+            @Nullable String lastUpdated, @NonNull String trackedEntityAttribute,
+            @NonNull String trackedEntityInstance) {
         nonNull(trackedEntityAttribute);
         nonNull(trackedEntityInstance);
-        sqLiteBind(insertRowStatement, 1, state);
-        sqLiteBind(insertRowStatement, 2, value);
-        sqLiteBind(insertRowStatement, 3, trackedEntityAttribute);
-        sqLiteBind(insertRowStatement, 4, trackedEntityInstance);
+        sqLiteBind(insertRowStatement, 1, value);
+        sqLiteBind(insertRowStatement, 2, created);
+        sqLiteBind(insertRowStatement, 3, lastUpdated);
+        sqLiteBind(insertRowStatement, 4, trackedEntityAttribute);
+        sqLiteBind(insertRowStatement, 5, trackedEntityInstance);
 
-        long returnValue = databaseAdapter.executeInsert(TrackedEntityAttributeValueModel.TABLE, insertRowStatement);
+        long returnValue = databaseAdapter.executeInsert(
+                TrackedEntityAttributeValueModel.TABLE, insertRowStatement);
+
         insertRowStatement.clearBindings();
         return returnValue;
     }

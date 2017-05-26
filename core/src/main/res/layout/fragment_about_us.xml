@@ -68,7 +68,6 @@
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:textSize="15sp"
-                android:text="@string/unavailable"
                 android:paddingTop="@dimen/about_us_text_view_bottom_padding"
                 app:font="@string/medium_font_name" />
 
@@ -86,26 +85,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/about_us_text_view_bottom_padding"
-                android:text="@string/unavailable"
                 android:autoLink="web"
                 android:textSize="15sp"
                 app:font="@string/medium_font_name" />
 
-            <ImageView
-                android:id="@+id/est_logo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_eyeseetea_logo" />
-
-            <org.hisp.dhis.android.sdk.ui.views.FontTextView
-                android:id="@+id/est_about"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/est_about"
-                android:textSize="15sp"
-                android:autoLink="web"
-                android:paddingBottom="@dimen/about_us_text_view_bottom_padding"
-                app:font="@string/medium_font_name" />
         </LinearLayout>
         </ScrollView>
 

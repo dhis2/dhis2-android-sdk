@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2016, University of Oslo
+  ~
+  ~ All rights reserved.
+  ~ Redistribution and use in source and binary forms, with or without
+  ~ modification, are permitted provided that the following conditions are met:
+  ~ Redistributions of source code must retain the above copyright notice, this
+  ~ list of conditions and the following disclaimer.
+  ~
+  ~ Redistributions in binary form must reproduce the above copyright notice,
+  ~ this list of conditions and the following disclaimer in the documentation
+  ~ and/or other materials provided with the distribution.
+  ~ Neither the name of the HISP project nor the names of its contributors may
+  ~ be used to endorse or promote products derived from this software without
+  ~ specific prior written permission.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ~ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  ~ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  ~ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+  ~ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  ~ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  ~ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  ~ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<resources>-->
+    <!-- Theme colours -->
+    <color name="color_primary_dark">#FF194261</color>
+    <color name="color_primary_default">#FF276696</color>
+    <color name="color_primary_light">#FF3284C3</color>
+
+    <color name="color_accent_dark">#FFF57C00</color>
+    <color name="color_accent_default">#FFFF9800</color>
+    <color name="color_accent_light">#FFFFE0B2</color>
+
+    <color name="color_material_red_dark">#FFD32F2F</color>
+    <color name="color_material_red_default">#FFF44336</color>
+    <color name="color_material_red_light">#FFFFCDD2</color>
+
+    <color name="color_material_green_default">#FF8BC34A</color>
+
+    <color name="color_divider">#FFB6B6B6</color>
+
+    <color name="color_text_primary">#FF212121</color>
+    <color name="color_text_primary_inverse">#FFFFFFFF</color>
+    <color name="color_text_secondary">#FF727272</color>
+
+    <color name="color_navigation_text_disabled">#24000000</color>
+    <color name="color_navigation_text_enabled">#8a000000</color>
+</resources>

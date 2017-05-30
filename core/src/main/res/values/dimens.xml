@@ -47,4 +47,7 @@
     <dimen name="dropdownListPreferredItemHeight">40dp</dimen>
 
     <integer name="activity_anim_duration">300</integer>
+
+    <dimen name="about_us_text_view_padding">13dp</dimen>
+    <dimen name="about_us_text_view_bottom_padding">6dp</dimen>
 </resources>

@@ -60,6 +60,7 @@ import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.ui.activities.INavigationHandler;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.TrackedEntityInstanceItemRow;
+import org.hisp.dhis.android.sdk.ui.fragments.AboutUsFragment;
 import org.hisp.dhis.android.sdk.ui.fragments.settings.SettingsFragment;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
@@ -243,6 +244,10 @@ public abstract class SelectProgramFragment extends Fragment
         if (id == R.id.action_settings) {
             mNavigationHandler.switchFragment(
                     new SettingsFragment(), SettingsFragment.TAG, true);
+        }
+        if (id == R.id.action_about) {
+            mNavigationHandler.switchFragment(
+                    new AboutUsFragment(), AboutUsFragment.TAG, true);
         }
 
         return super.onOptionsItemSelected(item);

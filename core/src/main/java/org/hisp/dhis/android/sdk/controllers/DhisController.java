@@ -31,7 +31,6 @@ package org.hisp.dhis.android.sdk.controllers;
 
 import android.content.Context;
 
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.squareup.okhttp.HttpUrl;
@@ -100,6 +99,10 @@ public final class DhisController {
     static void loadData(Context context) throws APIException, IllegalStateException {
         LoadingController.loadMetaData(context, getInstance().getDhisApi());
         LoadingController.loadDataValues(context, getInstance().getDhisApi());
+    }
+
+    static void syncRemotelyDeletedData(Context context) throws APIException, IllegalStateException {
+        LoadingController.syncRemotelyDeletedData(context, getInstance().getDhisApi());
     }
 
     static void sendData() throws APIException, IllegalStateException {

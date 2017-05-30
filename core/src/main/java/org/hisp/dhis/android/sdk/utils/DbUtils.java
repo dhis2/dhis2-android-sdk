@@ -166,4 +166,16 @@ public final class DbUtils {
 
         return ops;
     }
+
+    public static <T extends BaseIdentifiableObject> List<DbOperation> removeResources(List<T> list) {
+        List<DbOperation> ops = new ArrayList<>();
+        Map<String, T> listToBeRemoved = toMap(list);
+        // Remove items.
+        for (String newModelKey : listToBeRemoved.keySet()) {
+            T item = listToBeRemoved.get(newModelKey);
+            ops.add(DbOperation.delete(item));
+        }
+
+        return ops;
+    }
 }

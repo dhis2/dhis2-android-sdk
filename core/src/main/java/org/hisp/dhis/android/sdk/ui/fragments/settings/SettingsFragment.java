@@ -68,6 +68,7 @@ public class SettingsFragment extends Fragment
     private Spinner updateFrequencySpinner;
     private Button logoutButton;
     private Button synchronizeButton;
+    private Button synchronizeRemovedEventsButton;
     private ProgressBar mProgessBar;
     private TextView syncTextView;
     private String progressMessage;
@@ -92,12 +93,14 @@ public class SettingsFragment extends Fragment
         updateFrequencySpinner.setOnItemSelectedListener(this);
 
         synchronizeButton = (Button) view.findViewById(R.id.settings_sync_button);
+        synchronizeRemovedEventsButton = (Button) view.findViewById(R.id.settings_sync_remotely_deleted_events_button);
         logoutButton = (Button) view.findViewById(R.id.settings_logout_button);
         mProgessBar = (ProgressBar) view.findViewById(R.id.settings_progessbar);
         syncTextView = (TextView) view.findViewById(R.id.settings_sync_textview);
         mProgessBar.setVisibility(View.GONE);
         logoutButton.setOnClickListener(this);
         synchronizeButton.setOnClickListener(this);
+        synchronizeRemovedEventsButton.setOnClickListener(this);
 
         //if(DhisController.isLoading() && getProgressMessage() != null)
         {
@@ -147,12 +150,26 @@ public class SettingsFragment extends Fragment
                         DhisService.synchronize(context);
                     }
                 }.start();
-                synchronizeButton.setEnabled(false);
-                mProgessBar.setVisibility(View.VISIBLE);
-                synchronizeButton.setText("Synchronizing...");
+                startSync();
+            }
+        } else if (view.getId() == R.id.settings_sync_remotely_deleted_events_button) {
+            if (isAdded()) {
+                final Context context = getActivity().getBaseContext();
+                Toast.makeText(context, getString(R.string.sync_deleted_events), Toast.LENGTH_SHORT).show();
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        DhisService.synchronizeRemotelyDeletedEvents(context);
+                    }
+                }.start();
+                startSync();
             }
         }
+
+
     }
+
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -191,24 +208,39 @@ public class SettingsFragment extends Fragment
     {
         if(!enable)
         {
-            synchronizeButton.setEnabled(false);
-            mProgessBar.setVisibility(View.VISIBLE);
-            synchronizeButton.setText("Synchronizing...");
-            syncTextView.setText(getProgressMessage());
+            startSync();
         }
         else
         {
-            synchronizeButton.setEnabled(true);
-            mProgessBar.setVisibility(View.GONE);
-            syncTextView.setText(/*DhisController.getLastSynchronizationSummary()*/"");
-            synchronizeButton.setText(R.string.synchronize_with_server);
+            endSync();
         }
+        syncTextView.setText(getProgressMessage());
+    }
+
+    private void startSync() {
+        synchronizeButton.setEnabled(false);
+        synchronizeRemovedEventsButton.setEnabled(false);
+        mProgessBar.setVisibility(View.VISIBLE);
+        synchronizeButton.setText("Synchronizing...");
+        synchronizeRemovedEventsButton.setText("Synchronizing...");
+    }
+
+    private void endSync() {
+        synchronizeButton.setEnabled(true);
+        synchronizeRemovedEventsButton.setEnabled(true);
+        mProgessBar.setVisibility(View.GONE);
+        syncTextView.setText("");
+        synchronizeButton.setText(R.string.synchronize_with_server);
+        synchronizeRemovedEventsButton.setText(R.string.synchronize_deleted_events);
     }
 
     @Subscribe
     public void onSynchronizationFinishedEvent(final UiEvent event)
     {
-        if(event.getEventType().equals(UiEvent.UiEventType.SYNCING_END))
+        if(event.getEventType().equals(UiEvent.UiEventType.SYNCING_START))
+        {
+            enableUi(false);
+        } else if(event.getEventType().equals(UiEvent.UiEventType.SYNCING_END))
         {
             enableUi(true);
         }
@@ -231,6 +263,7 @@ public class SettingsFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(TAG, "sync: on resume" );
         Dhis2Application.getEventBus().register(this);
 
         //if(!DhisController.isLoading())

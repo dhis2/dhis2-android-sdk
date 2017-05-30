@@ -71,4 +71,6 @@ public interface EnrollmentStore {
                @Nullable String longitude,
                @NonNull State state,
                @NonNull String whereEnrollmentUid);
+
+    int setState(@NonNull String uid, @NonNull State state);
 }

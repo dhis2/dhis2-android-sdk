@@ -32,6 +32,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.imports.ImportStatus;
 
 import java.util.Date;
 
@@ -54,4 +55,6 @@ public interface TrackedEntityInstanceStore {
                @NonNull String whereTrackedEntityInstanceUid);
 
     int delete(@NonNull String uid);
+
+    int setState(@NonNull String uid, @NonNull State state);
 }

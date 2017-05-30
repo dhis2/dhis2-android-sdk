@@ -386,6 +386,31 @@ public class EventStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).isExhausted();
     }
 
+    @Test
+    public void setState_shouldUpdateEventState() throws Exception {
+        ContentValues event = new ContentValues();
+        event.put(Columns.UID, EVENT_UID);
+        event.put(Columns.PROGRAM, PROGRAM);
+        event.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+        event.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
+        event.put(Columns.STATE, STATE.name());
+        database().insert(EventModel.TABLE, null, event);
+
+        String[] projection = {Columns.UID, Columns.STATE};
+        Cursor cursor = database().query(EventModel.TABLE, projection, null, null, null, null, null);
+
+        // check that event was successfully inserted into database
+        assertThatCursor(cursor).hasRow(EVENT_UID, STATE).isExhausted();
+        State updatedState = State.ERROR;
+        eventStore.setState(EVENT_UID, updatedState);
+
+        cursor = database().query(EventModel.TABLE, projection, null, null, null, null, null);
+
+        // check that state was updated
+        assertThatCursor(cursor).hasRow(EVENT_UID, updatedState);
+
+    }
+
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistEventWithInvalidProgramForeignKey() {
         eventStore.insert(

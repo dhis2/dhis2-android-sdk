@@ -79,6 +79,11 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
             " WHERE " +
             Columns.UID + " =?;";
 
+    private static final String UPADTE_STATE_STATEMENT = "UPDATE " + EnrollmentModel.TABLE + " SET " +
+            Columns.STATE + " =? " +
+            " WHERE " +
+            Columns.UID + " =?;";
+
     private static final String DELETE_STATEMENT = "DELETE FROM " +
             EnrollmentModel.TABLE + " WHERE " +
             Columns.UID + " =?;";
@@ -86,6 +91,7 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
+    private final SQLiteStatement setStateStatement;
     private final DatabaseAdapter databaseAdapter;
 
     public EnrollmentStoreImpl(DatabaseAdapter databaseAdapter) {
@@ -93,6 +99,7 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
         this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
         this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
         this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
+        this.setStateStatement = databaseAdapter.compileStatement(UPADTE_STATE_STATEMENT);
     }
 
 
@@ -103,7 +110,7 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
                        @Nullable Date dateOfIncident, @Nullable Boolean followUp,
                        @Nullable EnrollmentStatus enrollmentStatus, @NonNull String trackedEntityInstance,
                        @Nullable String latitude, @Nullable String longitude, @Nullable State state) {
-        insertStatement.clearBindings();
+
 
         sqLiteBind(insertStatement, 1, uid);
         sqLiteBind(insertStatement, 2, created);
@@ -121,12 +128,14 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
         sqLiteBind(insertStatement, 14, longitude);
         sqLiteBind(insertStatement, 15, state);
 
-        return databaseAdapter.executeInsert(EnrollmentModel.TABLE, insertStatement);
+        long insert = databaseAdapter.executeInsert(EnrollmentModel.TABLE, insertStatement);
+        insertStatement.clearBindings();
+
+        return insert;
     }
 
     @Override
     public int delete(@NonNull String uid) {
-        deleteStatement.clearBindings();
         sqLiteBind(deleteStatement, 1, uid);
 
         int rowId = deleteStatement.executeUpdateDelete();
@@ -143,7 +152,6 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
                       @Nullable Boolean followUp, @NonNull EnrollmentStatus enrollmentStatus,
                       @NonNull String trackedEntityInstance, @Nullable String latitude,
                       @Nullable String longitude, @NonNull State state, @NonNull String whereEnrollmentUid) {
-        updateStatement.clearBindings();
 
         sqLiteBind(updateStatement, 1, uid);
         sqLiteBind(updateStatement, 2, created);
@@ -168,5 +176,18 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
         updateStatement.clearBindings();
 
         return rowId;
+    }
+
+    @Override
+    public int setState(@NonNull String uid, @NonNull State state) {
+        sqLiteBind(setStateStatement, 1, state);
+
+        // bind the where clause
+        sqLiteBind(setStateStatement, 2, uid);
+
+        int update = databaseAdapter.executeUpdateDelete(EnrollmentModel.TABLE, setStateStatement);
+        setStateStatement.clearBindings();
+
+        return update;
     }
 }

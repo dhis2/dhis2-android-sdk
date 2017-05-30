@@ -220,6 +220,35 @@ public class TrackedEntityInstanceStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).isExhausted();
     }
 
+    @Test
+    public void setState_shouldUpdateTrackedEntityInstanceState() throws Exception {
+        ContentValues trackedEntityInstance = new ContentValues();
+        trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.UID, UID);
+        trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
+        trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.TRACKED_ENTITY, TRACKED_ENTITY);
+        trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.STATE, STATE.name());
+
+        database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
+
+        String[] projection = {
+                TrackedEntityInstanceModel.Columns.UID,
+                TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT,
+                TrackedEntityInstanceModel.Columns.TRACKED_ENTITY,
+                TrackedEntityInstanceModel.Columns.STATE
+        };
+
+        Cursor cursor = database().query(TrackedEntityInstanceModel.TABLE, projection, null, null, null, null, null);
+        // check that tracked entity instance was successfully inserted
+        assertThatCursor(cursor).hasRow(UID, ORGANISATION_UNIT, TRACKED_ENTITY, STATE).isExhausted();
+        State updatedState = State.SYNCED;
+        trackedEntityInstanceStore.setState(UID, updatedState);
+
+        cursor = database().query(TrackedEntityInstanceModel.TABLE, projection, null, null, null, null, null);
+
+        // check that trackedEntityInstance is updated with updated state
+        assertThatCursor(cursor).hasRow(UID, ORGANISATION_UNIT, TRACKED_ENTITY, updatedState).isExhausted();
+    }
+
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistTrackedEntityInstanceWithInvalidOrgUnitForeignKey() {
         trackedEntityInstanceStore.insert(UID, date, date, CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,

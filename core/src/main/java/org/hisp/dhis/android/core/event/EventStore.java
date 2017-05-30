@@ -74,4 +74,6 @@ public interface EventStore {
     );
 
     int delete(@NonNull String uid);
+
+    int setState(@NonNull String uid, @NonNull State state);
 }

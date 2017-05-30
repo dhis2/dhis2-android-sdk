@@ -81,6 +81,11 @@ public class EventStoreImpl implements EventStore {
             " WHERE " +
             Columns.UID + " =?;";
 
+    private static final String UPDATE_STATE_STATEMENT = "UPDATE " + EventModel.TABLE + " SET " +
+            Columns.STATE + " =? " +
+            " WHERE " +
+            Columns.UID + " =?;";
+
     private static final String DELETE_STATEMENT = "DELETE FROM " +
             EventModel.TABLE + " WHERE " +
             Columns.UID + " =?;";
@@ -88,6 +93,7 @@ public class EventStoreImpl implements EventStore {
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
+    private final SQLiteStatement setStateStatement;
     private final DatabaseAdapter databaseAdapter;
 
     public EventStoreImpl(DatabaseAdapter databaseAdapter) {
@@ -95,6 +101,7 @@ public class EventStoreImpl implements EventStore {
         this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
         this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
         this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
+        this.setStateStatement = databaseAdapter.compileStatement(UPDATE_STATE_STATEMENT);
     }
 
     @Override
@@ -106,7 +113,6 @@ public class EventStoreImpl implements EventStore {
                        @NonNull String programStage, @NonNull String organisationUnit,
                        @Nullable Date eventDate, @Nullable Date completedDate,
                        @Nullable Date dueDate, @Nullable State state) {
-        insertStatement.clearBindings();
 
         sqLiteBind(insertStatement, 1, uid);
         sqLiteBind(insertStatement, 2, enrollmentUid);
@@ -125,7 +131,10 @@ public class EventStoreImpl implements EventStore {
         sqLiteBind(insertStatement, 15, dueDate);
         sqLiteBind(insertStatement, 16, state);
 
-        return databaseAdapter.executeInsert(EventModel.TABLE, insertStatement);
+        long insert = databaseAdapter.executeInsert(EventModel.TABLE, insertStatement);
+
+        insertStatement.clearBindings();
+        return insert;
     }
 
     @Override
@@ -138,7 +147,6 @@ public class EventStoreImpl implements EventStore {
                       @NonNull Date eventDate, @Nullable Date completedDate,
                       @Nullable Date dueDate, @NonNull State state,
                       @NonNull String whereEventUid) {
-        updateStatement.clearBindings();
 
         sqLiteBind(updateStatement, 1, uid);
         sqLiteBind(updateStatement, 2, enrollmentUid);
@@ -168,13 +176,23 @@ public class EventStoreImpl implements EventStore {
 
     @Override
     public int delete(@NonNull String uid) {
-        deleteStatement.clearBindings();
         sqLiteBind(deleteStatement, 1, uid);
 
         int rowId = deleteStatement.executeUpdateDelete();
         deleteStatement.clearBindings();
 
         return rowId;
+    }
+
+    @Override
+    public int setState(@NonNull String uid, @NonNull State state) {
+        sqLiteBind(setStateStatement, 1, state);
+        sqLiteBind(setStateStatement, 2, uid);
+
+        int update = databaseAdapter.executeUpdateDelete(EventModel.TABLE, setStateStatement);
+        setStateStatement.clearBindings();
+
+        return update;
     }
 
 }

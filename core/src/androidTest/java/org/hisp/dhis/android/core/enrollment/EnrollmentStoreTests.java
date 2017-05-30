@@ -372,6 +372,34 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).isExhausted();
     }
 
+    @Test
+    public void setState_shouldUpdateEnrollmentState() throws Exception {
+        ContentValues enrollment = new ContentValues();
+        enrollment.put(EnrollmentModel.Columns.UID, UID);
+        enrollment.put(EnrollmentModel.Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
+        enrollment.put(EnrollmentModel.Columns.PROGRAM, PROGRAM);
+        enrollment.put(EnrollmentModel.Columns.TRACKED_ENTITY_INSTANCE, TRACKED_ENTITY_INSTANCE);
+        enrollment.put(EnrollmentModel.Columns.STATE, STATE.name());
+
+        database().insert(EnrollmentModel.TABLE, null, enrollment);
+
+        String[] projection = {EnrollmentModel.Columns.UID, EnrollmentModel.Columns.STATE};
+
+        Cursor cursor = database().query(EnrollmentModel.TABLE, projection, null, null, null, null, null);
+
+        // check that enrollment was successfully inserted into database
+        assertThatCursor(cursor).hasRow(UID, STATE).isExhausted();
+
+        State updatedState = State.ERROR;
+        enrollmentStore.setState(UID, updatedState);
+
+        cursor = database().query(EnrollmentModel.TABLE, projection, null, null, null, null, null);
+
+        // check that state is updated
+        assertThatCursor(cursor).hasRow(UID, updatedState);
+
+    }
+
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistEnrollWithInvalidOrgUnitForeignKey() {
         enrollmentStore.insert(

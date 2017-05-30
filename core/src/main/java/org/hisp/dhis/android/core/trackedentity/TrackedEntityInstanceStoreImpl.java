@@ -64,6 +64,11 @@ class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
             " WHERE " +
             TrackedEntityInstanceModel.Columns.UID + " =?;";
 
+    private static final String SET_STATE_STATEMENT = "UPDATE " + TrackedEntityInstanceModel.TABLE + " SET " +
+            TrackedEntityInstanceModel.Columns.STATE + " =?" +
+            " WHERE " +
+            TrackedEntityInstanceModel.Columns.UID + " =?;";
+
     private static final String DELETE_STATEMENT = "DELETE FROM " +
             TrackedEntityInstanceModel.TABLE +
             " WHERE " +
@@ -72,6 +77,7 @@ class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
     private final SQLiteStatement insertRowStatement;
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
+    private final SQLiteStatement setStateStatement;
     private final DatabaseAdapter databaseAdapter;
 
     TrackedEntityInstanceStoreImpl(DatabaseAdapter databaseAdapter) {
@@ -79,6 +85,7 @@ class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
         this.insertRowStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
         this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
         this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
+        this.setStateStatement = databaseAdapter.compileStatement(SET_STATE_STATEMENT);
     }
 
     @Override
@@ -129,12 +136,24 @@ class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
 
     @Override
     public int delete(@NonNull String uid) {
-        deleteStatement.clearBindings();
         sqLiteBind(deleteStatement, 1, uid);
 
         int rowId = deleteStatement.executeUpdateDelete();
         deleteStatement.clearBindings();
 
         return rowId;
+    }
+
+    @Override
+    public int setState(@NonNull String uid, @NonNull State state) {
+        sqLiteBind(setStateStatement, 1, state);
+
+        // bind the where argument
+        sqLiteBind(setStateStatement, 2, uid);
+
+        int updatedRow = databaseAdapter.executeUpdateDelete(TrackedEntityInstanceModel.TABLE, setStateStatement);
+        setStateStatement.clearBindings();
+
+        return updatedRow;
     }
 }

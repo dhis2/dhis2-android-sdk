@@ -78,7 +78,7 @@ public enum ValueType {
             TEXT, LONG_TEXT, LETTER, COORDINATE));
 
     public static final Set<ValueType> DATE_TYPES = new HashSet<>(Arrays.asList(
-            DATE, DATETIME));
+            DATE, DATETIME, AGE));
 
     private final Class<?> javaClass;
 

@@ -35,6 +35,7 @@ import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -63,6 +64,7 @@ public class EditTextRow extends Row {
                 !DataEntryRowTypes.LONG_TEXT.equals(rowType) &&
                 !DataEntryRowTypes.NUMBER.equals(rowType) &&
                 !DataEntryRowTypes.INTEGER.equals(rowType) &&
+                !DataEntryRowTypes.PERCENTAGE.equals(rowType) &&
                 !DataEntryRowTypes.INTEGER_NEGATIVE.equals(rowType) &&
                 !DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE.equals(rowType) &&
                 !DataEntryRowTypes.INTEGER_POSITIVE.equals(rowType)) {
@@ -87,7 +89,7 @@ public class EditTextRow extends Row {
             TextView mandatoryIndicator = (TextView) root.findViewById(R.id.mandatory_indicator);
             TextView warningLabel = (TextView) root.findViewById(R.id.warning_label);
             TextView errorLabel = (TextView) root.findViewById(R.id.error_label);
-            EditText editText = (EditText) root.findViewById(R.id.edit_text_row);
+            final EditText editText = (EditText) root.findViewById(R.id.edit_text_row);
             detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
 
             if (DataEntryRowTypes.TEXT.equals(mRowType)) {
@@ -108,6 +110,21 @@ public class EditTextRow extends Row {
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER |
                         InputType.TYPE_NUMBER_FLAG_SIGNED);
                 editText.setHint(R.string.enter_integer);
+                editText.setSingleLine(true);
+            } else if (DataEntryRowTypes.PERCENTAGE.equals(mRowType)) {
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER |
+                        InputType.TYPE_NUMBER_FLAG_SIGNED);
+                editText.setHint(R.string.enter_percentage);
+                editText.setFilters(new InputFilter[]{new PercentageFilter()});
+                int pos = editText.getText().length();
+                editText.setSelection(pos);
+                editText.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        editText.requestFocus(editText.getText().length());
+                        return true;
+                    }
+                });
                 editText.setSingleLine(true);
             } else if (DataEntryRowTypes.INTEGER_NEGATIVE.equals(mRowType)) {
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER |
@@ -272,4 +289,35 @@ public class EditTextRow extends Row {
             return str;
         }
     }
+
+    private static class PercentageFilter implements InputFilter {
+
+        @Override
+        public CharSequence filter(CharSequence str, int start, int end,
+                Spanned spn, int spnStart, int spnEnd) {
+
+            String value = spn.toString();
+            if(value.isEmpty()){
+                return str;
+            }
+
+            if(str.length()==0 || value.equals("0") || value.equals("100")){
+                return "";
+            }
+
+            if((value.equals("10") && str.charAt(0) == '0')){
+                return str;
+            }else if(value.matches("^\\d{2}$")){
+                return "";
+            }
+
+            if ((spn.length() > 0) && (spnStart == 0)
+                    && (str.length() > 0) && (str.charAt(0) == '0')) {
+                return "";
+            }
+
+            return str;
+        }
+    }
 }
+

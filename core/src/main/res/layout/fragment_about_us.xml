@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/about_us_text_view_padding"
                 android:paddingBottom="@dimen/about_us_text_view_padding"
-                android:src="@drawable/ic_launcher" />
+                android:src="@drawable/dhis2_logo" />
 
             <org.hisp.dhis.android.sdk.ui.views.FontTextView
                 android:id="@+id/app_name"

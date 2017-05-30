@@ -45,7 +45,7 @@ public class AboutUsFragment extends Fragment {
         return stringCommit;
     }
 
-    private static StringBuilder convertFromInputStreamToString(InputStream inputStream) {
+    protected static StringBuilder convertFromInputStreamToString(InputStream inputStream) {
         StringBuilder stringBuilder = new StringBuilder();
 
         try {

@@ -1,10 +1,4 @@
-Android version of the DHIS 2 app Event Capture. Works for 2.23+ version of DHIS. <br/>
-For previous versions find apk files on our github page www.github.com/dhis2/dhis2-android-eventcapture . <br/>
-
-To test this application it is possible to use the test server using the following information: <br/>
-Server url: https://play.dhis2.org/demo <br/>
-Login: android <br/>
-Password: Android123 <br/>
+This App has been developed by using the UiO Android SDK. Please find more information about this SDK in the following repository: https://github.com/dhis2/dhis2-android-sdk<br/><br/>
 
 Developed by University of Oslo(UiO) (http://www.uio.no).<br/><br/>
 Maintained by EyeSeeTea Ltd (http://eyeseetea.com).<br/><br/>

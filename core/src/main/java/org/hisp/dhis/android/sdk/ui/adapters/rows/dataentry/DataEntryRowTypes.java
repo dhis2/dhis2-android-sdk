@@ -47,5 +47,6 @@ public enum DataEntryRowTypes {
     ENROLLMENT_DATE,
     COORDINATES,
     DATAVALUECOORDINATES,
+    PERCENTAGE,
     PHONE_NUMBER
 }

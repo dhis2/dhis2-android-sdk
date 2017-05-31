@@ -244,7 +244,29 @@
     <string name="detailed_info_dataelement">Detailed information</string>
     <string name="detailed_info_coordinate_row">Please enter the GPS coordinates by pressing the button on the right side of the row. If it does not work, please check your data and/or GPS connection.</string>
     <string name="detailed_info_status_row">Please press the complete button when you are finished with entering data. Press the validate button to check if the entered data is valid.</string>
+    <string name="action_about">About this app</string>
 
+
+    <!-- last commit -->
+    <string name="about_this_app">About this app</string>
+    <string name="app_version">App version: %s</string>
+    <string name="last_commit">Commit hash: %s</string>
+    <string name="unavailable">Unavailable</string>
+    <string name="est_about">This app is under the maintenance of EyeSeeTea Ltd (http://eyeseetea.com)</string>
+
+    <string name="lastcommit_unavailable"><![CDATA[
+    <p>This option requires some changes in the git repository.</p>
+    <p>Steps:</p>
+    <p>1. Please open or create the .git/hooks/post-commit and .git/hooks/post-checkout files.</p>
+    <p>2. If the file does not exist, add the following lines: </p>
+    <p>#!/bin/sh </p>
+    <p>gitPath=$(git rev-parse --show-toplevel)</p>
+    <p>sh ${gitPath}/generate_last_commit.sh </p>
+    <p>2. If the file already exists, you only need add the following lines at the end:</p>
+    <p>gitPath=$(git rev-parse --show-toplevel)</p>
+    <p>sh ${gitPath}/generate_last_commit.sh </p>
+    <p>3. Run "git checkout". </p>]]>
+    </string>
     <string name="error_exporting_data">"Error metadata could not be exported."</string>
     <string name="export_data_name">Export database</string>
     <string name="developers_settings">Developers options</string>

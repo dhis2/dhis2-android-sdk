@@ -179,7 +179,7 @@ public class ImportSummaryTests {
         assertThat(importSummary.reference()).isEqualTo("Rmp5T1vmZ74");
 
         assertThat(importSummary.importEvent()).isNull();
-        assertThat(importSummary.importEnrollments()).isNotNull();
+        assertThat(importSummary.importEnrollment()).isNotNull();
 
 
     }

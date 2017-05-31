@@ -40,7 +40,7 @@ public abstract class ImportSummary {
 
     @Nullable
     @JsonProperty(IMPORT_ENROLLMENT)
-    public abstract ImportEnrollment importEnrollments();
+    public abstract ImportEnrollment importEnrollment();
 
     @Nullable
     @JsonProperty(IMPORT_EVENT)

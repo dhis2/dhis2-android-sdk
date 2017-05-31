@@ -31,7 +31,6 @@ package org.hisp.dhis.android.sdk.ui.fragments.settings;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -61,10 +60,7 @@ import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.network.Session;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.preferences.AppPreferences;
-import org.hisp.dhis.android.sdk.ui.views.FontButton;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
-
-import java.io.IOException;
 
 /**
  * Basic settings Fragment giving users options to change update frequency to the server,

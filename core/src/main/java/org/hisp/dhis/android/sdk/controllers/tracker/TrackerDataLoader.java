@@ -137,38 +137,42 @@ final class TrackerDataLoader extends ResourceController {
 
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.EVENTS)) {
             for (OrganisationUnit organisationUnit : assignedOrganisationUnits) {
-                if (organisationUnit.getId() == null || organisationUnit.getId().length() == Utils.randomUUID.length()) {
+                if (organisationUnit.getId() == null
+                        || organisationUnit.getId().length() == Utils.randomUUID.length()) {
                     continue;
                 }
 
                 List<Program> programsForOrgUnit = new ArrayList<>();
-                List<Program> programsForOrgUnitSEWoR = MetaDataController.getProgramsForOrganisationUnit
-                        (organisationUnit.getId(),
-                                ProgramType.WITHOUT_REGISTRATION);
+                List<Program> programsForOrgUnitSEWoR =
+                        MetaDataController.getProgramsForOrganisationUnit
+                                (organisationUnit.getId(),
+                                        ProgramType.WITHOUT_REGISTRATION);
                 if (programsForOrgUnitSEWoR != null) {
                     programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
+                    if (programsForOrgUnitSEWoR.size() > 0) {
+                        programsForOrganisationUnits.put(organisationUnit.getId(),
+                                programsForOrgUnit);
+                    }
                 }
-
-                programsForOrganisationUnits.put(organisationUnit.getId(), programsForOrgUnit);
             }
 
-            for (final OrganisationUnit organisationUnit : assignedOrganisationUnits) {
-                if (organisationUnit.getId() == null || organisationUnit.getId().length() == Utils.randomUUID.length())
-                    continue;
-
-                for (final Program program : programsForOrganisationUnits.get(organisationUnit.getId())) {
-                    if (program.getUid() == null || program.getUid().length() == Utils.randomUUID.length())
+            for (String organisationUnitUid : programsForOrganisationUnits.keySet()) {
+                for (Program program : programsForOrganisationUnits.get(organisationUnitUid)) {
+                    if (program.getUid() == null
+                            || program.getUid().length() == Utils.randomUUID.length())
                         continue;
 
-                        UiUtils.postProgressMessage(context.getString(R.string.sync_deleted_events) + ": "
-                                + organisationUnit.getLabel() + ": " + program.getName());
-                        try {
-                            deleteRemotelyDeletedEvents(dhisApi, organisationUnit.getId(), program.getUid());
-                        } catch (APIException e) {
-                            e.printStackTrace();
-                            //todo: could probably do something prettier here. This catch is done to prevent
-                            // stopping loading of the following program/orgUnit as throwing and exception would exit the loop..
-                        }
+                    UiUtils.postProgressMessage(context.getString(R.string.sync_deleted_events) + ": "
+                            + organisationUnitUid + ": " + program.getName());
+
+                    try {
+                        deleteRemotelyDeletedEvents(dhisApi, organisationUnitUid, program.getUid());
+                    } catch (APIException e) {
+                        e.printStackTrace();
+                        //todo: could probably do something prettier here. This catch is done to
+                        // prevent
+                        // stopping loading of the following program/orgUnit as throwing and exception would exit the loop..
+                    }
                 }
             }
         }
@@ -196,7 +200,7 @@ final class TrackerDataLoader extends ResourceController {
         map.put("fields", "[event]");
         map.put("skipPaging", "true");
 
-        List<Event> localEvents = TrackerController.getEvents(organisationUnitUid,programUid);
+        List<Event> localEvents = TrackerController.getEvents(organisationUnitUid,programUid, true);
         List<Event> eventsToBeRemoved = new ArrayList<>();
         if(localEvents.size()==0) {
             return;

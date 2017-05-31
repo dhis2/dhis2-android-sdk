@@ -196,6 +196,22 @@ public final class TrackerController extends ResourceController {
     }
 
     /**
+     * Returns a list of events for a given org unit and from server
+     *
+     * @param organisationUnitId
+     * @param programId
+     * @return
+     */
+    public static List<Event> getEvents(String organisationUnitId, String programId, boolean isFromServer) {
+        List<Event> events = new Select().from(Event.class).where(Condition.column
+                (Event$Table.ORGANISATIONUNITID).is(organisationUnitId)).
+                and(Condition.column(Event$Table.PROGRAMID).is(programId))
+                .and(Condition.column(Event$Table.FROMSERVER).is(isFromServer))
+                .orderBy(false, Event$Table.LASTUPDATED).queryList();
+        return events;
+    }
+
+    /**
      * Returns an Event based on the given localId
      *
      * @param localId

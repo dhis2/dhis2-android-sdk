@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (c) 2016, University of Oslo
+  ~
+  ~ All rights reserved.
+  ~ Redistribution and use in source and binary forms, with or without
+  ~ modification, are permitted provided that the following conditions are met:
+  ~ Redistributions of source code must retain the above copyright notice, this
+  ~ list of conditions and the following disclaimer.
+  ~
+  ~ Redistributions in binary form must reproduce the above copyright notice,
+  ~ this list of conditions and the following disclaimer in the documentation
+  ~ and/or other materials provided with the distribution.
+  ~ Neither the name of the HISP project nor the names of its contributors may
+  ~ be used to endorse or promote products derived from this software without
+  ~ specific prior written permission.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ~ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  ~ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  ~ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+  ~ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  ~ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  ~ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  ~ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/color_primary_default"
+            android:fillViewport="true"
+            android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/layout_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:padding="8dp">
+
+        <FrameLayout
+            android:id="@+id/layout_dhis_logo"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_centerHorizontal="true">
+
+            <org.hisp.dhis.client.sdk.ui.views.CircleView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:circle_radius="50dp"
+                app:stroke_color="@android:color/white"
+                app:stroke_width="@dimen/circle_stroke_width"/>
+
+            <fr.castorflex.android.circularprogressbar.CircularProgressBar
+                android:id="@+id/progress_bar_circular"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:indeterminate="true"/>
+
+            <org.hisp.dhis.client.sdk.ui.views.FontTextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/two"
+                android:textColor="@android:color/white"
+                android:textSize="74sp"
+                app:font="@string/font_name_regular"/>
+
+        </FrameLayout>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/layout_login_views"
+            android:layout_width="384dp"
+            android:layout_height="384dp"
+            android:layout_below="@id/layout_dhis_logo"
+            android:layout_centerHorizontal="true"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:weightSum="1">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginBottom="8dp">
+
+                    <org.hisp.dhis.client.sdk.ui.views.FontTextInputEditText
+                        android:id="@+id/edittext_server_url"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:hint="@string/server_url"
+                        android:inputType="textUri"
+                        android:singleLine="true"
+                        app:font="@string/font_name_regular"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginBottom="8dp">
+
+                    <org.hisp.dhis.client.sdk.ui.views.FontTextInputEditText
+                        android:id="@+id/edittext_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:hint="@string/username"
+                        android:inputType="text"
+                        android:singleLine="true"
+                        app:font="@string/font_name_regular"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginBottom="16dp">
+
+                    <org.hisp.dhis.client.sdk.ui.views.FontTextInputEditText
+                        android:id="@+id/edittext_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:hint="@string/password"
+                        android:inputType="textPassword"
+                        android:singleLine="true"
+                        app:font="@string/font_name_regular"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <org.hisp.dhis.client.sdk.ui.views.FontButton
+                    android:id="@+id/button_log_in"
+                    android:layout_width="196dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/button_selector_accent"
+                    android:text="@string/log_in"
+                    android:textAllCaps="true"
+                    android:textColor="@android:color/white"
+                    android:textSize="17sp"
+                    app:font="@string/font_name_medium"/>
+
+                <org.hisp.dhis.client.sdk.ui.views.FontButton
+                    android:id="@+id/button_log_out"
+                    android:layout_width="196dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/button_selector_red"
+                    android:text="@string/clear_and_logout"
+                    android:textAllCaps="true"
+                    android:textColor="@android:color/white"
+                    android:textSize="17sp"
+                    app:font="@string/font_name_medium"/>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </RelativeLayout>
+
+</ScrollView>

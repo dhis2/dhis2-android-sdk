@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<org.hisp.dhis.client.sdk.ui.views.FontTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="2dp"
+    android:singleLine="true"
+    android:textSize="@dimen/text_size_medium"
+    app:font="@string/font_name_light"
+    tools:text="Placeholder text" />

@@ -31,6 +31,7 @@ package org.hisp.dhis.android.sdk.ui.fragments.settings;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -53,7 +54,10 @@ import org.hisp.dhis.android.sdk.controllers.PeriodicSynchronizerController;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis.android.sdk.ui.views.FontButton;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
+
+import java.io.IOException;
 
 /**
  * Basic settings Fragment giving users options to change update frequency to the server,
@@ -82,11 +86,7 @@ public class SettingsFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_settings, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_settings, container, false);
         updateFrequencySpinner = (Spinner) view.findViewById(R.id.settings_update_frequency_spinner);
         updateFrequencySpinner.setSelection(PeriodicSynchronizerController.getUpdateFrequency(getActivity()));
         updateFrequencySpinner.setOnItemSelectedListener(this);
@@ -98,17 +98,7 @@ public class SettingsFragment extends Fragment
         mProgessBar.setVisibility(View.GONE);
         logoutButton.setOnClickListener(this);
         synchronizeButton.setOnClickListener(this);
-
-        //if(DhisController.isLoading() && getProgressMessage() != null)
-        {
-            //syncTextView.setText(getProgressMessage());
-            //Log.d(TAG, getProgressMessage());
-        }
-        //else if(!DhisController.isLoading())
-        {
-            //setSummaryFromLastSync in syncTextView
-            //syncTextView.setText(DhisController.getLastSynchronizationSummary());
-        }
+        return view;
     }
 
     @Override

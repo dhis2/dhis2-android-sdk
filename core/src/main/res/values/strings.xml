@@ -183,6 +183,7 @@
     <string name="enter_long_text">Enter long text</string>
     <string name="enter_number">Enter number</string>
     <string name="enter_integer">Enter integer</string>
+    <string name="enter_percentage">Enter percentage</string>
     <string name="enter_negative_integer">Enter negative integer</string>
     <string name="enter_positive_integer_or_zero">Enter positive integer or zero</string>
     <string name="enter_positive_integer">Enter positive integer</string>
@@ -269,4 +270,9 @@
     <p>sh ${gitPath}/generate_last_commit.sh </p>
     <p>3. Run "git checkout". </p>]]>
     </string>
+    <string name="error_exporting_data">"Error metadata could not be exported."</string>
+    <string name="export_data_name">Export database</string>
+    <string name="developers_settings">Developers options</string>
+    <string name="developer_option_key">developer optionkey</string>
+    <string name="developer_option_title">"Show developer options"</string>
 </resources>

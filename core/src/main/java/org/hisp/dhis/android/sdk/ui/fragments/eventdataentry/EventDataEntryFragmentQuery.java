@@ -299,6 +299,10 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
             row = new CheckBoxRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue);
         } else if (dataElement.getValueType().equals(ValueType.DATE)) {
             row = new DatePickerRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, programStageDataElement.getAllowFutureDate());
+        } else if (dataElement.getValueType().equals(ValueType.AGE)) {
+            row = new DatePickerRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, programStageDataElement.getAllowFutureDate());
+        } else if (dataElement.getValueType().equals(ValueType.PERCENTAGE)) {
+            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.PERCENTAGE);
         } else {
             row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.LONG_TEXT);
         }

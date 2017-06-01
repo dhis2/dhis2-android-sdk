@@ -69,7 +69,7 @@ public class SettingsFragment extends Fragment
     private Button logoutButton;
     private Button synchronizeButton;
     private Button synchronizeRemovedEventsButton;
-    private ProgressBar mProgessBar;
+    private ProgressBar mProgressBar;
     private TextView syncTextView;
     private String progressMessage;
 
@@ -83,11 +83,7 @@ public class SettingsFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_settings, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_settings, container, false);
         updateFrequencySpinner = (Spinner) view.findViewById(R.id.settings_update_frequency_spinner);
         updateFrequencySpinner.setSelection(PeriodicSynchronizerController.getUpdateFrequency(getActivity()));
         updateFrequencySpinner.setOnItemSelectedListener(this);
@@ -95,13 +91,12 @@ public class SettingsFragment extends Fragment
         synchronizeButton = (Button) view.findViewById(R.id.settings_sync_button);
         synchronizeRemovedEventsButton = (Button) view.findViewById(R.id.settings_sync_remotely_deleted_events_button);
         logoutButton = (Button) view.findViewById(R.id.settings_logout_button);
-        mProgessBar = (ProgressBar) view.findViewById(R.id.settings_progessbar);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.settings_progessbar);
         syncTextView = (TextView) view.findViewById(R.id.settings_sync_textview);
-        mProgessBar.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
         logoutButton.setOnClickListener(this);
         synchronizeButton.setOnClickListener(this);
         synchronizeRemovedEventsButton.setOnClickListener(this);
-
         //if(DhisController.isLoading() && getProgressMessage() != null)
         {
             //syncTextView.setText(getProgressMessage());
@@ -112,6 +107,7 @@ public class SettingsFragment extends Fragment
             //setSummaryFromLastSync in syncTextView
             //syncTextView.setText(DhisController.getLastSynchronizationSummary());
         }
+        return view;
     }
 
     @Override
@@ -170,7 +166,6 @@ public class SettingsFragment extends Fragment
 
     }
 
-
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         PeriodicSynchronizerController.setUpdateFrequency(getActivity(), position);
@@ -180,6 +175,7 @@ public class SettingsFragment extends Fragment
     public void onNothingSelected(AdapterView<?> parent) {
         // stub implementation
     }
+
     private void setText(CharSequence text)
     {
         if(isAdded())
@@ -220,7 +216,7 @@ public class SettingsFragment extends Fragment
     private void startSync() {
         synchronizeButton.setEnabled(false);
         synchronizeRemovedEventsButton.setEnabled(false);
-        mProgessBar.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
         synchronizeButton.setText("Synchronizing...");
         synchronizeRemovedEventsButton.setText("Synchronizing...");
     }
@@ -228,7 +224,7 @@ public class SettingsFragment extends Fragment
     private void endSync() {
         synchronizeButton.setEnabled(true);
         synchronizeRemovedEventsButton.setEnabled(true);
-        mProgessBar.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
         syncTextView.setText("");
         synchronizeButton.setText(R.string.synchronize_with_server);
         synchronizeRemovedEventsButton.setText(R.string.synchronize_deleted_events);
@@ -263,7 +259,6 @@ public class SettingsFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "sync: on resume" );
         Dhis2Application.getEventBus().register(this);
 
         //if(!DhisController.isLoading())

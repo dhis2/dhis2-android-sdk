@@ -132,32 +132,13 @@ final class TrackerDataLoader extends ResourceController {
      * Loads datavalue items that is scheduled to be loaded but has not yet been.
      */
     static void deleteRemotelyDeletedEvents(Context context, DhisApi dhisApi) throws APIException {
-        List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
-        Hashtable<String, List<Program>> programsForOrganisationUnits = new Hashtable<>();
+        Hashtable<String, List<Program>> myProgramsByOrganisationUnit = new Hashtable<>();
 
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.EVENTS)) {
-            for (OrganisationUnit organisationUnit : assignedOrganisationUnits) {
-                if (organisationUnit.getId() == null
-                        || organisationUnit.getId().length() == Utils.randomUUID.length()) {
-                    continue;
-                }
+            myProgramsByOrganisationUnit = MetaDataController.getAssignedProgramsByOrganisationUnit();
 
-                List<Program> programsForOrgUnit = new ArrayList<>();
-                List<Program> programsForOrgUnitSEWoR =
-                        MetaDataController.getProgramsForOrganisationUnit
-                                (organisationUnit.getId(),
-                                        ProgramType.WITHOUT_REGISTRATION);
-                if (programsForOrgUnitSEWoR != null) {
-                    programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
-                    if (programsForOrgUnitSEWoR.size() > 0) {
-                        programsForOrganisationUnits.put(organisationUnit.getId(),
-                                programsForOrgUnit);
-                    }
-                }
-            }
-
-            for (String organisationUnitUid : programsForOrganisationUnits.keySet()) {
-                for (Program program : programsForOrganisationUnits.get(organisationUnitUid)) {
+            for (String organisationUnitUid : myProgramsByOrganisationUnit.keySet()) {
+                for (Program program : myProgramsByOrganisationUnit.get(organisationUnitUid)) {
                     if (program.getUid() == null
                             || program.getUid().length() == Utils.randomUUID.length())
                         continue;
@@ -178,6 +159,7 @@ final class TrackerDataLoader extends ResourceController {
         }
         UiUtils.postProgressMessage("");
     }
+
 
     static void getEventsDataFromServer(DhisApi dhisApi, String organisationUnitUid, String programUid, DateTime serverDateTime) throws APIException {
         Log.d(CLASS_TAG, "getEventsDataFromServer");

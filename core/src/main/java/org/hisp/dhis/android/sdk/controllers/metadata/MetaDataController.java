@@ -94,11 +94,13 @@ import org.hisp.dhis.android.sdk.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.utils.DbUtils;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
+import org.hisp.dhis.android.sdk.utils.Utils;
 import org.hisp.dhis.android.sdk.utils.api.ProgramType;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -407,6 +409,32 @@ public final class MetaDataController extends ResourceController {
     public static List<OrganisationUnit> getAssignedOrganisationUnits() {
         List<OrganisationUnit> organisationUnits = new Select().from(OrganisationUnit.class).queryList();
         return organisationUnits;
+    }
+
+    public static Hashtable<String, List<Program>> getAssignedProgramsByOrganisationUnit() {
+        List<OrganisationUnit> assignedOrganisationUnits = getAssignedOrganisationUnits();
+        Hashtable<String, List<Program>> programsForOrganisationUnits = new Hashtable<>();
+
+        for (OrganisationUnit organisationUnit : assignedOrganisationUnits) {
+            if (organisationUnit.getId() == null
+                    || organisationUnit.getId().length() == Utils.randomUUID.length()) {
+                continue;
+            }
+
+            List<Program> programsForOrgUnit = new ArrayList<>();
+            List<Program> programsForOrgUnitSEWoR = getProgramsForOrganisationUnit
+                            (organisationUnit.getId(), ProgramType.WITHOUT_REGISTRATION);
+
+            if (programsForOrgUnitSEWoR != null) {
+                programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
+                if (programsForOrgUnitSEWoR.size() > 0) {
+                    programsForOrganisationUnits.put(organisationUnit.getId(),
+                            programsForOrgUnit);
+                }
+            }
+        }
+
+        return programsForOrganisationUnits;
     }
 
     public static List<OrganisationUnitProgramRelationship> getOrganisationUnitProgramRelationships() {

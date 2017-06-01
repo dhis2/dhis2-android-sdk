@@ -36,7 +36,6 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.LoadingController;
 import org.hisp.dhis.android.sdk.controllers.ResourceController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
@@ -55,7 +54,6 @@ import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship$Table;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue$Table;
@@ -194,6 +192,22 @@ public final class TrackerController extends ResourceController {
         List<Event> events = new Select().from(Event.class).where(Condition.column
                 (Event$Table.ORGANISATIONUNITID).is(organisationUnitId)).
                 and(Condition.column(Event$Table.PROGRAMID).is(programId)).orderBy(false, Event$Table.LASTUPDATED).queryList();
+        return events;
+    }
+
+    /**
+     * Returns a list of events for a given org unit and from server
+     *
+     * @param organisationUnitId
+     * @param programId
+     * @return
+     */
+    public static List<Event> getEvents(String organisationUnitId, String programId, boolean isFromServer) {
+        List<Event> events = new Select().from(Event.class).where(Condition.column
+                (Event$Table.ORGANISATIONUNITID).is(organisationUnitId)).
+                and(Condition.column(Event$Table.PROGRAMID).is(programId))
+                .and(Condition.column(Event$Table.FROMSERVER).is(isFromServer))
+                .orderBy(false, Event$Table.LASTUPDATED).queryList();
         return events;
     }
 
@@ -397,6 +411,14 @@ public final class TrackerController extends ResourceController {
     public static void loadDataValues(Context context, DhisApi dhisApi) throws APIException {
         UiUtils.postProgressMessage(context.getString(R.string.loading_metadata));
         TrackerDataLoader.updateDataValueDataItems(context, dhisApi);
+    }
+
+    /**
+     * Loads datavalues from the server and stores it in local persistence.
+     */
+    public static void syncRemotelyDeletedData(Context context, DhisApi dhisApi) throws APIException {
+        UiUtils.postProgressMessage(context.getString(R.string.sync_deleted_events));
+        TrackerDataLoader.deleteRemotelyDeletedEvents(context, dhisApi);
     }
 
     public static List<TrackedEntityInstance> queryTrackedEntityInstancesDataFromServer(DhisApi dhisApi,

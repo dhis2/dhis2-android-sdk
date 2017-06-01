@@ -31,7 +31,6 @@ package org.hisp.dhis.android.sdk.ui.fragments.settings;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -54,10 +53,7 @@ import org.hisp.dhis.android.sdk.controllers.PeriodicSynchronizerController;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis.android.sdk.ui.views.FontButton;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
-
-import java.io.IOException;
 
 /**
  * Basic settings Fragment giving users options to change update frequency to the server,
@@ -72,7 +68,8 @@ public class SettingsFragment extends Fragment
     private Spinner updateFrequencySpinner;
     private Button logoutButton;
     private Button synchronizeButton;
-    private ProgressBar mProgessBar;
+    private Button synchronizeRemovedEventsButton;
+    private ProgressBar mProgressBar;
     private TextView syncTextView;
     private String progressMessage;
 
@@ -92,12 +89,24 @@ public class SettingsFragment extends Fragment
         updateFrequencySpinner.setOnItemSelectedListener(this);
 
         synchronizeButton = (Button) view.findViewById(R.id.settings_sync_button);
+        synchronizeRemovedEventsButton = (Button) view.findViewById(R.id.settings_sync_remotely_deleted_events_button);
         logoutButton = (Button) view.findViewById(R.id.settings_logout_button);
-        mProgessBar = (ProgressBar) view.findViewById(R.id.settings_progessbar);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.settings_progessbar);
         syncTextView = (TextView) view.findViewById(R.id.settings_sync_textview);
-        mProgessBar.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
         logoutButton.setOnClickListener(this);
         synchronizeButton.setOnClickListener(this);
+        synchronizeRemovedEventsButton.setOnClickListener(this);
+        //if(DhisController.isLoading() && getProgressMessage() != null)
+        {
+            //syncTextView.setText(getProgressMessage());
+            //Log.d(TAG, getProgressMessage());
+        }
+        //else if(!DhisController.isLoading())
+        {
+            //setSummaryFromLastSync in syncTextView
+            //syncTextView.setText(DhisController.getLastSynchronizationSummary());
+        }
         return view;
     }
 
@@ -137,11 +146,24 @@ public class SettingsFragment extends Fragment
                         DhisService.synchronize(context);
                     }
                 }.start();
-                synchronizeButton.setEnabled(false);
-                mProgessBar.setVisibility(View.VISIBLE);
-                synchronizeButton.setText("Synchronizing...");
+                startSync();
+            }
+        } else if (view.getId() == R.id.settings_sync_remotely_deleted_events_button) {
+            if (isAdded()) {
+                final Context context = getActivity().getBaseContext();
+                Toast.makeText(context, getString(R.string.sync_deleted_events), Toast.LENGTH_SHORT).show();
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        DhisService.synchronizeRemotelyDeletedEvents(context);
+                    }
+                }.start();
+                startSync();
             }
         }
+
+
     }
 
     @Override
@@ -153,6 +175,7 @@ public class SettingsFragment extends Fragment
     public void onNothingSelected(AdapterView<?> parent) {
         // stub implementation
     }
+
     private void setText(CharSequence text)
     {
         if(isAdded())
@@ -181,24 +204,39 @@ public class SettingsFragment extends Fragment
     {
         if(!enable)
         {
-            synchronizeButton.setEnabled(false);
-            mProgessBar.setVisibility(View.VISIBLE);
-            synchronizeButton.setText("Synchronizing...");
-            syncTextView.setText(getProgressMessage());
+            startSync();
         }
         else
         {
-            synchronizeButton.setEnabled(true);
-            mProgessBar.setVisibility(View.GONE);
-            syncTextView.setText(/*DhisController.getLastSynchronizationSummary()*/"");
-            synchronizeButton.setText(R.string.synchronize_with_server);
+            endSync();
         }
+        syncTextView.setText(getProgressMessage());
+    }
+
+    private void startSync() {
+        synchronizeButton.setEnabled(false);
+        synchronizeRemovedEventsButton.setEnabled(false);
+        mProgressBar.setVisibility(View.VISIBLE);
+        synchronizeButton.setText("Synchronizing...");
+        synchronizeRemovedEventsButton.setText("Synchronizing...");
+    }
+
+    private void endSync() {
+        synchronizeButton.setEnabled(true);
+        synchronizeRemovedEventsButton.setEnabled(true);
+        mProgressBar.setVisibility(View.GONE);
+        syncTextView.setText("");
+        synchronizeButton.setText(R.string.synchronize_with_server);
+        synchronizeRemovedEventsButton.setText(R.string.synchronize_deleted_events);
     }
 
     @Subscribe
     public void onSynchronizationFinishedEvent(final UiEvent event)
     {
-        if(event.getEventType().equals(UiEvent.UiEventType.SYNCING_END))
+        if(event.getEventType().equals(UiEvent.UiEventType.SYNCING_START))
+        {
+            enableUi(false);
+        } else if(event.getEventType().equals(UiEvent.UiEventType.SYNCING_END))
         {
             enableUi(true);
         }

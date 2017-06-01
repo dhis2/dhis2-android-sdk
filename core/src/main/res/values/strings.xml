@@ -121,6 +121,7 @@
     <string name="loading_metadata">Loading meta data</string>
     <string name="saving_data_locally">Saving data locally</string>
     <string name="loading_events">Loading Events</string>
+    <string name="sync_deleted_events">Synchronizing remotely deleted Events</string>
     <string name="loading_enrollments">Loading Enrollments</string>
     <string name="retry">Retry</string>
 
@@ -168,6 +169,7 @@
     </string-array>
 
     <string name="synchronize_with_server">Synchronize with server</string>
+    <string name="synchronize_deleted_events">Synchronize remotely deleted events</string>
     <string name="event_sent">Sent</string>
     <string name="find_option">Find Option</string>
     <string name="new_event">New event</string>

@@ -555,6 +555,7 @@ public final class MetaDataController extends ResourceController {
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.OPTIONSETS);
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.TRACKEDENTITYATTRIBUTES);
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.CONSTANTS);
+        DateTimeManager.getInstance().deleteLastUpdated(ResourceType.PROGRAMS);
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.PROGRAMRULES);
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.PROGRAMRULEVARIABLES);
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.PROGRAMRULEACTIONS);

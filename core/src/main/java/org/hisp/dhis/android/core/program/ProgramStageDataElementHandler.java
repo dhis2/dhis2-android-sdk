@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.dataelement.DataElementHandler;
 
 import java.util.List;
@@ -37,14 +39,14 @@ public class ProgramStageDataElementHandler {
     private final ProgramStageDataElementStore programStageDataElementStore;
     private final DataElementHandler dataElementHandler;
 
-    public ProgramStageDataElementHandler(ProgramStageDataElementStore programStageDataElementStore,
-                                          DataElementHandler dataElementHandler) {
+    ProgramStageDataElementHandler(ProgramStageDataElementStore programStageDataElementStore,
+                                   DataElementHandler dataElementHandler) {
         this.programStageDataElementStore = programStageDataElementStore;
         this.dataElementHandler = dataElementHandler;
     }
 
-    public void handleProgramStageDataElements(String programStageSectionUid,
-                                               List<ProgramStageDataElement> programStageDataElements) {
+    void handleProgramStageDataElements(String programStageSectionUid,
+                                        List<ProgramStageDataElement> programStageDataElements) {
         if (programStageDataElements == null) {
             return;
         }
@@ -100,10 +102,15 @@ public class ProgramStageDataElementHandler {
                             programStageDataElement.allowProvidedElsewhere(), programStageDataElement.sortOrder(),
                             programStageDataElement.allowFutureDate(), programStageDataElement.dataElement().uid(),
                             programStageDataElement.programStage().uid(), programStageSectionUid
-                            );
+                    );
                 }
             }
             dataElementHandler.handleDataElement(programStageDataElement.dataElement());
         }
+    }
+
+    void updateProgramStageDataElementWithProgramStageSectionLink(@NonNull String programStageSectionUid,
+                                                                  @NonNull String dataElementUid) {
+        programStageDataElementStore.updateWithProgramStageSectionLink(programStageSectionUid, dataElementUid);
     }
 }

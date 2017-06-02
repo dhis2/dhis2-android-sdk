@@ -43,7 +43,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -51,7 +50,6 @@ import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class ProgramStageSectionHandlerTests {
-
     public static final String PROGRAM_STAGE_UID = "test_program_stage_uid";
     public static final String PROGRAM_STAGE_SECTION_UID = "test_program_stage_section_uid";
     public static final String DATA_ELEMENT_UID = "test_data_uid";
@@ -60,7 +58,7 @@ public class ProgramStageSectionHandlerTests {
     private ProgramStageSectionStore programStageSectionStore;
 
     @Mock
-    private ProgramStageSectionDataElementLinkStore programStageSectionDataElementLinkStore;
+    private ProgramStageDataElementHandler programStageDataElementHandler;
 
     @Mock
     private ProgramIndicatorHandler programIndicatorHandler;
@@ -81,7 +79,7 @@ public class ProgramStageSectionHandlerTests {
         MockitoAnnotations.initMocks(this);
 
         programStageSectionHandler = new ProgramStageSectionHandler(
-                programStageSectionStore, programStageSectionDataElementLinkStore, programIndicatorHandler
+                programStageSectionStore, programStageDataElementHandler, programIndicatorHandler
         );
 
         when(programStageSection.uid()).thenReturn(PROGRAM_STAGE_SECTION_UID);
@@ -89,6 +87,7 @@ public class ProgramStageSectionHandlerTests {
         programStageSections.add(programStageSection);
         dataElements = new ArrayList<>(1);
         dataElements.add(dataElement);
+        when(programStageSection.dataElements()).thenReturn(dataElements);
     }
 
     @Test
@@ -107,11 +106,11 @@ public class ProgramStageSectionHandlerTests {
         verify(programStageSectionStore, never()).update(anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class), anyInt(), anyString(), anyString());
 
-        verify(programStageSectionDataElementLinkStore, never()).update(anyString(), anyString(), anyString(),
-                anyString());
-        verify(programStageSectionDataElementLinkStore, never()).insert(anyString(), anyString());
-
         // verify that handlers is called once
+        verify(programStageDataElementHandler, times(1)).updateProgramStageDataElementWithProgramStageSectionLink(
+                anyString(), anyString()
+        );
+
         verify(programIndicatorHandler, times(1)).handleProgramIndicator(
                 anyString(), anyListOf(ProgramIndicator.class)
         );
@@ -127,8 +126,6 @@ public class ProgramStageSectionHandlerTests {
 
         when(programStageSection.dataElements()).thenReturn(dataElements);
         when(dataElement.uid()).thenReturn(DATA_ELEMENT_UID);
-        when(programStageSectionDataElementLinkStore.update(eq(PROGRAM_STAGE_SECTION_UID), eq(DATA_ELEMENT_UID),
-                eq(PROGRAM_STAGE_SECTION_UID), eq(DATA_ELEMENT_UID))).thenReturn(1);
 
         programStageSectionHandler.handleProgramStageSection(PROGRAM_STAGE_UID, programStageSections);
 
@@ -142,11 +139,10 @@ public class ProgramStageSectionHandlerTests {
 
         verify(programStageSectionStore, never()).delete(anyString());
 
-        // verify that handlers is called once
-        verify(programStageSectionDataElementLinkStore, times(1)).update(eq(PROGRAM_STAGE_SECTION_UID),
-                eq(DATA_ELEMENT_UID), eq(PROGRAM_STAGE_SECTION_UID), eq(DATA_ELEMENT_UID));
-        verify(programStageSectionDataElementLinkStore, never()).insert(eq(PROGRAM_STAGE_SECTION_UID),
-                eq(DATA_ELEMENT_UID));
+
+        verify(programStageDataElementHandler, times(1)).updateProgramStageDataElementWithProgramStageSectionLink(
+                anyString(), anyString()
+        );
 
         verify(programIndicatorHandler, times(1)).handleProgramIndicator(
                 anyString(), anyListOf(ProgramIndicator.class)
@@ -162,8 +158,6 @@ public class ProgramStageSectionHandlerTests {
 
         when(programStageSection.dataElements()).thenReturn(dataElements);
         when(dataElement.uid()).thenReturn(DATA_ELEMENT_UID);
-        when(programStageSectionDataElementLinkStore.update(eq(PROGRAM_STAGE_SECTION_UID), eq(DATA_ELEMENT_UID),
-                eq(PROGRAM_STAGE_SECTION_UID), eq(DATA_ELEMENT_UID))).thenReturn(0);
 
         programStageSectionHandler.handleProgramStageSection(PROGRAM_STAGE_UID, programStageSections);
 
@@ -179,11 +173,9 @@ public class ProgramStageSectionHandlerTests {
         verify(programStageSectionStore, never()).delete(anyString());
 
         // verify that handlers is called once
-        //TODO:...
-        verify(programStageSectionDataElementLinkStore, times(1)).update(eq(PROGRAM_STAGE_SECTION_UID),
-                eq(DATA_ELEMENT_UID), eq(PROGRAM_STAGE_SECTION_UID), eq(DATA_ELEMENT_UID));
-        verify(programStageSectionDataElementLinkStore, times(1)).insert(eq(PROGRAM_STAGE_SECTION_UID),
-                eq(DATA_ELEMENT_UID));
+        verify(programStageDataElementHandler, times(1)).updateProgramStageDataElementWithProgramStageSectionLink(
+                anyString(), anyString()
+        );
 
         verify(programIndicatorHandler, times(1)).handleProgramIndicator(
                 anyString(), anyListOf(ProgramIndicator.class)
@@ -204,9 +196,9 @@ public class ProgramStageSectionHandlerTests {
 
         verify(programStageSectionStore, never()).delete(anyString());
 
-        verify(programStageSectionDataElementLinkStore, never()).update(anyString(), anyString(), anyString(),
-                anyString());
-        verify(programStageSectionDataElementLinkStore, never()).insert(anyString(), anyString());
+        verify(programStageDataElementHandler, never()).updateProgramStageDataElementWithProgramStageSectionLink(
+                anyString(), anyString()
+        );
 
         verify(programIndicatorHandler, never()).handleProgramIndicator(
                 anyString(), anyListOf(ProgramIndicator.class)
@@ -226,9 +218,10 @@ public class ProgramStageSectionHandlerTests {
 
         verify(programStageSectionStore, never()).delete(anyString());
 
-        verify(programStageSectionDataElementLinkStore, never()).update(anyString(), anyString(), anyString(),
-                anyString());
-        verify(programStageSectionDataElementLinkStore, never()).insert(anyString(), anyString());
+
+        verify(programStageDataElementHandler, never()).updateProgramStageDataElementWithProgramStageSectionLink(
+                anyString(), anyString()
+        );
 
         verify(programIndicatorHandler, never()).handleProgramIndicator(
                 anyString(), anyListOf(ProgramIndicator.class)
@@ -248,9 +241,9 @@ public class ProgramStageSectionHandlerTests {
 
         verify(programStageSectionStore, never()).delete(anyString());
 
-        verify(programStageSectionDataElementLinkStore, never()).update(anyString(), anyString(), anyString(),
-                anyString());
-        verify(programStageSectionDataElementLinkStore, never()).insert(anyString(), anyString());
+        verify(programStageDataElementHandler, never()).updateProgramStageDataElementWithProgramStageSectionLink(
+                anyString(), anyString()
+        );
 
         verify(programIndicatorHandler, never()).handleProgramIndicator(
                 anyString(), anyListOf(ProgramIndicator.class)

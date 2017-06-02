@@ -31,6 +31,7 @@ package org.hisp.dhis.android.sdk.ui.fragments.settings;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -53,6 +54,7 @@ import org.hisp.dhis.android.sdk.controllers.PeriodicSynchronizerController;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis.android.sdk.ui.activities.LoginActivity;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 
 /**
@@ -131,6 +133,8 @@ public class SettingsFragment extends Fragment
                                         });
                             } else {
                                 DhisService.logOutUser(getActivity());
+                                Intent intent = new Intent(getActivity().getApplicationContext(), LoginActivity.class);
+                                startActivity(intent);
                                 getActivity().finish();
                             }
                         }

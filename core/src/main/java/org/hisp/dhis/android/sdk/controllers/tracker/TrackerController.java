@@ -384,6 +384,7 @@ public final class TrackerController extends ResourceController {
                 DateTimeManager.getInstance().deleteLastUpdated(ResourceType.EVENTS, organisationUnit.getId() + program.getUid());
             }
         }
+        DateTimeManager.getInstance().deleteLastUpdated(ResourceType.EVENTS);
     }
 
     /**

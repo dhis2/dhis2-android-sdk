@@ -97,25 +97,29 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
         this.serverDate = new Date(serverDate.getTime());
 
         //TODO: make this an argument to the constructor:
-        ProgramStageSectionDataElementLinkStore programStageSectionDataElementLinkStore =
-                new ProgramStageSectionDataElementLinkStoreImpl(databaseAdapter);
+
+        //TODO: This needs to be refactored badly
 
         ProgramIndicatorHandler programIndicatorHandler = new ProgramIndicatorHandler(programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore);
+
+        OptionHandler optionHandler = new OptionHandler(optionStore);
+        OptionSetHandler optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
+        DataElementHandler dataElementHandler = new DataElementHandler(dataElementStore, optionSetHandler);
+
+        ProgramStageDataElementHandler programStageDataElementHandler = new ProgramStageDataElementHandler(
+                programStageDataElementStore, dataElementHandler
+        );
 
         this.programHandler = new ProgramHandler(programStore,
                 new ProgramRuleVariableHandler(programRuleVariableStore),
                 new ProgramStageHandler(
                         programStageStore,
                         new ProgramStageSectionHandler(programStageSectionStore,
-                                programStageSectionDataElementLinkStore,
+                                programStageDataElementHandler,
                                 programIndicatorHandler
                         ),
-                        new ProgramStageDataElementHandler(programStageDataElementStore,
-                                new DataElementHandler(dataElementStore, new OptionSetHandler(optionSetStore,
-                                        new OptionHandler(optionStore))
-                                )
-                        )
+                        programStageDataElementHandler
                 ),
                 programIndicatorHandler,
                 new ProgramRuleHandler(programRuleStore, new ProgramRuleActionHandler(programRuleActionStore)),

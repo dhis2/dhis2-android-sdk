@@ -38,6 +38,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.LoadingController;
 import org.hisp.dhis.android.sdk.controllers.ResourceController;
+import org.hisp.dhis.android.sdk.controllers.SyncStrategy;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
@@ -392,7 +393,7 @@ public final class TrackerController extends ResourceController {
      */
     public static void synchronizeDataValues(Context context, DhisApi dhisApi) throws APIException {
         sendLocalData(dhisApi);
-        loadDataValues(context, dhisApi);
+        loadDataValues(context, SyncStrategy.DOWNLOAD_ONLY_NEW,dhisApi);
     }
 
     /**
@@ -408,9 +409,9 @@ public final class TrackerController extends ResourceController {
     /**
      * Loads datavalues from the server and stores it in local persistence.
      */
-    public static void loadDataValues(Context context, DhisApi dhisApi) throws APIException {
+    public static void loadDataValues(Context context,SyncStrategy syncStrategy, DhisApi dhisApi) throws APIException {
         UiUtils.postProgressMessage(context.getString(R.string.loading_metadata));
-        TrackerDataLoader.updateDataValueDataItems(context, dhisApi);
+        TrackerDataLoader.updateDataValueDataItems(context, syncStrategy, dhisApi);
     }
 
     /**

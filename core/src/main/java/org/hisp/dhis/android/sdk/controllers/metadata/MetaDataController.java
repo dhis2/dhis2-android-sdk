@@ -40,6 +40,7 @@ import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.ApiEndpointContainer;
 import org.hisp.dhis.android.sdk.controllers.LoadingController;
 import org.hisp.dhis.android.sdk.controllers.ResourceController;
+import org.hisp.dhis.android.sdk.controllers.SyncStrategy;
 import org.hisp.dhis.android.sdk.controllers.wrappers.AssignedProgramsWrapper;
 import org.hisp.dhis.android.sdk.controllers.wrappers.OptionSetWrapper;
 import org.hisp.dhis.android.sdk.controllers.wrappers.ProgramWrapper;
@@ -578,16 +579,16 @@ public final class MetaDataController extends ResourceController {
     /**
      * Loads metaData from the server and stores it in local persistence.
      */
-    public static void loadMetaData(Context context, DhisApi dhisApi) throws APIException {
+    public static void loadMetaData(Context context,SyncStrategy syncStrategy, DhisApi dhisApi) throws APIException {
         Log.d(CLASS_TAG, "loadMetaData");
         UiUtils.postProgressMessage(context.getString(R.string.loading_metadata));
-        updateMetaDataItems(context, dhisApi);
+        updateMetaDataItems(context ,syncStrategy, dhisApi);
     }
 
     /**
      * Loads a metadata item that is scheduled to be loaded but has not yet been.
      */
-    private static void updateMetaDataItems(Context context, DhisApi dhisApi) throws APIException {
+    private static void updateMetaDataItems(Context context,SyncStrategy syncStrategy, DhisApi dhisApi) throws APIException {
         SystemInfo serverSystemInfo = dhisApi.getSystemInfo();
         DateTime serverDateTime = serverSystemInfo.getServerDate();
         //some items depend on each other. Programs depend on AssignedPrograms because we need
@@ -602,7 +603,7 @@ public final class MetaDataController extends ResourceController {
             if (assignedPrograms != null) {
                 for (String program : assignedPrograms) {
                     if ( shouldLoad(serverDateTime, ResourceType.PROGRAMS, program) ) {
-                        getProgramDataFromServer(dhisApi, program, serverDateTime);
+                        getProgramDataFromServer(syncStrategy, dhisApi, program, serverDateTime);
                     }
                 }
             }
@@ -646,8 +647,7 @@ public final class MetaDataController extends ResourceController {
 
     private static void getAssignedProgramsDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
         Log.d(CLASS_TAG, "getAssignedProgramsDataFromServer");
-        DateTime lastUpdated = DateTimeManager.getInstance()
-                .getLastUpdated(ResourceType.ASSIGNEDPROGRAMS);
+
         UserAccount userAccount= dhisApi.getUserAccount();
         Map<String, Program> programMap = new HashMap<>();
         List<Program> assignedProgramUids = userAccount.getPrograms();
@@ -678,10 +678,13 @@ public final class MetaDataController extends ResourceController {
                 .setLastUpdated(ResourceType.ASSIGNEDPROGRAMS, serverDateTime);
     }
 
-    private static void getProgramDataFromServer(DhisApi dhisApi, String uid, DateTime serverDateTime) throws APIException {
+    private static void getProgramDataFromServer(SyncStrategy syncStrategy,DhisApi dhisApi, String uid, DateTime serverDateTime) throws APIException {
         Log.d(CLASS_TAG, "getProgramDataFromServer");
-        DateTime lastUpdated = DateTimeManager.getInstance()
-                .getLastUpdated(ResourceType.PROGRAM, uid);
+
+        DateTime lastUpdated = null;
+
+        if (syncStrategy == SyncStrategy.DOWNLOAD_ONLY_NEW)
+            lastUpdated = DateTimeManager.getInstance().getLastUpdated(ResourceType.PROGRAM, uid);
 
         Program program = updateProgram(dhisApi, uid, lastUpdated);
         DateTimeManager.getInstance()
@@ -710,12 +713,13 @@ public final class MetaDataController extends ResourceController {
         return updatedProgram;
     }
 
-    private static void getOptionSetDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
+    private static void getOptionSetDataFromServer(DhisApi dhisApi,
+            DateTime serverDateTime) throws APIException {
         Log.d(CLASS_TAG, "getOptionSetDataFromServer");
         Map<String, String> QUERY_MAP_FULL = new HashMap<>();
         QUERY_MAP_FULL.put("fields", "*,options[*]");
-        DateTime lastUpdated = DateTimeManager.getInstance()
-                .getLastUpdated(ResourceType.OPTIONSETS);
+
+        DateTime lastUpdated = DateTimeManager.getInstance().getLastUpdated(ResourceType.OPTIONSETS);
 
         if (lastUpdated != null) {
             QUERY_MAP_FULL.put("filter", "lastUpdated:gt:" + lastUpdated.toString());

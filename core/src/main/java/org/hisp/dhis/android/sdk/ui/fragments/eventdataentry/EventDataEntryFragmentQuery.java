@@ -58,6 +58,7 @@ import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowFactory;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EventDatePickerRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EventDueDatePickerRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.IndicatorRow;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EventCoordinatesRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.StatusRow;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragmentSection;
@@ -216,7 +217,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
     private static void addCoordinateRow(EventDataEntryFragmentForm form, List<Row> rows) {
         if (form.getStage() != null &&
                 form.getStage().getCaptureCoordinates()) {
-            rows.add(new CoordinatesRow(form.getEvent()));
+            rows.add(new EventCoordinatesRow(form.getEvent()));
         }
     }
 

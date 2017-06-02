@@ -29,12 +29,16 @@
 
 package org.hisp.dhis.android.sdk.ui.fragments.eventdataentry;
 
+import static android.text.TextUtils.isEmpty;
+
+import static org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController.getDataElement;
+
 import android.content.Context;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
-import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.loaders.Query;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
@@ -47,30 +51,28 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EventDueDatePickerRow;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
-import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragmentSection;
-import org.hisp.dhis.android.sdk.utils.api.ValueType;
-import org.hisp.dhis.android.sdk.utils.services.ProgramIndicatorService;
-import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.AutoCompleteRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.CheckBoxRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.CoordinatesRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DatePickerRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EditTextRow;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EventCoordinatesRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EventDatePickerRow;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EventDueDatePickerRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.IndicatorRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.RadioButtonsRow;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.StatusRow;
+import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragmentSection;
+import org.hisp.dhis.android.sdk.utils.api.ValueType;
+import org.hisp.dhis.android.sdk.utils.services.ProgramIndicatorService;
+import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import static android.text.TextUtils.isEmpty;
-import static org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController.getDataElement;
 
 class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
 
@@ -197,7 +199,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
     private static void addCoordinateRow(EventDataEntryFragmentForm form, List<Row> rows) {
         if (form.getStage() != null &&
                 form.getStage().getCaptureCoordinates()) {
-            rows.add(new CoordinatesRow(form.getEvent()));
+            rows.add(new EventCoordinatesRow(form.getEvent()));
         }
     }
 
@@ -303,6 +305,8 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
             row = new DatePickerRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, programStageDataElement.getAllowFutureDate());
         } else if (dataElement.getValueType().equals(ValueType.PERCENTAGE)) {
             row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.PERCENTAGE);
+        } else if (dataElement.getValueType().equals(ValueType.COORDINATE)) {
+            row = new CoordinatesRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.COORDINATES);
         } else {
             row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.LONG_TEXT);
         }

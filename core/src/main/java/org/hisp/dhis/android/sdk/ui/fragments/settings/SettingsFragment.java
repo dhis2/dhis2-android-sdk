@@ -52,6 +52,7 @@ import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.DhisService;
 import org.hisp.dhis.android.sdk.controllers.PeriodicSynchronizerController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.controllers.SyncStrategy;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
@@ -150,7 +151,7 @@ public class SettingsFragment extends Fragment
                 new Thread() {
                     @Override
                     public void run() {
-                        DhisService.synchronize(context);
+                        DhisService.synchronize(context, SyncStrategy.DOWNLOAD_ALL);
                     }
                 }.start();
                 startSync();

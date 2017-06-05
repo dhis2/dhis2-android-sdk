@@ -36,6 +36,7 @@ import android.util.Log;
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
+import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
@@ -100,13 +101,14 @@ public final class LoadingController {
      */
     static void loadInitialData(Context context, DhisApi dhisApi)
             throws APIException, IllegalStateException {
+        UiUtils.postProgressMessage(context.getString(org.hisp.dhis.android.sdk.R.string.finishing_up), LoadingMessageEvent.EventType.STARTUP);
         if (!MetaDataController.isDataLoaded(context)) {
             loadMetaData(context, dhisApi);
         } else if (!TrackerController.isDataLoaded(context)) {
             Log.d(CLASS_TAG, "loading initial datavalues");
             String message = "";
             message = context.getString(R.string.finishing_up);
-            UiUtils.postProgressMessage(message);
+            UiUtils.postProgressMessage(message, LoadingMessageEvent.EventType.STARTUP);
             loadDataValues(context, dhisApi);
         }
     }

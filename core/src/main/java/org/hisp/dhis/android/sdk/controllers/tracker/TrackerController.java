@@ -39,6 +39,7 @@ import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.LoadingController;
 import org.hisp.dhis.android.sdk.controllers.ResourceController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
@@ -410,7 +411,7 @@ public final class TrackerController extends ResourceController {
      * Loads datavalues from the server and stores it in local persistence.
      */
     public static void loadDataValues(Context context, DhisApi dhisApi) throws APIException {
-        UiUtils.postProgressMessage(context.getString(R.string.loading_metadata));
+        UiUtils.postProgressMessage(context.getString(R.string.loading_metadata), LoadingMessageEvent.EventType.METADATA);
         TrackerDataLoader.updateDataValueDataItems(context, dhisApi);
     }
 
@@ -418,7 +419,7 @@ public final class TrackerController extends ResourceController {
      * Loads datavalues from the server and stores it in local persistence.
      */
     public static void syncRemotelyDeletedData(Context context, DhisApi dhisApi) throws APIException {
-        UiUtils.postProgressMessage(context.getString(R.string.sync_deleted_events));
+        UiUtils.postProgressMessage(context.getString(R.string.sync_deleted_events),LoadingMessageEvent.EventType.REMOVE_EVENTS);
         TrackerDataLoader.deleteRemotelyDeletedEvents(context, dhisApi);
     }
 

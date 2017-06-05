@@ -34,7 +34,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
@@ -90,7 +89,7 @@ public abstract class Row implements DataEntryRow {
     }
 
     public String getDescription() {
-        if(this instanceof CoordinatesRow) {
+        if(this instanceof EventCoordinatesRow) {
             mDescription = "";
         } else if (this instanceof StatusRow) {
             mDescription = "";

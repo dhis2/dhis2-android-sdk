@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.GpsController;
@@ -91,7 +92,7 @@ public final class QuestionCoordinatesRow extends Row {
         }
         holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
         if(mValue!=null) {
-            holder.updateViews(mValue);
+            holder.updateViews(mLabel,mValue);
         }
         //input filters for coordinate row text fields
         InputFilter[] latitudeFilters = new InputFilter[2];
@@ -106,7 +107,7 @@ public final class QuestionCoordinatesRow extends Row {
 
         holder.latitude.setFilters(latitudeFilters);
         holder.longitude.setFilters(longitudeFilters);
-        holder.updateViews(mValue);
+        holder.updateViews(mLabel, mValue);
 
         return view;
     }
@@ -117,6 +118,7 @@ public final class QuestionCoordinatesRow extends Row {
     }
 
     private static class CoordinateViewHolder {
+        private final TextView labelTextView;
         private final EditText latitude;
         private final EditText longitude;
         private final ImageButton captureCoords;
@@ -132,6 +134,7 @@ public final class QuestionCoordinatesRow extends Row {
                     .getString(R.string.longitude_error_message);
 
             /* views */
+            labelTextView = (TextView) view.findViewById(R.id.text_label);
             latitude = (EditText) view.findViewById(R.id.latitude_edittext);
             longitude = (EditText) view.findViewById(R.id.longitude_edittext);
             captureCoords = (ImageButton) view.findViewById(R.id.capture_coordinates);
@@ -148,10 +151,11 @@ public final class QuestionCoordinatesRow extends Row {
             captureCoords.setOnClickListener(onButtonClickListener);
         }
 
-        public void updateViews(BaseValue baseValue) {
+        public void updateViews(String labelText,BaseValue baseValue) {
             String lon = getLongitudeFromValue(baseValue);
             String lat = getLatitudeFromValue(baseValue);
 
+            labelTextView.setText(labelText);
             latitudeWatcher.setBaseValue(baseValue);
             latitude.setText(lat);
             longitudeWatcher.setBaseValue(baseValue);

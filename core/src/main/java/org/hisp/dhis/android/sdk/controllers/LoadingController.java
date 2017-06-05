@@ -103,13 +103,13 @@ public final class LoadingController {
             throws APIException, IllegalStateException {
         UiUtils.postProgressMessage(context.getString(org.hisp.dhis.android.sdk.R.string.finishing_up), LoadingMessageEvent.EventType.STARTUP);
         if (!MetaDataController.isDataLoaded(context)) {
-            loadMetaData(context, dhisApi);
+            loadMetaData(context, SyncStrategy.DOWNLOAD_ALL,dhisApi);
         } else if (!TrackerController.isDataLoaded(context)) {
             Log.d(CLASS_TAG, "loading initial datavalues");
             String message = "";
             message = context.getString(R.string.finishing_up);
             UiUtils.postProgressMessage(message, LoadingMessageEvent.EventType.STARTUP);
-            loadDataValues(context, dhisApi);
+            loadDataValues(context, SyncStrategy.DOWNLOAD_ALL, dhisApi);
         }
     }
 
@@ -118,11 +118,11 @@ public final class LoadingController {
      * synchronizeMetaData to save data.
      * @param context
      */
-    static void loadMetaData(Context context, DhisApi dhisApi) throws APIException {
+    static void loadMetaData(Context context,SyncStrategy syncStrategy, DhisApi dhisApi) throws APIException {
         Log.d(CLASS_TAG, "loading metadata!");
         Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_START));
         try {
-            MetaDataController.loadMetaData(context, dhisApi);
+            MetaDataController.loadMetaData(context, syncStrategy,dhisApi);
         } catch (APIException e) {
             //to make sure we stop showing loading indicator
             Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
@@ -131,10 +131,10 @@ public final class LoadingController {
         Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
     }
 
-    static void loadDataValues(Context context, DhisApi dhisApi) throws APIException {
+    static void loadDataValues(Context context,SyncStrategy syncStrategy, DhisApi dhisApi) throws APIException {
         Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_START));
         try {
-            TrackerController.loadDataValues(context, dhisApi);
+            TrackerController.loadDataValues(context, syncStrategy, dhisApi);
         } catch (APIException e) {
             //to make sure we stop showing loading indicator
             Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));

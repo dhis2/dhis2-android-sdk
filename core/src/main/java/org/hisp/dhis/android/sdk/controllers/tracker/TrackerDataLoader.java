@@ -40,6 +40,7 @@ import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.ApiEndpointContainer;
 import org.hisp.dhis.android.sdk.controllers.LoadingController;
 import org.hisp.dhis.android.sdk.controllers.ResourceController;
+import org.hisp.dhis.android.sdk.controllers.SyncStrategy;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.controllers.wrappers.EventsWrapper;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
@@ -81,7 +82,7 @@ final class TrackerDataLoader extends ResourceController {
     /**
      * Loads datavalue items that is scheduled to be loaded but has not yet been.
      */
-    static void updateDataValueDataItems(Context context, DhisApi dhisApi) throws APIException {
+    static void updateDataValueDataItems(Context context, SyncStrategy syncStrategy,DhisApi dhisApi) throws APIException {
         SystemInfo serverSystemInfo = dhisApi.getSystemInfo();
         DateTime serverDateTime = serverSystemInfo.getServerDate();
         List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
@@ -116,7 +117,7 @@ final class TrackerDataLoader extends ResourceController {
                         UiUtils.postProgressMessage(context.getString(R.string.loading_events) + ": "
                                 + organisationUnit.getLabel() + ": " + program.getName(), LoadingMessageEvent.EventType.DATA);
                         try {
-                        getEventsDataFromServer(dhisApi, organisationUnit.getId(), program.getUid(), serverDateTime);
+                        getEventsDataFromServer(dhisApi, syncStrategy, organisationUnit.getId(), program.getUid(), serverDateTime);
                         } catch (APIException e) {
                         e.printStackTrace();
                         //todo: could probably do something prettier here. This catch is done to prevent
@@ -162,10 +163,15 @@ final class TrackerDataLoader extends ResourceController {
     }
 
 
-    static void getEventsDataFromServer(DhisApi dhisApi, String organisationUnitUid, String programUid, DateTime serverDateTime) throws APIException {
+    static void getEventsDataFromServer(DhisApi dhisApi, SyncStrategy syncStrategy,String organisationUnitUid, String programUid, DateTime serverDateTime) throws APIException {
         Log.d(CLASS_TAG, "getEventsDataFromServer");
-        DateTime lastUpdated = DateTimeManager.getInstance()
-                .getLastUpdated(ResourceType.EVENTS,organisationUnitUid+programUid);
+
+        DateTime lastUpdated = null;
+
+        if (syncStrategy == SyncStrategy.DOWNLOAD_ONLY_NEW)
+            lastUpdated = DateTimeManager.getInstance()
+                    .getLastUpdated(ResourceType.EVENTS,organisationUnitUid+programUid);
+
         final Map<String, String> map = new HashMap<>();
         map.put("fields", "[:all]");
         if (lastUpdated != null) {

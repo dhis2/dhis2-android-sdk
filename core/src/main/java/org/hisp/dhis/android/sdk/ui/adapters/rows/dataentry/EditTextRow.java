@@ -29,6 +29,7 @@
 
 package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
+import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -39,25 +40,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
+import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
-import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
-import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 
 public class EditTextRow extends Row {
     private static final String EMPTY_FIELD = "";
     private static int LONG_TEXT_LINE_COUNT = 3;
     private static String rowTypeTemp;
 
-    public EditTextRow(String label, boolean mandatory, String warning, BaseValue baseValue, DataEntryRowTypes rowType) {
+    public EditTextRow(String label, boolean mandatory, String warning, BaseValue baseValue, DataEntryRowTypes rowType, Event event) {
         mLabel = label;
         mMandatory = mandatory;
         mWarning = warning;
         mValue = baseValue;
         mRowType = rowType;
+        mEvent = event;
 
         if (!DataEntryRowTypes.TEXT.equals(rowType) &&
                 !DataEntryRowTypes.LONG_TEXT.equals(rowType) &&
@@ -88,7 +92,7 @@ public class EditTextRow extends Row {
             TextView mandatoryIndicator = (TextView) root.findViewById(R.id.mandatory_indicator);
             TextView warningLabel = (TextView) root.findViewById(R.id.warning_label);
             TextView errorLabel = (TextView) root.findViewById(R.id.error_label);
-            EditText editText = (EditText) root.findViewById(R.id.edit_text_row);
+            final EditText editText = (EditText) root.findViewById(R.id.edit_text_row);
             detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
 
             if (DataEntryRowTypes.TEXT.equals(mRowType)) {
@@ -134,7 +138,22 @@ public class EditTextRow extends Row {
                 editText.setSingleLine(true);
             }
 
-            OnTextChangeListener listener = new OnTextChangeListener();
+            final Context context = inflater.getContext();
+            OnTextChangeListener listener = new OnTextChangeListener(new ValueCallback(){
+                @Override
+                public void saveValue(String newValue, BaseValue value) {
+                        if(!isMandatory() || (!isEventComplete() || (newValue!=null && !newValue.equals("")))) {
+                            value.setValue(newValue);
+                            Dhis2Application.getEventBus()
+                                    .post(new RowValueChangedEvent(value, rowTypeTemp));
+                        }else{
+                            //restore last value
+                            editText.setText(mValue.getValue());
+                            Toast.makeText(context, context.getString(R.string.remove_mandatory_value_error), Toast.LENGTH_SHORT).show();
+                        }
+                }
+            });
+            listener.setBaseValue(mValue);
             holder = new ValueEntryHolder(label, mandatoryIndicator, warningLabel, errorLabel, editText, detailedInfoButton, listener );
             holder.editText.addTextChangedListener(listener);
 
@@ -150,7 +169,6 @@ public class EditTextRow extends Row {
         }
 
         holder.textLabel.setText(mLabel);
-        holder.listener.setBaseValue(mValue);
         holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
 
         holder.editText.setText(mValue.getValue());
@@ -216,19 +234,23 @@ public class EditTextRow extends Row {
     }
 
     private static class OnTextChangeListener extends AbsTextWatcher {
-        private BaseValue value;
+        ValueCallback mValueCallback;
+
+        protected BaseValue value;
 
         public void setBaseValue(BaseValue value) {
             this.value = value;
         }
 
+        public OnTextChangeListener(ValueCallback valueCallback) {
+            mValueCallback = valueCallback;
+        }
+
         @Override
         public void afterTextChanged(Editable s) {
             String newValue = s != null ? s.toString() : EMPTY_FIELD;
-            if (!newValue.equals(value.getValue())) {
-                value.setValue(newValue);
-                Dhis2Application.getEventBus()
-                        .post(new RowValueChangedEvent(value, rowTypeTemp));
+            if (value == null || !newValue.equals(value.getValue())) {
+                mValueCallback.saveValue(newValue, value);
             }
         }
     }
@@ -356,6 +378,11 @@ public class EditTextRow extends Row {
         }
 
 
+    }
+
+
+    public interface ValueCallback {
+        void saveValue(String newValue, BaseValue baseValue);
     }
 }
 

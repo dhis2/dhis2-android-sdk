@@ -276,4 +276,6 @@
     <string name="developer_option_key">developer optionkey</string>
     <string name="developer_option_title">"Show developer options"</string>
     <string name="synchronizing">Synchronizing...</string>
+    <string name="remove_mandatory_value_error">You can not remove a required value if the event was completed</string>
+
 </resources>

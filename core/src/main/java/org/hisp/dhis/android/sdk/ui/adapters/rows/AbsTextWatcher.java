@@ -32,7 +32,11 @@ package org.hisp.dhis.android.sdk.ui.adapters.rows;
 import android.text.Editable;
 import android.text.TextWatcher;
 
+import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
+import org.hisp.dhis.android.sdk.persistence.models.Event;
+
 public abstract class AbsTextWatcher implements TextWatcher {
+
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         // stub implementation

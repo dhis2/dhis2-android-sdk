@@ -39,12 +39,14 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
-import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
+import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
+import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
@@ -52,21 +54,22 @@ public class DatePickerRow extends Row {
     private static final String EMPTY_FIELD = "";
     private final boolean mAllowDatesInFuture;
 
-    public DatePickerRow(String label, boolean mandatory, String warning, BaseValue value, boolean allowDatesInFuture) {
+    public DatePickerRow(String label, boolean mandatory, String warning, BaseValue value, boolean allowDatesInFuture, Event event) {
         mAllowDatesInFuture = allowDatesInFuture;
         mLabel = label;
         mMandatory = mandatory;
         mValue = value;
         mWarning = warning;
+        mEvent = event;
 
         checkNeedsForDescriptionButton();
     }
 
     @Override
-    public View getView(FragmentManager fragmentManager, LayoutInflater inflater,
+    public View getView(FragmentManager fragmentManager, final LayoutInflater inflater,
                         View convertView, ViewGroup container) {
         View view;
-        DatePickerRowHolder holder;
+        final DatePickerRowHolder holder;
 
         if (convertView != null && convertView.getTag() instanceof DatePickerRowHolder) {
             view = convertView;
@@ -91,6 +94,22 @@ public class DatePickerRow extends Row {
             holder.pickerInvoker.setEnabled(true);
         }
         holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
+        final TextView datePickerTextView = holder.pickerInvoker;
+        holder.clearButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if (!isMandatory() || !isEventComplete()) {
+                    datePickerTextView.setText(EMPTY_FIELD);
+                    mValue.setValue(EMPTY_FIELD);
+                    Dhis2Application.getEventBus()
+                            .post(new RowValueChangedEvent(mValue, DataEntryRowTypes.DATE.toString()));
+                } else {
+                    Toast.makeText(inflater.getContext(), inflater.getContext().getString(
+                            R.string.remove_mandatory_value_error),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }});
+
         holder.updateViews(mLabel, mValue);
 
         if(isDetailedInfoButtonHidden()) {
@@ -139,7 +158,6 @@ public class DatePickerRow extends Row {
         final View detailedInfoButton;
         final DateSetListener dateSetListener;
         final OnEditTextClickListener invokerListener;
-        final ClearButtonListener clearButtonListener;
 
         public DatePickerRowHolder(View root, Context context, View detailedInfoButton, boolean allowDatesInFuture) {
             textLabel = (TextView) root.findViewById(R.id.text_label);
@@ -152,15 +170,12 @@ public class DatePickerRow extends Row {
 
             dateSetListener = new DateSetListener(pickerInvoker);
             invokerListener = new OnEditTextClickListener(context, dateSetListener, allowDatesInFuture);
-            clearButtonListener = new ClearButtonListener(pickerInvoker);
 
-            clearButton.setOnClickListener(clearButtonListener);
             pickerInvoker.setOnClickListener(invokerListener);
         }
 
         public void updateViews(String label, BaseValue baseValue) {
             dateSetListener.setBaseValue(baseValue);
-            clearButtonListener.setBaseValue(baseValue);
 
             textLabel.setText(label);
             pickerInvoker.setText(baseValue.getValue());
@@ -205,10 +220,6 @@ public class DatePickerRow extends Row {
 
         @Override
         public void onClick(View view) {
-            textView.setText(EMPTY_FIELD);
-            value.setValue(EMPTY_FIELD);
-            Dhis2Application.getEventBus()
-                    .post(new RowValueChangedEvent(value, DataEntryRowTypes.DATE.toString()));
         }
     }
 

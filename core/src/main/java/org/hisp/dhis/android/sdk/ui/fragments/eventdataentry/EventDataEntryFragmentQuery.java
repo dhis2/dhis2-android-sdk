@@ -53,7 +53,7 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.AutoCompleteRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.CheckBoxRow;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.CoordinatesRow;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.QuestionCoordinatesRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DatePickerRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EditTextRow;
@@ -306,7 +306,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
         } else if (dataElement.getValueType().equals(ValueType.PERCENTAGE)) {
             row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.PERCENTAGE);
         } else if (dataElement.getValueType().equals(ValueType.COORDINATE)) {
-            row = new CoordinatesRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.COORDINATES);
+            row = new QuestionCoordinatesRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.QUESTION_COORDINATES);
         } else {
             row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.LONG_TEXT);
         }

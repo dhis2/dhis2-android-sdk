@@ -29,7 +29,6 @@
 
 package org.hisp.dhis.android.sdk.controllers.tracker;
 
-import static org.hisp.dhis.android.sdk.R.string.enrollment;
 import static org.hisp.dhis.android.sdk.utils.NetworkUtils.unwrapResponse;
 
 import android.content.Context;
@@ -44,6 +43,7 @@ import org.hisp.dhis.android.sdk.controllers.ResourceController;
 import org.hisp.dhis.android.sdk.controllers.SyncStrategy;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.controllers.wrappers.EventsWrapper;
+import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
@@ -115,7 +115,7 @@ final class TrackerDataLoader extends ResourceController {
 
                     if (shouldLoad(serverDateTime, ResourceType.EVENTS, organisationUnit.getId() + program.getUid())) {
                         UiUtils.postProgressMessage(context.getString(R.string.loading_events) + ": "
-                                + organisationUnit.getLabel() + ": " + program.getName());
+                                + organisationUnit.getLabel() + ": " + program.getName(), LoadingMessageEvent.EventType.DATA);
                         try {
                         getEventsDataFromServer(dhisApi, syncStrategy, organisationUnit.getId(), program.getUid(), serverDateTime);
                         } catch (APIException e) {
@@ -127,7 +127,7 @@ final class TrackerDataLoader extends ResourceController {
                 }
             }
         }
-        UiUtils.postProgressMessage("");
+        UiUtils.postProgressMessage("", LoadingMessageEvent.EventType.FINISH);
     }
 
     /**
@@ -146,7 +146,7 @@ final class TrackerDataLoader extends ResourceController {
                         continue;
 
                     UiUtils.postProgressMessage(context.getString(R.string.sync_deleted_events) + ": "
-                            + organisationUnitUid + ": " + program.getName());
+                            + organisationUnitUid + ": " + program.getName(), LoadingMessageEvent.EventType.REMOVE_EVENTS);
 
                     try {
                         deleteRemotelyDeletedEvents(dhisApi, organisationUnitUid, program.getUid());
@@ -159,7 +159,7 @@ final class TrackerDataLoader extends ResourceController {
                 }
             }
         }
-        UiUtils.postProgressMessage("");
+        UiUtils.postProgressMessage("",LoadingMessageEvent.EventType.FINISH);
     }
 
 

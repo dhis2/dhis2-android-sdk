@@ -31,6 +31,7 @@ package org.hisp.dhis.android.sdk.ui.fragments.settings;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -50,10 +51,12 @@ import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.DhisService;
 import org.hisp.dhis.android.sdk.controllers.PeriodicSynchronizerController;
+import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.controllers.SyncStrategy;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis.android.sdk.ui.activities.LoginActivity;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 
 /**
@@ -72,7 +75,7 @@ public class SettingsFragment extends Fragment
     private Button synchronizeRemovedEventsButton;
     private ProgressBar mProgressBar;
     private TextView syncTextView;
-    private String progressMessage;
+    private LoadingMessageEvent progressMessage;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -132,6 +135,8 @@ public class SettingsFragment extends Fragment
                                         });
                             } else {
                                 DhisService.logOutUser(getActivity());
+                                Intent intent = new Intent(getActivity().getApplicationContext(), LoginActivity.class);
+                                startActivity(intent);
                                 getActivity().finish();
                             }
                         }
@@ -140,6 +145,8 @@ public class SettingsFragment extends Fragment
             if (isAdded()) {
                 final Context context = getActivity().getBaseContext();
                 Toast.makeText(context, getString(R.string.syncing), Toast.LENGTH_SHORT).show();
+                setProgressMessage(new LoadingMessageEvent(getString(R.string.syncing),
+                        LoadingMessageEvent.EventType.METADATA));
 
                 new Thread() {
                     @Override
@@ -153,6 +160,8 @@ public class SettingsFragment extends Fragment
             if (isAdded()) {
                 final Context context = getActivity().getBaseContext();
                 Toast.makeText(context, getString(R.string.sync_deleted_events), Toast.LENGTH_SHORT).show();
+                setProgressMessage(new LoadingMessageEvent(getString(R.string.sync_deleted_events),
+                        LoadingMessageEvent.EventType.REMOVE_EVENTS));
 
                 new Thread() {
                     @Override
@@ -177,26 +186,39 @@ public class SettingsFragment extends Fragment
         // stub implementation
     }
 
-    private void setText(CharSequence text)
+    private void setText(LoadingMessageEvent event)
     {
-        if(isAdded())
-        {
-            if(text != null)
-            {
-                syncTextView.setText(text);
+            if(event!=null) {
+                if (event.eventType.equals(LoadingMessageEvent.EventType.DATA) ||
+                        event.eventType.equals(LoadingMessageEvent.EventType.METADATA) ||
+                        event.eventType.equals(LoadingMessageEvent.EventType.STARTUP)) {
+                    changeUiVisibility(false);
+                    synchronizeButton.setText(getActivity().getApplicationContext().getString(
+                            R.string.synchronizing));
+                } else if (event.eventType.equals(LoadingMessageEvent.EventType.REMOVE_EVENTS)) {
+                    synchronizeRemovedEventsButton.setText(
+                            getActivity().getApplicationContext().getString(
+                                    R.string.synchronizing));
+                    changeUiVisibility(false);
+                }else if(event.eventType.equals(LoadingMessageEvent.EventType.FINISH)){
+                    endSync();
+                }
+
+                if (event.message != null) {
+                    syncTextView.setText(event.message);
+                } else
+                    Log.d(TAG, "Loading message is null");
             }
-            else
-                Log.d(TAG, "Loading message is null");
-        }
     }
+
     @Subscribe
     public void onLoadingMessageEvent(final LoadingMessageEvent event) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run()
             {
-                setProgressMessage(event.message);
-                setText(event.message);
+                setProgressMessage(event);
+                setText(event);
             }
         });
     }
@@ -211,24 +233,29 @@ public class SettingsFragment extends Fragment
         {
             endSync();
         }
-        syncTextView.setText(getProgressMessage());
     }
 
     private void startSync() {
-        synchronizeButton.setEnabled(false);
-        synchronizeRemovedEventsButton.setEnabled(false);
-        mProgressBar.setVisibility(View.VISIBLE);
-        synchronizeButton.setText("Synchronizing...");
-        synchronizeRemovedEventsButton.setText("Synchronizing...");
+        changeUiVisibility(false);
+        setText(getProgressMessage());
     }
 
     private void endSync() {
-        synchronizeButton.setEnabled(true);
-        synchronizeRemovedEventsButton.setEnabled(true);
-        mProgressBar.setVisibility(View.GONE);
+        changeUiVisibility(true);
         syncTextView.setText("");
         synchronizeButton.setText(R.string.synchronize_with_server);
         synchronizeRemovedEventsButton.setText(R.string.synchronize_deleted_events);
+    }
+
+    private void changeUiVisibility(boolean enabled) {
+        if(!enabled){
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
+        else{
+            mProgressBar.setVisibility(View.GONE);
+        }
+        synchronizeButton.setEnabled(enabled);
+        synchronizeRemovedEventsButton.setEnabled(enabled);
     }
 
     @Subscribe
@@ -243,11 +270,11 @@ public class SettingsFragment extends Fragment
         }
     }
 
-    public String getProgressMessage() {
+    public LoadingMessageEvent getProgressMessage() {
         return progressMessage;
     }
 
-    public void setProgressMessage(String progressMessage) {
+    public void setProgressMessage(LoadingMessageEvent progressMessage) {
         this.progressMessage = progressMessage;
     }
 
@@ -268,5 +295,10 @@ public class SettingsFragment extends Fragment
         }
         //else
         //    enableUi(false);
+        if(!MetaDataController.isDataLoaded(getActivity().getApplicationContext())){
+            LoadingMessageEvent event = new LoadingMessageEvent("", LoadingMessageEvent.EventType.STARTUP);
+            setProgressMessage(event);
+            setText(event);
+        }
     }
 }

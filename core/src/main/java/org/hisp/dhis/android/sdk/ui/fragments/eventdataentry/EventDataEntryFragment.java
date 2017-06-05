@@ -29,6 +29,8 @@
 
 package org.hisp.dhis.android.sdk.ui.fragments.eventdataentry;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -52,7 +54,6 @@ import com.squareup.otto.Subscribe;
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.GpsController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
-import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.loaders.DbLoader;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
@@ -77,14 +78,11 @@ import org.hisp.dhis.android.sdk.utils.UiUtils;
 import org.hisp.dhis.android.sdk.utils.services.ProgramIndicatorService;
 import org.hisp.dhis.android.sdk.utils.services.VariableService;
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFragmentForm> {
 
@@ -631,7 +629,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
         //if rowType is coordinate or event date, save the event
         if(event.getRowType() == null
-                || DataEntryRowTypes.COORDINATES.toString().equals(event.getRowType())
+                || DataEntryRowTypes.EVENT_COORDINATES.toString().equals(event.getRowType())
                 || DataEntryRowTypes.EVENT_DATE.toString().equals(event.getRowType())) {
             //save event
             saveThread.scheduleSaveEvent();

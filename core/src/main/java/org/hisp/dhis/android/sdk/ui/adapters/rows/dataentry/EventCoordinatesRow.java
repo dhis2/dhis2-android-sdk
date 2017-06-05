@@ -49,12 +49,12 @@ import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 
-public final class CoordinatesRow extends Row {
+public final class EventCoordinatesRow extends Row {
     private static final String EMPTY_FIELD = "";
     private final Event mEvent;
     private final int MAX_INPUT_LENGTH = 9; // max input length = 9 for accepting 6 decimals in coordinates
 
-    public CoordinatesRow(Event event) {
+    public EventCoordinatesRow(Event event) {
         mEvent = event;
     }
 
@@ -69,7 +69,7 @@ public final class CoordinatesRow extends Row {
             holder = (CoordinateViewHolder) view.getTag();
         } else {
             View root = inflater.inflate(
-                    R.layout.listview_row_coordinate_picker, container, false);
+                    R.layout.listview_row_event_coordinate_picker, container, false);
             detailedInfoButton =  root.findViewById(R.id.detailed_info_button_layout);
             holder = new CoordinateViewHolder(root, detailedInfoButton);
 
@@ -102,7 +102,7 @@ public final class CoordinatesRow extends Row {
 
     @Override
     public int getViewType() {
-        return DataEntryRowTypes.COORDINATES.ordinal();
+        return DataEntryRowTypes.EVENT_COORDINATES.ordinal();
     }
 
     private static class CoordinateViewHolder {
@@ -190,7 +190,7 @@ public final class CoordinatesRow extends Row {
                     mEvent.setLatitude(Double.valueOf(newValue));
                     DataValue dataValue = new DataValue();
                     dataValue.setValue("" + newValue);
-                    Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue, DataEntryRowTypes.COORDINATES.toString()));
+                    Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue, DataEntryRowTypes.EVENT_COORDINATES.toString()));
 
                 }
             }
@@ -219,7 +219,7 @@ public final class CoordinatesRow extends Row {
                     mEvent.setLongitude(Double.valueOf(newValue));
                     DataValue dataValue = new DataValue();
                     dataValue.setValue("" + newValue);
-                    Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue, DataEntryRowTypes.COORDINATES.toString()));
+                    Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue, DataEntryRowTypes.EVENT_COORDINATES.toString()));
                 }
             }
         }

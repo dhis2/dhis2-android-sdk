@@ -275,4 +275,5 @@
     <string name="developers_settings">Developers options</string>
     <string name="developer_option_key">developer optionkey</string>
     <string name="developer_option_title">"Show developer options"</string>
+    <string name="synchronizing">Synchronizing...</string>
 </resources>

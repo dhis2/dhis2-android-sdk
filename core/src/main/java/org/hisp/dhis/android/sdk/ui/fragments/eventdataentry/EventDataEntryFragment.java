@@ -746,8 +746,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         }
 
         //if rowType is coordinate or event date, save the event
-        if (event.getRowType() == null
-                || DataEntryRowTypes.COORDINATES.toString().equals(event.getRowType())
+       if(event.getRowType() == null
+                || DataEntryRowTypes.EVENT_COORDINATES.toString().equals(event.getRowType())
                 || DataEntryRowTypes.EVENT_DATE.toString().equals(event.getRowType())) {
             //save event
             saveThread.scheduleSaveEvent();

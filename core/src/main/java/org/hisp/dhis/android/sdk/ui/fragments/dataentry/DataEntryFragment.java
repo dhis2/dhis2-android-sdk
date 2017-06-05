@@ -58,6 +58,7 @@ import org.hisp.dhis.android.sdk.ui.adapters.DataValueAdapter;
 import org.hisp.dhis.android.sdk.ui.adapters.SectionAdapter;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EventCoordinatesRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.IndicatorRow;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.QuestionCoordinatesRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.StatusRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.common.AbsProgramRuleFragment;
@@ -301,7 +302,8 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     public void onShowDetailedInfo(OnDetailedInfoButtonClick eventClick) // may inherit code from DataEntryFragment
     {
         String message = "";
-        if(eventClick.getRow() instanceof EventCoordinatesRow)
+
+        if(eventClick.getRow() instanceof EventCoordinatesRow || eventClick.getRow() instanceof QuestionCoordinatesRow)
             message = getResources().getString(R.string.detailed_info_coordinate_row);
         else if (eventClick.getRow() instanceof StatusRow)
             message = getResources().getString(R.string.detailed_info_status_row);

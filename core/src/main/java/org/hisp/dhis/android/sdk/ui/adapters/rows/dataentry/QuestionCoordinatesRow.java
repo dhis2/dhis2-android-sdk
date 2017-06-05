@@ -20,7 +20,7 @@ import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 
-public final class CoordinatesRow extends Row {
+public final class QuestionCoordinatesRow extends Row {
     private static final String EMPTY_FIELD = "";
     private final int MAX_INPUT_LENGTH = 9;
             // max input length = 9 for accepting 6 decimals in coordinates
@@ -33,31 +33,32 @@ public final class CoordinatesRow extends Row {
         return value;
     }
 
-    public static String getLatitude(BaseValue baseValue) {
+    public static String getLatitudeFromValue(BaseValue baseValue) {
         if(baseValue == null || baseValue.getValue() == null)
             return "0";
         String value = baseValue.getValue();
         if (value.contains(",")) {
-            return value.substring(value.indexOf(",") + 1, value.length()).replace("]", "");
+            return value.substring(value.indexOf(",") + 1, value.length()).replace("]", EMPTY_FIELD);
         }
         return "0";
     }
 
-    public static String getLongitude(BaseValue baseValue) {
+    public static String getLongitudeFromValue(BaseValue baseValue) {
         if(baseValue == null || baseValue.getValue() == null)
             return "0";
         String value = baseValue.getValue();
         if (value.contains(",")) {
-            return value.substring(0, value.indexOf(",")).replace("[", "");
+            return value.substring(0, value.indexOf(",")).replace("[", EMPTY_FIELD);
         }
         return "0";
     }
 
+    //the latitude and logitude is saved in the server with the format: "[longitude,latitude]"
     public static String getCoordinateValue(EditText latitude, EditText longitude) {
-        return "[" + latitude.getText() + "," + longitude.getText() + "]";
+        return "[" + longitude.getText() + "," + latitude.getText() + "]";
     }
 
-    public CoordinatesRow(String label, boolean mandatory, String warning, BaseValue baseValue,
+    public QuestionCoordinatesRow(String label, boolean mandatory, String warning, BaseValue baseValue,
             DataEntryRowTypes rowType) {
         mLabel = label;
         mMandatory = mandatory;
@@ -65,7 +66,7 @@ public final class CoordinatesRow extends Row {
         mValue = baseValue;
         mRowType = rowType;
 
-        checkNeedsForDescriptionButton();
+        //checkNeedsForDescriptionButton();
 
     }
 
@@ -74,22 +75,24 @@ public final class CoordinatesRow extends Row {
             View convertView, ViewGroup container) {
         View view;
         CoordinateViewHolder holder;
-        if (convertView != null && convertView.getTag() instanceof CoordinateViewHolder) {
+
+        if (convertView != null && convertView.getTag() instanceof QuestionCoordinatesRow) {
             view = convertView;
             holder = (CoordinateViewHolder) view.getTag();
         } else {
             View root = inflater.inflate(R.layout.listview_row_event_coordinate_picker, container,
                     false);
             root.setBackgroundColor(Color.WHITE);
-            //detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
-            holder = new CoordinateViewHolder(root);
+            View detailedInfoButton =  root.findViewById(R.id.detailed_info_button_layout);
+            holder = new CoordinateViewHolder(root, detailedInfoButton);
 
             root.setTag(holder);
             view = root;
         }
-        //holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
-
-        holder.updateViews(mValue);
+        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
+        if(mValue!=null) {
+            holder.updateViews(mValue);
+        }
         //input filters for coordinate row text fields
         InputFilter[] latitudeFilters = new InputFilter[2];
         InputFilter[] longitudeFilters = new InputFilter[2];
@@ -110,19 +113,19 @@ public final class CoordinatesRow extends Row {
 
     @Override
     public int getViewType() {
-        return DataEntryRowTypes.COORDINATES.ordinal();
+        return DataEntryRowTypes.QUESTION_COORDINATES.ordinal();
     }
 
     private static class CoordinateViewHolder {
         private final EditText latitude;
         private final EditText longitude;
         private final ImageButton captureCoords;
-//        private final View detailedInfoButton;
+        public final View detailedInfoButton;
         private final LatitudeWatcher latitudeWatcher;
         private final LongitudeWatcher longitudeWatcher;
         private final OnCaptureCoordsClickListener onButtonClickListener;
 
-        public CoordinateViewHolder(View view) {
+        public CoordinateViewHolder(View view, View detailedInfoButton) {
             final String latitudeMessage = view.getContext()
                     .getString(R.string.latitude_error_message);
             final String longitudeMessage = view.getContext()
@@ -132,7 +135,7 @@ public final class CoordinatesRow extends Row {
             latitude = (EditText) view.findViewById(R.id.latitude_edittext);
             longitude = (EditText) view.findViewById(R.id.longitude_edittext);
             captureCoords = (ImageButton) view.findViewById(R.id.capture_coordinates);
-//            this.detailedInfoButton = detailedInfoButton;
+            this.detailedInfoButton = detailedInfoButton;
             /* text watchers and click listener */
             latitudeWatcher = new LatitudeWatcher(latitude, longitude, latitudeMessage,
                     longitudeMessage);
@@ -146,16 +149,13 @@ public final class CoordinatesRow extends Row {
         }
 
         public void updateViews(BaseValue baseValue) {
-
-            String lat = getLatitude(baseValue);
-            String lon = getLongitude(baseValue);
+            String lon = getLongitudeFromValue(baseValue);
+            String lat = getLatitudeFromValue(baseValue);
 
             latitudeWatcher.setBaseValue(baseValue);
-            latitude.setText(lon);
+            latitude.setText(lat);
             longitudeWatcher.setBaseValue(baseValue);
-            longitude.setText(lat);
-
-
+            longitude.setText(lon);
         }
     }
     private abstract static class CoordinateWatcher extends AbsTextWatcher {
@@ -190,10 +190,10 @@ public final class CoordinatesRow extends Row {
 
         @Override
         public void afterTextChanged(Editable s) {
-            String  value = getLatitude(mBaseValue);
+            String  value = getLongitudeFromValue(mBaseValue);
 
             if (s.length() > 1) {
-                if (s.toString().equals(getLongitude(mBaseValue))) {
+                if (s.toString().equals(getLatitudeFromValue(mBaseValue))) {
                     //ignore
                     return;
                 }
@@ -219,10 +219,10 @@ public final class CoordinatesRow extends Row {
         @Override
         public void afterTextChanged(Editable s) {
             String
-                value = getLongitude(mBaseValue);
+                value = getLatitudeFromValue(mBaseValue);
 
             if (s.length() > 1) {
-                if (s.toString().equals(getLatitude(mBaseValue))) {
+                if (s.toString().equals(getLongitudeFromValue(mBaseValue))) {
                     //ignore
                     return;
                 }
@@ -279,11 +279,11 @@ public final class CoordinatesRow extends Row {
         public CharSequence filter(CharSequence charSequence, int i, int i2, Spanned spanned,
                 int i3, int i4) {
             if (charSequence != null && charSequence.toString().trim().equals(invalidValue)) {
-                if (baseValue == null || baseValue.getValue() == null || getLatitude(baseValue)
+                if (baseValue == null || baseValue.getValue() == null || getLongitudeFromValue(baseValue)
                         == null) {
                     return invalidValue; //if getLat == null && location.getLat== 0.0, return 0.0
                 } else {
-                    return getLatitude(baseValue);
+                    return getLongitudeFromValue(baseValue);
                 }
             }
 
@@ -300,11 +300,11 @@ public final class CoordinatesRow extends Row {
         public CharSequence filter(CharSequence charSequence, int i, int i2, Spanned spanned,
                 int i3, int i4) {
             if (charSequence != null && charSequence.toString().trim().equals(invalidValue)) {
-                if (baseValue == null || baseValue.getValue() == null || getLongitude(baseValue)
+                if (baseValue == null || baseValue.getValue() == null || getLatitudeFromValue(baseValue)
                         == null) {
                     return invalidValue;
                 } else {
-                    return getLongitude(baseValue);
+                    return getLatitudeFromValue(baseValue);
                 }
             }
             return null;

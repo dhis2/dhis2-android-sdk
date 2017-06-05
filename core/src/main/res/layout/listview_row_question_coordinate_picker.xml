@@ -32,7 +32,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/transparent_blue"
+    android:background="@color/white"
     android:baselineAligned="false"
     android:orientation="horizontal"
     android:weightSum="1">

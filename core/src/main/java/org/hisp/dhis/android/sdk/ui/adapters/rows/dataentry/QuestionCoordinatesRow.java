@@ -1,7 +1,5 @@
 package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
-import static android.R.attr.label;
-
 import android.location.Location;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
@@ -68,7 +66,7 @@ public final class QuestionCoordinatesRow extends Row {
         mValue = baseValue;
         mRowType = rowType;
 
-        //checkNeedsForDescriptionButton();
+        checkNeedsForDescriptionButton();
 
     }
 

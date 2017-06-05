@@ -34,19 +34,28 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.hisp.dhis.client.sdk.ui.BuildConfig;
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.activities.BaseActivity;
 import org.hisp.dhis.client.sdk.ui.activities.OnBackPressedCallback;
 import org.hisp.dhis.client.sdk.ui.activities.OnBackPressedFromFragmentCallback;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Locale;
+
 
 public class InformationFragment extends BaseFragment implements OnBackPressedCallback {
 
@@ -74,6 +83,49 @@ public class InformationFragment extends BaseFragment implements OnBackPressedCa
         return inflater.inflate(R.layout.fragment_information, container, false);
     }
 
+    public static Spanned getCommitMessage(Context context) {
+        String stringCommit = getCommitHash(context);
+
+        if (stringCommit.contains(context.getString(R.string.unavailable))) {
+            stringCommit = String.format(context.getString(R.string.last_commit), stringCommit);
+            stringCommit = stringCommit + " " + context.getText(R.string.lastcommit_unavailable);
+        } else {
+            stringCommit = String.format(context.getString(R.string.last_commit), stringCommit);
+        }
+
+        return Html.fromHtml(stringCommit);
+    }
+
+    public static String getCommitHash(Context context) {
+        String stringCommit;
+        //Check if lastcommit.txt file exist, and if not exist show as unavailable.
+        int layoutId = context.getResources().getIdentifier("lastcommit", "raw",
+                BuildConfig.main_app);
+        if (layoutId == 0) {
+            stringCommit = context.getString(R.string.unavailable);
+        } else {
+            InputStream commit = context.getResources().openRawResource(layoutId);
+            stringCommit = convertFromInputStreamToString(commit).toString();
+        }
+        return stringCommit;
+    }
+
+    private static StringBuilder convertFromInputStreamToString(InputStream inputStream) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        try {
+            BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+            String line;
+            while ((line = r.readLine()) != null) {
+                stringBuilder.append(line + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return stringBuilder;
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -84,8 +136,39 @@ public class InformationFragment extends BaseFragment implements OnBackPressedCa
         }
         // setup fields :
         setAppNameAndVersion(getContext().getApplicationInfo().packageName);
+        setCommitHash(getContext());
+        setDescription(getContext());
     }
 
+    /**
+     * Commit hash from main app file.
+     * Fills in the commit hash if exists, or how make it works.
+     *
+     * @param context the name of the app package.
+     */
+    private void setCommitHash(Context context) {
+        TextView commitTextView = (TextView) getActivity().findViewById(R.id.commit_hash);
+        commitTextView.setText(getCommitMessage(context));
+    }
+
+    /**
+     * App-info from main app file.
+     * Fills in the app description message.
+     *
+     * @param context the name of the app package.
+     */
+    private void setDescription(Context context) {
+        TextView descriptionTextView = (TextView) getActivity().findViewById(R.id.description);
+        descriptionTextView.setText(getDescriptionMessage(context));
+    }
+
+    private SpannableString getDescriptionMessage(Context context) {
+        InputStream message = context.getResources().openRawResource(R.raw.description);
+        String stringMessage = convertFromInputStreamToString(message).toString();
+        final SpannableString linkedMessage = new SpannableString(Html.fromHtml(stringMessage));
+        Linkify.addLinks(linkedMessage, Linkify.EMAIL_ADDRESSES | Linkify.WEB_URLS);
+        return linkedMessage;
+    }
     /**
      * App-info from app package name.
      * Fills in the App name, version, build and adds the app icon.
@@ -118,7 +201,7 @@ public class InformationFragment extends BaseFragment implements OnBackPressedCa
                 appBuild = "" + packageManager.getPackageInfo(packageName, 0).versionCode;
                 appIconImageView.setImageDrawable(packageManager.getApplicationIcon(packageName));
             } catch (PackageManager.NameNotFoundException e) {
-                //e.printStackTrace();
+                e.printStackTrace();
             }
         }
         if (appName.length() > 0 && appVersion.length() > 0) {

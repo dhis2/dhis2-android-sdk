@@ -121,6 +121,12 @@ public final class QuestionCoordinatesRow extends Row {
         holder.latitude.setFilters(latitudeFilters);
         holder.longitude.setFilters(longitudeFilters);
 
+
+        if(!mMandatory) {
+            holder.mandatoryIndicator.setVisibility(View.GONE);
+        } else {
+            holder.mandatoryIndicator.setVisibility(View.VISIBLE);
+        }
         return view;
     }
 
@@ -133,6 +139,7 @@ public final class QuestionCoordinatesRow extends Row {
         private final TextView labelTextView;
         private final EditText latitude;
         private final EditText longitude;
+        public final TextView mandatoryIndicator;
         private final ImageButton captureCoordinates;
         private final View detailedInfoButton;
         private final LatitudeWatcher latitudeWatcher;
@@ -146,6 +153,7 @@ public final class QuestionCoordinatesRow extends Row {
                     .getString(R.string.longitude_error_message);
 
             /* views */
+            mandatoryIndicator = (TextView) view.findViewById(R.id.mandatory_indicator);
             labelTextView = (TextView) view.findViewById(R.id.text_label);
             latitude = (EditText) view.findViewById(R.id.latitude_edittext);
             longitude = (EditText) view.findViewById(R.id.longitude_edittext);

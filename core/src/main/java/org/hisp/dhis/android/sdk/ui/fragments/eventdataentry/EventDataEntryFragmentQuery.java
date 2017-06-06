@@ -133,7 +133,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
             }
             addEventDateRow(context, form, rows);
             addCoordinateRow(form, rows);
-            populateDataEntryRows(form, stage.getProgramStageDataElements(), rows, username);
+            populateDataEntryRows(form, stage.getProgramStageDataElements(), rows, username, event);
             populateIndicatorRows(form, stage.getProgramIndicators(), rows);
             form.getSections().add(new DataEntryFragmentSection(DEFAULT_SECTION, null, rows));
         } else {
@@ -152,7 +152,8 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
                     addEventDateRow(context, form, rows);
                     addCoordinateRow(form, rows);
                 }
-                populateDataEntryRows(form, section.getProgramStageDataElements(), rows, username);
+                populateDataEntryRows(form, section.getProgramStageDataElements(), rows, username,
+                        event);
                 populateIndicatorRows(form, section.getProgramIndicators(), rows);
                 form.getSections().add(new DataEntryFragmentSection(section.getName(), section.getUid(), rows));
             }
@@ -204,8 +205,8 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
     }
 
     private static void populateDataEntryRows(EventDataEntryFragmentForm form,
-                                              List<ProgramStageDataElement> dataElements,
-                                              List<Row> rows, String username) {
+            List<ProgramStageDataElement> dataElements,
+            List<Row> rows, String username, Event event) {
         for (ProgramStageDataElement stageDataElement : dataElements) {
             DataValue dataValue = getDataValue(stageDataElement.getDataelement(), form.getEvent(), username);
             DataElement dataElement = getDataElement(stageDataElement.getDataelement());
@@ -213,7 +214,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
                 form.getDataElementNames().put(stageDataElement.getDataelement(),
                         dataElement.getDisplayName());
                 form.getDataValues().put(dataValue.getDataElement(), dataValue);
-                rows.add(createDataEntryRow(stageDataElement, dataElement, dataValue));
+                rows.add(createDataEntryRow(stageDataElement, dataElement, dataValue, event));
             }
         }
     }
@@ -264,7 +265,8 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
         return event;
     }
 
-    private static Row createDataEntryRow(ProgramStageDataElement programStageDataElement, DataElement dataElement, DataValue dataValue) {
+    private static Row createDataEntryRow(ProgramStageDataElement programStageDataElement,
+            DataElement dataElement, DataValue dataValue, Event event) {
         Row row;
 
         String dataElementName;
@@ -277,38 +279,38 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
         if (dataElement.getOptionSet() != null) {
             OptionSet optionSet = MetaDataController.getOptionSet(dataElement.getOptionSet());
             if (optionSet == null) {
-                row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.TEXT);
+                row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.TEXT, event);
             } else {
-                row = new AutoCompleteRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, optionSet);
+                row = new AutoCompleteRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, optionSet, event);
             }
         } else if (dataElement.getValueType().equals(ValueType.TEXT)) {
-            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.TEXT);
+            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.TEXT, event);
         } else if (dataElement.getValueType().equals(ValueType.LONG_TEXT)) {
-            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.LONG_TEXT);
+            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.LONG_TEXT, event);
         } else if (dataElement.getValueType().equals(ValueType.NUMBER)) {
-            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.NUMBER);
+            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.NUMBER, event);
         } else if (dataElement.getValueType().equals(ValueType.INTEGER)) {
-            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.INTEGER);
+            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.INTEGER, event);
         } else if (dataElement.getValueType().equals(ValueType.INTEGER_ZERO_OR_POSITIVE)) {
-            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE);
+            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE, event);
         } else if (dataElement.getValueType().equals(ValueType.INTEGER_POSITIVE)) {
-            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.INTEGER_POSITIVE);
+            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.INTEGER_POSITIVE, event);
         } else if (dataElement.getValueType().equals(ValueType.INTEGER_NEGATIVE)) {
-            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.INTEGER_NEGATIVE);
+            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.INTEGER_NEGATIVE, event);
         } else if (dataElement.getValueType().equals(ValueType.BOOLEAN)) {
             row = new RadioButtonsRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.BOOLEAN);
         } else if (dataElement.getValueType().equals(ValueType.TRUE_ONLY)) {
-            row = new CheckBoxRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue);
+            row = new CheckBoxRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, event);
         } else if (dataElement.getValueType().equals(ValueType.DATE)) {
-            row = new DatePickerRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, programStageDataElement.getAllowFutureDate());
+            row = new DatePickerRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, programStageDataElement.getAllowFutureDate(), event);
         } else if (dataElement.getValueType().equals(ValueType.AGE)) {
-            row = new DatePickerRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, programStageDataElement.getAllowFutureDate());
+            row = new DatePickerRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, programStageDataElement.getAllowFutureDate(), event);
         } else if (dataElement.getValueType().equals(ValueType.PERCENTAGE)) {
-            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.PERCENTAGE);
+            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.PERCENTAGE, event);
         } else if (dataElement.getValueType().equals(ValueType.COORDINATE)) {
-            row = new QuestionCoordinatesRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.QUESTION_COORDINATES);
+            row = new QuestionCoordinatesRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.QUESTION_COORDINATES, event);
         } else {
-            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.LONG_TEXT);
+            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.LONG_TEXT, event);
         }
         return row;
     }

@@ -29,6 +29,8 @@
 
 package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
+import static android.text.TextUtils.isEmpty;
+
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,12 +41,11 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
-import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
-
-import static android.text.TextUtils.isEmpty;
+import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
+import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 
 public class CheckBoxRow extends Row {
     private static final String TRUE = "true";
@@ -52,11 +53,13 @@ public class CheckBoxRow extends Row {
 
     private final String mLabel;
 
-    public CheckBoxRow(String label, boolean mandatory, String warning, BaseValue mValue) {
+    public CheckBoxRow(String label, boolean mandatory, String warning, BaseValue mValue,
+            Event event) {
         mLabel = label;
         this.mValue = mValue;
         this.mWarning = warning;
         this.mMandatory = mandatory;
+        this.mEvent = event;
 
         checkNeedsForDescriptionButton();
 
@@ -86,7 +89,7 @@ public class CheckBoxRow extends Row {
             holder.checkBox.setOnCheckedChangeListener(holder.listener);
             holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
 
-            if(!isEditable()) {
+            if(!isEditable() || isEventComplete() && isMandatory()) {
                 holder.checkBox.setEnabled(false);
                 holder.textLabel.setEnabled(false);
             } else {

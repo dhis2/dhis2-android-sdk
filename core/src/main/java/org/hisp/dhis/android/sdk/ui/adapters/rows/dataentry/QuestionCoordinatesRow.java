@@ -1,7 +1,5 @@
 package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
-import static android.R.attr.label;
-
 import android.location.Location;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
@@ -13,11 +11,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.GpsController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
+import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
@@ -61,23 +61,35 @@ public final class QuestionCoordinatesRow extends Row {
     }
 
     public QuestionCoordinatesRow(String label, boolean mandatory, String warning, BaseValue baseValue,
-            DataEntryRowTypes rowType) {
+            DataEntryRowTypes rowType, Event event) {
         mLabel = label;
         mMandatory = mandatory;
         mWarning = warning;
         mValue = baseValue;
         mRowType = rowType;
+        mEvent = event;
 
-        //checkNeedsForDescriptionButton();
+        checkNeedsForDescriptionButton();
 
     }
 
     @Override
-    public View getView(FragmentManager fragmentManager, LayoutInflater inflater,
+    public View getView(FragmentManager fragmentManager, final LayoutInflater inflater,
             View convertView, ViewGroup container) {
         View view;
         CoordinateViewHolder holder;
 
+        CoordinateCallback coordinateCallback = new CoordinateCallback(){
+            @Override
+            public boolean canValueBeSaved(String newValue) {
+                if(newValue==null) return false;
+                if((newValue.equals("") || newValue.equals("-")) && isMandatory() && isEventComplete()) {
+                    Toast.makeText(inflater.getContext(), inflater.getContext().getString(R.string.error_delete_mandatory_value), Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                return true;
+            }
+        };
         if (convertView != null && convertView.getTag() instanceof QuestionCoordinatesRow.CoordinateViewHolder) {
             view = convertView;
             holder = (QuestionCoordinatesRow.CoordinateViewHolder) view.getTag();
@@ -85,7 +97,7 @@ public final class QuestionCoordinatesRow extends Row {
             View root = inflater.inflate(
                     R.layout.listview_row_question_coordinate_picker, container, false);
             detailedInfoButton =  root.findViewById(R.id.detailed_info_button_layout);
-            holder = new QuestionCoordinatesRow.CoordinateViewHolder(root, detailedInfoButton);
+            holder = new QuestionCoordinatesRow.CoordinateViewHolder(root, detailedInfoButton, coordinateCallback);
 
             root.setTag(holder);
             view = root;
@@ -109,6 +121,12 @@ public final class QuestionCoordinatesRow extends Row {
         holder.latitude.setFilters(latitudeFilters);
         holder.longitude.setFilters(longitudeFilters);
 
+
+        if(!mMandatory) {
+            holder.mandatoryIndicator.setVisibility(View.GONE);
+        } else {
+            holder.mandatoryIndicator.setVisibility(View.VISIBLE);
+        }
         return view;
     }
 
@@ -121,19 +139,21 @@ public final class QuestionCoordinatesRow extends Row {
         private final TextView labelTextView;
         private final EditText latitude;
         private final EditText longitude;
+        public final TextView mandatoryIndicator;
         private final ImageButton captureCoordinates;
         private final View detailedInfoButton;
         private final LatitudeWatcher latitudeWatcher;
         private final LongitudeWatcher longitudeWatcher;
         private final OnCaptureCoordsClickListener onButtonClickListener;
 
-        public CoordinateViewHolder(View view, View detailedInfoButton) {
+        public CoordinateViewHolder(View view, View detailedInfoButton, CoordinateCallback coordinateCallback) {
             final String latitudeMessage = view.getContext()
                     .getString(R.string.latitude_error_message);
             final String longitudeMessage = view.getContext()
                     .getString(R.string.longitude_error_message);
 
             /* views */
+            mandatoryIndicator = (TextView) view.findViewById(R.id.mandatory_indicator);
             labelTextView = (TextView) view.findViewById(R.id.text_label);
             latitude = (EditText) view.findViewById(R.id.latitude_edittext);
             longitude = (EditText) view.findViewById(R.id.longitude_edittext);
@@ -141,13 +161,13 @@ public final class QuestionCoordinatesRow extends Row {
             this.detailedInfoButton = detailedInfoButton;
             /* text watchers and click listener */
             latitudeWatcher = new LatitudeWatcher(latitude, longitude, latitudeMessage,
-                    longitudeMessage);
+                    longitudeMessage, coordinateCallback);
             longitudeWatcher = new LongitudeWatcher(latitude, longitude, latitudeMessage,
-                    longitudeMessage);
-            onButtonClickListener = new OnCaptureCoordsClickListener(latitude, longitude);
-
+                    longitudeMessage, coordinateCallback);
             latitude.addTextChangedListener(latitudeWatcher);
             longitude.addTextChangedListener(longitudeWatcher);
+            onButtonClickListener = new OnCaptureCoordsClickListener(latitude, longitude);
+
             captureCoordinates.setOnClickListener(onButtonClickListener);
         }
 
@@ -168,14 +188,16 @@ public final class QuestionCoordinatesRow extends Row {
         final  EditText mEditTextLongitude;
         final String mLatitudeMessage;
         final String mLongitudeMessage;
+        final CoordinateCallback mCoordinateCallback;
         BaseValue mBaseValue;
 
         public CoordinateWatcher(EditText mEditTextLatitude, EditText mEditTextLongitude,
-                String mLatitudeMessage, String mLongitudeMessage) {
+                String mLatitudeMessage, String mLongitudeMessage, CoordinateCallback coordinateCallback) {
             this.mEditTextLatitude = mEditTextLatitude;
             this.mEditTextLongitude = mEditTextLongitude;
             this.mLongitudeMessage = mLongitudeMessage;
             this.mLatitudeMessage = mLatitudeMessage;
+            this.mCoordinateCallback = coordinateCallback;
         }
 
         public void setBaseValue(BaseValue mDataValue) {
@@ -189,27 +211,31 @@ public final class QuestionCoordinatesRow extends Row {
     private static class LatitudeWatcher extends CoordinateWatcher {
 
         public LatitudeWatcher(EditText mLatitude, EditText mLongitude, String mLatitudeMessage,
-                String mLongitudeMessage) {
-            super(mLatitude, mLongitude, mLatitudeMessage, mLongitudeMessage);
+                String mLongitudeMessage, CoordinateCallback coordinateCallback) {
+            super(mLatitude, mLongitude, mLatitudeMessage, mLongitudeMessage, coordinateCallback);
         }
 
         @Override
         public void afterTextChanged(Editable s) {
-            String  value = getLongitudeFromValue(mBaseValue);
+            if (mCoordinateCallback.canValueBeSaved(s.toString())) {
+                String value = getLongitudeFromValue(mBaseValue);
 
-            if (s.length() > 1) {
-                if (s.toString().equals(getLatitudeFromValue(mBaseValue))) {
-                    //ignore
-                    return;
-                }
-                String newValue = s.toString();
-                if (Double.parseDouble(newValue) < -90 || Double.parseDouble(newValue) > 90) {
-                    mEditTextLatitude.setError(mLatitudeMessage);
-                }
+                if (s.length() > 1) {
+                    if (s.toString().equals(getLatitudeFromValue(mBaseValue))) {
+                        //ignore
+                        return;
+                    }
+                    String newValue = s.toString();
+                    if (Double.parseDouble(newValue) < -90 || Double.parseDouble(newValue) > 90) {
+                        mEditTextLatitude.setError(mLatitudeMessage);
+                    }
 
-                if (newValue != value && mBaseValue!=null) {
-                    saveCoordinates(mEditTextLatitude, mEditTextLongitude, mBaseValue);
+                    if (newValue != value && mBaseValue != null) {
+                        saveCoordinates(mEditTextLatitude, mEditTextLongitude, mBaseValue);
+                    }
                 }
+            }else{
+               mEditTextLatitude.setText(getLatitudeFromValue(mBaseValue));
             }
         }
     }
@@ -217,28 +243,32 @@ public final class QuestionCoordinatesRow extends Row {
     private static class LongitudeWatcher extends CoordinateWatcher {
 
         public LongitudeWatcher(EditText mLatitude, EditText mLongitude, String mLatitudeMessage,
-                String mLongitudeMessage) {
-            super(mLatitude, mLongitude, mLatitudeMessage, mLongitudeMessage);
+                String mLongitudeMessage, CoordinateCallback coordinateCallback) {
+            super(mLatitude, mLongitude, mLatitudeMessage, mLongitudeMessage, coordinateCallback);
         }
 
         @Override
         public void afterTextChanged(Editable s) {
-            String
-                value = getLatitudeFromValue(mBaseValue);
+            if(mCoordinateCallback.canValueBeSaved(s.toString())) {
+                String
+                        value = getLatitudeFromValue(mBaseValue);
 
-            if (s.length() > 1) {
-                if (s.toString().equals(getLongitudeFromValue(mBaseValue))) {
-                    //ignore
-                    return;
-                }
-                String newValue = s.toString();
-                if (Double.parseDouble(newValue) < -180 || Double.parseDouble(newValue) > 180) {
-                    mEditTextLongitude.setError(mLongitudeMessage);
-                }
+                if (s.length() > 1) {
+                    if (s.toString().equals(getLongitudeFromValue(mBaseValue))) {
+                        //ignore
+                        return;
+                    }
+                    String newValue = s.toString();
+                    if (Double.parseDouble(newValue) < -180 || Double.parseDouble(newValue) > 180) {
+                        mEditTextLongitude.setError(mLongitudeMessage);
+                    }
 
-                if (!newValue.equals(value) && mBaseValue!=null) {
-                    saveCoordinates(mEditTextLatitude, mEditTextLongitude, mBaseValue);
+                    if (!newValue.equals(value) && mBaseValue != null) {
+                        saveCoordinates(mEditTextLatitude, mEditTextLongitude, mBaseValue);
+                    }
                 }
+            }else{
+               mEditTextLongitude.setText(getLongitudeFromValue(mBaseValue));
             }
         }
     }
@@ -314,5 +344,9 @@ public final class QuestionCoordinatesRow extends Row {
             }
             return null;
         }
+    }
+
+    public interface CoordinateCallback {
+        boolean canValueBeSaved(String newValue);
     }
 }

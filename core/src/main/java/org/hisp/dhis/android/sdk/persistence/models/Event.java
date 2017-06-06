@@ -339,4 +339,9 @@ public class Event extends BaseSerializableModel {
     public void setUid(String uid) {
         this.event = uid;
     }
+
+    @JsonIgnore
+    public boolean isComplete(){
+        return getStatus().equals(Event.STATUS_COMPLETED);
+    }
 }

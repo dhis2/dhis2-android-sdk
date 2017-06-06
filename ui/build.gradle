@@ -41,6 +41,7 @@ android {
         targetSdkVersion cfg.targetSdkVersion
         versionCode cfg.versionCode
         versionName cfg.versionName
+        buildConfigField "String", "main_app", '"'+cfg.package+'"'
     }
 
     compileOptions {

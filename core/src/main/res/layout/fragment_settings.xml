@@ -38,88 +38,162 @@
     <android.support.v7.widget.CardView
         android:layout_height="match_parent"
         android:layout_width="match_parent">
-
         <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp">
-
-            <org.hisp.dhis.android.sdk.ui.views.FontTextView
-                android:id="@+id/update_frequency_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:text="@string/update_frequency"
-                android:textSize="@dimen/medium_text_size"
-                android:textColor="@color/darker_grey"
-                app:font="@string/light_font_name" />
-
-            <Spinner
-                android:id="@+id/settings_update_frequency_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:background="@drawable/spinner_background_holo_light"
-                android:entries="@array/update_frequencies"
-                android:layout_below="@+id/update_frequency_label" />
-            <LinearLayout
-                android:id="@+id/settings_sync_wrap_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/settings_update_frequency_spinner"
-                android:orientation="horizontal"
-                android:paddingTop="40dp"
-                android:weightSum="1">
-
-            <org.hisp.dhis.android.sdk.ui.views.FontButton
-                android:id="@+id/settings_sync_button"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:background="@drawable/button_blue_selector"
-                android:singleLine="true"
-                android:text="@string/synchronize_with_server"
-                android:textColor="@color/white"
-                android:textSize="@dimen/medium_text_size"
-                android:layout_below="@+id/settings_update_frequency_spinner"
-                android:layout_gravity="center_horizontal"
-                app:font="@string/medium_font_name"
-                android:layout_weight="0.5"
-                />
-
-                <ProgressBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:id="@+id/settings_progessbar"/>
-
-            </LinearLayout>
-
+                android:layout_height="match_parent"
+                android:layout_above="@+id/settings_logout_button">
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/settings_sync_wrap_layout">
-                <TextView
-                    android:id="@+id/settings_sync_textview"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <org.hisp.dhis.android.sdk.ui.views.FontTextView
+                    android:id="@+id/update_frequency_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/update_frequency"
                     android:textSize="@dimen/medium_text_size"
-                    android:layout_gravity="center_horizontal"/>
+                    android:textColor="@color/darker_grey"
+                    app:font="@string/light_font_name" />
+
+                <Spinner
+                    android:id="@+id/settings_update_frequency_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/spinner_background_holo_light"
+                    android:entries="@array/update_frequencies"
+                    android:layout_below="@+id/update_frequency_label" />
+                <LinearLayout
+                    android:id="@+id/settings_sync_wrap_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/settings_update_frequency_spinner"
+                    android:orientation="horizontal"
+                    android:paddingTop="40dp"
+                    android:weightSum="1">
+
+                <org.hisp.dhis.android.sdk.ui.views.FontButton
+                    android:id="@+id/settings_sync_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/settings_button_selector"
+                    android:singleLine="true"
+                    android:text="@string/synchronize_with_server"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/medium_text_size"
+                    android:layout_below="@+id/settings_update_frequency_spinner"
+                    android:layout_gravity="center_horizontal"
+                    app:font="@string/medium_font_name" />
+
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/settings_sync_remove_wrap_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/settings_sync_wrap_layout"
+                    android:orientation="horizontal"
+                    android:paddingTop="40dp"
+                    android:weightSum="1">
 
+
+                    <org.hisp.dhis.android.sdk.ui.views.FontButton
+                        android:id="@+id/settings_sync_remotely_deleted_events_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@drawable/settings_button_selector"
+                        android:singleLine="true"
+                        android:text="@string/synchronize_deleted_events"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/medium_text_size"
+                        android:layout_below="@+id/settings_sync_wrap_layout"
+                        android:layout_gravity="center_horizontal"
+                        app:font="@string/medium_font_name" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/settings_sync_text_and_progress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_below="@+id/settings_sync_remove_wrap_layout">
+
+                    <ProgressBar
+                        android:id="@+id/settings_progessbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:indeterminate="false" />
+
+                    <TextView
+                        android:id="@+id/settings_sync_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="20dp"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textSize="@dimen/medium_text_size"
+                        android:layout_gravity="center_horizontal"/>
+
+                    <org.hisp.dhis.android.sdk.ui.views.FontTextView
+                        android:id="@+id/developer_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="6dp"
+                        android:text="@string/developers_settings"
+                        android:textColor="@color/darker_grey"
+                        android:textSize="@dimen/medium_text_size"
+                        app:font="@string/light_font_name" />
+
+                    <org.hisp.dhis.android.sdk.ui.views.FontCheckBox
+                        android:id="@+id/checkbox_developers_options"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginTop="6dp"
+                        android:padding="6dp"
+                        android:text="@string/developer_option_title"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/medium_text_size"
+                        app:font="@string/medium_font_name" />
+
+                    <org.hisp.dhis.android.sdk.ui.views.FontButton
+                        android:id="@+id/settings_export_data"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/settings_button_selector"
+                        android:padding="6dp"
+                        android:text="@string/export_data_name"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/medium_text_size"
+                        android:visibility="invisible"
+                        app:font="@string/medium_font_name" />
+                </LinearLayout>
+            </LinearLayout>
+            </ScrollView>
             <org.hisp.dhis.android.sdk.ui.views.FontButton
-                android:id="@+id/settings_logout_button"
+                android:id="@id/settings_logout_button"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="16dp"
+                android:layout_marginBottom="6dp"
                 android:background="@drawable/button_red_selector"
                 android:singleLine="true"
                 android:text="@string/logout"
                 android:textColor="@color/white"
                 android:textSize="@dimen/medium_text_size"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="6dp"
                 app:font="@string/medium_font_name" />
         </RelativeLayout>
 

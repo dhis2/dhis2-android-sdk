@@ -29,6 +29,8 @@
 
 package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
+import static android.text.TextUtils.isEmpty;
+
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -38,26 +40,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
-import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
+import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.Option;
 import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.dialogs.AutoCompleteDialogAdapter;
 import org.hisp.dhis.android.sdk.ui.dialogs.AutoCompleteDialogAdapter.OptionAdapterValue;
 import org.hisp.dhis.android.sdk.ui.dialogs.AutoCompleteDialogFragment;
 import org.hisp.dhis.android.sdk.ui.dialogs.AutoCompleteDialogFragment.OnOptionSelectedListener;
+import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import static android.text.TextUtils.isEmpty;
 
 public final class AutoCompleteRow extends Row {
     private static final String EMPTY_FIELD = "";
@@ -67,7 +69,8 @@ public final class AutoCompleteRow extends Row {
     private final ArrayList<String> mOptions;
 
     public AutoCompleteRow(String label, boolean mandatory, String warning, BaseValue value,
-                           OptionSet optionSet) {
+                           OptionSet optionSet, Event event) {
+        mEvent = event;
         mLabel = label;
         mValue = value;
         mWarning = warning;
@@ -89,9 +92,9 @@ public final class AutoCompleteRow extends Row {
     }
 
     @Override
-    public View getView(FragmentManager fragmentManager, LayoutInflater inflater,
+    public View getView(FragmentManager fragmentManager, final LayoutInflater inflater,
                         View convertView, ViewGroup container) {
-        View view;
+        final View view;
         ViewHolder holder;
         checkNeedsForDescriptionButton();
         if (convertView != null && convertView.getTag() instanceof ViewHolder) {
@@ -108,7 +111,18 @@ public final class AutoCompleteRow extends Row {
         holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
         holder.onTextChangedListener.setBaseValue(mValue);
         holder.onTextChangedListener.setOptions(mNameToCodeMap);
-
+        final TextView autoCompleteTextView = holder.valueTextView;
+        holder.clearButton.setOnClickListener(new View.OnClickListener(){
+        @Override
+        public void onClick(View view) {
+            if (!isMandatory() || !isEventComplete()) {
+                autoCompleteTextView.setText(EMPTY_FIELD);
+            } else {
+                Toast.makeText(inflater.getContext(), inflater.getContext().getString(
+                        R.string.error_delete_mandatory_value),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }});
         holder.onDropDownButtonListener.setOptions(mOptions);
         holder.onDropDownButtonListener.setFragmentManager(fragmentManager);
 
@@ -176,7 +190,6 @@ public final class AutoCompleteRow extends Row {
         public final TextView valueTextView;
         public final ImageButton clearButton;
         public final View detailedInfoButton;
-        public final OnClearButtonListener onClearButtonListener;
         public final OnTextChangedListener onTextChangedListener;
         public final DropDownButtonListener onDropDownButtonListener;
 
@@ -191,12 +204,9 @@ public final class AutoCompleteRow extends Row {
 
             OnOptionSelectedListener onOptionListener
                     = new OnOptionItemSelectedListener(valueTextView);
-            onClearButtonListener = new OnClearButtonListener(valueTextView);
             onTextChangedListener = new OnTextChangedListener();
             onDropDownButtonListener = new DropDownButtonListener();
             onDropDownButtonListener.setListener(onOptionListener);
-
-            clearButton.setOnClickListener(onClearButtonListener);
             valueTextView.setOnClickListener(onDropDownButtonListener);
         }
 
@@ -247,19 +257,6 @@ public final class AutoCompleteRow extends Row {
         }
     }
 
-    private static class OnClearButtonListener implements View.OnClickListener {
-        private final TextView textView;
-
-        public OnClearButtonListener(TextView textView) {
-            this.textView = textView;
-        }
-
-        @Override
-        public void onClick(View v) {
-            textView.setText(EMPTY_FIELD);
-        }
-    }
-
     private static class OnTextChangedListener extends AbsTextWatcher {
         private BaseValue value;
         private Map<String, String> nameToCodeMap;
@@ -281,10 +278,13 @@ public final class AutoCompleteRow extends Row {
             }
 
             if (!newValue.equals(value.getValue())) {
-                value.setValue(newValue);
-                Dhis2Application.getEventBus()
-                        .post(new RowValueChangedEvent(value, DataEntryRowTypes.AUTO_COMPLETE.toString()));
+                saveValue(newValue);
             }
+        }
+
+        private void saveValue(String newValue) {
+            value.setValue(newValue);
+            Dhis2Application.getEventBus().post(new RowValueChangedEvent(value,DataEntryRowTypes.AUTO_COMPLETE.toString()));
         }
     }
 

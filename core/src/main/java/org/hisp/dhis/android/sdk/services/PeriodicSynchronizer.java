@@ -39,6 +39,7 @@ import android.util.Log;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.DhisService;
 import org.hisp.dhis.android.sdk.controllers.PeriodicSynchronizerController;
+import org.hisp.dhis.android.sdk.controllers.SyncStrategy;
 
 /**
  *	This class can be activated to periodically synchronize with a DHIS 2 server to fetch newly updated meta data and
@@ -69,7 +70,7 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
             cancelPeriodicSynchronizer(context);
             return;
         }
-        DhisService.synchronize(context);
+        DhisService.synchronize(context, SyncStrategy.DOWNLOAD_ONLY_NEW);
 	}
 
 	/**

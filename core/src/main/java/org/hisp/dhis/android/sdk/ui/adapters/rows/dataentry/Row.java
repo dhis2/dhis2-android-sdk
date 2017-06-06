@@ -34,11 +34,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 
@@ -46,6 +46,7 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
  * Created by erling on 9/9/15.
  */
 public abstract class Row implements DataEntryRow {
+    protected Event mEvent;
     protected String mLabel;
     protected String mWarning;
     protected String mError;
@@ -90,7 +91,7 @@ public abstract class Row implements DataEntryRow {
     }
 
     public String getDescription() {
-        if(this instanceof CoordinatesRow) {
+        if(this instanceof EventCoordinatesRow) {
             mDescription = "";
         } else if (this instanceof StatusRow) {
             mDescription = "";
@@ -116,8 +117,7 @@ public abstract class Row implements DataEntryRow {
         mDescription = getDescription();
         if(mDescription == null || mDescription.equals("")) {
             setHideDetailedInfoButton(true);
-        }
-        else {
+        } else {
             setHideDetailedInfoButton(false);
         }
     }
@@ -143,5 +143,25 @@ public abstract class Row implements DataEntryRow {
 
     public void setError(String mError) {
         this.mError = mError;
+    }
+
+    public Event getEvent() {
+        return mEvent;
+    }
+
+    public void setEvent(Event event) {
+        mEvent = event;
+    }
+
+    public boolean isEventComplete(){
+        return (mEvent == null) ? false : mEvent.isComplete();
+    }
+
+    public boolean isMandatory() {
+        return mMandatory;
+    }
+
+    public void setMandatory(boolean mandatory) {
+        mMandatory = mandatory;
     }
 }

@@ -33,41 +33,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.raizlabs.android.dbflow.runtime.FlowContentObserver;
-import com.raizlabs.android.dbflow.structure.BaseModel;
-import com.raizlabs.android.dbflow.structure.Model;
-
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
+import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis.android.sdk.persistence.models.Constant;
-import org.hisp.dhis.android.sdk.persistence.models.DataElement;
-import org.hisp.dhis.android.sdk.persistence.models.DataValue;
-import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
-import org.hisp.dhis.android.sdk.persistence.models.Event;
-import org.hisp.dhis.android.sdk.persistence.models.Option;
-import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
-import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
-import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelationship;
-import org.hisp.dhis.android.sdk.persistence.models.Program;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.sdk.persistence.models.RelationshipType;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntity;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
-import org.hisp.dhis.android.sdk.persistence.models.User;
 import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 
@@ -128,14 +101,15 @@ public final class LoadingController {
      */
     static void loadInitialData(Context context, DhisApi dhisApi)
             throws APIException, IllegalStateException {
+        UiUtils.postProgressMessage(context.getString(org.hisp.dhis.android.sdk.R.string.finishing_up), LoadingMessageEvent.EventType.STARTUP);
         if (!MetaDataController.isDataLoaded(context)) {
-            loadMetaData(context, dhisApi);
+            loadMetaData(context, SyncStrategy.DOWNLOAD_ALL,dhisApi);
         } else if (!TrackerController.isDataLoaded(context)) {
             Log.d(CLASS_TAG, "loading initial datavalues");
             String message = "";
             message = context.getString(R.string.finishing_up);
-            UiUtils.postProgressMessage(message);
-            loadDataValues(context, dhisApi);
+            UiUtils.postProgressMessage(message, LoadingMessageEvent.EventType.STARTUP);
+            loadDataValues(context, SyncStrategy.DOWNLOAD_ALL, dhisApi);
         }
     }
 
@@ -144,11 +118,11 @@ public final class LoadingController {
      * synchronizeMetaData to save data.
      * @param context
      */
-    static void loadMetaData(Context context, DhisApi dhisApi) throws APIException {
+    static void loadMetaData(Context context,SyncStrategy syncStrategy, DhisApi dhisApi) throws APIException {
         Log.d(CLASS_TAG, "loading metadata!");
         Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_START));
         try {
-            MetaDataController.loadMetaData(context, dhisApi);
+            MetaDataController.loadMetaData(context, syncStrategy,dhisApi);
         } catch (APIException e) {
             //to make sure we stop showing loading indicator
             Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
@@ -157,10 +131,22 @@ public final class LoadingController {
         Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
     }
 
-    static void loadDataValues(Context context, DhisApi dhisApi) throws APIException {
+    static void loadDataValues(Context context,SyncStrategy syncStrategy, DhisApi dhisApi) throws APIException {
         Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_START));
         try {
-            TrackerController.loadDataValues(context, dhisApi);
+            TrackerController.loadDataValues(context, syncStrategy, dhisApi);
+        } catch (APIException e) {
+            //to make sure we stop showing loading indicator
+            Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
+            throw e;
+        }
+        Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
+    }
+
+    static void syncRemotelyDeletedData(Context context, DhisApi dhisApi) throws APIException {
+        Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_START));
+        try {
+            TrackerController.syncRemotelyDeletedData(context, dhisApi);
         } catch (APIException e) {
             //to make sure we stop showing loading indicator
             Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));

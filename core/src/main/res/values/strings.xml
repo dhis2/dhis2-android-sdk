@@ -121,6 +121,7 @@
     <string name="loading_metadata">Loading meta data</string>
     <string name="saving_data_locally">Saving data locally</string>
     <string name="loading_events">Loading Events</string>
+    <string name="sync_deleted_events">Synchronizing remotely deleted Events</string>
     <string name="loading_enrollments">Loading Enrollments</string>
     <string name="retry">Retry</string>
 
@@ -168,6 +169,7 @@
     </string-array>
 
     <string name="synchronize_with_server">Synchronize with server</string>
+    <string name="synchronize_deleted_events">Synchronize remotely deleted events</string>
     <string name="event_sent">Sent</string>
     <string name="find_option">Find Option</string>
     <string name="new_event">New event</string>
@@ -181,6 +183,7 @@
     <string name="enter_long_text">Enter long text</string>
     <string name="enter_number">Enter number</string>
     <string name="enter_integer">Enter integer</string>
+    <string name="enter_percentage">Enter percentage</string>
     <string name="enter_negative_integer">Enter negative integer</string>
     <string name="enter_positive_integer_or_zero">Enter positive integer or zero</string>
     <string name="enter_positive_integer">Enter positive integer</string>
@@ -244,6 +247,35 @@
     <string name="detailed_info_dataelement">Detailed information</string>
     <string name="detailed_info_coordinate_row">Please enter the GPS coordinates by pressing the button on the right side of the row. If it does not work, please check your data and/or GPS connection.</string>
     <string name="detailed_info_status_row">Please press the complete button when you are finished with entering data. Press the validate button to check if the entered data is valid.</string>
+    <string name="action_about">About this app</string>
 
+
+    <!-- last commit -->
+    <string name="about_this_app">About this app</string>
+    <string name="app_version">App version: %s</string>
+    <string name="last_commit">Commit hash: %s</string>
+    <string name="unavailable">Unavailable</string>
+    <string name="est_about">This app is under the maintenance of EyeSeeTea Ltd (http://eyeseetea.com)</string>
+
+    <string name="lastcommit_unavailable"><![CDATA[
+    <p>This option requires some changes in the git repository.</p>
+    <p>Steps:</p>
+    <p>1. Please open or create the .git/hooks/post-commit and .git/hooks/post-checkout files.</p>
+    <p>2. If the file does not exist, add the following lines: </p>
+    <p>#!/bin/sh </p>
+    <p>gitPath=$(git rev-parse --show-toplevel)</p>
+    <p>sh ${gitPath}/generate_last_commit.sh </p>
+    <p>2. If the file already exists, you only need add the following lines at the end:</p>
+    <p>gitPath=$(git rev-parse --show-toplevel)</p>
+    <p>sh ${gitPath}/generate_last_commit.sh </p>
+    <p>3. Run "git checkout". </p>]]>
+    </string>
+    <string name="error_exporting_data">"Error metadata could not be exported."</string>
+    <string name="export_data_name">Export database</string>
+    <string name="developers_settings">Developers options</string>
+    <string name="developer_option_key">developer optionkey</string>
+    <string name="developer_option_title">"Show developer options"</string>
+    <string name="synchronizing">Synchronizing...</string>
+    <string name="error_delete_mandatory_value">"You can't remove a required value for a completed event"</string>
 
 </resources>

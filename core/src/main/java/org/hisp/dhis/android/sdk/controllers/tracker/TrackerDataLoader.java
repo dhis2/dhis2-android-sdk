@@ -29,19 +29,21 @@
 
 package org.hisp.dhis.android.sdk.controllers.tracker;
 
+import static org.hisp.dhis.android.sdk.utils.NetworkUtils.unwrapResponse;
+
 import android.content.Context;
 import android.util.Log;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.ApiEndpointContainer;
-import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.LoadingController;
 import org.hisp.dhis.android.sdk.controllers.ResourceController;
+import org.hisp.dhis.android.sdk.controllers.SyncStrategy;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.controllers.wrappers.EventsWrapper;
+import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
@@ -61,15 +63,12 @@ import org.hisp.dhis.android.sdk.utils.Utils;
 import org.hisp.dhis.android.sdk.utils.api.ProgramType;
 import org.joda.time.DateTime;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import static org.hisp.dhis.android.sdk.utils.NetworkUtils.unwrapResponse;
 
 /**
  * @author Simen Skogly Russnes on 24.08.15.
@@ -83,7 +82,7 @@ final class TrackerDataLoader extends ResourceController {
     /**
      * Loads datavalue items that is scheduled to be loaded but has not yet been.
      */
-    static void updateDataValueDataItems(Context context, DhisApi dhisApi) throws APIException {
+    static void updateDataValueDataItems(Context context, SyncStrategy syncStrategy,DhisApi dhisApi) throws APIException {
         SystemInfo serverSystemInfo = dhisApi.getSystemInfo();
         DateTime serverDateTime = serverSystemInfo.getServerDate();
         List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
@@ -116,9 +115,9 @@ final class TrackerDataLoader extends ResourceController {
 
                     if (shouldLoad(serverDateTime, ResourceType.EVENTS, organisationUnit.getId() + program.getUid())) {
                         UiUtils.postProgressMessage(context.getString(R.string.loading_events) + ": "
-                                + organisationUnit.getLabel() + ": " + program.getName());
+                                + organisationUnit.getLabel() + ": " + program.getName(), LoadingMessageEvent.EventType.DATA);
                         try {
-                        getEventsDataFromServer(dhisApi, organisationUnit.getId(), program.getUid(), serverDateTime);
+                        getEventsDataFromServer(dhisApi, syncStrategy, organisationUnit.getId(), program.getUid(), serverDateTime);
                         } catch (APIException e) {
                         e.printStackTrace();
                         //todo: could probably do something prettier here. This catch is done to prevent
@@ -128,12 +127,51 @@ final class TrackerDataLoader extends ResourceController {
                 }
             }
         }
+        UiUtils.postProgressMessage("", LoadingMessageEvent.EventType.FINISH);
     }
 
-    static void getEventsDataFromServer(DhisApi dhisApi, String organisationUnitUid, String programUid, DateTime serverDateTime) throws APIException {
+    /**
+     * Loads datavalue items that is scheduled to be loaded but has not yet been.
+     */
+    static void deleteRemotelyDeletedEvents(Context context, DhisApi dhisApi) throws APIException {
+        Hashtable<String, List<Program>> myProgramsByOrganisationUnit = new Hashtable<>();
+
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.EVENTS)) {
+            myProgramsByOrganisationUnit = MetaDataController.getAssignedProgramsByOrganisationUnit();
+
+            for (String organisationUnitUid : myProgramsByOrganisationUnit.keySet()) {
+                for (Program program : myProgramsByOrganisationUnit.get(organisationUnitUid)) {
+                    if (program.getUid() == null
+                            || program.getUid().length() == Utils.randomUUID.length())
+                        continue;
+
+                    UiUtils.postProgressMessage(context.getString(R.string.sync_deleted_events) + ": "
+                            + organisationUnitUid + ": " + program.getName(), LoadingMessageEvent.EventType.REMOVE_EVENTS);
+
+                    try {
+                        deleteRemotelyDeletedEvents(dhisApi, organisationUnitUid, program.getUid());
+                    } catch (APIException e) {
+                        e.printStackTrace();
+                        //todo: could probably do something prettier here. This catch is done to
+                        // prevent
+                        // stopping loading of the following program/orgUnit as throwing and exception would exit the loop..
+                    }
+                }
+            }
+        }
+        UiUtils.postProgressMessage("",LoadingMessageEvent.EventType.FINISH);
+    }
+
+
+    static void getEventsDataFromServer(DhisApi dhisApi, SyncStrategy syncStrategy,String organisationUnitUid, String programUid, DateTime serverDateTime) throws APIException {
         Log.d(CLASS_TAG, "getEventsDataFromServer");
-        DateTime lastUpdated = DateTimeManager.getInstance()
-                .getLastUpdated(ResourceType.EVENTS,organisationUnitUid+programUid);
+
+        DateTime lastUpdated = null;
+
+        if (syncStrategy == SyncStrategy.DOWNLOAD_ONLY_NEW)
+            lastUpdated = DateTimeManager.getInstance()
+                    .getLastUpdated(ResourceType.EVENTS,organisationUnitUid+programUid);
+
         final Map<String, String> map = new HashMap<>();
         map.put("fields", "[:all]");
         if (lastUpdated != null) {
@@ -143,6 +181,42 @@ final class TrackerDataLoader extends ResourceController {
                 map);
         List<Event> events = EventsWrapper.getEvents(response);
         saveResourceDataFromServer(ResourceType.EVENTS,organisationUnitUid+programUid, dhisApi, events, null, serverDateTime);
+    }
+
+    static void deleteRemotelyDeletedEvents(DhisApi dhisApi, String organisationUnitUid, String programUid) throws APIException {
+        Log.d(CLASS_TAG, "getEventsDataFromServer");
+        final Map<String, String> map = new HashMap<>();
+        map.put("fields", "[event]");
+        map.put("skipPaging", "true");
+
+        List<Event> localEvents = TrackerController.getEvents(organisationUnitUid,programUid, true);
+        List<Event> eventsToBeRemoved = new ArrayList<>();
+        if(localEvents.size()==0) {
+            return;
+        }
+
+        JsonNode response = dhisApi.getEventUids(programUid, organisationUnitUid,
+                map);
+
+        List<Event> remoteEvents = EventsWrapper.getEvents(response);
+        for (Event localEvent:localEvents){
+            boolean isRemoved = true;
+            for (Event remoteEvent:remoteEvents){
+                if(remoteEvent.getEvent().equals(localEvent.getEvent())){
+                    isRemoved=false;
+                    break;
+                }
+            }
+            if(isRemoved){
+                eventsToBeRemoved.add(localEvent);
+            }
+        }
+
+        removeResource(eventsToBeRemoved);
+    }
+
+    public static void removeResource(List<Event> list) {
+        ResourceController.removeResource(list);
     }
 
     static List<TrackedEntityInstance> queryTrackedEntityInstancesDataFromServer(DhisApi dhisApi,

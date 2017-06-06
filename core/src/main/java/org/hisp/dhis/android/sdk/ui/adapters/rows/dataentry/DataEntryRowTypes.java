@@ -45,5 +45,8 @@ public enum DataEntryRowTypes {
     INDICATOR,
     EVENT_DATE,
     ENROLLMENT_DATE,
-    COORDINATES,
+    EVENT_COORDINATES,
+    QUESTION_COORDINATES,
+    PERCENTAGE,
+    AGE
 }

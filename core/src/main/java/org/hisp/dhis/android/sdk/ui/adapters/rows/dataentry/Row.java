@@ -117,8 +117,7 @@ public abstract class Row implements DataEntryRow {
         mDescription = getDescription();
         if(mDescription == null || mDescription.equals("")) {
             setHideDetailedInfoButton(true);
-        }
-        else {
+        } else {
             setHideDetailedInfoButton(false);
         }
     }
@@ -155,10 +154,7 @@ public abstract class Row implements DataEntryRow {
     }
 
     public boolean isEventComplete(){
-        if(mEvent == null)
-            return false;
-        else
-            return mEvent.isComplete();
+        return (mEvent == null) ? false : mEvent.isComplete();
     }
 
     public boolean isMandatory() {

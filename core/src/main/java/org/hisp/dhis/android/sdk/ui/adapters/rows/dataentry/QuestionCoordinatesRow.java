@@ -84,7 +84,7 @@ public final class QuestionCoordinatesRow extends Row {
             public boolean canValueBeSaved(String newValue) {
                 if(newValue==null) return false;
                 if((newValue.equals("") || newValue.equals("-")) && isMandatory() && isEventComplete()) {
-                    Toast.makeText(inflater.getContext(), inflater.getContext().getString(R.string.remove_mandatory_value_error), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(inflater.getContext(), inflater.getContext().getString(R.string.error_delete_mandatory_value), Toast.LENGTH_SHORT).show();
                     return false;
                 }
                 return true;

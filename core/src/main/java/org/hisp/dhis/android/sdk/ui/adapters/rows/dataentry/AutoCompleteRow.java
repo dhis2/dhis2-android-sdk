@@ -119,7 +119,7 @@ public final class AutoCompleteRow extends Row {
                 autoCompleteTextView.setText(EMPTY_FIELD);
             } else {
                 Toast.makeText(inflater.getContext(), inflater.getContext().getString(
-                        R.string.remove_mandatory_value_error),
+                        R.string.error_delete_mandatory_value),
                         Toast.LENGTH_SHORT).show();
             }
         }});

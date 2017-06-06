@@ -81,7 +81,6 @@ public class DatePickerRow extends Row {
 
             holder = new DatePickerRowHolder(root, inflater.getContext(), detailedInfoButton, mAllowDatesInFuture);
 
-
             root.setTag(holder);
             view = root;
         }
@@ -105,7 +104,7 @@ public class DatePickerRow extends Row {
                             .post(new RowValueChangedEvent(mValue, DataEntryRowTypes.DATE.toString()));
                 } else {
                     Toast.makeText(inflater.getContext(), inflater.getContext().getString(
-                            R.string.remove_mandatory_value_error),
+                            R.string.error_delete_mandatory_value),
                             Toast.LENGTH_SHORT).show();
                 }
             }});
@@ -114,8 +113,7 @@ public class DatePickerRow extends Row {
 
         if(isDetailedInfoButtonHidden()) {
             holder.detailedInfoButton.setVisibility(View.INVISIBLE);
-        }
-        else {
+        } else {
             holder.detailedInfoButton.setVisibility(View.VISIBLE);
         }
 

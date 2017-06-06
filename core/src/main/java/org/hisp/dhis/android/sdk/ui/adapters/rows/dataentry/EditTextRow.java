@@ -149,7 +149,7 @@ public class EditTextRow extends Row {
                         }else{
                             //restore last value
                             editText.setText(mValue.getValue());
-                            Toast.makeText(context, context.getString(R.string.remove_mandatory_value_error), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, context.getString(R.string.error_delete_mandatory_value), Toast.LENGTH_SHORT).show();
                         }
                 }
             });

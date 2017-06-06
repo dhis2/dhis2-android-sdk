@@ -35,7 +35,6 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +66,7 @@ public class EditTextRow extends Row {
                 !DataEntryRowTypes.INTEGER_NEGATIVE.equals(rowType) &&
                 !DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE.equals(rowType) &&
                 !DataEntryRowTypes.PHONE_NUMBER.equals(rowType) &&
+                !DataEntryRowTypes.PERCENTAGE.equals(rowType) &&
                 !DataEntryRowTypes.INTEGER_POSITIVE.equals(rowType)) {
             throw new IllegalArgumentException("Unsupported row type");
         }
@@ -117,6 +117,12 @@ public class EditTextRow extends Row {
                         InputType.TYPE_NUMBER_FLAG_SIGNED);
                 editText.setHint(R.string.enter_negative_integer);
                 editText.setFilters(new InputFilter[]{new NegInpFilter()});
+                editText.setSingleLine(true);
+            } else if (DataEntryRowTypes.PERCENTAGE.equals(mRowType)) {
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER |
+                        InputType.TYPE_NUMBER_FLAG_SIGNED);
+                editText.setHint(R.string.enter_percentage);
+                editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3), new MinMaxInputFilter(0, 100)});
                 editText.setSingleLine(true);
             } else if (DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE.equals(mRowType)) {
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -267,6 +273,7 @@ public class EditTextRow extends Row {
         return value;
     }
 
+
     private static class NegInpFilter implements InputFilter {
 
         @Override
@@ -311,6 +318,80 @@ public class EditTextRow extends Row {
             }
 
             return str;
+        }
+    }
+
+    public class MinMaxInputFilter implements InputFilter {
+        /**
+         * Minimum allowed value for the input.
+         * Null means there is no minimum limit.
+         */
+        private Integer minAllowed;
+
+        /**
+         * Maximum allowed value for the input.
+         * Null means there is no maximum limit.
+         */
+        private Integer maxAllowed;
+
+        public MinMaxInputFilter(Integer min){
+            this.minAllowed=min;
+        }
+
+        public MinMaxInputFilter(Integer min, Integer max){
+            this(min);
+            this.maxAllowed=max;
+        }
+
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            try {
+                // Remove the string out of destination that is to be replaced
+                String newVal = dest.toString().substring(0, dstart) + dest.toString().substring(dend, dest.toString().length());
+                // Add the new string in
+                newVal = newVal.substring(0, dstart) + source.toString() + newVal.substring(dstart, newVal.length());
+                if(newVal.length()>1 && newVal.startsWith("0")) {
+                    return "";
+                }
+                int input = Integer.parseInt(newVal);
+                if (inRange(input)) {
+                    return null;
+                }
+            }catch (NumberFormatException nfe) {
+            }
+            return "";
+        }
+
+        /**
+         * Checks if the value is between the specified range.
+         *
+         * @param value
+         * @return
+         */
+        public boolean inRange(Integer value){
+            boolean isMinOk=true;
+            boolean isMaxOk=true;
+            //No bounds -> ok
+            if(minAllowed==null && maxAllowed==null){
+                return true;
+            }
+            //Check minimum
+            if(minAllowed!=null){
+                if(value==null){
+                    isMinOk=false;
+                }else{
+                    isMinOk=minAllowed<=value;
+                }
+            }
+            //Check maximum
+            if(maxAllowed!=null){
+                if(value==null){
+                    isMaxOk=false;
+                }else{
+                    isMaxOk=value<=maxAllowed;
+                }
+            }
+            return isMinOk && isMaxOk;
         }
     }
 }

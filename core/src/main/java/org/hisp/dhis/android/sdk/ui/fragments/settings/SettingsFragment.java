@@ -89,12 +89,7 @@ public class SettingsFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_settings, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-
+        View view = inflater.inflate(R.layout.fragment_settings, container, false);
         if(getActionBar() != null) {
             getActionBar().setTitle(getString(R.string.settings));
             getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -123,7 +118,9 @@ public class SettingsFragment extends Fragment
             //setSummaryFromLastSync in syncTextView
             //syncTextView.setText(DhisController.getLastSynchronizationSummary());
         }
+        return view;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         if (menuItem.getItemId() == android.R.id.home) {

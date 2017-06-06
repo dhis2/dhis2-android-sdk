@@ -250,5 +250,10 @@
     <string name="enter_phone_number">Enter phone number</string>
     <string name="choose_filter">Choose filter</string>
 
+    <string name="error_exporting_data">"Error metadata could not be exported."</string>
+    <string name="developers_settings">Developers options</string>
+    <string name="export_data_name">Export database</string>
+    <string name="developer_option_key">developer optionkey</string>
+    <string name="developer_option_title">"Show developer options"</string>
 
 </resources>

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
+import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.junit.Before;
@@ -37,6 +38,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -57,16 +59,23 @@ public class OrganisationUnitHandlerTests {
     private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
 
     @Mock
+    private OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
+
+    @Mock
     private OrganisationUnit organisationUnit;
 
     @Mock
     private User user;
+
+    @Mock
+    private Program program;
 
     // object to test
     private OrganisationUnitHandler organisationUnitHandler;
 
     // list of organisation units
     private List<OrganisationUnit> organisationUnits;
+
 
     // scope of org units
     private OrganisationUnitModel.Scope scope;
@@ -75,8 +84,8 @@ public class OrganisationUnitHandlerTests {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         organisationUnitHandler = new OrganisationUnitHandler(
-                organisationUnitStore, userOrganisationUnitLinkStore
-        );
+                organisationUnitStore, userOrganisationUnitLinkStore,
+                organisationUnitProgramLinkStore);
 
         when(organisationUnit.uid()).thenReturn("test_organisation_unit_uid");
         when(user.uid()).thenReturn("test_user_uid");
@@ -85,13 +94,31 @@ public class OrganisationUnitHandlerTests {
         organisationUnits.add(organisationUnit);
 
         scope = OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE;
+        when(organisationUnit.programs()).thenReturn(Collections.singletonList(program));
     }
 
-    @Test (expected = NullPointerException.class)
     public void doNothing_doNothingWhenPassingInNullOrganisationUnits() throws Exception {
         organisationUnitHandler.handleOrganisationUnits(
                 null, scope, user.uid()
         );
+
+        // verify that stores is never invoked
+
+        verify(organisationUnitStore, never()).delete(anyString());
+        verify(organisationUnitStore, never()).insert(anyString(), anyString(), anyString(), anyString(), any(Date.class),
+                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
+                any(Date.class), any(Date.class), anyString(), anyInt());
+        verify(organisationUnitStore, never()).update(
+                anyString(), anyString(), anyString(), anyString(), any(Date.class),
+                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
+                any(Date.class), any(Date.class), anyString(), anyInt(), anyString()
+        );
+
+        verify(userOrganisationUnitLinkStore, never()).update(
+                anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
+        verify(userOrganisationUnitLinkStore, never()).insert(anyString(), anyString(), anyString());
+
+        verify(organisationUnitProgramLinkStore, never()).insert(anyString(), anyString());
     }
 
     @Test
@@ -119,6 +146,7 @@ public class OrganisationUnitHandlerTests {
         verify(userOrganisationUnitLinkStore, never()).update(
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString()
         );
+        verify(organisationUnitProgramLinkStore, never()).insert(anyString(), anyString());
     }
 
     @Test
@@ -151,11 +179,12 @@ public class OrganisationUnitHandlerTests {
 
         // verify that link store #update method is called once
         verify(userOrganisationUnitLinkStore, times(1)).update(
-                anyString(), anyString(), anyString(), anyString(),anyString(), anyString()
+                anyString(), anyString(), anyString(), anyString(), anyString(), anyString()
         );
 
         // verify that insert in link store is never called
         verify(userOrganisationUnitLinkStore, never()).insert(anyString(), anyString(), anyString());
+        verify(organisationUnitProgramLinkStore, times(1)).insert(anyString(), anyString());
     }
 
     @Test
@@ -185,11 +214,14 @@ public class OrganisationUnitHandlerTests {
 
         // verify that link store #update method is called once
         verify(userOrganisationUnitLinkStore, never()).update(
-                anyString(), anyString(), anyString(), anyString(),anyString(), anyString()
+                anyString(), anyString(), anyString(), anyString(), anyString(), anyString()
         );
 
         // verify that insert in link store is never called
         verify(userOrganisationUnitLinkStore, never()).insert(anyString(), anyString(), anyString());
+
+        verify(organisationUnitProgramLinkStore, times(1)).insert(anyString(), anyString());
+
     }
 
     @Test
@@ -227,8 +259,10 @@ public class OrganisationUnitHandlerTests {
 
         // verify that link store #update method is called once since we try to update before inserting
         verify(userOrganisationUnitLinkStore, times(1)).update(
-                anyString(), anyString(), anyString(), anyString(),anyString(), anyString()
+                anyString(), anyString(), anyString(), anyString(), anyString(), anyString()
         );
+
+        verify(organisationUnitProgramLinkStore, times(1)).insert(anyString(), anyString());
     }
 
     @Test
@@ -261,7 +295,9 @@ public class OrganisationUnitHandlerTests {
         verify(userOrganisationUnitLinkStore, never()).insert(anyString(), anyString(), anyString());
 
         verify(userOrganisationUnitLinkStore, never()).update(
-                anyString(), anyString(), anyString(), anyString(),anyString(), anyString()
+                anyString(), anyString(), anyString(), anyString(), anyString(), anyString()
         );
+
+        verify(organisationUnitProgramLinkStore, times(1)).insert(anyString(), anyString());
     }
 }

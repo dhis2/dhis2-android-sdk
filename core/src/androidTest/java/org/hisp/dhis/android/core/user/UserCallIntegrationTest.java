@@ -38,7 +38,8 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
@@ -224,9 +225,13 @@ public class UserCallIntegrationTest extends AbsStoreTestCase {
         UserRoleStore userRoleStore = new UserRoleStoreImpl(databaseAdapter());
         UserStore userStore = new UserStoreImpl(databaseAdapter());
         UserRoleProgramLinkStore userRoleProgramLinkStore = new UserRoleProgramLinkStoreImpl(databaseAdapter());
+        OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore =
+                new OrganisationUnitProgramLinkStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
-        organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore, userOrganisationUnitStore);
+        organisationUnitHandler = new OrganisationUnitHandler(
+                organisationUnitStore, userOrganisationUnitStore, organisationUnitProgramLinkStore
+        );
 
         userCall = new UserCall(userService, databaseAdapter(),
                 userStore, userCredentialsStore, userRoleStore, resourceStore, new Date(),

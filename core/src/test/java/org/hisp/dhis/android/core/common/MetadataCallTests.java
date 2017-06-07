@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
@@ -208,6 +209,9 @@ public class MetadataCallTests {
     private TrackedEntityStore trackedEntityStore;
 
     @Mock
+    private OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
+
+    @Mock
     private UserService userService;
 
     @Mock
@@ -313,7 +317,8 @@ public class MetadataCallTests {
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore,
                 optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
-                programStageSectionStore, programStageStore, relationshipStore, trackedEntityStore);
+                programStageSectionStore, programStageStore, relationshipStore, trackedEntityStore,
+                organisationUnitProgramLinkStore);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 

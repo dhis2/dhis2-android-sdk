@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.common;
 
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
@@ -36,6 +38,7 @@ import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
@@ -114,38 +117,41 @@ public class MetadataCall implements Call<Response> {
     private final ProgramStageStore programStageStore;
     private final RelationshipTypeStore relationshipStore;
     private final TrackedEntityStore trackedEntityStore;
+    private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
 
-    public MetadataCall(DatabaseAdapter databaseAdapter,
-                        SystemInfoService systemInfoService,
-                        UserService userService,
-                        ProgramService programService,
-                        OrganisationUnitService organisationUnitService,
-                        TrackedEntityService trackedEntityService,
-                        OptionSetService optionSetService,
-                        SystemInfoStore systemInfoStore,
-                        ResourceStore resourceStore,
-                        UserStore userStore,
-                        UserCredentialsStore userCredentialsStore,
-                        UserRoleStore userRoleStore,
-                        UserRoleProgramLinkStore userRoleProgramLinkStore,
-                        OrganisationUnitStore organisationUnitStore,
-                        UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
-                        ProgramStore programStore,
-                        TrackedEntityAttributeStore trackedEntityAttributeStore,
-                        ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
-                        ProgramRuleVariableStore programRuleVariableStore,
-                        ProgramIndicatorStore programIndicatorStore,
-                        ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore,
-                        ProgramRuleActionStore programRuleActionStore,
-                        ProgramRuleStore programRuleStore,
-                        OptionStore optionStore,
-                        OptionSetStore optionSetStore,
-                        DataElementStore dataElementStore,
-                        ProgramStageDataElementStore programStageDataElementStore,
-                        ProgramStageSectionStore programStageSectionStore,
-                        ProgramStageStore programStageStore,
-                        RelationshipTypeStore relationshipStore,
-                        TrackedEntityStore trackedEntityStore) {
+    public MetadataCall(@NonNull DatabaseAdapter databaseAdapter,
+                        @NonNull SystemInfoService systemInfoService,
+                        @NonNull UserService userService,
+                        @NonNull ProgramService programService,
+                        @NonNull OrganisationUnitService organisationUnitService,
+                        @NonNull TrackedEntityService trackedEntityService,
+                        @NonNull OptionSetService optionSetService,
+                        @NonNull SystemInfoStore systemInfoStore,
+                        @NonNull ResourceStore resourceStore,
+                        @NonNull UserStore userStore,
+                        @NonNull UserCredentialsStore userCredentialsStore,
+                        @NonNull UserRoleStore userRoleStore,
+                        @NonNull UserRoleProgramLinkStore userRoleProgramLinkStore,
+                        @NonNull OrganisationUnitStore organisationUnitStore,
+                        @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
+                        @NonNull ProgramStore programStore,
+                        @NonNull TrackedEntityAttributeStore trackedEntityAttributeStore,
+                        @NonNull ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
+                        @NonNull ProgramRuleVariableStore programRuleVariableStore,
+                        @NonNull ProgramIndicatorStore programIndicatorStore,
+                        @NonNull ProgramStageSectionProgramIndicatorLinkStore
+                                programStageSectionProgramIndicatorLinkStore,
+                        @NonNull ProgramRuleActionStore programRuleActionStore,
+                        @NonNull ProgramRuleStore programRuleStore,
+                        @NonNull OptionStore optionStore,
+                        @NonNull OptionSetStore optionSetStore,
+                        @NonNull DataElementStore dataElementStore,
+                        @NonNull ProgramStageDataElementStore programStageDataElementStore,
+                        @NonNull ProgramStageSectionStore programStageSectionStore,
+                        @NonNull ProgramStageStore programStageStore,
+                        @NonNull RelationshipTypeStore relationshipStore,
+                        @NonNull TrackedEntityStore trackedEntityStore,
+                        @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.userService = userService;
@@ -177,6 +183,7 @@ public class MetadataCall implements Call<Response> {
         this.programStageStore = programStageStore;
         this.relationshipStore = relationshipStore;
         this.trackedEntityStore = trackedEntityStore;
+        this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
     }
 
     @Override
@@ -211,8 +218,8 @@ public class MetadataCall implements Call<Response> {
             User user = (User) response.body();
             response = new OrganisationUnitCall(
                     user, organisationUnitService, databaseAdapter, organisationUnitStore,
-                    resourceStore, serverDate, userOrganisationUnitLinkStore
-            ).call();
+                    resourceStore, serverDate, userOrganisationUnitLinkStore,
+                    organisationUnitProgramLinkStore).call();
             if (!response.isSuccessful()) {
                 return response;
             }

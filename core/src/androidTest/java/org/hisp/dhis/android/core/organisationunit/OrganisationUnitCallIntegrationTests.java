@@ -268,6 +268,8 @@ public class OrganisationUnitCallIntegrationTests extends AbsStoreTestCase {
         OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter());
         UserOrganisationUnitLinkStore userOrganisationUnitLinkStore =
                 new UserOrganisationUnitLinkStoreImpl(databaseAdapter());
+        OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore =
+                new OrganisationUnitProgramLinkStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
         // Create a user with the root as assigned organisation unit (for the test):
@@ -285,7 +287,8 @@ public class OrganisationUnitCallIntegrationTests extends AbsStoreTestCase {
         database().insert(UserModel.TABLE, null, userContentValues);
 
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, databaseAdapter(),
-                organisationUnitStore, resourceStore, new Date(), userOrganisationUnitLinkStore);
+                organisationUnitStore, resourceStore, new Date(), userOrganisationUnitLinkStore,
+                organisationUnitProgramLinkStore);
     }
 
     @Test

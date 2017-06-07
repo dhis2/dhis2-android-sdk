@@ -41,6 +41,7 @@ import org.hisp.dhis.android.sdk.controllers.ApiEndpointContainer;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.LoadingController;
 import org.hisp.dhis.android.sdk.controllers.ResourceController;
+import org.hisp.dhis.android.sdk.controllers.SyncStrategy;
 import org.hisp.dhis.android.sdk.controllers.wrappers.AssignedProgramsWrapper;
 import org.hisp.dhis.android.sdk.controllers.wrappers.OptionSetWrapper;
 import org.hisp.dhis.android.sdk.controllers.wrappers.ProgramWrapper;
@@ -589,10 +590,10 @@ public final class MetaDataController extends ResourceController {
     /**
      * Loads metaData from the server and stores it in local persistence.
      */
-    public static void loadMetaData(Context context, DhisApi dhisApi, boolean forceSync) throws APIException {
+    public static void loadMetaData(Context context, DhisApi dhisApi, SyncStrategy syncStrategy) throws APIException {
         Log.d(CLASS_TAG, "loadMetaData");
         UiUtils.postProgressMessage(context.getString(R.string.loading_metadata));
-        updateMetaDataItems(context, dhisApi, forceSync);
+        updateMetaDataItems(context, dhisApi, syncStrategy);
     }
 
     private static void updateTrackedDataItems(Context context, DhisApi dhisApi, DateTime serverDateTime) {
@@ -610,7 +611,7 @@ public final class MetaDataController extends ResourceController {
     /**
      * Loads a metadata item that is scheduled to be loaded but has not yet been.
      */
-    private static void updateMetaDataItems(Context context, DhisApi dhisApi, boolean forceSync) throws APIException {
+    private static void updateMetaDataItems(Context context, DhisApi dhisApi, SyncStrategy syncStrategy) throws APIException {
         if (dhisApi == null) {
             dhisApi = DhisController.getInstance().getDhisApi();
             if (dhisApi == null) {
@@ -632,7 +633,7 @@ public final class MetaDataController extends ResourceController {
             if (assignedPrograms != null) {
                 for (String program : assignedPrograms) {
                     if (shouldLoad(serverDateTime, ResourceType.PROGRAMS, program)) {
-                        getProgramDataFromServer(dhisApi, program, serverDateTime, forceSync);
+                        getProgramDataFromServer(dhisApi, program, serverDateTime, syncStrategy);
                     }
                 }
             }
@@ -768,18 +769,18 @@ public final class MetaDataController extends ResourceController {
                 .setLastUpdated(ResourceType.ASSIGNEDPROGRAMS, serverDateTime);
     }
 
-    private static void getProgramDataFromServer(DhisApi dhisApi, String uid, DateTime serverDateTime, boolean forceSync) throws APIException {
+    private static void getProgramDataFromServer(DhisApi dhisApi, String uid, DateTime serverDateTime, SyncStrategy syncStrategy) throws APIException {
         Log.d(CLASS_TAG, "getProgramDataFromServer");
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.PROGRAM, uid);
 
-        Program program = updateProgram(dhisApi, uid, lastUpdated, forceSync);
+        Program program = updateProgram(dhisApi, uid, lastUpdated, syncStrategy);
         DateTimeManager.getInstance()
                 .setLastUpdated(ResourceType.PROGRAM, uid, serverDateTime);
 
     }
 
-    private static Program updateProgram(DhisApi dhisApi, String uid, DateTime lastUpdated, boolean forceSync) throws APIException {
+    private static Program updateProgram(DhisApi dhisApi, String uid, DateTime lastUpdated, SyncStrategy syncStrategy) throws APIException {
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
 
         QUERY_MAP_FULL.put("fields",
@@ -789,7 +790,7 @@ public final class MetaDataController extends ResourceController {
                         "[*,programStage[id],dataElement[*,optionSet[id]]]],programTrackedEntityAttributes" +
                         "[*,trackedEntityAttribute[*]],!organisationUnits");
 
-        if (!forceSync && lastUpdated != null) {
+        if (syncStrategy.equals(SyncStrategy.DOWNLOAD_ONLY_NEW) && lastUpdated != null) {
             QUERY_MAP_FULL.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
         }
 

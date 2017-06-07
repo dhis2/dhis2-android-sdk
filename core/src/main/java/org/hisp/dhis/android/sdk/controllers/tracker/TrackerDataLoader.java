@@ -139,6 +139,7 @@ final class TrackerDataLoader extends ResourceController {
                 }
             }
         }
+        UiUtils.postProgressMessage("");
     }
 
     static void updateEventsForEnrollments(Context context, DhisApi dhisApi, List<Enrollment> enrollments, DateTime serverDateTime) {
@@ -187,7 +188,83 @@ final class TrackerDataLoader extends ResourceController {
 
     }
 
-    static Map<String, List<Enrollment>> mapActiveEnrollmentsByProgram(List<Enrollment> enrollments) {
+
+    /**
+     * Loads datavalue items that is scheduled to be loaded but has not yet been.
+     */
+    static void deleteRemotelyDeletedEvents(Context context, DhisApi dhisApi) throws APIException {
+        Hashtable<String, List<Program>> myProgramsByOrganisationUnit = new Hashtable<>();
+
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.EVENTS)) {
+            myProgramsByOrganisationUnit =
+                    MetaDataController.getAssignedProgramsByOrganisationUnit();
+
+            for (String organisationUnitUid : myProgramsByOrganisationUnit.keySet()) {
+                for (Program program : myProgramsByOrganisationUnit.get(organisationUnitUid)) {
+                    if (program.getUid() == null
+                            || program.getUid().length() == Utils.randomUUID.length()) {
+                        continue;
+                    }
+
+                    UiUtils.postProgressMessage(
+                            context.getString(R.string.sync_deleted_events) + ": "
+                                    + organisationUnitUid + ": " + program.getName());
+
+                    try {
+                        deleteRemotelyDeletedEvents(dhisApi, organisationUnitUid, program.getUid());
+                    } catch (APIException e) {
+                        e.printStackTrace();
+                        //todo: could probably do something prettier here. This catch is done to
+                        // prevent
+                        // stopping loading of the following program/orgUnit as throwing and
+                        // exception would exit the loop..
+                    }
+                }
+            }
+        }
+        UiUtils.postProgressMessage("");
+    }
+
+    static void deleteRemotelyDeletedEvents(DhisApi dhisApi, String organisationUnitUid,
+            String programUid) throws APIException {
+        Log.d(CLASS_TAG, "getEventsDataFromServer");
+        final Map<String, String> map = new HashMap<>();
+        map.put("fields", "[event]");
+        map.put("skipPaging", "true");
+
+        List<Event> localEvents = TrackerController.getEvents(organisationUnitUid, programUid,
+                true);
+        List<Event> eventsToBeRemoved = new ArrayList<>();
+        if (localEvents.size() == 0) {
+            return;
+        }
+
+        JsonNode response = dhisApi.getEventUids(programUid, organisationUnitUid,
+                map);
+
+        List<Event> remoteEvents = EventsWrapper.getEvents(response);
+        for (Event localEvent : localEvents) {
+            boolean isRemoved = true;
+            for (Event remoteEvent : remoteEvents) {
+                if (remoteEvent.getEvent().equals(localEvent.getEvent())) {
+                    isRemoved = false;
+                    break;
+                }
+            }
+            if (isRemoved) {
+                eventsToBeRemoved.add(localEvent);
+            }
+        }
+
+        removeResource(eventsToBeRemoved);
+    }
+
+    public static void removeResource(List<Event> list) {
+        ResourceController.removeResource(list);
+    }
+
+    static Map<String, List<Enrollment>> mapActiveEnrollmentsByProgram(List<Enrollment>
+            enrollments) {
         Map<String, List<Enrollment>> programToEnrollmentMap = new HashMap<>();
 
         for (Enrollment enrollment : enrollments) {

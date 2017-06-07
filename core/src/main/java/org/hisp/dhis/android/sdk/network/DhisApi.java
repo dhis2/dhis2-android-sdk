@@ -248,6 +248,10 @@ public interface DhisApi {
     @GET("/" + ApiEndpointContainer.RELATIONSHIPTYPES + "?paging=false")
     Map<String, List<RelationshipType>> getRelationshipTypes(@QueryMap Map<String, String> queryParams);
 
+    @GET("/" + ApiEndpointContainer.EVENTS)
+    JsonNode getEventUids(@Query("program") String programUid, @Query("orgUnit") String organisationUnitUid,
+            @QueryMap Map<String, String> queryParams);
+
     /////////////////////////////////////////////////////////////////////////
     // Methods for working with Tracker Data Values
     /////////////////////////////////////////////////////////////////////////

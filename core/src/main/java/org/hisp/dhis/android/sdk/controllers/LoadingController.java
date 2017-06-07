@@ -148,4 +148,17 @@ public final class LoadingController {
         }
         Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
     }
+
+
+    static void syncRemotelyDeletedData(Context context, DhisApi dhisApi) throws APIException {
+        Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_START));
+        try {
+            TrackerController.syncRemotelyDeletedData(context, dhisApi);
+        } catch (APIException e) {
+            //to make sure we stop showing loading indicator
+            Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
+            throw e;
+        }
+        Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
+    }
 }

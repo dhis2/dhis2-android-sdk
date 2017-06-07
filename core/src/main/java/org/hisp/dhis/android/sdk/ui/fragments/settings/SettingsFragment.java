@@ -75,7 +75,8 @@ public class SettingsFragment extends Fragment
     private Spinner updateFrequencySpinner;
     private Button logoutButton;
     private Button synchronizeButton;
-    private ProgressBar mProgessBar;
+    private Button synchronizeRemovedEventsButton;
+    private ProgressBar mProgressBar;
     private TextView syncTextView;
     private String progressMessage;
 
@@ -101,12 +102,15 @@ public class SettingsFragment extends Fragment
         updateFrequencySpinner.setOnItemSelectedListener(this);
 
         synchronizeButton = (Button) view.findViewById(R.id.settings_sync_button);
+        synchronizeRemovedEventsButton = (Button) view.findViewById(
+                R.id.settings_sync_remotely_deleted_events_button);
         logoutButton = (Button) view.findViewById(R.id.settings_logout_button);
-        mProgessBar = (ProgressBar) view.findViewById(R.id.settings_progessbar);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.settings_progessbar);
         syncTextView = (TextView) view.findViewById(R.id.settings_sync_textview);
-        mProgessBar.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
         logoutButton.setOnClickListener(this);
         synchronizeButton.setOnClickListener(this);
+        synchronizeRemovedEventsButton.setOnClickListener(this);
 
         //if(DhisController.isLoading() && getProgressMessage() != null)
         {
@@ -133,14 +137,17 @@ public class SettingsFragment extends Fragment
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.settings_logout_button) {
-            UiUtils.showConfirmDialog(getActivity(), getString(R.string.logout_title), getString(R.string.logout_message),
-                    getString(R.string.logout_option), getString(R.string.cancel_option), new DialogInterface.OnClickListener() {
+            UiUtils.showConfirmDialog(getActivity(), getString(R.string.logout_title),
+                    getString(R.string.logout_message),
+                    getString(R.string.logout_option), getString(R.string.cancel_option),
+                    new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
                             if (DhisController.hasUnSynchronizedDatavalues) {
                                 //show error dialog
-                                UiUtils.showErrorDialog(getActivity(), getString(R.string.error_message),
+                                UiUtils.showErrorDialog(getActivity(),
+                                        getString(R.string.error_message),
                                         getString(R.string.unsynchronized_data_values),
                                         new DialogInterface.OnClickListener() {
 
@@ -151,21 +158,21 @@ public class SettingsFragment extends Fragment
                                         });
                             } else {
                                 Session session = DhisController.getInstance().getSession();
-                                if(session != null) {
+                                if (session != null) {
                                     HttpUrl httpUrl = session.getServerUrl();
-                                    if(httpUrl != null) {
+                                    if (httpUrl != null) {
                                         String serverUrlString = httpUrl.toString();
-                                        AppPreferences appPreferences = new AppPreferences(getActivity().getApplicationContext());
+                                        AppPreferences appPreferences = new AppPreferences(
+                                                getActivity().getApplicationContext());
                                         appPreferences.putServerUrl(serverUrlString);
                                     }
                                 }
                                 DhisService.logOutUser(getActivity());
 
                                 int apiVersion = Build.VERSION.SDK_INT;
-                                if(apiVersion >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                                if (apiVersion >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
                                     getActivity().finishAffinity();
-                                }
-                                else {
+                                } else {
                                     getActivity().finish();
                                     System.exit(0);
                                 }
@@ -184,11 +191,31 @@ public class SettingsFragment extends Fragment
                         DhisService.synchronize(context);
                     }
                 }.start();
-                synchronizeButton.setEnabled(false);
-                mProgessBar.setVisibility(View.VISIBLE);
-                synchronizeButton.setText("Synchronizing...");
+                startSync();
+            }
+        } else if (view.getId() == R.id.settings_sync_remotely_deleted_events_button) {
+            if (isAdded()) {
+                final Context context = getActivity().getBaseContext();
+                Toast.makeText(context, getString(R.string.sync_deleted_events),
+                        Toast.LENGTH_SHORT).show();
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        DhisService.synchronizeRemotelyDeletedEvents(context);
+                    }
+                }.start();
+                startSync();
             }
         }
+    }
+
+    private void startSync() {
+        synchronizeButton.setEnabled(false);
+        synchronizeRemovedEventsButton.setEnabled(false);
+        mProgressBar.setVisibility(View.VISIBLE);
+        synchronizeButton.setText("Synchronizing...");
+        synchronizeRemovedEventsButton.setText("Synchronizing...");
     }
 
     @Override
@@ -228,24 +255,30 @@ public class SettingsFragment extends Fragment
     {
         if(!enable)
         {
-            synchronizeButton.setEnabled(false);
-            mProgessBar.setVisibility(View.VISIBLE);
-            synchronizeButton.setText("Synchronizing...");
+            startSync();
             syncTextView.setText(getProgressMessage());
         }
         else
         {
-            synchronizeButton.setEnabled(true);
-            mProgessBar.setVisibility(View.GONE);
-            syncTextView.setText(/*DhisController.getLastSynchronizationSummary()*/"");
-            synchronizeButton.setText(R.string.synchronize_with_server);
+            endSync();
         }
+    }
+
+    private void endSync() {
+        synchronizeButton.setEnabled(true);
+        synchronizeRemovedEventsButton.setEnabled(true);
+        mProgressBar.setVisibility(View.GONE);
+        syncTextView.setText("");
+        synchronizeButton.setText(R.string.synchronize_with_server);
+        synchronizeRemovedEventsButton.setText(R.string.synchronize_deleted_data);
     }
 
     @Subscribe
     public void onSynchronizationFinishedEvent(final UiEvent event)
     {
-        if(event.getEventType().equals(UiEvent.UiEventType.SYNCING_END))
+        if (event.getEventType().equals(UiEvent.UiEventType.SYNCING_START)) {
+            enableUi(false);
+        } else if (event.getEventType().equals(UiEvent.UiEventType.SYNCING_END))
         {
             enableUi(true);
         }

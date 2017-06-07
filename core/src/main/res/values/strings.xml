@@ -256,5 +256,7 @@
     <string name="export_data_name">Export database</string>
     <string name="developer_option_key">developer optionkey</string>
     <string name="developer_option_title">"Show developer options"</string>
+    <string name="sync_deleted_events">Synchronizing remotely deleted Events</string>
+    <string name="synchronize_deleted_data">Synchronize remotely deleted data</string>
 
 </resources>

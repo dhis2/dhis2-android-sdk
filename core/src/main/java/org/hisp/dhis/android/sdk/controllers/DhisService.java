@@ -179,6 +179,17 @@ public final class DhisService extends Service {
         });
     }
 
+    public static void synchronizeRemotelyDeletedEvents(final Context context) {
+        JobExecutor.enqueueJob(new NetworkJob<Object>(0,
+                null) {
+            @Override
+            public Object execute() throws APIException {
+                DhisController.syncRemotelyDeletedData(context);
+                return new Object();
+            }
+        });
+    }
+
     public static Job loadData(final Context context) {
         Job job=JobExecutor.enqueueJob(new NetworkJob<Object>(0,
                 null) {

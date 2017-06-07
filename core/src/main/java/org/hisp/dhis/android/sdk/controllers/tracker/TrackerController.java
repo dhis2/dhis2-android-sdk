@@ -196,6 +196,28 @@ public final class TrackerController extends ResourceController {
     }
 
     /**
+     * Returns a list of events for a given org unit and from server
+     */
+    public static List<Event> getEvents(String organisationUnitId, String programId,
+            boolean isFromServer) {
+        List<Event> events = new Select().from(Event.class).where(Condition.column
+                (Event$Table.ORGANISATIONUNITID).is(organisationUnitId)).
+                and(Condition.column(Event$Table.PROGRAMID).is(programId))
+                .and(Condition.column(Event$Table.FROMSERVER).is(isFromServer))
+                .orderBy(false, Event$Table.LASTUPDATED).queryList();
+        return events;
+    }
+
+    /**
+     * Loads datavalues from the server and stores it in local persistence.
+     */
+    public static void syncRemotelyDeletedData(Context context, DhisApi dhisApi)
+            throws APIException {
+        UiUtils.postProgressMessage(context.getString(R.string.sync_deleted_events));
+        TrackerDataLoader.deleteRemotelyDeletedEvents(context, dhisApi);
+    }
+
+    /**
      * Returns a list of events for the given server-assigned UID. Note that if possible,
      * getEventsByEnrollment(long) should always be used if possible, as the UID may change if the
      * enrollment is created locally on the device, and then synced with the server.

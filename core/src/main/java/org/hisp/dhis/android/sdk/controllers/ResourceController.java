@@ -32,6 +32,8 @@ package org.hisp.dhis.android.sdk.controllers;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.models.BaseIdentifiableObject;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
+import org.hisp.dhis.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.meta.DbOperation;
 import org.hisp.dhis.android.sdk.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
@@ -134,5 +136,18 @@ public abstract class ResourceController {
             map.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
         }
         return map;
+    }
+
+    public static void removeResource(List<Event> list) {
+        Queue<DbOperation> operations = new LinkedList<>();
+        operations.addAll(DbUtils.removeResources(list));
+        for (Event event : list) {
+            if (event.getDataValues() != null) {
+                for (DataValue dataValue : event.getDataValues()) {
+                    operations.add(DbOperation.delete(dataValue));
+                }
+            }
+        }
+        DbUtils.applyBatch(operations);
     }
 }

@@ -73,6 +73,11 @@ public class RadioButtonsRow extends Row {
         if (convertView != null && convertView.getTag() instanceof BooleanRowHolder) {
             view = convertView;
             holder = (BooleanRowHolder) convertView.getTag();
+            RadioGroup.OnCheckedChangeListener listener = holder.radioGroupCheckedChangeListener;
+            holder.radioGroup.setOnCheckedChangeListener(null);
+            holder.radioGroup.clearCheck();
+            holder.radioGroup.setOnCheckedChangeListener(listener);
+            holder.updateViews(mLabel, mValue);
         } else {
             View root = inflater.inflate(
                     R.layout.listview_row_radio_buttons, container, false);

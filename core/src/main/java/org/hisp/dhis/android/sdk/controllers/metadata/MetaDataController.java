@@ -50,14 +50,24 @@ import org.hisp.dhis.android.sdk.persistence.models.Attribute;
 import org.hisp.dhis.android.sdk.persistence.models.Attribute$Table;
 import org.hisp.dhis.android.sdk.persistence.models.AttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.AttributeValue$Table;
+import org.hisp.dhis.android.sdk.persistence.models.Conflict;
 import org.hisp.dhis.android.sdk.persistence.models.Constant;
 import org.hisp.dhis.android.sdk.persistence.models.Constant$Table;
+import org.hisp.dhis.android.sdk.persistence.models.Dashboard;
+import org.hisp.dhis.android.sdk.persistence.models.DashboardElement;
+import org.hisp.dhis.android.sdk.persistence.models.DashboardItem;
+import org.hisp.dhis.android.sdk.persistence.models.DashboardItemContent;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement$Table;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
+import org.hisp.dhis.android.sdk.persistence.models.ImportCount;
+import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
+import org.hisp.dhis.android.sdk.persistence.models.Interpretation;
+import org.hisp.dhis.android.sdk.persistence.models.InterpretationComment;
+import org.hisp.dhis.android.sdk.persistence.models.InterpretationElement;
 import org.hisp.dhis.android.sdk.persistence.models.Option;
 import org.hisp.dhis.android.sdk.persistence.models.Option$Table;
 import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
@@ -95,6 +105,7 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute$Table
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGeneratedValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGeneratedValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGroup;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.User;
 import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
@@ -549,8 +560,25 @@ public final class MetaDataController extends ResourceController {
      * Deletes all meta data from local database
      */
     public static void wipe() {
-        Delete.tables(Constant.class,
+        Delete.tables(
+                Attribute.class,
+                AttributeValue.class,
+                Conflict.class,
+                Constant.class,
+                Dashboard.class,
+                DashboardElement.class,
+                DashboardItem.class,
+                DashboardItemContent.class,
                 DataElement.class,
+                DataValue.class,
+                Enrollment.class,
+                Event.class,
+                FailedItem.class,
+                ImportCount.class,
+                ImportSummary.class,
+                Interpretation.class,
+                InterpretationComment.class,
+                InterpretationElement.class,
                 Option.class,
                 OptionSet.class,
                 OrganisationUnit.class,
@@ -558,32 +586,23 @@ public final class MetaDataController extends ResourceController {
                 Program.class,
                 ProgramIndicator.class,
                 ProgramIndicatorToSectionRelationship.class,
+                ProgramRule.class,
+                ProgramRuleAction.class,
+                ProgramRuleVariable.class,
                 ProgramStage.class,
                 ProgramStageDataElement.class,
                 ProgramStageSection.class,
                 ProgramTrackedEntityAttribute.class,
-                SystemInfo.class,
-                TrackedEntity.class,
-                TrackedEntityAttributeGeneratedValue.class,
-                TrackedEntityAttribute.class,
-                TrackedEntityAttributeGroup.class,
-                TrackedEntityInstance.class,
-                Enrollment.class,
-                Event.class,
-                DataValue.class,
-                FailedItem.class,
-                User.class,
-                ProgramRule.class,
-                ProgramRuleVariable.class,
-                ProgramRuleAction.class,
-                RelationshipType.class,
                 Relationship.class,
-                Attribute.class,
-                AttributeValue.class);
-
-        /**  * Delete.tables(  Attribute.class,  AttributeValue.class,  Constant.class,  Conflict.class,  Dashboard.class,  DashboardElement.class,  DashboardItem.class,  DashboardItemContent.class,  DataElement.class,  DataValue.class,  Enrollment.class,  Event.class,  FailedItem.class,  ImportCount.class,  ImportSummary.class,  Interpretation.class,  InterpretationComment.class,  InterpretationElement.class,  Option.class,  OptionSet.class,  OrganisationUnit.class,  OrganisationUnitProgramRelationship.class,  Program.class,  ProgramIndicator.class,  ProgramIndicatorToSectionRelationship.class,  ProgramStage.class,  ProgramStageDataElement.class,  ProgramStageSection.class,  ProgramTrackedEntityAttribute.class,  RelationshipType.class,  Relationship.class,  SystemInfo.class,  TrackedEntity.class,  TrackedEntityAttribute.class,  TrackedEntityAttributeGeneratedValue.class,  TrackedEntityAttributeValue.class,  TrackedEntityInstance.class,  User.class,  UserAccount.class  );  */
-
-
+                RelationshipType.class,
+                SystemInfo.class,
+                TrackedEntityAttributeGeneratedValue.class,
+                TrackedEntityAttributeValue.class,
+                TrackedEntityAttribute.class,
+                TrackedEntityInstance.class,
+                TrackedEntity.class,
+                User.class,
+                UserAccount.class);
     }
 
     /**

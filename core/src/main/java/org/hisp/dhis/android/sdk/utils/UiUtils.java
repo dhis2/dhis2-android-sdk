@@ -148,14 +148,13 @@ public final class UiUtils {
      * Sends an event with feedback to user on loading. Picked up in LoadingFragment.
      *
      * @param message
+     * @param eventType
      */
-    public static void postProgressMessage(final String message) {
+    public static void postProgressMessage(final String message, final LoadingMessageEvent.EventType eventType) {
         new Thread() {
             @Override
             public void run() {
-                LoadingMessageEvent event = new LoadingMessageEvent();
-                event.message = message;
-                Dhis2Application.bus.post(event);
+                Dhis2Application.bus.post(new LoadingMessageEvent(message, eventType));
             }
         }.start();
     }

@@ -46,6 +46,7 @@ import org.hisp.dhis.android.sdk.controllers.ResourceController;
 import org.hisp.dhis.android.sdk.controllers.wrappers.AssignedProgramsWrapper;
 import org.hisp.dhis.android.sdk.controllers.wrappers.OptionSetWrapper;
 import org.hisp.dhis.android.sdk.controllers.wrappers.ProgramWrapper;
+import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.models.Attribute;
@@ -593,7 +594,8 @@ public final class MetaDataController extends ResourceController {
      */
     public static void loadMetaData(Context context, DhisApi dhisApi, boolean forceSync) throws APIException {
         Log.d(CLASS_TAG, "loadMetaData");
-        UiUtils.postProgressMessage(context.getString(R.string.loading_metadata));
+        UiUtils.postProgressMessage(context.getString(R.string.loading_metadata),
+                LoadingMessageEvent.EventType.METADATA);
         updateMetaDataItems(context, dhisApi, forceSync);
     }
 

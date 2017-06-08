@@ -104,26 +104,36 @@ public class OrganisationUnitHandler {
                             organisationUnit.level()
                     );
                 }
-                if (scope != null) {
-                    int updatedLinkRow = userOrganisationUnitLinkStore.update(userUid, organisationUnit.uid(),
-                            scope.name(), userUid, organisationUnit.uid(), scope.name());
-                    if (updatedLinkRow <= 0) {
-                        userOrganisationUnitLinkStore.insert(userUid, organisationUnit.uid(), scope.name());
-                    }
-                }
-                if (organisationUnit.programs() != null) {
-                    List<Program> programs = organisationUnit.programs();
-                    int programSize = programs.size();
+                addUserOrganisationUnitLink(scope, userUid, organisationUnit);
 
-                    for (int j = 0; j < programSize; j++) {
-                        Program program = programs.get(j);
+                addOrganisationUnitProgramLink(organisationUnit);
+            }
+        }
+    }
 
-                        organisationUnitProgramLinkStore.insert(
-                                organisationUnit.uid(),
-                                program.uid()
-                        );
-                    }
-                }
+    private void addUserOrganisationUnitLink(@Nullable OrganisationUnitModel.Scope scope,
+                                             @NonNull String userUid, OrganisationUnit organisationUnit) {
+        if (scope != null) {
+            int updatedLinkRow = userOrganisationUnitLinkStore.update(userUid, organisationUnit.uid(),
+                    scope.name(), userUid, organisationUnit.uid(), scope.name());
+            if (updatedLinkRow <= 0) {
+                userOrganisationUnitLinkStore.insert(userUid, organisationUnit.uid(), scope.name());
+            }
+        }
+    }
+
+    private void addOrganisationUnitProgramLink(@NonNull OrganisationUnit organisationUnit) {
+        if (organisationUnit.programs() != null) {
+            List<Program> programs = organisationUnit.programs();
+            int programSize = programs.size();
+
+            for (int j = 0; j < programSize; j++) {
+                Program program = programs.get(j);
+
+                organisationUnitProgramLinkStore.insert(
+                        organisationUnit.uid(),
+                        program.uid()
+                );
             }
         }
     }

@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
@@ -286,6 +287,43 @@ public class OrganisationUnitCallIntegrationTests extends AbsStoreTestCase {
         userContentValues.put(UserModel.Columns.ID, "user_uid");
         database().insert(UserModel.TABLE, null, userContentValues);
 
+        // inserting programs for creating OrgUnitProgramLinks
+        ContentValues program = new ContentValues();
+        program.put(ProgramModel.Columns.UID, "uy2gU8kT1jF");
+        database().insert(ProgramModel.TABLE, null, program);
+
+        ContentValues program1 = new ContentValues();
+        program1.put(ProgramModel.Columns.UID, "q04UBOqq3rp");
+        database().insert(ProgramModel.TABLE, null, program1);
+
+        ContentValues program2 = new ContentValues();
+        program2.put(ProgramModel.Columns.UID, "VBqh0ynB2wv");
+        database().insert(ProgramModel.TABLE, null, program2);
+
+        ContentValues program3 = new ContentValues();
+        program3.put(ProgramModel.Columns.UID, "eBAyeGv0exc");
+        database().insert(ProgramModel.TABLE, null, program3);
+
+        ContentValues program4 = new ContentValues();
+        program4.put(ProgramModel.Columns.UID, "kla3mAPgvCH");
+        database().insert(ProgramModel.TABLE, null, program4);
+
+        ContentValues program5 = new ContentValues();
+        program5.put(ProgramModel.Columns.UID, "lxAQ7Zs9VYR");
+        database().insert(ProgramModel.TABLE, null, program5);
+
+        ContentValues program6 = new ContentValues();
+        program6.put(ProgramModel.Columns.UID, "IpHINAT79UW");
+        database().insert(ProgramModel.TABLE, null, program6);
+
+        ContentValues program7 = new ContentValues();
+        program7.put(ProgramModel.Columns.UID, "WSGAb5XwJ3Y");
+        database().insert(ProgramModel.TABLE, null, program7);
+
+        ContentValues program8 = new ContentValues();
+        program8.put(ProgramModel.Columns.UID, "ur1Edk5Oe2n");
+        database().insert(ProgramModel.TABLE, null, program8);
+
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, databaseAdapter(),
                 organisationUnitStore, resourceStore, new Date(), userOrganisationUnitLinkStore,
                 organisationUnitProgramLinkStore);
@@ -315,6 +353,8 @@ public class OrganisationUnitCallIntegrationTests extends AbsStoreTestCase {
         userContentValues.put(UserModel.Columns.PHONE_NUMBER, "phoneNumber");
         userContentValues.put(UserModel.Columns.NATIONALITY, "nationality");
         database().insert(UserModel.TABLE, null, userContentValues);
+
+
 
         organisationUnitCall.call();
 

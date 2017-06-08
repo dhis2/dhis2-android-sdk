@@ -697,15 +697,16 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ResourceModel.Columns.LAST_SYNCED + " TEXT" + ");";
 
     private static final String CREATE_ORGANISATION_UNIT_PROGRAM_LINK_TABLE = "CREATE TABLE " +
-            OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK + " (" +
+            OrganisationUnitProgramLinkModel.TABLE + " (" +
             OrganisationUnitProgramLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
             OrganisationUnitProgramLinkModel.Columns.PROGRAM + " TEXT NOT NULL," +
             " FOREIGN KEY (" + OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT + ")" +
             " REFERENCES " + OrganisationUnitModel.TABLE + " (" + OrganisationUnitModel.Columns.UID + ")" +
-            " ON DELETE CASCADE," +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
             " FOREIGN KEY (" + OrganisationUnitProgramLinkModel.Columns.PROGRAM + ")" +
-            " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" + " ON DELETE CASCADE," +
+            " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
             " UNIQUE (" + OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT + ", " +
             OrganisationUnitProgramLinkModel.Columns.PROGRAM + ")" +
             ");";

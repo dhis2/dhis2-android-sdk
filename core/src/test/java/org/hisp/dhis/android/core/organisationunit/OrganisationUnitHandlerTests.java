@@ -94,6 +94,7 @@ public class OrganisationUnitHandlerTests {
         organisationUnits.add(organisationUnit);
 
         scope = OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE;
+        when(program.uid()).thenReturn("test_program_uid");
         when(organisationUnit.programs()).thenReturn(Collections.singletonList(program));
     }
 

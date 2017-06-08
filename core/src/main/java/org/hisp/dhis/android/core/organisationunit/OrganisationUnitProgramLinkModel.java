@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.common.BaseModel;
 
 @AutoValue
 public abstract class OrganisationUnitProgramLinkModel extends BaseModel {
-    public static final String ORGANISATION_UNIT_PROGRAM_LINK = "OrganisationUnitProgramLink";
+    public static final String TABLE = "OrganisationUnitProgramLink";
 
     public static class Columns extends BaseModel.Columns {
         public static final String PROGRAM = "program";

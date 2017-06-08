@@ -52,6 +52,7 @@ import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.DhisService;
+import org.hisp.dhis.android.sdk.controllers.SyncStrategy;
 import org.hisp.dhis.android.sdk.events.OnTeiDownloadedEvent;
 import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
@@ -275,7 +276,7 @@ public abstract class SelectProgramFragment extends BaseFragment
         if (isAdded()) {
             Context context = getActivity().getBaseContext();
             Toast.makeText(context, getString(R.string.syncing), Toast.LENGTH_SHORT).show();
-            DhisService.synchronize(context);
+            DhisService.synchronize(context, SyncStrategy.DOWNLOAD_ALL);
         }
     }
 

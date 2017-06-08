@@ -56,7 +56,7 @@ public class ProgramWrapper {
     public static List<DbOperation> setReferences(Program program) {
         List<DbOperation> operations = new ArrayList<>();
         Map<String, Attribute> attributes = new HashMap<>();
-        if(program != null) {
+        if(program != null && program.getUid() != null) {
             operations.addAll(update(program));
             operations.add(DbOperation.save(program));
             int sortOrder = 0;

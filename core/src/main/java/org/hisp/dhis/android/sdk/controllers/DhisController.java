@@ -108,25 +108,25 @@ public final class DhisController {
      *
      * @param context
      */
-    static void synchronize(final Context context)
+    static void synchronize(final Context context, SyncStrategy syncStrategy)
             throws APIException, IllegalStateException {
         Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_START));
         sendData();
-        loadData(context);
+        loadData(context, syncStrategy);
         getInstance().getSyncDateWrapper().setLastSyncedNow();
     }
 
     public static void forceSynchronize(Context context) throws APIException, IllegalStateException {
         Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_START));
         sendData();
-        LoadingController.loadMetaData(context, getInstance().getDhisApi(), true);
-        LoadingController.loadDataValues(context, getInstance().getDhisApi());
+        LoadingController.loadMetaData(context, SyncStrategy.DOWNLOAD_ALL, getInstance().getDhisApi());
+        LoadingController.loadDataValues(context, SyncStrategy.DOWNLOAD_ALL, getInstance().getDhisApi());
         getInstance().getSyncDateWrapper().setLastSyncedNow();
     }
 
-    static void loadData(Context context) throws APIException, IllegalStateException {
-        LoadingController.loadMetaData(context, getInstance().getDhisApi(), false);
-        LoadingController.loadDataValues(context, getInstance().getDhisApi());
+    static void loadData(Context context, SyncStrategy syncStrategy)  throws APIException, IllegalStateException {
+        LoadingController.loadMetaData(context, syncStrategy, getInstance().getDhisApi());
+        LoadingController.loadDataValues(context, syncStrategy, getInstance().getDhisApi());
     }
 
     static void sendData() throws APIException, IllegalStateException {

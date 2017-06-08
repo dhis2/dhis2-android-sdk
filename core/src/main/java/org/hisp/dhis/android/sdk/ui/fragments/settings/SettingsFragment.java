@@ -31,6 +31,7 @@ package org.hisp.dhis.android.sdk.ui.fragments.settings;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -61,6 +62,7 @@ import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.network.Session;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.preferences.AppPreferences;
+import org.hisp.dhis.android.sdk.ui.activities.LoginActivity;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 
 /**
@@ -164,11 +166,14 @@ public class SettingsFragment extends Fragment
 
                                 int apiVersion = Build.VERSION.SDK_INT;
                                 if(apiVersion >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                                    Intent intent = new Intent(getActivity().getApplicationContext(), LoginActivity.class);
+                                    startActivity(intent);
                                     getActivity().finishAffinity();
                                 }
                                 else {
+                                    Intent intent = new Intent(getActivity().getApplicationContext(), LoginActivity.class);
+                                    startActivity(intent);
                                     getActivity().finish();
-                                    System.exit(0);
                                 }
 
                             }

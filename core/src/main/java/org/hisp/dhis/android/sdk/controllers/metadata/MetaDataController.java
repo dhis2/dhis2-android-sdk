@@ -1006,7 +1006,9 @@ public final class MetaDataController extends ResourceController {
 
             List<Program> programsForOrgUnit = new ArrayList<>();
             List<Program> programsForOrgUnitSEWoR = getProgramsForOrganisationUnit
-                    (organisationUnit.getId(), ProgramType.WITHOUT_REGISTRATION);
+                    (organisationUnit.getId(),
+                            ProgramType.WITHOUT_REGISTRATION,
+                            ProgramType.WITH_REGISTRATION);
 
             if (programsForOrgUnitSEWoR != null) {
                 programsForOrgUnit.addAll(programsForOrgUnitSEWoR);

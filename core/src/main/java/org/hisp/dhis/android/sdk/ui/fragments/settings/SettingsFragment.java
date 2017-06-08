@@ -201,12 +201,12 @@ public class SettingsFragment extends Fragment
                 Toast.makeText(context, getString(R.string.sync_deleted_events),
                         Toast.LENGTH_SHORT).show();
                 setProgressMessage(new LoadingMessageEvent(getString(R.string.sync_deleted_events),
-                        LoadingMessageEvent.EventType.REMOVE_EVENTS));
+                        LoadingMessageEvent.EventType.REMOVE_DATA));
 
                 new Thread() {
                     @Override
                     public void run() {
-                        DhisService.synchronizeRemotelyDeletedEvents(context);
+                        DhisService.synchronizeRemotelyDeletedData(context);
                     }
                 }.start();
                 startSync();
@@ -255,7 +255,7 @@ public class SettingsFragment extends Fragment
                 changeUiVisibility(false);
                 synchronizeButton.setText(getActivity().getApplicationContext().getString(
                         R.string.synchronizing));
-            } else if (event.eventType.equals(LoadingMessageEvent.EventType.REMOVE_EVENTS)) {
+            } else if (event.eventType.equals(LoadingMessageEvent.EventType.REMOVE_DATA)) {
                 synchronizeRemovedEventsButton.setText(
                         getActivity().getApplicationContext().getString(
                                 R.string.synchronizing));

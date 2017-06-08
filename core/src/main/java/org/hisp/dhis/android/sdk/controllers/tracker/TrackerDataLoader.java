@@ -29,7 +29,11 @@
 
 package org.hisp.dhis.android.sdk.controllers.tracker;
 
+import static org.hisp.dhis.android.sdk.utils.NetworkUtils.unwrapResponse;
+import static org.hisp.dhis.client.sdk.utils.StringUtils.isEmpty;
+
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -61,18 +65,17 @@ import org.hisp.dhis.android.sdk.utils.DbUtils;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 import org.hisp.dhis.android.sdk.utils.Utils;
 import org.hisp.dhis.android.sdk.utils.api.ProgramType;
+import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static org.hisp.dhis.android.sdk.utils.NetworkUtils.unwrapResponse;
-import static org.hisp.dhis.client.sdk.utils.StringUtils.isEmpty;
 
 /**
  * @author Simen Skogly Russnes on 24.08.15.
@@ -189,30 +192,31 @@ final class TrackerDataLoader extends ResourceController {
 
     }
 
-
     /**
      * Loads datavalue items that is scheduled to be loaded but has not yet been.
      */
-    static void deleteRemotelyDeletedEvents(Context context, DhisApi dhisApi) throws APIException {
-        Hashtable<String, List<Program>> myProgramsByOrganisationUnit = new Hashtable<>();
-
-        if (LoadingController.isLoadFlagEnabled(context, ResourceType.EVENTS)) {
-            myProgramsByOrganisationUnit =
-                    MetaDataController.getAssignedProgramsByOrganisationUnit();
-
+    static void deleteRemotelyDeletedTrackedEntityInstances(Context context, DhisApi dhisApi,
+            Hashtable<String, List<Program>> myProgramsByOrganisationUnit) {
             for (String organisationUnitUid : myProgramsByOrganisationUnit.keySet()) {
-                for (Program program : myProgramsByOrganisationUnit.get(organisationUnitUid)) {
-                    if (program.getUid() == null
-                            || program.getUid().length() == Utils.randomUUID.length()) {
-                        continue;
-                    }
 
                     UiUtils.postProgressMessage(
-                            context.getString(R.string.sync_deleted_events) + ": "
-                                    + organisationUnitUid + ": " + program.getName(), LoadingMessageEvent.EventType.REMOVE_EVENTS);
+                            context.getString(R.string.sync_deleted_tracked_entities) + ": "
+                                    + organisationUnitUid,
+                            LoadingMessageEvent.EventType.REMOVE_DATA);
+
+                List<TrackedEntityInstance> localTrackedEntityInstances =
+                        TrackerController.getTrackedEntityInstances(organisationUnitUid);
+
+                HashMap<String, List<TrackedEntityInstance>> mapTrackedEntityInstances =
+                        groupTrackedEntityInstancesByTrackedEntity(localTrackedEntityInstances);
+
+                for (String trackedEntity : mapTrackedEntityInstances.keySet()) {
+                    List<TrackedEntityInstance> trackedEntityInstanceList =
+                            mapTrackedEntityInstances.get(trackedEntity);
 
                     try {
-                        deleteRemotelyDeletedEvents(dhisApi, organisationUnitUid, program.getUid());
+                        deleteRemotelyDeletedTrackedEntityInstances(dhisApi, organisationUnitUid,
+                                trackedEntity, trackedEntityInstanceList);
                     } catch (APIException e) {
                         e.printStackTrace();
                         //todo: could probably do something prettier here. This catch is done to
@@ -222,8 +226,246 @@ final class TrackerDataLoader extends ResourceController {
                     }
                 }
             }
+
+        deleteRemotelyDeletedEnrollments(context, dhisApi, myProgramsByOrganisationUnit);
+    }
+
+    private static void deleteRemotelyDeletedEnrollments(Context context, DhisApi dhisApi,
+            Hashtable<String, List<Program>> myProgramsByOrganisationUnit) {
+        for (String organisationUnitUid : myProgramsByOrganisationUnit.keySet()) {
+
+            UiUtils.postProgressMessage(
+                    context.getString(R.string.sync_deleted_enrollments) + ": "
+                            + organisationUnitUid, LoadingMessageEvent.EventType.REMOVE_DATA);
+
+            List<TrackedEntityInstance> localTrackedEntityInstances =
+                    TrackerController.getTrackedEntityInstances(organisationUnitUid);
+
+            HashMap<String, List<TrackedEntityInstance>> mapTrackedEntityInstances =
+                    groupTrackedEntityInstancesByTrackedEntity(localTrackedEntityInstances);
+
+            for (String trackedEntity : mapTrackedEntityInstances.keySet()) {
+                List<TrackedEntityInstance> trackedEntityInstanceList =
+                        mapTrackedEntityInstances.get(trackedEntity);
+
+                ArrayList<Enrollment> enrollments = new ArrayList<>();
+                for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstanceList) {
+                    enrollments.addAll(TrackerController.getEnrollments(trackedEntityInstance));
+                }
+
+                try {
+                    deleteRemotelyDeletedEnrollments(dhisApi, organisationUnitUid,
+                            trackedEntity, enrollments);
+                } catch (APIException e) {
+                    e.printStackTrace();
+                    //todo: could probably do something prettier here. This catch is done to
+                    // prevent
+                    // stopping loading of the following program/orgUnit as throwing and
+                    // exception would exit the loop..
+                }
+            }
         }
-        UiUtils.postProgressMessage("",LoadingMessageEvent.EventType.FINISH);
+
+        deleteRemotelyDeletedRelationships(context, dhisApi, myProgramsByOrganisationUnit);
+    }
+
+    private static void deleteRemotelyDeletedRelationships(Context context, DhisApi dhisApi,
+            Hashtable<String, List<Program>> myProgramsByOrganisationUnit) {
+
+        for (String organisationUnitUid : myProgramsByOrganisationUnit.keySet()) {
+            for (Program program : myProgramsByOrganisationUnit.get(organisationUnitUid)) {
+                if (program.getUid() == null
+                        || program.getUid().length() == Utils.randomUUID.length()) {
+                    continue;
+                }
+
+                UiUtils.postProgressMessage(
+                        context.getString(R.string.sync_deleted_relations) + ": "
+                                + organisationUnitUid + ": " + program.getName(),
+                        LoadingMessageEvent.EventType.REMOVE_DATA);
+
+                List<TrackedEntityInstance> localTrackedEntityInstances =
+                        TrackerController.getTrackedEntityInstances();
+                try {
+                    for (TrackedEntityInstance trackedEntityInstance :
+                            localTrackedEntityInstances) {
+                        if (trackedEntityInstance.getRelationships() != null
+                                && trackedEntityInstance.getRelationships().size() > 0) {
+                            deleteRemotelyDeletedRelationships(dhisApi,
+                                    trackedEntityInstance);
+                        }
+                    }
+                } catch (APIException e) {
+                    e.printStackTrace();
+                    //todo: could probably do something prettier here. This catch is done to
+                    // prevent
+                    // stopping loading of the following program/orgUnit as throwing and
+                    // exception would exit the loop..
+                }
+            }
+        }
+    }
+
+    private static void deleteRemotelyDeletedRelationships(DhisApi dhisApi,
+            TrackedEntityInstance trackedEntityInstanceParent) {
+        Log.d(CLASS_TAG, "deleteRemotelyDeletedRelationships");
+        final Map<String, String> map = new HashMap<>();
+        map.put("fields", "relationships[relationship]");
+
+        List<Relationship> localRelationships = trackedEntityInstanceParent.getRelationships();
+        if (localRelationships.size() == 0) {
+            return;
+        }
+
+        TrackedEntityInstance trackedEntityInstance =
+                dhisApi.getTrackedEntityInstance(trackedEntityInstanceParent.getUid(),
+                        map);
+
+        List<Relationship> remoteRelationships = trackedEntityInstance.getRelationships();
+
+        List<Relationship> localRelationshipsToBeRemoved = new ArrayList<>();
+
+        for (Relationship relationship : localRelationships) {
+            boolean isRemoved = true;
+            for (Relationship remoteRelationship : remoteRelationships) {
+                if (remoteRelationship.getRelationship().equals(relationship.getRelationship())) {
+                    isRemoved = false;
+                    break;
+                }
+            }
+            if (isRemoved) {
+                localRelationshipsToBeRemoved.add(relationship);
+            }
+        }
+
+        ResourceController.removetrackedRelationships(localRelationshipsToBeRemoved);
+    }
+
+    @NonNull
+    private static HashMap<String, List<TrackedEntityInstance>>
+    groupTrackedEntityInstancesByTrackedEntity(
+            List<TrackedEntityInstance> localTrackedEntityInstances) {
+        HashMap<String, List<TrackedEntityInstance>> mapTrackedEntityInstances =
+                new HashMap<>();
+        for (TrackedEntityInstance localTrackedEntityInstance :
+                localTrackedEntityInstances) {
+            String trackedEntityUid = localTrackedEntityInstance.getTrackedEntity();
+            if (mapTrackedEntityInstances.containsKey(trackedEntityUid)) {
+                mapTrackedEntityInstances.get(trackedEntityUid).add(localTrackedEntityInstance);
+            } else {
+                List<TrackedEntityInstance> trackedEntityInstancesList = new ArrayList<>();
+                trackedEntityInstancesList.add(localTrackedEntityInstance);
+                mapTrackedEntityInstances.put(trackedEntityUid,
+                        trackedEntityInstancesList);
+            }
+        }
+        return mapTrackedEntityInstances;
+    }
+
+    static void deleteRemotelyDeletedData(Context context, DhisApi dhisApi) throws APIException {
+        Hashtable<String, List<Program>> myProgramsByOrganisationUnit = new Hashtable<>();
+
+        myProgramsByOrganisationUnit =
+                MetaDataController.getAssignedProgramsByOrganisationUnit();
+        for (String organisationUnitUid : myProgramsByOrganisationUnit.keySet()) {
+            for (Program program : myProgramsByOrganisationUnit.get(organisationUnitUid)) {
+                if (program.getUid() == null
+                        || program.getUid().length() == Utils.randomUUID.length()) {
+                    continue;
+                }
+
+                UiUtils.postProgressMessage(
+                        context.getString(R.string.sync_deleted_events) + ": "
+                                + organisationUnitUid + ": " + program.getName(),
+                        LoadingMessageEvent.EventType.REMOVE_DATA);
+
+                try {
+                    deleteRemotelyDeletedEvents(dhisApi, organisationUnitUid, program.getUid());
+                } catch (APIException e) {
+                    e.printStackTrace();
+                    //todo: could probably do something prettier here. This catch is done to
+                    // prevent
+                    // stopping loading of the following program/orgUnit as throwing and
+                    // exception would exit the loop..
+                }
+            }
+        }
+
+        deleteRemotelyDeletedTrackedEntityInstances(context, dhisApi, myProgramsByOrganisationUnit);
+    }
+
+    private static void deleteRemotelyDeletedEnrollments(DhisApi dhisApi,
+            String organisationUnitUid, String trackedEntityUid,
+            ArrayList<Enrollment> enrollments) {
+        Log.d(CLASS_TAG, "getTrackedEntityInstances");
+        final Map<String, String> map = new HashMap<>();
+        map.put("fields", "trackedEntityInstance[!attributes]");
+        map.put("trackedEntity", trackedEntityUid);
+
+        List<Enrollment> localEnrollmentToBeRemoved = new ArrayList<>();
+        if (enrollments.size() == 0) {
+            return;
+        }
+
+        List<Enrollment> remoteEnrollments = new ArrayList<>();
+        Map<String, List<Enrollment>> enrollmentList = dhisApi.getEnrollments(organisationUnitUid,
+                map);
+        for (String enrollmentKey : enrollmentList.keySet()) {
+            remoteEnrollments.addAll(
+                    enrollmentList.get(enrollmentKey));
+        }
+        for (Enrollment enrollment : enrollments) {
+            boolean isRemoved = true;
+            for (Enrollment remoteEnrollment : remoteEnrollments) {
+                if (remoteEnrollment.getUid().equals(enrollment.getUid())) {
+                    isRemoved = false;
+                    break;
+                }
+            }
+            if (isRemoved) {
+                localEnrollmentToBeRemoved.add(enrollment);
+            }
+        }
+
+        ResourceController.removetrackedEnrollments(localEnrollmentToBeRemoved);
+    }
+
+    private static void deleteRemotelyDeletedTrackedEntityInstances(DhisApi dhisApi,
+            String organisationUnitUid, String trackedEntityUid,
+            List<TrackedEntityInstance> localTrackedEntityInstances) {
+        Log.d(CLASS_TAG, "getTrackedEntityInstances");
+        final Map<String, String> map = new HashMap<>();
+        map.put("fields", "trackedEntityInstance[!attributes]");
+        map.put("trackedEntity", trackedEntityUid);
+
+        List<TrackedEntityInstance> localTrackedEntityInstancesToBeRemoved =
+                new ArrayList<>();
+        if (localTrackedEntityInstances.size() == 0) {
+            return;
+        }
+
+        List<TrackedEntityInstance> remoteTrackedEntityInstances = new ArrayList<>();
+        Map<String, List<TrackedEntityInstance>> trackedEntityInstancesList =
+                dhisApi.getTrackedEntityInstances(organisationUnitUid,
+                        map);
+        for (String trackedEntityInstanceKey : trackedEntityInstancesList.keySet()) {
+            remoteTrackedEntityInstances.addAll(
+                    trackedEntityInstancesList.get(trackedEntityInstanceKey));
+        }
+        for (TrackedEntityInstance trackedEntityInstance : localTrackedEntityInstances) {
+            boolean isRemoved = true;
+            for (TrackedEntityInstance remoteTrackedEntityInstance : remoteTrackedEntityInstances) {
+                if (remoteTrackedEntityInstance.getUid().equals(trackedEntityInstance.getUid())) {
+                    isRemoved = false;
+                    break;
+                }
+            }
+            if (isRemoved) {
+                localTrackedEntityInstancesToBeRemoved.add(trackedEntityInstance);
+            }
+        }
+
+        ResourceController.removetrackedEntities(localTrackedEntityInstancesToBeRemoved);
     }
 
     static void deleteRemotelyDeletedEvents(DhisApi dhisApi, String organisationUnitUid,
@@ -257,11 +499,7 @@ final class TrackerDataLoader extends ResourceController {
             }
         }
 
-        removeResource(eventsToBeRemoved);
-    }
-
-    public static void removeResource(List<Event> list) {
-        ResourceController.removeResource(list);
+        ResourceController.removeEvents(eventsToBeRemoved);
     }
 
     static Map<String, List<Enrollment>> mapActiveEnrollmentsByProgram(List<Enrollment>

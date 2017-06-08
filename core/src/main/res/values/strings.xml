@@ -257,6 +257,9 @@
     <string name="developer_option_key">developer optionkey</string>
     <string name="developer_option_title">"Show developer options"</string>
     <string name="sync_deleted_events">Synchronizing remotely deleted Events</string>
+    <string name="sync_deleted_tracked_entities">Synchronizing remotely deleted tracked entities</string>
+    <string name="sync_deleted_relations">Synchronizing remotely deleted tracked entity relations</string>
+    <string name="sync_deleted_enrollments">Synchronizing remotely deleted enrollments</string>
     <string name="synchronize_deleted_data">Synchronize remotely deleted data</string>
     <string name="synchronizing">Synchronizing...</string>
 

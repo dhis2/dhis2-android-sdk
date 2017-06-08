@@ -70,6 +70,7 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -214,8 +215,9 @@ public final class TrackerController extends ResourceController {
      */
     public static void syncRemotelyDeletedData(Context context, DhisApi dhisApi)
             throws APIException {
-        UiUtils.postProgressMessage(context.getString(R.string.sync_deleted_events), LoadingMessageEvent.EventType.REMOVE_EVENTS);
-        TrackerDataLoader.deleteRemotelyDeletedEvents(context, dhisApi);
+        UiUtils.postProgressMessage(context.getString(R.string.synchronize_deleted_data), LoadingMessageEvent.EventType.REMOVE_DATA);
+        TrackerDataLoader.deleteRemotelyDeletedData(context, dhisApi);
+        UiUtils.postProgressMessage("",LoadingMessageEvent.EventType.FINISH);
     }
 
     /**
@@ -325,6 +327,14 @@ public final class TrackerController extends ResourceController {
                 (Condition.column(TrackedEntityInstance$Table.LOCALID).is(localId)).querySingle();
     }
 
+    public static List<TrackedEntityInstance> getTrackedEntityInstances(String organisationUnitUId) {
+        return new Select().from(TrackedEntityInstance.class).where
+                (Condition.column(TrackedEntityInstance$Table.ORGUNIT).is(organisationUnitUId)).queryList();
+    }
+
+    public static List<TrackedEntityInstance> getTrackedEntityInstances() {
+        return new Select().from(TrackedEntityInstance.class).queryList();
+    }
     /*
    * Returns a list of tracked entity attribute values for an instance in a selected program
    * @param trackedEntityInstance

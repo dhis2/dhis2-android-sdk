@@ -314,7 +314,7 @@ public class QueryTrackedEntityInstancesResultDialogFragment extends DialogFragm
 
             @Override
             public Object execute() throws APIException {
-                TrackerController.getTrackedEntityInstancesDataFromServer(DhisController.getInstance().getDhisApi(), getSelectedTrackedEntityInstances(), true);
+                TrackerController.getTrackedEntityInstancesDataFromServer(DhisController.getInstance().getDhisApi(), getSelectedTrackedEntityInstances(), true, true);
                 Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
                 return new Object();
             }

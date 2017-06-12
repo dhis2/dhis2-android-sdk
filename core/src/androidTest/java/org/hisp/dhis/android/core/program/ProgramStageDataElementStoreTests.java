@@ -552,6 +552,47 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).isExhausted();
     }
 
+    @Test
+    public void updateWithProgramStageSection_shouldUpdateProgramStageDataElement() throws Exception {
+        // inserting necessary foreign keys
+        ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
+        database().insert(DataElementModel.TABLE, null, dataElement);
+
+        ContentValues program = CreateProgramUtils.create(ID, PROGRAM, null, null, null);
+        database().insert(ProgramModel.TABLE, null, program);
+
+        ContentValues programStage = CreateProgramStageUtils.create(ID, PROGRAM_STAGE, PROGRAM);
+        database().insert(ProgramStageModel.TABLE, null, programStage);
+
+        ContentValues programStageSection = CreateProgramStageSectionUtils.create(
+                1L, PROGRAM_STAGE_SECTION, PROGRAM_STAGE
+        );
+        database().insert(ProgramStageSectionModel.TABLE, null, programStageSection);
+
+        ContentValues programStageDataElement = new ContentValues();
+        programStageDataElement.put(Columns.UID, UID);
+        programStageDataElement.put(Columns.DATA_ELEMENT, DATA_ELEMENT);
+        programStageDataElement.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+        // null program stage section
+        programStageDataElement.putNull(Columns.PROGRAM_STAGE_SECTION);
+
+        database().insert(ProgramStageDataElementModel.TABLE, null, programStageDataElement);
+
+        String[] projection = {Columns.UID, Columns.DATA_ELEMENT, Columns.PROGRAM_STAGE_SECTION};
+
+        Cursor cursor = database().query(ProgramStageDataElementModel.TABLE, projection, null, null, null, null, null);
+        // checking that psde was successfully inserted
+        assertThatCursor(cursor).hasRow(UID, DATA_ELEMENT, null);
+
+        // update program stage data element programStageSection link based on data element
+        store.updateWithProgramStageSectionLink(PROGRAM_STAGE_SECTION, DATA_ELEMENT);
+
+        cursor = database().query(ProgramStageDataElementModel.TABLE, projection, null, null, null, null, null);
+
+        assertThatCursor(cursor).hasRow(UID, DATA_ELEMENT, PROGRAM_STAGE_SECTION);
+
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void insert_null_uid() {
         store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, DISPLAY_IN_REPORTS, COMPULSORY,
@@ -603,7 +644,7 @@ public class ProgramStageDataElementStoreTests extends AbsStoreTestCase {
     @Test(expected = IllegalArgumentException.class)
     public void updateWithoutSection_null_dataElement() {
         store.updateWithoutSection(UID, CODE, NAME, DISPLAY_NAME, date, date, DISPLAY_IN_REPORTS, COMPULSORY,
-                ALLOW_PROVIDED_ELSEWHERE, SORT_ORDER, ALLOW_FUTURE_DATE, null, PROGRAM_STAGE , UID);
+                ALLOW_PROVIDED_ELSEWHERE, SORT_ORDER, ALLOW_FUTURE_DATE, null, PROGRAM_STAGE, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)

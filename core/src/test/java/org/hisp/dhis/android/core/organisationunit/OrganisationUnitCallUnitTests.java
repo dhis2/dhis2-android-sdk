@@ -28,12 +28,10 @@
 package org.hisp.dhis.android.core.organisationunit;
 
 import android.database.Cursor;
-import android.util.Log;
 
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
-import org.hisp.dhis.android.core.data.api.FilterConverter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.program.Program;
@@ -95,6 +93,9 @@ public class OrganisationUnitCallUnitTests {
 
     @Mock
     private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
+
+    @Mock
+    private OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
 
     @Mock
     private ResourceStore resourceStore;
@@ -196,7 +197,7 @@ public class OrganisationUnitCallUnitTests {
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, database,
                 organisationUnitStore,
                 resourceStore,
-                serverDate, userOrganisationUnitLinkStore);
+                serverDate, userOrganisationUnitLinkStore, organisationUnitProgramLinkStore);
 
         //Return only one organisationUnit.
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));

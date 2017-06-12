@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
 import java.util.List;
@@ -35,14 +37,14 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class ProgramStageSectionHandler {
     private final ProgramStageSectionStore programStageSectionStore;
-    private final ProgramStageSectionDataElementLinkStore programStageSectionDataElementLinkStore;
+    private final ProgramStageDataElementHandler programStageDataElementHandler;
     private final ProgramIndicatorHandler programIndicatorHandler;
 
-    public ProgramStageSectionHandler(ProgramStageSectionStore programStageSectionStore,
-                                      ProgramStageSectionDataElementLinkStore programStageSectionDataElementLinkStore,
-                                      ProgramIndicatorHandler programIndicatorHandler) {
+    public ProgramStageSectionHandler(@NonNull ProgramStageSectionStore programStageSectionStore,
+                                      @NonNull ProgramStageDataElementHandler programStageDataElementHandler,
+                                      @NonNull ProgramIndicatorHandler programIndicatorHandler) {
         this.programStageSectionStore = programStageSectionStore;
-        this.programStageSectionDataElementLinkStore = programStageSectionDataElementLinkStore;
+        this.programStageDataElementHandler = programStageDataElementHandler;
         this.programIndicatorHandler = programIndicatorHandler;
     }
 
@@ -72,18 +74,18 @@ public class ProgramStageSectionHandler {
                     );
                 }
             }
+
+
             //Loop over the list and add all entries
-            String pssUid = programStageSection.uid();
+            String programStageSectionUid = programStageSection.uid();
             List<DataElement> dataElements = programStageSection.dataElements();
-            for(int j = 0, deSize = dataElements.size(); j < deSize; j++) {
-                String deUid = dataElements.get(j).uid();
-                //TODO: figure out a way to handle deletions. Maybe dump all pssUid entries and re-insert all ?
-                //TODO: double check if this is right: (Problem is with the fact that neither pssUid, nor deUid are
-                // defined as unique in the table (and should not be).
-                int updated = programStageSectionDataElementLinkStore.update(pssUid, deUid, pssUid, deUid);
-                if(updated <= 0) {
-                    programStageSectionDataElementLinkStore.insert(pssUid, deUid);
-                }
+            for (int j = 0, deSize = dataElements.size(); j < deSize; j++) {
+                String dataElementUid = dataElements.get(j).uid();
+
+                programStageDataElementHandler.updateProgramStageDataElementWithProgramStageSectionLink(
+                        programStageSectionUid, dataElementUid
+                );
+
             }
             programIndicatorHandler.handleProgramIndicator(programStageSection.uid(),
                     programStageSection.programIndicators());

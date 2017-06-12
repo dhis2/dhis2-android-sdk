@@ -102,9 +102,17 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
     private static final String DELETE_STATEMENT = "DELETE FROM " + ProgramStageDataElementModel.TABLE + " WHERE " +
             ProgramStageDataElementModel.Columns.UID + " =?;";
 
+    private static final String UPDATE_WITH_PROGRAM_STAGE_SECTION_STATEMENT = "UPDATE " +
+            ProgramStageDataElementModel.TABLE + " SET " +
+            ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION + " =? " +
+            " WHERE " +
+            ProgramStageDataElementModel.Columns.DATA_ELEMENT + " =?;";
+
+
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateWithSectionStatement;
     private final SQLiteStatement updateWithoutSectionStatement;
+    private final SQLiteStatement updateWithProgramStageSectionLinkStatement;
     private final SQLiteStatement deleteStatement;
 
     private final DatabaseAdapter databaseAdapter;
@@ -114,6 +122,8 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
         this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
         this.updateWithSectionStatement = databaseAdapter.compileStatement(UPDATE_WITH_SECTION_STATEMENT);
         this.updateWithoutSectionStatement = databaseAdapter.compileStatement(UPDATE_WITHOUT_SECTION_STATEMENT);
+        this.updateWithProgramStageSectionLinkStatement =
+                databaseAdapter.compileStatement(UPDATE_WITH_PROGRAM_STAGE_SECTION_STATEMENT);
         this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
@@ -208,6 +218,21 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
         deleteStatement.clearBindings();
 
         return delete;
+    }
+
+    @Override
+    public int updateWithProgramStageSectionLink(@NonNull String programStageSectionUid,
+                                                 @NonNull String dataElementUid) {
+        sqLiteBind(updateWithProgramStageSectionLinkStatement, 1, programStageSectionUid);
+        sqLiteBind(updateWithProgramStageSectionLinkStatement, 2, dataElementUid);
+
+        int update = databaseAdapter.executeUpdateDelete(
+                ProgramStageDataElementModel.TABLE, updateWithProgramStageSectionLinkStatement
+        );
+
+        updateWithProgramStageSectionLinkStatement.clearBindings();
+
+        return update;
     }
 
     private void bindArguments(@NonNull SQLiteStatement sqLiteStatement, @NonNull String uid,

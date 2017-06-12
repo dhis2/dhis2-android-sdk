@@ -194,7 +194,7 @@ public class ProgramCallIntegrationTests extends AbsStoreTestCase {
         ProgramStageSectionStore programStageSectionStore = new ProgramStageSectionStoreImpl(databaseAdapter());
         ProgramStageSectionHandler programStageSectionHandler = new ProgramStageSectionHandler(
                 programStageSectionStore,
-                new ProgramStageSectionDataElementLinkStoreImpl(databaseAdapter()),
+                programStageDataElementHandler,
                 programIndicatorHandler
         );
 

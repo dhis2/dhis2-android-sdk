@@ -37,7 +37,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitProgramLinkStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
-            OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK + " (" +
+            OrganisationUnitProgramLinkModel.TABLE + " (" +
             OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT + ", " +
             OrganisationUnitProgramLinkModel.Columns.PROGRAM + ") " +
             "VALUES(?,?);";
@@ -58,7 +58,7 @@ public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitPro
         sqLiteBind(insertStatement, 1, organisationUnitUid);
         sqLiteBind(insertStatement, 2, programUid);
 
-        long ret = databaseAdapter.executeInsert(OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK,
+        long ret = databaseAdapter.executeInsert(OrganisationUnitProgramLinkModel.TABLE,
                 insertStatement);
         insertStatement.clearBindings();
         return ret;

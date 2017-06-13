@@ -242,7 +242,8 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
                 }
                 Row row = DataEntryRowFactory.createDataEntryView(stageDataElement.getCompulsory(),
                         stageDataElement.getAllowFutureDate(), dataElement.getOptionSet(),
-                        dataElementName, dataValue, dataElement.getValueType(), true, false);
+                        dataElementName, dataValue, dataElement.getValueType(), true, false,
+                        form.getStage().getProgram().getDataEntryMethod());
                 rows.add(row);
             }
         }

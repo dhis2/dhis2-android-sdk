@@ -383,12 +383,26 @@ public final class TrackerController extends ResourceController {
      */
     public static List<TrackedEntityAttributeValue> getTrackedEntityAttributeValues
     (long trackedEntityInstance) {
+        return new Select().from(TrackedEntityAttributeValue.class).where(Condition.column
+                (TrackedEntityAttributeValue$Table.LOCALTRACKEDENTITYINSTANCEID).is(trackedEntityInstance)).orderBy(TrackedEntityAttributeValue$Table.TRACKEDENTITYATTRIBUTEID).queryList();
+    }
+
+    /**
+     * Returns a list of all visible trackedEntityAttributeValues for a given TEI
+     *
+     * @param trackedEntityInstance
+     * @return
+     */
+    public static List<TrackedEntityAttributeValue> getVisibleTrackedEntityAttributeValues
+    (long trackedEntityInstance) {
         return new Select().from(TrackedEntityAttributeValue.class)
                 .join(TrackedEntityAttribute.class, Join.JoinType.LEFT)
                 .on(Condition.column(TrackedEntityAttribute$Table.ID).eq(TrackedEntityAttributeValue$Table.TRACKEDENTITYATTRIBUTEID))
                 .where(Condition.column
-                (TrackedEntityAttributeValue$Table.LOCALTRACKEDENTITYINSTANCEID).is(trackedEntityInstance))
-                .orderBy(false, TrackedEntityAttribute$Table.SORTORDERINLISTNOPROGRAM).queryList();
+                        (TrackedEntityAttributeValue$Table.LOCALTRACKEDENTITYINSTANCEID).is(trackedEntityInstance))
+                .and(Condition.column
+                        (TrackedEntityAttribute$Table.DISPLAYINLISTNOPROGRAM).is(true))
+                .orderBy(true, TrackedEntityAttribute$Table.SORTORDERINLISTNOPROGRAM).queryList();
     }
 
     /**

@@ -40,7 +40,7 @@ public enum DataEntryRowTypes {
     BOOLEAN,
     GENDER,
     TRUE_ONLY,
-    AUTO_COMPLETE,
+    OPTION_SET,
     DATE,
     INDICATOR,
     EVENT_DATE,

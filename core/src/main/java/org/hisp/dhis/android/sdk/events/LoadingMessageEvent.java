@@ -35,5 +35,14 @@ package org.hisp.dhis.android.sdk.events;
  * @author Simen Skogly Russnes on 20.02.15.
  */
 public class LoadingMessageEvent {
+    public EventType eventType;
     public String message;
+
+    public LoadingMessageEvent(String message,
+            EventType eventType) {
+        this.message = message;
+        this.eventType = eventType;
+    }
+
+    public enum EventType{ METADATA, DATA, REMOVE_EVENTS, STARTUP, FINISH}
 }

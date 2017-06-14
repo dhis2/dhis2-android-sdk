@@ -43,6 +43,7 @@ import org.hisp.dhis.android.sdk.controllers.LoadingController;
 import org.hisp.dhis.android.sdk.controllers.ResourceController;
 import org.hisp.dhis.android.sdk.controllers.SyncStrategy;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
@@ -202,6 +203,28 @@ public final class TrackerController extends ResourceController {
                 + " ORDER BY " + Event$Table.DUEDATE;
 
         return new StringQuery<Event>(Event.class, rawSqlQuery).queryList();
+    }
+
+    /**
+     * Returns a list of events for a given org unit and from server
+     */
+    public static List<Event> getEvents(String organisationUnitId, String programId,
+            boolean isFromServer) {
+        List<Event> events = new Select().from(Event.class).where(Condition.column
+                (Event$Table.ORGANISATIONUNITID).is(organisationUnitId)).
+                and(Condition.column(Event$Table.PROGRAMID).is(programId))
+                .and(Condition.column(Event$Table.FROMSERVER).is(isFromServer))
+                .orderBy(false, Event$Table.LASTUPDATED).queryList();
+        return events;
+    }
+
+    /**
+     * Loads datavalues from the server and stores it in local persistence.
+     */
+    public static void syncRemotelyDeletedData(Context context, DhisApi dhisApi)
+            throws APIException {
+        UiUtils.postProgressMessage(context.getString(R.string.sync_deleted_events), LoadingMessageEvent.EventType.REMOVE_EVENTS);
+        TrackerDataLoader.deleteRemotelyDeletedEvents(context, dhisApi);
     }
 
     /**
@@ -474,7 +497,7 @@ public final class TrackerController extends ResourceController {
      * Loads datavalues from the server and stores it in local persistence.
      */
     public static void loadDataValues(Context context, DhisApi dhisApi, SyncStrategy syncStrategy) throws APIException {
-        UiUtils.postProgressMessage(context.getString(R.string.loading_metadata));
+        UiUtils.postProgressMessage(context.getString(R.string.loading_metadata), LoadingMessageEvent.EventType.METADATA);
         TrackerDataLoader.updateDataValueDataItems(context, dhisApi, syncStrategy);
     }
 

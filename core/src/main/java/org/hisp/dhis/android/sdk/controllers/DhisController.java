@@ -102,6 +102,10 @@ public final class DhisController {
         return dhisApi;
     }
 
+    static void syncRemotelyDeletedData(Context context) throws APIException, IllegalStateException {
+        LoadingController.syncRemotelyDeletedData(context, getInstance().getDhisApi());
+    }
+
     /**
      * Initiates synchronization with server. Updates MetaData, sends locally saved data, loads
      * new data values from server.

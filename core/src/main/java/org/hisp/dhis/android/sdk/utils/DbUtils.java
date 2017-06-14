@@ -29,6 +29,9 @@
 
 package org.hisp.dhis.android.sdk.utils;
 
+import static org.hisp.dhis.android.sdk.persistence.models.BaseIdentifiableObject.toMap;
+import static org.hisp.dhis.android.sdk.utils.Preconditions.isNull;
+
 import com.raizlabs.android.dbflow.runtime.TransactionManager;
 
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
@@ -41,9 +44,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import static org.hisp.dhis.android.sdk.persistence.models.BaseIdentifiableObject.toMap;
-import static org.hisp.dhis.android.sdk.utils.Preconditions.isNull;
 
 /**
  * This class is intended to process list of DbOperations
@@ -223,6 +223,20 @@ public final class DbUtils {
         for (String newModelKey : newModelsMap.keySet()) {
             T item = newModelsMap.get(newModelKey);
             ops.add(DbOperation.save(item));
+        }
+
+        return ops;
+    }
+
+
+    public static <T extends BaseIdentifiableObject> List<DbOperation> removeResources(
+            List<T> list) {
+        List<DbOperation> ops = new ArrayList<>();
+        Map<String, T> listToBeRemoved = toMap(list);
+        // Remove items.
+        for (String newModelKey : listToBeRemoved.keySet()) {
+            T item = listToBeRemoved.get(newModelKey);
+            ops.add(DbOperation.delete(item));
         }
 
         return ops;

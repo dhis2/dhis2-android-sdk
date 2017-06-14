@@ -597,9 +597,6 @@ final class TrackerDataLoader extends ResourceController {
                         + "trackedEntityInstanceB]");
         List<Relationship> localRelationships = TrackerController.getRelationships(
                 trackedEntityInstanceUid);
-        if (localRelationships.size() == 0) {
-            return;
-        }
 
         TrackedEntityInstance remoteTrackedEntityInstance =
                 dhisApi.getTrackedEntityInstance(trackedEntityInstanceUid,

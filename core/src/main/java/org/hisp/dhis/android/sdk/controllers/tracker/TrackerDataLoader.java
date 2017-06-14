@@ -196,10 +196,7 @@ final class TrackerDataLoader extends ResourceController {
      * Loads datavalue items that is scheduled to be loaded but has not yet been.
      */
     static void deleteRemotelyDeletedEvents(Context context, DhisApi dhisApi) throws APIException {
-        Hashtable<String, List<Program>> myProgramsByOrganisationUnit = new Hashtable<>();
-
-        if (LoadingController.isLoadFlagEnabled(context, ResourceType.EVENTS)) {
-            myProgramsByOrganisationUnit =
+        Hashtable<String, List<Program>> myProgramsByOrganisationUnit =
                     MetaDataController.getAssignedProgramsByOrganisationUnit();
 
             for (String organisationUnitUid : myProgramsByOrganisationUnit.keySet()) {
@@ -224,7 +221,6 @@ final class TrackerDataLoader extends ResourceController {
                     }
                 }
             }
-        }
         UiUtils.postProgressMessage("",LoadingMessageEvent.EventType.FINISH);
     }
 

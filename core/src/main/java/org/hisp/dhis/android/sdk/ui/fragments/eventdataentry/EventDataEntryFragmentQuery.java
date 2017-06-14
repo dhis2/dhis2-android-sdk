@@ -35,6 +35,8 @@ import static org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController.
 
 import android.content.Context;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.GpsController;
@@ -99,6 +101,8 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
         }
 
         if(DhisController.getInstance().getSession() == null) {
+            Crashlytics.log("Null session. ProgramStageId: "+programStageId);
+            Crashlytics.logException(new Exception("Null session exception"));
             DhisController.getInstance().init();
         }
 

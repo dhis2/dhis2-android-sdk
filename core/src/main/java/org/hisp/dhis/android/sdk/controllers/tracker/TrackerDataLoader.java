@@ -607,6 +607,7 @@ final class TrackerDataLoader extends ResourceController {
         ResourceController.overwriteRelationsFromServer(remoteRelationships, localRelationships);
 
         if (remoteRelationships.size() == 0) {
+            Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
             return;
         }
 

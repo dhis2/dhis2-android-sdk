@@ -40,6 +40,7 @@ import com.raizlabs.android.dbflow.sql.queriable.StringQuery;
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.LoadingController;
 import org.hisp.dhis.android.sdk.controllers.ResourceController;
+import org.hisp.dhis.android.sdk.controllers.SyncStrategy;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.network.APIException;
@@ -452,7 +453,7 @@ public final class TrackerController extends ResourceController {
      */
     public static void synchronizeDataValues(Context context, DhisApi dhisApi) throws APIException {
         sendLocalData(dhisApi);
-        loadDataValues(context, dhisApi);
+        loadDataValues(context, dhisApi, SyncStrategy.DOWNLOAD_ONLY_NEW);
     }
 
     /**
@@ -469,9 +470,9 @@ public final class TrackerController extends ResourceController {
     /**
      * Loads datavalues from the server and stores it in local persistence.
      */
-    public static void loadDataValues(Context context, DhisApi dhisApi) throws APIException {
+    public static void loadDataValues(Context context, DhisApi dhisApi, SyncStrategy syncStrategy) throws APIException {
         UiUtils.postProgressMessage(context.getString(R.string.loading_metadata), LoadingMessageEvent.EventType.METADATA);
-        TrackerDataLoader.updateDataValueDataItems(context, dhisApi);
+        TrackerDataLoader.updateDataValueDataItems(context, dhisApi, syncStrategy);
     }
 
     public static List<TrackedEntityInstance> queryTrackedEntityInstancesDataFromServer(DhisApi dhisApi,

@@ -38,6 +38,7 @@ import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.ApiEndpointContainer;
 import org.hisp.dhis.android.sdk.controllers.LoadingController;
 import org.hisp.dhis.android.sdk.controllers.ResourceController;
+import org.hisp.dhis.android.sdk.controllers.SyncStrategy;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.controllers.wrappers.EventsWrapper;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
@@ -87,7 +88,7 @@ final class TrackerDataLoader extends ResourceController {
     /**
      * Loads datavalue items that is scheduled to be loaded but has not yet been.
      */
-    static void updateDataValueDataItems(Context context, DhisApi dhisApi) throws APIException {
+    static void updateDataValueDataItems(Context context, DhisApi dhisApi, SyncStrategy syncStrategy) throws APIException {
         if (dhisApi == null) {
             return;
         }
@@ -130,7 +131,7 @@ final class TrackerDataLoader extends ResourceController {
                         UiUtils.postProgressMessage(context.getString(R.string.loading_events) + ": "
                                 + organisationUnit.getLabel() + ": " + program.getName(), LoadingMessageEvent.EventType.DATA);
                         try {
-                            getEventsDataFromServer(dhisApi, organisationUnit.getId(), program.getUid(), serverDateTime);
+                            getEventsDataFromServer(dhisApi, syncStrategy, organisationUnit.getId(), program.getUid(), serverDateTime);
                         } catch (APIException e) {
                             e.printStackTrace();
                             //todo: could probably do something prettier here. This catch is done to prevent
@@ -298,13 +299,19 @@ final class TrackerDataLoader extends ResourceController {
         }
     }
 
-    static void getEventsDataFromServer(DhisApi dhisApi, String organisationUnitUid, String programUid, DateTime serverDateTime) throws APIException {
+    static void getEventsDataFromServer(DhisApi dhisApi, SyncStrategy syncStrategy, String organisationUnitUid, String programUid, DateTime serverDateTime) throws APIException {
         if (dhisApi == null) {
             return;
         }
         Log.d(CLASS_TAG, "getEventsDataFromServer");
-        DateTime lastUpdated = DateTimeManager.getInstance()
-                .getLastUpdated(ResourceType.EVENTS, organisationUnitUid + programUid);
+
+        DateTime lastUpdated = null;
+
+        if(syncStrategy == SyncStrategy.DOWNLOAD_ONLY_NEW) {
+            DateTimeManager.getInstance()
+                    .getLastUpdated(ResourceType.EVENTS, organisationUnitUid + programUid);
+        }
+
         final Map<String, String> map = new HashMap<>();
         map.put("fields", "[:all]");
         if (lastUpdated != null) {
@@ -524,7 +531,7 @@ final class TrackerDataLoader extends ResourceController {
         if (enrollments != null) {
             for (Enrollment enrollment : enrollments) {
                 try {
-                    getEventsDataFromServer(dhisApi, enrollment, serverDateTime);
+                    getEventsDataFromServer(dhisApi, SyncStrategy.DOWNLOAD_ONLY_NEW, enrollment, serverDateTime);
                 } catch (APIException e) {//can't throw this exception up because we want to continue loading enrollments.. todo: let the user know?
                     e.printStackTrace();
                 }
@@ -552,7 +559,7 @@ final class TrackerDataLoader extends ResourceController {
         DateTimeManager.getInstance()
                 .setLastUpdated(ResourceType.ENROLLMENT, uid, serverDateTime);
         if (getEvents) {
-            getEventsDataFromServer(dhisApi, enrollment, serverDateTime);
+            getEventsDataFromServer(dhisApi, SyncStrategy.DOWNLOAD_ONLY_NEW, enrollment, serverDateTime);
         }
     }
 
@@ -565,7 +572,7 @@ final class TrackerDataLoader extends ResourceController {
         return updatedEnrollment;
     }
 
-    static void getEventsDataFromServer(DhisApi dhisApi, Enrollment enrollment, DateTime serverDateTime) {
+    static void getEventsDataFromServer(DhisApi dhisApi, SyncStrategy syncStrategy, Enrollment enrollment, DateTime serverDateTime) {
         if (enrollment == null) {
             return;
         } else if (dhisApi == null) {
@@ -577,8 +584,12 @@ final class TrackerDataLoader extends ResourceController {
             return;
         }
 
-        DateTime lastUpdated = DateTimeManager.getInstance()
-                .getLastUpdated(ResourceType.EVENTS, enrollment.getEnrollment());
+        DateTime lastUpdated = null;
+
+        if(syncStrategy == SyncStrategy.DOWNLOAD_ONLY_NEW) {
+            lastUpdated = DateTimeManager.getInstance()
+                    .getLastUpdated(ResourceType.EVENTS, enrollment.getEnrollment());
+        }
 
         JsonNode response = dhisApi
                 .getEventsForEnrollment(enrollment.getProgram().getUid(), enrollment.getStatus(),

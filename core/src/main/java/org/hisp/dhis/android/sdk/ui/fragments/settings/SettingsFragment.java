@@ -31,6 +31,7 @@ package org.hisp.dhis.android.sdk.ui.fragments.settings;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -56,11 +57,13 @@ import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.DhisService;
 import org.hisp.dhis.android.sdk.controllers.PeriodicSynchronizerController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.controllers.SyncStrategy;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.network.Session;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.preferences.AppPreferences;
+import org.hisp.dhis.android.sdk.ui.activities.LoginActivity;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 
 /**
@@ -171,11 +174,15 @@ public class SettingsFragment extends Fragment
                                 DhisService.logOutUser(getActivity());
 
                                 int apiVersion = Build.VERSION.SDK_INT;
-                                if (apiVersion >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                                if(apiVersion >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                                    Intent intent = new Intent(getActivity().getApplicationContext(), LoginActivity.class);
+                                    startActivity(intent);
                                     getActivity().finishAffinity();
-                                } else {
+                                }
+                                else {
+                                    Intent intent = new Intent(getActivity().getApplicationContext(), LoginActivity.class);
+                                    startActivity(intent);
                                     getActivity().finish();
-                                    System.exit(0);
                                 }
 
                             }
@@ -190,7 +197,7 @@ public class SettingsFragment extends Fragment
                 new Thread() {
                     @Override
                     public void run() {
-                        DhisService.synchronize(context);
+                        DhisService.synchronize(context, SyncStrategy.DOWNLOAD_ALL);
                     }
                 }.start();
                 startSync();

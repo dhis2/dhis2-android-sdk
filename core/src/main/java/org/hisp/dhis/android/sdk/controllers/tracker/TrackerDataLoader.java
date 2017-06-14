@@ -29,6 +29,9 @@
 
 package org.hisp.dhis.android.sdk.controllers.tracker;
 
+import static org.hisp.dhis.android.sdk.utils.NetworkUtils.unwrapResponse;
+import static org.hisp.dhis.client.sdk.utils.StringUtils.isEmpty;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -43,6 +46,7 @@ import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.controllers.wrappers.EventsWrapper;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.events.OnTeiDownloadedEvent;
+import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
@@ -71,9 +75,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static org.hisp.dhis.android.sdk.utils.NetworkUtils.unwrapResponse;
-import static org.hisp.dhis.client.sdk.utils.StringUtils.isEmpty;
 
 /**
  * @author Simen Skogly Russnes on 24.08.15.
@@ -323,7 +324,18 @@ final class TrackerDataLoader extends ResourceController {
         saveResourceDataFromServer(ResourceType.EVENTS, organisationUnitUid + programUid, dhisApi, events, null, serverDateTime);
     }
 
-    static List<TrackedEntityInstance> queryTrackedEntityInstancesDataFromServer(DhisApi dhisApi,
+    static TrackedEntityInstance queryTrackedEntityInstanceDataFromServer(DhisApi dhisApi,
+            String trackedEntityInstanceUid) throws APIException {
+        final Map<String, String> map = new HashMap<>();
+        if (dhisApi == null) {
+            return null;
+        }
+        TrackedEntityInstance trackedEntityInstance = dhisApi
+                .getTrackedEntityInstance(trackedEntityInstanceUid, map);
+        return trackedEntityInstance;
+    }
+
+    static List<TrackedEntityInstance> queryTrackedEntityInstanceDataFromServer(DhisApi dhisApi,
                                                                                  String organisationUnitUid,
                                                                                  String programUid,
                                                                                  String queryString,
@@ -422,7 +434,9 @@ final class TrackerDataLoader extends ResourceController {
         return trackedEntityInstances;
     }
 
-    static List<TrackedEntityInstance> getTrackedEntityInstancesDataFromServer(DhisApi dhisApi, List<TrackedEntityInstance> trackedEntityInstances, boolean getEnrollments) {
+    static List<TrackedEntityInstance> getTrackedEntityInstancesDataFromServer(DhisApi dhisApi,
+            List<TrackedEntityInstance> trackedEntityInstances, boolean getEnrollments,
+            boolean getRecursiveRelations) {
         if (trackedEntityInstances == null) {
             return null;
         }
@@ -439,7 +453,9 @@ final class TrackerDataLoader extends ResourceController {
             int userFriendlyIndex = (int) (Math.ceil((teiIndex + 1) / 2.0));
 
             try {
-                trackedEntityInstancesToReturn.add(getTrackedEntityInstanceDataFromServer(dhisApi, trackedEntityInstances.get(teiIndex).getTrackedEntityInstance(), getEnrollments, serverDateTime));
+                trackedEntityInstancesToReturn.add(getTrackedEntityInstanceDataFromServer(dhisApi,
+                        trackedEntityInstances.get(teiIndex).getTrackedEntityInstance(),
+                        getEnrollments, getRecursiveRelations, serverDateTime));
             } catch (APIException e) { //can't throw this further up because we want to continue loading all the TEIs..
                 e.printStackTrace();
                 Dhis2Application.getEventBus().post(
@@ -455,7 +471,9 @@ final class TrackerDataLoader extends ResourceController {
         return trackedEntityInstancesToReturn;
     }
 
-    static TrackedEntityInstance getTrackedEntityInstanceDataFromServer(DhisApi dhisApi, String uid, boolean getEnrollments, DateTime serverDateTime) throws APIException {
+    static TrackedEntityInstance getTrackedEntityInstanceDataFromServer(DhisApi dhisApi, String uid,
+            boolean getEnrollments, boolean getRecursiveRelations, DateTime serverDateTime)
+            throws APIException {
         if (dhisApi == null) {
             return null;
         }
@@ -474,8 +492,10 @@ final class TrackerDataLoader extends ResourceController {
         if (trackedEntityInstance.getAttributes() != null) {
             for (TrackedEntityAttributeValue value : trackedEntityInstance.getAttributes()) {
                 if (value != null) {
-                    value.setTrackedEntityInstanceId(trackedEntityInstance.getTrackedEntityInstance());
-                    value.setLocalTrackedEntityInstanceId(trackedEntityInstance.getLocalId());
+                    value.setTrackedEntityInstanceId(
+                            trackedEntityInstance.getTrackedEntityInstance());
+                    value.setLocalTrackedEntityInstanceId(
+                            trackedEntityInstance.getLocalId());
                     operations.add(DbOperation.save(value));
                 }
             }
@@ -489,6 +509,26 @@ final class TrackerDataLoader extends ResourceController {
             }
         }
         DbUtils.applyBatch(operations);
+
+        if (getRecursiveRelations) {
+            if (trackedEntityInstance.getRelationships() != null) {
+                for (Relationship relationship : trackedEntityInstance.getRelationships()) {
+                    if (relationship != null) {
+                        String targetTrackedEntity = relationship.getTrackedEntityInstanceB();
+                        if (trackedEntityInstance.getTrackedEntityInstance().equals(
+                                targetTrackedEntity)) {
+                            targetTrackedEntity = relationship.getTrackedEntityInstanceA();
+                        }
+                        if (TrackerController.getTrackedEntityInstanceByUid(targetTrackedEntity)
+                                == null) {
+                            getTrackedEntityInstanceDataFromServer(dhisApi, targetTrackedEntity,
+                                    getEnrollments,
+                                    false, serverDateTime);
+                        }
+                    }
+                }
+            }
+        }
         DateTimeManager.getInstance()
                 .setLastUpdated(ResourceType.TRACKEDENTITYINSTANCE, uid, serverDateTime);
         if (getEnrollments) {
@@ -624,5 +664,72 @@ final class TrackerDataLoader extends ResourceController {
 
         Event updatedEvent = dhisApi.getEvent(uid, QUERY_MAP_FULL);
         return updatedEvent;
+    }
+
+    protected static void refreshRelationshipsByTrackedEntityInstance(DhisApi dhisApi,
+            String trackedEntityInstanceUid) {
+        Log.d(CLASS_TAG, "refreshRelationshipsByTrackedEntityInstance");
+        final Map<String, String> map = new HashMap<>();
+        map.put("fields",
+                "relationships[relationship,displayName,trackedEntityInstanceA,"
+                        + "trackedEntityInstanceB]");
+        List<Relationship> localRelationships = TrackerController.getRelationships(
+                trackedEntityInstanceUid);
+
+        TrackedEntityInstance remoteTrackedEntityInstance =
+                dhisApi.getTrackedEntityInstance(trackedEntityInstanceUid,
+                        map);
+
+        List<Relationship> remoteRelationships = remoteTrackedEntityInstance.getRelationships();
+
+        ResourceController.overwriteRelationsFromServer(remoteRelationships, localRelationships);
+
+        if (remoteRelationships.size() == 0) {
+            Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
+            return;
+        }
+
+        List<String> notSavedTrackedEntityInstanceUIds = getNotSavedTrackedEntityInstancesUIds(
+                trackedEntityInstanceUid, remoteRelationships);
+
+        if (notSavedTrackedEntityInstanceUIds.size() > 0) {
+            for (String notSavedTrackedEntityInstanceUid : notSavedTrackedEntityInstanceUIds) {
+                remoteTrackedEntityInstance = queryTrackedEntityInstanceDataFromServer(dhisApi,
+                        notSavedTrackedEntityInstanceUid);
+                if (remoteTrackedEntityInstance != null) {
+                    DateTime serverDateTime = dhisApi.getSystemInfo()
+                            .getServerDate();
+                    TrackerDataLoader.getTrackedEntityInstanceDataFromServer(
+                            dhisApi, remoteTrackedEntityInstance.getUid(), true, false,
+                            serverDateTime);
+                }
+            }
+        }
+
+        Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
+    }
+
+    private static List<String> getNotSavedTrackedEntityInstancesUIds(
+            String trackedEntityInstanceUid,
+            List<Relationship> remoteRelationships) {
+        List<String> notSavedTrackedEntityInstances = new ArrayList<>();
+        for (Relationship remoteRelationship : remoteRelationships) {
+            String remoteTrackedEntityInstanceA = remoteRelationship.getTrackedEntityInstanceA();
+            String remoteTrackedEntityInstanceB = remoteRelationship.getTrackedEntityInstanceB();
+            if (!remoteTrackedEntityInstanceA.equals(trackedEntityInstanceUid)) {
+                addNotSavedUids(notSavedTrackedEntityInstances, remoteTrackedEntityInstanceA);
+            } else {
+                addNotSavedUids(notSavedTrackedEntityInstances, remoteTrackedEntityInstanceB);
+            }
+        }
+        return notSavedTrackedEntityInstances;
+    }
+
+    private static void addNotSavedUids(List<String> notSavedTrackedEntityInstances,
+            String trackedEntityInstance) {
+        if (TrackerController.getTrackedEntityInstanceByUid(trackedEntityInstance)
+                == null) {
+            notSavedTrackedEntityInstances.add(trackedEntityInstance);
+        }
     }
 }

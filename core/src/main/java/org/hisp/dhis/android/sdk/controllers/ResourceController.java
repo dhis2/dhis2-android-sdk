@@ -32,6 +32,7 @@ package org.hisp.dhis.android.sdk.controllers;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.models.BaseIdentifiableObject;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
+import org.hisp.dhis.android.sdk.persistence.models.Relationship;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.meta.DbOperation;
@@ -150,4 +151,19 @@ public abstract class ResourceController {
         }
         DbUtils.applyBatch(operations);
     }
+
+    public static void overwriteRelationsFromServer(List<Relationship> updatedItems,
+            List<Relationship> persistedItems) {
+        Queue<DbOperation> operations = new LinkedList<>();
+        //remove old values
+        for(Relationship relationship:persistedItems) {
+            operations.add(DbOperation.delete(relationship));
+        }
+        //save new values
+        for(Relationship relationship:updatedItems) {
+            operations.add(DbOperation.save(relationship));
+        }
+        DbUtils.applyBatch(operations);
+    }
+
 }

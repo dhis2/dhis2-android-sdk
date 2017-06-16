@@ -112,7 +112,7 @@ public class ProgramStageHandlerTests {
         );
 
         verify(programStageDataElementHandler, times(1)).handleProgramStageDataElements(
-                anyString(), anyListOf(ProgramStageDataElement.class)
+                anyListOf(ProgramStageDataElement.class)
         );
 
     }
@@ -151,7 +151,7 @@ public class ProgramStageHandlerTests {
         );
 
         verify(programStageDataElementHandler, times(2)).handleProgramStageDataElements(
-                anyString(), anyListOf(ProgramStageDataElement.class)
+                anyListOf(ProgramStageDataElement.class)
         );
 
     }
@@ -187,7 +187,7 @@ public class ProgramStageHandlerTests {
         );
 
         verify(programStageDataElementHandler, times(1)).handleProgramStageDataElements(
-                anyString(), anyListOf(ProgramStageDataElement.class)
+                anyListOf(ProgramStageDataElement.class)
         );
 
     }
@@ -213,7 +213,7 @@ public class ProgramStageHandlerTests {
                 anyString(), anyListOf(ProgramStageSection.class)
         );
 
-        verify(programStageDataElementHandler, never()).handleProgramStageDataElements(anyString(),
+        verify(programStageDataElementHandler, never()).handleProgramStageDataElements(
                 anyListOf(ProgramStageDataElement.class)
         );
 
@@ -240,7 +240,7 @@ public class ProgramStageHandlerTests {
                 anyString(), anyListOf(ProgramStageSection.class)
         );
 
-        verify(programStageDataElementHandler, never()).handleProgramStageDataElements(anyString(),
+        verify(programStageDataElementHandler, never()).handleProgramStageDataElements(
                 anyListOf(ProgramStageDataElement.class)
         );
 
@@ -267,7 +267,7 @@ public class ProgramStageHandlerTests {
                 anyString(), anyListOf(ProgramStageSection.class)
         );
 
-        verify(programStageDataElementHandler, never()).handleProgramStageDataElements(anyString(),
+        verify(programStageDataElementHandler, never()).handleProgramStageDataElements(
                 anyListOf(ProgramStageDataElement.class)
         );
     }

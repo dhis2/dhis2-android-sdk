@@ -64,7 +64,7 @@ public class FontRadioButton extends AppCompatRadioButton {
         }
     }
 
-    private void setFont(final String fontName) {
+    public void setFont(final String fontName) {
         if (getContext() != null && getContext().getAssets() != null && fontName != null) {
             Typeface typeface = TypefaceManager.getTypeface(getContext().getAssets(), fontName);
             if (typeface != null) {

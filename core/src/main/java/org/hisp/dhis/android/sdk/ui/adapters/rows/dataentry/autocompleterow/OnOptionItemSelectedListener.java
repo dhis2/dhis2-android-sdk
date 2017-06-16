@@ -23,6 +23,6 @@ class OnOptionItemSelectedListener implements AutoCompleteOnOptionSelectedListen
     public void onOptionSelected(int dialogId, int position, String id, String name) {
         valueTextView.setText(name);
         Dhis2Application.getEventBus()
-                .post(new RowValueChangedEvent(value, DataEntryRowTypes.AUTO_COMPLETE.toString()));
+                .post(new RowValueChangedEvent(value, DataEntryRowTypes.OPTION_SET.toString()));
     }
 }

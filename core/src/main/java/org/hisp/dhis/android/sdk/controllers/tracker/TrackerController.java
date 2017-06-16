@@ -44,8 +44,10 @@ import org.hisp.dhis.android.sdk.controllers.ResourceController;
 import org.hisp.dhis.android.sdk.controllers.SyncStrategy;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
+import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
+import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
@@ -241,7 +243,9 @@ public final class TrackerController extends ResourceController {
             throws APIException {
         UiUtils.postProgressMessage(context.getString(R.string.synchronize_deleted_data), LoadingMessageEvent.EventType.REMOVE_DATA);
         TrackerDataLoader.deleteRemotelyDeletedData(context, dhisApi);
+        Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
         UiUtils.postProgressMessage("",LoadingMessageEvent.EventType.FINISH);
+
     }
 
     /**

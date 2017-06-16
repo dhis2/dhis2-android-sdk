@@ -156,7 +156,7 @@ public abstract class ResourceController {
         DbUtils.applyBatch(operations);
     }
 
-    public static void removetrackedEntities(List<TrackedEntityInstance> list) {
+    public static void removeTrackedEntityInstances(List<TrackedEntityInstance> list) {
         Queue<DbOperation> operations = new LinkedList<>();
         operations.addAll(DbUtils.removeResources(list));
         for (TrackedEntityInstance trackedEntityInstance : list) {

@@ -290,6 +290,9 @@ public interface DhisApi {
     @GET("/"+ApiEndpointContainer.ENROLLMENTS+"?skipPaging=true&ouMode=ACCESSIBLE")
     Map<String, List<Enrollment>> getEnrollments(@Query("trackedEntityInstance") String trackedEntityInstanceUid, @QueryMap Map<String, String> queryMap);
 
+    @GET("/"+ApiEndpointContainer.ENROLLMENTS+"?skipPaging=true&ouMode=ACCESSIBLE")
+    Map<String, List<Enrollment>> getEnrollmentsByOrgUnit(@Query("orgUnit") String organisationUnitUid, @QueryMap Map<String, String> queryMap);
+
     @POST("/"+ApiEndpointContainer.ENROLLMENTS+"/")
     Response postEnrollment(@Body Enrollment enrollment);
 

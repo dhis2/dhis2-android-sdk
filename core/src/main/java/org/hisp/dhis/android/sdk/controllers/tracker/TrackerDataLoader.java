@@ -67,11 +67,9 @@ import org.hisp.dhis.android.sdk.utils.DbUtils;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 import org.hisp.dhis.android.sdk.utils.Utils;
 import org.hisp.dhis.android.sdk.utils.api.ProgramType;
-import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -267,7 +265,6 @@ final class TrackerDataLoader extends ResourceController {
                 }
             }
         }
-
         deleteRemotelyDeletedRelationships(context, dhisApi, myProgramsByOrganisationUnit);
     }
 
@@ -293,8 +290,7 @@ final class TrackerDataLoader extends ResourceController {
                             localTrackedEntityInstances) {
                         if (trackedEntityInstance.getRelationships() != null
                                 && trackedEntityInstance.getRelationships().size() > 0) {
-                            deleteRemotelyDeletedRelationships(dhisApi,
-                                    trackedEntityInstance);
+                            refreshRelationshipsByTrackedEntityInstance(dhisApi, trackedEntityInstance.getUid());
                         }
                     }
                 } catch (APIException e) {
@@ -306,41 +302,6 @@ final class TrackerDataLoader extends ResourceController {
                 }
             }
         }
-    }
-
-    private static void deleteRemotelyDeletedRelationships(DhisApi dhisApi,
-            TrackedEntityInstance trackedEntityInstanceParent) {
-        Log.d(CLASS_TAG, "deleteRemotelyDeletedRelationships");
-        final Map<String, String> map = new HashMap<>();
-        map.put("fields", "relationships[relationship]");
-
-        List<Relationship> localRelationships = trackedEntityInstanceParent.getRelationships();
-        if (localRelationships.size() == 0) {
-            return;
-        }
-
-        TrackedEntityInstance trackedEntityInstance =
-                dhisApi.getTrackedEntityInstance(trackedEntityInstanceParent.getUid(),
-                        map);
-
-        List<Relationship> remoteRelationships = trackedEntityInstance.getRelationships();
-
-        List<Relationship> localRelationshipsToBeRemoved = new ArrayList<>();
-
-        for (Relationship relationship : localRelationships) {
-            boolean isRemoved = true;
-            for (Relationship remoteRelationship : remoteRelationships) {
-                if (remoteRelationship.getRelationship().equals(relationship.getRelationship())) {
-                    isRemoved = false;
-                    break;
-                }
-            }
-            if (isRemoved) {
-                localRelationshipsToBeRemoved.add(relationship);
-            }
-        }
-
-        ResourceController.removetrackedRelationships(localRelationshipsToBeRemoved);
     }
 
     @NonNull
@@ -401,21 +362,21 @@ final class TrackerDataLoader extends ResourceController {
             ArrayList<Enrollment> enrollments) {
         Log.d(CLASS_TAG, "getTrackedEntityInstances");
         final Map<String, String> map = new HashMap<>();
-        map.put("fields", "trackedEntityInstance[!attributes]");
+        map.put("fields", "enrollment");
         map.put("trackedEntity", trackedEntityUid);
 
-        List<Enrollment> localEnrollmentToBeRemoved = new ArrayList<>();
         if (enrollments.size() == 0) {
             return;
         }
 
         List<Enrollment> remoteEnrollments = new ArrayList<>();
-        Map<String, List<Enrollment>> enrollmentList = dhisApi.getEnrollments(organisationUnitUid,
+        Map<String, List<Enrollment>> enrollmentList = dhisApi.getEnrollmentsByOrgUnit(organisationUnitUid,
                 map);
         for (String enrollmentKey : enrollmentList.keySet()) {
             remoteEnrollments.addAll(
                     enrollmentList.get(enrollmentKey));
         }
+        List<Enrollment> localEnrollmentToBeRemoved = new ArrayList<>();
         for (Enrollment enrollment : enrollments) {
             boolean isRemoved = true;
             for (Enrollment remoteEnrollment : remoteEnrollments) {
@@ -437,11 +398,9 @@ final class TrackerDataLoader extends ResourceController {
             List<TrackedEntityInstance> localTrackedEntityInstances) {
         Log.d(CLASS_TAG, "getTrackedEntityInstances");
         final Map<String, String> map = new HashMap<>();
-        map.put("fields", "trackedEntityInstance[!attributes]");
+        map.put("fields", "trackedEntityInstance,[attributes]");
         map.put("trackedEntity", trackedEntityUid);
 
-        List<TrackedEntityInstance> localTrackedEntityInstancesToBeRemoved =
-                new ArrayList<>();
         if (localTrackedEntityInstances.size() == 0) {
             return;
         }
@@ -454,12 +413,16 @@ final class TrackerDataLoader extends ResourceController {
             remoteTrackedEntityInstances.addAll(
                     trackedEntityInstancesList.get(trackedEntityInstanceKey));
         }
+        List<TrackedEntityInstance> localTrackedEntityInstancesToBeRemoved =
+                new ArrayList<>();
         for (TrackedEntityInstance trackedEntityInstance : localTrackedEntityInstances) {
             boolean isRemoved = true;
             for (TrackedEntityInstance remoteTrackedEntityInstance : remoteTrackedEntityInstances) {
                 if (remoteTrackedEntityInstance.getUid().equals(trackedEntityInstance.getUid())) {
-                    isRemoved = false;
-                    break;
+                    if(remoteTrackedEntityInstance.getAttributes().size()>1) {
+                        isRemoved = false;
+                        break;
+                    }
                 }
             }
             if (isRemoved) {
@@ -467,7 +430,7 @@ final class TrackerDataLoader extends ResourceController {
             }
         }
 
-        ResourceController.removetrackedEntities(localTrackedEntityInstancesToBeRemoved);
+        ResourceController.removeTrackedEntityInstances(localTrackedEntityInstancesToBeRemoved);
     }
 
     static void deleteRemotelyDeletedEvents(DhisApi dhisApi, String organisationUnitUid,
@@ -479,7 +442,6 @@ final class TrackerDataLoader extends ResourceController {
 
         List<Event> localEvents = TrackerController.getAllEvents(organisationUnitUid, programUid,
                 true);
-        List<Event> eventsToBeRemoved = new ArrayList<>();
         if (localEvents.size() == 0) {
             return;
         }
@@ -488,6 +450,7 @@ final class TrackerDataLoader extends ResourceController {
                 map);
 
         List<Event> remoteEvents = EventsWrapper.getEvents(response);
+        List<Event> eventsToBeRemoved = new ArrayList<>();
         for (Event localEvent : localEvents) {
             boolean isRemoved = true;
             for (Event remoteEvent : remoteEvents) {
@@ -943,8 +906,6 @@ final class TrackerDataLoader extends ResourceController {
                 }
             }
         }
-
-        Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
     }
 
     private static List<String> getNotSavedTrackedEntityInstancesUIds(

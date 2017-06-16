@@ -627,4 +627,13 @@ public final class TrackerController extends ResourceController {
     public static void refreshRelationsByTrackedEntity(DhisApi dhisApi, String trackedEntityInstance) {
         TrackerDataLoader.refreshRelationshipsByTrackedEntityInstance(dhisApi, trackedEntityInstance);
     }
+
+    public static void updateTrackedEntityInstances(DhisApi dhisApi,
+            List<TrackedEntityInstance> trackedEntityInstances, DateTime serverDateTime) {
+        for(TrackedEntityInstance trackedEntityInstance:trackedEntityInstances) {
+            TrackerDataLoader.getTrackedEntityInstanceDataFromServer(
+                    dhisApi, trackedEntityInstance.getUid(), true, true,
+                    serverDateTime);
+        }
+    }
 }

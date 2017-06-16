@@ -217,6 +217,21 @@ public final class TrackerController extends ResourceController {
                 .orderBy(false, Event$Table.LASTUPDATED).queryList();
         return events;
     }
+    /**
+     * Returns a list of events for a given org unit and from server
+     */
+    public static List<Event> getAllEvents(String organisationUnitId, String programId,
+            boolean isFromServer) {
+        List<Event> events = new Select().from(Event.class)
+                .join(FailedItem.class, Join.JoinType.LEFT)
+                .on(Condition.column(FailedItem$Table.ITEMID).eq(Event$Table.LOCALID)).where(Condition.column
+                (Event$Table.ORGANISATIONUNITID).is(organisationUnitId)).
+                and(Condition.column(Event$Table.PROGRAMID).is(programId))
+                .and(Condition.column(Event$Table.FROMSERVER).is(isFromServer))
+                .or(Condition.column(FailedItem$Table.ITEMTYPE).is("Event"))
+                .orderBy(false, Event$Table.LASTUPDATED).queryList();
+        return events;
+    }
 
     /**
      * Loads datavalues from the server and stores it in local persistence.

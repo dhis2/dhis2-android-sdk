@@ -1043,8 +1043,4 @@ public final class MetaDataController extends ResourceController {
 
         return programsForOrganisationUnits;
     }
-
-    public static List<Event> getAllEvents() {
-        return new Select().from(Event.class).queryList();
-    }
 }

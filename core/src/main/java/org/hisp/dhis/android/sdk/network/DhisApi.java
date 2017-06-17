@@ -256,18 +256,18 @@ public interface DhisApi {
     // Methods for working with Tracker Data Values
     /////////////////////////////////////////////////////////////////////////
     @GET("/" + ApiEndpointContainer.EVENTS + "?page=0")
-    JsonNode getEvents(@Query("program") String programUid,
+    List<Event> getEvents(@Query("program") String programUid,
             @Query("orgUnit") String organisationUnitUid,
             @Query("pageSize") int eventLimit,
             @QueryMap Map<String, String> queryParams);
 
     @GET("/" + ApiEndpointContainer.EVENTS + "?skipPaging=true")
-    JsonNode getEvents(@Query("program") String programUid,
+    List<Event> getEvents(@Query("program") String programUid,
             @Query("orgUnit") String organisationUnitUid,
             @QueryMap Map<String, String> queryParams);
 
     @GET("/" + ApiEndpointContainer.EVENTS + "?skipPaging=true&ouMode=ACCESSIBLE&")
-    JsonNode getEventsForTrackedEntityInstance(@Query("program") String programUid,
+    List<Event> getEventsForTrackedEntityInstance(@Query("program") String programUid,
                                                               @QueryMap Map<String, String> queryParams);
 
     @GET("/" + ApiEndpointContainer.EVENTS + "?skipPaging=true&ouMode=ACCESSIBLE")

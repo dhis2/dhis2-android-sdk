@@ -186,11 +186,14 @@ final class TrackerDataLoader extends ResourceController {
                 for (Enrollment enrollment : enrollmentsForProgram) {
                     sb.append(enrollment.getTrackedEntityInstance() + delimiter);
                 }
-                QUERY_MAP_FULL.put(trackedEntityInstanceQueryParams, sb.toString().substring(0,sb.length()-1));
+                QUERY_MAP_FULL.put(trackedEntityInstanceQueryParams, sb.toString());
                 try {
-                    List<Event> eventsForTrackedEntityInstance = EventsWrapper.getEvents(dhisApi.getEventsForTrackedEntityInstance(programUid, QUERY_MAP_FULL));
+                    List<Event> eventsForTrackedEntityInstance =
+                            dhisApi.getEventsForTrackedEntityInstance(programUid, QUERY_MAP_FULL);
                     if (eventsForTrackedEntityInstance != null) {
-                        eventsFromServer.addAll(eventsForTrackedEntityInstance);
+                        eventsFromServer.addAll(
+                                dhisApi.getEventsForTrackedEntityInstance(programUid,
+                                        QUERY_MAP_FULL));
                     }
                 } catch (APIException apiException) {
                     apiException.printStackTrace();
@@ -337,9 +340,8 @@ final class TrackerDataLoader extends ResourceController {
         if (lastUpdated != null) {
             map.put("lastUpdated", lastUpdated.toString());
         }
-        JsonNode response = dhisApi.getEvents(programUid, organisationUnitUid, 50,
+        List<Event> events = dhisApi.getEvents(programUid, organisationUnitUid, 50,
                 map);
-        List<Event> events = EventsWrapper.getEvents(response);
         saveResourceDataFromServer(ResourceType.EVENTS, organisationUnitUid + programUid, dhisApi,
                 events, null, serverDateTime);
     }

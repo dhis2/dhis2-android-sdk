@@ -82,13 +82,13 @@
                             android:id="@+id/settings_sync_button"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
+                            android:layout_below="@+id/settings_update_frequency_spinner"
+                            android:layout_gravity="center_horizontal"
                             android:background="@drawable/settings_button_selector"
                             android:singleLine="true"
                             android:text="@string/synchronize_with_server"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/medium_text_size"
-                            android:layout_below="@+id/settings_update_frequency_spinner"
-                            android:layout_gravity="center_horizontal"
+                            android:textSize="@dimen/small_text_size"
                             app:font="@string/medium_font_name" />
 
                     </LinearLayout>
@@ -107,13 +107,13 @@
                             android:id="@+id/settings_sync_remotely_deleted_events_button"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
+                            android:layout_below="@+id/settings_sync_wrap_layout"
+                            android:layout_gravity="center_horizontal"
                             android:background="@drawable/settings_button_selector"
                             android:singleLine="true"
                             android:text="@string/synchronize_deleted_data"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/medium_text_size"
-                            android:layout_below="@+id/settings_sync_wrap_layout"
-                            android:layout_gravity="center_horizontal"
+                            android:textSize="@dimen/small_text_size"
                             app:font="@string/medium_font_name" />
 
                     </LinearLayout>
@@ -176,12 +176,13 @@
                             android:padding="6dp"
                             android:text="@string/export_data_name"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/medium_text_size"
+                            android:textSize="@dimen/small_text_size"
                             android:visibility="invisible"
                             app:font="@string/medium_font_name" />
                     </LinearLayout>
                 </LinearLayout>
             </ScrollView>
+
             <org.hisp.dhis.android.sdk.ui.views.FontButton
                 android:id="@id/settings_logout_button"
                 android:layout_width="match_parent"
@@ -193,7 +194,7 @@
                 android:singleLine="true"
                 android:text="@string/logout"
                 android:textColor="@color/white"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/small_text_size"
                 app:font="@string/medium_font_name" />
         </RelativeLayout>
 

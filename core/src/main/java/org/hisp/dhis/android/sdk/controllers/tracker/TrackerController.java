@@ -220,7 +220,7 @@ public final class TrackerController extends ResourceController {
     /**
      * Returns a list of events for a given org unit and from server
      */
-    public static List<Event> getAllEvents(String organisationUnitId, String programId,
+    public static List<Event> getAllConflictingAndNotConflictingEvents(String organisationUnitId, String programId,
             boolean isFromServer) {
         List<Event> events = new Select().from(Event.class)
                 .join(FailedItem.class, Join.JoinType.LEFT)

@@ -47,10 +47,10 @@
         android:id="@+id/current_tei_relationship_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/medium_text_size"
+        android:textSize="@dimen/small_text_size"
         app:font="@string/regular_font_name" />
     <org.hisp.dhis.android.sdk.ui.views.FontTextView
-        android:textSize="@dimen/medium_text_size"
+        android:textSize="@dimen/small_text_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/of"
@@ -58,7 +58,7 @@
         android:layout_marginRight="5dp"
         app:font="@string/regular_font_name" />
     <org.hisp.dhis.android.sdk.ui.views.FontTextView
-        android:textSize="@dimen/medium_text_size"
+        android:textSize="@dimen/small_text_size"
         android:id="@+id/relative_relationship_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

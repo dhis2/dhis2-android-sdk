@@ -410,7 +410,7 @@ final class TrackerDataLoader extends ResourceController {
             }
         }
 
-        ResourceController.removetrackedEnrollments(localEnrollmentToBeRemoved);
+        ResourceController.removeTrackedEntityEnrollments(localEnrollmentToBeRemoved);
     }
 
     private static void deleteRemotelyDeletedTrackedEntityInstances(DhisApi dhisApi,

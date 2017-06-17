@@ -32,7 +32,6 @@ package org.hisp.dhis.android.sdk.controllers;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.models.BaseIdentifiableObject;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
-import org.hisp.dhis.android.sdk.persistence.models.Relationship;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
@@ -142,13 +141,13 @@ public abstract class ResourceController {
         return map;
     }
 
-    public static void removetrackedEnrollments(List<Enrollment> list) {
+    public static void removeTrackedEntityEnrollments(List<Enrollment> list) {
         Queue<DbOperation> operations = new LinkedList<>();
         operations.addAll(DbUtils.removeResources(list));
         DbUtils.applyBatch(operations);
     }
 
-    public static void removetrackedRelationships(List<Relationship> list) {
+    public static void removeTrackedEntityRelationships(List<Relationship> list) {
         Queue<DbOperation> operations = new LinkedList<>();
         for(Relationship relationship: list) {
             operations.add(DbOperation.delete(relationship));

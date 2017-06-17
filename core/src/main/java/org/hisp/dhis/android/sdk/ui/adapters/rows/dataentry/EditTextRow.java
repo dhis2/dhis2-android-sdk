@@ -67,7 +67,8 @@ public class EditTextRow extends Row {
                 !DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE.equals(rowType) &&
                 !DataEntryRowTypes.PHONE_NUMBER.equals(rowType) &&
                 !DataEntryRowTypes.PERCENTAGE.equals(rowType) &&
-                !DataEntryRowTypes.INTEGER_POSITIVE.equals(rowType)) {
+                !DataEntryRowTypes.INTEGER_POSITIVE.equals(rowType) &&
+                !DataEntryRowTypes.INVALID_DATA_ENTRY.equals(rowType)) {
             throw new IllegalArgumentException("Unsupported row type");
         }
         checkNeedsForDescriptionButton();
@@ -139,6 +140,10 @@ public class EditTextRow extends Row {
                 editText.setInputType(InputType.TYPE_CLASS_PHONE);
                 editText.setHint(R.string.enter_phone_number);
                 editText.setSingleLine(true);
+            } else if (DataEntryRowTypes.INVALID_DATA_ENTRY.equals(mRowType)) {
+                editText.setHint(R.string.invalid_entry_type);
+                editText.setEnabled(false);
+                editText.setFocusable(false);
             }
 
             OnTextChangeListener listener = new OnTextChangeListener();

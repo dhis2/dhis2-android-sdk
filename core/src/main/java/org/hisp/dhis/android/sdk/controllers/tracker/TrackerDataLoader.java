@@ -116,12 +116,12 @@ final class TrackerDataLoader extends ResourceController {
                 }
 
                 List<Program> programsForOrgUnit = new ArrayList<>();
-                List<Program> programsForOrgUnitSEWoR =
+                List<Program> programsForOrgUnitFromDB =
                         MetaDataController.getProgramsForOrganisationUnit
                                 (organisationUnit.getId(),
-                                        ProgramType.WITHOUT_REGISTRATION);
-                if (programsForOrgUnitSEWoR != null) {
-                    programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
+                                        ProgramType.WITHOUT_REGISTRATION, ProgramType.WITH_REGISTRATION);
+                if (programsForOrgUnitFromDB != null) {
+                    programsForOrgUnit.addAll(programsForOrgUnitFromDB);
                 }
 
                 programsForOrganisationUnits.put(organisationUnit.getId(), programsForOrgUnit);

@@ -39,9 +39,7 @@ import android.widget.Filterable;
 import android.widget.LinearLayout;
 
 import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.ui.views.FontTextView;
@@ -54,7 +52,8 @@ import java.util.List;
 import java.util.Map;
 
 
-public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter implements Filterable {
+public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter implements
+        Filterable {
     /**
      * Lock used to modify the content of {@link #mObjects}. Any write operation
      * performed on the array should be synchronized on this lock. This lock is also
@@ -74,11 +73,13 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
     // the mFilter ArrayFilter is used. mObjects will then only contain the filtered values.
     private ArrayList<TrackedEntityInstance> mOriginalValues;
     private ArrayFilter mFilter;
-    private Map<String,ProgramTrackedEntityAttribute> programTrackedEntityAttributeMap;
+    private Map<String, ProgramTrackedEntityAttribute> programTrackedEntityAttributeMap;
 
     private final LayoutInflater mInflater;
 
-    public QueryTrackedEntityInstancesResultDialogAdapter(LayoutInflater inflater, List<TrackedEntityInstance> selectedTrackedEntityInstances, Map<String,ProgramTrackedEntityAttribute> programTrackedEntityAttributeMap) {
+    public QueryTrackedEntityInstancesResultDialogAdapter(LayoutInflater inflater,
+            List<TrackedEntityInstance> selectedTrackedEntityInstances,
+            Map<String, ProgramTrackedEntityAttribute> programTrackedEntityAttributeMap) {
         mInflater = inflater;
         mObjects = new ArrayList<>();
         this.selectedTrackedEntityInstances = selectedTrackedEntityInstances;
@@ -94,7 +95,7 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
      */
     @Override
     public int getCount() {
-        if(mObjects==null) {
+        if (mObjects == null) {
             return 0;
         }
         return mObjects.size();
@@ -136,26 +137,17 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
         View view;
         ViewHolder holder;
         TrackedEntityInstance trackedEntityInstance = mObjects.get(position);
+
+        List<TrackedEntityAttributeValue> trackedEntityAttributesByProgram =
+                getTrackedEntityAttributesByProgram(
+                trackedEntityInstance.getAttributes(),
+                programTrackedEntityAttributeMap);
+
         if (convertView == null) {
             view = mInflater.inflate(
                     R.layout.dialog_fragment_listview_item_teiqueryresult, parent, false);
 
-            List<FontTextView> labelViews = new ArrayList<>();
-            List<FontTextView> valueViews = new ArrayList<>();
-            if(trackedEntityInstance!=null && trackedEntityInstance.getAttributes()!=null) {
-                for (int i = 0; i < trackedEntityInstance.getAttributes().size(); i++) {
-                    LinearLayout textViewLayout = (LinearLayout) mInflater.inflate(R.layout.two_horizontal_textviews, parent, false);
-                    FontTextView labelTextView = (FontTextView) textViewLayout.findViewById(R.id.left_textview);
-                    FontTextView valueTextView = (FontTextView) textViewLayout.findViewById(R.id.right_textview);
-
-                    LinearLayout ll = (LinearLayout) view.findViewById(R.id.textviewcontainer);
-                    ll.addView(textViewLayout);
-                    labelViews.add(labelTextView);
-                    valueViews.add(valueTextView);
-                }
-            }
-
-            holder = new ViewHolder(labelViews, valueViews);
+            holder = new ViewHolder(view, mInflater);
             view.setTag(holder);
         } else {
             view = convertView;
@@ -164,50 +156,84 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
             holder = (ViewHolder) view.getTag();
         }
 
-        if(trackedEntityInstance!=null) {
-            holder.setData(trackedEntityInstance.getAttributes(), programTrackedEntityAttributeMap);
+        if (trackedEntityInstance != null) {
+            holder.setData(trackedEntityAttributesByProgram, programTrackedEntityAttributeMap);
         }
         view.setId(position);
         return view;
     }
 
-    private static class ViewHolder {
-        final List<FontTextView> labelViews;
-        final List<FontTextView> valueViews;
+    private List<TrackedEntityAttributeValue> getTrackedEntityAttributesByProgram(
+            List<TrackedEntityAttributeValue> attributes,
+            Map<String, ProgramTrackedEntityAttribute> programTrackedEntityAttributeMap) {
 
-        private ViewHolder(List<FontTextView> labelViews, List<FontTextView> valueViews) {
-            this.labelViews = labelViews;
-            this.valueViews = valueViews;
+        List<TrackedEntityAttributeValue> attributesByProgram = new ArrayList<>();
+
+
+        for (int i = 0; i < attributes.size(); i++) {
+            TrackedEntityAttributeValue attributeValue = attributes.get(i);
+
+            if (programTrackedEntityAttributeMap.containsKey(
+                    attributeValue.getTrackedEntityAttributeId())) {
+                attributesByProgram.add(attributeValue);
+            }
+        }
+
+        return attributesByProgram;
+    }
+
+    private static class ViewHolder {
+        LinearLayout attributeContainer;
+        LayoutInflater mInflater;
+
+        private ViewHolder(View view, LayoutInflater inflater) {
+            mInflater = inflater;
+            attributeContainer = (LinearLayout) view.findViewById(R.id.textviewcontainer);
         }
 
         /**
          * Sets the values of a given TrackedEntityAttributeValue list into the set textviews
-         * @param values
          */
-        public void setData(List<TrackedEntityAttributeValue> values, Map<String,ProgramTrackedEntityAttribute> programTrackedEntityAttributeMap) {
-            for(FontTextView fontTextView: labelViews) {
-                fontTextView.setText("");
-            }
-            for(FontTextView fontTextView: valueViews) {
-                fontTextView.setText("");
-            }
+        public void setData(List<TrackedEntityAttributeValue> values,
+                Map<String, ProgramTrackedEntityAttribute> programTrackedEntityAttributeMap) {
 
-            if(values!=null) {
-                //sort teav by programtrackedentityattributes
-                Comparator<TrackedEntityAttributeValue> trackedEntityAttributeValueComparator = new TrackedEntityAttributeValueByIndexInProgramSorter(programTrackedEntityAttributeMap);
+            attributeContainer.removeAllViews();
+
+            if (values != null) {
+
+                Comparator<TrackedEntityAttributeValue> trackedEntityAttributeValueComparator =
+                        new TrackedEntityAttributeValueByIndexInProgramSorter(
+                                programTrackedEntityAttributeMap);
                 Collections.sort(values, trackedEntityAttributeValueComparator);
-                for (int i = 0; i < values.size() && i < labelViews.size(); i++) {
-                    TrackedEntityAttributeValue teav = values.get(i);
-                    if(teav != null) {
-                        if(programTrackedEntityAttributeMap.containsKey(teav.getTrackedEntityAttributeId())) {
-                            ProgramTrackedEntityAttribute ptea = programTrackedEntityAttributeMap.get(teav.getTrackedEntityAttributeId());
+
+                for (int i = 0; i < values.size(); i++) {
+                    TrackedEntityAttributeValue trackedEntityAttributeValue = values.get(i);
+                    if (programTrackedEntityAttributeMap.containsKey(
+                            trackedEntityAttributeValue.getTrackedEntityAttributeId())) {
+                        if (trackedEntityAttributeValue != null ) {
+                            ProgramTrackedEntityAttribute programTrackedEntityAttribute =
+                                    programTrackedEntityAttributeMap.get(
+                                            trackedEntityAttributeValue.getTrackedEntityAttributeId());
 
                             StringBuilder builder = new StringBuilder();
-                            builder.append(ptea.getTrackedEntityAttribute().getDisplayName());
-                            builder.append(labelViews.get(i).getContext().getString(R.string.delimiter));
+                            builder.append(programTrackedEntityAttribute.getTrackedEntityAttribute().getDisplayName());
+                            builder.append(attributeContainer.getContext().getString(
+                                    R.string.delimiter));
 
-                            labelViews.get(i).setText(builder.toString());
-                            valueViews.get(i).setText(teav.getValue());
+                            LinearLayout attributeLayout = (LinearLayout) mInflater.inflate(
+                                    R.layout.two_horizontal_textviews, attributeContainer, false);
+
+                            FontTextView labelTextView = (FontTextView) attributeLayout.findViewById(
+                                    R.id.left_textview);
+                            labelTextView.setText(builder.toString());
+
+                            FontTextView valueTextView = (FontTextView) attributeLayout.findViewById(
+                                    R.id.right_textview);
+
+                            valueTextView.setText(trackedEntityAttributeValue.getValue());
+
+                            attributeContainer.addView(attributeLayout);
+
                         }
                     }
                 }
@@ -262,9 +288,10 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
 
                 for (int i = 0; i < count; i++) {
                     final TrackedEntityInstance trackedEntityInstanceValue = values.get(i);
-                    for(TrackedEntityAttributeValue attrValue: trackedEntityInstanceValue.getAttributes()) {
+                    for (TrackedEntityAttributeValue attrValue : trackedEntityInstanceValue
+                            .getAttributes()) {
                         final String value = attrValue.getValue();
-                        if(value == null) {
+                        if (value == null) {
                             break;
                         }
                         final String valueText = value.toLowerCase();

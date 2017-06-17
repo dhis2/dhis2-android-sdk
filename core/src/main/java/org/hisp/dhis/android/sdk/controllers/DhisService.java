@@ -179,7 +179,7 @@ public final class DhisService extends Service {
         });
     }
 
-    public static void synchronizeRemotelyDeletedEvents(final Context context) {
+    public static void synchronizeRemotelyDeletedData(final Context context) {
         JobExecutor.enqueueJob(new NetworkJob<Object>(0,
                 null) {
             @Override

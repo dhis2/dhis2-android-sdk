@@ -111,6 +111,7 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGenera
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGroup;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance$Table;
 import org.hisp.dhis.android.sdk.persistence.models.User;
 import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
 import org.hisp.dhis.android.sdk.persistence.models.meta.DbOperation;
@@ -360,6 +361,11 @@ public final class MetaDataController extends ResourceController {
 
     public static List<TrackedEntityAttribute> getTrackedEntityAttributes() {
         return new Select().from(TrackedEntityAttribute.class).queryList();
+    }
+
+    public static List<TrackedEntityInstance> getTrackedEntityInstancesFromServer() {
+        return new Select().from(TrackedEntityInstance.class).where(Condition.column(
+                TrackedEntityInstance$Table.FROMSERVER).is(true)).queryList();
     }
 
     public static List<TrackedEntityAttributeGroup> getTrackedEntityAttributeGroups() {
@@ -1024,7 +1030,9 @@ public final class MetaDataController extends ResourceController {
 
             List<Program> programsForOrgUnit = new ArrayList<>();
             List<Program> programsForOrgUnitSEWoR = getProgramsForOrganisationUnit
-                    (organisationUnit.getId(), ProgramType.WITHOUT_REGISTRATION, ProgramType.WITH_REGISTRATION);
+                    (organisationUnit.getId(),
+                            ProgramType.WITHOUT_REGISTRATION,
+                            ProgramType.WITH_REGISTRATION);
 
             if (programsForOrgUnitSEWoR != null) {
                 programsForOrgUnit.addAll(programsForOrgUnitSEWoR);

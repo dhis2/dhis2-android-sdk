@@ -44,8 +44,10 @@ import org.hisp.dhis.android.sdk.controllers.ResourceController;
 import org.hisp.dhis.android.sdk.controllers.SyncStrategy;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
+import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
+import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
@@ -74,6 +76,7 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -217,14 +220,32 @@ public final class TrackerController extends ResourceController {
                 .orderBy(false, Event$Table.LASTUPDATED).queryList();
         return events;
     }
+    /**
+     * Returns a list of events for a given org unit and from server
+     */
+    public static List<Event> getAllConflictingAndNotConflictingEvents(String organisationUnitId, String programId,
+            boolean isFromServer) {
+        List<Event> events = new Select().from(Event.class)
+                .join(FailedItem.class, Join.JoinType.LEFT)
+                .on(Condition.column(FailedItem$Table.ITEMID).eq(Event$Table.LOCALID)).where(Condition.column
+                (Event$Table.ORGANISATIONUNITID).is(organisationUnitId)).
+                and(Condition.column(Event$Table.PROGRAMID).is(programId))
+                .and(Condition.column(Event$Table.FROMSERVER).is(isFromServer))
+                .or(Condition.column(FailedItem$Table.ITEMTYPE).is("Event"))
+                .orderBy(false, Event$Table.LASTUPDATED).queryList();
+        return events;
+    }
 
     /**
      * Loads datavalues from the server and stores it in local persistence.
      */
     public static void syncRemotelyDeletedData(Context context, DhisApi dhisApi)
             throws APIException {
-        UiUtils.postProgressMessage(context.getString(R.string.sync_deleted_events), LoadingMessageEvent.EventType.REMOVE_EVENTS);
-        TrackerDataLoader.deleteRemotelyDeletedEvents(context, dhisApi);
+        UiUtils.postProgressMessage(context.getString(R.string.synchronize_deleted_data), LoadingMessageEvent.EventType.REMOVE_DATA);
+        TrackerDataLoader.deleteRemotelyDeletedData(context, dhisApi);
+        Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
+        UiUtils.postProgressMessage("",LoadingMessageEvent.EventType.FINISH);
+
     }
 
     /**
@@ -334,6 +355,14 @@ public final class TrackerController extends ResourceController {
                 (Condition.column(TrackedEntityInstance$Table.LOCALID).is(localId)).querySingle();
     }
 
+    public static List<TrackedEntityInstance> getTrackedEntityInstances(String organisationUnitUId) {
+        return new Select().from(TrackedEntityInstance.class).where
+                (Condition.column(TrackedEntityInstance$Table.ORGUNIT).is(organisationUnitUId)).queryList();
+    }
+
+    public static List<TrackedEntityInstance> getTrackedEntityInstances() {
+        return new Select().from(TrackedEntityInstance.class).queryList();
+    }
     /*
    * Returns a list of tracked entity attribute values for an instance in a selected program
    * @param trackedEntityInstance
@@ -626,5 +655,14 @@ public final class TrackerController extends ResourceController {
 
     public static void refreshRelationsByTrackedEntity(DhisApi dhisApi, String trackedEntityInstance) {
         TrackerDataLoader.refreshRelationshipsByTrackedEntityInstance(dhisApi, trackedEntityInstance);
+    }
+
+    public static void updateTrackedEntityInstances(DhisApi dhisApi,
+            List<TrackedEntityInstance> trackedEntityInstances, DateTime serverDateTime) {
+        for(TrackedEntityInstance trackedEntityInstance:trackedEntityInstances) {
+            TrackerDataLoader.getTrackedEntityInstanceDataFromServer(
+                    dhisApi, trackedEntityInstance.getUid(), true, true,
+                    serverDateTime);
+        }
     }
 }

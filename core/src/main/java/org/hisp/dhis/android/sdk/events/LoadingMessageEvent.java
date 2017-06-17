@@ -44,5 +44,5 @@ public class LoadingMessageEvent {
         this.eventType = eventType;
     }
 
-    public enum EventType{ METADATA, DATA, REMOVE_EVENTS, STARTUP, FINISH}
+    public enum EventType{ METADATA, DATA, REMOVE_DATA,  STARTUP, FINISH}
 }

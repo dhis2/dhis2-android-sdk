@@ -252,6 +252,7 @@
     <string name="delimiter">:</string>
     <string name="enter_phone_number">Enter phone number</string>
     <string name="choose_filter">Choose filter</string>
+    <string name="invalid_entry_type">Value-type not supported</string>
 
     <string name="error_exporting_data">"Error metadata could not be exported."</string>
     <string name="developers_settings">Developers options</string>
@@ -259,6 +260,9 @@
     <string name="developer_option_key">developer optionkey</string>
     <string name="developer_option_title">"Show developer options"</string>
     <string name="sync_deleted_events">Synchronizing remotely deleted Events</string>
+    <string name="sync_deleted_tracked_entities">Synchronizing remotely deleted tracked entities</string>
+    <string name="sync_deleted_relations">Synchronizing remotely deleted tracked entity relations</string>
+    <string name="sync_deleted_enrollments">Synchronizing remotely deleted enrollments</string>
     <string name="synchronize_deleted_data">Synchronize remotely deleted data</string>
     <string name="synchronizing">Synchronizing...</string>
 

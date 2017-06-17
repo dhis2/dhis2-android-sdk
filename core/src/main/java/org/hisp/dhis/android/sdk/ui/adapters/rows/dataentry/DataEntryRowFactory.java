@@ -59,7 +59,8 @@ public class DataEntryRowFactory {
         } else if(valueType.equals(ValueType.COORDINATE)) {
             row = new DataValueCoordinatesRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.DATAVALUECOORDINATES);
         } else {
-            row = new EditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.LONG_TEXT);
+            row = new EditTextRow(trackedEntityAttributeName, mandatory, null, baseValue,
+                    DataEntryRowTypes.INVALID_DATA_ENTRY);
         }
         row.setEditable(editable);
         row.setShouldNeverBeEdited(shouldNeverBeEdited);

@@ -223,7 +223,7 @@ public final class TrackerController extends ResourceController {
     /**
      * Returns a list of events for a given org unit and from server
      */
-    public static List<Event> getAllEvents(String organisationUnitId, String programId,
+    public static List<Event> getAllConflictingAndNotConflictingEvents(String organisationUnitId, String programId,
             boolean isFromServer) {
         List<Event> events = new Select().from(Event.class)
                 .join(FailedItem.class, Join.JoinType.LEFT)
@@ -655,5 +655,14 @@ public final class TrackerController extends ResourceController {
 
     public static void refreshRelationsByTrackedEntity(DhisApi dhisApi, String trackedEntityInstance) {
         TrackerDataLoader.refreshRelationshipsByTrackedEntityInstance(dhisApi, trackedEntityInstance);
+    }
+
+    public static void updateTrackedEntityInstances(DhisApi dhisApi,
+            List<TrackedEntityInstance> trackedEntityInstances, DateTime serverDateTime) {
+        for(TrackedEntityInstance trackedEntityInstance:trackedEntityInstances) {
+            TrackerDataLoader.getTrackedEntityInstanceDataFromServer(
+                    dhisApi, trackedEntityInstance.getUid(), true, true,
+                    serverDateTime);
+        }
     }
 }

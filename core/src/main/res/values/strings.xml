@@ -252,6 +252,7 @@
     <string name="delimiter">:</string>
     <string name="enter_phone_number">Enter phone number</string>
     <string name="choose_filter">Choose filter</string>
+    <string name="invalid_entry_type">Value-type not supported</string>
 
     <string name="error_exporting_data">"Error metadata could not be exported."</string>
     <string name="developers_settings">Developers options</string>

@@ -58,6 +58,7 @@ import org.hisp.dhis.android.sdk.controllers.DhisService;
 import org.hisp.dhis.android.sdk.controllers.PeriodicSynchronizerController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.controllers.SyncStrategy;
+import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.network.Session;
@@ -208,12 +209,12 @@ public class SettingsFragment extends Fragment
                 Toast.makeText(context, getString(R.string.sync_deleted_events),
                         Toast.LENGTH_SHORT).show();
                 setProgressMessage(new LoadingMessageEvent(getString(R.string.sync_deleted_events),
-                        LoadingMessageEvent.EventType.REMOVE_EVENTS));
+                        LoadingMessageEvent.EventType.REMOVE_DATA));
 
                 new Thread() {
                     @Override
                     public void run() {
-                        DhisService.synchronizeRemotelyDeletedEvents(context);
+                        DhisService.synchronizeRemotelyDeletedData(context);
                     }
                 }.start();
                 startSync();
@@ -262,7 +263,7 @@ public class SettingsFragment extends Fragment
                 changeUiVisibility(false);
                 synchronizeButton.setText(getActivity().getApplicationContext().getString(
                         R.string.synchronizing));
-            } else if (event.eventType.equals(LoadingMessageEvent.EventType.REMOVE_EVENTS)) {
+            } else if (event.eventType.equals(LoadingMessageEvent.EventType.REMOVE_DATA)) {
                 synchronizeRemovedEventsButton.setText(
                         getActivity().getApplicationContext().getString(
                                 R.string.synchronizing));
@@ -277,7 +278,6 @@ public class SettingsFragment extends Fragment
                 Log.d(TAG, "Loading message is null");
         }
     }
-
     @Subscribe
     public void onLoadingMessageEvent(final LoadingMessageEvent event) {
         getActivity().runOnUiThread(new Runnable() {

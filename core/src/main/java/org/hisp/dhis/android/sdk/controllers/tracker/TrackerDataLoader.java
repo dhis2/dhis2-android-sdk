@@ -99,11 +99,14 @@ final class TrackerDataLoader extends ResourceController {
         List<OrganisationUnit> assignedOrganisationUnits =
                 MetaDataController.getAssignedOrganisationUnits();
         Hashtable<String, List<Program>> programsForOrganisationUnits = new Hashtable<>();
-
-
+        List<TrackedEntityInstance> trackedEntityInstances = MetaDataController.getTrackedEntityInstancesFromServer();
+        if(syncStrategy.equals(SyncStrategy.DOWNLOAD_ALL)) {
+            TrackerController.updateTrackedEntityInstances(dhisApi, trackedEntityInstances,
+                    serverDateTime);
+        }
         //check if events is updated on server
-        List<Enrollment> activeEnrollments = TrackerController.getActiveEnrollments();
-//        updateEventsForEnrollments(context, dhisApi, activeEnrollments, serverDateTime);
+        //List<Enrollment> activeEnrollments = TrackerController.getActiveEnrollments();
+        //updateEventsForEnrollments(context, dhisApi, activeEnrollments, serverDateTime);
 
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.EVENTS)) {
             for (OrganisationUnit organisationUnit : assignedOrganisationUnits) {
@@ -113,12 +116,12 @@ final class TrackerDataLoader extends ResourceController {
                 }
 
                 List<Program> programsForOrgUnit = new ArrayList<>();
-                List<Program> programsForOrgUnitSEWoR =
+                List<Program> programsForOrgUnitFromDB =
                         MetaDataController.getProgramsForOrganisationUnit
                                 (organisationUnit.getId(),
-                                        ProgramType.WITHOUT_REGISTRATION);
-                if (programsForOrgUnitSEWoR != null) {
-                    programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
+                                        ProgramType.WITHOUT_REGISTRATION, ProgramType.WITH_REGISTRATION);
+                if (programsForOrgUnitFromDB != null) {
+                    programsForOrgUnit.addAll(programsForOrgUnitFromDB);
                 }
 
                 programsForOrganisationUnits.put(organisationUnit.getId(), programsForOrgUnit);
@@ -192,17 +195,12 @@ final class TrackerDataLoader extends ResourceController {
                                 dhisApi.getEventsForTrackedEntityInstance(programUid,
                                         QUERY_MAP_FULL));
                     }
-
                 } catch (APIException apiException) {
                     apiException.printStackTrace();
                     failed = true;
                 }
-
             }
-
-
         }
-
 
         if (!failed) {
             saveResourceDataFromServer(ResourceType.EVENTS, dhisApi, eventsFromServer, null,
@@ -342,9 +340,8 @@ final class TrackerDataLoader extends ResourceController {
         if (lastUpdated != null) {
             map.put("lastUpdated", lastUpdated.toString());
         }
-        JsonNode response = dhisApi.getEvents(programUid, organisationUnitUid, 50,
+        List<Event> events = dhisApi.getEvents(programUid, organisationUnitUid, 50,
                 map);
-        List<Event> events = EventsWrapper.getEvents(response);
         saveResourceDataFromServer(ResourceType.EVENTS, organisationUnitUid + programUid, dhisApi,
                 events, null, serverDateTime);
     }

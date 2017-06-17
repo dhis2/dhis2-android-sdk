@@ -91,7 +91,7 @@ public class EditTextRow extends Row {
             TextView mandatoryIndicator = (TextView) root.findViewById(R.id.mandatory_indicator);
             TextView warningLabel = (TextView) root.findViewById(R.id.warning_label);
             TextView errorLabel = (TextView) root.findViewById(R.id.error_label);
-            EditText editText = (EditText) root.findViewById(R.id.edit_text_row);
+            final EditText editText = (EditText) root.findViewById(R.id.edit_text_row);
 //            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
 
             if (DataEntryRowTypes.TEXT.equals(mRowType)) {
@@ -107,6 +107,39 @@ public class EditTextRow extends Row {
                         InputType.TYPE_NUMBER_FLAG_DECIMAL |
                         InputType.TYPE_NUMBER_FLAG_SIGNED);
                 editText.setHint(R.string.enter_number);
+                editText.setFilters(new InputFilter[]{new NumberFilter()});
+                editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        if (!hasFocus) {
+                            String text = editText.getText().toString();
+                            if(text.startsWith("0") && text.length()>1){
+                                if(text.contains(".")) {
+                                    String decimals = text.substring(text.indexOf("."),
+                                            text.length());
+                                    text = new Integer(text.substring(0,text.indexOf("."))).toString()+decimals;
+                                }else{
+                                    text = new Integer(text).toString();
+                                }
+                            }
+                            if (editText.getText() != null && text.endsWith(".")) {
+                                editText.getText().clear();
+                                editText.append(text.substring(0, text.length() - 1));
+                            } else if (text.contains(".")) {
+                                int pointPosition = text.indexOf(".");
+                                String removeZeroes = text.substring(pointPosition + 1,
+                                        text.length());
+                                removeZeroes = removeLastZero(removeZeroes);
+                                text = text.substring(0, pointPosition + 1) + removeZeroes;
+                                if(text.endsWith(".0")) {
+                                    text = text.substring(0,text.indexOf(".0"));
+                                }
+                                editText.getText().clear();
+                                editText.append(text);
+                            }
+                        }
+                    }
+                });
                 editText.setSingleLine(true);
             } else if (DataEntryRowTypes.INTEGER.equals(mRowType)) {
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER |
@@ -200,6 +233,12 @@ public class EditTextRow extends Row {
         }
 
         return view;
+    }
+
+    private String removeLastZero(String text) {
+        if(text.endsWith("0") && text.length()>1)
+            return removeLastZero(text.substring(0, text.length()-1));
+        return text;
     }
 
     @Override
@@ -305,6 +344,28 @@ public class EditTextRow extends Row {
 
             if ((spn.length() > 0) && (spStart == 0)
                     && (str.length() > 0) && (str.charAt(0) == '0')) {
+                return EMPTY_FIELD;
+            }
+
+            return str;
+        }
+    }
+
+    private static class NumberFilter implements InputFilter {
+
+        @Override
+        public CharSequence filter(CharSequence str, int start, int end,
+                Spanned spn, int spnStart, int spnEnd) {
+            //Do not start with .
+            if (str.length() > 0 && str.charAt(0) == '.' && spnStart == 0 && spnEnd == 1) {
+                return EMPTY_FIELD;
+            }
+            //do not start with 00
+            if ((str.length() > 0) && (str.charAt(0) == '0' && spn.length() > 0 && spn.charAt(0)
+                    == '0')) {
+                if (spn.length() > 1 && spn.toString().contains(".")) {
+                    return str;
+                }
                 return EMPTY_FIELD;
             }
 

@@ -144,7 +144,7 @@ public class SettingsFragment extends Fragment
         if (view.getId() == R.id.settings_logout_button) {
             UiUtils.showConfirmDialog(getActivity(), getString(R.string.logout_title),
                     getString(R.string.logout_message),
-                    getString(R.string.logout), getString(R.string.cancel_option),
+                    getString(R.string.logout), getString(R.string.cancel),
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

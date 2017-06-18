@@ -76,7 +76,7 @@ public class OrganisationUnitProgramLinkStoreTests extends AbsStoreTestCase {
         // checking if successful insert
         assertThat(rowId).isEqualTo(1L);
 
-        Cursor cursor = database().query(OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK, PROJECTION,
+        Cursor cursor = database().query(OrganisationUnitProgramLinkModel.TABLE, PROJECTION,
                 null, null, null, null, null);
 
         assertThatCursor(cursor).hasRow(ORGANISATION_UNIT_UID, PROGRAM_UID).isExhausted();
@@ -113,11 +113,11 @@ public class OrganisationUnitProgramLinkStoreTests extends AbsStoreTestCase {
         organisationUnitProgramLink.put(Columns.PROGRAM, PROGRAM_UID);
 
         database().insert(
-                OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK, null, organisationUnitProgramLink);
+                OrganisationUnitProgramLinkModel.TABLE, null, organisationUnitProgramLink);
 
         String[] projection = {Columns.ID, Columns.ORGANISATION_UNIT, Columns.PROGRAM};
 
-        Cursor cursor = database().query(OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK, projection,
+        Cursor cursor = database().query(OrganisationUnitProgramLinkModel.TABLE, projection,
                 null, null, null, null, null);
 
         // checking that link was successfully inserted
@@ -126,7 +126,7 @@ public class OrganisationUnitProgramLinkStoreTests extends AbsStoreTestCase {
         database().delete(OrganisationUnitModel.TABLE,
                 OrganisationUnitModel.Columns.UID + " =?", new String[]{ORGANISATION_UNIT_UID});
 
-        cursor = database().query(OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK, projection,
+        cursor = database().query(OrganisationUnitProgramLinkModel.TABLE, projection,
                 null, null, null, null, null);
 
         assertThatCursor(cursor).isExhausted();
@@ -147,11 +147,11 @@ public class OrganisationUnitProgramLinkStoreTests extends AbsStoreTestCase {
         organisationUnitProgramLink.put(Columns.PROGRAM, PROGRAM_UID);
 
         database().insert(
-                OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK, null, organisationUnitProgramLink);
+                OrganisationUnitProgramLinkModel.TABLE, null, organisationUnitProgramLink);
 
         String[] projection = {Columns.ID, Columns.ORGANISATION_UNIT, Columns.PROGRAM};
 
-        Cursor cursor = database().query(OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK, projection,
+        Cursor cursor = database().query(OrganisationUnitProgramLinkModel.TABLE, projection,
                 null, null, null, null, null);
 
         assertThatCursor(cursor).hasRow(ID, ORGANISATION_UNIT_UID, PROGRAM_UID).isExhausted();

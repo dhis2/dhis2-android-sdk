@@ -48,6 +48,8 @@ import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
 import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.option.OptionStoreImpl;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
@@ -149,6 +151,7 @@ public final class D2 {
     private final ProgramStageStore programStageStore;
     private final RelationshipTypeStore relationshipStore;
     private final TrackedEntityStore trackedEntityStore;
+    private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
 
     @VisibleForTesting
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter) {
@@ -190,6 +193,7 @@ public final class D2 {
         this.programStageStore = new ProgramStageStoreImpl(databaseAdapter);
         this.relationshipStore = new RelationshipTypeStoreImpl(databaseAdapter);
         this.trackedEntityStore = new TrackedEntityStoreImpl(databaseAdapter);
+        this.organisationUnitProgramLinkStore = new OrganisationUnitProgramLinkStoreImpl(databaseAdapter);
     }
 
     @NonNull
@@ -243,7 +247,7 @@ public final class D2 {
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore, optionStore,
                 optionSetStore, dataElementStore, programStageDataElementStore, programStageSectionStore,
-                programStageStore, relationshipStore, trackedEntityStore);
+                programStageStore, relationshipStore, trackedEntityStore, organisationUnitProgramLinkStore);
     }
 
     public static class Builder {

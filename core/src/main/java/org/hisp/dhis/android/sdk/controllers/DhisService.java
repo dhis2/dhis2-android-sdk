@@ -168,12 +168,23 @@ public final class DhisService extends Service {
         });
     }
 
-    public static void synchronize(final Context context) {
+    public static void synchronize(final Context context, final SyncStrategy syncStrategy) {
         JobExecutor.enqueueJob(new NetworkJob<Object>(0,
                 null) {
             @Override
             public Object execute() throws APIException {
-                DhisController.synchronize(context);
+                DhisController.synchronize(context, syncStrategy);
+                return new Object();
+            }
+        });
+    }
+
+    public static void synchronizeRemotelyDeletedData(final Context context) {
+        JobExecutor.enqueueJob(new NetworkJob<Object>(0,
+                null) {
+            @Override
+            public Object execute() throws APIException {
+                DhisController.syncRemotelyDeletedData(context);
                 return new Object();
             }
         });
@@ -184,7 +195,7 @@ public final class DhisService extends Service {
                 null) {
             @Override
             public Object execute() throws APIException {
-                DhisController.loadData(context);
+                DhisController.loadData(context, SyncStrategy.DOWNLOAD_ONLY_NEW);
                 return new Object();
             }
         });

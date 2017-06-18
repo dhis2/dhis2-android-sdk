@@ -34,15 +34,20 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Join;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.queriable.StringQuery;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.LoadingController;
 import org.hisp.dhis.android.sdk.controllers.ResourceController;
+import org.hisp.dhis.android.sdk.controllers.SyncStrategy;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
+import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
+import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
@@ -56,6 +61,8 @@ import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship$Table;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
@@ -69,6 +76,7 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -100,6 +108,11 @@ public final class TrackerController extends ResourceController {
         }
         Log.d(CLASS_TAG, "data values are loaded.");
         return true;
+    }
+
+    public static TrackedEntityInstance getTrackedEntityInstanceByUid(String trackedEntityInstanceUid) {
+        return new Select().from(TrackedEntityInstance.class).where(Condition.column
+                (TrackedEntityInstance$Table.TRACKEDENTITYINSTANCE).is(trackedEntityInstanceUid)).querySingle();
     }
 
     public static List<Relationship> getRelationships(String trackedEntityInstance) {
@@ -193,6 +206,46 @@ public final class TrackerController extends ResourceController {
                 + " ORDER BY " + Event$Table.DUEDATE;
 
         return new StringQuery<Event>(Event.class, rawSqlQuery).queryList();
+    }
+
+    /**
+     * Returns a list of events for a given org unit and from server
+     */
+    public static List<Event> getEvents(String organisationUnitId, String programId,
+            boolean isFromServer) {
+        List<Event> events = new Select().from(Event.class).where(Condition.column
+                (Event$Table.ORGANISATIONUNITID).is(organisationUnitId)).
+                and(Condition.column(Event$Table.PROGRAMID).is(programId))
+                .and(Condition.column(Event$Table.FROMSERVER).is(isFromServer))
+                .orderBy(false, Event$Table.LASTUPDATED).queryList();
+        return events;
+    }
+    /**
+     * Returns a list of events for a given org unit and from server
+     */
+    public static List<Event> getAllConflictingAndNotConflictingEvents(String organisationUnitId, String programId,
+            boolean isFromServer) {
+        List<Event> events = new Select().from(Event.class)
+                .join(FailedItem.class, Join.JoinType.LEFT)
+                .on(Condition.column(FailedItem$Table.ITEMID).eq(Event$Table.LOCALID)).where(Condition.column
+                (Event$Table.ORGANISATIONUNITID).is(organisationUnitId)).
+                and(Condition.column(Event$Table.PROGRAMID).is(programId))
+                .and(Condition.column(Event$Table.FROMSERVER).is(isFromServer))
+                .or(Condition.column(FailedItem$Table.ITEMTYPE).is("Event"))
+                .orderBy(false, Event$Table.LASTUPDATED).queryList();
+        return events;
+    }
+
+    /**
+     * Loads datavalues from the server and stores it in local persistence.
+     */
+    public static void syncRemotelyDeletedData(Context context, DhisApi dhisApi)
+            throws APIException {
+        UiUtils.postProgressMessage(context.getString(R.string.synchronize_deleted_data), LoadingMessageEvent.EventType.REMOVE_DATA);
+        TrackerDataLoader.deleteRemotelyDeletedData(context, dhisApi);
+        Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
+        UiUtils.postProgressMessage("",LoadingMessageEvent.EventType.FINISH);
+
     }
 
     /**
@@ -302,6 +355,14 @@ public final class TrackerController extends ResourceController {
                 (Condition.column(TrackedEntityInstance$Table.LOCALID).is(localId)).querySingle();
     }
 
+    public static List<TrackedEntityInstance> getTrackedEntityInstances(String organisationUnitUId) {
+        return new Select().from(TrackedEntityInstance.class).where
+                (Condition.column(TrackedEntityInstance$Table.ORGUNIT).is(organisationUnitUId)).queryList();
+    }
+
+    public static List<TrackedEntityInstance> getTrackedEntityInstances() {
+        return new Select().from(TrackedEntityInstance.class).queryList();
+    }
     /*
    * Returns a list of tracked entity attribute values for an instance in a selected program
    * @param trackedEntityInstance
@@ -379,6 +440,24 @@ public final class TrackerController extends ResourceController {
     }
 
     /**
+     * Returns a list of all visible trackedEntityAttributeValues for a given TEI
+     *
+     * @param trackedEntityInstance
+     * @return
+     */
+    public static List<TrackedEntityAttributeValue> getVisibleTrackedEntityAttributeValues
+    (long trackedEntityInstance) {
+        return new Select().from(TrackedEntityAttributeValue.class)
+                .join(TrackedEntityAttribute.class, Join.JoinType.LEFT)
+                .on(Condition.column(TrackedEntityAttribute$Table.ID).eq(TrackedEntityAttributeValue$Table.TRACKEDENTITYATTRIBUTEID))
+                .where(Condition.column
+                        (TrackedEntityAttributeValue$Table.LOCALTRACKEDENTITYINSTANCEID).is(trackedEntityInstance))
+                .and(Condition.column
+                        (TrackedEntityAttribute$Table.DISPLAYINLISTNOPROGRAM).is(true))
+                .orderBy(true, TrackedEntityAttribute$Table.SORTORDERINLISTNOPROGRAM).queryList();
+    }
+
+    /**
      * Returns a list of failed items from the database, or null if there are none.
      * Failed items are items that have failed to upload and sync with the server for some reason
      *
@@ -429,7 +508,7 @@ public final class TrackerController extends ResourceController {
      */
     public static void synchronizeDataValues(Context context, DhisApi dhisApi) throws APIException {
         sendLocalData(dhisApi);
-        loadDataValues(context, dhisApi);
+        loadDataValues(context, dhisApi, SyncStrategy.DOWNLOAD_ONLY_NEW);
     }
 
     /**
@@ -446,9 +525,9 @@ public final class TrackerController extends ResourceController {
     /**
      * Loads datavalues from the server and stores it in local persistence.
      */
-    public static void loadDataValues(Context context, DhisApi dhisApi) throws APIException {
-        UiUtils.postProgressMessage(context.getString(R.string.loading_metadata));
-        TrackerDataLoader.updateDataValueDataItems(context, dhisApi);
+    public static void loadDataValues(Context context, DhisApi dhisApi, SyncStrategy syncStrategy) throws APIException {
+        UiUtils.postProgressMessage(context.getString(R.string.loading_metadata), LoadingMessageEvent.EventType.METADATA);
+        TrackerDataLoader.updateDataValueDataItems(context, dhisApi, syncStrategy);
     }
 
     public static List<TrackedEntityInstance> queryTrackedEntityInstancesDataFromServer(DhisApi dhisApi,
@@ -456,7 +535,7 @@ public final class TrackerController extends ResourceController {
                                                                                         String programUid,
                                                                                         String queryString,
                                                                                         TrackedEntityAttributeValue... params) throws APIException {
-        return TrackerDataLoader.queryTrackedEntityInstancesDataFromServer(dhisApi, organisationUnitUid, programUid, queryString, params);
+        return TrackerDataLoader.queryTrackedEntityInstanceDataFromServer(dhisApi, organisationUnitUid, programUid, queryString, params);
     }
 
     public static List<TrackedEntityInstance> queryTrackedEntityInstancesDataFromAllAccessibleOrgUnits(DhisApi dhisApi,
@@ -468,8 +547,8 @@ public final class TrackerController extends ResourceController {
         return TrackerDataLoader.queryTrackedEntityInstancesDataFromAllAccessibleOrgunits(dhisApi, organisationUnitUid, programUid, queryString, detailedSearch, params);
     }
 
-    public static List<TrackedEntityInstance> getTrackedEntityInstancesDataFromServer(DhisApi dhisApi, List<TrackedEntityInstance> trackedEntityInstances, boolean getEnrollments) throws APIException {
-        return TrackerDataLoader.getTrackedEntityInstancesDataFromServer(dhisApi, trackedEntityInstances, getEnrollments);
+    public static List<TrackedEntityInstance> getTrackedEntityInstancesDataFromServer(DhisApi dhisApi, List<TrackedEntityInstance> trackedEntityInstances, boolean getEnrollments, boolean getRecursiveRelations) throws APIException {
+        return TrackerDataLoader.getTrackedEntityInstancesDataFromServer(dhisApi, trackedEntityInstances, getEnrollments, getRecursiveRelations);
     }
 
     public static void getEnrollmentDataFromServer(DhisApi dhisApi, String uid, boolean getEvents, DateTime serverDateTime) throws APIException {
@@ -572,5 +651,18 @@ public final class TrackerController extends ResourceController {
                 + " ORDER BY " + Event$Table.DUEDATE;
 
         return new StringQuery<Event>(Event.class, rawSqlQuery).queryList();
+    }
+
+    public static void refreshRelationsByTrackedEntity(DhisApi dhisApi, String trackedEntityInstance) {
+        TrackerDataLoader.refreshRelationshipsByTrackedEntityInstance(dhisApi, trackedEntityInstance);
+    }
+
+    public static void updateTrackedEntityInstances(DhisApi dhisApi,
+            List<TrackedEntityInstance> trackedEntityInstances, DateTime serverDateTime) {
+        for(TrackedEntityInstance trackedEntityInstance:trackedEntityInstances) {
+            TrackerDataLoader.getTrackedEntityInstanceDataFromServer(
+                    dhisApi, trackedEntityInstance.getUid(), true, true,
+                    serverDateTime);
+        }
     }
 }

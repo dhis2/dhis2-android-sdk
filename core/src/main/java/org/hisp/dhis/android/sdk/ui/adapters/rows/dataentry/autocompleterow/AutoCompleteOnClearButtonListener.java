@@ -31,6 +31,6 @@ class AutoCompleteOnClearButtonListener implements View.OnClickListener {
         optionNameCacher.clearCachedOptionName();
         textView.setText(AutoCompleteRow.EMPTY_FIELD);
         Dhis2Application.getEventBus()
-                .post(new RowValueChangedEvent(value, DataEntryRowTypes.AUTO_COMPLETE.toString()));
+                .post(new RowValueChangedEvent(value, DataEntryRowTypes.OPTION_SET.toString()));
     }
 }

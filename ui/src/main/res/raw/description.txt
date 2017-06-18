@@ -1,0 +1,11 @@
+Description:<br/>
+Register, enroll, and follow up Tracked Entity Instances in DHIS 2 Tracker Programs. Works for 2.24 version of DHIS and above.<br/>
+For previous versions find apk files on our github page www.github.com/dhis2/dhis2-android-trackercapture .<br/>
+
+To test this application it is possible to use the test server using the following information:<br/>
+Server url: https://play.dhis2.org/demo<br/>
+Login: android<br/>
+Password: Android123<br/><br/>
+
+Developed by University of Oslo(UiO) (http://www.uio.no).<br/><br/>
+Maintained by EyeSeeTea Ltd (http://eyeseetea.com).<br/><br/>

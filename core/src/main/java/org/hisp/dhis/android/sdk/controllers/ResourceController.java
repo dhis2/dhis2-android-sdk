@@ -32,6 +32,11 @@ package org.hisp.dhis.android.sdk.controllers;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.models.BaseIdentifiableObject;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
+import org.hisp.dhis.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
+import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.persistence.models.Relationship;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.meta.DbOperation;
 import org.hisp.dhis.android.sdk.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
@@ -135,4 +140,59 @@ public abstract class ResourceController {
         }
         return map;
     }
+
+    public static void removeTrackedEntityEnrollments(List<Enrollment> list) {
+        Queue<DbOperation> operations = new LinkedList<>();
+        operations.addAll(DbUtils.removeResources(list));
+        DbUtils.applyBatch(operations);
+    }
+
+    public static void removeTrackedEntityRelationships(List<Relationship> list) {
+        Queue<DbOperation> operations = new LinkedList<>();
+        for(Relationship relationship: list) {
+            operations.add(DbOperation.delete(relationship));
+        }
+        DbUtils.applyBatch(operations);
+    }
+
+    public static void removeTrackedEntityInstances(List<TrackedEntityInstance> list) {
+        Queue<DbOperation> operations = new LinkedList<>();
+        operations.addAll(DbUtils.removeResources(list));
+        for (TrackedEntityInstance trackedEntityInstance : list) {
+            if (trackedEntityInstance.getRelationships() != null) {
+                for (Relationship relationship : trackedEntityInstance.getRelationships()) {
+                    operations.add(DbOperation.delete(relationship));
+                }
+            }
+        }
+        DbUtils.applyBatch(operations);
+    }
+
+    public static void removeEvents(List<Event> list) {
+        Queue<DbOperation> operations = new LinkedList<>();
+        operations.addAll(DbUtils.removeResources(list));
+        for (Event event : list) {
+            if (event.getDataValues() != null) {
+                for (DataValue dataValue : event.getDataValues()) {
+                    operations.add(DbOperation.delete(dataValue));
+                }
+            }
+        }
+        DbUtils.applyBatch(operations);
+    }
+
+    public static void overwriteRelationsFromServer(List<Relationship> updatedItems,
+            List<Relationship> persistedItems) {
+        Queue<DbOperation> operations = new LinkedList<>();
+        //remove old values
+        for(Relationship relationship:persistedItems) {
+            operations.add(DbOperation.delete(relationship));
+        }
+        //save new values
+        for(Relationship relationship:updatedItems) {
+            operations.add(DbOperation.save(relationship));
+        }
+        DbUtils.applyBatch(operations);
+    }
+
 }

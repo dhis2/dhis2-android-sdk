@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ * Copyright (c) 2016, University of Oslo
+  ~  * All rights reserved.
+  ~  *
+  ~  * Redistribution and use in source and binary forms, with or without
+  ~  * modification, are permitted provided that the following conditions are met:
+  ~  * Redistributions of source code must retain the above copyright notice, this
+  ~  * list of conditions and the following disclaimer.
+  ~  *
+  ~  * Redistributions in binary form must reproduce the above copyright notice,
+  ~  * this list of conditions and the following disclaimer in the documentation
+  ~  * and/or other materials provided with the distribution.
+  ~  * Neither the name of the HISP project nor the names of its contributors may
+  ~  * be used to endorse or promote products derived from this software without
+  ~  * specific prior written permission.
+  ~  *
+  ~  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ~  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  ~  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  ~  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+  ~  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  ~  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  ~  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  ~  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  ~  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  ~  */
+  -->
+
+<resources>
+
+    <string name="action_settings">Paramètres</string>
+    <string name="imgdesc">imgdesc</string>
+    <string name="title_activity_main">Menú principal</string>
+    <string name="title_activity_splash">DHIS2 Tracker</string>
+    <string name="title_activity_pin">Bloqueo por Código Pin</string>
+    <string name="organisation_unit">Unidad Organizativa</string>
+    <string name="programId">Programa</string>
+    <string name="register">Registrar</string>
+    <string name="enrollment">Registro</string>
+    <string name="eventDate">Fecha del evento</string>
+    <string name="dialog_organisation_units">Unidades organizativas</string>
+    <string name="dialog_programs">Programas</string>
+
+    <string name="please_enter">Por favor introduce</string>
+
+
+    <string name="description">Descripción de ImageView</string>
+    <string name="specify_search_criteria">Por favor indica un criterio de búsqueda</string>
+    <string name="edit">Editar</string>
+
+
+    <!-- Alert Dialogs -->
+    <string name="ok_option">OK</string>
+    <string name="yes_option">Sí</string>
+    <string name="none_option">Ninguno</string>
+    <string name="no_option">No</string>
+    <string name="error_message">Error</string>
+    <string name="delete">Borrar</string>
+    <string name="missing_mandatory_field">Valor obligatorio vacío</string>
+    <string name="unable_to_complete_registration">Imposible completar el registro.</string>
+    <string name="review_errors">Por favor corrige los errores abajo mostrados e inténtalo de nuevo</string>
+
+
+    <!-- Login Activity -->
+    <string name="server_url">URL del Servidor</string>
+    <string name="username">Nombre de usuario</string>
+    <string name="password">Contraseña</string>
+    <string name="login">Conectarse</string>
+    <string name="custom_url">URL personalizada</string>
+    <string name="invalid_username_or_password">Imposible conectarse. Usuario o contraseña inválidos.</string>
+    <string name="invalid_server_url">La URL proporcionada no es válida.</string>
+    <string name="unable_to_login">No se puede acceder.</string>
+    <string name="syncing">Sincronizando...</string>
+    <string name="refresh_relations">Actualizando las relaciones de instancias de entidades trazadas desde el servidor</string>
+    <string name="please_wait">Espera por favor</string>
+    <string name="enter_username">Por favor introduce un nombre de usuario</string>
+    <string name="enter_password">Por favor introduce una contraseña</string>
+    <string name="enter_serverurl">Por favor introduce una URL de servidor</string>
+
+    <!-- ProgramOverview Fragment -->
+    <string name="profile">Perfil</string>
+    <string name="relationships">Relaciones</string>
+    <string name="indicators">Indicadores</string>
+    <string name="notes">Notas</string>
+    <string name="of">de</string>
+    <string name="new_string">Nuevo</string>
+    <string name="refresh_string">Actualizar</string>
+    <string name="confirm">Confirmar</string>
+    <string name="confirm_relationship">¿Quieres registrar esta relación?</string>
+    <string name="please_select_relationshiptype">Por favor selecciona un tipo de relación</string>
+    <string name="relationship_exists">Ya existe la relación</string>
+
+    <!-- Add Relative Fragment -->
+    <string name="search">Buscar</string>
+
+
+    <!-- Data Entry -->
+    <string name="submit">Enviar</string>
+    <string name="cancel">Cancelar</string>
+
+
+    <!-- Pending Registration -->
+    <string name="loading">Cargando</string>
+
+
+    <!-- GPS -->
+
+
+    <string name="latitude">Latitud</string>
+    <string name="longitude">Longitud</string>
+    <string name="coordinates">Coordenadas</string>
+
+
+    <!-- Data fetching -->
+    <string name="loading_metadata">Cargando metadatos</string>
+    <string name="saving_data_locally">Guardando los datos en local</string>
+    <string name="loading_events">Cargando Eventos</string>
+    <string name="loading_enrollments">Cargando Registros</string>
+    <string name="retry">Reintentar</string>
+
+
+    <!-- Data uploading -->
+    <string name="loading_failed">Carga fallida</string>
+    <string name="retrying">Reintentando</string>
+
+    <string name="update_frequency">Frecuencia de sincronización automática</string>
+    <string name="logout">\"Borrar datos locales &amp; salir\"</string>
+    <string name="complete">Completo</string>
+    <string name="loading_server_info">Cargando la información del servidor</string>
+    <string name="loading_program">Cargando programId</string>
+    <string name="loading_optionsets">Cargando conjuntos de opciones</string>
+    <string name="loading_trackedentityattributes">Cargando atributos de instancias de unidades trazadas</string>
+    <string name="updating_constants">Actualizando constantes</string>
+    <string name="loading_constants">Cargando constantes</string>
+    <string name="loading_programrules">Cargando las reglas de programId</string>
+    <string name="loading_programrulevariables">Cargando las variables de la regla de programId</string>
+    <string name="loading_programruleactions">Cargando las reglas de actión de programId</string>
+    <string name="loading_relationshiptypes">Cargando las instancias de entidades trazadas</string>
+    <string name="incomplete">Incompleto</string>
+    <string name="discard">Descartar</string>
+    <string name="save_and_close">Guardar y cerrar</string>
+    <string name="terminate">Cancelar</string>
+    <string name="unknown">Desconocido</string>
+    <string name="sending_data_server">Enviando los datos al servidor</string>
+
+    <string-array name="update_frequencies">
+        <item>1 Minute</item>
+        <item>15 Minutes</item>
+        <item>1 Hour</item>
+        <item>1 Day</item>
+        <item>Disabled</item>
+    </string-array>
+
+    <string-array name="copy_store_error_message">
+        <item>Copy</item>
+        <item>Write to SD card</item>
+    </string-array>
+
+    <string name="synchronize_with_server">Sinc con el servidor</string>
+    <string name="event_sent">Enviado</string>
+    <string name="find_option">Encontrar Opción</string>
+    <string name="new_event">Nuevo evento</string>
+    <string name="event_offline">Sin conexión</string>
+    <string name="event_error">Error</string>
+    <string name="upcoming_events">Próximos eventos</string>
+
+    <string name="validation_error">Por favor completa los siguientes campos obligatorios</string>
+    <string name="enter_date">Introduce una fecha</string>
+    <string name="enter_text">Introduce un texto</string>
+    <string name="enter_long_text">Introduce un texto largo</string>
+    <string name="enter_number">Introduce un número</string>
+    <string name="enter_integer">Introduce un entero</string>
+    <string name="enter_negative_integer">Introduce un número negativo</string>
+    <string name="enter_percentage">Introduce un porcentaje</string>
+    <string name="enter_positive_integer_or_zero">Introduce un entero positivo o cero</string>
+    <string name="enter_positive_integer">Introduce un entero positivo</string>
+    <string name="enter_coordinates">Introduce coordenadas</string>
+    <string name="latitude_error_message">La latitude debe estar en el rango de -90 a 90</string>
+    <string name="longitude_error_message">La longitud debe estar en el rago de -180 a 180</string>
+    <string name="warning_hidefieldwithvalue">Los siguientes campos rellenos han sido escondidos y su valor borrado.</string>
+    <string name="report_date">Fecha de informe</string>
+    <string name="choose_organisation_unit">Selecciona una unidad organizativa</string>
+    <string name="choose_program">Selecciona un programa</string>
+    <string name="duedate">Fecha límite</string>
+    <string name="eventname">Nombre del evento</string>
+    <string name="startdate">Fecha de inicio</string>
+    <string name="enddate">Fecha de fin</string>
+
+    <string name="registered_events">Eventos registrados</string>
+    <string name="status">Estado</string>
+    <string name="event_status">Estado del evento</string>
+    <string name="validate">Validar</string>
+    <string name="up">ARRIBA</string>
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
+    <string name="none">Ninguno</string>
+
+    <string name="gender_male">Hombre</string>
+    <string name="gender_female">Mujer</string>
+    <string name="gender_other">Otro</string>
+    <string name="logout_message">¿Estás seguro de querer desconectarte? Todos tus datos almacenados en el dispositivo se perderán si seleccionas salir.</string>
+    <string name="logout_title">Desconectando</string>
+    <string name="complete_confirm">¿Estás seguro de querer completar el evento?</string>
+    <string name="incomplete_confirm">¿Estás seguro de que quieres marcar el evento como incompleto?</string>
+    <string name="tracked_entity_instances">Instancias de Entidades Trazadas</string>
+    <string name="validation_success">¡Validación pasada con éxito!</string>
+    <string name="last_updated">Actualizado por última vez</string>
+    <string name="failed_item">Elemento fallado</string>
+    <string name="detailed_search">Búsqueda avanzada</string>
+    <string name="select_to_load">Selecciona para descargar al dispositivo</string>
+    <string name="select_all">Seleccionar todos</string>
+    <string name="deselect_all">Deseleccionar todas</string>
+    <string name="query_tracked_entity_instances">Descarga de instancias de entidades</string>
+    <string name="unsynchronized_data_values">Tienes que sincronizar tus cambios con el servidor antes de salir. Por favor comprueba tu conexión a internet y pulsa el botón de sincronización</string>
+
+    <string name="status_sent_description">Este elemento ha sido sincronizado con éxito con el servidor.</string>
+    <string name="status_offline_description">Este elemento no se ha sincronizado aún con el servidor.</string>
+    <string name="status_error_description">Algo salió mal. Por favor intenta volver a enviar el evento o contacte al administrador.</string>
+    <string name="copied_text">Copiado al porta papeles.</string>
+    <string name="network_error">Error de red</string>
+    <string name="error_description">Descripción del error</string>
+
+    <!--  Error log storage on device -->
+    <string name="text_written_to_sd_card">Texto escrito en la tarjeta SD</string>
+    <string name="sd_card_error_message">¡Error! ¿Está la tarjeta SD introducida?</string>
+
+    <string name="go_to_programoverview_fragment">Ir a la vista general</string>
+    <string name="go_to_dataentry_fragment">ir a entrada de datos</string>
+
+    <!-- Remove Report Entity confirmation dialog -->
+    <string name="remove">Borrar del dispositivo</string>
+    <string name="remove_report_entity_dialog_title">¿Borrar elemento?</string>
+    <string name="remove_report_entity_dialog_message">Este elemento será borrado del dispositivo. Podrás volver a descargarlo del servidor posteriormente.</string>
+
+    <string name="warning_delete_unsent_tei">¡Alerta! Este elemento no ha sido sincronizado con el servidor. Si lo borras, no podrás recuperar estos datos</string>
+    <string name="detailed_info_dataelement">Información detallada</string>
+    <string name="detailed_info_coordinate_row">Por favor, introduce las coordnadas GPS pulsando en el botón a la derecha de la fila. Si no funciona, por favor comprueba tus datos y/o conexión GPS.</string>
+    <string name="detailed_info_status_row">Por favor, pulsa el botón de completado cuando hayas terminado de introducir los datos. Pulsa el botón de validación para comprobar si los datos introducidos son correctos.</string>
+    <string name="enter_phone_number">Introduce un número de teléfono</string>
+    <string name="choose_filter">Selecciona un filtro</string>
+    <string name="invalid_entry_type">Tipo de valor no soportado</string>
+
+    <string name="error_exporting_data">\"Error los metadatos no pudieron exportarse.\"</string>
+    <string name="developers_settings">Opciones para desarrolladores</string>
+    <string name="export_data_name">Exportar base de datos</string>
+    <string name="developer_option_key">optionkey para desarrolladores</string>
+    <string name="developer_option_title">\"Mostrar opciones para desarrolladores\"</string>
+    <string name="sync_deleted_events">Sincronizando eventos borrados en remoto</string>
+    <string name="sync_deleted_tracked_entities">Sincronizando las entidades trazadas borradas en remoto</string>
+    <string name="sync_deleted_relations">Sincronizando las relaciones entre entidades trazadas borradas en remoto</string>
+    <string name="sync_deleted_enrollments">Sincronizando los registros borrados en remoto</string>
+    <string name="synchronize_deleted_data">Sinc datos borrados en remoto</string>
+    <string name="synchronizing">Sincronizando...</string>
+    <string name="discard_confirm_changes">¿Estás seguro de descartar los cambios?</string>
+    <string name="finishing_up">Espera mientras se termina la configuración inicial de la base de datos. Ésto puede tomar algunos minutos.</string>
+    <string name="loading_assigned_programs">Cargando los programas asignados</string>
+    <string name="loading_tracked_entity_instances">Cargando instancias de entidades trazadas</string>
+
+</resources>

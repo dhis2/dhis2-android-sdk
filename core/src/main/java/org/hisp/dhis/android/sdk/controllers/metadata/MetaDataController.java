@@ -29,6 +29,8 @@
 
 package org.hisp.dhis.android.sdk.controllers.metadata;
 
+import static org.hisp.dhis.android.sdk.utils.NetworkUtils.unwrapResponse;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -41,23 +43,35 @@ import org.hisp.dhis.android.sdk.controllers.ApiEndpointContainer;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.LoadingController;
 import org.hisp.dhis.android.sdk.controllers.ResourceController;
+import org.hisp.dhis.android.sdk.controllers.SyncStrategy;
 import org.hisp.dhis.android.sdk.controllers.wrappers.AssignedProgramsWrapper;
 import org.hisp.dhis.android.sdk.controllers.wrappers.OptionSetWrapper;
 import org.hisp.dhis.android.sdk.controllers.wrappers.ProgramWrapper;
+import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.models.Attribute;
 import org.hisp.dhis.android.sdk.persistence.models.Attribute$Table;
 import org.hisp.dhis.android.sdk.persistence.models.AttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.AttributeValue$Table;
+import org.hisp.dhis.android.sdk.persistence.models.Conflict;
 import org.hisp.dhis.android.sdk.persistence.models.Constant;
 import org.hisp.dhis.android.sdk.persistence.models.Constant$Table;
+import org.hisp.dhis.android.sdk.persistence.models.Dashboard;
+import org.hisp.dhis.android.sdk.persistence.models.DashboardElement;
+import org.hisp.dhis.android.sdk.persistence.models.DashboardItem;
+import org.hisp.dhis.android.sdk.persistence.models.DashboardItemContent;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement$Table;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
+import org.hisp.dhis.android.sdk.persistence.models.ImportCount;
+import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
+import org.hisp.dhis.android.sdk.persistence.models.Interpretation;
+import org.hisp.dhis.android.sdk.persistence.models.InterpretationComment;
+import org.hisp.dhis.android.sdk.persistence.models.InterpretationElement;
 import org.hisp.dhis.android.sdk.persistence.models.Option;
 import org.hisp.dhis.android.sdk.persistence.models.Option$Table;
 import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
@@ -95,7 +109,9 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute$Table
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGeneratedValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGeneratedValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGroup;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance$Table;
 import org.hisp.dhis.android.sdk.persistence.models.User;
 import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
 import org.hisp.dhis.android.sdk.persistence.models.meta.DbOperation;
@@ -103,17 +119,17 @@ import org.hisp.dhis.android.sdk.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.utils.DbUtils;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
+import org.hisp.dhis.android.sdk.utils.Utils;
 import org.hisp.dhis.android.sdk.utils.api.ProgramType;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static org.hisp.dhis.android.sdk.utils.NetworkUtils.unwrapResponse;
 
 /**
  * @author Simen Skogly Russnes on 19.02.15.
@@ -347,6 +363,11 @@ public final class MetaDataController extends ResourceController {
         return new Select().from(TrackedEntityAttribute.class).queryList();
     }
 
+    public static List<TrackedEntityInstance> getTrackedEntityInstancesFromServer() {
+        return new Select().from(TrackedEntityInstance.class).where(Condition.column(
+                TrackedEntityInstance$Table.FROMSERVER).is(true)).queryList();
+    }
+
     public static List<TrackedEntityAttributeGroup> getTrackedEntityAttributeGroups() {
         return new Select().from(TrackedEntityAttributeGroup.class).queryList();
     }
@@ -549,8 +570,25 @@ public final class MetaDataController extends ResourceController {
      * Deletes all meta data from local database
      */
     public static void wipe() {
-        Delete.tables(Constant.class,
+        Delete.tables(
+                Attribute.class,
+                AttributeValue.class,
+                Conflict.class,
+                Constant.class,
+                Dashboard.class,
+                DashboardElement.class,
+                DashboardItem.class,
+                DashboardItemContent.class,
                 DataElement.class,
+                DataValue.class,
+                Enrollment.class,
+                Event.class,
+                FailedItem.class,
+                ImportCount.class,
+                ImportSummary.class,
+                Interpretation.class,
+                InterpretationComment.class,
+                InterpretationElement.class,
                 Option.class,
                 OptionSet.class,
                 OrganisationUnit.class,
@@ -558,41 +596,33 @@ public final class MetaDataController extends ResourceController {
                 Program.class,
                 ProgramIndicator.class,
                 ProgramIndicatorToSectionRelationship.class,
+                ProgramRule.class,
+                ProgramRuleAction.class,
+                ProgramRuleVariable.class,
                 ProgramStage.class,
                 ProgramStageDataElement.class,
                 ProgramStageSection.class,
                 ProgramTrackedEntityAttribute.class,
-                SystemInfo.class,
-                TrackedEntity.class,
-                TrackedEntityAttributeGeneratedValue.class,
-                TrackedEntityAttribute.class,
-                TrackedEntityAttributeGroup.class,
-                TrackedEntityInstance.class,
-                Enrollment.class,
-                Event.class,
-                DataValue.class,
-                FailedItem.class,
-                User.class,
-                ProgramRule.class,
-                ProgramRuleVariable.class,
-                ProgramRuleAction.class,
-                RelationshipType.class,
                 Relationship.class,
-                Attribute.class,
-                AttributeValue.class);
-
-        /**  * Delete.tables(  Attribute.class,  AttributeValue.class,  Constant.class,  Conflict.class,  Dashboard.class,  DashboardElement.class,  DashboardItem.class,  DashboardItemContent.class,  DataElement.class,  DataValue.class,  Enrollment.class,  Event.class,  FailedItem.class,  ImportCount.class,  ImportSummary.class,  Interpretation.class,  InterpretationComment.class,  InterpretationElement.class,  Option.class,  OptionSet.class,  OrganisationUnit.class,  OrganisationUnitProgramRelationship.class,  Program.class,  ProgramIndicator.class,  ProgramIndicatorToSectionRelationship.class,  ProgramStage.class,  ProgramStageDataElement.class,  ProgramStageSection.class,  ProgramTrackedEntityAttribute.class,  RelationshipType.class,  Relationship.class,  SystemInfo.class,  TrackedEntity.class,  TrackedEntityAttribute.class,  TrackedEntityAttributeGeneratedValue.class,  TrackedEntityAttributeValue.class,  TrackedEntityInstance.class,  User.class,  UserAccount.class  );  */
-
-
+                RelationshipType.class,
+                SystemInfo.class,
+                TrackedEntityAttributeGeneratedValue.class,
+                TrackedEntityAttributeValue.class,
+                TrackedEntityAttribute.class,
+                TrackedEntityInstance.class,
+                TrackedEntity.class,
+                User.class,
+                UserAccount.class);
     }
 
     /**
      * Loads metaData from the server and stores it in local persistence.
      */
-    public static void loadMetaData(Context context, DhisApi dhisApi, boolean forceSync) throws APIException {
+    public static void loadMetaData(Context context, DhisApi dhisApi, SyncStrategy syncStrategy) throws APIException {
         Log.d(CLASS_TAG, "loadMetaData");
-        UiUtils.postProgressMessage(context.getString(R.string.loading_metadata));
-        updateMetaDataItems(context, dhisApi, forceSync);
+        UiUtils.postProgressMessage(context.getString(R.string.loading_metadata),
+                LoadingMessageEvent.EventType.METADATA);
+        updateMetaDataItems(context, dhisApi, syncStrategy);
     }
 
     private static void updateTrackedDataItems(Context context, DhisApi dhisApi, DateTime serverDateTime) {
@@ -610,7 +640,7 @@ public final class MetaDataController extends ResourceController {
     /**
      * Loads a metadata item that is scheduled to be loaded but has not yet been.
      */
-    private static void updateMetaDataItems(Context context, DhisApi dhisApi, boolean forceSync) throws APIException {
+    private static void updateMetaDataItems(Context context, DhisApi dhisApi, SyncStrategy syncStrategy) throws APIException {
         if (dhisApi == null) {
             dhisApi = DhisController.getInstance().getDhisApi();
             if (dhisApi == null) {
@@ -632,7 +662,7 @@ public final class MetaDataController extends ResourceController {
             if (assignedPrograms != null) {
                 for (String program : assignedPrograms) {
                     if (shouldLoad(serverDateTime, ResourceType.PROGRAMS, program)) {
-                        getProgramDataFromServer(dhisApi, program, serverDateTime, forceSync);
+                        getProgramDataFromServer(dhisApi, program, serverDateTime, syncStrategy);
                     }
                 }
             }
@@ -685,8 +715,6 @@ public final class MetaDataController extends ResourceController {
 
     private static void getAssignedProgramsDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
         Log.d(CLASS_TAG, "getAssignedProgramsDataFromServer");
-        DateTime lastUpdated = DateTimeManager.getInstance()
-                .getLastUpdated(ResourceType.ASSIGNEDPROGRAMS);
         UserAccount userAccount = dhisApi.getUserAccount();
         Map<String, Program> programMap = new HashMap<>();
         List<Program> assignedProgramUids = userAccount.getPrograms();
@@ -768,18 +796,18 @@ public final class MetaDataController extends ResourceController {
                 .setLastUpdated(ResourceType.ASSIGNEDPROGRAMS, serverDateTime);
     }
 
-    private static void getProgramDataFromServer(DhisApi dhisApi, String uid, DateTime serverDateTime, boolean forceSync) throws APIException {
+    private static void getProgramDataFromServer(DhisApi dhisApi, String uid, DateTime serverDateTime, SyncStrategy syncStrategy) throws APIException {
         Log.d(CLASS_TAG, "getProgramDataFromServer");
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.PROGRAM, uid);
 
-        Program program = updateProgram(dhisApi, uid, lastUpdated, forceSync);
+        Program program = updateProgram(dhisApi, uid, lastUpdated, syncStrategy);
         DateTimeManager.getInstance()
                 .setLastUpdated(ResourceType.PROGRAM, uid, serverDateTime);
 
     }
 
-    private static Program updateProgram(DhisApi dhisApi, String uid, DateTime lastUpdated, boolean forceSync) throws APIException {
+    private static Program updateProgram(DhisApi dhisApi, String uid, DateTime lastUpdated, SyncStrategy syncStrategy) throws APIException {
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
 
         QUERY_MAP_FULL.put("fields",
@@ -789,7 +817,7 @@ public final class MetaDataController extends ResourceController {
                         "[*,programStage[id],dataElement[*,optionSet[id]]]],programTrackedEntityAttributes" +
                         "[*,trackedEntityAttribute[*]],!organisationUnits");
 
-        if (!forceSync && lastUpdated != null) {
+        if (syncStrategy == SyncStrategy.DOWNLOAD_ONLY_NEW && lastUpdated != null) {
             QUERY_MAP_FULL.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
         }
 
@@ -988,5 +1016,33 @@ public final class MetaDataController extends ResourceController {
             }
         }
         return null;
+    }
+
+    public static Hashtable<String, List<Program>> getAssignedProgramsByOrganisationUnit() {
+        List<OrganisationUnit> assignedOrganisationUnits = getAssignedOrganisationUnits();
+        Hashtable<String, List<Program>> programsForOrganisationUnits = new Hashtable<>();
+
+        for (OrganisationUnit organisationUnit : assignedOrganisationUnits) {
+            if (organisationUnit.getId() == null
+                    || organisationUnit.getId().length() == Utils.randomUUID.length()) {
+                continue;
+            }
+
+            List<Program> programsForOrgUnit = new ArrayList<>();
+            List<Program> programsForOrgUnitSEWoR = getProgramsForOrganisationUnit
+                    (organisationUnit.getId(),
+                            ProgramType.WITHOUT_REGISTRATION,
+                            ProgramType.WITH_REGISTRATION);
+
+            if (programsForOrgUnitSEWoR != null) {
+                programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
+                if (programsForOrgUnitSEWoR.size() > 0) {
+                    programsForOrganisationUnits.put(organisationUnit.getId(),
+                            programsForOrgUnit);
+                }
+            }
+        }
+
+        return programsForOrganisationUnits;
     }
 }

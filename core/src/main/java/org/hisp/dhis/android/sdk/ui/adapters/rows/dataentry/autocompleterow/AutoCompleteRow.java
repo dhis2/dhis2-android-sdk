@@ -31,34 +31,20 @@ package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.autocompleterow;
 
 import android.graphics.Color;
 import android.support.v4.app.FragmentManager;
-import android.text.Editable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
-import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.Option;
 import org.hisp.dhis.android.sdk.persistence.models.Option$Table;
 import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
-import org.hisp.dhis.android.sdk.ui.dialogs.AutoCompleteDialogFragment.OnOptionSelectedListener;
-import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import static android.text.TextUtils.isEmpty;
 
 public final class AutoCompleteRow extends Row implements OptionNameCacher {
     static final String EMPTY_FIELD = "";
@@ -156,7 +142,7 @@ public final class AutoCompleteRow extends Row implements OptionNameCacher {
 
     @Override
     public int getViewType() {
-        return DataEntryRowTypes.AUTO_COMPLETE.ordinal();
+        return DataEntryRowTypes.OPTION_SET.ordinal();
     }
 
     public void cacheOptionName() {

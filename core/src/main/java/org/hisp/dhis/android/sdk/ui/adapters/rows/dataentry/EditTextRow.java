@@ -35,7 +35,6 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,7 +66,9 @@ public class EditTextRow extends Row {
                 !DataEntryRowTypes.INTEGER_NEGATIVE.equals(rowType) &&
                 !DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE.equals(rowType) &&
                 !DataEntryRowTypes.PHONE_NUMBER.equals(rowType) &&
-                !DataEntryRowTypes.INTEGER_POSITIVE.equals(rowType)) {
+                !DataEntryRowTypes.PERCENTAGE.equals(rowType) &&
+                !DataEntryRowTypes.INTEGER_POSITIVE.equals(rowType) &&
+                !DataEntryRowTypes.INVALID_DATA_ENTRY.equals(rowType)) {
             throw new IllegalArgumentException("Unsupported row type");
         }
         checkNeedsForDescriptionButton();
@@ -90,7 +91,7 @@ public class EditTextRow extends Row {
             TextView mandatoryIndicator = (TextView) root.findViewById(R.id.mandatory_indicator);
             TextView warningLabel = (TextView) root.findViewById(R.id.warning_label);
             TextView errorLabel = (TextView) root.findViewById(R.id.error_label);
-            EditText editText = (EditText) root.findViewById(R.id.edit_text_row);
+            final EditText editText = (EditText) root.findViewById(R.id.edit_text_row);
 //            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
 
             if (DataEntryRowTypes.TEXT.equals(mRowType)) {
@@ -106,6 +107,39 @@ public class EditTextRow extends Row {
                         InputType.TYPE_NUMBER_FLAG_DECIMAL |
                         InputType.TYPE_NUMBER_FLAG_SIGNED);
                 editText.setHint(R.string.enter_number);
+                editText.setFilters(new InputFilter[]{new NumberFilter()});
+                editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        if (!hasFocus) {
+                            String text = editText.getText().toString();
+                            if(text.startsWith("0") && text.length()>1){
+                                if(text.contains(".")) {
+                                    String decimals = text.substring(text.indexOf("."),
+                                            text.length());
+                                    text = new Integer(text.substring(0,text.indexOf("."))).toString()+decimals;
+                                }else{
+                                    text = new Integer(text).toString();
+                                }
+                            }
+                            if (editText.getText() != null && text.endsWith(".")) {
+                                editText.getText().clear();
+                                editText.append(text.substring(0, text.length() - 1));
+                            } else if (text.contains(".")) {
+                                int pointPosition = text.indexOf(".");
+                                String removeZeroes = text.substring(pointPosition + 1,
+                                        text.length());
+                                removeZeroes = removeLastZero(removeZeroes);
+                                text = text.substring(0, pointPosition + 1) + removeZeroes;
+                                if(text.endsWith(".0")) {
+                                    text = text.substring(0,text.indexOf(".0"));
+                                }
+                                editText.getText().clear();
+                                editText.append(text);
+                            }
+                        }
+                    }
+                });
                 editText.setSingleLine(true);
             } else if (DataEntryRowTypes.INTEGER.equals(mRowType)) {
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER |
@@ -117,6 +151,12 @@ public class EditTextRow extends Row {
                         InputType.TYPE_NUMBER_FLAG_SIGNED);
                 editText.setHint(R.string.enter_negative_integer);
                 editText.setFilters(new InputFilter[]{new NegInpFilter()});
+                editText.setSingleLine(true);
+            } else if (DataEntryRowTypes.PERCENTAGE.equals(mRowType)) {
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER |
+                        InputType.TYPE_NUMBER_FLAG_SIGNED);
+                editText.setHint(R.string.enter_percentage);
+                editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3), new MinMaxInputFilter(0, 100)});
                 editText.setSingleLine(true);
             } else if (DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE.equals(mRowType)) {
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -133,6 +173,10 @@ public class EditTextRow extends Row {
                 editText.setInputType(InputType.TYPE_CLASS_PHONE);
                 editText.setHint(R.string.enter_phone_number);
                 editText.setSingleLine(true);
+            } else if (DataEntryRowTypes.INVALID_DATA_ENTRY.equals(mRowType)) {
+                editText.setHint(R.string.invalid_entry_type);
+                editText.setEnabled(false);
+                editText.setFocusable(false);
             }
 
             OnTextChangeListener listener = new OnTextChangeListener();
@@ -189,6 +233,12 @@ public class EditTextRow extends Row {
         }
 
         return view;
+    }
+
+    private String removeLastZero(String text) {
+        if(text.endsWith("0") && text.length()>1)
+            return removeLastZero(text.substring(0, text.length()-1));
+        return text;
     }
 
     @Override
@@ -267,6 +317,7 @@ public class EditTextRow extends Row {
         return value;
     }
 
+
     private static class NegInpFilter implements InputFilter {
 
         @Override
@@ -300,6 +351,28 @@ public class EditTextRow extends Row {
         }
     }
 
+    private static class NumberFilter implements InputFilter {
+
+        @Override
+        public CharSequence filter(CharSequence str, int start, int end,
+                Spanned spn, int spnStart, int spnEnd) {
+            //Do not start with .
+            if (str.length() > 0 && str.charAt(0) == '.' && spnStart == 0 && spnEnd == 1) {
+                return EMPTY_FIELD;
+            }
+            //do not start with 00
+            if ((str.length() > 0) && (str.charAt(0) == '0' && spn.length() > 0 && spn.charAt(0)
+                    == '0')) {
+                if (spn.length() > 1 && spn.toString().contains(".")) {
+                    return str;
+                }
+                return EMPTY_FIELD;
+            }
+
+            return str;
+        }
+    }
+
     private static class PosFilter implements InputFilter {
 
         @Override
@@ -311,6 +384,80 @@ public class EditTextRow extends Row {
             }
 
             return str;
+        }
+    }
+
+    public class MinMaxInputFilter implements InputFilter {
+        /**
+         * Minimum allowed value for the input.
+         * Null means there is no minimum limit.
+         */
+        private Integer minAllowed;
+
+        /**
+         * Maximum allowed value for the input.
+         * Null means there is no maximum limit.
+         */
+        private Integer maxAllowed;
+
+        public MinMaxInputFilter(Integer min){
+            this.minAllowed=min;
+        }
+
+        public MinMaxInputFilter(Integer min, Integer max){
+            this(min);
+            this.maxAllowed=max;
+        }
+
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            try {
+                // Remove the string out of destination that is to be replaced
+                String newVal = dest.toString().substring(0, dstart) + dest.toString().substring(dend, dest.toString().length());
+                // Add the new string in
+                newVal = newVal.substring(0, dstart) + source.toString() + newVal.substring(dstart, newVal.length());
+                if(newVal.length()>1 && newVal.startsWith("0")) {
+                    return "";
+                }
+                int input = Integer.parseInt(newVal);
+                if (inRange(input)) {
+                    return null;
+                }
+            }catch (NumberFormatException nfe) {
+            }
+            return "";
+        }
+
+        /**
+         * Checks if the value is between the specified range.
+         *
+         * @param value
+         * @return
+         */
+        public boolean inRange(Integer value){
+            boolean isMinOk=true;
+            boolean isMaxOk=true;
+            //No bounds -> ok
+            if(minAllowed==null && maxAllowed==null){
+                return true;
+            }
+            //Check minimum
+            if(minAllowed!=null){
+                if(value==null){
+                    isMinOk=false;
+                }else{
+                    isMinOk=minAllowed<=value;
+                }
+            }
+            //Check maximum
+            if(maxAllowed!=null){
+                if(value==null){
+                    isMaxOk=false;
+                }else{
+                    isMaxOk=value<=maxAllowed;
+                }
+            }
+            return isMinOk && isMaxOk;
         }
     }
 }

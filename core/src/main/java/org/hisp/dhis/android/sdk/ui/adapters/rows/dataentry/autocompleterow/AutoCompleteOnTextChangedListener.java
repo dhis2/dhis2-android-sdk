@@ -1,7 +1,6 @@
 package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.autocompleterow;
 
 import android.text.Editable;
-import android.util.Log;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -13,8 +12,6 @@ import org.hisp.dhis.android.sdk.persistence.models.Option$Table;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
-
-import java.util.Map;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -61,7 +58,7 @@ public class AutoCompleteOnTextChangedListener extends AbsTextWatcher {
             optionNameCacher.cacheOptionName();
 
             Dhis2Application.getEventBus()
-                    .post(new RowValueChangedEvent(value, DataEntryRowTypes.AUTO_COMPLETE.toString()));
+                    .post(new RowValueChangedEvent(value, DataEntryRowTypes.OPTION_SET.toString()));
         }
     }
 }

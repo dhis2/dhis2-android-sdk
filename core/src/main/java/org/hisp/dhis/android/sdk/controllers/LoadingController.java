@@ -36,6 +36,7 @@ import android.util.Log;
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
+import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
@@ -101,14 +102,16 @@ public final class LoadingController {
      */
     static void loadInitialData(Context context, DhisApi dhisApi)
             throws APIException, IllegalStateException {
+        UiUtils.postProgressMessage(context.getString(org.hisp.dhis.android.sdk.R.string.finishing_up),
+                LoadingMessageEvent.EventType.STARTUP);
         if (!MetaDataController.isDataLoaded(context)) {
-            loadMetaData(context, dhisApi, true); // true = force sync
+            loadMetaData(context, SyncStrategy.DOWNLOAD_ALL, dhisApi);
         } else if (!TrackerController.isDataLoaded(context)) {
             Log.d(CLASS_TAG, "loading initial datavalues");
             String message = "";
             message = context.getString(R.string.finishing_up);
-            UiUtils.postProgressMessage(message);
-            loadDataValues(context, dhisApi);
+            UiUtils.postProgressMessage(message, LoadingMessageEvent.EventType.STARTUP);
+            loadDataValues(context, SyncStrategy.DOWNLOAD_ALL, dhisApi);
         }
     }
 
@@ -118,7 +121,7 @@ public final class LoadingController {
      *
      * @param context
      */
-    static void loadMetaData(Context context, DhisApi dhisApi, boolean forceSync) throws APIException {
+    static void loadMetaData(Context context, SyncStrategy syncStrategy, DhisApi dhisApi) throws APIException {
 
         if (context == null) {
             Log.i(CLASS_TAG, "Unable to load metadata. We have no valid context.");
@@ -128,7 +131,7 @@ public final class LoadingController {
         Log.d(CLASS_TAG, "loading metadata!");
         Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_START));
         try {
-            MetaDataController.loadMetaData(context, dhisApi, forceSync);
+            MetaDataController.loadMetaData(context, dhisApi, syncStrategy);
         } catch (APIException e) {
             //to make sure we stop showing loading indicator
             Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
@@ -137,10 +140,23 @@ public final class LoadingController {
         Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
     }
 
-    static void loadDataValues(Context context, DhisApi dhisApi) throws APIException {
+    static void loadDataValues(Context context, SyncStrategy syncStrategy, DhisApi dhisApi) throws APIException {
         Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_START));
         try {
-            TrackerController.loadDataValues(context, dhisApi);
+            TrackerController.loadDataValues(context, dhisApi, syncStrategy);
+        } catch (APIException e) {
+            //to make sure we stop showing loading indicator
+            Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
+            throw e;
+        }
+        Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
+    }
+
+
+    static void syncRemotelyDeletedData(Context context, DhisApi dhisApi) throws APIException {
+        Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_START));
+        try {
+            TrackerController.syncRemotelyDeletedData(context, dhisApi);
         } catch (APIException e) {
             //to make sure we stop showing loading indicator
             Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));

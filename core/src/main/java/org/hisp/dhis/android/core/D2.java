@@ -34,14 +34,20 @@ import android.support.annotation.VisibleForTesting;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
+import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
+import org.hisp.dhis.android.core.event.EventStore;
+import org.hisp.dhis.android.core.event.EventStoreImpl;
+import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
@@ -80,6 +86,13 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityService;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStoreImpl;
@@ -149,6 +162,13 @@ public final class D2 {
     private final ProgramStageStore programStageStore;
     private final RelationshipTypeStore relationshipStore;
     private final TrackedEntityStore trackedEntityStore;
+    private final TrackedEntityInstanceStore trackedEntityInstanceStore;
+    private final TrackedEntityInstanceService trackedEntityInstanceService;
+    private final EnrollmentStore enrollmentStore;
+    private final EventStore eventStore;
+    private final TrackedEntityDataValueStore trackedEntityDataValueStore;
+    private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
+
 
     @VisibleForTesting
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter) {
@@ -162,6 +182,7 @@ public final class D2 {
         this.organisationUnitService = retrofit.create(OrganisationUnitService.class);
         this.trackedEntityService = retrofit.create(TrackedEntityService.class);
         this.optionSetService = retrofit.create(OptionSetService.class);
+        this.trackedEntityInstanceService = retrofit.create(TrackedEntityInstanceService.class);
 
         // stores
         this.userStore =
@@ -214,6 +235,16 @@ public final class D2 {
                 new RelationshipTypeStoreImpl(databaseAdapter);
         this.trackedEntityStore =
                 new TrackedEntityStoreImpl(databaseAdapter);
+        this.trackedEntityInstanceStore =
+                new TrackedEntityInstanceStoreImpl(databaseAdapter);
+        this.enrollmentStore =
+                new EnrollmentStoreImpl(databaseAdapter);
+        this.eventStore =
+                new EventStoreImpl(databaseAdapter);
+        this.trackedEntityDataValueStore =
+                new TrackedEntityDataValueStoreImpl(databaseAdapter);
+        this.trackedEntityAttributeValueStore =
+                new TrackedEntityAttributeValueStoreImpl(databaseAdapter);
     }
 
     @NonNull
@@ -268,6 +299,13 @@ public final class D2 {
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore, optionStore,
                 optionSetStore, dataElementStore, programStageDataElementStore, programStageSectionStore,
                 programStageStore, relationshipStore, trackedEntityStore);
+    }
+
+    @NonNull
+    public Call<Response<WebResponse>> syncTrackedEntityInstances() {
+        return new TrackedEntityInstancePostCall(databaseAdapter, trackedEntityInstanceService,
+                trackedEntityInstanceStore, enrollmentStore, eventStore, trackedEntityDataValueStore,
+                trackedEntityAttributeValueStore);
     }
 
     public static class Builder {

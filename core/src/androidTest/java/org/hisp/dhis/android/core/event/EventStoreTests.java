@@ -36,6 +36,7 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.enrollment.CreateEnrollmentUtils;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.event.EventModel.Columns;
@@ -49,6 +50,7 @@ import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityInstanceUtils;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
 import org.junit.Before;
@@ -58,6 +60,8 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -372,11 +376,11 @@ public class EventStoreTests extends AbsStoreTestCase {
         event.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
         database().insert(EventModel.TABLE, null, event);
 
-        String[] projection = {Columns.UID};
+        String[] projection = {Columns.UID, Columns.ORGANISATION_UNIT};
         Cursor cursor = database().query(EventModel.TABLE, projection, null, null, null, null, null);
 
         // check that event was successfully inserted into database
-        assertThatCursor(cursor).hasRow(EVENT_UID).isExhausted();
+        assertThatCursor(cursor).hasRow(EVENT_UID, ORGANISATION_UNIT).isExhausted();
 
         eventStore.delete(EVENT_UID);
 
@@ -408,6 +412,64 @@ public class EventStoreTests extends AbsStoreTestCase {
 
         // check that state was updated
         assertThatCursor(cursor).hasRow(EVENT_UID, updatedState);
+
+    }
+
+    @Test
+    public void query_shouldReturnListOfEvents() throws Exception {
+        ContentValues eventContentValues = new ContentValues();
+        eventContentValues.put(Columns.UID, EVENT_UID);
+        eventContentValues.put(Columns.PROGRAM, PROGRAM);
+        eventContentValues.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+        eventContentValues.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
+        eventContentValues.put(Columns.ENROLLMENT_UID, ENROLLMENT_UID);
+        eventContentValues.put(Columns.STATUS, STATUS.name());
+        eventContentValues.put(Columns.EVENT_DATE, dateString);
+        eventContentValues.put(Columns.COMPLETE_DATE, dateString);
+        eventContentValues.put(Columns.LATITUDE, dateString);
+        eventContentValues.put(Columns.STATE, STATE.name());
+        database().insert(EventModel.TABLE, null, eventContentValues);
+
+        String dataElementUid = "de_uid";
+        ContentValues dataElement = new ContentValues();
+        dataElement.put(DataElementModel.Columns.UID, dataElementUid);
+        database().insert(DataElementModel.TABLE, null, dataElement);
+
+        ContentValues dataValue = new ContentValues();
+        dataValue.put(TrackedEntityDataValueModel.Columns.EVENT, EVENT_UID);
+        dataValue.put(TrackedEntityDataValueModel.Columns.DATA_ELEMENT, dataElementUid);
+        dataValue.put(TrackedEntityDataValueModel.Columns.VALUE, "some_value");
+        database().insert(TrackedEntityDataValueModel.TABLE, null, dataValue);
+
+        String[] dataValueProjection = {TrackedEntityDataValueModel.Columns.EVENT};
+        Cursor dataValueCursor = database().query(TrackedEntityDataValueModel.TABLE, dataValueProjection,
+                null, null, null, null, null);
+        assertThatCursor(dataValueCursor).hasRow(EVENT_UID).isExhausted();
+
+        String[] projection = {Columns.UID};
+        Cursor cursor = database().query(EventModel.TABLE, projection, Columns.UID + " =?",
+                new String[]{EVENT_UID}, null, null, null);
+        // verify that eventContentValues was successfully inserted
+        assertThatCursor(cursor).hasRow(EVENT_UID).isExhausted();
+
+
+        // query for events
+        Map<String, List<Event>> eventMap = eventStore.query();
+        assertThat(eventMap.size()).isEqualTo(1);
+
+        List<Event> events = eventMap.get(ENROLLMENT_UID);
+        assertThat(events.size()).isEqualTo(1);
+
+        Event event = events.get(0);
+        // check that uid and data values is included
+        assertThat(event.uid()).isEqualTo(EVENT_UID);
+    }
+
+    @Test
+    public void query_shouldReturnEmptyListWithNoEventsPresent() throws Exception {
+        Map<String, List<Event>> events = eventStore.query();
+
+        assertThat(events.size()).isEqualTo(0);
 
     }
 

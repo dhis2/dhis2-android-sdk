@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.AndroidTestUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.enrollment.EnrollmentModel.Columns;
 import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
@@ -54,6 +55,8 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -62,21 +65,21 @@ import static org.hisp.dhis.android.core.enrollment.EnrollmentModel.TABLE;
 @RunWith(AndroidJUnit4.class)
 public class EnrollmentStoreTests extends AbsStoreTestCase {
     private static final String[] PROJECTION = {
-            EnrollmentModel.Columns.UID,
-            EnrollmentModel.Columns.CREATED,
-            EnrollmentModel.Columns.LAST_UPDATED,
-            EnrollmentModel.Columns.CREATED_AT_CLIENT,
-            EnrollmentModel.Columns.LAST_UPDATED_AT_CLIENT,
-            EnrollmentModel.Columns.ORGANISATION_UNIT,
-            EnrollmentModel.Columns.PROGRAM,
-            EnrollmentModel.Columns.DATE_OF_ENROLLMENT,
-            EnrollmentModel.Columns.DATE_OF_INCIDENT,
-            EnrollmentModel.Columns.FOLLOW_UP,
-            EnrollmentModel.Columns.ENROLLMENT_STATUS,
-            EnrollmentModel.Columns.TRACKED_ENTITY_INSTANCE,
-            EnrollmentModel.Columns.LATITUDE,
-            EnrollmentModel.Columns.LONGITUDE,
-            EnrollmentModel.Columns.STATE
+            Columns.UID,
+            Columns.CREATED,
+            Columns.LAST_UPDATED,
+            Columns.CREATED_AT_CLIENT,
+            Columns.LAST_UPDATED_AT_CLIENT,
+            Columns.ORGANISATION_UNIT,
+            Columns.PROGRAM,
+            Columns.DATE_OF_ENROLLMENT,
+            Columns.DATE_OF_INCIDENT,
+            Columns.FOLLOW_UP,
+            Columns.ENROLLMENT_STATUS,
+            Columns.TRACKED_ENTITY_INSTANCE,
+            Columns.LATITUDE,
+            Columns.LONGITUDE,
+            Columns.STATE
     };
 
     private EnrollmentStore enrollmentStore;
@@ -239,14 +242,14 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
     @Test
     public void update_shouldUpdateEnrollment() throws Exception {
         ContentValues enrollment = new ContentValues();
-        enrollment.put(EnrollmentModel.Columns.UID, UID);
-        enrollment.put(EnrollmentModel.Columns.ENROLLMENT_STATUS, ENROLLMENT_STATUS.name());
-        enrollment.put(EnrollmentModel.Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
-        enrollment.put(EnrollmentModel.Columns.PROGRAM, PROGRAM);
-        enrollment.put(EnrollmentModel.Columns.TRACKED_ENTITY_INSTANCE, TRACKED_ENTITY_INSTANCE);
+        enrollment.put(Columns.UID, UID);
+        enrollment.put(Columns.ENROLLMENT_STATUS, ENROLLMENT_STATUS.name());
+        enrollment.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
+        enrollment.put(Columns.PROGRAM, PROGRAM);
+        enrollment.put(Columns.TRACKED_ENTITY_INSTANCE, TRACKED_ENTITY_INSTANCE);
         database().insert(EnrollmentModel.TABLE, null, enrollment);
 
-        String[] projection = {EnrollmentModel.Columns.UID, EnrollmentModel.Columns.ENROLLMENT_STATUS};
+        String[] projection = {Columns.UID, Columns.ENROLLMENT_STATUS};
         Cursor cursor = database().query(TABLE, projection, null, null, null, null, null);
 
         // check that enrollment was successfully inserted into database
@@ -270,13 +273,13 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
     @Test
     public void delete_shouldDeleteEnrollment() throws Exception {
         ContentValues enrollment = new ContentValues();
-        enrollment.put(EnrollmentModel.Columns.UID, UID);
-        enrollment.put(EnrollmentModel.Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
-        enrollment.put(EnrollmentModel.Columns.PROGRAM, PROGRAM);
-        enrollment.put(EnrollmentModel.Columns.TRACKED_ENTITY_INSTANCE, TRACKED_ENTITY_INSTANCE);
+        enrollment.put(Columns.UID, UID);
+        enrollment.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
+        enrollment.put(Columns.PROGRAM, PROGRAM);
+        enrollment.put(Columns.TRACKED_ENTITY_INSTANCE, TRACKED_ENTITY_INSTANCE);
         database().insert(EnrollmentModel.TABLE, null, enrollment);
 
-        String[] projection = {EnrollmentModel.Columns.UID};
+        String[] projection = {Columns.UID};
         Cursor cursor = database().query(TABLE, projection, null, null, null, null, null);
 
         // check that enrollment was successfully inserted into database
@@ -375,15 +378,15 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
     @Test
     public void setState_shouldUpdateEnrollmentState() throws Exception {
         ContentValues enrollment = new ContentValues();
-        enrollment.put(EnrollmentModel.Columns.UID, UID);
-        enrollment.put(EnrollmentModel.Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
-        enrollment.put(EnrollmentModel.Columns.PROGRAM, PROGRAM);
-        enrollment.put(EnrollmentModel.Columns.TRACKED_ENTITY_INSTANCE, TRACKED_ENTITY_INSTANCE);
-        enrollment.put(EnrollmentModel.Columns.STATE, STATE.name());
+        enrollment.put(Columns.UID, UID);
+        enrollment.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
+        enrollment.put(Columns.PROGRAM, PROGRAM);
+        enrollment.put(Columns.TRACKED_ENTITY_INSTANCE, TRACKED_ENTITY_INSTANCE);
+        enrollment.put(Columns.STATE, STATE.name());
 
         database().insert(EnrollmentModel.TABLE, null, enrollment);
 
-        String[] projection = {EnrollmentModel.Columns.UID, EnrollmentModel.Columns.STATE};
+        String[] projection = {Columns.UID, Columns.STATE};
 
         Cursor cursor = database().query(EnrollmentModel.TABLE, projection, null, null, null, null, null);
 
@@ -398,6 +401,36 @@ public class EnrollmentStoreTests extends AbsStoreTestCase {
         // check that state is updated
         assertThatCursor(cursor).hasRow(UID, updatedState);
 
+    }
+
+    @Test
+    public void query_shouldReturnListOfEnrollments() throws Exception {
+        ContentValues enrollmentContentValues = new ContentValues();
+        enrollmentContentValues.put(Columns.UID, UID);
+        enrollmentContentValues.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
+        enrollmentContentValues.put(Columns.PROGRAM, PROGRAM);
+        enrollmentContentValues.put(Columns.TRACKED_ENTITY_INSTANCE, TRACKED_ENTITY_INSTANCE);
+        enrollmentContentValues.put(Columns.STATE, STATE.name());
+        database().insert(EnrollmentModel.TABLE, null, enrollmentContentValues);
+
+        String[] projection = {Columns.UID};
+
+        Cursor cursor = database().query(EnrollmentModel.TABLE, projection, null, null, null, null, null);
+
+        // check that enrollment was successfully inserted into database
+        assertThatCursor(cursor).hasRow(UID).isExhausted();
+
+        Map<String, List<Enrollment>> map = enrollmentStore.query();
+        assertThat(map.size()).isEqualTo(1);
+
+        List<Enrollment> enrollments = map.get(TRACKED_ENTITY_INSTANCE);
+        assertThat(enrollments.size()).isEqualTo(1);
+
+        Enrollment enrollment = enrollments.get(0);
+        assertThat(enrollment.uid()).isEqualTo(UID);
+        assertThat(enrollment.organisationUnit()).isEqualTo(ORGANISATION_UNIT);
+        assertThat(enrollment.program()).isEqualTo(PROGRAM);
+        assertThat(enrollment.trackedEntityInstance()).isEqualTo(TRACKED_ENTITY_INSTANCE);
     }
 
     @Test(expected = SQLiteConstraintException.class)

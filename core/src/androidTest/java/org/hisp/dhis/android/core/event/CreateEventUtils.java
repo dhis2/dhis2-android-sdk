@@ -32,6 +32,8 @@ import android.content.ContentValues;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.State;
+
 public class CreateEventUtils {
 
     private static final String ENROLLMENT_UID = "test_enrollment";
@@ -66,6 +68,7 @@ public class CreateEventUtils {
         event.put(EventModel.Columns.EVENT_DATE, DATE);
         event.put(EventModel.Columns.COMPLETE_DATE, DATE);
         event.put(EventModel.Columns.DUE_DATE, DATE);
+        event.put(EventModel.Columns.STATE, State.TO_POST.name());
         return event;
     }
 }

@@ -29,11 +29,13 @@
 package org.hisp.dhis.android.core.utils;
 
 import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 
+import java.text.ParseException;
 import java.util.Date;
 
 /**
@@ -179,6 +181,18 @@ public final class StoreUtils {
             default: {
                 throw new IllegalArgumentException("Unknown import status");
             }
+        }
+    }
+
+    @NonNull
+    public static Date parse(@NonNull String date) {
+        if (date == null) {
+            return null;
+        }
+        try {
+            return BaseIdentifiableObject.DATE_FORMAT.parse(date);
+        } catch (ParseException p) {
+            throw new RuntimeException(p);
         }
     }
 }

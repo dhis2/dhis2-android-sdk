@@ -28,16 +28,23 @@
 
 package org.hisp.dhis.android.core.event;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.event.EventModel.Columns;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class EventStoreImpl implements EventStore {
@@ -89,6 +96,29 @@ public class EventStoreImpl implements EventStore {
     private static final String DELETE_STATEMENT = "DELETE FROM " +
             EventModel.TABLE + " WHERE " +
             Columns.UID + " =?;";
+
+    private static final String QUERY_STATEMENT = "SELECT " +
+            "  Event.uid, " +
+            "  Event.created, " +
+            "  Event.lastUpdated, " +
+            "  Event.createdAtClient, " +
+            "  Event.lastUpdatedAtClient, " +
+            "  Event.status, " +
+            "  Event.latitude, " +
+            "  Event.longitude, " +
+            "  Event.program, " +
+            "  Event.programStage, " +
+            "  Event.orgUnit, " +
+            "  Event.enrollment, " +
+            "  Event.eventDate, " +
+            "  Event.completedDate, " +
+            "  Event.dueDate " +
+            "FROM (Event INNER JOIN Enrollment ON Event.enrollment = Enrollment.uid " +
+            "  INNER JOIN TrackedEntityInstance ON Enrollment.trackedEntityInstance = TrackedEntityInstance.uid) " +
+            "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE' " +
+            "      OR Enrollment.state = 'TO_POST' OR Enrollment.state = 'TO_UPDATE' OR Event.state = 'TO_POST' " +
+            "OR Event.state = 'TO_UPDATE';";
+
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -193,6 +223,53 @@ public class EventStoreImpl implements EventStore {
         setStateStatement.clearBindings();
 
         return update;
+    }
+
+    @Override
+    public Map<String, List<Event>> query() {
+        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
+        Map<String, List<Event>> events = new HashMap<>(cursor.getCount());
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+
+                do {
+                    String uid = cursor.getString(0);
+                    Date created = cursor.getString(1) != null ? parse(cursor.getString(1)) : null;
+                    Date lastUpdated = cursor.getString(2) != null ? parse(cursor.getString(2)) : null;
+                    String createdAtClient = cursor.getString(3) != null ? cursor.getString(3) : null;
+                    String lastUpdatedAtClient = cursor.getString(4) != null ? cursor.getString(4) : null;
+                    EventStatus eventStatus =
+                            cursor.getString(5) != null ? EventStatus.valueOf(cursor.getString(5)) : null;
+                    String latitude = cursor.getString(6) != null ? cursor.getString(6) : null;
+                    String longitude = cursor.getString(7) != null ? cursor.getString(7) : null;
+                    String program = cursor.getString(8) != null ? cursor.getString(8) : null;
+                    String programStage = cursor.getString(9) != null ? cursor.getString(9) : null;
+                    String organisationUnit = cursor.getString(10) != null ? cursor.getString(10) : null;
+                    String enrollment = cursor.getString(11) != null ? cursor.getString(11) : null;
+                    Date eventDate = cursor.getString(12) != null ? parse(cursor.getString(12)) : null;
+                    Date completedDate = cursor.getString(13) != null ? parse(cursor.getString(13)) : null;
+                    Date dueDate = cursor.getString(14) != null ? parse(cursor.getString(14)) : null;
+
+                    if (events.get(enrollment) == null) {
+                        events.put(enrollment, new ArrayList<Event>());
+                    }
+
+                    events.get(enrollment).add(Event.create(
+                            uid, enrollment, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
+                            program, programStage, organisationUnit, eventDate, eventStatus,
+                            Coordinates.create(latitude, longitude), completedDate,
+                            dueDate, false, null));
+
+                }
+                while (cursor.moveToNext());
+            }
+
+        } finally {
+            cursor.close();
+        }
+        return events;
     }
 
 }

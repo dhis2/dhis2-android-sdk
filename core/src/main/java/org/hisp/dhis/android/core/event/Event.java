@@ -167,4 +167,5 @@ public abstract class Event {
                 program, programStage, organisationUnit, eventDate, eventStatus, coordinates,
                 completedDate, dueDate, deleted, safeUnmodifiableList(dataValues));
     }
+
 }

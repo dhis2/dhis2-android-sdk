@@ -34,6 +34,8 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.common.State;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public interface EventStore {
     long insert(@NonNull String uid,
@@ -76,4 +78,6 @@ public interface EventStore {
     int delete(@NonNull String uid);
 
     int setState(@NonNull String uid, @NonNull State state);
+
+    Map<String, List<Event>> query();
 }

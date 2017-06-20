@@ -159,4 +159,5 @@ public abstract class Enrollment {
                 organisationUnit, program, dateOfEnrollment, dateOfIncident, followUp, enrollmentStatus,
                 trackedEntityInstance, coordinate, deleted, safeUnmodifiableList(events));
     }
+
 }

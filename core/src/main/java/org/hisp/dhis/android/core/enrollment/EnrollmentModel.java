@@ -59,7 +59,7 @@ public abstract class EnrollmentModel extends BaseDataModel {
     public abstract ContentValues toContentValues();
 
     public static class Columns extends BaseDataModel.Columns {
-        public static final String UID = "enrollment";
+        public static final String UID = "uid";
         public static final String CREATED = "created";
         public static final String LAST_UPDATED = "lastUpdated";
         public static final String CREATED_AT_CLIENT = "createdAtClient";

@@ -28,16 +28,23 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel.Columns;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class EnrollmentStoreImpl implements EnrollmentStore {
@@ -87,6 +94,27 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
     private static final String DELETE_STATEMENT = "DELETE FROM " +
             EnrollmentModel.TABLE + " WHERE " +
             Columns.UID + " =?;";
+
+    private static final String QUERY_STATEMENT = "SELECT " +
+            "  Enrollment.uid, " +
+            "  Enrollment.created, " +
+            "  Enrollment.lastUpdated, " +
+            "  Enrollment.createdAtClient, " +
+            "  Enrollment.lastUpdatedAtClient, " +
+            "  Enrollment.orgUnit, " +
+            "  Enrollment.program, " +
+            "  Enrollment.enrollmentDate, " +
+            "  Enrollment.incidentDate, " +
+            "  Enrollment.followup, " +
+            "  Enrollment.status, " +
+            "  Enrollment.trackedEntityInstance, " +
+            "  Enrollment.latitude, " +
+            "  Enrollment.longitude " +
+            "FROM (Enrollment " +
+            "  INNER JOIN TrackedEntityInstance ON Enrollment.trackedEntityInstance = TrackedEntityInstance.uid " +
+            ") " +
+            "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE' " +
+            " OR Enrollment.state = 'TO_POST' OR Enrollment.state = 'TO_UPDATE';";
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -189,5 +217,52 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
         setStateStatement.clearBindings();
 
         return update;
+    }
+
+    @Override
+    public Map<String, List<Enrollment>> query() {
+        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
+        Map<String, List<Enrollment>> enrollmentMap = new HashMap<>(cursor.getCount());
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+
+                do {
+                    String uid = cursor.getString(0);
+                    Date created = cursor.getString(1) != null ? parse(cursor.getString(1)) : null;
+                    Date lastUpdated = cursor.getString(2) != null ? parse(cursor.getString(2)) : null;
+                    String createdAtClient = cursor.getString(3) != null ? cursor.getString(3) : null;
+                    String lastUpdatedAtClient = cursor.getString(4) != null ? cursor.getString(4) : null;
+                    String organisationUnit = cursor.getString(5) != null ? cursor.getString(5) : null;
+                    String program = cursor.getString(6) != null ? cursor.getString(6) : null;
+                    Date enrollmentDate = cursor.getString(7) != null ? parse(cursor.getString(7)) : null;
+                    Date incidentDate = cursor.getString(8) != null ? parse(cursor.getString(8)) : null;
+                    Boolean followUp =
+                            cursor.getString(9) != null || cursor.getInt(9) != 0 ? Boolean.FALSE : Boolean.TRUE;
+                    EnrollmentStatus status =
+                            cursor.getString(10) != null ? EnrollmentStatus.valueOf(cursor.getString(10)) : null;
+                    String trackedEntityInstance = cursor.getString(11) != null ? cursor.getString(11) : null;
+                    String latitude = cursor.getString(12) != null ? cursor.getString(12) : null;
+                    String longitude = cursor.getString(13) != null ? cursor.getString(13) : null;
+
+                    if (enrollmentMap.get(trackedEntityInstance) == null) {
+                        enrollmentMap.put(trackedEntityInstance, new ArrayList<Enrollment>());
+                    }
+
+                    enrollmentMap.get(trackedEntityInstance).add(Enrollment.create(
+                            uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
+                            organisationUnit, program, enrollmentDate, incidentDate, followUp,
+                            status, trackedEntityInstance, Coordinates.create(latitude, longitude), false, null
+                    ));
+
+                }
+                while (cursor.moveToNext());
+            }
+
+        } finally {
+            cursor.close();
+        }
+        return enrollmentMap;
     }
 }

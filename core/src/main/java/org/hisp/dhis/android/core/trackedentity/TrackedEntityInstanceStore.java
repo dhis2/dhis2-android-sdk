@@ -32,9 +32,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.imports.ImportStatus;
 
 import java.util.Date;
+import java.util.Map;
 
 public interface TrackedEntityInstanceStore {
     long insert(
@@ -57,4 +57,6 @@ public interface TrackedEntityInstanceStore {
     int delete(@NonNull String uid);
 
     int setState(@NonNull String uid, @NonNull State state);
+
+    Map<String, TrackedEntityInstance> query();
 }

@@ -28,51 +28,67 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel.Columns;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
+public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             TrackedEntityInstanceModel.TABLE + " (" +
-            TrackedEntityInstanceModel.Columns.UID + ", " +
-            TrackedEntityInstanceModel.Columns.CREATED + ", " +
-            TrackedEntityInstanceModel.Columns.LAST_UPDATED + ", " +
-            TrackedEntityInstanceModel.Columns.CREATED_AT_CLIENT + ", " +
-            TrackedEntityInstanceModel.Columns.LAST_UPDATED_AT_CLIENT + ", " +
-            TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT + ", " +
-            TrackedEntityInstanceModel.Columns.TRACKED_ENTITY + ", " +
-            TrackedEntityInstanceModel.Columns.STATE +
+            Columns.UID + ", " +
+            Columns.CREATED + ", " +
+            Columns.LAST_UPDATED + ", " +
+            Columns.CREATED_AT_CLIENT + ", " +
+            Columns.LAST_UPDATED_AT_CLIENT + ", " +
+            Columns.ORGANISATION_UNIT + ", " +
+            Columns.TRACKED_ENTITY + ", " +
+            Columns.STATE +
             ") " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + TrackedEntityInstanceModel.TABLE + " SET " +
-            TrackedEntityInstanceModel.Columns.UID + " =?, " +
-            TrackedEntityInstanceModel.Columns.CREATED + " =?, " +
-            TrackedEntityInstanceModel.Columns.LAST_UPDATED + " =?, " +
-            TrackedEntityInstanceModel.Columns.CREATED_AT_CLIENT + " =? , " +
-            TrackedEntityInstanceModel.Columns.LAST_UPDATED_AT_CLIENT + " =? , " +
-            TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT + " =?, " +
-            TrackedEntityInstanceModel.Columns.TRACKED_ENTITY + " =?, " +
-            TrackedEntityInstanceModel.Columns.STATE + " =? " +
+            Columns.UID + " =?, " +
+            Columns.CREATED + " =?, " +
+            Columns.LAST_UPDATED + " =?, " +
+            Columns.CREATED_AT_CLIENT + " =? , " +
+            Columns.LAST_UPDATED_AT_CLIENT + " =? , " +
+            Columns.ORGANISATION_UNIT + " =?, " +
+            Columns.TRACKED_ENTITY + " =?, " +
+            Columns.STATE + " =? " +
             " WHERE " +
-            TrackedEntityInstanceModel.Columns.UID + " =?;";
+            Columns.UID + " =?;";
 
     private static final String SET_STATE_STATEMENT = "UPDATE " + TrackedEntityInstanceModel.TABLE + " SET " +
-            TrackedEntityInstanceModel.Columns.STATE + " =?" +
+            Columns.STATE + " =?" +
             " WHERE " +
-            TrackedEntityInstanceModel.Columns.UID + " =?;";
+            Columns.UID + " =?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " +
             TrackedEntityInstanceModel.TABLE +
             " WHERE " +
-            TrackedEntityInstanceModel.Columns.UID + " =?;";
+            Columns.UID + " =?;";
+
+    private static final String QUERY_STATEMENT = "SELECT " +
+            "  TrackedEntityInstance.uid, " +
+            "  TrackedEntityInstance.created, " +
+            "  TrackedEntityInstance.lastUpdated, " +
+            "  TrackedEntityInstance.createdAtClient, " +
+            "  TrackedEntityInstance.lastUpdatedAtClient, " +
+            "  TrackedEntityInstance.organisationUnit, " +
+            "  TrackedEntityInstance.trackedEntity " +
+            "FROM TrackedEntityInstance " +
+            "WHERE state = 'TO_POST' OR state = 'TO_UPDATE'";
 
     private final SQLiteStatement insertRowStatement;
     private final SQLiteStatement updateStatement;
@@ -80,7 +96,7 @@ class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
     private final SQLiteStatement setStateStatement;
     private final DatabaseAdapter databaseAdapter;
 
-    TrackedEntityInstanceStoreImpl(DatabaseAdapter databaseAdapter) {
+    public TrackedEntityInstanceStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
         this.insertRowStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
         this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
@@ -155,5 +171,35 @@ class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
         setStateStatement.clearBindings();
 
         return updatedRow;
+    }
+
+    @Override
+    public Map<String, TrackedEntityInstance> query() {
+        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
+        Map<String, TrackedEntityInstance> trackedEntityInstanceMap = new HashMap<>();
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    String uid = cursor.getString(0);
+                    Date created = cursor.getString(1) != null ? parse(cursor.getString(1)) : null;
+                    Date lastUpdated = cursor.getString(2) != null ? parse(cursor.getString(2)) : null;
+                    String createdAtClient = cursor.getString(3) != null ? cursor.getString(3) : null;
+                    String lastUpdatedAtClient = cursor.getString(4) != null ? cursor.getString(4) : null;
+                    String organisationUnit = cursor.getString(5) != null ? cursor.getString(5) : null;
+                    String trackedEntity = cursor.getString(6) != null ? cursor.getString(6) : null;
+
+                    trackedEntityInstanceMap.put(uid, TrackedEntityInstance.create(
+                            uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
+                            organisationUnit, trackedEntity, false, null, null, null));
+
+                } while (cursor.moveToNext());
+            }
+
+        } finally {
+            cursor.close();
+        }
+
+        return trackedEntityInstanceMap;
     }
 }

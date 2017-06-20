@@ -28,14 +28,22 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueStore {
@@ -50,6 +58,21 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
             TrackedEntityDataValueModel.Columns.PROVIDED_ELSEWHERE +
             ") " + "VALUES (?,?,?,?,?,?,?)";
 
+    private static final String QUERY_STATEMENT = "SELECT " +
+            "  TrackedEntityDataValue.created, " +
+            "  TrackedEntityDataValue.lastUpdated, " +
+            "  TrackedEntityDataValue.dataElement, " +
+            "  TrackedEntityDataValue.event, " +
+            "  TrackedEntityDataValue.storedBy, " +
+            "  TrackedEntityDataValue.value, " +
+            "  TrackedEntityDataValue.providedElsewhere " +
+            "FROM (TrackedEntityDataValue INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid " +
+            "  INNER JOIN Enrollment ON Event.enrollment = Enrollment.uid " +
+            "  INNER JOIN TrackedEntityInstance ON Enrollment.trackedEntityInstance = TrackedEntityInstance.uid) " +
+            "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE' " +
+            "      OR Enrollment.state = 'TO_POST' OR Enrollment.state = 'TO_UPDATE' OR Event.state = 'TO_POST' " +
+            " OR Event.state = 'TO_POST';";
+
     private final SQLiteStatement insertRowStatement;
     private final DatabaseAdapter databaseAdapter;
 
@@ -62,7 +85,6 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
     public long insert(@NonNull String event, @Nullable Date created, @Nullable Date lastUpdated,
                        @Nullable String dataElement, @Nullable String storedBy,
                        @Nullable String value, @Nullable Boolean providedElsewhere) {
-        insertRowStatement.clearBindings();
 
         sqLiteBind(insertRowStatement, 1, event);
         sqLiteBind(insertRowStatement, 2, created);
@@ -72,11 +94,49 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
         sqLiteBind(insertRowStatement, 6, value);
         sqLiteBind(insertRowStatement, 7, providedElsewhere);
 
-        return databaseAdapter.executeInsert(TrackedEntityDataValueModel.TABLE, insertRowStatement);
+        long insert = databaseAdapter.executeInsert(TrackedEntityDataValueModel.TABLE, insertRowStatement);
+        insertRowStatement.clearBindings();
+
+        return insert;
+
     }
 
     @Override
-    public void close() {
-        insertRowStatement.close();
+    public Map<String, List<TrackedEntityDataValue>> query() {
+        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
+        Map<String, List<TrackedEntityDataValue>> dataValues = new HashMap<>(cursor.getCount());
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+
+                    Date created = cursor.getString(0) != null ? parse(cursor.getString(0)) : null;
+                    Date lastUpdated = cursor.getString(1) != null ? parse(cursor.getString(1)) : null;
+                    String dataElement = cursor.getString(2) != null ? cursor.getString(2) : null;
+                    String event = cursor.getString(3) != null ? cursor.getString(3) : null;
+                    String storedBy = cursor.getString(4) != null ? cursor.getString(4) : null;
+                    String value = cursor.getString(5) != null ? cursor.getString(5) : null;
+                    Boolean providedElsewhere =
+                            cursor.getString(6) != null || cursor.getInt(6) != 0 ? Boolean.FALSE : Boolean.TRUE;
+
+                    if (dataValues.get(event) == null) {
+                        dataValues.put(event, new ArrayList<TrackedEntityDataValue>());
+                    }
+
+
+                    dataValues.get(event).add(TrackedEntityDataValue.create(
+                            created, lastUpdated, dataElement, storedBy, value, providedElsewhere
+                    ));
+
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return dataValues;
     }
+
+
 }

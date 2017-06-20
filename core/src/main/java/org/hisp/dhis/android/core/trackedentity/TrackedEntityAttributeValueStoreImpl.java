@@ -35,6 +35,9 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.List;
+import java.util.Map;
+
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttributeValueStore {
@@ -46,6 +49,14 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
             TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ", " +
             TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + ") " +
             "VALUES (?, ?, ?, ?)";
+    
+    private static final String QUERY_STATEMENT = "SELECT " +
+            "  TrackedEntityAttributeValue.trackedEntityAttribute, " +
+            "  TrackedEntityAttributeValue.value " +
+            "FROM (TrackedEntityAttributeValue " +
+            "  INNER JOIN TrackedEntityInstance " +
+            "    ON TrackedEntityAttributeValue.trackedEntityInstance = TrackedEntityInstance.uid) " +
+            "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE';";
 
     private final SQLiteStatement insertRowStatement;
     private final DatabaseAdapter databaseAdapter;
@@ -60,19 +71,20 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
                        @Nullable String value,
                        @NonNull String trackedEntityAttribute,
                        @NonNull String trackedEntityInstance) {
-
-        insertRowStatement.clearBindings();
-
         sqLiteBind(insertRowStatement, 1, state);
         sqLiteBind(insertRowStatement, 2, value);
         sqLiteBind(insertRowStatement, 3, trackedEntityAttribute);
         sqLiteBind(insertRowStatement, 4, trackedEntityInstance);
 
-        return databaseAdapter.executeInsert(TrackedEntityAttributeValueModel.TABLE, insertRowStatement);
+        long insert = databaseAdapter.executeInsert(TrackedEntityAttributeValueModel.TABLE, insertRowStatement);
+        insertRowStatement.clearBindings();
+        
+        return insert;
     }
 
     @Override
-    public void close() {
-        insertRowStatement.close();
+    public Map<String, List<TrackedEntityAttributeValue>> query() {
+        return null;
     }
+
 }

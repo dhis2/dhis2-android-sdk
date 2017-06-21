@@ -34,6 +34,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel.Columns;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -51,12 +52,13 @@ public class TrackedEntityDataValueModelTests {
     private static final String VALUE = "test_value";
     private static final Boolean PROVIDED_ELSEWHERE = false;
 
-    private final Date date;
-    private final String dateString;
+    private Date date;
+    private String dateString;
 
-    public TrackedEntityDataValueModelTests() {
-        this.date = new Date();
-        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
+    @Before
+    public void setup() {
+        date = new Date();
+        dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
 
     @Test

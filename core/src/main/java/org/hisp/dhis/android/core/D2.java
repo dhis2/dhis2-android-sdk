@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
+import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
@@ -53,6 +54,8 @@ import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
 import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.option.OptionStoreImpl;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
@@ -62,8 +65,8 @@ import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
 import org.hisp.dhis.android.core.program.ProgramRuleActionStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramRuleStore;
 import org.hisp.dhis.android.core.program.ProgramRuleStoreImpl;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableModelStore;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableModelStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableStore;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramService;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementStore;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementStoreImpl;
@@ -117,7 +120,6 @@ import org.hisp.dhis.android.core.user.UserStoreImpl;
 import java.util.concurrent.Callable;
 
 import okhttp3.OkHttpClient;
-import retrofit2.Converter;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -149,7 +151,7 @@ public final class D2 {
     private final ProgramStore programStore;
     private final TrackedEntityAttributeStore trackedEntityAttributeStore;
     private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
-    private final ProgramRuleVariableModelStore programRuleVariableStore;
+    private final ProgramRuleVariableStore programRuleVariableStore;
     private final ProgramIndicatorStore programIndicatorStore;
     private final ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
     private final ProgramRuleActionStore programRuleActionStore;
@@ -162,12 +164,16 @@ public final class D2 {
     private final ProgramStageStore programStageStore;
     private final RelationshipTypeStore relationshipStore;
     private final TrackedEntityStore trackedEntityStore;
+
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final EnrollmentStore enrollmentStore;
     private final EventStore eventStore;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
+
+
+    private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
 
 
     @VisibleForTesting
@@ -185,6 +191,7 @@ public final class D2 {
         this.trackedEntityInstanceService = retrofit.create(TrackedEntityInstanceService.class);
 
         // stores
+
         this.userStore =
                 new UserStoreImpl(databaseAdapter);
         this.userCredentialsStore =
@@ -210,7 +217,7 @@ public final class D2 {
         this.programTrackedEntityAttributeStore =
                 new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter);
         this.programRuleVariableStore =
-                new ProgramRuleVariableModelStoreImpl(databaseAdapter);
+                new ProgramRuleVariableStoreImpl(databaseAdapter);
         this.programIndicatorStore =
                 new ProgramIndicatorStoreImpl(databaseAdapter);
         this.programStageSectionProgramIndicatorLinkStore =
@@ -245,6 +252,9 @@ public final class D2 {
                 new TrackedEntityDataValueStoreImpl(databaseAdapter);
         this.trackedEntityAttributeValueStore =
                 new TrackedEntityAttributeValueStoreImpl(databaseAdapter);
+        this.organisationUnitProgramLinkStore =
+                new OrganisationUnitProgramLinkStoreImpl(databaseAdapter);
+
     }
 
     @NonNull
@@ -298,7 +308,7 @@ public final class D2 {
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore, optionStore,
                 optionSetStore, dataElementStore, programStageDataElementStore, programStageSectionStore,
-                programStageStore, relationshipStore, trackedEntityStore);
+                programStageStore, relationshipStore, trackedEntityStore, organisationUnitProgramLinkStore);
     }
 
     @NonNull
@@ -352,16 +362,12 @@ public final class D2 {
                     .setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw())
                     .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-            Converter.Factory jsonConverterFactory
-                    = JacksonConverterFactory.create(objectMapper);
-            Converter.Factory filterConverterFactory
-                    = FieldsConverterFactory.create();
-
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(configuration.serverUrl())
                     .client(okHttpClient)
-                    .addConverterFactory(jsonConverterFactory)
-                    .addConverterFactory(filterConverterFactory)
+                    .addConverterFactory(JacksonConverterFactory.create(objectMapper))
+                    .addConverterFactory(FilterConverterFactory.create())
+                    .addConverterFactory(FieldsConverterFactory.create())
                     .validateEagerly(true)
                     .build();
 

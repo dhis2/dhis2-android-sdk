@@ -53,13 +53,16 @@ public interface ProgramStageDataElementStore {
     );
 
     int updateWithoutSection(@NonNull String uid, @Nullable String code, @Nullable String name,
-                          @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-                          @NonNull Boolean displayInReports, @NonNull Boolean compulsory,
-                          @NonNull Boolean allowProvidedElsewhere, @Nullable Integer sortOrder,
-                          @NonNull Boolean allowFutureDate, @NonNull String dataElement,
-                          @Nullable String programStageUid, @NonNull String whereProgramStageDataElementUid
+                             @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+                             @NonNull Boolean displayInReports, @NonNull Boolean compulsory,
+                             @NonNull Boolean allowProvidedElsewhere, @Nullable Integer sortOrder,
+                             @NonNull Boolean allowFutureDate, @NonNull String dataElement,
+                             @Nullable String programStageUid, @NonNull String whereProgramStageDataElementUid
     );
 
     int delete(@NonNull String uid);
 
+    int updateWithProgramStageSectionLink(@NonNull String programStageSectionUid,
+                                          @NonNull String dataElementUid
+    );
 }

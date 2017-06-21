@@ -45,7 +45,9 @@ public interface TrackedEntityAttributeStore {
                 @Nullable TrackedEntityAttributeSearchScope searchScope, @Nullable Boolean programScope,
                 @Nullable Boolean displayInListNoProgram, @Nullable Boolean generated,
                 @Nullable Boolean displayOnVisitSchedule, @Nullable Boolean orgUnitScope,
-                @Nullable Boolean unique, @Nullable Boolean inherit);
+                @Nullable Boolean unique, @Nullable Boolean inherit
+    );
+
     int update(@NonNull String uid, @Nullable String code, @NonNull String name,
                @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
                @Nullable String shortName, @Nullable String displayShortName,
@@ -55,7 +57,8 @@ public interface TrackedEntityAttributeStore {
                @Nullable TrackedEntityAttributeSearchScope searchScope, @Nullable Boolean programScope,
                @Nullable Boolean displayInListNoProgram, @Nullable Boolean generated,
                @Nullable Boolean displayOnVisitSchedule, @Nullable Boolean orgUnitScope,
-               @Nullable Boolean unique, @Nullable Boolean inherit, @NonNull String whereTrackedEntityAttributeUid);
+               @Nullable Boolean unique, @Nullable Boolean inherit, @NonNull String whereTrackedEntityAttributeUid
+    );
 
     int delete(String uid);
 }

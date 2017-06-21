@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class OptionSetStoreImpl implements OptionSetStore {
@@ -62,7 +63,6 @@ public class OptionSetStoreImpl implements OptionSetStore {
             OptionSetModel.Columns.VALUE_TYPE + "=?" + " WHERE " +
             OptionSetModel.Columns.UID + " = ?;";
 
-
     private static final String DELETE_STATEMENT = "DELETE FROM " + OptionSetModel.TABLE +
             " WHERE " + OptionSetModel.Columns.UID + " =?;";
 
@@ -82,6 +82,7 @@ public class OptionSetStoreImpl implements OptionSetStore {
     public long insert(@NonNull String uid, @NonNull String code, @NonNull String name, @NonNull String displayName,
                        @NonNull Date created, @NonNull Date lastUpdated, @NonNull Integer version,
                        @NonNull ValueType valueType) {
+        isNull(uid);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, version, valueType);
 
         // execute and clear bindings
@@ -90,7 +91,6 @@ public class OptionSetStoreImpl implements OptionSetStore {
 
         return insert;
 
-
     }
 
     @Override
@@ -98,11 +98,12 @@ public class OptionSetStoreImpl implements OptionSetStore {
                       @NonNull String displayName, @NonNull Date created,
                       @NonNull Date lastUpdated, @NonNull Integer version, @NonNull ValueType valueType,
                       @NonNull String whereUid) {
+        isNull(uid);
+        isNull(whereUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, version, valueType);
 
         // bind the where clause
         sqLiteBind(updateStatement, 9, whereUid);
-
 
         int update = databaseAdapter.executeUpdateDelete(OptionSetModel.TABLE, updateStatement);
         updateStatement.clearBindings();
@@ -112,7 +113,7 @@ public class OptionSetStoreImpl implements OptionSetStore {
 
     @Override
     public int delete(@NonNull String uid) {
-
+        isNull(uid);
         // bind the where clause
         sqLiteBind(deleteStatement, 1, uid);
 
@@ -135,6 +136,5 @@ public class OptionSetStoreImpl implements OptionSetStore {
         sqLiteBind(sqLiteStatement, 7, version);
         sqLiteBind(sqLiteStatement, 8, valueType);
     }
-
 
 }

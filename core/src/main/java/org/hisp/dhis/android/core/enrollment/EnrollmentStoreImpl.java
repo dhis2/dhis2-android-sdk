@@ -101,7 +101,7 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
             "  Enrollment.lastUpdated, " +
             "  Enrollment.createdAtClient, " +
             "  Enrollment.lastUpdatedAtClient, " +
-            "  Enrollment.orgUnit, " +
+            "  Enrollment.organisationUnit, " +
             "  Enrollment.program, " +
             "  Enrollment.enrollmentDate, " +
             "  Enrollment.incidentDate, " +
@@ -130,7 +130,6 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
         this.setStateStatement = databaseAdapter.compileStatement(UPADTE_STATE_STATEMENT);
     }
 
-
     @Override
     public long insert(@NonNull String uid, @Nullable Date created, @Nullable Date lastUpdated,
                        @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
@@ -138,8 +137,6 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
                        @Nullable Date dateOfIncident, @Nullable Boolean followUp,
                        @Nullable EnrollmentStatus enrollmentStatus, @NonNull String trackedEntityInstance,
                        @Nullable String latitude, @Nullable String longitude, @Nullable State state) {
-
-
         sqLiteBind(insertStatement, 1, uid);
         sqLiteBind(insertStatement, 2, created);
         sqLiteBind(insertStatement, 3, lastUpdated);

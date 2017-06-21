@@ -33,10 +33,8 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,6 +43,7 @@ import java.util.Map;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
@@ -86,6 +85,9 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
                        @Nullable String dataElement, @Nullable String storedBy,
                        @Nullable String value, @Nullable Boolean providedElsewhere) {
 
+        isNull(event);
+        isNull(dataElement);
+
         sqLiteBind(insertRowStatement, 1, event);
         sqLiteBind(insertRowStatement, 2, created);
         sqLiteBind(insertRowStatement, 3, lastUpdated);
@@ -94,11 +96,9 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
         sqLiteBind(insertRowStatement, 6, value);
         sqLiteBind(insertRowStatement, 7, providedElsewhere);
 
-        long insert = databaseAdapter.executeInsert(TrackedEntityDataValueModel.TABLE, insertRowStatement);
+        long ret = databaseAdapter.executeInsert(TrackedEntityDataValueModel.TABLE, insertRowStatement);
         insertRowStatement.clearBindings();
-
-        return insert;
-
+        return ret;
     }
 
     @Override

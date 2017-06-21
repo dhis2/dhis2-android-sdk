@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.Map;
 
 public interface TrackedEntityInstanceStore {
+
     long insert(
             @NonNull String uid, @NonNull Date created, @NonNull Date lastUpdated,
             @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,

@@ -134,6 +134,7 @@ public class TrackedEntityInstanceStoreTests extends AbsStoreTestCase {
     public void insert_shouldPersistNullableRowInDatabase() {
         long rowId = trackedEntityInstanceStore.insert(UID, null, null, null, null,
                 ORGANISATION_UNIT, TRACKED_ENTITY, null);
+
         Cursor cursor = database().query(TrackedEntityInstanceModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(
@@ -204,18 +205,28 @@ public class TrackedEntityInstanceStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteTrackedEntityInstanceWhenDeletingOrganisationUnitForeignKey() {
+
         trackedEntityInstanceStore.insert(UID, date, date, CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
                 ORGANISATION_UNIT, TRACKED_ENTITY, STATE);
+
+
         database().delete(OrganisationUnitModel.TABLE,
-                OrganisationUnitModel.Columns.UID + "=?", new String[]{ORGANISATION_UNIT});
+                OrganisationUnitModel.Columns.UID + "=?", new String[]{
+                        ORGANISATION_UNIT
+                });
+
         Cursor cursor = database().query(TrackedEntityInstanceModel.TABLE, PROJECTION, null, null, null, null, null);
-        assertThatCursor(cursor).isExhausted();
+
+        assertThatCursor(cursor).
+
+                isExhausted();
     }
 
     @Test
     public void delete_shouldDeleteTrackedEntityInstanceWhenDeletingTrackedEntityForeignKey() {
         trackedEntityInstanceStore.insert(UID, date, date, CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
                 ORGANISATION_UNIT, TRACKED_ENTITY, STATE);
+
         database().delete(TrackedEntityModel.TABLE,
                 TrackedEntityModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY});
         Cursor cursor = database().query(TrackedEntityInstanceModel.TABLE, PROJECTION, null, null, null, null, null);
@@ -277,8 +288,10 @@ public class TrackedEntityInstanceStoreTests extends AbsStoreTestCase {
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistTrackedEntityInstanceWithInvalidOrgUnitForeignKey() {
+
         trackedEntityInstanceStore.insert(UID, date, date, CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
                 "wrong", TRACKED_ENTITY, STATE);
+
     }
 
     @Test(expected = SQLiteConstraintException.class)
@@ -287,4 +300,26 @@ public class TrackedEntityInstanceStoreTests extends AbsStoreTestCase {
                 ORGANISATION_UNIT, "wrong", STATE);
     }
 
+    // ToDo: consider introducing conflict resolution strategy
+    @Test
+    public void close_shouldNotCloseDatabase() {
+        assertThat(database().isOpen()).isTrue();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        trackedEntityInstanceStore.insert(
+                null, date, date, dateString, dateString, ORGANISATION_UNIT, TRACKED_ENTITY, STATE
+        );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_organisationUnit() {
+        trackedEntityInstanceStore.insert(UID, date, date, dateString, dateString, null, TRACKED_ENTITY, STATE);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_trackedEntity() {
+        trackedEntityInstanceStore.insert(UID, date, date, dateString, dateString, ORGANISATION_UNIT, null, STATE);
+    }
 }

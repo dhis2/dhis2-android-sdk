@@ -37,26 +37,25 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoModel.Columns;
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 public class SystemInfoStoreImpl implements SystemInfoStore {
-
     private static final String INSERT_STATEMENT = "INSERT INTO " + SystemInfoModel.TABLE + " (" +
             Columns.SERVER_DATE + ", " +
             Columns.DATE_FORMAT + ", " +
             Columns.VERSION + ", " +
             Columns.CONTEXT_PATH + ") " +
             "VALUES (?, ?, ?, ?);";
+
     private static final String UPDATE_STATEMENT = "UPDATE " + SystemInfoModel.TABLE + " SET " +
             Columns.SERVER_DATE + " =?, " +
             Columns.DATE_FORMAT + " =?, " +
             Columns.VERSION + " =?, " +
             Columns.CONTEXT_PATH + " =? " +
-            " WHERE " +
-            Columns.CONTEXT_PATH + " =?;";
+            " WHERE " + Columns.CONTEXT_PATH + " =?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + SystemInfoModel.TABLE +
-            " WHERE " +
-            Columns.CONTEXT_PATH + " =?;";
+            " WHERE " + Columns.CONTEXT_PATH + " =?;";
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -75,14 +74,14 @@ public class SystemInfoStoreImpl implements SystemInfoStore {
                        @NonNull String dateFormat,
                        @NonNull String version,
                        @NonNull String contextPath) {
-        insertStatement.clearBindings();
-
+        isNull(serverDate);
+        isNull(dateFormat);
+        isNull(version);
+        isNull(contextPath);
         bindArguments(insertStatement, serverDate, dateFormat, version, contextPath);
-
-        long insert = databaseAdapter.executeInsert(SystemInfoModel.TABLE, insertStatement);
+        long ret = databaseAdapter.executeInsert(SystemInfoModel.TABLE, insertStatement);
         insertStatement.clearBindings();
-
-        return insert;
+        return ret;
     }
 
     @Override
@@ -91,23 +90,27 @@ public class SystemInfoStoreImpl implements SystemInfoStore {
                       @NonNull String version,
                       @NonNull String contextPath,
                       @NonNull String whereContextPath) {
+        isNull(serverDate);
+        isNull(dateFormat);
+        isNull(version);
+        isNull(contextPath);
+        isNull(whereContextPath);
         bindArguments(updateStatement, serverDate, dateFormat, version, contextPath);
-
         sqLiteBind(updateStatement, 5, whereContextPath);
 
-        int update = databaseAdapter.executeUpdateDelete(SystemInfoModel.TABLE, updateStatement);
+        int ret = databaseAdapter.executeUpdateDelete(SystemInfoModel.TABLE, updateStatement);
         updateStatement.clearBindings();
-
-        return update;
+        return ret;
     }
 
     @Override
     public int delete(@NonNull String contextPath) {
+        isNull(contextPath);
         sqLiteBind(deleteStatement, 1, contextPath);
-        int delete = databaseAdapter.executeUpdateDelete(SystemInfoModel.TABLE, deleteStatement);
-        deleteStatement.clearBindings();
 
-        return delete;
+        int ret = databaseAdapter.executeUpdateDelete(SystemInfoModel.TABLE, deleteStatement);
+        deleteStatement.clearBindings();
+        return ret;
     }
 
     private void bindArguments(@NonNull SQLiteStatement sqLiteStatement,

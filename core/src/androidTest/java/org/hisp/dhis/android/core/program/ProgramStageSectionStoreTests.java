@@ -80,7 +80,7 @@ public class ProgramStageSectionStoreTests extends AbsStoreTestCase {
     private final Date date;
     private final String dateString;
 
-    private ProgramStageSectionStore programStageSectionStore;
+    private ProgramStageSectionStore store;
 
     public ProgramStageSectionStoreTests() {
         this.date = new Date();
@@ -91,7 +91,7 @@ public class ProgramStageSectionStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.programStageSectionStore = new ProgramStageSectionStoreImpl(databaseAdapter());
+        this.store = new ProgramStageSectionStoreImpl(databaseAdapter());
 
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
@@ -110,7 +110,7 @@ public class ProgramStageSectionStoreTests extends AbsStoreTestCase {
     @Test
     public void insert_shouldPersistProgramStageSectionInDatabase() {
 
-        long rowId = programStageSectionStore.insert(
+        long rowId = store.insert(
                 UID,
                 CODE,
                 NAME,
@@ -144,7 +144,7 @@ public class ProgramStageSectionStoreTests extends AbsStoreTestCase {
         final String deferredProgramStage = "deferredProgramStage";
 
         database().beginTransaction();
-        long rowId = programStageSectionStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER,
+        long rowId = store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER,
                 deferredProgramStage
         );
         ContentValues programStage = CreateProgramStageUtils.create(3L, deferredProgramStage, PROGRAM);
@@ -187,7 +187,7 @@ public class ProgramStageSectionStoreTests extends AbsStoreTestCase {
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistProgramStageSectionWithInvalidProgramStageForeignKey() {
         String WRONG_UID = "wrong";
-        programStageSectionStore.insert(
+        store.insert(
                 UID,
                 CODE,
                 NAME,
@@ -202,7 +202,6 @@ public class ProgramStageSectionStoreTests extends AbsStoreTestCase {
     @Test
     public void update_shouldUpdateProgramStageSection() throws Exception {
         // insertion of foreign key: program stage happens in the setUp method
-
 
         // insert program stage section into database
         ContentValues programStageSection = new ContentValues();
@@ -219,7 +218,7 @@ public class ProgramStageSectionStoreTests extends AbsStoreTestCase {
         String updatedDisplayName = "updated_display_name";
 
         // update program stage section with new display name
-        int update = programStageSectionStore.update(
+        int update = store.update(
                 UID, CODE, NAME, updatedDisplayName,
                 date, date, SORT_ORDER, PROGRAM_STAGE, UID
         );
@@ -250,7 +249,7 @@ public class ProgramStageSectionStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(UID);
 
         // delete program stage section
-        int delete = programStageSectionStore.delete(UID);
+        int delete = store.delete(UID);
 
         // check that store returns 1 (deletion happen)
         assertThat(delete).isEqualTo(1);
@@ -259,5 +258,34 @@ public class ProgramStageSectionStoreTests extends AbsStoreTestCase {
 
         // check that row doesn't exist in database
         assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, PROGRAM_STAGE);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_programStage() {
+        store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, null);
+    }
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_uid() {
+        store.update(null, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, PROGRAM_STAGE, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_programStage() {
+        store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, null, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_whereUid() {
+        store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, PROGRAM_STAGE, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_null_uid() {
+        store.delete(null);
     }
 }

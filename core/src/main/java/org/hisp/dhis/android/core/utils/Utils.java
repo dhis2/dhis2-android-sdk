@@ -83,5 +83,11 @@ public final class Utils {
         return object.deleted() != null && object.deleted();
     }
 
+    public static <T> void isNull(T object) {
+        if (object == null) {
+            throw new IllegalArgumentException("Object must not be null");
+        }
+    }
+
 
 }

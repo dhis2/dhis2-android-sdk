@@ -231,9 +231,6 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             " FOREIGN KEY (" + ProgramModel.Columns.RELATIONSHIP_TYPE + ")" +
             " REFERENCES " + RelationshipTypeModel.TABLE + " (" + RelationshipTypeModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
-            " FOREIGN KEY (" + ProgramModel.Columns.RELATED_PROGRAM + ") " +
-            " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
             " FOREIGN KEY (" + ProgramModel.Columns.TRACKED_ENTITY + ")" +
             " REFERENCES " + TrackedEntityModel.TABLE + " (" + TrackedEntityModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
@@ -603,7 +600,8 @@ public class DbOpenHelper extends SQLiteOpenHelper {
     private static final String CREATE_TRACKED_ENTITY_ATTRIBUTE_VALUE_TABLE = "CREATE TABLE " +
             TrackedEntityAttributeValueModel.TABLE + " (" +
             TrackedEntityAttributeValueModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            TrackedEntityAttributeValueModel.Columns.STATE + " TEXT," +
+            TrackedEntityAttributeValueModel.Columns.CREATED + " TEXT," +
+            TrackedEntityAttributeValueModel.Columns.LAST_UPDATED + " TEXT," +
             TrackedEntityAttributeValueModel.Columns.VALUE + " TEXT," +
             TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT NOT NULL," +
             TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + " TEXT NOT NULL," +
@@ -709,15 +707,16 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ResourceModel.Columns.LAST_SYNCED + " TEXT" + ");";
 
     private static final String CREATE_ORGANISATION_UNIT_PROGRAM_LINK_TABLE = "CREATE TABLE " +
-            OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK + " (" +
+            OrganisationUnitProgramLinkModel.TABLE + " (" +
             OrganisationUnitProgramLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
             OrganisationUnitProgramLinkModel.Columns.PROGRAM + " TEXT NOT NULL," +
             " FOREIGN KEY (" + OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT + ")" +
             " REFERENCES " + OrganisationUnitModel.TABLE + " (" + OrganisationUnitModel.Columns.UID + ")" +
-            " ON DELETE CASCADE," +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
             " FOREIGN KEY (" + OrganisationUnitProgramLinkModel.Columns.PROGRAM + ")" +
-            " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" + " ON DELETE CASCADE," +
+            " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
             " UNIQUE (" + OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT + ", " +
             OrganisationUnitProgramLinkModel.Columns.PROGRAM + ")" +
             ");";
@@ -807,7 +806,6 @@ public class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_USER_ROLE_TABLE);
         database.execSQL(CREATE_USER_ROLE_PROGRAM_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_SECTION_PROGRAM_INDICATOR_LINK_TABLE);
-
         return database;
     }
 
@@ -830,6 +828,6 @@ public class DbOpenHelper extends SQLiteOpenHelper {
         super.onOpen(db);
 
         // enable foreign key support in database
-        db.execSQL("PRAGMA foreign_keys = ON;");
+//        db.execSQL("PRAGMA foreign_keys = ON;");
     }
 }

@@ -108,7 +108,7 @@ public class EventStoreImpl implements EventStore {
             "  Event.longitude, " +
             "  Event.program, " +
             "  Event.programStage, " +
-            "  Event.orgUnit, " +
+            "  Event.organisationUnit, " +
             "  Event.enrollment, " +
             "  Event.eventDate, " +
             "  Event.completedDate, " +
@@ -143,7 +143,6 @@ public class EventStoreImpl implements EventStore {
                        @NonNull String programStage, @NonNull String organisationUnit,
                        @Nullable Date eventDate, @Nullable Date completedDate,
                        @Nullable Date dueDate, @Nullable State state) {
-
         sqLiteBind(insertStatement, 1, uid);
         sqLiteBind(insertStatement, 2, enrollmentUid);
         sqLiteBind(insertStatement, 3, created);

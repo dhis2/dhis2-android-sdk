@@ -58,12 +58,12 @@ public class CreateTrackedEntityDataValueUtils {
         return values;
     }
 
-    public static ContentValues create(@NonNull Long id, @NonNull String event) {
+    public static ContentValues create(@NonNull Long id, @NonNull String event, @NonNull String dataElement) {
         ContentValues values = new ContentValues();
 
         values.put(TrackedEntityDataValueModel.Columns.ID, id);
         values.put(TrackedEntityDataValueModel.Columns.EVENT, event);
-        values.put(TrackedEntityDataValueModel.Columns.DATA_ELEMENT, DATA_ELEMENT);
+        values.put(TrackedEntityDataValueModel.Columns.DATA_ELEMENT, dataElement);
         values.put(TrackedEntityDataValueModel.Columns.STORED_BY, STORED_BY);
         values.put(TrackedEntityDataValueModel.Columns.VALUE, VALUE);
         values.put(TrackedEntityDataValueModel.Columns.CREATED, DATE);

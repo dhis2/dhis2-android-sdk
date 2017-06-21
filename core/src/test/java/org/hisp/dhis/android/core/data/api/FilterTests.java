@@ -41,7 +41,7 @@ public class FilterTests {
 
     @Test
     public void fieldFilterConstructor_shouldThrowExceptionOnNullName() {
-        Filter<String, String> filter = FilterImpl.create(null, null, (String[]) null);
+        Filter<String, String> filter = GtFilter.create(null, null);
         assertThat(filter).isNull();
     }
 
@@ -56,7 +56,7 @@ public class FilterTests {
 
     @Test
     public void fieldFilterEquals_shouldConformToContract() {
-        EqualsVerifier.forClass(FilterImpl.create(Field.create(""), "", "a").getClass())
+        EqualsVerifier.forClass(GtFilter.create(Field.create(""), "a").getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();
     }

@@ -124,7 +124,7 @@ public final class StoreUtils {
         if (arg == null) {
             sqLiteStatement.bindNull(index);
         } else {
-            sqLiteStatement.bindString(index, arg.toString());
+            sqLiteStatement.bindString(index, arg.name());
         }
     }
 
@@ -161,6 +161,7 @@ public final class StoreUtils {
     }
 
     /**
+<<<<<<< HEAD
      * Takes the import status and converts it to the state which indicates if it was imported, had errors or warning.
      *
      * @param importStatus

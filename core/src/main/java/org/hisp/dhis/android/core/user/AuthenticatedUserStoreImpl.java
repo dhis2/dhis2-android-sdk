@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
     private static final String[] PROJECTION = new String[]{
@@ -61,10 +62,15 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
 
     @Override
     public long insert(@NonNull String userUid, @NonNull String credentials) {
-        insertRowStatement.clearBindings();
+        isNull(userUid);
+        isNull(credentials);
+
         sqLiteBind(insertRowStatement, 1, userUid);
         sqLiteBind(insertRowStatement, 2, credentials);
-        return databaseAdapter.executeInsert(AuthenticatedUserModel.TABLE, insertRowStatement);
+
+        long returnValue = databaseAdapter.executeInsert(AuthenticatedUserModel.TABLE, insertRowStatement);
+        insertRowStatement.clearBindings();
+        return returnValue;
     }
 
     @NonNull
@@ -100,8 +106,4 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
         return databaseAdapter.delete(AuthenticatedUserModel.TABLE);
     }
 
-    @Override
-    public void close() {
-        insertRowStatement.close();
-    }
 }

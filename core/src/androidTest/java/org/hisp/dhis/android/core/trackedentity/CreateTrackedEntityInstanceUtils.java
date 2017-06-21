@@ -29,16 +29,19 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
+import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.State;
 
 public class CreateTrackedEntityInstanceUtils {
-    private static final State STATE = State.ERROR;
+    private static final State STATE = State.TO_POST;
 
     // used for timestamps
     private static final String DATE = "2011-12-24T12:24:25.203";
 
-    public static ContentValues create(String uid, String organisationUnit, String trackedEntity) {
+    public static ContentValues create(@NonNull String uid,
+                                       @NonNull String organisationUnit,
+                                       @NonNull String trackedEntity) {
         ContentValues trackedEntityInstance = new ContentValues();
         trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.UID, uid);
         trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.CREATED, DATE);

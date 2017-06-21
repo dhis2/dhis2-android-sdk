@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
@@ -55,8 +56,7 @@ public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
             ProgramStageSectionModel.Columns.PROGRAM_STAGE + ") " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 
-    private static final String UPDATE_STATEMENT = "UPDATE " + ProgramStageSectionModel.TABLE +
-            " SET " +
+    private static final String UPDATE_STATEMENT = "UPDATE " + ProgramStageSectionModel.TABLE + " SET " +
             ProgramStageSectionModel.Columns.UID + " =?, " +
             ProgramStageSectionModel.Columns.CODE + " =?, " +
             ProgramStageSectionModel.Columns.NAME + " =?, " +
@@ -65,17 +65,14 @@ public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
             ProgramStageSectionModel.Columns.LAST_UPDATED + " =?, " +
             ProgramStageSectionModel.Columns.SORT_ORDER + " =?, " +
             ProgramStageSectionModel.Columns.PROGRAM_STAGE + " =? " +
-            " WHERE " +
-            ProgramStageSectionModel.Columns.UID + " =?;";
+            " WHERE " + ProgramStageSectionModel.Columns.UID + " =?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + ProgramStageSectionModel.TABLE +
-            " WHERE " +
-            ProgramStageSectionModel.Columns.UID + " =?;";
+            " WHERE " + ProgramStageSectionModel.Columns.UID + " =?;";
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
-
 
     private final DatabaseAdapter databaseAdapter;
 
@@ -91,6 +88,8 @@ public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
                        @NonNull String name, @NonNull String displayName,
                        @NonNull Date created, @NonNull Date lastUpdated,
                        @Nullable Integer sortOrder, @Nullable String programStage) {
+        isNull(uid);
+        isNull(programStage);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, sortOrder, programStage);
 
         Long insert = databaseAdapter.executeInsert(ProgramStageSectionModel.TABLE, insertStatement);
@@ -103,6 +102,9 @@ public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
     public int update(@NonNull String uid, @Nullable String code, @NonNull String name, @NonNull String displayName,
                       @NonNull Date created, @NonNull Date lastUpdated, @Nullable Integer sortOrder,
                       @Nullable String programStage, @NonNull String whereProgramStageSectionUid) {
+        isNull(uid);
+        isNull(programStage);
+        isNull(whereProgramStageSectionUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, sortOrder, programStage);
 
         // bind the where argument
@@ -117,6 +119,7 @@ public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
 
     @Override
     public int delete(String uid) {
+        isNull(uid);
         sqLiteBind(deleteStatement, 1, uid);
         int delete = databaseAdapter.executeUpdateDelete(ProgramStageSectionModel.TABLE, deleteStatement);
         deleteStatement.clearBindings();

@@ -4,23 +4,16 @@ import android.content.ContentValues;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils;
-import org.hisp.dhis.android.core.dataelement.DataElementModel;
+import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.enrollment.CreateEnrollmentUtils;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.event.CreateEventUtils;
 import org.hisp.dhis.android.core.event.EventModel;
-import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
-import org.hisp.dhis.android.core.program.CreateProgramStageDataElementUtils;
-import org.hisp.dhis.android.core.program.CreateProgramStageUtils;
-import org.hisp.dhis.android.core.program.CreateProgramUtils;
-import org.hisp.dhis.android.core.program.ProgramModel;
-import org.hisp.dhis.android.core.program.ProgramStageDataElementModel;
-import org.hisp.dhis.android.core.program.ProgramStageModel;
+import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.utils.CodeGenerator;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 import org.junit.Before;
@@ -31,6 +24,7 @@ import java.io.IOException;
 
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
+import retrofit2.Response;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -50,7 +44,7 @@ public class TrackedEntityInstancePostCallIntegrationTest extends AbsStoreTestCa
         super.setUp();
 
         ConfigurationModel config = ConfigurationModel.builder()
-                .serverUrl(HttpUrl.parse("https://play.dhis2.org/dev/api/"))
+                .serverUrl(HttpUrl.parse("https://play.dhis2.org/demo/api/"))
                 .build();
 
         d2 = new D2.Builder()
@@ -62,17 +56,17 @@ public class TrackedEntityInstancePostCallIntegrationTest extends AbsStoreTestCa
                                 .build()
                 ).build();
 
-//        codeGenerator = new CodeGeneratorImpl();
-//        String orgUnitUid = codeGenerator.generate();
-//        String programUid = "IpHINAT79UW";
-//        String programStageUid = "A03MvHHogjR";
-//        String dataElementUid = "a3kGcGDCuk6";
-//        String trackedEntityUid = "nEenWmSyUEp";
-//        String programStageDataElementUid = "LBNxoXdMnkv";
-//        String trackedEntityAttributeUid = "w75KJ2mc4zz";
-//        String eventUid = codeGenerator.generate();
-//        String enrollmentUid = codeGenerator.generate();
-//        String trackedEntityInstanceUid = codeGenerator.generate();
+        codeGenerator = new CodeGeneratorImpl();
+        String orgUnitUid = "DiszpKrYNg8";
+        String programUid = "IpHINAT79UW";
+        String programStageUid = "A03MvHHogjR";
+        String dataElementUid = "a3kGcGDCuk6";
+        String trackedEntityUid = "nEenWmSyUEp";
+        String programStageDataElementUid = "LBNxoXdMnkv";
+        String trackedEntityAttributeUid = "w75KJ2mc4zz";
+        String eventUid = codeGenerator.generate();
+        String enrollmentUid = codeGenerator.generate();
+        String trackedEntityInstanceUid = codeGenerator.generate();
 //
 //
 //        setUpMetadata(
@@ -82,31 +76,41 @@ public class TrackedEntityInstancePostCallIntegrationTest extends AbsStoreTestCa
 //
 //
 //
-//        createDummyDataToPost(
-//                orgUnitUid, programUid, programStageUid, trackedEntityUid,
-//                eventUid, enrollmentUid, trackedEntityInstanceUid, trackedEntityAttributeUid
-//        );
+        createDummyDataToPost(
+                orgUnitUid, programUid, programStageUid, trackedEntityUid,
+                eventUid, enrollmentUid, trackedEntityInstanceUid, trackedEntityAttributeUid,
+                dataElementUid
+        );
 
     }
 
     private void createDummyDataToPost(String orgUnitUid, String programUid, String programStageUid,
                                        String trackedEntityUid, String eventUid, String enrollmentUid,
-                                       String trackedEntityInstanceUid, String trackedEntityAttributeUid) {
+                                       String trackedEntityInstanceUid, String trackedEntityAttributeUid,
+                                       String dataElementUid) {
         ContentValues trackedEntityInstance =
                 CreateTrackedEntityInstanceUtils.create(trackedEntityInstanceUid, orgUnitUid, trackedEntityUid);
         ContentValues enrollment =
                 CreateEnrollmentUtils.create(enrollmentUid, programUid, orgUnitUid, trackedEntityInstanceUid);
         ContentValues event =
                 CreateEventUtils.create(eventUid, programUid, programStageUid, orgUnitUid, enrollmentUid);
-        ContentValues trackedEntityDataValues = CreateTrackedEntityDataValueUtils.create(1L, eventUid);
+        ContentValues trackedEntityDataValues = CreateTrackedEntityDataValueUtils.create(1L, eventUid, dataElementUid);
         ContentValues trackedEntityAttributeValues =
                 CreateTrackedEntityAttributeValueUtils.create(trackedEntityAttributeUid, trackedEntityInstanceUid);
 
-        database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
-        database().insert(EnrollmentModel.TABLE, null, enrollment);
-        database().insert(EventModel.TABLE, null, event);
-        database().insert(TrackedEntityDataValueModel.TABLE, null, trackedEntityDataValues);
-        database().insert(TrackedEntityAttributeValueModel.TABLE, null, trackedEntityAttributeValues);
+        Transaction transaction = databaseAdapter().beginNewTransaction();
+        try {
+            database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
+            database().insert(EnrollmentModel.TABLE, null, enrollment);
+            database().insert(EventModel.TABLE, null, event);
+            database().insert(TrackedEntityDataValueModel.TABLE, null, trackedEntityDataValues);
+            database().insert(TrackedEntityAttributeValueModel.TABLE, null, trackedEntityAttributeValues);
+            transaction.setSuccessful();
+
+        } finally {
+            transaction.end();
+        }
+
 
     }
 
@@ -165,10 +169,13 @@ public class TrackedEntityInstancePostCallIntegrationTest extends AbsStoreTestCa
         response = d2.logIn("android", "Android123").call();
         assertThat(response.isSuccessful()).isTrue();
 
-        d2.syncMetaData().call();
+        response = d2.syncMetaData().call();
+        assertThat(response.isSuccessful()).isTrue();
 
-//        response = d2.syncTrackedEntityInstances().call();
-//        assertThat(response.isSuccessful()).isTrue();
+        Call<Response<WebResponse>> call = d2.syncTrackedEntityInstances();
+        response = call.call();
+
+        assertThat(response.isSuccessful()).isTrue();
 
         //second sync:
 //        response = d2.syncTrackedEntityInstances().call();

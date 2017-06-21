@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.resource.ResourceModel.Columns;
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 public class ResourceStoreImpl implements ResourceStore {
     public static final String INSERT_STATEMENT = "INSERT INTO " + ResourceModel.TABLE + " (" +
@@ -67,6 +68,7 @@ public class ResourceStoreImpl implements ResourceStore {
 
     @Override
     public long insert(@NonNull String resourceType, @Nullable Date lastSynced) {
+        isNull(resourceType);
         sqLiteBind(insertStatement, 1, resourceType);
         sqLiteBind(insertStatement, 2, lastSynced);
 
@@ -78,6 +80,8 @@ public class ResourceStoreImpl implements ResourceStore {
     @Override
     public int update(@NonNull String resourceType, @Nullable Date lastSynced,
                       @NonNull String whereResourceType) {
+        isNull(resourceType);
+        isNull(whereResourceType);
         sqLiteBind(updateStatement, 1, resourceType);
         sqLiteBind(updateStatement, 2, lastSynced);
         sqLiteBind(updateStatement, 3, whereResourceType);
@@ -89,6 +93,7 @@ public class ResourceStoreImpl implements ResourceStore {
 
     @Override
     public int delete(@NonNull String resourceType) {
+        isNull(resourceType);
         sqLiteBind(deleteStatement, 1, resourceType);
 
         int returnValue = databaseAdapter.executeUpdateDelete(ResourceModel.TABLE, deleteStatement);

@@ -250,6 +250,7 @@ public class EventStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistEventNullableInDatabase() {
+
         long rowId = eventStore.insert(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, null, null, PROGRAM,
                 PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null);
         Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
@@ -539,6 +540,7 @@ public class EventStoreTests extends AbsStoreTestCase {
         );
     }
 
+
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistEventWithInvalidEnrollmentForeignKey() {
         eventStore.insert(
@@ -560,5 +562,6 @@ public class EventStoreTests extends AbsStoreTestCase {
                 STATE
         );
     }
+
 
 }

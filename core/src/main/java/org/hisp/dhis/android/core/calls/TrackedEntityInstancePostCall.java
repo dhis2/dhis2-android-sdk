@@ -11,12 +11,14 @@ import org.hisp.dhis.android.core.event.EventImportHandler;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.imports.WebResponseHandler;
+import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceImportHandler;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstancePayload;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 
@@ -76,9 +78,11 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
         }
 
         List<TrackedEntityInstance> trackedEntityInstancesToPost = queryDataToSync();
+        TrackedEntityInstancePayload trackedEntityInstancePayload = new TrackedEntityInstancePayload();
+        trackedEntityInstancePayload.trackedEntityInstances = trackedEntityInstancesToPost;
 
         Response<WebResponse> response = trackedEntityInstanceService.postTrackedEntityInstances(
-                trackedEntityInstancesToPost)
+                trackedEntityInstancePayload)
                 .execute();
 
         if (response.isSuccessful()) {
@@ -131,7 +135,7 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
 
             }
 
-            // Building TEI WITHOUT (null) relationships
+            // Building TEI WITHOUT (new ArrayList) relationships
             List<TrackedEntityAttributeValue> attributeValues = attributeValueMap.get(teiUid);
             TrackedEntityInstance trackedEntityInstance = trackedEntityInstances.get(teiUid);
 
@@ -139,7 +143,7 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
                     trackedEntityInstance.created(), trackedEntityInstance.lastUpdated(),
                     trackedEntityInstance.createdAtClient(), trackedEntityInstance.lastUpdatedAtClient(),
                     trackedEntityInstance.organisationUnit(), trackedEntityInstance.trackedEntity(),
-                    trackedEntityInstance.deleted(), attributeValues, null, enrollmentsRecreated));
+                    trackedEntityInstance.deleted(), attributeValues, new ArrayList<Relationship>(), enrollmentsRecreated));
 
         }
 

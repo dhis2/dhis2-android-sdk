@@ -32,14 +32,12 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel.Columns;
-
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " +
-            UserRoleProgramLinkModel.TABLE + " (" +
-            Columns.USER_ROLE + ", " +
-            Columns.PROGRAM + ") " +
+    private static final String INSERT_STATEMENT = "INSERT INTO " + UserRoleProgramLinkModel.TABLE + " (" +
+            Columns.USER_ROLE + ", " + Columns.PROGRAM + ") " +
             "VALUES (?, ?);";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + UserRoleProgramLinkModel.TABLE +
@@ -64,8 +62,8 @@ public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
 
     @Override
     public long insert(@NonNull String userRole, @NonNull String program) {
-        insertStatement.clearBindings();
-
+        isNull(userRole);
+        isNull(program);
         sqLiteBind(insertStatement, 1, userRole);
         sqLiteBind(insertStatement, 2, program);
 
@@ -78,26 +76,24 @@ public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
     @Override
     public int update(@NonNull String userRoleUid, @NonNull String programUid,
                       @NonNull String whereUserRoleUid, @NonNull String whereProgramUid) {
-        updateStatement.clearBindings();
-
+        isNull(userRoleUid);
+        isNull(programUid);
+        isNull(whereUserRoleUid);
+        isNull(whereProgramUid);
         sqLiteBind(updateStatement, 1, userRoleUid);
         sqLiteBind(updateStatement, 2, programUid);
-
-        // bind whereClause
-
         sqLiteBind(updateStatement, 3, whereUserRoleUid);
         sqLiteBind(updateStatement, 4, whereProgramUid);
 
         int update = databaseAdapter.executeUpdateDelete(UserRoleProgramLinkModel.TABLE, updateStatement);
         updateStatement.clearBindings();
-
         return update;
     }
 
     @Override
     public int delete(@NonNull String userRoleUid, @NonNull String programUid) {
-        deleteStatement.clearBindings();
-
+        isNull(userRoleUid);
+        isNull(programUid);
         sqLiteBind(deleteStatement, 1, userRoleUid);
         sqLiteBind(deleteStatement, 2, programUid);
 
@@ -105,5 +101,4 @@ public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
         deleteStatement.clearBindings();
         return delete;
     }
-
 }

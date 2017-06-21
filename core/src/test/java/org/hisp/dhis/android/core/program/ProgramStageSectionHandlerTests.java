@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,6 +50,9 @@ import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class ProgramStageSectionHandlerTests {
+    public static final String PROGRAM_STAGE_UID = "test_program_stage_uid";
+    public static final String PROGRAM_STAGE_SECTION_UID = "test_program_stage_section_uid";
+    public static final String DATA_ELEMENT_UID = "test_data_uid";
 
     @Mock
     private ProgramStageSectionStore programStageSectionStore;
@@ -61,8 +65,11 @@ public class ProgramStageSectionHandlerTests {
 
     @Mock
     private ProgramStageSection programStageSection;
-
     private List<ProgramStageSection> programStageSections;
+
+    @Mock
+    private DataElement dataElement;
+    private List<DataElement> dataElements;
 
     // object to test
     private ProgramStageSectionHandler programStageSectionHandler;
@@ -75,16 +82,19 @@ public class ProgramStageSectionHandlerTests {
                 programStageSectionStore, programStageDataElementHandler, programIndicatorHandler
         );
 
-        when(programStageSection.uid()).thenReturn("test_program_stage_section_uid");
+        when(programStageSection.uid()).thenReturn(PROGRAM_STAGE_SECTION_UID);
         programStageSections = new ArrayList<>();
         programStageSections.add(programStageSection);
+        dataElements = new ArrayList<>(1);
+        dataElements.add(dataElement);
+        when(programStageSection.dataElements()).thenReturn(dataElements);
     }
 
     @Test
     public void delete_shouldDeleteProgramStageSection() throws Exception {
         when(programStageSection.deleted()).thenReturn(Boolean.TRUE);
 
-        programStageSectionHandler.handleProgramStageSection("test_program_stage_uid", programStageSections);
+        programStageSectionHandler.handleProgramStageSection(PROGRAM_STAGE_UID, programStageSections);
 
         // verify that delete is called once
         verify(programStageSectionStore, times(1)).delete(programStageSection.uid());
@@ -97,9 +107,8 @@ public class ProgramStageSectionHandlerTests {
                 anyString(), any(Date.class), any(Date.class), anyInt(), anyString(), anyString());
 
         // verify that handlers is called once
-
-        verify(programStageDataElementHandler, times(1)).handleProgramStageDataElements(
-                anyString(), anyListOf(ProgramStageDataElement.class)
+        verify(programStageDataElementHandler, times(1)).updateProgramStageDataElementWithProgramStageSectionLink(
+                anyString(), anyString()
         );
 
         verify(programIndicatorHandler, times(1)).handleProgramIndicator(
@@ -115,7 +124,10 @@ public class ProgramStageSectionHandlerTests {
                 anyString(), any(Date.class), any(Date.class), anyInt(), anyString(), anyString())
         ).thenReturn(1);
 
-        programStageSectionHandler.handleProgramStageSection("test_program_stage_uid", programStageSections);
+        when(programStageSection.dataElements()).thenReturn(dataElements);
+        when(dataElement.uid()).thenReturn(DATA_ELEMENT_UID);
+
+        programStageSectionHandler.handleProgramStageSection(PROGRAM_STAGE_UID, programStageSections);
 
         // verify that update is called once
         verify(programStageSectionStore, times(1)).update(anyString(), anyString(), anyString(),
@@ -127,10 +139,9 @@ public class ProgramStageSectionHandlerTests {
 
         verify(programStageSectionStore, never()).delete(anyString());
 
-        // verify that handlers is called once
 
-        verify(programStageDataElementHandler, times(1)).handleProgramStageDataElements(
-                anyString(), anyListOf(ProgramStageDataElement.class)
+        verify(programStageDataElementHandler, times(1)).updateProgramStageDataElementWithProgramStageSectionLink(
+                anyString(), anyString()
         );
 
         verify(programIndicatorHandler, times(1)).handleProgramIndicator(
@@ -145,7 +156,10 @@ public class ProgramStageSectionHandlerTests {
                 anyString(), any(Date.class), any(Date.class), anyInt(), anyString(), anyString())
         ).thenReturn(0);
 
-        programStageSectionHandler.handleProgramStageSection("test_program_stage_uid", programStageSections);
+        when(programStageSection.dataElements()).thenReturn(dataElements);
+        when(dataElement.uid()).thenReturn(DATA_ELEMENT_UID);
+
+        programStageSectionHandler.handleProgramStageSection(PROGRAM_STAGE_UID, programStageSections);
 
         // verify that update is called once since we update before we insert
         verify(programStageSectionStore, times(1)).update(anyString(), anyString(), anyString(),
@@ -159,9 +173,8 @@ public class ProgramStageSectionHandlerTests {
         verify(programStageSectionStore, never()).delete(anyString());
 
         // verify that handlers is called once
-
-        verify(programStageDataElementHandler, times(1)).handleProgramStageDataElements(
-                anyString(), anyListOf(ProgramStageDataElement.class)
+        verify(programStageDataElementHandler, times(1)).updateProgramStageDataElementWithProgramStageSectionLink(
+                anyString(), anyString()
         );
 
         verify(programIndicatorHandler, times(1)).handleProgramIndicator(
@@ -183,8 +196,8 @@ public class ProgramStageSectionHandlerTests {
 
         verify(programStageSectionStore, never()).delete(anyString());
 
-        verify(programStageDataElementHandler, never()).handleProgramStageDataElements(
-                anyString(), anyListOf(ProgramStageDataElement.class)
+        verify(programStageDataElementHandler, never()).updateProgramStageDataElementWithProgramStageSectionLink(
+                anyString(), anyString()
         );
 
         verify(programIndicatorHandler, never()).handleProgramIndicator(
@@ -194,7 +207,7 @@ public class ProgramStageSectionHandlerTests {
 
     @Test
     public void doNothing_doNothingWhenPassingInNullProgramStageSectionArgument() throws Exception {
-        programStageSectionHandler.handleProgramStageSection("test_program_stage_uid", null);
+        programStageSectionHandler.handleProgramStageSection(PROGRAM_STAGE_UID, null);
 
         // verify that program stage section store is never invoked
         verify(programStageSectionStore, never()).insert(anyString(), anyString(), anyString(),
@@ -205,8 +218,9 @@ public class ProgramStageSectionHandlerTests {
 
         verify(programStageSectionStore, never()).delete(anyString());
 
-        verify(programStageDataElementHandler, never()).handleProgramStageDataElements(
-                anyString(), anyListOf(ProgramStageDataElement.class)
+
+        verify(programStageDataElementHandler, never()).updateProgramStageDataElementWithProgramStageSectionLink(
+                anyString(), anyString()
         );
 
         verify(programIndicatorHandler, never()).handleProgramIndicator(
@@ -227,8 +241,8 @@ public class ProgramStageSectionHandlerTests {
 
         verify(programStageSectionStore, never()).delete(anyString());
 
-        verify(programStageDataElementHandler, never()).handleProgramStageDataElements(
-                anyString(), anyListOf(ProgramStageDataElement.class)
+        verify(programStageDataElementHandler, never()).updateProgramStageDataElementWithProgramStageSectionLink(
+                anyString(), anyString()
         );
 
         verify(programIndicatorHandler, never()).handleProgramIndicator(

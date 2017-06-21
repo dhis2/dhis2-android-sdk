@@ -41,24 +41,20 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 public class ConfigurationStoreTests extends AbsStoreTestCase {
-    private static final String[] PROJECTION = {
-            ConfigurationModel.Columns.ID,
-            ConfigurationModel.Columns.SERVER_URL
-    };
+    private static final String[] PROJECTION = {ConfigurationModel.Columns.ID, ConfigurationModel.Columns.SERVER_URL};
 
-    private ConfigurationStore configurationStore;
+    private ConfigurationStore store;
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
-
-        configurationStore = new ConfigurationStoreImpl(databaseAdapter());
+        store = new ConfigurationStoreImpl(databaseAdapter());
     }
 
     @Test
     public void save_shouldPersistRowInDatabase() {
-        long rowId = configurationStore.save("http://testserver.org/");
+        long rowId = store.save("http://testserver.org/");
 
         Cursor cursor = database().query(ConfigurationModel.CONFIGURATION,
                 PROJECTION, null, null, null, null, null);
@@ -77,7 +73,7 @@ public class ConfigurationStoreTests extends AbsStoreTestCase {
         database().insert(ConfigurationModel.CONFIGURATION, null, contentValues);
 
         // trying to configure configuration with server url (which is set to be unique in the table)
-        long rowId = configurationStore.save("http://testserver.org/");
+        long rowId = store.save("http://testserver.org/");
 
         Cursor cursor = database().query(ConfigurationModel.CONFIGURATION,
                 PROJECTION, null, null, null, null, null);
@@ -94,7 +90,7 @@ public class ConfigurationStoreTests extends AbsStoreTestCase {
 
         database().insert(ConfigurationModel.CONFIGURATION, null, contentValues);
 
-        long rowId = configurationStore.save("test_another_url");
+        long rowId = store.save("test_another_url");
 
         Cursor cursor = database().query(ConfigurationModel.CONFIGURATION,
                 PROJECTION, null, null, null, null, null);
@@ -111,7 +107,7 @@ public class ConfigurationStoreTests extends AbsStoreTestCase {
 
         database().insert(ConfigurationModel.CONFIGURATION, null, contentValues);
 
-        long deleted = configurationStore.delete();
+        long deleted = store.delete();
 
         Cursor cursor = database().query(ConfigurationModel.CONFIGURATION,
                 PROJECTION, null, null, null, null, null);
@@ -121,7 +117,7 @@ public class ConfigurationStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldNotFail_ifNoRowsArePersisted() {
-        long deleted = configurationStore.delete();
+        long deleted = store.delete();
         assertThat(deleted).isEqualTo(0);
     }
 
@@ -132,14 +128,19 @@ public class ConfigurationStoreTests extends AbsStoreTestCase {
 
         database().insert(ConfigurationModel.CONFIGURATION, null, contentValues);
 
-        ConfigurationModel persistedConfiguration = configurationStore.query();
+        ConfigurationModel persistedConfiguration = store.query();
         assertThat(persistedConfiguration.id()).isEqualTo(1L);
         assertThat(persistedConfiguration.serverUrl().toString()).isEqualTo("http://testserver.org/");
     }
 
     @Test
     public void query_shouldReturnNull_ifNoRowsArePersisted() {
-        ConfigurationModel persistedConfiguration = configurationStore.query();
+        ConfigurationModel persistedConfiguration = store.query();
         assertThat(persistedConfiguration).isNull();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        store.save(null);
     }
 }

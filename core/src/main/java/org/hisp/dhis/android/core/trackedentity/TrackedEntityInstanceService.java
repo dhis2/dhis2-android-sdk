@@ -5,7 +5,6 @@ import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.data.api.Where;
 import org.hisp.dhis.android.core.data.api.Which;
-import org.hisp.dhis.android.core.imports.ImportSummaries;
 import org.hisp.dhis.android.core.imports.WebResponse;
 
 import java.util.Date;
@@ -27,5 +26,5 @@ public interface TrackedEntityInstanceService {
 
     @POST("trackedEntityInstances")
     Call<WebResponse> postTrackedEntityInstances(
-            @Body List<TrackedEntityInstance> trackedEntityInstances);
+            @Body TrackedEntityInstancePayload trackedEntityInstances);
 }

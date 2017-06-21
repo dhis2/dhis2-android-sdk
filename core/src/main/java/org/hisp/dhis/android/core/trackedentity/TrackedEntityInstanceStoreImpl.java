@@ -90,36 +90,38 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
             "FROM TrackedEntityInstance " +
             "WHERE state = 'TO_POST' OR state = 'TO_UPDATE'";
 
-    private final SQLiteStatement insertRowStatement;
+
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
     private final SQLiteStatement setStateStatement;
+
+    private final SQLiteStatement insertStatement;
+
     private final DatabaseAdapter databaseAdapter;
 
     public TrackedEntityInstanceStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
-        this.insertRowStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
         this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
         this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
         this.setStateStatement = databaseAdapter.compileStatement(SET_STATE_STATEMENT);
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
     public long insert(@NonNull String uid, @Nullable Date created, @Nullable Date lastUpdated,
                        @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
                        @NonNull String organisationUnit, @NonNull String trackedEntity, @Nullable State state) {
-        insertRowStatement.clearBindings();
 
-        sqLiteBind(insertRowStatement, 1, uid);
-        sqLiteBind(insertRowStatement, 2, created);
-        sqLiteBind(insertRowStatement, 3, lastUpdated);
-        sqLiteBind(insertRowStatement, 4, createdAtClient);
-        sqLiteBind(insertRowStatement, 5, lastUpdatedAtClient);
-        sqLiteBind(insertRowStatement, 6, organisationUnit);
-        sqLiteBind(insertRowStatement, 7, trackedEntity);
-        sqLiteBind(insertRowStatement, 8, state);
+        sqLiteBind(insertStatement, 1, uid);
+        sqLiteBind(insertStatement, 2, created);
+        sqLiteBind(insertStatement, 3, lastUpdated);
+        sqLiteBind(insertStatement, 4, organisationUnit);
+        sqLiteBind(insertStatement, 5, trackedEntity);
+        sqLiteBind(insertStatement, 6, state);
 
-        return databaseAdapter.executeInsert(TrackedEntityInstanceModel.TABLE, insertRowStatement);
+        long returnValue = databaseAdapter.executeInsert(TrackedEntityInstanceModel.TABLE, insertStatement);
+        insertStatement.clearBindings();
+        return returnValue;
     }
 
     @Override

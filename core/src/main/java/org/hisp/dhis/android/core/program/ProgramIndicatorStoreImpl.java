@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
@@ -78,18 +79,14 @@ public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
             ProgramIndicatorModel.Columns.FILTER + " =?, " +
             ProgramIndicatorModel.Columns.DECIMALS + " =?, " +
             ProgramIndicatorModel.Columns.PROGRAM + " =? " +
-            " WHERE " +
-            ProgramIndicatorModel.Columns.UID + " =?;";
+            " WHERE " + ProgramIndicatorModel.Columns.UID + " =?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + ProgramIndicatorModel.TABLE +
-            " WHERE " +
-            ProgramIndicatorModel.Columns.UID + " =?;";
+            " WHERE " + ProgramIndicatorModel.Columns.UID + " =?;";
 
     private final SQLiteStatement insertRowStatement;
-
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
-
 
     private final DatabaseAdapter databaseAdapter;
 
@@ -109,7 +106,8 @@ public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
                        @Nullable String expression, @Nullable String dimensionItem,
                        @Nullable String filter, @Nullable Integer decimals,
                        @Nullable String program) {
-
+        isNull(uid);
+        isNull(program);
         bindArguments(insertRowStatement, uid, code, name, displayName, created, lastUpdated, shortName,
                 displayShortName, description, displayDescription, displayInForm, expression, dimensionItem,
                 filter, decimals, program);
@@ -117,10 +115,8 @@ public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
         // execute and clear bindings
         Long insert = databaseAdapter.executeInsert(ProgramIndicatorModel.TABLE, insertRowStatement);
         insertRowStatement.clearBindings();
-
         return insert;
     }
-
 
     @Override
     public int update(@NonNull String uid, @Nullable String code, @NonNull String name, @Nullable String displayName,
@@ -130,6 +126,9 @@ public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
                       @Nullable String expression, @Nullable String dimensionItem, @Nullable String filter,
                       @Nullable Integer decimals, @Nullable String program,
                       @NonNull String whereProgramIndicatorUid) {
+        isNull(uid);
+        isNull(program);
+        isNull(whereProgramIndicatorUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
                 description, displayDescription, displayInForm, expression, dimensionItem, filter, decimals, program);
 
@@ -139,19 +138,18 @@ public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
         // execute and clear bindings
         int update = databaseAdapter.executeUpdateDelete(ProgramIndicatorModel.TABLE, updateStatement);
         updateStatement.clearBindings();
-
         return update;
     }
 
     @Override
     public int delete(String uid) {
+        isNull(uid);
         // bind the where argument
         sqLiteBind(deleteStatement, 1, uid);
 
         // execute and clear bindings
         int delete = databaseAdapter.executeUpdateDelete(ProgramIndicatorModel.TABLE, deleteStatement);
         deleteStatement.clearBindings();
-
         return delete;
     }
 

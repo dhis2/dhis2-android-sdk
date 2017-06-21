@@ -56,7 +56,6 @@ public class SystemInfoCall implements Call<Response<SystemInfo>> {
         this.resourceStore = resourceStore;
     }
 
-
     @Override
     public boolean isExecuted() {
         synchronized (this) {

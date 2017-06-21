@@ -64,7 +64,7 @@ public abstract class EnrollmentModel extends BaseDataModel {
         public static final String LAST_UPDATED = "lastUpdated";
         public static final String CREATED_AT_CLIENT = "createdAtClient";
         public static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
-        public static final String ORGANISATION_UNIT = "orgUnit";
+        public static final String ORGANISATION_UNIT = "organisationUnit";
         public static final String PROGRAM = "program";
         public static final String DATE_OF_ENROLLMENT = "enrollmentDate";
         public static final String DATE_OF_INCIDENT = "incidentDate";

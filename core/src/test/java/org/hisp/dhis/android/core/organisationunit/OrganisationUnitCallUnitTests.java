@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.user.User;
@@ -68,7 +67,6 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -95,6 +93,9 @@ public class OrganisationUnitCallUnitTests {
 
     @Mock
     private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
+
+    @Mock
+    private OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
 
     @Mock
     private ResourceStore resourceStore;
@@ -196,7 +197,7 @@ public class OrganisationUnitCallUnitTests {
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, database,
                 organisationUnitStore,
                 resourceStore,
-                serverDate, userOrganisationUnitLinkStore);
+                serverDate, userOrganisationUnitLinkStore, organisationUnitProgramLinkStore);
 
         //Return only one organisationUnit.
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));

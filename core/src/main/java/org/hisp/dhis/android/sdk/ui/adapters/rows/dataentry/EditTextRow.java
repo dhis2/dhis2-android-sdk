@@ -30,6 +30,7 @@
 package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -91,7 +92,7 @@ public class EditTextRow extends Row {
             TextView mandatoryIndicator = (TextView) root.findViewById(R.id.mandatory_indicator);
             TextView warningLabel = (TextView) root.findViewById(R.id.warning_label);
             TextView errorLabel = (TextView) root.findViewById(R.id.error_label);
-            final EditText editText = (EditText) root.findViewById(R.id.edit_text_row);
+            EditText editText = (EditText) root.findViewById(R.id.edit_text_row);
 //            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
 
             if (DataEntryRowTypes.TEXT.equals(mRowType)) {
@@ -108,38 +109,7 @@ public class EditTextRow extends Row {
                         InputType.TYPE_NUMBER_FLAG_SIGNED);
                 editText.setHint(R.string.enter_number);
                 editText.setFilters(new InputFilter[]{new NumberFilter()});
-                editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                    @Override
-                    public void onFocusChange(View v, boolean hasFocus) {
-                        if (!hasFocus) {
-                            String text = editText.getText().toString();
-                            if(text.startsWith("0") && text.length()>1){
-                                if(text.contains(".")) {
-                                    String decimals = text.substring(text.indexOf("."),
-                                            text.length());
-                                    text = new Integer(text.substring(0,text.indexOf("."))).toString()+decimals;
-                                }else{
-                                    text = new Integer(text).toString();
-                                }
-                            }
-                            if (editText.getText() != null && text.endsWith(".")) {
-                                editText.getText().clear();
-                                editText.append(text.substring(0, text.length() - 1));
-                            } else if (text.contains(".")) {
-                                int pointPosition = text.indexOf(".");
-                                String removeZeroes = text.substring(pointPosition + 1,
-                                        text.length());
-                                removeZeroes = removeLastZero(removeZeroes);
-                                text = text.substring(0, pointPosition + 1) + removeZeroes;
-                                if(text.endsWith(".0")) {
-                                    text = text.substring(0,text.indexOf(".0"));
-                                }
-                                editText.getText().clear();
-                                editText.append(text);
-                            }
-                        }
-                    }
-                });
+                editText.setOnFocusChangeListener(new OnNumberFocusChangeListener(editText));
                 editText.setSingleLine(true);
             } else if (DataEntryRowTypes.INTEGER.equals(mRowType)) {
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER |
@@ -235,12 +205,6 @@ public class EditTextRow extends Row {
         return view;
     }
 
-    private String removeLastZero(String text) {
-        if(text.endsWith("0") && text.length()>1)
-            return removeLastZero(text.substring(0, text.length()-1));
-        return text;
-    }
-
     @Override
     public int getViewType() {
         return mRowType.ordinal();
@@ -266,6 +230,76 @@ public class EditTextRow extends Row {
             this.editText = editText;
 //            this.detailedInfoButton = detailedInfoButton;
             this.listener = listener;
+        }
+    }
+
+    private class OnNumberFocusChangeListener implements View.OnFocusChangeListener {
+        private EditText mEditText;
+
+        public OnNumberFocusChangeListener(EditText editText){
+            mEditText=editText;
+        }
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            if (!hasFocus) {
+                String text = mEditText.getText().toString();
+                text = trimLeftZeroes(text);
+                if (mEditText.getText() != null && text.endsWith(".")) {
+                    text = removeLastChar(text);
+                } else if (text.contains(".")) {
+                    text = fixDecimals(text);
+                }
+                setText(text);
+            }
+        }
+
+        @NonNull
+        private String fixDecimals(String text) {
+            int pointPosition = text.indexOf(".");
+            String removeZeroes = text.substring(pointPosition + 1,
+                    text.length());
+            removeZeroes = trimDecimalsRightZeroes(removeZeroes);
+            text = text.substring(0, pointPosition + 1) + removeZeroes;
+            text = removeIncorrectDecimals(text);
+            return text;
+        }
+
+        @NonNull
+        private String removeIncorrectDecimals(String text) {
+            if(text.endsWith(".0")) {
+                text = text.substring(0,text.indexOf(".0"));
+            }
+            return text;
+        }
+
+        @NonNull
+        private String removeLastChar(String text) {
+            return text.substring(0, text.length() - 1);
+        }
+
+        private void setText(String substring) {
+            //The edittext clear() should be called to avoid infinite loop listening the focus event
+            mEditText.getText().clear();
+            mEditText.append(substring);
+        }
+
+        private String trimLeftZeroes(String text) {
+            if(text.startsWith("0") && text.length()>1){
+                if(text.contains(".")) {
+                    String decimals = text.substring(text.indexOf("."),
+                            text.length());
+                    text = new Integer(text.substring(0,text.indexOf("."))).toString()+decimals;
+                }else{
+                    text = new Integer(text).toString();
+                }
+            }
+            return text;
+        }
+
+        private String trimDecimalsRightZeroes(String text) {
+            if(text.endsWith("0") && text.length()>1)
+                return trimDecimalsRightZeroes(removeLastChar(text));
+            return text;
         }
     }
 
@@ -356,11 +390,17 @@ public class EditTextRow extends Row {
         @Override
         public CharSequence filter(CharSequence str, int start, int end,
                 Spanned spn, int spnStart, int spnEnd) {
-            //Do not start with .
-            if (str.length() > 0 && str.charAt(0) == '.' && spnStart == 0 && spnEnd == 1) {
-                return EMPTY_FIELD;
-            }
-            //do not start with 00
+
+            if (ifStartsWithPointReturnEmpty(str, spnStart, spnEnd)) return EMPTY_FIELD;
+
+            CharSequence x = ifStartsWithZeroesReturnEmpty(str, spn);
+            if (x != null) return x;
+
+            return str;
+        }
+
+        @Nullable
+        private CharSequence ifStartsWithZeroesReturnEmpty(CharSequence str, Spanned spn) {
             if ((str.length() > 0) && (str.charAt(0) == '0' && spn.length() > 0 && spn.charAt(0)
                     == '0')) {
                 if (spn.length() > 1 && spn.toString().contains(".")) {
@@ -368,8 +408,14 @@ public class EditTextRow extends Row {
                 }
                 return EMPTY_FIELD;
             }
+            return null;
+        }
 
-            return str;
+        private boolean ifStartsWithPointReturnEmpty(CharSequence str, int spnStart, int spnEnd) {
+            if (str.length() > 0 && str.charAt(0) == '.' && spnStart == 0 && spnEnd == 1) {
+                return true;
+            }
+            return false;
         }
     }
 

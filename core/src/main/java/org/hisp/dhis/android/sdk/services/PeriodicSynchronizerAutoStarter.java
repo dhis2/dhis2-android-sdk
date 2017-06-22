@@ -36,7 +36,7 @@ import android.util.Log;
 
 public class PeriodicSynchronizerAutoStarter extends BroadcastReceiver {
 
-    public final static String CLASS_TAG = "PeriodicSynchronizerAutoStarter";
+    public final static String CLASS_TAG = "PrdicSyncAutoStarter";
 
 	@Override
 	public void onReceive(Context context, Intent intent) {

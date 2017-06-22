@@ -50,8 +50,7 @@ public class CodeGenerator
     /**
      * Generates a pseudo random string using the allowed characters. Code is
      * 11 characters long.
-     * 
-     * @param codeSize the number of characters in the code.
+     *
      * @return the code.
      */
     public static String generateCode()

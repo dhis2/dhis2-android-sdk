@@ -329,7 +329,7 @@ public class QueryTrackedEntityInstancesResultDialogFragment extends DialogFragm
         }
     }
 
-    static class ParameterParcelable implements Parcelable {
+    private static class ParameterParcelable implements Parcelable {
         public static final String TAG = ParameterParcelable.class.getSimpleName();
         private final List<TrackedEntityInstance> trackedEntityInstances;
         public ParameterParcelable(List<TrackedEntityInstance> trackedEntityInstances) {
@@ -347,7 +347,7 @@ public class QueryTrackedEntityInstancesResultDialogFragment extends DialogFragm
             dest.writeList(trackedEntityInstances);
         }
 
-        public List<TrackedEntityInstance> getTrackedEntityInstances() {
+        private List<TrackedEntityInstance> getTrackedEntityInstances() {
             return trackedEntityInstances;
         }
     }

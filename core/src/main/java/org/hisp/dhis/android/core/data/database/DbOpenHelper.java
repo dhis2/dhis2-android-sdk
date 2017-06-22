@@ -828,6 +828,6 @@ public class DbOpenHelper extends SQLiteOpenHelper {
         super.onOpen(db);
 
         // enable foreign key support in database
-//        db.execSQL("PRAGMA foreign_keys = ON;");
+        db.execSQL("PRAGMA foreign_keys = ON;");
     }
 }

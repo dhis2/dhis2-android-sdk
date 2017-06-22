@@ -256,7 +256,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
             if(indicatorRow==null) {
                 String value = ProgramIndicatorService
                         .getProgramIndicatorValue(form.getEvent(), programIndicator);
-                indicatorRow = new IndicatorRow(programIndicator, value);
+                indicatorRow = new IndicatorRow(programIndicator, value, programIndicator.getDisplayDescription());
                 form.getIndicatorToIndicatorRowMap().put(programIndicator.getUid(), indicatorRow);
                 form.getIndicatorRows().add(indicatorRow);
             }

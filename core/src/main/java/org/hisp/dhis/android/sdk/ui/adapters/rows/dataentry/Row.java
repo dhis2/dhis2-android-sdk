@@ -29,13 +29,11 @@
 
 package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
-import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
@@ -99,7 +97,7 @@ public abstract class Row implements DataEntryRow, Serializable {
         } else if (this instanceof StatusRow) {
             mDescription = "";
         } else if(this instanceof IndicatorRow) {
-            mDescription = "";
+            return mDescription;
         }
 
         String itemId = getItemId();

@@ -115,9 +115,11 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
         sqLiteBind(insertStatement, 1, uid);
         sqLiteBind(insertStatement, 2, created);
         sqLiteBind(insertStatement, 3, lastUpdated);
-        sqLiteBind(insertStatement, 4, organisationUnit);
-        sqLiteBind(insertStatement, 5, trackedEntity);
-        sqLiteBind(insertStatement, 6, state);
+        sqLiteBind(insertStatement, 4, createdAtClient);
+        sqLiteBind(insertStatement, 5,  lastUpdatedAtClient);
+        sqLiteBind(insertStatement, 6, organisationUnit);
+        sqLiteBind(insertStatement, 7, trackedEntity);
+        sqLiteBind(insertStatement, 8, state);
 
         long returnValue = databaseAdapter.executeInsert(TrackedEntityInstanceModel.TABLE, insertStatement);
         insertStatement.clearBindings();

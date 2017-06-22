@@ -1,18 +1,19 @@
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.content.ContentValues;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.enrollment.CreateEnrollmentUtils;
-import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
-import org.hisp.dhis.android.core.event.CreateEventUtils;
-import org.hisp.dhis.android.core.event.EventModel;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
+import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.event.EventStore;
+import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.utils.CodeGenerator;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
@@ -21,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.Date;
 
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -38,13 +40,30 @@ public class TrackedEntityInstancePostCallIntegrationTest extends AbsStoreTestCa
     Exception e;
     CodeGenerator codeGenerator;
 
+    private TrackedEntityInstanceStore trackedEntityInstanceStore;
+    private EnrollmentStore enrollmentStore;
+    private EventStore eventStore;
+    private TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
+    private TrackedEntityDataValueStore trackedEntityDataValueStore;
+    private String orgUnitUid;
+    private String programUid;
+    private String programStageUid;
+    private String dataElementUid;
+    private String trackedEntityUid;
+    private String programStageDataElementUid;
+    private String trackedEntityAttributeUid;
+    private String eventUid;
+    private String enrollmentUid;
+    private String trackedEntityInstanceUid;
+
+
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
 
         ConfigurationModel config = ConfigurationModel.builder()
-                .serverUrl(HttpUrl.parse("https://play.dhis2.org/demo/api/"))
+                .serverUrl(HttpUrl.parse("https://play.dhis2.org/dev/api/"))
                 .build();
 
         d2 = new D2.Builder()
@@ -56,96 +75,53 @@ public class TrackedEntityInstancePostCallIntegrationTest extends AbsStoreTestCa
                                 .build()
                 ).build();
 
-        codeGenerator = new CodeGeneratorImpl();
-        String orgUnitUid = "DiszpKrYNg8";
-        String programUid = "IpHINAT79UW";
-        String programStageUid = "A03MvHHogjR";
-        String dataElementUid = "a3kGcGDCuk6";
-        String trackedEntityUid = "nEenWmSyUEp";
-        String programStageDataElementUid = "LBNxoXdMnkv";
-        String trackedEntityAttributeUid = "w75KJ2mc4zz";
-        String eventUid = codeGenerator.generate();
-        String enrollmentUid = codeGenerator.generate();
-        String trackedEntityInstanceUid = codeGenerator.generate();
-//
-//
-//        setUpMetadata(
-//                orgUnitUid, programUid, programStageUid, programStageDataElementUid,
-//                trackedEntityUid, dataElementUid, trackedEntityAttributeUid
-//        );
-//
-//
-//
-        createDummyDataToPost(
-                orgUnitUid, programUid, programStageUid, trackedEntityUid,
-                eventUid, enrollmentUid, trackedEntityInstanceUid, trackedEntityAttributeUid,
-                dataElementUid
-        );
+        trackedEntityInstanceStore = new TrackedEntityInstanceStoreImpl(databaseAdapter());
+        enrollmentStore = new EnrollmentStoreImpl(databaseAdapter());
+        eventStore = new EventStoreImpl(databaseAdapter());
+        trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStoreImpl(databaseAdapter());
+        trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl(databaseAdapter());
 
+        codeGenerator = new CodeGeneratorImpl();
+        orgUnitUid = "DiszpKrYNg8";
+        programUid = "IpHINAT79UW";
+        programStageUid = "A03MvHHogjR";
+        dataElementUid = "a3kGcGDCuk6";
+        trackedEntityUid = "nEenWmSyUEp";
+        programStageDataElementUid = "LBNxoXdMnkv";
+        trackedEntityAttributeUid = "w75KJ2mc4zz";
+        eventUid = codeGenerator.generate();
+        enrollmentUid = codeGenerator.generate();
+        trackedEntityInstanceUid = codeGenerator.generate();
     }
 
     private void createDummyDataToPost(String orgUnitUid, String programUid, String programStageUid,
                                        String trackedEntityUid, String eventUid, String enrollmentUid,
                                        String trackedEntityInstanceUid, String trackedEntityAttributeUid,
                                        String dataElementUid) {
-        ContentValues trackedEntityInstance =
-                CreateTrackedEntityInstanceUtils.create(trackedEntityInstanceUid, orgUnitUid, trackedEntityUid);
-        ContentValues enrollment =
-                CreateEnrollmentUtils.create(enrollmentUid, programUid, orgUnitUid, trackedEntityInstanceUid);
-        ContentValues event =
-                CreateEventUtils.create(eventUid, programUid, programStageUid, orgUnitUid, enrollmentUid);
-        ContentValues trackedEntityDataValues = CreateTrackedEntityDataValueUtils.create(1L, eventUid, dataElementUid);
-        ContentValues trackedEntityAttributeValues =
-                CreateTrackedEntityAttributeValueUtils.create(trackedEntityAttributeUid, trackedEntityInstanceUid);
+        trackedEntityInstanceStore.insert(
+                trackedEntityInstanceUid, new Date(), new Date(), null, null, orgUnitUid, trackedEntityUid, State.TO_POST
+        );
 
-        Transaction transaction = databaseAdapter().beginNewTransaction();
-        try {
-            database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
-            database().insert(EnrollmentModel.TABLE, null, enrollment);
-            database().insert(EventModel.TABLE, null, event);
-            database().insert(TrackedEntityDataValueModel.TABLE, null, trackedEntityDataValues);
-            database().insert(TrackedEntityAttributeValueModel.TABLE, null, trackedEntityAttributeValues);
-            transaction.setSuccessful();
+        enrollmentStore.insert(
+                enrollmentUid, new Date(), new Date(), null, null, orgUnitUid, programUid, new Date(),
+                new Date(), Boolean.FALSE, EnrollmentStatus.ACTIVE,
+                trackedEntityInstanceUid, "10.33", "12.231", State.TO_POST
+        );
 
-        } finally {
-            transaction.end();
-        }
+        eventStore.insert(
+                eventUid, enrollmentUid, new Date(), new Date(), null, null,
+                EventStatus.ACTIVE, "13.21", "12.21", programUid, programStageUid, orgUnitUid,
+                new Date(), new Date(), new Date(), State.TO_POST
+        );
 
+        trackedEntityDataValueStore.insert(
+                eventUid, new Date(), new Date(), dataElementUid, "user_name", "value", Boolean.FALSE
+        );
 
+        trackedEntityAttributeValueStore.insert(
+                "some_value", "2017-01-01", "2017-01-01", trackedEntityAttributeUid, trackedEntityInstanceUid
+        );
     }
-
-
-    private void setUpMetadata(String orgUnitUid, String programUid,
-                               String programStageUid, String programStageDataElementUid,
-                               String trackedEntityUid,
-                               String dataElementUid, String trackedEntityAttributeUid) {
-
-//        ContentValues orgUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, orgUnitUid);
-//        ContentValues program = CreateProgramUtils.create(1L, programUid, null, null, trackedEntityUid);
-//        ContentValues programStage = CreateProgramStageUtils.create(1L, programStageUid, programUid);
-//
-//
-//        ContentValues programStageDataElement = CreateProgramStageDataElementUtils.create(
-//                1L, programStageDataElementUid, programStageUid, dataElementUid
-//        );
-//
-//        ContentValues dataElement = CreateDataElementUtils.create(1L, dataElementUid, null);
-//
-//
-//        ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.create(
-//                1L, trackedEntityAttributeUid, null
-//        );
-//
-//        database().insert(OrganisationUnitModel.TABLE, null, orgUnit);
-//        database().insert(ProgramModel.TABLE, null, program);
-//        database().insert(ProgramStageModel.TABLE, null, programStage);
-//        database().insert(ProgramStageDataElementModel.TABLE, null, programStageDataElement);
-//        database().insert(DataElementModel.TABLE, null, dataElement);
-//        database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
-    }
-
-
-
 
    /* How to extract database from tests:
     edit: AbsStoreTestCase.java (adding database name.)
@@ -172,20 +148,19 @@ public class TrackedEntityInstancePostCallIntegrationTest extends AbsStoreTestCa
         response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
 
+
+        createDummyDataToPost(
+                orgUnitUid, programUid, programStageUid, trackedEntityUid,
+                eventUid, enrollmentUid, trackedEntityInstanceUid, trackedEntityAttributeUid,
+                dataElementUid
+        );
+
+
         Call<Response<WebResponse>> call = d2.syncTrackedEntityInstances();
         response = call.call();
 
         assertThat(response.isSuccessful()).isTrue();
 
-        //second sync:
-//        response = d2.syncTrackedEntityInstances().call();
-//        assertThat(response.isSuccessful()).isTrue();
-
-        //TODO: add aditional sync + break point.
-        //when debugger stops at the new break point manually change metadata online & resume.
-        //This way I can make sure that additive (updates) work as well.
-        //The changes could be to one of the programs, adding stuff to it.
-        // adding a new program..etc.
     }
 
     @Test

@@ -41,5 +41,5 @@ public interface TrackedEntityDataValueStore {
                 @Nullable String value, @Nullable Boolean providedElsewhere
     );
 
-    Map<String, List<TrackedEntityDataValue>> query();
+    Map<String, List<TrackedEntityDataValue>> queryTrackedEntityDataValues(Boolean singleEvents);
 }

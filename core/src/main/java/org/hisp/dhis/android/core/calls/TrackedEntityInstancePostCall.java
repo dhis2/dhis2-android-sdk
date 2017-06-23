@@ -94,8 +94,9 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
 
 
     public List<TrackedEntityInstance> dataToSync() {
-        Map<String, List<TrackedEntityDataValue>> dataValueMap = trackedEntityDataValueStore.query();
-        Map<String, List<Event>> eventMap = eventStore.query();
+        Map<String, List<TrackedEntityDataValue>> dataValueMap =
+                trackedEntityDataValueStore.queryTrackedEntityDataValues(Boolean.FALSE);
+        Map<String, List<Event>> eventMap = eventStore.queryEventsAttachedToEnrollmentToPost();
         Map<String, List<Enrollment>> enrollmentMap = enrollmentStore.query();
         Map<String, List<TrackedEntityAttributeValue>> attributeValueMap = trackedEntityAttributeValueStore.query();
         Map<String, TrackedEntityInstance> trackedEntityInstances = trackedEntityInstanceStore.query();

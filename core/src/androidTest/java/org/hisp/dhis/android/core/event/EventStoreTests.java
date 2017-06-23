@@ -455,7 +455,7 @@ public class EventStoreTests extends AbsStoreTestCase {
 
 
         // query for events
-        Map<String, List<Event>> eventMap = eventStore.query();
+        Map<String, List<Event>> eventMap = eventStore.queryEventsAttachedToEnrollmentToPost();
         assertThat(eventMap.size()).isEqualTo(1);
 
         List<Event> events = eventMap.get(ENROLLMENT_UID);
@@ -468,7 +468,7 @@ public class EventStoreTests extends AbsStoreTestCase {
 
     @Test
     public void query_shouldReturnEmptyListWithNoEventsPresent() throws Exception {
-        Map<String, List<Event>> events = eventStore.query();
+        Map<String, List<Event>> events = eventStore.queryEventsAttachedToEnrollmentToPost();
 
         assertThat(events.size()).isEqualTo(0);
 

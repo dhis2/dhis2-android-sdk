@@ -79,5 +79,7 @@ public interface EventStore {
 
     int setState(@NonNull String uid, @NonNull State state);
 
-    Map<String, List<Event>> query();
+    Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost();
+
+    List<Event> querySingleEventsToPost();
 }

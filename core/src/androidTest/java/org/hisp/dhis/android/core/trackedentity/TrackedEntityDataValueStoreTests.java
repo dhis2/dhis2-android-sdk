@@ -299,7 +299,9 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
         // verify that TEDV was successfully inserted
         assertThatCursor(cursor).hasRow(EVENT).isExhausted();
 
-        Map<String, List<TrackedEntityDataValue>> map = trackedEntityDataValueStore.query();
+        Map<String, List<TrackedEntityDataValue>> map =
+                trackedEntityDataValueStore.queryTrackedEntityDataValues(Boolean.FALSE);
+
         assertThat(map.size()).isEqualTo(1);
 
         List<TrackedEntityDataValue> dataValues = map.get(EVENT);

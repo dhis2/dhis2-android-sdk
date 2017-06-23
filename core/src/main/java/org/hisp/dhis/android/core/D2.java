@@ -46,6 +46,8 @@ import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
+import org.hisp.dhis.android.core.event.EventPostCall;
+import org.hisp.dhis.android.core.event.EventService;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.imports.WebResponse;
@@ -169,6 +171,7 @@ public final class D2 {
     private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final EnrollmentStore enrollmentStore;
     private final EventStore eventStore;
+    private final EventService eventService;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
@@ -189,6 +192,7 @@ public final class D2 {
         this.trackedEntityService = retrofit.create(TrackedEntityService.class);
         this.optionSetService = retrofit.create(OptionSetService.class);
         this.trackedEntityInstanceService = retrofit.create(TrackedEntityInstanceService.class);
+        this.eventService = retrofit.create(EventService.class);
 
         // stores
 
@@ -316,6 +320,10 @@ public final class D2 {
         return new TrackedEntityInstancePostCall(databaseAdapter, trackedEntityInstanceService,
                 trackedEntityInstanceStore, enrollmentStore, eventStore, trackedEntityDataValueStore,
                 trackedEntityAttributeValueStore);
+    }
+
+    public Call<Response<WebResponse>> syncSingleEvents() {
+        return new EventPostCall(databaseAdapter, eventService, eventStore, trackedEntityDataValueStore);
     }
 
     public static class Builder {

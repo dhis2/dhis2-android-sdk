@@ -57,7 +57,7 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
             TrackedEntityDataValueModel.Columns.PROVIDED_ELSEWHERE +
             ") " + "VALUES (?,?,?,?,?,?,?)";
 
-    private static final String QUERY_STATEMENT = "SELECT " +
+    private static final String QUERY_TRACKED_ENTITY_DATA_VALUES_ATTACHED_TO_TRACKER_EVENTS = "SELECT " +
             "  TrackedEntityDataValue.created, " +
             "  TrackedEntityDataValue.lastUpdated, " +
             "  TrackedEntityDataValue.dataElement, " +
@@ -71,6 +71,20 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
             "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE' " +
             "      OR Enrollment.state = 'TO_POST' OR Enrollment.state = 'TO_UPDATE' OR Event.state = 'TO_POST' " +
             " OR Event.state = 'TO_POST';";
+
+    private static final String QUERY_TRACKED_ENTITY_DATA_VALUES_ATTACHED_TO_SINGLE_EVENTS = "SELECT " +
+            "  TrackedEntityDataValue.created, " +
+            "  TrackedEntityDataValue.lastUpdated, " +
+            "  TrackedEntityDataValue.dataElement, " +
+            "  TrackedEntityDataValue.event, " +
+            "  TrackedEntityDataValue.storedBy, " +
+            "  TrackedEntityDataValue.value, " +
+            "  TrackedEntityDataValue.providedElsewhere " +
+            "FROM (TrackedEntityDataValue INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid " +
+            " INNER JOIN Program ON Event.program = Program.uid) " +
+            "WHERE Program.programType = 'WITHOUT_REGISTRATION' " +
+            "AND Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE';";
+
 
     private final SQLiteStatement insertRowStatement;
     private final DatabaseAdapter databaseAdapter;
@@ -101,8 +115,25 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
         return ret;
     }
 
+    /**
+     * If singleEvents is true, then we query for Events which is NOT attached to any Enrollment and TrackedEntityInstance
+     * If singleEvents is false, then we query for Events which IS attached to Enrollments and TrackedEntityInstances.
+     * Example: singleEvents = true, then we query for TrackedEntityDataValues to Events where Event.program.programType = 'WITHOUT_REGISTRATION'
+     *
+     * @param singleEvents
+     * @return
+     */
+
+    //TODO TESTS!!
     @Override
-    public Map<String, List<TrackedEntityDataValue>> query() {
+    public Map<String, List<TrackedEntityDataValue>> queryTrackedEntityDataValues(Boolean singleEvents) {
+        String QUERY_STATEMENT;
+        if (singleEvents) {
+            QUERY_STATEMENT = QUERY_TRACKED_ENTITY_DATA_VALUES_ATTACHED_TO_SINGLE_EVENTS;
+        } else {
+            QUERY_STATEMENT = QUERY_TRACKED_ENTITY_DATA_VALUES_ATTACHED_TO_TRACKER_EVENTS;
+        }
+
         Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
         Map<String, List<TrackedEntityDataValue>> dataValues = new HashMap<>(cursor.getCount());
 
@@ -137,6 +168,4 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
 
         return dataValues;
     }
-
-
 }

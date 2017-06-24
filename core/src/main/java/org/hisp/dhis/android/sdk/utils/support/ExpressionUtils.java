@@ -35,7 +35,6 @@ import org.apache.commons.jexl2.JexlEngine;
 import org.apache.commons.jexl2.JexlException;
 import org.apache.commons.jexl2.MapContext;
 import org.apache.commons.lang3.StringUtils;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions;
 
 import java.util.HashMap;
@@ -189,33 +188,6 @@ public class ExpressionUtils {
     }
 
     /**
-     * Indicates whether the given expression is valid, i.e. can be successfully
-     * evaluated.
-     *
-     * @param expression the expression.
-     * @param vars the variables, can be null.
-     * @return true or false.
-     */
-    public static boolean isValid( String expression, Map<String, Object> vars )
-    {
-        try
-        {
-            Object result = evaluate( expression, vars, true );
-
-            return result != null;
-        }
-        catch ( JexlException ex )
-        {
-            if ( ex.getMessage().contains( "divide error" ) )
-            {
-                return true; //TODO Masking bug in Jexl, fix
-            }
-
-            return false;
-        }
-    }
-
-    /**
      * Indicates whether the given value is numeric.
      *
      * @param value the value.
@@ -226,24 +198,4 @@ public class ExpressionUtils {
         return NUMERIC_PATTERN.matcher( value ).matches();
     }
 
-    /**
-     * Converts the given expression into a valid SQL clause.
-     *
-     * @param expression the expression.
-     * @return an SQL clause.
-     */
-    public static String asSql( String expression )
-    {
-        if ( expression == null )
-        {
-            return null;
-        }
-
-        for ( String key : EL_SQL_MAP.keySet() )
-        {
-            expression = expression.replaceAll( key, EL_SQL_MAP.get( key ) );
-        }
-
-        return expression;
-    }
 }

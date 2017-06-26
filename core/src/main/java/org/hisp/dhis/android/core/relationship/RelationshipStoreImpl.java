@@ -34,8 +34,8 @@ import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 public class RelationshipStoreImpl implements RelationshipStore {
 
@@ -59,7 +59,7 @@ public class RelationshipStoreImpl implements RelationshipStore {
                        @Nullable String trackedEntityInstanceB,
                        @NonNull String relationshipType) {
 
-        nonNull(relationshipType);
+        isNull(relationshipType);
         sqLiteBind(insertStatement, 1, trackedEntityInstanceA);
         sqLiteBind(insertStatement, 2, trackedEntityInstanceB);
         sqLiteBind(insertStatement, 3, relationshipType);

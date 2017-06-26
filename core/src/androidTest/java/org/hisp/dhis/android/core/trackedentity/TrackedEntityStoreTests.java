@@ -181,11 +181,6 @@ public class TrackedEntityStoreTests extends AbsStoreTestCase {
 
     // ToDo: consider introducing conflict resolution strategy
 
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        store.close();
-        assertThat(database().isOpen()).isTrue();
-    }
 
     @Test(expected = IllegalArgumentException.class)
     public void insert_null_uid() {

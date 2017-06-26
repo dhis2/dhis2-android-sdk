@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoModel.Columns;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 public class SystemInfoStoreImpl implements SystemInfoStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + SystemInfoModel.TABLE + " (" +
@@ -74,10 +74,10 @@ public class SystemInfoStoreImpl implements SystemInfoStore {
                        @NonNull String dateFormat,
                        @NonNull String version,
                        @NonNull String contextPath) {
-        nonNull(serverDate);
-        nonNull(dateFormat);
-        nonNull(version);
-        nonNull(contextPath);
+        isNull(serverDate);
+        isNull(dateFormat);
+        isNull(version);
+        isNull(contextPath);
         bindArguments(insertStatement, serverDate, dateFormat, version, contextPath);
         long ret = databaseAdapter.executeInsert(SystemInfoModel.TABLE, insertStatement);
         insertStatement.clearBindings();
@@ -90,11 +90,11 @@ public class SystemInfoStoreImpl implements SystemInfoStore {
                       @NonNull String version,
                       @NonNull String contextPath,
                       @NonNull String whereContextPath) {
-        nonNull(serverDate);
-        nonNull(dateFormat);
-        nonNull(version);
-        nonNull(contextPath);
-        nonNull(whereContextPath);
+        isNull(serverDate);
+        isNull(dateFormat);
+        isNull(version);
+        isNull(contextPath);
+        isNull(whereContextPath);
         bindArguments(updateStatement, serverDate, dateFormat, version, contextPath);
         sqLiteBind(updateStatement, 5, whereContextPath);
 
@@ -105,7 +105,7 @@ public class SystemInfoStoreImpl implements SystemInfoStore {
 
     @Override
     public int delete(@NonNull String contextPath) {
-        nonNull(contextPath);
+        isNull(contextPath);
         sqLiteBind(deleteStatement, 1, contextPath);
 
         int ret = databaseAdapter.executeUpdateDelete(SystemInfoModel.TABLE, deleteStatement);

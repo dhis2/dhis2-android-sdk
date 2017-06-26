@@ -38,12 +38,14 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel.Columns;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -54,11 +56,13 @@ public class TrackedEntityInstanceStoreTests extends AbsStoreTestCase {
     private static final String ORGANISATION_UNIT = "test_organisationUnit";
     private static final String TRACKED_ENTITY = "test_trackedEntity";
     private static final State STATE = State.ERROR;
+    private static final String CREATED_AT_CLIENT = "2016-04-28T23:44:28.126";
+    private static final String LAST_UPDATED_AT_CLIENT = "2016-04-28T23:44:28.126";
 
     private final Date date;
     private final String dateString;
 
-    private TrackedEntityInstanceStore store;
+    private TrackedEntityInstanceStore trackedEntityInstanceStore;
 
     public TrackedEntityInstanceStoreTests() {
         this.date = new Date();
@@ -66,12 +70,14 @@ public class TrackedEntityInstanceStoreTests extends AbsStoreTestCase {
     }
 
     public static final String[] PROJECTION = {
-            TrackedEntityInstanceModel.Columns.UID,
-            TrackedEntityInstanceModel.Columns.CREATED,
-            TrackedEntityInstanceModel.Columns.LAST_UPDATED,
-            TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT,
-            TrackedEntityInstanceModel.Columns.TRACKED_ENTITY,
-            TrackedEntityInstanceModel.Columns.STATE
+            Columns.UID,
+            Columns.CREATED,
+            Columns.LAST_UPDATED,
+            Columns.CREATED_AT_CLIENT,
+            Columns.LAST_UPDATED_AT_CLIENT,
+            Columns.ORGANISATION_UNIT,
+            Columns.TRACKED_ENTITY,
+            Columns.STATE
     };
 
     @Before
@@ -79,7 +85,7 @@ public class TrackedEntityInstanceStoreTests extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        store = new TrackedEntityInstanceStoreImpl(databaseAdapter());
+        trackedEntityInstanceStore = new TrackedEntityInstanceStoreImpl(databaseAdapter());
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, TRACKED_ENTITY);
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
@@ -88,13 +94,15 @@ public class TrackedEntityInstanceStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistRowInDatabase() {
-        long rowId = store.insert(UID, date, date,
+        long rowId = trackedEntityInstanceStore.insert(UID, date, date,
+                CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
                 ORGANISATION_UNIT, TRACKED_ENTITY, STATE);
 
         Cursor cursor = database().query(TrackedEntityInstanceModel.TABLE,
                 PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, dateString, dateString,
+                CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
                 ORGANISATION_UNIT, TRACKED_ENTITY, STATE).isExhausted();
     }
 
@@ -105,7 +113,7 @@ public class TrackedEntityInstanceStoreTests extends AbsStoreTestCase {
 
         database().beginTransaction();
 
-        long rowId = store.insert(UID, date, date,
+        long rowId = trackedEntityInstanceStore.insert(UID, date, date, CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
                 deferredOrganisationUnit, deferredTrackedEntity, STATE);
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(11L, deferredOrganisationUnit);
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(11L, deferredTrackedEntity);
@@ -117,18 +125,71 @@ public class TrackedEntityInstanceStoreTests extends AbsStoreTestCase {
         Cursor cursor = database().query(TrackedEntityInstanceModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, dateString, dateString,
+                CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
                 deferredOrganisationUnit, deferredTrackedEntity, STATE
         ).isExhausted();
     }
 
     @Test
     public void insert_shouldPersistNullableRowInDatabase() {
-        long rowId = store.insert(UID, null, null, ORGANISATION_UNIT, TRACKED_ENTITY, null);
+        long rowId = trackedEntityInstanceStore.insert(UID, null, null, null, null,
+                ORGANISATION_UNIT, TRACKED_ENTITY, null);
+
         Cursor cursor = database().query(TrackedEntityInstanceModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(
-                UID, null, null, ORGANISATION_UNIT, TRACKED_ENTITY, null
+                UID, null, null, null, null, ORGANISATION_UNIT, TRACKED_ENTITY, null
         ).isExhausted();
+    }
+
+    @Test
+    public void update_shouldUpdateTrackedEntityInstance() throws Exception {
+        ContentValues trackedEntityInstance = new ContentValues();
+        trackedEntityInstance.put(Columns.UID, UID);
+        trackedEntityInstance.put(Columns.TRACKED_ENTITY, TRACKED_ENTITY);
+        trackedEntityInstance.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
+        trackedEntityInstance.put(Columns.LAST_UPDATED, dateString);
+        database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
+
+        String[] projection = {Columns.UID, Columns.LAST_UPDATED};
+        Cursor cursor = database().query(TrackedEntityInstanceModel.TABLE, projection, null, null, null, null, null);
+
+        // check that tracked entity instance was successfully inserted
+        assertThatCursor(cursor).hasRow(UID, dateString).isExhausted();
+
+        Date newLastUpdated = new Date();
+
+        trackedEntityInstanceStore.update(UID, null, newLastUpdated, null, null,
+                ORGANISATION_UNIT, TRACKED_ENTITY, null, UID);
+
+        String newLastUpdatedString = BaseIdentifiableObject.DATE_FORMAT.format(newLastUpdated);
+        cursor = database().query(TrackedEntityInstanceModel.TABLE, projection, null, null, null, null, null);
+
+        // check that tracked entity instance was successfully updated
+        assertThatCursor(cursor).hasRow(UID, newLastUpdatedString).isExhausted();
+
+    }
+
+    @Test
+    public void delete_shouldDeleteTrackedEntityInstance() throws Exception {
+        ContentValues trackedEntityInstance = new ContentValues();
+        trackedEntityInstance.put(Columns.UID, UID);
+        trackedEntityInstance.put(Columns.TRACKED_ENTITY, TRACKED_ENTITY);
+        trackedEntityInstance.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
+        database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
+
+        String[] projection = {Columns.UID};
+        Cursor cursor = database().query(TrackedEntityInstanceModel.TABLE, projection, null, null, null, null, null);
+
+        // check that tracked entity instance was successfully inserted
+        assertThatCursor(cursor).hasRow(UID).isExhausted();
+
+        trackedEntityInstanceStore.delete(UID);
+
+        cursor = database().query(TrackedEntityInstanceModel.TABLE, projection, null, null, null, null, null);
+
+        // check that tracked entity instance is deleted
+        assertThatCursor(cursor).isExhausted();
     }
 
     @Test
@@ -136,7 +197,7 @@ public class TrackedEntityInstanceStoreTests extends AbsStoreTestCase {
         database().insert(TrackedEntityInstanceModel.TABLE, null,
                 CreateTrackedEntityInstanceUtils.create(UID, ORGANISATION_UNIT, TRACKED_ENTITY));
 
-        store.delete();
+        trackedEntityInstanceStore.delete();
 
         Cursor cursor = database().query(TrackedEntityInstanceModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
@@ -144,30 +205,99 @@ public class TrackedEntityInstanceStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteTrackedEntityInstanceWhenDeletingOrganisationUnitForeignKey() {
-        store.insert(UID, date, date, ORGANISATION_UNIT, TRACKED_ENTITY, STATE);
+
+        trackedEntityInstanceStore.insert(UID, date, date, CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
+                ORGANISATION_UNIT, TRACKED_ENTITY, STATE);
+
+
         database().delete(OrganisationUnitModel.TABLE,
-                OrganisationUnitModel.Columns.UID + "=?", new String[]{ORGANISATION_UNIT});
+                OrganisationUnitModel.Columns.UID + "=?", new String[]{
+                        ORGANISATION_UNIT
+                });
+
         Cursor cursor = database().query(TrackedEntityInstanceModel.TABLE, PROJECTION, null, null, null, null, null);
-        assertThatCursor(cursor).isExhausted();
+
+        assertThatCursor(cursor).
+
+                isExhausted();
     }
 
     @Test
     public void delete_shouldDeleteTrackedEntityInstanceWhenDeletingTrackedEntityForeignKey() {
-        store.insert(UID, date, date, ORGANISATION_UNIT, TRACKED_ENTITY, STATE);
+        trackedEntityInstanceStore.insert(UID, date, date, CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
+                ORGANISATION_UNIT, TRACKED_ENTITY, STATE);
+
         database().delete(TrackedEntityModel.TABLE,
                 TrackedEntityModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY});
         Cursor cursor = database().query(TrackedEntityInstanceModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
 
+    @Test
+    public void setState_shouldUpdateTrackedEntityInstanceState() throws Exception {
+        ContentValues trackedEntityInstance = new ContentValues();
+        trackedEntityInstance.put(Columns.UID, UID);
+        trackedEntityInstance.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
+        trackedEntityInstance.put(Columns.TRACKED_ENTITY, TRACKED_ENTITY);
+        trackedEntityInstance.put(Columns.STATE, STATE.name());
+
+        database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
+
+        String[] projection = {
+                Columns.UID,
+                Columns.ORGANISATION_UNIT,
+                Columns.TRACKED_ENTITY,
+                Columns.STATE
+        };
+
+        Cursor cursor = database().query(TrackedEntityInstanceModel.TABLE, projection, null, null, null, null, null);
+        // check that tracked entity instance was successfully inserted
+        assertThatCursor(cursor).hasRow(UID, ORGANISATION_UNIT, TRACKED_ENTITY, STATE).isExhausted();
+        State updatedState = State.SYNCED;
+        trackedEntityInstanceStore.setState(UID, updatedState);
+
+        cursor = database().query(TrackedEntityInstanceModel.TABLE, projection, null, null, null, null, null);
+
+        // check that trackedEntityInstance is updated with updated state
+        assertThatCursor(cursor).hasRow(UID, ORGANISATION_UNIT, TRACKED_ENTITY, updatedState).isExhausted();
+    }
+
+    @Test
+    public void query_shouldReturnListOfTrackedEntityInstances() throws Exception {
+        ContentValues trackedEntityInstanceContentValues = new ContentValues();
+        trackedEntityInstanceContentValues.put(Columns.UID, UID);
+        trackedEntityInstanceContentValues.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
+        trackedEntityInstanceContentValues.put(Columns.TRACKED_ENTITY, TRACKED_ENTITY);
+        trackedEntityInstanceContentValues.put(Columns.STATE, State.TO_POST.name());
+        database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstanceContentValues);
+
+        String[] projection = {Columns.UID};
+        Cursor cursor = database().query(TrackedEntityInstanceModel.TABLE, projection, null, null, null, null, null);
+        // verify that tei was successfully inserted into database
+        assertThatCursor(cursor).hasRow(UID).isExhausted();
+
+        Map<String, TrackedEntityInstance> map = trackedEntityInstanceStore.query();
+        assertThat(map.containsKey(UID)).isTrue();
+
+        TrackedEntityInstance trackedEntityInstance = map.get(UID);
+        assertThat(trackedEntityInstance.uid()).isEqualTo(UID);
+        assertThat(trackedEntityInstance.organisationUnit()).isEqualTo(ORGANISATION_UNIT);
+        assertThat(trackedEntityInstance.trackedEntity()).isEqualTo(TRACKED_ENTITY);
+
+    }
+
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistTrackedEntityInstanceWithInvalidOrgUnitForeignKey() {
-        store.insert(UID, date, date, "wrong", TRACKED_ENTITY, STATE);
+
+        trackedEntityInstanceStore.insert(UID, date, date, CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
+                "wrong", TRACKED_ENTITY, STATE);
+
     }
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistTrackedEntityInstanceWithInvalidTrackedEntityForeignKey() {
-        store.insert(UID, date, date, ORGANISATION_UNIT, "wrong", STATE);
+        trackedEntityInstanceStore.insert(UID, date, date, CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
+                ORGANISATION_UNIT, "wrong", STATE);
     }
 
     // ToDo: consider introducing conflict resolution strategy
@@ -176,18 +306,20 @@ public class TrackedEntityInstanceStoreTests extends AbsStoreTestCase {
         assertThat(database().isOpen()).isTrue();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = SQLiteConstraintException.class)
     public void insert_null_uid() {
-        store.insert(null, date, date, ORGANISATION_UNIT, TRACKED_ENTITY, STATE);
+        trackedEntityInstanceStore.insert(
+                null, date, date, dateString, dateString, ORGANISATION_UNIT, TRACKED_ENTITY, STATE
+        );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = SQLiteConstraintException.class)
     public void insert_null_organisationUnit() {
-        store.insert(UID, date, date, null, TRACKED_ENTITY, STATE);
+        trackedEntityInstanceStore.insert(UID, date, date, dateString, dateString, null, TRACKED_ENTITY, STATE);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = SQLiteConstraintException.class)
     public void insert_null_trackedEntity() {
-        store.insert(UID, date, date, ORGANISATION_UNIT, null, STATE);
+        trackedEntityInstanceStore.insert(UID, date, date, dateString, dateString, ORGANISATION_UNIT, null, STATE);
     }
 }

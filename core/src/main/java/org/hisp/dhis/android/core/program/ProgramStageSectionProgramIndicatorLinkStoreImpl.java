@@ -32,8 +32,8 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 public class ProgramStageSectionProgramIndicatorLinkStoreImpl implements ProgramStageSectionProgramIndicatorLinkStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
@@ -60,8 +60,8 @@ public class ProgramStageSectionProgramIndicatorLinkStoreImpl implements Program
     @Override
     public Long insert(@NonNull String programStageSection, @NonNull String programIndicator) {
 
-        nonNull(programStageSection);
-        nonNull(programIndicator);
+        isNull(programStageSection);
+        isNull(programIndicator);
 
         sqLiteBind(insertStatement, 1, programStageSection);
         sqLiteBind(insertStatement, 2, programIndicator);
@@ -74,10 +74,10 @@ public class ProgramStageSectionProgramIndicatorLinkStoreImpl implements Program
     @Override
     public int update(@NonNull String programStageSection, @NonNull String programIndicator,
                       @NonNull String whereProgramStageSection, @NonNull String whereProgramIndicator) {
-        nonNull(programStageSection);
-        nonNull(programIndicator);
-        nonNull(whereProgramStageSection);
-        nonNull(whereProgramIndicator);
+        isNull(programStageSection);
+        isNull(programIndicator);
+        isNull(whereProgramStageSection);
+        isNull(whereProgramIndicator);
 
         sqLiteBind(updateStatement, 1, programStageSection);
         sqLiteBind(updateStatement, 2, programIndicator);

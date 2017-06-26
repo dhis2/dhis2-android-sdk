@@ -36,6 +36,9 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.dataelement.DataElementModel;
+import org.hisp.dhis.android.core.enrollment.CreateEnrollmentUtils;
+import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.event.EventModel.Columns;
 import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
@@ -45,7 +48,10 @@ import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.program.ProgramStageModel;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
+import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityInstanceUtils;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,6 +60,8 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -65,6 +73,8 @@ public class EventStoreTests extends AbsStoreTestCase {
             Columns.ENROLLMENT_UID,
             Columns.CREATED, // created
             Columns.LAST_UPDATED, // lastUpdated
+            Columns.CREATED_AT_CLIENT,
+            Columns.LAST_UPDATED_AT_CLIENT,
             Columns.STATUS,
             Columns.LATITUDE,
             Columns.LONGITUDE,
@@ -85,6 +95,9 @@ public class EventStoreTests extends AbsStoreTestCase {
     private static final String PROGRAM_STAGE = "test_programStage";
     private static final String ORGANISATION_UNIT = "test_orgUnit";
     private static final State STATE = State.TO_POST;
+    private static final String CREATED_AT_CLIENT = "2016-04-28T23:44:28.126";
+    private static final String LAST_UPDATED_AT_CLIENT = "2016-04-28T23:44:28.126";
+
     //foreign keys to program:
     private static final long TRACKED_ENTITY_ID = 1L;
     private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
@@ -95,7 +108,7 @@ public class EventStoreTests extends AbsStoreTestCase {
     private final String dateString;
     private final String WRONG_UID = "wrong";
 
-    private EventStore store;
+    private EventStore eventStore;
 
     public EventStoreTests() throws ParseException {
         this.date = new Date();
@@ -106,7 +119,7 @@ public class EventStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.store = new EventStoreImpl(databaseAdapter());
+        this.eventStore = new EventStoreImpl(databaseAdapter());
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
@@ -119,18 +132,29 @@ public class EventStoreTests extends AbsStoreTestCase {
 
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
+        String trackedEntityInstanceUid = "trackedEntityInstanceUid";
+        ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(trackedEntityInstanceUid,
+                ORGANISATION_UNIT, TRACKED_ENTITY_UID);
+        ContentValues enrollment = CreateEnrollmentUtils.create(
+                ENROLLMENT_UID, PROGRAM, ORGANISATION_UNIT, trackedEntityInstanceUid
+        );
+
 
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
         database().insert(ProgramStageModel.TABLE, null, programStage);
+        database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
+        database().insert(EnrollmentModel.TABLE, null, enrollment);
     }
 
     @Test
     public void insert_shouldPersistEventInDatabase() {
-        long rowId = store.insert(
+        long rowId = eventStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
                 date, // created
                 date, // lastUpdated
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 STATUS,
                 LATITUDE,
                 LONGITUDE,
@@ -150,6 +174,8 @@ public class EventStoreTests extends AbsStoreTestCase {
                 ENROLLMENT_UID,
                 dateString, // created
                 dateString, // lastUpdated
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 STATUS,
                 LATITUDE,
                 LONGITUDE,
@@ -170,11 +196,13 @@ public class EventStoreTests extends AbsStoreTestCase {
         final String deferredOrganisationUnit = "deferredOrganisationUnit";
 
         database().beginTransaction();
-        long rowId = store.insert(
+        long rowId = eventStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
                 date, // created
                 date, // lastUpdated
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 STATUS,
                 LATITUDE,
                 LONGITUDE,
@@ -205,6 +233,8 @@ public class EventStoreTests extends AbsStoreTestCase {
                 ENROLLMENT_UID,
                 dateString, // created
                 dateString, // lastUpdated
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 STATUS,
                 LATITUDE,
                 LONGITUDE,
@@ -220,21 +250,24 @@ public class EventStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistEventNullableInDatabase() {
-        long rowId = store.insert(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, PROGRAM,
+
+        long rowId = eventStore.insert(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, null, null, PROGRAM,
                 PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null);
         Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor).hasRow(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, PROGRAM,
+        assertThatCursor(cursor).hasRow(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, null, null, PROGRAM,
                 PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null).isExhausted();
     }
 
     @Test
     public void delete_shouldDeleteEventWhenDeletingProgramForeignKey() {
-        store.insert(
+        eventStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
                 date,
                 date,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 STATUS,
                 LATITUDE,
                 LONGITUDE,
@@ -254,11 +287,13 @@ public class EventStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteEventWhenDeletingProgramStageForeignKey() {
-        store.insert(
+        eventStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
                 date,
                 date,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 STATUS,
                 LATITUDE,
                 LONGITUDE,
@@ -278,11 +313,13 @@ public class EventStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteEventWhenDeletingOrganisationUnitForeignKey() {
-        store.insert(
+        eventStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
                 date,
                 date,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 STATUS,
                 LATITUDE,
                 LONGITUDE,
@@ -302,13 +339,150 @@ public class EventStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).isExhausted();
     }
 
+    @Test
+    public void update_shouldUpdateEvent() throws Exception {
+        ContentValues event = new ContentValues();
+        event.put(Columns.UID, EVENT_UID);
+        event.put(Columns.EVENT_DATE, dateString);
+        event.put(Columns.PROGRAM, PROGRAM);
+        event.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+        event.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
+        database().insert(EventModel.TABLE, null, event);
+
+        String[] projection = {Columns.UID, Columns.EVENT_DATE};
+        Cursor cursor = database().query(EventModel.TABLE, projection, null, null, null, null, null);
+
+        // check that event was successfully inserted into database
+        assertThatCursor(cursor).hasRow(EVENT_UID, dateString).isExhausted();
+
+        Date updatedDate = new Date();
+
+        eventStore.update(EVENT_UID, null, null, null, null, null, null, null, null,
+                PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT, updatedDate, null, null, null, EVENT_UID);
+
+        cursor = database().query(EventModel.TABLE, projection, null, null, null, null, null);
+
+        String updatedDateString = BaseIdentifiableObject.DATE_FORMAT.format(updatedDate);
+
+        // check that event was updated with updatedDateString
+        assertThatCursor(cursor).hasRow(EVENT_UID, updatedDateString).isExhausted();
+    }
+
+    @Test
+    public void delete_shouldDeleteEvent() throws Exception {
+        ContentValues event = new ContentValues();
+        event.put(Columns.UID, EVENT_UID);
+        event.put(Columns.PROGRAM, PROGRAM);
+        event.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+        event.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
+        database().insert(EventModel.TABLE, null, event);
+
+        String[] projection = {Columns.UID, Columns.ORGANISATION_UNIT};
+        Cursor cursor = database().query(EventModel.TABLE, projection, null, null, null, null, null);
+
+        // check that event was successfully inserted into database
+        assertThatCursor(cursor).hasRow(EVENT_UID, ORGANISATION_UNIT).isExhausted();
+
+        eventStore.delete(EVENT_UID);
+
+        cursor = database().query(EventModel.TABLE, projection, null, null, null, null, null);
+
+        // check that event is deleted
+        assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test
+    public void setState_shouldUpdateEventState() throws Exception {
+        ContentValues event = new ContentValues();
+        event.put(Columns.UID, EVENT_UID);
+        event.put(Columns.PROGRAM, PROGRAM);
+        event.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+        event.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
+        event.put(Columns.STATE, STATE.name());
+        database().insert(EventModel.TABLE, null, event);
+
+        String[] projection = {Columns.UID, Columns.STATE};
+        Cursor cursor = database().query(EventModel.TABLE, projection, null, null, null, null, null);
+
+        // check that event was successfully inserted into database
+        assertThatCursor(cursor).hasRow(EVENT_UID, STATE).isExhausted();
+        State updatedState = State.ERROR;
+        eventStore.setState(EVENT_UID, updatedState);
+
+        cursor = database().query(EventModel.TABLE, projection, null, null, null, null, null);
+
+        // check that state was updated
+        assertThatCursor(cursor).hasRow(EVENT_UID, updatedState);
+
+    }
+
+    @Test
+    public void query_shouldReturnListOfEvents() throws Exception {
+        ContentValues eventContentValues = new ContentValues();
+        eventContentValues.put(Columns.UID, EVENT_UID);
+        eventContentValues.put(Columns.PROGRAM, PROGRAM);
+        eventContentValues.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
+        eventContentValues.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
+        eventContentValues.put(Columns.ENROLLMENT_UID, ENROLLMENT_UID);
+        eventContentValues.put(Columns.STATUS, STATUS.name());
+        eventContentValues.put(Columns.EVENT_DATE, dateString);
+        eventContentValues.put(Columns.COMPLETE_DATE, dateString);
+        eventContentValues.put(Columns.LATITUDE, dateString);
+        eventContentValues.put(Columns.STATE, STATE.name());
+        database().insert(EventModel.TABLE, null, eventContentValues);
+
+        String dataElementUid = "de_uid";
+        ContentValues dataElement = new ContentValues();
+        dataElement.put(DataElementModel.Columns.UID, dataElementUid);
+        database().insert(DataElementModel.TABLE, null, dataElement);
+
+        ContentValues dataValue = new ContentValues();
+        dataValue.put(TrackedEntityDataValueModel.Columns.EVENT, EVENT_UID);
+        dataValue.put(TrackedEntityDataValueModel.Columns.DATA_ELEMENT, dataElementUid);
+        dataValue.put(TrackedEntityDataValueModel.Columns.VALUE, "some_value");
+        database().insert(TrackedEntityDataValueModel.TABLE, null, dataValue);
+
+        String[] dataValueProjection = {TrackedEntityDataValueModel.Columns.EVENT};
+        Cursor dataValueCursor = database().query(TrackedEntityDataValueModel.TABLE, dataValueProjection,
+                null, null, null, null, null);
+        assertThatCursor(dataValueCursor).hasRow(EVENT_UID).isExhausted();
+
+        String[] projection = {Columns.UID};
+        Cursor cursor = database().query(EventModel.TABLE, projection, Columns.UID + " =?",
+                new String[]{EVENT_UID}, null, null, null);
+        // verify that eventContentValues was successfully inserted
+        assertThatCursor(cursor).hasRow(EVENT_UID).isExhausted();
+
+
+        // query for events
+        Map<String, List<Event>> eventMap = eventStore.queryEventsAttachedToEnrollmentToPost();
+        assertThat(eventMap.size()).isEqualTo(1);
+
+        List<Event> events = eventMap.get(ENROLLMENT_UID);
+        assertThat(events.size()).isEqualTo(1);
+
+        Event event = events.get(0);
+        // check that uid and data values is included
+        assertThat(event.uid()).isEqualTo(EVENT_UID);
+    }
+
+    @Test
+    public void query_shouldReturnEmptyListWithNoEventsPresent() throws Exception {
+        Map<String, List<Event>> events = eventStore.queryEventsAttachedToEnrollmentToPost();
+
+        assertThat(events.size()).isEqualTo(0);
+
+    }
+
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistEventWithInvalidProgramForeignKey() {
-        store.insert(
+        eventStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
                 date,
                 date,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 STATUS,
                 LATITUDE,
                 LONGITUDE,
@@ -324,11 +498,13 @@ public class EventStoreTests extends AbsStoreTestCase {
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistEventWithInvalidProgramStageForeignKey() throws ParseException {
-        store.insert(
+        eventStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
                 date,
                 date,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 STATUS,
                 LATITUDE,
                 LONGITUDE,
@@ -344,11 +520,13 @@ public class EventStoreTests extends AbsStoreTestCase {
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistEventWithInvalidOrganisationUnitForeignKey() {
-        store.insert(
+        eventStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
                 date,
                 date,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
                 STATUS,
                 LATITUDE,
                 LONGITUDE,
@@ -362,33 +540,28 @@ public class EventStoreTests extends AbsStoreTestCase {
         );
     }
 
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        store.close();
-        assertThat(database().isOpen()).isTrue();
+
+    @Test(expected = SQLiteConstraintException.class)
+    public void exception_persistEventWithInvalidEnrollmentForeignKey() {
+        eventStore.insert(
+                EVENT_UID,
+                WRONG_UID, // supply wrong uid
+                date,
+                date,
+                CREATED_AT_CLIENT,
+                LAST_UPDATED_AT_CLIENT,
+                STATUS,
+                LATITUDE,
+                LONGITUDE,
+                PROGRAM,
+                PROGRAM_STAGE,
+                ORGANISATION_UNIT,
+                date,
+                date,
+                date,
+                STATE
+        );
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void insert_null_uid() {
-        store.insert(null, ENROLLMENT_UID, date, date, STATUS, LATITUDE, LONGITUDE, PROGRAM, PROGRAM_STAGE,
-                ORGANISATION_UNIT, date, date, date, STATE);
-    }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void insert_null_program() {
-        store.insert(EVENT_UID, ENROLLMENT_UID, date, date, STATUS, LATITUDE, LONGITUDE, null, PROGRAM_STAGE,
-                ORGANISATION_UNIT, date, date, date, STATE);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void insert_null_programStage() {
-        store.insert(EVENT_UID, ENROLLMENT_UID, date, date, STATUS, LATITUDE, LONGITUDE, PROGRAM, null,
-                ORGANISATION_UNIT, date, date, date, STATE);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void insert_null_organisationUnit() {
-        store.insert(EVENT_UID, ENROLLMENT_UID, date, date, STATUS, LATITUDE, LONGITUDE, PROGRAM, PROGRAM_STAGE,
-                null, date, date, date, STATE);
-    }
 }

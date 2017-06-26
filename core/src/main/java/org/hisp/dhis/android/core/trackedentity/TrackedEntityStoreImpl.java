@@ -36,8 +36,9 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
+
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class TrackedEntityStoreImpl implements TrackedEntityStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + TrackedEntityModel.TABLE + " (" +
@@ -91,7 +92,7 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
                        @Nullable String displayShortName, @Nullable String description,
                        @Nullable String displayDescription
     ) {
-        nonNull(uid);
+        isNull(uid);
         sqLiteBind(insertStatement, 1, uid);
         sqLiteBind(insertStatement, 2, code);
         sqLiteBind(insertStatement, 3, name);
@@ -115,8 +116,8 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
                       @Nullable String shortName, @Nullable String displayShortName, @Nullable String description,
                       @Nullable String displayDescription, @NonNull String whereUid
     ) {
-        nonNull(uid);
-        nonNull(whereUid);
+        isNull(uid);
+        isNull(whereUid);
         sqLiteBind(updateStatement, 1, uid);
         sqLiteBind(updateStatement, 2, code);
         sqLiteBind(updateStatement, 3, name);
@@ -136,15 +137,11 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
 
     @Override
     public int delete(@NonNull String uid) {
-        nonNull(uid);
+        isNull(uid);
         sqLiteBind(deleteStatement, 1, uid);
         int rowId = deleteStatement.executeUpdateDelete();
         deleteStatement.clearBindings();
         return rowId;
     }
 
-    @Override
-    public void close() {
-        insertStatement.close();
-    }
 }

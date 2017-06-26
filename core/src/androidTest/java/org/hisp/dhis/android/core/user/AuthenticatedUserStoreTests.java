@@ -79,12 +79,12 @@ public class AuthenticatedUserStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(1L, USER_UID, USER_CREDENTIALS).isExhausted();
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void insert_null_uid_arg() {
         authenticatedUserStore.insert(null, USER_CREDENTIALS);
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void insert_null_credentials_arg() {
         authenticatedUserStore.insert(USER_UID, null);
     }
@@ -159,9 +159,4 @@ public class AuthenticatedUserStoreTests extends AbsStoreTestCase {
         authenticatedUserStore.insert(wrongUserUid, USER_CREDENTIALS);
     }
 
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        authenticatedUserStore.close();
-        assertThat(database().isOpen()).isTrue();
-    }
 }

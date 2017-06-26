@@ -35,8 +35,8 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class OptionStoreImpl implements OptionStore {
@@ -85,8 +85,8 @@ public class OptionStoreImpl implements OptionStore {
                        @NonNull Date created,
                        @NonNull Date lastUpdated,
                        @NonNull String optionSet) {
-        nonNull(uid);
-        nonNull(optionSet);
+        isNull(uid);
+        isNull(optionSet);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, optionSet);
 
         // execute and clear bindings
@@ -105,9 +105,9 @@ public class OptionStoreImpl implements OptionStore {
                       @NonNull Date lastUpdated,
                       @NonNull String optionSet,
                       @NonNull String whereOptionUid) {
-        nonNull(uid);
-        nonNull(optionSet);
-        nonNull(whereOptionUid);
+        isNull(uid);
+        isNull(optionSet);
+        isNull(whereOptionUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, optionSet);
 
         // bind the where argument
@@ -122,7 +122,7 @@ public class OptionStoreImpl implements OptionStore {
 
     @Override
     public int delete(@NonNull String uid) {
-        nonNull(uid);
+        isNull(uid);
         sqLiteBind(deleteStatement, 1, uid);
 
         int delete = databaseAdapter.executeUpdateDelete(OptionModel.TABLE, deleteStatement);

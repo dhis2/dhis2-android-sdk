@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class UserStoreImpl implements UserStore {
@@ -112,7 +112,7 @@ public class UserStoreImpl implements UserStore {
             @Nullable String languages, @Nullable String email, @Nullable String phoneNumber,
             @Nullable String nationality) {
 
-        nonNull(uid);
+        isNull(uid);
         bindArguments(
                 insertStatement, uid, code, name,
                 displayName, created, lastUpdated, birthday, education, gender,
@@ -136,8 +136,8 @@ public class UserStoreImpl implements UserStore {
             @Nullable String languages, @Nullable String email, @Nullable String phoneNumber,
             @Nullable String nationality, @NonNull String whereUid) {
 
-        nonNull(uid);
-        nonNull(whereUid);
+        isNull(uid);
+        isNull(whereUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, birthday, education, gender,
                 jobTitle, surname, firstName, introduction, employer, interests, languages, email, phoneNumber,
                 nationality
@@ -151,7 +151,7 @@ public class UserStoreImpl implements UserStore {
 
     @Override
     public int delete(@NonNull String uid) {
-        nonNull(uid);
+        isNull(uid);
         sqLiteBind(deleteStatement, 1, uid);
 
         int delete = databaseAdapter.executeUpdateDelete(UserModel.TABLE, deleteStatement);

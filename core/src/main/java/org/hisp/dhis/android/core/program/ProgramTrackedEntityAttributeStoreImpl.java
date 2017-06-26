@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
@@ -109,9 +109,9 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
                        @Nullable String displayDescription, @Nullable Boolean mandatory,
                        @NonNull String trackedEntityAttribute, @Nullable Boolean allowFutureDates,
                        @Nullable Boolean displayInList, @NonNull String program, @Nullable Integer sortOrder) {
-        nonNull(uid);
-        nonNull(trackedEntityAttribute);
-        nonNull(program);
+        isNull(uid);
+        isNull(trackedEntityAttribute);
+        isNull(program);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, shortName,
                 displayShortName, description, displayDescription, mandatory, trackedEntityAttribute,
                 allowFutureDates, displayInList, program, sortOrder);
@@ -129,10 +129,10 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
                       @NonNull String trackedEntityAttribute, @Nullable Boolean allowFutureDates,
                       @Nullable Boolean displayInList, @NonNull String program, @Nullable Integer sortOrder,
                       @NonNull String whereProgramTrackedEntityAttributeUid) {
-        nonNull(uid);
-        nonNull(trackedEntityAttribute);
-        nonNull(program);
-        nonNull(whereProgramTrackedEntityAttributeUid);
+        isNull(uid);
+        isNull(trackedEntityAttribute);
+        isNull(program);
+        isNull(whereProgramTrackedEntityAttributeUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, shortName,
                 displayShortName, description, displayDescription, mandatory, trackedEntityAttribute,
                 allowFutureDates, displayInList, program, sortOrder);
@@ -148,7 +148,7 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
 
     @Override
     public int delete(@NonNull String uid) {
-        nonNull(uid);
+        isNull(uid);
         // bind the where argument
         sqLiteBind(deleteStatement, 1, uid);
 

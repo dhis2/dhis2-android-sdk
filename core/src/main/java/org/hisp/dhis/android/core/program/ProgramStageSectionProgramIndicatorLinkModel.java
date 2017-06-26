@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.common.BaseModel;
 
 @AutoValue
 public abstract class ProgramStageSectionProgramIndicatorLinkModel extends BaseModel {
-    public static final String TABLE = "programStageSectionProgramIndicatorLinkTable";
+    public static final String TABLE = "ProgramStageSectionProgramIndicatorLinkTable";
 
     public static class Columns extends BaseModel.Columns {
         public static final String PROGRAM_STAGE_SECTION = "programStageSection";

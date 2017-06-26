@@ -37,8 +37,8 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
@@ -126,7 +126,7 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
                        @Nullable Boolean generated, @Nullable Boolean displayOnVisitSchedule,
                        @Nullable Boolean orgUnitScope, @Nullable Boolean unique,
                        @Nullable Boolean inherit) {
-        nonNull(uid);
+        isNull(uid);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, shortName,
                 displayShortName, description, displayDescription, pattern, sortOrderInListNoProgram, optionSet,
                 valueType, expression, searchScope, programScope, displayInListNoProgram,
@@ -149,8 +149,8 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
                       @Nullable Boolean displayOnVisitSchedule, @Nullable Boolean orgUnitScope,
                       @Nullable Boolean unique, @Nullable Boolean inherit,
                       @NonNull String whereUid) {
-        nonNull(uid);
-        nonNull(whereUid);
+        isNull(uid);
+        isNull(whereUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, shortName,
                 displayShortName, description, displayDescription, pattern, sortOrderInListNoProgram, optionSet,
                 valueType, expression, searchScope, programScope, displayInListNoProgram,
@@ -164,7 +164,7 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
 
     @Override
     public int delete(@NonNull String uid) {
-        nonNull(uid);
+        isNull(uid);
         sqLiteBind(deleteStatement, 1, uid);
 
         int delete = databaseAdapter.executeUpdateDelete(TrackedEntityAttributeModel.TABLE, deleteStatement);

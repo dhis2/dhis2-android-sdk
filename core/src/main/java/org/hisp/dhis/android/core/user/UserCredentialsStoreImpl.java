@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class UserCredentialsStoreImpl implements UserCredentialsStore {
@@ -83,8 +83,8 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
                        @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
                        @Nullable String username, @NonNull String user) {
 
-        nonNull(uid);
-        nonNull(user);
+        isNull(uid);
+        isNull(user);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, username, user);
 
         long returnValue = databaseAdapter.executeInsert(UserCredentialsModel.TABLE, insertStatement);
@@ -97,9 +97,9 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
                       @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
                       @Nullable String username, @NonNull String user, @NonNull String whereUid) {
 
-        nonNull(uid);
-        nonNull(user);
-        nonNull(whereUid);
+        isNull(uid);
+        isNull(user);
+        isNull(whereUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, username, user);
         sqLiteBind(updateStatement, 9, whereUid);
 
@@ -110,7 +110,7 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
 
     @Override
     public int delete(@NonNull String uid) {
-        nonNull(uid);
+        isNull(uid);
         sqLiteBind(deleteStatement, 1, uid);
 
         int returnValue = databaseAdapter.executeUpdateDelete(UserCredentialsModel.TABLE, deleteStatement);

@@ -37,8 +37,8 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
@@ -114,7 +114,7 @@ public class DataElementStoreImpl implements DataElementStore {
                        @Nullable String formName, @Nullable String numberType,
                        @Nullable String domainType, @Nullable String dimension,
                        @Nullable String displayFormName, @Nullable String optionSet) {
-        nonNull(uid);
+        isNull(uid);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
                 description, displayDescription, valueType, zeroIsSignificant, aggregationOperator, formName,
                 numberType, domainType, dimension, displayFormName, optionSet);
@@ -127,7 +127,7 @@ public class DataElementStoreImpl implements DataElementStore {
 
     @Override
     public int delete(String uid) {
-        nonNull(uid);
+        isNull(uid);
         // bind the where argument
         sqLiteBind(deleteStatement, 1, uid);
 
@@ -146,8 +146,8 @@ public class DataElementStoreImpl implements DataElementStore {
                       @Nullable String formName, @Nullable String numberType, @Nullable String domainType,
                       @Nullable String dimension, @Nullable String displayFormName, @Nullable String optionSet,
                       @NonNull String whereDataElementUid) {
-        nonNull(uid);
-        nonNull(whereDataElementUid);
+        isNull(uid);
+        isNull(whereDataElementUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, shortName,
                 displayShortName, description, displayDescription, valueType, zeroIsSignificant, aggregationOperator,
                 formName, numberType, domainType, dimension, displayFormName, optionSet);

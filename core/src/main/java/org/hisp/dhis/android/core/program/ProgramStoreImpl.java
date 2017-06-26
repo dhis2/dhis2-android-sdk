@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
@@ -163,7 +163,7 @@ public class ProgramStoreImpl implements ProgramStore {
 //            @NonNull CategoryCombo categoryCombo
     ) {
 
-        nonNull(uid);
+        isNull(uid);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
                 description, displayDescription, version, onlyEnrollOnce, enrollmentDateLabel, displayIncidentDate,
                 incidentDateLabel, registration, selectEnrollmentDatesInFuture, dataEntryMethod,
@@ -208,8 +208,8 @@ public class ProgramStoreImpl implements ProgramStore {
                       @Nullable String relatedProgram,
                       @Nullable String trackedEntity,
                       @NonNull String whereProgramUid) {
-        nonNull(uid);
-        nonNull(whereProgramUid);
+        isNull(uid);
+        isNull(whereProgramUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
                 description, displayDescription, version, onlyEnrollOnce, enrollmentDateLabel, displayIncidentDate,
                 incidentDateLabel, registration, selectEnrollmentDatesInFuture, dataEntryMethod,
@@ -230,7 +230,7 @@ public class ProgramStoreImpl implements ProgramStore {
 
     @Override
     public int delete(@NonNull String uid) {
-        nonNull(uid);
+        isNull(uid);
         // bind the where argument
         sqLiteBind(deleteStatement, 1, uid);
 

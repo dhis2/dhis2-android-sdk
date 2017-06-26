@@ -29,6 +29,10 @@
 package org.hisp.dhis.android.core.event;
 
 import android.content.ContentValues;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import org.hisp.dhis.android.core.common.State;
 
 public class CreateEventUtils {
 
@@ -40,10 +44,19 @@ public class CreateEventUtils {
     // timestamp
     private static final String DATE = "2017-01-12T11:31:00.000";
 
-    public static ContentValues create(String uid, String program, String programStage, String orgUnit) {
+    public static ContentValues create(@NonNull String uid,
+                                       @NonNull String program,
+                                       @NonNull String programStage,
+                                       @NonNull String orgUnit,
+                                       @Nullable String enrollmentUid) {
         ContentValues event = new ContentValues();
         event.put(EventModel.Columns.UID, uid);
-        event.put(EventModel.Columns.ENROLLMENT_UID, ENROLLMENT_UID);
+
+        if (enrollmentUid == null) {
+            event.putNull(EventModel.Columns.ENROLLMENT_UID);
+        }
+
+        event.put(EventModel.Columns.ENROLLMENT_UID, enrollmentUid);
         event.put(EventModel.Columns.CREATED, DATE);
         event.put(EventModel.Columns.LAST_UPDATED, DATE);
         event.put(EventModel.Columns.STATUS, STATUS.name());
@@ -55,6 +68,7 @@ public class CreateEventUtils {
         event.put(EventModel.Columns.EVENT_DATE, DATE);
         event.put(EventModel.Columns.COMPLETE_DATE, DATE);
         event.put(EventModel.Columns.DUE_DATE, DATE);
+        event.put(EventModel.Columns.STATE, State.TO_POST.name());
         return event;
     }
 }

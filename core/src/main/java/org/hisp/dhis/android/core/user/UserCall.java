@@ -27,10 +27,11 @@
  */
 package org.hisp.dhis.android.core.user;
 
+
 import android.database.sqlite.SQLiteConstraintException;
 import android.util.Log;
 
-import org.hisp.dhis.android.core.common.Call;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;

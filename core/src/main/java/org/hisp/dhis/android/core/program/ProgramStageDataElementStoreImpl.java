@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
@@ -114,9 +114,9 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
                        @Nullable Integer sortOrder, @NonNull Boolean allowFutureDate,
                        @NonNull String dataElement, @Nullable String programStageUid,
                        @Nullable String programStageSection) {
-        nonNull(uid);
-        nonNull(dataElement);
-        nonNull(programStageUid);
+        isNull(uid);
+        isNull(dataElement);
+        isNull(programStageUid);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, displayInReports, compulsory,
                 allowProvidedElsewhere, sortOrder, allowFutureDate, dataElement, programStageUid);
 
@@ -137,10 +137,11 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
                       @NonNull Boolean allowProvidedElsewhere, @Nullable Integer sortOrder,
                       @NonNull Boolean allowFutureDate, @NonNull String dataElement,
                       @Nullable String programStageUid, @NonNull String whereProgramStageDataElementUid) {
-        nonNull(uid);
-        nonNull(dataElement);
-        nonNull(programStageUid);
-        nonNull(whereProgramStageDataElementUid);
+        isNull(uid);
+        isNull(dataElement);
+        isNull(programStageUid);
+        isNull(whereProgramStageDataElementUid);
+
         bindArguments(updateWithoutSectionStatement, uid, code, name, displayName, created, lastUpdated,
                 displayInReports, compulsory, allowProvidedElsewhere, sortOrder,
                 allowFutureDate, dataElement, programStageUid);
@@ -159,7 +160,7 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
 
     @Override
     public int delete(@NonNull String uid) {
-        nonNull(uid);
+        isNull(uid);
         // bind the where argument
         sqLiteBind(deleteStatement, 1, uid);
 

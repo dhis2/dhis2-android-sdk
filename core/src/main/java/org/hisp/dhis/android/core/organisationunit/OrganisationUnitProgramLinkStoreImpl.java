@@ -32,8 +32,8 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitProgramLinkStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
@@ -53,8 +53,8 @@ public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitPro
     @Override
     public long insert(@NonNull String organisationUnitUid, @NonNull String programUid) {
 
-        nonNull(organisationUnitUid);
-        nonNull(programUid);
+        isNull(organisationUnitUid);
+        isNull(programUid);
         sqLiteBind(insertStatement, 1, organisationUnitUid);
         sqLiteBind(insertStatement, 2, programUid);
 

@@ -34,15 +34,23 @@ import android.support.annotation.VisibleForTesting;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.calls.MetadataCall;
+import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Call;
-import org.hisp.dhis.android.core.common.MetadataCall;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
+import org.hisp.dhis.android.core.event.EventPostCall;
+import org.hisp.dhis.android.core.event.EventService;
+import org.hisp.dhis.android.core.event.EventStore;
+import org.hisp.dhis.android.core.event.EventStoreImpl;
+import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
@@ -83,6 +91,13 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityService;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStoreImpl;
@@ -151,7 +166,18 @@ public final class D2 {
     private final ProgramStageStore programStageStore;
     private final RelationshipTypeStore relationshipStore;
     private final TrackedEntityStore trackedEntityStore;
+
+    private final TrackedEntityInstanceStore trackedEntityInstanceStore;
+    private final TrackedEntityInstanceService trackedEntityInstanceService;
+    private final EnrollmentStore enrollmentStore;
+    private final EventStore eventStore;
+    private final EventService eventService;
+    private final TrackedEntityDataValueStore trackedEntityDataValueStore;
+    private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
+
+
     private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
+
 
     @VisibleForTesting
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter) {
@@ -165,35 +191,74 @@ public final class D2 {
         this.organisationUnitService = retrofit.create(OrganisationUnitService.class);
         this.trackedEntityService = retrofit.create(TrackedEntityService.class);
         this.optionSetService = retrofit.create(OptionSetService.class);
+        this.trackedEntityInstanceService = retrofit.create(TrackedEntityInstanceService.class);
+        this.eventService = retrofit.create(EventService.class);
 
         // stores
-        this.userStore = new UserStoreImpl(databaseAdapter);
-        this.userCredentialsStore = new UserCredentialsStoreImpl(databaseAdapter);
-        this.userOrganisationUnitLinkStore = new UserOrganisationUnitLinkStoreImpl(databaseAdapter);
-        this.authenticatedUserStore = new AuthenticatedUserStoreImpl(databaseAdapter);
-        this.organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter);
-        this.resourceStore = new ResourceStoreImpl(databaseAdapter);
-        this.systemInfoStore = new SystemInfoStoreImpl(databaseAdapter);
-        this.userRoleStore = new UserRoleStoreImpl(databaseAdapter);
-        this.userRoleProgramLinkStore = new UserRoleProgramLinkStoreImpl(databaseAdapter);
-        this.programStore = new ProgramStoreImpl(databaseAdapter);
-        this.trackedEntityAttributeStore = new TrackedEntityAttributeStoreImpl(databaseAdapter);
-        this.programTrackedEntityAttributeStore = new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter);
-        this.programRuleVariableStore = new ProgramRuleVariableStoreImpl(databaseAdapter);
-        this.programIndicatorStore = new ProgramIndicatorStoreImpl(databaseAdapter);
-        this.programStageSectionProgramIndicatorLinkStore = new ProgramStageSectionProgramIndicatorLinkStoreImpl(
-                databaseAdapter);
-        this.programRuleActionStore = new ProgramRuleActionStoreImpl(databaseAdapter);
-        this.programRuleStore = new ProgramRuleStoreImpl(databaseAdapter);
-        this.optionStore = new OptionStoreImpl(databaseAdapter);
-        this.optionSetStore = new OptionSetStoreImpl(databaseAdapter);
-        this.dataElementStore = new DataElementStoreImpl(databaseAdapter);
-        this.programStageDataElementStore = new ProgramStageDataElementStoreImpl(databaseAdapter);
-        this.programStageSectionStore = new ProgramStageSectionStoreImpl(databaseAdapter);
-        this.programStageStore = new ProgramStageStoreImpl(databaseAdapter);
-        this.relationshipStore = new RelationshipTypeStoreImpl(databaseAdapter);
-        this.trackedEntityStore = new TrackedEntityStoreImpl(databaseAdapter);
-        this.organisationUnitProgramLinkStore = new OrganisationUnitProgramLinkStoreImpl(databaseAdapter);
+
+        this.userStore =
+                new UserStoreImpl(databaseAdapter);
+        this.userCredentialsStore =
+                new UserCredentialsStoreImpl(databaseAdapter);
+        this.userOrganisationUnitLinkStore =
+                new UserOrganisationUnitLinkStoreImpl(databaseAdapter);
+        this.authenticatedUserStore =
+                new AuthenticatedUserStoreImpl(databaseAdapter);
+        this.organisationUnitStore =
+                new OrganisationUnitStoreImpl(databaseAdapter);
+        this.resourceStore =
+                new ResourceStoreImpl(databaseAdapter);
+        this.systemInfoStore =
+                new SystemInfoStoreImpl(databaseAdapter);
+        this.userRoleStore =
+                new UserRoleStoreImpl(databaseAdapter);
+        this.userRoleProgramLinkStore =
+                new UserRoleProgramLinkStoreImpl(databaseAdapter);
+        this.programStore =
+                new ProgramStoreImpl(databaseAdapter);
+        this.trackedEntityAttributeStore =
+                new TrackedEntityAttributeStoreImpl(databaseAdapter);
+        this.programTrackedEntityAttributeStore =
+                new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter);
+        this.programRuleVariableStore =
+                new ProgramRuleVariableStoreImpl(databaseAdapter);
+        this.programIndicatorStore =
+                new ProgramIndicatorStoreImpl(databaseAdapter);
+        this.programStageSectionProgramIndicatorLinkStore =
+                new ProgramStageSectionProgramIndicatorLinkStoreImpl(databaseAdapter);
+        this.programRuleActionStore =
+                new ProgramRuleActionStoreImpl(databaseAdapter);
+        this.programRuleStore =
+                new ProgramRuleStoreImpl(databaseAdapter);
+        this.optionStore =
+                new OptionStoreImpl(databaseAdapter);
+        this.optionSetStore =
+                new OptionSetStoreImpl(databaseAdapter);
+        this.dataElementStore =
+                new DataElementStoreImpl(databaseAdapter);
+        this.programStageDataElementStore =
+                new ProgramStageDataElementStoreImpl(databaseAdapter);
+        this.programStageSectionStore =
+                new ProgramStageSectionStoreImpl(databaseAdapter);
+        this.programStageStore =
+                new ProgramStageStoreImpl(databaseAdapter);
+        this.relationshipStore =
+                new RelationshipTypeStoreImpl(databaseAdapter);
+        this.trackedEntityStore =
+                new TrackedEntityStoreImpl(databaseAdapter);
+        this.trackedEntityInstanceStore =
+                new TrackedEntityInstanceStoreImpl(databaseAdapter);
+        this.enrollmentStore =
+                new EnrollmentStoreImpl(databaseAdapter);
+        this.eventStore =
+                new EventStoreImpl(databaseAdapter);
+        this.trackedEntityDataValueStore =
+                new TrackedEntityDataValueStoreImpl(databaseAdapter);
+        this.trackedEntityAttributeValueStore =
+                new TrackedEntityAttributeValueStoreImpl(databaseAdapter);
+        this.organisationUnitProgramLinkStore =
+                new OrganisationUnitProgramLinkStoreImpl(databaseAdapter);
+
     }
 
     @NonNull
@@ -248,6 +313,17 @@ public final class D2 {
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore, optionStore,
                 optionSetStore, dataElementStore, programStageDataElementStore, programStageSectionStore,
                 programStageStore, relationshipStore, trackedEntityStore, organisationUnitProgramLinkStore);
+    }
+
+    @NonNull
+    public Call<Response<WebResponse>> syncTrackedEntityInstances() {
+        return new TrackedEntityInstancePostCall(trackedEntityInstanceService,
+                trackedEntityInstanceStore, enrollmentStore, eventStore, trackedEntityDataValueStore,
+                trackedEntityAttributeValueStore);
+    }
+
+    public Call<Response<WebResponse>> syncSingleEvents() {
+        return new EventPostCall(eventService, eventStore, trackedEntityDataValueStore);
     }
 
     public static class Builder {

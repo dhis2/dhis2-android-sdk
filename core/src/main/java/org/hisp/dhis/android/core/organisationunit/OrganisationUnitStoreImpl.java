@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
@@ -111,7 +111,7 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
             @Nullable String parent,
             @Nullable Integer level) {
 
-        nonNull(uid);
+        isNull(uid);
         bindArguments(insertStatement, uid, code, name, displayName, created,
                 lastUpdated, shortName, displayShortName, description, displayDescription,
                 path, openingDate, closedDate, parent, level
@@ -130,8 +130,8 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
                       @Nullable String path, @Nullable Date openingDate, @Nullable Date closedDate,
                       @Nullable String parent, @Nullable Integer level, @NonNull String whereUid) {
 
-        nonNull(uid);
-        nonNull(whereUid);
+        isNull(uid);
+        isNull(whereUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, shortName,
                 displayShortName, description, displayDescription, path, openingDate, closedDate, parent, level
         );
@@ -144,7 +144,7 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
 
     @Override
     public int delete(@NonNull String uid) {
-        nonNull(uid);
+        isNull(uid);
         sqLiteBind(deleteStatement, 1, uid);
 
         int ret = databaseAdapter.executeUpdateDelete(OrganisationUnitModel.TABLE, deleteStatement);

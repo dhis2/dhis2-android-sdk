@@ -32,9 +32,8 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel.Columns;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + UserRoleProgramLinkModel.TABLE + " (" +
@@ -63,8 +62,8 @@ public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
 
     @Override
     public long insert(@NonNull String userRole, @NonNull String program) {
-        nonNull(userRole);
-        nonNull(program);
+        isNull(userRole);
+        isNull(program);
         sqLiteBind(insertStatement, 1, userRole);
         sqLiteBind(insertStatement, 2, program);
 
@@ -77,10 +76,10 @@ public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
     @Override
     public int update(@NonNull String userRoleUid, @NonNull String programUid,
                       @NonNull String whereUserRoleUid, @NonNull String whereProgramUid) {
-        nonNull(userRoleUid);
-        nonNull(programUid);
-        nonNull(whereUserRoleUid);
-        nonNull(whereProgramUid);
+        isNull(userRoleUid);
+        isNull(programUid);
+        isNull(whereUserRoleUid);
+        isNull(whereProgramUid);
         sqLiteBind(updateStatement, 1, userRoleUid);
         sqLiteBind(updateStatement, 2, programUid);
         sqLiteBind(updateStatement, 3, whereUserRoleUid);
@@ -93,8 +92,8 @@ public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
 
     @Override
     public int delete(@NonNull String userRoleUid, @NonNull String programUid) {
-        nonNull(userRoleUid);
-        nonNull(programUid);
+        isNull(userRoleUid);
+        isNull(programUid);
         sqLiteBind(deleteStatement, 1, userRoleUid);
         sqLiteBind(deleteStatement, 2, programUid);
 

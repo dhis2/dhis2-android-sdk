@@ -33,8 +33,8 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
@@ -75,9 +75,9 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
 
     @Override
     public long insert(@NonNull String user, @NonNull String organisationUnit, @NonNull String organisationUnitScope) {
-        nonNull(user);
-        nonNull(organisationUnit);
-        nonNull(organisationUnitScope);
+        isNull(user);
+        isNull(organisationUnit);
+        isNull(organisationUnitScope);
 
         bindArguments(insertStatement, user, organisationUnit, organisationUnitScope);
 
@@ -90,12 +90,12 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
     public int update(@NonNull String user, @NonNull String organisationUnit, @NonNull String organisationUnitScope,
                       @NonNull String whereUserUid, @NonNull String whereOrganisationUnitUid,
                       @NonNull String whereOrganisationUnitScope) {
-        nonNull(user);
-        nonNull(organisationUnit);
-        nonNull(organisationUnitScope);
-        nonNull(whereUserUid);
-        nonNull(whereOrganisationUnitUid);
-        nonNull(whereOrganisationUnitScope);
+        isNull(user);
+        isNull(organisationUnit);
+        isNull(organisationUnitScope);
+        isNull(whereUserUid);
+        isNull(whereOrganisationUnitUid);
+        isNull(whereOrganisationUnitScope);
 
         bindArguments(updateStatement, user, organisationUnit, organisationUnitScope);
         sqLiteBind(updateStatement, 4, whereUserUid);
@@ -110,9 +110,9 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
     @Override
     public int delete(@NonNull String userUid, @NonNull String organisationUnitUid,
                       @NonNull String organisationUnitScope) {
-        nonNull(userUid);
-        nonNull(organisationUnitUid);
-        nonNull(organisationUnitScope);
+        isNull(userUid);
+        isNull(organisationUnitUid);
+        isNull(organisationUnitScope);
 
         bindArguments(deleteStatement, userUid, organisationUnitUid, organisationUnitScope);
 

@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.user.UserRoleModel.Columns;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
@@ -87,7 +87,7 @@ public class UserRoleStoreImpl implements UserRoleStore {
                        @Nullable Date created,
                        @Nullable Date lastUpdated) {
 
-        nonNull(uid);
+        isNull(uid);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated);
 
         Long insert = databaseAdapter.executeInsert(UserRoleModel.TABLE, insertStatement);
@@ -103,8 +103,8 @@ public class UserRoleStoreImpl implements UserRoleStore {
                       @Nullable Date created,
                       @Nullable Date lastUpdated,
                       @NonNull String whereUid) {
-        nonNull(uid);
-        nonNull(whereUid);
+        isNull(uid);
+        isNull(whereUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated);
         sqLiteBind(updateStatement, 7, whereUid);
 
@@ -115,7 +115,7 @@ public class UserRoleStoreImpl implements UserRoleStore {
 
     @Override
     public int delete(@NonNull String uid) {
-        nonNull(uid);
+        isNull(uid);
         sqLiteBind(deleteStatement, 1, uid);
 
         int delete = databaseAdapter.executeUpdateDelete(UserRoleModel.TABLE, deleteStatement);

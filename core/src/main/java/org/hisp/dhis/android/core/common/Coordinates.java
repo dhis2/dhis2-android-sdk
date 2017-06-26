@@ -28,34 +28,29 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.support.annotation.Nullable;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_Coordinates.Builder.class)
 public abstract class Coordinates {
-    private final static String JSON_PROPERTY_LATITUDE = "latitude";
-    private final static String JSON_PROPERTY_LONGITUDE = "longitude";
+    private final static String LATITUDE = "latitude";
+    private final static String LONGITUDE = "longitude";
 
-    @JsonProperty(JSON_PROPERTY_LATITUDE)
-    public abstract Double latitude();
+    @Nullable
+    @JsonProperty(LATITUDE)
+    public abstract String latitude();
 
-    @JsonProperty(JSON_PROPERTY_LONGITUDE)
-    public abstract Double longitude();
+    @Nullable
+    @JsonProperty(LONGITUDE)
+    public abstract String longitude();
 
-    public static Builder builder() {
-        return new AutoValue_Coordinates.Builder();
-    }
-
-    @AutoValue.Builder
-    public static abstract class Builder {
-        @JsonProperty(JSON_PROPERTY_LATITUDE)
-        public abstract Builder latitude(Double latitude);
-
-        @JsonProperty(JSON_PROPERTY_LONGITUDE)
-        public abstract Builder longitude(Double longitude);
-
-        public abstract Coordinates build();
+    @JsonCreator
+    public static Coordinates create(
+            @JsonProperty(LATITUDE) String latitude,
+            @JsonProperty(LONGITUDE) String longitude) {
+        return new AutoValue_Coordinates(latitude, longitude);
     }
 }

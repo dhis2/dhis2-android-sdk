@@ -25,10 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
@@ -117,6 +118,9 @@ public class MetadataCall implements Call<Response> {
     private final ProgramStageStore programStageStore;
     private final RelationshipTypeStore relationshipStore;
     private final TrackedEntityStore trackedEntityStore;
+
+    private boolean isExecuted;
+
     private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
 
     public MetadataCall(@NonNull DatabaseAdapter databaseAdapter,
@@ -188,11 +192,21 @@ public class MetadataCall implements Call<Response> {
 
     @Override
     public boolean isExecuted() {
-        return false;
+        synchronized (this) {
+            return isExecuted;
+        }
     }
 
     @Override
     public Response call() throws Exception {
+        synchronized (this) {
+            if (isExecuted) {
+                throw new IllegalStateException("Already executed");
+            }
+
+            isExecuted = true;
+        }
+
         Response response = null;
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
@@ -207,8 +221,13 @@ public class MetadataCall implements Call<Response> {
             Date serverDate = systemInfo.serverDate();
 
             response = new UserCall(
-                    userService, databaseAdapter, userStore,
-                    userCredentialsStore, userRoleStore, resourceStore, serverDate,
+                    userService,
+                    databaseAdapter,
+                    userStore,
+                    userCredentialsStore,
+                    userRoleStore,
+                    resourceStore,
+                    serverDate,
                     userRoleProgramLinkStore
             ).call();
             if (!response.isSuccessful()) {

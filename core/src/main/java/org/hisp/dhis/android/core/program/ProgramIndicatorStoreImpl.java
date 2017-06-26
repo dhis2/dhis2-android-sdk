@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
@@ -106,8 +106,8 @@ public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
                        @Nullable String expression, @Nullable String dimensionItem,
                        @Nullable String filter, @Nullable Integer decimals,
                        @Nullable String program) {
-        nonNull(uid);
-        nonNull(program);
+        isNull(uid);
+        isNull(program);
         bindArguments(insertRowStatement, uid, code, name, displayName, created, lastUpdated, shortName,
                 displayShortName, description, displayDescription, displayInForm, expression, dimensionItem,
                 filter, decimals, program);
@@ -126,9 +126,9 @@ public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
                       @Nullable String expression, @Nullable String dimensionItem, @Nullable String filter,
                       @Nullable Integer decimals, @Nullable String program,
                       @NonNull String whereProgramIndicatorUid) {
-        nonNull(uid);
-        nonNull(program);
-        nonNull(whereProgramIndicatorUid);
+        isNull(uid);
+        isNull(program);
+        isNull(whereProgramIndicatorUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
                 description, displayDescription, displayInForm, expression, dimensionItem, filter, decimals, program);
 
@@ -143,7 +143,7 @@ public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
 
     @Override
     public int delete(String uid) {
-        nonNull(uid);
+        isNull(uid);
         // bind the where argument
         sqLiteBind(deleteStatement, 1, uid);
 

@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 public class ConstantStoreImpl implements ConstantStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + ConstantModel.TABLE + " (" +
@@ -62,7 +62,7 @@ public class ConstantStoreImpl implements ConstantStore {
     public long insert(@NonNull String uid, @Nullable String code, @Nullable String name,
                        @Nullable String displayName, @Nullable Date created,
                        @Nullable Date lastUpdated, @NonNull String value) {
-        nonNull(uid);
+        isNull(uid);
         sqLiteBind(insertStatement, 1, uid);
         sqLiteBind(insertStatement, 2, code);
         sqLiteBind(insertStatement, 3, name);
@@ -76,8 +76,4 @@ public class ConstantStoreImpl implements ConstantStore {
         return ret;
     }
 
-    @Override
-    public void close() {
-        insertStatement.close();
-    }
 }

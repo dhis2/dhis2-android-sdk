@@ -31,6 +31,9 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.util.List;
+import java.util.Map;
+
 public interface TrackedEntityAttributeValueStore {
 
     long insert(
@@ -40,5 +43,5 @@ public interface TrackedEntityAttributeValueStore {
             @NonNull String trackedEntityAttribute,
             @NonNull String trackedEntityInstance);
 
-    void close();
+    Map<String, List<TrackedEntityAttributeValue>> query();
 }

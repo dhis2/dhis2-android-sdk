@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
@@ -93,9 +93,9 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
                        @Nullable Date lastUpdated,
                        @NonNull String aIsToB,
                        @NonNull String bIsToA) {
-        nonNull(uid);
-        nonNull(aIsToB);
-        nonNull(bIsToA);
+        isNull(uid);
+        isNull(aIsToB);
+        isNull(bIsToA);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, aIsToB, bIsToA);
 
         long ret = databaseAdapter.executeInsert(RelationshipTypeModel.TABLE, insertStatement);
@@ -113,10 +113,10 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
                       @NonNull String aIsToB,
                       @NonNull String bIsToA,
                       @NonNull String whereUid) {
-        nonNull(uid);
-        nonNull(aIsToB);
-        nonNull(bIsToA);
-        nonNull(whereUid);
+        isNull(uid);
+        isNull(aIsToB);
+        isNull(bIsToA);
+        isNull(whereUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, aIsToB, bIsToA);
         sqLiteBind(updateStatement, 9, whereUid);
 
@@ -127,7 +127,7 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
 
     @Override
     public int delete(@NonNull String uid) {
-        nonNull(uid);
+        isNull(uid);
         sqLiteBind(deleteStatement, 1, uid);
 
         int ret = deleteStatement.executeUpdateDelete();

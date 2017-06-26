@@ -28,15 +28,22 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
+
+@SuppressWarnings("PMD.NPathComplexity")
 public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttributeValueStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
@@ -48,6 +55,16 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
             TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + ") " +
             "VALUES (?, ?, ?, ?, ?)";
 
+    private static final String QUERY_STATEMENT = "SELECT " +
+            "  TrackedEntityAttributeValue.trackedEntityAttribute, " +
+            "  TrackedEntityAttributeValue.value, " +
+            "  TrackedEntityAttributeValue.trackedEntityInstance " +
+            "FROM (TrackedEntityAttributeValue " +
+            "  INNER JOIN TrackedEntityInstance " +
+            "    ON TrackedEntityAttributeValue.trackedEntityInstance = TrackedEntityInstance.uid) " +
+            "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE';";
+
+
     private final SQLiteStatement insertRowStatement;
     private final DatabaseAdapter databaseAdapter;
 
@@ -58,10 +75,10 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
 
     @Override
     public long insert(@Nullable String value, @Nullable String created,
-            @Nullable String lastUpdated, @NonNull String trackedEntityAttribute,
-            @NonNull String trackedEntityInstance) {
-        nonNull(trackedEntityAttribute);
-        nonNull(trackedEntityInstance);
+                       @Nullable String lastUpdated, @NonNull String trackedEntityAttribute,
+                       @NonNull String trackedEntityInstance) {
+        isNull(trackedEntityAttribute);
+        isNull(trackedEntityInstance);
         sqLiteBind(insertRowStatement, 1, value);
         sqLiteBind(insertRowStatement, 2, created);
         sqLiteBind(insertRowStatement, 3, lastUpdated);
@@ -73,10 +90,40 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
 
         insertRowStatement.clearBindings();
         return returnValue;
+
     }
 
     @Override
-    public void close() {
-        insertRowStatement.close();
+    public Map<String, List<TrackedEntityAttributeValue>> query() {
+        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
+        Map<String, List<TrackedEntityAttributeValue>> attributeValues = new HashMap<>(cursor.getCount());
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                List<TrackedEntityAttributeValue> emptyAttributeValueList = new ArrayList<>();
+                do {
+
+                    String attribute = cursor.getString(0) == null ? null : cursor.getString(0);
+                    String value = cursor.getString(1) == null ? null : cursor.getString(1);
+                    String trackedEntityInstance = cursor.getString(2) == null ? null : cursor.getString(2);
+
+
+                    if (attributeValues.get(trackedEntityInstance) == null) {
+                        attributeValues.put(trackedEntityInstance, emptyAttributeValueList);
+                    }
+
+
+                    attributeValues.get(trackedEntityInstance)
+                            .add(TrackedEntityAttributeValue.create(attribute, value));
+
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return attributeValues;
     }
+
 }

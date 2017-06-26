@@ -35,6 +35,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
 import java.util.Date;
@@ -44,10 +46,12 @@ import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 @AutoValue
 public abstract class Event {
-    private static final String EVENT_UID = "event";
+    private static final String UID = "event";
     private static final String ENROLLMENT_UID = "enrollment";
     private static final String CREATED = "created";
     private static final String LAST_UPDATED = "lastUpdated";
+    private static final String CREATED_AT_CLIENT = "createdAtClient";
+    private static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
     private static final String STATUS = "status";
     private static final String COORDINATE = "coordinate";
     private static final String PROGRAM = "program";
@@ -56,9 +60,29 @@ public abstract class Event {
     private static final String EVENT_DATE = "eventDate";
     private static final String COMPLETE_DATE = "completedDate";
     private static final String DUE_DATE = "dueDate";
+    private static final String DELETED = "deleted";
     private static final String TRACKED_ENTITY_DATA_VALUES = "dataValues";
 
-    @JsonProperty(EVENT_UID)
+    public static final Field<Event, String> uid = Field.create(UID);
+    public static final Field<Event, String> enrollment = Field.create(ENROLLMENT_UID);
+    public static final Field<Event, String> created = Field.create(CREATED);
+    public static final Field<Event, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<Event, String> createdAtClient = Field.create(CREATED_AT_CLIENT);
+    public static final Field<Event, String> lastUpdatedAtClient = Field.create(LAST_UPDATED_AT_CLIENT);
+    public static final Field<Event, EventStatus> eventStatus = Field.create(STATUS);
+    public static final Field<Event, Coordinates> coordinates = Field.create(COORDINATE);
+    public static final Field<Event, String> program = Field.create(PROGRAM);
+    public static final Field<Event, String> programStage = Field.create(PROGRAM_STAGE);
+    public static final Field<Event, String> organisationUnit = Field.create(ORGANISATION_UNIT);
+    public static final Field<Event, String> eventDate = Field.create(EVENT_DATE);
+    public static final Field<Event, String> completeDate = Field.create(COMPLETE_DATE);
+    public static final Field<Event, Boolean> deleted = Field.create(DELETED);
+    public static final Field<Event, String> dueDate = Field.create(DUE_DATE);
+
+    public static final NestedField<Event, TrackedEntityDataValue> trackedEntityDataValues
+            = NestedField.create(TRACKED_ENTITY_DATA_VALUES);
+
+    @JsonProperty(UID)
     public abstract String uid();
 
     @Nullable
@@ -72,6 +96,14 @@ public abstract class Event {
     @Nullable
     @JsonProperty(LAST_UPDATED)
     public abstract Date lastUpdated();
+
+    @Nullable
+    @JsonProperty(CREATED_AT_CLIENT)
+    public abstract String createdAtClient();
+
+    @Nullable
+    @JsonProperty(LAST_UPDATED_AT_CLIENT)
+    public abstract String lastUpdatedAtClient();
 
     @Nullable
     @JsonProperty(PROGRAM)
@@ -106,15 +138,21 @@ public abstract class Event {
     public abstract Date dueDate();
 
     @Nullable
+    @JsonProperty(DELETED)
+    public abstract Boolean deleted();
+
+    @Nullable
     @JsonProperty(TRACKED_ENTITY_DATA_VALUES)
     public abstract List<TrackedEntityDataValue> trackedEntityDataValues();
 
     @JsonCreator
     public static Event create(
-            @JsonProperty(EVENT_UID) String uid,
+            @JsonProperty(UID) String uid,
             @JsonProperty(ENROLLMENT_UID) String enrollmentUid,
             @JsonProperty(CREATED) Date created,
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(CREATED_AT_CLIENT) String createdAtClient,
+            @JsonProperty(LAST_UPDATED_AT_CLIENT) String lastUpdatedAtClient,
             @JsonProperty(PROGRAM) String program,
             @JsonProperty(PROGRAM_STAGE) String programStage,
             @JsonProperty(ORGANISATION_UNIT) String organisationUnit,
@@ -123,9 +161,11 @@ public abstract class Event {
             @JsonProperty(COORDINATE) Coordinates coordinates,
             @JsonProperty(COMPLETE_DATE) Date completedDate,
             @JsonProperty(DUE_DATE) Date dueDate,
+            @JsonProperty(DELETED) Boolean deleted,
             @JsonProperty(TRACKED_ENTITY_DATA_VALUES) List<TrackedEntityDataValue> dataValues) {
-        return new AutoValue_Event(uid, enrollmentUid, created, lastUpdated, program, programStage,
-                organisationUnit, eventDate, eventStatus, coordinates, completedDate, dueDate,
-                safeUnmodifiableList(dataValues));
+        return new AutoValue_Event(uid, enrollmentUid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
+                program, programStage, organisationUnit, eventDate, eventStatus, coordinates,
+                completedDate, dueDate, deleted, safeUnmodifiableList(dataValues));
     }
+
 }

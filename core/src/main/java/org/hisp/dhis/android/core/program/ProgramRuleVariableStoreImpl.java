@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.nonNull;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
@@ -99,8 +99,8 @@ public class ProgramRuleVariableStoreImpl implements ProgramRuleVariableStore {
                        @NonNull String program, @Nullable String programStage,
                        @Nullable String dataElement, @Nullable String trackedEntityAttribute,
                        @Nullable ProgramRuleVariableSourceType programRuleVariableSourceType) {
-        nonNull(uid);
-        nonNull(program);
+        isNull(uid);
+        isNull(program);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, useCodeForOptionSet,
                 program, programStage, dataElement, trackedEntityAttribute, programRuleVariableSourceType);
 
@@ -117,9 +117,9 @@ public class ProgramRuleVariableStoreImpl implements ProgramRuleVariableStore {
                       @Nullable String trackedEntityAttribute,
                       @Nullable ProgramRuleVariableSourceType programRuleVariableSourceType,
                       @NonNull String whereProgramRuleVariableUid) {
-        nonNull(uid);
-        nonNull(program);
-        nonNull(whereProgramRuleVariableUid);
+        isNull(uid);
+        isNull(program);
+        isNull(whereProgramRuleVariableUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, useCodeForOptionSet,
                 program, programStage, dataElement, trackedEntityAttribute, programRuleVariableSourceType);
 
@@ -134,7 +134,7 @@ public class ProgramRuleVariableStoreImpl implements ProgramRuleVariableStore {
 
     @Override
     public int delete(String uid) {
-        nonNull(uid);
+        isNull(uid);
         // bind the where argument
         sqLiteBind(deleteStatement, 1, uid);
 

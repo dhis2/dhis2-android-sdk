@@ -621,6 +621,8 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             EventModel.Columns.ENROLLMENT_UID + " TEXT," +
             EventModel.Columns.CREATED + " TEXT," +
             EventModel.Columns.LAST_UPDATED + " TEXT," +
+            EventModel.Columns.CREATED_AT_CLIENT + " TEXT," +
+            EventModel.Columns.LAST_UPDATED_AT_CLIENT + " TEXT," +
             EventModel.Columns.STATUS + " TEXT," +
             EventModel.Columns.LATITUDE + " TEXT," +
             EventModel.Columns.LONGITUDE + " TEXT," +
@@ -639,6 +641,10 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             " REFERENCES " + ProgramStageModel.TABLE +
             " (" + ProgramStageModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+            "FOREIGN KEY (" + EventModel.Columns.ENROLLMENT_UID + ")" +
+            " REFERENCES " + EnrollmentModel.TABLE +
+            " (" + EnrollmentModel.Columns.UID + ")" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
             " FOREIGN KEY (" + EventModel.Columns.ORGANISATION_UNIT + ")" +
             " REFERENCES " + OrganisationUnitModel.TABLE +
             " (" + OrganisationUnitModel.Columns.UID + ")" +
@@ -651,6 +657,8 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             TrackedEntityInstanceModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             TrackedEntityInstanceModel.Columns.CREATED + " TEXT," +
             TrackedEntityInstanceModel.Columns.LAST_UPDATED + " TEXT," +
+            TrackedEntityInstanceModel.Columns.CREATED_AT_CLIENT + " TEXT," +
+            TrackedEntityInstanceModel.Columns.LAST_UPDATED_AT_CLIENT + " TEXT," +
             TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
             TrackedEntityInstanceModel.Columns.TRACKED_ENTITY + " TEXT NOT NULL," +
             TrackedEntityInstanceModel.Columns.STATE + " TEXT," +
@@ -667,6 +675,8 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             EnrollmentModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
             EnrollmentModel.Columns.CREATED + " TEXT," +
             EnrollmentModel.Columns.LAST_UPDATED + " TEXT," +
+            EnrollmentModel.Columns.CREATED_AT_CLIENT + " TEXT," +
+            EnrollmentModel.Columns.LAST_UPDATED_AT_CLIENT + " TEXT," +
             EnrollmentModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
             EnrollmentModel.Columns.PROGRAM + " TEXT NOT NULL," +
             EnrollmentModel.Columns.DATE_OF_ENROLLMENT + " TEXT," +

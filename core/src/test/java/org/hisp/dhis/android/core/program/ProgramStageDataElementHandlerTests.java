@@ -93,19 +93,16 @@ public class ProgramStageDataElementHandlerTests {
 
     @Test
     public void doNothing_shouldDoNothingWhenPassingInNullProgramStageDataElements() throws Exception {
-        programStageDataElementHandler.handleProgramStageDataElements("test_program_stage_section_uid", null);
+        programStageDataElementHandler.handleProgramStageDataElements(null);
 
         // verify that program stage data element store is never invoked
         verify(programStageDataElementStore, never()).delete(anyString());
         verify(programStageDataElementStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyBoolean(), anyBoolean(), anyInt(), anyBoolean(),
                 anyString(), anyString(), anyString());
-        verify(programStageDataElementStore, never()).updateWithoutSection(anyString(), anyString(), anyString(), anyString(),
+        verify(programStageDataElementStore, never()).update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyBoolean(), anyBoolean(), anyInt(), anyBoolean(),
                 anyString(), anyString(), anyString());
-        verify(programStageDataElementStore, never()).updateWithSection(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyBoolean(), anyBoolean(), anyBoolean(), anyInt(), anyBoolean(),
-                anyString(), anyString(), anyString(), anyString());
 
         // verify that data element handler is never invoked
         verify(dataElementHandler, never()).handleDataElement(any(DataElement.class));
@@ -115,8 +112,7 @@ public class ProgramStageDataElementHandlerTests {
     public void delete_shouldDeleteProgramStageDataElement() throws Exception {
         when(programStageDataElement.deleted()).thenReturn(Boolean.TRUE);
 
-        programStageDataElementHandler.handleProgramStageDataElements(
-                "program_stage_section_uid", programStageDataElements
+        programStageDataElementHandler.handleProgramStageDataElements(programStageDataElements
         );
 
         verify(programStageDataElementStore, times(1)).delete(programStageDataElement.uid());
@@ -127,16 +123,10 @@ public class ProgramStageDataElementHandlerTests {
                 any(Date.class), any(Date.class), anyBoolean(), anyBoolean(), anyBoolean(), anyInt(), anyBoolean(),
                 anyString(), anyString(), anyString()
         );
-        verify(programStageDataElementStore, never()).updateWithoutSection(
+        verify(programStageDataElementStore, never()).update(
                 anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyBoolean(), anyBoolean(), anyInt(), anyBoolean(),
                 anyString(), anyString(), anyString()
-        );
-        verify(programStageDataElementStore, never()).updateWithSection(
-                anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyInt(), anyBoolean(),
-                anyString(), anyString(), anyString(), anyString()
         );
 
         // verify that data element handler is invoked once
@@ -144,29 +134,20 @@ public class ProgramStageDataElementHandlerTests {
     }
 
     @Test
-    public void update_shouldUpdateProgramStageDataElementWithoutProgramStageSection() throws Exception {
-        when(programStageDataElementStore.updateWithoutSection(anyString(), anyString(), anyString(), anyString(),
+    public void update_shouldUpdateProgramStageDataElement() throws Exception {
+        when(programStageDataElementStore.update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyBoolean(), anyBoolean(), anyInt(), anyBoolean(),
                 anyString(), anyString(), anyString())).thenReturn(1);
 
-        programStageDataElementHandler.handleProgramStageDataElements(
-                null, programStageDataElements
-        );
+        programStageDataElementHandler.handleProgramStageDataElements(programStageDataElements);
 
-        // verify that updateWithoutSection is invoked once
-        verify(programStageDataElementStore, times(1)).updateWithoutSection(
+        // verify that update is invoked once
+        verify(programStageDataElementStore, times(1)).update(
                 anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyBoolean(), anyBoolean(), anyInt(), anyBoolean(),
                 anyString(), anyString(), anyString()
         );
 
-
-        // verify that insert and updateWithSection and delete function is never called
-        verify(programStageDataElementStore, never()).updateWithSection(
-                anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyBoolean(), anyBoolean(), anyBoolean(), anyInt(), anyBoolean(),
-                anyString(), anyString(), anyString(), anyString()
-        );
 
         verify(programStageDataElementStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyBoolean(), anyBoolean(), anyInt(), anyBoolean(),
@@ -176,71 +157,28 @@ public class ProgramStageDataElementHandlerTests {
 
         // verify that data element handler is called once
         verify(dataElementHandler, times(1)).handleDataElement(any(DataElement.class));
-    }
-
-    @Test
-    public void update_shouldUpdateProgramStageDataElementWithProgramStageSection() throws Exception {
-        when(programStageDataElementStore.updateWithSection(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyBoolean(), anyBoolean(), anyBoolean(), anyInt(), anyBoolean(),
-                anyString(), anyString(), anyString(), anyString())).thenReturn(1);
-        programStageDataElementHandler.handleProgramStageDataElements(
-                "test_program_stage_section_uid", programStageDataElements
-        );
-
-        // verify that updateWithSection is invoked once
-        verify(programStageDataElementStore, times(1)).updateWithSection(
-                anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyBoolean(), anyBoolean(), anyBoolean(), anyInt(), anyBoolean(),
-                anyString(), anyString(), anyString(), anyString()
-        );
-
-
-        // verify that insert and updateWithoutSection and delete function is never called
-        verify(programStageDataElementStore, never()).updateWithoutSection(
-                anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyBoolean(), anyBoolean(), anyBoolean(), anyInt(), anyBoolean(),
-                anyString(), anyString(), anyString()
-        );
-
-        verify(programStageDataElementStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyBoolean(), anyBoolean(), anyBoolean(), anyInt(), anyBoolean(),
-                anyString(), anyString(), anyString());
-
-        verify(programStageDataElementStore, never()).delete(anyString());
-
-        // verify that data element handler is called once
-        verify(dataElementHandler, times(1)).handleDataElement(any(DataElement.class));
-
     }
 
     @Test
     public void insert_shouldInsertProgramStageDataElement() throws Exception {
-        when(programStageDataElementStore.updateWithSection(anyString(), anyString(), anyString(), anyString(),
+        when(programStageDataElementStore.update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyBoolean(), anyBoolean(), anyInt(), anyBoolean(),
-                anyString(), anyString(), anyString(), anyString())).thenReturn(0);
-        programStageDataElementHandler.handleProgramStageDataElements(
-                "test_program_stage_section_uid", programStageDataElements
-        );
+                anyString(), anyString(), anyString())).thenReturn(0);
+        programStageDataElementHandler.handleProgramStageDataElements(programStageDataElements);
 
         // verify that insert is called once
         verify(programStageDataElementStore, times(1)).insert(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyBoolean(), anyBoolean(), anyInt(), anyBoolean(),
                 anyString(), anyString(), anyString());
 
-        // verify that updateWithSection is invoked once since we update before we insert
-        verify(programStageDataElementStore, times(1)).updateWithSection(
-                anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyBoolean(), anyBoolean(), anyBoolean(), anyInt(), anyBoolean(),
-                anyString(), anyString(), anyString(), anyString()
-        );
-
-        // verify that updateWithoutSection and delete function is never called
-        verify(programStageDataElementStore, never()).updateWithoutSection(
+        // verify that update is invoked once since we update before we insert
+        verify(programStageDataElementStore, times(1)).update(
                 anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyBoolean(), anyBoolean(), anyInt(), anyBoolean(),
                 anyString(), anyString(), anyString()
         );
 
+        // verify that delete function is never called
         verify(programStageDataElementStore, never()).delete(anyString());
 
         // verify that data element handler is never called

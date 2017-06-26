@@ -80,12 +80,20 @@ public class ProgramStageHandler {
                             programStage.standardInterval(), programUid);
                 }
             }
+
+
+            // We will first save programStageDataElements which will invoke saving of all data elements
+            // and graph below (data elements, option sets, options..)
+            programStageDataElementHandler.handleProgramStageDataElements(
+                    programStage.programStageDataElements());
+
+            // programStageSectionHandler will first persist the programStageSections,
+            // then we will update the programStageDataElements with the missing link to programStageSection
+            // based on the dataElement foreign key for the programStageDataElement
             programStageSectionHandler.handleProgramStageSection(programStage.uid(),
                     programStage.programStageSections());
-            // programStageDataElements has already been saved through saving of programStageSections, however,
-            // only with uids. The full object is being persisted in the method call below (See api call).
-            programStageDataElementHandler.handleProgramStageDataElements(null,
-                    programStage.programStageDataElements());
+
+
         }
     }
 }

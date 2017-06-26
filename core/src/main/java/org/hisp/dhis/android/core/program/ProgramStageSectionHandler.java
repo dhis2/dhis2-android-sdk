@@ -79,7 +79,9 @@ public class ProgramStageSectionHandler {
             //Loop over the list and add all entries
             String programStageSectionUid = programStageSection.uid();
             List<DataElement> dataElements = programStageSection.dataElements();
-            for (int j = 0, deSize = dataElements.size(); j < deSize; j++) {
+            int dataElementSize = dataElements.size();
+
+            for (int j = 0; j < dataElementSize; j++) {
                 String dataElementUid = dataElements.get(j).uid();
 
                 programStageDataElementHandler.updateProgramStageDataElementWithProgramStageSectionLink(

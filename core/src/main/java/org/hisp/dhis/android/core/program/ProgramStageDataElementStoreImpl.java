@@ -62,25 +62,6 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
             ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION + ") " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-    private static final String UPDATE_WITH_SECTION_STATEMENT = "UPDATE " +
-            ProgramStageDataElementModel.TABLE + " SET " +
-            ProgramStageDataElementModel.Columns.UID + " =?, " +
-            ProgramStageDataElementModel.Columns.CODE + " =?, " +
-            ProgramStageDataElementModel.Columns.NAME + " =?, " +
-            ProgramStageDataElementModel.Columns.DISPLAY_NAME + " =?, " +
-            ProgramStageDataElementModel.Columns.CREATED + " =?, " +
-            ProgramStageDataElementModel.Columns.LAST_UPDATED + " =?, " +
-            ProgramStageDataElementModel.Columns.DISPLAY_IN_REPORTS + " =?, " +
-            ProgramStageDataElementModel.Columns.COMPULSORY + " =?, " +
-            ProgramStageDataElementModel.Columns.ALLOW_PROVIDED_ELSEWHERE + " =?, " +
-            ProgramStageDataElementModel.Columns.SORT_ORDER + " =?, " +
-            ProgramStageDataElementModel.Columns.ALLOW_FUTURE_DATE + " =?, " +
-            ProgramStageDataElementModel.Columns.DATA_ELEMENT + " =?, " +
-            ProgramStageDataElementModel.Columns.PROGRAM_STAGE + " =?, " +
-            ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION + " =?" +
-            " WHERE " +
-            ProgramStageDataElementModel.Columns.UID + " =?;";
-
     private static final String UPDATE_WITHOUT_SECTION_STATEMENT = "UPDATE " +
             ProgramStageDataElementModel.TABLE + " SET " +
             ProgramStageDataElementModel.Columns.UID + " =?, " +
@@ -110,7 +91,6 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
 
 
     private final SQLiteStatement insertStatement;
-    private final SQLiteStatement updateWithSectionStatement;
     private final SQLiteStatement updateWithoutSectionStatement;
     private final SQLiteStatement updateWithProgramStageSectionLinkStatement;
     private final SQLiteStatement deleteStatement;
@@ -120,7 +100,6 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
     public ProgramStageDataElementStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
         this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
-        this.updateWithSectionStatement = databaseAdapter.compileStatement(UPDATE_WITH_SECTION_STATEMENT);
         this.updateWithoutSectionStatement = databaseAdapter.compileStatement(UPDATE_WITHOUT_SECTION_STATEMENT);
         this.updateWithProgramStageSectionLinkStatement =
                 databaseAdapter.compileStatement(UPDATE_WITH_PROGRAM_STAGE_SECTION_STATEMENT);
@@ -150,47 +129,19 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
         return insert;
     }
 
-    // TODO: Refactor updateWithSection and updateWithoutSection when programStageSection is available as a direct
-    // TODO: property of the program stage data element. It should be there in March according to Morten and Lars.
+
     @Override
-    public int updateWithSection(@NonNull String uid, @Nullable String code, @Nullable String name,
-                                 @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-                                 @NonNull Boolean displayInReports, @NonNull Boolean compulsory,
-                                 @NonNull Boolean allowProvidedElsewhere, @Nullable Integer sortOrder,
-                                 @NonNull Boolean allowFutureDate, @NonNull String dataElement,
-                                 @Nullable String programStageUid, @Nullable String programStageSection,
-                                 @NonNull String whereProgramStageDataElementUid) {
+    public int update(@NonNull String uid, @Nullable String code, @Nullable String name,
+                      @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+                      @NonNull Boolean displayInReports, @NonNull Boolean compulsory,
+                      @NonNull Boolean allowProvidedElsewhere, @Nullable Integer sortOrder,
+                      @NonNull Boolean allowFutureDate, @NonNull String dataElement,
+                      @Nullable String programStageUid, @NonNull String whereProgramStageDataElementUid) {
         isNull(uid);
         isNull(dataElement);
         isNull(programStageUid);
         isNull(whereProgramStageDataElementUid);
-        bindArguments(updateWithSectionStatement, uid, code, name, displayName, created, lastUpdated,
-                displayInReports, compulsory, allowProvidedElsewhere, sortOrder, allowFutureDate, dataElement,
-                programStageUid);
-        // bind the optional argument program stage section
-        sqLiteBind(updateWithSectionStatement, 14, programStageSection);
 
-        // bind the where argument
-        sqLiteBind(updateWithSectionStatement, 15, whereProgramStageDataElementUid);
-
-        // execute and clear bindings
-        int update = databaseAdapter.executeUpdateDelete(ProgramStageDataElementModel.TABLE,
-                updateWithSectionStatement);
-        updateWithSectionStatement.clearBindings();
-        return update;
-    }
-
-    @Override
-    public int updateWithoutSection(@NonNull String uid, @Nullable String code, @Nullable String name,
-                                    @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-                                    @NonNull Boolean displayInReports, @NonNull Boolean compulsory,
-                                    @NonNull Boolean allowProvidedElsewhere, @Nullable Integer sortOrder,
-                                    @NonNull Boolean allowFutureDate, @NonNull String dataElement,
-                                    @Nullable String programStageUid, @NonNull String whereProgramStageDataElementUid) {
-        isNull(uid);
-        isNull(dataElement);
-        isNull(programStageUid);
-        isNull(whereProgramStageDataElementUid);
         bindArguments(updateWithoutSectionStatement, uid, code, name, displayName, created, lastUpdated,
                 displayInReports, compulsory, allowProvidedElsewhere, sortOrder,
                 allowFutureDate, dataElement, programStageUid);

@@ -47,6 +47,13 @@ import java.util.Map;
 import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals",
+        "PMD.NPathComplexity",
+        "PMD.CyclomaticComplexity",
+        "PMD.ModifiedCyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity"
+})
 public class EventStoreImpl implements EventStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + EventModel.TABLE + " (" +
@@ -252,27 +259,27 @@ public class EventStoreImpl implements EventStore {
         try {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
-
+                List<Event> emptyEventList = new ArrayList<>();
                 do {
                     String uid = cursor.getString(0);
-                    Date created = cursor.getString(1) != null ? parse(cursor.getString(1)) : null;
-                    Date lastUpdated = cursor.getString(2) != null ? parse(cursor.getString(2)) : null;
-                    String createdAtClient = cursor.getString(3) != null ? cursor.getString(3) : null;
-                    String lastUpdatedAtClient = cursor.getString(4) != null ? cursor.getString(4) : null;
+                    Date created = cursor.getString(1) == null ? null : parse(cursor.getString(1));
+                    Date lastUpdated = cursor.getString(2) == null ? null : parse(cursor.getString(2));
+                    String createdAtClient = cursor.getString(3) == null ? null : cursor.getString(3);
+                    String lastUpdatedAtClient = cursor.getString(4) == null ? null : cursor.getString(4);
                     EventStatus eventStatus =
-                            cursor.getString(5) != null ? EventStatus.valueOf(cursor.getString(5)) : null;
-                    String latitude = cursor.getString(6) != null ? cursor.getString(6) : null;
-                    String longitude = cursor.getString(7) != null ? cursor.getString(7) : null;
-                    String program = cursor.getString(8) != null ? cursor.getString(8) : null;
-                    String programStage = cursor.getString(9) != null ? cursor.getString(9) : null;
-                    String organisationUnit = cursor.getString(10) != null ? cursor.getString(10) : null;
-                    String enrollment = cursor.getString(11) != null ? cursor.getString(11) : null;
-                    Date eventDate = cursor.getString(12) != null ? parse(cursor.getString(12)) : null;
-                    Date completedDate = cursor.getString(13) != null ? parse(cursor.getString(13)) : null;
-                    Date dueDate = cursor.getString(14) != null ? parse(cursor.getString(14)) : null;
+                            cursor.getString(5) == null ? null : EventStatus.valueOf(cursor.getString(5));
+                    String latitude = cursor.getString(6) == null ? null : cursor.getString(6);
+                    String longitude = cursor.getString(7) == null ? null : cursor.getString(7);
+                    String program = cursor.getString(8) == null ? null : cursor.getString(8);
+                    String programStage = cursor.getString(9) == null ? null : cursor.getString(9);
+                    String organisationUnit = cursor.getString(10) == null ? null : cursor.getString(10);
+                    String enrollment = cursor.getString(11) == null ? null : cursor.getString(11);
+                    Date eventDate = cursor.getString(12) == null ? null : parse(cursor.getString(12));
+                    Date completedDate = cursor.getString(13) == null ? null : parse(cursor.getString(13));
+                    Date dueDate = cursor.getString(14) == null ? null : parse(cursor.getString(14));
 
                     if (events.get(enrollment) == null) {
-                        events.put(enrollment, new ArrayList<Event>());
+                        events.put(enrollment, emptyEventList);
                     }
 
                     events.get(enrollment).add(Event.create(
@@ -302,21 +309,21 @@ public class EventStoreImpl implements EventStore {
 
                 do {
                     String uid = cursor.getString(0);
-                    Date created = cursor.getString(1) != null ? parse(cursor.getString(1)) : null;
-                    Date lastUpdated = cursor.getString(2) != null ? parse(cursor.getString(2)) : null;
-                    String createdAtClient = cursor.getString(3) != null ? cursor.getString(3) : null;
-                    String lastUpdatedAtClient = cursor.getString(4) != null ? cursor.getString(4) : null;
+                    Date created = cursor.getString(1) == null ? null : parse(cursor.getString(1));
+                    Date lastUpdated = cursor.getString(2) == null ? null : parse(cursor.getString(2));
+                    String createdAtClient = cursor.getString(3) == null ? null : cursor.getString(3);
+                    String lastUpdatedAtClient = cursor.getString(4) == null ? null : cursor.getString(4);
                     EventStatus eventStatus =
-                            cursor.getString(5) != null ? EventStatus.valueOf(cursor.getString(5)) : null;
-                    String latitude = cursor.getString(6) != null ? cursor.getString(6) : null;
-                    String longitude = cursor.getString(7) != null ? cursor.getString(7) : null;
-                    String program = cursor.getString(8) != null ? cursor.getString(8) : null;
-                    String programStage = cursor.getString(9) != null ? cursor.getString(9) : null;
-                    String organisationUnit = cursor.getString(10) != null ? cursor.getString(10) : null;
-                    String enrollment = cursor.getString(11) != null ? cursor.getString(11) : null;
-                    Date eventDate = cursor.getString(12) != null ? parse(cursor.getString(12)) : null;
-                    Date completedDate = cursor.getString(13) != null ? parse(cursor.getString(13)) : null;
-                    Date dueDate = cursor.getString(14) != null ? parse(cursor.getString(14)) : null;
+                            cursor.getString(5) == null ? null : EventStatus.valueOf(cursor.getString(5));
+                    String latitude = cursor.getString(6) == null ? null : cursor.getString(6);
+                    String longitude = cursor.getString(7) == null ? null : cursor.getString(7);
+                    String program = cursor.getString(8) == null ? null : cursor.getString(8);
+                    String programStage = cursor.getString(9) == null ? null : cursor.getString(9);
+                    String organisationUnit = cursor.getString(10) == null ? null : cursor.getString(10);
+                    String enrollment = cursor.getString(11) == null ? null : cursor.getString(11);
+                    Date eventDate = cursor.getString(12) == null ? null : parse(cursor.getString(12));
+                    Date completedDate = cursor.getString(13) == null ? null : parse(cursor.getString(13));
+                    Date dueDate = cursor.getString(14) == null ? null : parse(cursor.getString(14));
 
                     events.add(Event.create(
                             uid, enrollment, created, lastUpdated, createdAtClient, lastUpdatedAtClient,

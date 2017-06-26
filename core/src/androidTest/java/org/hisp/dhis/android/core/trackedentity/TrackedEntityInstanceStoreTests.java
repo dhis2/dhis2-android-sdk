@@ -306,19 +306,19 @@ public class TrackedEntityInstanceStoreTests extends AbsStoreTestCase {
         assertThat(database().isOpen()).isTrue();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = SQLiteConstraintException.class)
     public void insert_null_uid() {
         trackedEntityInstanceStore.insert(
                 null, date, date, dateString, dateString, ORGANISATION_UNIT, TRACKED_ENTITY, STATE
         );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = SQLiteConstraintException.class)
     public void insert_null_organisationUnit() {
         trackedEntityInstanceStore.insert(UID, date, date, dateString, dateString, null, TRACKED_ENTITY, STATE);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = SQLiteConstraintException.class)
     public void insert_null_trackedEntity() {
         trackedEntityInstanceStore.insert(UID, date, date, dateString, dateString, ORGANISATION_UNIT, null, STATE);
     }

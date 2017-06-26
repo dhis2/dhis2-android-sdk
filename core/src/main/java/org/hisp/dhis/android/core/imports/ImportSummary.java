@@ -34,7 +34,8 @@ public abstract class ImportSummary {
     @JsonProperty(RESPONSE_TYPE)
     public abstract String responseType();
 
-    @NonNull
+    //TODO: Reference SHOULD be annotated with NotNull. This is just a bug in ImportSummary response from server.
+    @Nullable
     @JsonProperty(REFERENCE)
     public abstract String reference();
 

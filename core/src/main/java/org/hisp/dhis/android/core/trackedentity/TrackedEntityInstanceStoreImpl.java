@@ -44,6 +44,10 @@ import java.util.Map;
 import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals",
+        "PMD.NPathComplexity"
+})
 public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             TrackedEntityInstanceModel.TABLE + " (" +
@@ -116,7 +120,7 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
         sqLiteBind(insertStatement, 2, created);
         sqLiteBind(insertStatement, 3, lastUpdated);
         sqLiteBind(insertStatement, 4, createdAtClient);
-        sqLiteBind(insertStatement, 5,  lastUpdatedAtClient);
+        sqLiteBind(insertStatement, 5, lastUpdatedAtClient);
         sqLiteBind(insertStatement, 6, organisationUnit);
         sqLiteBind(insertStatement, 7, trackedEntity);
         sqLiteBind(insertStatement, 8, state);
@@ -186,12 +190,12 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
                 cursor.moveToFirst();
                 do {
                     String uid = cursor.getString(0);
-                    Date created = cursor.getString(1) != null ? parse(cursor.getString(1)) : null;
-                    Date lastUpdated = cursor.getString(2) != null ? parse(cursor.getString(2)) : null;
-                    String createdAtClient = cursor.getString(3) != null ? cursor.getString(3) : null;
-                    String lastUpdatedAtClient = cursor.getString(4) != null ? cursor.getString(4) : null;
-                    String organisationUnit = cursor.getString(5) != null ? cursor.getString(5) : null;
-                    String trackedEntity = cursor.getString(6) != null ? cursor.getString(6) : null;
+                    Date created = cursor.getString(1) == null ? null : parse(cursor.getString(1));
+                    Date lastUpdated = cursor.getString(2) == null ? null : parse(cursor.getString(2));
+                    String createdAtClient = cursor.getString(3) == null ? null : cursor.getString(3);
+                    String lastUpdatedAtClient = cursor.getString(4) == null ? null : cursor.getString(4);
+                    String organisationUnit = cursor.getString(5) == null ? null : cursor.getString(5);
+                    String trackedEntity = cursor.getString(6) == null ? null : cursor.getString(6);
 
                     trackedEntityInstanceMap.put(uid, TrackedEntityInstance.create(
                             uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,

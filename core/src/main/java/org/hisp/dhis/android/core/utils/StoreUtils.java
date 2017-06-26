@@ -161,7 +161,6 @@ public final class StoreUtils {
     }
 
     /**
-<<<<<<< HEAD
      * Takes the import status and converts it to the state which indicates if it was imported, had errors or warning.
      *
      * @param importStatus

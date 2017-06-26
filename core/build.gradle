@@ -103,6 +103,7 @@ dependencies {
     testCompile "org.assertj:assertj-core:${libraries.assertj}"
     testCompile "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
     testCompile "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
+    testCompile 'com.google.code.findbugs:annotations:3.0.0'
 
     // Android test dependencies
     androidTestCompile "org.mockito:mockito-core:${libraries.mockito}"
@@ -111,6 +112,7 @@ dependencies {
     androidTestCompile("com.google.truth:truth:${libraries.truth}") {
         exclude group: 'junit' // Android has JUnit built in.
     }
+    compile 'com.google.code.findbugs:annotations:3.0.0'
 }
 
 apply from: rootProject.file("plugins/gradle-mvn-push.gradle")

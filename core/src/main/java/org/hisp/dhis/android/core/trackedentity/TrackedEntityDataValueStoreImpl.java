@@ -45,6 +45,12 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+@SuppressWarnings({
+        "PMD.NPathComplexity",
+        "PMD.CyclomaticComplexity",
+        "PMD.ModifiedCyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity"
+})
 public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             TrackedEntityDataValueModel.TABLE + " (" +
@@ -116,9 +122,11 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
     }
 
     /**
-     * If singleEvents is true, then we query for Events which is NOT attached to any Enrollment and TrackedEntityInstance
+     * If singleEvents is true, then we query for Events which is NOT
+     * attached to any Enrollment and TrackedEntityInstance
      * If singleEvents is false, then we query for Events which IS attached to Enrollments and TrackedEntityInstances.
-     * Example: singleEvents = true, then we query for TrackedEntityDataValues to Events where Event.program.programType = 'WITHOUT_REGISTRATION'
+     * Example: singleEvents = true, then we query for TrackedEntityDataValues to Events
+     * where Event.program.programType = 'WITHOUT_REGISTRATION'
      *
      * @param singleEvents
      * @return
@@ -127,32 +135,33 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
     //TODO TESTS!!
     @Override
     public Map<String, List<TrackedEntityDataValue>> queryTrackedEntityDataValues(Boolean singleEvents) {
-        String QUERY_STATEMENT;
+        String queryStatement;
         if (singleEvents) {
-            QUERY_STATEMENT = QUERY_TRACKED_ENTITY_DATA_VALUES_ATTACHED_TO_SINGLE_EVENTS;
+            queryStatement = QUERY_TRACKED_ENTITY_DATA_VALUES_ATTACHED_TO_SINGLE_EVENTS;
         } else {
-            QUERY_STATEMENT = QUERY_TRACKED_ENTITY_DATA_VALUES_ATTACHED_TO_TRACKER_EVENTS;
+            queryStatement = QUERY_TRACKED_ENTITY_DATA_VALUES_ATTACHED_TO_TRACKER_EVENTS;
         }
 
-        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
+        Cursor cursor = databaseAdapter.query(queryStatement);
         Map<String, List<TrackedEntityDataValue>> dataValues = new HashMap<>(cursor.getCount());
 
         try {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
+                List<TrackedEntityDataValue> emptyDataValueList = new ArrayList<>();
                 do {
 
-                    Date created = cursor.getString(0) != null ? parse(cursor.getString(0)) : null;
-                    Date lastUpdated = cursor.getString(1) != null ? parse(cursor.getString(1)) : null;
-                    String dataElement = cursor.getString(2) != null ? cursor.getString(2) : null;
-                    String event = cursor.getString(3) != null ? cursor.getString(3) : null;
-                    String storedBy = cursor.getString(4) != null ? cursor.getString(4) : null;
-                    String value = cursor.getString(5) != null ? cursor.getString(5) : null;
+                    Date created = cursor.getString(0) == null ? null : parse(cursor.getString(0));
+                    Date lastUpdated = cursor.getString(1) == null ? null : parse(cursor.getString(1));
+                    String dataElement = cursor.getString(2) == null ? null : cursor.getString(2);
+                    String event = cursor.getString(3) == null ? null : cursor.getString(3);
+                    String storedBy = cursor.getString(4) == null ? null : cursor.getString(4);
+                    String value = cursor.getString(5) == null ? null : cursor.getString(5);
                     Boolean providedElsewhere =
-                            cursor.getString(6) != null || cursor.getInt(6) != 0 ? Boolean.FALSE : Boolean.TRUE;
+                            cursor.getString(6) == null || cursor.getInt(6) == 0 ? Boolean.FALSE: Boolean.TRUE;
 
                     if (dataValues.get(event) == null) {
-                        dataValues.put(event, new ArrayList<TrackedEntityDataValue>());
+                        dataValues.put(event, emptyDataValueList);
                     }
 
 

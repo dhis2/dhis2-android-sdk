@@ -317,13 +317,13 @@ public final class D2 {
 
     @NonNull
     public Call<Response<WebResponse>> syncTrackedEntityInstances() {
-        return new TrackedEntityInstancePostCall(databaseAdapter, trackedEntityInstanceService,
+        return new TrackedEntityInstancePostCall(trackedEntityInstanceService,
                 trackedEntityInstanceStore, enrollmentStore, eventStore, trackedEntityDataValueStore,
                 trackedEntityAttributeValueStore);
     }
 
     public Call<Response<WebResponse>> syncSingleEvents() {
-        return new EventPostCall(databaseAdapter, eventService, eventStore, trackedEntityDataValueStore);
+        return new EventPostCall(eventService, eventStore, trackedEntityDataValueStore);
     }
 
     public static class Builder {

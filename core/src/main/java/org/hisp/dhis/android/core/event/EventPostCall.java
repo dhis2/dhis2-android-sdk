@@ -3,7 +3,6 @@ package org.hisp.dhis.android.core.event;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
@@ -19,18 +18,15 @@ public class EventPostCall implements Call<Response<WebResponse>> {
     private final EventService eventService;
 
     // adapter and stores
-    private final DatabaseAdapter databaseAdapter;
     private final EventStore eventStore;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
 
     private boolean isExecuted;
 
-    public EventPostCall(@NonNull DatabaseAdapter databaseAdapter,
-                         @NonNull EventService eventService,
+    public EventPostCall(@NonNull EventService eventService,
                          @NonNull EventStore eventStore,
                          @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore) {
         this.eventService = eventService;
-        this.databaseAdapter = databaseAdapter;
         this.eventStore = eventStore;
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
     }

@@ -47,6 +47,12 @@ import java.util.Map;
 import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals",
+        "PMD.CyclomaticComplexity",
+        "PMD.ModifiedCyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity"
+})
 public class EnrollmentStoreImpl implements EnrollmentStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + EnrollmentModel.TABLE + " (" +
@@ -221,30 +227,31 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
         Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
         Map<String, List<Enrollment>> enrollmentMap = new HashMap<>(cursor.getCount());
 
+
         try {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
-
+                List<Enrollment> emptyEnrollmentList = new ArrayList<>();
                 do {
                     String uid = cursor.getString(0);
-                    Date created = cursor.getString(1) != null ? parse(cursor.getString(1)) : null;
-                    Date lastUpdated = cursor.getString(2) != null ? parse(cursor.getString(2)) : null;
-                    String createdAtClient = cursor.getString(3) != null ? cursor.getString(3) : null;
-                    String lastUpdatedAtClient = cursor.getString(4) != null ? cursor.getString(4) : null;
-                    String organisationUnit = cursor.getString(5) != null ? cursor.getString(5) : null;
-                    String program = cursor.getString(6) != null ? cursor.getString(6) : null;
-                    Date enrollmentDate = cursor.getString(7) != null ? parse(cursor.getString(7)) : null;
-                    Date incidentDate = cursor.getString(8) != null ? parse(cursor.getString(8)) : null;
+                    Date created = cursor.getString(1) == null ? null : parse(cursor.getString(1));
+                    Date lastUpdated = cursor.getString(2) == null ? null : parse(cursor.getString(2));
+                    String createdAtClient = cursor.getString(3) == null ? null : cursor.getString(3);
+                    String lastUpdatedAtClient = cursor.getString(4) == null ? null : cursor.getString(4);
+                    String organisationUnit = cursor.getString(5) == null ? null : cursor.getString(5);
+                    String program = cursor.getString(6) == null ? null : cursor.getString(6);
+                    Date enrollmentDate = cursor.getString(7) == null ? null : parse(cursor.getString(7));
+                    Date incidentDate = cursor.getString(8) == null ? null : parse(cursor.getString(8));
                     Boolean followUp =
-                            cursor.getString(9) != null || cursor.getInt(9) != 0 ? Boolean.FALSE : Boolean.TRUE;
+                            cursor.getString(9) == null || cursor.getInt(9) == 0 ? Boolean.TRUE : Boolean.FALSE;
                     EnrollmentStatus status =
-                            cursor.getString(10) != null ? EnrollmentStatus.valueOf(cursor.getString(10)) : null;
-                    String trackedEntityInstance = cursor.getString(11) != null ? cursor.getString(11) : null;
-                    String latitude = cursor.getString(12) != null ? cursor.getString(12) : null;
-                    String longitude = cursor.getString(13) != null ? cursor.getString(13) : null;
+                            cursor.getString(10) == null ? null : EnrollmentStatus.valueOf(cursor.getString(10));
+                    String trackedEntityInstance = cursor.getString(11) == null ? null : cursor.getString(11);
+                    String latitude = cursor.getString(12) == null ? null : cursor.getString(12);
+                    String longitude = cursor.getString(13) == null ? null : cursor.getString(13);
 
                     if (enrollmentMap.get(trackedEntityInstance) == null) {
-                        enrollmentMap.put(trackedEntityInstance, new ArrayList<Enrollment>());
+                        enrollmentMap.put(trackedEntityInstance, emptyEnrollmentList);
                     }
 
                     enrollmentMap.get(trackedEntityInstance).add(Enrollment.create(

@@ -36,15 +36,14 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+@SuppressWarnings("PMD.NPathComplexity")
 public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttributeValueStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
@@ -102,21 +101,21 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
         try {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
+                List<TrackedEntityAttributeValue> emptyAttributeValueList = new ArrayList<>();
                 do {
 
-                    String attribute = cursor.getString(0) != null ? cursor.getString(0) : null;
-                    String value = cursor.getString(1) != null ? cursor.getString(1) : null;
-                    String trackedEntityInstance = cursor.getString(2) != null ? cursor.getString(2) : null;
+                    String attribute = cursor.getString(0) == null ? null : cursor.getString(0);
+                    String value = cursor.getString(1) == null ? null : cursor.getString(1);
+                    String trackedEntityInstance = cursor.getString(2) == null ? null : cursor.getString(2);
 
 
                     if (attributeValues.get(trackedEntityInstance) == null) {
-                        attributeValues.put(trackedEntityInstance, new ArrayList<TrackedEntityAttributeValue>());
+                        attributeValues.put(trackedEntityInstance, emptyAttributeValueList);
                     }
 
 
-                    attributeValues.get(trackedEntityInstance).add(TrackedEntityAttributeValue.create(
-                           attribute, value
-                    ));
+                    attributeValues.get(trackedEntityInstance)
+                            .add(TrackedEntityAttributeValue.create(attribute, value));
 
                 } while (cursor.moveToNext());
             }

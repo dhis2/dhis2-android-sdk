@@ -138,13 +138,11 @@ public class EventStoreImpl implements EventStore {
             "  Event.program, " +
             "  Event.programStage, " +
             "  Event.organisationUnit, " +
-            "  Event.enrollment, " +
             "  Event.eventDate, " +
             "  Event.completedDate, " +
-            "  Event.dueDate  " +
-            "  FROM (Event INNER JOIN Program ON Event.program = Program.uid) " +
-            "WHERE Program.programType = 'WITHOUT_REGISTRATION' " +
-            "AND Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE';";
+            "  Event.dueDate " +
+            "  FROM Event " +
+            "WHERE Event.enrollment ISNULL AND (Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE')";
 
 
     private final SQLiteStatement insertStatement;

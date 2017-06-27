@@ -52,6 +52,11 @@ public class EventPostCall implements Call<Response<WebResponse>> {
 
         List<Event> eventsToPost = queryEventsToPost();
 
+        // if there is nothing to send, return null
+        if (eventsToPost.isEmpty()) {
+            return null;
+        }
+
         EventPayload eventPayload = new EventPayload();
         eventPayload.events = eventsToPost;
 
@@ -63,6 +68,7 @@ public class EventPostCall implements Call<Response<WebResponse>> {
         return response;
     }
 
+    @NonNull
     private List<Event> queryEventsToPost() {
         Map<String, List<TrackedEntityDataValue>> dataValueMap =
                 trackedEntityDataValueStore.queryTrackedEntityDataValues(Boolean.TRUE);

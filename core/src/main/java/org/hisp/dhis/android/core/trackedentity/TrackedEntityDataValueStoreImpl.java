@@ -81,15 +81,13 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
     private static final String QUERY_TRACKED_ENTITY_DATA_VALUES_ATTACHED_TO_SINGLE_EVENTS = "SELECT " +
             "  TrackedEntityDataValue.created, " +
             "  TrackedEntityDataValue.lastUpdated, " +
-            "  TrackedEntityDataValue.dataElement, " +
             "  TrackedEntityDataValue.event, " +
+            "  TrackedEntityDataValue.dataElement, " +
+            "  TrackedEntityDataValue.providedElsewhere, " +
             "  TrackedEntityDataValue.storedBy, " +
-            "  TrackedEntityDataValue.value, " +
-            "  TrackedEntityDataValue.providedElsewhere " +
-            "FROM (TrackedEntityDataValue INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid " +
-            " INNER JOIN Program ON Event.program = Program.uid) " +
-            "WHERE Program.programType = 'WITHOUT_REGISTRATION' " +
-            "AND Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE';";
+            "  TrackedEntityDataValue.value " +
+            "FROM (TrackedEntityDataValue INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid) " +
+            "WHERE Event.enrollment ISNULL AND (Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE');";
 
 
     private final SQLiteStatement insertRowStatement;
@@ -158,7 +156,7 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
                     String storedBy = cursor.getString(4) == null ? null : cursor.getString(4);
                     String value = cursor.getString(5) == null ? null : cursor.getString(5);
                     Boolean providedElsewhere =
-                            cursor.getString(6) == null || cursor.getInt(6) == 0 ? Boolean.FALSE: Boolean.TRUE;
+                            cursor.getString(6) == null || cursor.getInt(6) == 0 ? Boolean.FALSE : Boolean.TRUE;
 
                     if (dataValues.get(event) == null) {
                         dataValues.put(event, emptyDataValueList);

@@ -73,6 +73,12 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
         }
 
         List<TrackedEntityInstance> trackedEntityInstancesToPost = queryDataToSync();
+
+        // if size is 0, then no need to do network request
+        if (trackedEntityInstancesToPost.isEmpty()) {
+            return null;
+        }
+
         TrackedEntityInstancePayload trackedEntityInstancePayload = new TrackedEntityInstancePayload();
         trackedEntityInstancePayload.trackedEntityInstances = trackedEntityInstancesToPost;
 
@@ -101,42 +107,57 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
         List<Enrollment> enrollmentsRecreated = new ArrayList<>();
         List<Event> eventRecreated = new ArrayList<>();
         List<Relationship> relationshipRecreated = new ArrayList<>();
+
+        // EMPTY LISTS TO REPLACE NULL VALUES SO THAT API DOESN'T BREAK.
+        List<TrackedEntityAttributeValue> emptyAttributeValueList = new ArrayList<>();
+
         for (Map.Entry<String, TrackedEntityInstance> teiUid : trackedEntityInstances.entrySet()) {
 
             List<Enrollment> enrollments = enrollmentMap.get(teiUid.getKey());
 
-            // building enrollment
-            int enrollmentSize = enrollments.size();
-            for (int i = 0; i < enrollmentSize; i++) {
-                Enrollment enrollment = enrollments.get(i);
+            // if enrollments is not null, then they exist for this tracked entity instance
+            if (enrollments != null) {
+                // building enrollment
+                int enrollmentSize = enrollments.size();
+                for (int i = 0; i < enrollmentSize; i++) {
+                    Enrollment enrollment = enrollments.get(i);
 
-                // building events for enrollment
-                List<Event> eventsForEnrollment = eventMap.get(enrollment.uid());
+                    // building events for enrollment
+                    List<Event> eventsForEnrollment = eventMap.get(enrollment.uid());
 
+                    // if eventsForEnrollment is not null, then they exist for this enrollment
+                    if (eventsForEnrollment != null) {
+                        int eventSize = eventsForEnrollment.size();
+                        for (int j = 0; j < eventSize; j++) {
+                            Event event = eventsForEnrollment.get(j);
+                            List<TrackedEntityDataValue> dataValuesForEvent = dataValueMap.get(event.uid());
 
-                int eventSize = eventsForEnrollment.size();
-                for (int j = 0; j < eventSize; j++) {
-                    Event event = eventsForEnrollment.get(j);
-                    List<TrackedEntityDataValue> dataValuesForEvent = dataValueMap.get(event.uid());
+                            eventRecreated.add(Event.create(event.uid(), event.enrollmentUid(), event.created(),
+                                    event.lastUpdated(), event.createdAtClient(), event.lastUpdatedAtClient(),
+                                    event.program(), event.programStage(), event.organisationUnit(), event.eventDate(),
+                                    event.status(), event.coordinates(),
+                                    event.completedDate(), event.dueDate(), event.deleted(), dataValuesForEvent));
+                        }
+                    }
+                    enrollmentsRecreated.add(
+                            Enrollment.create(enrollment.uid(), enrollment.created(), enrollment.lastUpdated(),
+                                    enrollment.createdAtClient(), enrollment.lastUpdatedAtClient(),
+                                    enrollment.organisationUnit(), enrollment.program(), enrollment.dateOfEnrollment(),
+                                    enrollment.dateOfIncident(), enrollment.followUp(), enrollment.enrollmentStatus(),
+                                    enrollment.trackedEntityInstance(), enrollment.coordinate(), enrollment.deleted(),
+                                    eventRecreated));
 
-                    eventRecreated.add(Event.create(event.uid(), event.enrollmentUid(), event.created(),
-                            event.lastUpdated(), event.createdAtClient(), event.lastUpdatedAtClient(),
-                            event.program(), event.programStage(), event.organisationUnit(), event.eventDate(),
-                            event.status(), event.coordinates(),
-                            event.completedDate(), event.dueDate(), event.deleted(), dataValuesForEvent));
                 }
-                enrollmentsRecreated.add(
-                        Enrollment.create(enrollment.uid(), enrollment.created(), enrollment.lastUpdated(),
-                                enrollment.createdAtClient(), enrollment.lastUpdatedAtClient(),
-                                enrollment.organisationUnit(), enrollment.program(), enrollment.dateOfEnrollment(),
-                                enrollment.dateOfIncident(), enrollment.followUp(), enrollment.enrollmentStatus(),
-                                enrollment.trackedEntityInstance(), enrollment.coordinate(), enrollment.deleted(),
-                                eventRecreated));
-
             }
 
             // Building TEI WITHOUT (new ArrayList) relationships
             List<TrackedEntityAttributeValue> attributeValues = attributeValueMap.get(teiUid.getKey());
+
+            // if attributeValues is null, it means that they doesn't exist.
+            // Then we need to set it to empty arrayList so that API doesn't break
+            if (attributeValues == null) {
+                attributeValues = emptyAttributeValueList;
+            }
             TrackedEntityInstance trackedEntityInstance = trackedEntityInstances.get(teiUid.getKey());
 
             trackedEntityInstancesRecreated.add(TrackedEntityInstance.create(trackedEntityInstance.uid(),

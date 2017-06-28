@@ -43,7 +43,10 @@ import java.util.Map;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-@SuppressWarnings("PMD.NPathComplexity")
+@SuppressWarnings({
+        "PMD.NPathComplexity",
+        "PMD.AvoidInstantiatingObjectsInLoops"
+})
 public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttributeValueStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
@@ -101,7 +104,6 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
         try {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
-                List<TrackedEntityAttributeValue> emptyAttributeValueList = new ArrayList<>();
                 do {
 
                     String attribute = cursor.getString(0) == null ? null : cursor.getString(0);
@@ -110,7 +112,7 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
 
 
                     if (attributeValues.get(trackedEntityInstance) == null) {
-                        attributeValues.put(trackedEntityInstance, emptyAttributeValueList);
+                        attributeValues.put(trackedEntityInstance, new ArrayList<TrackedEntityAttributeValue>());
                     }
 
 

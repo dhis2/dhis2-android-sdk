@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import retrofit2.Response;
-
+@SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
 public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>> {
     // service
     private final TrackedEntityInstanceService trackedEntityInstanceService;
@@ -104,19 +104,20 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
 
         List<TrackedEntityInstance> trackedEntityInstancesRecreated = new ArrayList<>();
 
-        List<Enrollment> enrollmentsRecreated = new ArrayList<>();
-        List<Event> eventRecreated = new ArrayList<>();
+
+
         List<Relationship> relationshipRecreated = new ArrayList<>();
 
         // EMPTY LISTS TO REPLACE NULL VALUES SO THAT API DOESN'T BREAK.
         List<TrackedEntityAttributeValue> emptyAttributeValueList = new ArrayList<>();
 
         for (Map.Entry<String, TrackedEntityInstance> teiUid : trackedEntityInstances.entrySet()) {
-
+            List<Enrollment> enrollmentsRecreated = new ArrayList<>();
             List<Enrollment> enrollments = enrollmentMap.get(teiUid.getKey());
 
             // if enrollments is not null, then they exist for this tracked entity instance
             if (enrollments != null) {
+                List<Event> eventRecreated = new ArrayList<>();
                 // building enrollment
                 int enrollmentSize = enrollments.size();
                 for (int i = 0; i < enrollmentSize; i++) {

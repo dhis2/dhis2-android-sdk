@@ -49,7 +49,8 @@ import static org.hisp.dhis.android.core.utils.Utils.isNull;
         "PMD.NPathComplexity",
         "PMD.CyclomaticComplexity",
         "PMD.ModifiedCyclomaticComplexity",
-        "PMD.StdCyclomaticComplexity"
+        "PMD.StdCyclomaticComplexity",
+        "PMD.AvoidInstantiatingObjectsInLoops"
 })
 public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
@@ -146,9 +147,7 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
         try {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
-                List<TrackedEntityDataValue> emptyDataValueList = new ArrayList<>();
                 do {
-
                     Date created = cursor.getString(0) == null ? null : parse(cursor.getString(0));
                     Date lastUpdated = cursor.getString(1) == null ? null : parse(cursor.getString(1));
                     String dataElement = cursor.getString(2) == null ? null : cursor.getString(2);
@@ -159,7 +158,7 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
                             cursor.getString(6) == null || cursor.getInt(6) == 0 ? Boolean.FALSE : Boolean.TRUE;
 
                     if (dataValues.get(event) == null) {
-                        dataValues.put(event, emptyDataValueList);
+                        dataValues.put(event, new ArrayList<TrackedEntityDataValue>());
                     }
 
 

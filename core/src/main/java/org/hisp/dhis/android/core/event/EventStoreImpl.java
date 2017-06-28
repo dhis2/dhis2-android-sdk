@@ -318,13 +318,12 @@ public class EventStoreImpl implements EventStore {
                     String program = cursor.getString(8) == null ? null : cursor.getString(8);
                     String programStage = cursor.getString(9) == null ? null : cursor.getString(9);
                     String organisationUnit = cursor.getString(10) == null ? null : cursor.getString(10);
-                    String enrollment = cursor.getString(11) == null ? null : cursor.getString(11);
-                    Date eventDate = cursor.getString(12) == null ? null : parse(cursor.getString(12));
-                    Date completedDate = cursor.getString(13) == null ? null : parse(cursor.getString(13));
-                    Date dueDate = cursor.getString(14) == null ? null : parse(cursor.getString(14));
+                    Date eventDate = cursor.getString(11) == null ? null : parse(cursor.getString(11));
+                    Date completedDate = cursor.getString(12) == null ? null : parse(cursor.getString(12));
+                    Date dueDate = cursor.getString(13) == null ? null : parse(cursor.getString(13));
 
                     events.add(Event.create(
-                            uid, enrollment, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
+                            uid, null, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                             program, programStage, organisationUnit, eventDate, eventStatus,
                             Coordinates.create(latitude, longitude), completedDate,
                             dueDate, false, null));

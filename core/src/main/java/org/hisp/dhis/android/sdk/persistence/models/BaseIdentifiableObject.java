@@ -86,6 +86,16 @@ public abstract class BaseIdentifiableObject extends BaseModel {
     @Column(name = "access")
     Access access;
 
+    @JsonProperty("createdAtClient")
+    public void setCreatedAtClient(String created) {
+        this.created = created;
+    }
+
+    @JsonProperty("lastUpdatedAtClient")
+    public void setLastUpdatedAtClient(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
     }

@@ -55,6 +55,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="orange">#FF9900</color>
     <color name="black">#FF000000</color>
+    <color name="link">#0000FF</color>
     <color name="grey">#8a000000</color>
     <color name="light_grey">#FFE5E5E5</color>
     <color name="light_grey_transparent">#66E5E5E5</color>

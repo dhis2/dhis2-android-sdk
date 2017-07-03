@@ -126,6 +126,7 @@
 
     <string name="update_frequency">Fréquence de synchronisation automatique</string>
     <string name="logout">\"Effacer les données locales &amp; sortir\"</string>
+    <string name="un_enroll">"Désinscription"</string>
     <string name="complete">Complet</string>
     <string name="finishing_up">Finalisation de configuration initiale de la base de données. Cela peut prendre quelques minutes donc veuillez d\'être patient.</string>
     <string name="loading_server_info">Téléchargement d\'info du serveur</string>

@@ -29,6 +29,8 @@
 
 package org.hisp.dhis.android.sdk.ui.fragments.eventdataentry;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -66,7 +68,6 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.ui.adapters.SectionAdapter;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EditTextRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.IndicatorRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.RunProgramRulesEvent;
@@ -83,19 +84,11 @@ import org.hisp.dhis.android.sdk.utils.services.ProgramIndicatorService;
 import org.hisp.dhis.android.sdk.utils.services.VariableService;
 import org.joda.time.DateTime;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import retrofit.http.HEAD;
-
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFragmentForm> {
 
@@ -748,7 +741,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         super.onRowValueChanged(event);
 
         // do not run program rules for EditTextRows - DelayedDispatcher takes care of this
-        if (event.getRow() == null || !(event.getRow() instanceof EditTextRow)) {
+        if (event.getRow() == null || !(event.getRow().isEditTextRow())) {
             evaluateRulesAndIndicators(event.getId());
         }
 

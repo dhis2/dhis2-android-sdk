@@ -126,6 +126,7 @@
 
     <string name="update_frequency">Frecuencia de sincronización automática</string>
     <string name="logout">\"Borrar datos locales &amp; salir\"</string>
+    <string name="un_enroll">Desinscribirse</string>
     <string name="complete">Completo</string>
     <string name="loading_server_info">Cargando la información del servidor</string>
     <string name="loading_program">Cargando programId</string>

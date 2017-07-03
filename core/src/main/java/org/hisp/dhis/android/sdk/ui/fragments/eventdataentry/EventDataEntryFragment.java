@@ -725,7 +725,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                     }
                 });
             } else {
-                eventClick.getComplete().setText(R.string.complete);
+                eventClick.getComplete().setText(R.string.un_enroll);
                 form.getEvent().setStatus(Event.STATUS_ACTIVE);
                 form.getEvent().setFromServer(false);
 

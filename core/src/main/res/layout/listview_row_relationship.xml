@@ -62,6 +62,7 @@
         android:id="@+id/relative_relationship_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/link"
         android:inputType="text"
         app:font="@string/regular_font_name" />
     </LinearLayout>

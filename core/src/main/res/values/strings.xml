@@ -242,6 +242,7 @@
     <string name="detailed_info_dataelement">Detailed information</string>
     <string name="detailed_info_coordinate_row">Please enter the GPS coordinates by pressing the button on the right side of the row. If it does not work, please check your data and/or GPS connection.</string>
     <string name="detailed_info_status_row">Please press the complete button when you are finished with entering data. Press the validate button to check if the entered data is valid.</string>
+    <string name="enter_email">Enter e-mail</string>
     <string name="enter_phone_number">Enter phone number</string>
     <string name="choose_filter">Choose filter</string>
     <string name="invalid_entry_type">Value-type not supported</string>

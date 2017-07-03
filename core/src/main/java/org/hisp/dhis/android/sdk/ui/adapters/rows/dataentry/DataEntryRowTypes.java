@@ -49,5 +49,6 @@ public enum DataEntryRowTypes {
     DATAVALUECOORDINATES,
     PERCENTAGE,
     PHONE_NUMBER,
+    EMAIL,
     INVALID_DATA_ENTRY
 }

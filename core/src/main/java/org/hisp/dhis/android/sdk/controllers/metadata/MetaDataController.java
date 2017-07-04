@@ -92,6 +92,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStage$Table;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection;
@@ -343,6 +344,11 @@ public final class MetaDataController extends ResourceController {
                 ProgramStage$Table.SORTORDER).queryList();
     }
 
+    public static List<ProgramIndicator> getProgramIndicators(String program) {
+        return new Select().from(ProgramIndicator.class).where(
+                Condition.column(ProgramIndicator$Table.PROGRAM).is(program))
+                .orderBy(ProgramIndicator$Table.ID).queryList();
+    }
     /**
      * Returns a program stage for a given program stage uid
      *
@@ -825,7 +831,11 @@ public final class MetaDataController extends ResourceController {
         Program updatedProgram = dhisApi.getProgram(uid, QUERY_MAP_FULL);
         List<DbOperation> operations = ProgramWrapper.setReferences(updatedProgram);
         DbUtils.applyBatch(operations);
-
+        operations.clear();
+        for(ProgramIndicator programIndicator:updatedProgram.getProgramIndicators()) {
+            operations.add(DbOperation.save(programIndicator));
+        }
+        DbUtils.applyBatch(operations);
 
         return updatedProgram;
     }

@@ -103,7 +103,7 @@ public abstract class Row implements DataEntryRow, Serializable {
         } else if (this instanceof StatusRow) {
             mDescription = "";
         } else if(this instanceof IndicatorRow) {
-            mDescription = "";
+            return mDescription;
         }
 
         String itemId = getItemId();

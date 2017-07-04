@@ -23,6 +23,7 @@ import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 
 public final class QuestionCoordinatesRow extends Row {
     private static final String EMPTY_FIELD = "";
+    public static final String UNDEFINED = "undefined";
     private final int MAX_INPUT_LENGTH = 9;
             // max input length = 9 for accepting 6 decimals in coordinates
 
@@ -39,9 +40,12 @@ public final class QuestionCoordinatesRow extends Row {
             return "0";
         String value = baseValue.getValue();
         if (value.contains(",")) {
-            return value.substring(value.indexOf(",") + 1, value.length()).replace("]", EMPTY_FIELD);
+            String latitude = value.substring(value.indexOf(",") + 1, value.length()).replace("]", EMPTY_FIELD);
+            if(!latitude.equals(UNDEFINED)){
+                return latitude;
+            }
         }
-        return "0";
+        return "";
     }
 
     public static String getLongitudeFromValue(BaseValue baseValue) {
@@ -49,14 +53,32 @@ public final class QuestionCoordinatesRow extends Row {
             return "0";
         String value = baseValue.getValue();
         if (value.contains(",")) {
-            return value.substring(0, value.indexOf(",")).replace("[", EMPTY_FIELD);
+            String longitude = value.substring(0, value.indexOf(",")).replace("[", EMPTY_FIELD);
+            if(!longitude.equals(UNDEFINED)){
+                return longitude;
+            }
         }
-        return "0";
+        return "";
     }
 
     //the latitude and logitude is saved in the server with the format: "[longitude,latitude]"
     public static String getCoordinateValue(EditText latitude, EditText longitude) {
-        return "[" + longitude.getText() + "," + latitude.getText() + "]";
+        String latitudeValue = latitude.getText().toString();
+        if(latitudeValue!=null && !latitudeValue.equals("") && !latitudeValue.equals(UNDEFINED)){
+            if(isInvalidLatitude(latitudeValue)){
+                latitudeValue=UNDEFINED;
+            }
+        }
+        String longitudeValue = longitude.getText().toString();
+
+        if(longitudeValue!=null && !longitudeValue.equals("") && !longitudeValue.equals(UNDEFINED)){
+            if(isInvalidLongitude(longitudeValue))
+            {
+                longitudeValue=UNDEFINED;
+            }
+        }
+
+        return "[" + longitudeValue + "," + latitudeValue + "]";
     }
 
     public QuestionCoordinatesRow(String label, boolean mandatory, String warning, BaseValue baseValue,
@@ -202,10 +224,9 @@ public final class QuestionCoordinatesRow extends Row {
                     return;
                 }
                 String newValue = s.toString();
-                if (Double.parseDouble(newValue) < -90 || Double.parseDouble(newValue) > 90) {
+                if (isInvalidLatitude(newValue)) {
                     mEditTextLatitude.setError(mLatitudeMessage);
                 }
-
                 if (newValue != value && mBaseValue!=null) {
                     saveCoordinates(mEditTextLatitude, mEditTextLongitude, mBaseValue);
                 }
@@ -231,15 +252,22 @@ public final class QuestionCoordinatesRow extends Row {
                     return;
                 }
                 String newValue = s.toString();
-                if (Double.parseDouble(newValue) < -180 || Double.parseDouble(newValue) > 180) {
+                if (isInvalidLongitude(newValue)) {
                     mEditTextLongitude.setError(mLongitudeMessage);
                 }
-
                 if (!newValue.equals(value) && mBaseValue!=null) {
                     saveCoordinates(mEditTextLatitude, mEditTextLongitude, mBaseValue);
                 }
             }
         }
+    }
+
+    private static boolean isInvalidLongitude(String newValue) {
+        return Double.parseDouble(newValue) < -180 || Double.parseDouble(newValue) > 180;
+    }
+
+    private static boolean isInvalidLatitude(String newValue) {
+        return Double.parseDouble(newValue) < -90 || Double.parseDouble(newValue) > 90;
     }
 
     private static class OnCaptureCoordsClickListener implements View.OnClickListener {

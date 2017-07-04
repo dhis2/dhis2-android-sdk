@@ -93,10 +93,6 @@ public final class EventCoordinatesRow extends Row {
         holder.longitude.setFilters(longitudeFilters);
         holder.updateViews(mEvent);
 
-        // Coordinates cannot be manually entered
-        holder.latitude.setEnabled(false);
-        holder.longitude.setEnabled(false);
-
         return view;
     }
 
@@ -183,9 +179,7 @@ public final class EventCoordinatesRow extends Row {
                 double newValue = Double.parseDouble(s.toString());
                 if (newValue < -90 || newValue > 90) {
                     mEditText.setError(mCoordinateMessage);
-                }
-
-                if(newValue != value)
+                } else if(newValue != value)
                 {
                     mEvent.setLatitude(Double.valueOf(newValue));
                     DataValue dataValue = new DataValue();
@@ -212,9 +206,7 @@ public final class EventCoordinatesRow extends Row {
                 double newValue = Double.parseDouble(s.toString());
                 if (newValue < -180 || newValue > 180) {
                     mEditText.setError(mCoordinateMessage);
-                }
-
-                if(newValue != value)
+                } else if(newValue != value)
                 {
                     mEvent.setLongitude(Double.valueOf(newValue));
                     DataValue dataValue = new DataValue();

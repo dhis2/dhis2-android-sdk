@@ -154,4 +154,17 @@ public abstract class Row implements DataEntryRow, Serializable {
     public void setShouldNeverBeEdited(boolean shouldNeverBeEdited) {
         this.shouldNeverBeEdited = shouldNeverBeEdited;
     }
+
+    public boolean isEditTextRow(){
+         return !(!DataEntryRowTypes.TEXT.equals(mRowType) &&
+                !DataEntryRowTypes.LONG_TEXT.equals(mRowType) &&
+                !DataEntryRowTypes.NUMBER.equals(mRowType) &&
+                !DataEntryRowTypes.INTEGER.equals(mRowType) &&
+                !DataEntryRowTypes.INTEGER_NEGATIVE.equals(mRowType) &&
+                !DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE.equals(mRowType) &&
+                !DataEntryRowTypes.PHONE_NUMBER.equals(mRowType) &&
+                !DataEntryRowTypes.PERCENTAGE.equals(mRowType) &&
+                !DataEntryRowTypes.INTEGER_POSITIVE.equals(mRowType) &&
+                !DataEntryRowTypes.INVALID_DATA_ENTRY.equals(mRowType));
+    }
 }

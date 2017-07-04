@@ -122,6 +122,9 @@ public class Program extends BaseMetaDataObject {
     @Column(name = "displayFrontPageList")
     boolean displayFrontPageList;
 
+    @JsonProperty("programIndicators")
+    List<ProgramIndicator> programIndicators;
+
     @JsonProperty("programStages")
     List<ProgramStage> programStages;
 
@@ -157,6 +160,22 @@ public class Program extends BaseMetaDataObject {
      *
      * @return
      */
+    public List<ProgramIndicator> getProgramIndicators() {
+        if (programIndicators == null) {
+            programIndicators = MetaDataController.getProgramIndicators(id);
+        }
+        return programIndicators;
+    }
+
+    public void setProgramIndicators(List<ProgramIndicator> programIndicators) {
+        this.programIndicators = programIndicators;
+    }
+
+    /**
+     * Using lazy loading for one to many relationships
+     *
+     * @return
+     */
     public List<ProgramStage> getProgramStages() {
         if (programStages == null) {
             programStages = MetaDataController.getProgramStages(id);
@@ -177,10 +196,6 @@ public class Program extends BaseMetaDataObject {
 
     public void setProgramTrackedEntityAttributes(List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes) {
         this.programTrackedEntityAttributes = programTrackedEntityAttributes;
-    }
-
-    public List<ProgramIndicator> getProgramIndicators() {
-        return MetaDataController.getProgramIndicatorsByProgram(id);
     }
 
     public List<ProgramRule> getProgramRules() {

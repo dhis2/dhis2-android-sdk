@@ -60,8 +60,8 @@ public class DataEntryRowFactory {
             row = new QuestionCoordinatesRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.QUESTION_COORDINATES);
         } else  if(valueType.equals(ValueType.PHONE_NUMBER)) {
             row = new PhoneEditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.PHONE_NUMBER);
-        } else  if(valueType.equals(ValueType.EMAIL)) {
-            row = new EmailEditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.EMAIL);
+        }  else  if(valueType.equals(ValueType.EMAIL)) {
+            row = new EmailAddressEditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.EMAIL);
         } else {
             row = new InvalidEditTextRow(trackedEntityAttributeName, mandatory, null, baseValue,
                     DataEntryRowTypes.INVALID_DATA_ENTRY);

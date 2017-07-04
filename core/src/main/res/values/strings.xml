@@ -60,6 +60,7 @@
     <string name="missing_mandatory_field">Missing mandatory field</string>
     <string name="unable_to_complete_registration">Unable to complete registration.</string>
     <string name="review_errors">Please review the errors below and try again.</string>
+    <string name="validation_errors">Please review the validation errors and try again.</string>
 
 
     <!-- Login Activity -->
@@ -242,7 +243,10 @@
     <string name="detailed_info_dataelement">Detailed information</string>
     <string name="detailed_info_coordinate_row">Please enter the GPS coordinates by pressing the button on the right side of the row. If it does not work, please check your data and/or GPS connection.</string>
     <string name="detailed_info_status_row">Please press the complete button when you are finished with entering data. Press the validate button to check if the entered data is valid.</string>
+
     <string name="enter_email">Enter e-mail</string>
+    <string name="error_email">Please enter a valid e-mail address</string>
+
     <string name="enter_phone_number">Enter phone number</string>
     <string name="choose_filter">Choose filter</string>
     <string name="invalid_entry_type">Value-type not supported</string>

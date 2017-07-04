@@ -235,24 +235,41 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         }
     }
 
-    protected void showValidationErrorDialog(ArrayList<String> mandatoryFieldsMissingErrors, ArrayList<String> programRulesErrors) {
+    protected  void  showValidationErrorDialog(ArrayList<String> mandatoryFieldsMissingErrors, ArrayList<String> programRulesErrors){
         ArrayList<String> errors = new ArrayList<>();
-        if (mandatoryFieldsMissingErrors != null) {
-            for (String mandatoryFieldsError : mandatoryFieldsMissingErrors) {
-                errors.add(getActivity().getString(R.string.missing_mandatory_field) + ": " + mandatoryFieldsError);
-            }
-        }
-        if (programRulesErrors != null) {
-            for (String programRulesError : programRulesErrors) {
-                errors.add(getActivity().getString(R.string.error_message) + ": " + programRulesError);
-            }
-        }
+        addMandatoryErrors(mandatoryFieldsMissingErrors, errors);
+        addErrors(programRulesErrors, errors);
+    }
+
+    protected void showValidationErrorDialog(ArrayList<String> mandatoryFieldsMissingErrors, ArrayList<String> programRulesErrors, ArrayList<String> fieldValidationError) {
+        ArrayList<String> errors = new ArrayList<>();
+        addMandatoryErrors(mandatoryFieldsMissingErrors, errors);
+        addErrors(programRulesErrors, errors);
+        addErrors(fieldValidationError, errors);
         if (!errors.isEmpty()) {
             validationErrorDialog = ValidationErrorDialog
                     .newInstance(getActivity().getString(R.string.unable_to_complete_registration) + " " + getActivity().getString(R.string.review_errors), errors);
             validationErrorDialog.show(getChildFragmentManager());
         } else {
             Toast.makeText(getContext(), R.string.unable_to_complete_registration, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void addErrors(ArrayList<String> programRulesErrors,
+            ArrayList<String> errors) {
+        if (programRulesErrors != null) {
+            for (String programRulesError : programRulesErrors) {
+                errors.add(getActivity().getString(R.string.error_message) + ": " + programRulesError);
+            }
+        }
+    }
+
+    private void addMandatoryErrors(ArrayList<String> mandatoryFieldsMissingErrors,
+            ArrayList<String> errors) {
+        if (mandatoryFieldsMissingErrors != null) {
+            for (String mandatoryFieldsError : mandatoryFieldsMissingErrors) {
+                errors.add(getActivity().getString(R.string.missing_mandatory_field) + ": " + mandatoryFieldsError);
+            }
         }
     }
 

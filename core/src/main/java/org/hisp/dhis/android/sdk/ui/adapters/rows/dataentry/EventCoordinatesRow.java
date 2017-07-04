@@ -179,15 +179,21 @@ public final class EventCoordinatesRow extends Row {
                 double newValue = Double.parseDouble(s.toString());
                 if (newValue < -90 || newValue > 90) {
                     mEditText.setError(mCoordinateMessage);
+                    if(newValue != value){
+                        saveLatitude(null);
+                    }
                 } else if(newValue != value)
                 {
-                    mEvent.setLatitude(Double.valueOf(newValue));
-                    DataValue dataValue = new DataValue();
-                    dataValue.setValue("" + newValue);
-                    Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue, DataEntryRowTypes.EVENT_COORDINATES.toString()));
-
+                    saveLatitude(newValue);
                 }
             }
+        }
+
+        private void saveLatitude(Double newValue) {
+            mEvent.setLatitude(newValue);
+            DataValue dataValue = new DataValue();
+            dataValue.setValue("" + newValue);
+            Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue, DataEntryRowTypes.EVENT_COORDINATES.toString()));
         }
     }
 
@@ -203,17 +209,24 @@ public final class EventCoordinatesRow extends Row {
                 value = mEvent.getLongitude();
 
             if (s.length() > 1) {
-                double newValue = Double.parseDouble(s.toString());
+                Double newValue = Double.parseDouble(s.toString());
                 if (newValue < -180 || newValue > 180) {
                     mEditText.setError(mCoordinateMessage);
+                    if(newValue != value){
+                        saveLongitude(null);
+                    }
                 } else if(newValue != value)
                 {
-                    mEvent.setLongitude(Double.valueOf(newValue));
-                    DataValue dataValue = new DataValue();
-                    dataValue.setValue("" + newValue);
-                    Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue, DataEntryRowTypes.EVENT_COORDINATES.toString()));
+                    saveLongitude(newValue);
                 }
             }
+        }
+
+        private void saveLongitude(Double newValue) {
+            mEvent.setLongitude(newValue);
+            DataValue dataValue = new DataValue();
+            dataValue.setValue("" + newValue);
+            Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue, DataEntryRowTypes.EVENT_COORDINATES.toString()));
         }
     }
 

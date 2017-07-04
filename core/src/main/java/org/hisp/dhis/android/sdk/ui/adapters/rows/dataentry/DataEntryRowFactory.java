@@ -23,7 +23,7 @@ public class DataEntryRowFactory {
         if (optionSetId != null) {
             OptionSet optionSet = MetaDataController.getOptionSet(optionSetId);
             if (optionSet == null) {
-                row = new EditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.TEXT);
+                row = new ShortTextEditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.TEXT);
             } else {
                 List<Option> options = MetaDataController.getOptions(optionSetId);
 
@@ -35,21 +35,21 @@ public class DataEntryRowFactory {
                     row = new AutoCompleteRow(trackedEntityAttributeName, mandatory, null, baseValue, optionSet);
             }
         } else if (valueType.equals(ValueType.TEXT)) {
-            row = new EditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.TEXT);
+            row = new ShortTextEditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.TEXT);
         } else if (valueType.equals(ValueType.LONG_TEXT)) {
-            row = new EditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.LONG_TEXT);
+            row = new LongEditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.LONG_TEXT);
         } else if (valueType.equals(ValueType.NUMBER)) {
-            row = new EditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.NUMBER);
+            row = new NumberEditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.NUMBER);
         } else if (valueType.equals(ValueType.INTEGER)) {
-            row = new EditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.INTEGER);
+            row = new IntegerEditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.INTEGER);
         } else if (valueType.equals(ValueType.INTEGER_ZERO_OR_POSITIVE)) {
-            row = new EditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE);
+            row = new IntegerZeroOrPositiveEditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE);
         } else if (valueType.equals(ValueType.PERCENTAGE)) {
-            row = new EditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.PERCENTAGE);
+            row = new PercentageEditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.PERCENTAGE);
         } else if (valueType.equals(ValueType.INTEGER_POSITIVE)) {
-            row = new EditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.INTEGER_POSITIVE);
+            row = new IntegerPositiveEditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.INTEGER_POSITIVE);
         } else if (valueType.equals(ValueType.INTEGER_NEGATIVE)) {
-            row = new EditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.INTEGER_NEGATIVE);
+            row = new IntegerNegativeEditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.INTEGER_NEGATIVE);
         } else if (valueType.equals(ValueType.BOOLEAN)) {
             row = new RadioButtonsRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.BOOLEAN);
         } else if (valueType.equals(ValueType.TRUE_ONLY)) {
@@ -58,8 +58,10 @@ public class DataEntryRowFactory {
             row = new DatePickerRow(trackedEntityAttributeName, mandatory, null, baseValue, allowFutureDate);
         } else if(valueType.equals(ValueType.COORDINATE)) {
             row = new DataValueCoordinatesRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.DATAVALUECOORDINATES);
+        } else  if(valueType.equals(ValueType.PHONE_NUMBER)) {
+            row = new PhoneEditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.PHONE_NUMBER);
         } else {
-            row = new EditTextRow(trackedEntityAttributeName, mandatory, null, baseValue,
+            row = new InvalidEditTextRow(trackedEntityAttributeName, mandatory, null, baseValue,
                     DataEntryRowTypes.INVALID_DATA_ENTRY);
         }
         row.setEditable(editable);

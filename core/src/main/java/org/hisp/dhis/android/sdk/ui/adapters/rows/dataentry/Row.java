@@ -50,6 +50,7 @@ public abstract class Row implements DataEntryRow, Serializable {
     protected String mLabel;
     protected String mWarning;
     protected String mError;
+    protected Integer mErrorStringId;
     protected BaseValue mValue;
     protected String mDescription;
     protected DataEntryRowTypes mRowType;
@@ -80,6 +81,11 @@ public abstract class Row implements DataEntryRow, Serializable {
 
     @Override
     public abstract int getViewType();
+
+    @Override
+    public Integer getValidationError(){
+        return mErrorStringId;
+    }
 
     public String getItemId()
     {

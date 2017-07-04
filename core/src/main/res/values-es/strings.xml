@@ -60,6 +60,7 @@
     <string name="missing_mandatory_field">Valor obligatorio vacío</string>
     <string name="unable_to_complete_registration">Imposible completar el registro.</string>
     <string name="review_errors">Por favor corrige los errores abajo mostrados e inténtalo de nuevo</string>
+    <string name="validation_errors">Por favor corrige los errores  de validación e inténtalo de nuevo</string>
 
 
     <!-- Login Activity -->
@@ -187,6 +188,8 @@
     <string name="eventname">Nombre del evento</string>
     <string name="startdate">Fecha de inicio</string>
     <string name="enddate">Fecha de fin</string>
+
+    <string name="error_email">Por favor introduzca una dirección de correo electrónico válido</string>
 
     <string name="registered_events">Eventos registrados</string>
     <string name="status">Estado</string>

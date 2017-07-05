@@ -45,13 +45,19 @@
     <color name="Transparent">#00000000</color>
     <color name="Light_Gray">#dddddd</color>
     <color name="Medium_Gray">#727272</color>
-    <color name="stage_completed">#dff0d8</color>
-    <color name="stage_executed">#d9edf7</color>
-    <color name="stage_Incomplete">#d5cbc1</color>
-    <color name="stage_ontime">#fcf8e3</color>
+    <color name="stage_completed">@color/web_light_grey</color>
+    <color name="stage_executed">@color/web_light_orange</color>
+    <color name="stage_Incomplete">@color/web_light_orange</color>
+    <color name="stage_ontime">@color/web_light_green</color>
     <color name="stage_overdue">#f2dede</color>
-    <color name="stage_skipped">#d5cbc1</color>
+    <color name="stage_skipped">@color/web_light_grey</color>
 
+    <color name="web_orange">#eed659</color>
+    <color name="web_light_orange">#fcf8e3</color>
+    <color name="web_grey">#8a8a8a</color>e2dfcc
+    <color name="web_light_grey">#e6e6e6</color>
+    <color name="web_green">#468847</color>
+    <color name="web_light_green">#dff0d8</color>
     <color name="white">#FFFFFFFF</color>
     <color name="orange">#FF9900</color>
     <color name="black">#FF000000</color>

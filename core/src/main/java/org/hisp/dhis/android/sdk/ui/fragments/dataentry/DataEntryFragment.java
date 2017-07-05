@@ -239,6 +239,18 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         ArrayList<String> errors = new ArrayList<>();
         addMandatoryErrors(mandatoryFieldsMissingErrors, errors);
         addErrors(programRulesErrors, errors);
+        showErrorsDialog(errors);
+    }
+
+    private void showErrorsDialog(ArrayList<String> errors) {
+        if (!errors.isEmpty()) {
+            validationErrorDialog = ValidationErrorDialog
+                    .newInstance(getActivity().getString(R.string.unable_to_complete_registration) + " " + getActivity().getString(R.string.review_errors), errors);
+            validationErrorDialog.show(getChildFragmentManager());
+        } else {
+            Toast.makeText(getContext(), R.string.unable_to_complete_registration, Toast.LENGTH_LONG).show();
+
+        }
     }
 
     protected void showValidationErrorDialog(ArrayList<String> mandatoryFieldsMissingErrors, ArrayList<String> programRulesErrors, ArrayList<String> fieldValidationError) {
@@ -246,13 +258,7 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         addMandatoryErrors(mandatoryFieldsMissingErrors, errors);
         addErrors(programRulesErrors, errors);
         addErrors(fieldValidationError, errors);
-        if (!errors.isEmpty()) {
-            validationErrorDialog = ValidationErrorDialog
-                    .newInstance(getActivity().getString(R.string.unable_to_complete_registration) + " " + getActivity().getString(R.string.review_errors), errors);
-            validationErrorDialog.show(getChildFragmentManager());
-        } else {
-            Toast.makeText(getContext(), R.string.unable_to_complete_registration, Toast.LENGTH_LONG).show();
-        }
+        showErrorsDialog(errors);
     }
 
     private void addErrors(ArrayList<String> programRulesErrors,

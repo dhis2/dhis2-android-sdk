@@ -2,6 +2,7 @@ package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
 
 import android.support.v4.app.FragmentManager;
+import android.text.Editable;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +13,10 @@ import android.widget.TextView;
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 
-public class PhoneEditTextRow extends Row {
+public class EmailAddressEditTextRow extends Row {
     private static String rowTypeTemp;
 
-    public PhoneEditTextRow(String label, boolean mandatory, String warning,
+    public EmailAddressEditTextRow(String label, boolean mandatory, String warning,
             BaseValue baseValue,
             DataEntryRowTypes rowType) {
         mLabel = label;
@@ -24,7 +25,7 @@ public class PhoneEditTextRow extends Row {
         mValue = baseValue;
         mRowType = rowType;
 
-        if (!DataEntryRowTypes.PHONE_NUMBER.equals(rowType)) {
+        if (!DataEntryRowTypes.EMAIL.equals(rowType)) {
             throw new IllegalArgumentException("Unsupported row type");
         }
         checkNeedsForDescriptionButton();
@@ -32,7 +33,7 @@ public class PhoneEditTextRow extends Row {
 
     @Override
     public int getViewType() {
-        return DataEntryRowTypes.PHONE_NUMBER.ordinal();
+        return DataEntryRowTypes.EMAIL.ordinal();
     }
 
     @Override
@@ -54,11 +55,11 @@ public class PhoneEditTextRow extends Row {
             EditText editText = (EditText) root.findViewById(R.id.edit_text_row);
 //            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
 
-            editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-            editText.setHint(R.string.enter_phone_number);
+            editText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+            editText.setHint(R.string.enter_email);
             editText.setSingleLine(true);
 
-            OnTextChangeListener listener = new OnTextChangeListener();
+            EmailWatcher listener = new EmailWatcher(editText, errorLabel);
             listener.setRow(this);
             listener.setRowType(rowTypeTemp);
             holder = new ValueEntryHolder(label, mandatoryIndicator, warningLabel, errorLabel, editText, listener);
@@ -116,4 +117,42 @@ public class PhoneEditTextRow extends Row {
         return view;
     }
 
+    private class EmailWatcher extends OnTextChangeListener{
+        final private EditText mEditText;
+        final private TextView mErrorLabel;
+
+
+        public EmailWatcher(EditText editText, TextView errorLabel) {
+            super();
+            mEditText = editText;
+            mErrorLabel = errorLabel;
+        }
+
+        public void afterTextChanged(Editable s) {
+            super.afterTextChanged(s);
+            String text = mEditText.getText().toString();
+            validateEmail(text);
+        }
+
+        public void validateEmail(String email) {
+                String regExp = "^([a-zA-Z]+@[a-zA-Z]+[.][a-zA-Z]+)$";
+                if(!email.matches(regExp) && email.length()>0){
+                    setError(R.string.error_email);
+                }else{
+                    setError(null);
+                }
+        }
+
+
+        private void setError(Integer stringId) {
+            if(stringId == null) {
+                mErrorLabel.setVisibility(View.GONE);
+                mErrorLabel.setText("");
+            }else{
+                mErrorLabel.setVisibility(View.VISIBLE);
+                mErrorLabel.setText(stringId);
+            }
+            mErrorStringId = stringId;
+        }
+    }
 }

@@ -49,12 +49,12 @@ import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 
-public final class CoordinatesRow extends Row {
+public final class EventCoordinatesRow extends Row {
     private static final String EMPTY_FIELD = "";
     private final Event mEvent;
     private final int MAX_INPUT_LENGTH = 9; // max input length = 9 for accepting 6 decimals in coordinates
 
-    public CoordinatesRow(Event event) {
+    public EventCoordinatesRow(Event event) {
         mEvent = event;
     }
 
@@ -69,14 +69,14 @@ public final class CoordinatesRow extends Row {
             holder = (CoordinateViewHolder) view.getTag();
         } else {
             View root = inflater.inflate(
-                    R.layout.listview_row_coordinate_picker, container, false);
-//            detailedInfoButton =  root.findViewById(R.id.detailed_info_button_layout);
-            holder = new CoordinateViewHolder(root);
+                    R.layout.listview_row_event_coordinate_picker, container, false);
+            View detailedInfoButton =  root.findViewById(R.id.detailed_info_button_layout);
+            holder = new CoordinateViewHolder(root, detailedInfoButton);
 
             root.setTag(holder);
             view = root;
         }
-//        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
+        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
 
         //input filters for coordinate row text fields
         InputFilter[] latitudeFilters = new InputFilter[2];
@@ -93,28 +93,24 @@ public final class CoordinatesRow extends Row {
         holder.longitude.setFilters(longitudeFilters);
         holder.updateViews(mEvent);
 
-        // Coordinates cannot be manually entered
-        holder.latitude.setEnabled(false);
-        holder.longitude.setEnabled(false);
-
         return view;
     }
 
     @Override
     public int getViewType() {
-        return DataEntryRowTypes.COORDINATES.ordinal();
+        return DataEntryRowTypes.EVENT_COORDINATES.ordinal();
     }
 
     private static class CoordinateViewHolder {
         private final EditText latitude;
         private final EditText longitude;
         private final ImageButton captureCoords;
-//        private final View detailedInfoButton;
+        private final View detailedInfoButton;
         private final LatitudeWatcher latitudeWatcher;
         private final LongitudeWatcher longitudeWatcher;
         private final OnCaptureCoordsClickListener onButtonClickListener;
 
-        public CoordinateViewHolder(View view) {
+        public CoordinateViewHolder(View view, View detailedInfoButton) {
             final String latitudeMessage = view.getContext()
                     .getString(R.string.latitude_error_message);
             final String longitudeMessage = view.getContext()
@@ -124,7 +120,7 @@ public final class CoordinatesRow extends Row {
             latitude = (EditText) view.findViewById(R.id.latitude_edittext);
             longitude = (EditText) view.findViewById(R.id.longitude_edittext);
             captureCoords = (ImageButton) view.findViewById(R.id.capture_coordinates);
-//            this.detailedInfoButton = detailedInfoButton;
+            this.detailedInfoButton = detailedInfoButton;
 
             /* text watchers and click listener */
             latitudeWatcher = new LatitudeWatcher(latitude, latitudeMessage);
@@ -183,17 +179,21 @@ public final class CoordinatesRow extends Row {
                 double newValue = Double.parseDouble(s.toString());
                 if (newValue < -90 || newValue > 90) {
                     mEditText.setError(mCoordinateMessage);
-                }
-
-                if(newValue != value)
+                    if(newValue != value){
+                        saveLatitude(null);
+                    }
+                } else if(newValue != value)
                 {
-                    mEvent.setLatitude(Double.valueOf(newValue));
-                    DataValue dataValue = new DataValue();
-                    dataValue.setValue("" + newValue);
-                    Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue, DataEntryRowTypes.COORDINATES.toString()));
-
+                    saveLatitude(newValue);
                 }
             }
+        }
+
+        private void saveLatitude(Double newValue) {
+            mEvent.setLatitude(newValue);
+            DataValue dataValue = new DataValue();
+            dataValue.setValue("" + newValue);
+            Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue, DataEntryRowTypes.EVENT_COORDINATES.toString()));
         }
     }
 
@@ -209,19 +209,24 @@ public final class CoordinatesRow extends Row {
                 value = mEvent.getLongitude();
 
             if (s.length() > 1) {
-                double newValue = Double.parseDouble(s.toString());
+                Double newValue = Double.parseDouble(s.toString());
                 if (newValue < -180 || newValue > 180) {
                     mEditText.setError(mCoordinateMessage);
-                }
-
-                if(newValue != value)
+                    if(newValue != value){
+                        saveLongitude(null);
+                    }
+                } else if(newValue != value)
                 {
-                    mEvent.setLongitude(Double.valueOf(newValue));
-                    DataValue dataValue = new DataValue();
-                    dataValue.setValue("" + newValue);
-                    Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue, DataEntryRowTypes.COORDINATES.toString()));
+                    saveLongitude(newValue);
                 }
             }
+        }
+
+        private void saveLongitude(Double newValue) {
+            mEvent.setLongitude(newValue);
+            DataValue dataValue = new DataValue();
+            dataValue.setValue("" + newValue);
+            Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue, DataEntryRowTypes.EVENT_COORDINATES.toString()));
         }
     }
 

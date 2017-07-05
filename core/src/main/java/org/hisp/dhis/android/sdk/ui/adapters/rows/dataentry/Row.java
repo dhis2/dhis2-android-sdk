@@ -98,7 +98,7 @@ public abstract class Row implements DataEntryRow, Serializable {
     }
 
     public String getDescription() {
-        if(this instanceof CoordinatesRow) {
+        if(this instanceof EventCoordinatesRow) {
             mDescription = "";
         } else if (this instanceof StatusRow) {
             mDescription = "";

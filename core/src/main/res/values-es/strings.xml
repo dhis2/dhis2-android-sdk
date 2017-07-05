@@ -60,6 +60,7 @@
     <string name="missing_mandatory_field">Valor obligatorio vacío</string>
     <string name="unable_to_complete_registration">Imposible completar el registro.</string>
     <string name="review_errors">Por favor corrige los errores abajo mostrados e inténtalo de nuevo</string>
+    <string name="validation_errors">Por favor corrige los errores  de validación e inténtalo de nuevo</string>
 
 
     <!-- Login Activity -->
@@ -188,6 +189,8 @@
     <string name="startdate">Fecha de inicio</string>
     <string name="enddate">Fecha de fin</string>
 
+    <string name="error_email">Por favor introduzca una dirección de correo electrónico válido</string>
+
     <string name="registered_events">Eventos registrados</string>
     <string name="status">Estado</string>
     <string name="event_status">Estado del evento</string>
@@ -238,6 +241,7 @@
     <string name="detailed_info_dataelement">Información detallada</string>
     <string name="detailed_info_coordinate_row">Por favor, introduce las coordnadas GPS pulsando en el botón a la derecha de la fila. Si no funciona, por favor comprueba tus datos y/o conexión GPS.</string>
     <string name="detailed_info_status_row">Por favor, pulsa el botón de completado cuando hayas terminado de introducir los datos. Pulsa el botón de validación para comprobar si los datos introducidos son correctos.</string>
+    <string name="enter_email">Introduce un correo electronico</string>
     <string name="enter_phone_number">Introduce un número de teléfono</string>
     <string name="choose_filter">Selecciona un filtro</string>
     <string name="invalid_entry_type">Tipo de valor no soportado</string>

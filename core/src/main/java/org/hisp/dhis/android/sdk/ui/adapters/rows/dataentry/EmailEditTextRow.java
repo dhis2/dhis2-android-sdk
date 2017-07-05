@@ -12,10 +12,10 @@ import android.widget.TextView;
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 
-public class PhoneEditTextRow extends Row {
+public class EmailEditTextRow extends Row {
     private static String rowTypeTemp;
 
-    public PhoneEditTextRow(String label, boolean mandatory, String warning,
+    public EmailEditTextRow(String label, boolean mandatory, String warning,
             BaseValue baseValue,
             DataEntryRowTypes rowType) {
         mLabel = label;
@@ -24,7 +24,7 @@ public class PhoneEditTextRow extends Row {
         mValue = baseValue;
         mRowType = rowType;
 
-        if (!DataEntryRowTypes.PHONE_NUMBER.equals(rowType)) {
+        if (!DataEntryRowTypes.EMAIL.equals(rowType)) {
             throw new IllegalArgumentException("Unsupported row type");
         }
         checkNeedsForDescriptionButton();
@@ -32,7 +32,7 @@ public class PhoneEditTextRow extends Row {
 
     @Override
     public int getViewType() {
-        return DataEntryRowTypes.PHONE_NUMBER.ordinal();
+        return DataEntryRowTypes.EMAIL.ordinal();
     }
 
     @Override
@@ -55,7 +55,7 @@ public class PhoneEditTextRow extends Row {
 //            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
 
             editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-            editText.setHint(R.string.enter_phone_number);
+            editText.setHint(R.string.enter_email);
             editText.setSingleLine(true);
 
             OnTextChangeListener listener = new OnTextChangeListener();
@@ -115,5 +115,6 @@ public class PhoneEditTextRow extends Row {
 
         return view;
     }
+
 
 }

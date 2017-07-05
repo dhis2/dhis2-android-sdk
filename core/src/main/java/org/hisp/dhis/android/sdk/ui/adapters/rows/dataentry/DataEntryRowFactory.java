@@ -57,7 +57,7 @@ public class DataEntryRowFactory {
         } else if (valueType.equals(ValueType.DATE) || valueType.equals(ValueType.AGE)) {
             row = new DatePickerRow(trackedEntityAttributeName, mandatory, null, baseValue, allowFutureDate);
         } else if(valueType.equals(ValueType.COORDINATE)) {
-            row = new DataValueCoordinatesRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.DATAVALUECOORDINATES);
+            row = new QuestionCoordinatesRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.QUESTION_COORDINATES);
         } else  if(valueType.equals(ValueType.PHONE_NUMBER)) {
             row = new PhoneEditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.PHONE_NUMBER);
         }  else  if(valueType.equals(ValueType.EMAIL)) {

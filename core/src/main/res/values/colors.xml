@@ -48,7 +48,7 @@
     <color name="stage_completed">@color/web_grey</color>
     <color name="stage_executed">@color/web_orange</color>
     <color name="stage_Incomplete">@color/web_orange</color>
-    <color name="stage_ontime">@color/web_orange</color>
+    <color name="stage_ontime">@color/web_green</color>
     <color name="stage_overdue">@color/web_green</color>
     <color name="stage_skipped">@color/web_light_grey</color>
 

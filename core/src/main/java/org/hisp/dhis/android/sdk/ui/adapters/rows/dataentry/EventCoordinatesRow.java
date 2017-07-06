@@ -53,6 +53,8 @@ public final class EventCoordinatesRow extends Row {
     private static final String EMPTY_FIELD = "";
     private final Event mEvent;
     private final int MAX_INPUT_LENGTH = 9; // max input length = 9 for accepting 6 decimals in coordinates
+    protected boolean longitudeError;
+    protected boolean latitudeError;
 
     public EventCoordinatesRow(Event event) {
         mEvent = event;
@@ -101,7 +103,7 @@ public final class EventCoordinatesRow extends Row {
         return DataEntryRowTypes.EVENT_COORDINATES.ordinal();
     }
 
-    private static class CoordinateViewHolder {
+    private class CoordinateViewHolder {
         private final EditText latitude;
         private final EditText longitude;
         private final ImageButton captureCoords;
@@ -164,7 +166,7 @@ public final class EventCoordinatesRow extends Row {
         @Override
         public abstract void afterTextChanged(Editable s);
     }
-    private static class LatitudeWatcher extends CoordinateWatcher {
+    private class LatitudeWatcher extends CoordinateWatcher {
 
         public LatitudeWatcher(EditText mLatitude, String mLatitudeMessage) {
             super(mLatitude,mLatitudeMessage);
@@ -179,17 +181,23 @@ public final class EventCoordinatesRow extends Row {
                 double newValue = Double.parseDouble(s.toString());
                 if (newValue < -90 || newValue > 90) {
                     mEditText.setError(mCoordinateMessage);
-                    if(newValue != value){
-                        saveLatitude(null);
-                    }
-                } else if(newValue != value)
-                {
+                    saveLatitude(null);
+                } else {
                     saveLatitude(newValue);
                 }
             }
         }
 
         private void saveLatitude(Double newValue) {
+            if(newValue==null){
+                latitudeError=true;
+                mErrorStringId = R.string.error_location_values;
+            }else{
+                latitudeError=false;
+                if(!longitudeError) {
+                    mErrorStringId = null;
+                }
+            }
             mEvent.setLatitude(newValue);
             DataValue dataValue = new DataValue();
             dataValue.setValue("" + newValue);
@@ -197,7 +205,7 @@ public final class EventCoordinatesRow extends Row {
         }
     }
 
-    private static class LongitudeWatcher extends CoordinateWatcher {
+    private class LongitudeWatcher extends CoordinateWatcher {
 
         public LongitudeWatcher(EditText mLongitude, String mLongitudeMessage) {
             super(mLongitude, mLongitudeMessage);
@@ -212,10 +220,8 @@ public final class EventCoordinatesRow extends Row {
                 Double newValue = Double.parseDouble(s.toString());
                 if (newValue < -180 || newValue > 180) {
                     mEditText.setError(mCoordinateMessage);
-                    if(newValue != value){
-                        saveLongitude(null);
-                    }
-                } else if(newValue != value)
+                    saveLongitude(null);
+                } else
                 {
                     saveLongitude(newValue);
                 }
@@ -223,6 +229,15 @@ public final class EventCoordinatesRow extends Row {
         }
 
         private void saveLongitude(Double newValue) {
+            if(newValue==null){
+                longitudeError=true;
+                mErrorStringId = R.string.error_location_values;
+            }else{
+                longitudeError=false;
+                if(!latitudeError) {
+                    mErrorStringId = null;
+                }
+            }
             mEvent.setLongitude(newValue);
             DataValue dataValue = new DataValue();
             dataValue.setValue("" + newValue);

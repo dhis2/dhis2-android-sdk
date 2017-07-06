@@ -111,6 +111,7 @@
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
     <string name="coordinates">Coordinates</string>
+    <string name="error_location_values">Please enter a valid location value</string>
 
 
     <!-- Data fetching -->
@@ -171,7 +172,9 @@
     <string name="event_error">Error</string>
     <string name="upcoming_events">Upcoming Events</string>
 
-    <string name="validation_error">Please complete the following compulsory fields</string>
+    <string name="validation_field_exit">Warning: There are invalid values and you\'re about to exit. If you proceed, invalid values will be deleted. Do you want to continue?</string>
+    <string name="validation_field_title">Warning: There are invalid values</string>
+    <string name="validation_compulsory_error">Please complete the following compulsory fields</string>
     <string name="enter_date">Enter date</string>
     <string name="enter_text">Enter text</string>
     <string name="enter_long_text">Enter long text</string>

@@ -139,7 +139,7 @@ public final class QuestionCoordinatesRow extends Row {
         return DataEntryRowTypes.QUESTION_COORDINATES.ordinal();
     }
 
-    private static class CoordinateViewHolder {
+    private class CoordinateViewHolder {
         private final TextView labelTextView;
         private final EditText latitude;
         private final EditText longitude;
@@ -207,7 +207,7 @@ public final class QuestionCoordinatesRow extends Row {
         public abstract void afterTextChanged(Editable s);
     }
 
-    private static class LatitudeWatcher extends CoordinateWatcher {
+    private class LatitudeWatcher extends CoordinateWatcher {
 
         public LatitudeWatcher(EditText mLatitude, EditText mLongitude, String mLatitudeMessage,
                 String mLongitudeMessage) {
@@ -224,17 +224,31 @@ public final class QuestionCoordinatesRow extends Row {
                     return;
                 }
                 String newValue = s.toString();
-                if (isInvalidLatitude(newValue)) {
-                    mEditTextLatitude.setError(mLatitudeMessage);
+                saveCoordinates(mEditTextLatitude, mEditTextLongitude, mBaseValue);
+                setValidationError(newValue);
+            }
+        }
+
+        private void setValidationError(String newValue) {
+            if (isInvalidLatitude(newValue)) {
+                mEditTextLatitude.setError(mLatitudeMessage);
+            }
+            mErrorStringId = null;
+            if (mEditTextLatitude.getText().length() > 0) {
+                if (isInvalidLatitude(mEditTextLatitude.getText().toString())) {
+                    mErrorStringId = R.string.error_location_values;
                 }
-                if (newValue != value && mBaseValue!=null) {
-                    saveCoordinates(mEditTextLatitude, mEditTextLongitude, mBaseValue);
+            }
+            if (mEditTextLongitude.getText().length() > 0) {
+                if (isInvalidLongitude(mEditTextLongitude.getText().toString())) {
+                    mErrorStringId = R.string.error_location_values;
                 }
             }
         }
     }
 
-    private static class LongitudeWatcher extends CoordinateWatcher {
+
+    private class LongitudeWatcher extends CoordinateWatcher {
 
         public LongitudeWatcher(EditText mLatitude, EditText mLongitude, String mLatitudeMessage,
                 String mLongitudeMessage) {
@@ -252,11 +266,27 @@ public final class QuestionCoordinatesRow extends Row {
                     return;
                 }
                 String newValue = s.toString();
+                saveCoordinates(mEditTextLatitude, mEditTextLongitude, mBaseValue);
                 if (isInvalidLongitude(newValue)) {
                     mEditTextLongitude.setError(mLongitudeMessage);
                 }
-                if (!newValue.equals(value) && mBaseValue!=null) {
-                    saveCoordinates(mEditTextLatitude, mEditTextLongitude, mBaseValue);
+                setValidationError(newValue);
+            }
+        }
+
+        private void setValidationError(String newValue) {
+            if (isInvalidLatitude(newValue)) {
+                mEditTextLongitude.setError(mLatitudeMessage);
+            }
+            mErrorStringId = null;
+            if (mEditTextLatitude.getText().length() > 0) {
+                if (isInvalidLatitude(mEditTextLatitude.getText().toString())) {
+                    mErrorStringId = R.string.error_location_values;
+                }
+            }
+            if (mEditTextLongitude.getText().length() > 0) {
+                if (isInvalidLongitude(mEditTextLongitude.getText().toString())) {
+                    mErrorStringId = R.string.error_location_values;
                 }
             }
         }

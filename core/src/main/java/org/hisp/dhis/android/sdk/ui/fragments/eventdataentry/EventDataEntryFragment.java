@@ -434,6 +434,14 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         Map<String, ProgramStageDataElement> dataElements = toMap(
                 form.getStage().getProgramStageDataElements()
         );
+
+        for (DataEntryFragmentSection dataEntryFragmentSection:form.getSections()) {
+            for (Row row : dataEntryFragmentSection.getRows()) {
+                if (row.getValidationError() != null) {
+                    return false;
+                }
+            }
+        }
         for (DataValue dataValue : form.getEvent().getDataValues()) {
             ProgramStageDataElement dataElement = dataElements.get(dataValue.getDataElement());
             if (dataElement == null) {
@@ -613,6 +621,21 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         return errors;
     }
 
+    private static ArrayList<String> getRowsErrors(Context context, EventDataEntryFragmentForm form) {
+        ArrayList<String> errors = new ArrayList<>();
+        for (DataEntryFragmentSection dataEntryFragmentSection:form.getSections()){
+            for(Row row: dataEntryFragmentSection.getRows()) {
+                if (row.getValidationError() != null) {
+                    Integer stringId = row.getValidationError();
+                    if(stringId!=null) {
+                        errors.add(context.getString(stringId));
+                    }
+                }
+            }
+        }
+        return errors;
+    }
+
     @Subscribe
     public void onHideLoadingDialog(HideLoadingDialogEvent event) {
         super.onHideLoadingDialog(event);
@@ -732,7 +755,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                 Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
             }
         } else {
-            showValidationErrorDialog(getValidationErrors(), getProgramRuleFragmentHelper().getProgramRuleValidationErrors());
+            showValidationErrorDialog(getValidationErrors(), getProgramRuleFragmentHelper().getProgramRuleValidationErrors(), getRowsErrors(getContext(), form));
         }
     }
 
@@ -888,5 +911,52 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         eventsForEnrollment.add(event);
         form.getEnrollment().setEvents(eventsForEnrollment);
         form.getEnrollment().save();
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        if (menuItem.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }else
+        return super.onOptionsItemSelected(menuItem);
+    }
+
+    @Override
+    public boolean doBack() {
+        List<String> errors = getRowsErrors(getContext(), form);
+        if (errors.size() > 0) {
+            showErrorAndGoBack();
+            return false;
+        } else {
+            return super.doBack();
+        }
+    }
+
+    private void showErrorAndGoBack() {
+
+        String title = getContext().getString(R.string.validation_field_title);
+        String message = getContext().getString(R.string.validation_field_exit);
+        UiUtils.showConfirmDialog(getActivity(),
+                title, message,
+                getString(R.string.ok_option),
+                getString(org.hisp.dhis.android.sdk.R.string.cancel),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //discard
+                        EventDataEntryFragment.this.removeInvalidFields();
+                        EventDataEntryFragment.super.doBack();
+                    }
+                });
+    }
+
+    private void removeInvalidFields() {
+        for (DataEntryFragmentSection dataEntryFragmentSection : form.getSections()) {
+            for (Row row : dataEntryFragmentSection.getRows()) {
+                if (row.getValidationError() != null && row.getValue() != null) {
+                    row.getValue().delete();
+                }
+            }
+        }
     }
 }

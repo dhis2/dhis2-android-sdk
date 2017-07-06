@@ -58,7 +58,6 @@ import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.events.UiEvent;
-import org.hisp.dhis.android.sdk.ui.fragments.progressdialog.ProgressDialogFragment;
 import org.hisp.dhis.android.sdk.job.JobExecutor;
 import org.hisp.dhis.android.sdk.job.NetworkJob;
 import org.hisp.dhis.android.sdk.network.APIException;
@@ -66,6 +65,7 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
+import org.hisp.dhis.android.sdk.ui.fragments.progressdialog.ProgressDialogFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -153,7 +153,9 @@ public class QueryTrackedEntityInstancesResultDialogFragment extends DialogFragm
                 getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mFilter.getWindowToken(), 0);
 
-        mAdapter = new QueryTrackedEntityInstancesResultDialogAdapter(LayoutInflater.from(getActivity()), getSelectedTrackedEntityInstances(), null);
+        mAdapter = new QueryTrackedEntityInstancesResultDialogAdapter(
+                LayoutInflater.from(getActivity()), getSelectedTrackedEntityInstances(), null,
+                getContext());
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
 

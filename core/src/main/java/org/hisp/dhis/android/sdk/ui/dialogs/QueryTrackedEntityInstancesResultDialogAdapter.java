@@ -29,6 +29,13 @@
 
 package org.hisp.dhis.android.sdk.ui.dialogs;
 
+import android.content.Context;
+import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.style.MetricAffectingSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,14 +83,17 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
     private Map<String, ProgramTrackedEntityAttribute> programTrackedEntityAttributeMap;
 
     private final LayoutInflater mInflater;
+    private Context mContext;
 
     public QueryTrackedEntityInstancesResultDialogAdapter(LayoutInflater inflater,
             List<TrackedEntityInstance> selectedTrackedEntityInstances,
-            Map<String, ProgramTrackedEntityAttribute> programTrackedEntityAttributeMap) {
+            Map<String, ProgramTrackedEntityAttribute> programTrackedEntityAttributeMap,
+            Context context) {
         mInflater = inflater;
         mObjects = new ArrayList<>();
         this.selectedTrackedEntityInstances = selectedTrackedEntityInstances;
         this.programTrackedEntityAttributeMap = programTrackedEntityAttributeMap;
+        mContext = context;
     }
 
     public List<TrackedEntityInstance> getData() {
@@ -147,7 +157,7 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
             view = mInflater.inflate(
                     R.layout.dialog_fragment_listview_item_teiqueryresult, parent, false);
 
-            holder = new ViewHolder(view, mInflater);
+            holder = new ViewHolder(view, mInflater, mContext);
             view.setTag(holder);
         } else {
             view = convertView;
@@ -185,10 +195,12 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
     private static class ViewHolder {
         LinearLayout attributeContainer;
         LayoutInflater mInflater;
+        Context mContext;
 
-        private ViewHolder(View view, LayoutInflater inflater) {
+        private ViewHolder(View view, LayoutInflater inflater, Context context) {
             mInflater = inflater;
             attributeContainer = (LinearLayout) view.findViewById(R.id.textviewcontainer);
+            mContext = context;
         }
 
         /**
@@ -227,10 +239,21 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
                                     R.id.left_textview);
                             labelTextView.setText(builder.toString());
 
-                            FontTextView valueTextView = (FontTextView) attributeLayout.findViewById(
-                                    R.id.right_textview);
 
-                            valueTextView.setText(trackedEntityAttributeValue.getValue());
+                            Typeface font = Typeface.createFromAsset(mContext.getAssets(),
+                                    "fonts/" + mContext.getString(R.string.light_font_name));
+                            Typeface font2 = Typeface.createFromAsset(mContext.getAssets(),
+                                    "fonts/" + mContext.getString(R.string.medium_font_name));
+                            SpannableStringBuilder SS = new SpannableStringBuilder(
+                                    builder.toString() + trackedEntityAttributeValue.getValue());
+                            SS.setSpan(new CustomTypefaceSpan(font), 0, builder.toString().length(),
+                                    Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+                            SS.setSpan(new CustomTypefaceSpan(font2), builder.toString().length(),
+                                    builder.toString().length()
+                                            + trackedEntityAttributeValue.getValue().length(),
+                                    Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+                            labelTextView.setText(SS);
+
 
                             attributeContainer.addView(attributeLayout);
 
@@ -397,6 +420,41 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
         @Override
         public int hashCode() {
             return (id == null ? 0 : id.hashCode()) ^ (label == null ? 0 : label.hashCode());
+        }
+    }
+
+
+    private static class CustomTypefaceSpan extends MetricAffectingSpan {
+        private final Typeface typeface;
+
+        public CustomTypefaceSpan(final Typeface typeface) {
+            this.typeface = typeface;
+        }
+
+        @Override
+        public void updateDrawState(final TextPaint drawState) {
+            apply(drawState);
+        }
+
+        @Override
+        public void updateMeasureState(final TextPaint paint) {
+            apply(paint);
+        }
+
+        private void apply(final Paint paint) {
+            final Typeface oldTypeface = paint.getTypeface();
+            final int oldStyle = oldTypeface != null ? oldTypeface.getStyle() : 0;
+            final int fakeStyle = oldStyle & ~typeface.getStyle();
+
+            if ((fakeStyle & Typeface.BOLD) != 0) {
+                paint.setFakeBoldText(true);
+            }
+
+            if ((fakeStyle & Typeface.ITALIC) != 0) {
+                paint.setTextSkewX(-0.25f);
+            }
+
+            paint.setTypeface(typeface);
         }
     }
 }

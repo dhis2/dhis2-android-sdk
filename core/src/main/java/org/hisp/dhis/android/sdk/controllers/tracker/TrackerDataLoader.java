@@ -893,9 +893,14 @@ final class TrackerDataLoader extends ResourceController {
                         enrollment.getTrackedEntityInstance(),
                         getBasicQueryMap(lastUpdated));
         List<Event> events = EventsWrapper.getEvents(response);
+        List<Event> invalidEvents = new ArrayList<>();
         for (Event event : events) {
             event.setLocalEnrollmentId(enrollment.getLocalId());
+            if(event.getOrganisationUnitId()==null) {
+                invalidEvents.add(event);
+            }
         }
+        events.removeAll(invalidEvents);
 
         saveResourceDataFromServer(ResourceType.EVENTS, enrollment.getUid(), dhisApi, events,
                 TrackerController.getEventsByEnrollment(enrollment.getLocalId()), serverDateTime);

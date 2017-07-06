@@ -848,7 +848,7 @@ public final class MetaDataController extends ResourceController {
                 .getLastUpdated(ResourceType.OPTIONSETS);
 
         if (lastUpdated != null) {
-            QUERY_MAP_FULL.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
+            QUERY_MAP_FULL.put("filter", "lastUpdated:gt:" + lastUpdated.toString().replace("Z",""));
         }
 
         List<OptionSet> optionSets = unwrapResponse(dhisApi

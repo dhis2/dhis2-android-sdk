@@ -140,6 +140,14 @@ public final class TrackerController extends ResourceController {
                 is(trackedEntityInstance.getLocalId())).queryList();
     }
 
+    public static List<Enrollment> getEnrollments(TrackedEntityInstance trackedEntityInstance,
+            String programUId, String orgUnit) {
+        return new Select().from(Enrollment.class).where(Condition.column(Enrollment$Table.LOCALTRACKEDENTITYINSTANCEID).
+                is(trackedEntityInstance.getLocalId()))
+                .and(Condition.column(Enrollment$Table.PROGRAM).is(programUId))
+                .and(Condition.column(Enrollment$Table.ORGUNIT).is(orgUnit)).queryList();
+    }
+
     /**
      * Returns a list of enrollments for a given program and tracked entity instance
      *

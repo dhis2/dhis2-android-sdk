@@ -922,21 +922,17 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     }
 
     @Override
-    public boolean onBackPressed() {
+    public boolean doBack() {
         List<String> errors = getRowsErrors(getContext(), form);
         if (errors.size() > 0) {
-            showErrorAndGoBack(this);
+            showErrorAndGoBack();
             return false;
         } else {
-            return super.onBackPressed();
+            return super.doBack();
         }
     }
 
-    public void goBack() {
-        super.onBackPressed();
-    }
-
-    private void showErrorAndGoBack(final EventDataEntryFragment eventDataEntryFragment) {
+    private void showErrorAndGoBack() {
 
         String title = getContext().getString(R.string.validation_field_title);
         String message = getContext().getString(R.string.validation_field_exit);
@@ -948,8 +944,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //discard
-                        eventDataEntryFragment.removeInvalidFields();
-                        eventDataEntryFragment.goBack();
+                        EventDataEntryFragment.this.removeInvalidFields();
+                        EventDataEntryFragment.super.doBack();
                     }
                 });
     }

@@ -179,8 +179,7 @@ public final class TrackerController extends ResourceController {
 
     public static Enrollment getEnrollment(String enrollment) {
         return new Select().from(Enrollment.class).where(Condition.column
-                (Enrollment$Table.ENROLLMENT).is(enrollment))
-                .orderBy(Enrollment$Table.STATUS).querySingle();
+                (Enrollment$Table.ENROLLMENT).is(enrollment)).querySingle();
     }
 
     public static Enrollment getEnrollment(long localEnrollmentId) {

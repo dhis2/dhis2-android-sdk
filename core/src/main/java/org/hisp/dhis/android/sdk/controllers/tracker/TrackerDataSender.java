@@ -209,7 +209,11 @@ final class TrackerDataSender {
             return;
         }
 
-        Enrollment enrollment = TrackerController.getEnrollment(event.getEnrollment());
+        Enrollment cancelledEnrollment = TrackerController.getCancelledEnrollment(event.getEnrollment());
+        if (cancelledEnrollment != null && !cancelledEnrollment.isFromServer()) { // the cancelled enrollment should be pushed before.
+            sendEnrollmentChanges(dhisApi, cancelledEnrollment, false);
+        }
+        Enrollment enrollment = TrackerController.getNotCancelledEnrollment(event.getEnrollment());
         if (enrollment != null && !enrollment.isFromServer()) { // if enrollment is unsent, send it before events
             sendEnrollmentChanges(dhisApi, enrollment, false);
         }

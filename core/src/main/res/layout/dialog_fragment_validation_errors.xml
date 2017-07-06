@@ -46,7 +46,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:textSize="@dimen/large_text_size"
-        android:text="@string/validation_error"
+        android:text="@string/validation_compulsory_error"
         app:font="@string/medium_font_name"/>
 
     <View

@@ -235,13 +235,6 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         }
     }
 
-    protected  void  showValidationErrorDialog(ArrayList<String> mandatoryFieldsMissingErrors, ArrayList<String> programRulesErrors){
-        ArrayList<String> errors = new ArrayList<>();
-        addMandatoryErrors(mandatoryFieldsMissingErrors, errors);
-        addErrors(programRulesErrors, errors);
-        showErrorsDialog(errors);
-    }
-
     private void showErrorsDialog(ArrayList<String> errors) {
         if (!errors.isEmpty()) {
             validationErrorDialog = ValidationErrorDialog

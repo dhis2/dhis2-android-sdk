@@ -8,4 +8,3 @@ Login: android<br/>
 Password: Android123<br/><br/>
 
 Developed by University of Oslo(UiO) (http://www.uio.no).<br/><br/>
-Maintained by EyeSeeTea Ltd (http://eyeseetea.com).<br/><br/>

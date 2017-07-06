@@ -83,6 +83,7 @@
 
     <org.hisp.dhis.android.sdk.ui.views.FontTextView
         android:id="@+id/error_label"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="4dp"

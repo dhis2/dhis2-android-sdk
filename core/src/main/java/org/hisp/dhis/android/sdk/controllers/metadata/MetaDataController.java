@@ -675,7 +675,7 @@ public final class MetaDataController extends ResourceController {
         }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.OPTIONSETS)) {
             if (shouldLoad(serverDateTime, ResourceType.OPTIONSETS)) {
-                getOptionSetDataFromServer(dhisApi, serverDateTime);
+                getOptionSetDataFromServer(dhisApi, serverDateTime, syncStrategy);
             }
         }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.TRACKEDENTITYATTRIBUTES)) {
@@ -840,14 +840,15 @@ public final class MetaDataController extends ResourceController {
         return updatedProgram;
     }
 
-    private static void getOptionSetDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
+    private static void getOptionSetDataFromServer(DhisApi dhisApi, DateTime serverDateTime,
+            SyncStrategy syncStrategy) throws APIException {
         Log.d(CLASS_TAG, "getOptionSetDataFromServer");
         Map<String, String> QUERY_MAP_FULL = new HashMap<>();
         QUERY_MAP_FULL.put("fields", "*,options[*]");
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.OPTIONSETS);
 
-        if (lastUpdated != null) {
+        if (syncStrategy == SyncStrategy.DOWNLOAD_ONLY_NEW && lastUpdated != null) {
             QUERY_MAP_FULL.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
         }
 

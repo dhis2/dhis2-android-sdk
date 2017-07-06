@@ -101,11 +101,11 @@ public class EmailAddressEditTextRow extends Row {
             holder.warningLabel.setText(mWarning);
         }
 
-        if (mError == null) {
+        if (mErrorStringId == null) {
             holder.errorLabel.setVisibility(View.GONE);
         } else {
             holder.errorLabel.setVisibility(View.VISIBLE);
-            holder.errorLabel.setText(mError);
+            holder.errorLabel.setText(mErrorStringId);
         }
 
         if (!mMandatory) {

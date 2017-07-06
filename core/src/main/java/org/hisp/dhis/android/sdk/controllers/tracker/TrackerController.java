@@ -144,6 +144,7 @@ public final class TrackerController extends ResourceController {
             String programUId, String orgUnit) {
         return new Select().from(Enrollment.class).where(Condition.column(Enrollment$Table.LOCALTRACKEDENTITYINSTANCEID).
                 is(trackedEntityInstance.getLocalId()))
+                .and(Condition.column(Enrollment$Table.STATUS).is(Enrollment.COMPLETED))
                 .and(Condition.column(Enrollment$Table.PROGRAM).is(programUId))
                 .and(Condition.column(Enrollment$Table.ORGUNIT).is(orgUnit)).queryList();
     }
@@ -163,9 +164,23 @@ public final class TrackerController extends ResourceController {
         return enrollments;
     }
 
+    public static Enrollment getCancelledEnrollment(String enrollment) {
+        return new Select().from(Enrollment.class).where(Condition.column
+                (Enrollment$Table.ENROLLMENT).is(enrollment))
+                .and(Condition.column(Enrollment$Table.STATUS).is(Enrollment.CANCELLED)).querySingle();
+    }
+
+
+    public static Enrollment getNotCancelledEnrollment(String enrollment) {
+        return new Select().from(Enrollment.class).where(Condition.column
+                (Enrollment$Table.ENROLLMENT).is(enrollment))
+                .and(Condition.column(Enrollment$Table.STATUS).isNot(Enrollment.CANCELLED)).querySingle();
+    }
+
     public static Enrollment getEnrollment(String enrollment) {
         return new Select().from(Enrollment.class).where(Condition.column
-                (Enrollment$Table.ENROLLMENT).is(enrollment)).querySingle();
+                (Enrollment$Table.ENROLLMENT).is(enrollment))
+                .orderBy(Enrollment$Table.STATUS).querySingle();
     }
 
     public static Enrollment getEnrollment(long localEnrollmentId) {

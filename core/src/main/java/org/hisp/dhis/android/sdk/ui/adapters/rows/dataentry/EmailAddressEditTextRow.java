@@ -135,7 +135,8 @@ public class EmailAddressEditTextRow extends Row {
         }
 
         public void validateEmail(String email) {
-                String regExp = "^([a-zA-Z]+@[a-zA-Z]+[.][a-zA-Z]+)$";
+            String regExp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)"
+                    + "*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
                 if(!email.matches(regExp) && email.length()>0){
                     setError(R.string.error_email);
                 }else{

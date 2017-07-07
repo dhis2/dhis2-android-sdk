@@ -92,6 +92,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStage$Table;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection;
@@ -343,6 +344,11 @@ public final class MetaDataController extends ResourceController {
                 ProgramStage$Table.SORTORDER).queryList();
     }
 
+    public static List<ProgramIndicator> getProgramIndicators(String program) {
+        return new Select().from(ProgramIndicator.class).where(
+                Condition.column(ProgramIndicator$Table.PROGRAM).is(program))
+                .orderBy(ProgramIndicator$Table.ID).queryList();
+    }
     /**
      * Returns a program stage for a given program stage uid
      *
@@ -669,7 +675,7 @@ public final class MetaDataController extends ResourceController {
         }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.OPTIONSETS)) {
             if (shouldLoad(serverDateTime, ResourceType.OPTIONSETS)) {
-                getOptionSetDataFromServer(dhisApi, serverDateTime);
+                getOptionSetDataFromServer(dhisApi, serverDateTime, syncStrategy);
             }
         }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.TRACKEDENTITYATTRIBUTES)) {
@@ -825,19 +831,24 @@ public final class MetaDataController extends ResourceController {
         Program updatedProgram = dhisApi.getProgram(uid, QUERY_MAP_FULL);
         List<DbOperation> operations = ProgramWrapper.setReferences(updatedProgram);
         DbUtils.applyBatch(operations);
-
+        operations.clear();
+        for(ProgramIndicator programIndicator:updatedProgram.getProgramIndicators()) {
+            operations.add(DbOperation.save(programIndicator));
+        }
+        DbUtils.applyBatch(operations);
 
         return updatedProgram;
     }
 
-    private static void getOptionSetDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
+    private static void getOptionSetDataFromServer(DhisApi dhisApi, DateTime serverDateTime,
+            SyncStrategy syncStrategy) throws APIException {
         Log.d(CLASS_TAG, "getOptionSetDataFromServer");
         Map<String, String> QUERY_MAP_FULL = new HashMap<>();
         QUERY_MAP_FULL.put("fields", "*,options[*]");
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.OPTIONSETS);
 
-        if (lastUpdated != null) {
+        if (syncStrategy == SyncStrategy.DOWNLOAD_ONLY_NEW && lastUpdated != null) {
             QUERY_MAP_FULL.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
         }
 

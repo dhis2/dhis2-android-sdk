@@ -95,6 +95,10 @@ public class ProgramIndicator extends BaseNameableObject {
     @Column(name = "displayShortName")
     String displayShortName;
 
+    @JsonProperty("displayInForm")
+    @Column(name = "displayInForm")
+    boolean displayInForm;
+
     @Column(name = "program")
     String program;
 
@@ -169,5 +173,13 @@ public class ProgramIndicator extends BaseNameableObject {
 
     public void setExternalAccess(boolean externalAccess) {
         this.externalAccess = externalAccess;
+    }
+
+    public boolean isDisplayInForm() {
+        return displayInForm;
+    }
+
+    public void setDisplayInForm(boolean displayInForm) {
+        this.displayInForm = displayInForm;
     }
 }

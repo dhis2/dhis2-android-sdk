@@ -56,8 +56,9 @@ import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.ui.activities.OnBackPressedListener;
 import org.hisp.dhis.android.sdk.ui.adapters.DataValueAdapter;
 import org.hisp.dhis.android.sdk.ui.adapters.SectionAdapter;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.CoordinatesRow;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EventCoordinatesRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.IndicatorRow;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.QuestionCoordinatesRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.StatusRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.common.AbsProgramRuleFragment;
@@ -234,24 +235,40 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         }
     }
 
-    protected void showValidationErrorDialog(ArrayList<String> mandatoryFieldsMissingErrors, ArrayList<String> programRulesErrors) {
-        ArrayList<String> errors = new ArrayList<>();
-        if (mandatoryFieldsMissingErrors != null) {
-            for (String mandatoryFieldsError : mandatoryFieldsMissingErrors) {
-                errors.add(getActivity().getString(R.string.missing_mandatory_field) + ": " + mandatoryFieldsError);
-            }
-        }
-        if (programRulesErrors != null) {
-            for (String programRulesError : programRulesErrors) {
-                errors.add(getActivity().getString(R.string.error_message) + ": " + programRulesError);
-            }
-        }
+    private void showErrorsDialog(ArrayList<String> errors) {
         if (!errors.isEmpty()) {
             validationErrorDialog = ValidationErrorDialog
                     .newInstance(getActivity().getString(R.string.unable_to_complete_registration) + " " + getActivity().getString(R.string.review_errors), errors);
             validationErrorDialog.show(getChildFragmentManager());
         } else {
             Toast.makeText(getContext(), R.string.unable_to_complete_registration, Toast.LENGTH_LONG).show();
+
+        }
+    }
+
+    protected void showValidationErrorDialog(ArrayList<String> mandatoryFieldsMissingErrors, ArrayList<String> programRulesErrors, ArrayList<String> fieldValidationError) {
+        ArrayList<String> errors = new ArrayList<>();
+        addMandatoryErrors(mandatoryFieldsMissingErrors, errors);
+        addErrors(programRulesErrors, errors);
+        addErrors(fieldValidationError, errors);
+        showErrorsDialog(errors);
+    }
+
+    private void addErrors(ArrayList<String> programRulesErrors,
+            ArrayList<String> errors) {
+        if (programRulesErrors != null) {
+            for (String programRulesError : programRulesErrors) {
+                errors.add(getActivity().getString(R.string.error_message) + ": " + programRulesError);
+            }
+        }
+    }
+
+    private void addMandatoryErrors(ArrayList<String> mandatoryFieldsMissingErrors,
+            ArrayList<String> errors) {
+        if (mandatoryFieldsMissingErrors != null) {
+            for (String mandatoryFieldsError : mandatoryFieldsMissingErrors) {
+                errors.add(getActivity().getString(R.string.missing_mandatory_field) + ": " + mandatoryFieldsError);
+            }
         }
     }
 
@@ -302,7 +319,7 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     {
         String message = "";
 
-        if (eventClick.getRow() instanceof CoordinatesRow)
+        if(eventClick.getRow() instanceof EventCoordinatesRow || eventClick.getRow() instanceof QuestionCoordinatesRow)
             message = getResources().getString(R.string.detailed_info_coordinate_row);
         else if (eventClick.getRow() instanceof StatusRow)
             message = getResources().getString(R.string.detailed_info_status_row);

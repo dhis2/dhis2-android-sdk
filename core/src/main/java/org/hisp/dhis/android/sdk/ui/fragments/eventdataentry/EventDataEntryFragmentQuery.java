@@ -53,8 +53,8 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.CoordinatesRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowFactory;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EventCoordinatesRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EventDatePickerRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EventDueDatePickerRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.IndicatorRow;
@@ -216,7 +216,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
     private static void addCoordinateRow(EventDataEntryFragmentForm form, List<Row> rows) {
         if (form.getStage() != null &&
                 form.getStage().getCaptureCoordinates()) {
-            rows.add(new CoordinatesRow(form.getEvent()));
+            rows.add(new EventCoordinatesRow(form.getEvent()));
         }
     }
 
@@ -256,7 +256,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
             if(indicatorRow==null) {
                 String value = ProgramIndicatorService
                         .getProgramIndicatorValue(form.getEvent(), programIndicator);
-                indicatorRow = new IndicatorRow(programIndicator, value);
+                indicatorRow = new IndicatorRow(programIndicator, value, programIndicator.getDisplayDescription());
                 form.getIndicatorToIndicatorRowMap().put(programIndicator.getUid(), indicatorRow);
                 form.getIndicatorRows().add(indicatorRow);
             }

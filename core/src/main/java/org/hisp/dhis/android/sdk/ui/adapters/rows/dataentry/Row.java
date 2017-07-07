@@ -29,13 +29,11 @@
 
 package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
-import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
@@ -52,6 +50,7 @@ public abstract class Row implements DataEntryRow, Serializable {
     protected String mLabel;
     protected String mWarning;
     protected String mError;
+    protected Integer mErrorStringId;
     protected BaseValue mValue;
     protected String mDescription;
     protected DataEntryRowTypes mRowType;
@@ -83,6 +82,11 @@ public abstract class Row implements DataEntryRow, Serializable {
     @Override
     public abstract int getViewType();
 
+    @Override
+    public Integer getValidationError(){
+        return mErrorStringId;
+    }
+
     public String getItemId()
     {
         if(mValue instanceof DataValue)
@@ -94,12 +98,12 @@ public abstract class Row implements DataEntryRow, Serializable {
     }
 
     public String getDescription() {
-        if(this instanceof CoordinatesRow) {
+        if(this instanceof EventCoordinatesRow) {
             mDescription = "";
         } else if (this instanceof StatusRow) {
             mDescription = "";
         } else if(this instanceof IndicatorRow) {
-            mDescription = "";
+            return mDescription;
         }
 
         String itemId = getItemId();
@@ -155,5 +159,18 @@ public abstract class Row implements DataEntryRow, Serializable {
 
     public void setShouldNeverBeEdited(boolean shouldNeverBeEdited) {
         this.shouldNeverBeEdited = shouldNeverBeEdited;
+    }
+
+    public boolean isEditTextRow(){
+         return !(!DataEntryRowTypes.TEXT.equals(mRowType) &&
+                !DataEntryRowTypes.LONG_TEXT.equals(mRowType) &&
+                !DataEntryRowTypes.NUMBER.equals(mRowType) &&
+                !DataEntryRowTypes.INTEGER.equals(mRowType) &&
+                !DataEntryRowTypes.INTEGER_NEGATIVE.equals(mRowType) &&
+                !DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE.equals(mRowType) &&
+                !DataEntryRowTypes.PHONE_NUMBER.equals(mRowType) &&
+                !DataEntryRowTypes.PERCENTAGE.equals(mRowType) &&
+                !DataEntryRowTypes.INTEGER_POSITIVE.equals(mRowType) &&
+                !DataEntryRowTypes.INVALID_DATA_ENTRY.equals(mRowType));
     }
 }

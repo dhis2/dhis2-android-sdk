@@ -38,8 +38,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
@@ -48,9 +46,11 @@ import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonCli
 import org.hisp.dhis.android.sdk.ui.fragments.eventdataentry.EventDataEntryFragment;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.ValidationErrorDialog;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnCompleteEventClick;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
+import org.hisp.dhis.android.sdk.ui.fragments.dataentry.ValidationErrorDialog;
+import org.hisp.dhis.android.sdk.ui.fragments.eventdataentry.EventDataEntryFragment;
 
 import java.util.ArrayList;
 
@@ -84,7 +84,6 @@ public final class StatusRow extends Row {
         } else {
             View root = inflater.inflate(
                     R.layout.listview_row_status, container, false);
-//            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
             holder = new StatusViewHolder(context, root, mEvent, programStage);
 
             root.setTag(holder);
@@ -110,7 +109,7 @@ public final class StatusRow extends Row {
 
     @Override
     public int getViewType() {
-        return DataEntryRowTypes.COORDINATES.ordinal();
+        return DataEntryRowTypes.EVENT_COORDINATES.ordinal();
     }
 
 
@@ -153,9 +152,7 @@ public final class StatusRow extends Row {
                     }
                 }
             } else {
-                if(context != null) {
-                    button.setText(context.getString(R.string.complete));
-                }
+                button.setText(R.string.complete);
             }
         }
     }

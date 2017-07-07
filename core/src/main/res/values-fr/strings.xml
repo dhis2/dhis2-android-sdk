@@ -60,6 +60,7 @@
     <string name="missing_mandatory_field">Valeur obligatoire vide</string>
     <string name="unable_to_complete_registration">Impossible de compléter l\'enregistrement</string>
     <string name="review_errors">Veuillez reviser les erreurs remarquées et essayez à nouveau.</string>
+    <string name="validation_errors">Veuillez examiner les erreurs de validation et réessayer.</string>
 
 
     <!-- Login Activity -->
@@ -110,6 +111,7 @@
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
     <string name="coordinates">Coordonnées</string>
+    <string name="error_location_values">"S'il vous plaît entrer une perte de bail valide"</string>
 
 
     <!-- Data fetching -->
@@ -126,6 +128,7 @@
 
     <string name="update_frequency">Fréquence de synchronisation automatique</string>
     <string name="logout">\"Effacer les données locales &amp; sortir\"</string>
+    <string name="un_enroll">"Désinscription"</string>
     <string name="complete">Complet</string>
     <string name="finishing_up">Finalisation de configuration initiale de la base de données. Cela peut prendre quelques minutes donc veuillez d\'être patient.</string>
     <string name="loading_server_info">Téléchargement d\'info du serveur</string>
@@ -169,7 +172,9 @@
     <string name="event_error">Erreur</string>
     <string name="upcoming_events">Événements à venir</string>
 
-    <string name="validation_error">Veuillez completer les champs obligatoires suivants</string>
+    <string name="validation_field_exit">Avertissement: Il existe des valeurs non valides et vous êtes sur le point de quitter. Si vous procédez, les valeurs non valides seront supprimées. Voulez-vous continuer?</string>
+    <string name="validation_field_title">Avertissement: il existe des valeurs non valides</string>
+    <string name="validation_compulsory_error">Veuillez completer les champs obligatoires suivants</string>
     <string name="enter_date">Entrez une date</string>
     <string name="enter_text">Entrez un texte</string>
     <string name="enter_long_text">Entrez un texte long</string>
@@ -190,6 +195,8 @@
     <string name="eventname">Nom de l\'événement</string>
     <string name="startdate">Date de commencement</string>
     <string name="enddate">Date du fin</string>
+
+    <string name="error_email">"S'il vous plaît entrer une adresse e-mail valide"</string>
 
     <string name="registered_events">Événements enregistrés</string>
     <string name="status">Statut</string>
@@ -241,7 +248,8 @@
     <string name="detailed_info_dataelement">Information détaillée</string>
     <string name="detailed_info_coordinate_row">Prière d\'entrer les coordonnées GPS en appuyant sur le button à droite du ligne. S\'il ne marche pas, verifiez votre resseau et/ou connection GPS.</string>
     <string name="detailed_info_status_row">S\'il vous plait, appuyez sur le button compléter quand vous aurez fini d\'entrer les données. Veuillez appuyer le button valider pour vérifier si les données entrées sont valides.</string>
-    <string name="enter_phone_number">Entrez un núméro de telephone</string>
+    <string name="enter_email">Entrez un email</string>
+    <string name="enter_phone_number">Enter phone number</string>
     <string name="choose_filter">Sélectionnez une option</string>
     <string name="invalid_entry_type">Type de valeur non supporté</string>
 

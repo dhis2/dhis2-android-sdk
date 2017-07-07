@@ -140,6 +140,15 @@ public final class TrackerController extends ResourceController {
                 is(trackedEntityInstance.getLocalId())).queryList();
     }
 
+    public static List<Enrollment> getEnrollments(TrackedEntityInstance trackedEntityInstance,
+            String programUId, String orgUnit) {
+        return new Select().from(Enrollment.class).where(Condition.column(Enrollment$Table.LOCALTRACKEDENTITYINSTANCEID).
+                is(trackedEntityInstance.getLocalId()))
+                .and(Condition.column(Enrollment$Table.STATUS).is(Enrollment.COMPLETED))
+                .and(Condition.column(Enrollment$Table.PROGRAM).is(programUId))
+                .and(Condition.column(Enrollment$Table.ORGUNIT).is(orgUnit)).queryList();
+    }
+
     /**
      * Returns a list of enrollments for a given program and tracked entity instance
      *
@@ -153,6 +162,29 @@ public final class TrackerController extends ResourceController {
                 and(Condition.column(Enrollment$Table.LOCALTRACKEDENTITYINSTANCEID).
                         is(trackedEntityInstance.getLocalId())).queryList();
         return enrollments;
+    }
+
+    public static Enrollment getLastEnrollment(String program,
+            TrackedEntityInstance trackedEntityInstance) {
+        Enrollment enrollments = new Select().from(Enrollment.class).
+                where(Condition.column(Enrollment$Table.PROGRAM).is(program)).
+                and(Condition.column(Enrollment$Table.LOCALTRACKEDENTITYINSTANCEID).
+                        is(trackedEntityInstance.getLocalId()))
+                .orderBy(false, Enrollment$Table.LOCALID).querySingle();
+        return enrollments;
+    }
+
+    public static Enrollment getCancelledEnrollment(String enrollment) {
+        return new Select().from(Enrollment.class).where(Condition.column
+                (Enrollment$Table.ENROLLMENT).is(enrollment))
+                .and(Condition.column(Enrollment$Table.STATUS).is(Enrollment.CANCELLED)).querySingle();
+    }
+
+
+    public static Enrollment getNotCancelledEnrollment(String enrollment) {
+        return new Select().from(Enrollment.class).where(Condition.column
+                (Enrollment$Table.ENROLLMENT).is(enrollment))
+                .and(Condition.column(Enrollment$Table.STATUS).isNot(Enrollment.CANCELLED)).querySingle();
     }
 
     public static Enrollment getEnrollment(String enrollment) {

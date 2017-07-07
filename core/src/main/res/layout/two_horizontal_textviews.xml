@@ -46,15 +46,4 @@
         android:textSize="@dimen/medium_text_size"
         app:font="@string/light_font_name"/>
 
-    <org.hisp.dhis.android.sdk.ui.views.FontTextView
-        android:id="@+id/right_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="4dp"
-        android:textSize="@dimen/medium_text_size"
-        app:font="@string/medium_font_name"/>
-
 </LinearLayout>

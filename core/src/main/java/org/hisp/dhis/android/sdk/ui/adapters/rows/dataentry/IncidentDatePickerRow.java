@@ -29,9 +29,12 @@
 
 package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
+import static android.text.TextUtils.isEmpty;
+
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,16 +46,18 @@ import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
-import static android.text.TextUtils.isEmpty;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 
 public class IncidentDatePickerRow extends AbsEnrollmentDatePickerRow {
-
+    private static final String TAG = "IncidentDatePickerRow";
     private Enrollment mEnrollment;
     private String mLabel;
 
@@ -119,7 +124,7 @@ public class IncidentDatePickerRow extends AbsEnrollmentDatePickerRow {
 //            this.detailedInfoButton = detailedInfoButton;
 
             dateSetListener = new DateSetListener(pickerInvoker);
-            invokerListener = new OnEditTextClickListener(context, dateSetListener);
+            invokerListener = new OnEditTextClickListener(context, dateSetListener, pickerInvoker);
             clearButtonListener = new ClearButtonListener(pickerInvoker);
 
             clearButton.setOnClickListener(clearButtonListener);
@@ -151,18 +156,31 @@ public class IncidentDatePickerRow extends AbsEnrollmentDatePickerRow {
     private static class OnEditTextClickListener implements View.OnClickListener {
         private final Context context;
         private final DateSetListener listener;
+        private TextView dateText;
 
         public OnEditTextClickListener(Context context,
-                                       DateSetListener listener) {
+                DateSetListener listener, TextView dateText) {
             this.context = context;
             this.listener = listener;
+            this.dateText = dateText;
         }
 
         @Override
         public void onClick(View view) {
-            LocalDate currentDate = new LocalDate();
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.US);
+            if (!dateText.getText().toString().isEmpty()) {
+                try {
+                    calendar.setTime(
+                            simpleDateFormat.parse(dateText.getText().toString()));
+                } catch (ParseException e) {
+                    Log.e(TAG, "Invalid date format, can't parse to put in the picker");
+                    e.printStackTrace();
+                }
+            }
             DatePickerDialog picker = new DatePickerDialog(context, listener,
-                    currentDate.getYear(), currentDate.getMonthOfYear() - 1, currentDate.getDayOfMonth());
+                    calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH));
             picker.getDatePicker().setMaxDate(DateTime.now().getMillis());
             picker.show();
         }

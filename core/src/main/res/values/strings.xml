@@ -60,6 +60,7 @@
     <string name="missing_mandatory_field">Missing mandatory field</string>
     <string name="unable_to_complete_registration">Unable to complete registration.</string>
     <string name="review_errors">Please review the errors below and try again.</string>
+    <string name="validation_errors">Please review the validation errors and try again.</string>
 
 
     <!-- Login Activity -->
@@ -110,6 +111,7 @@
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
     <string name="coordinates">Coordinates</string>
+    <string name="error_location_values">Please enter a valid location value</string>
 
 
     <!-- Data fetching -->
@@ -126,6 +128,7 @@
 
     <string name="update_frequency">Automatic synchronization frequency</string>
     <string name="logout">"Delete all local data &amp; log out"</string>
+    <string name="un_enroll">Un-enroll</string>
     <string name="complete">Complete</string>
     <string name="finishing_up">Finishing initial database setup. This may take several minutes so please be patient.</string>
     <string name="loading_server_info">Loading server info</string>
@@ -169,7 +172,9 @@
     <string name="event_error">Error</string>
     <string name="upcoming_events">Upcoming Events</string>
 
-    <string name="validation_error">Please complete the following compulsory fields</string>
+    <string name="validation_field_exit">Warning: There are invalid values and you\'re about to exit. If you proceed, invalid values will be deleted. Do you want to continue?</string>
+    <string name="validation_field_title">Warning: There are invalid values</string>
+    <string name="validation_compulsory_error">Please complete the following compulsory fields</string>
     <string name="enter_date">Enter date</string>
     <string name="enter_text">Enter text</string>
     <string name="enter_long_text">Enter long text</string>
@@ -244,6 +249,9 @@
     <string name="enter_phone_number">Enter phone number</string>
     <string name="choose_filter">Choose filter</string>
     <string name="invalid_entry_type">Value-type not supported</string>
+
+    <string name="enter_email">Enter e-mail</string>
+    <string name="error_email">Please enter a valid e-mail address</string>
 
     <string name="error_exporting_data">"Error metadata could not be exported."</string>
     <string name="developers_settings">Developers options</string>

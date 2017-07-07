@@ -60,6 +60,7 @@
     <string name="missing_mandatory_field">Valor obligatorio vacío</string>
     <string name="unable_to_complete_registration">Imposible completar el registro.</string>
     <string name="review_errors">Por favor corrige los errores abajo mostrados e inténtalo de nuevo</string>
+    <string name="validation_errors">Por favor corrige los errores  de validación e inténtalo de nuevo</string>
 
 
     <!-- Login Activity -->
@@ -110,7 +111,7 @@
     <string name="latitude">Latitud</string>
     <string name="longitude">Longitud</string>
     <string name="coordinates">Coordenadas</string>
-
+    <string name="error_location_values">Por favor, introduzca una coordenada válida</string>
 
     <!-- Data fetching -->
     <string name="loading_metadata">Cargando metadatos</string>
@@ -126,6 +127,7 @@
 
     <string name="update_frequency">Frecuencia de sincronización automática</string>
     <string name="logout">\"Borrar datos locales &amp; salir\"</string>
+    <string name="un_enroll">Desinscribirse</string>
     <string name="complete">Completo</string>
     <string name="loading_server_info">Cargando la información del servidor</string>
     <string name="loading_program">Cargando programId</string>
@@ -165,7 +167,9 @@
     <string name="event_error">Error</string>
     <string name="upcoming_events">Próximos eventos</string>
 
-    <string name="validation_error">Por favor completa los siguientes campos obligatorios</string>
+    <string name="validation_field_exit">Advertencia: hay valores no válidos y está a punto de salir. Si continúa, se eliminarán los valores no válidos. ¿Quieres continuar?</string>
+    <string name="validation_field_title">Advertencia: hay valores no válidos</string>
+    <string name="validation_compulsory_error">Por favor completa los siguientes campos obligatorios</string>
     <string name="enter_date">Introduce una fecha</string>
     <string name="enter_text">Introduce un texto</string>
     <string name="enter_long_text">Introduce un texto largo</string>
@@ -186,6 +190,8 @@
     <string name="eventname">Nombre del evento</string>
     <string name="startdate">Fecha de inicio</string>
     <string name="enddate">Fecha de fin</string>
+
+    <string name="error_email">Por favor introduzca una dirección de correo electrónico válido</string>
 
     <string name="registered_events">Eventos registrados</string>
     <string name="status">Estado</string>
@@ -237,6 +243,7 @@
     <string name="detailed_info_dataelement">Información detallada</string>
     <string name="detailed_info_coordinate_row">Por favor, introduce las coordnadas GPS pulsando en el botón a la derecha de la fila. Si no funciona, por favor comprueba tus datos y/o conexión GPS.</string>
     <string name="detailed_info_status_row">Por favor, pulsa el botón de completado cuando hayas terminado de introducir los datos. Pulsa el botón de validación para comprobar si los datos introducidos son correctos.</string>
+    <string name="enter_email">Introduce un correo electronico</string>
     <string name="enter_phone_number">Introduce un número de teléfono</string>
     <string name="choose_filter">Selecciona un filtro</string>
     <string name="invalid_entry_type">Tipo de valor no soportado</string>

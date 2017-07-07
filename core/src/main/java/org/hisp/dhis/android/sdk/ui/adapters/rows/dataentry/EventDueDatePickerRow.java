@@ -29,9 +29,12 @@
 
 package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
+import static android.text.TextUtils.isEmpty;
+
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -44,16 +47,19 @@ import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
-import static android.text.TextUtils.isEmpty;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class EventDueDatePickerRow extends Row {
+    private static final String TAG = "EventDueDatePickerRow";
     private static final String EMPTY_FIELD = "";
-    private static final String DATE_FORMAT = "YYYY-MM-dd";
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
     private final Event mEvent;
     private final boolean mAllowDatesInFuture;
 
@@ -130,7 +136,8 @@ public class EventDueDatePickerRow extends Row {
 //            this.detailedInfoButton = detailedInfoButton;
 
             dateSetListener = new DateSetListener(pickerInvoker);
-            invokerListener = new OnEditTextClickListener(context, dateSetListener, allowDatesInFuture);
+            invokerListener = new OnEditTextClickListener(context, dateSetListener,
+                    allowDatesInFuture, pickerInvoker);
             clearButtonListener = new ClearButtonListener(pickerInvoker);
 
             clearButton.setOnClickListener(clearButtonListener);
@@ -157,21 +164,33 @@ public class EventDueDatePickerRow extends Row {
         private final Context context;
         private final DateSetListener listener;
         private final boolean allowDatesInFuture;
+        private TextView dateText;
 
         public OnEditTextClickListener(Context context,
-                                       DateSetListener listener, boolean allowDatesInFuture) {
+                DateSetListener listener, boolean allowDatesInFuture, TextView dateText) {
             this.context = context;
             this.listener = listener;
-
+            this.dateText = dateText;
 
             this.allowDatesInFuture = allowDatesInFuture;
         }
 
         @Override
         public void onClick(View view) {
-            LocalDate currentDate = new LocalDate();
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.US);
+            if (!dateText.getText().toString().isEmpty()) {
+                try {
+                    calendar.setTime(
+                            simpleDateFormat.parse(dateText.getText().toString()));
+                } catch (ParseException e) {
+                    Log.e(TAG, "Invalid date format, can't parse to put in the picker");
+                    e.printStackTrace();
+                }
+            }
             DatePickerDialog picker = new DatePickerDialog(context, listener,
-                    currentDate.getYear(), currentDate.getMonthOfYear() - 1, currentDate.getDayOfMonth());
+                    calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH));
             if(!allowDatesInFuture) {
                 picker.getDatePicker().setMaxDate(DateTime.now().getMillis());
             }

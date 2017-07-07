@@ -915,7 +915,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         if (menuItem.getItemId() == android.R.id.home) {
-            onBackPressed();
+            doBack();
             return true;
         }else
         return super.onOptionsItemSelected(menuItem);

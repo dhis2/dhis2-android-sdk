@@ -164,6 +164,16 @@ public final class TrackerController extends ResourceController {
         return enrollments;
     }
 
+    public static Enrollment getLastEnrollment(String program,
+            TrackedEntityInstance trackedEntityInstance) {
+        Enrollment enrollments = new Select().from(Enrollment.class).
+                where(Condition.column(Enrollment$Table.PROGRAM).is(program)).
+                and(Condition.column(Enrollment$Table.LOCALTRACKEDENTITYINSTANCEID).
+                        is(trackedEntityInstance.getLocalId()))
+                .orderBy(false, Enrollment$Table.LOCALID).querySingle();
+        return enrollments;
+    }
+
     public static Enrollment getCancelledEnrollment(String enrollment) {
         return new Select().from(Enrollment.class).where(Condition.column
                 (Enrollment$Table.ENROLLMENT).is(enrollment))

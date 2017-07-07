@@ -30,7 +30,7 @@
 <resources>
     <string name="app_name" translatable="false">DHIS 2 Android SDK</string>
     <string name="date_format" translatable="false">yyyy-mm-dd</string>
-    <string name="delimiter" translatable="false">:</string>
+    <string name="delimiter" translatable="false">:&#160;</string>
     <string name="directory" translatable="false">/dhis2/</string>
     <string name="error_log_file_name" translatable="false">error-log.txt</string>
     <string name="mandatory_indicator" translatable="false">*</string>

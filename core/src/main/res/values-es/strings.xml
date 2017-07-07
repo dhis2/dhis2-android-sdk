@@ -111,7 +111,7 @@
     <string name="latitude">Latitud</string>
     <string name="longitude">Longitud</string>
     <string name="coordinates">Coordenadas</string>
-
+    <string name="error_location_values">Por favor, introduzca una coordenada válida</string>
 
     <!-- Data fetching -->
     <string name="loading_metadata">Cargando metadatos</string>
@@ -167,7 +167,9 @@
     <string name="event_error">Error</string>
     <string name="upcoming_events">Próximos eventos</string>
 
-    <string name="validation_error">Por favor completa los siguientes campos obligatorios</string>
+    <string name="validation_field_exit">Advertencia: hay valores no válidos y está a punto de salir. Si continúa, se eliminarán los valores no válidos. ¿Quieres continuar?</string>
+    <string name="validation_field_title">Advertencia: hay valores no válidos</string>
+    <string name="validation_compulsory_error">Por favor completa los siguientes campos obligatorios</string>
     <string name="enter_date">Introduce una fecha</string>
     <string name="enter_text">Introduce un texto</string>
     <string name="enter_long_text">Introduce un texto largo</string>

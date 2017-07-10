@@ -192,7 +192,7 @@ public class EditTextRow extends Row {
             holder.errorLabel.setVisibility(View.GONE);
         } else {
             holder.errorLabel.setVisibility(View.VISIBLE);
-            holder.errorLabel.setText(mWarning);
+            holder.errorLabel.setText(mError);
         }
 
         if(!mMandatory) {

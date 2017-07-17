@@ -307,6 +307,8 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
             row = new DatePickerRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, programStageDataElement.getAllowFutureDate(), event);
         } else if (dataElement.getValueType().equals(ValueType.PERCENTAGE)) {
             row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.PERCENTAGE, event);
+        } else if (dataElement.getValueType().equals(ValueType.TIME)) {
+            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.NOT_SUPPORTED, event);
         } else if (dataElement.getValueType().equals(ValueType.COORDINATE)) {
             row = new QuestionCoordinatesRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.QUESTION_COORDINATES, event);
         } else {

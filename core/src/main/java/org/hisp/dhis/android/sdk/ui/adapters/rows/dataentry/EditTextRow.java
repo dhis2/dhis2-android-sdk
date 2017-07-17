@@ -70,7 +70,8 @@ public class EditTextRow extends Row {
                 !DataEntryRowTypes.PERCENTAGE.equals(rowType) &&
                 !DataEntryRowTypes.INTEGER_NEGATIVE.equals(rowType) &&
                 !DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE.equals(rowType) &&
-                !DataEntryRowTypes.INTEGER_POSITIVE.equals(rowType)) {
+                !DataEntryRowTypes.INTEGER_POSITIVE.equals(rowType) &&
+                !DataEntryRowTypes.NOT_SUPPORTED.equals(rowType)) {
             throw new IllegalArgumentException("Unsupported row type");
         }
         checkNeedsForDescriptionButton();
@@ -167,7 +168,12 @@ public class EditTextRow extends Row {
             root.setTag(holder);
             view = root;
         }
-
+        if(mRowType.equals(DataEntryRowTypes.NOT_SUPPORTED)){
+            holder.editText.setHint(R.string.unsupported_value_type);
+            holder.editText.setEnabled(false);
+        } else{
+            holder.editText.setEnabled(true);
+        }
         holder.textLabel.setText(mLabel);
         holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
 

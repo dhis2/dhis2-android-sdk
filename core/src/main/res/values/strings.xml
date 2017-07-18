@@ -277,5 +277,5 @@
     <string name="developer_option_title">"Show developer options"</string>
     <string name="synchronizing">Synchronizing...</string>
     <string name="error_delete_mandatory_value">"You can't remove a required value for a completed event"</string>
-
+    <string name="unsupported_value_type">"Unsupported value type"</string>
 </resources>

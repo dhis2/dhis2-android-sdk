@@ -50,6 +50,7 @@ public enum ValueType {
     TRUE_ONLY(Boolean.class),
     DATE(Date.class),
     DATETIME(Date.class),
+    TIME(Date.class),
     NUMBER(Double.class),
     UNIT_INTERVAL(Double.class),
     PERCENTAGE(Double.class),
@@ -75,7 +76,7 @@ public enum ValueType {
             BOOLEAN, TRUE_ONLY));
 
     public static final Set<ValueType> TEXT_TYPES = new HashSet<>(Arrays.asList(
-            TEXT, LONG_TEXT, LETTER, COORDINATE));
+            TEXT, LONG_TEXT, LETTER, COORDINATE, TIME));
 
     public static final Set<ValueType> DATE_TYPES = new HashSet<>(Arrays.asList(
             DATE, DATETIME, AGE));

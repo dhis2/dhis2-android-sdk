@@ -205,8 +205,7 @@ public final class MetaDataController extends ResourceController {
     public static List<ProgramStageDataElement> getProgramStageDataElements(ProgramStageSection section) {
         if (section == null) return null;
         return new Select().from(ProgramStageDataElement.class).where(Condition.column
-                (ProgramStageDataElement$Table.PROGRAMSTAGESECTION).is(section.getUid())).orderBy
-                (ProgramStageDataElement$Table.SORTORDER).queryList();
+                (ProgramStageDataElement$Table.PROGRAMSTAGESECTION).is(section.getUid())).queryList();
     }
 
     public static List<ProgramStageDataElement> getProgramStageDataElements(ProgramStage programStage) {

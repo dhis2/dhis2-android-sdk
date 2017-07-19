@@ -29,7 +29,6 @@
 
 package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
-import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -40,7 +39,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
@@ -141,7 +139,7 @@ public class EditTextRow extends Row {
                 editText.setSingleLine(true);
             }
 
-            final Context context = inflater.getContext();
+            /*final Context context = inflater.getContext();
             OnTextChangeListener listener = new OnTextChangeListener(new ValueCallback(){
                 @Override
                 public void saveValue(String newValue, BaseValue value) {
@@ -155,32 +153,38 @@ public class EditTextRow extends Row {
                             Toast.makeText(context, context.getString(R.string.error_delete_mandatory_value), Toast.LENGTH_SHORT).show();
                         }
                 }
-            });
-            listener.setBaseValue(mValue);
+            });*/
+            OnTextChangeListener listener = new OnTextChangeListener();
+            listener.setRow(this);
+            listener.setRowType(rowTypeTemp);
             holder = new ValueEntryHolder(label, mandatoryIndicator, warningLabel, errorLabel, editText, detailedInfoButton, listener );
+            listener.setBaseValue(mValue);
             holder.editText.addTextChangedListener(listener);
-
-            if(!isEditable()) {
-                holder.editText.setEnabled(false);
-            } else {
-                holder.editText.setEnabled(true);
-            }
 
             rowTypeTemp = mRowType.toString();
             root.setTag(holder);
             view = root;
         }
+
+        if(!isEditable()) {
+            holder.editText.setEnabled(false);
+        } else {
+            holder.editText.setEnabled(true);
+        }
+
+        holder.textLabel.setText(mLabel);
+        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
+        holder.listener.setBaseValue(mValue);
+
+        holder.editText.setText(mValue.getValue());
+        holder.editText.setSelection(holder.editText.getText().length());
+
         if(mRowType.equals(DataEntryRowTypes.NOT_SUPPORTED)){
             holder.editText.setHint(R.string.unsupported_value_type);
             holder.editText.setEnabled(false);
         } else{
             holder.editText.setEnabled(true);
         }
-        holder.textLabel.setText(mLabel);
-        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
-
-        holder.editText.setText(mValue.getValue());
-        holder.editText.setSelection(holder.editText.getText().length());
 
         if(isDetailedInfoButtonHidden()) {
             holder.detailedInfoButton.setVisibility(View.INVISIBLE);
@@ -208,7 +212,6 @@ public class EditTextRow extends Row {
         } else {
             holder.mandatoryIndicator.setVisibility(View.VISIBLE);
         }
-        holder.editText.setOnEditorActionListener(mOnEditorActionListener);
 
         return view;
     }
@@ -243,23 +246,32 @@ public class EditTextRow extends Row {
     }
 
     private static class OnTextChangeListener extends AbsTextWatcher {
-        ValueCallback mValueCallback;
+
 
         protected BaseValue value;
+        Row row;
+        String rowType;
+
+        public void setRowType(String type){
+            rowType = type;
+        }
+
+        public void setRow(Row row) {
+            this.row = row;
+        }
 
         public void setBaseValue(BaseValue value) {
             this.value = value;
         }
 
-        public OnTextChangeListener(ValueCallback valueCallback) {
-            mValueCallback = valueCallback;
-        }
-
         @Override
         public void afterTextChanged(Editable s) {
             String newValue = s != null ? s.toString() : EMPTY_FIELD;
-            if (value == null || !newValue.equals(value.getValue())) {
-                mValueCallback.saveValue(newValue, value);
+            if (!newValue.equals(value.getValue())) {
+                value.setValue(newValue);
+                RowValueChangedEvent rowValueChangeEvent = new RowValueChangedEvent(value, rowType);
+                rowValueChangeEvent.setRow(row);
+                Dhis2Application.getEventBus().post(rowValueChangeEvent);
             }
         }
     }

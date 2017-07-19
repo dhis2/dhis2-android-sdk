@@ -214,6 +214,22 @@ public final class TrackerController extends ResourceController {
     }
 
     /**
+     * Returns a list of events with created date. When a event have a creation date this event is saved in the server.
+     *
+     * @param organisationUnitId
+     * @param programId
+     * @return
+     */
+    public static List<Event> getServerEvents(String organisationUnitId, String programId) {
+        List<Event> events = new Select().from(Event.class).where(Condition.column
+                (Event$Table.ORGANISATIONUNITID).is(organisationUnitId)).
+                and(Condition.column(Event$Table.PROGRAMID).is(programId))
+                .and(Condition.column(Event$Table.CREATED).isNotNull())
+                .orderBy(false, Event$Table.LASTUPDATED).queryList();
+        return events;
+    }
+
+    /**
      * Returns an Event based on the given localId
      *
      * @param localId

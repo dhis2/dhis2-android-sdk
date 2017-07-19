@@ -189,7 +189,7 @@ final class TrackerDataLoader extends ResourceController {
         map.put("fields", "[event]");
         map.put("skipPaging", "true");
 
-        List<Event> localEvents = TrackerController.getEvents(organisationUnitUid,programUid, true);
+        List<Event> localEvents = TrackerController.getServerEvents(organisationUnitUid,programUid);
         List<Event> eventsToBeRemoved = new ArrayList<>();
         if(localEvents.size()==0) {
             return;

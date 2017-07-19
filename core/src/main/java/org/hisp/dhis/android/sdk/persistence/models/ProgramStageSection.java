@@ -56,8 +56,13 @@ public class ProgramStageSection extends BaseMetaDataObject {
     @Column(name = "programStage")
     String programStage;
 
+    // v2.26
     @JsonProperty("programStageDataElements")
     List<ProgramStageDataElement> programStageDataElements;
+
+    // v2.27
+    @JsonProperty("dataElements")
+    List<DataElement> dataElements;
 
     @JsonProperty("programIndicators")
     List<ProgramIndicator> programIndicators;
@@ -77,6 +82,10 @@ public class ProgramStageSection extends BaseMetaDataObject {
 
     public void setProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
         this.programStageDataElements = programStageDataElements;
+    }
+
+    public List<DataElement> getDataElements() {
+        return dataElements;
     }
 
     public List<ProgramIndicator> getProgramIndicators() {

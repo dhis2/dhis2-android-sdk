@@ -54,6 +54,8 @@ public class EditTextRow extends Row {
     private static final String EMPTY_FIELD = "";
     private static int LONG_TEXT_LINE_COUNT = 3;
     private static String rowTypeTemp;
+    private TextView.OnEditorActionListener mOnEditorActionListener;
+
 
     public EditTextRow(String label, boolean mandatory, String warning, BaseValue baseValue, DataEntryRowTypes rowType, Event event) {
         mLabel = label;
@@ -206,6 +208,7 @@ public class EditTextRow extends Row {
         } else {
             holder.mandatoryIndicator.setVisibility(View.VISIBLE);
         }
+        holder.editText.setOnEditorActionListener(mOnEditorActionListener);
 
         return view;
     }
@@ -389,6 +392,11 @@ public class EditTextRow extends Row {
 
     public interface ValueCallback {
         void saveValue(String newValue, BaseValue baseValue);
+    }
+
+    public void setOnEditorActionListener(
+            TextView.OnEditorActionListener onEditorActionListener) {
+        mOnEditorActionListener = onEditorActionListener;
     }
 }
 

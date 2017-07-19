@@ -169,7 +169,7 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         View upButton = getLayoutInflater(savedInstanceState)
                 .inflate(R.layout.up_button_layout, listView, false);
         listViewAdapter = new DataValueAdapter(getChildFragmentManager(),
-                getLayoutInflater(savedInstanceState));
+                getLayoutInflater(savedInstanceState), listView);
 
         listView.addFooterView(upButton);
         listView.setVisibility(View.VISIBLE);

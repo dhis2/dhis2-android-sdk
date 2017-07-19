@@ -102,9 +102,24 @@ public final class EventItemRow implements EventRow {
 
         holder.listener.setEvent(mEvent);
         holder.listener.setStatus(mStatus);
-        holder.firstItem.setText(mFirstItem);
-        holder.secondItem.setText(mSecondItem);
-        holder.thirdItem.setText(mThirdItem);
+        if (mFirstItem != null) {
+            holder.firstItem.setText(mFirstItem);
+            holder.firstItem.setVisibility(View.VISIBLE);
+        } else {
+            holder.firstItem.setVisibility(View.GONE);
+        }
+        if(mSecondItem!=null) {
+            holder.secondItem.setText(mSecondItem);
+            holder.secondItem.setVisibility(View.VISIBLE);
+        }else {
+            holder.secondItem.setVisibility(View.GONE);
+        }
+        if(mThirdItem!=null) {
+            holder.thirdItem.setText(mThirdItem);
+            holder.thirdItem.setVisibility(View.VISIBLE);
+        }else {
+            holder.thirdItem.setVisibility(View.GONE);
+        }
 
         switch (mStatus) {
             case OFFLINE: {

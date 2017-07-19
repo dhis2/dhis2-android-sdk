@@ -41,19 +41,14 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
 
-import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis.android.sdk.utils.api.CodeGenerator;
-import org.hisp.dhis.android.sdk.utils.support.DateUtils;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * @author Simen Skogly Russnes on 23.02.15.
@@ -68,6 +63,8 @@ public class Event extends BaseSerializableModel {
     public static final String STATUS_COMPLETED = "COMPLETED";
     public static final String STATUS_FUTURE_VISIT = "SCHEDULE";
     public static final String STATUS_SKIPPED = "SKIPPED";
+    @JsonIgnore
+    public static final String EVENT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 
     @JsonIgnore
     @Column(name = "event")

@@ -34,8 +34,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 
 /**
  * Created by erling on 5/8/15.
@@ -70,17 +70,31 @@ public class TrackedEntityInstanceColumnNamesRow implements EventRow
             holder = (ViewHolder) view.getTag();
         }
         holder.trackedEntityTitle.setText(mTitle);
+        if (mFirstItem == null) {
+            holder.firstItem.setVisibility(View.GONE);
+        } else {
+            holder.firstItem.setVisibility(View.VISIBLE);
+            holder.firstItem.setText(mFirstItem);
+            holder.firstItem.setOnClickListener(holder.listener);
+        }
 
-        holder.firstItem.setText(mFirstItem);
-        holder.firstItem.setOnClickListener(holder.listener);
+        if (mSecondItem == null) {
+            holder.secondItem.setVisibility(View.GONE);
+        } else {
+            holder.secondItem.setVisibility(View.VISIBLE);
+            holder.secondItem.setText(mSecondItem);
+            holder.secondItem.setOnClickListener(holder.listener);
+        }
 
-        holder.secondItem.setText(mSecondItem);
-        holder.secondItem.setOnClickListener(holder.listener);
-
-        holder.thirdItem.setText(mThirdItem);
-        holder.thirdItem.setOnClickListener(holder.listener);
-
+        if (mThirdItem == null) {
+            holder.thirdItem.setVisibility(View.GONE);
+        } else {
+            holder.thirdItem.setVisibility(View.VISIBLE);
+            holder.thirdItem.setText(mThirdItem);
+            holder.thirdItem.setOnClickListener(holder.listener);
+        }
         holder.statusItem.setOnClickListener(holder.listener);
+
 
         return view;
     }

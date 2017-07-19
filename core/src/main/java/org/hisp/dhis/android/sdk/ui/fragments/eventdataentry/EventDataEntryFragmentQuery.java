@@ -312,7 +312,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
         } else if (dataElement.getValueType().equals(ValueType.COORDINATE)) {
             row = new QuestionCoordinatesRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.QUESTION_COORDINATES, event);
         } else {
-            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.LONG_TEXT, event);
+            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.NOT_SUPPORTED, event);
         }
         return row;
     }

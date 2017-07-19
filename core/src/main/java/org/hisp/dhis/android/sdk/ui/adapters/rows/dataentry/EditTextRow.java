@@ -29,6 +29,7 @@
 
 package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
+import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -39,6 +40,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
@@ -154,7 +156,7 @@ public class EditTextRow extends Row {
                         }
                 }
             });*/
-            OnTextChangeListener listener = new OnTextChangeListener();
+            OnTextChangeListener listener = new OnTextChangeListener(inflater.getContext());
             listener.setRow(this);
             listener.setRowType(rowTypeTemp);
             holder = new ValueEntryHolder(label, mandatoryIndicator, warningLabel, errorLabel, editText, detailedInfoButton, listener );
@@ -175,6 +177,8 @@ public class EditTextRow extends Row {
         holder.textLabel.setText(mLabel);
         holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
         holder.listener.setBaseValue(mValue);
+        holder.listener.isMandatory = isMandatory();
+        holder.listener.isEventComplete = isEventComplete();
 
         holder.editText.setText(mValue.getValue());
         holder.editText.setSelection(holder.editText.getText().length());
@@ -251,6 +255,13 @@ public class EditTextRow extends Row {
         protected BaseValue value;
         Row row;
         String rowType;
+        boolean isMandatory;
+        boolean isEventComplete;
+        Context context;
+
+        public OnTextChangeListener(Context context){
+            this.context = context;
+        }
 
         public void setRowType(String type){
             rowType = type;
@@ -267,11 +278,17 @@ public class EditTextRow extends Row {
         @Override
         public void afterTextChanged(Editable s) {
             String newValue = s != null ? s.toString() : EMPTY_FIELD;
-            if (!newValue.equals(value.getValue())) {
-                value.setValue(newValue);
-                RowValueChangedEvent rowValueChangeEvent = new RowValueChangedEvent(value, rowType);
-                rowValueChangeEvent.setRow(row);
-                Dhis2Application.getEventBus().post(rowValueChangeEvent);
+
+            if(!isMandatory || (!isEventComplete || (!newValue.equals("")))) {
+                if (!newValue.equals(value.getValue())) {
+                    value.setValue(newValue);
+                    RowValueChangedEvent rowValueChangeEvent = new RowValueChangedEvent(value,
+                            rowType);
+                    rowValueChangeEvent.setRow(row);
+                    Dhis2Application.getEventBus().post(rowValueChangeEvent);
+                }
+            }else{
+                Toast.makeText(context, context.getString(R.string.error_delete_mandatory_value), Toast.LENGTH_SHORT).show();
             }
         }
     }

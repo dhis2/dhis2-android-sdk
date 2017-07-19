@@ -156,7 +156,7 @@ public class EditTextRow extends Row {
                         }
                 }
             });*/
-            OnTextChangeListener listener = new OnTextChangeListener(inflater.getContext());
+            OnTextChangeListener listener = new OnTextChangeListener(inflater.getContext(), editText);
             listener.setRow(this);
             listener.setRowType(rowTypeTemp);
             holder = new ValueEntryHolder(label, mandatoryIndicator, warningLabel, errorLabel, editText, detailedInfoButton, listener );
@@ -257,10 +257,12 @@ public class EditTextRow extends Row {
         String rowType;
         boolean isMandatory;
         boolean isEventComplete;
+        EditText mEditText;
         Context context;
 
-        public OnTextChangeListener(Context context){
+        public OnTextChangeListener(Context context, EditText editText){
             this.context = context;
+            this.mEditText = editText;
         }
 
         public void setRowType(String type){
@@ -289,6 +291,7 @@ public class EditTextRow extends Row {
                 }
             }else{
                 Toast.makeText(context, context.getString(R.string.error_delete_mandatory_value), Toast.LENGTH_SHORT).show();
+                mEditText.setText(value.getValue());
             }
         }
     }

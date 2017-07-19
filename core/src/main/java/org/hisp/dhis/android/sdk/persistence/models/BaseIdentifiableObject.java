@@ -90,6 +90,17 @@ public abstract class BaseIdentifiableObject extends BaseModel {
     public void handleUnknown(String key, Object value) {
     }
 
+
+    @JsonProperty("createdAtClient")
+    public void setCreatedAtClient(String created) {
+        this.created = created;
+    }
+
+    @JsonProperty("lastUpdatedAtClient")
+    public void setLastUpdatedAtClient(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
     public abstract String getUid();
 
     public abstract void setUid(String id);

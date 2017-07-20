@@ -30,21 +30,20 @@
 package org.hisp.dhis.android.sdk.ui.adapters;
 
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.TextView;
 
-import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRow;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EditTextRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 
 import java.util.HashMap;
 import java.util.List;
@@ -59,14 +58,16 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
     private Map<String, Boolean> hiddenDataElementRows;
     private Map<String, String> warningDataElementRows;
     private Map<String, String> errorDataElementRows;
+    private ListView mListView;
 
     public DataValueAdapter(FragmentManager fragmentManager,
-                            LayoutInflater inflater) {
+            LayoutInflater inflater, ListView listView) {
         super(inflater);
         mFragmentManager = fragmentManager;
         hiddenDataElementRows = new HashMap<>();
         warningDataElementRows = new HashMap<>();
         errorDataElementRows = new HashMap<>();
+        mListView = listView;
     }
 
     @Override
@@ -76,6 +77,11 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
             String id = dataEntryRow.getItemId();
             dataEntryRow.setWarning(warningDataElementRows.get(id));
             dataEntryRow.setError(errorDataElementRows.get(id));
+            if (dataEntryRow instanceof EditTextRow) {
+                ((EditTextRow) dataEntryRow).setOnEditorActionListener(
+                        new CustomOnEditorActionListener());
+            }
+
             View view = dataEntryRow.getView(mFragmentManager, getInflater(), convertView, parent);
             view.setVisibility(View.VISIBLE); //in case recycling invisible view
             view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT,
@@ -87,6 +93,7 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
                 view.postInvalidate();
                 view.setVisibility(View.GONE);
             }
+
             return view;
         } else {
             return null;
@@ -191,4 +198,29 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
         }
         else return -1;
     }
+
+
+    public class CustomOnEditorActionListener implements TextView.OnEditorActionListener {
+
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            final TextView view = v;
+            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                final int position = mListView.getPositionForView(v);
+                mListView.smoothScrollToPosition(position + 1);
+                mListView.postDelayed(new Runnable() {
+                    public void run() {
+                        TextView nextField = (TextView) view.focusSearch(View.FOCUS_DOWN);
+                        if (nextField != null) {
+                            nextField.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+                            nextField.requestFocus();
+                        }
+                    }
+                }, 200);
+                return true;
+            }
+            return false;
+        }
+    }
+
 }

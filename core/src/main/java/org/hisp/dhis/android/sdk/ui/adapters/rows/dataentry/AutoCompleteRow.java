@@ -135,8 +135,6 @@ public final class AutoCompleteRow extends Row {
 
         holder.valueTextView.setText(name);
 
-        holder.setOnTextChangedListener();
-
         if(!isEditable()) {
             holder.valueTextView.setEnabled(false);
             holder.valueTextView.setTextColor(Color.parseColor("#C6C6C6")); //setEnabled(false) won't set disabled text on some devices
@@ -164,7 +162,7 @@ public final class AutoCompleteRow extends Row {
             holder.errorLabel.setVisibility(View.GONE);
         } else {
             holder.errorLabel.setVisibility(View.VISIBLE);
-            holder.errorLabel.setText(mWarning);
+            holder.errorLabel.setText(mError);
         }
 
         if(!mMandatory) {
@@ -172,6 +170,8 @@ public final class AutoCompleteRow extends Row {
         } else {
             holder.mandatoryIndicator.setVisibility(View.VISIBLE);
         }
+
+        holder.setOnTextChangedListener();
 
         return view;
     }

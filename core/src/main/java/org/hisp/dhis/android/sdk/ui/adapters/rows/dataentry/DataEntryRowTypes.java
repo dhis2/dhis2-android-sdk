@@ -48,5 +48,6 @@ public enum DataEntryRowTypes {
     EVENT_COORDINATES,
     QUESTION_COORDINATES,
     PERCENTAGE,
-    AGE
+    AGE,
+    NOT_SUPPORTED
 }

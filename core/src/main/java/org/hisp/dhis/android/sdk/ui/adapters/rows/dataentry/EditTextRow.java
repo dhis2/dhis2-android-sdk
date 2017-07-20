@@ -140,22 +140,7 @@ public class EditTextRow extends Row {
                 editText.setFilters(new InputFilter[]{new PosFilter()});
                 editText.setSingleLine(true);
             }
-
-            /*final Context context = inflater.getContext();
-            OnTextChangeListener listener = new OnTextChangeListener(new ValueCallback(){
-                @Override
-                public void saveValue(String newValue, BaseValue value) {
-                        if(!isMandatory() || (!isEventComplete() || (newValue!=null && !newValue.equals("")))) {
-                            value.setValue(newValue);
-                            Dhis2Application.getEventBus()
-                                    .post(new RowValueChangedEvent(value, rowTypeTemp));
-                        }else{
-                            //restore last value
-                            editText.setText(mValue.getValue());
-                            Toast.makeText(context, context.getString(R.string.error_delete_mandatory_value), Toast.LENGTH_SHORT).show();
-                        }
-                }
-            });*/
+            
             OnTextChangeListener listener = new OnTextChangeListener(inflater.getContext(), editText);
             listener.setRow(this);
             listener.setRowType(rowTypeTemp);

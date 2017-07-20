@@ -64,7 +64,10 @@ public class Event extends BaseSerializableModel {
     public static final String STATUS_FUTURE_VISIT = "SCHEDULE";
     public static final String STATUS_SKIPPED = "SKIPPED";
     @JsonIgnore
-    public static final String EVENT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+    public static final String EVENT_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+
+    @JsonIgnore
+    public static final String EVENT_DATE_FORMAT = "yy-MM-dd";
 
     @JsonIgnore
     @Column(name = "event")

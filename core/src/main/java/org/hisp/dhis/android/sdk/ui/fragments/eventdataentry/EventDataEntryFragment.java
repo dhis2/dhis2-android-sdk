@@ -67,6 +67,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.ui.adapters.SectionAdapter;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.IndicatorRow;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnCompleteEventClick;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragment;
@@ -259,6 +260,20 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
             if (form.getStatusRow() != null) {
                 form.getStatusRow().setFragmentActivity(getActivity());
+            }
+            List<Row> rows = new ArrayList<>();
+            if(data.getCurrentSection()!=null) {
+                rows.addAll(data.getCurrentSection().getRows());
+            }
+            if(data.getSections()!=null) {
+                for (DataEntryFragmentSection dataEntryFragmentSection : data.getSections()) {
+                    rows.addAll(dataEntryFragmentSection.getRows());
+                }
+            }
+            for(Row row : rows) {
+                if (row.getViewType() == (DataEntryRowTypes.QUESTION_COORDINATES.ordinal())) {
+                    GpsController.activateGps(getActivity().getBaseContext());
+                }
             }
             if (data.getStage() != null &&
                     data.getStage().getCaptureCoordinates()) {

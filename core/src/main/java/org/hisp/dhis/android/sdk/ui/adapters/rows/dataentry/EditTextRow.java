@@ -140,47 +140,40 @@ public class EditTextRow extends Row {
                 editText.setFilters(new InputFilter[]{new PosFilter()});
                 editText.setSingleLine(true);
             }
-
-            final Context context = inflater.getContext();
-            OnTextChangeListener listener = new OnTextChangeListener(new ValueCallback(){
-                @Override
-                public void saveValue(String newValue, BaseValue value) {
-                        if(!isMandatory() || (!isEventComplete() || (newValue!=null && !newValue.equals("")))) {
-                            value.setValue(newValue);
-                            Dhis2Application.getEventBus()
-                                    .post(new RowValueChangedEvent(value, rowTypeTemp));
-                        }else{
-                            //restore last value
-                            editText.setText(mValue.getValue());
-                            Toast.makeText(context, context.getString(R.string.error_delete_mandatory_value), Toast.LENGTH_SHORT).show();
-                        }
-                }
-            });
-            listener.setBaseValue(mValue);
+            
+            OnTextChangeListener listener = new OnTextChangeListener(inflater.getContext(), editText);
+            listener.setRow(this);
+            listener.setRowType(rowTypeTemp);
             holder = new ValueEntryHolder(label, mandatoryIndicator, warningLabel, errorLabel, editText, detailedInfoButton, listener );
+            listener.setBaseValue(mValue);
             holder.editText.addTextChangedListener(listener);
-
-            if(!isEditable()) {
-                holder.editText.setEnabled(false);
-            } else {
-                holder.editText.setEnabled(true);
-            }
 
             rowTypeTemp = mRowType.toString();
             root.setTag(holder);
             view = root;
         }
+
+        if(!isEditable()) {
+            holder.editText.setEnabled(false);
+        } else {
+            holder.editText.setEnabled(true);
+        }
+
+        holder.textLabel.setText(mLabel);
+        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
+        holder.listener.setBaseValue(mValue);
+        holder.listener.isMandatory = isMandatory();
+        holder.listener.isEventComplete = isEventComplete();
+
+        holder.editText.setText(mValue.getValue());
+        holder.editText.setSelection(holder.editText.getText().length());
+
         if(mRowType.equals(DataEntryRowTypes.NOT_SUPPORTED)){
             holder.editText.setHint(R.string.unsupported_value_type);
             holder.editText.setEnabled(false);
         } else{
             holder.editText.setEnabled(true);
         }
-        holder.textLabel.setText(mLabel);
-        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
-
-        holder.editText.setText(mValue.getValue());
-        holder.editText.setSelection(holder.editText.getText().length());
 
         if(isDetailedInfoButtonHidden()) {
             holder.detailedInfoButton.setVisibility(View.INVISIBLE);
@@ -208,7 +201,6 @@ public class EditTextRow extends Row {
         } else {
             holder.mandatoryIndicator.setVisibility(View.VISIBLE);
         }
-        holder.editText.setOnEditorActionListener(mOnEditorActionListener);
 
         return view;
     }
@@ -243,23 +235,48 @@ public class EditTextRow extends Row {
     }
 
     private static class OnTextChangeListener extends AbsTextWatcher {
-        ValueCallback mValueCallback;
+
 
         protected BaseValue value;
+        Row row;
+        String rowType;
+        boolean isMandatory;
+        boolean isEventComplete;
+        EditText mEditText;
+        Context context;
+
+        public OnTextChangeListener(Context context, EditText editText){
+            this.context = context;
+            this.mEditText = editText;
+        }
+
+        public void setRowType(String type){
+            rowType = type;
+        }
+
+        public void setRow(Row row) {
+            this.row = row;
+        }
 
         public void setBaseValue(BaseValue value) {
             this.value = value;
         }
 
-        public OnTextChangeListener(ValueCallback valueCallback) {
-            mValueCallback = valueCallback;
-        }
-
         @Override
         public void afterTextChanged(Editable s) {
             String newValue = s != null ? s.toString() : EMPTY_FIELD;
-            if (value == null || !newValue.equals(value.getValue())) {
-                mValueCallback.saveValue(newValue, value);
+
+            if(!isMandatory || (!isEventComplete || (!newValue.equals("")))) {
+                if (!newValue.equals(value.getValue())) {
+                    value.setValue(newValue);
+                    RowValueChangedEvent rowValueChangeEvent = new RowValueChangedEvent(value,
+                            rowType);
+                    rowValueChangeEvent.setRow(row);
+                    Dhis2Application.getEventBus().post(rowValueChangeEvent);
+                }
+            }else{
+                Toast.makeText(context, context.getString(R.string.error_delete_mandatory_value), Toast.LENGTH_SHORT).show();
+                mEditText.setText(value.getValue());
             }
         }
     }

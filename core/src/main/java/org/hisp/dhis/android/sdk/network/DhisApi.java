@@ -94,6 +94,8 @@ public interface DhisApi {
     @POST("/dashboards/")
     Response postDashboard(@Body Dashboard dashboard);
 
+    @DELETE("/dashboards/{uid}")
+    Response deleteDashboard(@Path("uid") String dashboardUId);
 
     @PUT("/dashboards/{uid}")
     Response putDashboard(@Path("uid") String uid, @Body Dashboard dashboard);

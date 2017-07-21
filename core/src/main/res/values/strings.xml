@@ -244,7 +244,7 @@
     <string name="go_to_programoverview_fragment">Go to overview</string>
     <string name="go_to_dataentry_fragment">Go to data entry</string>
 
-    <string name="warning_delete_unsent_tei">Warning! If you delete this item, the event will be removed from the server</string>
+    <string name="warning_delete_event">Warning! If you delete this event, it will be removed from the server</string>
     <string name="detailed_info_dataelement">Detailed information</string>
     <string name="detailed_info_coordinate_row">Please enter the GPS coordinates by pressing the button on the right side of the row. If it does not work, please check your data and/or GPS connection.</string>
     <string name="detailed_info_status_row">Please press the complete button when you are finished with entering data. Press the validate button to check if the entered data is valid.</string>

@@ -289,6 +289,9 @@ public interface DhisApi {
     @PUT("/"+ApiEndpointContainer.EVENTS+"/{eventUid}")
     Response putEvent(@Path("eventUid") String eventUid, @Body Event event);
 
+    @DELETE("/" + ApiEndpointContainer.EVENTS + "/{eventUid}")
+    Response deleteEvent(@Path("eventUid") String eventUid);
+
     @GET("/"+ApiEndpointContainer.ENROLLMENTS+"/{enrollmentUid}")
     Enrollment getEnrollment(@Path("enrollmentUid") String enrollmentUid, @QueryMap Map<String, String> queryMap);
 

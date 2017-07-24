@@ -127,11 +127,19 @@ public class RuleExpressionTests {
 
     @Test
     public void fromShouldReturnExpressionWithInnerFunctionCallOnly() {
-        RuleExpression ruleExpression = RuleExpression.from("d2:floor(d2:ceil(8.7))");
+        RuleExpression ruleExpression = RuleExpression.from("d2:some(1, d2:ceil(8.7)) == 9 " +
+                "&& d2:hasValue(A{test_variable_one}) " +
+                "&& d2:ceil(d2:floor(d2:floor(9.8))) == A{test_variable_two}");
 
-        assertThat(ruleExpression.functions().size()).isEqualTo(1);
+        assertThat(ruleExpression.variables().size()).isEqualTo(2);
+        assertThat(ruleExpression.variables().get(0)).isEqualTo("A{test_variable_one}");
+        assertThat(ruleExpression.variables().get(1)).isEqualTo("A{test_variable_two}");
+
+        assertThat(ruleExpression.functions().size()).isEqualTo(2);
         assertThat(ruleExpression.functions().get(0)).isEqualTo("d2:ceil(8.7)");
+        assertThat(ruleExpression.functions().get(1)).isEqualTo("d2:floor(9.8)");
     }
+
 
     @Test
     public void fromShouldReturnExpressionWithFunctionsAndVariables() {

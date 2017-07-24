@@ -18,6 +18,7 @@ public class RuleExpressionTests {
         assertThat(ruleExpression.variables().size()).isEqualTo(2);
         assertThat(ruleExpression.variables().get(0)).isEqualTo("#{test_variable_one}");
         assertThat(ruleExpression.variables().get(1)).isEqualTo("#{test_variable_two}");
+        assertThat(ruleExpression.functions().size()).isEqualTo(0);
     }
 
     @Test
@@ -28,6 +29,7 @@ public class RuleExpressionTests {
         assertThat(ruleExpression.variables().size()).isEqualTo(2);
         assertThat(ruleExpression.variables().get(0)).isEqualTo("A{test_variable_one}");
         assertThat(ruleExpression.variables().get(1)).isEqualTo("A{test_variable_two}");
+        assertThat(ruleExpression.functions().size()).isEqualTo(0);
     }
 
     @Test
@@ -38,6 +40,7 @@ public class RuleExpressionTests {
         assertThat(ruleExpression.variables().size()).isEqualTo(2);
         assertThat(ruleExpression.variables().get(0)).isEqualTo("V{test_variable_one}");
         assertThat(ruleExpression.variables().get(1)).isEqualTo("V{test_variable_two}");
+        assertThat(ruleExpression.functions().size()).isEqualTo(0);
     }
 
     @Test
@@ -48,6 +51,7 @@ public class RuleExpressionTests {
         assertThat(ruleExpression.variables().size()).isEqualTo(2);
         assertThat(ruleExpression.variables().get(0)).isEqualTo("C{test_variable_one}");
         assertThat(ruleExpression.variables().get(1)).isEqualTo("C{test_variable_two}");
+        assertThat(ruleExpression.functions().size()).isEqualTo(0);
     }
 
     @Test
@@ -61,6 +65,7 @@ public class RuleExpressionTests {
         assertThat(ruleExpression.variables().get(1)).isEqualTo("C{test_variable_two}");
         assertThat(ruleExpression.variables().get(2)).isEqualTo("V{test_variable_three}");
         assertThat(ruleExpression.variables().get(3)).isEqualTo("#{test_variable_four}");
+        assertThat(ruleExpression.functions().size()).isEqualTo(0);
     }
 
     @Test
@@ -97,5 +102,48 @@ public class RuleExpressionTests {
         } catch (UnsupportedOperationException unsupportedOperationException) {
             // noop
         }
+    }
+
+    @Test
+    public void fromShouldReturnExpressionWithImmutableFunctions() {
+        RuleExpression ruleExpression = RuleExpression.from("");
+
+        try {
+            ruleExpression.functions().add("another_function");
+            fail("UnsupportedOperationException was expected, but nothing was thrown.");
+        } catch (UnsupportedOperationException unsupportedOperationException) {
+            // noop
+        }
+    }
+
+    @Test
+    public void fromShouldReturnExpressionWithFunctions() {
+        RuleExpression ruleExpression = RuleExpression.from("d2:floor(16.4) + d2:ceil(8.7)");
+
+        assertThat(ruleExpression.functions().size()).isEqualTo(2);
+        assertThat(ruleExpression.functions().get(0)).isEqualTo("d2:floor(16.4)");
+        assertThat(ruleExpression.functions().get(1)).isEqualTo("d2:ceil(8.7)");
+    }
+
+    @Test
+    public void fromShouldReturnExpressionWithInnerFunctionCallOnly() {
+        RuleExpression ruleExpression = RuleExpression.from("d2:floor(d2:ceil(8.7))");
+
+        assertThat(ruleExpression.functions().size()).isEqualTo(1);
+        assertThat(ruleExpression.functions().get(0)).isEqualTo("d2:ceil(8.7)");
+    }
+
+    @Test
+    public void fromShouldReturnExpressionWithFunctionsAndVariables() {
+        RuleExpression ruleExpression = RuleExpression.from("A{test_variable_one} <0 && " +
+                "C{test_variable_two} == '' && (d2:floor(16.4) + d2:ceil(8.7)) == 20");
+
+        assertThat(ruleExpression.variables().size()).isEqualTo(2);
+        assertThat(ruleExpression.variables().get(0)).isEqualTo("A{test_variable_one}");
+        assertThat(ruleExpression.variables().get(1)).isEqualTo("C{test_variable_two}");
+
+        assertThat(ruleExpression.functions().size()).isEqualTo(2);
+        assertThat(ruleExpression.functions().get(0)).isEqualTo("d2:floor(16.4)");
+        assertThat(ruleExpression.functions().get(1)).isEqualTo("d2:ceil(8.7)");
     }
 }

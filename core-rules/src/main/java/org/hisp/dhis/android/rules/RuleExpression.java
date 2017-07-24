@@ -13,7 +13,11 @@ import javax.annotation.Nonnull;
 @AutoValue
 abstract class RuleExpression {
     static final String VARIABLE_PATTERN = "[A#CV]\\{(\\w+.?\\w*)\\}";
+    static final String FUNCTION_PATTERN = "(d2:(\\w+.?\\w*)\\( *(([\\d/\\*\\+\\-%\\. ]+)|" +
+            "( *'[^']*'))*( *, *(([\\d/\\*\\+\\-%\\. ]+)|'[^']*'))* *\\))";
+
     static final Pattern VARIABLE_PATTERN_COMPILED = Pattern.compile(VARIABLE_PATTERN);
+    static final Pattern FUNCTION_PATTERN_COMPILED = Pattern.compile(FUNCTION_PATTERN);
 
     @Nonnull
     public abstract String expression();
@@ -22,19 +26,30 @@ abstract class RuleExpression {
     public abstract List<String> variables();
 
     @Nonnull
+    public abstract List<String> functions();
+
+    @Nonnull
     static RuleExpression from(@Nonnull String expression) {
         if (expression == null) {
             throw new NullPointerException("expression == null");
         }
 
         List<String> variables = new ArrayList<>();
+        List<String> functions = new ArrayList<>();
+
+        Matcher variableMatcher = VARIABLE_PATTERN_COMPILED.matcher(expression);
+        Matcher functionMatcher = FUNCTION_PATTERN_COMPILED.matcher(expression);
 
         // iterate over matched values and aggregate them
-        Matcher matcher = VARIABLE_PATTERN_COMPILED.matcher(expression);
-        while (matcher.find()) {
-            variables.add(matcher.group());
+        while (variableMatcher.find()) {
+            variables.add(variableMatcher.group());
         }
 
-        return new AutoValue_RuleExpression(expression, Collections.unmodifiableList(variables));
+        while (functionMatcher.find()) {
+            functions.add(functionMatcher.group());
+        }
+
+        return new AutoValue_RuleExpression(expression, Collections.unmodifiableList(variables),
+                Collections.unmodifiableList(functions));
     }
 }

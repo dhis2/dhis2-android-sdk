@@ -41,5 +41,4 @@ public interface ConstantStore {
             @Nullable Date lastUpdated, @NonNull String value
     );
 
-    void close();
 }

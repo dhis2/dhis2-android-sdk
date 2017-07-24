@@ -40,19 +40,19 @@ import java.util.Date;
 
 @AutoValue
 public abstract class TrackedEntityDataValue {
-    public final static String DATA_ELEMENT = "dataElement";
-    public final static String STORED_BY = "storedBy";
-    public final static String VALUE = "value";
-    public final static String CREATED = "created";
-    public final static String LAST_UPDATED = "lastUpdated";
-    public final static String PROVIDED_ELSEWHERE = "providedElsewhere";
+    private final static String DATA_ELEMENT = "dataElement";
+    private final static String STORED_BY = "storedBy";
+    private final static String VALUE = "value";
+    private final static String CREATED = "created";
+    private final static String LAST_UPDATED = "lastUpdated";
+    private final static String PROVIDED_ELSEWHERE = "providedElsewhere";
 
-    public static final Field<TrackedEntityAttribute, String> dataElement = Field.create(DATA_ELEMENT);
-    public static final Field<TrackedEntityAttribute, String> storedBy = Field.create(STORED_BY);
-    public static final Field<TrackedEntityAttribute, String> value = Field.create(VALUE);
-    public static final Field<TrackedEntityAttribute, Date> created = Field.create(CREATED);
-    public static final Field<TrackedEntityAttribute, Date> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<TrackedEntityAttribute, Boolean> providedElsewhere = Field.create(PROVIDED_ELSEWHERE);
+    public static final Field<TrackedEntityDataValue, String> dataElement = Field.create(DATA_ELEMENT);
+    public static final Field<TrackedEntityDataValue, String> storedBy = Field.create(STORED_BY);
+    public static final Field<TrackedEntityDataValue, String> value = Field.create(VALUE);
+    public static final Field<TrackedEntityDataValue, Date> created = Field.create(CREATED);
+    public static final Field<TrackedEntityDataValue, Date> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<TrackedEntityDataValue, Boolean> providedElsewhere = Field.create(PROVIDED_ELSEWHERE);
 
     @Nullable
     @JsonProperty(CREATED)

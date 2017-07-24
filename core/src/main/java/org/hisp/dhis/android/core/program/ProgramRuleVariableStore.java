@@ -25,35 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.data.api;
+
+package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.auto.value.AutoValue;
+import java.util.Date;
 
-import java.util.Arrays;
-import java.util.Collection;
+public interface ProgramRuleVariableStore {
+    long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
+                @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+                @Nullable Boolean useCodeForOptionSet, @NonNull String program,
+                @Nullable String programStage, @Nullable String dataElement,
+                @Nullable String trackedEntityAttribute,
+                @Nullable ProgramRuleVariableSourceType programRuleVariableSourceType
+    );
 
-@AutoValue
-public abstract class FilterImpl<T, K> implements Filter<T, K> {
-    public static <T, K> FilterImpl<T, K> create(@NonNull Field<T, K> field,
-                                                 @NonNull String operator,
-                                                 @Nullable String... values) {
-        //If the filter is incomplete, returning null, tells Retrofit that this filter should not be included.
-        if (values == null || values[0] == null || values[0].isEmpty()) {
-            return null;
-        }
-        return new AutoValue_FilterImpl<>(field, operator, Arrays.asList(values));
-    }
+    int update(
+            @NonNull String uid, @Nullable String code, @NonNull String name,
+            @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+            @Nullable Boolean useCodeForOptionSet, @NonNull String program,
+            @Nullable String programStage, @Nullable String dataElement,
+            @Nullable String trackedEntityAttribute,
+            @Nullable ProgramRuleVariableSourceType programRuleVariableSourceType,
+            @NonNull String whereProgramRuleVariableUid
+    );
 
-    public static <T, K> FilterImpl<T, K> create(@NonNull Field<T, K> field,
-                                                 @NonNull String operator,
-                                                 @Nullable Collection<String> values) {
-        //If the filter is incomplete, returning null, tells Retrofit that this filter should not be included.
-        if (values == null || values.isEmpty()) {
-            return null;
-        }
-        return new AutoValue_FilterImpl<>(field, operator, Arrays.asList(values.toArray(new String[values.size()])));
-    }
+    int delete(String uid);
 }

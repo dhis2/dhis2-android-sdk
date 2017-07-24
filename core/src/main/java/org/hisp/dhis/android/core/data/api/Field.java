@@ -40,11 +40,11 @@ import java.util.Collection;
 public abstract class Field<Parent, Child> implements Property<Parent, Child> {
 
     public Filter<Parent, Child> gt(String value) {
-        return FilterImpl.create(this, "gt", value);
+        return GtFilter.create(this, value);
     }
 
     public Filter<Parent, Child> in(Collection<String> values) {
-        return FilterImpl.create(this, "in", values);
+        return InFilter.create(this, values);
     }
 
     public static <T, K> Field<T, K> create(@NonNull String name) {

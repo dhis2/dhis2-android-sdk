@@ -40,5 +40,4 @@ public interface AuthenticatedUserStore {
 
     int delete();
 
-    void close();
 }

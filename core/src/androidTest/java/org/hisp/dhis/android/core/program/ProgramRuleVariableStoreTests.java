@@ -88,7 +88,7 @@ public class ProgramRuleVariableStoreTests extends AbsStoreTestCase {
     private static final ProgramRuleVariableSourceType PROGRAM_RULE_VARIABLE_SOURCE_TYPE =
             ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM;
 
-    private ProgramRuleVariableModelStore programRuleVariableModelStore;
+    private ProgramRuleVariableStore store;
 
     private final Date date;
     private final String dateString;
@@ -102,7 +102,7 @@ public class ProgramRuleVariableStoreTests extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        programRuleVariableModelStore = new ProgramRuleVariableModelStoreImpl(databaseAdapter());
+        store = new ProgramRuleVariableStoreImpl(databaseAdapter());
         //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
@@ -123,7 +123,7 @@ public class ProgramRuleVariableStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistProgramRuleVariableInDatabase() {
-        long rowId = programRuleVariableModelStore.insert(
+        long rowId = store.insert(
                 UID,
                 CODE,
                 NAME,
@@ -164,7 +164,7 @@ public class ProgramRuleVariableStoreTests extends AbsStoreTestCase {
         final String deferredDataElement = "deferredDataElement";
 
         database().beginTransaction();
-        long rowId = programRuleVariableModelStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date,
+        long rowId = store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date,
                 USE_CODE_FOR_OPTION_SET,
                 deferredProgram,
                 deferredProgramStage,
@@ -199,7 +199,7 @@ public class ProgramRuleVariableStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistProgramRuleVariableInDatabaseWithProgramForeignKey() {
-        long rowId = programRuleVariableModelStore.insert(
+        long rowId = store.insert(
                 UID,
                 CODE,
                 NAME,
@@ -350,7 +350,7 @@ public class ProgramRuleVariableStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(UID, 1); // 1 == Boolean.TRUE
         boolean updatedUseCodeForOptionSet = Boolean.FALSE;
 
-        int update = programRuleVariableModelStore.update(
+        int update = store.update(
                 UID, CODE, NAME, DISPLAY_NAME, date, date, updatedUseCodeForOptionSet,
                 PROGRAM, null, null, null, PROGRAM_RULE_VARIABLE_SOURCE_TYPE, UID
         );
@@ -377,7 +377,7 @@ public class ProgramRuleVariableStoreTests extends AbsStoreTestCase {
         // check that program rule variable was successfully inserted
         assertThatCursor(cursor).hasRow(UID);
 
-        int delete = programRuleVariableModelStore.delete(UID);
+        int delete = store.delete(UID);
 
         // check that store returns 1 on successful delete
         assertThat(delete).isEqualTo(1);
@@ -385,6 +385,41 @@ public class ProgramRuleVariableStoreTests extends AbsStoreTestCase {
         cursor = database().query(ProgramRuleVariableModel.TABLE, projection, null, null, null, null, null);
         // check that program rule variable is not in database
         assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, USE_CODE_FOR_OPTION_SET, PROGRAM, PROGRAM_STAGE,
+                DATA_ELEMENT, TRACKED_ENTITY_ATTRIBUTE, PROGRAM_RULE_VARIABLE_SOURCE_TYPE);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_program() {
+        store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, USE_CODE_FOR_OPTION_SET, null, PROGRAM_STAGE,
+                DATA_ELEMENT, TRACKED_ENTITY_ATTRIBUTE, PROGRAM_RULE_VARIABLE_SOURCE_TYPE);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_uid() {
+        store.update(null, CODE, NAME, DISPLAY_NAME, date, date, USE_CODE_FOR_OPTION_SET, PROGRAM, PROGRAM_STAGE,
+                DATA_ELEMENT, TRACKED_ENTITY_ATTRIBUTE, PROGRAM_RULE_VARIABLE_SOURCE_TYPE, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_program() {
+        store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, USE_CODE_FOR_OPTION_SET, null, PROGRAM_STAGE,
+                DATA_ELEMENT, TRACKED_ENTITY_ATTRIBUTE, PROGRAM_RULE_VARIABLE_SOURCE_TYPE, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_whereUid() {
+        store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, USE_CODE_FOR_OPTION_SET, PROGRAM, PROGRAM_STAGE,
+                DATA_ELEMENT, TRACKED_ENTITY_ATTRIBUTE, PROGRAM_RULE_VARIABLE_SOURCE_TYPE, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_null_uid() {
+        store.delete(null);
     }
 }
 

@@ -29,9 +29,13 @@
 package org.hisp.dhis.android.core.utils;
 
 import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.imports.ImportStatus;
 
+import java.text.ParseException;
 import java.util.Date;
 
 /**
@@ -120,7 +124,7 @@ public final class StoreUtils {
         if (arg == null) {
             sqLiteStatement.bindNull(index);
         } else {
-            sqLiteStatement.bindString(index, arg.toString());
+            sqLiteStatement.bindString(index, arg.name());
         }
     }
 
@@ -153,6 +157,42 @@ public final class StoreUtils {
             sqLiteStatement.bindNull(index);
         } else {
             sqLiteStatement.bindLong(index, arg);
+        }
+    }
+
+    /**
+     * Takes the import status and converts it to the state which indicates if it was imported, had errors or warning.
+     *
+     * @param importStatus
+     * @return the state from the ImportStatus
+     */
+    public static State getState(ImportStatus importStatus) {
+        switch (importStatus) {
+            case ERROR: {
+                return State.ERROR;
+            }
+            case SUCCESS: {
+                return State.SYNCED;
+            }
+            case WARNING: {
+                // TODO: Handle WARNING different? State.WARNING and then highligh what went wrong in the UI.
+                return State.SYNCED;
+            }
+            default: {
+                throw new IllegalArgumentException("Unknown import status");
+            }
+        }
+    }
+
+    @NonNull
+    public static Date parse(@NonNull String date) {
+        if (date == null) {
+            return null;
+        }
+        try {
+            return BaseIdentifiableObject.DATE_FORMAT.parse(date);
+        } catch (ParseException p) {
+            throw new RuntimeException(p);
         }
     }
 }

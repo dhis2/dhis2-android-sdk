@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
 
-import org.hisp.dhis.android.core.common.Call;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
@@ -102,7 +102,7 @@ public class ProgramCallTests {
     private ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
 
     @Mock
-    private ProgramRuleVariableModelStore programRuleVariableStore;
+    private ProgramRuleVariableStore programRuleVariableStore;
 
     @Mock
     private ProgramIndicatorStore programIndicatorStore;
@@ -275,9 +275,7 @@ public class ProgramCallTests {
                                 ProgramStageSection.uid, ProgramStageSection.code, ProgramStageSection.name,
                                 ProgramStageSection.displayName, ProgramStageSection.created,
                                 ProgramStageSection.lastUpdated, ProgramStageSection.sortOrder,
-                                ProgramStageSection.deleted, ProgramStageSection.programStageDataElements.with(
-                                        ProgramStageDataElement.uid
-                                ),
+                                ProgramStageSection.deleted, ProgramStageSection.dataElements.with(DataElement.uid),
                                 ProgramStageSection.programIndicators.with(
                                         ProgramIndicator.uid,
                                         ProgramIndicator.program.with(

@@ -53,12 +53,14 @@ public abstract class EventModel extends BaseDataModel {
         public static final String ENROLLMENT_UID = "enrollment";
         public static final String CREATED = "created";
         public static final String LAST_UPDATED = "lastUpdated";
+        public static final String CREATED_AT_CLIENT = "createdAtClient";
+        public static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
         public static final String STATUS = "status";
         public static final String LATITUDE = "latitude";
         public static final String LONGITUDE = "longitude";
         public static final String PROGRAM = "program";
         public static final String PROGRAM_STAGE = "programStage";
-        public static final String ORGANISATION_UNIT = "orgUnit";
+        public static final String ORGANISATION_UNIT = "organisationUnit";
         public static final String EVENT_DATE = "eventDate";
         public static final String COMPLETE_DATE = "completedDate";
         public static final String DUE_DATE = "dueDate";
@@ -93,6 +95,14 @@ public abstract class EventModel extends BaseDataModel {
     @ColumnName(Columns.LAST_UPDATED)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
+
+    @Nullable
+    @ColumnName(Columns.CREATED_AT_CLIENT)
+    public abstract String createdAtClient();
+
+    @Nullable
+    @ColumnName(Columns.LAST_UPDATED_AT_CLIENT)
+    public abstract String lastUpdatedAtClient();
 
     @Nullable
     @ColumnName(Columns.PROGRAM)
@@ -143,6 +153,10 @@ public abstract class EventModel extends BaseDataModel {
         public abstract Builder created(@Nullable Date created);
 
         public abstract Builder lastUpdated(@Nullable Date lastUpdated);
+
+        public abstract Builder createdAtClient(@Nullable String createdAtClient);
+
+        public abstract Builder lastUpdatedAtClient(@Nullable String lastUpdatedAtClient);
 
         public abstract Builder program(@Nullable String program);
 

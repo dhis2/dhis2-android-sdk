@@ -33,6 +33,7 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 public class ProgramStageSectionProgramIndicatorLinkStoreImpl implements ProgramStageSectionProgramIndicatorLinkStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
@@ -45,11 +46,8 @@ public class ProgramStageSectionProgramIndicatorLinkStoreImpl implements Program
             ProgramStageSectionProgramIndicatorLinkModel.TABLE + " SET " +
             ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION + " =?, " +
             ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_INDICATOR + " =? " +
-            " WHERE " +
-            ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION + " =? " +
-            " AND " +
-            ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_INDICATOR + " =?;";
-
+            " WHERE " + ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION + " =? " +
+            " AND " + ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_INDICATOR + " =?;";
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -61,18 +59,26 @@ public class ProgramStageSectionProgramIndicatorLinkStoreImpl implements Program
 
     @Override
     public Long insert(@NonNull String programStageSection, @NonNull String programIndicator) {
+
+        isNull(programStageSection);
+        isNull(programIndicator);
+
         sqLiteBind(insertStatement, 1, programStageSection);
         sqLiteBind(insertStatement, 2, programIndicator);
 
         Long insert = insertStatement.executeInsert();
         insertStatement.clearBindings();
-
         return insert;
     }
 
     @Override
     public int update(@NonNull String programStageSection, @NonNull String programIndicator,
                       @NonNull String whereProgramStageSection, @NonNull String whereProgramIndicator) {
+        isNull(programStageSection);
+        isNull(programIndicator);
+        isNull(whereProgramStageSection);
+        isNull(whereProgramIndicator);
+
         sqLiteBind(updateStatement, 1, programStageSection);
         sqLiteBind(updateStatement, 2, programIndicator);
 
@@ -83,7 +89,6 @@ public class ProgramStageSectionProgramIndicatorLinkStoreImpl implements Program
         // execute and clear bindings
         int update = updateStatement.executeUpdateDelete();
         updateStatement.clearBindings();
-
         return update;
     }
 }

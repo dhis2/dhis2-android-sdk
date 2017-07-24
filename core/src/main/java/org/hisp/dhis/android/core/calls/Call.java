@@ -26,31 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.calls;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import java.util.concurrent.Callable;
 
-import java.util.Date;
+public interface Call<T> extends Callable<T> {
+    int MAX_UIDS = 64;
 
-public interface ProgramRuleVariableModelStore {
-    long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
-                @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-                @Nullable Boolean useCodeForOptionSet, @NonNull String program,
-                @Nullable String programStage, @Nullable String dataElement,
-                @Nullable String trackedEntityAttribute,
-                @Nullable ProgramRuleVariableSourceType programRuleVariableSourceType
-    );
-
-    int update(
-            @NonNull String uid, @Nullable String code, @NonNull String name,
-            @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-            @Nullable Boolean useCodeForOptionSet, @NonNull String program,
-            @Nullable String programStage, @Nullable String dataElement,
-            @Nullable String trackedEntityAttribute,
-            @Nullable ProgramRuleVariableSourceType programRuleVariableSourceType,
-            @NonNull String whereProgramRuleVariableUid
-    );
-
-    int delete(String uid);
+    boolean isExecuted();
 }

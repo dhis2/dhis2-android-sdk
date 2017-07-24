@@ -32,6 +32,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public interface TrackedEntityDataValueStore {
     long insert(@NonNull String event, @Nullable Date created, @Nullable Date lastUpdated,
@@ -39,5 +41,5 @@ public interface TrackedEntityDataValueStore {
                 @Nullable String value, @Nullable Boolean providedElsewhere
     );
 
-    void close();
+    Map<String, List<TrackedEntityDataValue>> queryTrackedEntityDataValues(Boolean singleEvents);
 }

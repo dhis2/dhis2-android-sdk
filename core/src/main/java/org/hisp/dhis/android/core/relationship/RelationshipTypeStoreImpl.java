@@ -37,12 +37,12 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
 })
 public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
-
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             RelationshipTypeModel.TABLE + " (" +
             RelationshipTypeModel.Columns.UID + ", " +
@@ -85,57 +85,60 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
     }
 
     @Override
-    public long insert(
-            @NonNull String uid,
-            @Nullable String code,
-            @NonNull String name,
-            @Nullable String displayName,
-            @Nullable Date created,
-            @Nullable Date lastUpdated,
-            @NonNull String aIsToB,
-            @NonNull String bIsToA
-    ) {
+    public long insert(@NonNull String uid,
+                       @Nullable String code,
+                       @NonNull String name,
+                       @Nullable String displayName,
+                       @Nullable Date created,
+                       @Nullable Date lastUpdated,
+                       @NonNull String aIsToB,
+                       @NonNull String bIsToA) {
+        isNull(uid);
+        isNull(aIsToB);
+        isNull(bIsToA);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, aIsToB, bIsToA);
-        long insert = databaseAdapter.executeInsert(RelationshipTypeModel.TABLE, insertStatement);
 
+        long ret = databaseAdapter.executeInsert(RelationshipTypeModel.TABLE, insertStatement);
         insertStatement.clearBindings();
-        return insert;
+        return ret;
     }
 
     @Override
     public int update(@NonNull String uid,
                       @Nullable String code,
-                      @NonNull String name,
+                      @Nullable String name,
                       @Nullable String displayName,
                       @Nullable Date created,
                       @Nullable Date lastUpdated,
                       @NonNull String aIsToB,
                       @NonNull String bIsToA,
-                      @NonNull String whereRelationshipTypeUid) {
+                      @NonNull String whereUid) {
+        isNull(uid);
+        isNull(aIsToB);
+        isNull(bIsToA);
+        isNull(whereUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, aIsToB, bIsToA);
+        sqLiteBind(updateStatement, 9, whereUid);
 
-        sqLiteBind(updateStatement, 9, whereRelationshipTypeUid);
-
-        int update = updateStatement.executeUpdateDelete();
+        int ret = updateStatement.executeUpdateDelete();
         updateStatement.clearBindings();
-
-        return update;
+        return ret;
     }
 
     @Override
     public int delete(@NonNull String uid) {
+        isNull(uid);
         sqLiteBind(deleteStatement, 1, uid);
 
-        int delete = deleteStatement.executeUpdateDelete();
+        int ret = deleteStatement.executeUpdateDelete();
         deleteStatement.clearBindings();
-
-        return delete;
+        return ret;
     }
 
     private void bindArguments(@NonNull SQLiteStatement sqLiteStatement,
                                @NonNull String uid,
                                @Nullable String code,
-                               @NonNull String name,
+                               @Nullable String name,
                                @Nullable String displayName,
                                @Nullable Date created,
                                @Nullable Date lastUpdated,

@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
@@ -74,8 +75,7 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
             OrganisationUnitModel.Columns.CLOSED_DATE + "=?, " +
             OrganisationUnitModel.Columns.LEVEL + "=?, " +
             OrganisationUnitModel.Columns.PARENT + "=? " +
-            " WHERE " +
-            OrganisationUnitModel.Columns.UID + " = ?;";
+            " WHERE " + OrganisationUnitModel.Columns.UID + " = ?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + OrganisationUnitModel.TABLE +
             " WHERE " + OrganisationUnitModel.Columns.UID + " =?;";
@@ -110,15 +110,16 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
             @Nullable Date closedDate,
             @Nullable String parent,
             @Nullable Integer level) {
-        insertStatement.clearBindings();
 
-        bindArguments(
-                insertStatement, uid, code, name, displayName, created,
+        isNull(uid);
+        bindArguments(insertStatement, uid, code, name, displayName, created,
                 lastUpdated, shortName, displayShortName, description, displayDescription,
                 path, openingDate, closedDate, parent, level
         );
 
-        return databaseAdapter.executeInsert(OrganisationUnitModel.TABLE, insertStatement);
+        long ret = databaseAdapter.executeInsert(OrganisationUnitModel.TABLE, insertStatement);
+        insertStatement.clearBindings();
+        return ret;
     }
 
     @Override
@@ -128,27 +129,27 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
                       @Nullable String description, @Nullable String displayDescription,
                       @Nullable String path, @Nullable Date openingDate, @Nullable Date closedDate,
                       @Nullable String parent, @Nullable Integer level, @NonNull String whereUid) {
-        updateStatement.clearBindings();
 
-        bindArguments(
-                updateStatement, uid, code, name, displayName, created, lastUpdated, shortName,
+        isNull(uid);
+        isNull(whereUid);
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, shortName,
                 displayShortName, description, displayDescription, path, openingDate, closedDate, parent, level
         );
-
-        // bind the whereClause
         sqLiteBind(updateStatement, 16, whereUid);
 
-        return databaseAdapter.executeUpdateDelete(OrganisationUnitModel.TABLE, updateStatement);
+        int ret = databaseAdapter.executeUpdateDelete(OrganisationUnitModel.TABLE, updateStatement);
+        updateStatement.clearBindings();
+        return ret;
     }
 
     @Override
     public int delete(@NonNull String uid) {
-        deleteStatement.clearBindings();
-
-        // bind the whereClause
+        isNull(uid);
         sqLiteBind(deleteStatement, 1, uid);
 
-        return databaseAdapter.executeUpdateDelete(OrganisationUnitModel.TABLE, deleteStatement);
+        int ret = databaseAdapter.executeUpdateDelete(OrganisationUnitModel.TABLE, deleteStatement);
+        deleteStatement.clearBindings();
+        return ret;
     }
 
     @Override

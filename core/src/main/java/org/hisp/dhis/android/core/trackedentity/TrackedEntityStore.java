@@ -42,12 +42,11 @@ public interface TrackedEntityStore {
     );
 
     int update(@NonNull String uid, @Nullable String code, @Nullable String name,
-                @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
-                @Nullable String shortName, @Nullable String displayShortName,
-                @Nullable String description, @Nullable String displayDescription, @NonNull String whereUid
+               @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
+               @Nullable String shortName, @Nullable String displayShortName,
+               @Nullable String description, @Nullable String displayDescription, @NonNull String whereUid
     );
 
     int delete(@NonNull String uid);
 
-    void close();
 }

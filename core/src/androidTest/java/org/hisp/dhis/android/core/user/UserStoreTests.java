@@ -74,7 +74,7 @@ public class UserStoreTests extends AbsStoreTestCase {
     private static final String NAME = "test_name";
     private static final String DISPLAY_NAME = "test_display_name";
 
-    private UserStore userStore;
+    private UserStore store;
 
     public static ContentValues create(long id, String uid) {
         ContentValues user = new ContentValues();
@@ -106,14 +106,14 @@ public class UserStoreTests extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        userStore = new UserStoreImpl(databaseAdapter());
+        store = new UserStoreImpl(databaseAdapter());
     }
 
     @Test
     public void insert_shouldPersistRowInDatabase() {
         Date date = new Date();
 
-        long rowId = userStore.insert(
+        long rowId = store.insert(
                 "test_user_uid",
                 "test_user_code",
                 "test_user_name",
@@ -191,12 +191,10 @@ public class UserStoreTests extends AbsStoreTestCase {
                 BaseIdentifiableObject.DATE_FORMAT.format(date),
                 BaseIdentifiableObject.DATE_FORMAT.format(date));
 
-
         String newName = "test_new_name";
         String newDisplayName = "test_new_display_name";
 
-        userStore.update(UID, CODE, newName, newDisplayName, date,
-                date,
+        store.update(UID, CODE, newName, newDisplayName, date, date,
                 "test_user_birthday",
                 "test_user_education",
                 "test_user_gender",
@@ -219,7 +217,6 @@ public class UserStoreTests extends AbsStoreTestCase {
                 BaseIdentifiableObject.DATE_FORMAT.format(date),
                 BaseIdentifiableObject.DATE_FORMAT.format(date)
         ).isExhausted();
-
     }
 
     @Test
@@ -244,7 +241,7 @@ public class UserStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(ID, UID, CODE, NAME, DISPLAY_NAME);
 
         // delete the user
-        userStore.delete(UID);
+        store.delete(UID);
 
         cursor = database().query(UserModel.TABLE, projection, null, null, null, null, null);
         // checking that user was successfully deleted
@@ -256,12 +253,85 @@ public class UserStoreTests extends AbsStoreTestCase {
         ContentValues user = create(1L, "test_user_id");
         database().insert(UserModel.TABLE, null, user);
 
-        int deleted = userStore.delete();
+        int deleted = store.delete();
 
         Cursor cursor = database().query(UserModel.TABLE,
                 null, null, null, null, null, null);
         assertThat(deleted).isEqualTo(1);
         assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        store.insert(
+                null,
+                "test_user_code",
+                "test_user_name",
+                "test_user_display_name",
+                new Date(), new Date(),
+                "test_user_birthday",
+                "test_user_education",
+                "test_user_gender",
+                "test_user_job_title",
+                "test_user_surname",
+                "test_user_first_name",
+                "test_user_introduction",
+                "test_user_employer",
+                "test_user_interests",
+                "test_user_languages",
+                "test_user_email",
+                "test_user_phone_number",
+                "test_user_nationality"
+        );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_uid() {
+        store.update(null,
+                CODE, "newName", "newDisplayName",
+                new Date(), new Date(),
+                "test_user_birthday",
+                "test_user_education",
+                "test_user_gender",
+                "test_user_job_title",
+                "test_user_surname",
+                "test_user_first_name",
+                "test_user_introduction",
+                "test_user_employer",
+                "test_user_interests",
+                "test_user_languages",
+                "test_user_email",
+                "test_user_phone_number",
+                "test_user_nationality",
+                UID
+        );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_whereUid() {
+        store.update(UID,
+                CODE, "newName", "newDisplayName",
+                new Date(), new Date(),
+                "test_user_birthday",
+                "test_user_education",
+                "test_user_gender",
+                "test_user_job_title",
+                "test_user_surname",
+                "test_user_first_name",
+                "test_user_introduction",
+                "test_user_employer",
+                "test_user_interests",
+                "test_user_languages",
+                "test_user_email",
+                "test_user_phone_number",
+                "test_user_nationality",
+                null
+        );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_null_uid() {
+        store.delete(null);
     }
 
     // ToDo: consider introducing conflict resolution strategy
@@ -278,7 +348,7 @@ public class UserStoreTests extends AbsStoreTestCase {
 //
 //        // try to insert duplicate into user table through store
 //        Date date = new Date();
-//        long rowId = userStore.insert(
+//        long rowId = store.insert(
 //                "test_user_uid",
 //                "test_user_code",
 //                "test_user_name",
@@ -301,8 +371,10 @@ public class UserStoreTests extends AbsStoreTestCase {
 //
 //        System.out.println("RowId: " + rowId);
 //
-//        assertThatCursor(database().query(DbOpenHelper.Tables.UID, UserCredentialsContractTests.USER_CREDENTIALS_PROJECTION, null, null, null, null, null))
+//        assertThatCursor(database().query(DbOpenHelper.Tables.UID, UserCredentialsContractTests
+// .USER_CREDENTIALS_PROJECTION, null, null, null, null, null))
 //                .hasRow(UserCredentialsContractTests.USER_CREDENTIALS_PROJECTION, userCredentials)
 //                .isExhausted();
 //    }
 }
+

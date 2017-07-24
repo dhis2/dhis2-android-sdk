@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
@@ -108,13 +109,15 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
                        @Nullable String displayDescription, @Nullable Boolean mandatory,
                        @NonNull String trackedEntityAttribute, @Nullable Boolean allowFutureDates,
                        @Nullable Boolean displayInList, @NonNull String program, @Nullable Integer sortOrder) {
+        isNull(uid);
+        isNull(trackedEntityAttribute);
+        isNull(program);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, shortName,
                 displayShortName, description, displayDescription, mandatory, trackedEntityAttribute,
                 allowFutureDates, displayInList, program, sortOrder);
 
         Long insert = databaseAdapter.executeInsert(ProgramTrackedEntityAttributeModel.TABLE, insertStatement);
         insertStatement.clearBindings();
-
         return insert;
     }
 
@@ -126,6 +129,10 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
                       @NonNull String trackedEntityAttribute, @Nullable Boolean allowFutureDates,
                       @Nullable Boolean displayInList, @NonNull String program, @Nullable Integer sortOrder,
                       @NonNull String whereProgramTrackedEntityAttributeUid) {
+        isNull(uid);
+        isNull(trackedEntityAttribute);
+        isNull(program);
+        isNull(whereProgramTrackedEntityAttributeUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, shortName,
                 displayShortName, description, displayDescription, mandatory, trackedEntityAttribute,
                 allowFutureDates, displayInList, program, sortOrder);
@@ -136,19 +143,18 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
         // execute and clear bindings
         int update = databaseAdapter.executeUpdateDelete(ProgramTrackedEntityAttributeModel.TABLE, updateStatement);
         updateStatement.clearBindings();
-
         return update;
     }
 
     @Override
-    public int delete(String uid) {
+    public int delete(@NonNull String uid) {
+        isNull(uid);
         // bind the where argument
         sqLiteBind(deleteStatement, 1, uid);
 
         // execute and clear bindings
         int delete = databaseAdapter.executeUpdateDelete(ProgramTrackedEntityAttributeModel.TABLE, deleteStatement);
         deleteStatement.clearBindings();
-
         return delete;
     }
 

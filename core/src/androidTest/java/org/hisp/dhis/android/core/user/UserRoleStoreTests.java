@@ -133,4 +133,24 @@ public class UserRoleStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).isExhausted();
 
     }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        userRoleStore.insert(null, CODE, NAME, DISPLAY_NAME, date, date);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void update_null_uid() {
+        userRoleStore.update(null, CODE, NAME, DISPLAY_NAME, date, date, UID);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void update_null_where() {
+        userRoleStore.update(UID, CODE, NAME, DISPLAY_NAME, date, date, null);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void delete_null_arg() {
+        userRoleStore.delete(null);
+    }
 }

@@ -47,7 +47,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
-
 @RunWith(AndroidJUnit4.class)
 public class ProgramIndicatorStoreTests extends AbsStoreTestCase {
     private static final String UID = "test_uid";
@@ -66,7 +65,6 @@ public class ProgramIndicatorStoreTests extends AbsStoreTestCase {
     private static final String FILTER = "test_filter";
     private static final String PROGRAM = "test_program";
     private static final Integer DECIMALS = 3;
-
 
     public static final String[] PROGRAM_INDICATOR_PROJECTION = {
             Columns.UID,
@@ -87,14 +85,14 @@ public class ProgramIndicatorStoreTests extends AbsStoreTestCase {
             Columns.PROGRAM
     };
 
-    private ProgramIndicatorStore programIndicatorStore;
+    private ProgramIndicatorStore store;
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
 
-        programIndicatorStore = new ProgramIndicatorStoreImpl(databaseAdapter());
+        store = new ProgramIndicatorStoreImpl(databaseAdapter());
     }
 
     @Test
@@ -102,7 +100,7 @@ public class ProgramIndicatorStoreTests extends AbsStoreTestCase {
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, null, null, null);
         database().insert(ProgramModel.TABLE, null, program);
 
-        long rowId = programIndicatorStore.insert(
+        long rowId = store.insert(
                 UID,
                 CODE,
                 NAME,
@@ -148,7 +146,6 @@ public class ProgramIndicatorStoreTests extends AbsStoreTestCase {
 
     // ToDo: consider introducing conflict resolution strategy
 
-
     @Test
     public void update_shouldUpdateProgramIndicator() throws Exception {
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, null, null, null);
@@ -169,7 +166,7 @@ public class ProgramIndicatorStoreTests extends AbsStoreTestCase {
         boolean updatedDisplayInForm = Boolean.FALSE; // Boolean.FALSE == 0 in database
 
         // update the program indicator
-        int update = programIndicatorStore.update(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED,
+        int update = store.update(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED,
                 SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, updatedDisplayInForm, EXPRESSION,
                 DIMENSION_ITEM, FILTER, updatedDecimals, PROGRAM, UID);
 
@@ -198,7 +195,7 @@ public class ProgramIndicatorStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(UID);
 
         // delete the program indicator
-        int delete = programIndicatorStore.delete(UID);
+        int delete = store.delete(UID);
 
         // check that store returns 1 when successfully deleting
         assertThat(delete).isEqualTo(1);
@@ -234,5 +231,45 @@ public class ProgramIndicatorStoreTests extends AbsStoreTestCase {
 
         // check that program indicator was deleted on cascade from program
         assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        store.insert(null, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, SHORT_NAME, DISPLAY_SHORT_NAME,
+                DESCRIPTION, DISPLAY_DESCRIPTION, DISPLAY_IN_FORM, EXPRESSION, DIMENSION_ITEM, FILTER, DECIMALS,
+                PROGRAM);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_program() {
+        store.insert(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, SHORT_NAME, DISPLAY_SHORT_NAME,
+                DESCRIPTION, DISPLAY_DESCRIPTION, DISPLAY_IN_FORM, EXPRESSION, DIMENSION_ITEM, FILTER, DECIMALS,
+                null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_uid() {
+        store.update(null, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, SHORT_NAME, DISPLAY_SHORT_NAME,
+                DESCRIPTION, DISPLAY_DESCRIPTION, DISPLAY_IN_FORM, EXPRESSION, DIMENSION_ITEM, FILTER, DECIMALS,
+                PROGRAM, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_program() {
+        store.update(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, SHORT_NAME, DISPLAY_SHORT_NAME,
+                DESCRIPTION, DISPLAY_DESCRIPTION, DISPLAY_IN_FORM, EXPRESSION, DIMENSION_ITEM, FILTER, DECIMALS,
+                null, UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_whereUid() {
+        store.update(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, SHORT_NAME, DISPLAY_SHORT_NAME,
+                DESCRIPTION, DISPLAY_DESCRIPTION, DISPLAY_IN_FORM, EXPRESSION, DIMENSION_ITEM, FILTER, DECIMALS,
+                PROGRAM, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_null_uid() {
+        store.delete(null);
     }
 }

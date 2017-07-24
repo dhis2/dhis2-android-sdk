@@ -75,18 +75,18 @@ public class TrackedEntityStoreTests extends AbsStoreTestCase {
         this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
 
-    private TrackedEntityStore trackedEntityStore;
+    private TrackedEntityStore store;
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        trackedEntityStore = new TrackedEntityStoreImpl(databaseAdapter());
+        store = new TrackedEntityStoreImpl(databaseAdapter());
     }
 
     @Test
     public void insert_shouldPersistRowInDatabase() {
-        long rowId = trackedEntityStore.insert(
+        long rowId = store.insert(
                 UID,
                 CODE,
                 NAME,
@@ -137,7 +137,7 @@ public class TrackedEntityStoreTests extends AbsStoreTestCase {
         ).isExhausted();
 
         assertThat(date != null).isTrue();
-        trackedEntityStore.update(
+        store.update(
                 UID,
                 CODE,
                 NAME,
@@ -172,7 +172,7 @@ public class TrackedEntityStoreTests extends AbsStoreTestCase {
 
         database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
 
-        int deleted = trackedEntityStore.delete(UID);
+        int deleted = store.delete(UID);
         Cursor cursor = database().query(TrackedEntityModel.TABLE, null, null, null, null, null, null);
 
         assertThat(deleted).isEqualTo(1L);
@@ -181,9 +181,30 @@ public class TrackedEntityStoreTests extends AbsStoreTestCase {
 
     // ToDo: consider introducing conflict resolution strategy
 
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        trackedEntityStore.close();
-        assertThat(database().isOpen()).isTrue();
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_uid() {
+        store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME,
+                DESCRIPTION, DISPLAY_DESCRIPTION
+        );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_uid() {
+        store.update(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME,
+                DESCRIPTION, DISPLAY_DESCRIPTION, UID
+        );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_null_whereUid() {
+        store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME,
+                DESCRIPTION, DISPLAY_DESCRIPTION, null
+        );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_null_uid() {
+        store.delete(null);
     }
 }

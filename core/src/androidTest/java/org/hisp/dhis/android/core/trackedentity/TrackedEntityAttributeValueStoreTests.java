@@ -33,7 +33,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
@@ -47,20 +46,19 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class TrackedEntityAttributeValueStoreTests extends AbsStoreTestCase {
-
-    //BaseDataModel:
-    private static final State STATE = State.SYNCED;
-
     //TrackedEntityAttributeValueModel:
     private static final String VALUE = "test_value";
+    private static final String CREATED = "test_created";
+    private static final String LAST_UPDATED = "test_lastUpdated";
     private static final String TRACKED_ENTITY_ATTRIBUTE = "test_trackedEntityAttributeUid";
     private static final String TRACKED_ENTITY_INSTANCE = "test_trackedEntityInstanceUid";
     private static final String ORGANIZATION_UNIT = "test_organizationUnitUid";
     private static final String TRACKED_ENTITY = "test_trackedEntity";
 
     private static final String[] PROJECTION = {
-            TrackedEntityAttributeValueModel.Columns.STATE,
             TrackedEntityAttributeValueModel.Columns.VALUE,
+            TrackedEntityAttributeValueModel.Columns.CREATED,
+            TrackedEntityAttributeValueModel.Columns.LAST_UPDATED,
             TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE,
             TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE
     };
@@ -70,6 +68,7 @@ public class TrackedEntityAttributeValueStoreTests extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
+
         this.store = new TrackedEntityAttributeValueStoreImpl(databaseAdapter());
 
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANIZATION_UNIT);
@@ -87,13 +86,15 @@ public class TrackedEntityAttributeValueStoreTests extends AbsStoreTestCase {
 
     @Test
     public void insert_shouldPersistTrackedEntityAttributeValueInDatabase() {
-        long rowId = store.insert(STATE, VALUE, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE);
+        long rowId = store.insert(VALUE, CREATED, LAST_UPDATED,
+                TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE);
 
         Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
                 PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor).hasRow(STATE, VALUE, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE)
+        assertThatCursor(cursor)
+                .hasRow(VALUE, CREATED, LAST_UPDATED, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE)
                 .isExhausted();
     }
 
@@ -103,7 +104,8 @@ public class TrackedEntityAttributeValueStoreTests extends AbsStoreTestCase {
         final String deferredTrackedEntityInstance = "deferredTrackedEntityInstance";
 
         database().beginTransaction();
-        long rowId = store.insert(STATE, VALUE, deferredTrackedEntityAttribute, deferredTrackedEntityInstance);
+        long rowId = store.insert(VALUE, CREATED, LAST_UPDATED,
+                deferredTrackedEntityAttribute, deferredTrackedEntityInstance);
         ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(
                 deferredTrackedEntityInstance, ORGANIZATION_UNIT, TRACKED_ENTITY);
         ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.create(3L,
@@ -117,37 +119,37 @@ public class TrackedEntityAttributeValueStoreTests extends AbsStoreTestCase {
                 PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor).hasRow(STATE, VALUE, deferredTrackedEntityAttribute, deferredTrackedEntityInstance)
+        assertThatCursor(cursor)
+                .hasRow(VALUE, CREATED, LAST_UPDATED, deferredTrackedEntityAttribute, deferredTrackedEntityInstance)
                 .isExhausted();
     }
 
     @Test
     public void insert_shouldPersistTrackedEntityAttributeValueNullableInDatabase() {
-
-        long rowId = store.insert(STATE, null, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE);
+        long rowId = store.insert(null, CREATED, LAST_UPDATED, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE);
 
         Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
                 PROJECTION,
                 null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor).hasRow(STATE, null, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE)
+        assertThatCursor(cursor)
+                .hasRow(null, CREATED, LAST_UPDATED, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE)
                 .isExhausted();
     }
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistTrackedEntityAttributeValueWithInvalidTrackedEntityAttribute() {
-        store.insert(STATE, VALUE, "wrong", TRACKED_ENTITY_INSTANCE);
+        store.insert(VALUE, CREATED, LAST_UPDATED, "wrong", TRACKED_ENTITY_INSTANCE);
     }
 
     @Test(expected = SQLiteConstraintException.class)
     public void exception_persistTrackedEntityAttributeValueWithInvalidTrackedEntityInstance() {
-        store.insert(STATE, VALUE, TRACKED_ENTITY_ATTRIBUTE, "wrong");
+        store.insert(VALUE, CREATED, LAST_UPDATED, TRACKED_ENTITY_ATTRIBUTE, "wrong");
     }
 
     @Test
     public void delete_shouldDeleteTrackedEntityAttributeValueWhenDeletingTrackedEntityAttribute() {
-
         insert_shouldPersistTrackedEntityAttributeValueNullableInDatabase();
 
         database().delete(TrackedEntityAttributeModel.TABLE,
@@ -160,7 +162,6 @@ public class TrackedEntityAttributeValueStoreTests extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteTrackedEntityAttributeValueWhenDeletingTrackedEntityInstance() {
-
         insert_shouldPersistTrackedEntityAttributeValueNullableInDatabase();
 
         database().delete(TrackedEntityInstanceModel.TABLE,
@@ -171,9 +172,14 @@ public class TrackedEntityAttributeValueStoreTests extends AbsStoreTestCase {
         assertThatCursor(cursor).isExhausted();
     }
 
-    @Test
-    public void close_shouldNotCloseDatabase() {
-        store.close();
-        assertThat(database().isOpen()).isTrue();
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_trackedEntity() {
+        store.insert(VALUE, CREATED, LAST_UPDATED, null, TRACKED_ENTITY_INSTANCE);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_trackedEntityInstance() {
+        store.insert(VALUE, CREATED, LAST_UPDATED, TRACKED_ENTITY_ATTRIBUTE, null);
     }
 }

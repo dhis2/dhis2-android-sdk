@@ -34,10 +34,15 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.data.api.Field;
+
 @AutoValue
 public abstract class TrackedEntityAttributeValue {
     private static final String ATTRIBUTE = "attribute";
     private static final String VALUE = "value";
+
+    public static final Field<TrackedEntityAttributeValue, String> trackedEntityAttribute = Field.create(ATTRIBUTE);
+    public static final Field<TrackedEntityAttributeValue, String> value = Field.create(VALUE);
 
     @Nullable
     @JsonProperty(ATTRIBUTE)
@@ -50,7 +55,6 @@ public abstract class TrackedEntityAttributeValue {
     @JsonCreator
     public static TrackedEntityAttributeValue create(@JsonProperty(ATTRIBUTE) String attribute,
                                                      @JsonProperty(VALUE) String value) {
-
         return new AutoValue_TrackedEntityAttributeValue(attribute, value);
     }
 }

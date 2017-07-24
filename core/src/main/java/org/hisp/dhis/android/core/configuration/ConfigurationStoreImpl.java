@@ -37,6 +37,7 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 public class ConfigurationStoreImpl implements ConfigurationStore {
 
@@ -63,14 +64,15 @@ public class ConfigurationStoreImpl implements ConfigurationStore {
 
     @Override
     public long save(@NonNull String serverUrl) {
+        isNull(serverUrl);
 
         delete(); // Delete all rows from table. We only allow one row.
-        insertStatement.clearBindings();
         sqLiteBind(insertStatement, 1, CONFIGURATION_ID);
         sqLiteBind(insertStatement, 2, serverUrl);
-        databaseAdapter.executeInsert(ConfigurationModel.CONFIGURATION, insertStatement);
 
-        return 1;
+        long ret = databaseAdapter.executeInsert(ConfigurationModel.CONFIGURATION, insertStatement);
+        insertStatement.clearBindings();
+        return ret;
     }
 
     @Nullable

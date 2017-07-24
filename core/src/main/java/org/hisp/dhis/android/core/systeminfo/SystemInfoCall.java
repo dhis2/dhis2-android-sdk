@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.common.Call;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -55,7 +55,6 @@ public class SystemInfoCall implements Call<Response<SystemInfo>> {
         this.systemInfoService = systemInfoService;
         this.resourceStore = resourceStore;
     }
-
 
     @Override
     public boolean isExecuted() {

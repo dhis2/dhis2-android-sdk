@@ -32,10 +32,10 @@ import java.util.List;
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class ProgramRuleVariableHandler {
-    private final ProgramRuleVariableModelStore programRuleVariableModelStore;
+    private final ProgramRuleVariableStore programRuleVariableStore;
 
-    public ProgramRuleVariableHandler(ProgramRuleVariableModelStore programRuleVariableModelStore) {
-        this.programRuleVariableModelStore = programRuleVariableModelStore;
+    public ProgramRuleVariableHandler(ProgramRuleVariableStore programRuleVariableStore) {
+        this.programRuleVariableStore = programRuleVariableStore;
     }
 
     public void handleProgramRuleVariables(List<ProgramRuleVariable> programRuleVariables) {
@@ -53,7 +53,7 @@ public class ProgramRuleVariableHandler {
             ProgramRuleVariable programRuleVariable = programRuleVariables.get(i);
 
             if (isDeleted(programRuleVariable)) {
-                programRuleVariableModelStore.delete(programRuleVariable.uid());
+                programRuleVariableStore.delete(programRuleVariable.uid());
             } else {
                 String programStageUid = null;
                 if(programRuleVariable.programStage() != null) {
@@ -70,7 +70,7 @@ public class ProgramRuleVariableHandler {
                     trackedEntityAttributeUid = programRuleVariable.trackedEntityAttribute().uid();
                 }
 
-                int updatedRow = programRuleVariableModelStore.update(
+                int updatedRow = programRuleVariableStore.update(
                         programRuleVariable.uid(), programRuleVariable.code(),
                         programRuleVariable.name(), programRuleVariable.displayName(),
                         programRuleVariable.created(), programRuleVariable.lastUpdated(),
@@ -82,7 +82,7 @@ public class ProgramRuleVariableHandler {
                 );
 
                 if (updatedRow <= 0) {
-                    programRuleVariableModelStore.insert(
+                    programRuleVariableStore.insert(
                             programRuleVariable.uid(), programRuleVariable.code(),
                             programRuleVariable.name(), programRuleVariable.displayName(),
                             programRuleVariable.created(), programRuleVariable.lastUpdated(),

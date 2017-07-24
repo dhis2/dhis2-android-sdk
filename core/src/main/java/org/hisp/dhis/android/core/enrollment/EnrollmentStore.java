@@ -34,11 +34,15 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.common.State;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public interface EnrollmentStore {
     long insert(@NonNull String uid,
                 @Nullable Date created,
                 @Nullable Date lastUpdated,
+                @Nullable String createdAtClient,
+                @Nullable String lastUpdatedAtClient,
                 @NonNull String organisationUnit,
                 @NonNull String program,
                 @Nullable Date dateOfEnrollment,
@@ -51,5 +55,26 @@ public interface EnrollmentStore {
                 @Nullable State state
     );
 
-    void close();
+    int delete(@NonNull String uid);
+
+    int update(@NonNull String uid,
+               @NonNull Date created,
+               @NonNull Date lastUpdated,
+               @Nullable String createdAtClient,
+               @Nullable String lastUpdatedAtClient,
+               @NonNull String organisationUnit,
+               @NonNull String program,
+               @NonNull Date dateOfEnrollment,
+               @Nullable Date dateOfIncident,
+               @Nullable Boolean followUp,
+               @NonNull EnrollmentStatus enrollmentStatus,
+               @NonNull String trackedEntityInstance,
+               @Nullable String latitude,
+               @Nullable String longitude,
+               @NonNull State state,
+               @NonNull String whereEnrollmentUid);
+
+    int setState(@NonNull String uid, @NonNull State state);
+
+    Map<String, List<Enrollment>> query();
 }

@@ -34,23 +34,52 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.common.State;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public interface EventStore {
     long insert(@NonNull String uid,
                 @Nullable String enrollmentUid,
-                @Nullable Date created,
-                @Nullable Date lastUpdated,
-                @Nullable EventStatus status,
+                @NonNull Date created,
+                @NonNull Date lastUpdated,
+                @Nullable String createdAtClient,
+                @Nullable String lastUpdatedAtClient,
+                @NonNull EventStatus status,
                 @Nullable String latitude,
                 @Nullable String longitude,
                 @NonNull String program,
                 @NonNull String programStage,
                 @NonNull String organisationUnit,
-                @Nullable Date eventDate,
+                @NonNull Date eventDate,
                 @Nullable Date completedDate,
                 @Nullable Date dueDate,
-                @Nullable State state
+                @NonNull State state
     );
 
-    void close();
+    int update(@NonNull String uid,
+               @Nullable String enrollmentUid,
+               @NonNull Date created,
+               @NonNull Date lastUpdated,
+               @Nullable String createdAtClient,
+               @Nullable String lastUpdatedAtClient,
+               @NonNull EventStatus eventStatus,
+               @Nullable String latitude,
+               @Nullable String longitude,
+               @NonNull String program,
+               @NonNull String programStage,
+               @NonNull String organisationUnit,
+               @NonNull Date eventDate,
+               @Nullable Date completedDate,
+               @Nullable Date dueDate,
+               @NonNull State state,
+               @NonNull String whereEventUid
+    );
+
+    int delete(@NonNull String uid);
+
+    int setState(@NonNull String uid, @NonNull State state);
+
+    Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost();
+
+    List<Event> querySingleEventsToPost();
 }

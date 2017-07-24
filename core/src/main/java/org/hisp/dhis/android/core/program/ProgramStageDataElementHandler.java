@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.dataelement.DataElementHandler;
 
 import java.util.List;
@@ -37,29 +39,27 @@ public class ProgramStageDataElementHandler {
     private final ProgramStageDataElementStore programStageDataElementStore;
     private final DataElementHandler dataElementHandler;
 
-    public ProgramStageDataElementHandler(ProgramStageDataElementStore programStageDataElementStore,
-                                          DataElementHandler dataElementHandler) {
+    ProgramStageDataElementHandler(ProgramStageDataElementStore programStageDataElementStore,
+                                   DataElementHandler dataElementHandler) {
         this.programStageDataElementStore = programStageDataElementStore;
         this.dataElementHandler = dataElementHandler;
     }
 
-    public void handleProgramStageDataElements(String programStageSectionUid,
-                                               List<ProgramStageDataElement> programStageDataElements) {
+    void handleProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
         if (programStageDataElements == null) {
             return;
         }
-        deleteOrPersistProgramStageDataElements(programStageSectionUid, programStageDataElements);
+        deleteOrPersistProgramStageDataElements(programStageDataElements);
     }
 
     /**
      * This method deletes or persists program stage data elements and applies the changes to database.
      * Method will call update with or without programStageSectionUid depending if it exists.
      *
-     * @param programStageSectionUid
+     *
      * @param programStageDataElements
      */
-    private void deleteOrPersistProgramStageDataElements(String programStageSectionUid,
-                                                         List<ProgramStageDataElement> programStageDataElements) {
+    private void deleteOrPersistProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
         int size = programStageDataElements.size();
         for (int i = 0; i < size; i++) {
             ProgramStageDataElement programStageDataElement = programStageDataElements.get(i);
@@ -68,8 +68,8 @@ public class ProgramStageDataElementHandler {
                 programStageDataElementStore.delete(programStageDataElement.uid());
             } else {
                 int updatedRow;
-                if (programStageSectionUid == null) {
-                    updatedRow = programStageDataElementStore.updateWithoutSection(
+
+                    updatedRow = programStageDataElementStore.update(
                             programStageDataElement.uid(),
                             programStageDataElement.code(), programStageDataElement.name(),
                             programStageDataElement.displayName(), programStageDataElement.created(),
@@ -78,18 +78,7 @@ public class ProgramStageDataElementHandler {
                             programStageDataElement.sortOrder(), programStageDataElement.allowFutureDate(),
                             programStageDataElement.dataElement().uid(), programStageDataElement.programStage().uid(),
                             programStageDataElement.uid());
-                } else {
-                    updatedRow = programStageDataElementStore.updateWithSection(
-                            programStageDataElement.uid(),
-                            programStageDataElement.code(), programStageDataElement.name(),
-                            programStageDataElement.displayName(), programStageDataElement.created(),
-                            programStageDataElement.lastUpdated(), programStageDataElement.displayInReports(),
-                            programStageDataElement.compulsory(), programStageDataElement.allowProvidedElsewhere(),
-                            programStageDataElement.sortOrder(), programStageDataElement.allowFutureDate(),
-                            programStageDataElement.dataElement().uid(), programStageDataElement.programStage().uid(),
-                            programStageSectionUid, programStageDataElement.uid()
-                    );
-                }
+
 
                 if (updatedRow <= 0) {
                     programStageDataElementStore.insert(
@@ -99,11 +88,16 @@ public class ProgramStageDataElementHandler {
                             programStageDataElement.displayInReports(), programStageDataElement.compulsory(),
                             programStageDataElement.allowProvidedElsewhere(), programStageDataElement.sortOrder(),
                             programStageDataElement.allowFutureDate(), programStageDataElement.dataElement().uid(),
-                            programStageDataElement.programStage().uid(), programStageSectionUid
-                            );
+                            programStageDataElement.programStage().uid(), null
+                    );
                 }
             }
             dataElementHandler.handleDataElement(programStageDataElement.dataElement());
         }
+    }
+
+    void updateProgramStageDataElementWithProgramStageSectionLink(@NonNull String programStageSectionUid,
+                                                                  @NonNull String dataElementUid) {
+        programStageDataElementStore.updateWithProgramStageSectionLink(programStageSectionUid, dataElementUid);
     }
 }

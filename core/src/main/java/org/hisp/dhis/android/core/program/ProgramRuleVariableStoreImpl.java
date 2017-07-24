@@ -37,11 +37,12 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
 })
-public class ProgramRuleVariableModelStoreImpl implements ProgramRuleVariableModelStore {
+public class ProgramRuleVariableStoreImpl implements ProgramRuleVariableStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             ProgramRuleVariableModel.TABLE + " (" +
@@ -73,12 +74,10 @@ public class ProgramRuleVariableModelStoreImpl implements ProgramRuleVariableMod
             ProgramRuleVariableModel.Columns.DATA_ELEMENT + " =?, " +
             ProgramRuleVariableModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " =?, " +
             ProgramRuleVariableModel.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE + " =? " +
-            " WHERE " +
-            ProgramRuleVariableModel.Columns.UID + " =?;";
+            " WHERE " + ProgramRuleVariableModel.Columns.UID + " =?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + ProgramRuleVariableModel.TABLE +
-            " WHERE " +
-            ProgramRuleVariableModel.Columns.UID + " =?;";
+            " WHERE " + ProgramRuleVariableModel.Columns.UID + " =?;";
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -86,7 +85,7 @@ public class ProgramRuleVariableModelStoreImpl implements ProgramRuleVariableMod
 
     private final DatabaseAdapter databaseAdapter;
 
-    public ProgramRuleVariableModelStoreImpl(DatabaseAdapter databaseAdapter) {
+    public ProgramRuleVariableStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
         this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
         this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
@@ -100,13 +99,14 @@ public class ProgramRuleVariableModelStoreImpl implements ProgramRuleVariableMod
                        @NonNull String program, @Nullable String programStage,
                        @Nullable String dataElement, @Nullable String trackedEntityAttribute,
                        @Nullable ProgramRuleVariableSourceType programRuleVariableSourceType) {
+        isNull(uid);
+        isNull(program);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, useCodeForOptionSet,
                 program, programStage, dataElement, trackedEntityAttribute, programRuleVariableSourceType);
 
         // execute and clear bindings
         Long insert = databaseAdapter.executeInsert(ProgramRuleVariableModel.TABLE, insertStatement);
         insertStatement.clearBindings();
-
         return insert;
     }
 
@@ -117,6 +117,9 @@ public class ProgramRuleVariableModelStoreImpl implements ProgramRuleVariableMod
                       @Nullable String trackedEntityAttribute,
                       @Nullable ProgramRuleVariableSourceType programRuleVariableSourceType,
                       @NonNull String whereProgramRuleVariableUid) {
+        isNull(uid);
+        isNull(program);
+        isNull(whereProgramRuleVariableUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, useCodeForOptionSet,
                 program, programStage, dataElement, trackedEntityAttribute, programRuleVariableSourceType);
 
@@ -126,19 +129,18 @@ public class ProgramRuleVariableModelStoreImpl implements ProgramRuleVariableMod
         // execute and clear bindings
         int update = databaseAdapter.executeUpdateDelete(ProgramRuleVariableModel.TABLE, updateStatement);
         updateStatement.clearBindings();
-
         return update;
     }
 
     @Override
     public int delete(String uid) {
+        isNull(uid);
         // bind the where argument
         sqLiteBind(deleteStatement, 1, uid);
 
         // execute and clear bindings
         int delete = databaseAdapter.executeUpdateDelete(ProgramRuleVariableModel.TABLE, deleteStatement);
         deleteStatement.clearBindings();
-
         return delete;
     }
 

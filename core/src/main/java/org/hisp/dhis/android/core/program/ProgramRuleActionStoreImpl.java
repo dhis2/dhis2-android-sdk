@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
@@ -111,7 +112,8 @@ public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
                        @Nullable String programStage,
                        @Nullable String dataElement,
                        @Nullable String programRule) {
-
+        isNull(uid);
+        isNull(programRule);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, data,
                 content, location, trackedEntityAttribute, programIndicator, programStageSection,
                 programRuleActionType, programStage, dataElement, programRule);
@@ -137,6 +139,9 @@ public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
                       @Nullable String dataElement,
                       @Nullable String programRule,
                       @NonNull String whereProgramRuleActionUid) {
+        isNull(uid);
+        isNull(programRule);
+        isNull(whereProgramRuleActionUid);
         bindArguments(updateStatement,
                 uid, code, name, displayName, created, lastUpdated, data,
                 content, location, trackedEntityAttribute, programIndicator, programStageSection,
@@ -154,6 +159,7 @@ public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
 
     @Override
     public int delete(String uid) {
+        isNull(uid);
         // bind the where argument
         sqLiteBind(deleteStatement, 1, uid);
 

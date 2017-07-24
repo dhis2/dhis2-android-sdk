@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.organisationunit;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.Call;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
@@ -58,6 +58,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
     private final DatabaseAdapter database;
     private final OrganisationUnitStore organisationUnitStore;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
+    private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
     private final ResourceStore resourceStore;
 
     private final Date serverDate;
@@ -69,7 +70,8 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                                 @NonNull OrganisationUnitStore organisationUnitStore,
                                 @NonNull ResourceStore resourceStore,
                                 @NonNull Date serverDate,
-                                @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore) {
+                                @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
+                                @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore) {
         this.user = user;
         this.organisationUnitService = organisationUnitService;
         this.database = database;
@@ -77,6 +79,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         this.resourceStore = resourceStore;
         this.serverDate = new Date(serverDate.getTime());
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
+        this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
     }
 
     @Override
@@ -98,8 +101,8 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
         OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
-                organisationUnitStore, userOrganisationUnitLinkStore
-        );
+                organisationUnitStore, userOrganisationUnitLinkStore,
+                organisationUnitProgramLinkStore);
 
         Transaction transaction = database.beginNewTransaction();
         try {
@@ -142,7 +145,6 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                 OrganisationUnit.displayDescription, OrganisationUnit.path, OrganisationUnit.openingDate,
                 OrganisationUnit.closedDate, OrganisationUnit.level, OrganisationUnit.deleted,
                 OrganisationUnit.parent.with(OrganisationUnit.uid),
-                //TODO: find out if programs are relevant: can they be updated on their own ?
                 OrganisationUnit.programs.with(Program.uid)
         ).build();
         return organisationUnitService.getOrganisationUnits(uid, fields, lastUpdatedFilter, true, false).execute();

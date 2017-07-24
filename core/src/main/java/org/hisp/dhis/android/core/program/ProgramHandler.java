@@ -62,46 +62,20 @@ public class ProgramHandler {
         if (program == null) {
             return;
         }
-
-        deleteOrPersistProgram(program);
-
-        // programStageHandler will invoke programStageSectionHandler, programStageDataElementHandler,
-        // programIndicatorHandler, dataElement handler and optionSetHandler
-        programStageHandler.handleProgramStage(
-                program.uid(), program.programStages()
-        );
-
-        programTrackedEntityAttributeHandler.handleProgramTrackedEntityAttributes(
-                program.programTrackedEntityAttributes()
-        );
-
-        programIndicatorHandler.handleProgramIndicator(
-                null, program.programIndicators()
-        );
-
-        programRuleHandler.handleProgramRules(program.programRules());
-
-        programRuleVariableHandler.handleProgramRuleVariables(program.programRuleVariables());
-
-        relationshipHandler.handleRelationshipType(program.relationshipType());
-
-        // TODO: delete or persist categoryCombos
-    }
-
-
-    private void deleteOrPersistProgram(Program program) {
         if (isDeleted(program)) {
             programStore.delete(program.uid());
         } else {
             String relatedProgramUid = null;
-
             if (program.relatedProgram() != null) {
                 relatedProgramUid = program.relatedProgram().uid();
             }
-
             String trackedEntityUid = null;
             if (program.trackedEntity() != null) {
                 trackedEntityUid = program.trackedEntity().uid();
+            }
+            String relationshipTypeUid = null;
+            if (program.relationshipType() != null) {
+                relationshipTypeUid = program.relationshipType().uid();
             }
 
             int updatedRow = programStore.update(
@@ -113,7 +87,7 @@ public class ProgramHandler {
                     program.dataEntryMethod(), program.ignoreOverdueEvents(), program.relationshipFromA(),
                     program.selectIncidentDatesInFuture(), program.captureCoordinates(),
                     program.useFirstStageDuringRegistration(), program.displayFrontPageList(),
-                    program.programType(), program.relationshipText(), program.relationshipText(),
+                    program.programType(), relationshipTypeUid, program.relationshipText(),
                     relatedProgramUid, trackedEntityUid, program.uid());
 
             if (updatedRow <= 0) {
@@ -126,10 +100,19 @@ public class ProgramHandler {
                         program.dataEntryMethod(), program.ignoreOverdueEvents(), program.relationshipFromA(),
                         program.selectIncidentDatesInFuture(), program.captureCoordinates(),
                         program.useFirstStageDuringRegistration(), program.displayFrontPageList(),
-                        program.programType(), program.relationshipText(), program.relationshipText(),
-                        relatedProgramUid, trackedEntityUid
-                );
+                        program.programType(), relationshipTypeUid, program.relationshipText(),
+                        relatedProgramUid, trackedEntityUid);
             }
         }
+        // programStageHandler will invoke programStageSectionHandler, programStageDataElementHandler,
+        // programIndicatorHandler, dataElement handler and optionSetHandler
+        programStageHandler.handleProgramStage(program.uid(), program.programStages());
+        programTrackedEntityAttributeHandler.handleProgramTrackedEntityAttributes(
+                program.programTrackedEntityAttributes());
+        programIndicatorHandler.handleProgramIndicator(null, program.programIndicators());
+        programRuleHandler.handleProgramRules(program.programRules());
+        programRuleVariableHandler.handleProgramRuleVariables(program.programRuleVariables());
+        relationshipHandler.handleRelationshipType(program.relationshipType());
+        // TODO: delete or persist categoryCombos
     }
 }

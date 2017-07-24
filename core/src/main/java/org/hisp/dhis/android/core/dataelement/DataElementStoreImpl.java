@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
@@ -113,7 +114,7 @@ public class DataElementStoreImpl implements DataElementStore {
                        @Nullable String formName, @Nullable String numberType,
                        @Nullable String domainType, @Nullable String dimension,
                        @Nullable String displayFormName, @Nullable String optionSet) {
-
+        isNull(uid);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
                 description, displayDescription, valueType, zeroIsSignificant, aggregationOperator, formName,
                 numberType, domainType, dimension, displayFormName, optionSet);
@@ -121,19 +122,18 @@ public class DataElementStoreImpl implements DataElementStore {
         // execute and clear bindings
         Long insert = databaseAdapter.executeInsert(DataElementModel.TABLE, insertStatement);
         insertStatement.clearBindings();
-
         return insert;
     }
 
     @Override
     public int delete(String uid) {
+        isNull(uid);
         // bind the where argument
         sqLiteBind(deleteStatement, 1, uid);
 
         // execute and clear bindings
         int delete = databaseAdapter.executeUpdateDelete(DataElementModel.TABLE, deleteStatement);
         deleteStatement.clearBindings();
-
         return delete;
     }
 
@@ -146,6 +146,8 @@ public class DataElementStoreImpl implements DataElementStore {
                       @Nullable String formName, @Nullable String numberType, @Nullable String domainType,
                       @Nullable String dimension, @Nullable String displayFormName, @Nullable String optionSet,
                       @NonNull String whereDataElementUid) {
+        isNull(uid);
+        isNull(whereDataElementUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, shortName,
                 displayShortName, description, displayDescription, valueType, zeroIsSignificant, aggregationOperator,
                 formName, numberType, domainType, dimension, displayFormName, optionSet);
@@ -156,7 +158,6 @@ public class DataElementStoreImpl implements DataElementStore {
         // execute and clear bindings
         int update = databaseAdapter.executeUpdateDelete(DataElementModel.TABLE, updateStatement);
         updateStatement.clearBindings();
-
         return update;
     }
 
@@ -179,7 +180,7 @@ public class DataElementStoreImpl implements DataElementStore {
         sqLiteBind(sqLiteStatement, 8, displayShortName);
         sqLiteBind(sqLiteStatement, 9, description);
         sqLiteBind(sqLiteStatement, 10, displayDescription);
-        sqLiteBind(sqLiteStatement, 11, valueType.name());
+        sqLiteBind(sqLiteStatement, 11, valueType);
         sqLiteBind(sqLiteStatement, 12, zeroIsSignificant);
         sqLiteBind(sqLiteStatement, 13, aggregationOperator);
         sqLiteBind(sqLiteStatement, 14, formName);

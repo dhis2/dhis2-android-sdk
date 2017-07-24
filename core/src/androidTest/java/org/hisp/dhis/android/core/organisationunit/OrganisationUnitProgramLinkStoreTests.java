@@ -47,19 +47,19 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
-public class OrganisationUnitProgramLinkModelStoreIntegrationTest extends AbsStoreTestCase {
+public class OrganisationUnitProgramLinkStoreTests extends AbsStoreTestCase {
     private static final Long ID = 3L;
     private static final String ORGANISATION_UNIT_UID = "test_organisation_unit_uid";
     private static final String PROGRAM_UID = "test_program_uid";
     private static final String[] PROJECTION = {Columns.ORGANISATION_UNIT, Columns.PROGRAM};
 
-    private OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
+    private OrganisationUnitProgramLinkStore store;
 
     @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        organisationUnitProgramLinkStore = new OrganisationUnitProgramLinkStoreImpl(databaseAdapter());
+        store = new OrganisationUnitProgramLinkStoreImpl(databaseAdapter());
     }
 
     @Test
@@ -71,12 +71,12 @@ public class OrganisationUnitProgramLinkModelStoreIntegrationTest extends AbsSto
         ContentValues program = CreateProgramUtils.create(ID, PROGRAM_UID, null, null, null);
         database().insert(ProgramModel.TABLE, null, program);
 
-        long rowId = organisationUnitProgramLinkStore.insert(ORGANISATION_UNIT_UID, PROGRAM_UID);
+        long rowId = store.insert(ORGANISATION_UNIT_UID, PROGRAM_UID);
 
         // checking if successful insert
         assertThat(rowId).isEqualTo(1L);
 
-        Cursor cursor = database().query(OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK, PROJECTION,
+        Cursor cursor = database().query(OrganisationUnitProgramLinkModel.TABLE, PROJECTION,
                 null, null, null, null, null);
 
         assertThatCursor(cursor).hasRow(ORGANISATION_UNIT_UID, PROGRAM_UID).isExhausted();
@@ -87,7 +87,7 @@ public class OrganisationUnitProgramLinkModelStoreIntegrationTest extends AbsSto
         ContentValues program = CreateProgramUtils.create(ID, PROGRAM_UID, null, null, null);
         database().insert(ProgramModel.TABLE, null, program);
 
-        organisationUnitProgramLinkStore.insert(ORGANISATION_UNIT_UID, PROGRAM_UID);
+        store.insert(ORGANISATION_UNIT_UID, PROGRAM_UID);
     }
 
     @Test(expected = SQLiteConstraintException.class)
@@ -95,7 +95,7 @@ public class OrganisationUnitProgramLinkModelStoreIntegrationTest extends AbsSto
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(ID, ORGANISATION_UNIT_UID);
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
 
-        organisationUnitProgramLinkStore.insert(ORGANISATION_UNIT_UID, PROGRAM_UID);
+        store.insert(ORGANISATION_UNIT_UID, PROGRAM_UID);
     }
 
     @Test
@@ -113,11 +113,11 @@ public class OrganisationUnitProgramLinkModelStoreIntegrationTest extends AbsSto
         organisationUnitProgramLink.put(Columns.PROGRAM, PROGRAM_UID);
 
         database().insert(
-                OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK, null, organisationUnitProgramLink);
+                OrganisationUnitProgramLinkModel.TABLE, null, organisationUnitProgramLink);
 
         String[] projection = {Columns.ID, Columns.ORGANISATION_UNIT, Columns.PROGRAM};
 
-        Cursor cursor = database().query(OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK, projection,
+        Cursor cursor = database().query(OrganisationUnitProgramLinkModel.TABLE, projection,
                 null, null, null, null, null);
 
         // checking that link was successfully inserted
@@ -126,7 +126,7 @@ public class OrganisationUnitProgramLinkModelStoreIntegrationTest extends AbsSto
         database().delete(OrganisationUnitModel.TABLE,
                 OrganisationUnitModel.Columns.UID + " =?", new String[]{ORGANISATION_UNIT_UID});
 
-        cursor = database().query(OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK, projection,
+        cursor = database().query(OrganisationUnitProgramLinkModel.TABLE, projection,
                 null, null, null, null, null);
 
         assertThatCursor(cursor).isExhausted();
@@ -147,13 +147,24 @@ public class OrganisationUnitProgramLinkModelStoreIntegrationTest extends AbsSto
         organisationUnitProgramLink.put(Columns.PROGRAM, PROGRAM_UID);
 
         database().insert(
-                OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK, null, organisationUnitProgramLink);
+                OrganisationUnitProgramLinkModel.TABLE, null, organisationUnitProgramLink);
 
         String[] projection = {Columns.ID, Columns.ORGANISATION_UNIT, Columns.PROGRAM};
 
-        Cursor cursor = database().query(OrganisationUnitProgramLinkModel.ORGANISATION_UNIT_PROGRAM_LINK, projection,
+        Cursor cursor = database().query(OrganisationUnitProgramLinkModel.TABLE, projection,
                 null, null, null, null, null);
 
         assertThatCursor(cursor).hasRow(ID, ORGANISATION_UNIT_UID, PROGRAM_UID).isExhausted();
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_organisationUnit() {
+        store.insert(null, PROGRAM_UID);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void insert_null_program() {
+        store.insert(ORGANISATION_UNIT_UID, null);
+    }
+
 }

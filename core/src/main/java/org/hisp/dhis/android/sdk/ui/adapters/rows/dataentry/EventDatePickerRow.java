@@ -56,10 +56,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class EventDatePickerRow extends Row {
+public class EventDatePickerRow extends AbsDatePickerRow {
     private static final String TAG = "EventDatePickerRow";
-    private static final String EMPTY_FIELD = "";
-    private static final String DATE_FORMAT = "yyyy-MM-dd";
     private final Event mEvent;
     private final boolean mAllowDatesInFuture;
 
@@ -159,43 +157,6 @@ public class EventDatePickerRow extends Row {
             pickerInvoker.setText(eventDate);
         }
 
-    }
-
-    private static class OnEditTextClickListener implements OnClickListener {
-        private final Context context;
-        private final DateSetListener listener;
-        private final boolean allowDatesInFuture;
-        private TextView dateText;
-
-        public OnEditTextClickListener(Context context,
-                DateSetListener listener, boolean allowDatesInFuture, TextView dateText) {
-            this.context = context;
-            this.listener = listener;
-            this.allowDatesInFuture = allowDatesInFuture;
-            this.dateText = dateText;
-        }
-
-        @Override
-        public void onClick(View view) {
-            Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.US);
-            if (!dateText.getText().toString().isEmpty()) {
-                try {
-                    calendar.setTime(
-                            simpleDateFormat.parse(dateText.getText().toString()));
-                } catch (ParseException e) {
-                    Log.e(TAG, "Invalid date format, can't parse to put in the picker");
-                    e.printStackTrace();
-                }
-            }
-            DatePickerDialog picker = new DatePickerDialog(context, listener,
-                    calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH));
-            if(!allowDatesInFuture) {
-                picker.getDatePicker().setMaxDate(DateTime.now().getMillis());
-            }
-            picker.show();
-        }
     }
 
     private static class ClearButtonListener implements OnClickListener {

@@ -1,11 +1,7 @@
 package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
 
-import static org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.AbsEnrollmentDatePickerRow.EMPTY_FIELD;
-
 import android.support.v4.app.FragmentManager;
-import android.text.InputFilter;
-import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

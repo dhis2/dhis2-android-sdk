@@ -34,7 +34,6 @@ import static android.text.TextUtils.isEmpty;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -51,15 +50,8 @@ import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-
-public class EventDueDatePickerRow extends Row {
+public class EventDueDatePickerRow extends AbsDatePickerRow {
     private static final String TAG = "EventDueDatePickerRow";
-    private static final String EMPTY_FIELD = "";
-    private static final String DATE_FORMAT = "yyyy-MM-dd";
     private final Event mEvent;
     private final boolean mAllowDatesInFuture;
 
@@ -160,43 +152,6 @@ public class EventDueDatePickerRow extends Row {
         }
     }
 
-    private static class OnEditTextClickListener implements OnClickListener {
-        private final Context context;
-        private final DateSetListener listener;
-        private final boolean allowDatesInFuture;
-        private TextView dateText;
-
-        public OnEditTextClickListener(Context context,
-                DateSetListener listener, boolean allowDatesInFuture, TextView dateText) {
-            this.context = context;
-            this.listener = listener;
-            this.dateText = dateText;
-
-            this.allowDatesInFuture = allowDatesInFuture;
-        }
-
-        @Override
-        public void onClick(View view) {
-            Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.US);
-            if (!dateText.getText().toString().isEmpty()) {
-                try {
-                    calendar.setTime(
-                            simpleDateFormat.parse(dateText.getText().toString()));
-                } catch (ParseException e) {
-                    Log.e(TAG, "Invalid date format, can't parse to put in the picker");
-                    e.printStackTrace();
-                }
-            }
-            DatePickerDialog picker = new DatePickerDialog(context, listener,
-                    calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH));
-            if(!allowDatesInFuture) {
-                picker.getDatePicker().setMaxDate(DateTime.now().getMillis());
-            }
-            picker.show();
-        }
-    }
 
     private static class ClearButtonListener implements OnClickListener {
         private final TextView textView;

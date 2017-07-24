@@ -13,8 +13,8 @@ import javax.annotation.Nonnull;
 @AutoValue
 abstract class RuleExpression {
     static final String VARIABLE_PATTERN = "[A#CV]\\{(\\w+.?\\w*)\\}";
-    static final String FUNCTION_PATTERN = "(d2:(\\w+.?\\w*)\\( *(([\\d/\\*\\+\\-%\\. ]+)|" +
-            "( *'[^']*'))*( *, *(([\\d/\\*\\+\\-%\\. ]+)|'[^']*'))* *\\))";
+    static final String FUNCTION_PATTERN = "d2:(\\w+.?\\w*)\\( *(([\\d/\\*\\+\\-%\\. ]+)|" +
+            "( *'[^']*'))*( *, *(([\\d/\\*\\+\\-%\\. ]+)|'[^']*'))* *\\)";
 
     static final Pattern VARIABLE_PATTERN_COMPILED = Pattern.compile(VARIABLE_PATTERN);
     static final Pattern FUNCTION_PATTERN_COMPILED = Pattern.compile(FUNCTION_PATTERN);

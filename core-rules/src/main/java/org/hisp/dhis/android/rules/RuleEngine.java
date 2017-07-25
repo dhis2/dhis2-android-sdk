@@ -14,6 +14,7 @@ import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+// ToDo: escaping quotes in data values passed from outside
 public final class RuleEngine {
 
     @Nonnull
@@ -67,8 +68,9 @@ public final class RuleEngine {
                 .ruleEvents(ruleEvents)
                 .build();
 
-        return new RuleEngineExecution(ruleEngineContext.expressionEvaluator(),
-                ruleEngineContext.rules(), valueMap);
+        RuleExpressionProcessor expressionProcessor = new RuleExpressionProcessor(
+                ruleEngineContext.expressionEvaluator(), valueMap);
+        return new RuleEngineExecution(expressionProcessor, ruleEngineContext.rules());
     }
 
     @Nonnull

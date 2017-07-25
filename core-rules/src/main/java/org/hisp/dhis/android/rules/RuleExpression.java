@@ -2,9 +2,9 @@ package org.hisp.dhis.android.rules;
 
 import com.google.auto.value.AutoValue;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,10 +23,10 @@ abstract class RuleExpression {
     public abstract String expression();
 
     @Nonnull
-    public abstract List<String> variables();
+    public abstract Set<String> variables();
 
     @Nonnull
-    public abstract List<String> functions();
+    public abstract Set<String> functions();
 
     @Nonnull
     static RuleExpression from(@Nonnull String expression) {
@@ -34,8 +34,8 @@ abstract class RuleExpression {
             throw new NullPointerException("expression == null");
         }
 
-        List<String> variables = new ArrayList<>();
-        List<String> functions = new ArrayList<>();
+        Set<String> variables = new HashSet<>();
+        Set<String> functions = new HashSet<>();
 
         Matcher variableMatcher = VARIABLE_PATTERN_COMPILED.matcher(expression);
         Matcher functionMatcher = FUNCTION_PATTERN_COMPILED.matcher(expression);
@@ -49,7 +49,7 @@ abstract class RuleExpression {
             functions.add(functionMatcher.group());
         }
 
-        return new AutoValue_RuleExpression(expression, Collections.unmodifiableList(variables),
-                Collections.unmodifiableList(functions));
+        return new AutoValue_RuleExpression(expression, Collections.unmodifiableSet(variables),
+                Collections.unmodifiableSet(functions));
     }
 }

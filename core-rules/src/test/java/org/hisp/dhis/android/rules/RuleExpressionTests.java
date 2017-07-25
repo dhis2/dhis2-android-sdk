@@ -16,8 +16,8 @@ public class RuleExpressionTests {
 
         RuleExpression ruleExpression = RuleExpression.from(expression);
         assertThat(ruleExpression.variables().size()).isEqualTo(2);
-        assertThat(ruleExpression.variables().get(0)).isEqualTo("#{test_variable_one}");
-        assertThat(ruleExpression.variables().get(1)).isEqualTo("#{test_variable_two}");
+        assertThat(ruleExpression.variables()).contains("#{test_variable_one}");
+        assertThat(ruleExpression.variables()).contains("#{test_variable_two}");
         assertThat(ruleExpression.functions().size()).isEqualTo(0);
     }
 
@@ -27,8 +27,8 @@ public class RuleExpressionTests {
 
         RuleExpression ruleExpression = RuleExpression.from(expression);
         assertThat(ruleExpression.variables().size()).isEqualTo(2);
-        assertThat(ruleExpression.variables().get(0)).isEqualTo("A{test_variable_one}");
-        assertThat(ruleExpression.variables().get(1)).isEqualTo("A{test_variable_two}");
+        assertThat(ruleExpression.variables()).contains("A{test_variable_one}");
+        assertThat(ruleExpression.variables()).contains("A{test_variable_two}");
         assertThat(ruleExpression.functions().size()).isEqualTo(0);
     }
 
@@ -38,8 +38,8 @@ public class RuleExpressionTests {
 
         RuleExpression ruleExpression = RuleExpression.from(expression);
         assertThat(ruleExpression.variables().size()).isEqualTo(2);
-        assertThat(ruleExpression.variables().get(0)).isEqualTo("V{test_variable_one}");
-        assertThat(ruleExpression.variables().get(1)).isEqualTo("V{test_variable_two}");
+        assertThat(ruleExpression.variables()).contains("V{test_variable_one}");
+        assertThat(ruleExpression.variables()).contains("V{test_variable_two}");
         assertThat(ruleExpression.functions().size()).isEqualTo(0);
     }
 
@@ -49,8 +49,8 @@ public class RuleExpressionTests {
 
         RuleExpression ruleExpression = RuleExpression.from(expression);
         assertThat(ruleExpression.variables().size()).isEqualTo(2);
-        assertThat(ruleExpression.variables().get(0)).isEqualTo("C{test_variable_one}");
-        assertThat(ruleExpression.variables().get(1)).isEqualTo("C{test_variable_two}");
+        assertThat(ruleExpression.variables()).contains("C{test_variable_one}");
+        assertThat(ruleExpression.variables()).contains("C{test_variable_two}");
         assertThat(ruleExpression.functions().size()).isEqualTo(0);
     }
 
@@ -61,10 +61,25 @@ public class RuleExpressionTests {
 
         RuleExpression ruleExpression = RuleExpression.from(expression);
         assertThat(ruleExpression.variables().size()).isEqualTo(4);
-        assertThat(ruleExpression.variables().get(0)).isEqualTo("A{test_variable_one}");
-        assertThat(ruleExpression.variables().get(1)).isEqualTo("C{test_variable_two}");
-        assertThat(ruleExpression.variables().get(2)).isEqualTo("V{test_variable_three}");
-        assertThat(ruleExpression.variables().get(3)).isEqualTo("#{test_variable_four}");
+        assertThat(ruleExpression.variables()).contains("A{test_variable_one}");
+        assertThat(ruleExpression.variables()).contains("C{test_variable_two}");
+        assertThat(ruleExpression.variables()).contains("V{test_variable_three}");
+        assertThat(ruleExpression.variables()).contains("#{test_variable_four}");
+        assertThat(ruleExpression.functions().size()).isEqualTo(0);
+    }
+
+    @Test
+    public void fromShouldReturnExpressionWithAllVariablesWithoutDuplicates() {
+        String expression = "A{test_variable_one} <0 && C{test_variable_two} == '' && " +
+                "V{test_variable_three} <0 && #{test_variable_four} == '' && " +
+                "A{test_variable_one} + C{test_variable_two} == 10";
+
+        RuleExpression ruleExpression = RuleExpression.from(expression);
+        assertThat(ruleExpression.variables().size()).isEqualTo(4);
+        assertThat(ruleExpression.variables()).contains("A{test_variable_one}");
+        assertThat(ruleExpression.variables()).contains("C{test_variable_two}");
+        assertThat(ruleExpression.variables()).contains("V{test_variable_three}");
+        assertThat(ruleExpression.variables()).contains("#{test_variable_four}");
         assertThat(ruleExpression.functions().size()).isEqualTo(0);
     }
 
@@ -121,8 +136,19 @@ public class RuleExpressionTests {
         RuleExpression ruleExpression = RuleExpression.from("d2:floor(16.4) + d2:ceil(8.7)");
 
         assertThat(ruleExpression.functions().size()).isEqualTo(2);
-        assertThat(ruleExpression.functions().get(0)).isEqualTo("d2:floor(16.4)");
-        assertThat(ruleExpression.functions().get(1)).isEqualTo("d2:ceil(8.7)");
+        assertThat(ruleExpression.functions()).contains("d2:floor(16.4)");
+        assertThat(ruleExpression.functions()).contains("d2:ceil(8.7)");
+    }
+
+    @Test
+    public void fromShouldReturnExpressionWithFunctionsWithoutDuplicates() {
+        RuleExpression ruleExpression = RuleExpression.from("d2:floor(16.4) + " +
+                "d2:ceil(8.7) + d2:ceil(8.7) + d2:floor(15.9)");
+
+        assertThat(ruleExpression.functions().size()).isEqualTo(3);
+        assertThat(ruleExpression.functions()).contains("d2:floor(16.4)");
+        assertThat(ruleExpression.functions()).contains("d2:ceil(8.7)");
+        assertThat(ruleExpression.functions()).contains("d2:floor(15.9)");
     }
 
     @Test
@@ -132,14 +158,13 @@ public class RuleExpressionTests {
                 "&& d2:ceil(d2:floor(d2:floor(9.8))) == A{test_variable_two}");
 
         assertThat(ruleExpression.variables().size()).isEqualTo(2);
-        assertThat(ruleExpression.variables().get(0)).isEqualTo("A{test_variable_one}");
-        assertThat(ruleExpression.variables().get(1)).isEqualTo("A{test_variable_two}");
+        assertThat(ruleExpression.variables()).contains("A{test_variable_one}");
+        assertThat(ruleExpression.variables()).contains("A{test_variable_two}");
 
         assertThat(ruleExpression.functions().size()).isEqualTo(2);
-        assertThat(ruleExpression.functions().get(0)).isEqualTo("d2:ceil(8.7)");
-        assertThat(ruleExpression.functions().get(1)).isEqualTo("d2:floor(9.8)");
+        assertThat(ruleExpression.functions()).contains("d2:ceil(8.7)");
+        assertThat(ruleExpression.functions()).contains("d2:floor(9.8)");
     }
-
 
     @Test
     public void fromShouldReturnExpressionWithFunctionsAndVariables() {
@@ -147,11 +172,11 @@ public class RuleExpressionTests {
                 "C{test_variable_two} == '' && (d2:floor(16.4) + d2:ceil(8.7)) == 20");
 
         assertThat(ruleExpression.variables().size()).isEqualTo(2);
-        assertThat(ruleExpression.variables().get(0)).isEqualTo("A{test_variable_one}");
-        assertThat(ruleExpression.variables().get(1)).isEqualTo("C{test_variable_two}");
+        assertThat(ruleExpression.variables()).contains("A{test_variable_one}");
+        assertThat(ruleExpression.variables()).contains("C{test_variable_two}");
 
         assertThat(ruleExpression.functions().size()).isEqualTo(2);
-        assertThat(ruleExpression.functions().get(0)).isEqualTo("d2:floor(16.4)");
-        assertThat(ruleExpression.functions().get(1)).isEqualTo("d2:ceil(8.7)");
+        assertThat(ruleExpression.functions()).contains("d2:floor(16.4)");
+        assertThat(ruleExpression.functions()).contains("d2:ceil(8.7)");
     }
 }

@@ -15,6 +15,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 // ToDo: escaping quotes in data values passed from outside
+// ToDo: logging
 public final class RuleEngine {
 
     @Nonnull

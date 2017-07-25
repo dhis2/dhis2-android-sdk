@@ -63,6 +63,7 @@ ext {
             javaxannotations: "3.0.1",
             retrofit        : "2.1.0",
             okhttp          : "3.5.0",
+            duktape         : "1.1.0",
 
             // @NonNull, @Nullable
             // annotations for java modules

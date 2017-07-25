@@ -41,6 +41,7 @@ android {
 dependencies {
     compile project(":core-rules")
     compile "com.android.support:support-annotations:${libraries.support}"
+    compile "com.squareup.duktape:duktape-android:${libraries.duktape}"
 
     androidTestCompile "com.android.support.test:runner:${libraries.testrunner}"
     androidTestCompile("com.google.truth:truth:${libraries.truth}") {

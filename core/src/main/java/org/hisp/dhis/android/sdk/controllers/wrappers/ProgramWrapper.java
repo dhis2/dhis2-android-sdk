@@ -123,7 +123,6 @@ public class ProgramWrapper {
                         programStage.getProgramStageDataElements()) {
                     if (dataElement.getUid().equals(programStageDataElement.getDataElement().getUid())){
                         programStageDataElement.setSortOrder(count++);
-                        programStageDataElement.save();
                         programStageDataElements.add(programStageDataElement);
                         continue;
                     }

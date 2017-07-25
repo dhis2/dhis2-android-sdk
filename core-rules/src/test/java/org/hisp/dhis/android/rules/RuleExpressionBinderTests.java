@@ -7,9 +7,9 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import static junit.framework.TestCase.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -26,35 +26,69 @@ public class RuleExpressionBinderTests {
         MockitoAnnotations.initMocks(this);
 
         String expression = "A{test_variable_one} <0 && C{test_variable_two} == '' && " +
-                "V{test_variable_three} <0 && #{test_variable_four} == ''";
+                "V{test_variable_three} <0 && #{test_variable_four} == '' && " +
+                "d2:floor(d2:ceil(3.8)) + d2:ceil(3.8) == 6 && " +
+                "d2:hasValue(4.5)";
 
-        List<String> variables = Arrays.asList(
+        Set<String> variables = new HashSet<>(Arrays.asList(
                 "A{test_variable_one}",
                 "C{test_variable_two}",
                 "V{test_variable_three}",
                 "#{test_variable_four}"
-        );
+        ));
+
+        Set<String> functions = new HashSet<>(Arrays.asList(
+                "d2:ceil(3.8)",
+                "d2:hasValue(4.5)"
+        ));
 
         when(ruleExpression.expression()).thenReturn(expression);
         when(ruleExpression.variables()).thenReturn(variables);
+        when(ruleExpression.functions()).thenReturn(functions);
     }
 
     @Test
     public void buildShouldBindValuesCorrectly() {
         String result = RuleExpressionBinder.from(ruleExpression)
-                .bind("A{test_variable_one}", "1")
-                .bind("C{test_variable_two}", "2")
-                .bind("V{test_variable_three}", "3")
-                .bind("#{test_variable_four}", "4")
+                .bindVariable("A{test_variable_one}", "1")
+                .bindVariable("C{test_variable_two}", "2")
+                .bindVariable("V{test_variable_three}", "3")
+                .bindVariable("#{test_variable_four}", "4")
+                .bindFunction("d2:hasValue(4.5)", "true")
+                .bindFunction("d2:ceil(3.8)", "4")
                 .build();
 
-        assertThat(result).isEqualTo("1 <0 && 2 == '' && 3 <0 && 4 == ''");
+        assertThat(result).isEqualTo("1 <0 && 2 == '' && 3 <0 && 4 == '' && " +
+                "d2:floor(4) + 4 == 6 && true");
+    }
+
+    @Test
+    public void buildShouldBindValuesForDuplicateVariableReferences() {
+        String expression = "A{test_variable_one} <0 && C{test_variable_two} == '' && " +
+                "V{test_variable_three} <0 && #{test_variable_four} == '' && " +
+                "A{test_variable_one} + C{test_variable_two} == 10 && " +
+                "d2:floor(d2:ceil(3.8)) + d2:ceil(3.8) == 6 && " +
+                "d2:hasValue(4.5) && d2:hasValue(4.5)";
+        when(ruleExpression.expression()).thenReturn(expression);
+
+        String result = RuleExpressionBinder.from(ruleExpression)
+                .bindVariable("A{test_variable_one}", "1")
+                .bindVariable("C{test_variable_two}", "2")
+                .bindVariable("V{test_variable_three}", "3")
+                .bindVariable("#{test_variable_four}", "4")
+                .bindFunction("d2:hasValue(4.5)", "true")
+                .bindFunction("d2:ceil(3.8)", "4")
+                .build();
+
+        assertThat(result).isEqualTo("1 <0 && 2 == '' && 3 <0 && 4 == '' && 1 + 2 == 10 && " +
+                "d2:floor(4) + 4 == 6 && true && true");
     }
 
     @Test
     public void buildShouldNotFailIfNoVariablesInExpression() {
         when(ruleExpression.expression()).thenReturn("1 < 0");
-        when(ruleExpression.variables()).thenReturn(new ArrayList<String>());
+        when(ruleExpression.variables()).thenReturn(new HashSet<String>());
+        when(ruleExpression.functions()).thenReturn(new HashSet<String>());
 
         String expression = RuleExpressionBinder.from(ruleExpression).build();
         assertThat(expression).isEqualTo("1 < 0");
@@ -64,9 +98,9 @@ public class RuleExpressionBinderTests {
     public void buildShouldThrowIfNotEnoughValues() {
         try {
             RuleExpressionBinder.from(ruleExpression)
-                    .bind("A{test_variable_one}", "1")
-                    .bind("C{test_variable_two}", "2")
-                    .bind("V{test_variable_three}", "3")
+                    .bindVariable("A{test_variable_one}", "1")
+                    .bindVariable("C{test_variable_two}", "2")
+                    .bindVariable("V{test_variable_three}", "3")
                     .build();
             fail("IllegalStateException was expected, but nothing was thrown.");
         } catch (IllegalStateException illegalStateException) {
@@ -77,7 +111,7 @@ public class RuleExpressionBinderTests {
     @Test
     public void buildShouldThrowIfPassingIllegalVariable() {
         try {
-            RuleExpressionBinder.from(ruleExpression).bind("V{test_variable_five}", "3");
+            RuleExpressionBinder.from(ruleExpression).bindVariable("V{test_variable_five}", "3");
             fail("IllegalArgumentException was expected, but nothing was thrown.");
         } catch (IllegalArgumentException illegalArgumentException) {
             // noop

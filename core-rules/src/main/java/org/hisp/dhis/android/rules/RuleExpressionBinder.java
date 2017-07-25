@@ -1,7 +1,6 @@
 package org.hisp.dhis.android.rules;
 
-import java.util.LinkedHashMap;
-import java.util.Locale;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -9,18 +8,23 @@ import javax.annotation.Nonnull;
 final class RuleExpressionBinder {
 
     @Nonnull
-    private final String ruleExpressionTemplate;
+    private final String ruleExpression;
 
     @Nonnull
     private final Map<String, String> ruleVariableValues;
 
-    RuleExpressionBinder(@Nonnull String ruleExpressionTemplate,
-            @Nonnull Map<String, String> ruleVariableValues) {
-        this.ruleExpressionTemplate = ruleExpressionTemplate;
+    @Nonnull
+    private final Map<String, String> ruleFunctionCalls;
+
+    RuleExpressionBinder(@Nonnull String ruleExpression,
+            @Nonnull Map<String, String> ruleVariableValues,
+            @Nonnull Map<String, String> ruleFunctionCalls) {
+        this.ruleExpression = ruleExpression;
         this.ruleVariableValues = ruleVariableValues;
+        this.ruleFunctionCalls = ruleFunctionCalls;
     }
 
-    RuleExpressionBinder bind(@Nonnull String variable, @Nonnull String value) {
+    RuleExpressionBinder bindVariable(@Nonnull String variable, @Nonnull String value) {
         if (!ruleVariableValues.containsKey(variable)) {
             throw new IllegalArgumentException("Non-existing variable: " + variable);
         }
@@ -29,30 +33,54 @@ final class RuleExpressionBinder {
         return this;
     }
 
+    RuleExpressionBinder bindFunction(@Nonnull String functionCall, @Nonnull String value) {
+        if (!ruleFunctionCalls.containsKey(functionCall)) {
+            throw new IllegalArgumentException("Non-existing function call: " + functionCall);
+        }
+
+        ruleFunctionCalls.put(functionCall, value);
+        return this;
+    }
+
     @Nonnull
     String build() {
-        String[] values = new String[ruleVariableValues.size()];
+        String expression = ruleExpression;
 
-        int index = 0;
+        // iterate over variables and replace them with values
         for (Map.Entry<String, String> variableValue : ruleVariableValues.entrySet()) {
             if (variableValue.getValue() == null) {
                 throw new IllegalStateException("Value has not been substituted for " +
                         "variable: " + variableValue.getKey());
             }
 
-            values[index++] = variableValue.getValue();
+            while (expression.contains(variableValue.getKey())) {
+                expression = expression.replace(variableValue.getKey(),
+                        variableValue.getValue());
+            }
         }
 
-        // yes, this ugly cast is needed to make compiler happy
-        return String.format(Locale.US, ruleExpressionTemplate, (Object[]) values);
+        // iterate over function calls and replace them with values
+        for (Map.Entry<String, String> functionCall : ruleFunctionCalls.entrySet()) {
+            if (functionCall.getValue() == null) {
+                throw new IllegalStateException("Value has not been substituted for " +
+                        "function call: " + functionCall.getKey());
+            }
+
+            while (expression.contains(functionCall.getKey())) {
+                expression = expression.replace(functionCall.getKey(),
+                        functionCall.getValue());
+            }
+        }
+
+        return expression;
     }
 
     @Nonnull
     static RuleExpressionBinder from(@Nonnull RuleExpression ruleExpression) {
-        // Using linked hash map to preserve order of variables. This is very important
-        // since we will rely on order when replacing variables with values.
         Map<String, String> ruleVariablePlaceholders =
-                new LinkedHashMap<>(ruleExpression.variables().size());
+                new HashMap<>(ruleExpression.variables().size());
+        Map<String, String> ruleFunctionPlaceholders =
+                new HashMap<>(ruleExpression.functions().size());
 
         // populate list with placeholders which later will be used as
         // source values in expression
@@ -60,11 +88,11 @@ final class RuleExpressionBinder {
             ruleVariablePlaceholders.put(variable, null);
         }
 
-        // create expression template which later will be used as a target
-        // for substituting values.
-        String expressionTemplate = ruleExpression.expression()
-                .replaceAll(RuleExpression.VARIABLE_PATTERN, "%s");
+        for (String function : ruleExpression.functions()) {
+            ruleFunctionPlaceholders.put(function, null);
+        }
 
-        return new RuleExpressionBinder(expressionTemplate, ruleVariablePlaceholders);
+        return new RuleExpressionBinder(ruleExpression.expression(),
+                ruleVariablePlaceholders, ruleFunctionPlaceholders);
     }
 }

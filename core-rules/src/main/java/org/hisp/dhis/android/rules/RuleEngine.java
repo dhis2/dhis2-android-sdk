@@ -68,9 +68,8 @@ public final class RuleEngine {
                 .ruleEvents(ruleEvents)
                 .build();
 
-        RuleExpressionProcessor expressionProcessor = new RuleExpressionProcessor(
-                ruleEngineContext.expressionEvaluator(), valueMap);
-        return new RuleEngineExecution(expressionProcessor, ruleEngineContext.rules());
+        return new RuleEngineExecution(executionContext().expressionEvaluator(),
+                ruleEngineContext.rules(), valueMap);
     }
 
     @Nonnull

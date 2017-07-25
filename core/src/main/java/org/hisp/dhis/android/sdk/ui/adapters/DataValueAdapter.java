@@ -81,7 +81,6 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
                 ((EditTextRow) dataEntryRow).setOnEditorActionListener(
                         new CustomOnEditorActionListener());
             }
-
             View view = dataEntryRow.getView(mFragmentManager, getInflater(), convertView, parent);
             view.setVisibility(View.VISIBLE); //in case recycling invisible view
             view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT,
@@ -92,6 +91,7 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
                 view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
                 view.postInvalidate();
                 view.setVisibility(View.GONE);
+                dataEntryRow.getValue().setValue(null);
             }
 
             return view;

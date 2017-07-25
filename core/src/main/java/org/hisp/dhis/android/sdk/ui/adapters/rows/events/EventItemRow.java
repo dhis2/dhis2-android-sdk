@@ -29,6 +29,8 @@
 
 package org.hisp.dhis.android.sdk.ui.adapters.rows.events;
 
+import static org.hisp.dhis.android.sdk.utils.Preconditions.isNull;
+
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -42,8 +44,6 @@ import org.hisp.dhis.android.sdk.events.OnRowClick;
 import org.hisp.dhis.android.sdk.events.OnTrackerItemClick;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
-
-import static org.hisp.dhis.android.sdk.utils.Preconditions.isNull;
 
 /**
  * Created by araz on 03.04.2015.
@@ -62,6 +62,7 @@ public final class EventItemRow implements EventRow {
     private String mSent;
     private String mError;
     private String mOffline;
+    private int elementsToShow;
 
     public EventItemRow(Context context) {
         isNull(context, "Context must not be null");
@@ -102,19 +103,19 @@ public final class EventItemRow implements EventRow {
 
         holder.listener.setEvent(mEvent);
         holder.listener.setStatus(mStatus);
-        if (mFirstItem != null) {
+        if (elementsToShow >= 1) {
             holder.firstItem.setText(mFirstItem);
             holder.firstItem.setVisibility(View.VISIBLE);
         } else {
             holder.firstItem.setVisibility(View.GONE);
         }
-        if(mSecondItem!=null) {
+        if (elementsToShow >= 2) {
             holder.secondItem.setText(mSecondItem);
             holder.secondItem.setVisibility(View.VISIBLE);
         }else {
             holder.secondItem.setVisibility(View.GONE);
         }
-        if(mThirdItem!=null) {
+        if (elementsToShow >= 3) {
             holder.thirdItem.setText(mThirdItem);
             holder.thirdItem.setVisibility(View.VISIBLE);
         }else {
@@ -187,6 +188,14 @@ public final class EventItemRow implements EventRow {
 
     public OnRowClick.ITEM_STATUS getStatus() {
         return mStatus;
+    }
+
+    public int getElementsToShow() {
+        return elementsToShow;
+    }
+
+    public void setElementsToShow(int elementsToShow) {
+        this.elementsToShow = elementsToShow;
     }
 
     private static class ViewHolder {

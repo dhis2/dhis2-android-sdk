@@ -1,2 +1,3 @@
 include ":core"
 include ":core-rules"
+include ':core-rules-android'

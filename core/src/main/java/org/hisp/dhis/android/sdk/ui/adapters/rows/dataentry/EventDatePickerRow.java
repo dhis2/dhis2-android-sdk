@@ -34,7 +34,6 @@ import static android.text.TextUtils.isEmpty;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -50,11 +49,6 @@ import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
 
 public class EventDatePickerRow extends AbsDatePickerRow {
     private static final String TAG = "EventDatePickerRow";

@@ -29,7 +29,6 @@
 
 package org.hisp.dhis.android.sdk.controllers.tracker;
 
-import android.net.Uri;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -56,7 +55,6 @@ import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship$Table;
 import org.hisp.dhis.android.sdk.persistence.models.SystemInfo;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntity;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
@@ -88,7 +86,9 @@ final class TrackerDataSender {
 
     static void sendEventChanges(DhisApi dhisApi) throws APIException {
         List<Event> events = new Select().from(Event.class).where
-                (Condition.column(Event$Table.FROMSERVER).is(false)).queryList();
+                (Condition.column(Event$Table.FROMSERVER).is(false))
+                .and(Condition.column(Event$Table.STATUS).isNot(Event.STATUS_DELETED))
+                .queryList();
 
         List<Event> eventsWithFailedThreshold = new Select().from(Event.class)
                 .join(FailedItem.class, Join.JoinType.LEFT)
@@ -96,6 +96,7 @@ final class TrackerDataSender {
                 .where(Condition.column(FailedItem$Table.ITEMTYPE).eq(FailedItem.EVENT))
                 .and(Condition.column(FailedItem$Table.FAILCOUNT).greaterThan(3))
                 .and(Condition.column(Event$Table.FROMSERVER).is(false))
+                .and(Condition.column(Event$Table.STATUS).isNot(Event.STATUS_DELETED))
                 .queryList();
 
         List<Event> eventsToPost = new ArrayList<>();
@@ -426,7 +427,7 @@ final class TrackerDataSender {
         Log.d(CLASS_TAG, "updating enrollment references");
         new Update(Event.class).set(Condition.column
                 (Event$Table.ENROLLMENT).is
-                (newReference)).where(Condition.column(Event$Table.LOCALENROLLMENTID).is(localId)).async().execute();
+                (newReference)).where(Condition.column(Event$Table.LOCALENROLLMENTID).is(localId)).and(Condition.column(Event$Table.STATUS).isNot(Event.STATUS_DELETED)).async().execute();
 
         new Update(Enrollment.class).set(Condition.column
                 (Enrollment$Table.ENROLLMENT).is
@@ -751,4 +752,35 @@ final class TrackerDataSender {
         }
         return null;
     }
+
+    public static void deleteLocallyDeletedEvents(DhisApi dhisApi) {
+        List<Event> events = TrackerController.getDeletedEvents();
+        Log.d(CLASS_TAG, "got this many events to be removed:" + events.size());
+        for(Event event : events){
+            deleteEvent(dhisApi, event);
+        }
+    }
+
+
+    static void deleteEvent(DhisApi dhisApi, Event event) throws APIException {
+        if (event == null) {
+            return;
+        }
+        try {
+            Response response = dhisApi.deleteEvent(event.getUid());
+            if (response.getStatus() == 200) {
+                ImportSummary importSummary = getImportSummary(response);
+                handleImportSummary(importSummary, FailedItem.EVENT, event.getLocalId());
+                if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
+                        ImportSummary.OK.equals(importSummary.getStatus())) {
+                    // delete locally event
+                    event.delete();
+                    clearFailedItem(FailedItem.EVENT, event.getLocalId());
+                }
+            }
+        } catch (APIException apiException) {
+            NetworkUtils.handleEventSendException(apiException, event);
+        }
+    }
+
 }

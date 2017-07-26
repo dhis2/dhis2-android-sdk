@@ -63,6 +63,7 @@ public class Event extends BaseSerializableModel {
     public static final String STATUS_COMPLETED = "COMPLETED";
     public static final String STATUS_FUTURE_VISIT = "SCHEDULE";
     public static final String STATUS_SKIPPED = "SKIPPED";
+    public static final String STATUS_DELETED = "DELETED";
     @JsonIgnore
     public static final String EVENT_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 

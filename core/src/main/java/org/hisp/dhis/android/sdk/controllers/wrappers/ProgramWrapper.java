@@ -122,7 +122,7 @@ public class ProgramWrapper {
                 for (ProgramStageDataElement programStageDataElement:
                         programStage.getProgramStageDataElements()) {
                     if (dataElement.getUid().equals(programStageDataElement.getDataElement().getUid())){
-                        programStageDataElement.setSortOrder(count++);
+                        programStageDataElement.setSortOrder(count++); //FIXME: getter changing content
                         programStageDataElements.add(programStageDataElement);
                         continue;
                     }

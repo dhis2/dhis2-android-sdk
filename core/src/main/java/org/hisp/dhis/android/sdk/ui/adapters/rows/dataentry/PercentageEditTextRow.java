@@ -13,8 +13,9 @@ import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.autocompleterow.TextRow;
 
-public class PercentageEditTextRow extends Row {
+public class PercentageEditTextRow extends TextRow {
     private static String rowTypeTemp;
 
     public PercentageEditTextRow(String label, boolean mandatory, String warning,
@@ -117,6 +118,7 @@ public class PercentageEditTextRow extends Row {
         } else {
             holder.mandatoryIndicator.setVisibility(View.VISIBLE);
         }
+        holder.editText.setOnEditorActionListener(mOnEditorActionListener);
 
         return view;
     }

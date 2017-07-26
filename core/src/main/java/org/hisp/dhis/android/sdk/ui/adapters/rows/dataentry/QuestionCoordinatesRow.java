@@ -18,10 +18,11 @@ import org.hisp.dhis.android.sdk.controllers.GpsController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.autocompleterow.TextRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 
-public final class QuestionCoordinatesRow extends Row {
+public final class QuestionCoordinatesRow extends TextRow {
     private static final String EMPTY_FIELD = "";
     public static final String UNDEFINED = "undefined";
     private final int MAX_INPUT_LENGTH = 9;
@@ -130,6 +131,8 @@ public final class QuestionCoordinatesRow extends Row {
         holder.latitude.setFilters(latitudeFilters);
         holder.longitude.setFilters(longitudeFilters);
         holder.updateViews(mLabel, mValue);
+        holder.latitude.setOnEditorActionListener(mOnEditorActionListener);
+        holder.longitude.setOnEditorActionListener(mOnEditorActionListener);
 
         return view;
     }

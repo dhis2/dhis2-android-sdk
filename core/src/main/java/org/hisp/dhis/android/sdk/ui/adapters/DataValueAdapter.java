@@ -29,21 +29,25 @@
 
 package org.hisp.dhis.android.sdk.ui.adapters;
 
+import android.content.Context;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRow;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.QuestionCoordinatesRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.autocompleterow.TextRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 
 import java.util.HashMap;
@@ -59,14 +63,18 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
     private Map<String, Boolean> hiddenDataElementRows;
     private Map<String, String> warningDataElementRows;
     private Map<String, String> errorDataElementRows;
+    private ListView mListView;
+    private Context mContext;
 
     public DataValueAdapter(FragmentManager fragmentManager,
-                            LayoutInflater inflater) {
+            LayoutInflater inflater, ListView listView, Context context) {
         super(inflater);
         mFragmentManager = fragmentManager;
         hiddenDataElementRows = new HashMap<>();
         warningDataElementRows = new HashMap<>();
         errorDataElementRows = new HashMap<>();
+        mListView = listView;
+        mContext = context;
     }
 
     @Override
@@ -76,6 +84,13 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
             String id = dataEntryRow.getItemId();
             dataEntryRow.setWarning(warningDataElementRows.get(id));
             dataEntryRow.setError(errorDataElementRows.get(id));
+            if (dataEntryRow instanceof QuestionCoordinatesRow) {
+                ((TextRow) dataEntryRow).setOnEditorActionListener(
+                        new CustomOnEditorActionListener(true));
+            } else if (dataEntryRow instanceof TextRow) {
+                ((TextRow) dataEntryRow).setOnEditorActionListener(
+                        new CustomOnEditorActionListener());
+            }
             View view = dataEntryRow.getView(mFragmentManager, getInflater(), convertView, parent);
             view.setVisibility(View.VISIBLE); //in case recycling invisible view
             view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT,
@@ -206,5 +221,56 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
             return dataElementsToRowIndexMap.get(dataElement);
         }
         else return -1;
+    }
+
+
+    public class CustomOnEditorActionListener implements TextView.OnEditorActionListener {
+        private boolean isFocusRight;
+
+        public CustomOnEditorActionListener() {
+            isFocusRight = false;
+        }
+
+        public CustomOnEditorActionListener(boolean isFocusRight) {
+            this.isFocusRight = isFocusRight;
+        }
+
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            final TextView view = v;
+            if (actionId == EditorInfo.IME_ACTION_NEXT && view != null && mListView != null) {
+                int position = mListView.getPositionForView(v);
+                mListView.smoothScrollToPosition(position + 1);
+
+                mListView.postDelayed(new Runnable() {
+                    public void run() {
+                        if (view.focusSearch(View.FOCUS_DOWN) instanceof TextView) {
+                            TextView nextField = null;
+                            if (isFocusRight && view.focusSearch(
+                                    View.FOCUS_RIGHT) instanceof TextView) {
+                                nextField = (TextView) view.focusSearch(View.FOCUS_RIGHT);
+                            }
+                            if (nextField == null) {
+                                nextField = (TextView) view.focusSearch(View.FOCUS_DOWN);
+                            }
+                            if (nextField != null) {
+                                int nextPosition = mListView.getPositionForView(nextField);
+                                if (nextPosition + 1 < mData.size()) {
+                                    nextField.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+                                }
+                                nextField.requestFocus();
+                            }
+                        } else {
+                            InputMethodManager imm = (InputMethodManager) mContext.getSystemService
+                                    (Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                        }
+                    }
+                }, 200);
+
+                return true;
+            }
+            return false;
+        }
     }
 }

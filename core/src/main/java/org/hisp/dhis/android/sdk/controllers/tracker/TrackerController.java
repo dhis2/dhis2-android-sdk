@@ -39,6 +39,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.queriable.StringQuery;
 
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.LoadingController;
 import org.hisp.dhis.android.sdk.controllers.ResourceController;
 import org.hisp.dhis.android.sdk.controllers.SyncStrategy;
@@ -76,8 +77,9 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Simen Skogly Russnes on 23.02.15.
@@ -614,7 +616,69 @@ public final class TrackerController extends ResourceController {
     }
 
     public static void sendTrackedEntityInstanceChanges(DhisApi dhisApi, TrackedEntityInstance trackedEntityInstance, boolean sendEnrollments) throws APIException {
+        Map<String, TrackedEntityInstance> relatedTeis = new HashMap<String,
+                TrackedEntityInstance>();
+        relatedTeis = getRecursiveRelationatedTeis(trackedEntityInstance, relatedTeis);
+        pushTeiWithoutRelationFirst(relatedTeis);
         TrackerDataSender.sendTrackedEntityInstanceChanges(dhisApi, trackedEntityInstance, sendEnrollments);
+    }
+
+
+    private static Map<String, TrackedEntityInstance> getRecursiveRelationatedTeis(
+            TrackedEntityInstance trackedEntityInstance,
+            Map<String, TrackedEntityInstance> relatedTeiList) {
+        if (trackedEntityInstance.getRelationships() != null
+                && trackedEntityInstance.getRelationships().size() > 0) {
+            for (Relationship relationship : trackedEntityInstance.getRelationships()) {
+                if (relationship.getTrackedEntityInstanceB().equals(
+                        trackedEntityInstance.getUid())) {
+                    String target = relationship.getTrackedEntityInstanceA();
+                    relatedTeiList = addRelatedNotPushedTeis(relatedTeiList, target);
+                } else if (relationship.getTrackedEntityInstanceA().equals(
+                        trackedEntityInstance.getUid())) {
+                    String target = relationship.getTrackedEntityInstanceB();
+                    relatedTeiList = addRelatedNotPushedTeis(relatedTeiList, target);
+                }
+            }
+        }
+        return relatedTeiList;
+    }
+
+    private static Map<String, TrackedEntityInstance> addRelatedNotPushedTeis(
+            Map<String, TrackedEntityInstance> relatedTeiList, String target) {
+        TrackedEntityInstance relatedTrackedEntityInstance =
+                TrackerController.getTrackedEntityInstance(target);
+        if (!relatedTrackedEntityInstance.isFromServer()
+                && relatedTrackedEntityInstance.getCreated() == null) {
+            if (!relatedTeiList.containsKey(relatedTrackedEntityInstance.getUid())) {
+                relatedTeiList.put(relatedTrackedEntityInstance.getUid(),
+                        relatedTrackedEntityInstance);
+                relatedTeiList = getRecursiveRelationatedTeis(relatedTrackedEntityInstance,
+                        relatedTeiList);
+            }
+        }
+        return relatedTeiList;
+    }
+
+    private static void pushTeiWithoutRelationFirst(
+            Map<String, TrackedEntityInstance> trackedEntityInstances) {
+        List<TrackedEntityInstance> trackerEntityInstancesWithRelations = new ArrayList<>();
+        if (trackedEntityInstances.size() > 0) {
+            for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances.values()) {
+                trackerEntityInstancesWithRelations.add(trackedEntityInstance);
+                trackedEntityInstance.setRelationships(new ArrayList<Relationship>());
+                TrackerController.sendTrackedEntityInstanceChanges(
+                        DhisController.getInstance().getDhisApi(), trackedEntityInstance, true);
+            }
+            for (TrackedEntityInstance trackedEntityInstance :
+                    trackerEntityInstancesWithRelations) {
+                if (trackedEntityInstance.getRelationships().size() > 0) {
+                    trackedEntityInstance.setFromServer(false);
+                    TrackerController.sendTrackedEntityInstanceChanges(
+                            DhisController.getInstance().getDhisApi(), trackedEntityInstance, true);
+                }
+            }
+        }
     }
 
     public static List<Enrollment> getActiveEnrollments() {

@@ -18,18 +18,12 @@ public class RuleActionAssignTests {
     public void createMustSubstituteEmptyStringsForNullArguments() {
         RuleActionAssign ruleActionAssignNoContent = RuleActionAssign
                 .create(null, "test_data", "test_field");
-        RuleActionAssign ruleActionAssignNoData = RuleActionAssign
-                .create("test_content", null, "test_field");
         RuleActionAssign ruleActionAssignNoField = RuleActionAssign
                 .create("test_content", "test_data", null);
 
         assertThat(ruleActionAssignNoContent.content()).isEqualTo("");
         assertThat(ruleActionAssignNoContent.data()).isEqualTo("test_data");
         assertThat(ruleActionAssignNoContent.field()).isEqualTo("test_field");
-
-        assertThat(ruleActionAssignNoData.content()).isEqualTo("test_content");
-        assertThat(ruleActionAssignNoData.data()).isEqualTo("");
-        assertThat(ruleActionAssignNoData.field()).isEqualTo("test_field");
 
         assertThat(ruleActionAssignNoField.content()).isEqualTo("test_content");
         assertThat(ruleActionAssignNoField.data()).isEqualTo("test_data");
@@ -39,9 +33,19 @@ public class RuleActionAssignTests {
     @Test
     public void createMustThrowWhenContentAndDataAreNull() {
         try {
-            RuleActionAssign.create(null, null, null);
+            RuleActionAssign.create(null, "test_data", null);
             fail("IllegalArgumentException was expected, but nothing was thrown.");
         } catch (IllegalArgumentException illegalArgumentException) {
+            // noop
+        }
+    }
+
+    @Test
+    public void createMustThrowWhenDataIsNull() {
+        try {
+            RuleActionAssign.create("test_content", null, "test_field");
+            fail("NullPointerException was expected, but nothing was thrown.");
+        } catch (NullPointerException nullPointerException) {
             // noop
         }
     }

@@ -19,13 +19,13 @@ public abstract class RuleActionAssign {
 
     @Nonnull
     public static RuleActionAssign create(@Nullable String content,
-            @Nullable String data, @Nullable String field) {
-        if (content == null && data == null && field == null) {
+            @Nonnull String data, @Nullable String field) {
+        if (content == null && field == null) {
             throw new IllegalArgumentException("Either data or field " +
                     "parameters must be not null.");
         }
 
         return new AutoValue_RuleActionAssign(content == null ? "" : content,
-                data == null ? "" : data, field == null ? "" : field);
+                data, field == null ? "" : field);
     }
 }

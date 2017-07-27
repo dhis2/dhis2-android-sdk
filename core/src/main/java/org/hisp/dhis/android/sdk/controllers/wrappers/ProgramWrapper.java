@@ -117,11 +117,14 @@ public class ProgramWrapper {
         if (programStageSection.getDataElements() != null){
 
             //v.2.27
-            for (ProgramStageDataElement programStageDataElement:
-                    programStage.getProgramStageDataElements()) {
-                for (DataElement dataElement:programStageSection.getDataElements()){
+            int count=0;
+            for (DataElement dataElement:programStageSection.getDataElements()){
+                for (ProgramStageDataElement programStageDataElement:
+                        programStage.getProgramStageDataElements()) {
                     if (dataElement.getUid().equals(programStageDataElement.getDataElement().getUid())){
+                        programStageDataElement.setSortOrder(count++); //FIXME: getter changing content
                         programStageDataElements.add(programStageDataElement);
+                        continue;
                     }
                 }
             }

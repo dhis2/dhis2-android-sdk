@@ -38,7 +38,10 @@ public enum ProgramRuleActionType {
     SHOWWARNING("showwarning"),
     SHOWERROR("showerror"),
     HIDEPROGRAMSTAGE("hideprogramstage"),
-    CREATEEVENT("createevent");
+    CREATEEVENT("createevent"),
+    SETMANDATORYFIELD("setmandatoryfield"),
+    WARNINGONCOMPLETE("warningoncomplete"),
+    ERRORONCOMPLETE("erroroncomplete");
 
     final String value;
 

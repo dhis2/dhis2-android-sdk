@@ -103,7 +103,7 @@ public final class EventItemRow implements EventRow {
 
         holder.listener.setEvent(mEvent);
         holder.listener.setStatus(mStatus);
-        if (elementsToShow >= 1) {
+        if (elementsToShow >= 0) {
             holder.firstItem.setText(mFirstItem);
             holder.firstItem.setVisibility(View.VISIBLE);
         } else {

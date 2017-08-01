@@ -119,8 +119,6 @@ public class TrackedEntityInstanceItemRow implements EventRow, Comparator<Tracke
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 (1.0f-0.25f)/columns.size()
         );
-
-        params.gravity = Gravity.CENTER_VERTICAL;
         holder.container.removeAllViews();
         for(String column: columns){
             LinearLayout columnView = (LinearLayout)inflater.inflate(R.layout.event_item_column, holder.container , false);

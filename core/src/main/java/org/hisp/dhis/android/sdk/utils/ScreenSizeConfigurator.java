@@ -2,52 +2,56 @@ package org.hisp.dhis.android.sdk.utils;
 
 import static org.hisp.dhis.android.sdk.utils.Preconditions.isNull;
 
-import android.content.Context;
-import android.content.res.Configuration;
+import android.view.Display;
+import android.view.WindowManager;
 
 /**
  * Created by ignac on 01/08/2017.
  */
 
 public class ScreenSizeConfigurator {
-    private Context context;
+    private static final int SCREEN_SIZE_XLARGE = 1080;
+    private static final int SCREEN_SIZE_LARGE = 750;
+    private static final int SCREEN_SIZE_NORMAL = 640;
+    private static final int SCREEN_SIZE_SMALL = 320;
+    private WindowManager windowManager;
     public static ScreenSizeConfigurator screenSizeConfigurator;
 
     private ScreenSizeConfigurator(
-            Context context) {
-        this.context = context;
+            WindowManager windowManager) {
+        this.windowManager = windowManager;
     }
 
-    public static ScreenSizeConfigurator init(Context context){
-        isNull(context, "context must not be null");
-        if(screenSizeConfigurator == null){
-            screenSizeConfigurator = new ScreenSizeConfigurator(context);
+    public static ScreenSizeConfigurator init(WindowManager windowManager) {
+        isNull(windowManager, "context must not be null");
+        if (screenSizeConfigurator == null) {
+            screenSizeConfigurator = new ScreenSizeConfigurator(windowManager);
         }
         return screenSizeConfigurator;
     }
 
-    public static ScreenSizeConfigurator getInstance(){
+    public static ScreenSizeConfigurator getInstance() {
         isNull(screenSizeConfigurator, "screenSizeConfigurator must not be null");
         return screenSizeConfigurator;
     }
 
-    private static int getColumnsByScreen(Context context) {int screenSize = context.getResources().getConfiguration().screenLayout
-            & Configuration.SCREENLAYOUT_SIZE_MASK;
-        switch (screenSize) {
-            case Configuration.SCREENLAYOUT_SIZE_XLARGE:
-                return 9;
-            case Configuration.SCREENLAYOUT_SIZE_LARGE:
-                return 10;
-            case Configuration.SCREENLAYOUT_SIZE_NORMAL:
-                return 6;
-            case Configuration.SCREENLAYOUT_SIZE_SMALL:
-                return 2;
-            default:
-                return 3;
+    private int getColumnsByScreen(WindowManager windowManager) {
+        Display display = windowManager.getDefaultDisplay();
+        int width = display.getWidth();
+        if (width <= SCREEN_SIZE_SMALL) {
+            return 4;
+        } else if (width <= SCREEN_SIZE_NORMAL) {
+            return 8;
+        } else if (width <= SCREEN_SIZE_LARGE) {
+            return 10;
+        } else if (width <= SCREEN_SIZE_XLARGE) {
+            return 12;
+        } else {
+            return 14;
         }
     }
 
     public int getFields() {
-        return getColumnsByScreen(this.context);
+        return getColumnsByScreen(this.windowManager);
     }
 }

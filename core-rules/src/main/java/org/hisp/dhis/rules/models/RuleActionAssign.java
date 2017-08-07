@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class RuleActionAssign {
+public abstract class RuleActionAssign extends RuleAction {
 
     @Nonnull
     public abstract String content();

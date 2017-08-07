@@ -2,17 +2,24 @@ package org.hisp.dhis.rules.models;
 
 import com.google.auto.value.AutoValue;
 
+import javax.annotation.Nonnull;
+
 @AutoValue
 public abstract class RuleEffect {
 
-    public abstract String content();
+    @Nonnull
+    public abstract RuleAction ruleAction();
 
-    public abstract String location();
-
+    @Nonnull
     public abstract String data();
 
-    // package visible in order to avoid creation of RuleEffects outside engine
-    static RuleEffect create(String content, String location, String data) {
-        return new AutoValue_RuleEffect(content, location, data);
+    @Nonnull
+    public static RuleEffect create(@Nonnull RuleAction ruleAction, @Nonnull String data) {
+        return new AutoValue_RuleEffect(ruleAction, data);
+    }
+
+    @Nonnull
+    public static RuleEffect create(@Nonnull RuleAction ruleAction) {
+        return new AutoValue_RuleEffect(ruleAction, "");
     }
 }

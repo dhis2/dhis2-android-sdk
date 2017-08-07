@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class RuleActionHideField {
+public abstract class RuleActionHideField extends RuleAction {
 
     /**
      * @return a message to show to user

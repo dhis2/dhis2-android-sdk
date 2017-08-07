@@ -179,4 +179,16 @@ public class RuleExpressionTests {
         assertThat(ruleExpression.functions()).contains("d2:floor(16.4)");
         assertThat(ruleExpression.functions()).contains("d2:ceil(8.7)");
     }
+
+    @Test
+    public void unwrapMustReturnVariableName() {
+        assertThat(RuleExpression.unwrapVariableName("A{test_variable_one}"))
+                .isEqualTo("test_variable_one");
+        assertThat(RuleExpression.unwrapVariableName("C{test_variable_two}"))
+                .isEqualTo("test_variable_two");
+        assertThat(RuleExpression.unwrapVariableName("V{test_variable_three}"))
+                .isEqualTo("test_variable_three");
+        assertThat(RuleExpression.unwrapVariableName("#{test_variable_four}"))
+                .isEqualTo("test_variable_four");
+    }
 }

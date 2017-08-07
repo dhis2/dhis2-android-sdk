@@ -2,7 +2,7 @@ package org.hisp.dhis.rules.models;
 
 import javax.annotation.Nonnull;
 
-abstract class RuleActionText {
+abstract class RuleActionText extends RuleAction {
     public static final String LOCATION_FEEDBACK_WIDGET = "feedback";
     public static final String LOCATION_INDICATOR_WIDGET = "indicators";
 

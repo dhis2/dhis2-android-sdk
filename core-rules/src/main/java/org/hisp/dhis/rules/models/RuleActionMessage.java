@@ -2,7 +2,7 @@ package org.hisp.dhis.rules.models;
 
 import javax.annotation.Nonnull;
 
-abstract class RuleActionMessage {
+abstract class RuleActionMessage extends RuleAction {
 
     @Nonnull
     public abstract String content();

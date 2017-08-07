@@ -11,11 +11,6 @@ import org.junit.runner.RunWith;
 
 import static com.google.common.truth.Truth.assertThat;
 
-/**
- * Instrumentation test, which will execute on an Android device.
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
 @RunWith(AndroidJUnit4.class)
 public class DuktapeEvaluatorTests {
     private Duktape duktape;
@@ -35,5 +30,6 @@ public class DuktapeEvaluatorTests {
     @Test
     public void checkReturnValue() throws Exception {
         assertThat(duktapeEvaluator.evaluate("2 + 2")).isEqualTo("4.0");
+        assertThat(duktapeEvaluator.evaluate("true")).isEqualTo("true");
     }
 }

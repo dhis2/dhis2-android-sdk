@@ -29,6 +29,18 @@ abstract class RuleExpression {
     public abstract Set<String> functions();
 
     @Nonnull
+    static String unwrapVariableName(@Nonnull String variable) {
+        Matcher variableNameMatcher = VARIABLE_PATTERN_COMPILED.matcher(variable);
+
+        // extract variable name
+        if (variableNameMatcher.find()) {
+            return variableNameMatcher.group(1);
+        }
+
+        throw new IllegalArgumentException("Malformed variable: " + variable);
+    }
+
+    @Nonnull
     static RuleExpression from(@Nonnull String expression) {
         if (expression == null) {
             throw new NullPointerException("expression == null");

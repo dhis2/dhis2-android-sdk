@@ -26,7 +26,7 @@ public final class QuestionCoordinatesRow extends TextRow {
     private static final String EMPTY_FIELD = "";
     public static final String UNDEFINED = "undefined";
     private final int MAX_INPUT_LENGTH = 9;
-            // max input length = 9 for accepting 6 decimals in coordinates
+    // max input length = 9 for accepting 6 decimals in coordinates
 
     public static BaseValue saveCoordinates(EditText latitude, EditText longitude,
             BaseValue value) {
@@ -219,8 +219,6 @@ public final class QuestionCoordinatesRow extends TextRow {
 
         @Override
         public void afterTextChanged(Editable s) {
-            String  value = getLongitudeFromValue(mBaseValue);
-
             if (s.length() > 1) {
                 if (s.toString().equals(getLatitudeFromValue(mBaseValue))) {
                     //ignore
@@ -260,26 +258,20 @@ public final class QuestionCoordinatesRow extends TextRow {
 
         @Override
         public void afterTextChanged(Editable s) {
-            String
-                value = getLatitudeFromValue(mBaseValue);
-
             if (s.length() > 1) {
-                if (s.toString().equals(getLongitudeFromValue(mBaseValue))) {
+                if (s.toString().equals(getLatitudeFromValue(mBaseValue))) {
                     //ignore
                     return;
                 }
                 String newValue = s.toString();
                 saveCoordinates(mEditTextLatitude, mEditTextLongitude, mBaseValue);
-                if (isInvalidLongitude(newValue)) {
-                    mEditTextLongitude.setError(mLongitudeMessage);
-                }
                 setValidationError(newValue);
             }
         }
 
         private void setValidationError(String newValue) {
-            if (isInvalidLatitude(newValue)) {
-                mEditTextLongitude.setError(mLatitudeMessage);
+            if (isInvalidLongitude(newValue)) {
+                mEditTextLongitude.setError(mLongitudeMessage);
             }
             mErrorStringId = null;
             if (mEditTextLatitude.getText().length() > 0) {
@@ -323,7 +315,7 @@ public final class QuestionCoordinatesRow extends TextRow {
     private abstract class InvalidInputValueFilter implements InputFilter {
         BaseValue baseValue;
         final String invalidValue = "0.0";
-                // we don't want users to overwrite existing coordinates with 0.0 - aka no
+        // we don't want users to overwrite existing coordinates with 0.0 - aka no
         // network coords
 
         public InvalidInputValueFilter(BaseValue baseValue) {

@@ -185,7 +185,7 @@ public class ProgramRuleService {
             if (programRuleAction.getProgramRuleActionType().equals(ProgramRuleActionType.ASSIGN) && programRuleAction.getContent() != null) {
                 String programRuleVariableName = programRuleAction.getContent().substring(2, programRuleAction.getContent().length() - 1);
                 ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(programRuleVariableName);
-                if (programRuleVariable.getDataElement() != null) {
+                if (programRuleVariable != null && programRuleVariable.getDataElement() != null) {
                     dataElementsInRule.add(programRuleVariable.getDataElement());
                 }
             }
@@ -238,7 +238,7 @@ public class ProgramRuleService {
             if (programRuleAction.getProgramRuleActionType().equals(ProgramRuleActionType.ASSIGN) && programRuleAction.getContent() != null) {
                 String programRuleVariableName = programRuleAction.getContent().substring(2, programRuleAction.getContent().length() - 1);
                 ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(programRuleVariableName);
-                if (programRuleVariable.getTrackedEntityAttribute() != null) {
+                if (programRuleVariable != null && programRuleVariable.getTrackedEntityAttribute() != null) {
                     trackedEntityAttributesInRule.add(programRuleVariable.getTrackedEntityAttribute());
                 }
             }

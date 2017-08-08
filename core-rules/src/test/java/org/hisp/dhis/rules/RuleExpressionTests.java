@@ -191,4 +191,10 @@ public class RuleExpressionTests {
         assertThat(RuleExpression.unwrapVariableName("#{test_variable_four}"))
                 .isEqualTo("test_variable_four");
     }
+
+    @Test
+    public void buildMustReturnUnmodifiedStringIfNoVariablesOrFunctions() {
+        RuleExpression ruleExpression = RuleExpression.from("'test_expression'");
+        assertThat(ruleExpression.expression()).isEqualTo("'test_expression'");
+    }
 }

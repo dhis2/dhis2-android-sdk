@@ -5,7 +5,7 @@ import com.google.auto.value.AutoValue;
 import javax.annotation.Nonnull;
 
 @AutoValue
-public abstract class RuleActionHideSection {
+public abstract class RuleActionHideSection extends RuleAction {
 
     @Nonnull
     public abstract String programStageSection();

@@ -94,18 +94,13 @@ class RuleEngineExecution implements Callable<List<RuleEffect>> {
     @Nonnull
     private String process(@Nonnull String expression) {
         // we don't want to run empty expression
-        if (!expression.isEmpty()) {
-            return expressionEvaluator.evaluate(processRuleExpression(expression));
+        if (!expression.trim().isEmpty()) {
+            String expressionWithVariableValues = bindVariableValues(expression);
+            String expressionWithFunctionValues = bindFunctionValues(expressionWithVariableValues);
+            return expressionEvaluator.evaluate(expressionWithFunctionValues);
         }
 
         return "";
-    }
-
-    @Nonnull
-    private String processRuleExpression(@Nonnull String ruleExpression) {
-        String expressionWithVariableValues = bindVariableValues(ruleExpression);
-        String expressionWithFunctionValues = bindFunctionValues(expressionWithVariableValues);
-        return expressionEvaluator.evaluate(expressionWithFunctionValues);
     }
 
     @Nonnull
@@ -135,7 +130,7 @@ class RuleEngineExecution implements Callable<List<RuleEffect>> {
 
             List<String> arguments = new ArrayList<>(ruleFunctionCall.arguments());
             for (int j = 0; j < arguments.size(); j++) {
-                arguments.set(j, processRuleExpression(arguments.get(j)));
+                arguments.set(j, process(arguments.get(j)));
             }
 
             ruleExpressionBinder.bindFunction(ruleFunctionCall.functionCall(),

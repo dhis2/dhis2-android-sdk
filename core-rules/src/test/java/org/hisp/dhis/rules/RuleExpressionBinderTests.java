@@ -117,4 +117,11 @@ public class RuleExpressionBinderTests {
             // noop
         }
     }
+
+    @Test
+    public void buildMustReturnUnmodifiedStringIfNoVariablesOrFunctions() {
+        RuleExpression ruleExpression = RuleExpression.from("'test_expression'");
+        RuleExpressionBinder ruleExpressionBinder = RuleExpressionBinder.from(ruleExpression);
+        assertThat(ruleExpressionBinder.build()).isEqualTo("'test_expression'");
+    }
 }

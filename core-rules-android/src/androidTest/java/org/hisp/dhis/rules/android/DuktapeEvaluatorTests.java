@@ -31,5 +31,6 @@ public class DuktapeEvaluatorTests {
     public void checkReturnValue() throws Exception {
         assertThat(duktapeEvaluator.evaluate("2 + 2")).isEqualTo("4.0");
         assertThat(duktapeEvaluator.evaluate("true")).isEqualTo("true");
+        assertThat(duktapeEvaluator.evaluate("\'test_string\'")).isEqualTo("test_string");
     }
 }

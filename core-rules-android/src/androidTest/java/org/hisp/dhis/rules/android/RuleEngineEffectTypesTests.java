@@ -33,20 +33,16 @@ import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
-// ToDo: fallback tests (check that variables without values are substituted with correct values)
 // ToDo: function tests (check that function invocations are producing expected values; check nested function invocation)
 // ToDo: various source type tests (referencing variables from different events)
 @RunWith(AndroidJUnit4.class)
-public class RuleEngineExpressionTests {
+public class RuleEngineEffectTypesTests {
     private Duktape duktape;
 
     @Before
     public void setUp() throws Exception {
         duktape = Duktape.create();
     }
-
-    // check all possible rule effect outputs (that properties are propagated as expected)
-    // check the way variables are replaced with values (multiple references to the same variable)
 
     @Test
     public void simpleConditionMustResultInAssignEffect() throws Exception {

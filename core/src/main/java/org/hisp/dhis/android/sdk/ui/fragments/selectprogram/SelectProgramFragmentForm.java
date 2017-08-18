@@ -32,7 +32,7 @@ package org.hisp.dhis.android.sdk.ui.fragments.selectprogram;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.EventRow;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.events.TrackedEntityInstanceColumnNamesRow;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.events.TrackedEntityInstanceDynamicColumnRows;
 
 import java.util.List;
 
@@ -44,7 +44,7 @@ public class SelectProgramFragmentForm
     private List<EventRow> eventRowList;
     private Program program;
     private OrganisationUnit orgUnit;
-    private TrackedEntityInstanceColumnNamesRow columnNames;
+    private TrackedEntityInstanceDynamicColumnRows columnNames;
 
     public SelectProgramFragmentForm(){}
 
@@ -72,11 +72,11 @@ public class SelectProgramFragmentForm
         this.program = program;
     }
 
-    public TrackedEntityInstanceColumnNamesRow getColumnNames() {
+    public TrackedEntityInstanceDynamicColumnRows getColumnNames() {
         return columnNames;
     }
 
-    public void setColumnNames(TrackedEntityInstanceColumnNamesRow columnNames) {
+    public void setColumnNames(TrackedEntityInstanceDynamicColumnRows columnNames) {
         this.columnNames = columnNames;
     }
 }

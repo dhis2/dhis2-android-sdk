@@ -2,6 +2,7 @@ package org.hisp.dhis.android.sdk.utils;
 
 import static org.hisp.dhis.android.sdk.utils.Preconditions.isNull;
 
+import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
 
@@ -10,10 +11,7 @@ import android.view.WindowManager;
  */
 
 public class ScreenSizeConfigurator {
-    private static final int SCREEN_SIZE_XLARGE = 1080;
-    private static final int SCREEN_SIZE_LARGE = 750;
-    private static final int SCREEN_SIZE_NORMAL = 640;
-    private static final int SCREEN_SIZE_SMALL = 320;
+    private static final int SINGLE_PIECE = 250;
     private WindowManager windowManager;
     public static ScreenSizeConfigurator screenSizeConfigurator;
 
@@ -36,19 +34,10 @@ public class ScreenSizeConfigurator {
     }
 
     private int getColumnsByScreen(WindowManager windowManager) {
-        Display display = windowManager.getDefaultDisplay();
-        int width = display.getWidth();
-        if (width <= SCREEN_SIZE_SMALL) {
-            return 4;
-        } else if (width <= SCREEN_SIZE_NORMAL) {
-            return 8;
-        } else if (width <= SCREEN_SIZE_LARGE) {
-            return 10;
-        } else if (width <= SCREEN_SIZE_XLARGE) {
-            return 12;
-        } else {
-            return 14;
-        }
+        DisplayMetrics metrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(metrics);
+        int width = metrics.widthPixels;
+        return width/SINGLE_PIECE;
     }
 
     public int getFields() {

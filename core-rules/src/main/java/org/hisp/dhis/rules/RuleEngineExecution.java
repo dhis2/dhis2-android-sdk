@@ -96,9 +96,9 @@ class RuleEngineExecution implements Callable<List<RuleEffect>> {
     private String process(@Nonnull String expression) {
         // we don't want to run empty expression
         if (!expression.trim().isEmpty()) {
-            expression = bindVariableValues(expression);
-            expression = bindFunctionValues(expression);
-            return expressionEvaluator.evaluate(expression);
+            String expressionWithVariableValues = bindVariableValues(expression);
+            String expressionWithFunctionValues = bindFunctionValues(expressionWithVariableValues);
+            return expressionEvaluator.evaluate(expressionWithFunctionValues);
         }
 
         return "";
@@ -122,6 +122,7 @@ class RuleEngineExecution implements Callable<List<RuleEffect>> {
     }
 
     @Nonnull
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     private String bindFunctionValues(@Nonnull String expression) {
         RuleExpression ruleExpression = RuleExpression.from(expression);
         RuleExpressionBinder ruleExpressionBinder = RuleExpressionBinder.from(ruleExpression);
@@ -138,16 +139,16 @@ class RuleEngineExecution implements Callable<List<RuleEffect>> {
                     .create(ruleFunctionCall.functionName()).evaluate(arguments, valueMap));
         }
 
-        expression = ruleExpressionBinder.build();
+        String processedExpression = ruleExpressionBinder.build();
 
         // In case if there are functions which
         // are not processed completely.
-        if (expression.contains(D2_FUNCTION_PREFIX)) {
+        if (processedExpression.contains(D2_FUNCTION_PREFIX)) {
             // Another recursive call to process rest of
             // the d2 function calls.
-            expression = bindFunctionValues(expression);
+            processedExpression = bindFunctionValues(processedExpression);
         }
 
-        return expression;
+        return processedExpression;
     }
 }

@@ -1,4 +1,7 @@
 package org.hisp.dhis.rules.models;
 
-public abstract class RuleAction {
+public class RuleAction {
+    protected RuleAction() {
+        // stub implementation
+    }
 }

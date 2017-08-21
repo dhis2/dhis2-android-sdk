@@ -35,14 +35,14 @@ public abstract class RuleVariableValue {
             @Nonnull RuleValueType ruleValueType) {
 
         // clean-up the value before processing it
-        value = value.replace("'", "");
+        String processedValue = value.replace("'", "");
 
-        // if text value, wrap it
+        // if text processedValue, wrap it
         if (RuleValueType.TEXT.equals(ruleValueType)) {
-            value = String.format(Locale.US, "'%s'", value);
+            processedValue = String.format(Locale.US, "'%s'", processedValue);
         }
 
-        return new AutoValue_RuleVariableValue(value, ruleValueType,
+        return new AutoValue_RuleVariableValue(processedValue, ruleValueType,
                 Collections.unmodifiableList(new ArrayList<String>()));
     }
 
@@ -50,14 +50,14 @@ public abstract class RuleVariableValue {
     static RuleVariableValue create(@Nonnull String value,
             @Nonnull RuleValueType ruleValueType, @Nonnull List<String> candidates) {
         // clean-up the value before processing it
-        value = value.replace("'", "");
+        String processedValue = value.replace("'", "");
 
-        // if text value, wrap it
+        // if text processedValue, wrap it
         if (RuleValueType.TEXT.equals(ruleValueType)) {
-            value = String.format(Locale.US, "'%s'", value);
+            processedValue = String.format(Locale.US, "'%s'", processedValue);
         }
 
-        return new AutoValue_RuleVariableValue(value, ruleValueType,
+        return new AutoValue_RuleVariableValue(processedValue, ruleValueType,
                 Collections.unmodifiableList(candidates));
     }
 }

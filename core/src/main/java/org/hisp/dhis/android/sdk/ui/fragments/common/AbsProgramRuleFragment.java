@@ -162,7 +162,8 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
         }
     }
 
-    protected void applyAssignRuleAction(ProgramRuleAction programRuleAction) {
+
+            protected void applyAssignRuleAction(ProgramRuleAction programRuleAction) {
         String stringResult = ProgramRuleService.getCalculatedConditionValue(programRuleAction.getData());
         String programRuleVariableName = programRuleAction.getContent();
         ProgramRuleVariable programRuleVariable;

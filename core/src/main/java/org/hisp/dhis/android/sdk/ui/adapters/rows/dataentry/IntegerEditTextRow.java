@@ -11,8 +11,9 @@ import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.autocompleterow.TextRow;
 
-public class IntegerEditTextRow extends Row {
+public class IntegerEditTextRow extends TextRow {
     private static String rowTypeTemp;
 
     public IntegerEditTextRow(String label, boolean mandatory, String warning,
@@ -115,6 +116,7 @@ public class IntegerEditTextRow extends Row {
         } else {
             holder.mandatoryIndicator.setVisibility(View.VISIBLE);
         }
+        holder.editText.setOnEditorActionListener(mOnEditorActionListener);
 
         return view;
     }

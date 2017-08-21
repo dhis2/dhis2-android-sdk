@@ -282,6 +282,14 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             if (data.getStage() != null &&
                     data.getStage().getCaptureCoordinates()) {
                 GpsController.activateGps(getActivity().getBaseContext());
+            }else{
+                if(hasCoordinateQuestion()){
+                    GpsController.activateGps(getActivity().getBaseContext());
+                }
+            }
+            if (data.getStage() != null &&
+                    data.getStage().getCaptureCoordinates()) {
+                GpsController.activateGps(getActivity().getBaseContext());
             }
             if (data.getSections() != null && !data.getSections().isEmpty()) {
                 if (data.getSections().size() > 1) {
@@ -313,6 +321,25 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
             initiateEvaluateProgramRules();
         }
+    }
+
+    private boolean hasCoordinateQuestion() {
+        List<Row> rows = new ArrayList<>();
+        if(form.getSections()!=null) {
+            List<DataEntryFragmentSection> sections = form.getSections();
+            for(DataEntryFragmentSection section : sections){
+                rows.addAll(section.getRows());
+            }
+        }
+        if(form.getCurrentSection()!=null){
+            rows.addAll(form.getCurrentSection().getRows());
+        }
+        for(Row row:rows){
+            if(row.getViewType()==(DataEntryRowTypes.QUESTION_COORDINATES.ordinal())){
+                return  true;
+            }
+        }
+        return false;
     }
 
     private void showErrorAndDisableEditing(String extraInfo) {

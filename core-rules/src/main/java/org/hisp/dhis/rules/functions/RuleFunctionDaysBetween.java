@@ -40,7 +40,7 @@ abstract class RuleFunctionDaysBetween extends RuleFunction {
      * @param end   the end date.
      * @return number of days between dates.
      */
-    private static Integer daysBetween(String start, String end) {
+    static Integer daysBetween(String start, String end) {
         SimpleDateFormat format = new SimpleDateFormat();
         format.applyPattern(DATE_PATTERN);
 

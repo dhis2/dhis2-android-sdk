@@ -56,6 +56,10 @@ public class TrackedEntityInstancePostCallIntegrationTest extends AbsStoreTestCa
     private String enrollmentUid;
     private String trackedEntityInstanceUid;
 
+    private String event1Uid;
+    private String enrollment1Uid;
+    private String trackedEntityInstance1Uid;
+
 
     @Before
     @Override
@@ -89,9 +93,14 @@ public class TrackedEntityInstancePostCallIntegrationTest extends AbsStoreTestCa
         trackedEntityUid = "nEenWmSyUEp";
         programStageDataElementUid = "LBNxoXdMnkv";
         trackedEntityAttributeUid = "w75KJ2mc4zz";
+
         eventUid = codeGenerator.generate();
         enrollmentUid = codeGenerator.generate();
         trackedEntityInstanceUid = codeGenerator.generate();
+
+        event1Uid = codeGenerator.generate();
+        enrollment1Uid = codeGenerator.generate();
+        trackedEntityInstance1Uid = codeGenerator.generate();
     }
 
     private void createDummyDataToPost(String orgUnitUid, String programUid, String programStageUid,
@@ -139,7 +148,7 @@ public class TrackedEntityInstancePostCallIntegrationTest extends AbsStoreTestCa
     //This test is uncommented because technically it is flaky.
     //It depends on a live server to operate and the login is hardcoded here.
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
-//    @Test
+    @Test
     public void dataSyncTest() throws Exception {
         retrofit2.Response response = null;
         response = d2.logIn("android", "Android123").call();
@@ -152,6 +161,12 @@ public class TrackedEntityInstancePostCallIntegrationTest extends AbsStoreTestCa
         createDummyDataToPost(
                 orgUnitUid, programUid, programStageUid, trackedEntityUid,
                 eventUid, enrollmentUid, trackedEntityInstanceUid, trackedEntityAttributeUid,
+                dataElementUid
+        );
+
+        createDummyDataToPost(
+                orgUnitUid, programUid, programStageUid, trackedEntityUid,
+                event1Uid, enrollment1Uid, trackedEntityInstance1Uid, trackedEntityAttributeUid,
                 dataElementUid
         );
 

@@ -51,7 +51,8 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
         "PMD.AvoidDuplicateLiterals",
         "PMD.CyclomaticComplexity",
         "PMD.ModifiedCyclomaticComplexity",
-        "PMD.StdCyclomaticComplexity"
+        "PMD.StdCyclomaticComplexity",
+        "PMD.AvoidInstantiatingObjectsInLoops"
 })
 public class EnrollmentStoreImpl implements EnrollmentStore {
 
@@ -231,7 +232,6 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
         try {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
-                List<Enrollment> emptyEnrollmentList = new ArrayList<>();
                 do {
                     String uid = cursor.getString(0);
                     Date created = cursor.getString(1) == null ? null : parse(cursor.getString(1));
@@ -251,7 +251,7 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
                     String longitude = cursor.getString(13) == null ? null : cursor.getString(13);
 
                     if (enrollmentMap.get(trackedEntityInstance) == null) {
-                        enrollmentMap.put(trackedEntityInstance, emptyEnrollmentList);
+                        enrollmentMap.put(trackedEntityInstance, new ArrayList<Enrollment>());
                     }
 
                     enrollmentMap.get(trackedEntityInstance).add(Enrollment.create(

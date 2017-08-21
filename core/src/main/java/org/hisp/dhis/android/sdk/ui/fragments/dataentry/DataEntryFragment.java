@@ -51,6 +51,7 @@ import android.widget.Toast;
 import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.controllers.ErrorType;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.ui.activities.OnBackPressedListener;
@@ -67,6 +68,7 @@ import org.hisp.dhis.android.sdk.ui.fragments.eventdataentry.UpdateSectionsEvent
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         implements LoaderManager.LoaderCallbacks<D>, AdapterView.OnItemSelectedListener,
@@ -166,6 +168,7 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
             return true;
         } else if (menuItem.getItemId() == R.id.action_new_event) {
             proceed();
+            return true;
         }
         return super.onOptionsItemSelected(menuItem);
     }
@@ -246,28 +249,20 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         }
     }
 
-    protected void showValidationErrorDialog(ArrayList<String> mandatoryFieldsMissingErrors, ArrayList<String> programRulesErrors, ArrayList<String> fieldValidationError) {
+    protected void showValidationErrorDialog(HashMap<ErrorType, ArrayList<String>> errorsMap) {
         ArrayList<String> errors = new ArrayList<>();
-        addMandatoryErrors(mandatoryFieldsMissingErrors, errors);
-        addErrors(programRulesErrors, errors);
-        addErrors(fieldValidationError, errors);
+        addErrors(errorsMap.get(ErrorType.MANDATORY), errors, getActivity().getString(R.string.missing_mandatory_field));
+        addErrors(errorsMap.get(ErrorType.UNIQUE), errors, getActivity().getString(R.string.unique_value_form_empty));
+        addErrors(errorsMap.get(ErrorType.PROGRAM_RULE), errors, getActivity().getString(R.string.error_message));
+        addErrors(errorsMap.get(ErrorType.INVALID_FIELD), errors, getActivity().getString(R.string.error_message));
         showErrorsDialog(errors);
     }
 
     private void addErrors(ArrayList<String> programRulesErrors,
-            ArrayList<String> errors) {
+            ArrayList<String> errors, String errorMessage) {
         if (programRulesErrors != null) {
             for (String programRulesError : programRulesErrors) {
-                errors.add(getActivity().getString(R.string.error_message) + ": " + programRulesError);
-            }
-        }
-    }
-
-    private void addMandatoryErrors(ArrayList<String> mandatoryFieldsMissingErrors,
-            ArrayList<String> errors) {
-        if (mandatoryFieldsMissingErrors != null) {
-            for (String mandatoryFieldsError : mandatoryFieldsMissingErrors) {
-                errors.add(getActivity().getString(R.string.missing_mandatory_field) + ": " + mandatoryFieldsError);
+                errors.add(errorMessage + ": " + programRulesError);
             }
         }
     }
@@ -346,7 +341,7 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
 
     public abstract SectionAdapter getSpinnerAdapter();
 
-    protected abstract ArrayList<String> getValidationErrors();
+    protected abstract HashMap<ErrorType, ArrayList<String>> getValidationErrors();
 
     protected abstract boolean isValid();
 

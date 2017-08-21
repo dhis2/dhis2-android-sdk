@@ -53,6 +53,7 @@ import com.raizlabs.android.dbflow.structure.Model;
 import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.controllers.ErrorType;
 import org.hisp.dhis.android.sdk.controllers.GpsController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
@@ -494,15 +495,18 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     }
 
     @Override
-    public ArrayList<String> getValidationErrors() {
-        ArrayList<String> errors = new ArrayList<>();
+    public HashMap<ErrorType, ArrayList<String>> getValidationErrors() {
+        HashMap<ErrorType, ArrayList<String>> errors = new HashMap<>();
         if (form.getEvent() == null || form.getStage() == null) {
             return errors;
         }
         if (isEmpty(form.getEvent().getEventDate())) {
             String reportDateDescription = form.getStage().getReportDateDescription() == null ?
                     getString(R.string.report_date) : form.getStage().getReportDateDescription();
-            errors.add(reportDateDescription);
+            if(!errors.containsKey(ErrorType.MANDATORY)){
+                errors.put(ErrorType.MANDATORY, new ArrayList<String>());
+            }
+            errors.get(ErrorType.MANDATORY).add(reportDateDescription);
         }
         Map<String, ProgramStageDataElement> dataElements = toMap(
                 form.getStage().getProgramStageDataElements()
@@ -512,7 +516,10 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             if (dataElement == null) {
                 // don't do anything
             } else if (dataElement.getCompulsory() && isEmpty(dataValue.getValue())) {
-                errors.add(MetaDataController.getDataElement(dataElement.getDataelement()).getDisplayName());
+                if(!errors.containsKey(ErrorType.MANDATORY)){
+                    errors.put(ErrorType.MANDATORY, new ArrayList<String>());
+                }
+                errors.get(ErrorType.MANDATORY).add(MetaDataController.getDataElement(dataElement.getDataelement()).getDisplayName());
             }
         }
         return errors;
@@ -782,7 +789,10 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                 Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
             }
         } else {
-            showValidationErrorDialog(getValidationErrors(), getProgramRuleFragmentHelper().getProgramRuleValidationErrors(), getRowsErrors(getContext(), form));
+            HashMap<ErrorType, ArrayList<String>>  allErrors = getValidationErrors();
+            allErrors.put(ErrorType.PROGRAM_RULE, getProgramRuleFragmentHelper().getProgramRuleValidationErrors());
+            allErrors.put(ErrorType.INVALID_FIELD, getRowsErrors(getContext(), form));
+            showValidationErrorDialog(allErrors);
         }
     }
 

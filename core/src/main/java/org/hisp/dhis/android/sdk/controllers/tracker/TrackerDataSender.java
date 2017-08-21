@@ -532,9 +532,18 @@ final class TrackerDataSender {
         }
         Map<String, TrackedEntityInstance> relatedTeis = new HashMap<String,
                 TrackedEntityInstance>();
+        SystemInfo systemInfo = DhisController.getInstance().getDhisApi().getSystemInfo();
+        DateTime serverDate = systemInfo.getServerDate();
         relatedTeis = getRecursiveRelationatedTeis(trackedEntityInstance, relatedTeis);
-        pushTeiWithoutRelationFirst(relatedTeis);
-        sendTrackedEntityInstance(dhisApi, trackedEntityInstance, sendEnrollments);
+        if(relatedTeis.size()>1) {
+            pushTeiWithoutRelationFirst(relatedTeis, serverDate);
+            trackedEntityInstance.setCreated(serverDate.toString());
+            trackedEntityInstance.setCreatedAtClient(serverDate.toString());
+            trackedEntityInstance.setFromServer(true);
+            sendTrackedEntityInstance(dhisApi, trackedEntityInstance, sendEnrollments);
+        }else {
+            sendTrackedEntityInstance(dhisApi, trackedEntityInstance, sendEnrollments);
+        }
     }
 
 
@@ -575,11 +584,12 @@ final class TrackerDataSender {
     }
 
     private static void pushTeiWithoutRelationFirst(
-            Map<String, TrackedEntityInstance> trackedEntityInstances) {
+            Map<String, TrackedEntityInstance> trackedEntityInstances, DateTime serverDate) {
         List<TrackedEntityInstance> trackerEntityInstancesWithRelations = new ArrayList<>();
         if (trackedEntityInstances.size() > 0) {
             for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances.values()) {
                 trackerEntityInstancesWithRelations.add(trackedEntityInstance);
+                //set relationships as null
                 trackedEntityInstance.setRelationships(new ArrayList<Relationship>());
                 TrackerController.sendTrackedEntityInstanceChanges(
                         DhisController.getInstance().getDhisApi(), trackedEntityInstance, true);
@@ -590,6 +600,9 @@ final class TrackerDataSender {
                     trackedEntityInstance.setFromServer(false);
                     TrackerController.sendTrackedEntityInstanceChanges(
                             DhisController.getInstance().getDhisApi(), trackedEntityInstance, true);
+                    trackedEntityInstance.setCreated(serverDate.toString());
+                    trackedEntityInstance.setLastUpdated(serverDate.toString());
+                    trackedEntityInstance.save();
                 }
             }
         }

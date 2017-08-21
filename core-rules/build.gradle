@@ -1,0 +1,26 @@
+apply plugin: "java"
+apply plugin: "idea"
+apply plugin: "net.ltgt.apt"
+apply from: rootProject.file("plugins/java-checkstyle.gradle")
+apply from: rootProject.file("plugins/java-findbugs.gradle")
+apply from: rootProject.file("plugins/java-pmd.gradle")
+apply from: rootProject.file("plugins/errorprone.gradle")
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
+dependencies {
+    // JSR305 lib with @NonNull, @Nullable annotations
+    compile "com.google.code.findbugs:jsr305:${libraries.jsr305}"
+
+    // Google's auto-value. Annotations are used only during compilation time, as well as
+    // annotation processor which hoops up into compilation process
+    compileOnly "com.google.auto.value:auto-value:${libraries.autovalue}"
+    apt "com.google.auto.value:auto-value:${libraries.autovalue}"
+
+    // test dependencies
+    testCompile "junit:junit:${libraries.junit}"
+    testCompile "org.mockito:mockito-core:${libraries.mockito}"
+    testCompile "org.assertj:assertj-core:${libraries.assertj}"
+    testCompile "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
+}

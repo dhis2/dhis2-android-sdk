@@ -23,7 +23,7 @@ afterEvaluate {
         }
 
         findBugsTask.excludeFilter = rootProject.file(
-                "plugins/android-findbugs-filter.xml"
+                "plugins/findbugs-filter.xml"
         )
 
         def compileTask = variant.javaCompile

@@ -109,7 +109,7 @@ public class RuleExpressionBinderTests {
     }
 
     @Test
-    public void buildShouldThrowIfPassingIllegalVariable() {
+    public void bindVariableShouldThrowIfPassingIllegalVariable() {
         try {
             RuleExpressionBinder.from(ruleExpression).bindVariable("V{test_variable_five}", "3");
             fail("IllegalArgumentException was expected, but nothing was thrown.");

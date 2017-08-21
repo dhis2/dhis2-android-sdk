@@ -193,8 +193,18 @@ public class RuleExpressionTests {
     }
 
     @Test
-    public void buildMustReturnUnmodifiedStringIfNoVariablesOrFunctions() {
+    public void fromMustReturnUnmodifiedStringIfNoVariablesOrFunctions() {
         RuleExpression ruleExpression = RuleExpression.from("'test_expression'");
         assertThat(ruleExpression.expression()).isEqualTo("'test_expression'");
+    }
+
+    @Test
+    public void fromMustReturnFunctionCallWithParameter() {
+        RuleExpression ruleExpression = RuleExpression.from("d2:hasValue('test_value')");
+
+        assertThat(ruleExpression.expression()).isEqualTo("d2:hasValue('test_value')");
+        assertThat(ruleExpression.variables().size()).isEqualTo(0);
+        assertThat(ruleExpression.functions().size()).isEqualTo(1);
+        assertThat(ruleExpression.functions()).contains("d2:hasValue('test_value')");
     }
 }

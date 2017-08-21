@@ -26,18 +26,54 @@ public class RuleVariableValueTests {
     }
 
     @Test
-    public void valuesShouldBePropagatedCorrectly() {
+    public void textValuesMostBeWrapped() {
         RuleVariableValue variableValue = RuleVariableValue.create(
                 "test_value", RuleValueType.TEXT, Arrays.asList(
-                        "test_value_candidate_one", "test_value_candidate_two"
-                )
-        );
+                        "test_value_candidate_one", "test_value_candidate_two"));
 
-        assertThat(variableValue.value()).isEqualTo("test_value");
+        assertThat(variableValue.value()).isEqualTo("'test_value'");
         assertThat(variableValue.type()).isEqualTo(RuleValueType.TEXT);
         assertThat(variableValue.candidates().size()).isEqualTo(2);
         assertThat(variableValue.candidates().get(0)).isEqualTo("test_value_candidate_one");
         assertThat(variableValue.candidates().get(1)).isEqualTo("test_value_candidate_two");
+    }
+
+
+    @Test
+    public void wrappedTextValuesMustNotBeDoubleWrapped() {
+        RuleVariableValue variableValue = RuleVariableValue.create(
+                "'test_value'", RuleValueType.TEXT, Arrays.asList(
+                        "test_value_candidate_one", "test_value_candidate_two"));
+
+        assertThat(variableValue.value()).isEqualTo("'test_value'");
+        assertThat(variableValue.type()).isEqualTo(RuleValueType.TEXT);
+        assertThat(variableValue.candidates().size()).isEqualTo(2);
+        assertThat(variableValue.candidates().get(0)).isEqualTo("test_value_candidate_one");
+        assertThat(variableValue.candidates().get(1)).isEqualTo("test_value_candidate_two");
+    }
+
+    @Test
+    public void numericValuesMostNotBeWrapped() {
+        RuleVariableValue variableValue = RuleVariableValue.create(
+                "1", RuleValueType.NUMERIC, Arrays.asList("2", "3"));
+
+        assertThat(variableValue.value()).isEqualTo("1");
+        assertThat(variableValue.type()).isEqualTo(RuleValueType.NUMERIC);
+        assertThat(variableValue.candidates().size()).isEqualTo(2);
+        assertThat(variableValue.candidates().get(0)).isEqualTo("2");
+        assertThat(variableValue.candidates().get(1)).isEqualTo("3");
+    }
+
+    @Test
+    public void booleanValuesMostNotBeWrapped() {
+        RuleVariableValue variableValue = RuleVariableValue.create(
+                "true", RuleValueType.BOOLEAN, Arrays.asList("false", "false"));
+
+        assertThat(variableValue.value()).isEqualTo("true");
+        assertThat(variableValue.type()).isEqualTo(RuleValueType.BOOLEAN);
+        assertThat(variableValue.candidates().size()).isEqualTo(2);
+        assertThat(variableValue.candidates().get(0)).isEqualTo("false");
+        assertThat(variableValue.candidates().get(1)).isEqualTo("false");
     }
 
     @Test
@@ -58,10 +94,5 @@ public class RuleVariableValueTests {
         } catch (NullPointerException exception) {
             // noop
         }
-    }
-
-    @Test
-    public void createShouldReturnValueWithImmutableCandidates() {
-
     }
 }

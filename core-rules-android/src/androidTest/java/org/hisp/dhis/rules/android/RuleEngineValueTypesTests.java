@@ -27,7 +27,7 @@ import java.util.List;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(JUnit4.class)
-public class RuleEngineValueTypeTests {
+public class RuleEngineValueTypesTests {
 
     private Duktape duktape;
 

@@ -7,21 +7,22 @@ import org.hisp.dhis.rules.models.RuleValueType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @AutoValue
-abstract class RuleVariableValue {
+public abstract class RuleVariableValue {
 
     @Nullable
-    abstract String value();
+    public abstract String value();
 
     @Nonnull
-    abstract RuleValueType type();
+    public abstract RuleValueType type();
 
     @Nonnull
-    abstract List<String> candidates();
+    public abstract List<String> candidates();
 
     @Nonnull
     static RuleVariableValue create(@Nonnull RuleValueType ruleValueType) {
@@ -32,6 +33,15 @@ abstract class RuleVariableValue {
     @Nonnull
     static RuleVariableValue create(@Nonnull String value,
             @Nonnull RuleValueType ruleValueType) {
+
+        // clean-up the value before processing it
+        value = value.replace("'", "");
+
+        // if text value, wrap it
+        if (RuleValueType.TEXT.equals(ruleValueType)) {
+            value = String.format(Locale.US, "'%s'", value);
+        }
+
         return new AutoValue_RuleVariableValue(value, ruleValueType,
                 Collections.unmodifiableList(new ArrayList<String>()));
     }
@@ -39,6 +49,14 @@ abstract class RuleVariableValue {
     @Nonnull
     static RuleVariableValue create(@Nonnull String value,
             @Nonnull RuleValueType ruleValueType, @Nonnull List<String> candidates) {
+        // clean-up the value before processing it
+        value = value.replace("'", "");
+
+        // if text value, wrap it
+        if (RuleValueType.TEXT.equals(ruleValueType)) {
+            value = String.format(Locale.US, "'%s'", value);
+        }
+
         return new AutoValue_RuleVariableValue(value, ruleValueType,
                 Collections.unmodifiableList(candidates));
     }

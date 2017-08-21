@@ -21,6 +21,7 @@ import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 
 class RuleEngineExecution implements Callable<List<RuleEffect>> {
+    private static final String D2_FUNCTION_PREFIX = "d2:";
 
     @Nonnull
     private final RuleExpressionEvaluator expressionEvaluator;
@@ -95,9 +96,9 @@ class RuleEngineExecution implements Callable<List<RuleEffect>> {
     private String process(@Nonnull String expression) {
         // we don't want to run empty expression
         if (!expression.trim().isEmpty()) {
-            String expressionWithVariableValues = bindVariableValues(expression);
-            String expressionWithFunctionValues = bindFunctionValues(expressionWithVariableValues);
-            return expressionEvaluator.evaluate(expressionWithFunctionValues);
+            expression = bindVariableValues(expression);
+            expression = bindFunctionValues(expression);
+            return expressionEvaluator.evaluate(expression);
         }
 
         return "";
@@ -133,10 +134,20 @@ class RuleEngineExecution implements Callable<List<RuleEffect>> {
                 arguments.set(j, process(arguments.get(j)));
             }
 
-            ruleExpressionBinder.bindFunction(ruleFunctionCall.functionCall(),
-                    RuleFunction.create(ruleFunctionCall.functionName()).evaluate(arguments));
+            ruleExpressionBinder.bindFunction(ruleFunctionCall.functionCall(), RuleFunction
+                    .create(ruleFunctionCall.functionName()).evaluate(arguments, valueMap));
         }
 
-        return ruleExpressionBinder.build();
+        expression = ruleExpressionBinder.build();
+
+        // In case if there are functions which
+        // are not processed completely.
+        if (expression.contains(D2_FUNCTION_PREFIX)) {
+            // Another recursive call to process rest of
+            // the d2 function calls.
+            expression = bindFunctionValues(expression);
+        }
+
+        return expression;
     }
 }

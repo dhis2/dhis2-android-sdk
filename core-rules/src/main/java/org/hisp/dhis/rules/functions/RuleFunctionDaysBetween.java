@@ -2,10 +2,13 @@ package org.hisp.dhis.rules.functions;
 
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.rules.RuleVariableValue;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
@@ -15,9 +18,11 @@ abstract class RuleFunctionDaysBetween extends RuleFunction {
 
     @Nonnull
     @Override
-    public String evaluate(@Nonnull List<String> arguments) {
+    public String evaluate(@Nonnull List<String> arguments,
+            @Nonnull Map<String, RuleVariableValue> valueMap) {
         if (arguments.size() != 2) {
-            throw new IllegalArgumentException("Two arguments expected, two were supplied");
+            throw new IllegalArgumentException("Two arguments were expected, " +
+                    arguments.size() + " were supplied");
         }
 
         return String.valueOf(daysBetween(arguments.get(0), arguments.get(1)));

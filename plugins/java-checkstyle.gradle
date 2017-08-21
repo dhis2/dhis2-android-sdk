@@ -1,0 +1,25 @@
+apply plugin: "checkstyle"
+
+checkstyle {
+    // inspect only main source set
+    sourceSets = [
+            sourceSets.main
+    ]
+
+    // Fail early.
+    ignoreFailures = false
+
+    // Do not output results into console.
+    showViolations = false
+
+    configFile = rootProject.file(
+            "plugins/checkstyle-style.xml"
+    )
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        html.enabled = true
+        xml.enabled = false
+    }
+}

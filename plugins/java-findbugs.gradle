@@ -1,0 +1,28 @@
+apply plugin: "findbugs"
+
+findbugs {
+    // inspect only main source set
+    sourceSets = [
+            sourceSets.main
+    ]
+
+    // Fail early.
+    ignoreFailures = false
+
+    // Aggressive inspection.
+    effort = "max"
+
+    // Fail build on high priority warnings.
+    reportLevel = "low"
+
+    excludeFilter = rootProject.file(
+            "plugins/findbugs-filter.xml"
+    )
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        html.enabled = true
+        xml.enabled = false
+    }
+}

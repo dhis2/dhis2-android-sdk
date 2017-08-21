@@ -22,7 +22,7 @@ afterEvaluate {
 
         // see: https://pmd.github.io/pmd-5.5.2/pmd-java/rules/index.html
         pmdTask.ruleSetFiles = rootProject.files(
-                "plugins/android-pmd-rules.xml"
+                "plugins/pmd-rules.xml"
         )
 
         // setting list of rule sets explicitly to empty list

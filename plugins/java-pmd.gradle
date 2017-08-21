@@ -1,0 +1,28 @@
+apply plugin: "pmd"
+
+pmd {
+    toolVersion = "5.5.2"
+
+    // inspect only main source set
+    sourceSets = [
+            sourceSets.main
+    ]
+
+    // Fail early.
+    ignoreFailures = false
+
+    // see: https://pmd.github.io/pmd-5.5.2/pmd-java/rules/index.html
+    ruleSetFiles = rootProject.files(
+            "plugins/pmd-rules.xml"
+    )
+
+    // setting list of rule sets explicitly to empty list
+    ruleSets = []
+}
+
+tasks.withType(Pmd) {
+    reports {
+        html.enabled = true
+        xml.enabled = false
+    }
+}

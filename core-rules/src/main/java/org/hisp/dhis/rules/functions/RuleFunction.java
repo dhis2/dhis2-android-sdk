@@ -20,6 +20,8 @@ public abstract class RuleFunction {
         switch (fun) {
             case RuleFunctionDaysBetween.D2_DAYS_BETWEEN:
                 return RuleFunctionDaysBetween.create();
+            case RuleFunctionWeeksBetween.D2_WEEKS_BETWEEN:
+                return RuleFunctionWeeksBetween.create();
             case RuleFunctionHasValue.D2_HAS_VALUE:
                 return RuleFunctionHasValue.create();
             case RuleFunctionFloor.D2_FLOOR:

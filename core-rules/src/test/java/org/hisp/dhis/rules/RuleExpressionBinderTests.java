@@ -95,20 +95,6 @@ public class RuleExpressionBinderTests {
     }
 
     @Test
-    public void buildShouldThrowIfNotEnoughValues() {
-        try {
-            RuleExpressionBinder.from(ruleExpression)
-                    .bindVariable("A{test_variable_one}", "1")
-                    .bindVariable("C{test_variable_two}", "2")
-                    .bindVariable("V{test_variable_three}", "3")
-                    .build();
-            fail("IllegalStateException was expected, but nothing was thrown.");
-        } catch (IllegalStateException illegalStateException) {
-            // noop
-        }
-    }
-
-    @Test
     public void bindVariableShouldThrowIfPassingIllegalVariable() {
         try {
             RuleExpressionBinder.from(ruleExpression).bindVariable("V{test_variable_five}", "3");

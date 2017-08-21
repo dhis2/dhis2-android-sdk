@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 public abstract class RuleActionWarningOnCompletion extends RuleActionMessage {
 
     @Nonnull
+    @SuppressWarnings("PMD.NPathComplexity")
     public static RuleActionWarningOnCompletion create(@Nullable String content,
             @Nullable String data, @Nullable String field) {
         if (content == null && data == null && field == null) {

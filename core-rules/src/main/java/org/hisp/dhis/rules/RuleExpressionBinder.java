@@ -53,22 +53,16 @@ final class RuleExpressionBinder {
                     expression = expression.replace(variableValue.getKey(),
                             variableValue.getValue());
                 }
-
-//                throw new IllegalStateException("Value has not been substituted for " +
-//                        "variable: " + variableValue.getKey());
             }
         }
 
         // iterate over function calls and replace them with values
         for (Map.Entry<String, String> functionCall : ruleFunctionCalls.entrySet()) {
             if (functionCall.getValue() != null) {
-                // ToDo: write tests for this concrete case
                 while (expression.contains(functionCall.getKey())) {
                     expression = expression.replace(functionCall.getKey(),
                             functionCall.getValue());
                 }
-//                throw new IllegalStateException("Value has not been substituted for " +
-//                        "function call: " + functionCall.getKey());
             }
         }
 

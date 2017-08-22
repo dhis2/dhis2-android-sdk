@@ -592,7 +592,7 @@ final class TrackerDataSender {
                 //set relationships as null
                 trackedEntityInstance.setRelationships(new ArrayList<Relationship>());
                 TrackerController.sendTrackedEntityInstanceChanges(
-                        DhisController.getInstance().getDhisApi(), trackedEntityInstance, true);
+                        DhisController.getInstance().getDhisApi(), trackedEntityInstance, false);
             }
             for (TrackedEntityInstance trackedEntityInstance :
                     trackerEntityInstancesWithRelations) {

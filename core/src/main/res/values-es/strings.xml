@@ -61,6 +61,7 @@
     <string name="unable_to_complete_registration">Imposible completar el registro.</string>
     <string name="review_errors">Por favor corrige los errores abajo mostrados e inténtalo de nuevo</string>
     <string name="validation_errors">Por favor corrige los errores  de validación e inténtalo de nuevo</string>
+    <string name="unique_value_form_empty">Valor no único inválido</string>
 
 
     <!-- Login Activity -->

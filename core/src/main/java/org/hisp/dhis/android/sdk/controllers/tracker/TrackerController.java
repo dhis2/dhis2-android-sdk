@@ -697,4 +697,20 @@ public final class TrackerController extends ResourceController {
                     serverDateTime);
         }
     }
+
+
+    /**
+     * Returns the number of the given value by given trackedentityattribute
+     *
+     * @param value
+     * @return
+     */
+    public static int countTrackedEntityAttributeValue(String value, String trackedEntityAttribute) {
+        return (int) new Select().count().from(TrackedEntityAttributeValue.class).where(
+                Condition.column(TrackedEntityAttributeValue$Table.
+                        VALUE).eq(value))
+                .and(
+                Condition.column(TrackedEntityAttributeValue$Table.
+                        TRACKEDENTITYATTRIBUTEID).eq(trackedEntityAttribute)).count();
+    }
 }

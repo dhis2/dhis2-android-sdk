@@ -61,6 +61,7 @@
     <string name="unable_to_complete_registration">Unable to complete registration.</string>
     <string name="review_errors">Please review the errors below and try again.</string>
     <string name="validation_errors">Please review the validation errors and try again.</string>
+    <string name="unique_value_form_empty">Invalid unique value</string>
 
 
     <!-- Login Activity -->

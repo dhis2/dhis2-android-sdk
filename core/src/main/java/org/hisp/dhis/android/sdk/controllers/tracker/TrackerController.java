@@ -76,7 +76,6 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -616,6 +615,7 @@ public final class TrackerController extends ResourceController {
     public static void sendTrackedEntityInstanceChanges(DhisApi dhisApi, TrackedEntityInstance trackedEntityInstance, boolean sendEnrollments) throws APIException {
         TrackerDataSender.sendTrackedEntityInstanceChanges(dhisApi, trackedEntityInstance, sendEnrollments);
     }
+
 
     public static List<Enrollment> getActiveEnrollments() {
         List<Enrollment> activeEnrollments = new Select().from(Enrollment.class)

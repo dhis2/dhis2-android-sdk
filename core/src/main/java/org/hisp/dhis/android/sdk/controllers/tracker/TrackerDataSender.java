@@ -530,6 +530,86 @@ final class TrackerDataSender {
                 return;
             }
         }
+        Map<String, TrackedEntityInstance> relatedTeis = new HashMap<String,
+                TrackedEntityInstance>();
+        SystemInfo systemInfo = DhisController.getInstance().getDhisApi().getSystemInfo();
+        DateTime serverDate = systemInfo.getServerDate();
+        relatedTeis = getRecursiveRelationatedTeis(trackedEntityInstance, relatedTeis);
+        if(relatedTeis.size()>1) {
+            pushTeiWithoutRelationFirst(relatedTeis, serverDate);
+            trackedEntityInstance.setCreated(serverDate.toString());
+            trackedEntityInstance.setCreatedAtClient(serverDate.toString());
+            trackedEntityInstance.setFromServer(true);
+            sendTrackedEntityInstance(dhisApi, trackedEntityInstance, sendEnrollments);
+        }else {
+            sendTrackedEntityInstance(dhisApi, trackedEntityInstance, sendEnrollments);
+        }
+    }
+
+
+    private static Map<String, TrackedEntityInstance> getRecursiveRelationatedTeis(
+            TrackedEntityInstance trackedEntityInstance,
+            Map<String, TrackedEntityInstance> relatedTeiList) {
+        if (trackedEntityInstance.getRelationships() != null
+                && trackedEntityInstance.getRelationships().size() > 0) {
+            for (Relationship relationship : trackedEntityInstance.getRelationships()) {
+                if (relationship.getTrackedEntityInstanceB().equals(
+                        trackedEntityInstance.getUid())) {
+                    String target = relationship.getTrackedEntityInstanceA();
+                    relatedTeiList = addRelatedNotPushedTeis(relatedTeiList, target);
+                } else if (relationship.getTrackedEntityInstanceA().equals(
+                        trackedEntityInstance.getUid())) {
+                    String target = relationship.getTrackedEntityInstanceB();
+                    relatedTeiList = addRelatedNotPushedTeis(relatedTeiList, target);
+                }
+            }
+        }
+        return relatedTeiList;
+    }
+
+    private static Map<String, TrackedEntityInstance> addRelatedNotPushedTeis(
+            Map<String, TrackedEntityInstance> relatedTeiList, String target) {
+        TrackedEntityInstance relatedTrackedEntityInstance =
+                TrackerController.getTrackedEntityInstance(target);
+        if (!relatedTrackedEntityInstance.isFromServer()
+                && relatedTrackedEntityInstance.getCreated() == null) {
+            if (!relatedTeiList.containsKey(relatedTrackedEntityInstance.getUid())) {
+                relatedTeiList.put(relatedTrackedEntityInstance.getUid(),
+                        relatedTrackedEntityInstance);
+                relatedTeiList = getRecursiveRelationatedTeis(relatedTrackedEntityInstance,
+                        relatedTeiList);
+            }
+        }
+        return relatedTeiList;
+    }
+
+    private static void pushTeiWithoutRelationFirst(
+            Map<String, TrackedEntityInstance> trackedEntityInstances, DateTime serverDate) {
+        List<TrackedEntityInstance> trackerEntityInstancesWithRelations = new ArrayList<>();
+        if (trackedEntityInstances.size() > 0) {
+            for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances.values()) {
+                trackerEntityInstancesWithRelations.add(trackedEntityInstance);
+                //set relationships as null
+                trackedEntityInstance.setRelationships(new ArrayList<Relationship>());
+                TrackerController.sendTrackedEntityInstanceChanges(
+                        DhisController.getInstance().getDhisApi(), trackedEntityInstance, false);
+            }
+            for (TrackedEntityInstance trackedEntityInstance :
+                    trackerEntityInstancesWithRelations) {
+                if (trackedEntityInstance.getRelationships().size() > 0) {
+                    trackedEntityInstance.setFromServer(false);
+                    TrackerController.sendTrackedEntityInstanceChanges(
+                            DhisController.getInstance().getDhisApi(), trackedEntityInstance, true);
+                    trackedEntityInstance.setCreated(serverDate.toString());
+                    trackedEntityInstance.setLastUpdated(serverDate.toString());
+                    trackedEntityInstance.save();
+                }
+            }
+        }
+    }
+
+    private static void sendTrackedEntityInstance(DhisApi dhisApi,
+            TrackedEntityInstance trackedEntityInstance, boolean sendEnrollments) {
         boolean success;
         if (trackedEntityInstance.getCreated() == null) {
             success = postTrackedEntityInstance(trackedEntityInstance, dhisApi);

@@ -58,6 +58,9 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
     @Column(name = "trackedEntityInstance")
     @Unique
     String trackedEntityInstance;
+    public void setCreated(String created) {
+        this.created = created;
+    }
 
     @JsonProperty("trackedEntity")
     @Column(name = "trackedEntity")

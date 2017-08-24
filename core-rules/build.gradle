@@ -24,3 +24,5 @@ dependencies {
     testCompile "org.assertj:assertj-core:${libraries.assertj}"
     testCompile "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
 }
+
+apply from: rootProject.file("plugins/gradle-mvn-push.gradle")

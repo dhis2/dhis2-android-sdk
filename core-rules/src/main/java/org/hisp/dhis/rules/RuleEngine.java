@@ -84,7 +84,13 @@ public final class RuleEngine {
                     "set as a part of execution context.", this.ruleEnrollment.enrollment()));
         }
 
-        throw new UnsupportedOperationException();
+        Map<String, RuleVariableValue> valueMap = RuleVariableValueMapBuilder.target(ruleEnrollment)
+                .ruleVariables(ruleEngineContext.ruleVariables())
+                .ruleEvents(ruleEvents)
+                .build();
+
+        return new RuleEngineExecution(executionContext().expressionEvaluator(),
+                ruleEngineContext.rules(), valueMap);
     }
 
     public static class Builder {

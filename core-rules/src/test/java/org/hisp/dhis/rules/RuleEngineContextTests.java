@@ -107,18 +107,6 @@ public class RuleEngineContextTests {
     }
 
     @Test
-    public void builderShouldThrowIfRulesListIsEmpty() {
-        try {
-            RuleEngineContext.builder(ruleExpressionEvaluator)
-                    .rules(new ArrayList<Rule>())
-                    .build();
-            fail("IllegalArgumentException was expected, but nothing was thrown");
-        } catch (IllegalArgumentException illegalArgumentException) {
-            // noop
-        }
-    }
-
-    @Test
     public void toEngineBuilderShouldReturnNewInstances() {
         RuleEngineContext ruleEngineContext = RuleEngineContext.builder(ruleExpressionEvaluator)
                 .ruleVariables(Arrays.asList(mock(RuleVariable.class)))

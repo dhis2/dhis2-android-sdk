@@ -3,7 +3,6 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
@@ -14,7 +13,6 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
-import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.utils.CodeGenerator;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 import org.junit.Before;
@@ -26,9 +24,6 @@ import java.util.Date;
 
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
-import retrofit2.Response;
-
-import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class TrackedEntityInstancePostCallIntegrationTest extends AbsStoreTestCase {
@@ -104,9 +99,9 @@ public class TrackedEntityInstancePostCallIntegrationTest extends AbsStoreTestCa
     }
 
     private void createDummyDataToPost(String orgUnitUid, String programUid, String programStageUid,
-                                       String trackedEntityUid, String eventUid, String enrollmentUid,
-                                       String trackedEntityInstanceUid, String trackedEntityAttributeUid,
-                                       String dataElementUid) {
+            String trackedEntityUid, String eventUid, String enrollmentUid,
+            String trackedEntityInstanceUid, String trackedEntityAttributeUid,
+            String dataElementUid) {
         trackedEntityInstanceStore.insert(
                 trackedEntityInstanceUid, new Date(), new Date(), null, null, orgUnitUid, trackedEntityUid, State.TO_POST
         );
@@ -150,35 +145,30 @@ public class TrackedEntityInstancePostCallIntegrationTest extends AbsStoreTestCa
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
     @Test
     public void dataSyncTest() throws Exception {
-        retrofit2.Response response = null;
-        response = d2.logIn("android", "Android123").call();
-        assertThat(response.isSuccessful()).isTrue();
-
-        response = d2.syncMetaData().call();
-        assertThat(response.isSuccessful()).isTrue();
-
-
-        createDummyDataToPost(
-                orgUnitUid, programUid, programStageUid, trackedEntityUid,
-                eventUid, enrollmentUid, trackedEntityInstanceUid, trackedEntityAttributeUid,
-                dataElementUid
-        );
-
-        createDummyDataToPost(
-                orgUnitUid, programUid, programStageUid, trackedEntityUid,
-                event1Uid, enrollment1Uid, trackedEntityInstance1Uid, trackedEntityAttributeUid,
-                dataElementUid
-        );
-
-
-        Call<Response<WebResponse>> call = d2.syncTrackedEntityInstances();
-        response = call.call();
-
-        assertThat(response.isSuccessful()).isTrue();
-
-    }
-
-    @Test
-    public void stub() {
+//        retrofit2.Response response = null;
+//        response = d2.logIn("android", "Android123").call();
+//        assertThat(response.isSuccessful()).isTrue();
+//
+//        response = d2.syncMetaData().call();
+//        assertThat(response.isSuccessful()).isTrue();
+//
+//
+//        createDummyDataToPost(
+//                orgUnitUid, programUid, programStageUid, trackedEntityUid,
+//                eventUid, enrollmentUid, trackedEntityInstanceUid, trackedEntityAttributeUid,
+//                dataElementUid
+//        );
+//
+//        createDummyDataToPost(
+//                orgUnitUid, programUid, programStageUid, trackedEntityUid,
+//                event1Uid, enrollment1Uid, trackedEntityInstance1Uid, trackedEntityAttributeUid,
+//                dataElementUid
+//        );
+//
+//
+//        Call<Response<WebResponse>> call = d2.syncTrackedEntityInstances();
+//        response = call.call();
+//
+//        assertThat(response.isSuccessful()).isTrue();
     }
 }

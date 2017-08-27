@@ -95,8 +95,8 @@ public final class RuleEngineContext {
 
         @Nonnull
         public RuleEngineContext build() {
-            if (rules == null || rules.isEmpty()) {
-                throw new IllegalArgumentException("At least one rule must be supplied");
+            if (rules == null) {
+                rules = unmodifiableList(new ArrayList<Rule>());
             }
 
             if (ruleVariables == null) {

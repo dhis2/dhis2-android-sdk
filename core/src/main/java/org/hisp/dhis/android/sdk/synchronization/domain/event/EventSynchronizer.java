@@ -8,15 +8,18 @@ import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
-import org.hisp.dhis.android.sdk.utils.NetworkUtils;
+import org.hisp.dhis.android.sdk.synchronization.domain.faileditem.IFailedItemRepository;
 
 public class EventSynchronizer {
     //coordinate one type of item
 
     IEventRepository mEventRepository;
+    IFailedItemRepository mFailedItemRepository;
 
-    public EventSynchronizer(IEventRepository eventRepository) {
+    public EventSynchronizer(IEventRepository eventRepository,
+            IFailedItemRepository failedItemRepository) {
         mEventRepository = eventRepository;
+        mFailedItemRepository = failedItemRepository;
     }
 
     public void sync(Event event) {
@@ -28,22 +31,14 @@ public class EventSynchronizer {
 
                 event.setFromServer(true);
                 mEventRepository.save(event);
+                mFailedItemRepository.clearFailedItem(EVENT, event.getLocalId());
 
-                clearFailedItem(EVENT, event.getLocalId());
-            }else if (ImportSummary.ERROR.equals(importSummary.getStatus())) {
-                //Log.d(CLASS_TAG, "failed.. ");
-                NetworkUtils.handleImportSummaryError(importSummary, EVENT, 200, id);
+            } else if (ImportSummary.ERROR.equals(importSummary.getStatus())) {
+                mFailedItemRepository.handleImportSummaryError(importSummary, EVENT, 200, id);
             }
-
-        } catch (APIException apiException) {
-            NetworkUtils.handleEventSendException(apiException, event);
+        } catch (APIException api) {
+            mFailedItemRepository.handleSerializableItemException(api, FailedItem.EVENT,
+                    event.getLocalId());
         }
-    }
-
-    private void clearFailedItem(String type, long id) {
-      /*  FailedItem item = mFailedItemRepository.getFailedItem(type, id);
-        if (item != null) {
-            item.async().delete();
-        }*/
     }
 }

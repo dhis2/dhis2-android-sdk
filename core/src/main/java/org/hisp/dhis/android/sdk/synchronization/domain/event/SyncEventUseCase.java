@@ -2,19 +2,20 @@ package org.hisp.dhis.android.sdk.synchronization.domain.event;
 
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.synchronization.domain.faileditem.IFailedItemRepository;
-import org.hisp.dhis.android.sdk.synchronization.domain.trackedentityinstance
-        .TrackedEntityInstanceSynchronizer;
 
 public class SyncEventUseCase {
     //coordinate items to sync
 
     IEventRepository mEventRepository;
+    IFailedItemRepository mFailedItemRepository;
     EventSynchronizer mEventSynchronizer;
 
 
     public SyncEventUseCase(IEventRepository eventRepository,
             IFailedItemRepository failedItemRepository) {
         mEventRepository = eventRepository;
+        mFailedItemRepository = failedItemRepository;
+        mEventSynchronizer = new EventSynchronizer(mEventRepository, mFailedItemRepository);
 
     }
 
@@ -30,6 +31,6 @@ public class SyncEventUseCase {
         //EnrollmentSynchronizer.sync(enrollment);
 
         //else
-        //mEventSynchronizer.sync(event);
+        mEventSynchronizer.sync(event);
     }
 }

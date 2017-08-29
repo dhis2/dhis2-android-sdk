@@ -333,48 +333,5 @@ public class UserStoreTests extends AbsStoreTestCase {
     public void delete_null_uid() {
         store.delete(null);
     }
-
-    // ToDo: consider introducing conflict resolution strategy
-//    @Test
-//    public void save_shouldNotTriggerOtherTablesOnDuplicate() {
-//        // inserting user
-//        ContentValues user = UserContractTests.authenticator(1L, "test_user_uid");
-//        database().insert(DbOpenHelper.Tables.USER_UID, null, user);
-//
-//        // inserting user credentials
-//        ContentValues userCredentials = UserCredentialsContractTests.authenticator(
-//                1L, "test_user_credentials", "test_user_uid");
-//        database().insert(DbOpenHelper.Tables.UID, null, userCredentials);
-//
-//        // try to insert duplicate into user table through store
-//        Date date = new Date();
-//        long rowId = store.insert(
-//                "test_user_uid",
-//                "test_user_code",
-//                "test_user_name",
-//                "test_user_display_name",
-//                date, date,
-//                "test_user_birthday",
-//                "test_user_education",
-//                "test_user_gender",
-//                "test_user_job_title",
-//                "test_user_surname",
-//                "test_user_first_name",
-//                "test_user_introduction",
-//                "test_user_employer",
-//                "test_user_interests",
-//                "test_user_languages",
-//                "test_user_email",
-//                "test_user_phone_number",
-//                "test_user_nationality"
-//        );
-//
-//        System.out.println("RowId: " + rowId);
-//
-//        assertThatCursor(database().query(DbOpenHelper.Tables.UID, UserCredentialsContractTests
-// .USER_CREDENTIALS_PROJECTION, null, null, null, null, null))
-//                .hasRow(UserCredentialsContractTests.USER_CREDENTIALS_PROJECTION, userCredentials)
-//                .isExhausted();
-//    }
 }
 

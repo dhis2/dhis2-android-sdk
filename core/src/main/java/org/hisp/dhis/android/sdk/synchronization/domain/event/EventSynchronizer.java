@@ -66,10 +66,8 @@ public class EventSynchronizer extends Synchronizer{
                 }
             }
         } catch (APIException api) {
-            //The sdk try to upload it event by event in this case
             for (Event event : events) {
-                super.handleSerializableItemException(api, FailedItem.EVENT,
-                        event.getLocalId());
+                sync(event);
             }
         }
     }

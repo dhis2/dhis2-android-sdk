@@ -13,4 +13,6 @@ public interface IEnrollmentRepository {
     ImportSummary sync (Enrollment enrollment);
 
     List<Event> getEvents(Enrollment enrollment);
+
+    Enrollment getEnrollment(String enrollment);
 }

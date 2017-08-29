@@ -5,7 +5,7 @@ import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.models.ApiResponse;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
-import org.hisp.dhis.android.sdk.synchronization.data.importSummary.ImportSummaryRemoteDataSource;
+import org.hisp.dhis.android.sdk.synchronization.data.common.RemoteDataSource;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 import retrofit.client.Response;
 
-public class EventRemoteDataSource extends ImportSummaryRemoteDataSource {
+public class EventRemoteDataSource extends RemoteDataSource {
 
     public EventRemoteDataSource(DhisApi dhisApi) {
         this.dhisApi = dhisApi;

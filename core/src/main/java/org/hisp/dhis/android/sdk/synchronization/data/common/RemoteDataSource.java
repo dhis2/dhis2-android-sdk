@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.sdk.synchronization.data.importSummary;
+package org.hisp.dhis.android.sdk.synchronization.data.common;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,7 +16,7 @@ import java.io.IOException;
 import retrofit.client.Response;
 import retrofit.converter.ConversionException;
 
-public class ImportSummaryRemoteDataSource {
+public class RemoteDataSource {
 
     public DhisApi dhisApi;
 

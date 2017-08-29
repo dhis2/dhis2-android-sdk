@@ -74,8 +74,16 @@ import org.hisp.dhis.android.sdk.synchronization.data.event.EventLocalDataSource
 import org.hisp.dhis.android.sdk.synchronization.data.event.EventRemoteDataSource;
 import org.hisp.dhis.android.sdk.synchronization.data.event.EventRepository;
 import org.hisp.dhis.android.sdk.synchronization.data.faileditem.FailedItemRepository;
+import org.hisp.dhis.android.sdk.synchronization.data.trackedentityinstance
+        .TrackedEntityInstanceLocalDataSource;
+import org.hisp.dhis.android.sdk.synchronization.data.trackedentityinstance
+        .TrackedEntityInstanceRemoteDataSource;
+import org.hisp.dhis.android.sdk.synchronization.data.trackedentityinstance
+        .TrackedEntityInstanceRepository;
 import org.hisp.dhis.android.sdk.synchronization.domain.enrollment.IEnrollmentRepository;
 import org.hisp.dhis.android.sdk.synchronization.domain.event.SyncEventUseCase;
+import org.hisp.dhis.android.sdk.synchronization.domain.trackedentityinstance
+        .ITrackedEntityInstanceRepository;
 import org.hisp.dhis.android.sdk.ui.views.FontTextView;
 import org.hisp.dhis.android.sdk.utils.LogUtils;
 
@@ -407,7 +415,10 @@ public abstract class ItemStatusDialogFragment extends DialogFragment
                 EventRepository eventRepository = new EventRepository(mLocalDataSource, mRemoteDataSource);
                 FailedItemRepository failedItemRepository = new FailedItemRepository();
 
-                SyncEventUseCase syncEventUseCase = new SyncEventUseCase(eventRepository, enrollmentRepository, failedItemRepository);
+                TrackedEntityInstanceLocalDataSource trackedEntityInstanceLocalDataSource = new TrackedEntityInstanceLocalDataSource();
+                TrackedEntityInstanceRemoteDataSource trackedEntityInstanceRemoteDataSource = new TrackedEntityInstanceRemoteDataSource(DhisController.getInstance().getDhisApi());
+                ITrackedEntityInstanceRepository trackedEntityInstanceRepository = new TrackedEntityInstanceRepository(trackedEntityInstanceLocalDataSource, trackedEntityInstanceRemoteDataSource);
+                SyncEventUseCase syncEventUseCase = new SyncEventUseCase(eventRepository, enrollmentRepository, trackedEntityInstanceRepository, failedItemRepository);
                 syncEventUseCase.execute(event);
                 return new Object();
             }

@@ -73,7 +73,6 @@ import org.hisp.dhis.android.sdk.synchronization.data.enrollment.EnrollmentRepos
 import org.hisp.dhis.android.sdk.synchronization.data.event.EventLocalDataSource;
 import org.hisp.dhis.android.sdk.synchronization.data.event.EventRemoteDataSource;
 import org.hisp.dhis.android.sdk.synchronization.data.event.EventRepository;
-import org.hisp.dhis.android.sdk.synchronization.data.faileditem.FailedItemLocalDataSource;
 import org.hisp.dhis.android.sdk.synchronization.data.faileditem.FailedItemRepository;
 import org.hisp.dhis.android.sdk.synchronization.domain.enrollment.IEnrollmentRepository;
 import org.hisp.dhis.android.sdk.synchronization.domain.event.SyncEventUseCase;
@@ -406,10 +405,8 @@ public abstract class ItemStatusDialogFragment extends DialogFragment
                 EventLocalDataSource mLocalDataSource = new EventLocalDataSource();
                 EventRemoteDataSource mRemoteDataSource = new EventRemoteDataSource(DhisController.getInstance().getDhisApi());
                 EventRepository eventRepository = new EventRepository(mLocalDataSource, mRemoteDataSource);
+                FailedItemRepository failedItemRepository = new FailedItemRepository();
 
-                FailedItemLocalDataSource failedItemLocalDataSource = new FailedItemLocalDataSource();
-
-                FailedItemRepository failedItemRepository = new FailedItemRepository(failedItemLocalDataSource);
                 SyncEventUseCase syncEventUseCase = new SyncEventUseCase(eventRepository, enrollmentRepository, failedItemRepository);
                 syncEventUseCase.execute(event);
                 return new Object();

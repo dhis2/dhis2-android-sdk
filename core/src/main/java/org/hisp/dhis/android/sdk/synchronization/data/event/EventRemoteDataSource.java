@@ -52,7 +52,6 @@ public class EventRemoteDataSource extends ImportSummaryRemoteDataSource {
     }
 
     private ImportSummary putEvent(Event event, DhisApi dhisApi) throws APIException {
-
         Response response = dhisApi.putEvent(event.getEvent(), event);
 
         return getImportSummary(response);

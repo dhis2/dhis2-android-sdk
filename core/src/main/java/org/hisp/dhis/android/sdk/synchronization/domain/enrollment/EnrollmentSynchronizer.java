@@ -5,9 +5,10 @@ import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
+import org.hisp.dhis.android.sdk.synchronization.domain.common.Synchronizer;
 import org.hisp.dhis.android.sdk.synchronization.domain.faileditem.IFailedItemRepository;
 
-public class EnrollmentSynchronizer {
+public class EnrollmentSynchronizer extends Synchronizer {
     //coordinate one type of item
 
     IEnrollmentRepository mEnrollmentRepository;
@@ -15,6 +16,8 @@ public class EnrollmentSynchronizer {
 
     public EnrollmentSynchronizer(IEnrollmentRepository enrollmentRepository,
             IFailedItemRepository failedItemRepository) {
+        super(failedItemRepository);
+
         mEnrollmentRepository = enrollmentRepository;
         mFailedItemRepository = failedItemRepository;
     }
@@ -28,13 +31,13 @@ public class EnrollmentSynchronizer {
 
                 enrollment.setFromServer(true);
                 mEnrollmentRepository.save(enrollment);
-                mFailedItemRepository.clearFailedItem(FailedItem.ENROLLMENT, enrollment.getLocalId());
+                super.clearFailedItem(FailedItem.ENROLLMENT, enrollment.getLocalId());
                 return true;
             } else if (ImportSummary.ERROR.equals(importSummary.getStatus())) {
-                mFailedItemRepository.handleImportSummaryError(importSummary, FailedItem.ENROLLMENT, 200, enrollment.getLocalId());
+                super.handleImportSummaryError(importSummary, FailedItem.ENROLLMENT, 200, enrollment.getLocalId());
             }
         } catch (APIException api) {
-            mFailedItemRepository.handleSerializableItemException(api, FailedItem.ENROLLMENT,
+            super.handleSerializableItemException(api, FailedItem.ENROLLMENT,
                     enrollment.getLocalId());
         }
         return false;

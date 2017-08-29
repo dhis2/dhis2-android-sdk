@@ -244,6 +244,7 @@
     <string name="remove_report_entity_dialog_message">This item will be removed from your device. You can re-download this item from the server at a later time.</string>
 
     <string name="warning_delete_unsent_tei">Warning! This item has not been synchronized with the server. If you delete this item, you will not be able to recover this data</string>
+    <string name="warning_delete_event">Warning! If you delete this item will be deleted from the server</string>
     <string name="detailed_info_dataelement">Detailed information</string>
     <string name="detailed_info_coordinate_row">Please enter the GPS coordinates by pressing the button on the right side of the row. If it does not work, please check your data and/or GPS connection.</string>
     <string name="detailed_info_status_row">Please press the complete button when you are finished with entering data. Press the validate button to check if the entered data is valid.</string>
@@ -265,5 +266,6 @@
     <string name="sync_deleted_enrollments">Synchronizing remotely deleted enrollments</string>
     <string name="synchronize_deleted_data">Sync remotely deleted data</string>
     <string name="synchronizing">Synchronizing...</string>
+
 
 </resources>

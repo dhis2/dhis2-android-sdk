@@ -246,6 +246,7 @@
     <string name="remove_report_entity_dialog_message">Cet élement va être effacé du dispositif. Vous pourrez le télécharger à nouveau dès le serveur ulterierement.</string>
 
     <string name="warning_delete_unsent_tei">Alarme ! Cet élement n\'a pas été synchronisé avec le serveur. Si vous l\'effacé, vous ne pourrez plus récupérer les données</string>
+    <string name="warning_delete_event">Alarme ! Si vous supprimez cet élément sera supprimé du serveur</string>
     <string name="detailed_info_dataelement">Information détaillée</string>
     <string name="detailed_info_coordinate_row">Prière d\'entrer les coordonnées GPS en appuyant sur le button à droite du ligne. S\'il ne marche pas, verifiez votre resseau et/ou connection GPS.</string>
     <string name="detailed_info_status_row">S\'il vous plait, appuyez sur le button compléter quand vous aurez fini d\'entrer les données. Veuillez appuyer le button valider pour vérifier si les données entrées sont valides.</string>

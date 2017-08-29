@@ -1,98 +1,33 @@
 package org.hisp.dhis.android.sdk.synchronization.data.faileditem;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
-import org.hisp.dhis.android.sdk.network.APIException;
-import org.hisp.dhis.android.sdk.persistence.models.Conflict;
-import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
-import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
-import org.hisp.dhis.android.sdk.synchronization.domain.faileditem.IFailedItemRepository;
-import org.hisp.dhis.android.sdk.utils.StringConverter;
+import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Select;
 
-import retrofit.converter.ConversionException;
+import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
+import org.hisp.dhis.android.sdk.synchronization.domain.faileditem.IFailedItemRepository;
+import org.hisp.dhis.android.sdk.persistence.models.FailedItem$Table;
 
 public class FailedItemRepository implements IFailedItemRepository {
-    FailedItemLocalDataSource mLocalDataSource;
 
-    public FailedItemRepository(
-            FailedItemLocalDataSource localDataSource) {
-        mLocalDataSource = localDataSource;
+    @Override
+    public void save(FailedItem failedItem) {
+        failedItem.save();
     }
 
     @Override
-    public void save(FailedItem event) {
-        mLocalDataSource.save(event);
-    }
-
-    @Override
-    public void clearFailedItem(String type, long id) {
-        FailedItem item = mLocalDataSource.getFailedItem(type, id);
+    public void delete(String type, long id) {
+        FailedItem item = getFailedItem(type, id);
         if (item != null) {
             item.async().delete();
         }
     }
 
-    @Override
-    public void handleImportSummaryError(ImportSummary importSummary, String type, int code,
-            long id) {
-        FailedItem failedItem = new FailedItem();
-        failedItem.setImportSummary(importSummary);
-        failedItem.setItemId(id);
-        failedItem.setItemType(type);
-        failedItem.setHttpStatusCode(code);
-        failedItem.save();
-        if (failedItem.getImportSummary() != null
-                && failedItem.getImportSummary().getConflicts() != null) {
-            for (Conflict conflict : failedItem.getImportSummary().getConflicts()) {
-                conflict.setImportSummary(failedItem.getImportSummary().getId());
-                conflict.save();
-            }
-        }
-        System.out.println(
-                "saved item: " + failedItem.getItemId() + ":" + failedItem.getItemType());
+    private FailedItem getFailedItem(String type, long id) {
+        return new Select().from(FailedItem.class).where(
+                Condition.column(FailedItem$Table.ITEMTYPE).is(type),
+                Condition.column(FailedItem$Table.ITEMID).is(id)).querySingle();
+
     }
 
-    @Override
-    public void handleSerializableItemException(APIException apiException, String type, long id) {
-        FailedItem failedItem = TrackerController.getFailedItem(type, id);
-        switch (apiException.getKind()) {
-            case NETWORK: {
-                if (failedItem == null) {
-                    failedItem = new FailedItem();
-                }
-                String cause = "Network error\n\n";
-                if (apiException != null && apiException.getCause() != null) {
-                    cause += ExceptionUtils.getStackTrace(apiException.getCause());
-                    failedItem.setErrorMessage(cause);
-                }
-                failedItem.setHttpStatusCode(-1);
-                failedItem.setItemId(id);
-                failedItem.setItemType(type);
-                failedItem.setFailCount(failedItem.getFailCount() + 1);
-                mLocalDataSource.save(failedItem);
-                break;
-            }
-            default: {
-                if (failedItem == null) {
-                    failedItem = new FailedItem();
-                }
 
-                if (apiException.getResponse() != null) {
-                    failedItem.setHttpStatusCode(apiException.getResponse().getStatus());
-                    try {
-                        failedItem.setErrorMessage(
-                                new StringConverter().fromBody(apiException.getResponse().getBody(),
-                                        String.class));
-                    } catch (ConversionException e) {
-                        e.printStackTrace();
-                    }
-                }
-                failedItem.setItemId(id);
-                failedItem.setItemType(type);
-                failedItem.setHttpStatusCode(apiException.getResponse().getStatus());
-                failedItem.setFailCount(failedItem.getFailCount() + 1);
-                mLocalDataSource.save(failedItem);
-            }
-        }
-    }
 }

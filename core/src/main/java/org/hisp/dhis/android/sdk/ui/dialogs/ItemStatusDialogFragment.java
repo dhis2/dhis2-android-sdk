@@ -70,7 +70,6 @@ import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.synchronization.data.event.EventLocalDataSource;
 import org.hisp.dhis.android.sdk.synchronization.data.event.EventRemoteDataSource;
 import org.hisp.dhis.android.sdk.synchronization.data.event.EventRepository;
-import org.hisp.dhis.android.sdk.synchronization.data.faileditem.FailedItemLocalDataSource;
 import org.hisp.dhis.android.sdk.synchronization.data.faileditem.FailedItemRepository;
 import org.hisp.dhis.android.sdk.synchronization.domain.event.SyncEventUseCase;
 import org.hisp.dhis.android.sdk.ui.views.FontTextView;
@@ -397,10 +396,8 @@ public abstract class ItemStatusDialogFragment extends DialogFragment
                 EventLocalDataSource mLocalDataSource = new EventLocalDataSource();
                 EventRemoteDataSource mRemoteDataSource = new EventRemoteDataSource(DhisController.getInstance().getDhisApi());
                 EventRepository eventRepository = new EventRepository(mLocalDataSource, mRemoteDataSource);
+                FailedItemRepository failedItemRepository = new FailedItemRepository();
 
-                FailedItemLocalDataSource failedItemLocalDataSource = new FailedItemLocalDataSource();
-
-                FailedItemRepository failedItemRepository = new FailedItemRepository(failedItemLocalDataSource);
                 SyncEventUseCase syncEventUseCase = new SyncEventUseCase(eventRepository, failedItemRepository);
                 syncEventUseCase.execute(event);
                 return new Object();

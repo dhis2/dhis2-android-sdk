@@ -241,6 +241,7 @@
     <string name="remove_report_entity_dialog_message">Este elemento será borrado del dispositivo. Podrás volver a descargarlo del servidor posteriormente.</string>
 
     <string name="warning_delete_unsent_tei">¡Alerta! Este elemento no ha sido sincronizado con el servidor. Si lo borras, no podrás recuperar estos datos</string>
+    <string name="warning_delete_event">¡Alerta! si borras este elemento será borrado del sevidor</string>
     <string name="detailed_info_dataelement">Información detallada</string>
     <string name="detailed_info_coordinate_row">Por favor, introduce las coordnadas GPS pulsando en el botón a la derecha de la fila. Si no funciona, por favor comprueba tus datos y/o conexión GPS.</string>
     <string name="detailed_info_status_row">Por favor, pulsa el botón de completado cuando hayas terminado de introducir los datos. Pulsa el botón de validación para comprobar si los datos introducidos son correctos.</string>

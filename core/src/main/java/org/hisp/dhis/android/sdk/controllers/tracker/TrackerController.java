@@ -238,19 +238,6 @@ public final class TrackerController extends ResourceController {
 
         return new StringQuery<Event>(Event.class, rawSqlQuery).queryList();
     }
-
-    /**
-     * Returns a list of events for a given org unit and from server
-     */
-    public static List<Event> getEvents(String organisationUnitId, String programId,
-            boolean isFromServer) {
-        List<Event> events = new Select().from(Event.class).where(Condition.column
-                (Event$Table.ORGANISATIONUNITID).is(organisationUnitId)).
-                and(Condition.column(Event$Table.PROGRAMID).is(programId))
-                .and(Condition.column(Event$Table.FROMSERVER).is(isFromServer))
-                .orderBy(false, Event$Table.LASTUPDATED).queryList();
-        return events;
-    }
     /**
      * Returns a list of events for a given org unit and from server
      */
@@ -298,7 +285,9 @@ public final class TrackerController extends ResourceController {
      * @return
      */
     public static List<Event> getEventsByEnrollment(long localEnrollmentId) {
-        return new Select().from(Event.class).where(Condition.column(Event$Table.LOCALENROLLMENTID).is(localEnrollmentId)).queryList();
+        return new Select().from(Event.class).where(
+                Condition.column(Event$Table.LOCALENROLLMENTID).is(localEnrollmentId)).and(
+                Condition.column(Event$Table.STATUS).isNot(Event.STATUS_DELETED)).queryList();
     }
 
     /**
@@ -308,10 +297,22 @@ public final class TrackerController extends ResourceController {
      * @param programId
      * @return
      */
-    public static List<Event> getEvents(String organisationUnitId, String programId) {
+    public static List<Event> getNotDeletedEvents(String organisationUnitId, String programId) {
         List<Event> events = new Select().from(Event.class).where(Condition.column
                 (Event$Table.ORGANISATIONUNITID).is(organisationUnitId)).
-                and(Condition.column(Event$Table.PROGRAMID).is(programId)).orderBy(false, Event$Table.LASTUPDATED).queryList();
+                and(Condition.column(Event$Table.PROGRAMID).is(programId)).and(
+                Condition.column(Event$Table.STATUS).isNot(Event.STATUS_DELETED)).orderBy(false,
+                Event$Table.LASTUPDATED).queryList();
+        return events;
+    }
+
+    /**
+     * Returns a list of events for a given org unit and from server
+     */
+    public static List<Event> getDeletedEvents() {
+        List<Event> events = new Select().from(Event.class)
+                .where(Condition.column(Event$Table.STATUS).is(Event.STATUS_DELETED))
+                .orderBy(false, Event$Table.LASTUPDATED).queryList();
         return events;
     }
 
@@ -547,6 +548,7 @@ public final class TrackerController extends ResourceController {
      */
     public static void sendLocalData(DhisApi dhisApi) throws APIException {
         Log.d(CLASS_TAG, "sending local data");
+        TrackerDataSender.deleteLocallyDeletedEvents(dhisApi);
         MetaDataController.getTrackedEntityAttributeGeneratedValues();
         TrackerDataSender.sendTrackedEntityInstanceChanges(dhisApi, false);
         TrackerDataSender.sendEnrollmentChanges(dhisApi, false);

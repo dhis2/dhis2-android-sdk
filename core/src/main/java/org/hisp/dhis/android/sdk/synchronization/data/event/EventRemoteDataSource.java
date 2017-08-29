@@ -28,6 +28,15 @@ public class EventRemoteDataSource extends RemoteDataSource {
         return updatedEvent;
     }
 
+
+    public ImportSummary update(Event event) {
+        if(event.getStatus().equals(Event.STATUS_DELETED)){
+            return deleteEvent(event, dhisApi);
+        }else {
+            return save(event);
+        }
+    }
+
     public ImportSummary save(Event event) {
         if (event.getCreated() == null) {
             return postEvent(event, dhisApi);
@@ -43,6 +52,12 @@ public class EventRemoteDataSource extends RemoteDataSource {
     private List<ImportSummary> batchEvents(Map<String, List<Event>> events, DhisApi dhisApi) throws APIException {
         ApiResponse apiResponse = dhisApi.postEvents(events);
         return apiResponse.getImportSummaries();
+    }
+
+    private ImportSummary deleteEvent(Event event, DhisApi dhisApi) throws  APIException {
+        Response response = dhisApi.deleteEvent(event.getUid());
+
+        return getImportSummary(response);
     }
 
     private ImportSummary postEvent(Event event, DhisApi dhisApi) throws APIException {

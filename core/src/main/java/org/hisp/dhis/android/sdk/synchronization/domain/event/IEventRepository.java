@@ -8,6 +8,8 @@ import java.util.List;
 public interface IEventRepository {
     void save(Event event);
 
+    void delete(Event event);
+
     ImportSummary sync(Event event);
 
     List<ImportSummary> sync(List<Event> event);

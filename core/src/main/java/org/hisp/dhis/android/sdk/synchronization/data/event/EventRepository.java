@@ -26,13 +26,22 @@ public class EventRepository implements IEventRepository {
     }
 
     @Override
+    public void delete(Event event) {
+        mLocalDataSource.delete(event);
+    }
+
+    @Override
     public ImportSummary sync(Event event) {
-        ImportSummary importSummary = mRemoteDataSource.save(event);
+        ImportSummary importSummary = mRemoteDataSource.update(event);
 
         if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
                 ImportSummary.OK.equals(importSummary.getStatus())) {
-            event.setFromServer(true);
-            updateEventTimestamp(event);
+            if(event.getStatus().equals(Event.STATUS_DELETED)){
+                event.delete();
+            }else {
+                event.setFromServer(true);
+                updateEventTimestamp(event);
+            }
         }
 
         return importSummary;
@@ -56,7 +65,11 @@ public class EventRepository implements IEventRepository {
                     System.out.println("IMPORT SUMMARY: " + importSummary.getDescription());
                     Event event = eventsMapCheck.get(importSummary.getReference());
                     if (event != null) {
-                        updateEventTimestamp(event, dateTime.toString(), dateTime.toString());
+                        if(event.getStatus().equals(Event.STATUS_DELETED)){
+                            event.delete();
+                        }else {
+                            updateEventTimestamp(event, dateTime.toString(), dateTime.toString());
+                        }
                     }
                 }
             }

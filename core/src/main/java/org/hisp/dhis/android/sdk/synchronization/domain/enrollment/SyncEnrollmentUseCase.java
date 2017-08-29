@@ -26,7 +26,7 @@ public class SyncEnrollmentUseCase {
         mFailedItemRepository = failedItemRepository;
         mEnrollmentSynchronizer = new EnrollmentSynchronizer(mEnrollmentRepository, eventRepository, mFailedItemRepository);
         mEventSynchronizer = new EventSynchronizer(eventRepository, mFailedItemRepository);
-        mTrackedEntityInstanceSynchronizer = new TrackedEntityInstanceSynchronizer(trackedEntityInstanceRepository, eventRepository, mFailedItemRepository);
+        mTrackedEntityInstanceSynchronizer = new TrackedEntityInstanceSynchronizer(trackedEntityInstanceRepository, mEnrollmentRepository, eventRepository, mFailedItemRepository);
     }
 
     public void execute(Enrollment enrollment) {

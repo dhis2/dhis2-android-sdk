@@ -2,6 +2,7 @@ package org.hisp.dhis.android.sdk.synchronization.domain.trackedentityinstance;
 
 
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.synchronization.domain.enrollment.IEnrollmentRepository;
 import org.hisp.dhis.android.sdk.synchronization.domain.event.IEventRepository;
 import org.hisp.dhis.android.sdk.synchronization.domain.faileditem.IFailedItemRepository;
 
@@ -11,11 +12,11 @@ public class SyncTrackedEntityInstanceUseCase {
     TrackedEntityInstanceSynchronizer mTrackedEntityInstanceSynchronizer;
 
 
-    public SyncTrackedEntityInstanceUseCase(ITrackedEntityInstanceRepository trackedEntityInstanceRepository, IEventRepository eventRepository,
+    public SyncTrackedEntityInstanceUseCase(ITrackedEntityInstanceRepository trackedEntityInstanceRepository, IEnrollmentRepository enrollmentRepository, IEventRepository eventRepository,
             IFailedItemRepository failedItemRepository) {
         mTrackedEntityInstanceRepository = trackedEntityInstanceRepository;
         mFailedItemRepository = failedItemRepository;
-        mTrackedEntityInstanceSynchronizer = new TrackedEntityInstanceSynchronizer(mTrackedEntityInstanceRepository, eventRepository, mFailedItemRepository);
+        mTrackedEntityInstanceSynchronizer = new TrackedEntityInstanceSynchronizer(mTrackedEntityInstanceRepository, enrollmentRepository, eventRepository, mFailedItemRepository);
     }
 
     public void execute(TrackedEntityInstance trackedEntityInstance) {

@@ -49,7 +49,7 @@ public class SyncEventUseCase {
                 enrollment.getTrackedEntityInstance());
         if (!tei.isFromServer()) {
             TrackedEntityInstanceSynchronizer trackedEntityInstanceSynchronizer =
-                    new TrackedEntityInstanceSynchronizer(mTrackedEntityInstanceRepository, mEventRepository, mFailedItemRepository);
+                    new TrackedEntityInstanceSynchronizer(mTrackedEntityInstanceRepository, mEnrollmentRepository, mEventRepository, mFailedItemRepository);
             trackedEntityInstanceSynchronizer.sync(tei);
         } else if (!enrollment.isFromServer()) {
             EnrollmentSynchronizer mEnrollmentSynchronizer = new EnrollmentSynchronizer(

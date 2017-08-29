@@ -23,10 +23,11 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
     IEventRepository mEventRepository;
     IFailedItemRepository mFailedItemRepository;
 
-    public TrackedEntityInstanceSynchronizer(ITrackedEntityInstanceRepository trackedEntityInstanceRepository, IEventRepository eventRepository,
+    public TrackedEntityInstanceSynchronizer(ITrackedEntityInstanceRepository trackedEntityInstanceRepository, IEnrollmentRepository enrollmentRepository, IEventRepository eventRepository,
             IFailedItemRepository failedItemRepository) {
         super(failedItemRepository);
         mTrackedEntityInstanceRepository = trackedEntityInstanceRepository;
+        mEnrollmentRepository = enrollmentRepository;
         mEventRepository = eventRepository;
         mFailedItemRepository = failedItemRepository;
     }

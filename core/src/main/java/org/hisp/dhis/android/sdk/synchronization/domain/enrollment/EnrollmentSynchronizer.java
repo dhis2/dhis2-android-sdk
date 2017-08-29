@@ -11,10 +11,10 @@ import org.hisp.dhis.android.sdk.synchronization.domain.event.EventSynchronizer;
 import org.hisp.dhis.android.sdk.synchronization.domain.event.IEventRepository;
 import org.hisp.dhis.android.sdk.synchronization.domain.faileditem.IFailedItemRepository;
 
+import java.util.Collections;
 import java.util.List;
 
 public class EnrollmentSynchronizer extends Synchronizer {
-    //coordinate one type of item
 
     IEnrollmentRepository mEnrollmentRepository;
     IEventRepository mEventRepository;
@@ -46,6 +46,19 @@ public class EnrollmentSynchronizer extends Synchronizer {
         } catch (APIException api) {
             super.handleSerializableItemException(api, FailedItem.ENROLLMENT,
                     enrollment.getLocalId());
+        }
+    }
+    public void sync(List<Enrollment> enrollments) {
+        Collections.sort(enrollments, new Enrollment.EnrollmentComparator());
+
+        for (Enrollment enrollment : enrollments) {
+            if(enrollment.isFromServer()){
+                continue;
+            }
+            if(enrollment.getCreated()==null && enrollment.getStatus().equals(Enrollment.CANCELLED)) {
+                sync(enrollment);
+            }
+            sync(enrollment);
         }
     }
 

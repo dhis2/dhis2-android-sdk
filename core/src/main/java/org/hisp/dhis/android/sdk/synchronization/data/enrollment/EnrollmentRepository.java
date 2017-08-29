@@ -9,6 +9,8 @@ import org.hisp.dhis.android.sdk.persistence.models.Enrollment$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.Event$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance$Table;
 import org.hisp.dhis.android.sdk.synchronization.domain.enrollment.IEnrollmentRepository;
 
 import java.util.List;
@@ -61,5 +63,11 @@ public class EnrollmentRepository implements IEnrollmentRepository {
     public Enrollment getEnrollment(String enrollmentUid) {
         return new Select().from(Enrollment.class).where(Condition.column
                 (Enrollment$Table.ENROLLMENT).is(enrollmentUid)).querySingle();
+    }
+
+    @Override
+    public TrackedEntityInstance getTrackedEntityInstance(String trackedEntityInstanceUid) {
+        return new Select().from(TrackedEntityInstance.class).where(Condition.column
+                (TrackedEntityInstance$Table.TRACKEDENTITYINSTANCE).is(trackedEntityInstanceUid)).querySingle();
     }
 }

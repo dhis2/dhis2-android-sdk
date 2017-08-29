@@ -2,27 +2,31 @@ package org.hisp.dhis.android.sdk.synchronization.domain.enrollment;
 
 
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.synchronization.domain.event.EventSynchronizer;
 import org.hisp.dhis.android.sdk.synchronization.domain.event.IEventRepository;
 import org.hisp.dhis.android.sdk.synchronization.domain.faileditem.IFailedItemRepository;
+import org.hisp.dhis.android.sdk.synchronization.domain.trackedentityinstance
+        .ITrackedEntityInstanceRepository;
+import org.hisp.dhis.android.sdk.synchronization.domain.trackedentityinstance
+        .TrackedEntityInstanceSynchronizer;
 
 public class SyncEnrollmentUseCase {
-    //coordinate items to sync
 
     IEnrollmentRepository mEnrollmentRepository;
-    IEventRepository mEventRepository;
     IFailedItemRepository mFailedItemRepository;
     EnrollmentSynchronizer mEnrollmentSynchronizer;
     EventSynchronizer mEventSynchronizer;
+    TrackedEntityInstanceSynchronizer mTrackedEntityInstanceSynchronizer;
 
 
     public SyncEnrollmentUseCase(IEnrollmentRepository enrollmentRepository, IEventRepository eventRepository,
-            IFailedItemRepository failedItemRepository) {
+            ITrackedEntityInstanceRepository trackedEntityInstanceRepository, IFailedItemRepository failedItemRepository) {
         mEnrollmentRepository = enrollmentRepository;
         mFailedItemRepository = failedItemRepository;
-        mEventRepository = eventRepository;
         mEnrollmentSynchronizer = new EnrollmentSynchronizer(mEnrollmentRepository, eventRepository, mFailedItemRepository);
-        mEventSynchronizer = new EventSynchronizer(mEventRepository, mFailedItemRepository);
+        mEventSynchronizer = new EventSynchronizer(eventRepository, mFailedItemRepository);
+        mTrackedEntityInstanceSynchronizer = new TrackedEntityInstanceSynchronizer(trackedEntityInstanceRepository, mFailedItemRepository);
     }
 
     public void execute(Enrollment enrollment) {
@@ -30,10 +34,11 @@ public class SyncEnrollmentUseCase {
             return;
         }
 
-        //if (Do you have to synchronize TEI?)
-        //TrackedEntityInstanceSynchronizer.sync(TEI);
-
-        //else
-        mEnrollmentSynchronizer.sync(enrollment);
+        TrackedEntityInstance tei = mEnrollmentRepository.getTrackedEntityInstance(enrollment.getTrackedEntityInstance());
+        if(!tei.isFromServer()){
+            mTrackedEntityInstanceSynchronizer.sync(tei);
+        }else {
+            mEnrollmentSynchronizer.sync(enrollment);
+        }
     }
 }

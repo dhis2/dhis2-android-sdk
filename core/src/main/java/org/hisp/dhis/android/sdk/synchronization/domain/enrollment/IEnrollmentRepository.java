@@ -4,6 +4,7 @@ package org.hisp.dhis.android.sdk.synchronization.domain.enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 
 import java.util.List;
 
@@ -15,4 +16,6 @@ public interface IEnrollmentRepository {
     List<Event> getEvents(long enrollmentId);
 
     Enrollment getEnrollment(String enrollmentUid);
+
+    TrackedEntityInstance getTrackedEntityInstance(String trackedEntityInstanceUid);
 }

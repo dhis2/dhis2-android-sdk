@@ -21,7 +21,7 @@ public class SyncEventUseCase {
 
     public void execute(Event event) {
         if (event == null) {
-            return;
+            throw new IllegalArgumentException("the Event to sync can not be null");
         }
 
         //if (Do you have to synchronize TEI?)

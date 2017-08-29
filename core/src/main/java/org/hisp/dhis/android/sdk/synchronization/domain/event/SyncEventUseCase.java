@@ -6,8 +6,6 @@ import org.hisp.dhis.android.sdk.synchronization.domain.enrollment.EnrollmentSyn
 import org.hisp.dhis.android.sdk.synchronization.domain.enrollment.IEnrollmentRepository;
 import org.hisp.dhis.android.sdk.synchronization.domain.faileditem.IFailedItemRepository;
 
-import java.util.List;
-
 public class SyncEventUseCase {
     //coordinate items to sync
 
@@ -38,12 +36,8 @@ public class SyncEventUseCase {
 
         Enrollment enrollment = mEnrollmentRepository.getEnrollment(event.getEnrollment());
         if(!enrollment.isFromServer()){
-            EnrollmentSynchronizer mEnrollmentSynchronizer = new EnrollmentSynchronizer(mEnrollmentRepository, mFailedItemRepository);
-            boolean success = mEnrollmentSynchronizer.sync(enrollment);
-            if(success){
-                List<Event> events = mEnrollmentRepository.getEvents(enrollment.getLocalId());
-                mEventSynchronizer.sync(events);
-            }
+            EnrollmentSynchronizer mEnrollmentSynchronizer = new EnrollmentSynchronizer(mEnrollmentRepository, mEventRepository, mFailedItemRepository);
+            mEnrollmentSynchronizer.sync(enrollment);
         }else{
             mEventSynchronizer.sync(event);
         }

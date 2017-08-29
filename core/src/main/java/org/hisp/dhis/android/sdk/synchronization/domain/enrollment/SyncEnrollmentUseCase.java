@@ -40,7 +40,7 @@ public class SyncEnrollmentUseCase {
         //else
         boolean success = mEnrollmentSynchronizer.sync(enrollment);
         if(success){
-            List<Event> events = mEnrollmentRepository.getEvents(enrollment);
+            List<Event> events = mEnrollmentRepository.getEvents(enrollment.getLocalId());
             mEventSynchronizer.sync(events);
         }
     }

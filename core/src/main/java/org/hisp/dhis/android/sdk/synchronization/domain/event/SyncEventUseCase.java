@@ -41,7 +41,7 @@ public class SyncEventUseCase {
             EnrollmentSynchronizer mEnrollmentSynchronizer = new EnrollmentSynchronizer(mEnrollmentRepository, mFailedItemRepository);
             boolean success = mEnrollmentSynchronizer.sync(enrollment);
             if(success){
-                List<Event> events = mEnrollmentRepository.getEvents(enrollment);
+                List<Event> events = mEnrollmentRepository.getEvents(enrollment.getLocalId());
                 mEventSynchronizer.sync(events);
             }
         }else{

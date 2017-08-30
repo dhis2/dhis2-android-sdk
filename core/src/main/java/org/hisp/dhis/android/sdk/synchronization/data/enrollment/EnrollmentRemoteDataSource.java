@@ -5,14 +5,14 @@ import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
-import org.hisp.dhis.android.sdk.synchronization.data.common.RemoteDataSource;
+import org.hisp.dhis.android.sdk.synchronization.data.common.ARemoteDataSource;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import retrofit.client.Response;
 
-public class EnrollmentRemoteDataSource extends RemoteDataSource {
+public class EnrollmentRemoteDataSource extends ARemoteDataSource {
     DhisApi dhisApi;
     public EnrollmentRemoteDataSource(DhisApi dhisApi) {
         this.dhisApi = dhisApi;

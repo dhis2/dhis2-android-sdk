@@ -34,6 +34,7 @@ public class EventSynchronizer extends Synchronizer {
                 mEventRepository.delete(event);
                 return;
             }
+            System.out.println("Synchronizing single event "+ event.getUid() +" "+event.getStatus());
 
             ImportSummary importSummary = mEventRepository.sync(event);
 
@@ -49,18 +50,49 @@ public class EventSynchronizer extends Synchronizer {
         try {
             Map<String, Event> eventsMapCheck = removeDeletedAndOnlyLocalEvents(events);
 
+            System.out.println("Synchronizing list of events ");
+
             List<ImportSummary> importSummaries = mEventRepository.sync(
                     new ArrayList<>(eventsMapCheck.values()));
 
             for (ImportSummary importSummary : importSummaries) {
                 Event event = eventsMapCheck.get(importSummary.getReference());
-
-                manageSyncResult(event, importSummary);
+                if(event != null){
+                    manageSyncResult(event, importSummary);
+                }
             }
         } catch (APIException api) {
             syncOneByOne(events);
         }
     }
+
+    public void syncRemovedEvents(List<Event> events) {
+        try {
+            Map<String, Event> eventsMapCheck = removeDeletedAndOnlyLocalEvents(events);
+
+            for(Event event:events){
+                event.setStatus(null);
+            }
+
+            System.out.println("Synchronizing removed events");
+
+            List<ImportSummary> importSummaries = mEventRepository.syncRemovedEvents(
+                    new ArrayList<>(eventsMapCheck.values()));
+
+            for (ImportSummary importSummary : importSummaries) {
+                Event event = eventsMapCheck.get(importSummary.getReference());
+                if(event==null && importSummary.getDescription()!=null){
+                    event = eventsMapCheck.get(importSummary.getDescription().replace("Deletion of event ","").replace(" was successful",""));
+                }
+                if(event != null){
+                    manageSyncResult(event, importSummary);
+                }
+            }
+        } catch (APIException api) {
+            syncOneByOne(events);
+        }
+    }
+
 
     private void manageSyncResult(Event event, ImportSummary importSummary) {
         if (importSummary.isSuccessOrOK()) {
@@ -71,7 +103,7 @@ public class EventSynchronizer extends Synchronizer {
     }
 
     private void updateSyncedEventLocally(Event event) {
-        if (event.getStatus().equals(Event.STATUS_DELETED)) {
+        if (event.isDeleted()) {
             mEventRepository.delete(event);
         } else {
             event.setFromServer(true);
@@ -88,7 +120,7 @@ public class EventSynchronizer extends Synchronizer {
     }
 
     public boolean isDeletedAndOnlyLocalEvent(Event event) {
-        return (event.getStatus().equals(Event.STATUS_DELETED) && (event.getCreated() == null));
+        return (event.isDeleted() && (event.getCreated() == null));
     }
 
 

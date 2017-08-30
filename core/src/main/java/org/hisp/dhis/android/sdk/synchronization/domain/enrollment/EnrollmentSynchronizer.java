@@ -52,6 +52,18 @@ public class EnrollmentSynchronizer extends Synchronizer {
         EventSynchronizer eventSynchronizer = new EventSynchronizer(mEventRepository,
                 mFailedItemRepository);
         List<Event> events = mEventRepository.getEventsByEnrollment(enrollmentId);
-        eventSynchronizer.sync(events);
+        List<Event> eventsToBeRemoved = mEventRepository.getEventsByEnrollmentToBeRemoved(enrollmentId);
+        if(eventsToBeRemoved!=null && eventsToBeRemoved.size()>0){
+            eventSynchronizer.syncRemovedEvents(eventsToBeRemoved);
+        }
+        if(events!=null && events.size()>0) {
+            eventSynchronizer.sync(events);
+        }
+        for(Event event: events){
+            if(!event.isFromServer()){
+                //Retry one by one
+                eventSynchronizer.sync(event);
+            }
+        }
     }
 }

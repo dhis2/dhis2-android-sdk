@@ -347,4 +347,9 @@ public class Event extends BaseSerializableModel {
     public void setUid(String uid) {
         this.event = uid;
     }
+
+    @JsonIgnore
+    public boolean isDeleted(){
+        return status==null || status.equals(Event.STATUS_DELETED);
+    }
 }

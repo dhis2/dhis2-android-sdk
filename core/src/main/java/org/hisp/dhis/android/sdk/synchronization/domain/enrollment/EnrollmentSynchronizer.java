@@ -32,9 +32,7 @@ public class EnrollmentSynchronizer extends Synchronizer {
         try {
             ImportSummary importSummary = mEnrollmentRepository.sync(enrollment);
 
-            if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
-                    ImportSummary.OK.equals(importSummary.getStatus())) {
-
+            if (importSummary.isSuccessOrOK()) {
                 enrollment.setFromServer(true);
                 mEnrollmentRepository.save(enrollment);
                 super.clearFailedItem(FailedItem.ENROLLMENT, enrollment.getLocalId());

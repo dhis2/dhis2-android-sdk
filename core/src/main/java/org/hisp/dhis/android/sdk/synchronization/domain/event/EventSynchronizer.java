@@ -63,7 +63,7 @@ public class EventSynchronizer extends Synchronizer {
     }
 
     private void manageSyncResult(Event event, ImportSummary importSummary) {
-        if (isImportSummarySuccess(importSummary)) {
+        if (importSummary.isSuccessOrOK()) {
             updateSyncedEventLocally(event);
         } else if (ImportSummary.ERROR.equals(importSummary.getStatus())) {
             super.handleImportSummaryError(importSummary, EVENT, 200, id);
@@ -91,10 +91,6 @@ public class EventSynchronizer extends Synchronizer {
         return (event.getStatus().equals(Event.STATUS_DELETED) && (event.getCreated() == null));
     }
 
-    public boolean isImportSummarySuccess(ImportSummary importSummary) {
-        return ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
-                ImportSummary.OK.equals(importSummary.getStatus());
-    }
 
     private Map<String, Event> removeDeletedAndOnlyLocalEvents (List<Event> events) {
         Map<String, Event> eventsMapCheck = new HashMap<>();

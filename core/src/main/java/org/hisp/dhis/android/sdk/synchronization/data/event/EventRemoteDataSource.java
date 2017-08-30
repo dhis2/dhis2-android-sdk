@@ -37,7 +37,7 @@ public class EventRemoteDataSource extends ARemoteDataSource {
         }
     }
 
-    public ImportSummary save(Event event) {
+    private ImportSummary save(Event event) {
         if (event.getCreated() == null) {
             return postEvent(event, dhisApi);
         } else {
@@ -45,8 +45,11 @@ public class EventRemoteDataSource extends ARemoteDataSource {
         }
     }
 
-    public List<ImportSummary> save(Map<String, List<Event>> events) {
-        return batchEvents(events, dhisApi);
+    public List<ImportSummary> save(List<Event> events) {
+        Map<String, List<Event>> eventsMap = new HashMap<>();
+        eventsMap.put("events", events);
+
+        return batchEvents(eventsMap, dhisApi);
     }
 
     private List<ImportSummary> batchEvents(Map<String, List<Event>> events, DhisApi dhisApi) throws APIException {

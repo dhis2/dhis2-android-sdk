@@ -135,4 +135,8 @@ public class ImportSummary extends BaseModel {
     public int getId() {
         return id;
     }
+
+    public boolean isSuccessOrOK() {
+        return getStatus().equals(SUCCESS) || getStatus().equals(OK);
+    }
 }

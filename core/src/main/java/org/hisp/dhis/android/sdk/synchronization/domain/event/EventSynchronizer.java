@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EventSynchronizer extends Synchronizer{
+public class EventSynchronizer extends Synchronizer {
     IEventRepository mEventRepository;
     IFailedItemRepository mFailedItemRepository;
 
@@ -30,27 +30,15 @@ public class EventSynchronizer extends Synchronizer{
 
     public void sync(Event event) {
         try {
-            if(event.getStatus().equals(Event.STATUS_DELETED)){
-                if(event.getCreated()==null){
-                    mEventRepository.delete(event);
-                    return;
-                }
+            if (isDeletedAndOnlyLocalEvent(event)) {
+                mEventRepository.delete(event);
+                return;
             }
+
             ImportSummary importSummary = mEventRepository.sync(event);
 
-            if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
-                    ImportSummary.OK.equals(importSummary.getStatus())) {
+            manageSyncResult(event, importSummary);
 
-                if(event.getStatus().equals(Event.STATUS_DELETED)){
-                    mEventRepository.delete(event);
-                }else {
-                    event.setFromServer(true);
-                    mEventRepository.save(event);
-                }
-                super.clearFailedItem(EVENT, event.getLocalId());
-            } else if (ImportSummary.ERROR.equals(importSummary.getStatus())) {
-                super.handleImportSummaryError(importSummary, EVENT, 200, id);
-            }
         } catch (APIException api) {
             super.handleSerializableItemException(api, FailedItem.EVENT,
                     event.getLocalId());
@@ -59,34 +47,66 @@ public class EventSynchronizer extends Synchronizer{
 
     public void sync(List<Event> events) {
         try {
-            Map<String, Event> eventsMapCheck = new HashMap<>();
-            List<Event> eventsToBePushed = new ArrayList<>();
-            for (Event event : events) {
-                if(event.getStatus().equals(Event.STATUS_DELETED)){
-                    if(event.getCreated()==null){
-                        mEventRepository.delete(event);
-                        continue;
-                    }
-                }
-                eventsToBePushed.add(event);
-                eventsMapCheck.put(event.getUid(), event);
-            }
-            List<ImportSummary> importSummaries = mEventRepository.sync(events);
+            Map<String, Event> eventsMapCheck = removeDeletedAndOnlyLocalEvents(events);
+
+            List<ImportSummary> importSummaries = mEventRepository.sync(
+                    new ArrayList<>(eventsMapCheck.values()));
 
             for (ImportSummary importSummary : importSummaries) {
                 Event event = eventsMapCheck.get(importSummary.getReference());
-                if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
-                        ImportSummary.OK.equals(importSummary.getStatus())) {
-                    super.clearFailedItem(EVENT, event.getLocalId());
-                } else if (ImportSummary.ERROR.equals(importSummary.getStatus())) {
-                    super.handleImportSummaryError(importSummary, EVENT, 200,
-                            event.getLocalId());
-                }
+
+                manageSyncResult(event, importSummary);
             }
         } catch (APIException api) {
-            for (Event event : events) {
-                sync(event);
+            syncOneByOne(events);
+        }
+    }
+
+    private void manageSyncResult(Event event, ImportSummary importSummary) {
+        if (isImportSummarySuccess(importSummary)) {
+            updateSyncedEventLocally(event);
+        } else if (ImportSummary.ERROR.equals(importSummary.getStatus())) {
+            super.handleImportSummaryError(importSummary, EVENT, 200, id);
+        }
+    }
+
+    private void updateSyncedEventLocally(Event event) {
+        if (event.getStatus().equals(Event.STATUS_DELETED)) {
+            mEventRepository.delete(event);
+        } else {
+            event.setFromServer(true);
+            mEventRepository.save(event);
+        }
+
+        super.clearFailedItem(EVENT, event.getLocalId());
+    }
+
+    private void syncOneByOne(List<Event> events) {
+        for (Event event : events) {
+            sync(event);
+        }
+    }
+
+    public boolean isDeletedAndOnlyLocalEvent(Event event) {
+        return (event.getStatus().equals(Event.STATUS_DELETED) && (event.getCreated() == null));
+    }
+
+    public boolean isImportSummarySuccess(ImportSummary importSummary) {
+        return ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
+                ImportSummary.OK.equals(importSummary.getStatus());
+    }
+
+    private Map<String, Event> removeDeletedAndOnlyLocalEvents (List<Event> events) {
+        Map<String, Event> eventsMapCheck = new HashMap<>();
+
+        for (Event event : events) {
+            if (isDeletedAndOnlyLocalEvent(event)) {
+                mEventRepository.delete(event);
+            } else {
+                eventsMapCheck.put(event.getUid(), event);
             }
         }
+
+        return eventsMapCheck;
     }
 }

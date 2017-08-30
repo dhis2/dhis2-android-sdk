@@ -18,7 +18,8 @@ public class EnrollmentSynchronizer extends Synchronizer {
     IEventRepository mEventRepository;
     IFailedItemRepository mFailedItemRepository;
 
-    public EnrollmentSynchronizer(IEnrollmentRepository enrollmentRepository, IEventRepository eventRepository,
+    public EnrollmentSynchronizer(IEnrollmentRepository enrollmentRepository,
+            IEventRepository eventRepository,
             IFailedItemRepository failedItemRepository) {
         super(failedItemRepository);
 
@@ -40,7 +41,8 @@ public class EnrollmentSynchronizer extends Synchronizer {
 
                 syncEvents(enrollment.getLocalId());
             } else if (ImportSummary.ERROR.equals(importSummary.getStatus())) {
-                super.handleImportSummaryError(importSummary, FailedItem.ENROLLMENT, 200, enrollment.getLocalId());
+                super.handleImportSummaryError(importSummary, FailedItem.ENROLLMENT, 200,
+                        enrollment.getLocalId());
             }
         } catch (APIException api) {
             super.handleSerializableItemException(api, FailedItem.ENROLLMENT,
@@ -49,7 +51,8 @@ public class EnrollmentSynchronizer extends Synchronizer {
     }
 
     private void syncEvents(long enrollmentId) {
-        EventSynchronizer eventSynchronizer = new EventSynchronizer(mEventRepository, mFailedItemRepository);
+        EventSynchronizer eventSynchronizer = new EventSynchronizer(mEventRepository,
+                mFailedItemRepository);
         List<Event> events = mEventRepository.getEventsByEnrollment(enrollmentId);
         eventSynchronizer.sync(events);
     }

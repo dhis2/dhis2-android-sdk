@@ -11,6 +11,7 @@ import org.hisp.dhis.android.sdk.synchronization.domain.enrollment.IEnrollmentRe
 import org.hisp.dhis.android.sdk.synchronization.domain.event.IEventRepository;
 import org.hisp.dhis.android.sdk.synchronization.domain.faileditem.IFailedItemRepository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,18 +36,32 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
     public void sync(TrackedEntityInstance trackedEntityInstance) {
         Map<String, TrackedEntityInstance> relatedTeis = new HashMap<String,
                 TrackedEntityInstance>();
+        mTrackedEntityInstanceRepository.getRecursiveRelationatedTeis(trackedEntityInstance,
+                relatedTeis);
+        if (relatedTeis.size() > 0) {
+            relatedTeis.put(trackedEntityInstance.getUid(), trackedEntityInstance);
+            syncTeiWithoutRelationships(relatedTeis);
+        } else {
+            syncCompleteTei(trackedEntityInstance);
+        }
+    }
+
+    private void syncCompleteTei(TrackedEntityInstance trackedEntityInstance) {
         try {
-            ImportSummary importSummary = mTrackedEntityInstanceRepository.sync(trackedEntityInstance);
+            ImportSummary importSummary = mTrackedEntityInstanceRepository.sync(
+                    trackedEntityInstance);
 
             if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
                     ImportSummary.OK.equals(importSummary.getStatus())) {
 
                 trackedEntityInstance.setFromServer(true);
                 mTrackedEntityInstanceRepository.save(trackedEntityInstance);
-                super.clearFailedItem(FailedItem.TRACKEDENTITYINSTANCE, trackedEntityInstance.getLocalId());
+                super.clearFailedItem(FailedItem.TRACKEDENTITYINSTANCE,
+                        trackedEntityInstance.getLocalId());
                 syncEnrollments(trackedEntityInstance.getLocalId());
             } else if (ImportSummary.ERROR.equals(importSummary.getStatus())) {
-                super.handleImportSummaryError(importSummary, FailedItem.TRACKEDENTITYINSTANCE, 200, trackedEntityInstance.getLocalId());
+                super.handleImportSummaryError(importSummary, FailedItem.TRACKEDENTITYINSTANCE,
+                        200, trackedEntityInstance.getLocalId());
             }
         } catch (APIException api) {
             super.handleSerializableItemException(api, FailedItem.ENROLLMENT,
@@ -54,6 +69,26 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
         }
     }
 
+    private void syncTeiWithoutRelationships(Map<String, TrackedEntityInstance> relatedTeis) {
+        List<TrackedEntityInstance> teisWithRelations = new ArrayList<>();
+        List<TrackedEntityInstance> teisWithoutRelations = new ArrayList<>();
+        for(String key : relatedTeis.keySet()){
+            TrackedEntityInstance trackedEntityInstance = relatedTeis.get(key);
+            teisWithRelations.add(trackedEntityInstance);
+            trackedEntityInstance.setRelationships(null);
+            teisWithoutRelations.add(trackedEntityInstance);
+        }
+        sync(teisWithoutRelations);
+        sync(teisWithRelations);
+    }
+
+
+    public void sync(List<TrackedEntityInstance> trackedEntityInstances) {
+        for(TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
+            syncCompleteTei(
+                    trackedEntityInstance);
+        }
+    }
 
     private void syncEnrollments(long localId) {
         EnrollmentSynchronizer eventSynchronizer = new EnrollmentSynchronizer(mEnrollmentRepository, mEventRepository, mFailedItemRepository);

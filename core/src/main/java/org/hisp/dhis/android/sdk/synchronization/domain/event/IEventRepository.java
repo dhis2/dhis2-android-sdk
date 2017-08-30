@@ -8,6 +8,8 @@ import java.util.List;
 public interface IEventRepository {
     List<Event> getEventsByEnrollment(long enrollmentId);
 
+    List<Event> getEventsByEnrollmentToBeRemoved(long enrollmentId);
+
     void save(Event event);
 
     void delete(Event event);
@@ -15,4 +17,6 @@ public interface IEventRepository {
     ImportSummary sync(Event event);
 
     List<ImportSummary> sync(List<Event> event);
+
+    List<ImportSummary> syncRemovedEvents(List<Event> event);
 }

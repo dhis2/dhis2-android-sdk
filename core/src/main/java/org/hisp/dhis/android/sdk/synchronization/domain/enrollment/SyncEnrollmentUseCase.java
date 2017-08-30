@@ -23,7 +23,7 @@ public class SyncEnrollmentUseCase {
 
     public void execute(Enrollment enrollment) {
         if (enrollment == null) {
-            return;
+            throw new IllegalArgumentException("the Enrollment to sync can not be null");
         }
 
         //if (Do you have to synchronize TEI?)

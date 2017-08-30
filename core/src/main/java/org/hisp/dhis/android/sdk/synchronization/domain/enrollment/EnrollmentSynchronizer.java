@@ -14,8 +14,6 @@ import org.hisp.dhis.android.sdk.synchronization.domain.faileditem.IFailedItemRe
 import java.util.List;
 
 public class EnrollmentSynchronizer extends Synchronizer {
-    //coordinate one type of item
-
     IEnrollmentRepository mEnrollmentRepository;
     IEventRepository mEventRepository;
     IFailedItemRepository mFailedItemRepository;
@@ -39,6 +37,7 @@ public class EnrollmentSynchronizer extends Synchronizer {
                 enrollment.setFromServer(true);
                 mEnrollmentRepository.save(enrollment);
                 super.clearFailedItem(FailedItem.ENROLLMENT, enrollment.getLocalId());
+
                 syncEvents(enrollment.getLocalId());
             } else if (ImportSummary.ERROR.equals(importSummary.getStatus())) {
                 super.handleImportSummaryError(importSummary, FailedItem.ENROLLMENT, 200, enrollment.getLocalId());
@@ -49,9 +48,9 @@ public class EnrollmentSynchronizer extends Synchronizer {
         }
     }
 
-    private void syncEvents(long localId) {
+    private void syncEvents(long enrollmentId) {
         EventSynchronizer eventSynchronizer = new EventSynchronizer(mEventRepository, mFailedItemRepository);
-        List<Event> events = mEnrollmentRepository.getEvents(localId);
+        List<Event> events = mEventRepository.getEventsByEnrollment(enrollmentId);
         eventSynchronizer.sync(events);
     }
 }

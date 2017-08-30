@@ -6,6 +6,8 @@ import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import java.util.List;
 
 public interface IEventRepository {
+    List<Event> getEventsByEnrollment(long enrollmentId);
+
     void save(Event event);
 
     void delete(Event event);

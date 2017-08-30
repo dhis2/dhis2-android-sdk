@@ -1,9 +1,13 @@
 package org.hisp.dhis.android.sdk.synchronization.data.event;
 
+import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Select;
+
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.synchronization.domain.event.IEventRepository;
 import org.joda.time.DateTime;
+import org.hisp.dhis.android.sdk.persistence.models.Event$Table;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +22,12 @@ public class EventRepository implements IEventRepository {
             EventRemoteDataSource remoteDataSource) {
         mLocalDataSource = localDataSource;
         mRemoteDataSource = remoteDataSource;
+    }
+
+    @Override
+    public List<Event> getEventsByEnrollment(long enrollmentId) {
+        return new Select().from(Event.class).where(
+                Condition.column(Event$Table.LOCALENROLLMENTID).is(enrollmentId)).queryList();
     }
 
     @Override

@@ -7,13 +7,10 @@ import org.hisp.dhis.android.sdk.synchronization.domain.event.IEventRepository;
 import org.hisp.dhis.android.sdk.synchronization.domain.faileditem.IFailedItemRepository;
 
 public class SyncEnrollmentUseCase {
-    //coordinate items to sync
-
     IEnrollmentRepository mEnrollmentRepository;
     IEventRepository mEventRepository;
     IFailedItemRepository mFailedItemRepository;
     EnrollmentSynchronizer mEnrollmentSynchronizer;
-    EventSynchronizer mEventSynchronizer;
 
 
     public SyncEnrollmentUseCase(IEnrollmentRepository enrollmentRepository, IEventRepository eventRepository,
@@ -22,7 +19,6 @@ public class SyncEnrollmentUseCase {
         mFailedItemRepository = failedItemRepository;
         mEventRepository = eventRepository;
         mEnrollmentSynchronizer = new EnrollmentSynchronizer(mEnrollmentRepository, eventRepository, mFailedItemRepository);
-        mEventSynchronizer = new EventSynchronizer(mEventRepository, mFailedItemRepository);
     }
 
     public void execute(Enrollment enrollment) {

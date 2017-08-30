@@ -5,7 +5,7 @@ import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.models.ApiResponse;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
-import org.hisp.dhis.android.sdk.synchronization.data.common.RemoteDataSource;
+import org.hisp.dhis.android.sdk.synchronization.data.common.ARemoteDataSource;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 import retrofit.client.Response;
 
-public class EventRemoteDataSource extends RemoteDataSource {
+public class EventRemoteDataSource extends ARemoteDataSource {
 
     public EventRemoteDataSource(DhisApi dhisApi) {
         this.dhisApi = dhisApi;
@@ -37,7 +37,7 @@ public class EventRemoteDataSource extends RemoteDataSource {
         }
     }
 
-    public ImportSummary save(Event event) {
+    private ImportSummary save(Event event) {
         if (event.getCreated() == null) {
             return postEvent(event, dhisApi);
         } else {
@@ -45,8 +45,11 @@ public class EventRemoteDataSource extends RemoteDataSource {
         }
     }
 
-    public List<ImportSummary> save(Map<String, List<Event>> events) {
-        return batchEvents(events, dhisApi);
+    public List<ImportSummary> save(List<Event> events) {
+        Map<String, List<Event>> eventsMap = new HashMap<>();
+        eventsMap.put("events", events);
+
+        return batchEvents(eventsMap, dhisApi);
     }
 
     private List<ImportSummary> batchEvents(Map<String, List<Event>> events, DhisApi dhisApi) throws APIException {

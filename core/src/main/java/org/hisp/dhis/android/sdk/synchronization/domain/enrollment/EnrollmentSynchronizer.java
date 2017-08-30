@@ -20,7 +20,8 @@ public class EnrollmentSynchronizer extends Synchronizer {
     IEventRepository mEventRepository;
     IFailedItemRepository mFailedItemRepository;
 
-    public EnrollmentSynchronizer(IEnrollmentRepository enrollmentRepository, IEventRepository eventRepository,
+    public EnrollmentSynchronizer(IEnrollmentRepository enrollmentRepository,
+            IEventRepository eventRepository,
             IFailedItemRepository failedItemRepository) {
         super(failedItemRepository);
 
@@ -33,15 +34,15 @@ public class EnrollmentSynchronizer extends Synchronizer {
         try {
             ImportSummary importSummary = mEnrollmentRepository.sync(enrollment);
 
-            if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
-                    ImportSummary.OK.equals(importSummary.getStatus())) {
-
+            if (importSummary.isSuccessOrOK()) {
                 enrollment.setFromServer(true);
                 mEnrollmentRepository.save(enrollment);
                 super.clearFailedItem(FailedItem.ENROLLMENT, enrollment.getLocalId());
+
                 syncEvents(enrollment.getLocalId());
-            } else if (ImportSummary.ERROR.equals(importSummary.getStatus())) {
-                super.handleImportSummaryError(importSummary, FailedItem.ENROLLMENT, 200, enrollment.getLocalId());
+            } else if (importSummary.isError()) {
+                super.handleImportSummaryError(importSummary, FailedItem.ENROLLMENT, 200,
+                        enrollment.getLocalId());
             }
         } catch (APIException api) {
             super.handleSerializableItemException(api, FailedItem.ENROLLMENT,
@@ -62,9 +63,10 @@ public class EnrollmentSynchronizer extends Synchronizer {
         }
     }
 
-    private void syncEvents(long localId) {
-        EventSynchronizer eventSynchronizer = new EventSynchronizer(mEventRepository, mFailedItemRepository);
-        List<Event> events = mEnrollmentRepository.getEvents(localId);
+    private void syncEvents(long enrollmentId) {
+        EventSynchronizer eventSynchronizer = new EventSynchronizer(mEventRepository,
+                mFailedItemRepository);
+        List<Event> events = mEventRepository.getEventsByEnrollment(enrollmentId);
         eventSynchronizer.sync(events);
     }
 }

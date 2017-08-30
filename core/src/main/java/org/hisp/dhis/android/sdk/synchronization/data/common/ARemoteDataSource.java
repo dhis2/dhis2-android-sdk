@@ -16,7 +16,7 @@ import java.io.IOException;
 import retrofit.client.Response;
 import retrofit.converter.ConversionException;
 
-public class RemoteDataSource {
+public abstract class ARemoteDataSource {
 
     public DhisApi dhisApi;
 
@@ -26,7 +26,7 @@ public class RemoteDataSource {
         return UploadTime;
     }
 
-    public static ImportSummary getImportSummary(Response response) {
+    public ImportSummary getImportSummary(Response response) {
         //because the web api almost randomly gives the responses in different forms, this
         //method checks which one it is that is being returned, and parses accordingly.
         if (response.getStatus() == 200) {
@@ -50,7 +50,7 @@ public class RemoteDataSource {
         return null;
     }
 
-    private static ImportSummary getPostImportSummary(Response response) {
+    private ImportSummary getPostImportSummary(Response response) {
         ImportSummary importSummary = null;
         try {
             String body = new StringConverter().fromBody(response.getBody(), String.class);
@@ -65,7 +65,7 @@ public class RemoteDataSource {
         return importSummary;
     }
 
-    private static ImportSummary getPutImportSummary(Response response) {
+    private ImportSummary getPutImportSummary(Response response) {
         ApiResponse apiResponse = null;
         try {
             String body = new StringConverter().fromBody(response.getBody(), String.class);

@@ -1,6 +1,10 @@
 package org.hisp.dhis.android.sdk.synchronization.data.event;
 
+import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Select;
+
 import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.persistence.models.Event$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.synchronization.domain.event.IEventRepository;
 import org.joda.time.DateTime;
@@ -21,6 +25,12 @@ public class EventRepository implements IEventRepository {
     }
 
     @Override
+    public List<Event> getEventsByEnrollment(long enrollmentId) {
+        return new Select().from(Event.class).where(
+                Condition.column(Event$Table.LOCALENROLLMENTID).is(enrollmentId)).queryList();
+    }
+
+    @Override
     public void save(Event event) {
         mLocalDataSource.save(event);
     }
@@ -34,14 +44,8 @@ public class EventRepository implements IEventRepository {
     public ImportSummary sync(Event event) {
         ImportSummary importSummary = mRemoteDataSource.update(event);
 
-        if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
-                ImportSummary.OK.equals(importSummary.getStatus())) {
-            if(event.getStatus().equals(Event.STATUS_DELETED)){
-                event.delete();
-            }else {
-                event.setFromServer(true);
-                updateEventTimestamp(event);
-            }
+        if (importSummary.isSuccessOrOK()) {
+            updateEventTimestamp(event);
         }
 
         return importSummary;
@@ -49,27 +53,20 @@ public class EventRepository implements IEventRepository {
 
     @Override
     public List<ImportSummary> sync(List<Event> events) {
-        Map<String, List<Event>> eventsMap = new HashMap<>();
-        eventsMap.put("events", events);
 
-        Map<String, Event> eventsMapCheck = new HashMap<>();
-        for (Event event : events) {
-            eventsMapCheck.put(event.getUid(), event);
-        }
-        List<ImportSummary> importSummaries = mRemoteDataSource.save(eventsMap);
+        List<ImportSummary> importSummaries = mRemoteDataSource.save(events);
+
+        Map<String, Event> eventsMap = toMap(events);
+
         DateTime dateTime = mRemoteDataSource.getServerTime();
+
         if (importSummaries != null) {
             for (ImportSummary importSummary : importSummaries) {
-                if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
-                        ImportSummary.OK.equals(importSummary.getStatus())) {
+                if (importSummary.isSuccessOrOK()) {
                     System.out.println("IMPORT SUMMARY: " + importSummary.getDescription());
-                    Event event = eventsMapCheck.get(importSummary.getReference());
+                    Event event = eventsMap.get(importSummary.getReference());
                     if (event != null) {
-                        if(event.getStatus().equals(Event.STATUS_DELETED)){
-                            event.delete();
-                        }else {
-                            updateEventTimestamp(event, dateTime.toString(), dateTime.toString());
-                        }
+                        updateEventTimestamp(event, dateTime.toString(), dateTime.toString());
                     }
                 }
             }
@@ -83,11 +80,18 @@ public class EventRepository implements IEventRepository {
     }
 
     private void updateEventTimestamp(Event event, String createdDate, String lastUpdated) {
-        // merging updated timestamp to local event model
-        event.setFromServer(true);
         event.setCreated(createdDate);
         event.setLastUpdated(lastUpdated);
 
         mLocalDataSource.save(event);
+    }
+
+    private Map<String,Event> toMap(List<Event> events){
+        Map<String, Event> eventsMap = new HashMap<>();
+        for (Event event : events) {
+            eventsMap.put(event.getUid(), event);
+        }
+
+        return eventsMap;
     }
 }

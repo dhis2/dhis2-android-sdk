@@ -6,14 +6,10 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment$Table;
-import org.hisp.dhis.android.sdk.persistence.models.Event;
-import org.hisp.dhis.android.sdk.persistence.models.Event$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance$Table;
 import org.hisp.dhis.android.sdk.synchronization.domain.enrollment.IEnrollmentRepository;
-
-import java.util.List;
 
 public class EnrollmentRepository implements IEnrollmentRepository {
     EnrollmentLocalDataSource mEnrollmentLocalDataSource;
@@ -40,12 +36,6 @@ public class EnrollmentRepository implements IEnrollmentRepository {
         }
 
         return importSummary;
-    }
-
-    @Override
-    public List<Event> getEvents(long enrollmentId) {
-        return new Select().from(Event.class).where(Condition.column(Event$Table.LOCALENROLLMENTID).is(enrollmentId)).queryList();
-
     }
 
     private void updateEnrollmentTimestamp(Enrollment enrollment) {

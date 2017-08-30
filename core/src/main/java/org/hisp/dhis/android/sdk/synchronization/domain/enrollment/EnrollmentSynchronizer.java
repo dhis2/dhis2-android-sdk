@@ -38,7 +38,7 @@ public class EnrollmentSynchronizer extends Synchronizer {
                 super.clearFailedItem(FailedItem.ENROLLMENT, enrollment.getLocalId());
 
                 syncEvents(enrollment.getLocalId());
-            } else if (ImportSummary.ERROR.equals(importSummary.getStatus())) {
+            } else if (importSummary.isError()) {
                 super.handleImportSummaryError(importSummary, FailedItem.ENROLLMENT, 200,
                         enrollment.getLocalId());
             }

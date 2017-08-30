@@ -65,7 +65,7 @@ public class EventSynchronizer extends Synchronizer {
     private void manageSyncResult(Event event, ImportSummary importSummary) {
         if (importSummary.isSuccessOrOK()) {
             updateSyncedEventLocally(event);
-        } else if (ImportSummary.ERROR.equals(importSummary.getStatus())) {
+        } else if (importSummary.isError()) {
             super.handleImportSummaryError(importSummary, EVENT, 200, id);
         }
     }

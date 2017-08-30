@@ -7,7 +7,7 @@ import org.hisp.dhis.android.sdk.network.response.ApiResponse2;
 import org.hisp.dhis.android.sdk.network.response.ImportSummary2;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
-import org.hisp.dhis.android.sdk.synchronization.data.common.RemoteDataSource;
+import org.hisp.dhis.android.sdk.synchronization.data.common.ARemoteDataSource;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.Map;
 
 import retrofit.client.Response;
 
-public class TrackedEntityInstanceRemoteDataSource  extends RemoteDataSource {
+public class TrackedEntityInstanceRemoteDataSource  extends ARemoteDataSource {
     DhisApi dhisApi;
 
     public TrackedEntityInstanceRemoteDataSource(DhisApi dhisApi) {
@@ -51,12 +51,12 @@ public class TrackedEntityInstanceRemoteDataSource  extends RemoteDataSource {
         return apiResponse.getImportSummaries();
     }
 
-    private static ImportSummary postTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance, DhisApi dhisApi) throws APIException {
+    private ImportSummary postTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance, DhisApi dhisApi) throws APIException {
         Response response = dhisApi.postTrackedEntityInstance(trackedEntityInstance);
         return getImportSummary(response);
     }
 
-    private static ImportSummary putTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance, DhisApi dhisApi) throws APIException {
+    private ImportSummary putTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance, DhisApi dhisApi) throws APIException {
         Response response = dhisApi.putTrackedEntityInstance(trackedEntityInstance.getUid(), trackedEntityInstance);
         return getImportSummary(response);
     }

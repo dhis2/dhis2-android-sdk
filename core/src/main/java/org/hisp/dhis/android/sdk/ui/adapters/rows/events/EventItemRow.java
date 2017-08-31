@@ -35,6 +35,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
@@ -45,14 +46,14 @@ import org.hisp.dhis.android.sdk.persistence.models.Event;
 
 import static org.hisp.dhis.android.sdk.utils.Preconditions.isNull;
 
+import java.util.List;
+
 /**
  * Created by araz on 03.04.2015.
  */
 public final class EventItemRow implements EventRow {
     private Event mEvent;
-    private String mFirstItem;
-    private String mSecondItem;
-    private String mThirdItem;
+    private List<String> columns;
     private OnRowClick.ITEM_STATUS mStatus;
 
     private Drawable mOfflineDrawable;
@@ -83,28 +84,29 @@ public final class EventItemRow implements EventRow {
         if (convertView == null) {
             view = inflater.inflate(R.layout.listview_event_item, container, false);
             holder = new ViewHolder(
-                    (TextView) view.findViewById(R.id.first_event_item),
-                    (TextView) view.findViewById(R.id.second_event_item),
-                    (TextView) view.findViewById(R.id.third_event_item),
+                    (LinearLayout)view.findViewById(R.id.dynamic_column_container),
                     (ImageView) view.findViewById(R.id.status_image_view),
                     (TextView) view.findViewById(R.id.status_text_view),
-                    new OnEventInternalClickListener()
+                    (LinearLayout) view.findViewById(R.id.status_container)
             );
             view.setTag(holder);
-            view.setOnClickListener(holder.listener);
-            view.setOnLongClickListener(holder.listener);
-            view.findViewById(R.id.status_container)
-                    .setOnClickListener(holder.listener);
         } else {
             view = convertView;
             holder = (ViewHolder) view.getTag();
         }
 
-        holder.listener.setEvent(mEvent);
-        holder.listener.setStatus(mStatus);
-        holder.firstItem.setText(mFirstItem);
-        holder.secondItem.setText(mSecondItem);
-        holder.thirdItem.setText(mThirdItem);
+        OnEventInternalClickListener listener = new OnEventInternalClickListener();
+        listener.setEvent(mEvent);
+        listener.setStatus(mStatus);
+        view.setOnClickListener(listener);
+        view.setOnLongClickListener(listener);
+        holder.statusContainer.setOnClickListener(listener);
+
+        for(String column: columns){
+            View columnView = inflater.inflate(R.layout.item_column, holder.columnContainer , false);
+            TextView textView = (TextView) columnView.findViewById(R.id.column_name);
+            textView.setText(column);
+        }
 
         switch (mStatus) {
             case OFFLINE: {
@@ -154,18 +156,6 @@ public final class EventItemRow implements EventRow {
         return mEvent;
     }
 
-    public void setSecondItem(String secondItem) {
-        this.mSecondItem = secondItem;
-    }
-
-    public void setThirdItem(String thirdItem) {
-        this.mThirdItem = thirdItem;
-    }
-
-    public void setFirstItem(String firstItem) {
-        this.mFirstItem = firstItem;
-    }
-
     public void setStatus(OnRowClick.ITEM_STATUS status) {
         mStatus = status;
     }
@@ -175,25 +165,20 @@ public final class EventItemRow implements EventRow {
     }
 
     private static class ViewHolder {
-        public final TextView firstItem;
-        public final TextView secondItem;
-        public final TextView thirdItem;
+        public final LinearLayout columnContainer;
+        public final LinearLayout statusContainer;
         public final ImageView statusImageView;
         public final TextView statusTextView;
-        public final OnEventInternalClickListener listener;
 
-        private ViewHolder(TextView firstItem,
-                           TextView secondItem,
-                           TextView thirdItem,
+        private ViewHolder(LinearLayout columnContainer,
                            ImageView statusImageView,
                            TextView statusTextView,
-                           OnEventInternalClickListener listener) {
-            this.firstItem = firstItem;
-            this.secondItem = secondItem;
-            this.thirdItem = thirdItem;
+                           LinearLayout statusContainer
+                           ) {
+            this.columnContainer = columnContainer;
             this.statusImageView = statusImageView;
             this.statusTextView = statusTextView;
-            this.listener = listener;
+            this.statusContainer = statusContainer;
         }
     }
 

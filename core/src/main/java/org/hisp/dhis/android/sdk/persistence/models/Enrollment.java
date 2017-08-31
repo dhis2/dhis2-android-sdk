@@ -368,8 +368,8 @@ public class Enrollment extends BaseSerializableModel {
 
         @Override
         public int compare(Enrollment e1, Enrollment e2) {
-            if(e1.getStatus().equals(CANCELLED)) {
-                if(e2.getStatus().equals(CANCELLED)){
+            if(e1.getStatus().equals(CANCELLED) || e1.getStatus().equals(COMPLETED)) {
+                if(e2.getStatus().equals(CANCELLED) || e1.getStatus().equals(COMPLETED)){
                     if(e1.getCreated()!=null){
                         return 0;
                     }else if (e2.getCreated()!=null){
@@ -378,7 +378,7 @@ public class Enrollment extends BaseSerializableModel {
                 }
                 return 0;
             }
-            if(e2.getStatus().equals(CANCELLED)){
+            if(e2.getStatus().equals(CANCELLED) || e1.getStatus().equals(COMPLETED)){
                 return 1;
             }
             return 0;

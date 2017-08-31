@@ -60,7 +60,7 @@ public class EnrollmentSynchronizer extends Synchronizer {
             if(enrollment.isFromServer()){
                 continue;
             }
-            if(enrollment.getCreated()==null && !enrollment.getStatus().equals(Enrollment.ACTIVE)) {
+            if(enrollment.getCreated()==null && (enrollment.getStatus().equals(Enrollment.CANCELLED) || enrollment.getStatus().equals(Enrollment.COMPLETED))) {
                 sync(enrollment);
             }
             sync(enrollment);

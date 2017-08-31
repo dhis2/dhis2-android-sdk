@@ -48,7 +48,7 @@ public class TrackedEntityInstanceRepository  implements ITrackedEntityInstanceR
             DateTime dateTime = mRemoteDataSource.getServerTime();
             for (ImportSummary2 importSummary2 : importSummaries) {
                 if (importSummary2.isSuccessOrOK()) {
-                    System.out.println("IMPORT SUMMARY: " + importSummary2.getDescription() + importSummary2.getHref());
+                    System.out.println("IMPORT SUMMARY(teibatch): " + importSummary2.getDescription() + importSummary2.getHref() +" "+ importSummary2.getReference());
                     TrackedEntityInstance trackedEntityInstance = trackedEntityInstanceMap.get(importSummary2.getReference());
                     if (trackedEntityInstance != null) {
                         updateTrackedEntityInstanceTimestamp(trackedEntityInstance, dateTime.toString(), dateTime.toString());
@@ -76,7 +76,7 @@ public class TrackedEntityInstanceRepository  implements ITrackedEntityInstanceR
             trackedEntityInstance.setRelationships(null);
             trackedEntityInstance.getRelationships();
         }
-        updateTrackedEntityInstanceTimestamp(remoteTrackedEntityInstance, remoteTrackedEntityInstance.getCreated(), remoteTrackedEntityInstance.getLastUpdated());
+        updateTrackedEntityInstanceTimestamp(trackedEntityInstance, remoteTrackedEntityInstance.getCreated(), remoteTrackedEntityInstance.getLastUpdated());
     }
 
     private void updateTrackedEntityInstanceTimestamp(TrackedEntityInstance trackedEntityInstance, String createdDate, String lastUpdated) {

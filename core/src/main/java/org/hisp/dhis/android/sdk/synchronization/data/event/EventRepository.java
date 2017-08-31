@@ -78,7 +78,7 @@ public class EventRepository implements IEventRepository {
         if (importSummaries != null) {
             for (ImportSummary importSummary : importSummaries) {
                 if (importSummary.isSuccessOrOK()) {
-                    System.out.println("IMPORT SUMMARY: " + importSummary.getDescription() + importSummary.getHref());
+                    System.out.println("IMPORT SUMMARY(event): " + importSummary.getDescription() + importSummary.getHref());
                     Event event = eventsMap.get(importSummary.getReference());
                     if (event != null) {
                         updateEventTimestamp(event, dateTime.toString(), dateTime.toString());

@@ -16,9 +16,6 @@ public interface ITrackedEntityInstanceRepository {
 
     List<ImportSummary2> sync(List<TrackedEntityInstance> trackedEntityInstances);
 
-    Map<String,TrackedEntityInstance> getRecursiveRelationatedTeis(TrackedEntityInstance trackedEntityInstance,
-            Map<String, TrackedEntityInstance> relatedTeis);
-
     List<TrackedEntityInstance> getAllLocalTeis();
 
     TrackedEntityInstance getTrackedEntityInstance(String uid);

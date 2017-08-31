@@ -86,28 +86,6 @@ public class TrackedEntityInstanceRepository  implements ITrackedEntityInstanceR
         mLocalDataSource.save(trackedEntityInstance);
     }
 
-
-    @Override
-    public Map<String, TrackedEntityInstance> getRecursiveRelationatedTeis(
-            TrackedEntityInstance trackedEntityInstance,
-            Map<String, TrackedEntityInstance> relatedTeiList) {
-        if (trackedEntityInstance.getRelationships() != null
-                && trackedEntityInstance.getRelationships().size() > 0) {
-            for (Relationship relationship : trackedEntityInstance.getRelationships()) {
-                if (relationship.getTrackedEntityInstanceB().equals(
-                        trackedEntityInstance.getUid())) {
-                    String target = relationship.getTrackedEntityInstanceA();
-                    relatedTeiList = addRelatedNotPushedTeis(relatedTeiList, target);
-                } else if (relationship.getTrackedEntityInstanceA().equals(
-                        trackedEntityInstance.getUid())) {
-                    String target = relationship.getTrackedEntityInstanceB();
-                    relatedTeiList = addRelatedNotPushedTeis(relatedTeiList, target);
-                }
-            }
-        }
-        return relatedTeiList;
-    }
-
     @Override
     public TrackedEntityInstance getTrackedEntityInstance(String trackedEntityInstanceUid) {
         return mLocalDataSource.getTrackedEntityInstance(trackedEntityInstanceUid);
@@ -116,21 +94,5 @@ public class TrackedEntityInstanceRepository  implements ITrackedEntityInstanceR
     @Override
     public List<TrackedEntityInstance> getAllLocalTeis() {
         return mLocalDataSource.getAllLocalTeis();
-    }
-
-    private Map<String, TrackedEntityInstance> addRelatedNotPushedTeis(
-            Map<String, TrackedEntityInstance> relatedTeiList, String target) {
-        TrackedEntityInstance relatedTrackedEntityInstance =
-                TrackerController.getTrackedEntityInstance(target);
-        if (!relatedTrackedEntityInstance.isFromServer()
-                && relatedTrackedEntityInstance.getCreated() == null) {
-            if (!relatedTeiList.containsKey(relatedTrackedEntityInstance.getUid())) {
-                relatedTeiList.put(relatedTrackedEntityInstance.getUid(),
-                        relatedTrackedEntityInstance);
-                relatedTeiList = getRecursiveRelationatedTeis(relatedTrackedEntityInstance,
-                        relatedTeiList);
-            }
-        }
-        return relatedTeiList;
     }
 }

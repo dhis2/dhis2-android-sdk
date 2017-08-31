@@ -43,13 +43,10 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
     public void sync(TrackedEntityInstance trackedEntityInstance) {
 
         if(trackedEntityInstance.getRelationships()!=null){
-            Map<String, TrackedEntityInstance> relatedTeiList = new HashMap<>();
-            mTrackedEntityInstanceRepository.getRecursiveRelationatedTeis(trackedEntityInstance, relatedTeiList);
-            if(relatedTeiList.size()>0) {
-                syncAllTeisInTwoSteps(mTrackedEntityInstanceRepository.getAllLocalTeis());
-                return;
-            }
+            syncAllTeisInTwoSteps(mTrackedEntityInstanceRepository.getAllLocalTeis());
+            return;
         }
+
         try {
             ImportSummary importSummary = mTrackedEntityInstanceRepository.sync(
                     trackedEntityInstance);

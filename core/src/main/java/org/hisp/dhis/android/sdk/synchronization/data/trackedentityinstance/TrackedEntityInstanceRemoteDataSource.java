@@ -16,7 +16,6 @@ import java.util.Map;
 import retrofit.client.Response;
 
 public class TrackedEntityInstanceRemoteDataSource  extends ARemoteDataSource {
-    DhisApi dhisApi;
 
     public TrackedEntityInstanceRemoteDataSource(DhisApi dhisApi) {
         this.dhisApi = dhisApi;

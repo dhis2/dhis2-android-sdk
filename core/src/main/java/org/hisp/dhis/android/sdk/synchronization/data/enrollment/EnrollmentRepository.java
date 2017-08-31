@@ -46,11 +46,13 @@ public class EnrollmentRepository implements IEnrollmentRepository {
 
     @Override
     public Enrollment getEnrollment(String enrollmentUid) {
-        return  mEnrollmentLocalDataSource.getEnrollments(enrollmentUid);
+        return  mEnrollmentLocalDataSource.getEnrollment(enrollmentUid);
     }
 
     @Override
-    public List<Enrollment> getEnrollments(long trackedEntityInstancelocalId) {
-        return mEnrollmentLocalDataSource.getEnrollments(trackedEntityInstancelocalId);
+    public List<Enrollment> getEnrollmentsByTrackedEntityInstanceId(
+            long trackedEntityInstancelocalId) {
+        return mEnrollmentLocalDataSource
+                .getEnrollmentsByTrackedEntityInstanceId(trackedEntityInstancelocalId);
     }
 }

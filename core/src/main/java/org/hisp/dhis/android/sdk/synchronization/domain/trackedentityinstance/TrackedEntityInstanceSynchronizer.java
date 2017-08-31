@@ -2,13 +2,11 @@ package org.hisp.dhis.android.sdk.synchronization.domain.trackedentityinstance;
 
 import static android.R.attr.id;
 
-import static org.hisp.dhis.android.sdk.persistence.models.FailedItem.EVENT;
 import static org.hisp.dhis.android.sdk.persistence.models.FailedItem.TRACKEDENTITYINSTANCE;
 
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.response.ImportSummary2;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
-import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
@@ -119,7 +117,7 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
 
     private void syncEnrollments(long localId) {
         EnrollmentSynchronizer eventSynchronizer = new EnrollmentSynchronizer(mEnrollmentRepository, mEventRepository, mFailedItemRepository);
-        List<Enrollment> enrollmentList = mEnrollmentRepository.getEnrollments(localId);
+        List<Enrollment> enrollmentList = mEnrollmentRepository.getEnrollmentsByTrackedEntityInstanceId(localId);
         eventSynchronizer.sync(enrollmentList);
     }
 

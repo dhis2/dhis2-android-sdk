@@ -6,6 +6,7 @@ import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
+import org.hisp.dhis.android.sdk.synchronization.data.enrollment.EnrollmentRepository;
 import org.hisp.dhis.android.sdk.synchronization.domain.common.Synchronizer;
 import org.hisp.dhis.android.sdk.synchronization.domain.event.EventSynchronizer;
 import org.hisp.dhis.android.sdk.synchronization.domain.event.IEventRepository;
@@ -31,18 +32,29 @@ public class EnrollmentSynchronizer extends Synchronizer {
 
     public void sync(Enrollment enrollment) {
         try {
-            //If the enrollment is already in the server and we will upload their state we need push the events before the enrollment.
-            if(enrollment.getCreated()!=null && !enrollment.getStatus().equals(Enrollment.ACTIVE)){
+            boolean isFirstTime = enrollment.getCreated()==null;
+
+            if(!isFirstTime){
                 syncEvents(enrollment.getLocalId());
             }
+
             ImportSummary importSummary = mEnrollmentRepository.sync(enrollment);
 
             if (importSummary.isSuccessOrOK()) {
+
+                if(isFirstTime) {
+                    syncEvents(enrollment.getLocalId());
+                }
+
+
+                if(isFirstTime && enrollment.getStatus().equals(Enrollment.CANCELLED) || enrollment.getStatus().equals(
+                        Enrollment.COMPLETED)){
+                    sync(enrollment);
+                }
+
                 enrollment.setFromServer(true);
                 mEnrollmentRepository.save(enrollment);
                 super.clearFailedItem(FailedItem.ENROLLMENT, enrollment.getLocalId());
-
-                syncEvents(enrollment.getLocalId());
             } else if (importSummary.isError()) {
                 super.handleImportSummaryError(importSummary, FailedItem.ENROLLMENT, 200,
                         enrollment.getLocalId());
@@ -59,9 +71,6 @@ public class EnrollmentSynchronizer extends Synchronizer {
         for (Enrollment enrollment : enrollments) {
             if(enrollment.isFromServer()){
                 continue;
-            }
-            if(enrollment.getCreated()==null && (enrollment.getStatus().equals(Enrollment.CANCELLED) || enrollment.getStatus().equals(Enrollment.COMPLETED))) {
-                sync(enrollment);
             }
             sync(enrollment);
         }

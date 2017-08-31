@@ -72,7 +72,7 @@ public class EventRepository implements IEventRepository {
 
         List<ImportSummary> importSummaries = mRemoteDataSource.save(events);
 
-        Map<String, Event> eventsMap = Enrollment.toMap(events);
+        Map<String, Event> eventsMap = Event.toMap(events);
 
         DateTime dateTime = mRemoteDataSource.getServerTime();
 

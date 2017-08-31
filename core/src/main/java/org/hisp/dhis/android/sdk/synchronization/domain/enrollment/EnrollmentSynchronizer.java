@@ -46,15 +46,15 @@ public class EnrollmentSynchronizer extends Synchronizer {
                     syncEvents(enrollment.getLocalId());
                 }
 
+                enrollment.setFromServer(true);
+                mEnrollmentRepository.save(enrollment);
+                super.clearFailedItem(FailedItem.ENROLLMENT, enrollment.getLocalId());
+
 
                 if(isFirstTime && enrollment.getStatus().equals(Enrollment.CANCELLED) || enrollment.getStatus().equals(
                         Enrollment.COMPLETED)){
                     sync(enrollment);
                 }
-
-                enrollment.setFromServer(true);
-                mEnrollmentRepository.save(enrollment);
-                super.clearFailedItem(FailedItem.ENROLLMENT, enrollment.getLocalId());
             } else if (importSummary.isError()) {
                 super.handleImportSummaryError(importSummary, FailedItem.ENROLLMENT, 200,
                         enrollment.getLocalId());

@@ -45,6 +45,10 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
             return;
         }
 
+        syncSingleTei(trackedEntityInstance);
+    }
+
+    private void syncSingleTei(TrackedEntityInstance trackedEntityInstance) {
         try {
             ImportSummary importSummary = mTrackedEntityInstanceRepository.sync(
                     trackedEntityInstance);
@@ -110,7 +114,7 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
 
     private void syncOneByOne(List<TrackedEntityInstance> trackedEntityInstances){
         for(TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
-            sync(trackedEntityInstance);
+            syncSingleTei(trackedEntityInstance);
         }
     }
 
@@ -124,12 +128,20 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
         for(TrackedEntityInstance trackedEntityInstance: trackedEntityInstances){
             trackedEntityInstance.setRelationships(new ArrayList<Relationship>());
         }
-        sync(trackedEntityInstances);
+        if(trackedEntityInstances.size()==1){
+            syncOneByOne(trackedEntityInstances);
+        }else {
+            sync(trackedEntityInstances);
+        }
         for(TrackedEntityInstance trackedEntityInstance: trackedEntityInstances){
             trackedEntityInstance.setFromServer(false);
             trackedEntityInstance.setRelationships(null);
             trackedEntityInstance.getRelationships();
         }
-        sync(trackedEntityInstances);
+        if(trackedEntityInstances.size()==1){
+            syncOneByOne(trackedEntityInstances);
+        }else {
+            sync(trackedEntityInstances);
+        }
     }
 }

@@ -1,9 +1,11 @@
 package org.hisp.dhis.android.sdk.synchronization.domain.trackedentityinstance;
 
 import org.hisp.dhis.android.sdk.network.APIException;
+import org.hisp.dhis.android.sdk.network.response.ImportSummary2;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
+import org.hisp.dhis.android.sdk.persistence.models.Relationship;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.synchronization.domain.common.Synchronizer;
 import org.hisp.dhis.android.sdk.synchronization.domain.enrollment.EnrollmentSynchronizer;
@@ -12,7 +14,6 @@ import org.hisp.dhis.android.sdk.synchronization.domain.event.IEventRepository;
 import org.hisp.dhis.android.sdk.synchronization.domain.faileditem.IFailedItemRepository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,65 +35,75 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
     }
 
     public void sync(TrackedEntityInstance trackedEntityInstance) {
-        Map<String, TrackedEntityInstance> relatedTeis = new HashMap<String,
-                TrackedEntityInstance>();
-        mTrackedEntityInstanceRepository.getRecursiveRelationatedTeis(trackedEntityInstance,
-                relatedTeis);
-        if (relatedTeis.size() > 0) {
-            relatedTeis.put(trackedEntityInstance.getUid(), trackedEntityInstance);
-            syncTeiWithoutRelationships(relatedTeis);
-        } else {
-            syncCompleteTei(trackedEntityInstance);
-        }
-    }
-
-    private void syncCompleteTei(TrackedEntityInstance trackedEntityInstance) {
         try {
             ImportSummary importSummary = mTrackedEntityInstanceRepository.sync(
                     trackedEntityInstance);
 
-            if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
-                    ImportSummary.OK.equals(importSummary.getStatus())) {
-
-                trackedEntityInstance.setFromServer(true);
-                mTrackedEntityInstanceRepository.save(trackedEntityInstance);
-                super.clearFailedItem(FailedItem.TRACKEDENTITYINSTANCE,
-                        trackedEntityInstance.getLocalId());
+            if (importSummary.isSuccessOrOK()) {
+                manageSyncResult(trackedEntityInstance, importSummary.isSuccessOrOK(), importSummary.isError());
                 syncEnrollments(trackedEntityInstance.getLocalId());
-            } else if (ImportSummary.ERROR.equals(importSummary.getStatus())) {
+            } else if (importSummary.isError()) {
                 super.handleImportSummaryError(importSummary, FailedItem.TRACKEDENTITYINSTANCE,
                         200, trackedEntityInstance.getLocalId());
             }
         } catch (APIException api) {
-            super.handleSerializableItemException(api, FailedItem.ENROLLMENT,
+            super.handleSerializableItemException(api, FailedItem.TRACKEDENTITYINSTANCE,
                     trackedEntityInstance.getLocalId());
         }
     }
 
-    private void syncTeiWithoutRelationships(Map<String, TrackedEntityInstance> relatedTeis) {
-        List<TrackedEntityInstance> teisWithRelations = new ArrayList<>();
-        List<TrackedEntityInstance> teisWithoutRelations = new ArrayList<>();
-        for(String key : relatedTeis.keySet()){
-            TrackedEntityInstance trackedEntityInstance = relatedTeis.get(key);
-            teisWithRelations.add(trackedEntityInstance);
-            trackedEntityInstance.setRelationships(null);
-            teisWithoutRelations.add(trackedEntityInstance);
+    private void manageSyncResult(TrackedEntityInstance trackedEntityInstance, boolean  isSuccess, boolean isError) {
+        if(isSuccess) {
+            trackedEntityInstance.setFromServer(true);
+            mTrackedEntityInstanceRepository.save(trackedEntityInstance);
+        }else if(isError) {
+            super.clearFailedItem(FailedItem.TRACKEDENTITYINSTANCE,
+                    trackedEntityInstance.getLocalId());
         }
-        sync(teisWithoutRelations);
-        sync(teisWithRelations);
     }
 
 
     public void sync(List<TrackedEntityInstance> trackedEntityInstances) {
+        try{
+            if (trackedEntityInstances == null || trackedEntityInstances.size() == 0) {
+                return;
+            }
+            Map<String, TrackedEntityInstance> trackedEntityInstanceMap = mTrackedEntityInstanceRepository.toMap(trackedEntityInstances);
+            List<ImportSummary2> importSummaries = mTrackedEntityInstanceRepository.sync(trackedEntityInstances);
+
+            for (ImportSummary2 importSummary : importSummaries) {
+                TrackedEntityInstance trackedEntityInstance = trackedEntityInstanceMap.get(importSummary.getReference());
+                if (trackedEntityInstance != null) {
+                    manageSyncResult(trackedEntityInstance, importSummary.isSuccessOrOK(), importSummary.isError());
+                }
+            }
+        } catch (Exception e){
+            syncOneByOne(trackedEntityInstances);
+        }
+    }
+
+    private void syncOneByOne(List<TrackedEntityInstance> trackedEntityInstances){
         for(TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
-            syncCompleteTei(
-                    trackedEntityInstance);
+            sync(trackedEntityInstance);
         }
     }
 
     private void syncEnrollments(long localId) {
         EnrollmentSynchronizer eventSynchronizer = new EnrollmentSynchronizer(mEnrollmentRepository, mEventRepository, mFailedItemRepository);
-        List<Enrollment> enrollmentList = mTrackedEntityInstanceRepository.getEnrollments(localId);
+        List<Enrollment> enrollmentList = mEnrollmentRepository.getEnrollments(localId);
         eventSynchronizer.sync(enrollmentList);
+    }
+
+    public void syncAllTeisInTwoSteps(List<TrackedEntityInstance> trackedEntityInstances) {
+        for(TrackedEntityInstance trackedEntityInstance: trackedEntityInstances){
+            trackedEntityInstance.setRelationships(new ArrayList<Relationship>());
+        }
+        sync(trackedEntityInstances);
+        for(TrackedEntityInstance trackedEntityInstance: trackedEntityInstances){
+            trackedEntityInstance.setFromServer(false);
+            trackedEntityInstance.setRelationships(null);
+            trackedEntityInstance.getRelationships();
+        }
+        sync(trackedEntityInstances);
     }
 }

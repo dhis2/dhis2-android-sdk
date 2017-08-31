@@ -12,10 +12,10 @@ import org.hisp.dhis.android.sdk.synchronization.domain.trackedentityinstance
         .TrackedEntityInstanceSynchronizer;
 
 public class SyncEventUseCase {
-    //coordinate items to sync
 
     ITrackedEntityInstanceRepository mTrackedEntityInstanceRepository;
     TrackedEntityInstanceSynchronizer mTrackedEntityInstanceSynchronizer;
+    EnrollmentSynchronizer mEnrollmentSynchronizer;
     IEventRepository mEventRepository;
     IEnrollmentRepository mEnrollmentRepository;
     IFailedItemRepository mFailedItemRepository;
@@ -31,6 +31,10 @@ public class SyncEventUseCase {
         mTrackedEntityInstanceRepository = trackedEntityInstanceRepository;
         mFailedItemRepository = failedItemRepository;
         mEventSynchronizer = new EventSynchronizer(mEventRepository, mFailedItemRepository);
+        mTrackedEntityInstanceSynchronizer =
+                new TrackedEntityInstanceSynchronizer(mTrackedEntityInstanceRepository, mEnrollmentRepository, mEventRepository, mFailedItemRepository);
+        mEnrollmentSynchronizer = new EnrollmentSynchronizer(
+                mEnrollmentRepository, mEventRepository, mFailedItemRepository);
     }
 
     public void execute(Event event) {
@@ -45,15 +49,11 @@ public class SyncEventUseCase {
         //EnrollmentSynchronizer.sync(enrollment);
 
         Enrollment enrollment = mEnrollmentRepository.getEnrollment(event.getEnrollment());
-        TrackedEntityInstance tei = mEnrollmentRepository.getTrackedEntityInstance(
+        TrackedEntityInstance tei = mTrackedEntityInstanceRepository.getTrackedEntityInstance(
                 enrollment.getTrackedEntityInstance());
         if (!tei.isFromServer()) {
-            TrackedEntityInstanceSynchronizer trackedEntityInstanceSynchronizer =
-                    new TrackedEntityInstanceSynchronizer(mTrackedEntityInstanceRepository, mEnrollmentRepository, mEventRepository, mFailedItemRepository);
-            trackedEntityInstanceSynchronizer.sync(tei);
+            mTrackedEntityInstanceSynchronizer.sync(tei);
         } else if (!enrollment.isFromServer()) {
-            EnrollmentSynchronizer mEnrollmentSynchronizer = new EnrollmentSynchronizer(
-                    mEnrollmentRepository, mEventRepository, mFailedItemRepository);
             mEnrollmentSynchronizer.sync(enrollment);
         } else {
             mEventSynchronizer.sync(event);

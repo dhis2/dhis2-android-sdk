@@ -1,19 +1,13 @@
 package org.hisp.dhis.android.sdk.synchronization.data.trackedentityinstance;
 
-
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Select;
-
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.network.response.ImportSummary2;
-import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.synchronization.domain.trackedentityinstance.ITrackedEntityInstanceRepository;
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,26 +29,61 @@ public class TrackedEntityInstanceRepository  implements ITrackedEntityInstanceR
 
     @Override
     public ImportSummary sync(TrackedEntityInstance trackedEntityInstance) {
-        DateTime serverDate = mRemoteDataSource.getServerTime();
-        Map<String, TrackedEntityInstance> relatedTeis = new HashMap<String,
-                TrackedEntityInstance>();
-        relatedTeis = getRecursiveRelationatedTeis(trackedEntityInstance, relatedTeis);
-        relatedTeis.put(trackedEntityInstance.getUid(), trackedEntityInstance);
-        if(relatedTeis.size()>1) {
-            pushTeiWithoutRelationFirst(relatedTeis, serverDate);
-            trackedEntityInstance.setCreated(serverDate.toString());
-            trackedEntityInstance.setCreatedAtClient(serverDate.toString());
-            trackedEntityInstance.setFromServer(true);
-            return mRemoteDataSource.save(trackedEntityInstance);
-        }else {
-            return mRemoteDataSource.save(trackedEntityInstance);
+        ImportSummary importSummary = mRemoteDataSource.save(trackedEntityInstance);
+
+        if (importSummary.isSuccessOrOK()) {
+            updateTrackedEntityInstanceTimestamp(trackedEntityInstance);
         }
 
+        return importSummary;
     }
 
     @Override
-    public List<ImportSummary2> sync(List<TrackedEntityInstance> relatedTeis) {
-        return mRemoteDataSource.save(relatedTeis);
+    public List<ImportSummary2> sync(List<TrackedEntityInstance> trackedEntityInstanceList) {
+
+        List<ImportSummary2> importSummaries = mRemoteDataSource.save(trackedEntityInstanceList);
+
+        Map<String, TrackedEntityInstance> trackedEntityInstanceMap = toMap(trackedEntityInstanceList);
+        if (importSummaries != null) {
+            DateTime dateTime = mRemoteDataSource.getServerTime();
+            for (ImportSummary2 importSummary2 : importSummaries) {
+                if (importSummary2.isSuccessOrOK()) {
+                    System.out.println("IMPORT SUMMARY: " + importSummary2.getDescription() + importSummary2.getHref());
+                    TrackedEntityInstance trackedEntityInstance = trackedEntityInstanceMap.get(importSummary2.getReference());
+                    if (trackedEntityInstance != null) {
+                        updateTrackedEntityInstanceTimestamp(trackedEntityInstance, dateTime.toString(), dateTime.toString());
+                    }
+                }
+            }
+        }
+        return importSummaries;
+    }
+
+    @Override
+    public Map<String,TrackedEntityInstance> toMap(List<TrackedEntityInstance> trackedEntityInstanceList){
+        Map<String, TrackedEntityInstance> trackedEntityInstanceMap = new HashMap<>();
+        for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstanceList) {
+            trackedEntityInstanceMap.put(trackedEntityInstance.getUid(), trackedEntityInstance);
+        }
+
+        return trackedEntityInstanceMap;
+    }
+
+    private void updateTrackedEntityInstanceTimestamp(TrackedEntityInstance trackedEntityInstance) {
+        TrackedEntityInstance remoteTrackedEntityInstance = mRemoteDataSource.getTrackedEntityInstance(trackedEntityInstance.getTrackedEntityInstance());
+        if(trackedEntityInstance.getRelationships()!=null && trackedEntityInstance.getRelationships().size()==0){
+            //Restore relations before save.
+            trackedEntityInstance.setRelationships(null);
+            trackedEntityInstance.getRelationships();
+        }
+        updateTrackedEntityInstanceTimestamp(remoteTrackedEntityInstance, remoteTrackedEntityInstance.getCreated(), remoteTrackedEntityInstance.getLastUpdated());
+    }
+
+    private void updateTrackedEntityInstanceTimestamp(TrackedEntityInstance trackedEntityInstance, String createdDate, String lastUpdated) {
+        trackedEntityInstance.setCreated(createdDate);
+        trackedEntityInstance.setLastUpdated(lastUpdated);
+
+        mLocalDataSource.save(trackedEntityInstance);
     }
 
 
@@ -103,30 +132,5 @@ public class TrackedEntityInstanceRepository  implements ITrackedEntityInstanceR
             }
         }
         return relatedTeiList;
-    }
-
-
-
-    private void pushTeiWithoutRelationFirst(
-            Map<String, TrackedEntityInstance> trackedEntityInstances, DateTime serverDate) {
-        List<TrackedEntityInstance> trackerEntityInstancesWithRelations = new ArrayList<>();
-        if (trackedEntityInstances.size() > 0) {
-            for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances.values()) {
-                trackerEntityInstancesWithRelations.add(trackedEntityInstance);
-                //set relationships as null
-                trackedEntityInstance.setRelationships(new ArrayList<Relationship>());
-                mRemoteDataSource.save(trackedEntityInstance);
-            }
-            for (TrackedEntityInstance trackedEntityInstance :
-                    trackerEntityInstancesWithRelations) {
-                if (trackedEntityInstance.getRelationships().size() > 0) {
-                    trackedEntityInstance.setFromServer(false);
-                    mRemoteDataSource.save(trackedEntityInstance);
-                    trackedEntityInstance.setCreated(serverDate.toString());
-                    trackedEntityInstance.setLastUpdated(serverDate.toString());
-                    trackedEntityInstance.save();
-                }
-            }
-        }
     }
 }

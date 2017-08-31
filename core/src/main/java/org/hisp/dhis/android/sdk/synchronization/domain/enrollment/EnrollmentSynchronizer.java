@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class EnrollmentSynchronizer extends Synchronizer {
-
     IEnrollmentRepository mEnrollmentRepository;
     IEventRepository mEventRepository;
     IFailedItemRepository mFailedItemRepository;
@@ -32,6 +31,10 @@ public class EnrollmentSynchronizer extends Synchronizer {
 
     public void sync(Enrollment enrollment) {
         try {
+            //If the enrollment is already in the server and we will upload their state we need push the events before the enrollment.
+            if(enrollment.getCreated()!=null && !enrollment.getStatus().equals(Enrollment.ACTIVE)){
+                syncEvents(enrollment.getLocalId());
+            }
             ImportSummary importSummary = mEnrollmentRepository.sync(enrollment);
 
             if (importSummary.isSuccessOrOK()) {
@@ -49,6 +52,7 @@ public class EnrollmentSynchronizer extends Synchronizer {
                     enrollment.getLocalId());
         }
     }
+
     public void sync(List<Enrollment> enrollments) {
         Collections.sort(enrollments, new Enrollment.EnrollmentComparator());
 
@@ -56,7 +60,7 @@ public class EnrollmentSynchronizer extends Synchronizer {
             if(enrollment.isFromServer()){
                 continue;
             }
-            if(enrollment.getCreated()==null && enrollment.getStatus().equals(Enrollment.CANCELLED)) {
+            if(enrollment.getCreated()==null && !enrollment.getStatus().equals(Enrollment.ACTIVE)) {
                 sync(enrollment);
             }
             sync(enrollment);

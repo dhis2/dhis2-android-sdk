@@ -13,6 +13,7 @@ import org.hisp.dhis.android.sdk.synchronization.domain.trackedentityinstance
 
 public class SyncEnrollmentUseCase {
 
+    ITrackedEntityInstanceRepository mTrackedEntityInstanceRepository;
     IEnrollmentRepository mEnrollmentRepository;
     IFailedItemRepository mFailedItemRepository;
     EnrollmentSynchronizer mEnrollmentSynchronizer;
@@ -22,6 +23,7 @@ public class SyncEnrollmentUseCase {
 
     public SyncEnrollmentUseCase(IEnrollmentRepository enrollmentRepository, IEventRepository eventRepository,
             ITrackedEntityInstanceRepository trackedEntityInstanceRepository, IFailedItemRepository failedItemRepository) {
+        mTrackedEntityInstanceRepository = trackedEntityInstanceRepository;
         mEnrollmentRepository = enrollmentRepository;
         mFailedItemRepository = failedItemRepository;
         mEnrollmentSynchronizer = new EnrollmentSynchronizer(mEnrollmentRepository, eventRepository, mFailedItemRepository);
@@ -34,7 +36,7 @@ public class SyncEnrollmentUseCase {
             throw new IllegalArgumentException("the Enrollment to sync can not be null");
         }
 
-        TrackedEntityInstance tei = mEnrollmentRepository.getTrackedEntityInstance(enrollment.getTrackedEntityInstance());
+        TrackedEntityInstance tei = mTrackedEntityInstanceRepository.getTrackedEntityInstance(enrollment.getTrackedEntityInstance());
         if(!tei.isFromServer()){
             mTrackedEntityInstanceSynchronizer.sync(tei);
         }else {

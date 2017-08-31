@@ -38,15 +38,16 @@ public class TrackedEntityInstanceRemoteDataSource  extends ARemoteDataSource {
             return putTrackedEntityInstance(trackedEntityInstance, dhisApi);
         }
     }
-    public List<ImportSummary2> save(List<TrackedEntityInstance> trackedEntityInstances) {
-        return batchTrackedEntityInstances(trackedEntityInstances, dhisApi);
-    }
 
-    private List<ImportSummary2> batchTrackedEntityInstances(List<TrackedEntityInstance> trackedEntityInstances, DhisApi dhisApi) throws
-            APIException {
+    public List<ImportSummary2> save(List<TrackedEntityInstance> trackedEntityInstances) {
         Map<String, List<TrackedEntityInstance>> map = new HashMap<>();
         map.put("trackedEntityInstances", trackedEntityInstances);
-        ApiResponse2 apiResponse = dhisApi.postTrackedEntityInstances(map);
+        return batchTrackedEntityInstances(map, dhisApi);
+    }
+
+    private List<ImportSummary2> batchTrackedEntityInstances(Map<String, List<TrackedEntityInstance>> trackedEntityInstances, DhisApi dhisApi) throws
+            APIException {
+        ApiResponse2 apiResponse = dhisApi.postTrackedEntityInstances(trackedEntityInstances);
         return apiResponse.getImportSummaries();
     }
 

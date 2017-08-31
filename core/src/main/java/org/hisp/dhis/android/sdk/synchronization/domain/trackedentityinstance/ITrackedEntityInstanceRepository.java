@@ -22,6 +22,8 @@ public interface ITrackedEntityInstanceRepository {
     List<TrackedEntityInstance> getAllLocalTeis();
 
     TrackedEntityInstance getTrackedEntityInstance(String uid);
+
+    Map<String,TrackedEntityInstance> toMap(List<TrackedEntityInstance> trackedEntityInstances);
 }
 
 

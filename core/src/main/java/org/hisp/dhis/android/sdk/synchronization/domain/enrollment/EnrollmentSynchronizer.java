@@ -31,8 +31,10 @@ public class EnrollmentSynchronizer extends Synchronizer {
 
     public void sync(Enrollment enrollment) {
         try {
-            //If the enrollment is already in the server and we will upload their state we need push the events before the enrollment.
-            if(enrollment.getCreated()!=null && !enrollment.getStatus().equals(Enrollment.ACTIVE)){
+            //If the enrollment is already in the server and we will upload their state we need
+            // push the events before the enrollment.
+            if (enrollment.getCreated() != null && !enrollment.getStatus().equals(
+                    Enrollment.ACTIVE)) {
                 syncEvents(enrollment.getLocalId());
             }
             ImportSummary importSummary = mEnrollmentRepository.sync(enrollment);
@@ -57,10 +59,11 @@ public class EnrollmentSynchronizer extends Synchronizer {
         Collections.sort(enrollments, new Enrollment.EnrollmentComparator());
 
         for (Enrollment enrollment : enrollments) {
-            if(enrollment.isFromServer()){
+            if (enrollment.isFromServer()) {
                 continue;
             }
-            if(enrollment.getCreated()==null && (enrollment.getStatus().equals(Enrollment.CANCELLED) || enrollment.getStatus().equals(Enrollment.COMPLETED))) {
+            if (enrollment.getCreated() == null && (enrollment.getStatus().equals(
+                    Enrollment.CANCELLED) || enrollment.getStatus().equals(Enrollment.COMPLETED))) {
                 sync(enrollment);
             }
             sync(enrollment);
@@ -72,13 +75,14 @@ public class EnrollmentSynchronizer extends Synchronizer {
                 mFailedItemRepository);
 
         List<Event> events = mEventRepository.getEventsByEnrollment(enrollmentId);
-        List<Event> eventsToBeRemoved = mEventRepository.getEventsByEnrollmentToBeRemoved(enrollmentId);
+        List<Event> eventsToBeRemoved = mEventRepository.getEventsByEnrollmentToBeRemoved(
+                enrollmentId);
 
-        if(eventsToBeRemoved!=null && eventsToBeRemoved.size()>0){
+        if (eventsToBeRemoved != null && eventsToBeRemoved.size() > 0) {
             eventSynchronizer.syncRemovedEvents(eventsToBeRemoved);
         }
 
-        if(events!=null && events.size()>0) {
+        if (events != null && events.size() > 0) {
             eventSynchronizer.sync(events);
         }
     }

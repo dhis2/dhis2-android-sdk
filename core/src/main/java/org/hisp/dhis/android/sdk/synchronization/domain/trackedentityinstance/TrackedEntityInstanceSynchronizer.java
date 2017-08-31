@@ -48,6 +48,7 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
                 return;
             }
         }
+
         try {
             ImportSummary importSummary = mTrackedEntityInstanceRepository.sync(
                     trackedEntityInstance);

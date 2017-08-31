@@ -48,17 +48,22 @@ public class EventSynchronizer extends Synchronizer {
 
     public void sync(List<Event> events) {
         try {
+            if (events == null || events.size() == 0)
+                return;
+
             Map<String, Event> eventsMapCheck = removeDeletedAndOnlyLocalEvents(events);
 
-            System.out.println("Synchronizing list of events ");
+            if (eventsMapCheck.values().size() != 0) {
+                System.out.println("Synchronizing list of events ");
 
-            List<ImportSummary> importSummaries = mEventRepository.sync(
-                    new ArrayList<>(eventsMapCheck.values()));
+                List<ImportSummary> importSummaries = mEventRepository.sync(
+                        new ArrayList<>(eventsMapCheck.values()));
 
-            for (ImportSummary importSummary : importSummaries) {
-                Event event = eventsMapCheck.get(importSummary.getReference());
-                if(event != null){
-                    manageSyncResult(event, importSummary);
+                for (ImportSummary importSummary : importSummaries) {
+                    Event event = eventsMapCheck.get(importSummary.getReference());
+                    if (event != null) {
+                        manageSyncResult(event, importSummary);
+                    }
                 }
             }
         } catch (APIException api) {
@@ -68,24 +73,32 @@ public class EventSynchronizer extends Synchronizer {
 
     public void syncRemovedEvents(List<Event> events) {
         try {
+
+            if (events == null || events.size() == 0)
+                return;
+
             Map<String, Event> eventsMapCheck = removeDeletedAndOnlyLocalEvents(events);
 
             for(Event event:events){
                 event.setStatus(null);
             }
 
-            System.out.println("Synchronizing removed events");
+            if (eventsMapCheck.values().size() != 0) {
 
-            List<ImportSummary> importSummaries = mEventRepository.syncRemovedEvents(
-                    new ArrayList<>(eventsMapCheck.values()));
+                System.out.println("Synchronizing removed events");
+                List<ImportSummary> importSummaries = mEventRepository.syncRemovedEvents(
+                        new ArrayList<>(eventsMapCheck.values()));
 
-            for (ImportSummary importSummary : importSummaries) {
-                Event event = eventsMapCheck.get(importSummary.getReference());
-                if(event==null && importSummary.getDescription()!=null){
-                    event = eventsMapCheck.get(importSummary.getDescription().replace("Deletion of event ","").replace(" was successful",""));
-                }
-                if(event != null){
-                    manageSyncResult(event, importSummary);
+                for (ImportSummary importSummary : importSummaries) {
+                    Event event = eventsMapCheck.get(importSummary.getReference());
+                    if (event == null && importSummary.getDescription() != null) {
+                        event = eventsMapCheck.get(
+                                importSummary.getDescription().replace("Deletion of event ",
+                                        "").replace(" was successful", ""));
+                    }
+                    if (event != null) {
+                        manageSyncResult(event, importSummary);
+                    }
                 }
             }
         } catch (APIException api) {

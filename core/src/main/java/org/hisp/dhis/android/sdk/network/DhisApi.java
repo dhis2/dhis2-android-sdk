@@ -286,6 +286,9 @@ public interface DhisApi {
     @POST("/"+ApiEndpointContainer.EVENTS+"/")
     ApiResponse postEvents(@Body Map<String, List<Event>> events);
 
+    @POST("/"+ApiEndpointContainer.EVENTS+"/"+"?strategy=DELETE")
+    ApiResponse postDeletedEvents(@Body Map<String, List<Event>> events);
+
     @PUT("/"+ApiEndpointContainer.EVENTS+"/{eventUid}")
     Response putEvent(@Path("eventUid") String eventUid, @Body Event event);
 

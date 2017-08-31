@@ -30,8 +30,8 @@ public class EventRemoteDataSource extends ARemoteDataSource {
 
 
     public ImportSummary update(Event event) {
-        if(event.getStatus().equals(Event.STATUS_DELETED)){
-            return deleteEvent(event, dhisApi);
+        if(event.isDeleted()){
+            return delete(event, dhisApi);
         }else {
             return save(event);
         }
@@ -57,10 +57,21 @@ public class EventRemoteDataSource extends ARemoteDataSource {
         return apiResponse.getImportSummaries();
     }
 
-    private ImportSummary deleteEvent(Event event, DhisApi dhisApi) throws  APIException {
+    private List<ImportSummary> batchDeletedEvents(Map<String, List<Event>> events, DhisApi dhisApi) throws  APIException {
+        ApiResponse apiResponse = dhisApi.postDeletedEvents(events);
+        return apiResponse.getImportSummaries();
+    }
+
+    private ImportSummary delete(Event event, DhisApi dhisApi) throws  APIException {
         Response response = dhisApi.deleteEvent(event.getUid());
 
         return getImportSummary(response);
+    }
+
+    public List<ImportSummary> delete(List<Event> events) throws  APIException{
+        Map<String, List<Event>> eventsMap = new HashMap<>();
+        eventsMap.put("events", events);
+        return batchDeletedEvents(eventsMap, dhisApi);
     }
 
     private ImportSummary postEvent(Event event, DhisApi dhisApi) throws APIException {

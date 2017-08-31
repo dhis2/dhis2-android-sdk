@@ -27,7 +27,20 @@ public class EventRepository implements IEventRepository {
     @Override
     public List<Event> getEventsByEnrollment(long enrollmentId) {
         return new Select().from(Event.class).where(
-                Condition.column(Event$Table.LOCALENROLLMENTID).is(enrollmentId)).queryList();
+                Condition.column(Event$Table.LOCALENROLLMENTID).is(enrollmentId))
+                .and(Condition.column(Event$Table.FROMSERVER).is(false))
+                .and(Condition.column(Event$Table.STATUS).isNot(Event.STATUS_DELETED))
+                .queryList();
+    }
+
+    @Override
+    public List<Event> getEventsByEnrollmentToBeRemoved(long enrollmentId) {
+        List<Event> events = new Select().from(Event.class).where(
+                Condition.column(Event$Table.LOCALENROLLMENTID).is(enrollmentId))
+                .and(Condition.column(Event$Table.FROMSERVER).is(false))
+                .and(Condition.column(Event$Table.STATUS).is(Event.STATUS_DELETED))
+                .queryList();
+        return events;
     }
 
     @Override
@@ -45,7 +58,9 @@ public class EventRepository implements IEventRepository {
         ImportSummary importSummary = mRemoteDataSource.update(event);
 
         if (importSummary.isSuccessOrOK()) {
-            updateEventTimestamp(event);
+            if(!event.isDeleted()) {
+                updateEventTimestamp(event);
+            }
         }
 
         return importSummary;
@@ -63,7 +78,7 @@ public class EventRepository implements IEventRepository {
         if (importSummaries != null) {
             for (ImportSummary importSummary : importSummaries) {
                 if (importSummary.isSuccessOrOK()) {
-                    System.out.println("IMPORT SUMMARY: " + importSummary.getDescription());
+                    System.out.println("IMPORT SUMMARY: " + importSummary.getDescription() + importSummary.getHref());
                     Event event = eventsMap.get(importSummary.getReference());
                     if (event != null) {
                         updateEventTimestamp(event, dateTime.toString(), dateTime.toString());
@@ -71,6 +86,14 @@ public class EventRepository implements IEventRepository {
                 }
             }
         }
+        return importSummaries;
+    }
+
+    @Override
+    public List<ImportSummary> syncRemovedEvents(List<Event> events) {
+
+        List<ImportSummary> importSummaries = mRemoteDataSource.delete(events);
+
         return importSummaries;
     }
 

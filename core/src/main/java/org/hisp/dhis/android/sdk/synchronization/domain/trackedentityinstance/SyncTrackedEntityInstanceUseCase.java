@@ -27,15 +27,6 @@ public class SyncTrackedEntityInstanceUseCase {
             return;
         }
 
-        if(trackedEntityInstance.getRelationships()!=null){
-            Map<String, TrackedEntityInstance> relatedTeiList = new HashMap<>();
-            mTrackedEntityInstanceRepository.getRecursiveRelationatedTeis(trackedEntityInstance, relatedTeiList);
-            if(relatedTeiList.size()>0) {
-                mTrackedEntityInstanceSynchronizer.syncAllTeisInTwoSteps(mTrackedEntityInstanceRepository.getAllLocalTeis());
-                return;
-            }
-        }
-
         mTrackedEntityInstanceSynchronizer.sync(trackedEntityInstance);
     }
 }

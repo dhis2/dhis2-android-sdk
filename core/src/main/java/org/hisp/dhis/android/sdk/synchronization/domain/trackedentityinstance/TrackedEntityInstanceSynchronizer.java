@@ -19,6 +19,7 @@ import org.hisp.dhis.android.sdk.synchronization.domain.event.IEventRepository;
 import org.hisp.dhis.android.sdk.synchronization.domain.faileditem.IFailedItemRepository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,15 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
     }
 
     public void sync(TrackedEntityInstance trackedEntityInstance) {
+
+        if(trackedEntityInstance.getRelationships()!=null){
+            Map<String, TrackedEntityInstance> relatedTeiList = new HashMap<>();
+            mTrackedEntityInstanceRepository.getRecursiveRelationatedTeis(trackedEntityInstance, relatedTeiList);
+            if(relatedTeiList.size()>0) {
+                syncAllTeisInTwoSteps(mTrackedEntityInstanceRepository.getAllLocalTeis());
+                return;
+            }
+        }
         try {
             ImportSummary importSummary = mTrackedEntityInstanceRepository.sync(
                     trackedEntityInstance);
@@ -93,6 +103,7 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
                 TrackedEntityInstance trackedEntityInstance = trackedEntityInstanceMap.get(importSummary.getReference());
                 if (trackedEntityInstance != null) {
                     manageSyncResult(trackedEntityInstance, importSummary);
+                    syncEnrollments(trackedEntityInstance.getLocalId());
                 }
             }
         } catch (Exception e){

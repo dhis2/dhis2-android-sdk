@@ -11,6 +11,8 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance$Table;
 import org.hisp.dhis.android.sdk.synchronization.domain.enrollment.IEnrollmentRepository;
 
+import java.util.List;
+
 public class EnrollmentRepository implements IEnrollmentRepository {
     EnrollmentLocalDataSource mEnrollmentLocalDataSource;
     EnrollmentRemoteDataSource mEnrollmentRemoteDataSource;
@@ -51,13 +53,11 @@ public class EnrollmentRepository implements IEnrollmentRepository {
 
     @Override
     public Enrollment getEnrollment(String enrollmentUid) {
-        return new Select().from(Enrollment.class).where(Condition.column
-                (Enrollment$Table.ENROLLMENT).is(enrollmentUid)).querySingle();
+        return  mEnrollmentLocalDataSource.getEnrollments(enrollmentUid);
     }
 
     @Override
-    public TrackedEntityInstance getTrackedEntityInstance(String trackedEntityInstanceUid) {
-        return new Select().from(TrackedEntityInstance.class).where(Condition.column
-                (TrackedEntityInstance$Table.TRACKEDENTITYINSTANCE).is(trackedEntityInstanceUid)).querySingle();
+    public List<Enrollment> getEnrollments(long trackedEntityInstancelocalId) {
+        return mEnrollmentLocalDataSource.getEnrollments(trackedEntityInstancelocalId);
     }
 }

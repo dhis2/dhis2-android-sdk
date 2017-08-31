@@ -1,6 +1,9 @@
 package org.hisp.dhis.android.sdk.synchronization.data.trackedentityinstance;
 
 
+import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Select;
+
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.network.response.ImportSummary2;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
@@ -77,8 +80,13 @@ public class TrackedEntityInstanceRepository  implements ITrackedEntityInstanceR
     }
 
     @Override
-    public List<Enrollment> getEnrollments(long localId) {
-       return mLocalDataSource.getEnrollments(localId);
+    public TrackedEntityInstance getTrackedEntityInstance(String trackedEntityInstanceUid) {
+        return mLocalDataSource.getTrackedEntityInstance(trackedEntityInstanceUid);
+    }
+
+    @Override
+    public List<TrackedEntityInstance> getAllLocalTeis() {
+        return mLocalDataSource.getAllLocalTeis();
     }
 
     private Map<String, TrackedEntityInstance> addRelatedNotPushedTeis(

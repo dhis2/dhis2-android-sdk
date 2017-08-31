@@ -19,7 +19,9 @@ public interface ITrackedEntityInstanceRepository {
     Map<String,TrackedEntityInstance> getRecursiveRelationatedTeis(TrackedEntityInstance trackedEntityInstance,
             Map<String, TrackedEntityInstance> relatedTeis);
 
-    List<Enrollment> getEnrollments(long localId);
+    List<TrackedEntityInstance> getAllLocalTeis();
+
+    TrackedEntityInstance getTrackedEntityInstance(String uid);
 }
 
 

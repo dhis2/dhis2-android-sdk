@@ -6,4 +6,7 @@ public class EventLocalDataSource {
     public void save(Event event) {
         event.save();
     }
+    public void delete(Event event) {
+        event.delete();
+    }
 }

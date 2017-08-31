@@ -67,10 +67,14 @@ import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
+import org.hisp.dhis.android.sdk.synchronization.data.enrollment.EnrollmentLocalDataSource;
+import org.hisp.dhis.android.sdk.synchronization.data.enrollment.EnrollmentRemoteDataSource;
+import org.hisp.dhis.android.sdk.synchronization.data.enrollment.EnrollmentRepository;
 import org.hisp.dhis.android.sdk.synchronization.data.event.EventLocalDataSource;
 import org.hisp.dhis.android.sdk.synchronization.data.event.EventRemoteDataSource;
 import org.hisp.dhis.android.sdk.synchronization.data.event.EventRepository;
 import org.hisp.dhis.android.sdk.synchronization.data.faileditem.FailedItemRepository;
+import org.hisp.dhis.android.sdk.synchronization.domain.enrollment.IEnrollmentRepository;
 import org.hisp.dhis.android.sdk.synchronization.domain.event.SyncEventUseCase;
 import org.hisp.dhis.android.sdk.ui.views.FontTextView;
 import org.hisp.dhis.android.sdk.utils.LogUtils;
@@ -393,12 +397,17 @@ public abstract class ItemStatusDialogFragment extends DialogFragment
 
             @Override
             public Object execute() throws APIException {
+
+                EnrollmentLocalDataSource enrollmentLocalDataSource = new EnrollmentLocalDataSource();
+                EnrollmentRemoteDataSource enrollmentRemoteDataSource = new EnrollmentRemoteDataSource(DhisController.getInstance().getDhisApi());
+                IEnrollmentRepository enrollmentRepository = new EnrollmentRepository(enrollmentLocalDataSource, enrollmentRemoteDataSource);
+
                 EventLocalDataSource mLocalDataSource = new EventLocalDataSource();
                 EventRemoteDataSource mRemoteDataSource = new EventRemoteDataSource(DhisController.getInstance().getDhisApi());
                 EventRepository eventRepository = new EventRepository(mLocalDataSource, mRemoteDataSource);
                 FailedItemRepository failedItemRepository = new FailedItemRepository();
 
-                SyncEventUseCase syncEventUseCase = new SyncEventUseCase(eventRepository, failedItemRepository);
+                SyncEventUseCase syncEventUseCase = new SyncEventUseCase(eventRepository, enrollmentRepository, failedItemRepository);
                 syncEventUseCase.execute(event);
                 return new Object();
             }

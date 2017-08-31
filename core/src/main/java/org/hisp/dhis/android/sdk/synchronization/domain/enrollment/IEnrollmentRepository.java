@@ -13,5 +13,5 @@ public interface IEnrollmentRepository {
 
     Enrollment getEnrollment(String enrollmentUid);
 
-    List<Enrollment> getEnrollments(long trackedEntityInstanceLocalId);
+    List<Enrollment> getEnrollmentsByTrackedEntityInstanceId(long trackedEntityInstanceLocalId);
 }

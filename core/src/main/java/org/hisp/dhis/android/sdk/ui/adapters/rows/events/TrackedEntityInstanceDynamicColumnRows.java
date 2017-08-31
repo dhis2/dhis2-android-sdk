@@ -29,22 +29,25 @@
 
 package org.hisp.dhis.android.sdk.ui.adapters.rows.events;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by erling on 5/8/15.
  */
-public class TrackedEntityInstanceColumnNamesRow implements EventRow
+public class TrackedEntityInstanceDynamicColumnRows implements EventRow
 {
-    private String mFirstItem;
-    private String mSecondItem;
-    private String mThirdItem;
+    private List<String> columns;
     private String mTitle;
     private String mTrackedEntity;
     private View view;
@@ -56,31 +59,46 @@ public class TrackedEntityInstanceColumnNamesRow implements EventRow
 
         if (convertView == null) {
             view = inflater.inflate(R.layout.listview_column_names_item, container, false);
+
             holder = new ViewHolder(
                     (TextView) view.findViewById(R.id.tracked_entity_title),
-                    (TextView) view.findViewById(R.id.first_column_name),
-                    (TextView) view.findViewById(R.id.second_column_name),
-                    (TextView) view.findViewById(R.id.third_column_name),
+                    (TextView) view.findViewById(R.id.column_name),
                     (TextView) view.findViewById(R.id.status_column),
-                    new ViewHolder.OnInternalColumnRowClickListener()
-            );
+                    (LinearLayout) view.findViewById(R.id.dynamic_column_container));
+            for(String column: columns){
+                View columnView = inflater.inflate(R.layout.item_column, (LinearLayout) view.findViewById(R.id.dynamic_column_container), false);
+                TextView textView = (TextView) columnView.findViewById(R.id.column_name);
+                textView.setText(column);
+            }
+
             view.setTag(holder);
         } else {
             view = convertView;
             holder = (ViewHolder) view.getTag();
         }
+        ViewHolder.OnInternalColumnRowClickListener onInternalColumnRowClickListener = new ViewHolder.OnInternalColumnRowClickListener();
+
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                (1.0f-0.25f)/columns.size()
+        );
+
+        params.gravity = Gravity.CENTER_VERTICAL;
+        holder.columnContainer.removeAllViews();
+        for(String column: columns){
+            View columnView = inflater.inflate(R.layout.item_column, holder.columnContainer, false);
+            TextView textView = (TextView) columnView.findViewById(R.id.column_name);
+            textView.setText(column);
+            holder.columnContainer.addView(columnView, params);
+            View spaceView = inflater.inflate(R.layout.space_column, holder.columnContainer, false);
+            holder.columnContainer.addView(spaceView);
+        }
+
         holder.trackedEntityTitle.setText(mTitle);
 
-        holder.firstItem.setText(mFirstItem);
-        holder.firstItem.setOnClickListener(holder.listener);
-
-        holder.secondItem.setText(mSecondItem);
-        holder.secondItem.setOnClickListener(holder.listener);
-
-        holder.thirdItem.setText(mThirdItem);
-        holder.thirdItem.setOnClickListener(holder.listener);
-
-        holder.statusItem.setOnClickListener(holder.listener);
+        holder.statusItem.setOnClickListener(onInternalColumnRowClickListener);
 
         return view;
     }
@@ -100,36 +118,24 @@ public class TrackedEntityInstanceColumnNamesRow implements EventRow
         return false;
     }
 
-    public void setSecondItem(String secondItem) {
-        this.mSecondItem = secondItem;
+
+    public List<String> getColumns() {
+        return columns;
     }
 
-    public void setFirstItem(String firstItem) {
-        this.mFirstItem = firstItem;
+    public void setColumns(List<String> columns) {
+        this.columns = columns;
     }
 
-    public void setThirdItem(String mThirdItem) {
-        this.mThirdItem = mThirdItem;
+    public void addColumn(String column) {
+        if(columns == null ){
+            columns = new ArrayList<>();
+        }
+        columns.add(column);
     }
 
     public void setTitle(String mTitle) {
         this.mTitle = mTitle;
-    }
-
-    public String getmFirstItem() {
-        return mFirstItem;
-    }
-
-    public String getmSecondItem() {
-        return mSecondItem;
-    }
-
-    public String getmTitle() {
-        return mTitle;
-    }
-
-    public String getmThirdItem() {
-        return mThirdItem;
     }
 
     public String getTrackedEntity() {
@@ -146,25 +152,19 @@ public class TrackedEntityInstanceColumnNamesRow implements EventRow
 
     private static class ViewHolder {
         public final TextView trackedEntityTitle;
-        public final TextView firstItem;
-        public final TextView secondItem;
-        public final TextView thirdItem;
+        public final TextView contentItem;
         public final TextView statusItem;
-        public final OnInternalColumnRowClickListener listener;
+        public final LinearLayout columnContainer;
 
 
         private ViewHolder(TextView trackedEntityTitle,
-                           TextView firstItem,
-                           TextView secondItem,
-                           TextView thirdItem,
+                           TextView contentItem,
                            TextView statusItem,
-                           OnInternalColumnRowClickListener listener) {
+                           LinearLayout columnContainer) {
             this.trackedEntityTitle = trackedEntityTitle;
-            this.firstItem = firstItem;
-            this.secondItem = secondItem;
-            this.thirdItem = thirdItem;
+            this.contentItem = contentItem;
             this.statusItem = statusItem;
-            this.listener = listener;
+            this.columnContainer = columnContainer;
         }
 
         private static class OnInternalColumnRowClickListener implements View.OnClickListener
@@ -172,18 +172,9 @@ public class TrackedEntityInstanceColumnNamesRow implements EventRow
             @Override
             public void onClick(View view)
             {
-                if(view.getId() == R.id.first_column_name)
+                if(view.getId() == R.id.column_name)
                     Dhis2Application.getEventBus().post(
                             new OnTrackedEntityInstanceColumnClick(OnTrackedEntityInstanceColumnClick.FIRST_COLUMN));
-
-                else if(view.getId() == R.id.second_column_name)
-                    Dhis2Application.getEventBus().post(
-                            new OnTrackedEntityInstanceColumnClick(OnTrackedEntityInstanceColumnClick.SECOND_COLUMN));
-
-                else if (view.getId() == R.id.third_column_name)
-                    Dhis2Application.getEventBus().post(
-                            new OnTrackedEntityInstanceColumnClick(OnTrackedEntityInstanceColumnClick.THIRD_COLUMN));
-
                 else if(view.getId() == R.id.status_column)
                     Dhis2Application.getEventBus().post(
                             new OnTrackedEntityInstanceColumnClick(OnTrackedEntityInstanceColumnClick.STATUS_COLUMN));

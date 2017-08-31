@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_weight="0.25"
+    android:layout_height="match_parent">
+
+    <org.hisp.dhis.android.sdk.ui.views.FontTextView
+        android:id="@+id/column_name"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="@dimen/xsmall_text_size"
+        android:gravity="center"
+        android:ellipsize="end"
+        android:minHeight="48dp"
+        android:padding="2dp"
+        app:font="@string/light_font_name"/>
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:background="@color/darker_grey"/>
+</LinearLayout>

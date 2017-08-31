@@ -24,7 +24,7 @@ public class SyncTrackedEntityInstanceUseCase {
 
     public void execute(TrackedEntityInstance trackedEntityInstance) {
         if (trackedEntityInstance == null) {
-            return;
+            throw new IllegalArgumentException("the trackedEntityInstance to sync can not be null");
         }
 
         mTrackedEntityInstanceSynchronizer.sync(trackedEntityInstance);

@@ -324,8 +324,7 @@ final class TrackerDataSender {
                 for (ImportSummary2 importSummary : importSummaries) {
                     Enrollment enrollment = enrollmentMap.get(importSummary.getReference());
                     System.out.println("IMPORT SUMMARY: " + importSummary.getDescription());
-                    if (ImportSummary2.Status.SUCCESS.equals(importSummary.getStatus()) ||
-                            ImportSummary2.Status.OK.equals(importSummary.getStatus())) {
+                    if (importSummary.isSuccessOrOK()) {
                         enrollment.setFromServer(true);
                         enrollment.setCreated(enrollmentUploadTime.toString());
                         enrollment.setLastUpdated(enrollmentUploadTime.toString());
@@ -650,8 +649,7 @@ final class TrackerDataSender {
                 for (ImportSummary2 importSummary : importSummaries) {
                     TrackedEntityInstance trackedEntityInstance = trackedEntityInstanceMap.get(importSummary.getReference());
                     System.out.println("IMPORT SUMMARY: " + importSummary.getDescription());
-                    if (ImportSummary2.Status.SUCCESS.equals(importSummary.getStatus()) ||
-                            ImportSummary2.Status.OK.equals(importSummary.getStatus())) {
+                    if (importSummary.isSuccessOrOK()) {
                         trackedEntityInstance.setFromServer(true);
                         trackedEntityInstance.setCreated(eventUploadTime.toString());
                         trackedEntityInstance.setLastUpdated(eventUploadTime.toString());

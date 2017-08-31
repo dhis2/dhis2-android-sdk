@@ -55,6 +55,15 @@ public class ImportSummary2 {
         return conflicts;
     }
 
+    public boolean isSuccessOrOK() {
+        return ImportSummary2.Status.SUCCESS.equals(status) ||
+                ImportSummary2.Status.OK.equals(status);
+    }
+
+    public boolean isError() {
+        return Status.ERROR.equals(status);
+    }
+
     public enum Status {
         SUCCESS, OK, ERROR
     }

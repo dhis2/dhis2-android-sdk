@@ -43,7 +43,9 @@ public class TrackedEntityInstanceRepository  implements ITrackedEntityInstanceR
 
         List<ImportSummary2> importSummaries = mRemoteDataSource.save(trackedEntityInstanceList);
 
-        Map<String, TrackedEntityInstance> trackedEntityInstanceMap = toMap(trackedEntityInstanceList);
+        Map<String, TrackedEntityInstance> trackedEntityInstanceMap =
+                TrackedEntityInstance.toMap(trackedEntityInstanceList);
+
         if (importSummaries != null) {
             DateTime dateTime = mRemoteDataSource.getServerTime();
             for (ImportSummary2 importSummary2 : importSummaries) {
@@ -57,16 +59,6 @@ public class TrackedEntityInstanceRepository  implements ITrackedEntityInstanceR
             }
         }
         return importSummaries;
-    }
-
-    @Override
-    public Map<String,TrackedEntityInstance> toMap(List<TrackedEntityInstance> trackedEntityInstanceList){
-        Map<String, TrackedEntityInstance> trackedEntityInstanceMap = new HashMap<>();
-        for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstanceList) {
-            trackedEntityInstanceMap.put(trackedEntityInstance.getUid(), trackedEntityInstance);
-        }
-
-        return trackedEntityInstanceMap;
     }
 
     private void updateTrackedEntityInstanceTimestamp(TrackedEntityInstance trackedEntityInstance) {

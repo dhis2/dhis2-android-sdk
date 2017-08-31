@@ -94,7 +94,9 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
             if (trackedEntityInstances == null || trackedEntityInstances.size() == 0) {
                 return;
             }
-            Map<String, TrackedEntityInstance> trackedEntityInstanceMap = mTrackedEntityInstanceRepository.toMap(trackedEntityInstances);
+            Map<String, TrackedEntityInstance> trackedEntityInstanceMap =
+            TrackedEntityInstance.toMap(trackedEntityInstances);
+
             List<ImportSummary2> importSummaries = mTrackedEntityInstanceRepository.sync(trackedEntityInstances);
 
             for (ImportSummary2 importSummary : importSummaries) {

@@ -91,24 +91,31 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
     }
 
     public void sync(List<TrackedEntityInstance> trackedEntityInstances) {
-        try{
-            if (trackedEntityInstances == null || trackedEntityInstances.size() == 0) {
-                return;
-            }
-            Map<String, TrackedEntityInstance> trackedEntityInstanceMap =
-            TrackedEntityInstance.toMap(trackedEntityInstances);
+        if (trackedEntityInstances == null || trackedEntityInstances.size() == 0) {
+            return;
+        } else if(trackedEntityInstances.size()==1){
+            syncSingleTei(trackedEntityInstances.get(0));
+            return;
+        } else {
 
-            List<ImportSummary2> importSummaries = mTrackedEntityInstanceRepository.sync(trackedEntityInstances);
+            try {
+                Map<String, TrackedEntityInstance> trackedEntityInstanceMap =
+                        TrackedEntityInstance.toMap(trackedEntityInstances);
 
-            for (ImportSummary2 importSummary : importSummaries) {
-                TrackedEntityInstance trackedEntityInstance = trackedEntityInstanceMap.get(importSummary.getReference());
-                if (trackedEntityInstance != null) {
-                    manageSyncResult(trackedEntityInstance, importSummary);
-                    syncEnrollments(trackedEntityInstance.getLocalId());
+                List<ImportSummary2> importSummaries = mTrackedEntityInstanceRepository.sync(
+                        trackedEntityInstances);
+
+                for (ImportSummary2 importSummary : importSummaries) {
+                    TrackedEntityInstance trackedEntityInstance = trackedEntityInstanceMap.get(
+                            importSummary.getReference());
+                    if (trackedEntityInstance != null) {
+                        manageSyncResult(trackedEntityInstance, importSummary);
+                        syncEnrollments(trackedEntityInstance.getLocalId());
+                    }
                 }
+            } catch (Exception e) {
+                syncOneByOne(trackedEntityInstances);
             }
-        } catch (Exception e){
-            syncOneByOne(trackedEntityInstances);
         }
     }
 
@@ -128,20 +135,12 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
         for(TrackedEntityInstance trackedEntityInstance: trackedEntityInstances){
             trackedEntityInstance.setRelationships(new ArrayList<Relationship>());
         }
-        if(trackedEntityInstances.size()==1){
-            syncOneByOne(trackedEntityInstances);
-        }else {
-            sync(trackedEntityInstances);
-        }
+        sync(trackedEntityInstances);
         for(TrackedEntityInstance trackedEntityInstance: trackedEntityInstances){
             trackedEntityInstance.setFromServer(false);
             trackedEntityInstance.setRelationships(null);
             trackedEntityInstance.getRelationships();
         }
-        if(trackedEntityInstances.size()==1){
-            syncOneByOne(trackedEntityInstances);
-        }else {
-            sync(trackedEntityInstances);
-        }
+        sync(trackedEntityInstances);
     }
 }

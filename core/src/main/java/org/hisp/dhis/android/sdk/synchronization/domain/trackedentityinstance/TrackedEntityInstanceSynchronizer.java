@@ -40,7 +40,8 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
 
     public void sync(TrackedEntityInstance trackedEntityInstance) {
 
-        if(trackedEntityInstance.getRelationships()!=null){
+        if(trackedEntityInstance.getRelationships()!=null &&
+                trackedEntityInstance.getRelationships().size() > 0){
             syncAllTeisInTwoSteps(mTrackedEntityInstanceRepository.getAllLocalTeis());
             return;
         }

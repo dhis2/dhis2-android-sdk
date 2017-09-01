@@ -271,20 +271,6 @@ final class TrackerDataSender {
         }
     }
 
-    private static void updateEventReferences(long localId, String newReference) {
-        new Update(DataValue.class).set(Condition.column
-                (DataValue$Table.EVENT).is
-                (newReference)).where(Condition.column(DataValue$Table.LOCALEVENTID).is(localId)).async().execute();
-
-        new Update(Event.class).set(Condition.column
-                (Event$Table.EVENT).is
-                (newReference), Condition.column(Event$Table.FROMSERVER).
-                is(true)).where(Condition.column(Event$Table.LOCALID).is(localId)).async().execute();
-        Event event = new Event();
-        event.save();
-        event.delete();//for triggering modelchangelistener
-    }
-
     private static void UpdateEventTimestamp(Event event, DhisApi dhisApi) throws APIException {
         try {
             final Map<String, String> QUERY_PARAMS = new HashMap<>();

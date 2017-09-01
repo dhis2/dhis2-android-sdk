@@ -34,7 +34,8 @@ public class EnrollmentSynchronizer extends Synchronizer {
 
         if (existsOnServerPreviously) {
             syncEvents(enrollment.getLocalId());
-            syncEnrollment(enrollment);
+            if (syncEnrollment(enrollment))
+                changeEnrollmentToSynced(enrollment);
         } else {
             if (syncEnrollment(enrollment))
             {
@@ -44,7 +45,11 @@ public class EnrollmentSynchronizer extends Synchronizer {
                         enrollment.getStatus().equals(Enrollment.COMPLETED))) {
                     //Send again because new enrollment is create as Active on server then
                     // Its necessary to change status from Active to Cancelled or Completed
-                    syncEnrollment(enrollment);
+                    if (syncEnrollment(enrollment));
+                        changeEnrollmentToSynced(enrollment);
+                }
+                else{
+                    changeEnrollmentToSynced(enrollment);
                 }
             }
         }
@@ -65,10 +70,6 @@ public class EnrollmentSynchronizer extends Synchronizer {
             ImportSummary importSummary = mEnrollmentRepository.sync(enrollment);
 
             if (importSummary.isSuccessOrOK()) {
-                enrollment.setFromServer(true);
-                mEnrollmentRepository.save(enrollment);
-                super.clearFailedItem(FailedItem.ENROLLMENT, enrollment.getLocalId());
-
                 isSyncSuccess = true;
 
             } else if (importSummary.isError()) {
@@ -83,6 +84,12 @@ public class EnrollmentSynchronizer extends Synchronizer {
         }
 
         return isSyncSuccess;
+    }
+
+    private void changeEnrollmentToSynced(Enrollment enrollment) {
+        enrollment.setFromServer(true);
+        mEnrollmentRepository.save(enrollment);
+        super.clearFailedItem(FailedItem.ENROLLMENT, enrollment.getLocalId());
     }
 
 

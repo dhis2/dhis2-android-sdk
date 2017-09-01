@@ -6,7 +6,6 @@ import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
-import org.hisp.dhis.android.sdk.synchronization.data.enrollment.EnrollmentRepository;
 import org.hisp.dhis.android.sdk.synchronization.domain.common.Synchronizer;
 import org.hisp.dhis.android.sdk.synchronization.domain.event.EventSynchronizer;
 import org.hisp.dhis.android.sdk.synchronization.domain.event.IEventRepository;
@@ -31,37 +30,23 @@ public class EnrollmentSynchronizer extends Synchronizer {
     }
 
     public void sync(Enrollment enrollment) {
-        try {
-            boolean isFirstTime = enrollment.getCreated()==null;
+        boolean existsOnServerPreviously = enrollment.getCreated() != null;
 
-            if(!isFirstTime){
+        if (existsOnServerPreviously) {
+            syncEvents(enrollment.getLocalId());
+            syncEnrollment(enrollment);
+        } else {
+            if (syncEnrollment(enrollment))
+            {
                 syncEvents(enrollment.getLocalId());
-            }
 
-            ImportSummary importSummary = mEnrollmentRepository.sync(enrollment);
-
-            if (importSummary.isSuccessOrOK()) {
-
-                if(isFirstTime) {
-                    syncEvents(enrollment.getLocalId());
+                if ((enrollment.getStatus().equals(Enrollment.CANCELLED) ||
+                        enrollment.getStatus().equals(Enrollment.COMPLETED))) {
+                    //Send again because new enrollment is create as Active on server then
+                    // Its necessary to change status from Active to Cancelled or Completed
+                    syncEnrollment(enrollment);
                 }
-
-                enrollment.setFromServer(true);
-                mEnrollmentRepository.save(enrollment);
-                super.clearFailedItem(FailedItem.ENROLLMENT, enrollment.getLocalId());
-
-
-                if(isFirstTime && (enrollment.getStatus().equals(Enrollment.CANCELLED) || enrollment.getStatus().equals(
-                        Enrollment.COMPLETED))){
-                    sync(enrollment);
-                }
-            } else if (importSummary.isError()) {
-                super.handleImportSummaryError(importSummary, FailedItem.ENROLLMENT, 200,
-                        enrollment.getLocalId());
             }
-        } catch (APIException api) {
-            super.handleSerializableItemException(api, FailedItem.ENROLLMENT,
-                    enrollment.getLocalId());
         }
     }
 
@@ -72,6 +57,34 @@ public class EnrollmentSynchronizer extends Synchronizer {
             sync(enrollment);
         }
     }
+
+    private boolean syncEnrollment(Enrollment enrollment) {
+        boolean isSyncSuccess = true;
+
+        try {
+            ImportSummary importSummary = mEnrollmentRepository.sync(enrollment);
+
+            if (importSummary.isSuccessOrOK()) {
+                enrollment.setFromServer(true);
+                mEnrollmentRepository.save(enrollment);
+                super.clearFailedItem(FailedItem.ENROLLMENT, enrollment.getLocalId());
+
+                isSyncSuccess = true;
+
+            } else if (importSummary.isError()) {
+                super.handleImportSummaryError(importSummary, FailedItem.ENROLLMENT, 200,
+                        enrollment.getLocalId());
+                isSyncSuccess = false;
+            }
+        } catch (APIException api) {
+            super.handleSerializableItemException(api, FailedItem.ENROLLMENT,
+                    enrollment.getLocalId());
+            isSyncSuccess = false;
+        }
+
+        return isSyncSuccess;
+    }
+
 
     private void syncEvents(long enrollmentId) {
         EventSynchronizer eventSynchronizer = new EventSynchronizer(mEventRepository,

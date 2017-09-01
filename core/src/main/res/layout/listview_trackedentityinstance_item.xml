@@ -35,15 +35,62 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="false"
-    android:background="@drawable/white_selector"
-    android:weightSum="1">
+    android:background="@drawable/white_selector">
 
-    <LinearLayout
-        android:id="@+id/dynamic_column_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-    </LinearLayout>
+
+    <org.hisp.dhis.android.sdk.ui.views.FontTextView
+        android:id="@+id/first_event_item"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:lines="2"
+        android:layout_weight="0.25"
+        android:textSize="@dimen/xsmall_text_size"
+        android:gravity="center"
+        android:ellipsize="end"
+        android:minHeight="48dp"
+        android:padding="2dp"
+        app:font="@string/light_font_name"/>
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:background="@color/darker_grey"/>
+
+    <org.hisp.dhis.android.sdk.ui.views.FontTextView
+        android:id="@+id/second_event_item"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:lines="2"
+        android:layout_weight="0.25"
+        android:gravity="center"
+        android:textSize="@dimen/xsmall_text_size"
+        android:ellipsize="end"
+        android:minHeight="48dp"
+        android:padding="2dp"
+        app:font="@string/light_font_name"/>
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:background="@color/darker_grey"/>
+
+    <org.hisp.dhis.android.sdk.ui.views.FontTextView
+        android:id="@+id/third_event_item"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:lines="2"
+        android:layout_weight="0.25"
+        android:textSize="@dimen/xsmall_text_size"
+        android:gravity="center"
+        android:ellipsize="end"
+        android:minHeight="48dp"
+        android:padding="2dp"
+        app:font="@string/light_font_name"/>
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:background="@color/darker_grey"/>
 
     <org.hisp.dhis.android.sdk.ui.views.FontTextView
         android:id="@+id/status_text_view"
@@ -57,5 +104,4 @@
         android:minHeight="48dp"
         android:padding="2dp"
         app:font="@string/light_font_name"/>
-
 </LinearLayout>

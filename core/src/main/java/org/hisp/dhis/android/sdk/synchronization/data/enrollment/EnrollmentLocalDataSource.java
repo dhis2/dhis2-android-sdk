@@ -17,7 +17,9 @@ public class EnrollmentLocalDataSource {
     public List<Enrollment> getEnrollmentsByTrackedEntityInstanceId(long localTEIId) {
         return new Select().from(Enrollment.class).where(
                 Condition.column(Enrollment$Table.LOCALTRACKEDENTITYINSTANCEID).
-                        is(localTEIId)).queryList();
+                        is(localTEIId))
+                .and(Condition.column(Enrollment$Table.FROMSERVER).
+                                is(false)).queryList();
     }
 
     public Enrollment getEnrollment(String enrollmentUid) {

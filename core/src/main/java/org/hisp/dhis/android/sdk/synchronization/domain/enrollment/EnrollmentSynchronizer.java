@@ -51,8 +51,8 @@ public class EnrollmentSynchronizer extends Synchronizer {
                 super.clearFailedItem(FailedItem.ENROLLMENT, enrollment.getLocalId());
 
 
-                if(isFirstTime && enrollment.getStatus().equals(Enrollment.CANCELLED) || enrollment.getStatus().equals(
-                        Enrollment.COMPLETED)){
+                if(isFirstTime && (enrollment.getStatus().equals(Enrollment.CANCELLED) || enrollment.getStatus().equals(
+                        Enrollment.COMPLETED))){
                     sync(enrollment);
                 }
             } else if (importSummary.isError()) {
@@ -69,9 +69,6 @@ public class EnrollmentSynchronizer extends Synchronizer {
         Collections.sort(enrollments, new Enrollment.EnrollmentComparator());
 
         for (Enrollment enrollment : enrollments) {
-            if (enrollment.isFromServer()) {
-                continue;
-            }
             sync(enrollment);
         }
     }

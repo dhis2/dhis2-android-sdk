@@ -17,11 +17,10 @@ import org.hisp.dhis.android.sdk.synchronization.domain.event.IEventRepository;
 import org.hisp.dhis.android.sdk.synchronization.domain.faileditem.IFailedItemRepository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TrackedEntityInstanceSynchronizer extends Synchronizer{
+public class TrackedEntityInstanceSynchronizer extends Synchronizer {
 
 
     ITrackedEntityInstanceRepository mTrackedEntityInstanceRepository;
@@ -29,7 +28,9 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
     IEventRepository mEventRepository;
     IFailedItemRepository mFailedItemRepository;
 
-    public TrackedEntityInstanceSynchronizer(ITrackedEntityInstanceRepository trackedEntityInstanceRepository, IEnrollmentRepository enrollmentRepository, IEventRepository eventRepository,
+    public TrackedEntityInstanceSynchronizer(
+            ITrackedEntityInstanceRepository trackedEntityInstanceRepository,
+            IEnrollmentRepository enrollmentRepository, IEventRepository eventRepository,
             IFailedItemRepository failedItemRepository) {
         super(failedItemRepository);
         mTrackedEntityInstanceRepository = trackedEntityInstanceRepository;
@@ -40,13 +41,38 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
 
     public void sync(TrackedEntityInstance trackedEntityInstance) {
 
-        if(trackedEntityInstance.getRelationships()!=null &&
-                trackedEntityInstance.getRelationships().size() > 0){
+        if (existsRelationships(trackedEntityInstance)) {
             syncAllTeisInTwoSteps(mTrackedEntityInstanceRepository.getAllLocalTeis());
-            return;
+        } else {
+            syncSingleTei(trackedEntityInstance);
         }
+    }
 
-        syncSingleTei(trackedEntityInstance);
+
+    public void sync(List<TrackedEntityInstance> trackedEntityInstances) {
+        if (trackedEntityInstances != null && trackedEntityInstances.size() >= 0) {
+            if (existsRelationships(trackedEntityInstances)) {
+                syncAllTeisInTwoSteps(trackedEntityInstances);
+            } else if (trackedEntityInstances.size() == 1) {
+                syncSingleTei(trackedEntityInstances.get(0));
+            } else {
+                syncTeis(trackedEntityInstances);
+            }
+        }
+    }
+
+    private void syncAllTeisInTwoSteps(List<TrackedEntityInstance> trackedEntityInstances) {
+        for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
+            trackedEntityInstance.setRelationships(new ArrayList<Relationship>());
+        }
+        syncTeis(trackedEntityInstances);
+
+        for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
+            trackedEntityInstance.setFromServer(false);
+            trackedEntityInstance.setRelationships(null);
+            trackedEntityInstance.getRelationships();
+        }
+        syncTeis(trackedEntityInstances);
     }
 
     private void syncSingleTei(TrackedEntityInstance trackedEntityInstance) {
@@ -67,6 +93,37 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
         }
     }
 
+    private void syncTeis(List<TrackedEntityInstance> trackedEntityInstances) {
+        try {
+            Map<String, TrackedEntityInstance> trackedEntityInstanceMap =
+                    TrackedEntityInstance.toMap(trackedEntityInstances);
+
+            List<ImportSummary2> importSummaries = mTrackedEntityInstanceRepository.sync(
+                    trackedEntityInstances);
+
+            for (ImportSummary2 importSummary : importSummaries) {
+                TrackedEntityInstance trackedEntityInstance = trackedEntityInstanceMap.get(
+                        importSummary.getReference());
+                if (trackedEntityInstance != null) {
+                    if (importSummary.isSuccessOrOK()) {
+                        syncEnrollments(trackedEntityInstance.getLocalId());
+                        changeTEIToSynced(trackedEntityInstance);
+                    } else if (importSummary.isError()) {
+                        super.handleImportSummaryError(null, TRACKEDENTITYINSTANCE, 200, id);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            syncOneByOne(trackedEntityInstances);
+        }
+    }
+
+    private void syncOneByOne(List<TrackedEntityInstance> trackedEntityInstances) {
+        for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
+            syncSingleTei(trackedEntityInstance);
+        }
+    }
+
     private void changeTEIToSynced(TrackedEntityInstance trackedEntityInstance) {
         trackedEntityInstance.setFromServer(true);
         mTrackedEntityInstanceRepository.save(trackedEntityInstance);
@@ -74,61 +131,29 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
                 trackedEntityInstance.getLocalId());
     }
 
-
-
-    public void sync(List<TrackedEntityInstance> trackedEntityInstances) {
-        if (trackedEntityInstances == null || trackedEntityInstances.size() == 0) {
-            return;
-        } else if(trackedEntityInstances.size()==1){
-            syncSingleTei(trackedEntityInstances.get(0));
-            return;
-        } else {
-
-            try {
-                Map<String, TrackedEntityInstance> trackedEntityInstanceMap =
-                        TrackedEntityInstance.toMap(trackedEntityInstances);
-
-                List<ImportSummary2> importSummaries = mTrackedEntityInstanceRepository.sync(
-                        trackedEntityInstances);
-
-            for (ImportSummary2 importSummary : importSummaries) {
-                TrackedEntityInstance trackedEntityInstance = trackedEntityInstanceMap.get(importSummary.getReference());
-                if (trackedEntityInstance != null) {
-                    if(importSummary.isSuccessOrOK()) {
-                        syncEnrollments(trackedEntityInstance.getLocalId());
-                        changeTEIToSynced(trackedEntityInstance);
-                    }else if(importSummary.isError()) {
-                        super.handleImportSummaryError(null, TRACKEDENTITYINSTANCE, 200, id);
-                    }
-                }
-            }
-        } catch (Exception e){
-            syncOneByOne(trackedEntityInstances);
-        }
-    }
-
-    private void syncOneByOne(List<TrackedEntityInstance> trackedEntityInstances){
-        for(TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
-            syncSingleTei(trackedEntityInstance);
-        }
-    }
-
     private void syncEnrollments(long localId) {
-        EnrollmentSynchronizer eventSynchronizer = new EnrollmentSynchronizer(mEnrollmentRepository, mEventRepository, mFailedItemRepository);
-        List<Enrollment> enrollmentList = mEnrollmentRepository.getEnrollmentsByTrackedEntityInstanceId(localId);
+        EnrollmentSynchronizer eventSynchronizer = new EnrollmentSynchronizer(mEnrollmentRepository,
+                mEventRepository, mFailedItemRepository);
+        List<Enrollment> enrollmentList =
+                mEnrollmentRepository.getEnrollmentsByTrackedEntityInstanceId(localId);
         eventSynchronizer.sync(enrollmentList);
     }
 
-    public void syncAllTeisInTwoSteps(List<TrackedEntityInstance> trackedEntityInstances) {
-        for(TrackedEntityInstance trackedEntityInstance: trackedEntityInstances){
-            trackedEntityInstance.setRelationships(new ArrayList<Relationship>());
+    private boolean existsRelationships(TrackedEntityInstance trackedEntityInstance) {
+        return trackedEntityInstance.getRelationships() != null &&
+                trackedEntityInstance.getRelationships().size() > 0;
+    }
+
+    private boolean existsRelationships(List<TrackedEntityInstance> trackedEntityInstances) {
+        boolean existsRelationships = false;
+
+        for (TrackedEntityInstance tei : trackedEntityInstances) {
+            if (existsRelationships(tei)) {
+                existsRelationships = true;
+                break;
+            }
         }
-        sync(trackedEntityInstances);
-        for(TrackedEntityInstance trackedEntityInstance: trackedEntityInstances){
-            trackedEntityInstance.setFromServer(false);
-            trackedEntityInstance.setRelationships(null);
-            trackedEntityInstance.getRelationships();
-        }
-        sync(trackedEntityInstances);
+
+        return existsRelationships;
     }
 }

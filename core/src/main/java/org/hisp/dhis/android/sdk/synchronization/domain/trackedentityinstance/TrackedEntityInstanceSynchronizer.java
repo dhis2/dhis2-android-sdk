@@ -40,7 +40,8 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
 
     public void sync(TrackedEntityInstance trackedEntityInstance) {
 
-        if(trackedEntityInstance.getRelationships()!=null){
+        if(trackedEntityInstance.getRelationships()!=null &&
+                trackedEntityInstance.getRelationships().size() > 0){
             syncAllTeisInTwoSteps(mTrackedEntityInstanceRepository.getAllLocalTeis());
             return;
         }
@@ -54,8 +55,8 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
                     trackedEntityInstance);
 
             if (importSummary.isSuccessOrOK()) {
-                manageSyncResult(trackedEntityInstance, importSummary);
                 syncEnrollments(trackedEntityInstance.getLocalId());
+                changeTEIToSynced(trackedEntityInstance);
             } else if (importSummary.isError()) {
                 super.handleImportSummaryError(importSummary, TRACKEDENTITYINSTANCE,
                         200, trackedEntityInstance.getLocalId());
@@ -66,29 +67,14 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
         }
     }
 
-    private void manageSyncResult(TrackedEntityInstance trackedEntityInstance, ImportSummary importSummary) {
-        if(importSummary.isSuccessOrOK()) {
-            trackedEntityInstance.setFromServer(true);
-            mTrackedEntityInstanceRepository.save(trackedEntityInstance);
-            super.clearFailedItem(TRACKEDENTITYINSTANCE,
-                    trackedEntityInstance.getLocalId());
-        }else if(importSummary.isError()) {
-            super.handleImportSummaryError(importSummary, TRACKEDENTITYINSTANCE, 200, id);
-        }
+    private void changeTEIToSynced(TrackedEntityInstance trackedEntityInstance) {
+        trackedEntityInstance.setFromServer(true);
+        mTrackedEntityInstanceRepository.save(trackedEntityInstance);
+        super.clearFailedItem(TRACKEDENTITYINSTANCE,
+                trackedEntityInstance.getLocalId());
     }
 
 
-    private void manageSyncResult(TrackedEntityInstance trackedEntityInstance,
-            ImportSummary2 importSummary) {
-        if(importSummary.isSuccessOrOK()) {
-            trackedEntityInstance.setFromServer(true);
-            mTrackedEntityInstanceRepository.save(trackedEntityInstance);
-            super.clearFailedItem(TRACKEDENTITYINSTANCE,
-                    trackedEntityInstance.getLocalId());
-        }else if(importSummary.isError()) {
-            super.handleImportSummaryError(null, TRACKEDENTITYINSTANCE, 200, id);
-        }
-    }
 
     public void sync(List<TrackedEntityInstance> trackedEntityInstances) {
         if (trackedEntityInstances == null || trackedEntityInstances.size() == 0) {
@@ -105,17 +91,19 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer{
                 List<ImportSummary2> importSummaries = mTrackedEntityInstanceRepository.sync(
                         trackedEntityInstances);
 
-                for (ImportSummary2 importSummary : importSummaries) {
-                    TrackedEntityInstance trackedEntityInstance = trackedEntityInstanceMap.get(
-                            importSummary.getReference());
-                    if (trackedEntityInstance != null) {
-                        manageSyncResult(trackedEntityInstance, importSummary);
+            for (ImportSummary2 importSummary : importSummaries) {
+                TrackedEntityInstance trackedEntityInstance = trackedEntityInstanceMap.get(importSummary.getReference());
+                if (trackedEntityInstance != null) {
+                    if(importSummary.isSuccessOrOK()) {
                         syncEnrollments(trackedEntityInstance.getLocalId());
+                        changeTEIToSynced(trackedEntityInstance);
+                    }else if(importSummary.isError()) {
+                        super.handleImportSummaryError(null, TRACKEDENTITYINSTANCE, 200, id);
                     }
                 }
-            } catch (Exception e) {
-                syncOneByOne(trackedEntityInstances);
             }
+        } catch (Exception e){
+            syncOneByOne(trackedEntityInstances);
         }
     }
 

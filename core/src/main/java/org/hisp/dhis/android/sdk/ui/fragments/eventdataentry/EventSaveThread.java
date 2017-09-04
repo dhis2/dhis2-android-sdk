@@ -29,8 +29,11 @@
 
 package org.hisp.dhis.android.sdk.ui.fragments.eventdataentry;
 
+import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.AsyncHelperThread;
 
 import java.util.HashMap;
@@ -98,6 +101,12 @@ public class EventSaveThread extends AsyncHelperThread {
         }
         saveEvent = false;
         event.setFromServer(false);
+        Enrollment enrollment = TrackerController.getEnrollment(event.getEnrollment());
+        enrollment.setFromServer(false);
+        enrollment.save();
+        TrackedEntityInstance trackedEntityInstance = TrackerController.getTrackedEntityInstance(event.getTrackedEntityInstance());
+        trackedEntityInstance.setFromServer(false);
+        trackedEntityInstance.save();
         Event tempEvent = new Event();
         tempEvent.setLocalId(event.getLocalId());
         tempEvent.setEvent(event.getEvent());

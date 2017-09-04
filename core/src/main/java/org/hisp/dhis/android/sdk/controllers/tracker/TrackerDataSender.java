@@ -271,20 +271,6 @@ final class TrackerDataSender {
         }
     }
 
-    private static void updateEventReferences(long localId, String newReference) {
-        new Update(DataValue.class).set(Condition.column
-                (DataValue$Table.EVENT).is
-                (newReference)).where(Condition.column(DataValue$Table.LOCALEVENTID).is(localId)).async().execute();
-
-        new Update(Event.class).set(Condition.column
-                (Event$Table.EVENT).is
-                (newReference), Condition.column(Event$Table.FROMSERVER).
-                is(true)).where(Condition.column(Event$Table.LOCALID).is(localId)).async().execute();
-        Event event = new Event();
-        event.save();
-        event.delete();//for triggering modelchangelistener
-    }
-
     private static void UpdateEventTimestamp(Event event, DhisApi dhisApi) throws APIException {
         try {
             final Map<String, String> QUERY_PARAMS = new HashMap<>();
@@ -324,8 +310,7 @@ final class TrackerDataSender {
                 for (ImportSummary2 importSummary : importSummaries) {
                     Enrollment enrollment = enrollmentMap.get(importSummary.getReference());
                     System.out.println("IMPORT SUMMARY: " + importSummary.getDescription());
-                    if (ImportSummary2.Status.SUCCESS.equals(importSummary.getStatus()) ||
-                            ImportSummary2.Status.OK.equals(importSummary.getStatus())) {
+                    if (importSummary.isSuccessOrOK()) {
                         enrollment.setFromServer(true);
                         enrollment.setCreated(enrollmentUploadTime.toString());
                         enrollment.setLastUpdated(enrollmentUploadTime.toString());
@@ -650,8 +635,7 @@ final class TrackerDataSender {
                 for (ImportSummary2 importSummary : importSummaries) {
                     TrackedEntityInstance trackedEntityInstance = trackedEntityInstanceMap.get(importSummary.getReference());
                     System.out.println("IMPORT SUMMARY: " + importSummary.getDescription());
-                    if (ImportSummary2.Status.SUCCESS.equals(importSummary.getStatus()) ||
-                            ImportSummary2.Status.OK.equals(importSummary.getStatus())) {
+                    if (importSummary.isSuccessOrOK()) {
                         trackedEntityInstance.setFromServer(true);
                         trackedEntityInstance.setCreated(eventUploadTime.toString());
                         trackedEntityInstance.setLastUpdated(eventUploadTime.toString());

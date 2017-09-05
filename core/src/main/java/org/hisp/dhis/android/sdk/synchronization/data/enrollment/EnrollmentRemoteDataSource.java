@@ -13,7 +13,7 @@ import java.util.Map;
 import retrofit.client.Response;
 
 public class EnrollmentRemoteDataSource extends ARemoteDataSource {
-    DhisApi dhisApi;
+
     public EnrollmentRemoteDataSource(DhisApi dhisApi) {
         this.dhisApi = dhisApi;
     }

@@ -3,6 +3,7 @@ package org.hisp.dhis.android.sdk.synchronization.data.event;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.Event$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
@@ -71,14 +72,14 @@ public class EventRepository implements IEventRepository {
 
         List<ImportSummary> importSummaries = mRemoteDataSource.save(events);
 
-        Map<String, Event> eventsMap = toMap(events);
+        Map<String, Event> eventsMap = Event.toMap(events);
 
         DateTime dateTime = mRemoteDataSource.getServerTime();
 
         if (importSummaries != null) {
             for (ImportSummary importSummary : importSummaries) {
                 if (importSummary.isSuccessOrOK()) {
-                    System.out.println("IMPORT SUMMARY: " + importSummary.getDescription() + importSummary.getHref());
+                    System.out.println("IMPORT SUMMARY(event): " + importSummary.getDescription() + importSummary.getHref());
                     Event event = eventsMap.get(importSummary.getReference());
                     if (event != null) {
                         updateEventTimestamp(event, dateTime.toString(), dateTime.toString());
@@ -107,14 +108,5 @@ public class EventRepository implements IEventRepository {
         event.setLastUpdated(lastUpdated);
 
         mLocalDataSource.save(event);
-    }
-
-    private Map<String,Event> toMap(List<Event> events){
-        Map<String, Event> eventsMap = new HashMap<>();
-        for (Event event : events) {
-            eventsMap.put(event.getUid(), event);
-        }
-
-        return eventsMap;
     }
 }

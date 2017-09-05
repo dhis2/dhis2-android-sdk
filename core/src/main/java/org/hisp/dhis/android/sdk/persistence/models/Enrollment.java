@@ -43,10 +43,10 @@ import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis.android.sdk.utils.api.CodeGenerator;
-import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -362,5 +362,26 @@ public class Enrollment extends BaseSerializableModel {
             return false;
         }
         return true;
+    }
+
+    public static class EnrollmentComparator implements Comparator<Enrollment> {
+
+        @Override
+        public int compare(Enrollment e1, Enrollment e2) {
+            if(e1.getStatus().equals(CANCELLED) || e1.getStatus().equals(COMPLETED)) {
+                if(e2.getStatus().equals(CANCELLED) || e1.getStatus().equals(COMPLETED)){
+                    if(e1.getCreated()!=null){
+                        return 0;
+                    }else if (e2.getCreated()!=null){
+                        return 1;
+                    }
+                }
+                return 0;
+            }
+            if(e2.getStatus().equals(CANCELLED) || e1.getStatus().equals(COMPLETED)){
+                return 1;
+            }
+            return 0;
+        }
     }
 }

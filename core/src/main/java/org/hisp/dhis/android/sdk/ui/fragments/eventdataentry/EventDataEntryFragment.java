@@ -56,6 +56,7 @@ import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.ErrorType;
 import org.hisp.dhis.android.sdk.controllers.GpsController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.loaders.DbLoader;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
@@ -67,6 +68,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.ui.adapters.SectionAdapter;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.IndicatorRow;
@@ -720,6 +722,10 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                         eventClick.getComplete().setText(labelForCompleteButton);
                                         eventClick.getEvent().setStatus(Event.STATUS_COMPLETED);
                                         form.getEvent().setFromServer(false);
+                                        form.getEnrollment().setFromServer(false);
+                                        TrackedEntityInstance trackedEntityInstance =TrackerController.getTrackedEntityInstance(form.getEnrollment().getTrackedEntityInstance());
+                                        trackedEntityInstance.setFromServer(false);
+                                        trackedEntityInstance.save();
                                         ProgramStage currentProgramStage = MetaDataController
                                                 .getProgramStage(form.getEvent().getProgramStageId());
 

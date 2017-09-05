@@ -58,7 +58,13 @@ public class EventRemoteDataSource extends ARemoteDataSource {
     }
 
     private List<ImportSummary> batchDeletedEvents(Map<String, List<Event>> events, DhisApi dhisApi) throws  APIException {
+        for(Event event:events.get("events")){
+            event.setStatus(null);
+        }
         ApiResponse apiResponse = dhisApi.postDeletedEvents(events);
+        for(Event event:events.get("events")){
+            event.setStatus(Event.STATUS_DELETED);
+        }
         return apiResponse.getImportSummaries();
     }
 

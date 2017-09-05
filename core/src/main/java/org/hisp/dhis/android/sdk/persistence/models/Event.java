@@ -350,6 +350,6 @@ public class Event extends BaseSerializableModel {
 
     @JsonIgnore
     public boolean isDeleted(){
-        return status==null || status.equals(Event.STATUS_DELETED);
+        return status.equals(Event.STATUS_DELETED);
     }
 }

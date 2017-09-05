@@ -79,10 +79,6 @@ public class EventSynchronizer extends Synchronizer {
 
             Map<String, Event> eventsMapCheck = removeDeletedAndOnlyLocalEvents(events);
 
-            for(Event event:events){
-                event.setStatus(null);
-            }
-
             if (eventsMapCheck.values().size() != 0) {
 
                 System.out.println("Synchronizing removed events");

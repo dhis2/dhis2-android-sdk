@@ -707,12 +707,13 @@ public final class TrackerController extends ResourceController {
      * @param value
      * @return
      */
-    public static int countTrackedEntityAttributeValue(String value, String trackedEntityAttribute) {
+    public static int countTrackedEntityAttributeValue(TrackedEntityAttributeValue value) {
         return (int) new Select().count().from(TrackedEntityAttributeValue.class).where(
                 Condition.column(TrackedEntityAttributeValue$Table.
-                        VALUE).eq(value))
-                .and(
-                Condition.column(TrackedEntityAttributeValue$Table.
-                        TRACKEDENTITYATTRIBUTEID).eq(trackedEntityAttribute)).count();
+                        VALUE).eq(value.getValue()))
+                .and(Condition.column(TrackedEntityAttributeValue$Table.
+                        TRACKEDENTITYATTRIBUTEID).eq(value.getTrackedEntityAttributeId()))
+                .and(Condition.column(TrackedEntityAttributeValue$Table.
+                        LOCALTRACKEDENTITYINSTANCEID).isNot(value.getLocalTrackedEntityInstanceId())).count();
     }
 }

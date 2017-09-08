@@ -83,6 +83,7 @@ public class EventSynchronizer extends Synchronizer {
                         for (ImportSummary importSummary : importSummaries) {
                             Event event = eventsMapCheck.get(importSummary.getReference());
                             if (event != null) {
+                                mEventRepository.updateEventTimestampIfIsPushed(event, importSummary);
                                 manageSyncResult(event, importSummary);
                                 events.remove(event);
                             }
@@ -133,7 +134,7 @@ public class EventSynchronizer extends Synchronizer {
         if (importSummary.isSuccessOrOK()) {
             updateSyncedEventLocally(event);
         } else if (importSummary.isError()) {
-            super.handleImportSummaryError(importSummary, EVENT, 200, id);
+            super.handleImportSummaryError(importSummary, EVENT, 200, event.getLocalId());
         }
     }
 

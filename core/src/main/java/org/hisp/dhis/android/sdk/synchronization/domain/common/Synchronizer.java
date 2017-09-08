@@ -109,7 +109,7 @@ public class Synchronizer {
                     return null;
                 }
                 if (node.has("response")) {
-                    return getBatchImportSummary(response);
+                    return getFailedBatchImportSummary(response);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -120,7 +120,7 @@ public class Synchronizer {
         return null;
     }
 
-    private List<ImportSummary> getBatchImportSummary(Response response) {
+    private List<ImportSummary> getFailedBatchImportSummary(Response response) {
         ApiResponse apiResponse = null;
         try {
             String body = new StringConverter().fromBody(response.getBody(), String.class);

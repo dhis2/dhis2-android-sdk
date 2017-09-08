@@ -19,4 +19,7 @@ public interface IEventRepository {
     List<ImportSummary> sync(List<Event> event);
 
     List<ImportSummary> syncRemovedEvents(List<Event> event);
+
+    void updateEventTimestampIfIsPushed(Event event,
+            ImportSummary importSummary);
 }

@@ -4,17 +4,26 @@ import static android.R.attr.id;
 
 import static org.hisp.dhis.android.sdk.persistence.models.FailedItem.EVENT;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
+import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.network.APIException;
+import org.hisp.dhis.android.sdk.persistence.models.ApiResponse;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.synchronization.domain.common.Synchronizer;
 import org.hisp.dhis.android.sdk.synchronization.domain.faileditem.IFailedItemRepository;
+import org.hisp.dhis.android.sdk.utils.StringConverter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import retrofit.client.Response;
+import retrofit.converter.ConversionException;
 
 public class EventSynchronizer extends Synchronizer {
     IEventRepository mEventRepository;
@@ -34,7 +43,8 @@ public class EventSynchronizer extends Synchronizer {
                 mEventRepository.delete(event);
                 return;
             }
-            System.out.println("Synchronizing single event "+ event.getUid() +" "+event.getStatus());
+            System.out.println(
+                    "Synchronizing single event " + event.getUid() + " " + event.getStatus());
 
             ImportSummary importSummary = mEventRepository.sync(event);
 
@@ -47,35 +57,52 @@ public class EventSynchronizer extends Synchronizer {
     }
 
     public void sync(List<Event> events) {
-        try {
-            if (events == null || events.size() == 0)
-                return;
+        if (events == null || events.size() == 0) {
+            return;
+        }
 
-            Map<String, Event> eventsMapCheck = removeDeletedAndOnlyLocalEvents(events);
+        Map<String, Event> eventsMapCheck = removeDeletedAndOnlyLocalEvents(events);
 
-            if (eventsMapCheck.values().size() != 0) {
-                System.out.println("Synchronizing list of events ");
+        if (eventsMapCheck.values().size() != 0) {
+            System.out.println("Synchronizing list of events ");
 
-                List<ImportSummary> importSummaries = mEventRepository.sync(
+            List<ImportSummary> importSummaries = null;
+            try {
+                importSummaries = mEventRepository.sync(
                         new ArrayList<>(eventsMapCheck.values()));
-
                 for (ImportSummary importSummary : importSummaries) {
                     Event event = eventsMapCheck.get(importSummary.getReference());
                     if (event != null) {
                         manageSyncResult(event, importSummary);
                     }
                 }
+            } catch (APIException api) {
+                if (api != null && api.getResponse() != null) {
+                    importSummaries = getImportSummary(api.getResponse());
+                    if (importSummaries != null) {
+                        for (ImportSummary importSummary : importSummaries) {
+                            Event event = eventsMapCheck.get(importSummary.getReference());
+                            if (event != null) {
+                                mEventRepository.updateEventTimestampIfIsPushed(event, importSummary);
+                                manageSyncResult(event, importSummary);
+                                events.remove(event);
+                            }
+                        }
+                    }
+                }
+                //Send only missing events
+                syncOneByOne(events);
             }
-        } catch (APIException api) {
-            syncOneByOne(events);
         }
     }
+
 
     public void syncRemovedEvents(List<Event> events) {
         try {
 
-            if (events == null || events.size() == 0)
+            if (events == null || events.size() == 0) {
                 return;
+            }
 
             Map<String, Event> eventsMapCheck = removeDeletedAndOnlyLocalEvents(events);
 
@@ -107,7 +134,7 @@ public class EventSynchronizer extends Synchronizer {
         if (importSummary.isSuccessOrOK()) {
             updateSyncedEventLocally(event);
         } else if (importSummary.isError()) {
-            super.handleImportSummaryError(importSummary, EVENT, 200, id);
+            super.handleImportSummaryError(importSummary, EVENT, 200, event.getLocalId());
         }
     }
 
@@ -133,7 +160,7 @@ public class EventSynchronizer extends Synchronizer {
     }
 
 
-    private Map<String, Event> removeDeletedAndOnlyLocalEvents (List<Event> events) {
+    private Map<String, Event> removeDeletedAndOnlyLocalEvents(List<Event> events) {
         Map<String, Event> eventsMapCheck = new HashMap<>();
 
         for (Event event : events) {

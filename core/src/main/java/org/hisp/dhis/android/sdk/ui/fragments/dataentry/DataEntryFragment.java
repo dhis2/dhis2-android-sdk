@@ -29,6 +29,7 @@
 
 package org.hisp.dhis.android.sdk.ui.fragments.dataentry;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -37,13 +38,18 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -140,6 +146,23 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         progressBar.setVisibility(View.GONE);
 
         listView = (ListView) view.findViewById(R.id.datavalues_listview);
+        listView.setRecyclerListener(new AbsListView.RecyclerListener() {
+            @Override
+            public void onMovedToScrapHeap(View view) {
+                if ( view.hasFocus()){
+                    view.clearFocus();
+                    ViewParent parent = view.getParent();
+                    if(parent!=null){
+                        parent.clearChildFocus(view);
+                    }
+                    if ( view instanceof EditText) {
+                        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(
+                                Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    }
+                }
+            }
+        });
         View upButton = getLayoutInflater(savedInstanceState)
                 .inflate(R.layout.up_button_layout, listView, false);
         listViewAdapter = new DataValueAdapter(getChildFragmentManager(),

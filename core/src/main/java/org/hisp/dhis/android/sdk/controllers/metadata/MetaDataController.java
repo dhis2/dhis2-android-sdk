@@ -92,7 +92,6 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStage$Table;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection;
@@ -122,6 +121,7 @@ import org.hisp.dhis.android.sdk.utils.DbUtils;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 import org.hisp.dhis.android.sdk.utils.Utils;
 import org.hisp.dhis.android.sdk.utils.api.ProgramType;
+import org.hisp.dhis.client.sdk.ui.AppPreferencesImpl;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -655,6 +655,8 @@ public final class MetaDataController extends ResourceController {
 
         }
         SystemInfo serverSystemInfo = dhisApi.getSystemInfo();
+        AppPreferencesImpl appPreferences = new AppPreferencesImpl(context);
+        appPreferences.setApiVersion(serverSystemInfo.getVersion());
         DateTime serverDateTime = serverSystemInfo.getServerDate();
         //some items depend on each other. Programs depend on AssignedPrograms because we need
         //the ids of programs to load.

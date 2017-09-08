@@ -2,6 +2,7 @@ package org.hisp.dhis.android.sdk.synchronization.data.event;
 
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
+import org.hisp.dhis.android.sdk.network.response.ApiResponse2;
 import org.hisp.dhis.android.sdk.persistence.models.ApiResponse;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;

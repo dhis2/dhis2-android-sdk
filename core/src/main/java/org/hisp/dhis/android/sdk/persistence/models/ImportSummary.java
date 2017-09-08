@@ -137,11 +137,19 @@ public class ImportSummary extends BaseModel {
     }
 
     public boolean isSuccessOrOK() {
-        return getStatus().equals(SUCCESS) || getStatus().equals(OK);
+        //When a batch list have conflicts, the response is success but the api response should be error.
+        return ((getStatus().equals(SUCCESS) && ((getConflicts()==null) || getConflicts().size()==0)) || getStatus().equals(OK));
     }
 
     public boolean isError() {
-        return ImportSummary.ERROR.equals(getStatus());
+        //When a batch list have conflicts, the response is success but the api response should be error.
+        return ImportSummary.ERROR.equals(getStatus()) || (getConflicts()!=null && getConflicts().size()>0);
     }
+
+    public boolean isConflictOnBatchPush() {
+        //When a batch list have conflicts, the response is success but the api response should be error.
+        return (getStatus().equals(SUCCESS) && ((getConflicts()!=null) && getConflicts().size()>0));
+    }
+
 
 }

@@ -1,16 +1,16 @@
 package org.hisp.dhis.android.sdk.synchronization.data.event;
 
+import android.support.annotation.Nullable;
+
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.Event$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.synchronization.domain.event.IEventRepository;
 import org.joda.time.DateTime;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,13 +58,17 @@ public class EventRepository implements IEventRepository {
     public ImportSummary sync(Event event) {
         ImportSummary importSummary = mRemoteDataSource.update(event);
 
-        if (importSummary.isSuccessOrOK()) {
+        updateEventTimestampIfIsPushed(event, importSummary);
+
+        return importSummary;
+    }
+
+    public void updateEventTimestampIfIsPushed(Event event, ImportSummary importSummary) {
+        if (importSummary.isSuccessOrOK() || importSummary.isConflictOnBatchPush()) {
             if(!event.isDeleted()) {
                 updateEventTimestamp(event);
             }
         }
-
-        return importSummary;
     }
 
     @Override
@@ -74,8 +78,13 @@ public class EventRepository implements IEventRepository {
 
         Map<String, Event> eventsMap = Event.toMap(events);
 
-        DateTime dateTime = mRemoteDataSource.getServerTime();
+        return updateEventsIfIsPushed(importSummaries, eventsMap);
+    }
 
+    @Nullable
+    private List<ImportSummary> updateEventsIfIsPushed(List<ImportSummary> importSummaries,
+            Map<String, Event> eventsMap) {
+        DateTime dateTime = mRemoteDataSource.getServerTime();
         if (importSummaries != null) {
             for (ImportSummary importSummary : importSummaries) {
                 if (importSummary.isSuccessOrOK()) {

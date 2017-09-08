@@ -53,8 +53,10 @@ import com.raizlabs.android.dbflow.structure.Model;
 import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.controllers.ErrorType;
 import org.hisp.dhis.android.sdk.controllers.GpsController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.loaders.DbLoader;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
@@ -66,6 +68,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.ui.adapters.SectionAdapter;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.IndicatorRow;
@@ -282,6 +285,14 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             if (data.getStage() != null &&
                     data.getStage().getCaptureCoordinates()) {
                 GpsController.activateGps(getActivity().getBaseContext());
+            }else{
+                if(hasCoordinateQuestion()){
+                    GpsController.activateGps(getActivity().getBaseContext());
+                }
+            }
+            if (data.getStage() != null &&
+                    data.getStage().getCaptureCoordinates()) {
+                GpsController.activateGps(getActivity().getBaseContext());
             }
             if (data.getSections() != null && !data.getSections().isEmpty()) {
                 if (data.getSections().size() > 1) {
@@ -313,6 +324,25 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
             initiateEvaluateProgramRules();
         }
+    }
+
+    private boolean hasCoordinateQuestion() {
+        List<Row> rows = new ArrayList<>();
+        if(form.getSections()!=null) {
+            List<DataEntryFragmentSection> sections = form.getSections();
+            for(DataEntryFragmentSection section : sections){
+                rows.addAll(section.getRows());
+            }
+        }
+        if(form.getCurrentSection()!=null){
+            rows.addAll(form.getCurrentSection().getRows());
+        }
+        for(Row row:rows){
+            if(row.getViewType()==(DataEntryRowTypes.QUESTION_COORDINATES.ordinal())){
+                return  true;
+            }
+        }
+        return false;
     }
 
     private void showErrorAndDisableEditing(String extraInfo) {
@@ -467,15 +497,18 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     }
 
     @Override
-    public ArrayList<String> getValidationErrors() {
-        ArrayList<String> errors = new ArrayList<>();
+    public HashMap<ErrorType, ArrayList<String>> getValidationErrors() {
+        HashMap<ErrorType, ArrayList<String>> errors = new HashMap<>();
         if (form.getEvent() == null || form.getStage() == null) {
             return errors;
         }
         if (isEmpty(form.getEvent().getEventDate())) {
             String reportDateDescription = form.getStage().getReportDateDescription() == null ?
                     getString(R.string.report_date) : form.getStage().getReportDateDescription();
-            errors.add(reportDateDescription);
+            if(!errors.containsKey(ErrorType.MANDATORY)){
+                errors.put(ErrorType.MANDATORY, new ArrayList<String>());
+            }
+            errors.get(ErrorType.MANDATORY).add(reportDateDescription);
         }
         Map<String, ProgramStageDataElement> dataElements = toMap(
                 form.getStage().getProgramStageDataElements()
@@ -485,7 +518,10 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             if (dataElement == null) {
                 // don't do anything
             } else if (dataElement.getCompulsory() && isEmpty(dataValue.getValue())) {
-                errors.add(MetaDataController.getDataElement(dataElement.getDataelement()).getDisplayName());
+                if(!errors.containsKey(ErrorType.MANDATORY)){
+                    errors.put(ErrorType.MANDATORY, new ArrayList<String>());
+                }
+                errors.get(ErrorType.MANDATORY).add(MetaDataController.getDataElement(dataElement.getDataelement()).getDisplayName());
             }
         }
         return errors;
@@ -686,6 +722,10 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                         eventClick.getComplete().setText(labelForCompleteButton);
                                         eventClick.getEvent().setStatus(Event.STATUS_COMPLETED);
                                         form.getEvent().setFromServer(false);
+                                        form.getEnrollment().setFromServer(false);
+                                        TrackedEntityInstance trackedEntityInstance =TrackerController.getTrackedEntityInstance(form.getEnrollment().getTrackedEntityInstance());
+                                        trackedEntityInstance.setFromServer(false);
+                                        trackedEntityInstance.save();
                                         ProgramStage currentProgramStage = MetaDataController
                                                 .getProgramStage(form.getEvent().getProgramStageId());
 
@@ -755,7 +795,10 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                 Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
             }
         } else {
-            showValidationErrorDialog(getValidationErrors(), getProgramRuleFragmentHelper().getProgramRuleValidationErrors(), getRowsErrors(getContext(), form));
+            HashMap<ErrorType, ArrayList<String>>  allErrors = getValidationErrors();
+            allErrors.put(ErrorType.PROGRAM_RULE, getProgramRuleFragmentHelper().getProgramRuleValidationErrors());
+            allErrors.put(ErrorType.INVALID_FIELD, getRowsErrors(getContext(), form));
+            showValidationErrorDialog(allErrors);
         }
     }
 

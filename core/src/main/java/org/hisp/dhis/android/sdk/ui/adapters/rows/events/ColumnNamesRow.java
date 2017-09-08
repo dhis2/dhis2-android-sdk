@@ -32,17 +32,19 @@ package org.hisp.dhis.android.sdk.ui.adapters.rows.events;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
+
+import java.util.List;
 
 /**
  * Created by araz on 03.04.2015.
  */
 public class ColumnNamesRow implements EventRow {
+    private List<String> columns;
     private String mFirstItem;
-    private String mSecondItem;
-    private String mThirdItem;
     private String mTitle;
 
     @Override
@@ -52,11 +54,16 @@ public class ColumnNamesRow implements EventRow {
 
         if (convertView == null) {
             view = inflater.inflate(R.layout.listview_column_names_item, container, false);
+            LinearLayout rowContainer = (LinearLayout)view.findViewById(R.id.dynamic_column_container);
+
+            for(String column: columns){
+                View columnView = inflater.inflate(R.layout.item_column, rowContainer, false);
+                TextView textView = (TextView) columnView.findViewById(R.id.column_name);
+                textView.setText(column);
+            }
             holder = new ViewHolder(
                     (TextView) view.findViewById(R.id.tracked_entity_title),
-                    (TextView) view.findViewById(R.id.first_column_name),
-                    (TextView) view.findViewById(R.id.second_column_name),
-                    (TextView) view.findViewById(R.id.third_column_name)
+                    (TextView) view.findViewById(R.id.column_name)
             );
             view.setTag(holder);
         } else {
@@ -65,8 +72,6 @@ public class ColumnNamesRow implements EventRow {
         }
         holder.trackedEntityTitle.setText(mTitle);
         holder.firstItem.setText(mFirstItem);
-        holder.secondItem.setText(mSecondItem);
-        holder.thirdItem.setText(mThirdItem);
 
         return view;
     }
@@ -86,12 +91,12 @@ public class ColumnNamesRow implements EventRow {
         return false;
     }
 
-    public void setThirdItem(String thirdItem) {
-        this.mThirdItem = thirdItem;
+    public List<String> getColumns() {
+        return columns;
     }
 
-    public void setSecondItem(String secondItem) {
-        this.mSecondItem = secondItem;
+    public void setColumns(List<String> columns) {
+        this.columns = columns;
     }
 
     public void setFirstItem(String firstItem) {
@@ -105,17 +110,11 @@ public class ColumnNamesRow implements EventRow {
     private static class ViewHolder {
         public final TextView trackedEntityTitle;
         public final TextView firstItem;
-        public final TextView secondItem;
-        public final TextView thirdItem;
 
         private ViewHolder(TextView trackedEntityTitle,
-                           TextView firstItem,
-                           TextView secondItem,
-                           TextView thirdItem)  {
+                           TextView firstItem)  {
             this.trackedEntityTitle = trackedEntityTitle;
             this.firstItem = firstItem;
-            this.secondItem = secondItem;
-            this.thirdItem = thirdItem;
         }
     }
 }

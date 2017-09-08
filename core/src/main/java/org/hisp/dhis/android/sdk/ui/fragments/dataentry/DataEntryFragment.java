@@ -29,6 +29,7 @@
 
 package org.hisp.dhis.android.sdk.ui.fragments.dataentry;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -37,13 +38,18 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -51,6 +57,7 @@ import android.widget.Toast;
 import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.controllers.ErrorType;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.ui.activities.OnBackPressedListener;
@@ -67,6 +74,7 @@ import org.hisp.dhis.android.sdk.ui.fragments.eventdataentry.UpdateSectionsEvent
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         implements LoaderManager.LoaderCallbacks<D>, AdapterView.OnItemSelectedListener,
@@ -124,7 +132,8 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_data_entry, container, false);
     }
 
@@ -138,10 +147,22 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         progressBar.setVisibility(View.GONE);
 
         listView = (ListView) view.findViewById(R.id.datavalues_listview);
+        listView.setRecyclerListener(new AbsListView.RecyclerListener() {
+            @Override
+            public void onMovedToScrapHeap(View view) {
+                if (view.hasFocus()) {
+                    view.clearFocus();
+                    ViewParent parent = view.getParent();
+                    if (parent != null) {
+                        parent.clearChildFocus(view);
+                    }
+                }
+            }
+        });
         View upButton = getLayoutInflater(savedInstanceState)
                 .inflate(R.layout.up_button_layout, listView, false);
         listViewAdapter = new DataValueAdapter(getChildFragmentManager(),
-                getLayoutInflater(savedInstanceState));
+                getLayoutInflater(savedInstanceState), listView, getContext());
 
         listView.addFooterView(upButton);
         listView.setVisibility(View.VISIBLE);
@@ -166,6 +187,7 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
             return true;
         } else if (menuItem.getItemId() == R.id.action_new_event) {
             proceed();
+            return true;
         }
         return super.onOptionsItemSelected(menuItem);
     }
@@ -187,7 +209,8 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     public void onNothingSelected(AdapterView<?> parent) {
     }
 
-    public static void resetHidingAndWarnings(DataValueAdapter dataValueAdapter, SectionAdapter sectionAdapter) {
+    public static void resetHidingAndWarnings(DataValueAdapter dataValueAdapter,
+            SectionAdapter sectionAdapter) {
         if (dataValueAdapter != null) {
             dataValueAdapter.resetHiding();
             dataValueAdapter.resetWarnings();
@@ -238,36 +261,35 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     private void showErrorsDialog(ArrayList<String> errors) {
         if (!errors.isEmpty()) {
             validationErrorDialog = ValidationErrorDialog
-                    .newInstance(getActivity().getString(R.string.unable_to_complete_registration) + " " + getActivity().getString(R.string.review_errors), errors);
+                    .newInstance(
+                            getActivity().getString(R.string.unable_to_complete_registration) + " "
+                                    + getActivity().getString(R.string.review_errors), errors);
             validationErrorDialog.show(getChildFragmentManager());
         } else {
-            Toast.makeText(getContext(), R.string.unable_to_complete_registration, Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), R.string.unable_to_complete_registration,
+                    Toast.LENGTH_LONG).show();
 
         }
     }
 
-    protected void showValidationErrorDialog(ArrayList<String> mandatoryFieldsMissingErrors, ArrayList<String> programRulesErrors, ArrayList<String> fieldValidationError) {
+    protected void showValidationErrorDialog(HashMap<ErrorType, ArrayList<String>> errorsMap) {
         ArrayList<String> errors = new ArrayList<>();
-        addMandatoryErrors(mandatoryFieldsMissingErrors, errors);
-        addErrors(programRulesErrors, errors);
-        addErrors(fieldValidationError, errors);
+        addErrors(errorsMap.get(ErrorType.MANDATORY), errors,
+                getActivity().getString(R.string.missing_mandatory_field));
+        addErrors(errorsMap.get(ErrorType.UNIQUE), errors,
+                getActivity().getString(R.string.unique_value_form_empty));
+        addErrors(errorsMap.get(ErrorType.PROGRAM_RULE), errors,
+                getActivity().getString(R.string.error_message));
+        addErrors(errorsMap.get(ErrorType.INVALID_FIELD), errors,
+                getActivity().getString(R.string.error_message));
         showErrorsDialog(errors);
     }
 
     private void addErrors(ArrayList<String> programRulesErrors,
-            ArrayList<String> errors) {
+            ArrayList<String> errors, String errorMessage) {
         if (programRulesErrors != null) {
             for (String programRulesError : programRulesErrors) {
-                errors.add(getActivity().getString(R.string.error_message) + ": " + programRulesError);
-            }
-        }
-    }
-
-    private void addMandatoryErrors(ArrayList<String> mandatoryFieldsMissingErrors,
-            ArrayList<String> errors) {
-        if (mandatoryFieldsMissingErrors != null) {
-            for (String mandatoryFieldsError : mandatoryFieldsMissingErrors) {
-                errors.add(getActivity().getString(R.string.missing_mandatory_field) + ": " + mandatoryFieldsError);
+                errors.add(errorMessage + ": " + programRulesError);
             }
         }
     }
@@ -315,18 +337,23 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     }
 
     @Subscribe
-    public void onShowDetailedInfo(OnDetailedInfoButtonClick eventClick) // may inherit code from DataEntryFragment
+    public void onShowDetailedInfo(
+            OnDetailedInfoButtonClick eventClick) // may inherit code from DataEntryFragment
     {
         String message = "";
 
-        if(eventClick.getRow() instanceof EventCoordinatesRow || eventClick.getRow() instanceof QuestionCoordinatesRow)
+        if (eventClick.getRow() instanceof EventCoordinatesRow
+                || eventClick.getRow() instanceof QuestionCoordinatesRow) {
             message = getResources().getString(R.string.detailed_info_coordinate_row);
-        else if (eventClick.getRow() instanceof StatusRow)
+        } else if (eventClick.getRow() instanceof StatusRow) {
             message = getResources().getString(R.string.detailed_info_status_row);
-        else if (eventClick.getRow() instanceof IndicatorRow)
+        } else if (eventClick.getRow() instanceof IndicatorRow) {
             message = ""; // need to change ProgramIndicator to extend BaseValue for this to work
-        else         // rest of the rows can either be of data element or tracked entity instance attribute
+        } else         // rest of the rows can either be of data element or tracked entity instance
+        // attribute
+        {
             message = eventClick.getRow().getDescription();
+        }
 
         UiUtils.showConfirmDialog(getActivity(),
                 getResources().getString(R.string.detailed_info_dataelement),
@@ -346,7 +373,7 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
 
     public abstract SectionAdapter getSpinnerAdapter();
 
-    protected abstract ArrayList<String> getValidationErrors();
+    protected abstract HashMap<ErrorType, ArrayList<String>> getValidationErrors();
 
     protected abstract boolean isValid();
 

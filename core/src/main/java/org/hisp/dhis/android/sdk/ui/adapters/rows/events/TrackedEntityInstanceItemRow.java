@@ -33,11 +33,13 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
@@ -46,7 +48,9 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.events.OnTrackerItemClick;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 import static org.hisp.dhis.android.sdk.utils.Preconditions.isNull;
 
@@ -55,9 +59,7 @@ import static org.hisp.dhis.android.sdk.utils.Preconditions.isNull;
  */
 public class TrackedEntityInstanceItemRow implements EventRow, Comparator<TrackedEntityInstanceItemRow>, View.OnCreateContextMenuListener {
     protected TrackedEntityInstance mTrackedEntityInstance;
-    protected String mFirstItem;
-    protected String mSecondItem;
-    protected String mThirdItem;
+    protected List<String> columns;
     private OnRowClick.ITEM_STATUS mStatus;
 
     private Drawable mOfflineDrawable;
@@ -86,20 +88,14 @@ public class TrackedEntityInstanceItemRow implements EventRow, Comparator<Tracke
         ViewHolder holder;
 
         if (convertView == null) {
-            view = inflater.inflate(org.hisp.dhis.android.sdk.R.layout.listview_event_item, container, false);
+            view = inflater.inflate(R.layout.listview_event_item, container, false);
+
             holder = new ViewHolder(
-                    (TextView) view.findViewById(R.id.first_event_item),
-                    (TextView) view.findViewById(R.id.second_event_item),
-                    (TextView) view.findViewById(R.id.third_event_item),
+                    (LinearLayout)view.findViewById(R.id.dynamic_column_container),
                     (ImageView) view.findViewById(R.id.status_image_view),
                     (TextView) view.findViewById(R.id.status_text_view),
-                    new OnTrackedEntityInstanceInternalClickListener()
+                    (LinearLayout) view.findViewById(R.id.status_container)
             );
-            view.setTag(holder);
-            view.setOnClickListener(holder.listener);
-            view.setOnLongClickListener(holder.listener);
-            view.findViewById(R.id.status_container)
-                    .setOnClickListener(holder.listener);
 
 
         } else {
@@ -107,12 +103,31 @@ public class TrackedEntityInstanceItemRow implements EventRow, Comparator<Tracke
             holder = (ViewHolder) view.getTag();
         }
 
-        holder.listener.setTrackedEntityInstance(mTrackedEntityInstance);
-        holder.listener.setStatus(mStatus);
-        holder.firstItem.setText(mFirstItem);
-        holder.secondItem.setText(mSecondItem);
-        holder.thirdItem.setText(mThirdItem);
+        view.setTag(holder);
 
+        OnTrackedEntityInstanceInternalClickListener onTrackedEntityInstanceInternalClickListener =new OnTrackedEntityInstanceInternalClickListener();
+
+        onTrackedEntityInstanceInternalClickListener.setTrackedEntityInstance(mTrackedEntityInstance);
+        onTrackedEntityInstanceInternalClickListener.setStatus(mStatus);
+
+        view.setOnClickListener(onTrackedEntityInstanceInternalClickListener);
+        view.setOnLongClickListener(onTrackedEntityInstanceInternalClickListener);
+        holder.statusContainer.setOnClickListener(onTrackedEntityInstanceInternalClickListener);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                (1.0f-0.25f)/columns.size()
+        );
+        holder.container.removeAllViews();
+        for(String column: columns){
+            LinearLayout columnView = (LinearLayout)inflater.inflate(R.layout.event_item_column, holder.container , false);
+            TextView textView = (TextView) columnView.findViewById(R.id.column_name);
+            textView.setText(column);
+            holder.container.addView(columnView, params);
+            View spaceView = inflater.inflate(R.layout.space_event_column, holder.container , false);
+            holder.container.addView(spaceView);
+        }
         if (mStatus != null) {
             switch (mStatus) {
                 case OFFLINE: {
@@ -163,28 +178,19 @@ public class TrackedEntityInstanceItemRow implements EventRow, Comparator<Tracke
         mTrackedEntityInstance = trackedEntityInstance;
     }
 
-    public void setSecondItem(String secondItem) {
-        this.mSecondItem = secondItem;
+    public List<String> getColumns() {
+        return columns;
     }
 
-    public void setThirdItem(String thirdItem) {
-        this.mThirdItem = thirdItem;
+    public void setColumns(List<String> columns) {
+        this.columns = columns;
     }
 
-    public void setFirstItem(String firstItem) {
-        this.mFirstItem = firstItem;
-    }
-
-    public String getmSecondItem() {
-        return mSecondItem;
-    }
-
-    public String getmThirdItem() {
-        return mThirdItem;
-    }
-
-    public String getmFirstItem() {
-        return mFirstItem;
+    public void addColumn(String column) {
+        if(columns == null){
+            columns = new ArrayList<>();
+        }
+        columns.add(column);
     }
 
     public void setStatus(OnRowClick.ITEM_STATUS status) {
@@ -203,31 +209,23 @@ public class TrackedEntityInstanceItemRow implements EventRow, Comparator<Tracke
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         Log.d("hello","oncreatecontext");
-
     }
 
 
 
     private static class ViewHolder {
-        public final TextView firstItem;
-        public final TextView secondItem;
-        public final TextView thirdItem;
+        public final LinearLayout container;
         public final ImageView statusImageView;
         public final TextView statusTextView;
-        public final OnTrackedEntityInstanceInternalClickListener listener;
+        public final LinearLayout statusContainer;
 
-        private ViewHolder(TextView firstItem,
-                           TextView secondItem,
-                           TextView thirdItem,
-                           ImageView statusImageView,
-                           TextView statusTextView,
-                           OnTrackedEntityInstanceInternalClickListener listener) {
-            this.firstItem = firstItem;
-            this.secondItem = secondItem;
-            this.thirdItem = thirdItem;
+        public ViewHolder(LinearLayout container, ImageView statusImageView, TextView statusTextView,
+                LinearLayout
+                        statusContainer) {
+            this.container = container;
             this.statusImageView = statusImageView;
             this.statusTextView = statusTextView;
-            this.listener = listener;
+            this.statusContainer = statusContainer;
         }
     }
 

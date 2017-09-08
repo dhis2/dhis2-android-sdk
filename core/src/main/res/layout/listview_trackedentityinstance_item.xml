@@ -35,8 +35,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="false"
-    android:background="@drawable/white_selector"
-    android:weightSum="1">
+    android:background="@drawable/white_selector">
+
 
     <org.hisp.dhis.android.sdk.ui.views.FontTextView
         android:id="@+id/first_event_item"
@@ -104,5 +104,4 @@
         android:minHeight="48dp"
         android:padding="2dp"
         app:font="@string/light_font_name"/>
-
 </LinearLayout>

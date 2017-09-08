@@ -1,7 +1,7 @@
 package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
 
-import static org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.AbsEnrollmentDatePickerRow.EMPTY_FIELD;
+import static org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.AbsDatePickerRow.EMPTY_FIELD;
 
 import android.text.Editable;
 import android.widget.EditText;

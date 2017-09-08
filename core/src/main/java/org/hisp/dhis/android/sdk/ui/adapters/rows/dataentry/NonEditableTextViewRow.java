@@ -36,9 +36,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.autocompleterow.TextRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 
-public abstract class NonEditableTextViewRow extends Row {
+public abstract class NonEditableTextViewRow extends TextRow {
 
     protected String mValue;
 
@@ -89,6 +90,7 @@ public abstract class NonEditableTextViewRow extends Row {
         else {
             holder.detailedInfoButton.setVisibility(View.VISIBLE);
         }
+        holder.textValue.setOnEditorActionListener(mOnEditorActionListener);
 
         return view;
     }

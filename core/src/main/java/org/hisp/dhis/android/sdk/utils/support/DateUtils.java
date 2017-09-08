@@ -32,6 +32,7 @@ package org.hisp.dhis.android.sdk.utils.support;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Months;
+import org.joda.time.Years;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 
@@ -347,6 +348,20 @@ public class DateUtils {
         final Days days = Days.daysBetween(new DateTime(startDate), new DateTime(endDate));
 
         return days.getDays();
+    }
+    /**
+     * Calculates the number of years between the start and end-date. Note this
+     * method is taking daylight saving time into account and has a performance
+     * overhead.
+     *
+     * @param startDate the start date.
+     * @param endDate   the end date.
+     * @return the number of years between the start and end date.
+     */
+    public static int yearsBetween(Date startDate, Date endDate) {
+        final Years years = Years.yearsBetween(new DateTime(startDate), new DateTime(endDate));
+
+        return years.getYears();
     }
 
     /**

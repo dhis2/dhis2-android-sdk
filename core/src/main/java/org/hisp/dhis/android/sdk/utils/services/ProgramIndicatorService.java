@@ -47,6 +47,8 @@ import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 import org.hisp.dhis.android.sdk.utils.support.ExpressionUtils;
 import org.hisp.dhis.android.sdk.utils.support.MathUtils;
 import org.hisp.dhis.android.sdk.utils.support.TextUtils;
+import org.hisp.dhis.android.sdk.utils.support.expression.Expression;
+import org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -184,6 +186,8 @@ public class ProgramIndicatorService {
                     matcher.appendReplacement(description, "Enrollment date");
                 } else if (ProgramIndicator.INCIDENT_DATE.equals(uid)) {
                     matcher.appendReplacement(description, "Incident date");
+                } else if (ProgramIndicator.EVENT_DATE.equals(uid)) {
+                        matcher.appendReplacement(description, "Event date");
                 } else if (ProgramIndicator.VALUE_COUNT.equals(uid)) {
                     matcher.appendReplacement(description, "Value count");
                 }
@@ -338,7 +342,11 @@ public class ProgramIndicatorService {
         String expression = indicator.getExpression();
 
         Matcher matcher = ProgramIndicator.EXPRESSION_PATTERN.matcher(expression);
-
+        Matcher matcherFunction = ProgramIndicator.FUNCTION_PATTERN.matcher(expression);
+        String alterinativeEvaluation = "";
+        if(expression.startsWith("d2")){
+            alterinativeEvaluation = expression.substring(3,expression.indexOf("("));
+        }
         int valueCount = 0;
         int zeroPosValueCount = 0;
         Event eventProgramStageInstance = null;
@@ -452,9 +460,17 @@ public class ProgramIndicatorService {
                         date = DateUtils.getMediumDate(enrollmentProgramInstance.getIncidentDate());
                     } else if (ProgramIndicator.CURRENT_DATE.equals(uid)) {
                         date = currentDate;
+                    } else if (ProgramIndicator.EVENT_DATE.equals(uid)) {
+                        date = DateUtils.getMediumDate(enrollmentProgramInstance.getEvents().get(0).getEventDate());
                     }
-
                     if (date != null) {
+                        if(!alterinativeEvaluation.isEmpty()){
+                            if(alterinativeEvaluation.equals("yearsBetween")){
+                                new Double(DateUtils.yearsBetween(currentDate, date) + "");
+                            }else if(alterinativeEvaluation.equals("daysBetween")){
+                                new Double(DateUtils.daysBetween(currentDate, date) + "");
+                            }
+                        }
                         matcher.appendReplacement(buffer, DateUtils.daysBetween(currentDate, date) + "");
                     }
                 }

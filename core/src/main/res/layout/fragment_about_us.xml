@@ -72,6 +72,15 @@
                 app:font="@string/medium_font_name" />
 
             <org.hisp.dhis.android.sdk.ui.views.FontTextView
+                android:id="@+id/app_session"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/about_us_text_view_bottom_padding"
+                android:textSize="15sp"
+                app:font="@string/medium_font_name"
+                />
+
+            <org.hisp.dhis.android.sdk.ui.views.FontTextView
                 android:id="@+id/commit_hash"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

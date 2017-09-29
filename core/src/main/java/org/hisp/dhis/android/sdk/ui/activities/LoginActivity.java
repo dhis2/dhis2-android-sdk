@@ -49,6 +49,9 @@ import com.squareup.otto.Subscribe;
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.DhisService;
+import org.hisp.dhis.android.sdk.controllers.LoadingController;
+import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
+import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.job.NetworkJob;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.network.Credentials;
@@ -72,6 +75,7 @@ public class LoginActivity extends Activity implements OnClickListener {
     private Button loginButton;
     private ProgressBar progressBar;
     private View viewsContainer;
+    private boolean isPulling;
 
     private AppPreferences mPrefs;
 
@@ -94,6 +98,9 @@ public class LoginActivity extends Activity implements OnClickListener {
     public void onResume() {
         super.onResume();
         Dhis2Application.bus.register(this);
+        if(isPulling) {
+            DhisService.loadInitialData(LoginActivity.this);
+        }
     }
 
     /**
@@ -177,10 +184,28 @@ public class LoginActivity extends Activity implements OnClickListener {
     }
 
     @Subscribe
+    public void onReceivedUiEvent(UiEvent uiEvent) {
+        if (uiEvent.getEventType().equals(UiEvent.UiEventType.INITIAL_SYNCING_END)) {
+            isPulling=false;
+            launchMainActivity();
+        }
+    }
+
+    @Subscribe
     public void onLoginFinished(NetworkJob.NetworkJobResult<ResourceType> result) {
         if(result!=null && ResourceType.USERS.equals(result.getResourceType())) {
             if(result.getResponseHolder().getApiException() == null) {
-                launchMainActivity();
+                LoadingController.enableLoading(this, ResourceType.ASSIGNEDPROGRAMS);
+                LoadingController.enableLoading(this, ResourceType.OPTIONSETS);
+                LoadingController.enableLoading(this, ResourceType.PROGRAMS);
+                LoadingController.enableLoading(this, ResourceType.CONSTANTS);
+                LoadingController.enableLoading(this, ResourceType.PROGRAMRULES);
+                LoadingController.enableLoading(this, ResourceType.PROGRAMRULEVARIABLES);
+                LoadingController.enableLoading(this, ResourceType.PROGRAMRULEACTIONS);
+                LoadingController.enableLoading(this, ResourceType.RELATIONSHIPTYPES);
+                LoadingController.enableLoading(this, ResourceType.EVENTS);
+                isPulling=true;
+                DhisService.loadInitialData(LoginActivity.this);
             } else {
                 onLoginFail(result.getResponseHolder().getApiException());
             }
@@ -227,12 +252,6 @@ public class LoginActivity extends Activity implements OnClickListener {
         progressBar.setVisibility(View.GONE);
         viewsContainer.setVisibility(View.VISIBLE);
         viewsContainer.startAnimation(anim);
-    }
-
-    private void handleUser() {
-        mPrefs.putServerUrl(serverEditText.getText().toString());
-        mPrefs.putUserName(usernameEditText.getText().toString());
-        launchMainActivity();
     }
 
     public void launchMainActivity() {

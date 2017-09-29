@@ -111,6 +111,7 @@ public final class LoadingController {
             UiUtils.postProgressMessage(message, LoadingMessageEvent.EventType.STARTUP);
             loadDataValues(context, SyncStrategy.DOWNLOAD_ALL, dhisApi);
         }
+        Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.INITIAL_SYNCING_END));
     }
 
     /**

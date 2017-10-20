@@ -122,6 +122,10 @@ public class Event extends BaseSerializableModel {
     @Column(name = "dueDate")
     String dueDate;
 
+    @JsonProperty("completedDate")
+    @Column(name = "completedDate")
+    String completedDate;
+
     @JsonProperty("dataValues")
     List<DataValue> dataValues;
 
@@ -323,6 +327,14 @@ public class Event extends BaseSerializableModel {
 
     public void setDueDate(String dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public String getCompletedDate() {
+        return completedDate;
+    }
+
+    public void setCompletedDate(String completedDate) {
+        this.completedDate = completedDate;
     }
 
     public void setDataValues(List<DataValue> dataValues) {

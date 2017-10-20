@@ -48,6 +48,18 @@ public class ApiResponse {
     public static final String RESPONSETYPE_IMPORTSUMMARIES = "ImportSummaries";
     public static final String RESPONSETYPE_IMPORTSUMMARY = "ImportSummary";
 
+    @JsonProperty("responseType")
+    private String responseType;
+
+    @JsonProperty("status")
+    private ImportSummary.Status status;
+
+    @JsonProperty("importCount")
+    private ImportCount importCount;
+
+    @JsonProperty("importSummaries")
+    private List<ImportSummary> importSummaries2;
+
     @JsonProperty("imported")
     int imported;
 
@@ -90,5 +102,29 @@ public class ApiResponse {
     @JsonIgnore
     public void setImportSummaries(List<ImportSummary> importSummaries) {
         this.importSummaries = importSummaries;
+    }
+
+    public String getResponseType() {
+        return responseType;
+    }
+
+    public ImportSummary.Status getStatus() {
+        return status;
+    }
+
+    public ImportCount getImportCount() {
+        return importCount;
+    }
+
+    public void setResponseType(String responseType) {
+        this.responseType = responseType;
+    }
+
+    public void setStatus(ImportSummary.Status status) {
+        this.status = status;
+    }
+
+    public void setImportCount(ImportCount importCount) {
+        this.importCount = importCount;
     }
 }

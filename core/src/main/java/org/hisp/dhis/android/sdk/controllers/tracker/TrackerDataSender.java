@@ -40,8 +40,6 @@ import com.raizlabs.android.dbflow.sql.language.Update;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
-import org.hisp.dhis.android.sdk.network.response.ApiResponse2;
-import org.hisp.dhis.android.sdk.network.response.ImportSummary2;
 import org.hisp.dhis.android.sdk.persistence.models.ApiResponse;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue$Table;
@@ -289,9 +287,9 @@ final class TrackerDataSender {
 
     static void postEnrollmentBatch(DhisApi dhisApi, List<Enrollment> enrollments) throws APIException {
         Map<String, Enrollment> enrollmentMap = new HashMap<>();
-        List<ImportSummary2> importSummaries = null;
+        List<ImportSummary> importSummaries = null;
 
-        ApiResponse2 apiResponse = null;
+        ApiResponse apiResponse = null;
         try {
             Map<String, List<Enrollment>> map = new HashMap<>();
             map.put("enrollments", enrollments);
@@ -307,7 +305,7 @@ final class TrackerDataSender {
             if (importSummaries != null) {
                 SystemInfo systemInfo = dhisApi.getSystemInfo();
                 DateTime enrollmentUploadTime = systemInfo.getServerDate();
-                for (ImportSummary2 importSummary : importSummaries) {
+                for (ImportSummary importSummary : importSummaries) {
                     Enrollment enrollment = enrollmentMap.get(importSummary.getReference());
                     System.out.println("IMPORT SUMMARY: " + importSummary.getDescription());
                     if (importSummary.isSuccessOrOK()) {
@@ -614,9 +612,9 @@ final class TrackerDataSender {
 
     static void postTrackedEntityInstanceBatch(DhisApi dhisApi, List<TrackedEntityInstance> trackedEntityInstances) throws APIException {
         Map<String, TrackedEntityInstance> trackedEntityInstanceMap = new HashMap<>();
-        List<ImportSummary2> importSummaries = null;
+        List<ImportSummary> importSummaries = null;
 
-        ApiResponse2 apiResponse = null;
+        ApiResponse apiResponse = null;
         try {
             Map<String, List<TrackedEntityInstance>> map = new HashMap<>();
             map.put("trackedEntityInstances", trackedEntityInstances);
@@ -632,7 +630,7 @@ final class TrackerDataSender {
             if (importSummaries != null) {
                 SystemInfo systemInfo = dhisApi.getSystemInfo();
                 DateTime eventUploadTime = systemInfo.getServerDate();
-                for (ImportSummary2 importSummary : importSummaries) {
+                for (ImportSummary importSummary : importSummaries) {
                     TrackedEntityInstance trackedEntityInstance = trackedEntityInstanceMap.get(importSummary.getReference());
                     System.out.println("IMPORT SUMMARY: " + importSummary.getDescription());
                     if (importSummary.isSuccessOrOK()) {

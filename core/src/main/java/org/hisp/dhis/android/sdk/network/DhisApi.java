@@ -306,9 +306,6 @@ public interface DhisApi {
     @POST("/"+ApiEndpointContainer.ENROLLMENTS+"/")
     Response postEnrollment(@Body Enrollment enrollment);
 
-    @POST("/"+ApiEndpointContainer.ENROLLMENTS+"/")
-    ApiResponse postEnrollments(@Body Map<String, List<Enrollment>> enrollments);
-
     @PUT("/"+ApiEndpointContainer.ENROLLMENTS+"/{enrollmentUid}")
     Response putEnrollment(@Path("enrollmentUid") String enrollmentUid, @Body Enrollment enrollment);
 

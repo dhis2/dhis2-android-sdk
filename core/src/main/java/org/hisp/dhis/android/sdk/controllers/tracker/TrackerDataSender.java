@@ -285,62 +285,6 @@ final class TrackerDataSender {
         }
     }
 
-    static void postEnrollmentBatch(DhisApi dhisApi, List<Enrollment> enrollments) throws APIException {
-        Map<String, Enrollment> enrollmentMap = new HashMap<>();
-        List<ImportSummary> importSummaries = null;
-
-        ApiResponse apiResponse = null;
-        try {
-            Map<String, List<Enrollment>> map = new HashMap<>();
-            map.put("enrollments", enrollments);
-            apiResponse = dhisApi.postEnrollments(map);
-
-            importSummaries = apiResponse.getImportSummaries();
-
-            for (Enrollment enrollment : enrollments) {
-                enrollmentMap.put(enrollment.getUid(), enrollment);
-            }
-
-            // check if all items were synced successfully
-            if (importSummaries != null) {
-                SystemInfo systemInfo = dhisApi.getSystemInfo();
-                DateTime enrollmentUploadTime = systemInfo.getServerDate();
-                for (ImportSummary importSummary : importSummaries) {
-                    Enrollment enrollment = enrollmentMap.get(importSummary.getReference());
-                    System.out.println("IMPORT SUMMARY: " + importSummary.getDescription());
-                    if (importSummary.isSuccessOrOK()) {
-                        enrollment.setFromServer(true);
-                        enrollment.setCreated(enrollmentUploadTime.toString());
-                        enrollment.setLastUpdated(enrollmentUploadTime.toString());
-                        enrollment.save();
-                        clearFailedItem(FailedItem.ENROLLMENT, enrollment.getLocalId());
-                        //UpdateEnrollmentTimestamp(enrollment, dhisApi);
-                    }
-                }
-            }
-
-        } catch (APIException apiException) {
-            //batch sending failed. Trying to re-send one by one
-            sendEnrollmentChanges(dhisApi, enrollments, false);
-
-        }
-    }
-
-    static void sendEnrollmentChanges(DhisApi dhisApi, boolean sendEvents) throws APIException {
-        List<Enrollment> enrollments = new Select().from(Enrollment.class).where(Condition.column(Enrollment$Table.FROMSERVER).is(false)).queryList();
-        if (dhisApi == null) {
-            dhisApi = DhisController.getInstance().getDhisApi();
-            if (dhisApi == null) {
-                return;
-            }
-        }
-        if (enrollments.size() <= 1) {
-            sendEnrollmentChanges(dhisApi, enrollments, sendEvents);
-        } else if (enrollments.size() > 1) {
-            postEnrollmentBatch(dhisApi, enrollments);
-        }
-    }
-
     static void sendEnrollmentChanges(DhisApi dhisApi, List<Enrollment> enrollments, boolean sendEvents) throws APIException {
         if (enrollments == null || enrollments.isEmpty()) {
             return;

@@ -96,6 +96,9 @@ public class ApiResponse {
     }
 
     public List<ImportSummary> getImportSummaries() {
+        if(importSummaries==null){
+            return importSummaries2;
+        }
         return importSummaries;
     }
 

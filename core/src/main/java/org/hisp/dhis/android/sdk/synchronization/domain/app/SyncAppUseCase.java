@@ -28,8 +28,6 @@ public class SyncAppUseCase {
 
     public void execute(){
         List<TrackedEntityInstance> trackedEntityInstanceList = mTrackedEntityInstanceRepository.getAllLocalTeis();
-        if(trackedEntityInstanceList.size()>0) {
-            mTrackedEntityInstanceSynchronizer.sync(trackedEntityInstanceList);
-        }
+        mTrackedEntityInstanceSynchronizer.sync(trackedEntityInstanceList);
     }
 }

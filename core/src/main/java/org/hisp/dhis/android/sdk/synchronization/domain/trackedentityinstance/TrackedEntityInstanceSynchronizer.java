@@ -50,7 +50,7 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer {
 
 
     public void sync(List<TrackedEntityInstance> trackedEntityInstances) {
-        if (trackedEntityInstances != null && trackedEntityInstances.size() >= 0) {
+        if (trackedEntityInstances != null && trackedEntityInstances.size() > 0) {
             if (existsRelationships(trackedEntityInstances)) {
                 syncAllTeisInTwoSteps(trackedEntityInstances);
             } else if (trackedEntityInstances.size() == 1) {

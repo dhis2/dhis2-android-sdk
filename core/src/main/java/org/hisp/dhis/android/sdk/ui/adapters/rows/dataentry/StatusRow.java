@@ -184,6 +184,7 @@ public final class StatusRow extends Row {
             if(event.getStatus().equals(Event.STATUS_COMPLETED)) {
                 event.setStatus(Event.STATUS_ACTIVE);
                 event.setCompletedDate(null);
+                event.save();
             } else {
                 event.setStatus(Event.STATUS_COMPLETED);
                 if(event.getCompletedDate()==null) {

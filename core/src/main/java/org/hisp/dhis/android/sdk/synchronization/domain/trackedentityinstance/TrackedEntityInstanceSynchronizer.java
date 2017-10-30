@@ -41,8 +41,9 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer {
 
     public void sync(TrackedEntityInstance trackedEntityInstance) {
 
-        if (existsRelationships(trackedEntityInstance)) {
-            syncAllTeisInTwoSteps(mTrackedEntityInstanceRepository.getAllLocalTeis());
+        List<TrackedEntityInstance> trackedEntityInstances = mTrackedEntityInstanceRepository.getAllLocalTeis();
+        if (existsRelationships(trackedEntityInstance) && trackedEntityInstances.size()>1) {
+            syncAllTeisInTwoSteps(trackedEntityInstances);
         } else {
             syncSingleTei(trackedEntityInstance);
         }

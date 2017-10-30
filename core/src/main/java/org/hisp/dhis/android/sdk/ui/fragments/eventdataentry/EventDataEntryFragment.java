@@ -30,6 +30,7 @@
 package org.hisp.dhis.android.sdk.ui.fragments.eventdataentry;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.hisp.dhis.android.sdk.persistence.models.Event.EVENT_DATETIME_FORMAT;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -79,6 +80,9 @@ import org.hisp.dhis.android.sdk.utils.UiUtils;
 import org.hisp.dhis.android.sdk.utils.services.ProgramIndicatorService;
 import org.hisp.dhis.android.sdk.utils.services.VariableService;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -253,6 +257,26 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     @Override
     public void onLoadFinished(Loader<EventDataEntryFragmentForm> loader, EventDataEntryFragmentForm data) {
         if (loader.getId() == LOADER_ID && isAdded()) {
+
+            int expiredDays= MetaDataController.getProgram(data.getEvent().getProgramId()).getCompleteEventsExpiryDays();
+            boolean isExpired=false;
+            if(data.getEvent().getCompletedDate()!=null) {
+                final DateTimeFormatter dtf = DateTimeFormat.forPattern(EVENT_DATETIME_FORMAT);
+                final LocalDate dt = dtf.parseLocalDate(data.getEvent().getCompletedDate());
+                dt.plusDays(expiredDays);
+                //isExpired=!dt.isAfter(new LocalDate());
+                if (isExpired) {
+                    UiUtils.showConfirmDialog(getActivity(), "",
+                            getActivity().getString(R.string.event_expired),
+                            getActivity().getString(R.string.ok_option),
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+                }
+            }
             progressBar.setVisibility(View.GONE);
             listView.setVisibility(View.VISIBLE);
             form = data;
@@ -263,14 +287,17 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             }
             List<Row> rows = new ArrayList<>();
             if(data.getCurrentSection()!=null) {
+                data.setCurrentSectionEditable(!isExpired);
                 rows.addAll(data.getCurrentSection().getRows());
             }
             if(data.getSections()!=null) {
+                data.setAllSectionsEditable(!isExpired);
                 for (DataEntryFragmentSection dataEntryFragmentSection : data.getSections()) {
                     rows.addAll(dataEntryFragmentSection.getRows());
                 }
             }
             for(Row row : rows) {
+                row.setEditable(!isExpired);
                 if (row.getViewType() == (DataEntryRowTypes.QUESTION_COORDINATES.ordinal())) {
                     GpsController.activateGps(getActivity().getBaseContext());
                 }
@@ -578,13 +605,17 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
                     UiUtils.showConfirmDialog(getActivity(), eventClick.getLabel(), eventClick.getAction(),
                             eventClick.getLabel(), getActivity().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     eventClick.getComplete().setText(R.string.incomplete);
                                     eventClick.getEvent().setStatus(Event.STATUS_COMPLETED);
+                                    if(eventClick.getEvent().getCompletedDate()==null) {
+                                        LocalDate date = new LocalDate();
+                                        eventClick.getEvent().setCompletedDate(date.toString(EVENT_DATETIME_FORMAT));
+                                        eventClick.getEvent().save();
+                                    }
                                     eventClick.getEvent().setFromServer(false);
                                     ProgramStage currentProgramStage = MetaDataController
                                             .getProgramStage(eventClick.getEvent().getProgramStageId());
@@ -629,7 +660,9 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             } else {
                 eventClick.getComplete().setText(R.string.complete);
                 eventClick.getEvent().setStatus(Event.STATUS_ACTIVE);
+                eventClick.getEvent().setCompletedDate(null);
                 eventClick.getEvent().setFromServer(false);
+                eventClick.getEvent().save();
                 Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
             }
         } else {

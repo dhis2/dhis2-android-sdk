@@ -3,8 +3,7 @@ package org.hisp.dhis.android.sdk.synchronization.data.trackedentityinstance;
 
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
-import org.hisp.dhis.android.sdk.network.response.ApiResponse2;
-import org.hisp.dhis.android.sdk.network.response.ImportSummary2;
+import org.hisp.dhis.android.sdk.persistence.models.ApiResponse;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.synchronization.data.common.ARemoteDataSource;
@@ -39,15 +38,15 @@ public class TrackedEntityInstanceRemoteDataSource  extends ARemoteDataSource {
         }
     }
 
-    public List<ImportSummary2> save(List<TrackedEntityInstance> trackedEntityInstances) {
+    public List<ImportSummary> save(List<TrackedEntityInstance> trackedEntityInstances) {
         Map<String, List<TrackedEntityInstance>> map = new HashMap<>();
         map.put("trackedEntityInstances", trackedEntityInstances);
         return batchTrackedEntityInstances(map, dhisApi);
     }
 
-    private List<ImportSummary2> batchTrackedEntityInstances(Map<String, List<TrackedEntityInstance>> trackedEntityInstances, DhisApi dhisApi) throws
+    private List<ImportSummary> batchTrackedEntityInstances(Map<String, List<TrackedEntityInstance>> trackedEntityInstances, DhisApi dhisApi) throws
             APIException {
-        ApiResponse2 apiResponse = dhisApi.postTrackedEntityInstances(trackedEntityInstances);
+        ApiResponse apiResponse = dhisApi.postTrackedEntityInstances(trackedEntityInstances);
         return apiResponse.getImportSummaries();
     }
 

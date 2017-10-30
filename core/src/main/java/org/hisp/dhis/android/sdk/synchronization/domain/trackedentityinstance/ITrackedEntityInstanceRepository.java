@@ -1,7 +1,7 @@
 package org.hisp.dhis.android.sdk.synchronization.domain.trackedentityinstance;
 
 
-import org.hisp.dhis.android.sdk.network.response.ImportSummary2;
+import org.hisp.dhis.android.sdk.persistence.models.ApiResponse;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
@@ -14,7 +14,7 @@ public interface ITrackedEntityInstanceRepository {
 
     ImportSummary sync (TrackedEntityInstance trackedEntityInstance);
 
-    List<ImportSummary2> sync(List<TrackedEntityInstance> trackedEntityInstances);
+    List<ImportSummary> sync(List<TrackedEntityInstance> trackedEntityInstances);
 
     List<TrackedEntityInstance> getAllLocalTeis();
 

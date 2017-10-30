@@ -29,6 +29,8 @@
 
 package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
+import static org.hisp.dhis.android.sdk.persistence.models.Event.EVENT_DATETIME_FORMAT;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -47,6 +49,7 @@ import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnCompleteEventClick;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.ValidationErrorDialog;
 import org.hisp.dhis.android.sdk.ui.fragments.eventdataentry.EventDataEntryFragment;
+import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 
@@ -86,17 +89,18 @@ public final class StatusRow extends Row {
         }
         holder.onValidateButtonClickListener.setFragmentActivity(fragmentActivity);
         holder.onCompleteButtonClickListener.setActivity(fragmentActivity);
-        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
 
         if(!isEditable())
         {
             holder.complete.setEnabled(false);
             holder.validate.setEnabled(false);
+            holder.detailedInfoButton.setOnClickListener(null);
         }
         else
         {
             holder.complete.setEnabled(true);
             holder.validate.setEnabled(true);
+            holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
         }
 
         return view;
@@ -179,8 +183,14 @@ public final class StatusRow extends Row {
         public void onClick(DialogInterface dialog, int which) {
             if(event.getStatus().equals(Event.STATUS_COMPLETED)) {
                 event.setStatus(Event.STATUS_ACTIVE);
+                event.setCompletedDate(null);
             } else {
                 event.setStatus(Event.STATUS_COMPLETED);
+                if(event.getCompletedDate()==null) {
+                    LocalDate date = new LocalDate();
+                    event.setCompletedDate(date.toString(EVENT_DATETIME_FORMAT));
+                    event.save();
+                }
             }
             StatusViewHolder.updateViews(event, complete, context);
         }

@@ -29,15 +29,11 @@
 
 package org.hisp.dhis.android.sdk.ui.fragments.eventdataentry;
 
-import android.util.Log;
-
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.AsyncHelperThread;
-import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragment;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -110,6 +106,7 @@ public class EventSaveThread extends AsyncHelperThread {
         tempEvent.setProgramStageId(event.getProgramStageId());
         tempEvent.setOrganisationUnitId(event.getOrganisationUnitId());
         tempEvent.setEventDate(event.getEventDate());
+        tempEvent.setCompletedDate(event.getCompletedDate());
         tempEvent.setDueDate(event.getDueDate());
         tempEvent.setFromServer(event.isFromServer());
         tempEvent.setUid(event.getUid());

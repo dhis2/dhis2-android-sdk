@@ -32,7 +32,6 @@ package org.hisp.dhis.android.sdk.network;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import org.hisp.dhis.android.sdk.controllers.ApiEndpointContainer;
-import org.hisp.dhis.android.sdk.network.response.ApiResponse2;
 import org.hisp.dhis.android.sdk.persistence.models.ApiResponse;
 import org.hisp.dhis.android.sdk.persistence.models.Constant;
 import org.hisp.dhis.android.sdk.persistence.models.Dashboard;
@@ -307,9 +306,6 @@ public interface DhisApi {
     @POST("/"+ApiEndpointContainer.ENROLLMENTS+"/")
     Response postEnrollment(@Body Enrollment enrollment);
 
-    @POST("/"+ApiEndpointContainer.ENROLLMENTS+"/")
-    ApiResponse2 postEnrollments(@Body Map<String, List<Enrollment>> enrollments);
-
     @PUT("/"+ApiEndpointContainer.ENROLLMENTS+"/{enrollmentUid}")
     Response putEnrollment(@Path("enrollmentUid") String enrollmentUid, @Body Enrollment enrollment);
 
@@ -330,7 +326,7 @@ public interface DhisApi {
     Response putTrackedEntityInstance(@Path("trackedEntityInstanceUid") String trackedEntityInstanceUid, @Body TrackedEntityInstance trackedEntityInstance);
 
     @POST("/"+ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"/" + "?strategy=CREATE_AND_UPDATE")
-    ApiResponse2 postTrackedEntityInstances(@Body Map<String, List<TrackedEntityInstance>> trackedEntityInstances);
+    ApiResponse postTrackedEntityInstances(@Body Map<String, List<TrackedEntityInstance>> trackedEntityInstances);
 
 //    @GET("/" + ApiEndpointContainer.TRACKED_ENTITY_ATTRIBUTES + "/{trackedEntityAttribute}" + "/generate")
     @GET("/"+ApiEndpointContainer.TRACKED_ENTITY_ATTRIBUTES+"/{trackedEntityAttribute}/generateAndReserve")

@@ -183,14 +183,11 @@ public final class StatusRow extends Row {
         public void onClick(DialogInterface dialog, int which) {
             if(event.getStatus().equals(Event.STATUS_COMPLETED)) {
                 event.setStatus(Event.STATUS_ACTIVE);
-                event.setCompletedDate(null);
-                event.save();
+                event.removeCompletedDate();
             } else {
                 event.setStatus(Event.STATUS_COMPLETED);
                 if(event.getCompletedDate()==null) {
-                    LocalDate date = new LocalDate();
-                    event.setCompletedDate(date.toString(EVENT_DATETIME_FORMAT));
-                    event.save();
+                    event.saveNewCompletedDate();
                 }
             }
             StatusViewHolder.updateViews(event, complete, context);

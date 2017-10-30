@@ -127,6 +127,8 @@ public final class QuestionCoordinatesRow extends Row {
         } else {
             holder.mandatoryIndicator.setVisibility(View.VISIBLE);
         }
+        holder.latitude.setEnabled(isEditable());
+        holder.longitude.setEnabled(isEditable());
         return view;
     }
 

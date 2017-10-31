@@ -29,9 +29,6 @@
 
 package org.hisp.dhis.android.sdk.ui.adapters;
 
-import static org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.AbsEnrollmentDatePickerRow
-        .EMPTY_FIELD;
-
 import android.support.v4.app.FragmentManager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;

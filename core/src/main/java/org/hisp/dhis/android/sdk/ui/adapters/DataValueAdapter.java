@@ -92,9 +92,8 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
                 view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
                 view.postInvalidate();
                 view.setVisibility(View.GONE);
-                if(dataEntryRow instanceof AutoCompleteRow){
-                    dataEntryRow.getValue().delete();
-                }else{
+                dataEntryRow.getValue().delete();
+                if(dataEntryRow instanceof AutoCompleteRow) {
                     dataEntryRow.getValue().setValue(null);
                 }
             }

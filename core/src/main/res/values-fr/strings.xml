@@ -29,7 +29,7 @@
 
 <resources>
 
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Paramètres</string>
     <string name="imgdesc">imgdesc</string>
     <string name="title_activity_main">Menu principal</string>
     <string name="title_activity_splash">DHIS2 Tracker</string>
@@ -74,7 +74,7 @@
     <string name="invalid_server_url">L\'URL introduite n\'est pas valide</string>
     <string name="unable_to_login">Il est impossible d\'acceder.</string>
     <string name="syncing">Synchronisation...</string>
-    <string name="refresh_relations">Actualisation d\'instances d\'entités tracées</string>
+    <string name="refresh_relations">Actualiser des relations des instances d\'entités tracées à partir du serveur</string>
     <string name="please_wait">Veuillez d\'attendre</string>
     <string name="enter_username">Prière d\'entrer un identifiant</string>
     <string name="enter_password">Prière d\'entrer un mot de passe</string>
@@ -128,7 +128,7 @@
     <string name="retrying">Reesaie</string>
 
     <string name="update_frequency">Fréquence de synchronisation automatique</string>
-    <string name="logout">\"Effacer les données locales &amp; sortir\"</string>
+    <string name="logout">Effacer les données locales &amp; sortir</string>
     <string name="un_enroll">"Désinscription"</string>
     <string name="complete">Complet</string>
     <string name="finishing_up">Finalisation de configuration initiale de la base de données. Cela peut prendre quelques minutes donc veuillez d\'être patient.</string>
@@ -155,14 +155,14 @@
     <string-array name="update_frequencies">
         <item>1 Minute</item>
         <item>15 Minutes</item>
-        <item>1 Hour</item>
+        <item>1 Heure</item>
         <item>1 Day</item>
         <item>Disabled</item>
     </string-array>
 
     <string-array name="copy_store_error_message">
-        <item>Copy</item>
-        <item>Write to SD card</item>
+        <item>Copie</item>
+        <item>Écrire sur la carte SD</item>
     </string-array>
 
     <string name="synchronize_with_server">Sync avec le serveur</string>

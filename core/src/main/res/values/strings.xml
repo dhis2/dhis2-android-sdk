@@ -255,7 +255,7 @@
     <string name="enter_email">Enter e-mail</string>
     <string name="error_email">Please enter a valid e-mail address</string>
 
-    <string name="error_exporting_data">"Error metadata could not be exported."</string>
+    <string name="error_exporting_data">Error metadata could not be exported.</string>
     <string name="developers_settings">Developers options</string>
     <string name="export_data_name">Export database</string>
     <string name="developer_option_key">developer optionkey</string>

@@ -313,7 +313,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             } else {
                 OrganisationUnit eventOrganisationUnit = MetaDataController.getOrganisationUnit(form.getEvent().getOrganisationUnitId());
                 if (eventOrganisationUnit == null) {
-                    showErrorAndDisableEditing(R.string.missing_ou);
+                    showErrorAndDisableEditing(getContext().getString(R.string.missing_ou));
                 } else if (!OrganisationUnit.TYPE.ASSIGNED.equals(eventOrganisationUnit.getType())) { // if user is not assigned to the event's OrgUnit. Disable data entry screen
                     setEditableDataEntryRows(form, false, false);
                 }

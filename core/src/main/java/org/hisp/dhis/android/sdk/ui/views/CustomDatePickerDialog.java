@@ -3,7 +3,9 @@ package org.hisp.dhis.android.sdk.ui.views;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
@@ -22,8 +24,14 @@ public class CustomDatePickerDialog extends DatePickerDialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            addTitleIfIsNecessary();
+        }
+    }
+
+    public void setPermanentTitle(CharSequence title) {
+        this.title = title;
         setTitle(title);
-        addTitleIfIsNecessary();
     }
 
     @Override
@@ -31,9 +39,6 @@ public class CustomDatePickerDialog extends DatePickerDialog {
         super.setCustomTitle(customTitleView);
     }
 
-    public void setPermanentTitle(CharSequence title) {
-        this.title = title;
-    }
 
     @Override
     public void onDateChanged(DatePicker view, int year, int month, int day) {

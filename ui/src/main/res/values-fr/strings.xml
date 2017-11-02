@@ -91,7 +91,7 @@
 
     <string name="crash_reports_name">Rapport d\'erreur</string>
     <string name="crash_reports_description_on">"\n        L'information de l'erreur sera envoyée aux développeurs de DHIS2\n    "</string>
-    <string name="crash_reports_description_off">"\n        No se enviará ninguna información\n    "</string>
+    <string name="crash_reports_description_off">"\n        Aucune information ne sera pas envoyée\n    "</string>
 
     <string name="account_name">Compte</string>
     <string name="account_description">Gestion de session en cours</string>
@@ -101,15 +101,15 @@
 
     <!-- Status indicators: -->
     <string name="syncing">Synchronisation</string>
-    <string name="logout_title">Déconnecter</string>
-    <string name="logout_option">Connectez - Out</string>
+    <string name="logout_title">Déconnection en cours</string>
+    <string name="logout_option">Déconnecter</string>
     <string name="cancel_option">Annuler</string>
 
     <!-- Messages: -->
     <string name="error_message">Erreur</string>
     <string name="logout_message">
         Êtes-vous sûr de vouloir vous déconnecter? Toutes vos données stockées sur l\'appareil seront
-         perdez-vous si vous choisissez de vous déconnecter.
+         perdues si vous choisissez de vous déconnecter.
     </string>
 
     <string name="unsynchronized_data_values">Vous devez synchroniser vos modifications avec le
@@ -118,7 +118,7 @@
     </string>
 
     <string name="settings">Paramètres</string>
-    <string name="stub_description">La description</string>
+    <string name="stub_description">Description</string>
 
     <string name="drawer_open">Ouvrir le tiroir de navigation</string>
     <string name="drawer_close">Fermer le tiroir de navigation</string>
@@ -126,18 +126,18 @@
     <string name="enter_date">Entrez la date</string>
     <string name="enter_text">Entrez du texte</string>
     <string name="enter_long_text">Entrez un texte long</string>
-    <string name="enter_number">Entrer un nombre</string>
+    <string name="enter_number">Entrez un nombre</string>
     <string name="enter_integer">Entrez un entier</string>
-    <string name="enter_negative_integer">Entrer l\'entier négatif</string>
-    <string name="enter_positive_integer_or_zero">Entrer un entier positif ou zéro</string>
-    <string name="enter_positive_integer">Entrer un nombre entier positif</string>
-    <string name="enter_coordinates">Entrez les coordonnées</string>
+    <string name="enter_negative_integer">Entrez un entier négatif</string>
+    <string name="enter_positive_integer_or_zero">Entrez un entier positif ou zéro</string>
+    <string name="enter_positive_integer">Entrer un entier positif</string>
+    <string name="enter_coordinates">Entrez des coordonnées</string>
     <string name="enter_latitude">Entrez la latitude</string>
     <string name="enter_longitude">Entrez la longitude</string>
     <string name="latitude_error_message">La latitude doit être comprise entre -90 et 90</string>
     <string name="longitude_error_message">La longitude doit être comprise entre -180 et 180</string>
-    <string name="warning_hidefieldwithvalue">Les champs suivants avec valeur sont masqués et la valeur a été masquée.</string>
-    <string name="report_date">Date du compte rendu</string>
+    <string name="warning_hidefieldwithvalue">Les champs suivants avec données sont masqués et la valeur a été masquée.</string>
+    <string name="report_date">Date du rapport</string>
     <string name="choose_organisation_unit">Sélectionnez l\'unité d\'organisation</string>
     <string name="choose_program">Sélectionnez le programme</string>
     <string name="choose_section">Sélectionnez la section</string>
@@ -150,16 +150,16 @@
     <string name="find_option">Trouver l\'option</string>
 
     <!-- Button labels: -->
-    <string name="today_date">La date d\'aujourd\'hui</string>
+    <string name="today_date">Date d\'aujourd\'hui</string>
     <string name="pick_date">Choisissez la date</string>
     <string name="yes">Oui</string>
     <string name="no">Non</string>
     <string name="edit_columns">Modifier les colonnes</string>
 
     <string name="sync_status_ok_title">Synchronisé</string>
-    <string name="sync_status_ok_message">Cet article a été synchronisé avec le serveur</string>
+    <string name="sync_status_ok_message">Cet element a été synchronisé avec le serveur</string>
     <string name="sync_status_offline_title">Non synchronisé</string>
-    <string name="sync_status_offline_message">Cet article n\'a pas encore été synchronisé avec le serveur</string>
+    <string name="sync_status_offline_message">Cet element n\'a pas encore été synchronisé avec le serveur</string>
     <string name="sync_status_error_title">Erreur</string>
     <string name="sync_status_error_message">Quelque chose s\'est mal passé. S\'il vous plaît, essayez de re-télécharger l\'événement ou contacter l\'administrateur du système</string>
     <string name="sync_now">Synchroniser maintenant</string>

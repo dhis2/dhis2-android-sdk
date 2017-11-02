@@ -100,6 +100,12 @@
     <!-- Data Entry -->
     <string name="submit">Envoyer</string>
     <string name="cancel">Annuler</string>
+    <string name="no_event_present">Il n\'y a aucun événement</string>
+    <string name="missing_ou">Unité d\'Organisation non-trouvée</string>
+    <string name="error_with_form">Erreur dans le formulaire: </string>
+    <string name="please_retry">. Veuillez reessayer.</string>
+    <string name="an_error_ocurred">Il y a eu une erreur</string>
+    <string name="due_date_for"> Date d\'écheance pour </string>
 
 
     <!-- Pending Registration -->

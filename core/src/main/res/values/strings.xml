@@ -100,6 +100,12 @@
     <!-- Data Entry -->
     <string name="submit">Submit</string>
     <string name="cancel">Cancel</string>
+    <string name="no_event_present">No event present</string>
+    <string name="missing_ou">Missing Organisation Unit</string>
+    <string name="error_with_form">Error with form: </string>
+    <string name="please_retry">. Please retry.</string>
+    <string name="an_error_ocurred">An error occurred</string>
+    <string name="due_date_for"> Due date for </string>
 
 
     <!-- Pending Registration -->

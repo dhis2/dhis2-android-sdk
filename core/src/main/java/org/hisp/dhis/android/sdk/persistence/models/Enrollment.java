@@ -43,6 +43,7 @@ import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis.android.sdk.utils.api.CodeGenerator;
+import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -138,7 +139,7 @@ public class Enrollment extends BaseSerializableModel {
                 dueDate = dueDate.plusDays(programStage.getMinDaysFromStart());
                 Event event = new Event(organisationUnit, status,
                         program.id, programStage,
-                        trackedEntityInstance, enrollment, dueDate.toString());
+                        trackedEntityInstance, enrollment, dueDate.toString(DateUtils.DEFAULT_DATE_FORMAT));
                 events.add(event);
             }
         }

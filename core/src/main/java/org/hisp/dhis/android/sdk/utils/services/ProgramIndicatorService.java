@@ -47,7 +47,6 @@ import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 import org.hisp.dhis.android.sdk.utils.support.ExpressionUtils;
 import org.hisp.dhis.android.sdk.utils.support.MathUtils;
 import org.hisp.dhis.android.sdk.utils.support.TextUtils;
-import org.hisp.dhis.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -85,12 +84,7 @@ public class ProgramIndicatorService {
         
         Double value = getValue(programInstance, null, programIndicator);
 
-        if (value != null && !Double.isNaN(value)) {
-            value = MathUtils.getRounded(value, 2);
-            return String.valueOf(value);
-        }
-
-        return null;
+        return TextUtils.fromDouble(value);
     }
 
     /**
@@ -107,12 +101,7 @@ public class ProgramIndicatorService {
         
         Double value = getValue(null, event, programIndicator);
 
-        if (value != null && !Double.isNaN(value)) {
-            value = MathUtils.getRounded(value, 2);
-            return String.valueOf(value);
-        }
-
-        return null;
+        return TextUtils.fromDouble(value);
     }
 
     /**
@@ -341,7 +330,6 @@ public class ProgramIndicatorService {
         String expression = indicator.getExpression();
 
         Matcher matcher = ProgramIndicator.EXPRESSION_PATTERN.matcher(expression);
-        Matcher matcherFunction = ProgramIndicator.FUNCTION_PATTERN.matcher(expression);
 
         int valueCount = 0;
         int zeroPosValueCount = 0;
@@ -497,10 +485,10 @@ public class ProgramIndicatorService {
             value = ExpressionUtils.evaluateToDouble(expression, null);
         } catch (JexlException e) {
             e.printStackTrace();
-            value = new Double(0);
+            value = null;
         } catch (IllegalStateException e){
             e.printStackTrace();
-            value = new Double(0);
+            value = null;
         }
         return value;
     }

@@ -442,4 +442,19 @@ public class TextUtils {
     public static String quote(String value) {
         return MathUtils.isNumeric(value) ? value : "\"" + value.replace("\"", "\\\"") + "\"";
     }
+
+    /**
+     * Takes a double and returns a string without the decimal part if it's all zeros.
+     *
+     * @param value the input numeric value.
+     * @return a string.
+     */
+    public static String fromDouble(Double value) {
+        if (value != null && !Double.isNaN(value)) {
+            value = MathUtils.getRounded(value, 2);
+            return String.valueOf(value).replaceAll("\\.0+$", "");
+        }
+
+        return "";
+    }
 }

@@ -35,6 +35,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -740,12 +741,16 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                                 int sortOrder = currentProgramStage.getSortOrder();
                                                 Program currentProgram = currentProgramStage.getProgram();
                                                 ProgramStage programStageToSchedule = null;
-                                                for (ProgramStage programStage : currentProgram.getProgramStages()) {
-                                                    if (programStage.getSortOrder() == (sortOrder + 1)) {
-                                                        programStageToSchedule = programStage;
-                                                    }
-                                                }
+                                                programStageToSchedule = getNextValidProgramStage(
+                                                        sortOrder, currentProgram,
+                                                        programStageToSchedule);
 
+                                                if(programStageToSchedule == null) {
+                                                    programStageToSchedule =
+                                                            getFirstValidProgramStage(
+                                                                    currentProgram,
+                                                                    programStageToSchedule);
+                                                }
                                                 if (programStageToSchedule != null) {
 
                                                     List<Event> events = form.getEnrollment().getEvents();
@@ -800,6 +805,36 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             allErrors.put(ErrorType.INVALID_FIELD, getRowsErrors(getContext(), form));
             showValidationErrorDialog(allErrors);
         }
+    }
+
+    @Nullable
+    private ProgramStage getFirstValidProgramStage(Program currentProgram,
+            ProgramStage programStageToSchedule) {
+            for (ProgramStage programStage : currentProgram.getProgramStages()) {
+                if (programStageToSchedule == null) {
+                    if(programStage.isRepeatable()) {
+                        programStageToSchedule = programStage;
+                    }else if(TrackerController.getEvent(form.getEnrollment().getLocalId(), programStage.getUid()) != null){
+                        programStageToSchedule = programStage;
+                    }
+                }
+            }
+        return programStageToSchedule;
+    }
+
+    @Nullable
+    private ProgramStage getNextValidProgramStage(int sortOrder, Program currentProgram,
+            ProgramStage programStageToSchedule) {
+        for (ProgramStage programStage : currentProgram.getProgramStages()) {
+            if (programStage.getSortOrder() >= (sortOrder + 1) && programStageToSchedule == null) {
+                if(programStage.isRepeatable()) {
+                    programStageToSchedule = programStage;
+                }else if(TrackerController.getEvent(form.getEnrollment().getLocalId(), programStage.getUid()) != null){
+                    programStageToSchedule = programStage;
+                }
+            }
+        }
+        return programStageToSchedule;
     }
 
     @Subscribe
@@ -922,10 +957,12 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             List<Event> eventsForEnrollment = new ArrayList<>();
             eventsForEnrollment.addAll(enrollment.getEvents());
             Collections.sort(eventsForEnrollment, new EventDateComparator());
-            Event lastKnownEvent = eventsForEnrollment.get(eventsForEnrollment.size() - 1);
+            if(eventsForEnrollment.size()>0) {
+                Event lastKnownEvent = eventsForEnrollment.get(eventsForEnrollment.size() - 1);
 
-            if (lastKnownEvent != null) {
-                return new DateTime(lastKnownEvent.getEventDate());
+                if (lastKnownEvent != null) {
+                    return new DateTime(lastKnownEvent.getEventDate());
+                }
             }
 
             if (programStage.getProgram().getDisplayIncidentDate()) {

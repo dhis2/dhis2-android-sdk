@@ -490,10 +490,10 @@ public class ProgramIndicatorService {
         try {
             value = ExpressionUtils.evaluateToDouble(expression, null);
         } catch (JexlException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
             value = new Double(0);
         } catch (IllegalStateException e){
-            //e.printStackTrace();
+            e.printStackTrace();
             value = new Double(0);
         }
         return value;

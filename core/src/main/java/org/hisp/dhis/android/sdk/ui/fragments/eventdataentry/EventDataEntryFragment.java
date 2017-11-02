@@ -744,7 +744,6 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                                 programStageToSchedule = getNextValidProgramStage(
                                                         sortOrder, currentProgram,
                                                         programStageToSchedule);
-
                                                 if(programStageToSchedule == null) {
                                                     programStageToSchedule =
                                                             getFirstValidProgramStage(
@@ -752,19 +751,9 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                                                     programStageToSchedule);
                                                 }
                                                 if (programStageToSchedule != null) {
-
-                                                    List<Event> events = form.getEnrollment().getEvents();
-                                                    List<Event> eventForStage = new ArrayList<>();
-                                                    for (Event event : events) {
-                                                        if (programStageToSchedule.getUid().equals(event.getProgramStageId())) {
-                                                            eventForStage.add(event);
-                                                        }
-                                                    }
-                                                    if (eventForStage.size() < 1) {
-                                                        DateTime dateTime = calculateScheduledDate(programStageToSchedule, form.getEnrollment());
-                                                        isShowingSchedulingOfNewEvent = true;
-                                                        showDatePicker(programStageToSchedule, dateTime); // datePicker will close this fragment when date is picked and new event is scheduled
-                                                    }
+                                                    DateTime dateTime = calculateScheduledDate(programStageToSchedule, form.getEnrollment());
+                                                    isShowingSchedulingOfNewEvent = true;
+                                                    showDatePicker(programStageToSchedule, dateTime); // datePicker will close this fragment when date is picked and new event is scheduled
                                                 }
                                             }
                                         }
@@ -812,11 +801,9 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             ProgramStage programStageToSchedule) {
             for (ProgramStage programStage : currentProgram.getProgramStages()) {
                 if (programStageToSchedule == null) {
-                    if(programStage.isRepeatable()) {
-                        programStageToSchedule = programStage;
-                    }else if(TrackerController.getEvent(form.getEnrollment().getLocalId(), programStage.getUid()) != null){
-                        programStageToSchedule = programStage;
-                    }
+                    programStageToSchedule = getValidProgramStage(programStageToSchedule, programStage);
+                }else{
+                    return programStageToSchedule;
                 }
             }
         return programStageToSchedule;
@@ -827,14 +814,41 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             ProgramStage programStageToSchedule) {
         for (ProgramStage programStage : currentProgram.getProgramStages()) {
             if (programStage.getSortOrder() >= (sortOrder + 1) && programStageToSchedule == null) {
-                if(programStage.isRepeatable()) {
-                    programStageToSchedule = programStage;
-                }else if(TrackerController.getEvent(form.getEnrollment().getLocalId(), programStage.getUid()) != null){
-                    programStageToSchedule = programStage;
+                programStageToSchedule = getValidProgramStage(programStageToSchedule, programStage);
+                if(programStageToSchedule!=null){
+                    return programStageToSchedule;
                 }
             }
         }
         return programStageToSchedule;
+    }
+
+    private ProgramStage getValidProgramStage(ProgramStage programStageToSchedule,
+            ProgramStage programStage) {
+        if(programStage.isRepeatable()) {
+            programStageToSchedule = programStage;
+        }else if(TrackerController.getEvent(form.getEnrollment().getLocalId(), programStage.getUid()) != null){
+            if(programStage.isRepeatable()) {
+                programStageToSchedule = programStage;
+            }else{
+                if (hasTheCorrectNumberOfEvents(programStage)) return programStage;
+            }
+        }
+        return programStageToSchedule;
+    }
+
+    private boolean hasTheCorrectNumberOfEvents(ProgramStage programStageToSchedule) {
+        List<Event> events = form.getEnrollment().getEvents();
+        List<Event> eventForStage = new ArrayList<>();
+        for (Event event : events) {
+            if (programStageToSchedule.getUid().equals(event.getProgramStageId())) {
+                eventForStage.add(event);
+            }
+        }
+        if(eventForStage.size()==0){
+            return true;
+        }
+        return false;
     }
 
     @Subscribe

@@ -267,5 +267,10 @@
     <string name="synchronize_deleted_data">Sync remotely deleted data</string>
     <string name="synchronizing">Synchronizing...</string>
 
-
+    <!-- snackbar -->
+    <string name="downloading">Downloading</string>
+    <string name="error_downloading">Error downloading element</string>
+    <string name="downloaded_with_errors">Download completed with errors</string>
+    <string name="download_complete">Download complete</string>
+    <string name="download_error_try_again">Download error - please try again</string>
 </resources>

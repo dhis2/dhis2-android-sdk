@@ -267,4 +267,10 @@
     <string name="synchronize_deleted_data">Sync données effacées en remote</string>
     <string name="synchronizing">Synchronisation...</string>
 
+    <!-- snackbar -->
+    <string name="downloading">Téléchargement</string>
+    <string name="error_downloading">Erreur de téléchargement</string>
+    <string name="downloaded_with_errors">Téléchargement completé avec des erreurs</string>
+    <string name="download_complete">Téléchargement completé</string>
+    <string name="download_error_try_again">Erreur de téléchargement - veillez reessayer</string>
 </resources>

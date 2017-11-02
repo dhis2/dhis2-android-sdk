@@ -1,6 +1,9 @@
 package org.hisp.dhis.android.sdk.events;
 
+import android.content.Context;
 import android.support.design.widget.Snackbar;
+
+import org.hisp.dhis.android.sdk.R;
 
 /**
  * Created by thomaslindsjorn on 25/07/16.
@@ -26,21 +29,21 @@ public class OnTeiDownloadedEvent {
         this.eventNumber = eventNumber;
     }
 
-    public String getUserFriendlyMessage() {
+    public String getUserFriendlyMessage(Context context) {
         switch (eventType) {
             case START:
-                return String.format("Downloading 1/%s", totalNumberOfTeis);
+                return String.format(context.getString(R.string.downloading) + " 1/%s", totalNumberOfTeis);
             case UPDATE:
-                return String.format("Downloading %s/%s", eventNumber, totalNumberOfTeis);
+                return String.format(context.getString(R.string.downloading) + " %s/%s", eventNumber, totalNumberOfTeis);
             case ERROR:
-                return String.format("Error downloading element %s", eventNumber);
+                return String.format(context.getString(R.string.error_downloading) + " %s", eventNumber);
             case END:
                 if (errorHasOccured) {
-                    return "Download completed with errors";
+                    return context.getString(R.string.downloaded_with_errors);
                 }
-                return "Download complete";
+                return context.getString(R.string.download_complete);
         }
-        return "Download error - please try again";
+        return context.getString(R.string.download_error_try_again);
     }
 
     public int getMessageDuration() {

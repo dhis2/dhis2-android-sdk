@@ -193,4 +193,7 @@
     <string name="last_commit">Commit hash: %s</string>
     <string name="unavailable">Indisponible</string>
     <string name="est_about">Cette application est sous le maintien de EyeSeeTea Ltd (http://eyeseetea.com)</string>
+
+    <!-- snackbar -->
+    <string name="retry">"Reessayer"</string>
 </resources>

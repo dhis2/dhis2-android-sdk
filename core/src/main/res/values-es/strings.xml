@@ -266,4 +266,10 @@
     <string name="loading_assigned_programs">Cargando los programas asignados</string>
     <string name="loading_tracked_entity_instances">Cargando instancias de entidades trazadas</string>
 
+    <!-- snackbar -->
+    <string name="downloading">Descargando</string>
+    <string name="error_downloading">Error descargando objeto</string>
+    <string name="downloaded_with_errors">Descarga terminada con errores</string>
+    <string name="download_complete">Descarga completada</string>
+    <string name="download_error_try_again">Error de descarga - por favor, inténtelo de nuevo</string>
 </resources>

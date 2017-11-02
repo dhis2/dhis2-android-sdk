@@ -93,7 +93,7 @@ public class ExpressionUtils {
         try {
             return evaluate(expression, vars, false);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return null;
         }
     }

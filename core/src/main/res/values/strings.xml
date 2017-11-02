@@ -100,6 +100,12 @@
     <!-- Data Entry -->
     <string name="submit">Submit</string>
     <string name="cancel">Cancel</string>
+    <string name="no_event_present">No event present</string>
+    <string name="missing_ou">Missing Organisation Unit</string>
+    <string name="error_with_form">Error with form: </string>
+    <string name="please_retry">. Please retry.</string>
+    <string name="an_error_ocurred">An error occurred</string>
+    <string name="due_date_for"> Due date for </string>
 
 
     <!-- Pending Registration -->
@@ -255,7 +261,7 @@
     <string name="enter_email">Enter e-mail</string>
     <string name="error_email">Please enter a valid e-mail address</string>
 
-    <string name="error_exporting_data">"Error metadata could not be exported."</string>
+    <string name="error_exporting_data">Error metadata could not be exported.</string>
     <string name="developers_settings">Developers options</string>
     <string name="export_data_name">Export database</string>
     <string name="developer_option_key">developer optionkey</string>
@@ -267,5 +273,10 @@
     <string name="synchronize_deleted_data">Sync remotely deleted data</string>
     <string name="synchronizing">Synchronizing...</string>
 
-
+    <!-- snackbar -->
+    <string name="downloading">Downloading</string>
+    <string name="error_downloading">Error downloading element</string>
+    <string name="downloaded_with_errors">Download completed with errors</string>
+    <string name="download_complete">Download complete</string>
+    <string name="download_error_try_again">Download error - please try again</string>
 </resources>

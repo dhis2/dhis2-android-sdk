@@ -310,11 +310,11 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
             if (form.getEvent() == null) {
                 // form is null - show error message and disable editing
-                showErrorAndDisableEditing("No event present");
+                showErrorAndDisableEditing(getContext().getString(R.string.no_event_present));
             } else {
                 OrganisationUnit eventOrganisationUnit = MetaDataController.getOrganisationUnit(form.getEvent().getOrganisationUnitId());
                 if (eventOrganisationUnit == null) {
-                    showErrorAndDisableEditing("Missing Organisation Unit");
+                    showErrorAndDisableEditing(getContext().getString(R.string.missing_ou));
                 } else if (!OrganisationUnit.TYPE.ASSIGNED.equals(eventOrganisationUnit.getType())) { // if user is not assigned to the event's OrgUnit. Disable data entry screen
                     setEditableDataEntryRows(form, false, false);
                 }
@@ -347,7 +347,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     }
 
     private void showErrorAndDisableEditing(String extraInfo) {
-        Toast.makeText(getContext(), "Error with form: " + extraInfo +". Please retry.", Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), getContext().getString(R.string.error_with_form) + extraInfo +getContext().getString(R.string.please_retry), Toast.LENGTH_LONG).show();
         setEditableDataEntryRows(form, false, false);
     }
 
@@ -381,7 +381,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         if (form.getSections() != null) {
             listViewAdapter.swapData(form.getSections().get(0).getRows()); //TODO find a better solution for this hack
         } else {
-            Toast.makeText(getContext(), "An error occurred", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getContext().getString(R.string.an_error_ocurred), Toast.LENGTH_SHORT).show();
         }
         listView.setAdapter(listViewAdapter);
     }
@@ -939,10 +939,10 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                 new DatePickerDialog(getActivity(),
                         null, scheduledDueDate.getYear(),
                         scheduledDueDate.getMonthOfYear() - 1, scheduledDueDate.getDayOfMonth() + standardInterval);
-        enrollmentDatePickerDialog.setTitle(getActivity().getString(R.string.please_enter) + " Due date for " + programStage.getDisplayName());
+        enrollmentDatePickerDialog.setTitle(getActivity().getString(R.string.please_enter) + getContext().getString(R.string.due_date_for) + programStage.getDisplayName());
         enrollmentDatePickerDialog.setCanceledOnTouchOutside(true);
 
-        enrollmentDatePickerDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
+        enrollmentDatePickerDialog.setButton(DialogInterface.BUTTON_POSITIVE, getContext().getString(R.string.ok_option),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -952,7 +952,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                         goBackToPreviousActivity();
                     }
                 });
-        enrollmentDatePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",
+        enrollmentDatePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getContext().getString(R.string.cancel_option),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

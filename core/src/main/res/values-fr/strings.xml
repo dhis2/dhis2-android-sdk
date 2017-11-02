@@ -129,7 +129,7 @@
 
     <string name="update_frequency">Fréquence de synchronisation automatique</string>
     <string name="logout">Effacer les données locales &amp; sortir</string>
-    <string name="un_enroll">"Désinscription"</string>
+    <string name="un_enroll">Désinscription</string>
     <string name="complete">Complet</string>
     <string name="finishing_up">Finalisation de configuration initiale de la base de données. Cela peut prendre quelques minutes donc veuillez d\'être patient.</string>
     <string name="loading_server_info">Téléchargement d\'info du serveur</string>
@@ -255,11 +255,11 @@
     <string name="choose_filter">Sélectionnez une option</string>
     <string name="invalid_entry_type">Type de valeur non supporté</string>
 
-    <string name="error_exporting_data">\"Erreur les métadonnées n\'ont pas pu être exportées.\"</string>
+    <string name="error_exporting_data">Erreur les métadonnées n\'ont pas pu être exportées.</string>
     <string name="developers_settings">Options pour développeurs</string>
     <string name="export_data_name">Exporter base de données</string>
     <string name="developer_option_key">optionkey pour développeurs</string>
-    <string name="developer_option_title">\"Afficher les options pour développeurs\"</string>
+    <string name="developer_option_title">Afficher les options pour développeurs</string>
     <string name="sync_deleted_events">Synchronisation d\'événements effacés en remote</string>
     <string name="sync_deleted_tracked_entities">Synchronisation des entités tracés effacés en remote</string>
     <string name="sync_deleted_relations">Synchronisation des relations entre entités tracés effacés en remote</string>

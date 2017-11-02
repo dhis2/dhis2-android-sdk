@@ -5,7 +5,6 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
@@ -25,7 +24,7 @@ public class CustomDatePickerDialog extends DatePickerDialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-            addTitleIfIsNecessary();
+            tryAddCustomTitleView();
         }
     }
 
@@ -46,16 +45,12 @@ public class CustomDatePickerDialog extends DatePickerDialog {
         setTitle(title);
     }
 
-    private void addTitleIfIsNecessary() {
+    private void tryAddCustomTitleView() {
         try {
-            if (!((TextView) ((LinearLayout) ((LinearLayout) ((LinearLayout) getDatePicker()
-                    .getParent().getParent().getParent()).getChildAt(
-                    0)).getChildAt(0)).getChildAt(1)).getText().equals(title)) {
-                customTextView = new TextView(getContext());
-                customTextView.setText(title);
-                ((LinearLayout) getDatePicker().getParent().getParent().getParent()).addView(
-                        customTextView, 0);
-            }
+            customTextView = new TextView(getContext());
+            customTextView.setText(title);
+            ((LinearLayout) getDatePicker().getParent().getParent().getParent()).addView(
+                    customTextView, 0);
         } catch (Exception e) {
             e.printStackTrace();
         }

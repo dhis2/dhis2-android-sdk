@@ -47,8 +47,7 @@ import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 import org.hisp.dhis.android.sdk.utils.support.ExpressionUtils;
 import org.hisp.dhis.android.sdk.utils.support.MathUtils;
 import org.hisp.dhis.android.sdk.utils.support.TextUtils;
-import org.hisp.dhis.android.sdk.utils.support.expression.Expression;
-import org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions;
+import org.hisp.dhis.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -343,10 +342,7 @@ public class ProgramIndicatorService {
 
         Matcher matcher = ProgramIndicator.EXPRESSION_PATTERN.matcher(expression);
         Matcher matcherFunction = ProgramIndicator.FUNCTION_PATTERN.matcher(expression);
-        String alterinativeEvaluation = "";
-        if(expression.startsWith("d2")){
-            alterinativeEvaluation = expression.substring(3,expression.indexOf("("));
-        }
+
         int valueCount = 0;
         int zeroPosValueCount = 0;
         Event eventProgramStageInstance = null;
@@ -417,7 +413,7 @@ public class ProgramIndicatorService {
                         zeroPosValueCount = isZeroOrPositive(value) ? (zeroPosValueCount + 1) : zeroPosValueCount;
                     }
 
-                    matcher.appendReplacement(buffer, value);
+                    matcher.appendReplacement(buffer, TextUtils.quote(value));
                 } else {
                     continue;
                 }
@@ -436,7 +432,7 @@ public class ProgramIndicatorService {
                             valueCount++;
                             zeroPosValueCount = isZeroOrPositive(value) ? (zeroPosValueCount + 1) : zeroPosValueCount;
                         }
-                        matcher.appendReplacement(buffer, value);
+                        matcher.appendReplacement(buffer, TextUtils.quote(value));
                     } else {
                         continue;
                     }
@@ -455,23 +451,17 @@ public class ProgramIndicatorService {
                     Date date = null;
 
                     if (ProgramIndicator.ENROLLMENT_DATE.equals(uid)) {
-                        date = DateUtils.getMediumDate(enrollmentProgramInstance.getEnrollmentDate());
+                        date = DateUtils.parseDate(enrollmentProgramInstance.getEnrollmentDate());
                     } else if (ProgramIndicator.INCIDENT_DATE.equals(uid)) {
-                        date = DateUtils.getMediumDate(enrollmentProgramInstance.getIncidentDate());
+                        date = DateUtils.parseDate(enrollmentProgramInstance.getIncidentDate());
                     } else if (ProgramIndicator.CURRENT_DATE.equals(uid)) {
                         date = currentDate;
                     } else if (ProgramIndicator.EVENT_DATE.equals(uid)) {
-                        date = DateUtils.getMediumDate(enrollmentProgramInstance.getEvents().get(0).getEventDate());
+                        date = DateUtils.parseDate(enrollmentProgramInstance.getEvents().get(0).getEventDate());
                     }
+
                     if (date != null) {
-                        if(!alterinativeEvaluation.isEmpty()){
-                            if(alterinativeEvaluation.equals("yearsBetween")){
-                                new Double(DateUtils.yearsBetween(currentDate, date) + "");
-                            }else if(alterinativeEvaluation.equals("daysBetween")){
-                                new Double(DateUtils.daysBetween(currentDate, date) + "");
-                            }
-                        }
-                        matcher.appendReplacement(buffer, DateUtils.daysBetween(currentDate, date) + "");
+                        matcher.appendReplacement(buffer, TextUtils.quote(DateUtils.getMediumDateString(date)));
                     }
                 }
             }

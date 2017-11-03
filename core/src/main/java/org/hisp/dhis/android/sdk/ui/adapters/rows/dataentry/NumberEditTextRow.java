@@ -1,8 +1,7 @@
 package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
 
-import static org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.AbsDatePickerRow
-        .EMPTY_FIELD;
+import static org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.AbsDatePickerRow.EMPTY_FIELD;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -217,8 +216,8 @@ public class NumberEditTextRow extends TextRow {
 
         @Nullable
         private CharSequence ifStartsWithZeroesReturnEmpty(CharSequence str, Spanned spn) {
-            if ((str.length() > 0) && (str.charAt(0) == '0' && spn.length() > 0 && spn.charAt(0)
-                    == '0')) {
+            if ((str.length() > 0) && (str.charAt(0) == '0' && spn.length() > 0 && (spn.charAt(0)
+                    == '0' && !(spn.length() > 1 && spn.charAt(1) != '0')))) {
                 if (spn.length() > 1 && spn.toString().contains(".")) {
                     return str;
                 }

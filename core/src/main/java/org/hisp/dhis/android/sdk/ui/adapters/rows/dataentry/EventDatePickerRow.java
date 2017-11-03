@@ -202,7 +202,7 @@ public class EventDatePickerRow extends AbsDatePickerRow {
             String newValue = date.toString(DATE_FORMAT);
             textView.setText(newValue);
 
-            if (!newValue.equals(value.getValue())) {
+            if (event.getEventDate() == null || !newValue.equals(value.getValue())) {
                 value.setValue(newValue);
                 event.setEventDate(value.getValue());
                 Dhis2Application.getEventBus().post(new RowValueChangedEvent(value, DataEntryRowTypes.EVENT_DATE.toString()));

@@ -35,6 +35,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -309,11 +310,11 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
             if (form.getEvent() == null) {
                 // form is null - show error message and disable editing
-                showErrorAndDisableEditing("No event present");
+                showErrorAndDisableEditing(getContext().getString(R.string.no_event_present));
             } else {
                 OrganisationUnit eventOrganisationUnit = MetaDataController.getOrganisationUnit(form.getEvent().getOrganisationUnitId());
                 if (eventOrganisationUnit == null) {
-                    showErrorAndDisableEditing("Missing Organisation Unit");
+                    showErrorAndDisableEditing(getContext().getString(R.string.missing_ou));
                 } else if (!OrganisationUnit.TYPE.ASSIGNED.equals(eventOrganisationUnit.getType())) { // if user is not assigned to the event's OrgUnit. Disable data entry screen
                     setEditableDataEntryRows(form, false, false);
                 }
@@ -346,7 +347,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     }
 
     private void showErrorAndDisableEditing(String extraInfo) {
-        Toast.makeText(getContext(), "Error with form: " + extraInfo +". Please retry.", Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), getContext().getString(R.string.error_with_form) + extraInfo +getContext().getString(R.string.please_retry), Toast.LENGTH_LONG).show();
         setEditableDataEntryRows(form, false, false);
     }
 
@@ -380,7 +381,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         if (form.getSections() != null) {
             listViewAdapter.swapData(form.getSections().get(0).getRows()); //TODO find a better solution for this hack
         } else {
-            Toast.makeText(getContext(), "An error occurred", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getContext().getString(R.string.an_error_ocurred), Toast.LENGTH_SHORT).show();
         }
         listView.setAdapter(listViewAdapter);
     }
@@ -740,26 +741,19 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                                 int sortOrder = currentProgramStage.getSortOrder();
                                                 Program currentProgram = currentProgramStage.getProgram();
                                                 ProgramStage programStageToSchedule = null;
-                                                for (ProgramStage programStage : currentProgram.getProgramStages()) {
-                                                    if (programStage.getSortOrder() == (sortOrder + 1)) {
-                                                        programStageToSchedule = programStage;
-                                                    }
+                                                programStageToSchedule = getNextValidProgramStage(
+                                                        sortOrder, currentProgram,
+                                                        programStageToSchedule);
+                                                if(programStageToSchedule == null) {
+                                                    programStageToSchedule =
+                                                            getFirstValidProgramStage(
+                                                                    currentProgram,
+                                                                    programStageToSchedule);
                                                 }
-
                                                 if (programStageToSchedule != null) {
-
-                                                    List<Event> events = form.getEnrollment().getEvents();
-                                                    List<Event> eventForStage = new ArrayList<>();
-                                                    for (Event event : events) {
-                                                        if (programStageToSchedule.getUid().equals(event.getProgramStageId())) {
-                                                            eventForStage.add(event);
-                                                        }
-                                                    }
-                                                    if (eventForStage.size() < 1) {
-                                                        DateTime dateTime = calculateScheduledDate(programStageToSchedule, form.getEnrollment());
-                                                        isShowingSchedulingOfNewEvent = true;
-                                                        showDatePicker(programStageToSchedule, dateTime); // datePicker will close this fragment when date is picked and new event is scheduled
-                                                    }
+                                                    DateTime dateTime = calculateScheduledDate(programStageToSchedule, form.getEnrollment());
+                                                    isShowingSchedulingOfNewEvent = true;
+                                                    showDatePicker(programStageToSchedule, dateTime); // datePicker will close this fragment when date is picked and new event is scheduled
                                                 }
                                             }
                                         }
@@ -800,6 +794,61 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             allErrors.put(ErrorType.INVALID_FIELD, getRowsErrors(getContext(), form));
             showValidationErrorDialog(allErrors);
         }
+    }
+
+    @Nullable
+    private ProgramStage getFirstValidProgramStage(Program currentProgram,
+            ProgramStage programStageToSchedule) {
+            for (ProgramStage programStage : currentProgram.getProgramStages()) {
+                if (programStageToSchedule == null) {
+                    programStageToSchedule = getValidProgramStage(programStageToSchedule, programStage);
+                }else{
+                    return programStageToSchedule;
+                }
+            }
+        return programStageToSchedule;
+    }
+
+    @Nullable
+    private ProgramStage getNextValidProgramStage(int sortOrder, Program currentProgram,
+            ProgramStage programStageToSchedule) {
+        for (ProgramStage programStage : currentProgram.getProgramStages()) {
+            if (programStage.getSortOrder() >= (sortOrder + 1) && programStageToSchedule == null) {
+                programStageToSchedule = getValidProgramStage(programStageToSchedule, programStage);
+                if(programStageToSchedule!=null){
+                    return programStageToSchedule;
+                }
+            }
+        }
+        return programStageToSchedule;
+    }
+
+    private ProgramStage getValidProgramStage(ProgramStage programStageToSchedule,
+            ProgramStage programStage) {
+        if(programStage.isRepeatable()) {
+            programStageToSchedule = programStage;
+        }else if(TrackerController.getEvent(form.getEnrollment().getLocalId(), programStage.getUid()) != null){
+            if(programStage.isRepeatable()) {
+                programStageToSchedule = programStage;
+            }else{
+                if (hasTheCorrectNumberOfEvents(programStage)) return programStage;
+            }
+        }
+        return programStageToSchedule;
+    }
+
+    private boolean hasTheCorrectNumberOfEvents(ProgramStage programStageToSchedule) {
+        List<Event> events = form.getEnrollment().getEvents();
+        List<Event> eventForStage = new ArrayList<>();
+        for (Event event : events) {
+            if (programStageToSchedule.getUid().equals(event.getProgramStageId())) {
+                eventForStage.add(event);
+            }
+        }
+        if(eventForStage.size()==0){
+            return true;
+        }
+        return false;
     }
 
     @Subscribe
@@ -890,10 +939,10 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                 new DatePickerDialog(getActivity(),
                         null, scheduledDueDate.getYear(),
                         scheduledDueDate.getMonthOfYear() - 1, scheduledDueDate.getDayOfMonth() + standardInterval);
-        enrollmentDatePickerDialog.setTitle(getActivity().getString(R.string.please_enter) + " Due date for " + programStage.getDisplayName());
+        enrollmentDatePickerDialog.setTitle(getActivity().getString(R.string.please_enter) + getContext().getString(R.string.due_date_for) + programStage.getDisplayName());
         enrollmentDatePickerDialog.setCanceledOnTouchOutside(true);
 
-        enrollmentDatePickerDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
+        enrollmentDatePickerDialog.setButton(DialogInterface.BUTTON_POSITIVE, getContext().getString(R.string.ok_option),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -903,7 +952,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                         goBackToPreviousActivity();
                     }
                 });
-        enrollmentDatePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",
+        enrollmentDatePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getContext().getString(R.string.cancel_option),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -922,10 +971,12 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             List<Event> eventsForEnrollment = new ArrayList<>();
             eventsForEnrollment.addAll(enrollment.getEvents());
             Collections.sort(eventsForEnrollment, new EventDateComparator());
-            Event lastKnownEvent = eventsForEnrollment.get(eventsForEnrollment.size() - 1);
+            if(eventsForEnrollment.size()>0) {
+                Event lastKnownEvent = eventsForEnrollment.get(eventsForEnrollment.size() - 1);
 
-            if (lastKnownEvent != null) {
-                return new DateTime(lastKnownEvent.getEventDate());
+                if (lastKnownEvent != null) {
+                    return new DateTime(lastKnownEvent.getEventDate());
+                }
             }
 
             if (programStage.getProgram().getDisplayIncidentDate()) {

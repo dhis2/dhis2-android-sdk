@@ -29,50 +29,50 @@
 <resources>
 
     <!-- AbsHomeActivity -->
-    <string name="drawer_item_help">Help</string>
-    <string name="drawer_item_apps">Apps</string>
+    <string name="drawer_item_help">Aidez-moi</string>
+    <string name="drawer_item_apps">applications</string>
     <string name="drawer_item_information">Information</string>
-    <string name="drawer_item_other">Other</string>
-    <string name="drawer_item_status">Status</string>
-    <string name="drawer_item_profile">Profile</string>
-    <string name="drawer_item_settings">Settings</string>
-    <string name="drawer_item_dashboard">Dashboard</string>
+    <string name="drawer_item_other">Autre</string>
+    <string name="drawer_item_status">Statut</string>
+    <string name="drawer_item_profile">Profil</string>
+    <string name="drawer_item_settings">Paramètres</string>
+    <string name="drawer_item_dashboard">Tableau de bord</string>
     <string name="drawer_item_data_capture">Data capture</string>
     <string name="drawer_item_event_capture">Event capture</string>
     <string name="drawer_item_tracker_capture">Tracker capture</string>
     <string name="drawer_item_tracker_capture_reports">BID reports</string>
-    <string name="drawer_item_synchronized">Synchronized: %s</string>
+    <string name="drawer_item_synchronized">Synchronisé: %s</string>
 
     <!-- AbsLoginActivity strings -->
-    <string name="server_url">Server URL</string>
-    <string name="username">Username</string>
-    <string name="password">Password</string>
-    <string name="log_in">Log in</string>
+    <string name="server_url">URL du serveur</string>
+    <string name="username">"Nom d'utilisateur"</string>
+    <string name="password">Mot de passe</string>
+    <string name="log_in">"S'identifier"</string>
     <string name="confirm_user">Confirmer l\'utilisateur</string>
     <string name="clear_and_logout">Effacer et sortir</string>
     <string name="two">2</string>
 
     <!-- Preferences fragment -->
-    <string name="sys_sync_disabled_warning">"Enable auto-sync data from system settings."</string>
+    <string name="sys_sync_disabled_warning">Activer les données de synchronisation automatique à partir des paramètres du système</string>
     <string name="application_settings">Application</string>
-    <string name="user_settings">User</string>
+    <string name="user_settings">Utilisateur</string>
 
     <string name="background_synchronization_name">Synchronisation en arrière-plan</string>
     <string name="background_synchronization_description_on">"\n        Les données de l'application seront synchronisées en arrière-plan\n    "</string>
     <string name="background_synchronization_description_off">"\n        Les données de l'application ne seront pas synchronisées en arrière-plan\n    "</string>
 
-    <string name="filter_options">Filter available options</string>
+    <string name="filter_options">Filtrer les options disponibles</string>
 
-    <string name="sync">Sync</string>
+    <string name="sync">Synchronisation</string>
 
-    <string name="synchronization_period_name">Synchronization period</string>
-    <string name="synchronization_period_description">Syncing every </string>
+    <string name="synchronization_period_name">Période de synchronisation</string>
+    <string name="synchronization_period_description">Synchroniser chaque</string>
     <string name="synchronization_period_option_value_default">240</string> <!-- Default sync every 4 hours -->
     <string-array name="synchronization_period_option_keys">
         <item>15 minutes</item>
-        <item>1 hour</item>
-        <item>4 hours</item>
-        <item>1 day</item>
+        <item>1 heure</item>
+        <item>4 heures</item>
+        <item>1 jour</item>
     </string-array>
     <string-array name="synchronization_period_option_values">
         <item>15</item>
@@ -81,17 +81,17 @@
         <item>1440</item>
     </string-array>
 
-    <string name="sync_notification_name">Background sync notifications</string>
+    <string name="sync_notification_name">Notifications de synchronisation en arrière-plan</string>
     <string name="sync_notification_description_on">
-        You will be notified of background syncing
+        Vous serez averti de la synchronisation en arrière-plan
     </string>
     <string name="sync_notification_description_off">
-        No notifications will be shown
+        Aucune notification ne sera affichée
     </string>
 
     <string name="crash_reports_name">Rapport d\'erreur</string>
     <string name="crash_reports_description_on">"\n        L'information de l'erreur sera envoyée aux développeurs de DHIS2\n    "</string>
-    <string name="crash_reports_description_off">"\n        No se enviará ninguna información\n    "</string>
+    <string name="crash_reports_description_off">"\n        Aucune information ne sera pas envoyée\n    "</string>
 
     <string name="account_name">Compte</string>
     <string name="account_description">Gestion de session en cours</string>
@@ -100,97 +100,100 @@
     <string name="action_settings">Paramêtres</string>
 
     <!-- Status indicators: -->
-    <string name="syncing">Synchronizing</string>
-    <string name="logout_title">Logging out</string>
-    <string name="logout_option">Log out</string>
+    <string name="syncing">Synchronisation</string>
+    <string name="logout_title">Déconnection en cours</string>
+    <string name="logout_option">Déconnecter</string>
     <string name="cancel_option">Annuler</string>
 
     <!-- Messages: -->
-    <string name="error_message">Error</string>
+    <string name="error_message">Erreur</string>
     <string name="logout_message">
-        Are you sure you want to log out? All your data stored on the device will
-        get lost if you choose to log out.
+        Êtes-vous sûr de vouloir vous déconnecter? Toutes vos données stockées sur l\'appareil seront
+         perdues si vous choisissez de vous déconnecter.
     </string>
 
-    <string name="unsynchronized_data_values">You need to synchronize your changes with the
-        server before logging out. Please check your Internet connection and press
-        the synchronization button
+    <string name="unsynchronized_data_values">Vous devez synchroniser vos modifications avec le
+         serveur avant de vous déconnecter. Veuillez vérifier votre connexion Internet et appuyez sur
+         le bouton de synchronisation
     </string>
 
-    <string name="settings">Settings</string>
+    <string name="settings">Paramètres</string>
     <string name="stub_description">Description</string>
 
-    <string name="drawer_open">Open navigation drawer</string>
-    <string name="drawer_close">Close navigation drawer</string>
+    <string name="drawer_open">Ouvrir le tiroir de navigation</string>
+    <string name="drawer_close">Fermer le tiroir de navigation</string>
 
-    <string name="enter_date">Enter date</string>
-    <string name="enter_text">Enter text</string>
-    <string name="enter_long_text">Enter long text</string>
-    <string name="enter_number">Enter number</string>
-    <string name="enter_integer">Enter integer</string>
-    <string name="enter_negative_integer">Enter negative integer</string>
-    <string name="enter_positive_integer_or_zero">Enter positive integer or zero</string>
-    <string name="enter_positive_integer">Enter positive integer</string>
-    <string name="enter_coordinates">Enter coordinates</string>
-    <string name="enter_latitude">Enter latitude</string>
-    <string name="enter_longitude">Enter longitude</string>
-    <string name="latitude_error_message">Latitude must be in range from -90 to 90</string>
-    <string name="longitude_error_message">Longitude must be in range from -180 to 180</string>
-    <string name="warning_hidefieldwithvalue">The following fields with value are being hidden and value has been blanked.</string>
-    <string name="report_date">Report date</string>
+    <string name="enter_date">Entrez la date</string>
+    <string name="enter_text">Entrez du texte</string>
+    <string name="enter_long_text">Entrez un texte long</string>
+    <string name="enter_number">Entrez un nombre</string>
+    <string name="enter_integer">Entrez un entier</string>
+    <string name="enter_negative_integer">Entrez un entier négatif</string>
+    <string name="enter_positive_integer_or_zero">Entrez un entier positif ou zéro</string>
+    <string name="enter_positive_integer">Entrer un entier positif</string>
+    <string name="enter_coordinates">Entrez des coordonnées</string>
+    <string name="enter_latitude">Entrez la latitude</string>
+    <string name="enter_longitude">Entrez la longitude</string>
+    <string name="latitude_error_message">La latitude doit être comprise entre -90 et 90</string>
+    <string name="longitude_error_message">La longitude doit être comprise entre -180 et 180</string>
+    <string name="warning_hidefieldwithvalue">Les champs suivants avec données sont masqués et la valeur a été masquée.</string>
+    <string name="report_date">Date du rapport</string>
     <string name="choose_organisation_unit">Sélectionnez l\'unité d\'organisation</string>
     <string name="choose_program">Sélectionnez le programme</string>
     <string name="choose_section">Sélectionnez la section</string>
     <string name="choose_filter">Sélectionez le filtre</string>
-    <string name="duedate">Due date</string>
-    <string name="eventname">Event name</string>
-    <string name="startdate">Start date</string>
-    <string name="enddate">End date</string>
+    <string name="duedate">Date d\'échéance</string>
+    <string name="eventname">Nom de l\'événement</string>
+    <string name="startdate">Date de début</string>
+    <string name="enddate">Date de fin</string>
     <string name="mandatory_indicator">*</string>
-    <string name="find_option">Find option</string>
+    <string name="find_option">Trouver l\'option</string>
 
     <!-- Button labels: -->
-    <string name="today_date">Today\'s date</string>
-    <string name="pick_date">Pick date</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-    <string name="edit_columns">Edit columns</string>
+    <string name="today_date">Date d\'aujourd\'hui</string>
+    <string name="pick_date">Choisissez la date</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
+    <string name="edit_columns">Modifier les colonnes</string>
 
-    <string name="sync_status_ok_title">Synced</string>
-    <string name="sync_status_ok_message">This item has been successfully synchronized with the server</string>
-    <string name="sync_status_offline_title">Not Synced</string>
-    <string name="sync_status_offline_message">This item has not yet been synchronized with the server</string>
-    <string name="sync_status_error_title">Error</string>
-    <string name="sync_status_error_message">Something went wrong. Please, try to re-upload event or contact system administrator</string>
-    <string name="sync_now">Sync now</string>
+    <string name="sync_status_ok_title">Synchronisé</string>
+    <string name="sync_status_ok_message">Cet element a été synchronisé avec le serveur</string>
+    <string name="sync_status_offline_title">Non synchronisé</string>
+    <string name="sync_status_offline_message">Cet element n\'a pas encore été synchronisé avec le serveur</string>
+    <string name="sync_status_error_title">Erreur</string>
+    <string name="sync_status_error_message">Quelque chose s\'est mal passé. S\'il vous plaît, essayez de re-télécharger l\'événement ou contacter l\'administrateur du système</string>
+    <string name="sync_now">Synchroniser maintenant</string>
 
     <!-- Delete Report Entity confirmation dialog -->
     <string name="delete">Effacer</string>
-    <string name="delete_report_entity_dialog_title">Delete this Report Entity?</string>
+    <string name="delete_report_entity_dialog_title">Supprimer cette entité de rapport?</string>
     <string name="delete_report_entity_dialog_message">L\'entité sera perdue à jamais. Vous devrez créer un nouvel entité et rentrer l\'information.</string>
-    <string name="report_entity_deletion_error">Unable to delete Report Entity</string>
+    <string name="report_entity_deletion_error">Impossible de supprimer l\'entité de rapport</string>
 
     <!-- SyncDateWrapper strings: -->
-    <string name="never">never</string>
-    <string name="min_ago">m ago</string>
+    <string name="never">jamais</string>
+    <string name="min_ago">m depuis</string>
     <string name="hours">h</string>
-    <string name="now">now</string>
+    <string name="now">à présent</string>
 
-    <string name="no_organisation_units">You are not assigned to any Organisation Units. Please contact system administrator.</string>
-    <string name="no_programs">You do not have any programs assigned to Organisation unit or you do not have the sufficient user roles. Please contact system administrator.</string>
-    <string name="report_entity">Report Entity</string>
-    <string name="filter_title">Filter</string>
+    <string name="no_organisation_units">Vous n\'êtes affecté à aucune unité d\'organisation. Veuillez contacter l\'administrateur du système.</string>
+    <string name="no_programs">Vous n\'avez aucun programme affecté à l\'unité d\'organisation ou vous n\'avez pas les rôles utilisateur suffisants. Veuillez contacter l\'administrateur du système.</string>
+    <string name="report_entity">Entité de rapport</string>
+    <string name="filter_title">Filtre</string>
 
     <!-- About fragment strings: -->
     <string name="documentation_header">Documentation:</string>
     <string name="libraries_header">Libraries used:</string>
-    <string name="logged_in_as">Logged in as:</string>
-    <string name="logged_in_at">At server:</string>
+    <string name="logged_in_as">Connecté en tant que:</string>
+    <string name="logged_in_at">Au serveur:</string>
 
     <!-- last commit -->
     <string name="about_this_app">À propos de cette appli</string>
     <string name="app_version">Version de l\'appli: %s</string>
     <string name="last_commit">Commit hash: %s</string>
-    <string name="unavailable">Unavailable</string>
-    <string name="est_about">This app is under the maintenance of EyeSeeTea Ltd (http://eyeseetea.com)</string>
+    <string name="unavailable">Indisponible</string>
+    <string name="est_about">Cette application est sous le maintien de EyeSeeTea Ltd (http://eyeseetea.com)</string>
+
+    <!-- snackbar -->
+    <string name="retry">"Reessayer"</string>
 </resources>

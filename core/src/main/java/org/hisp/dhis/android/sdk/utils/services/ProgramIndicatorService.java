@@ -84,12 +84,7 @@ public class ProgramIndicatorService {
         
         Double value = getValue(programInstance, null, programIndicator);
 
-        if (value != null && !Double.isNaN(value)) {
-            value = MathUtils.getRounded(value, 2);
-            return String.valueOf(value);
-        }
-
-        return null;
+        return TextUtils.fromDouble(value);
     }
 
     /**
@@ -106,12 +101,7 @@ public class ProgramIndicatorService {
         
         Double value = getValue(null, event, programIndicator);
 
-        if (value != null && !Double.isNaN(value)) {
-            value = MathUtils.getRounded(value, 2);
-            return String.valueOf(value);
-        }
-
-        return null;
+        return TextUtils.fromDouble(value);
     }
 
     /**
@@ -184,6 +174,8 @@ public class ProgramIndicatorService {
                     matcher.appendReplacement(description, "Enrollment date");
                 } else if (ProgramIndicator.INCIDENT_DATE.equals(uid)) {
                     matcher.appendReplacement(description, "Incident date");
+                } else if (ProgramIndicator.EVENT_DATE.equals(uid)) {
+                        matcher.appendReplacement(description, "Event date");
                 } else if (ProgramIndicator.VALUE_COUNT.equals(uid)) {
                     matcher.appendReplacement(description, "Value count");
                 }
@@ -409,7 +401,7 @@ public class ProgramIndicatorService {
                         zeroPosValueCount = isZeroOrPositive(value) ? (zeroPosValueCount + 1) : zeroPosValueCount;
                     }
 
-                    matcher.appendReplacement(buffer, value);
+                    matcher.appendReplacement(buffer, TextUtils.quote(value));
                 } else {
                     continue;
                 }
@@ -428,7 +420,7 @@ public class ProgramIndicatorService {
                             valueCount++;
                             zeroPosValueCount = isZeroOrPositive(value) ? (zeroPosValueCount + 1) : zeroPosValueCount;
                         }
-                        matcher.appendReplacement(buffer, value);
+                        matcher.appendReplacement(buffer, TextUtils.quote(value));
                     } else {
                         continue;
                     }
@@ -447,15 +439,17 @@ public class ProgramIndicatorService {
                     Date date = null;
 
                     if (ProgramIndicator.ENROLLMENT_DATE.equals(uid)) {
-                        date = DateUtils.getMediumDate(enrollmentProgramInstance.getEnrollmentDate());
+                        date = DateUtils.parseDate(enrollmentProgramInstance.getEnrollmentDate());
                     } else if (ProgramIndicator.INCIDENT_DATE.equals(uid)) {
-                        date = DateUtils.getMediumDate(enrollmentProgramInstance.getIncidentDate());
+                        date = DateUtils.parseDate(enrollmentProgramInstance.getIncidentDate());
                     } else if (ProgramIndicator.CURRENT_DATE.equals(uid)) {
                         date = currentDate;
+                    } else if (ProgramIndicator.EVENT_DATE.equals(uid)) {
+                        date = DateUtils.parseDate(enrollmentProgramInstance.getEvents().get(0).getEventDate());
                     }
 
                     if (date != null) {
-                        matcher.appendReplacement(buffer, DateUtils.daysBetween(currentDate, date) + "");
+                        matcher.appendReplacement(buffer, TextUtils.quote(DateUtils.getMediumDateString(date)));
                     }
                 }
             }
@@ -491,10 +485,10 @@ public class ProgramIndicatorService {
             value = ExpressionUtils.evaluateToDouble(expression, null);
         } catch (JexlException e) {
             e.printStackTrace();
-            value = new Double(0);
+            value = null;
         } catch (IllegalStateException e){
             e.printStackTrace();
-            value = new Double(0);
+            value = null;
         }
         return value;
     }

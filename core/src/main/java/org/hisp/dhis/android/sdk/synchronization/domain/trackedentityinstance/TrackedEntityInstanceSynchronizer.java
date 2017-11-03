@@ -5,7 +5,7 @@ import static android.R.attr.id;
 import static org.hisp.dhis.android.sdk.persistence.models.FailedItem.TRACKEDENTITYINSTANCE;
 
 import org.hisp.dhis.android.sdk.network.APIException;
-import org.hisp.dhis.android.sdk.network.response.ImportSummary2;
+import org.hisp.dhis.android.sdk.persistence.models.ApiResponse;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship;
@@ -41,8 +41,9 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer {
 
     public void sync(TrackedEntityInstance trackedEntityInstance) {
 
-        if (existsRelationships(trackedEntityInstance)) {
-            syncAllTeisInTwoSteps(mTrackedEntityInstanceRepository.getAllLocalTeis());
+        List<TrackedEntityInstance> trackedEntityInstances = mTrackedEntityInstanceRepository.getAllLocalTeis();
+        if (existsRelationships(trackedEntityInstance) && trackedEntityInstances.size()>1) {
+            syncAllTeisInTwoSteps(trackedEntityInstances);
         } else {
             syncSingleTei(trackedEntityInstance);
         }
@@ -50,7 +51,7 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer {
 
 
     public void sync(List<TrackedEntityInstance> trackedEntityInstances) {
-        if (trackedEntityInstances != null && trackedEntityInstances.size() >= 0) {
+        if (trackedEntityInstances != null && trackedEntityInstances.size() > 0) {
             if (existsRelationships(trackedEntityInstances)) {
                 syncAllTeisInTwoSteps(trackedEntityInstances);
             } else if (trackedEntityInstances.size() == 1) {
@@ -98,21 +99,20 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer {
             Map<String, TrackedEntityInstance> trackedEntityInstanceMap =
                     TrackedEntityInstance.toMap(trackedEntityInstances);
 
-            List<ImportSummary2> importSummaries = mTrackedEntityInstanceRepository.sync(
+            List<ImportSummary> importSummaries = mTrackedEntityInstanceRepository.sync(
                     trackedEntityInstances);
-
-            for (ImportSummary2 importSummary : importSummaries) {
-                TrackedEntityInstance trackedEntityInstance = trackedEntityInstanceMap.get(
-                        importSummary.getReference());
-                if (trackedEntityInstance != null) {
-                    if (importSummary.isSuccessOrOK()) {
-                        syncEnrollments(trackedEntityInstance.getLocalId());
-                        changeTEIToSynced(trackedEntityInstance);
-                    } else if (importSummary.isError()) {
-                        super.handleImportSummaryError(null, TRACKEDENTITYINSTANCE, 200, id);
+                    for (ImportSummary importSummary : importSummaries) {
+                        TrackedEntityInstance trackedEntityInstance = trackedEntityInstanceMap.get(
+                                importSummary.getReference());
+                        if (trackedEntityInstance != null) {
+                            if (importSummary.isSuccessOrOK()) {
+                                syncEnrollments(trackedEntityInstance.getLocalId());
+                                changeTEIToSynced(trackedEntityInstance);
+                            } else if (importSummary.isError()) {
+                                super.handleImportSummaryError(null, TRACKEDENTITYINSTANCE, 200, id);
+                            }
+                        }
                     }
-                }
-            }
         } catch (Exception e) {
             syncOneByOne(trackedEntityInstances);
         }

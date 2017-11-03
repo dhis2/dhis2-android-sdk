@@ -22,4 +22,8 @@ public interface AppPreferences {
     boolean getCrashReportsState();
 
     void setCrashReportsState(Boolean enabled);
+
+    String getAPiVersion();
+
+    void setApiVersion(String version);
 }

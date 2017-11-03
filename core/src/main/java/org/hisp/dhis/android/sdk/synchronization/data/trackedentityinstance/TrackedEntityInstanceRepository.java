@@ -1,7 +1,7 @@
 package org.hisp.dhis.android.sdk.synchronization.data.trackedentityinstance;
 
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
-import org.hisp.dhis.android.sdk.network.response.ImportSummary2;
+import org.hisp.dhis.android.sdk.persistence.models.ApiResponse;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
@@ -39,19 +39,19 @@ public class TrackedEntityInstanceRepository  implements ITrackedEntityInstanceR
     }
 
     @Override
-    public List<ImportSummary2> sync(List<TrackedEntityInstance> trackedEntityInstanceList) {
+    public List<ImportSummary> sync(List<TrackedEntityInstance> trackedEntityInstanceList) {
 
-        List<ImportSummary2> importSummaries = mRemoteDataSource.save(trackedEntityInstanceList);
+        List<ImportSummary> importSummaries = mRemoteDataSource.save(trackedEntityInstanceList);
 
         Map<String, TrackedEntityInstance> trackedEntityInstanceMap =
                 TrackedEntityInstance.toMap(trackedEntityInstanceList);
 
         if (importSummaries != null) {
             DateTime dateTime = mRemoteDataSource.getServerTime();
-            for (ImportSummary2 importSummary2 : importSummaries) {
-                if (importSummary2.isSuccessOrOK()) {
-                    System.out.println("IMPORT SUMMARY(teibatch): " + importSummary2.getDescription() + importSummary2.getHref() +" "+ importSummary2.getReference());
-                    TrackedEntityInstance trackedEntityInstance = trackedEntityInstanceMap.get(importSummary2.getReference());
+            for (ImportSummary importSummary : importSummaries) {
+                if (importSummary.isSuccessOrOK()) {
+                    System.out.println("IMPORT SUMMARY(teibatch): " + importSummary.getDescription() + importSummary.getHref() +" "+ importSummary.getReference());
+                    TrackedEntityInstance trackedEntityInstance = trackedEntityInstanceMap.get(importSummary.getReference());
                     if (trackedEntityInstance != null) {
                         updateTrackedEntityInstanceTimestamp(trackedEntityInstance, dateTime.toString(), dateTime.toString());
                     }

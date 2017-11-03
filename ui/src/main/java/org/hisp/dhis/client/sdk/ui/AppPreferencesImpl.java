@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.client.sdk.ui;
 
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
+
 import android.content.Context;
 import android.content.SharedPreferences;
-
-import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class AppPreferencesImpl implements AppPreferences {
     public final static String PREFS_NAME = "preferences:application";
@@ -41,12 +41,15 @@ public class AppPreferencesImpl implements AppPreferences {
     public static final String UPDATE_FREQUENCY = "update_frequency";
     public static final String BACKGROUND_SYNC = "background_sync";
     public static final String SYNC_NOTIFICATIONS = "sync_notifications";
+    public static final String API_VERSION = "apiVersion";
 
     //Default values:
     public static final int DEFAULT_UPDATE_FREQUENCY = 1440; // (1 day in minutes)
     public static final Boolean DEFAULT_BACKGROUND_SYNC = true;
     public static final Boolean DEFAULT_CRASH_REPORTS = true;
     public static final Boolean DEFAULT_SYNC_NOTIFICATIONS = true;
+    public static final String DEFAULT_API_VERSION = "2.27";
+
 
     private final SharedPreferences sharedPreferences;
 
@@ -111,6 +114,18 @@ public class AppPreferencesImpl implements AppPreferences {
     public void setCrashReportsState(Boolean enabled) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(CRASH_REPORTS, enabled);
+        editor.apply();
+    }
+
+    @Override
+    public String getAPiVersion() {
+        return sharedPreferences.getString(API_VERSION, DEFAULT_API_VERSION);
+    }
+
+    @Override
+    public void setApiVersion(String version) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(API_VERSION, version);
         editor.apply();
     }
 }

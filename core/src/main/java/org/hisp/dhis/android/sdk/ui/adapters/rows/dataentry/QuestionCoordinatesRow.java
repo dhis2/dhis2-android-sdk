@@ -21,6 +21,7 @@ import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.autocompleterow.TextRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
+import org.hisp.dhis.client.sdk.ui.AppPreferencesImpl;
 
 public final class QuestionCoordinatesRow extends TextRow {
     private static final String EMPTY_FIELD = "";
@@ -79,7 +80,16 @@ public final class QuestionCoordinatesRow extends TextRow {
             }
         }
 
-        return "[" + longitudeValue + "," + latitudeValue + "]";
+        String coordinatesValue;
+        AppPreferencesImpl appPreferences = new AppPreferencesImpl(latitude.getContext());
+
+        if (appPreferences.getAPiVersion().equals("2.25")) {
+            coordinatesValue = longitudeValue + "," + latitudeValue;
+        } else {
+            coordinatesValue = "[" + longitudeValue + "," + latitudeValue + "]";
+        }
+
+        return coordinatesValue;
     }
 
     public QuestionCoordinatesRow(String label, boolean mandatory, String warning, BaseValue baseValue,

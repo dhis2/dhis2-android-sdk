@@ -29,7 +29,7 @@
 
 <resources>
 
-    <string name="action_settings">Paramètres</string>
+    <string name="action_settings">Ajustes</string>
     <string name="imgdesc">imgdesc</string>
     <string name="title_activity_main">Menú principal</string>
     <string name="title_activity_splash">DHIS2 Tracker</string>
@@ -100,6 +100,12 @@
     <!-- Data Entry -->
     <string name="submit">Enviar</string>
     <string name="cancel">Cancelar</string>
+    <string name="no_event_present">No existe ningún evento</string>
+    <string name="missing_ou">No se encuentra la Unidad Organizativa</string>
+    <string name="error_with_form">Error en el formulario: </string>
+    <string name="please_retry">. Por favor, inténtelo de nuevo.</string>
+    <string name="an_error_ocurred">Hubo un error</string>
+    <string name="due_date_for"> Fecha límite para </string>
 
 
     <!-- Pending Registration -->
@@ -127,7 +133,7 @@
     <string name="retrying">Reintentando</string>
 
     <string name="update_frequency">Frecuencia de sincronización automática</string>
-    <string name="logout">\"Borrar datos locales &amp; salir\"</string>
+    <string name="logout">Borrar datos locales &amp; salir</string>
     <string name="un_enroll">Desinscribirse</string>
     <string name="complete">Completo</string>
     <string name="loading_server_info">Cargando la información del servidor</string>
@@ -148,16 +154,16 @@
     <string name="sending_data_server">Enviando los datos al servidor</string>
 
     <string-array name="update_frequencies">
-        <item>1 Minute</item>
-        <item>15 Minutes</item>
-        <item>1 Hour</item>
-        <item>1 Day</item>
-        <item>Disabled</item>
+        <item>1 Minuto</item>
+        <item>15 Minutos</item>
+        <item>1 Hora</item>
+        <item>1 Día</item>
+        <item>Desabilitado</item>
     </string-array>
 
     <string-array name="copy_store_error_message">
-        <item>Copy</item>
-        <item>Write to SD card</item>
+        <item>Copiar</item>
+        <item>Guardar en la tarjeta SD</item>
     </string-array>
 
     <string name="synchronize_with_server">Sinc con el servidor</string>
@@ -250,11 +256,11 @@
     <string name="choose_filter">Selecciona un filtro</string>
     <string name="invalid_entry_type">Tipo de valor no soportado</string>
 
-    <string name="error_exporting_data">\"Error los metadatos no pudieron exportarse.\"</string>
+    <string name="error_exporting_data">Error los metadatos no pudieron exportarse.</string>
     <string name="developers_settings">Opciones para desarrolladores</string>
     <string name="export_data_name">Exportar base de datos</string>
     <string name="developer_option_key">optionkey para desarrolladores</string>
-    <string name="developer_option_title">\"Mostrar opciones para desarrolladores\"</string>
+    <string name="developer_option_title">Mostrar opciones para desarrolladores</string>
     <string name="sync_deleted_events">Sincronizando eventos borrados en remoto</string>
     <string name="sync_deleted_tracked_entities">Sincronizando las entidades trazadas borradas en remoto</string>
     <string name="sync_deleted_relations">Sincronizando las relaciones entre entidades trazadas borradas en remoto</string>
@@ -266,4 +272,10 @@
     <string name="loading_assigned_programs">Cargando los programas asignados</string>
     <string name="loading_tracked_entity_instances">Cargando instancias de entidades trazadas</string>
 
+    <!-- snackbar -->
+    <string name="downloading">Descargando</string>
+    <string name="error_downloading">Error descargando objeto</string>
+    <string name="downloaded_with_errors">Descarga terminada con errores</string>
+    <string name="download_complete">Descarga completada</string>
+    <string name="download_error_try_again">Error de descarga - por favor, inténtelo de nuevo</string>
 </resources>

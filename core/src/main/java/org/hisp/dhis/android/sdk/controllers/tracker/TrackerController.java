@@ -515,44 +515,26 @@ public final class TrackerController extends ResourceController {
      * Sets all flags for all loaded data values to false, and all updated dates to null
      */
     public static void clearDataValueLoadedFlags() {
-        List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
+        List<OrganisationUnit> assignedOrganisationUnits =
+                MetaDataController.getAssignedOrganisationUnits();
         for (OrganisationUnit organisationUnit : assignedOrganisationUnits) {
             if (organisationUnit.getId() == null)
                 break;
             List<Program> programsForOrgUnit = new ArrayList<>();
-            List<Program> programsForOrgUnitSEWoR = MetaDataController.getProgramsForOrganisationUnit
-                    (organisationUnit.getId(),
-                            ProgramType.WITHOUT_REGISTRATION);
+            List<Program> programsForOrgUnitSEWoR =
+                    MetaDataController.getProgramsForOrganisationUnit
+                            (organisationUnit.getId(),
+                                    ProgramType.WITHOUT_REGISTRATION);
             if (programsForOrgUnitSEWoR != null)
                 programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
 
             for (Program program : programsForOrgUnit) {
                 if (program.getUid() == null)
                     break;
-                DateTimeManager.getInstance().deleteLastUpdated(ResourceType.EVENTS, organisationUnit.getId() + program.getUid());
+                DateTimeManager.getInstance().deleteLastUpdated(ResourceType.EVENTS,
+                        organisationUnit.getId() + program.getUid());
             }
         }
-    }
-
-    /**
-     * Loads user generated data from the server. Which data is loaded is determined by enabling
-     * or disabling flags in DHIS 2.
-     */
-    public static void synchronizeDataValues(Context context, DhisApi dhisApi) throws APIException {
-        sendLocalData(dhisApi);
-        loadDataValues(context, dhisApi, SyncStrategy.DOWNLOAD_ONLY_NEW);
-    }
-
-    /**
-     * Tries to send locally stored data to the server
-     */
-    public static void sendLocalData(DhisApi dhisApi) throws APIException {
-        Log.d(CLASS_TAG, "sending local data");
-        TrackerDataSender.deleteLocallyDeletedEvents(dhisApi);
-        MetaDataController.getTrackedEntityAttributeGeneratedValues();
-        TrackerDataSender.sendTrackedEntityInstanceChanges(dhisApi, false);
-        TrackerDataSender.sendEnrollmentChanges(dhisApi, false);
-        TrackerDataSender.sendEventChanges(dhisApi);
     }
 
     /**

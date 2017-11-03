@@ -32,7 +32,6 @@ package org.hisp.dhis.android.sdk.utils.support;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Months;
-import org.joda.time.Years;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 

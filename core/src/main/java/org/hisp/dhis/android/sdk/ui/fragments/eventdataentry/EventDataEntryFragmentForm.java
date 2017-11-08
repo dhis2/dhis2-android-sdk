@@ -35,6 +35,7 @@ import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.IndicatorRow;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.StatusRow;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragmentSection;
 
@@ -140,5 +141,19 @@ class EventDataEntryFragmentForm {
 
     public void setTrackedEntityAttributeValues(Map<String, TrackedEntityAttributeValue> trackedEntityAttributeValues) {
         this.trackedEntityAttributeValues = trackedEntityAttributeValues;
+    }
+
+    public void setCurrentSectionEditable(boolean isExpired) {
+        for(Row row:currentSection.getRows()){
+            row.setEditable(isExpired);
+        }
+    }
+
+    public void setAllSectionsEditable(boolean isExpired) {
+        for(DataEntryFragmentSection section:sections) {
+            for (Row row : section.getRows()) {
+                row.setEditable(isExpired);
+            }
+        }
     }
 }

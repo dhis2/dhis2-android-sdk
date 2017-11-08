@@ -30,6 +30,7 @@
 package org.hisp.dhis.android.sdk.ui.fragments.eventdataentry;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.hisp.dhis.android.sdk.persistence.models.Event.COMPLETION_DATETIME_FORMAT;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -79,6 +80,9 @@ import org.hisp.dhis.android.sdk.utils.UiUtils;
 import org.hisp.dhis.android.sdk.utils.services.ProgramIndicatorService;
 import org.hisp.dhis.android.sdk.utils.services.VariableService;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -253,6 +257,20 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     @Override
     public void onLoadFinished(Loader<EventDataEntryFragmentForm> loader, EventDataEntryFragmentForm data) {
         if (loader.getId() == LOADER_ID && isAdded()) {
+
+            int expiredDays= MetaDataController.getProgram(data.getEvent().getProgramId()).getCompleteEventsExpiryDays();
+            boolean isExpired=false;
+            if(data.getEvent().getCompletedDate()!=null && expiredDays>0) {
+                final DateTimeFormatter dtf = DateTimeFormat.forPattern(COMPLETION_DATETIME_FORMAT);
+                final LocalDate dt = dtf.parseLocalDate(data.getEvent().getCompletedDate());
+
+                isExpired=!dt.plusDays(expiredDays).isAfter(new LocalDate());
+                if (isExpired) {
+                    UiUtils.showConfirmDialog(getActivity(), "",
+                            getActivity().getString(R.string.event_expired),
+                            getActivity().getString(R.string.ok_option),null);
+                }
+            }
             progressBar.setVisibility(View.GONE);
             listView.setVisibility(View.VISIBLE);
             form = data;
@@ -263,14 +281,17 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             }
             List<Row> rows = new ArrayList<>();
             if(data.getCurrentSection()!=null) {
+                data.setCurrentSectionEditable(!isExpired);
                 rows.addAll(data.getCurrentSection().getRows());
             }
             if(data.getSections()!=null) {
+                data.setAllSectionsEditable(!isExpired);
                 for (DataEntryFragmentSection dataEntryFragmentSection : data.getSections()) {
                     rows.addAll(dataEntryFragmentSection.getRows());
                 }
             }
             for(Row row : rows) {
+                row.setEditable(!isExpired);
                 if (row.getViewType() == (DataEntryRowTypes.QUESTION_COORDINATES.ordinal())) {
                     GpsController.activateGps(getActivity().getBaseContext());
                 }
@@ -578,7 +599,6 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
                     UiUtils.showConfirmDialog(getActivity(), eventClick.getLabel(), eventClick.getAction(),
                             eventClick.getLabel(), getActivity().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                                 @Override
@@ -621,7 +641,12 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
                                         }
                                     }
-                                    Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
+                                    if(eventClick.getEvent().getCompletedDate()==null) {
+                                        eventClick.getEvent().saveNewCompletedDate();
+                                    }else {
+                                        Dhis2Application.getEventBus().post(
+                                                new RowValueChangedEvent(null, null));
+                                    }
                                 }
                             });
                     }
@@ -629,7 +654,9 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             } else {
                 eventClick.getComplete().setText(R.string.complete);
                 eventClick.getEvent().setStatus(Event.STATUS_ACTIVE);
+                eventClick.getEvent().setCompletedDate(null);
                 eventClick.getEvent().setFromServer(false);
+                eventClick.getEvent().removeCompletedDate();
                 Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
             }
         } else {
@@ -645,7 +672,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         //if rowType is coordinate or event date, save the event
         if(event.getRowType() == null
                 || DataEntryRowTypes.EVENT_COORDINATES.toString().equals(event.getRowType())
-                || DataEntryRowTypes.EVENT_DATE.toString().equals(event.getRowType())) {
+                || DataEntryRowTypes.EVENT_DATE.toString().equals(event.getRowType())
+                || DataEntryRowTypes.COMPLETED_DATE.toString().equals(event.getRowType())) {
             //save event
             saveThread.scheduleSaveEvent();
         } else {// save data element

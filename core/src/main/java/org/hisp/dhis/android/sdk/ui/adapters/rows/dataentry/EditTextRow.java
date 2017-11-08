@@ -153,12 +153,6 @@ public class EditTextRow extends Row {
             view = root;
         }
 
-        if(!isEditable()) {
-            holder.editText.setEnabled(false);
-        } else {
-            holder.editText.setEnabled(true);
-        }
-
         holder.textLabel.setText(mLabel);
         holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
         holder.listener.setBaseValue(mValue);
@@ -200,6 +194,12 @@ public class EditTextRow extends Row {
             holder.mandatoryIndicator.setVisibility(View.GONE);
         } else {
             holder.mandatoryIndicator.setVisibility(View.VISIBLE);
+        }
+
+        if(!isEditable()) {
+            holder.editText.setEnabled(false);
+        } else {
+            holder.editText.setEnabled(true);
         }
 
         return view;

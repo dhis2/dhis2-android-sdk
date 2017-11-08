@@ -90,6 +90,14 @@ public class Program extends BaseMetaDataObject {
     @Column(name = "incidentDateLabel")
     String incidentDateLabel;
 
+    @JsonProperty("expiryDays")
+    @Column(name = "expiryDays")
+    int expiryDays;
+
+    @JsonProperty("completeEventsExpiryDays")
+    @Column(name = "completeEventsExpiryDays")
+    int completeEventsExpiryDays;
+
     @JsonProperty("registration")
     @Column(name = "registration")
     boolean registration;
@@ -293,5 +301,21 @@ public class Program extends BaseMetaDataObject {
 
     public void setSelectIncidentDatesInFuture(boolean selectIncidentDatesInFuture) {
         this.selectIncidentDatesInFuture = selectIncidentDatesInFuture;
+    }
+
+    public int getExpiryDays() {
+        return expiryDays;
+    }
+
+    public void setExpiryDays(int expiryDays) {
+        this.expiryDays = expiryDays;
+    }
+
+    public int getCompleteEventsExpiryDays() {
+        return completeEventsExpiryDays;
+    }
+
+    public void setCompleteEventsExpiryDays(int completeEventsExpiryDays) {
+        this.completeEventsExpiryDays = completeEventsExpiryDays;
     }
 }

@@ -29,6 +29,11 @@
 
 package org.hisp.dhis.android.sdk.persistence.models;
 
+import static org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.AbsEnrollmentDatePickerRow
+        .EMPTY_FIELD;
+
+import android.content.Context;
+
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -41,9 +46,17 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
 
+import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
+import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
+import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.utils.api.CodeGenerator;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,6 +79,7 @@ public class Event extends BaseSerializableModel {
     public static final String STATUS_DELETED = "DELETED";
     @JsonIgnore
     public static final String EVENT_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+    public static final String COMPLETION_DATETIME_FORMAT = "yyyy-MM-dd'T'00:00:00.SSS";
 
     @JsonIgnore
     public static final String EVENT_DATE_FORMAT = "yy-MM-dd";
@@ -121,6 +135,10 @@ public class Event extends BaseSerializableModel {
     @JsonProperty("dueDate")
     @Column(name = "dueDate")
     String dueDate;
+
+    @JsonProperty("completedDate")
+    @Column(name = "completedDate")
+    String completedDate;
 
     @JsonProperty("dataValues")
     List<DataValue> dataValues;
@@ -323,6 +341,41 @@ public class Event extends BaseSerializableModel {
 
     public void setDueDate(String dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public String getCompletedDate() {
+        return completedDate;
+    }
+
+    public void setCompletedDate(String completedDate) {
+        this.completedDate = completedDate;
+    }
+
+    public void removeCompletedDate(){
+        setCompletedDate(null);
+        DataValue value = new DataValue();
+        value.setValue(EMPTY_FIELD);
+        Dhis2Application.getEventBus().post(new RowValueChangedEvent(value, DataEntryRowTypes.COMPLETED_DATE.toString()));
+    }
+
+    public void saveNewCompletedDate() {
+        DataValue value = new DataValue();
+
+        String newValue;
+        if (getCompletedDate() != null){
+            value.setValue(getCompletedDate());
+            newValue = getCompletedDate();
+        }
+        else {
+            LocalDate localDate = LocalDate.now();
+            DateTimeFormatter formatter = DateTimeFormat.forPattern(COMPLETION_DATETIME_FORMAT);
+            newValue = formatter.print(localDate);
+        }
+        if (!newValue.equals(value.getValue())) {
+            value.setValue(newValue);
+            setCompletedDate(value.getValue());
+            Dhis2Application.getEventBus().post(new RowValueChangedEvent(value, DataEntryRowTypes.COMPLETED_DATE.toString()));
+        }
     }
 
     public void setDataValues(List<DataValue> dataValues) {

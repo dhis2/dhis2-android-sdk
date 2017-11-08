@@ -268,13 +268,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                 if (isExpired) {
                     UiUtils.showConfirmDialog(getActivity(), "",
                             getActivity().getString(R.string.event_expired),
-                            getActivity().getString(R.string.ok_option),
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                }
-                            });
+                            getActivity().getString(R.string.ok_option),null);
                 }
             }
             progressBar.setVisibility(View.GONE);

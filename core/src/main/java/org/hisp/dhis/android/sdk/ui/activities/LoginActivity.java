@@ -42,6 +42,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.otto.Subscribe;
@@ -74,6 +75,7 @@ public class LoginActivity extends Activity implements OnClickListener {
     private EditText serverEditText;
     private Button loginButton;
     private ProgressBar progressBar;
+    private TextView progressText;
     private View viewsContainer;
     private boolean isPulling;
 
@@ -139,6 +141,8 @@ public class LoginActivity extends Activity implements OnClickListener {
 
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.GONE);
+        progressText = (TextView) findViewById(R.id.progress_text);
+        progressText.setVisibility(View.GONE);
         loginButton.setOnClickListener(this);
     }
 
@@ -192,6 +196,26 @@ public class LoginActivity extends Activity implements OnClickListener {
     }
 
     @Subscribe
+    public void onLoadingMessageEvent(final LoadingMessageEvent event) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run()
+            {
+                setText(event);
+            }
+        });
+    }
+
+    private void setText(LoadingMessageEvent event)
+    {
+        if(event!=null) {
+            if (event.message != null) {
+                progressText.setText(event.message);
+            }
+        }
+    }
+
+    @Subscribe
     public void onLoginFinished(NetworkJob.NetworkJobResult<ResourceType> result) {
         if(result!=null && ResourceType.USERS.equals(result.getResourceType())) {
             if(result.getResponseHolder().getApiException() == null) {
@@ -217,6 +241,7 @@ public class LoginActivity extends Activity implements OnClickListener {
         viewsContainer.startAnimation(anim);
         viewsContainer.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
+        progressText.setVisibility(View.VISIBLE);
     }
 
     private void showLoginFailedDialog(String error) {
@@ -250,6 +275,7 @@ public class LoginActivity extends Activity implements OnClickListener {
     private void showLoginDialog() {
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.in_down);
         progressBar.setVisibility(View.GONE);
+        progressText.setVisibility(View.GONE);
         viewsContainer.setVisibility(View.VISIBLE);
         viewsContainer.startAnimation(anim);
     }

@@ -164,9 +164,7 @@ public class EditTextRow extends Row {
 
         if(mRowType.equals(DataEntryRowTypes.NOT_SUPPORTED)){
             holder.editText.setHint(R.string.unsupported_value_type);
-            holder.editText.setEnabled(false);
-        } else{
-            holder.editText.setEnabled(true);
+            setEditable(false);
         }
 
         if(isDetailedInfoButtonHidden()) {

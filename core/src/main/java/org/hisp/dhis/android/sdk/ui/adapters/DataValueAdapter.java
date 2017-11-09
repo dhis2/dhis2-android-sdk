@@ -41,6 +41,7 @@ import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.AutoCompleteRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EditTextRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
@@ -91,7 +92,10 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
                 view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
                 view.postInvalidate();
                 view.setVisibility(View.GONE);
-                dataEntryRow.getValue().setValue(null);
+                dataEntryRow.getValue().delete();
+                if(dataEntryRow instanceof AutoCompleteRow) {
+                    dataEntryRow.getValue().setValue(null);
+                }
             }
 
             return view;

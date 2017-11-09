@@ -205,7 +205,7 @@ public class RadioButtonsRow extends Row {
                     firstButton.setChecked(true);
                 } else if (FALSE.equalsIgnoreCase(value)) {
                     secondButton.setChecked(true);
-                } else if (EMPTY_FIELD.equalsIgnoreCase(value)) {
+                } else if (EMPTY_FIELD.equalsIgnoreCase(value) || value==null) {
                     thirdButton.setChecked(true);
                 }
             } else if (DataEntryRowTypes.GENDER.equals(type)) {
@@ -215,6 +215,10 @@ public class RadioButtonsRow extends Row {
                     secondButton.setChecked(true);
                 } else if (OTHER.equalsIgnoreCase(value)) {
                     thirdButton.setChecked(true);
+                } else if(value==null){
+                    firstButton.setChecked(false);
+                    secondButton.setChecked(false);
+                    thirdButton.setChecked(false);
                 }
             }
         }

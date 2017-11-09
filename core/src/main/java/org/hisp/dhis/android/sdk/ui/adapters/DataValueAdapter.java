@@ -44,6 +44,7 @@ import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.AutoCompleteRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EditTextRow;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.RadioButtonsRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 
 import java.util.HashMap;
@@ -93,7 +94,7 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
                 view.postInvalidate();
                 view.setVisibility(View.GONE);
                 dataEntryRow.getValue().delete();
-                if(dataEntryRow instanceof AutoCompleteRow) {
+                if(dataEntryRow instanceof AutoCompleteRow || dataEntryRow instanceof RadioButtonsRow) {
                     dataEntryRow.getValue().setValue(null);
                 }
             }

@@ -61,6 +61,7 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
     private Map<String, String> warningDataElementRows;
     private Map<String, String> errorDataElementRows;
     private ListView mListView;
+    CustomOnEditorActionListener customOnEditorActionListener;
 
     public DataValueAdapter(FragmentManager fragmentManager,
             LayoutInflater inflater, ListView listView) {
@@ -70,6 +71,7 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
         warningDataElementRows = new HashMap<>();
         errorDataElementRows = new HashMap<>();
         mListView = listView;
+        customOnEditorActionListener = new CustomOnEditorActionListener();
     }
 
     @Override
@@ -79,10 +81,6 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
             String id = dataEntryRow.getItemId();
             dataEntryRow.setWarning(warningDataElementRows.get(id));
             dataEntryRow.setError(errorDataElementRows.get(id));
-            if (dataEntryRow instanceof EditTextRow) {
-                ((EditTextRow) dataEntryRow).setOnEditorActionListener(
-                        new CustomOnEditorActionListener());
-            }
             View view = dataEntryRow.getView(mFragmentManager, getInflater(), convertView, parent);
             view.setVisibility(View.VISIBLE); //in case recycling invisible view
             view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT,
@@ -99,6 +97,9 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
                 }
             }
 
+            if (dataEntryRow instanceof EditTextRow) {
+                ((EditTextRow) dataEntryRow).setOnEditorActionListener(customOnEditorActionListener);
+            }
             return view;
         } else {
             return null;

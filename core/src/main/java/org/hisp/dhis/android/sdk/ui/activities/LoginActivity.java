@@ -31,14 +31,15 @@ package org.hisp.dhis.android.sdk.ui.activities;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -54,10 +55,10 @@ import org.hisp.dhis.android.sdk.controllers.LoadingController;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.job.NetworkJob;
-import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis.android.sdk.network.Credentials;
-import org.hisp.dhis.android.sdk.persistence.preferences.AppPreferences;
 import org.hisp.dhis.android.sdk.network.APIException;
+import org.hisp.dhis.android.sdk.network.Credentials;
+import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis.android.sdk.persistence.preferences.AppPreferences;
 import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 
@@ -100,7 +101,7 @@ public class LoginActivity extends Activity implements OnClickListener {
     public void onResume() {
         super.onResume();
         Dhis2Application.bus.register(this);
-        if(isPulling) {
+        if (isPulling) {
             DhisService.loadInitialData(LoginActivity.this);
         }
     }
@@ -120,7 +121,7 @@ public class LoginActivity extends Activity implements OnClickListener {
         String password = null;
 
         DhisController.getInstance().init();
-        if(DhisController.isUserLoggedIn()) {
+        if (DhisController.isUserLoggedIn()) {
             server = DhisController.getInstance().getSession().getServerUrl().toString();
             username = DhisController.getInstance().getSession().getCredentials().getUsername();
             password = DhisController.getInstance().getSession().getCredentials().getPassword();
@@ -152,17 +153,17 @@ public class LoginActivity extends Activity implements OnClickListener {
         String password = passwordEditText.getText().toString();
         String serverURL = serverEditText.getText().toString();
 
-        if(username.isEmpty()) {
+        if (username.isEmpty()) {
             showLoginFailedDialog(getString(R.string.enter_username));
             return;
         }
 
-        if(password.isEmpty()) {
+        if (password.isEmpty()) {
             showLoginFailedDialog(getString(R.string.enter_password));
             return;
         }
 
-        if(serverURL.isEmpty()) {
+        if (serverURL.isEmpty()) {
             showLoginFailedDialog(getString(R.string.enter_serverurl));
             return;
         }
@@ -178,7 +179,7 @@ public class LoginActivity extends Activity implements OnClickListener {
     public void login(String serverUrl, String username, String password) {
         showProgress();
         HttpUrl serverUri = HttpUrl.parse(serverUrl);
-        if(serverUri == null) {
+        if (serverUri == null) {
             showLoginFailedDialog(getString(R.string.invalid_server_url));
             return;
         }
@@ -190,7 +191,7 @@ public class LoginActivity extends Activity implements OnClickListener {
     @Subscribe
     public void onReceivedUiEvent(UiEvent uiEvent) {
         if (uiEvent.getEventType().equals(UiEvent.UiEventType.INITIAL_SYNCING_END)) {
-            isPulling=false;
+            isPulling = false;
             launchMainActivity();
         }
     }
@@ -217,8 +218,10 @@ public class LoginActivity extends Activity implements OnClickListener {
 
     @Subscribe
     public void onLoginFinished(NetworkJob.NetworkJobResult<ResourceType> result) {
-        if(result!=null && ResourceType.USERS.equals(result.getResourceType())) {
-            if(result.getResponseHolder().getApiException() == null) {
+        if (result != null && ResourceType.USERS.equals(result.getResourceType())) {
+            if (result.getResponseHolder().getApiException() == null) {
+                hideKeyboard();
+
                 LoadingController.enableLoading(this, ResourceType.ASSIGNEDPROGRAMS);
                 LoadingController.enableLoading(this, ResourceType.OPTIONSETS);
                 LoadingController.enableLoading(this, ResourceType.PROGRAMS);
@@ -228,12 +231,18 @@ public class LoginActivity extends Activity implements OnClickListener {
                 LoadingController.enableLoading(this, ResourceType.PROGRAMRULEACTIONS);
                 LoadingController.enableLoading(this, ResourceType.RELATIONSHIPTYPES);
                 LoadingController.enableLoading(this, ResourceType.EVENTS);
-                isPulling=true;
+                isPulling = true;
                 DhisService.loadInitialData(LoginActivity.this);
             } else {
                 onLoginFail(result.getResponseHolder().getApiException());
             }
         }
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(passwordEditText.getWindowToken(), 0);
     }
 
     private void showProgress() {

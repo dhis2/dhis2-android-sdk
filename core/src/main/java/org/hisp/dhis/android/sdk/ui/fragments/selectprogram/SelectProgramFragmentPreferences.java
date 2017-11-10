@@ -73,6 +73,13 @@ public final class SelectProgramFragmentPreferences {
         }
     }
 
+    public void removePreferences() {
+        remove(ORG_UNIT_ID);
+        remove(ORG_UNIT_LABEL);
+        remove(PROGRAM_ID);
+        remove(PROGRAM_LABEL);
+    }
+
     public Pair<String, String> getOrgUnit() {
         String orgUnitId = get(ORG_UNIT_ID);
         String orgUnitLabel = get(ORG_UNIT_LABEL);

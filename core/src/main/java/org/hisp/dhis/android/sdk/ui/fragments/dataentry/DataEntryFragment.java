@@ -38,15 +38,18 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
@@ -76,7 +79,7 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     protected static final int INITIAL_POSITION = 0;
     protected static final String EXTRA_ARGUMENTS = "extra:Arguments";
     protected static final String EXTRA_SAVED_INSTANCE_STATE = "extra:savedInstanceState";
-    protected ListView listView;
+    protected static ListView listView;
     protected ProgressBar progressBar;
     protected DataValueAdapter listViewAdapter;
     protected boolean refreshing = false;

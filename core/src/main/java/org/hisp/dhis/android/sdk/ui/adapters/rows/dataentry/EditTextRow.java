@@ -48,6 +48,7 @@ import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
+import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragment;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 
 public class EditTextRow extends Row {
@@ -199,7 +200,7 @@ public class EditTextRow extends Row {
         } else {
             holder.editText.setEnabled(true);
         }
-
+        holder.editText.setOnEditorActionListener(mOnEditorActionListener);
         return view;
     }
 

@@ -39,7 +39,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="org.hisp.dhis.android.sdk.ui.activities.LoginActivity">
 
-    <include layout="@layout/progress_bar_light" />
+    <ProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleLargeInverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminate="true" />
+
 
     <LinearLayout
         android:id="@+id/login_views_container"
@@ -117,5 +124,20 @@
             app:font="@string/bold_font_name" />
 
     </LinearLayout>
+
+    <org.hisp.dhis.android.sdk.ui.views.FontTextView
+        android:id="@+id/progress_text"
+        style="?android:attr/progressBarStyleLargeInverse"
+        android:layout_width="390dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/progress_bar"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:text="@string/pull"
+        android:textColor="@color/white"
+        android:textSize="@dimen/medium_text_size"
+        android:visibility="visible"
+        app:font="@string/regular_font_name" />
 
 </RelativeLayout>

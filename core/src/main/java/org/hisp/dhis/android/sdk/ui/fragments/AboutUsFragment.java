@@ -10,19 +10,23 @@ import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.BuildConfig;
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.ui.views.FontTextView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Locale;
 
 public class AboutUsFragment extends Fragment {
     public static final String TAG = AboutUsFragment.class.getSimpleName();
@@ -103,5 +107,35 @@ public class AboutUsFragment extends Fragment {
                 getCommitMessage(getContext()));
         ((FontTextView) view.findViewById(R.id.description)).setText(
                 getDescriptionMessage(getContext()));
+        String url = DhisController.getInstance().getSession().getServerUrl().toString();
+        String username = DhisController.getInstance().getSession().getCredentials().getUsername();
+        if (url != null && username != null) {
+            // inside app_session:
+
+            TextView sessionText = (TextView) view.findViewById(R.id.app_session);
+            sessionText.setText(String.format(Locale.getDefault(), "%s %s\n",
+                    getString(R.string.logged_in_as),
+                    username));
+
+            sessionText.append(getString(R.string.logged_in_at) + " ");
+            addUrl(sessionText, url);
+            sessionText.setMovementMethod(LinkMovementMethod.getInstance());
+        }
     }
+
+    /**
+     * A wrapper method to append url to a textView.
+     *
+     * @param textView
+     * @param url
+     */
+    protected void addUrl(TextView textView, String url) {
+        textView.append(
+                Html.fromHtml(
+                        String.format(Locale.getDefault(), "<a href=\"%s\">%s</a>",
+                                url
+                                ,
+                                url)));
+    }
+
 }

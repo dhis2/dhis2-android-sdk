@@ -48,6 +48,7 @@ import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
+import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragment;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 
 public class EditTextRow extends Row {
@@ -153,12 +154,6 @@ public class EditTextRow extends Row {
             view = root;
         }
 
-        if(!isEditable()) {
-            holder.editText.setEnabled(false);
-        } else {
-            holder.editText.setEnabled(true);
-        }
-
         holder.textLabel.setText(mLabel);
         holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
         holder.listener.setBaseValue(mValue);
@@ -170,9 +165,7 @@ public class EditTextRow extends Row {
 
         if(mRowType.equals(DataEntryRowTypes.NOT_SUPPORTED)){
             holder.editText.setHint(R.string.unsupported_value_type);
-            holder.editText.setEnabled(false);
-        } else{
-            holder.editText.setEnabled(true);
+            setEditable(false);
         }
 
         if(isDetailedInfoButtonHidden()) {
@@ -202,6 +195,12 @@ public class EditTextRow extends Row {
             holder.mandatoryIndicator.setVisibility(View.VISIBLE);
         }
 
+        if(!isEditable()) {
+            holder.editText.setEnabled(false);
+        } else {
+            holder.editText.setEnabled(true);
+        }
+        holder.editText.setOnEditorActionListener(mOnEditorActionListener);
         return view;
     }
 

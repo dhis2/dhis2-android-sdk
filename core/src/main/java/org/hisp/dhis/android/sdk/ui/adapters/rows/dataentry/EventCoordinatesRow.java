@@ -96,7 +96,10 @@ public final class EventCoordinatesRow extends Row {
         // Coordinates cannot be manually entered
         holder.latitude.setEnabled(false);
         holder.longitude.setEnabled(false);
-
+        if(!isEditable()) {
+            holder.captureCoords.setEnabled(false);
+            holder.captureCoords.setOnClickListener(null);
+        }
         return view;
     }
 

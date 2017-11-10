@@ -41,8 +41,10 @@ import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.AutoCompleteRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EditTextRow;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.RadioButtonsRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 
 import java.util.HashMap;
@@ -59,6 +61,7 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
     private Map<String, String> warningDataElementRows;
     private Map<String, String> errorDataElementRows;
     private ListView mListView;
+    CustomOnEditorActionListener customOnEditorActionListener;
 
     public DataValueAdapter(FragmentManager fragmentManager,
             LayoutInflater inflater, ListView listView) {
@@ -68,6 +71,7 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
         warningDataElementRows = new HashMap<>();
         errorDataElementRows = new HashMap<>();
         mListView = listView;
+        customOnEditorActionListener = new CustomOnEditorActionListener();
     }
 
     @Override
@@ -77,10 +81,6 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
             String id = dataEntryRow.getItemId();
             dataEntryRow.setWarning(warningDataElementRows.get(id));
             dataEntryRow.setError(errorDataElementRows.get(id));
-            if (dataEntryRow instanceof EditTextRow) {
-                ((EditTextRow) dataEntryRow).setOnEditorActionListener(
-                        new CustomOnEditorActionListener());
-            }
             View view = dataEntryRow.getView(mFragmentManager, getInflater(), convertView, parent);
             view.setVisibility(View.VISIBLE); //in case recycling invisible view
             view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT,
@@ -91,9 +91,15 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
                 view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
                 view.postInvalidate();
                 view.setVisibility(View.GONE);
-                dataEntryRow.getValue().setValue(null);
+                dataEntryRow.getValue().delete();
+                if(dataEntryRow instanceof AutoCompleteRow || dataEntryRow instanceof RadioButtonsRow) {
+                    dataEntryRow.getValue().setValue(null);
+                }
             }
 
+            if (dataEntryRow instanceof EditTextRow) {
+                ((EditTextRow) dataEntryRow).setOnEditorActionListener(customOnEditorActionListener);
+            }
             return view;
         } else {
             return null;

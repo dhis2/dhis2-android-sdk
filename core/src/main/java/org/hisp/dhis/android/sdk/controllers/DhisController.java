@@ -46,6 +46,7 @@ import org.hisp.dhis.android.sdk.network.Session;
 import org.hisp.dhis.android.sdk.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.persistence.preferences.LastUpdatedManager;
 import org.hisp.dhis.android.sdk.network.APIException;
+import org.hisp.dhis.android.sdk.ui.fragments.selectprogram.SelectProgramFragmentPreferences;
 
 public final class DhisController {
     public final static String LAST_UPDATED_METADATA = "lastupdated_metadata";
@@ -137,6 +138,8 @@ public final class DhisController {
         MetaDataController.clearMetaDataLoadedFlags();
         TrackerController.clearDataValueLoadedFlags();
         MetaDataController.wipe();
+        SelectProgramFragmentPreferences selectProgramFragmentPreferences = new SelectProgramFragmentPreferences(context);
+        selectProgramFragmentPreferences.removePreferences();
         LoadingController.clearLoadFlags(context);
     }
 

@@ -50,6 +50,7 @@
             android:id="@+id/edit_text_row"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:imeOptions="actionNext|flagNoExtractUi"
             android:textSize="@dimen/medium_text_size"
             app:font="@string/light_font_name"/>
     </LinearLayout>

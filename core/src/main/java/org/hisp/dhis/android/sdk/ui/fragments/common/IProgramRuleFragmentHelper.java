@@ -37,6 +37,7 @@ import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -180,6 +181,11 @@ public interface IProgramRuleFragmentHelper {
      * @param uid
      */
     void saveTrackedEntityAttribute(String uid);
+
+    /**
+     * Disable form fields that use a given {@link DataValue}
+     */
+    List<Row> getFormRows();
 
     boolean blockingSpinnerNeeded();
 }

@@ -42,7 +42,9 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 import org.hisp.dhis.android.sdk.ui.fragments.common.IProgramRuleFragmentHelper;
+import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragmentSection;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.ValidationErrorDialog;
 import org.hisp.dhis.android.sdk.utils.api.ProgramRuleActionType;
@@ -184,6 +186,15 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
         if (trackedEntityAttributeValue != null) {
             trackedEntityAttributeValue.save();
         }
+    }
+
+    @Override
+    public List<Row> getFormRows() {
+        List<Row> rows = new ArrayList<>();
+        for (DataEntryFragmentSection section: eventDataEntryFragment.getForm().getSections()) {
+            rows.addAll(section.getRows());
+        }
+        return rows;
     }
 
     @Override

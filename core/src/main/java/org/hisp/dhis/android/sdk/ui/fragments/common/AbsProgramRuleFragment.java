@@ -33,11 +33,13 @@ import android.app.ProgressDialog;
 import android.util.Log;
 
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 import org.hisp.dhis.android.sdk.utils.comparators.ProgramRulePriorityComparator;
 import org.hisp.dhis.android.sdk.utils.services.ProgramRuleService;
 import org.hisp.dhis.android.sdk.utils.services.VariableService;
@@ -162,8 +164,7 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
         }
     }
 
-
-            protected void applyAssignRuleAction(ProgramRuleAction programRuleAction) {
+    protected void applyAssignRuleAction(ProgramRuleAction programRuleAction) {
         String stringResult = ProgramRuleService.getCalculatedConditionValue(programRuleAction.getData());
         String programRuleVariableName = programRuleAction.getContent();
         ProgramRuleVariable programRuleVariable;
@@ -180,6 +181,7 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
                 dataValue.setValue(stringResult);
                 programRuleFragmentHelper.flagDataChanged(true);
                 programRuleFragmentHelper.saveDataElement(dataElementId);
+                disableFormRows(dataValue);
             }
         }
         String trackedEntityAttributeId = programRuleAction.getTrackedEntityAttribute();
@@ -189,10 +191,11 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
                 trackedEntityAttributeValue.setValue(stringResult);
                 programRuleFragmentHelper.flagDataChanged(true);
                 programRuleFragmentHelper.saveTrackedEntityAttribute(trackedEntityAttributeId);
+                disableFormRows(trackedEntityAttributeValue);
             }
         }
     }
-
+    
     public void showBlockingProgressBar() {
         if (getActivity() != null) {
             getActivity().runOnUiThread(new Runnable() {
@@ -226,6 +229,14 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
                     }
                 }
             });
+        }
+    }
+
+    private void disableFormRows(BaseValue value) {
+        for (Row row : programRuleFragmentHelper.getFormRows()) {
+            if (row.getValue() == value) {
+                row.setEditable(false);
+            }
         }
     }
 }

@@ -42,6 +42,7 @@ public enum DataEntryRowTypes {
     TRUE_ONLY,
     OPTION_SET,
     DATE,
+    TIME,
     INDICATOR,
     EVENT_DATE,
     ENROLLMENT_DATE,

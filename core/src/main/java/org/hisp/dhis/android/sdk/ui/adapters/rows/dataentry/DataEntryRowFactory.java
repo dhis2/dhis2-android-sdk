@@ -56,6 +56,8 @@ public class DataEntryRowFactory {
             row = new CheckBoxRow(trackedEntityAttributeName, mandatory, null, baseValue);
         } else if (valueType.equals(ValueType.DATE) || valueType.equals(ValueType.AGE)) {
             row = new DatePickerRow(trackedEntityAttributeName, mandatory, null, baseValue, allowFutureDate);
+        } else if (valueType.equals(ValueType.TIME)) {
+            row = new TimePickerRow(trackedEntityAttributeName, mandatory, null, baseValue, allowFutureDate);
         } else if(valueType.equals(ValueType.COORDINATE)) {
             row = new QuestionCoordinatesRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.QUESTION_COORDINATES);
         } else  if(valueType.equals(ValueType.PHONE_NUMBER)) {

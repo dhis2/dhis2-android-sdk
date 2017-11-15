@@ -136,6 +136,11 @@ public final class EditTextRowView implements RowView {
                             enterText : dataEntityText.getHint();
                     return configure(hint, InputType.TYPE_CLASS_TEXT, true);
                 }
+                case URL:{
+                    String hint = isEmpty(dataEntityText.getHint()) ?
+                            enterText : dataEntityText.getHint();
+                    return configure(hint, InputType.TYPE_TEXT_VARIATION_URI, true);
+                }
                 case LONG_TEXT: {
                     String hint = isEmpty(dataEntityText.getHint()) ?
                             enterLongText : dataEntityText.getHint();

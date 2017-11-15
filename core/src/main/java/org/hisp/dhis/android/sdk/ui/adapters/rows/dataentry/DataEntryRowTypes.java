@@ -50,5 +50,6 @@ public enum DataEntryRowTypes {
     PERCENTAGE,
     PHONE_NUMBER,
     EMAIL,
-    INVALID_DATA_ENTRY
+    INVALID_DATA_ENTRY,
+    URL
 }

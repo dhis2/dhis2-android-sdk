@@ -62,6 +62,8 @@ public class DataEntryRowFactory {
             row = new PhoneEditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.PHONE_NUMBER);
         }  else  if(valueType.equals(ValueType.EMAIL)) {
             row = new EmailAddressEditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.EMAIL);
+        }  else  if(valueType.equals(ValueType.URL)) {
+            row = new URLEditTextRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.URL);
         } else {
             row = new InvalidEditTextRow(trackedEntityAttributeName, mandatory, null, baseValue,
                     DataEntryRowTypes.INVALID_DATA_ENTRY);

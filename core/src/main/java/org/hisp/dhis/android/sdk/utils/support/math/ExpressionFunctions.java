@@ -29,7 +29,8 @@
 
 package org.hisp.dhis.android.sdk.utils.support.math;
 
-import android.util.Log;
+import static org.hisp.dhis.android.sdk.utils.support.DateUtils.getMediumDateString;
+import static org.hisp.dhis.client.sdk.utils.StringUtils.isEmpty;
 
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
@@ -44,8 +45,6 @@ import org.joda.time.Years;
 import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static android.text.TextUtils.isEmpty;
 
 /**
  * Defines a set of functions that can be used in expressions in {@link org.hisp.dhis.android.sdk.persistence.models.ProgramRule}s
@@ -116,7 +115,7 @@ public class ExpressionFunctions {
      * @param condititon the condition.
      * @param trueValue the true value.
      * @param falseValue the false value.
-     * @return a String.
+     * @return an Object.
      */
     public static Object condition(String condititon, Object trueValue, Object falseValue) {
         return ExpressionUtils.isTrue(condititon, null) ? trueValue : falseValue;        
@@ -129,8 +128,7 @@ public class ExpressionFunctions {
      * @param end the end date.
      * @return number of days between dates.
      */
-    public static Integer daysBetween(String start, String end) 
-		throws ParseException {
+    public static Integer daysBetween(String start, String end) throws ParseException {
         if(isEmpty(start) || isEmpty(end)) {
             return 0;
         }
@@ -170,10 +168,16 @@ public class ExpressionFunctions {
     }
 
     public static Integer floor(Number value) {
+        if (value == null) {
+            throw new IllegalArgumentException();
+        }
         return new Double(Math.floor(value.doubleValue())).intValue();
     }
 
     public static Integer modulus(Number dividend, Number divisor) {
+        if (dividend == null || divisor == null) {
+            throw new IllegalArgumentException();
+        }
         int rest = dividend.intValue() % divisor.intValue();
         return rest;
     }
@@ -187,9 +191,12 @@ public class ExpressionFunctions {
     }
 
     public static String addDays(String date, Number daysToAdd) {
+        if (date == null || daysToAdd == null) {
+            throw new IllegalArgumentException();
+        }
         DateTime dateTime = new DateTime(date);
         DateTime newDateTime = dateTime.plusDays(daysToAdd.intValue());
-        return newDateTime.toString();
+        return getMediumDateString(newDateTime.toDate());
     }
 
     public static Integer count(String variableName) {
@@ -236,11 +243,11 @@ public class ExpressionFunctions {
     public static Integer countIfValue(String variableName) {
         ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(variableName);
 
-        String valueToCompare = programRuleVariable.getVariableValue();
-        valueToCompare = VariableService.processSingleValue(valueToCompare, programRuleVariable.getVariableType());
-
         Integer count = 0;
         if(programRuleVariable != null) {
+            String valueToCompare = programRuleVariable.getVariableValue();
+            valueToCompare = VariableService.processSingleValue(valueToCompare, programRuleVariable.getVariableType());
+
             if( programRuleVariable.isHasValue() ) {
                 if( programRuleVariable.getAllValues() != null ) {
                     for(int i = 0; i < programRuleVariable.getAllValues().size(); i++) {
@@ -260,17 +267,17 @@ public class ExpressionFunctions {
         return count;
     }
 
-    public Double ceil(double value) {
+    public static Double ceil(double value) {
         Double ceiled = Math.ceil(value);
         return ceiled;
     }
 
-    public Long round(double value) {
+    public static Long round(double value) {
         Long rounded = Math.round(value);
         return rounded;
     }
 
-    public Boolean hasValue(String variableName) {
+    public static Boolean hasValue(String variableName) {
         ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(variableName);
         boolean valueFound = false;
         if(programRuleVariable != null) {
@@ -281,7 +288,7 @@ public class ExpressionFunctions {
         return valueFound;
     }
 
-    public String lastEventDate(String variableName) {
+    public static String lastEventDate(String variableName) {
         ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(variableName);
         String valueFound = "''";
         if(programRuleVariable != null) {
@@ -293,17 +300,15 @@ public class ExpressionFunctions {
         return valueFound;
     }
 
-    public Boolean validatePattern(String inputToValidate, String patternString) {
-        Log.d(CLASS_TAG, inputToValidate + " : " + patternString);
+    public static Boolean validatePattern(String inputToValidate, String patternString) {
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(inputToValidate);
         boolean matchFound = matcher.find();
         return matchFound;
     }
 
-    public Boolean validatePattern(Integer inputToValidate, String patternString) {
-
+    public static Boolean validatePattern(Integer inputToValidate, String patternString) {
         String inputString = Integer.toString(inputToValidate);
-        return this.validatePattern(inputString, patternString);
+        return validatePattern(inputString, patternString);
     }
 }

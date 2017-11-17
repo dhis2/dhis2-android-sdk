@@ -451,25 +451,25 @@ public class ExpressionFunctionsTest {
     }
 
     @Test
-    public void lastEventDateShouldReturnEmptyEvaluatedStringForNonExistingVariable() {
+    public void lastEventDateShouldReturnEmptydStringForNonExistingVariable() {
         new ProgramRuleVariableMapSetter().set();
-        assertThat(lastEventDate("nonexisting"), is(equalTo("''")));
+        assertThat(lastEventDate("nonexisting"), is(equalTo("")));
     }
 
     @Test
-    public void lastEventDateShouldReturnEmptyEvaluatedStringForExistingVariableWithoutEventDate() {
+    public void lastEventDateShouldReturnEmptyStringForExistingVariableWithoutEventDate() {
         new ProgramRuleVariableMapSetter()
                 .addVariable("some-var", new Variable().build())
                 .set();
-        assertThat(lastEventDate("some-var"), is(equalTo("''")));
+        assertThat(lastEventDate("some-var"), is(equalTo("")));
     }
 
     @Test
-    public void lastEventDateShouldReturnEvaluatedDateForExistingVariableWithEventDate() {
+    public void lastEventDateShouldReturnDateForExistingVariableWithEventDate() {
         new ProgramRuleVariableMapSetter()
                 .addVariable("some-var", new Variable().withEventDate("2010-10-20").build())
                 .set();
-        assertThat(lastEventDate("some-var"), is(equalTo("'2010-10-20'")));
+        assertThat(lastEventDate("some-var"), is(equalTo("2010-10-20")));
     }
 
     @Test
@@ -481,10 +481,11 @@ public class ExpressionFunctionsTest {
     }
 
     @Test
-    public void validatePatternShouldReturnTrueForNonMatchingPairs() {
+    public void validatePatternShouldReturnTrueForFullMatchingPairs() {
         assertThat(validatePattern("abc123", "abc123"), is(equalTo(true)));
-        assertThat(validatePattern("abc123", "^abc"), is(equalTo(true)));
-        assertThat(validatePattern("abc123", "123"), is(equalTo(true)));
-        assertThat(validatePattern(123, "23"), is(equalTo(true)));
+        assertThat(validatePattern("abc123", "abc"), is(equalTo(false)));
+        assertThat(validatePattern("abc123", "123"), is(equalTo(false)));
+        assertThat(validatePattern(123, "12"), is(equalTo(false)));
+        assertThat(validatePattern(123, "123"), is(equalTo(true)));
     }
 }

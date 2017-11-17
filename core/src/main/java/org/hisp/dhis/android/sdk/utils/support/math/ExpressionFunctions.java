@@ -35,7 +35,6 @@ import static org.hisp.dhis.client.sdk.utils.StringUtils.isEmpty;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
-import org.hisp.dhis.android.sdk.utils.api.ValueType;
 import org.hisp.dhis.android.sdk.utils.services.VariableService;
 import org.hisp.dhis.android.sdk.utils.support.ExpressionUtils;
 import org.joda.time.DateTime;
@@ -246,7 +245,6 @@ public class ExpressionFunctions {
         Integer count = 0;
         if(programRuleVariable != null) {
             String valueToCompare = programRuleVariable.getVariableValue();
-            valueToCompare = VariableService.processSingleValue(valueToCompare, programRuleVariable.getVariableType());
 
             if( programRuleVariable.isHasValue() ) {
                 if( programRuleVariable.getAllValues() != null ) {
@@ -290,11 +288,10 @@ public class ExpressionFunctions {
 
     public static String lastEventDate(String variableName) {
         ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(variableName);
-        String valueFound = "''";
+        String valueFound = "";
         if(programRuleVariable != null) {
             if(programRuleVariable.getVariableEventDate() != null) {
                 valueFound = programRuleVariable.getVariableEventDate();
-                valueFound = VariableService.processSingleValue(valueFound, ValueType.DATE);
             }
         }
         return valueFound;
@@ -303,11 +300,11 @@ public class ExpressionFunctions {
     public static Boolean validatePattern(String inputToValidate, String patternString) {
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(inputToValidate);
-        boolean matchFound = matcher.find();
+        boolean matchFound = matcher.matches();
         return matchFound;
     }
 
-    public static Boolean validatePattern(Integer inputToValidate, String patternString) {
+    public static Boolean validatePattern(int inputToValidate, String patternString) {
         String inputString = Integer.toString(inputToValidate);
         return validatePattern(inputString, patternString);
     }

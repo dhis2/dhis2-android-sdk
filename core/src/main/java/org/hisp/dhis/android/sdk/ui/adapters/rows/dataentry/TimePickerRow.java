@@ -54,7 +54,8 @@ public class TimePickerRow extends Row {
     private static final String EMPTY_FIELD = "";
     private final boolean mAllowDatesInFuture;
 
-    public TimePickerRow(String label, boolean mandatory, String warning, BaseValue value, boolean allowDatesInFuture) {
+    public TimePickerRow(String label, boolean mandatory, String warning, BaseValue value,
+            boolean allowDatesInFuture) {
         mAllowDatesInFuture = allowDatesInFuture;
         mLabel = label;
         mMandatory = mandatory;
@@ -63,9 +64,10 @@ public class TimePickerRow extends Row {
 
         checkNeedsForDescriptionButton();
     }
+
     @Override
     public View getView(FragmentManager fragmentManager, LayoutInflater inflater,
-                        View convertView, ViewGroup container) {
+            View convertView, ViewGroup container) {
         View view;
         DatePickerRowHolder holder;
 
@@ -84,7 +86,7 @@ public class TimePickerRow extends Row {
             view = root;
         }
 
-        if(!isEditable()) {
+        if (!isEditable()) {
             holder.clearButton.setEnabled(false);
             holder.pickerInvoker.setEnabled(false);
         } else {
@@ -101,21 +103,21 @@ public class TimePickerRow extends Row {
 //            holder.detailedInfoButton.setVisibility(View.VISIBLE);
 //        }
 
-        if(mWarning == null) {
+        if (mWarning == null) {
             holder.warningLabel.setVisibility(View.GONE);
         } else {
             holder.warningLabel.setVisibility(View.VISIBLE);
             holder.warningLabel.setText(mWarning);
         }
 
-        if(mError == null) {
+        if (mError == null) {
             holder.errorLabel.setVisibility(View.GONE);
         } else {
             holder.errorLabel.setVisibility(View.VISIBLE);
             holder.errorLabel.setText(mError);
         }
 
-        if(!mMandatory) {
+        if (!mMandatory) {
             holder.mandatoryIndicator.setVisibility(View.GONE);
         } else {
             holder.mandatoryIndicator.setVisibility(View.VISIBLE);
@@ -137,7 +139,7 @@ public class TimePickerRow extends Row {
         final TextView errorLabel;
         final TextView pickerInvoker;
         final ImageButton clearButton;
-//        final View detailedInfoButton;
+        //        final View detailedInfoButton;
         final TimePickerListener dateSetListener;
         final OnEditTextClickListener invokerListener;
         final ClearButtonListener clearButtonListener;
@@ -156,8 +158,9 @@ public class TimePickerRow extends Row {
 
 
             picker = new TimePickerDialog(context, dateSetListener,
-                    00, 00,true);
-            invokerListener = new OnEditTextClickListener(context, dateSetListener, allowDatesInFuture, picker);
+                    00, 00, true);
+            invokerListener = new OnEditTextClickListener(context, dateSetListener,
+                    allowDatesInFuture, picker);
             clearButtonListener = new ClearButtonListener(pickerInvoker);
 
             clearButton.setOnClickListener(clearButtonListener);
@@ -169,11 +172,12 @@ public class TimePickerRow extends Row {
             clearButtonListener.setBaseValue(baseValue);
 
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-            try{
+            try {
                 Date date = sdf.parse(baseValue.getValue());
                 Calendar calendarDate = Calendar.getInstance();
                 calendarDate.setTime(date);
-                picker.updateTime(calendarDate.get(Calendar.HOUR_OF_DAY), calendarDate.get(Calendar.MINUTE));
+                picker.updateTime(calendarDate.get(Calendar.HOUR_OF_DAY),
+                        calendarDate.get(Calendar.MINUTE));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -238,7 +242,8 @@ public class TimePickerRow extends Row {
 
         @Override
         public void onTimeSet(TimePicker timePicker, int hours, int mins) {
-            String newValue = String.format(DATE_FORMAT, getFixedString(hours), getFixedString(mins));
+            String newValue = String.format(DATE_FORMAT, getFixedString(hours),
+                    getFixedString(mins));
             if (!newValue.equals(value.getValue())) {
                 System.out.println("TimePiker Saving value:" + newValue);
                 textView.setText(newValue);
@@ -249,10 +254,10 @@ public class TimePickerRow extends Row {
         }
 
         private String getFixedString(int number) {
-            if(String.valueOf(number).length()==1){
-                return "0"+number;
-            }else{
-                return ""+number;
+            if (String.valueOf(number).length() == 1) {
+                return "0" + number;
+            } else {
+                return "" + number;
             }
         }
     }

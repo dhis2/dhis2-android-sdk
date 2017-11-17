@@ -58,6 +58,8 @@ public class DataEntryRowFactory {
             row = new DatePickerRow(trackedEntityAttributeName, mandatory, null, baseValue, allowFutureDate);
         } else if (valueType.equals(ValueType.TIME)) {
             row = new TimePickerRow(trackedEntityAttributeName, mandatory, null, baseValue, allowFutureDate);
+        } else if (valueType.equals(ValueType.DATETIME)) {
+            row = new DateTimePickerRow(trackedEntityAttributeName, mandatory, null, baseValue, allowFutureDate);
         } else if(valueType.equals(ValueType.COORDINATE)) {
             row = new QuestionCoordinatesRow(trackedEntityAttributeName, mandatory, null, baseValue, DataEntryRowTypes.QUESTION_COORDINATES);
         } else  if(valueType.equals(ValueType.PHONE_NUMBER)) {

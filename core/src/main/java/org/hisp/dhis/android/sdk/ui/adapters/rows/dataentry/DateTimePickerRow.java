@@ -31,12 +31,19 @@ package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -45,14 +52,20 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class DateTimePickerRow extends Row {
     private static final String EMPTY_FIELD = "";
+    final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm";
     private final boolean mAllowDatesInFuture;
+    Context mContext;
 
-    public DateTimePickerRow(String label, boolean mandatory, String warning, BaseValue value, boolean allowDatesInFuture) {
+    public DateTimePickerRow(String label, boolean mandatory, String warning, BaseValue value,
+            boolean allowDatesInFuture) {
         mAllowDatesInFuture = allowDatesInFuture;
         mLabel = label;
         mMandatory = mandatory;
@@ -61,9 +74,10 @@ public class DateTimePickerRow extends Row {
 
         checkNeedsForDescriptionButton();
     }
+
     @Override
     public View getView(FragmentManager fragmentManager, LayoutInflater inflater,
-                        View convertView, ViewGroup container) {
+            View convertView, ViewGroup container) {
         View view;
         DatePickerRowHolder holder;
 
@@ -78,11 +92,12 @@ public class DateTimePickerRow extends Row {
             holder = new DatePickerRowHolder(root, inflater.getContext(), mAllowDatesInFuture);
 
 
+            holder.mAlertDialog = holder.createDialog(mContext, holder.pickerInvoker, mValue);
             root.setTag(holder);
             view = root;
         }
 
-        if(!isEditable()) {
+        if (!isEditable()) {
             holder.clearButton.setEnabled(false);
             holder.pickerInvoker.setEnabled(false);
         } else {
@@ -90,8 +105,8 @@ public class DateTimePickerRow extends Row {
             holder.pickerInvoker.setEnabled(true);
         }
 //        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
-        holder.updateViews(mLabel, mValue);
 
+        holder.updateViews(mLabel, holder, mValue);
 //        if(isDetailedInfoButtonHidden()) {
 //            holder.detailedInfoButton.setVisibility(View.INVISIBLE);
 //        }
@@ -99,21 +114,21 @@ public class DateTimePickerRow extends Row {
 //            holder.detailedInfoButton.setVisibility(View.VISIBLE);
 //        }
 
-        if(mWarning == null) {
+        if (mWarning == null) {
             holder.warningLabel.setVisibility(View.GONE);
         } else {
             holder.warningLabel.setVisibility(View.VISIBLE);
             holder.warningLabel.setText(mWarning);
         }
 
-        if(mError == null) {
+        if (mError == null) {
             holder.errorLabel.setVisibility(View.GONE);
         } else {
             holder.errorLabel.setVisibility(View.VISIBLE);
             holder.errorLabel.setText(mError);
         }
 
-        if(!mMandatory) {
+        if (!mMandatory) {
             holder.mandatoryIndicator.setVisibility(View.GONE);
         } else {
             holder.mandatoryIndicator.setVisibility(View.VISIBLE);
@@ -135,10 +150,14 @@ public class DateTimePickerRow extends Row {
         final TextView errorLabel;
         final TextView pickerInvoker;
         final ImageButton clearButton;
-//        final View detailedInfoButton;
-        final TimePickerListener dateSetListener;
-        final OnEditTextClickListener invokerListener;
+        //        final View detailedInfoButton;
+        AlertDialog mAlertDialog;
+        OnEditTextClickListener invokerListener;
         final ClearButtonListener clearButtonListener;
+        boolean allowDatesInFuture;
+        private View dialogView;
+        private DatePicker datePicker;
+        private TimePicker timePicker;
 
         public DatePickerRowHolder(View root, Context context, boolean allowDatesInFuture) {
             textLabel = (TextView) root.findViewById(R.id.text_label);
@@ -147,47 +166,116 @@ public class DateTimePickerRow extends Row {
             errorLabel = (TextView) root.findViewById(R.id.error_label);
             pickerInvoker = (TextView) root.findViewById(R.id.date_picker_text_view);
             clearButton = (ImageButton) root.findViewById(R.id.clear_text_view);
+            this.allowDatesInFuture = allowDatesInFuture;
 //            this.detailedInfoButton = detailedInfoButton;
 
-            dateSetListener = new TimePickerListener(pickerInvoker);
-            invokerListener = new OnEditTextClickListener(context, dateSetListener, allowDatesInFuture);
+            mContext = context;
+
+
+            dialogView = View.inflate(mContext, R.layout.time_date_picker, null);
+            datePicker = (DatePicker) dialogView.findViewById(R.id.datePicker);
+            timePicker = (TimePicker) dialogView.findViewById(R.id.timePicker);
             clearButtonListener = new ClearButtonListener(pickerInvoker);
 
             clearButton.setOnClickListener(clearButtonListener);
-            pickerInvoker.setOnClickListener(invokerListener);
         }
 
-        public void updateViews(String label, BaseValue baseValue) {
-            dateSetListener.setBaseValue(baseValue);
-            clearButtonListener.setBaseValue(baseValue);
+        private AlertDialog createDialog(Context context, final TextView pickerInvoker,
+                final BaseValue baseValue) {
+            final String VALUE_FORMAT = "%s-%s-%sT%s:%s";
+            AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+            timePicker.setIs24HourView(true);
+            if (baseValue != null && !baseValue.equals("")) {
+                timePicker.setCurrentHour(getDateType(baseValue, Calendar.HOUR_OF_DAY));
+                timePicker.setCurrentMinute(getDateType(baseValue, Calendar.MINUTE));
+            }
+            datePicker.init(getDateType(baseValue, Calendar.YEAR),
+                    getDateType(baseValue, Calendar.MONTH),
+                    getDateType(baseValue, Calendar.DAY_OF_MONTH),
+                    new DatePicker.OnDateChangedListener() {
+                        @Override
+                        public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
+                            System.out.println("TimeDatePiker onDateChanged");
+                            saveValue(timePicker, VALUE_FORMAT, datePicker, pickerInvoker,
+                                    baseValue);
+                        }
+                    });
+            //Fix datepicker width
+            try {
+                LinearLayout linearLayout = ((LinearLayout) datePicker.getChildAt(0));
+                if (linearLayout != null) {
+                    linearLayout.setLayoutParams(
+                            new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                                    FrameLayout.LayoutParams.MATCH_PARENT));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+                @Override
+                public void onTimeChanged(TimePicker timePicker, int i, int i1) {
+                    System.out.println("TimeDatePiker onTimeChanged");
+                    saveValue(timePicker, VALUE_FORMAT, datePicker, pickerInvoker,
+                            baseValue);
+                }
+            });
+            alertDialog.setView(dialogView);
+            return alertDialog;
+        }
 
+        public void updateViews(String label,
+                DatePickerRowHolder holder,
+                BaseValue baseValue) {
+            if (mValue != null && !mValue.getValue().equals("")) {
+                holder.datePicker.updateDate(getDateType(mValue, Calendar.YEAR),
+                        getDateType(mValue, Calendar.MONTH),
+                        getDateType(mValue, Calendar.DAY_OF_MONTH));
+                holder.timePicker.setCurrentHour(getDateType(mValue, Calendar.HOUR_OF_DAY));
+                holder.timePicker.setCurrentMinute(getDateType(mValue, Calendar.MINUTE));
+            }
+            clearButtonListener.setBaseValue(baseValue);
             textLabel.setText(label);
             pickerInvoker.setText(baseValue.getValue());
+            invokerListener = new OnEditTextClickListener(mAlertDialog, allowDatesInFuture,
+                    pickerInvoker, mValue);
+            pickerInvoker.setOnClickListener(invokerListener);
+        }
+        private void saveValue(TimePicker timePicker, String DATE_FORMAT, DatePicker datePicker,
+                TextView textView, BaseValue value) {
+            String newValue = String.format(DATE_FORMAT,
+                    datePicker.getYear(),getFixedString(datePicker.getMonth()+1),getFixedString(
+                            datePicker.getDayOfMonth()),
+                    getFixedString(timePicker.getCurrentHour()),
+                    getFixedString(timePicker.getCurrentMinute()));
+            System.out.println("TimeDatePiker Saving value:" + newValue);
+            if (!newValue.equals(value.getValue())) {
+                textView.setText(newValue);
+                value.setValue(newValue);
+                Dhis2Application.getEventBus()
+                        .post(new RowValueChangedEvent(value, DataEntryRowTypes.TIME.toString()));
+            }
         }
     }
 
-    private static class OnEditTextClickListener implements OnClickListener {
-        private final Context context;
-        private final TimePickerListener listener;
+    private class OnEditTextClickListener implements OnClickListener {
+        private final AlertDialog mAlertDialog;
         private final boolean allowDatesInFuture;
+        TextView pickerInvoker;
+        BaseValue baseValue;
 
-        public OnEditTextClickListener(Context context,
-                TimePickerListener listener, boolean allowDatesInFuture) {
-            this.context = context;
-            this.listener = listener;
+        public OnEditTextClickListener(AlertDialog alertDialog, boolean allowDatesInFuture,
+                TextView pickerInvoker, BaseValue baseValue) {
+            this.mAlertDialog = alertDialog;
             this.allowDatesInFuture = allowDatesInFuture;
+            this.pickerInvoker = pickerInvoker;
+            this.baseValue = baseValue;
         }
 
         @Override
         public void onClick(View view) {
-            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
-            Calendar mcurrentTime = Calendar.getInstance();
-            int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-            int minute = mcurrentTime.get(Calendar.MINUTE);
-            TimePickerDialog picker = new TimePickerDialog(context, listener,
-                    hour, minute,true);
-            picker.show();
+            mAlertDialog.show();
         }
+
     }
 
     private static class ClearButtonListener implements OnClickListener {
@@ -211,34 +299,29 @@ public class DateTimePickerRow extends Row {
         }
     }
 
-    private static class TimePickerListener implements DateTimePickeTimePickerDialog.OnTimeSetListener {
-        private static final String DATE_FORMAT = "%s:%s";
-        private final TextView textView;
-        private BaseValue value;
+    private int getDateType(BaseValue value, int type) {
+        Calendar calendar = getDateFromValue(value);
+        return calendar.get(type);
+    }
 
-        public TimePickerListener(TextView textView) {
-            this.textView = textView;
+    private Calendar getDateFromValue(BaseValue value) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
+        Calendar calendar = Calendar.getInstance();
+        try {
+            Date date = simpleDateFormat.parse(value.getValue());
+            calendar = Calendar.getInstance();
+            calendar.setTime(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+        return calendar;
+    }
 
-        public void setBaseValue(BaseValue value) {
-            this.value = value;
-        }
-
-        @Override
-        public void onTimeSet(TimePicker timePicker, int hours, int mins) {
-            String newValue = String.format(DATE_FORMAT, getFixedString(hours), getFixedString(mins));
-            textView.setText(newValue);
-            value.setValue(newValue);
-            Dhis2Application.getEventBus()
-                    .post(new RowValueChangedEvent(value, DataEntryRowTypes.TIME.toString()));
-        }
-
-        private String getFixedString(int number) {
-            if(String.valueOf(number).length()==1){
-                return "0"+number;
-            }else{
-                return ""+number;
-            }
+    private String getFixedString(int number) {
+        if (String.valueOf(number).length() == 1) {
+            return "0" + number;
+        } else {
+            return "" + number;
         }
     }
 }

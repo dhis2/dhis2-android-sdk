@@ -45,8 +45,10 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class TimePickerRow extends Row {
     private static final String EMPTY_FIELD = "";
@@ -139,6 +141,7 @@ public class TimePickerRow extends Row {
         final TimePickerListener dateSetListener;
         final OnEditTextClickListener invokerListener;
         final ClearButtonListener clearButtonListener;
+        TimePickerDialog picker;
 
         public DatePickerRowHolder(View root, Context context, boolean allowDatesInFuture) {
             textLabel = (TextView) root.findViewById(R.id.text_label);
@@ -150,7 +153,11 @@ public class TimePickerRow extends Row {
 //            this.detailedInfoButton = detailedInfoButton;
 
             dateSetListener = new TimePickerListener(pickerInvoker);
-            invokerListener = new OnEditTextClickListener(context, dateSetListener, allowDatesInFuture);
+
+
+            picker = new TimePickerDialog(context, dateSetListener,
+                    00, 00,true);
+            invokerListener = new OnEditTextClickListener(context, dateSetListener, allowDatesInFuture, picker);
             clearButtonListener = new ClearButtonListener(pickerInvoker);
 
             clearButton.setOnClickListener(clearButtonListener);
@@ -161,6 +168,15 @@ public class TimePickerRow extends Row {
             dateSetListener.setBaseValue(baseValue);
             clearButtonListener.setBaseValue(baseValue);
 
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            try{
+                Date date = sdf.parse(baseValue.getValue());
+                Calendar calendarDate = Calendar.getInstance();
+                calendarDate.setTime(date);
+                picker.updateTime(calendarDate.get(Calendar.HOUR_OF_DAY), calendarDate.get(Calendar.MINUTE));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             textLabel.setText(label);
             pickerInvoker.setText(baseValue.getValue());
         }
@@ -170,22 +186,18 @@ public class TimePickerRow extends Row {
         private final Context context;
         private final TimePickerListener listener;
         private final boolean allowDatesInFuture;
+        TimePickerDialog picker;
 
         public OnEditTextClickListener(Context context,
-                TimePickerListener listener, boolean allowDatesInFuture) {
+                TimePickerListener listener, boolean allowDatesInFuture, TimePickerDialog picker) {
             this.context = context;
             this.listener = listener;
             this.allowDatesInFuture = allowDatesInFuture;
+            this.picker = picker;
         }
 
         @Override
         public void onClick(View view) {
-            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
-            Calendar mcurrentTime = Calendar.getInstance();
-            int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-            int minute = mcurrentTime.get(Calendar.MINUTE);
-            TimePickerDialog picker = new TimePickerDialog(context, listener,
-                    hour, minute,true);
             picker.show();
         }
     }
@@ -227,10 +239,13 @@ public class TimePickerRow extends Row {
         @Override
         public void onTimeSet(TimePicker timePicker, int hours, int mins) {
             String newValue = String.format(DATE_FORMAT, getFixedString(hours), getFixedString(mins));
-            textView.setText(newValue);
-            value.setValue(newValue);
-            Dhis2Application.getEventBus()
-                    .post(new RowValueChangedEvent(value, DataEntryRowTypes.TIME.toString()));
+            if (!newValue.equals(value.getValue())) {
+                System.out.println("TimePiker Saving value:" + newValue);
+                textView.setText(newValue);
+                value.setValue(newValue);
+                Dhis2Application.getEventBus()
+                        .post(new RowValueChangedEvent(value, DataEntryRowTypes.TIME.toString()));
+            }
         }
 
         private String getFixedString(int number) {

@@ -148,6 +148,26 @@ public interface IProgramRuleFragmentHelper {
      * @param programRuleAction
      */
     void applyDisplayTextRuleAction(ProgramRuleAction programRuleAction);
+    /**
+     * Applies a {@link ProgramRuleAction} of type {@link org.hisp.dhis.android.sdk.utils.api.ProgramRuleActionType#SETMANDATORYFIELD}
+     * @param programRuleAction
+     */
+    void applySetMandatoryFieldRuleAction(ProgramRuleAction programRuleAction);
+    /**
+     * Applies a {@link ProgramRuleAction} of type {@link org.hisp.dhis.android.sdk.utils.api.ProgramRuleActionType#HIDEPROGRAMSTAGE}
+     * @param programRuleAction
+     */
+    void applyHideProgramStageRuleAction(ProgramRuleAction programRuleAction);
+    /**
+     * Applies a {@link ProgramRuleAction} of type {@link org.hisp.dhis.android.sdk.utils.api.ProgramRuleActionType#WARNINGONCOMPLETE}
+     * @param programRuleAction
+     */
+    void applyWarningOnCompleteRuleAction(ProgramRuleAction programRuleAction);
+    /**
+     * Applies a {@link ProgramRuleAction} of type {@link org.hisp.dhis.android.sdk.utils.api.ProgramRuleActionType#ERRORONCOMPLETE}
+     * @param programRuleAction
+     */
+    void applyErrorOnCompleteRuleAction(ProgramRuleAction programRuleAction);
 
     /**
      * Returns the {@link DataValue} for a given {@link org.hisp.dhis.android.sdk.persistence.models.DataElement}

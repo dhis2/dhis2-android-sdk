@@ -159,6 +159,30 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
                 programRuleFragmentHelper.applyDisplayTextRuleAction(programRuleAction);
                 break;
             }
+            case ERRORONCOMPLETE: {
+                //todo
+                System.out.println("ERRORONCOMPLETE");
+                programRuleFragmentHelper.applyErrorOnCompleteRuleAction(programRuleAction);
+                break;
+            }
+            case HIDEPROGRAMSTAGE: {
+                //todo
+                System.out.println("HIDEPROGRAMSTAGE4");
+                programRuleFragmentHelper.applyHideProgramStageRuleAction(programRuleAction);
+                break;
+            }
+            case SETMANDATORYFIELD: {
+                //todo
+                System.out.println("SETMANDATORYFIELD");
+                programRuleFragmentHelper.applySetMandatoryFieldRuleAction(programRuleAction);
+                break;
+            }
+            case WARNINGONCOMPLETE: {
+                //todo
+                System.out.println("WARNINGONCOMPLETE");
+                programRuleFragmentHelper.applyWarningOnCompleteRuleAction(programRuleAction);
+                break;
+            }
         }
     }
 

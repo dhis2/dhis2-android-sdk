@@ -480,6 +480,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             }
             if (dataElement.getCompulsory() && isEmpty(dataValue.getValue())) {
                 return false;
+            }else if(listViewAdapter.getMandatoryList().contains(dataElement.getDataelement()) && isEmpty(dataValue.getValue())){
+                return false;
             }
         }
         return true;
@@ -514,11 +516,13 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         Map<String, ProgramStageDataElement> dataElements = toMap(
                 form.getStage().getProgramStageDataElements()
         );
+        //listViewAdapter.getMandatoryList();
         for (DataValue dataValue : form.getEvent().getDataValues()) {
             ProgramStageDataElement dataElement = dataElements.get(dataValue.getDataElement());
+            String dataElementUid = dataElement.getDataElement().getUid();
             if (dataElement == null) {
                 // don't do anything
-            } else if (dataElement.getCompulsory() && isEmpty(dataValue.getValue())) {
+            } else if ((dataElement.getCompulsory() || listViewAdapter.getMandatoryList().contains(dataElementUid)) && isEmpty(dataValue.getValue())) {
                 if(!errors.containsKey(ErrorType.MANDATORY)){
                     errors.put(ErrorType.MANDATORY, new ArrayList<String>());
                 }

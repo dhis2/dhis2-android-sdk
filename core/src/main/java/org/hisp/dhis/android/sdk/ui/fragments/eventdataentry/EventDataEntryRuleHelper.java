@@ -42,6 +42,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 import org.hisp.dhis.android.sdk.ui.fragments.common.IProgramRuleFragmentHelper;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.ValidationErrorDialog;
@@ -266,6 +267,26 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
         }
     }
 
+
+    @Override
+    public void applySetMandatoryFieldRuleAction(ProgramRuleAction programRuleAction) {
+        eventDataEntryFragment.getListViewAdapter().addMandatoryOnIndex(programRuleAction.getDataElement());
+    }
+
+    @Override
+    public void applyHideProgramStageRuleAction(ProgramRuleAction programRuleAction) {
+
+    }
+
+    @Override
+    public void applyWarningOnCompleteRuleAction(ProgramRuleAction programRuleAction) {
+
+    }
+
+    @Override
+    public void applyErrorOnCompleteRuleAction(ProgramRuleAction programRuleAction) {
+
+    }
     public void flagDataChanged(boolean hasChanged) {
         eventDataEntryFragment.flagDataChanged(hasChanged);
     }

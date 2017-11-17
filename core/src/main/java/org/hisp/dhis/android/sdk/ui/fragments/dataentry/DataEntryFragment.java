@@ -29,7 +29,6 @@
 
 package org.hisp.dhis.android.sdk.ui.fragments.dataentry;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -38,7 +37,6 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,10 +44,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -214,6 +210,7 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         if (dataValueAdapter != null) {
             dataValueAdapter.resetHiding();
             dataValueAdapter.resetWarnings();
+            dataValueAdapter.resetMandatory();
             dataValueAdapter.resetErrors();
         }
         if (sectionAdapter != null) {

@@ -308,4 +308,73 @@ public class ExpressionFunctions {
         String inputString = Integer.toString(inputToValidate);
         return validatePattern(inputString, patternString);
     }
+
+    /**
+     * Return a substring from the beginning of a string up to a given length.
+     *
+     * @param inputString input value.
+     * @param length of the substring.
+     * @return the left substring.
+     */
+    public static String left(String inputString, int length) {
+        if (inputString == null)
+            return "";
+        int safeLength = Math.min(Math.max(0, length), inputString.length());
+        return inputString.substring(0, safeLength);
+    }
+
+    /**
+     * Return a substring of the end of a string up to a given length.
+     *
+     * @param inputString input value.
+     * @param length of the substring.
+     * @return the right substring.
+     */
+    public static String right(String inputString, int length) {
+        if (inputString == null)
+            return "";
+        int safeLength = Math.min(Math.max(0, length), inputString.length());
+        return inputString.substring(inputString.length() - safeLength);
+    }
+
+    /**
+     * Return the length of a given string.
+     *
+     * @param inputString input value.
+     * @return the length of the string
+     */
+    public static Integer length(String inputString) {
+        return inputString == null ? 0 : inputString.length();
+    }
+
+    /**
+     * Split a string given a separator and get the nth item.
+     *
+     * @param inputString input value.
+     * @param splitString separator value.
+     * @param fieldIndex item index to get from the split.
+     * @return the field after split.
+     */
+    public static String split(String inputString, String splitString, int fieldIndex) {
+        if (inputString == null || splitString == null)
+            return "";
+        String[] fields = inputString == null ? new String[0] : inputString.split(Pattern.quote(splitString));
+        return fieldIndex >= 0 && fieldIndex < fields.length ? fields[fieldIndex] : "";
+    }
+
+    /**
+     * Return a substring from a start index up to an end index (not included).
+     *
+     * @param inputString input value.
+     * @param startIndex start index.
+     * @param endIndex end index (not included)
+     * @return the substring.
+     */
+    public static String substring(String inputString, int startIndex, int endIndex) {
+        if (inputString == null)
+            return "";
+        int safeStartIndex = Math.min(Math.max(0, startIndex), inputString.length());
+        int safeEndIndex = Math.min(Math.max(0, endIndex), inputString.length());
+        return inputString.substring(safeStartIndex, safeEndIndex);
+    }
 }

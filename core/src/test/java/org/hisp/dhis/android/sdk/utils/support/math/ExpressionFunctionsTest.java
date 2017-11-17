@@ -16,9 +16,14 @@ import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.d
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.floor;
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.hasValue;
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.lastEventDate;
+import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.left;
+import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.length;
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.modulus;
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.monthsBetween;
+import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.right;
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.round;
+import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.split;
+import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.substring;
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.validatePattern;
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.weeksBetween;
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.yearsBetween;
@@ -487,5 +492,82 @@ public class ExpressionFunctionsTest {
         assertThat(validatePattern("abc123", "123"), is(equalTo(false)));
         assertThat(validatePattern(123, "12"), is(equalTo(false)));
         assertThat(validatePattern(123, "123"), is(equalTo(true)));
+    }
+
+    @Test
+    public void leftShouldReturnEmptyStringForNullInput() {
+        assertThat(left(null, 0), is(equalTo("")));
+        assertThat(left(null, 10), is(equalTo("")));
+        assertThat(left(null, -10), is(equalTo("")));
+    }
+
+    @Test
+    public void leftShouldReturnSubstringOfInputStringFromTheBeginning() {
+        assertThat(left("abcdef", 0), is(equalTo("")));
+        assertThat(left("abcdef", -5), is(equalTo("")));
+        assertThat(left("abcdef", 2), is(equalTo("ab")));
+        assertThat(left("abcdef", 30), is(equalTo("abcdef")));
+    }
+
+    @Test
+    public void rightShouldReturnEmptyStringForNullInput() {
+        assertThat(right(null, 0), is(equalTo("")));
+        assertThat(right(null, 10), is(equalTo("")));
+        assertThat(right(null, -10), is(equalTo("")));
+    }
+
+    @Test
+    public void rightShouldReturnSubstringOfInputStringFromTheEnd() {
+        assertThat(right("abcdef", 0), is(equalTo("")));
+        assertThat(right("abcdef", -5), is(equalTo("")));
+        assertThat(right("abcdef", 2), is(equalTo("ef")));
+        assertThat(right("abcdef", 30), is(equalTo("abcdef")));
+    }
+
+    @Test
+    public void lengthShouldReturnZeroForNullString() {
+        assertThat(length(null), is(equalTo(0)));
+    }
+
+    @Test
+    public void lengthShouldReturnLengthOfInputString() {
+        assertThat(length(""), is(equalTo(0)));
+        assertThat(length("abc"), is(equalTo(3)));
+        assertThat(length("abcdef"), is(equalTo(6)));
+    }
+
+    @Test
+    public void splitShouldReturnEmptyStringForNullInputs() {
+        assertThat(split(null, null, 0), is(equalTo("")));
+        assertThat(split("", null, 0), is(equalTo("")));
+        assertThat(split(null, "", 0), is(equalTo("")));
+    }
+
+    @Test
+    public void splitShouldReturnTheNthFieldOfTheSplitedInputString() {
+        assertThat(split("a,b,c", ",", 0), is(equalTo("a")));
+        assertThat(split("a,b,c", ",", 2), is(equalTo("c")));
+        assertThat(split("a,;b,;c", ",;", 1), is(equalTo("b")));
+    }
+
+    @Test
+    public void splitShouldReturnEmptyStringIfFieldIndexIsOutOfBounds() {
+        assertThat(split("a,b,c", ",", 10), is(equalTo("")));
+        assertThat(split("a,b,c", ",", -1), is(equalTo("")));
+    }
+
+    @Test
+    public void substringShouldReturnEmptyStringForNullInput() {
+        assertThat(substring(null, 0, 0), is(equalTo("")));
+        assertThat(substring(null, 0, 10), is(equalTo("")));
+    }
+
+    @Test
+    public void substringShouldReturnSubstringFromStartIndexToEndIndexOfInputString() {
+        assertThat(substring("abcdef", 0, 0), is(equalTo("")));
+        assertThat(substring("abcdef", 0, 1), is(equalTo("a")));
+        assertThat(substring("abcdef", -10, 1), is(equalTo("a")));
+        assertThat(substring("abcdef", 2, 4), is(equalTo("cd")));
+        assertThat(substring("abcdef", 2, 10), is(equalTo("cdef")));
     }
 }

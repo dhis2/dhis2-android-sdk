@@ -48,9 +48,14 @@ import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class DatePickerRow extends Row {
     private static final String EMPTY_FIELD = "";
     private final boolean mAllowDatesInFuture;
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
 
     public DatePickerRow(String label, boolean mandatory, String warning, BaseValue value, boolean allowDatesInFuture) {
         mAllowDatesInFuture = allowDatesInFuture;
@@ -76,7 +81,7 @@ public class DatePickerRow extends Row {
                     R.layout.listview_row_datepicker, container, false);
 //            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
 
-            holder = new DatePickerRowHolder(root, inflater.getContext(), mAllowDatesInFuture);
+            holder = new DatePickerRowHolder(root, inflater.getContext(), mAllowDatesInFuture, mValue);
 
 
             root.setTag(holder);
@@ -90,7 +95,7 @@ public class DatePickerRow extends Row {
             holder.clearButton.setEnabled(true);
             holder.pickerInvoker.setEnabled(true);
         }
-//        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
+//      holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
         holder.updateViews(mLabel, mValue);
 
 //        if(isDetailedInfoButtonHidden()) {
@@ -140,8 +145,9 @@ public class DatePickerRow extends Row {
         final DateSetListener dateSetListener;
         final OnEditTextClickListener invokerListener;
         final ClearButtonListener clearButtonListener;
+        DatePickerDialog picker;
 
-        public DatePickerRowHolder(View root, Context context, boolean allowDatesInFuture) {
+        public DatePickerRowHolder(View root, Context context, boolean allowDatesInFuture, BaseValue baseValue) {
             textLabel = (TextView) root.findViewById(R.id.text_label);
             mandatoryIndicator = (TextView) root.findViewById(R.id.mandatory_indicator);
             warningLabel = (TextView) root.findViewById(R.id.warning_label);
@@ -151,7 +157,14 @@ public class DatePickerRow extends Row {
 //            this.detailedInfoButton = detailedInfoButton;
 
             dateSetListener = new DateSetListener(pickerInvoker);
-            invokerListener = new OnEditTextClickListener(context, dateSetListener, allowDatesInFuture);
+
+            LocalDate currentDate = new LocalDate();
+            picker = new DatePickerDialog(context, dateSetListener, currentDate.getYear(), currentDate.getMonthOfYear(), currentDate.getDayOfMonth());
+
+            if(!allowDatesInFuture) {
+                picker.getDatePicker().setMaxDate(DateTime.now().getMillis());
+            }
+            invokerListener = new OnEditTextClickListener(picker);
             clearButtonListener = new ClearButtonListener(pickerInvoker);
 
             clearButton.setOnClickListener(clearButtonListener);
@@ -162,32 +175,31 @@ public class DatePickerRow extends Row {
             dateSetListener.setBaseValue(baseValue);
             clearButtonListener.setBaseValue(baseValue);
 
+            if(baseValue !=null && baseValue.getValue()!=null && !baseValue.equals("")) {
+                try {
+                    Date date = new SimpleDateFormat("yyyy-MM-dd").parse(baseValue.getValue());
+                    LocalDate currentDate = LocalDate.fromDateFields(date);
+                    picker.updateDate(currentDate.getYear(), currentDate.getMonthOfYear() - 1 , currentDate.getDayOfMonth());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+
             textLabel.setText(label);
             pickerInvoker.setText(baseValue.getValue());
         }
     }
 
     private static class OnEditTextClickListener implements OnClickListener {
-        private final Context context;
-        private final DateSetListener listener;
-        private final boolean allowDatesInFuture;
+        private DatePickerDialog datePickerDialog;
 
-        public OnEditTextClickListener(Context context,
-                                       DateSetListener listener, boolean allowDatesInFuture) {
-            this.context = context;
-            this.listener = listener;
-            this.allowDatesInFuture = allowDatesInFuture;
+        public OnEditTextClickListener(DatePickerDialog datePickerDialog) {
+            this.datePickerDialog = datePickerDialog;
         }
 
         @Override
         public void onClick(View view) {
-            LocalDate currentDate = new LocalDate();
-            DatePickerDialog picker = new DatePickerDialog(context, listener,
-                    currentDate.getYear(), currentDate.getMonthOfYear() - 1, currentDate.getDayOfMonth());
-            if(!allowDatesInFuture) {
-                picker.getDatePicker().setMaxDate(DateTime.now().getMillis());
-            }
-            picker.show();
+            datePickerDialog.show();
         }
     }
 
@@ -213,7 +225,6 @@ public class DatePickerRow extends Row {
     }
 
     private static class DateSetListener implements DatePickerDialog.OnDateSetListener {
-        private static final String DATE_FORMAT = "YYYY-MM-dd";
         private final TextView textView;
         private BaseValue value;
 
@@ -232,8 +243,14 @@ public class DatePickerRow extends Row {
             String newValue = date.toString(DATE_FORMAT);
             textView.setText(newValue);
             value.setValue(newValue);
+            System.out.println("DatePiker Saving value:" + newValue);
+            value.setValue(newValue);
             Dhis2Application.getEventBus()
                     .post(new RowValueChangedEvent(value, DataEntryRowTypes.DATE.toString()));
+        }
+
+        public BaseValue getBaseValue() {
+            return value;
         }
     }
 }

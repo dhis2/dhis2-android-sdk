@@ -219,17 +219,20 @@ public class ExpressionFunctions {
         ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(variableName);
 
         Integer count = 0;
+
         if(programRuleVariable != null) {
             if( programRuleVariable.isHasValue() ) {
                 if(programRuleVariable.getAllValues() != null && programRuleVariable.getAllValues().size() > 0) {
                     for(int i = 0; i < programRuleVariable.getAllValues().size(); i++) {
-                        if(programRuleVariable.getAllValues().get(i) != null) {
+                        Double value = getVariableValue(programRuleVariable, programRuleVariable.getAllValues().get(i));
+                        if(value != null && value >= 0.0) {
                             count++;
                         }
                     }
                 } else {
                     //The variable has a value, but no list of alternates. This means we only compare the elements real value
-                    if(programRuleVariable.getVariableValue() != null) {
+                    Double value = getVariableValue(programRuleVariable, programRuleVariable.getVariableValue());
+                    if(value != null && value >= 0.0) {
                         count = 1;
                     }
                 }
@@ -376,5 +379,16 @@ public class ExpressionFunctions {
         int safeStartIndex = Math.min(Math.max(0, startIndex), inputString.length());
         int safeEndIndex = Math.min(Math.max(0, endIndex), inputString.length());
         return inputString.substring(safeStartIndex, safeEndIndex);
+    }
+
+    private static Double getVariableValue(ProgramRuleVariable programRuleVariable, String evaluated) {
+        if (evaluated == null)
+            return null;
+        try {
+            String value = VariableService.processSingleValue(evaluated, programRuleVariable.getVariableType());
+            return Double.parseDouble(value);
+        } catch (NumberFormatException ex) {
+            return null;
+        }
     }
 }

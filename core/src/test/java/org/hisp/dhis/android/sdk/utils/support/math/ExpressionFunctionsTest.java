@@ -369,10 +369,10 @@ public class ExpressionFunctionsTest {
     }
 
     @Test
-    public void countIfZeroPosShouldReturnSizeOfNonNullValuesForProgramRuleVariableWithValues() {
+    public void countIfZeroPosShouldReturnSizeOfZeroOrPositiveValuesForProgramRuleVariableWithValues() {
         new ProgramRuleVariableMapSetter()
                 .addVariable("myvar",
-                        new Variable().withValue("1.0").withValues(Arrays.asList("1.0", null, "2.0")).build())
+                        new Variable().withValue("1.0").withValues(Arrays.asList("1.0", null, "2.0", "-3.0")).build())
                 .set();
         assertThat(countIfZeroPos("myvar"), is(equalTo(2)));
     }

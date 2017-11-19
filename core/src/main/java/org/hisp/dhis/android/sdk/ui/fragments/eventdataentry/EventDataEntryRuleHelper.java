@@ -42,9 +42,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 import org.hisp.dhis.android.sdk.ui.fragments.common.IProgramRuleFragmentHelper;
-import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragmentSection;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.ValidationErrorDialog;
 import org.hisp.dhis.android.sdk.utils.api.ProgramRuleActionType;
@@ -189,15 +187,6 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
     }
 
     @Override
-    public List<Row> getFormRows() {
-        List<Row> rows = new ArrayList<>();
-        for (DataEntryFragmentSection section: eventDataEntryFragment.getForm().getSections()) {
-            rows.addAll(section.getRows());
-        }
-        return rows;
-    }
-
-    @Override
     public void applyHideSectionRuleAction(ProgramRuleAction programRuleAction) {
         eventDataEntryFragment.hideSection(programRuleAction.getProgramStageSection());
     }
@@ -246,6 +235,11 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
             // Post changes. Using an empty string as rowtype ensures effective persistence
             Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue, ""));
         }
+    }
+
+    @Override
+    public void disableCalculatedFields(ProgramRuleAction programRuleAction) {
+        eventDataEntryFragment.getListViewAdapter().disableIndex(programRuleAction.getDataElement());
     }
 
     /**

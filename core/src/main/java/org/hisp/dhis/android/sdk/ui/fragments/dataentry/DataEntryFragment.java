@@ -213,6 +213,7 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
             SectionAdapter sectionAdapter) {
         if (dataValueAdapter != null) {
             dataValueAdapter.resetHiding();
+            dataValueAdapter.resetDisabled();
             dataValueAdapter.resetWarnings();
             dataValueAdapter.resetErrors();
         }

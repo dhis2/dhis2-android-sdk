@@ -202,6 +202,7 @@
     <string name="enddate">Fecha de fin</string>
 
     <string name="error_email">Por favor introduzca una dirección de correo electrónico válido</string>
+    <string name="error_url">Por favor introduzca una URL válida</string>
 
     <string name="registered_events">Eventos registrados</string>
     <string name="status">Estado</string>
@@ -255,6 +256,7 @@
     <string name="detailed_info_coordinate_row">Por favor, introduce las coordnadas GPS pulsando en el botón a la derecha de la fila. Si no funciona, por favor comprueba tus datos y/o conexión GPS.</string>
     <string name="detailed_info_status_row">Por favor, pulsa el botón de completado cuando hayas terminado de introducir los datos. Pulsa el botón de validación para comprobar si los datos introducidos son correctos.</string>
     <string name="enter_email">Introduce un correo electronico</string>
+    <string name="enter_url">Introduce una url</string>
     <string name="enter_phone_number">Introduce un número de teléfono</string>
     <string name="choose_filter">Selecciona un filtro</string>
     <string name="invalid_entry_type">Tipo de valor no soportado</string>

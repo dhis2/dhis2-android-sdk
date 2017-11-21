@@ -207,6 +207,7 @@
     <string name="enddate">Date du fin</string>
 
     <string name="error_email">"S'il vous plaît entrer une adresse e-mail valide"</string>
+    <string name="error_url">Veuillez entrer une URL valide </string>
 
     <string name="registered_events">Événements enregistrés</string>
     <string name="status">Statut</string>
@@ -259,6 +260,7 @@
     <string name="detailed_info_dataelement">Information détaillée</string>
     <string name="detailed_info_coordinate_row">Prière d\'entrer les coordonnées GPS en appuyant sur le button à droite du ligne. S\'il ne marche pas, verifiez votre resseau et/ou connection GPS.</string>
     <string name="detailed_info_status_row">S\'il vous plait, appuyez sur le button compléter quand vous aurez fini d\'entrer les données. Veuillez appuyer le button valider pour vérifier si les données entrées sont valides.</string>
+    <string name="enter_url">Entrez une URL</string>
     <string name="enter_email">Entrez un email</string>
     <string name="enter_phone_number">Enter phone number</string>
     <string name="choose_filter">Sélectionnez une option</string>

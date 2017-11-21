@@ -263,6 +263,8 @@
 
     <string name="enter_email">Enter e-mail</string>
     <string name="error_email">Please enter a valid e-mail address</string>
+    <string name="enter_url">Enter url</string>
+    <string name="error_url">Please enter a valid url</string>
 
     <string name="error_exporting_data">Error metadata could not be exported.</string>
     <string name="developers_settings">Developers options</string>

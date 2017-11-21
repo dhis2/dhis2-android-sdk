@@ -60,7 +60,7 @@ public class URLEditTextRow extends TextRow {
             editText.setHint(R.string.enter_url);
             editText.setSingleLine(true);
 
-            EmailWatcher listener = new EmailWatcher(editText, errorLabel);
+            URLWatcher listener = new URLWatcher(editText, errorLabel);
             listener.setRow(this);
             listener.setRowType(rowTypeTemp);
             holder = new ValueEntryHolder(label, mandatoryIndicator, warningLabel, errorLabel, editText, listener);
@@ -120,12 +120,12 @@ public class URLEditTextRow extends TextRow {
         return view;
     }
 
-    private class EmailWatcher extends OnTextChangeListener{
+    private class URLWatcher extends OnTextChangeListener{
         final private EditText mEditText;
         final private TextView mErrorLabel;
 
 
-        public EmailWatcher(EditText editText, TextView errorLabel) {
+        public URLWatcher(EditText editText, TextView errorLabel) {
             super();
             mEditText = editText;
             mErrorLabel = errorLabel;

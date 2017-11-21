@@ -182,6 +182,12 @@ public interface IProgramRuleFragmentHelper {
     void applyErrorOnCompleteRuleAction(ProgramRuleAction programRuleAction);
 
     /**
+     * Disable calculated fields within a {@link ProgramRuleAction}
+     * @param programRuleAction
+     */
+    void disableCalculatedFields(ProgramRuleAction programRuleAction);
+
+    /**
      * Returns the {@link DataValue} for a given {@link org.hisp.dhis.android.sdk.persistence.models.DataElement}
      * @param uid
      * @return

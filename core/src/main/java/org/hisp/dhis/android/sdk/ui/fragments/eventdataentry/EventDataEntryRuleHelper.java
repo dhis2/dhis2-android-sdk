@@ -252,6 +252,11 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
         }
     }
 
+    @Override
+    public void disableCalculatedFields(ProgramRuleAction programRuleAction) {
+        eventDataEntryFragment.getListViewAdapter().disableIndex(programRuleAction.getDataElement());
+    }
+
     /**
      * Displays a warning dialog to the user, indicating the data entry rows with values in them
      * are being hidden due to program rules.

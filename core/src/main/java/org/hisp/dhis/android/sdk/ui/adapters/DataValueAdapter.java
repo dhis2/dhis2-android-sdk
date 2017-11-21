@@ -64,6 +64,7 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
     private List<String> mandatoryDataElementRows;
     private final FragmentManager mFragmentManager;
     private Map<String, Boolean> hiddenDataElementRows;
+    private Map<String, Boolean> disabledDataElementRows;
     private Map<String, String> warningDataElementRows;
     private List<String> mandatoryProgramRuleDataElementRows;
     private Map<String, String> errorDataElementRows;
@@ -75,6 +76,7 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
         super(inflater);
         mFragmentManager = fragmentManager;
         hiddenDataElementRows = new HashMap<>();
+        disabledDataElementRows = new HashMap<>();
         warningDataElementRows = new HashMap<>();
         mandatoryProgramRuleDataElementRows = new ArrayList<>();
         errorDataElementRows = new HashMap<>();
@@ -87,6 +89,7 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
         if (getData() != null) {
             Row dataEntryRow = getData().get(position);
             String id = dataEntryRow.getItemId();
+            dataEntryRow.setEditable(!disabledDataElementRows.containsKey(id));
             if(mandatoryProgramRuleDataElementRows.contains(id)){
                 dataEntryRow.setMandatory(true);
             } else if(mandatoryDataElementRows.contains(id)){
@@ -191,10 +194,25 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
         }
     }
 
+    public void disableIndex(String dataElement) {
+        if(disabledDataElementRows == null) {
+            disabledDataElementRows = new HashMap<>();
+        }
+        if(dataElement != null) {
+            disabledDataElementRows.put(dataElement, true);
+        }
+    }
+
     public void resetHiding() {
         if (mData == null) return;
         if(hiddenDataElementRows != null) {
             hiddenDataElementRows.clear();
+        }
+    }
+    public void resetDisabled() {
+        if (mData == null) return;
+        if(disabledDataElementRows != null) {
+            disabledDataElementRows.clear();
         }
     }
 

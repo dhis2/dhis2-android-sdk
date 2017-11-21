@@ -219,8 +219,9 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
                 programRuleFragmentHelper.saveTrackedEntityAttribute(trackedEntityAttributeId);
             }
         }
+        programRuleFragmentHelper.disableCalculatedFields(programRuleAction);
     }
-
+    
     public void showBlockingProgressBar() {
         if (getActivity() != null) {
             getActivity().runOnUiThread(new Runnable() {

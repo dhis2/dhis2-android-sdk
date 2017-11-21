@@ -84,6 +84,11 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
     }
 
     @Override
+    public ArrayList<String> getHideProgramStages() {
+        return null;
+    }
+
+    @Override
     public void recycle() {
         eventDataEntryFragment = null;
     }

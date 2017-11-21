@@ -65,6 +65,12 @@ public interface IProgramRuleFragmentHelper {
      * @return
      */
     ArrayList<String> getShowOnCompleteWarningErrors();
+    /**
+     * Returns a list of the program stages
+     * that have {@link ProgramRule} force hide affecting them.
+     * @return
+     */
+    ArrayList<String> getHideProgramStages();
 
     /**
      * Nullifies all necessary references

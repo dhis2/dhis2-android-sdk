@@ -58,15 +58,29 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
 
     private EventDataEntryFragment eventDataEntryFragment;
     private ArrayList<String> programRuleValidationErrors;
+    private ArrayList<String> showOnCompleteErrors;
+    private ArrayList<String> showOnCompleteWarnings;
 
     public EventDataEntryRuleHelper(EventDataEntryFragment eventDataEntryFragment) {
         this.eventDataEntryFragment = eventDataEntryFragment;
         this.programRuleValidationErrors = new ArrayList<>();
+        this.showOnCompleteErrors = new ArrayList<>();
+        this.showOnCompleteWarnings = new ArrayList<>();
     }
 
     @Override
     public ArrayList<String> getProgramRuleValidationErrors() {
         return programRuleValidationErrors;
+    }
+
+    @Override
+    public ArrayList<String> getShowOnCompleteErrors() {
+        return showOnCompleteErrors;
+    }
+
+    @Override
+    public ArrayList<String> getShowOnCompleteWarningErrors() {
+        return showOnCompleteWarnings;
     }
 
     @Override
@@ -280,13 +294,18 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
 
     @Override
     public void applyWarningOnCompleteRuleAction(ProgramRuleAction programRuleAction) {
-
+        if (!showOnCompleteWarnings.contains(programRuleAction.getContent())) {
+            showOnCompleteWarnings.add(programRuleAction.getContent() + " " + programRuleAction.getData());
+        }
     }
 
     @Override
     public void applyErrorOnCompleteRuleAction(ProgramRuleAction programRuleAction) {
-
+        if (!showOnCompleteErrors.contains(programRuleAction.getContent())) {
+            showOnCompleteErrors.add(programRuleAction.getContent() + " " + programRuleAction.getData());
+        }
     }
+
     public void flagDataChanged(boolean hasChanged) {
         eventDataEntryFragment.flagDataChanged(hasChanged);
     }

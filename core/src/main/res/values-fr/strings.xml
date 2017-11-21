@@ -181,6 +181,9 @@
 
     <string name="validation_field_exit">Avertissement: Il existe des valeurs non valides et vous êtes sur le point de quitter. Si vous procédez, les valeurs non valides seront supprimées. Voulez-vous continuer?</string>
     <string name="validation_field_title">Avertissement: il existe des valeurs non valides</string>
+    <string name="program_rule_on_complete_message_title">"Messages de règle du programme"</string>
+    <string name="program_rule_on_complete_message_error">Les erreurs: %s</string>
+    <string name="program_rule_on_complete_message_warning">Avertissements: %s</string>
     <string name="validation_compulsory_error">Veuillez completer les champs obligatoires suivants</string>
     <string name="enter_date">Entrez une date</string>
     <string name="enter_text">Entrez un texte</string>

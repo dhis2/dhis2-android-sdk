@@ -176,6 +176,9 @@
 
     <string name="validation_field_exit">Advertencia: hay valores no válidos y está a punto de salir. Si continúa, se eliminarán los valores no válidos. ¿Quieres continuar?</string>
     <string name="validation_field_title">Advertencia: hay valores no válidos</string>
+    <string name="program_rule_on_complete_message_title">Mensajes de reglas del programa</string>
+    <string name="program_rule_on_complete_message_error">Error: %s</string>
+    <string name="program_rule_on_complete_message_warning">Alerta: %s</string>
     <string name="validation_compulsory_error">Por favor completa los siguientes campos obligatorios</string>
     <string name="enter_date">Introduce una fecha</string>
     <string name="enter_text">Introduce un texto</string>

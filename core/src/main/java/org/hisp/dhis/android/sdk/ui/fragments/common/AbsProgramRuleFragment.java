@@ -128,66 +128,70 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
 
         switch (programRuleAction.getProgramRuleActionType()) {
             case HIDEFIELD: {
+                System.out.println("Apply programrule: HIDEFIELD");
                 programRuleFragmentHelper.applyHideFieldRuleAction(programRuleAction, affectedFieldsWithValue);
                 break;
             }
             case HIDESECTION: {
+                System.out.println("Apply programrule: HIDESECTION");
                 programRuleFragmentHelper.applyHideSectionRuleAction(programRuleAction);
                 break;
             }
             case SHOWWARNING: {
+                System.out.println("Apply programrule: SHOWWARNING");
                 programRuleFragmentHelper.applyShowWarningRuleAction(programRuleAction);
                 break;
             }
             case SHOWERROR: {
+                System.out.println("Apply programrule: SHOWERROR");
                 programRuleFragmentHelper.applyShowErrorRuleAction(programRuleAction);
                 break;
             }
             case ASSIGN: {
+                System.out.println("Apply programrule: ASSIGN");
                 applyAssignRuleAction(programRuleAction);
                 break;
             }
             case CREATEEVENT: {
+                System.out.println("Apply programrule: CREATEEVENT");
                 programRuleFragmentHelper.applyCreateEventRuleAction(programRuleAction);
                 break;
             }
             case DISPLAYKEYVALUEPAIR: {
+                System.out.println("Apply programrule: DISPLAYKEYVALUEPAIR");
                 programRuleFragmentHelper.applyDisplayKeyValuePairRuleAction(programRuleAction);
                 break;
             }
             case DISPLAYTEXT: {
+                System.out.println("Apply programrule: DISPLAYTEXT");
                 programRuleFragmentHelper.applyDisplayTextRuleAction(programRuleAction);
                 break;
             }
             case ERRORONCOMPLETE: {
-                //todo
-                System.out.println("ERRORONCOMPLETE");
+                System.out.println("Apply programrule: ERRORONCOMPLETE");
                 programRuleFragmentHelper.applyErrorOnCompleteRuleAction(programRuleAction);
                 break;
             }
             case HIDEPROGRAMSTAGE: {
                 //todo
-                System.out.println("HIDEPROGRAMSTAGE4");
+                System.out.println("Apply programrule: HIDEPROGRAMSTAGE");
                 programRuleFragmentHelper.applyHideProgramStageRuleAction(programRuleAction);
                 break;
             }
             case SETMANDATORYFIELD: {
-                //todo
-                System.out.println("SETMANDATORYFIELD");
+                System.out.println("Apply programrule: SETMANDATORYFIELD");
                 programRuleFragmentHelper.applySetMandatoryFieldRuleAction(programRuleAction);
                 break;
             }
             case WARNINGONCOMPLETE: {
-                //todo
-                System.out.println("WARNINGONCOMPLETE");
+                System.out.println("Apply programrule: WARNINGONCOMPLETE");
                 programRuleFragmentHelper.applyWarningOnCompleteRuleAction(programRuleAction);
                 break;
             }
         }
     }
 
-
-            protected void applyAssignRuleAction(ProgramRuleAction programRuleAction) {
+    protected void applyAssignRuleAction(ProgramRuleAction programRuleAction) {
         String stringResult = ProgramRuleService.getCalculatedConditionValue(programRuleAction.getData());
         String programRuleVariableName = programRuleAction.getContent();
         ProgramRuleVariable programRuleVariable;

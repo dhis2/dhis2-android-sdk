@@ -539,6 +539,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
         if (hasRules(dataElement)) {
             getProgramRuleFragmentHelper().getProgramRuleValidationErrors().clear();
+            getProgramRuleFragmentHelper().getShowOnCompleteErrors().clear();
+            getProgramRuleFragmentHelper().getShowOnCompleteWarningErrors().clear();
             initiateEvaluateProgramRules();
         }
         if (hasIndicators(dataElement)) {
@@ -705,6 +707,13 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
     @Subscribe
     public void onItemClick(final OnCompleteEventClick eventClick) {
+        if(showOnCompleteMessages(eventClick)){
+            return;
+        }
+        completeEvent(eventClick);
+    }
+
+    private void completeEvent(final OnCompleteEventClick eventClick) {
         if (isValid()) {
             if (!eventClick.getEvent().getStatus().equals(Event.STATUS_COMPLETED)) {
                 getActivity().runOnUiThread(new Runnable() {
@@ -712,7 +721,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                     public void run() {
 
                         UiUtils.showConfirmDialog(getActivity(), eventClick.getLabel(), eventClick.getAction(),
-                                eventClick.getLabel(), getActivity().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                                eventClick.getLabel(), getActivity().getString(
+                                        R.string.cancel), new DialogInterface.OnClickListener() {
 
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -728,7 +738,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                         eventClick.getEvent().setStatus(Event.STATUS_COMPLETED);
                                         form.getEvent().setFromServer(false);
                                         form.getEnrollment().setFromServer(false);
-                                        TrackedEntityInstance trackedEntityInstance =TrackerController.getTrackedEntityInstance(form.getEnrollment().getTrackedEntityInstance());
+                                        TrackedEntityInstance trackedEntityInstance =
+                                                TrackerController.getTrackedEntityInstance(form.getEnrollment().getTrackedEntityInstance());
                                         trackedEntityInstance.setFromServer(false);
                                         trackedEntityInstance.save();
                                         ProgramStage currentProgramStage = MetaDataController
@@ -793,11 +804,49 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                 Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
             }
         } else {
-            HashMap<ErrorType, ArrayList<String>>  allErrors = getValidationErrors();
+            HashMap<ErrorType, ArrayList<String>> allErrors = getValidationErrors();
             allErrors.put(ErrorType.PROGRAM_RULE, getProgramRuleFragmentHelper().getProgramRuleValidationErrors());
             allErrors.put(ErrorType.INVALID_FIELD, getRowsErrors(getContext(), form));
             showValidationErrorDialog(allErrors);
         }
+    }
+
+    private boolean showOnCompleteMessages(
+            final OnCompleteEventClick eventClick) {
+        String message = "";
+        for(String value : getProgramRuleFragmentHelper().getShowOnCompleteWarningErrors()){
+            message += String.format(getString(R.string.program_rule_on_complete_message_warning), value)+"/n";
+        }
+        for(String value : getProgramRuleFragmentHelper().getShowOnCompleteErrors()){
+            message += String.format(getString(R.string.program_rule_on_complete_message_error), value)+"/n";
+        }
+        String title = getContext().getString(R.string.program_rule_on_complete_message_title);
+        if(getProgramRuleFragmentHelper().getShowOnCompleteErrors().size()>0) {
+            UiUtils.showConfirmDialog(getActivity(),
+                    title, message,
+                    getString(R.string.ok_option),
+                    getString(org.hisp.dhis.android.sdk.R.string.cancel),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //discard
+                        }
+                    });
+            return true;
+        }else if(getProgramRuleFragmentHelper().getShowOnCompleteWarningErrors().size()>0){
+            UiUtils.showConfirmDialog(getActivity(),
+                    title, message,
+                    getString(R.string.ok_option),
+                    getString(org.hisp.dhis.android.sdk.R.string.cancel),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            completeEvent(eventClick);
+                        }
+                    });
+            return true;
+        }
+        return false;
     }
 
     @Nullable

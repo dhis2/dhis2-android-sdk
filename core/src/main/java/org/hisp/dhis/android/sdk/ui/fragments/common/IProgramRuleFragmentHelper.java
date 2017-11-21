@@ -53,6 +53,18 @@ public interface IProgramRuleFragmentHelper {
      * @return
      */
     ArrayList<String> getProgramRuleValidationErrors();
+    /**
+     * Returns a list of the messages
+     * that have {@link ProgramRule} on complete errors affecting them.
+     * @return
+     */
+    ArrayList<String> getShowOnCompleteErrors();
+    /**
+     * Returns a list of the messages
+     * that have {@link ProgramRule} on warnings errors affecting them.
+     * @return
+     */
+    ArrayList<String> getShowOnCompleteWarningErrors();
 
     /**
      * Nullifies all necessary references

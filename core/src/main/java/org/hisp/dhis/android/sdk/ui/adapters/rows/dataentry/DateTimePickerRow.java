@@ -180,21 +180,34 @@ public class DateTimePickerRow extends Row {
             final String VALUE_FORMAT = "%s-%s-%sT%s:%s";
             AlertDialog alertDialog = new AlertDialog.Builder(context).create();
             timePicker.setIs24HourView(true);
-            if (baseValue != null && !baseValue.equals("")) {
+            if (baseValue != null && baseValue.getValue()!=null && !baseValue.getValue().equals("")) {
                 timePicker.setCurrentHour(getDateType(baseValue, Calendar.HOUR_OF_DAY));
                 timePicker.setCurrentMinute(getDateType(baseValue, Calendar.MINUTE));
+                datePicker.init(getDateType(baseValue, Calendar.YEAR),
+                        getDateType(baseValue, Calendar.MONTH),
+                        getDateType(baseValue, Calendar.DAY_OF_MONTH),
+                        new DatePicker.OnDateChangedListener() {
+                            @Override
+                            public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
+                                System.out.println("TimeDatePiker onDateChanged");
+                                saveValue(timePicker, VALUE_FORMAT, datePicker, pickerInvoker,
+                                        baseValue);
+                            }
+                        });
+            }else{
+                Calendar calendar = Calendar.getInstance();
+                datePicker.init(calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH),
+                        new DatePicker.OnDateChangedListener() {
+                            @Override
+                            public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
+                                System.out.println("TimeDatePiker onDateChanged");
+                                saveValue(timePicker, VALUE_FORMAT, datePicker, pickerInvoker,
+                                        baseValue);
+                            }
+                        });
             }
-            datePicker.init(getDateType(baseValue, Calendar.YEAR),
-                    getDateType(baseValue, Calendar.MONTH),
-                    getDateType(baseValue, Calendar.DAY_OF_MONTH),
-                    new DatePicker.OnDateChangedListener() {
-                        @Override
-                        public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
-                            System.out.println("TimeDatePiker onDateChanged");
-                            saveValue(timePicker, VALUE_FORMAT, datePicker, pickerInvoker,
-                                    baseValue);
-                        }
-                    });
             //Fix datepicker width
             try {
                 LinearLayout linearLayout = ((LinearLayout) datePicker.getChildAt(0));
@@ -221,7 +234,7 @@ public class DateTimePickerRow extends Row {
         public void updateViews(String label,
                 DatePickerRowHolder holder,
                 BaseValue baseValue) {
-            if (mValue != null && !mValue.getValue().equals("")) {
+            if (mValue != null && mValue.getValue()!=null && !mValue.getValue().equals("")) {
                 holder.datePicker.updateDate(getDateType(mValue, Calendar.YEAR),
                         getDateType(mValue, Calendar.MONTH),
                         getDateType(mValue, Calendar.DAY_OF_MONTH));

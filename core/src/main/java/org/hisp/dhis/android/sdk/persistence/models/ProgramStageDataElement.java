@@ -82,6 +82,10 @@ public class ProgramStageDataElement extends BaseModel {
     @Column(name = "programStageSection")
     String programStageSection;
 
+    @JsonProperty("renderOptionsAsRadio")
+    @Column(name = "renderOptionsAsRadio")
+    boolean renderOptionsAsRadio;
+
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
         // do something: put to a Map; log a warning, whatever
@@ -173,5 +177,13 @@ public class ProgramStageDataElement extends BaseModel {
 
     public DataElement getDataElementObj(){
         return dataElementObj;
+    }
+
+    public boolean isRenderOptionsAsRadio() {
+        return renderOptionsAsRadio;
+    }
+
+    public void setRenderOptionsAsRadio(boolean renderOptionsAsRadio) {
+        this.renderOptionsAsRadio = renderOptionsAsRadio;
     }
 }

@@ -239,10 +239,14 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
                 if(ValueType.COORDINATE.equals(stageDataElement.getDataElement().getValueType())) {
                     GpsController.activateGps(context);
                 }
+                boolean isRadioButton = form.getStage().getProgram().getDataEntryMethod();
+                if(!isRadioButton){
+                    isRadioButton = stageDataElement.isRenderOptionsAsRadio();
+                }
                 Row row = DataEntryRowFactory.createDataEntryView(stageDataElement.getCompulsory(),
                         stageDataElement.getAllowFutureDate(), dataElement.getOptionSet(),
                         dataElementName, dataValue, dataElement.getValueType(), true, false,
-                        form.getStage().getProgram().getDataEntryMethod());
+                        isRadioButton);
                 rows.add(row);
             }
         }

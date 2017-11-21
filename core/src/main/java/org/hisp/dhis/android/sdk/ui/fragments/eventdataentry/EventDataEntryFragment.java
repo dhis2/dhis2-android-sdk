@@ -1017,6 +1017,10 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
     @Override
     public boolean doBack() {
+        if(form.getEvent().getDueDate()==null && form.getEvent().getEventDate()==null){
+            form.getEvent().delete();
+            return super.doBack();
+        }
         List<String> errors = getRowsErrors(getContext(), form);
         if (errors.size() > 0) {
             showErrorAndGoBack();

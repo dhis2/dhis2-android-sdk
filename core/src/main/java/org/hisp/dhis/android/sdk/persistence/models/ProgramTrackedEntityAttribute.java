@@ -76,6 +76,11 @@ public class ProgramTrackedEntityAttribute extends BaseModel {
     @PrimaryKey
     String program;
 
+    @JsonProperty("renderOptionsAsRadio")
+    @Column(name = "renderOptionsAsRadio")
+    boolean renderOptionsAsRadio;
+
+
     @JsonProperty("trackedEntityAttribute")
     public void setTrackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute) {
         trackedEntityAttribute.async().save();
@@ -132,5 +137,13 @@ public class ProgramTrackedEntityAttribute extends BaseModel {
 
     public void setSortOrder(int sortOrder) {
         this.sortOrder = sortOrder;
+    }
+
+    public boolean isRenderOptionsAsRadio() {
+        return renderOptionsAsRadio;
+    }
+
+    public void setRenderOptionsAsRadio(boolean renderOptionsAsRadio) {
+        this.renderOptionsAsRadio = renderOptionsAsRadio;
     }
 }

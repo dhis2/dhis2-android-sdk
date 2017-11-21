@@ -173,11 +173,13 @@ public class TimePickerRow extends Row {
 
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
             try {
-                Date date = sdf.parse(baseValue.getValue());
-                Calendar calendarDate = Calendar.getInstance();
-                calendarDate.setTime(date);
-                picker.updateTime(calendarDate.get(Calendar.HOUR_OF_DAY),
-                        calendarDate.get(Calendar.MINUTE));
+                if(baseValue.getValue()!=null) {
+                    Date date = sdf.parse(baseValue.getValue());
+                    Calendar calendarDate = Calendar.getInstance();
+                    calendarDate.setTime(date);
+                    picker.updateTime(calendarDate.get(Calendar.HOUR_OF_DAY),
+                            calendarDate.get(Calendar.MINUTE));
+                }
             } catch (ParseException e) {
                 e.printStackTrace();
             }

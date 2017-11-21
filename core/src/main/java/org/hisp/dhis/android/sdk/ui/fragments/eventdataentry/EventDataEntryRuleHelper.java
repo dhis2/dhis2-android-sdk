@@ -300,14 +300,14 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
     @Override
     public void applyWarningOnCompleteRuleAction(ProgramRuleAction programRuleAction) {
         if (!showOnCompleteWarnings.contains(programRuleAction.getContent())) {
-            showOnCompleteWarnings.add(programRuleAction.getContent() + " " + programRuleAction.getData());
+            showOnCompleteWarnings.add(programRuleAction.getContent());
         }
     }
 
     @Override
     public void applyErrorOnCompleteRuleAction(ProgramRuleAction programRuleAction) {
         if (!showOnCompleteErrors.contains(programRuleAction.getContent())) {
-            showOnCompleteErrors.add(programRuleAction.getContent() + " " + programRuleAction.getData());
+            showOnCompleteErrors.add(programRuleAction.getContent());
         }
     }
 

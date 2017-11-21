@@ -814,17 +814,16 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     private boolean showOnCompleteMessages(
             final OnCompleteEventClick eventClick) {
         String message = "";
-        for(String value : getProgramRuleFragmentHelper().getShowOnCompleteWarningErrors()){
-            message += String.format(getString(R.string.program_rule_on_complete_message_warning), value)+"/n";
-        }
         for(String value : getProgramRuleFragmentHelper().getShowOnCompleteErrors()){
-            message += String.format(getString(R.string.program_rule_on_complete_message_error), value)+"/n";
+            message += String.format(getString(R.string.program_rule_on_complete_message_error), value)+"\n";
+        }
+        for(String value : getProgramRuleFragmentHelper().getShowOnCompleteWarningErrors()){
+            message += String.format(getString(R.string.program_rule_on_complete_message_warning), value)+"\n";
         }
         String title = getContext().getString(R.string.program_rule_on_complete_message_title);
         if(getProgramRuleFragmentHelper().getShowOnCompleteErrors().size()>0) {
             UiUtils.showConfirmDialog(getActivity(),
                     title, message,
-                    getString(R.string.ok_option),
                     getString(org.hisp.dhis.android.sdk.R.string.cancel),
                     new DialogInterface.OnClickListener() {
                         @Override

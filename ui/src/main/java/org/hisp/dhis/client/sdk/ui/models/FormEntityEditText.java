@@ -50,6 +50,6 @@ public class FormEntityEditText extends FormEntityCharSequence {
 
     public enum InputType {
         TEXT, LONG_TEXT, NUMBER, INTEGER, INTEGER_NEGATIVE,
-        INTEGER_ZERO_OR_POSITIVE, INTEGER_POSITIVE,
+        INTEGER_ZERO_OR_POSITIVE, INTEGER_POSITIVE, URL
     }
 }

@@ -707,8 +707,10 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
     @Subscribe
     public void onItemClick(final OnCompleteEventClick eventClick) {
-        if(showOnCompleteMessages(eventClick)){
-            return;
+        if (!eventClick.getEvent().getStatus().equals(Event.STATUS_COMPLETED)) {
+            if (showOnCompleteMessages(eventClick)) {
+                return;
+            }
         }
         completeEvent(eventClick);
     }

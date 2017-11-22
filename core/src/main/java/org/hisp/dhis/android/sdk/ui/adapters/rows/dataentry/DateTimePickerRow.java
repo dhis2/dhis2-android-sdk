@@ -247,27 +247,59 @@ public class DateTimePickerRow extends Row {
                 holder.timePicker.setCurrentMinute(getDateType(mValue, Calendar.MINUTE));
             }
             clearButtonListener.setBaseValue(baseValue);
+
             textLabel.setText(label);
-            pickerInvoker.setText(baseValue.getValue());
+
+            pickerInvoker.setText(getValueToRender(baseValue.getValue()));
+
+
             invokerListener = new OnEditTextClickListener(mAlertDialog, allowDatesInFuture,
                     pickerInvoker, mValue);
             pickerInvoker.setOnClickListener(invokerListener);
         }
 
+        private String getValueToRender (String value){
+            if (value == null || value.isEmpty())
+                return null;
+
+            final String DATE_FORMAT_RENDER = "yyyy-MM-dd HH:mm";
+
+            SimpleDateFormat toDateFormat = new SimpleDateFormat(DATE_FORMAT);
+            SimpleDateFormat toStringFormat = new SimpleDateFormat(DATE_FORMAT_RENDER);
+            Date date;
+            String dateToRender = "";
+            try {
+                date = toDateFormat.parse(value);
+                dateToRender = toStringFormat.format(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            return dateToRender;
+        }
+
         private void saveValue(TimePicker timePicker, String DATE_FORMAT, DatePicker datePicker,
                 TextView textView, BaseValue value) {
-            String newValue = String.format(DATE_FORMAT,
-                    datePicker.getYear(), getFixedString(datePicker.getMonth() + 1), getFixedString(
-                            datePicker.getDayOfMonth()),
-                    getFixedString(timePicker.getCurrentHour()),
-                    getFixedString(timePicker.getCurrentMinute()));
+            String newValue = getFormattedValue(timePicker, DATE_FORMAT, datePicker);
+            String textValue = getValueToRender(newValue);
+
             System.out.println("TimeDatePiker Saving value:" + newValue);
+
             if (!newValue.equals(value.getValue())) {
-                textView.setText(newValue);
+                textView.setText(textValue);
                 value.setValue(newValue);
                 Dhis2Application.getEventBus()
                         .post(new RowValueChangedEvent(value, DataEntryRowTypes.TIME.toString()));
             }
+        }
+
+        private String getFormattedValue(TimePicker timePicker, String DATE_FORMAT,
+                DatePicker datePicker) {
+            return String.format(DATE_FORMAT,
+                    datePicker.getYear(), getFixedString(datePicker.getMonth() + 1), getFixedString(
+                            datePicker.getDayOfMonth()),
+                    getFixedString(timePicker.getCurrentHour()),
+                    getFixedString(timePicker.getCurrentMinute()));
         }
     }
 

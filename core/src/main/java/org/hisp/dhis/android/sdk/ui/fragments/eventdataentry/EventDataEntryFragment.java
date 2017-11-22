@@ -286,7 +286,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             if (data.getStage() != null &&
                     data.getStage().getCaptureCoordinates()) {
                 GpsController.activateGps(getActivity().getBaseContext());
-            }else{
+            } else {
                 if(hasCoordinateQuestion()){
                     GpsController.activateGps(getActivity().getBaseContext());
                 }
@@ -480,7 +480,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             }
             if (dataElement.getCompulsory() && isEmpty(dataValue.getValue())) {
                 return false;
-            }else if(listViewAdapter.getMandatoryList().contains(dataElement.getDataelement()) && isEmpty(dataValue.getValue())){
+            } else if (listViewAdapter.getMandatoryList().contains(dataElement.getDataelement())
+                    && isEmpty(dataValue.getValue())) {
                 return false;
             }
         }
@@ -516,7 +517,6 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         Map<String, ProgramStageDataElement> dataElements = toMap(
                 form.getStage().getProgramStageDataElements()
         );
-        //listViewAdapter.getMandatoryList();
         for (DataValue dataValue : form.getEvent().getDataValues()) {
             ProgramStageDataElement dataElement = dataElements.get(dataValue.getDataElement());
             String dataElementUid = dataElement.getDataElement().getUid();

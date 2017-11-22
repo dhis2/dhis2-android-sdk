@@ -129,63 +129,62 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
 
         switch (programRuleAction.getProgramRuleActionType()) {
             case HIDEFIELD: {
-                System.out.println("Apply programrule: HIDEFIELD");
+                Log.i("Apply programrule:", "HIDEFIELD");
                 programRuleFragmentHelper.applyHideFieldRuleAction(programRuleAction, affectedFieldsWithValue);
                 break;
             }
             case HIDESECTION: {
-                System.out.println("Apply programrule: HIDESECTION");
+                Log.i("Apply programrule:", "HIDESECTION");
                 programRuleFragmentHelper.applyHideSectionRuleAction(programRuleAction);
                 break;
             }
             case SHOWWARNING: {
-                System.out.println("Apply programrule: SHOWWARNING");
+                Log.i("Apply programrule:", "SHOWWARNING");
                 programRuleFragmentHelper.applyShowWarningRuleAction(programRuleAction);
                 break;
             }
             case SHOWERROR: {
-                System.out.println("Apply programrule: SHOWERROR");
+                Log.i("Apply programrule:", "SHOWERROR");
                 programRuleFragmentHelper.applyShowErrorRuleAction(programRuleAction);
                 break;
             }
             case ASSIGN: {
-                System.out.println("Apply programrule: ASSIGN");
+                Log.i("Apply programrule:", "ASSIGN");
                 applyAssignRuleAction(programRuleAction);
                 break;
             }
             case CREATEEVENT: {
-                System.out.println("Apply programrule: CREATEEVENT");
+                Log.i("Apply programrule:", "CREATEEVENT");
                 programRuleFragmentHelper.applyCreateEventRuleAction(programRuleAction);
                 break;
             }
             case DISPLAYKEYVALUEPAIR: {
-                System.out.println("Apply programrule: DISPLAYKEYVALUEPAIR");
+                Log.i("Apply programrule:", "DISPLAYKEYVALUEPAIR");
                 programRuleFragmentHelper.applyDisplayKeyValuePairRuleAction(programRuleAction);
                 break;
             }
             case DISPLAYTEXT: {
-                System.out.println("Apply programrule: DISPLAYTEXT");
+                Log.i("Apply programrule:", "DISPLAYTEXT");
                 programRuleFragmentHelper.applyDisplayTextRuleAction(programRuleAction);
                 break;
             }
             case ERRORONCOMPLETE: {
-                System.out.println("Apply programrule: ERRORONCOMPLETE");
+                Log.i("Apply programrule:", "ERRORONCOMPLETE");
                 programRuleFragmentHelper.applyErrorOnCompleteRuleAction(programRuleAction);
                 break;
             }
             case HIDEPROGRAMSTAGE: {
-                //todo
-                System.out.println("Apply programrule: HIDEPROGRAMSTAGE");
+                Log.i("Apply programrule:", "HIDEPROGRAMSTAGE");
                 programRuleFragmentHelper.applyHideProgramStageRuleAction(programRuleAction);
                 break;
             }
             case SETMANDATORYFIELD: {
-                System.out.println("Apply programrule: SETMANDATORYFIELD");
+                Log.i("Apply programrule:", "SETMANDATORYFIELD");
                 programRuleFragmentHelper.applySetMandatoryFieldRuleAction(programRuleAction);
                 break;
             }
             case WARNINGONCOMPLETE: {
-                System.out.println("Apply programrule: WARNINGONCOMPLETE");
+                Log.i("Apply programrule:", "WARNINGONCOMPLETE");
                 programRuleFragmentHelper.applyWarningOnCompleteRuleAction(programRuleAction);
                 break;
             }

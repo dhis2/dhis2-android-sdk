@@ -45,6 +45,7 @@ import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.QuestionCoordinatesRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
@@ -175,6 +176,10 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
                     dataElementsToRowIndexMap.put(((DataValue) baseValue).getDataElement(), i);
                     if(dataEntryRow.isMandatory()){
                         mandatoryDataElementRows.add(((DataValue) baseValue).getDataElement());
+                    }
+                }else if (baseValue instanceof TrackedEntityAttributeValue) {
+                    if(dataEntryRow.isMandatory()){
+                        mandatoryDataElementRows.add(((TrackedEntityAttributeValue) baseValue).getTrackedEntityAttributeId());
                     }
                 }
             }

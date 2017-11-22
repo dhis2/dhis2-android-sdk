@@ -36,6 +36,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -151,6 +152,8 @@ public class DateTimePickerRow extends Row {
         final ClearButtonListener clearButtonListener;
         boolean allowDatesInFuture;
         private View dialogView;
+        private Button cancel;
+        private Button okButton;
         private DatePicker datePicker;
         private TimePicker timePicker;
 
@@ -170,6 +173,8 @@ public class DateTimePickerRow extends Row {
             dialogView = View.inflate(mContext, R.layout.time_date_picker, null);
             datePicker = (DatePicker) dialogView.findViewById(R.id.datePicker);
             timePicker = (TimePicker) dialogView.findViewById(R.id.timePicker);
+            cancel = (Button) dialogView.findViewById(R.id.cancel);
+            okButton = (Button) dialogView.findViewById(R.id.ok_button);
             clearButtonListener = new ClearButtonListener(pickerInvoker);
 
             clearButton.setOnClickListener(clearButtonListener);
@@ -178,7 +183,7 @@ public class DateTimePickerRow extends Row {
         private AlertDialog createDialog(Context context, final TextView pickerInvoker,
                 final BaseValue baseValue) {
             final String VALUE_FORMAT = "%s-%s-%sT%s:%s";
-            AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+            final AlertDialog alertDialog = new AlertDialog.Builder(context).create();
             timePicker.setIs24HourView(true);
             if (baseValue != null && baseValue.getValue()!=null && !baseValue.getValue().equals("")) {
                 timePicker.setCurrentHour(getDateType(baseValue, Calendar.HOUR_OF_DAY));
@@ -189,9 +194,6 @@ public class DateTimePickerRow extends Row {
                         new DatePicker.OnDateChangedListener() {
                             @Override
                             public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
-                                System.out.println("TimeDatePiker onDateChanged");
-                                saveValue(timePicker, VALUE_FORMAT, datePicker, pickerInvoker,
-                                        baseValue);
                             }
                         });
             }else{
@@ -202,9 +204,6 @@ public class DateTimePickerRow extends Row {
                         new DatePicker.OnDateChangedListener() {
                             @Override
                             public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
-                                System.out.println("TimeDatePiker onDateChanged");
-                                saveValue(timePicker, VALUE_FORMAT, datePicker, pickerInvoker,
-                                        baseValue);
                             }
                         });
             }
@@ -219,12 +218,18 @@ public class DateTimePickerRow extends Row {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+            cancel.setOnClickListener(new OnClickListener() {
                 @Override
-                public void onTimeChanged(TimePicker timePicker, int i, int i1) {
-                    System.out.println("TimeDatePiker onTimeChanged");
+                public void onClick(View view) {
+                    alertDialog.dismiss();
+                }
+            });
+            okButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
                     saveValue(timePicker, VALUE_FORMAT, datePicker, pickerInvoker,
                             baseValue);
+                    alertDialog.dismiss();
                 }
             });
             alertDialog.setView(dialogView);

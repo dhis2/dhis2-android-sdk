@@ -42,6 +42,7 @@ public enum DataEntryRowTypes {
     TRUE_ONLY,
     OPTION_SET,
     DATE,
+    TIME,
     INDICATOR,
     EVENT_DATE,
     ENROLLMENT_DATE,
@@ -50,5 +51,6 @@ public enum DataEntryRowTypes {
     PERCENTAGE,
     PHONE_NUMBER,
     EMAIL,
-    INVALID_DATA_ENTRY
+    INVALID_DATA_ENTRY,
+    URL
 }

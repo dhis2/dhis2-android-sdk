@@ -162,8 +162,7 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
         }
     }
 
-
-            protected void applyAssignRuleAction(ProgramRuleAction programRuleAction) {
+    protected void applyAssignRuleAction(ProgramRuleAction programRuleAction) {
         String stringResult = ProgramRuleService.getCalculatedConditionValue(programRuleAction.getData());
         String programRuleVariableName = programRuleAction.getContent();
         ProgramRuleVariable programRuleVariable;
@@ -191,8 +190,9 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
                 programRuleFragmentHelper.saveTrackedEntityAttribute(trackedEntityAttributeId);
             }
         }
+        programRuleFragmentHelper.disableCalculatedFields(programRuleAction);
     }
-
+    
     public void showBlockingProgressBar() {
         if (getActivity() != null) {
             getActivity().runOnUiThread(new Runnable() {

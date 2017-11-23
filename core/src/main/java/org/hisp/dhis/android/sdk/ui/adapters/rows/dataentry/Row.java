@@ -161,6 +161,14 @@ public abstract class Row implements DataEntryRow, Serializable {
         this.shouldNeverBeEdited = shouldNeverBeEdited;
     }
 
+    public boolean isMandatory() {
+        return mMandatory;
+    }
+
+    public void setMandatory(boolean mandatory) {
+        mMandatory = mandatory;
+    }
+
     public boolean isEditTextRow(){
          return !(!DataEntryRowTypes.TEXT.equals(mRowType) &&
                 !DataEntryRowTypes.LONG_TEXT.equals(mRowType) &&

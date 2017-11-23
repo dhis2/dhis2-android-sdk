@@ -194,6 +194,9 @@ public class DateTimePickerRow extends Row {
                         new DatePicker.OnDateChangedListener() {
                             @Override
                             public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
+                                System.out.println("TimeDatePiker onDateChanged");
+                                saveValue(timePicker, VALUE_FORMAT, datePicker, pickerInvoker,
+                                        baseValue);
                             }
                         });
             }else{
@@ -204,6 +207,9 @@ public class DateTimePickerRow extends Row {
                         new DatePicker.OnDateChangedListener() {
                             @Override
                             public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
+                                System.out.println("TimeDatePiker onDateChanged");
+                                saveValue(timePicker, VALUE_FORMAT, datePicker, pickerInvoker,
+                                        baseValue);
                             }
                         });
             }

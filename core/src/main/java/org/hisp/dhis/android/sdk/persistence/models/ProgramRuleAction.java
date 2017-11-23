@@ -57,6 +57,9 @@ public class ProgramRuleAction extends BaseMetaDataObject{
     @Column(name = "programStageSection")
     String programStageSection;
 
+    @Column(name = "programStage")
+    String programStage;
+
     @Column(name = "programRuleActionType")
     ProgramRuleActionType programRuleActionType;
 
@@ -90,6 +93,10 @@ public class ProgramRuleAction extends BaseMetaDataObject{
     @JsonProperty("programStageSection")
     public void setProgramStageSection(Map<String, Object> programStageSection) {
         this.programStageSection = (String) programStageSection.get("id");
+    }
+    @JsonProperty("programStage")
+    public void setProgramStage(Map<String, Object> programStage) {
+        this.programStage = (String) programStage.get("id");
     }
 
     public String getProgramStageSection() {
@@ -166,5 +173,9 @@ public class ProgramRuleAction extends BaseMetaDataObject{
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public String getProgramStage() {
+        return programStage;
     }
 }

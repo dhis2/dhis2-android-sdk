@@ -64,7 +64,8 @@ public enum ValueType
     USERNAME( String.class ),
     FILE_RESOURCE( String.class ),
     COORDINATE( String.class),
-    AGE( Date.class );
+    AGE( Date.class ),
+    URL ( String.class);
 
     public static final Set<ValueType> INTEGER_TYPES = new HashSet<>(Arrays.asList(
         INTEGER, INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE ));
@@ -76,7 +77,7 @@ public enum ValueType
         BOOLEAN, TRUE_ONLY ));
 
     public static final Set<ValueType> TEXT_TYPES = new HashSet<>(Arrays.asList(
-        TEXT, LONG_TEXT, LETTER, COORDINATE, TIME ));
+        TEXT, LONG_TEXT, LETTER, COORDINATE, TIME, URL ));
 
     public static final Set<ValueType> DATE_TYPES = new HashSet<>(Arrays.asList(
         DATE, DATETIME ));

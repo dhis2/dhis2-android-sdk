@@ -42,6 +42,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 import org.hisp.dhis.android.sdk.ui.fragments.common.IProgramRuleFragmentHelper;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.ValidationErrorDialog;
@@ -57,15 +58,34 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
 
     private EventDataEntryFragment eventDataEntryFragment;
     private ArrayList<String> programRuleValidationErrors;
+    private ArrayList<String> showOnCompleteErrors;
+    private ArrayList<String> showOnCompleteWarnings;
 
     public EventDataEntryRuleHelper(EventDataEntryFragment eventDataEntryFragment) {
         this.eventDataEntryFragment = eventDataEntryFragment;
         this.programRuleValidationErrors = new ArrayList<>();
+        this.showOnCompleteErrors = new ArrayList<>();
+        this.showOnCompleteWarnings = new ArrayList<>();
     }
 
     @Override
     public ArrayList<String> getProgramRuleValidationErrors() {
         return programRuleValidationErrors;
+    }
+
+    @Override
+    public ArrayList<String> getShowOnCompleteErrors() {
+        return showOnCompleteErrors;
+    }
+
+    @Override
+    public ArrayList<String> getShowOnCompleteWarningErrors() {
+        return showOnCompleteWarnings;
+    }
+
+    @Override
+    public ArrayList<String> getHideProgramStages() {
+        return null;
     }
 
     @Override
@@ -237,6 +257,11 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
         }
     }
 
+    @Override
+    public void disableCalculatedFields(ProgramRuleAction programRuleAction) {
+        eventDataEntryFragment.getListViewAdapter().disableIndex(programRuleAction.getDataElement());
+    }
+
     /**
      * Displays a warning dialog to the user, indicating the data entry rows with values in them
      * are being hidden due to program rules.
@@ -263,6 +288,31 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
             if (fragment.isAdded()) {
                 eventDataEntryFragment.getValidationErrorDialog().show(fragment.getChildFragmentManager());
             }
+        }
+    }
+
+
+    @Override
+    public void applySetMandatoryFieldRuleAction(ProgramRuleAction programRuleAction) {
+        eventDataEntryFragment.getListViewAdapter().addMandatoryOnIndex(programRuleAction.getDataElement());
+    }
+
+    @Override
+    public void applyHideProgramStageRuleAction(ProgramRuleAction programRuleAction) {
+
+    }
+
+    @Override
+    public void applyWarningOnCompleteRuleAction(ProgramRuleAction programRuleAction) {
+        if (!showOnCompleteWarnings.contains(programRuleAction.getContent())) {
+            showOnCompleteWarnings.add(programRuleAction.getContent());
+        }
+    }
+
+    @Override
+    public void applyErrorOnCompleteRuleAction(ProgramRuleAction programRuleAction) {
+        if (!showOnCompleteErrors.contains(programRuleAction.getContent())) {
+            showOnCompleteErrors.add(programRuleAction.getContent());
         }
     }
 

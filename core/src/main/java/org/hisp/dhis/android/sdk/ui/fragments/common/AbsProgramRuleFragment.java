@@ -93,6 +93,7 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
         for (ProgramRule programRule : programRules) {
             try {
                 boolean evaluatedTrue = ProgramRuleService.evaluate(programRule.getCondition());
+                Log.d("PROGRAM RULE", "evaluating program rule");
                 for (ProgramRuleAction action : programRule.getProgramRuleActions()) {
                     if (evaluatedTrue) {
                         applyProgramRuleAction(action, affectedFieldsWithValue);
@@ -128,42 +129,69 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
 
         switch (programRuleAction.getProgramRuleActionType()) {
             case HIDEFIELD: {
+                Log.i("Apply programrule:", "HIDEFIELD");
                 programRuleFragmentHelper.applyHideFieldRuleAction(programRuleAction, affectedFieldsWithValue);
                 break;
             }
             case HIDESECTION: {
+                Log.i("Apply programrule:", "HIDESECTION");
                 programRuleFragmentHelper.applyHideSectionRuleAction(programRuleAction);
                 break;
             }
             case SHOWWARNING: {
+                Log.i("Apply programrule:", "SHOWWARNING");
                 programRuleFragmentHelper.applyShowWarningRuleAction(programRuleAction);
                 break;
             }
             case SHOWERROR: {
+                Log.i("Apply programrule:", "SHOWERROR");
                 programRuleFragmentHelper.applyShowErrorRuleAction(programRuleAction);
                 break;
             }
             case ASSIGN: {
+                Log.i("Apply programrule:", "ASSIGN");
                 applyAssignRuleAction(programRuleAction);
                 break;
             }
             case CREATEEVENT: {
+                Log.i("Apply programrule:", "CREATEEVENT");
                 programRuleFragmentHelper.applyCreateEventRuleAction(programRuleAction);
                 break;
             }
             case DISPLAYKEYVALUEPAIR: {
+                Log.i("Apply programrule:", "DISPLAYKEYVALUEPAIR");
                 programRuleFragmentHelper.applyDisplayKeyValuePairRuleAction(programRuleAction);
                 break;
             }
             case DISPLAYTEXT: {
+                Log.i("Apply programrule:", "DISPLAYTEXT");
                 programRuleFragmentHelper.applyDisplayTextRuleAction(programRuleAction);
+                break;
+            }
+            case ERRORONCOMPLETE: {
+                Log.i("Apply programrule:", "ERRORONCOMPLETE");
+                programRuleFragmentHelper.applyErrorOnCompleteRuleAction(programRuleAction);
+                break;
+            }
+            case HIDEPROGRAMSTAGE: {
+                Log.i("Apply programrule:", "HIDEPROGRAMSTAGE");
+                programRuleFragmentHelper.applyHideProgramStageRuleAction(programRuleAction);
+                break;
+            }
+            case SETMANDATORYFIELD: {
+                Log.i("Apply programrule:", "SETMANDATORYFIELD");
+                programRuleFragmentHelper.applySetMandatoryFieldRuleAction(programRuleAction);
+                break;
+            }
+            case WARNINGONCOMPLETE: {
+                Log.i("Apply programrule:", "WARNINGONCOMPLETE");
+                programRuleFragmentHelper.applyWarningOnCompleteRuleAction(programRuleAction);
                 break;
             }
         }
     }
 
-
-            protected void applyAssignRuleAction(ProgramRuleAction programRuleAction) {
+    protected void applyAssignRuleAction(ProgramRuleAction programRuleAction) {
         String stringResult = ProgramRuleService.getCalculatedConditionValue(programRuleAction.getData());
         String programRuleVariableName = programRuleAction.getContent();
         ProgramRuleVariable programRuleVariable;
@@ -191,8 +219,9 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
                 programRuleFragmentHelper.saveTrackedEntityAttribute(trackedEntityAttributeId);
             }
         }
+        programRuleFragmentHelper.disableCalculatedFields(programRuleAction);
     }
-
+    
     public void showBlockingProgressBar() {
         if (getActivity() != null) {
             getActivity().runOnUiThread(new Runnable() {

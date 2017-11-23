@@ -43,13 +43,16 @@ import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
+import org.hisp.dhis.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.QuestionCoordinatesRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.autocompleterow.TextRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,9 +62,12 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
     private static final String CLASS_TAG = DataValueAdapter.class.getSimpleName();
 
     private Map<String, Integer> dataElementsToRowIndexMap;
+    private List<String> mandatoryDataElementRows;
     private final FragmentManager mFragmentManager;
     private Map<String, Boolean> hiddenDataElementRows;
+    private Map<String, Boolean> disabledDataElementRows;
     private Map<String, String> warningDataElementRows;
+    private List<String> mandatoryProgramRuleDataElementRows;
     private Map<String, String> errorDataElementRows;
     private ListView mListView;
     private Context mContext;
@@ -71,7 +77,9 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
         super(inflater);
         mFragmentManager = fragmentManager;
         hiddenDataElementRows = new HashMap<>();
+        disabledDataElementRows = new HashMap<>();
         warningDataElementRows = new HashMap<>();
+        mandatoryProgramRuleDataElementRows = new ArrayList<>();
         errorDataElementRows = new HashMap<>();
         mListView = listView;
         mContext = context;
@@ -82,6 +90,14 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
         if (getData() != null) {
             Row dataEntryRow = getData().get(position);
             String id = dataEntryRow.getItemId();
+            dataEntryRow.setEditable(!disabledDataElementRows.containsKey(id));
+            if(mandatoryProgramRuleDataElementRows.contains(id)){
+                dataEntryRow.setMandatory(true);
+            } else if(mandatoryDataElementRows.contains(id)){
+                dataEntryRow.setMandatory(true);
+            }else{
+                dataEntryRow.setMandatory(false);
+            }
             dataEntryRow.setWarning(warningDataElementRows.get(id));
             dataEntryRow.setError(errorDataElementRows.get(id));
             if (dataEntryRow instanceof QuestionCoordinatesRow) {
@@ -144,10 +160,13 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
     public void swapData(List<Row> data) {
         boolean notifyAdapter = mData != data;
         mData = data;
-        if (dataElementsToRowIndexMap == null)
+        if (dataElementsToRowIndexMap == null) {
             dataElementsToRowIndexMap = new HashMap<>();
+            mandatoryDataElementRows = new ArrayList<>();
+        }
         else {
             dataElementsToRowIndexMap.clear();
+            mandatoryDataElementRows.clear();
         }
         if (mData != null) {
             for (int i = 0; i < mData.size(); i++) {
@@ -155,6 +174,13 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
                 BaseValue baseValue = dataEntryRow.getValue();
                 if (baseValue instanceof DataValue) {
                     dataElementsToRowIndexMap.put(((DataValue) baseValue).getDataElement(), i);
+                    if(dataEntryRow.isMandatory()){
+                        mandatoryDataElementRows.add(((DataValue) baseValue).getDataElement());
+                    }
+                }else if (baseValue instanceof TrackedEntityAttributeValue) {
+                    if(dataEntryRow.isMandatory()){
+                        mandatoryDataElementRows.add(((TrackedEntityAttributeValue) baseValue).getTrackedEntityAttributeId());
+                    }
                 }
             }
         }
@@ -173,11 +199,44 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
         }
     }
 
+    public void disableIndex(String dataElement) {
+        if(disabledDataElementRows == null) {
+            disabledDataElementRows = new HashMap<>();
+        }
+        if(dataElement != null) {
+            disabledDataElementRows.put(dataElement, true);
+        }
+    }
+
     public void resetHiding() {
         if (mData == null) return;
         if(hiddenDataElementRows != null) {
             hiddenDataElementRows.clear();
         }
+    }
+    public void resetDisabled() {
+        if (mData == null) return;
+        if(disabledDataElementRows != null) {
+            disabledDataElementRows.clear();
+        }
+    }
+
+    public void addMandatoryOnIndex(String dataElement) {
+        if(mandatoryProgramRuleDataElementRows == null) {
+            mandatoryProgramRuleDataElementRows = new ArrayList();
+        }
+        mandatoryProgramRuleDataElementRows.add(dataElement);
+    }
+
+    public void resetMandatory() {
+        if (mData == null) return;
+        if(mandatoryProgramRuleDataElementRows != null) {
+            mandatoryProgramRuleDataElementRows.clear();
+        }
+    }
+
+    public List<String> getMandatoryList(){
+        return mandatoryProgramRuleDataElementRows;
     }
 
     public void showWarningOnIndex(String dataElement, String warning) {

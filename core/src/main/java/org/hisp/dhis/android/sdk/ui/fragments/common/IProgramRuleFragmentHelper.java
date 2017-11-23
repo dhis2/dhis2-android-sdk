@@ -53,6 +53,24 @@ public interface IProgramRuleFragmentHelper {
      * @return
      */
     ArrayList<String> getProgramRuleValidationErrors();
+    /**
+     * Returns a list of the messages
+     * that have {@link ProgramRule} on complete errors affecting them.
+     * @return
+     */
+    ArrayList<String> getShowOnCompleteErrors();
+    /**
+     * Returns a list of the messages
+     * that have {@link ProgramRule} on warnings errors affecting them.
+     * @return
+     */
+    ArrayList<String> getShowOnCompleteWarningErrors();
+    /**
+     * Returns a list of the program stages
+     * that have {@link ProgramRule} force hide affecting them.
+     * @return
+     */
+    ArrayList<String> getHideProgramStages();
 
     /**
      * Nullifies all necessary references
@@ -148,6 +166,32 @@ public interface IProgramRuleFragmentHelper {
      * @param programRuleAction
      */
     void applyDisplayTextRuleAction(ProgramRuleAction programRuleAction);
+    /**
+     * Applies a {@link ProgramRuleAction} of type {@link org.hisp.dhis.android.sdk.utils.api.ProgramRuleActionType#SETMANDATORYFIELD}
+     * @param programRuleAction
+     */
+    void applySetMandatoryFieldRuleAction(ProgramRuleAction programRuleAction);
+    /**
+     * Applies a {@link ProgramRuleAction} of type {@link org.hisp.dhis.android.sdk.utils.api.ProgramRuleActionType#HIDEPROGRAMSTAGE}
+     * @param programRuleAction
+     */
+    void applyHideProgramStageRuleAction(ProgramRuleAction programRuleAction);
+    /**
+     * Applies a {@link ProgramRuleAction} of type {@link org.hisp.dhis.android.sdk.utils.api.ProgramRuleActionType#WARNINGONCOMPLETE}
+     * @param programRuleAction
+     */
+    void applyWarningOnCompleteRuleAction(ProgramRuleAction programRuleAction);
+    /**
+     * Applies a {@link ProgramRuleAction} of type {@link org.hisp.dhis.android.sdk.utils.api.ProgramRuleActionType#ERRORONCOMPLETE}
+     * @param programRuleAction
+     */
+    void applyErrorOnCompleteRuleAction(ProgramRuleAction programRuleAction);
+
+    /**
+     * Disable calculated fields within a {@link ProgramRuleAction}
+     * @param programRuleAction
+     */
+    void disableCalculatedFields(ProgramRuleAction programRuleAction);
 
     /**
      * Returns the {@link DataValue} for a given {@link org.hisp.dhis.android.sdk.persistence.models.DataElement}

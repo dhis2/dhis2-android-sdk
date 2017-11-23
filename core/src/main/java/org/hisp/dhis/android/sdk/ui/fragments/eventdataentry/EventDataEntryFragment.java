@@ -286,7 +286,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             if (data.getStage() != null &&
                     data.getStage().getCaptureCoordinates()) {
                 GpsController.activateGps(getActivity().getBaseContext());
-            }else{
+            } else {
                 if(hasCoordinateQuestion()){
                     GpsController.activateGps(getActivity().getBaseContext());
                 }
@@ -480,6 +480,9 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             }
             if (dataElement.getCompulsory() && isEmpty(dataValue.getValue())) {
                 return false;
+            } else if (listViewAdapter.getMandatoryList().contains(dataElement.getDataelement())
+                    && isEmpty(dataValue.getValue())) {
+                return false;
             }
         }
         return true;
@@ -516,9 +519,10 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         );
         for (DataValue dataValue : form.getEvent().getDataValues()) {
             ProgramStageDataElement dataElement = dataElements.get(dataValue.getDataElement());
+            String dataElementUid = dataElement.getDataElement().getUid();
             if (dataElement == null) {
                 // don't do anything
-            } else if (dataElement.getCompulsory() && isEmpty(dataValue.getValue())) {
+            } else if ((dataElement.getCompulsory() || listViewAdapter.getMandatoryList().contains(dataElementUid)) && isEmpty(dataValue.getValue())) {
                 if(!errors.containsKey(ErrorType.MANDATORY)){
                     errors.put(ErrorType.MANDATORY, new ArrayList<String>());
                 }
@@ -535,6 +539,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
         if (hasRules(dataElement)) {
             getProgramRuleFragmentHelper().getProgramRuleValidationErrors().clear();
+            getProgramRuleFragmentHelper().getShowOnCompleteErrors().clear();
+            getProgramRuleFragmentHelper().getShowOnCompleteWarningErrors().clear();
             initiateEvaluateProgramRules();
         }
         if (hasIndicators(dataElement)) {
@@ -701,6 +707,14 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
     @Subscribe
     public void onItemClick(final OnCompleteEventClick eventClick) {
+        if (!eventClick.getEvent().getStatus().equals(Event.STATUS_COMPLETED)
+                && showOnCompleteMessages(eventClick)) {
+            return;
+        }
+        completeEvent(eventClick);
+    }
+
+    private void completeEvent(final OnCompleteEventClick eventClick) {
         if (isValid()) {
             if (!eventClick.getEvent().getStatus().equals(Event.STATUS_COMPLETED)) {
                 getActivity().runOnUiThread(new Runnable() {
@@ -708,7 +722,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                     public void run() {
 
                         UiUtils.showConfirmDialog(getActivity(), eventClick.getLabel(), eventClick.getAction(),
-                                eventClick.getLabel(), getActivity().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                                eventClick.getLabel(), getActivity().getString(
+                                        R.string.cancel), new DialogInterface.OnClickListener() {
 
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -724,7 +739,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                         eventClick.getEvent().setStatus(Event.STATUS_COMPLETED);
                                         form.getEvent().setFromServer(false);
                                         form.getEnrollment().setFromServer(false);
-                                        TrackedEntityInstance trackedEntityInstance =TrackerController.getTrackedEntityInstance(form.getEnrollment().getTrackedEntityInstance());
+                                        TrackedEntityInstance trackedEntityInstance =
+                                                TrackerController.getTrackedEntityInstance(form.getEnrollment().getTrackedEntityInstance());
                                         trackedEntityInstance.setFromServer(false);
                                         trackedEntityInstance.save();
                                         ProgramStage currentProgramStage = MetaDataController
@@ -789,11 +805,48 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                 Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
             }
         } else {
-            HashMap<ErrorType, ArrayList<String>>  allErrors = getValidationErrors();
+            HashMap<ErrorType, ArrayList<String>> allErrors = getValidationErrors();
             allErrors.put(ErrorType.PROGRAM_RULE, getProgramRuleFragmentHelper().getProgramRuleValidationErrors());
             allErrors.put(ErrorType.INVALID_FIELD, getRowsErrors(getContext(), form));
             showValidationErrorDialog(allErrors);
         }
+    }
+
+    private boolean showOnCompleteMessages(
+            final OnCompleteEventClick eventClick) {
+        String message = "";
+        for(String value : getProgramRuleFragmentHelper().getShowOnCompleteErrors()){
+            message += String.format(getString(R.string.program_rule_on_complete_message_error), value)+"\n";
+        }
+        for(String value : getProgramRuleFragmentHelper().getShowOnCompleteWarningErrors()){
+            message += String.format(getString(R.string.program_rule_on_complete_message_warning), value)+"\n";
+        }
+        String title = getContext().getString(R.string.program_rule_on_complete_message_title);
+        if(getProgramRuleFragmentHelper().getShowOnCompleteErrors().size()>0) {
+            UiUtils.showConfirmDialog(getActivity(),
+                    title, message,
+                    getString(org.hisp.dhis.android.sdk.R.string.cancel),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //discard
+                        }
+                    });
+            return true;
+        }else if(getProgramRuleFragmentHelper().getShowOnCompleteWarningErrors().size()>0){
+            UiUtils.showConfirmDialog(getActivity(),
+                    title, message,
+                    getString(R.string.ok_option),
+                    getString(org.hisp.dhis.android.sdk.R.string.cancel),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            completeEvent(eventClick);
+                        }
+                    });
+            return true;
+        }
+        return false;
     }
 
     @Nullable
@@ -1017,6 +1070,10 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
     @Override
     public boolean doBack() {
+        if(form.getEvent().getDueDate()==null && form.getEvent().getEventDate()==null){
+            form.getEvent().delete();
+            return super.doBack();
+        }
         List<String> errors = getRowsErrors(getContext(), form);
         if (errors.size() > 0) {
             showErrorAndGoBack();

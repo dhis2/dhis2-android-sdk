@@ -181,6 +181,9 @@
 
     <string name="validation_field_exit">Warning: There are invalid values and you\'re about to exit. If you proceed, invalid values will be deleted. Do you want to continue?</string>
     <string name="validation_field_title">Warning: There are invalid values</string>
+    <string name="program_rule_on_complete_message_title">Program rule messages</string>
+    <string name="program_rule_on_complete_message_error">Error: %s</string>
+    <string name="program_rule_on_complete_message_warning">Warning: %s</string>
     <string name="validation_compulsory_error">Please complete the following compulsory fields</string>
     <string name="enter_date">Enter date</string>
     <string name="enter_text">Enter text</string>
@@ -260,6 +263,8 @@
 
     <string name="enter_email">Enter e-mail</string>
     <string name="error_email">Please enter a valid e-mail address</string>
+    <string name="enter_url">Enter url</string>
+    <string name="error_url">Please enter a valid url</string>
 
     <string name="error_exporting_data">Error metadata could not be exported.</string>
     <string name="developers_settings">Developers options</string>

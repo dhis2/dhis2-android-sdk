@@ -1,14 +1,12 @@
 package org.hisp.dhis.android.sdk.utils.support.math;
 
-import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
-import org.hisp.dhis.android.sdk.utils.api.ValueType;
-import org.hisp.dhis.android.sdk.utils.services.VariableService;
-import org.junit.Test;
-
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hisp.dhis.android.sdk.utils.api.ValueType.INTEGER;
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.addDays;
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.ceil;
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.concatenate;
+import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.condition;
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.count;
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.countIfValue;
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.countIfZeroPos;
@@ -20,6 +18,7 @@ import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.l
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.length;
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.modulus;
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.monthsBetween;
+import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.oizp;
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.right;
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.round;
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.split;
@@ -28,14 +27,13 @@ import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.v
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.weeksBetween;
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.yearsBetween;
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.zing;
-import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.condition;
-import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.oizp;
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.zpvc;
-
 import static org.junit.Assert.assertThat;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
+import org.hisp.dhis.android.sdk.utils.api.ValueType;
+import org.hisp.dhis.android.sdk.utils.services.VariableService;
+import org.junit.Test;
 
 import java.text.ParseException;
 import java.util.Arrays;
@@ -492,6 +490,12 @@ public class ExpressionFunctionsTest {
         assertThat(validatePattern("abc123", "123"), is(equalTo(false)));
         assertThat(validatePattern(123, "12"), is(equalTo(false)));
         assertThat(validatePattern(123, "123"), is(equalTo(true)));
+        assertThat(validatePattern("27123456789", "27\\d{2}\\d{3}\\d{4}"), is(equalTo(true)));
+    }
+
+    @Test
+    public void validatePatternShouldWorkBeyondMaxIntValue() {
+        assertThat(validatePattern(27123456789L, "27\\d{9}"), is(equalTo(true)));
     }
 
     @Test

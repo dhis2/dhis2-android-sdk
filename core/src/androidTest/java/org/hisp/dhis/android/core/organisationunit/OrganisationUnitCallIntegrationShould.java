@@ -330,7 +330,7 @@ public class OrganisationUnitCallIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void call_shouldPersistOrganisationUnitTreeInDatabase() throws Exception {
+    public void persist_organisation_unit_tree_in_data_base_after_call() throws Exception {
         //Insert User in the User tables, such that UserOrganisationUnitLink's foreign key is satisfied:
         ContentValues userContentValues = new ContentValues();
         userContentValues.put(UserModel.Columns.UID, "user_uid");

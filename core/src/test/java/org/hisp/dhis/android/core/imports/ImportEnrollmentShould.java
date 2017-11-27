@@ -13,7 +13,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class ImportEnrollmentShould {
 
     @Test
-    public void importEnrollment_shouldParseFromJson() throws Exception {
+    public void map_from_json_string() throws Exception {
         ObjectMapper objectMapper = Inject.objectMapper();
 
         ImportEnrollment importEnrollment = objectMapper.readValue("{\n" +

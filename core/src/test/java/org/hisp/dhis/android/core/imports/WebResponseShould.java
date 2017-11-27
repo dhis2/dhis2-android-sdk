@@ -13,7 +13,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class WebResponseShould {
 
     @Test
-    public void webResponse_shouldParseFromJson() throws Exception {
+    public void map_from_json_string() throws Exception {
         ObjectMapper objectMapper = Inject.objectMapper();
 
         WebResponse webResponse = objectMapper.readValue("{\n" +
@@ -96,7 +96,7 @@ public class WebResponseShould {
     }
 
     @Test
-    public void webResponse_shouldParseFromJsonWithImportConflicts() throws Exception {
+    public void map_from_json_string_with_import_conflicts() throws Exception {
         ObjectMapper objectMapper = Inject.objectMapper();
 
         objectMapper.readValue("{\n" +

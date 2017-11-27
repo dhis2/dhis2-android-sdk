@@ -149,7 +149,7 @@ public class TrackedEntityCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldInvokeServer_withCorrectParameters() throws Exception {
+    public void invoke_server_with_correct_parameters_after_call() throws Exception {
         when(payload.items()).thenReturn(Collections.singletonList(trackedEntity));
 
         call.call();
@@ -169,7 +169,7 @@ public class TrackedEntityCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldInvokeServer_withCorrectParameters_withLastUpdated() throws Exception {
+    public void invoke_server_with_correct_parameters_after_call_with_last_updated() throws Exception {
         String date = "2014-11-25T09:37:53.358";
         when(resourceStore.getLastUpdated(eq(ResourceModel.Type.TRACKED_ENTITY))).thenReturn(date);
         when(payload.items()).thenReturn(Collections.singletonList(trackedEntity));
@@ -191,7 +191,7 @@ public class TrackedEntityCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldNotMarkTransactionSuccessful_storesOnException() throws Exception {
+    public void not_invoke_transactions_stores_after_exception_on_retrofit_call() throws Exception {
         when(retrofitCall.execute()).thenThrow(Exception.class);
         try {
             call.call();
@@ -205,7 +205,7 @@ public class TrackedEntityCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldInsert_ifRequestSucceeds() throws Exception {
+    public void invoke_insert_if_request_is_successful() throws Exception {
         Headers headers = new Headers.Builder().add("Date", lastUpdated.toString()).build();
         when(payload.items()).thenReturn(Collections.singletonList(trackedEntity));
         Response<Payload<TrackedEntity>> response = Response.success(payload, headers);
@@ -227,7 +227,7 @@ public class TrackedEntityCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldNotFail_onEmptyInput() throws IOException {
+    public void not_fail_on_empty_input() throws IOException {
         TrackedEntityCall call = new TrackedEntityCall(new HashSet<String>(), database,
                 trackedEntityStore, resourceStore, service, serverDate);
         when(service.trackedEntities(
@@ -250,7 +250,7 @@ public class TrackedEntityCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldThrowException_onConsecutiveCalls() {
+    public void throw_illegal_state_exception_on_consecutive_calls() {
         try {
             call.call();
             call.call();
@@ -262,7 +262,7 @@ public class TrackedEntityCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldMarkCallAsExecuted_onSuccess() {
+    public void return_true_when_is_executed_is_asked_before_on_success_call() {
         try {
             call.call();
         } catch (Exception e) {
@@ -274,7 +274,7 @@ public class TrackedEntityCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldMarkCallAsExecuted_onFailure() throws IOException {
+    public void return_true_when_is_executed_is_asked_before_on_failure_call() throws IOException {
         when(retrofitCall.execute()).thenThrow(new IOException());
         try {
             call.call();

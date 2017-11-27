@@ -51,7 +51,7 @@ public class TrackedEntityInstanceHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldDoNothingWhenPassingNullArgument() throws Exception {
+    public void do_nothing_when_passing_null_argument() throws Exception {
         trackedEntityInstanceHandler.handle(null);
 
         // verify that tracked entity instance store is never called
@@ -67,7 +67,7 @@ public class TrackedEntityInstanceHandlerShould {
     }
 
     @Test
-    public void delete_shouldDeleteTrackedEntityInstance() throws Exception {
+    public void invoke_delete_when_handle_program_tracked_entity_instance_set_as_deleted() throws Exception {
         when(trackedEntityInstance.deleted()).thenReturn(Boolean.TRUE);
 
         trackedEntityInstanceHandler.handle(trackedEntityInstance);
@@ -87,7 +87,7 @@ public class TrackedEntityInstanceHandlerShould {
     }
 
     @Test
-    public void update_shouldUpdateTrackedEntityInstance() throws Exception {
+    public void invoke_only_update_when_handle_tracked_entity_instance_inserted() throws Exception {
         when(trackedEntityInstanceStore.update(anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(),
                 anyString(), anyString(), any(State.class), anyString())).thenReturn(1);
@@ -112,7 +112,7 @@ public class TrackedEntityInstanceHandlerShould {
     }
 
     @Test
-    public void insert_shouldInsertTrackedEntityInstance() throws Exception {
+    public void invoke_update_and_insert_when_handle_tracked_entity_instance_not_inserted() throws Exception {
         when(trackedEntityInstanceStore.update(anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(),
                 anyString(), anyString(), any(State.class), anyString())).thenReturn(0);

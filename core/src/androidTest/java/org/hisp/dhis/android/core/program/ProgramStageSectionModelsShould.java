@@ -60,7 +60,7 @@ public class ProgramStageSectionModelsShould {
     }
 
     @Test
-    public void create_shouldConvertToModel() {
+    public void convert_to_model_after_create() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID, Columns.UID, Columns.CODE, Columns.NAME,
                 Columns.DISPLAY_NAME, Columns.CREATED, Columns.LAST_UPDATED,
@@ -87,7 +87,7 @@ public class ProgramStageSectionModelsShould {
     }
 
     @Test
-    public void create_shouldConvertToContentValues() {
+    public void convert_to_content_values() {
         ProgramStageSectionModel model = ProgramStageSectionModel.builder()
                 .id(ID)
                 .uid(UID)

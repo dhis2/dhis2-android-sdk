@@ -40,7 +40,7 @@ public class UserModelShould {
 
     //TODO: add more tests ?
     @Test
-    public void equals_shouldConformToContract() {
+    public void conform_to_contract() {
         EqualsVerifier.forClass(UserModel.builder().build().getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();

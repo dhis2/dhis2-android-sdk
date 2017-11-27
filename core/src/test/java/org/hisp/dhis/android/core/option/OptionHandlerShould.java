@@ -76,7 +76,7 @@ public class OptionHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldDoNothingWhenPassingNullArgument() throws Exception {
+    public void do_nothing_when_passing_null_argument() throws Exception {
         optionHandler.handleOptions(null);
         verify(optionStore, never()).delete(anyString());
         verify(optionStore, never()).insert(anyString(), anyString(), anyString(), anyString(), any(Date.class),
@@ -86,7 +86,7 @@ public class OptionHandlerShould {
     }
 
     @Test
-    public void delete_shouldDeleteOption() throws Exception {
+    public void invoke_only_delete_when_option_is_set_as_deleted() throws Exception {
         when(option.deleted()).thenReturn(Boolean.TRUE);
 
         optionHandler.handleOptions(options);
@@ -103,7 +103,7 @@ public class OptionHandlerShould {
     }
 
     @Test
-    public void update_shouldUpdateOption() throws Exception {
+    public void invoke_only_update_when_handle_options_inserted() throws Exception {
         when(optionStore.update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
                 any(Date.class), anyString(), anyString())).thenReturn(1);
 
@@ -121,7 +121,7 @@ public class OptionHandlerShould {
     }
 
     @Test
-    public void insert_shouldInsertOption() throws Exception {
+    public void invoke_update_and_insert_when_handle_options_not_inserted() throws Exception {
         when(optionStore.update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
                 any(Date.class), anyString(), anyString())).thenReturn(0);
 

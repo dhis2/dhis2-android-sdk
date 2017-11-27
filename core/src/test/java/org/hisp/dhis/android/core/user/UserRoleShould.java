@@ -41,7 +41,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class UserRoleShould {
     @Test
-    public void userCredentials_shouldMapFromJsonString() throws IOException, ParseException {
+    public void map_from_json_string() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
 
         UserRole userRole = objectMapper.readValue("{\n" +

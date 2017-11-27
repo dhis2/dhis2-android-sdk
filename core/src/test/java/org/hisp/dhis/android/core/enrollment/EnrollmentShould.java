@@ -42,7 +42,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class EnrollmentShould {
 
     @Test
-    public void enrollment_shouldMapFromJsonString() throws IOException, ParseException {
+    public void map_from_json_string() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
         Enrollment enrollment = objectMapper.readValue("{\n " +
                 "    \"trackedEntity\": \"nEenWmSyUEp\",\n " +

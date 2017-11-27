@@ -38,7 +38,7 @@ import org.mockito.MockitoAnnotations;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class SqLiteTransactionShould {
+public class SqLiteTestTransaction {
 
     @Mock
     DbOpenHelper dbOpenHelper;

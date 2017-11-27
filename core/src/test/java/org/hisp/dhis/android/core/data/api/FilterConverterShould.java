@@ -61,7 +61,7 @@ public class FilterConverterShould {
     }
 
     @Test
-    public void retrofit_shouldRespectFilter() throws IOException, InterruptedException {
+    public void returns_correct_path_when_create_a_retrofit_request_using_filters() throws IOException, InterruptedException {
         ArrayList<String> values = new ArrayList(2);
         values.add("uid1");
         values.add("uid2");
@@ -88,7 +88,7 @@ public class FilterConverterShould {
     }
 
     @Test
-    public void filterConverter_shouldConvertSingleValueFilterCorrectly() throws IOException, InterruptedException {
+    public void returns_correct_path_when_create_a_retrofit_request_using_filters_and_single_value() throws IOException, InterruptedException {
         ArrayList<String> values = new ArrayList(2);
         values.add("uid1");
 
@@ -115,7 +115,7 @@ public class FilterConverterShould {
     }
 
     @Test
-    public void retrofit_shouldRespectFieldAndFilterMixing() throws IOException, InterruptedException {
+    public void returns_correct_path_when_create_a_retrofit_request_using_filters_and_values() throws IOException, InterruptedException {
         ArrayList<String> values = new ArrayList(2);
         values.add("uid1");
         values.add("uid2");
@@ -148,7 +148,7 @@ public class FilterConverterShould {
     }
 
     @Test
-    public void retrofit_shouldIgnoreNullFilter() throws IOException, InterruptedException {
+    public void returns_correct_path_when_create_a_retrofit_request_ignoring_null_filter() throws IOException, InterruptedException {
         ArrayList<String> values = new ArrayList(2);
         values.add("uid1");
         values.add("uid2");
@@ -175,7 +175,7 @@ public class FilterConverterShould {
     }
 
     @Test
-    public void retrofit_shouldIgnoreEmptyStringFilter() throws IOException, InterruptedException {
+    public void returns_correct_path_when_create_a_retrofit_request_ignoring_empty_string_filter() throws IOException, InterruptedException {
         ArrayList<String> values = new ArrayList(2);
         values.add("uid1");
         values.add("uid2");
@@ -205,7 +205,7 @@ public class FilterConverterShould {
 
     @Test
     @SuppressWarnings("BadAnnotationImplementation")
-    public void converterFactory_shouldReturnConverterOnSpecificAnnotation() {
+    public void returns_converter_factory_on_correct_annotation() {
         Converter.Factory converterFactory = FilterConverterFactory.create();
 
         Converter<?, String> converter = converterFactory

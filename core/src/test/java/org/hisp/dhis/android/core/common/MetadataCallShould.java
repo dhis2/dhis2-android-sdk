@@ -332,7 +332,7 @@ public class MetadataCallShould {
     }
 
     @Test
-    public void call_shouldExecuteCalls() throws Exception {
+    public void returns_option_set_payload_when_execute_metadata_call() throws Exception {
         Response response = metadataCall.call();
         // assert that last successful response is returned
         assertThat(response.body()).isEqualTo(optionSetPayload);
@@ -340,7 +340,7 @@ public class MetadataCallShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldNotMarkTransactionSuccessful_ifSystemInfoCall_Fails() throws Exception {
+    public void verify_transaction_fail_when_system_info_call_fail() throws Exception {
         final int expectedTransactions = 1;
         when(systemInfoCall.execute()).thenReturn(errorResponse);
 
@@ -355,7 +355,7 @@ public class MetadataCallShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldNotMarkTransactionSuccessful_ifUserCall_Fails() throws Exception {
+    public void verify_transaction_fail_when_user_call_fail() throws Exception {
         final int expectedTransactions = 2;
         when(userCall.execute()).thenReturn(errorResponse);
 
@@ -370,7 +370,7 @@ public class MetadataCallShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldNotMarkTransactionSuccessful_ifOrganisationUnitCall_Fails() throws Exception {
+    public void verify_transaction_fail_when_organisation_unit_call_fail() throws Exception {
         final int expectedTransactions = 4;
         when(organisationUnitCall.execute()).thenReturn(errorResponse);
 
@@ -385,7 +385,7 @@ public class MetadataCallShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldNotMarkTransactionSuccessful_ifProgramCall_Fails() throws Exception {
+    public void verify_transaction_fail_when_program_call_fail() throws Exception {
         final int expectedTransactions = 4;
         when(programCall.execute()).thenReturn(errorResponse);
 
@@ -400,7 +400,7 @@ public class MetadataCallShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldNotMarkTransactionSuccessful_ifTrackedEntityCall_Fails() throws Exception {
+    public void verify_transaction_fail_when_tracked_entity_call_fail() throws Exception {
         final int expectedTransactions = 6;
         when(trackedEntityCall.execute()).thenReturn(errorResponse);
 
@@ -415,7 +415,7 @@ public class MetadataCallShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldNotMarkTransactionSuccessful_ifOptionSet_Fails() throws Exception {
+    public void verify_transaction_fail_when_option_set_fail() throws Exception {
         final int expectedTransactions = 6;
         when(optionSetCall.execute()).thenReturn(errorResponse);
 

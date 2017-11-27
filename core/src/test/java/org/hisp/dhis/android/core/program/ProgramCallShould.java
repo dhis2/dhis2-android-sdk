@@ -216,7 +216,7 @@ public class ProgramCallShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldInvokeServerWithCorrectFields() throws Exception {
+    public void return_correct_fields_when_invoke_server() throws Exception {
         when(programCall.execute()).thenReturn(Response.success(payload));
 
         when(programService.getPrograms(
@@ -392,7 +392,7 @@ public class ProgramCallShould {
     }
 
     @Test
-    public void call_shouldNotInvokeProgramStoreIfRequestFail() throws Exception {
+    public void not_invoke_program_store_if_request_fail() throws Exception {
         when(programCall.execute()).thenReturn(Response.<Payload<Program>>error(HttpURLConnection.HTTP_UNAUTHORIZED,
                 ResponseBody.create(MediaType.parse("application/json"), "{}")));
 
@@ -426,7 +426,7 @@ public class ProgramCallShould {
     }
 
     @Test
-    public void call_shouldInvokeProgramHandlerAndUpdateResourceTableIfRequestSucceeds() throws Exception {
+    public void invoke_program_handler_and_update_resource_into_table_if_request_succeeds() throws Exception {
         when(programCall.execute()).thenReturn(Response.success(payload));
         when(payload.items()).thenReturn(Arrays.asList(program, program, program));
         when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(1);
@@ -455,7 +455,7 @@ public class ProgramCallShould {
     }
 
     @Test
-    public void call_shouldInvokeProgramHandlerAndInsertIntoResourceTableIfRequestSucceeds() throws Exception {
+    public void invoke_program_handler_and_insert_resource_into_table_if_request_succeeds() throws Exception {
         when(programCall.execute()).thenReturn(Response.success(payload));
         when(payload.items()).thenReturn(Arrays.asList(program, program, program));
         when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(0);
@@ -486,7 +486,7 @@ public class ProgramCallShould {
     }
 
     @Test
-    public void call_shouldInvokeProgramHandlerIfLastSyncedProgramIsNotNull() throws Exception {
+    public void invoke_program_handler_if_last_synced_program_is_not_null() throws Exception {
         when(cursor.moveToFirst()).thenReturn(Boolean.TRUE);
         when(cursor.getString(anyInt())).thenReturn("2017-02-09");
         when(programCall.execute()).thenReturn(Response.success(payload));
@@ -516,11 +516,18 @@ public class ProgramCallShould {
     }
 
     @Test
-    public void call_shouldMarkCallAsExecutedOnSuccess() throws Exception {
+    public void mark_call_as_executed_on_success() throws Exception {
         when(programCall.execute()).thenReturn(Response.success(payload));
         programSyncCall.call();
 
         assertThat(programSyncCall.isExecuted()).isTrue();
+    }
+
+
+    @Test
+    public void throw_exception_when_executing_consecutive_call() throws Exception {
+        when(programCall.execute()).thenReturn(Response.success(payload));
+        programSyncCall.call();
 
         try {
             programSyncCall.call();
@@ -529,10 +536,9 @@ public class ProgramCallShould {
             // do nothing
         }
     }
-
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldMarkCallAsExecutedOnFailure() throws Exception {
+    public void throw_io_exception_when_call_is_executed() throws Exception {
         when(programCall.execute()).thenThrow(IOException.class);
 
         try {

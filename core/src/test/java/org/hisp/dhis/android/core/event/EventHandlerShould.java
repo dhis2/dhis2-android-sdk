@@ -39,7 +39,7 @@ public class EventHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldDoNothingWhenPassingNullArgument() throws Exception {
+    public void do_nothing_when_passing_null_argument() throws Exception {
         eventHandler.handle(null);
 
         // verify that store is never invoked
@@ -56,7 +56,7 @@ public class EventHandlerShould {
     }
 
     @Test
-    public void delete_shouldDeleteEvent() throws Exception {
+    public void invoke_only_delete_when_a_event_is_set_as_deleted() throws Exception {
         when(event.deleted()).thenReturn(Boolean.TRUE);
 
         eventHandler.handle(event);
@@ -76,7 +76,7 @@ public class EventHandlerShould {
     }
 
     @Test
-    public void update_shouldUpdateEvent() throws Exception {
+    public void invoke_only_update_when_handle_event_inserted() throws Exception {
         when(eventStore.update(anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(),
                 any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
@@ -100,7 +100,7 @@ public class EventHandlerShould {
     }
 
     @Test
-    public void insert_shouldInsertEvent() throws Exception {
+    public void invoke_update_and_insert_when_handle_event_not_inserted() throws Exception {
         when(eventStore.update(anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(),
                 any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),

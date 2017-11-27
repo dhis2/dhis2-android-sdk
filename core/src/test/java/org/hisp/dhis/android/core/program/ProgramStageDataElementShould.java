@@ -45,14 +45,14 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class ProgramStageDataElementShould {
 
     @Test
-    public void equals_shouldConformToContract() {
+    public void conform_to_contract() {
         EqualsVerifier.forClass(ProgramStageDataElementModel.builder().build().getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();
     }
 
     @Test
-    public void programStageDataElement_shouldMapFromJsonString() throws IOException, ParseException {
+    public void map_from_json_string() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
         ProgramStageDataElement programStageDataElement = objectMapper.readValue("{\n" +
                 "\n" +

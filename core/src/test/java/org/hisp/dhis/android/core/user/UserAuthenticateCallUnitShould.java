@@ -207,7 +207,7 @@ public class UserAuthenticateCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldInvokeServerWithCorrectParameters() throws Exception {
+    public void invoke_server_with_correct_parameters_after_call() throws Exception {
         when(userCall.execute()).thenReturn(Response.success(user));
         when(userService.authenticate(
                 credentialsCaptor.capture(), filterCaptor.capture())
@@ -252,7 +252,7 @@ public class UserAuthenticateCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldNotInvokeStoresOnException() throws IOException {
+    public void not_invoke_stores_on_exception_on_call() throws IOException {
         when(userCall.execute()).thenThrow(IOException.class);
 
         try {
@@ -285,7 +285,7 @@ public class UserAuthenticateCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldNotInvokeStoresIfRequestFails() throws Exception {
+    public void not_invoke_stores_on_exception_on_request_fail() throws Exception {
         when(userCall.execute()).thenReturn(Response.<User>error(HttpURLConnection.HTTP_UNAUTHORIZED,
                 ResponseBody.create(MediaType.parse("application/json"), "{}")));
 
@@ -316,7 +316,7 @@ public class UserAuthenticateCallUnitShould {
     }
 
     @Test
-    public void call_shouldPersistUserIfRequestSucceeds() throws Exception {
+    public void persist_objects_after_successful_call() throws Exception {
         when(userCall.execute()).thenReturn(Response.success(user));
 
         userAuthenticateCall.call();
@@ -372,7 +372,7 @@ public class UserAuthenticateCallUnitShould {
 
 
     @Test
-    public void call_shouldNotFailOnUserWithoutOrganisationUnits() throws Exception {
+    public void not_fail_after_call_a_user_without_organisation_unit() throws Exception {
         when(user.organisationUnits()).thenReturn(null);
         when(userCall.execute()).thenReturn(Response.success(user));
 
@@ -401,7 +401,7 @@ public class UserAuthenticateCallUnitShould {
     }
 
     @Test
-    public void call_shouldMarkCallAsExecutedOnSuccess() throws Exception {
+    public void mark_as_executed_when_call_is_success() throws Exception {
         when(userCall.execute()).thenReturn(Response.success(user));
 
         userAuthenticateCall.call();
@@ -419,7 +419,7 @@ public class UserAuthenticateCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldMarkCallAsExecutedOnFailure() throws Exception {
+    public void mark_as_executed_when_call_is_failure() throws Exception {
         when(userCall.execute()).thenThrow(IOException.class);
 
         try {
@@ -440,7 +440,7 @@ public class UserAuthenticateCallUnitShould {
     }
 
     @Test
-    public void call_shouldThrowExceptionIfUserIsAlreadySignedIn() throws Exception {
+    public void throw_illegal_state_exception_if_user_already_signed_in() throws Exception {
         when(authenticatedUserStore.query()).thenReturn(Arrays.asList(authenticatedUser));
 
         try {

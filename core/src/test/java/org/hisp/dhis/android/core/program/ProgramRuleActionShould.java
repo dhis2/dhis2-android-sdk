@@ -41,7 +41,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class ProgramRuleActionShould {
     @Test
-    public void programRuleAction_shouldMapFromJsonString() throws IOException, ParseException {
+    public void map_from_json_string() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
         ProgramRuleAction programRuleAction = objectMapper.readValue("{\n" +
                 "\"lastUpdated\": \"2015-09-14T22:22:15.458\",\n" +

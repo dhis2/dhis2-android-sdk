@@ -36,10 +36,10 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
 @RunWith(JUnit4.class)
-public class UserOrganisationUnitLinkModelShould {
+public class UserOrganisationUnitLinkModelsShould {
 
     @Test
-    public void equals_shouldConformToContract() {
+    public void conform_to_contract() {
         EqualsVerifier.forClass(UserOrganisationUnitLinkModel.builder().build().getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();

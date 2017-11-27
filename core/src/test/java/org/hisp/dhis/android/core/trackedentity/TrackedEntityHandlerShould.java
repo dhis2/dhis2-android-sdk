@@ -84,14 +84,14 @@ public class TrackedEntityHandlerShould {
     }
 
     @Test
-    public void shouldDelete() {
+    public void invoke_delete_when_handle_tracked_entity_set_as_deleted() {
         when(trackedEntity.deleted()).thenReturn(!DELETED);
         handler.handleTrackedEntity(trackedEntity);
         verify(store, times(1)).delete(UID);
     }
 
     @Test
-    public void shouldUpdate() {
+    public void invoke_only_update_when_handle_tracked_entity_inserted() {
         when(store.update(anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(), anyString(), anyString(), anyString())
         ).thenReturn(1);
@@ -103,7 +103,7 @@ public class TrackedEntityHandlerShould {
     }
 
     @Test
-    public void shouldInsert() {
+    public void invoke_insert_when_handle_tracked_entity_not_inserted_before() {
         when(store.update(anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(), anyString(), anyString(), anyString())
         ).thenReturn(-1);
@@ -115,7 +115,7 @@ public class TrackedEntityHandlerShould {
     }
 
     @Test (expected = NullPointerException.class)
-    public void nullPointerOnNullArgument() {
+    public void thrown_null_pointer_exception_when_pass_null_on_handle_tracked_entity_method() {
         handler.handleTrackedEntity(null);
     }
 }

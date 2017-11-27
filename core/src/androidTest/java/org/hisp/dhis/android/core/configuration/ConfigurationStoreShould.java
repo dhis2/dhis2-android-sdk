@@ -53,7 +53,7 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void save_shouldPersistRowInDatabase() {
+    public void persist_row_in_database_after_save() {
         long rowId = store.save("http://testserver.org/");
 
         Cursor cursor = database().query(ConfigurationModel.CONFIGURATION,
@@ -66,7 +66,7 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void save_shouldNotThrowOnConflict() {
+    public void not_thrown_on_save_conflict() {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConfigurationModel.Columns.SERVER_URL, "http://testserver.org/");
 
@@ -84,7 +84,7 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void save_shouldNotPersistMoreThatOneUrl() {
+    public void not_persist_more_than_one_url_on_save() {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConfigurationModel.Columns.SERVER_URL, "http://testserver.org/");
 
@@ -101,7 +101,7 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeletePersistedRows() {
+    public void delete_persisted_rows_on_delete() {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConfigurationModel.Columns.SERVER_URL, "http://testserver.org/");
 
@@ -116,13 +116,13 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldNotFail_ifNoRowsArePersisted() {
+    public void not_fail_if_no_rows_persisted_on_delete() {
         long deleted = store.delete();
         assertThat(deleted).isEqualTo(0);
     }
 
     @Test
-    public void query_shouldReturnPersistedRow() {
+    public void return_persisted_row_after_query() {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConfigurationModel.Columns.SERVER_URL, "http://testserver.org/");
 
@@ -134,7 +134,7 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void query_shouldReturnNull_ifNoRowsArePersisted() {
+    public void return_null_if_no_rows_are_persisted() {
         ConfigurationModel persistedConfiguration = store.query();
         assertThat(persistedConfiguration).isNull();
     }

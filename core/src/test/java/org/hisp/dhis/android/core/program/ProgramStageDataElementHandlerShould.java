@@ -92,7 +92,7 @@ public class ProgramStageDataElementHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldDoNothingWhenPassingInNullProgramStageDataElements() throws Exception {
+    public void do_nothing_when_passing_null_argument() throws Exception {
         programStageDataElementHandler.handleProgramStageDataElements(null);
 
         // verify that program stage data element store is never invoked
@@ -109,7 +109,7 @@ public class ProgramStageDataElementHandlerShould {
     }
 
     @Test
-    public void delete_shouldDeleteProgramStageDataElement() throws Exception {
+    public void invoke_delete_when_handle_program_stage_data_element_set_as_deleted() throws Exception {
         when(programStageDataElement.deleted()).thenReturn(Boolean.TRUE);
 
         programStageDataElementHandler.handleProgramStageDataElements(programStageDataElements
@@ -134,7 +134,7 @@ public class ProgramStageDataElementHandlerShould {
     }
 
     @Test
-    public void update_shouldUpdateProgramStageDataElement() throws Exception {
+    public void invoke_only_update_when_handle_program_stage_data_elements_inserted() throws Exception {
         when(programStageDataElementStore.update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyBoolean(), anyBoolean(), anyInt(), anyBoolean(),
                 anyString(), anyString(), anyString())).thenReturn(1);
@@ -160,7 +160,7 @@ public class ProgramStageDataElementHandlerShould {
     }
 
     @Test
-    public void insert_shouldInsertProgramStageDataElement() throws Exception {
+    public void invoke_update_and_insert_when_handle_program_stage_data_elements_not_inserted() throws Exception {
         when(programStageDataElementStore.update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyBoolean(), anyBoolean(), anyInt(), anyBoolean(),
                 anyString(), anyString(), anyString())).thenReturn(0);

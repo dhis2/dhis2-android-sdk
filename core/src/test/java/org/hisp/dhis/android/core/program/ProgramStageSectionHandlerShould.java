@@ -91,7 +91,7 @@ public class ProgramStageSectionHandlerShould {
     }
 
     @Test
-    public void delete_shouldDeleteProgramStageSection() throws Exception {
+    public void invoke_delete_when_handle_program_stage_section_set_as_deleted() throws Exception {
         when(programStageSection.deleted()).thenReturn(Boolean.TRUE);
 
         programStageSectionHandler.handleProgramStageSection(PROGRAM_STAGE_UID, programStageSections);
@@ -118,7 +118,7 @@ public class ProgramStageSectionHandlerShould {
     }
 
     @Test
-    public void update_shouldUpdateProgramStageSection() throws Exception {
+    public void invoke_only_update_when_handle_program_stage_section_inserted() throws Exception {
         when(programStageSectionStore.update(
                 anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class), anyInt(), anyString(), anyString())
@@ -150,7 +150,7 @@ public class ProgramStageSectionHandlerShould {
     }
 
     @Test
-    public void insert_shouldInsertProgramStageSection() throws Exception {
+    public void invoke_update_and_insert_when_handle_program_stage_section_not_inserted() throws Exception {
         when(programStageSectionStore.update(
                 anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class), anyInt(), anyString(), anyString())
@@ -184,7 +184,7 @@ public class ProgramStageSectionHandlerShould {
     }
 
     @Test
-    public void doNothing_doNothingWhenPassingInNullProgramStageUidArgument() throws Exception {
+    public void do_nothing_when_passing_null_program_stage_uid() throws Exception {
         programStageSectionHandler.handleProgramStageSection(null, programStageSections);
 
         // verify that program stage section store is never invoked
@@ -206,7 +206,7 @@ public class ProgramStageSectionHandlerShould {
     }
 
     @Test
-    public void doNothing_doNothingWhenPassingInNullProgramStageSectionArgument() throws Exception {
+    public void do_nothing_when_passing_null_program_stage_section() throws Exception {
         programStageSectionHandler.handleProgramStageSection(PROGRAM_STAGE_UID, null);
 
         // verify that program stage section store is never invoked
@@ -229,7 +229,7 @@ public class ProgramStageSectionHandlerShould {
     }
 
     @Test
-    public void doNothing_doNothingWhenPassingInNullArguments() throws Exception {
+    public void do_nothing_when_passing_null_arguments() throws Exception {
         programStageSectionHandler.handleProgramStageSection(null, null);
 
         // verify that program stage section store is never invoked

@@ -78,7 +78,7 @@ public class OptionSetStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistOptionSetInDatabase() throws ParseException {
+    public void should_persist_option_set_in_data_base_after_persist() throws ParseException {
         long rowId = store.insert(
                 UID, CODE, NAME, DISPLAY_NAME, date, date, VERSION, VALUE_TYPE);
 
@@ -96,7 +96,7 @@ public class OptionSetStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void update_shouldUpdateOptionSetInDatabase() throws Exception {
+    public void update_option_set_in_data_base_after_update() throws Exception {
         ContentValues optionSet = new ContentValues();
         optionSet.put(Columns.ID, 1L);
         optionSet.put(Columns.UID, UID);
@@ -127,7 +127,7 @@ public class OptionSetStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteOptionSetInDatabase() throws Exception {
+    public void delete_option_set_in_data_base_after_delete() throws Exception {
         ContentValues optionSet = new ContentValues();
         optionSet.put(Columns.ID, 1L);
         optionSet.put(Columns.UID, UID);
@@ -152,7 +152,7 @@ public class OptionSetStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteAnUpdatedOptionSet() throws Exception {
+    public void delete_an_updated_option_set_in_data_base_after_delete() throws Exception {
         ContentValues optionSet = new ContentValues();
         optionSet.put(Columns.ID, 1L);
         optionSet.put(Columns.UID, UID);
@@ -188,27 +188,27 @@ public class OptionSetStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_uid() {
+    public void throw_exception_after_insert_null_uid() {
         store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, VERSION, VALUE_TYPE);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_uid() {
+    public void throw_exception_after_update_null_uid() {
         store.update(null, CODE, NAME, DISPLAY_NAME, date, date, VERSION, VALUE_TYPE, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_whereUid() {
+    public void throw_exception_after_update_null_whereUid() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, VERSION, VALUE_TYPE, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void delete_null_uid() {
+    public void throw_exception_after_delete_null_uid() {
         store.delete(null);
     }
 
     //    @Test
-//    public void insertOrReplace_shouldPersistOptionSetInDatabase() throws ParseException {
+//    public void persist_option_set_in_data_base_after_insert_or_replace() throws ParseException {
 //        database().beginTransaction();
 //        Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 //

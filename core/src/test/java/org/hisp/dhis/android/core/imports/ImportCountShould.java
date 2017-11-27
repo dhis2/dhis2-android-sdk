@@ -13,7 +13,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class ImportCountShould {
 
     @Test
-    public void importCount_shouldParseFromJson() throws Exception {
+    public void map_from_json_string() throws Exception {
         ObjectMapper objectMapper = Inject.objectMapper();
         ImportCount importCount = objectMapper.readValue("{\n" +
                 "      \"imported\": 0,\n" +

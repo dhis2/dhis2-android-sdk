@@ -41,30 +41,30 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class FieldShould {
 
     @Test(expected = NullPointerException.class)
-    public void fieldConstructor_shouldThrowExceptionOnNullName() {
+    public void throw_null_pointer_exception_on_null_field_name() {
         Field.create(null);
     }
 
     @Test(expected = NullPointerException.class)
-    public void nestedFieldConstructor_shouldThrowExceptionOnNullName() {
+    public void throw_null_pointer_exception_on_null_nested_field_name() {
         NestedField.create(null);
     }
 
     @Test
-    public void fieldName_shouldReturnCorrectValue() {
+    public void return_field_name_given_in_constructor() {
         Field field = Field.create("test_field_name");
         assertThat(field.name()).isEqualTo("test_field_name");
     }
 
     @Test
-    public void fieldEquals_shouldConformToContract() {
+    public void conform_to_contract() {
         EqualsVerifier.forClass(Field.create("").getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();
     }
 
     @Test
-    public void nestedFieldEquals_shouldConformToContract() {
+    public void conform_nested_field_to_contract() {
         EqualsVerifier.forClass(NestedField.create("").getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();
@@ -72,7 +72,7 @@ public class FieldShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void nestedFieldWith_shouldReturnNewFieldInstance() {
+    public void return_nested_field_children_when_they_are_added_in_a_new_variable() {
         Field<String, String> fieldOne = Field.create("fieldOne");
         Field<String, String> fieldTwo = Field.create("fieldTwo");
 
@@ -87,7 +87,7 @@ public class FieldShould {
 
     @Test(expected = UnsupportedOperationException.class)
     @SuppressWarnings("unchecked")
-    public void nestedFieldChildren_shouldBeImmutable() {
+    public void throw_unsupported_operation_exception_when_try_to_modify_a_immutable_nested_field() {
         Field<String, String> fieldOne = Field.create("test_field_one");
 
         NestedField<String, String> nestedField = NestedField.create("test_nested_field");
@@ -97,7 +97,7 @@ public class FieldShould {
     }
 
     @Test
-    public void nestedFieldWith_shouldNotThrowOnNullArguments() {
+    public void no_throw_exceptions_when_nested_fields_have_null_arguments() {
         NestedField<String, ?> nestedField = NestedField.create("test_nested_field");
         assertThat(nestedField.with().children()).isEmpty();
     }

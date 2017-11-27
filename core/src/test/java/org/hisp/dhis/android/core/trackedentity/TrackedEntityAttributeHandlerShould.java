@@ -74,7 +74,7 @@ public class TrackedEntityAttributeHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldDoNothingWhenPassingInNull() throws Exception {
+    public void do_nothing_when_passing_null_argument() throws Exception {
         trackedEntityAttributeHandler.handleTrackedEntityAttribute(null);
 
         // verify that store is never called
@@ -94,7 +94,7 @@ public class TrackedEntityAttributeHandlerShould {
     }
 
     @Test
-    public void delete_shouldDeleteTrackedEntityAttribute() throws Exception {
+    public void invoke_delete_when_handle_tracked_entity_attribute_set_as_deleted() throws Exception {
         when(trackedEntityAttribute.deleted()).thenReturn(Boolean.TRUE);
 
         trackedEntityAttributeHandler.handleTrackedEntityAttribute(trackedEntityAttribute);
@@ -118,7 +118,7 @@ public class TrackedEntityAttributeHandlerShould {
     }
 
     @Test
-    public void update_shouldUpdateTrackedEntityAttribute() throws Exception {
+    public void invoke_only_update_when_handle_tracked_entity_attribute_inserted() throws Exception {
         when(trackedEntityAttributeStore.update(anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyInt(), anyString(), any(ValueType.class), anyString(),
@@ -145,7 +145,7 @@ public class TrackedEntityAttributeHandlerShould {
     }
 
     @Test
-    public void insert_shouldInsertTrackedEntityAttribute() throws Exception {
+    public void invoke_update_when_handle_invoke_update_and_insert_when_handle_tracked_entity_attribute_not_inserted() throws Exception {
         when(trackedEntityAttributeStore.update(anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyInt(), anyString(), any(ValueType.class), anyString(),

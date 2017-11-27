@@ -72,7 +72,7 @@ public class DataElementModelShould {
         this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
     @Test
-    public void create_shouldConvertToDataElementModel() {
+    public void convert_to_model_after_create() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID,
                 Columns.UID,
@@ -131,7 +131,7 @@ public class DataElementModelShould {
     }
 
     @Test
-    public void create_shouldConvertToContentValues() {
+    public void convert_to_content_values() {
         DataElementModel model = DataElementModel.builder()
                 .id(ID)
                 .uid(UID)

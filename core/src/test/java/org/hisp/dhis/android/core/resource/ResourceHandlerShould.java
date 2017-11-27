@@ -63,7 +63,7 @@ public class ResourceHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldDoNothingWhenPassingNullResource() throws Exception {
+    public void do_nothing_when_passing_null_resource() throws Exception {
         resourceHandler.handleResource(null, serverDate);
 
         // verify that store is never called
@@ -72,7 +72,7 @@ public class ResourceHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldDoNothingWhenPassingNullServerDate() throws Exception {
+    public void do_nothing_when_passing_null_server_date() throws Exception {
         resourceHandler.handleResource(ResourceModel.Type.PROGRAM, null);
 
         // verify that store is never called
@@ -81,7 +81,7 @@ public class ResourceHandlerShould {
     }
 
     @Test
-    public void update_shouldUpdateResource() throws Exception {
+    public void invoke_only_update_when_handle_resource_updatable() throws Exception {
         when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(1);
 
         resourceHandler.handleResource(ResourceModel.Type.PROGRAM, serverDate);
@@ -93,7 +93,7 @@ public class ResourceHandlerShould {
     }
 
     @Test
-    public void insert_shouldInsertResource() throws Exception {
+    public void invoke_update_and_insert_when_handle_resource_not_inserted() throws Exception {
         when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(0);
 
         resourceHandler.handleResource(ResourceModel.Type.PROGRAM, serverDate);

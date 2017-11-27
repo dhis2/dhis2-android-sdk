@@ -41,7 +41,7 @@ import static junit.framework.Assert.fail;
 public class FieldsShould {
 
     @Test
-    public void fields_shouldThrowExceptionOnNullArguments() {
+    public void throw_illegal_argument_exception_on_null_arguments() {
         try {
             Fields.builder().fields().build();
 
@@ -53,7 +53,7 @@ public class FieldsShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void filter_shouldBeImmutable() {
+    public void throw_unsupported_operation_exception_when_try_to_modify_a_immutable_field() {
         Fields fields = Fields.builder()
                 .fields(
                         Field.create("one"),
@@ -71,7 +71,7 @@ public class FieldsShould {
     }
 
     @Test
-    public void equals_shouldConformToContract() {
+    public void conform_to_contract() {
         EqualsVerifier.forClass(Fields.builder().build().getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();

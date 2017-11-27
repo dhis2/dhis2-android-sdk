@@ -46,14 +46,14 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class OptionSetShould {
 
     @Test
-    public void equals_shouldConformToContract() {
+    public void conform_to_contract() {
         EqualsVerifier.forClass(OptionSetModel.builder().build().getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();
     }
 
     @Test
-    public void optionSet_shouldMapFromJsonString() throws IOException, ParseException {
+    public void map_from_json_string() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
 
         OptionSet optionSet = objectMapper.readValue("{\n" +

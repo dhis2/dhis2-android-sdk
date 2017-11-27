@@ -220,7 +220,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
 
 
     @Test
-    public void call_shouldPersistOptionSetWithOptionsInDatabase() throws Exception {
+    public void persist_option_set_with_options_in_data_base_after_call() throws Exception {
         optionSetCall.call();
 
         Cursor optionSetCursor = database().query(OptionSetModel.TABLE,
@@ -294,7 +294,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void call_shouldReturnToOptionSetModel() throws Exception {
+    public void return_option_set_model_after_call() throws Exception {
         Response<Payload<OptionSet>> response = optionSetCall.call();
 
         List<OptionSet> optionSetList = response.body().items();

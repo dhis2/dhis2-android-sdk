@@ -45,7 +45,7 @@ public class OrganisationUnitProgramLinkTableIntegrationShould {
     private static final String PROGRAM_UID = "test_program_uid";
 
     @Test
-    public void create_shouldConvertToModel() throws Exception {
+    public void convert_to_model_after_create() throws Exception {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
                 Columns.ID, Columns.ORGANISATION_UNIT, Columns.PROGRAM
         });
@@ -65,7 +65,7 @@ public class OrganisationUnitProgramLinkTableIntegrationShould {
     }
 
     @Test
-    public void toContentValues_shouldConvertToContentValues() throws Exception {
+    public void convert_to_content_values() throws Exception {
         OrganisationUnitProgramLinkModel organisationUnitProgramLink = OrganisationUnitProgramLinkModel.builder()
                 .id(ID)
                 .organisationUnit(ORGANISATION_UNIT_UID)

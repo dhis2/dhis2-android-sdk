@@ -49,7 +49,7 @@ public class ConstantShould {
      * @throws IOException if parsing fails.
      */
     @Test
-    public void constant_shouldMapFromJsonString() throws IOException, ParseException {
+    public void map_json_to_model() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
 
         // parse payload into model instance

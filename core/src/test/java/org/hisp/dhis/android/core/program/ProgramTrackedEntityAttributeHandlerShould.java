@@ -93,7 +93,7 @@ public class ProgramTrackedEntityAttributeHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldDoNothingWhenPassingInNull() throws Exception {
+    public void do_nothing_when_passing_null_argument() throws Exception {
         programTrackedEntityAttributeHandler.handleProgramTrackedEntityAttributes(null);
 
         // verify that store is never called
@@ -111,7 +111,7 @@ public class ProgramTrackedEntityAttributeHandlerShould {
     }
 
     @Test
-    public void delete_shouldDeleteProgramTrackedEntityAttribute() throws Exception {
+    public void invoke_delete_when_handle_program_tracked_entity_attribute_set_as_deleted() throws Exception {
         when(programTrackedEntityAttribute.deleted()).thenReturn(Boolean.TRUE);
 
         programTrackedEntityAttributeHandler.handleProgramTrackedEntityAttributes(programTrackedEntityAttributes);
@@ -136,7 +136,7 @@ public class ProgramTrackedEntityAttributeHandlerShould {
     }
 
     @Test
-    public void update_shouldUpdateProgramTrackedEntityAttribute() throws Exception {
+    public void invoke_only_update_when_handle_program_stage_section_inserted() throws Exception {
         when(programTrackedEntityAttributeStore.update(
                 anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(), anyString(), anyString(), anyBoolean(),
@@ -166,7 +166,7 @@ public class ProgramTrackedEntityAttributeHandlerShould {
     }
 
     @Test
-    public void insert_shouldInsertProgramTrackedEntityAttribute() throws Exception {
+    public void invoke_update_when_handle_program_tracked_entity_attribute_mark_as_inserted() throws Exception {
         when(programTrackedEntityAttributeStore.update(
                 anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(), anyString(), anyString(), anyBoolean(),

@@ -65,7 +65,7 @@ public class TrackedEntityInstanceImportHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldDoNothingWhenPassingNullArguments() throws Exception {
+    public void do_nothing_when_passing_null_argument() throws Exception {
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(null);
 
         verify(trackedEntityInstanceStore, never()).setState(anyString(), any(State.class));
@@ -96,7 +96,7 @@ public class TrackedEntityInstanceImportHandlerShould {
     }
 
     @Test
-    public void setStatus_shouldUpdateTrackedEntityInstanceStatusSuccessAndHandleImportEnrollment() throws Exception {
+    public void update_tracker_entity_instance_status_success_status_and_handle_import_enrollment_on_import_success() throws Exception {
         when(importSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
         when(importSummary.reference()).thenReturn("test_tei_uid");
         when(importSummary.importEnrollment()).thenReturn(importEnrollment);
@@ -113,7 +113,7 @@ public class TrackedEntityInstanceImportHandlerShould {
     }
 
     @Test
-    public void setStatus_shouldUpdateTrackedEntityInstanceStatusSuccessAndHandleImportEvent() throws Exception {
+    public void update_tracker_entity_instance_status_success_status_and_handle_import_event_on_import_success() throws Exception {
         when(importSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
         when(importSummary.reference()).thenReturn("test_tei_uid");
         when(importSummary.importEvent()).thenReturn(importEvent);

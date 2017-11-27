@@ -105,7 +105,7 @@ public class ProgramRuleActionHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldDoNothingWhenPassingInNull() throws Exception {
+    public void do_nothing_when_passing_null_argument() throws Exception {
         programRuleActionHandler.handleProgramRuleActions(null);
 
         // verify that store is never called
@@ -122,7 +122,7 @@ public class ProgramRuleActionHandlerShould {
     }
 
     @Test
-    public void delete_shouldDeleteProgramRuleAction() throws Exception {
+    public void invoke_delete_when_handle_program_rule_action_set_as_deleted() throws Exception {
         when(programRuleAction.deleted()).thenReturn(Boolean.TRUE);
 
         programRuleActionHandler.handleProgramRuleActions(programRuleActions);
@@ -143,7 +143,7 @@ public class ProgramRuleActionHandlerShould {
     }
 
     @Test
-    public void update_shouldUpdateProgramRuleAction() throws Exception {
+    public void invoke_only_update_when_handle_program_rule_action_inserted() throws Exception {
         when(programRuleActionStore.update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
                 anyString(), anyString(), any(ProgramRuleActionType.class), anyString(), anyString(), anyString(),
@@ -167,7 +167,7 @@ public class ProgramRuleActionHandlerShould {
     }
 
     @Test
-    public void insert_shouldInsertProgramRuleAction() throws Exception {
+    public void invoke_update_and_insert_when_handle_program_rule_actions_not_inserted() throws Exception {
         when(programRuleActionStore.update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
                 anyString(), anyString(), any(ProgramRuleActionType.class), anyString(), anyString(), anyString(),

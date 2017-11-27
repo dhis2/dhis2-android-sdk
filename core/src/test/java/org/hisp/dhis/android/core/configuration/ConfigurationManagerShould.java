@@ -61,7 +61,7 @@ public class ConfigurationManagerShould {
     }
 
     @Test
-    public void save_shouldCallStoreWithCorrectArguments() {
+    public void return_correct_values_when_configuration_manager_is_configured_with_saved_store() {
         HttpUrl httpUrl = HttpUrl.parse("http://testserver.org/");
         when(configurationStore.save("http://testserver.org/api/")).thenReturn(1L);
         ConfigurationModel savedConfiguration = configurationManager.configure(httpUrl);
@@ -72,7 +72,7 @@ public class ConfigurationManagerShould {
     }
 
     @Test
-    public void save_shouldFailOnNullArgument() {
+    public void thrown_illegal_argument_exception_after_configure_with_null_argument() {
         try {
             configurationManager.configure(null);
 
@@ -83,7 +83,7 @@ public class ConfigurationManagerShould {
     }
 
     @Test
-    public void get_shouldCallQueryOnStore() {
+    public void invoke_configuration_store_query_when_call_configuration_manager_get_method() {
         ConfigurationModel configurationModel = mock(ConfigurationModel.class);
         when(configurationStore.query()).thenReturn(configurationModel);
 
@@ -94,7 +94,7 @@ public class ConfigurationManagerShould {
     }
 
     @Test
-    public void get_shouldReturnNull_ifNoConfigurationIsPersisted() {
+    public void return_null_if_configuration_is_not_persisted() {
         ConfigurationModel configuration = configurationManager.get();
 
         verify(configurationStore).query();
@@ -102,7 +102,7 @@ public class ConfigurationManagerShould {
     }
 
     @Test
-    public void remove_shouldReturnOne_ifConfigurationIsPersisted() {
+    public void invoke_delete_and_return_zero_when_configuration_manager_is_persisted_and_remove_method_is_called() {
         when(configurationStore.delete()).thenReturn(1);
 
         int removed = configurationManager.remove();
@@ -112,7 +112,7 @@ public class ConfigurationManagerShould {
     }
 
     @Test
-    public void remove_shouldReturnZero_ifNoConfigurationIsPersisted() {
+    public void invoke_delete_and_return_zero_when_configuration_manager_is_not_persisted_and_remove_method_is_called() {
         int removed = configurationManager.remove();
 
         verify(configurationStore).delete();
@@ -120,7 +120,7 @@ public class ConfigurationManagerShould {
     }
 
     @Test
-    public void save_shouldThrowException_ifUrlIsNotCanonized() {
+    public void thrown_illegal_argument_exception_when_configure_not_canonized_url() {
         HttpUrl baseUrlWithoutTrailingSlash = HttpUrl.parse("https://play.dhis2.org/demo");
 
         try {
@@ -133,7 +133,7 @@ public class ConfigurationManagerShould {
     }
 
     @Test
-    public void saveShouldReturnConfigurationModelWithApiAppended() {
+    public void invoke_save_configuration_store_when_configuration_manager_configure_a_valid_base_url() {
         HttpUrl baseUrl = HttpUrl.parse("https://play.dhis2.org/demo/");
 
         ConfigurationModel configurationModel = configurationManager.configure(baseUrl);

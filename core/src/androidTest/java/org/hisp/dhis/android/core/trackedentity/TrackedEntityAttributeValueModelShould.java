@@ -64,7 +64,7 @@ public class TrackedEntityAttributeValueModelShould {
     }
 
     @Test
-    public void create_shouldConvertToModel() {
+    public void convert_to_model_after_create() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 TrackedEntityAttributeValueModel.Columns.ID,
                 TrackedEntityAttributeValueModel.Columns.CREATED,
@@ -91,7 +91,7 @@ public class TrackedEntityAttributeValueModelShould {
     }
 
     @Test
-    public void toContentValues_shouldConvertToContentValues() {
+    public void convert_to_content_values() {
         TrackedEntityAttributeValueModel model = TrackedEntityAttributeValueModel.builder()
                 .id(ID)
                 .created(date)

@@ -74,7 +74,7 @@ public class DataElementHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldDoNothingWhenPassingInNull() throws Exception {
+    public void do_nothing_when_passing_in_null() throws Exception {
         dataElementHandler.handleDataElement(null);
 
         // verify that delete, update and insert is never called
@@ -95,7 +95,7 @@ public class DataElementHandlerShould {
     }
 
     @Test
-    public void delete_shouldDeleteDataElement() throws Exception {
+    public void invoke_delete_data_element_when_handle_data_element_set_as_deleted() throws Exception {
         when(dataElement.deleted()).thenReturn(Boolean.TRUE);
 
         dataElementHandler.handleDataElement(dataElement);
@@ -120,7 +120,7 @@ public class DataElementHandlerShould {
     }
 
     @Test
-    public void update_shouldUpdateDataElement() throws Exception {
+    public void invoke_only_update_when_handle_data_element_inserted() throws Exception {
         when(dataElementStore.update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
                 any(ValueType.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
@@ -147,7 +147,7 @@ public class DataElementHandlerShould {
     }
 
     @Test
-    public void insert_shouldInsertDataElement() throws Exception {
+    public void invoke_update_and_insert_when_handle_data_element_not_updatable() throws Exception {
         when(dataElementStore.update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
                 any(ValueType.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),

@@ -211,7 +211,7 @@ public class OrganisationUnitCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldInvokeServer_withCorrectParameters() throws Exception {
+    public void invoke_server_with_correct_parameters() throws Exception {
         when(payload.items()).thenReturn(Collections.singletonList(organisationUnit));
 
         organisationUnitCall.call();
@@ -233,7 +233,7 @@ public class OrganisationUnitCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldInvokeServer_withCorrectParameters_withLastUpdated() throws Exception {
+    public void invoke_server_with_correct_parameters_with_last_updated() throws Exception {
         String date = "2014-11-25T09:37:53.358";
         when(resourceStore.getLastUpdated(any(ResourceModel.Type.class))).thenReturn(date);
         when(payload.items()).thenReturn(Collections.singletonList(organisationUnit));
@@ -262,7 +262,7 @@ public class OrganisationUnitCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldNotMarkTransactionSuccessful_onException() throws Exception {
+    public void throw_exception_not_mark_transaction_successful() throws Exception {
         when(retrofitCall.execute()).thenThrow(IOException.class);
         try {
             organisationUnitCall.call();
@@ -278,7 +278,7 @@ public class OrganisationUnitCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldNotMarkTransactionSuccessful_ifRequestFails() throws Exception {
+    public void not_mark_transaction_successful_if_request_fails() throws Exception {
         when(retrofitCall.execute()).thenReturn(Response.<Payload<OrganisationUnit>>error(
                 HttpsURLConnection.HTTP_CLIENT_TIMEOUT,
                 ResponseBody.create(MediaType.parse("application/json"), "{}")));
@@ -293,7 +293,7 @@ public class OrganisationUnitCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldInvokeStore_ifRequestSucceeds() throws Exception {
+    public void invoke_store_if_request_succeeds() throws Exception {
         Headers headers = new Headers.Builder().add(HeaderUtils.DATE, lastUpdated.toString()).build();
         when(payload.items()).thenReturn(Collections.singletonList(organisationUnit));
         Response<Payload<OrganisationUnit>> response = Response.success(payload, headers);
@@ -315,7 +315,7 @@ public class OrganisationUnitCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldNotFail_onEmptyInput() {
+    public void not_fail_on_empty_input() {
         when(user.organisationUnits()).thenReturn(null); //no organisation units in user
         try {
             organisationUnitCall.call();
@@ -329,7 +329,7 @@ public class OrganisationUnitCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldThrowException_OnConsecutiveCalls() {
+    public void thrown_illegal_state_exception_on_consecutive_calls() {
         try {
             organisationUnitCall.call();
             organisationUnitCall.call();
@@ -341,7 +341,7 @@ public class OrganisationUnitCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldMarkCallAsExecuted_onSuccess() {
+    public void mark_as_executed_after_call() {
         when(organisationUnitStore.insert(any(String.class), any(String.class), any(String.class), any(String.class),
                 any(Date.class), any(Date.class), any(String.class), any(String.class), any(String.class),
                 any(String.class), any(String.class), any(Date.class), any(Date.class), any(String.class),
@@ -359,7 +359,7 @@ public class OrganisationUnitCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldMarkCallAsExecuted_onFailure() throws IOException {
+    public void mark_as_executed_after_call_with_io_exception() throws IOException {
         when(retrofitCall.execute()).thenThrow(new IOException());
         try {
             organisationUnitCall.call();

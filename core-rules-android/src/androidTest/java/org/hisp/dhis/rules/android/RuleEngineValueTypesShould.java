@@ -42,7 +42,7 @@ public class RuleEngineValueTypesShould {
     }
 
     @Test
-    public void booleanVariableWithoutValueMustFallbackToDefaultBooleanValue() throws Exception {
+    public void fallback_to_default_boolean_value_when_boolean_variable_without_valueM() throws Exception {
         RuleAction ruleAction = RuleActionDisplayKeyValuePair
                 .createForFeedback("test_action_content", "#{test_variable}");
         Rule rule = Rule.create(null, null, "true", Arrays.asList(ruleAction));
@@ -66,7 +66,7 @@ public class RuleEngineValueTypesShould {
     }
 
     @Test
-    public void numericVariableWithoutValueMustFallbackToDefaultNumericValue() throws Exception {
+    public void fallback_to_default_numeric_value_on_numeric_variable_without_value() throws Exception {
         RuleAction ruleAction = RuleActionDisplayKeyValuePair
                 .createForFeedback("test_action_content", "#{test_variable}");
         Rule rule = Rule.create(null, null, "true", Arrays.asList(ruleAction));
@@ -90,7 +90,7 @@ public class RuleEngineValueTypesShould {
     }
 
     @Test
-    public void textVariableWithoutValueMustFallbackToDefaultTextValue() throws Exception {
+    public void fallback_to_default_text_value_on_variable_without_value() throws Exception {
         RuleAction ruleAction = RuleActionDisplayKeyValuePair
                 .createForFeedback("test_action_content", "#{test_variable}");
         Rule rule = Rule.create(null, null, "true", Arrays.asList(ruleAction));

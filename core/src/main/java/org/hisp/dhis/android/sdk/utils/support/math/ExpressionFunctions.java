@@ -307,8 +307,8 @@ public class ExpressionFunctions {
         return matchFound;
     }
 
-    public static Boolean validatePattern(int inputToValidate, String patternString) {
-        String inputString = Integer.toString(inputToValidate);
+    public static Boolean validatePattern(long inputToValidate, String patternString) {
+        String inputString = Long.toString(inputToValidate);
         return validatePattern(inputString, patternString);
     }
 

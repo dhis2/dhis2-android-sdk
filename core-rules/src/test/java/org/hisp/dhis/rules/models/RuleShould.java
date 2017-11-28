@@ -16,7 +16,7 @@ import static org.mockito.Mockito.mock;
 public class RuleShould {
 
     @Test
-    public void createShouldThrowOnNullCondition() {
+    public void throw_null_pointer_exception_when_create_with_null_condition() {
         try {
             Rule.create("test_program_stage", 1, null, new ArrayList<RuleAction>());
             fail("NullPointerException was expected, but nothing was thrown.");
@@ -26,7 +26,7 @@ public class RuleShould {
     }
 
     @Test
-    public void createShouldThrowOnNullActionsList() {
+    public void throw_null_pointer_exception_when_create_with_null_action_list() {
         try {
             Rule.create("test_program_stage", 1, "test_condition", null);
             fail("NullPointerException was expected, but nothing was thrown.");
@@ -36,7 +36,7 @@ public class RuleShould {
     }
 
     @Test
-    public void createShouldPropagatePropertiesCorrectly() {
+    public void propagate_properties_correctly_when_create_with_valid_values() {
         RuleAction ruleAction = mock(RuleAction.class);
 
         Rule rule = Rule.create("test_program_stage", 1,
@@ -50,7 +50,7 @@ public class RuleShould {
     }
 
     @Test
-    public void createShouldReturnImmutableList() {
+    public void return_immutable_list_when_create_with_valid_values() {
         RuleAction ruleActionOne = mock(RuleAction.class);
         RuleAction ruleActionTwo = mock(RuleAction.class);
 

@@ -15,7 +15,7 @@ import static org.assertj.core.api.Java6Assertions.fail;
 public class RuleFunctionDaysBetweenShould {
 
     @Test
-    public void evaluateMustReturnCorrectNumberOfDays() {
+    public void evaluate_correct_number_of_days() {
         RuleFunction daysBetween = RuleFunctionDaysBetween.create();
 
         String days = daysBetween.evaluate(Arrays.asList(
@@ -24,7 +24,7 @@ public class RuleFunctionDaysBetweenShould {
     }
 
     @Test
-    public void evaluateMustFailOnWrongArgumentCount() {
+    public void throw_illegal_argument_exception_on_wrong_argument_count() {
         try {
             RuleFunctionDaysBetween.create().evaluate(Arrays.asList("one"),
                     new HashMap<String, RuleVariableValue>());

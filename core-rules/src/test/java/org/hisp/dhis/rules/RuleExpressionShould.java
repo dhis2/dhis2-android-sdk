@@ -11,7 +11,7 @@ import static org.assertj.core.api.Java6Assertions.fail;
 public class RuleExpressionShould {
 
     @Test
-    public void fromShouldReturnExpressionWithDataElementVariables() {
+    public void return_expression_with_data_element_variables() {
         String expression = "#{test_variable_one} <0 && #{test_variable_two} == ''";
 
         RuleExpression ruleExpression = RuleExpression.from(expression);
@@ -22,7 +22,7 @@ public class RuleExpressionShould {
     }
 
     @Test
-    public void fromShouldReturnExpressionWithAttributeVariables() {
+    public void return_expression_with_attribute_variables() {
         String expression = "A{test_variable_one} <0 && A{test_variable_two} == ''";
 
         RuleExpression ruleExpression = RuleExpression.from(expression);
@@ -33,7 +33,7 @@ public class RuleExpressionShould {
     }
 
     @Test
-    public void fromShouldReturnExpressionWithEnvironmentVariables() {
+    public void return_expression_with_environment_variables() {
         String expression = "V{test_variable_one} <0 && V{test_variable_two} == ''";
 
         RuleExpression ruleExpression = RuleExpression.from(expression);
@@ -44,7 +44,7 @@ public class RuleExpressionShould {
     }
 
     @Test
-    public void fromShouldReturnExpressionWithConstantVariables() {
+    public void return_expression_with_constants_variables() {
         String expression = "C{test_variable_one} <0 && C{test_variable_two} == ''";
 
         RuleExpression ruleExpression = RuleExpression.from(expression);
@@ -55,7 +55,7 @@ public class RuleExpressionShould {
     }
 
     @Test
-    public void fromShouldReturnExpressionWithAllVariables() {
+    public void return_expression_with_all_variables() {
         String expression = "A{test_variable_one} <0 && C{test_variable_two} == '' && " +
                 "V{test_variable_three} <0 && #{test_variable_four} == ''";
 
@@ -69,7 +69,7 @@ public class RuleExpressionShould {
     }
 
     @Test
-    public void fromShouldReturnExpressionWithAllVariablesWithoutDuplicates() {
+    public void return_expression_with_all_variables_without_duplicates() {
         String expression = "A{test_variable_one} <0 && C{test_variable_two} == '' && " +
                 "V{test_variable_three} <0 && #{test_variable_four} == '' && " +
                 "A{test_variable_one} + C{test_variable_two} == 10";
@@ -84,7 +84,7 @@ public class RuleExpressionShould {
     }
 
     @Test
-    public void fromShouldIgnoreEmptyVariables() {
+    public void ignore_empty_variables() {
         String expression = "#{} && A{} && V{}";
 
         RuleExpression ruleExpression = RuleExpression.from(expression);
@@ -92,13 +92,13 @@ public class RuleExpressionShould {
     }
 
     @Test
-    public void fromShouldPropagateExpressionToTheModel() {
+    public void propagate_expression_to_model() {
         RuleExpression ruleExpression = RuleExpression.from("test_expression");
         assertThat(ruleExpression.expression()).isEqualTo("test_expression");
     }
 
     @Test
-    public void fromShouldThrowOnNullExpression() {
+    public void throw_null_pointer_exception_if_expression_is_null() {
         try {
             RuleExpression.from(null);
             fail("NullPointerException was expected, but nothing was thrown.");
@@ -108,7 +108,7 @@ public class RuleExpressionShould {
     }
 
     @Test
-    public void fromShouldReturnExpressionWithImmutableVariables() {
+    public void throw_unsupported_operation_exception_when_try_to_modify_immutable_variables() {
         RuleExpression ruleExpression = RuleExpression.from("");
 
         try {
@@ -120,7 +120,7 @@ public class RuleExpressionShould {
     }
 
     @Test
-    public void fromShouldReturnExpressionWithImmutableFunctions() {
+    public void throw_unsupported_operation_exception_when_try_to_modify_immutable_functions() {
         RuleExpression ruleExpression = RuleExpression.from("");
 
         try {
@@ -132,7 +132,7 @@ public class RuleExpressionShould {
     }
 
     @Test
-    public void fromShouldReturnExpressionWithFunctions() {
+    public void return_expression_with_functions() {
         RuleExpression ruleExpression = RuleExpression.from("d2:floor(16.4) + d2:ceil(8.7)");
 
         assertThat(ruleExpression.functions().size()).isEqualTo(2);
@@ -141,7 +141,7 @@ public class RuleExpressionShould {
     }
 
     @Test
-    public void fromShouldReturnExpressionWithFunctionsWithoutDuplicates() {
+    public void return_expression_with_functions_without_duplicates() {
         RuleExpression ruleExpression = RuleExpression.from("d2:floor(16.4) + " +
                 "d2:ceil(8.7) + d2:ceil(8.7) + d2:floor(15.9)");
 
@@ -152,7 +152,7 @@ public class RuleExpressionShould {
     }
 
     @Test
-    public void fromShouldReturnExpressionWithInnerFunctionCallOnly() {
+    public void return_expression_with_inner_function_call_only() {
         RuleExpression ruleExpression = RuleExpression.from("d2:some(1, d2:ceil(8.7)) == 9 " +
                 "&& d2:hasValue(A{test_variable_one}) " +
                 "&& d2:ceil(d2:floor(d2:floor(9.8))) == A{test_variable_two}");
@@ -167,7 +167,7 @@ public class RuleExpressionShould {
     }
 
     @Test
-    public void fromShouldReturnExpressionWithFunctionsAndVariables() {
+    public void return_expression_with_functions_and_variables() {
         RuleExpression ruleExpression = RuleExpression.from("A{test_variable_one} <0 && " +
                 "C{test_variable_two} == '' && (d2:floor(16.4) + d2:ceil(8.7)) == 20");
 
@@ -181,7 +181,7 @@ public class RuleExpressionShould {
     }
 
     @Test
-    public void unwrapMustReturnVariableName() {
+    public void return_variable_name_after_unwrap() {
         assertThat(RuleExpression.unwrapVariableName("A{test_variable_one}"))
                 .isEqualTo("test_variable_one");
         assertThat(RuleExpression.unwrapVariableName("C{test_variable_two}"))
@@ -193,13 +193,13 @@ public class RuleExpressionShould {
     }
 
     @Test
-    public void fromMustReturnUnmodifiedStringIfNoVariablesOrFunctions() {
+    public void return_unmodified_string_if_no_variables_or_functions() {
         RuleExpression ruleExpression = RuleExpression.from("'test_expression'");
         assertThat(ruleExpression.expression()).isEqualTo("'test_expression'");
     }
 
     @Test
-    public void fromMustReturnFunctionCallWithParameter() {
+    public void return_functions_call_with_parameter() {
         RuleExpression ruleExpression = RuleExpression.from("d2:hasValue('test_value')");
 
         assertThat(ruleExpression.expression()).isEqualTo("d2:hasValue('test_value')");

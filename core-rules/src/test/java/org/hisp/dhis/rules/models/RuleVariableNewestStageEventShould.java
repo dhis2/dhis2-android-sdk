@@ -11,7 +11,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class RuleVariableNewestStageEventShould {
 
     @Test
-    public void createShouldThrowOnNullName() {
+    public void throw_null_pointer_exception_when_create_with_null_name() {
         try {
             RuleVariableNewestStageEvent.create(null, "test_dataelement", "test_programstage", RuleValueType.TEXT);
             fail("NullPointerException is expected, but nothing was thrown");
@@ -21,7 +21,7 @@ public class RuleVariableNewestStageEventShould {
     }
 
     @Test
-    public void createShouldThrowOnNullDataElement() {
+    public void throw_null_pointer_exception_when_create_with_null_data_element() {
         try {
             RuleVariableNewestStageEvent.create("test_variable", null, "test_programstage", RuleValueType.TEXT);
             fail("NullPointerException is expected, but nothing was thrown");
@@ -31,7 +31,7 @@ public class RuleVariableNewestStageEventShould {
     }
 
     @Test
-    public void createShouldThrowOnNullProgramStage() {
+    public void throw_null_pointer_exception_when_create_with_null_program_stage() {
         try {
             RuleVariableNewestStageEvent.create("test_variable", "test_dataelement", null, RuleValueType.TEXT);
             fail("NullPointerException is expected, but nothing was thrown");
@@ -41,7 +41,7 @@ public class RuleVariableNewestStageEventShould {
     }
 
     @Test
-    public void createShouldThrowOnNullDataElementType() {
+    public void throw_null_pointer_exception_when_create_with_null_data_element_type() {
         try {
             RuleVariableNewestStageEvent.create("test_variable", "test_dataelement", "test_programstage", null);
             fail("NullPointerException is expected, but nothing was thrown");
@@ -51,7 +51,7 @@ public class RuleVariableNewestStageEventShould {
     }
 
     @Test
-    public void createShouldPropagatePropertiesCorrectly() {
+    public void propagate_properties_correctly_when_create_with_valid_values() {
         RuleVariableNewestStageEvent ruleVariablePreviousEvent = RuleVariableNewestStageEvent.create(
                 "test_variable", "test_dataelement", "test_programstage", RuleValueType.NUMERIC);
 

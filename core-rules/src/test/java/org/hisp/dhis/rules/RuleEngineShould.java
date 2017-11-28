@@ -51,7 +51,7 @@ public class RuleEngineShould {
     }
 
     @Test
-    public void builderShouldThrowOnNullEnrollment() {
+    public void throw_illegal_argument_exception_when_build_with_null_enrollment() {
         try {
             ruleEngineContext.toEngineBuilder()
                     .enrollment(null)
@@ -64,7 +64,7 @@ public class RuleEngineShould {
     }
 
     @Test
-    public void builderShouldThrowOnNullEvents() {
+    public void throw_illegal_argument_exception_when_build_with_null_events() {
         try {
             ruleEngineContext.toEngineBuilder()
                     .enrollment(null)
@@ -77,7 +77,7 @@ public class RuleEngineShould {
     }
 
     @Test
-    public void builderShouldPropagateImmutableEventsList() {
+    public void propagate_immutable_events_list() {
         RuleEvent ruleEventOne = mock(RuleEvent.class);
         RuleEvent ruleEventTwo = mock(RuleEvent.class);
 
@@ -102,7 +102,7 @@ public class RuleEngineShould {
     }
 
     @Test
-    public void builderShouldPropagateImmutableEmptyListIfNoEventsProvided() {
+    public void propagate_immutable_empty_list_if_no_events_provided() {
         RuleEngine ruleEngine = ruleEngineContext.toEngineBuilder().build();
 
         assertThat(ruleEngine.events().size()).isEqualTo(0);
@@ -122,7 +122,7 @@ public class RuleEngineShould {
     }
 
     @Test
-    public void evaluateShouldThrowOnNullEvent() {
+    public void throw_illegal_argument_exception_when_evaluate_with_null_event() {
         try {
             RuleEvent ruleEvent = null;
             ruleEngineContext.toEngineBuilder().build().evaluate(ruleEvent);
@@ -133,7 +133,7 @@ public class RuleEngineShould {
     }
 
     @Test
-    public void evaluateShouldThrowIfEventIsAlreadyInContext() {
+    public void throw_illegal_state_exception_when_evaluate_if_event_is_already_in_context() {
         RuleEvent ruleEvent = RuleEvent.create("test_event", "test_programstage",
                 RuleEvent.Status.ACTIVE, new Date(), new Date(), new ArrayList<RuleDataValue>());
 
@@ -153,7 +153,7 @@ public class RuleEngineShould {
     }
 
     @Test
-    public void evaluateShouldThrowIfEnrollmentIsAlreadyInContext() {
+    public void throw_illegal_state_exception_if_evaluate_and_enrollemnt_is_already_in_context() {
         RuleEnrollment ruleEnrollment = mock(RuleEnrollment.class);
 
         RuleEngine ruleEngine = ruleEngineContext.toEngineBuilder()
@@ -169,7 +169,7 @@ public class RuleEngineShould {
     }
 
     @Test
-    public void evaluateShouldThrowOnNullEnrollment() {
+    public void throw_illegal_argument_exception_when_evaluate_with_null_enrollment() {
         try {
             RuleEnrollment ruleEnrollment = null;
             ruleEngineContext.toEngineBuilder().build().evaluate(ruleEnrollment);
@@ -180,7 +180,7 @@ public class RuleEngineShould {
     }
 
     @Test
-    public void concurrentIterationOverRulesListShouldNotFail() throws InterruptedException {
+    public void not_fail_when_the_iteration_over_rule_list_is_concurrent() throws InterruptedException {
         final RuleEngine ruleEngine = RuleEngineContext.builder(mock(RuleExpressionEvaluator.class))
                 .rules(Arrays.asList(mock(Rule.class), mock(Rule.class)))
                 .build().toEngineBuilder().build();

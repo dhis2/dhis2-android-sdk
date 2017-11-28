@@ -11,7 +11,7 @@ import static org.assertj.core.api.Java6Assertions.fail;
 public class RuleFunctionCallShould {
 
     @Test
-    public void fromMustReturnFunctionCallWithSingleArgument() {
+    public void return_function_call_with_single_argument() {
         RuleFunctionCall ruleFunctionCall = RuleFunctionCall.from("d2:floor(19.4)");
 
         assertThat(ruleFunctionCall.functionCall()).isEqualTo("d2:floor(19.4)");
@@ -21,7 +21,7 @@ public class RuleFunctionCallShould {
     }
 
     @Test
-    public void fromMustReturnFunctionCallWithMultipleArguments() {
+    public void return_function_call_with_multiple_arguments() {
         RuleFunctionCall ruleFunctionCall = RuleFunctionCall.from(
                 "d2:some('one', 'two', 'three')");
 
@@ -34,7 +34,7 @@ public class RuleFunctionCallShould {
     }
 
     @Test
-    public void fromMustReturnFunctionCallWithNoArguments() {
+    public void return_function_call_with_no_arguments() {
         RuleFunctionCall ruleFunctionCall = RuleFunctionCall.from("d2:some()");
 
         assertThat(ruleFunctionCall.functionCall()).isEqualTo("d2:some()");
@@ -43,7 +43,7 @@ public class RuleFunctionCallShould {
     }
 
     @Test
-    public void fromMustThrowOnNullArgument() {
+    public void throw_null_pointer_exception_when_null_arguments() {
         try {
             RuleFunctionCall.from(null);
             fail("NullPointerException was expected, but nothing was thrown.");
@@ -53,7 +53,7 @@ public class RuleFunctionCallShould {
     }
 
     @Test
-    public void fromMustReturnFunctionCallWithImmutableArguments() {
+    public void return_function_call_immutable_arguments() {
         RuleFunctionCall ruleFunctionCall = RuleFunctionCall.from("d2:some()");
 
         try {

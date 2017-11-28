@@ -14,7 +14,7 @@ import static org.assertj.core.api.Java6Assertions.fail;
 public class RuleActionCreateEventShould {
 
     @Test
-    public void createMustSubstituteEmptyStringsForNullArguments() {
+    public void substitute_empty_strings_for_null_arguments() {
         RuleActionCreateEvent ruleActionAssignNoContent = RuleActionCreateEvent
                 .create(null, "test_data", "test_program_stage");
         RuleActionCreateEvent ruleActionAssignNoField = RuleActionCreateEvent
@@ -30,7 +30,7 @@ public class RuleActionCreateEventShould {
     }
 
     @Test
-    public void createMustThrowWhenFieldIsNull() {
+    public void throw_null_pointer_exception_when_field_is_null() {
         try {
             RuleActionCreateEvent.create("test_content", "test_data", null);
             fail("NullPointerException was expected, but nothing was thrown.");
@@ -40,7 +40,7 @@ public class RuleActionCreateEventShould {
     }
 
     @Test
-    public void equalsAndHashcodeFunctionsMustConformToContract() {
+    public void have_the_equals_method_conform_to_contract() {
         EqualsVerifier.forClass(RuleActionCreateEvent
                 .create("test_content", "test_data", "test_field").getClass())
                 .suppress(Warning.NULL_FIELDS)

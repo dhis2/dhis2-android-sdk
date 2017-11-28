@@ -14,7 +14,7 @@ import static org.assertj.core.api.Java6Assertions.fail;
 public class RuleActionShowErrorShould {
 
     @Test
-    public void createMustSubstituteEmptyStringsForNullArguments() {
+    public void substitute_empty_strings_when_create_with_null_arguments() {
         RuleActionShowError ruleActionAssignNoContent = RuleActionShowError
                 .create(null, "test_data", "test_field");
         RuleActionShowError ruleActionAssignNoData = RuleActionShowError
@@ -30,7 +30,7 @@ public class RuleActionShowErrorShould {
     }
 
     @Test
-    public void createMustThrowWhenContentAndDataAreNull() {
+    public void throw_illegal_argument_exception_when_create_null_content_and_null_date() {
         try {
             RuleActionShowError.create(null, null, "test_field");
             fail("IllegalArgumentException was expected, but nothing was thrown.");
@@ -40,7 +40,7 @@ public class RuleActionShowErrorShould {
     }
 
     @Test
-    public void createMustThrowWhenFieldIsNull() {
+    public void throw_null_pointer_exception_when_create_with_null_field() {
         try {
             RuleActionShowError.create("test_content", "test_data", null);
             fail("NullPointerException was expected, but nothing was thrown.");
@@ -50,7 +50,7 @@ public class RuleActionShowErrorShould {
     }
 
     @Test
-    public void equalsAndHashcodeFunctionsMustConformToContract() {
+    public void have_the_equals_method_conform_to_contract() {
         EqualsVerifier.forClass(RuleActionShowError
                 .create("test_content", "test_data", "test_field").getClass())
                 .suppress(Warning.NULL_FIELDS)

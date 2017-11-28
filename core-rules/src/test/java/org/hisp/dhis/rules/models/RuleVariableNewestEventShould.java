@@ -11,7 +11,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class RuleVariableNewestEventShould {
 
     @Test
-    public void createShouldThrowOnNullName() {
+    public void throw_null_pointer_exception_when_create_with_null_name() {
         try {
             RuleVariableNewestEvent.create(null, "test_dataelement", RuleValueType.TEXT);
             fail("NullPointerException is expected, but nothing was thrown");
@@ -21,7 +21,7 @@ public class RuleVariableNewestEventShould {
     }
 
     @Test
-    public void createShouldThrowOnNullDataElement() {
+    public void throw_null_pointer_exception_when_create_with_null_data_element() {
         try {
             RuleVariableNewestEvent.create("test_variable", null, RuleValueType.TEXT);
             fail("NullPointerException is expected, but nothing was thrown");
@@ -31,7 +31,7 @@ public class RuleVariableNewestEventShould {
     }
 
     @Test
-    public void createShouldThrowOnNullDataElementType() {
+    public void throw_null_pointer_exception_when_create_with_null_data_element_type() {
         try {
             RuleVariableNewestEvent.create("test_variable", "test_dataelement", null);
             fail("NullPointerException is expected, but nothing was thrown");
@@ -41,7 +41,7 @@ public class RuleVariableNewestEventShould {
     }
 
     @Test
-    public void createShouldPropagatePropertiesCorrectly() {
+    public void propagate_properties_correctly_when_create_with_valid_values() {
         RuleVariableNewestEvent ruleVariableNewestEvent = RuleVariableNewestEvent.create(
                 "test_variable", "test_dataelement", RuleValueType.NUMERIC);
 

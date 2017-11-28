@@ -31,7 +31,7 @@ public class MetadataCallIntegrationTests extends AbsStoreTestCase {
         super.setUp();
 
         ConfigurationModel config = ConfigurationModel.builder()
-                .serverUrl(HttpUrl.parse("https://play.dhis2.org/dev/api/"))
+                .serverUrl(HttpUrl.parse("https://play.dhis2.org/android-current/api/"))
                 .build();
 
         d2 = new D2.Builder()
@@ -61,7 +61,7 @@ public class MetadataCallIntegrationTests extends AbsStoreTestCase {
     //This test is uncommented because technically it is flaky.
     //It depends on a live server to operate and the login is hardcoded here.
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
-    //@Test
+    @Test
     public void metadataSyncTest() throws Exception {
         retrofit2.Response response = null;
         response = d2.logIn("android", "Android123").call();

@@ -41,11 +41,12 @@ import static com.google.common.truth.Truth.assertThat;
 public abstract class AbsStoreTestCase {
     private SQLiteDatabase sqLiteDatabase;
     private DatabaseAdapter databaseAdapter;
+    private DbOpenHelper dbOpenHelper;
 
     @Before
     public void setUp() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , null);
+        dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
+                , "dhis.db");
         sqLiteDatabase = dbOpenHelper.getWritableDatabase();
         databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
     }
@@ -62,5 +63,10 @@ public abstract class AbsStoreTestCase {
 
     protected DatabaseAdapter databaseAdapter() {
         return databaseAdapter;
+    }
+
+    protected void deleteDatabase() {
+        InstrumentationRegistry.getTargetContext().getApplicationContext()
+                .deleteDatabase(dbOpenHelper.getDatabaseName());
     }
 }

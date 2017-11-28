@@ -57,7 +57,7 @@ public class FieldShould {
     }
 
     @Test
-    public void conform_to_contract() {
+    public void have_the_equals_method_conform_to_contract() {
         EqualsVerifier.forClass(Field.create("").getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();

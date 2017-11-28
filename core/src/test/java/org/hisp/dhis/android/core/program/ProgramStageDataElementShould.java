@@ -45,7 +45,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class ProgramStageDataElementShould {
 
     @Test
-    public void conform_to_contract() {
+    public void have_the_equals_method_conform_to_contract() {
         EqualsVerifier.forClass(ProgramStageDataElementModel.builder().build().getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();

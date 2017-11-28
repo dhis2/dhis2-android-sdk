@@ -48,7 +48,7 @@ public class EventShould {
 
     // ToDo: Consider re-evaluating usage of EqualsVerifier for store models
 //    @Test
-//    public void conform_to_contract() {
+//    public void have_the_equals_method_conform_to_contract() {
 //        EqualsVerifier.forClass(EventModel.builder().uid("a1b2c3d4e5f").build().getClass())
 //                .suppress(Warning.NULL_FIELDS)
 //                .verify();

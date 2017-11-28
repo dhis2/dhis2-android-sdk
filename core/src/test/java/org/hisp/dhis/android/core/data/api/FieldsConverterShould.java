@@ -92,7 +92,7 @@ public class FieldsConverterShould {
 
     @Test
     @SuppressWarnings("BadAnnotationImplementation")
-    public void return_instance_of_fields_converters_when_create_a_field_cvonverter_factory() {
+    public void return_instance_of_fields_converters_when_create_a_field_converter_factory() {
         Converter.Factory converterFactory = FieldsConverterFactory.create();
 
         Converter<?, String> converter = converterFactory

@@ -39,7 +39,7 @@ import nl.jqno.equalsverifier.Warning;
 public class UserOrganisationUnitLinkModelsShould {
 
     @Test
-    public void conform_to_contract() {
+    public void have_the_equals_method_conform_to_contract() {
         EqualsVerifier.forClass(UserOrganisationUnitLinkModel.builder().build().getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();

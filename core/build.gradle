@@ -76,6 +76,7 @@ android {
     }
 }
 
+
 dependencies {
     // Support libraries
     compile "com.android.support:support-annotations:${libraries.support}"
@@ -109,6 +110,7 @@ dependencies {
     androidTestCompile "org.mockito:mockito-core:${libraries.mockito}"
     androidTestCompile "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
     androidTestCompile "com.android.support.test:runner:${libraries.testrunner}"
+    androidTestCompile "com.squareup.okhttp3:logging-interceptor:${libraries.okhttp}"
     androidTestCompile("com.google.truth:truth:${libraries.truth}") {
         exclude group: 'junit' // Android has JUnit built in.
     }

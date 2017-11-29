@@ -26,7 +26,7 @@ public class RuleFunctionZingShould {
     }
     @Test
     public void thrown_illegal_argument_exception_if_first_parameter_is_null() {
-        thrown.expect(IllegalArgumentException.class);
+        thrown.expect(NullPointerException.class);
         RuleFunction zing = RuleFunctionZing.create();
 
         String zingNumber = zing.evaluate(null,
@@ -50,7 +50,7 @@ public class RuleFunctionZingShould {
         String zingNumber = zing.evaluate(Arrays.asList("0.1"),
                 new HashMap<String, RuleVariableValue>());
 
-        assertThat(zingNumber).isEqualTo("0.1");
+        assertThat(zingNumber).isEqualTo("1");
     }
 
 }

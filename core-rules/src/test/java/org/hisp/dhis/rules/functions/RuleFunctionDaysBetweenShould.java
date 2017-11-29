@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.assertj.core.api.Java6Assertions.fail;
 
 @RunWith(JUnit4.class)
 public class RuleFunctionDaysBetweenShould {
@@ -44,26 +43,8 @@ public class RuleFunctionDaysBetweenShould {
 
     @Test
     public void thrown_illegal_argument_exception_when_evaluate_with_no_date_strings() {
-        thrown.expect(ParseException.class);
+        thrown.expect(RuntimeException.class);
         RuleFunctionDaysBetween.create().evaluate(Arrays.asList("one","two"),
                 new HashMap<String, RuleVariableValue>());
-    }
-    @Test
-    public void throw_illegal_argument_exception_on_wrong_argument_count() {
-        try {
-            RuleFunctionDaysBetween.create().evaluate(Arrays.asList("one"),
-                    new HashMap<String, RuleVariableValue>());
-            fail("IllegalArgumentException was expected, but nothing was thrown.");
-        } catch (IllegalArgumentException illegalArgumentException) {
-            // noop
-        }
-
-        try {
-            RuleFunctionDaysBetween.create().evaluate(Arrays.asList("one", "two", "three"),
-                    new HashMap<String, RuleVariableValue>());
-            fail("IllegalArgumentException was expected, but nothing was thrown.");
-        } catch (IllegalArgumentException illegalArgumentException) {
-            // noop
-        }
     }
 }

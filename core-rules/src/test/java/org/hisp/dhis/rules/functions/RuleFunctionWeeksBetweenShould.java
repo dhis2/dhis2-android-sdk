@@ -44,7 +44,7 @@ public class RuleFunctionWeeksBetweenShould {
 
     @Test
     public void thrown_illegal_argument_exception_when_evaluate_with_no_date_strings() {
-        thrown.expect(ParseException.class);
+        thrown.expect(RuntimeException.class);
         RuleFunctionWeeksBetween.create().evaluate(Arrays.asList("one","two"),
                 new HashMap<String, RuleVariableValue>());
     }

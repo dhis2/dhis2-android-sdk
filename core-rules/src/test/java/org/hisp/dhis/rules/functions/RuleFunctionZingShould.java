@@ -7,6 +7,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -23,14 +24,6 @@ public class RuleFunctionZingShould {
                 new HashMap<String, RuleVariableValue>());
 
         assertThat(zingNumber).isEqualTo("0");
-    }
-    @Test
-    public void thrown_illegal_argument_exception_if_first_parameter_is_null() {
-        thrown.expect(NullPointerException.class);
-        RuleFunction zing = RuleFunctionZing.create();
-
-        String zingNumber = zing.evaluate(null,
-                new HashMap<String, RuleVariableValue>());
     }
 
     @Test
@@ -53,4 +46,21 @@ public class RuleFunctionZingShould {
         assertThat(zingNumber).isEqualTo("1");
     }
 
+    @Test
+    public void thrown_illegal_argument_exception_if_first_parameter_is_null() {
+        thrown.expect(NullPointerException.class);
+        RuleFunction zing = RuleFunctionZing.create();
+
+        zing.evaluate(null,
+                new HashMap<String, RuleVariableValue>());
+    }
+
+    @Test
+    public void thrown_illegal_argument_exception_if_first_parameter_is_empty_list() {
+        thrown.expect(IllegalArgumentException.class);
+        RuleFunction zing = RuleFunctionZing.create();
+
+        zing.evaluate(new ArrayList<String>(),
+                new HashMap<String, RuleVariableValue>());
+    }
 }

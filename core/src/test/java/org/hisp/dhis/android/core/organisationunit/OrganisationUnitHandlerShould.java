@@ -98,7 +98,7 @@ public class OrganisationUnitHandlerShould {
         when(organisationUnit.programs()).thenReturn(Collections.singletonList(program));
     }
 
-    public void doNothing_doNothingWhenPassingInNullOrganisationUnits() throws Exception {
+    public void do_nothing_when_passing_in_null_organisation_units() throws Exception {
         organisationUnitHandler.handleOrganisationUnits(
                 null, scope, user.uid()
         );
@@ -123,7 +123,7 @@ public class OrganisationUnitHandlerShould {
     }
 
     @Test
-    public void delete_shouldDeleteOrganisationUnit() throws Exception {
+    public void invoke_delete_when_handle_organisation_unit_set_as_delete() throws Exception {
         when(organisationUnit.deleted()).thenReturn(Boolean.TRUE);
 
         // passing in null args to user uid and org unit scope. We don't want to invoke link store
@@ -151,7 +151,7 @@ public class OrganisationUnitHandlerShould {
     }
 
     @Test
-    public void update_shouldUpdateOrganisationUnitAndLinkStore() throws Exception {
+    public void invoke_only_update_when_handle_updatable_organisation_unit_and_link_store() throws Exception {
         when(organisationUnitStore.update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
                 any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyInt(), anyString())).thenReturn(1);
@@ -189,7 +189,7 @@ public class OrganisationUnitHandlerShould {
     }
 
     @Test
-    public void update_shouldUpdateOrganisationUnit() throws Exception {
+    public void invoke_only_update_when_handle_organisation_units_inserted() throws Exception {
         when(organisationUnitStore.update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
                 any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyInt(), anyString())).thenReturn(1);
@@ -226,7 +226,7 @@ public class OrganisationUnitHandlerShould {
     }
 
     @Test
-    public void insert_shouldInsertOrganisationUnitAndInLinkStore() throws Exception {
+    public void invoke_update_and_insert_when_handle_insertable_organisation_unit_and_link_store() throws Exception {
         when(organisationUnitStore.update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
                 any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyInt(), anyString())).thenReturn(0);
@@ -267,7 +267,7 @@ public class OrganisationUnitHandlerShould {
     }
 
     @Test
-    public void insert_shouldInsertOrganisationUnit() throws Exception {
+    public void invoke_update_and_insert_when_handle_insertable_organisation_unit() throws Exception {
         when(organisationUnitStore.update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
                 any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyInt(), anyString())).thenReturn(0);

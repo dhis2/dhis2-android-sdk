@@ -72,7 +72,7 @@ public class UserModelModelShould {
     }
 
     @Test
-    public void create_shouldConvertToModel() {
+    public void convert_to_model_after_create() {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
                 Columns.ID,
                 Columns.UID,
@@ -130,7 +130,7 @@ public class UserModelModelShould {
     }
 
     @Test
-    public void toContentValues_shouldConvertToContentValues() {
+    public void convert_to_content_values() {
 
         UserModel userModel = UserModel.builder()
                 .id(ID)

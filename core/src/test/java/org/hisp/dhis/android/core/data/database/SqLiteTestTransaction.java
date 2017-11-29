@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,22 +26,53 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.data.database;
 
+import android.database.sqlite.SQLiteDatabase;
+
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(JUnit4.class)
-public class UserOrganisationUnitLinkModelShould {
+public class SqLiteTestTransaction {
+
+    @Mock
+    DbOpenHelper dbOpenHelper;
+
+    @Mock
+    SQLiteDatabase database;
+
+    private SqLiteTransaction transaction; // The class we are testing
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+
+        when(dbOpenHelper.getWritableDatabase()).thenReturn(database);
+
+        transaction = new SqLiteTransaction(dbOpenHelper);
+    }
 
     @Test
-    public void equals_shouldConformToContract() {
-        EqualsVerifier.forClass(UserOrganisationUnitLinkModel.builder().build().getClass())
-                .suppress(Warning.NULL_FIELDS)
-                .verify();
+    public void beginTransactionIsRunOnSqlDatabase() throws Exception {
+        transaction.begin();
+        verify(database).beginTransaction();
     }
+
+    @Test
+    public void transactionSuccessfulIsSetOnSqlDatabase() throws Exception {
+        transaction.setSuccessful();
+        verify(database).setTransactionSuccessful();
+    }
+
+    @Test
+    public void endTransactionIsRunOnSqlDatabase() throws Exception {
+        transaction.end();
+        verify(database).endTransaction();
+    }
+
 }

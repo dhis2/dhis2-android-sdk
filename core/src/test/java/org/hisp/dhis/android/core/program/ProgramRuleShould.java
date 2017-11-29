@@ -42,7 +42,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class ProgramRuleShould {
 
     @Test
-    public void programRule_shouldMapFromJsonString() throws IOException, ParseException {
+    public void map_from_json_string() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
         ProgramRule programRule = objectMapper.readValue("{\n" +
                 "\"created\": \"2015-09-14T21:17:40.841\",\n" +

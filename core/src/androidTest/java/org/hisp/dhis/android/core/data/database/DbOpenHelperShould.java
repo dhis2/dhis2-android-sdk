@@ -40,7 +40,7 @@ public class DbOpenHelperShould {
     private static final int DATABASE_TESTS_VERSION = 1;
 
     @Test
-    public void databaseVersion_shouldHaveCorrespondingTests() {
+    public void have_tests_on_database_versions() {
         // ToDo: tests for schema migration (requires some research to be done)
         // make sure that whenever database version is bumped,
         // corresponding schema migration tests are implemented

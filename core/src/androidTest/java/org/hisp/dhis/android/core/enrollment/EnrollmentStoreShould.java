@@ -132,7 +132,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistInDatabase() {
+    public void  persist_in_data_base_after_insert() {
         long rowId = store.insert(
                 UID,
                 date,
@@ -174,7 +174,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistDeferrableInDatabase() {
+    public void persist_deferrable_in_data_base_after_insert() {
         final String deferredOrganisationUnit = "deferredOrganisationUnit";
         final String deferredProgram = "deferredProgram";
         final String deferredTrackedEntityInstance = "deferredTrackedEntityInstance";
@@ -231,7 +231,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistNullableInDatabase() {
+    public void persist_nullable_in_data_base_after_insert() {
         long rowId = store.insert(UID, null, null, null, null, ORGANISATION_UNIT, PROGRAM,
                 null, null, null, null, TRACKED_ENTITY_INSTANCE, null, null, null);
 
@@ -242,7 +242,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void update_shouldUpdateEnrollment() throws Exception {
+    public void update_enrollment_in_database_after_update() throws Exception {
         ContentValues enrollment = new ContentValues();
         enrollment.put(Columns.UID, UID);
         enrollment.put(Columns.ENROLLMENT_STATUS, ENROLLMENT_STATUS.name());
@@ -273,7 +273,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteEnrollment() throws Exception {
+    public void delete_enrollment_in_database_after_delete() throws Exception {
         ContentValues enrollment = new ContentValues();
         enrollment.put(Columns.UID, UID);
         enrollment.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
@@ -296,7 +296,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteEnrollmentWhenDeletingOrgUnit() {
+    public void delete_enrollment_after_delete_org_unit() {
         store.insert(
                 UID,
                 date,
@@ -323,7 +323,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteEnrollmentWhenDeletingProgram() {
+    public void delete_enrollment_after_delete_program() {
 
         store.insert(
                 UID,
@@ -351,7 +351,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteEnrollmentWhenDeletingTrackedEntityInstance() {
+    public void delete_enrollment_after_delete_tracked_entity_instance() {
         store.insert(
                 UID,
                 date,
@@ -378,7 +378,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void setState_shouldUpdateEnrollmentState() throws Exception {
+    public void update_enrollment_state_after_set_state() throws Exception {
         ContentValues enrollment = new ContentValues();
         enrollment.put(Columns.UID, UID);
         enrollment.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
@@ -406,7 +406,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void query_shouldReturnListOfEnrollments() throws Exception {
+    public void return_list_of_enrollment_after_query() throws Exception {
         ContentValues enrollmentContentValues = new ContentValues();
         enrollmentContentValues.put(Columns.UID, UID);
         enrollmentContentValues.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
@@ -436,7 +436,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistEnrollWithInvalidOrgUnitForeignKey() {
+    public void throw_exception_after_persist_enrollment_with_invalid_org_unit_foreign_key() {
         store.insert(
                 UID,
                 date,
@@ -457,7 +457,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistEnrollWithInvalidProgramForeignKey() {
+    public void throw_exception_after_persist_enrollment_with_invalid_program_foreign_key() {
         store.insert(
                 UID,
                 date,
@@ -478,7 +478,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistEnrollWithInvalidTrackedEntityInstanceForeignKey() {
+    public void throw_exception_persist_enrollment_with_invalid_tracked_entity_instance_foreign_key() {
         store.insert(
                 UID,
                 date,

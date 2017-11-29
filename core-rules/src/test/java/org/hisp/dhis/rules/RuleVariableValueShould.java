@@ -17,16 +17,13 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 @RunWith(JUnit4.class)
 public class RuleVariableValueShould {
 
-    @Mock
-    private RuleDataValue ruleDataValue;
-
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
     }
 
     @Test
-    public void textValuesMostBeWrapped() {
+    public void wrap_text_values() {
         RuleVariableValue variableValue = RuleVariableValue.create(
                 "test_value", RuleValueType.TEXT, Arrays.asList(
                         "test_value_candidate_one", "test_value_candidate_two"));
@@ -40,7 +37,7 @@ public class RuleVariableValueShould {
 
 
     @Test
-    public void wrappedTextValuesMustNotBeDoubleWrapped() {
+    public void not_be_double_wrapped_text_value_when_wrapped() {
         RuleVariableValue variableValue = RuleVariableValue.create(
                 "'test_value'", RuleValueType.TEXT, Arrays.asList(
                         "test_value_candidate_one", "test_value_candidate_two"));
@@ -53,7 +50,7 @@ public class RuleVariableValueShould {
     }
 
     @Test
-    public void numericValuesMostNotBeWrapped() {
+    public void not_wrap_numeric_values() {
         RuleVariableValue variableValue = RuleVariableValue.create(
                 "1", RuleValueType.NUMERIC, Arrays.asList("2", "3"));
 
@@ -65,7 +62,7 @@ public class RuleVariableValueShould {
     }
 
     @Test
-    public void booleanValuesMostNotBeWrapped() {
+    public void not_wrap_boolean_values() {
         RuleVariableValue variableValue = RuleVariableValue.create(
                 "true", RuleValueType.BOOLEAN, Arrays.asList("false", "false"));
 
@@ -77,7 +74,7 @@ public class RuleVariableValueShould {
     }
 
     @Test
-    public void createShouldThrowOnNullValueType() {
+    public void throw_null_pointer_exception_when_create_with_null_value_type() {
         try {
             RuleVariableValue.create("test_value", null);
             fail("NullPointerException was expected, but nothing was thrown");
@@ -87,7 +84,7 @@ public class RuleVariableValueShould {
     }
 
     @Test
-    public void createShouldThrowOnNullCandidateList() {
+    public void throw_null_pointer_exception_when_create_with_null_candidate_list() {
         try {
             RuleVariableValue.create("test_value", RuleValueType.TEXT, null);
             fail("NullPointerException was expected, but nothing was thrown");

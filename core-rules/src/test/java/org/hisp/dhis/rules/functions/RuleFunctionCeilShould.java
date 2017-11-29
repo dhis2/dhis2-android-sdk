@@ -16,7 +16,7 @@ import static org.assertj.core.api.Java6Assertions.fail;
 public class RuleFunctionCeilShould {
 
     @Test
-    public void evaluateMustReturnCeiledValue() {
+    public void evaluate_correct_ceiled_value() {
         RuleFunction ceil = RuleFunctionCeil.create();
 
         String ceiledNumber = ceil.evaluate(Arrays.asList("5.9"),
@@ -26,7 +26,7 @@ public class RuleFunctionCeilShould {
     }
 
     @Test
-    public void evaluateMustFailOnWrongArgumentCount() {
+    public void throw_illegal_argument_exception_on_wrong_argument_count() {
         try {
             RuleFunctionCeil.create().evaluate(Arrays.asList("5.9", "6.8"),
                     new HashMap<String, RuleVariableValue>());

@@ -71,7 +71,7 @@ public class LogOutUserCallableShould {
     }
 
     @Test
-    public void logOut_shouldClearTables() throws Exception {
+    public void clear_tables_on_log_out() throws Exception {
         logOutUserCallable.call();
 
         verify(userStore).delete();

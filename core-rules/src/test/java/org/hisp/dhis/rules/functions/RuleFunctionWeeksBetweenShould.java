@@ -15,7 +15,7 @@ import static org.assertj.core.api.Java6Assertions.fail;
 public class RuleFunctionWeeksBetweenShould {
 
     @Test
-    public void evaluateMustReturnCorrectNumberOfWeeks() {
+    public void evaluate_correct_number_of_weeks() {
         RuleFunction weeksBetween = RuleFunctionWeeksBetween.create();
 
         String weeks = weeksBetween.evaluate(Arrays.asList(
@@ -24,7 +24,7 @@ public class RuleFunctionWeeksBetweenShould {
     }
 
     @Test
-    public void evaluateMustFailOnWrongArgumentCount() {
+    public void throw_illegal_argument_exception_on_wrong_argument_count() {
         try {
             RuleFunctionWeeksBetween.create().evaluate(Arrays.asList("one"),
                     new HashMap<String, RuleVariableValue>());

@@ -59,7 +59,7 @@ public class TrackedEntityInstanceModelShould {
     }
 
     @Test
-    public void create_shouldConvertToModel() {
+    public void convert_to_model_after_create() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID,
                 Columns.UID,
@@ -87,7 +87,7 @@ public class TrackedEntityInstanceModelShould {
     }
 
     @Test
-    public void toContentValues_shouldConvertToContentValues() {
+    public void convert_to_content_values() {
         TrackedEntityInstanceModel model = TrackedEntityInstanceModel.builder()
                 .id(ID)
                 .uid(UID)

@@ -42,17 +42,17 @@ import nl.jqno.equalsverifier.Warning;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class ProgramStageSectionModelShould {
+public class ProgramStageSectionModelsShould {
 
     @Test
-    public void equals_shouldConformToContract() {
+    public void have_the_equals_method_conform_to_contract() {
         EqualsVerifier.forClass(ProgramStageSectionModel.builder().build().getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();
     }
 
     @Test
-    public void programStageSection_shouldMapFromJsonString() throws IOException, ParseException {
+    public void map_from_json_string() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
         //Json (modified) from: https://play.dhis2.org/dev/api/programStageSections/bbjzL5gp0NZ.json
         ProgramStageSection programStageSection = objectMapper.readValue("{\n" +

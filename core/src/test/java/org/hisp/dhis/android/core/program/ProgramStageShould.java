@@ -43,7 +43,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class ProgramStageShould {
 
     @Test
-    public void programStage_shouldMapFromJsonString() throws IOException, ParseException {
+    public void map_from_json_string() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
         ProgramStage programStage = objectMapper.readValue("{\n" +
                 "\n" +

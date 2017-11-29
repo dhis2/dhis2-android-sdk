@@ -63,7 +63,7 @@ public class SystemInfoHandlerShould {
     }
 
     @Test
-    public void update_shouldUpdateSystemInfo() throws Exception {
+    public void invoke_only_update_when_handle_system_info_inserted() throws Exception {
         when(systemInfoStore.update(
                 any(Date.class), anyString(), anyString(), anyString(), anyString())
         ).thenReturn(1);
@@ -79,7 +79,7 @@ public class SystemInfoHandlerShould {
     }
 
     @Test
-    public void insert_shouldInsertSystemInfo() throws Exception {
+    public void invoke_update_and_insert_when_handle_system_info_not_inserted() throws Exception {
         when(systemInfoStore.update(
                 any(Date.class), anyString(), anyString(), anyString(), anyString())
         ).thenReturn(0);
@@ -95,7 +95,7 @@ public class SystemInfoHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldDoNothingWhenPassingInNullArgument() throws Exception {
+    public void do_nothing_when_passing_null_argument() throws Exception {
         systemInfoHandler.handleSystemInfo(null);
 
         // verify that store is never touched

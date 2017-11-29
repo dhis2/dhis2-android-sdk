@@ -22,7 +22,7 @@ public class ResourceModelIntegrationShould {
     private static final String DATE = "2017-01-18T13:39:00.000";
 
     @Test
-    public void create_shouldConvertToModel() throws Exception {
+    public void convert_to_model_after_create() throws Exception {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
                 Columns.ID, Columns.RESOURCE_TYPE, Columns.LAST_SYNCED
         });
@@ -42,7 +42,7 @@ public class ResourceModelIntegrationShould {
     }
 
     @Test
-    public void toContentValues_shouldConvertToContentValues() throws Exception {
+    public void convert_to_content_values() throws Exception {
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
         ResourceModel resource = ResourceModel.builder()
                 .id(ID)

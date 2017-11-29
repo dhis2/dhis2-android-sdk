@@ -45,14 +45,14 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class UserCredentialShould {
 
     @Test
-    public void equals_shouldConformToContract() {
+    public void have_the_equals_method_conform_to_contract() {
         EqualsVerifier.forClass(UserCredentialsModel.builder().build().getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();
     }
 
     @Test
-    public void userCredentials_shouldMapFromJsonString() throws IOException, ParseException {
+    public void map_from_json_string() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
 
         UserCredentials userCredentials = objectMapper.readValue("{\n" +

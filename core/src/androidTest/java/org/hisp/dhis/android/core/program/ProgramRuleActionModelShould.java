@@ -62,7 +62,7 @@ public class ProgramRuleActionModelShould {
     private static final String DATE = "2011-12-24T12:24:25.203";
 
     @Test
-    public void create_shouldConvertToModel() throws ParseException {
+    public void convert_to_a_model_after_create() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
                 ProgramRuleActionModel.Columns.ID,
                 ProgramRuleActionModel.Columns.UID,
@@ -115,7 +115,7 @@ public class ProgramRuleActionModelShould {
     }
 
     @Test
-    public void toContentValues_shouldConvertToContentValues() throws ParseException {
+    public void convert_to_content_values() throws ParseException {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
         ProgramRuleActionModel programRuleActionModel = ProgramRuleActionModel.builder()

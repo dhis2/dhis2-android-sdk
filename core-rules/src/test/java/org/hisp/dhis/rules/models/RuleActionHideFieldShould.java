@@ -14,7 +14,7 @@ import static org.assertj.core.api.Java6Assertions.fail;
 public class RuleActionHideFieldShould {
 
     @Test
-    public void createMustSubstituteEmptyStringIfArgumentsNull() {
+    public void substitute_empty_string_when_create_with_null_arguments() {
         RuleActionHideField ruleActionHideField =
                 RuleActionHideField.create(null, "test_field");
 
@@ -22,7 +22,7 @@ public class RuleActionHideFieldShould {
     }
 
     @Test
-    public void createMustThrowOnNullField() {
+    public void throw_null_pointer_exception_when_create_with_null_field() {
         try {
             RuleActionHideField.create("test_content", null);
             fail("NullPointerException was expected, but nothing was thrown.");
@@ -32,7 +32,7 @@ public class RuleActionHideFieldShould {
     }
 
     @Test
-    public void equalsAndHashCodeFunctionsMustConformContract() {
+    public void have_the_equals_method_conform_to_contract() {
         EqualsVerifier.forClass(RuleActionHideField.create("test_content", "test_field").getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();

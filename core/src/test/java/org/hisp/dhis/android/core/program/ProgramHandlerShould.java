@@ -138,7 +138,7 @@ public class ProgramHandlerShould {
     }
 
     @Test
-    public void delete_shouldDeleteProgram() throws Exception {
+    public void invoke_deleted_when_handle_program_set_as_deleted() throws Exception {
         when(program.deleted()).thenReturn(true);
 
         programHandler.handleProgram(program);
@@ -173,7 +173,7 @@ public class ProgramHandlerShould {
     }
 
     @Test
-    public void insert_shouldInsertProgram() throws Exception {
+    public void invoke_update_and_insert_when_handle_program_not_inserted() throws Exception {
         when(programStore.update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
                 anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
@@ -215,7 +215,7 @@ public class ProgramHandlerShould {
     }
 
     @Test
-    public void update_shouldUpdateProgram() throws Exception {
+    public void invoke_only_update_when_handle_program_inserted() throws Exception {
         when(programStore.update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
                 anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
@@ -255,7 +255,7 @@ public class ProgramHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldNotDoAnythingWithNullArgument() throws Exception {
+    public void do_nothing_with_null_argument() throws Exception {
         programHandler.handleProgram(null);
 
         // verify that programStore is never called with insert, update or delete

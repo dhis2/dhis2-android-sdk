@@ -42,7 +42,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class RelationshipTypeShould {
 
     @Test
-    public void relationshipType_shouldMapFromJsonString() throws IOException, ParseException {
+    public void map_from_json_string() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
 
         RelationshipType relationshipType = objectMapper.readValue("{\n" +

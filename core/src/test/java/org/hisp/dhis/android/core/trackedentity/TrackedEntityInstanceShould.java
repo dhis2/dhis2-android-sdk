@@ -42,7 +42,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class TrackedEntityInstanceShould {
 
     @Test
-    public void trackedEntityInstance_shouldMapFromJsonString() throws IOException, ParseException {
+    public void map_from_json_string() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
         TrackedEntityInstance trackedEntityInstance = objectMapper.readValue("{\n" +
                 "\n" +

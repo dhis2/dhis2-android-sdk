@@ -84,7 +84,7 @@ public class ProgramStageHandlerShould {
     }
 
     @Test
-    public void delete_shouldDeleteProgramStage() throws Exception {
+    public void invoke_delete_when_handle_program_stage_set_as_deleted() throws Exception {
         when(programStage.deleted()).thenReturn(Boolean.TRUE);
 
         programStageHandler.handleProgramStage("test_program_uid", programStages);
@@ -118,7 +118,7 @@ public class ProgramStageHandlerShould {
     }
 
     @Test
-    public void update_shouldUpdateProgramStage() throws Exception {
+    public void invoke_only_update_when_handle_program_stage_inserted() throws Exception {
         when(programStageStore.update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyBoolean(), anyBoolean(), anyString(),
                 anyBoolean(), anyBoolean(), anyBoolean(), any(FormType.class), anyBoolean(), anyBoolean(),
@@ -157,7 +157,7 @@ public class ProgramStageHandlerShould {
     }
 
     @Test
-    public void insert_shouldInsertProgramStage() throws Exception {
+    public void invoke_update_and_insert_when_handle_program_stage_not_inserted() throws Exception {
         // simulate that programStageStore didn't update anything
         when(programStageStore.update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyBoolean(), anyBoolean(), anyString(),
@@ -193,7 +193,7 @@ public class ProgramStageHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldDoNothingWhenPassingInNullArgumentProgramUid() throws Exception {
+    public void do_nothing_when_passing_null_program_uid() throws Exception {
         programStageHandler.handleProgramStage(null, programStages);
 
         // verify that programStageStore is never invoked
@@ -220,7 +220,7 @@ public class ProgramStageHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldDoNothingWhenPassingNullArgumentProgramStages() throws Exception {
+    public void do_nothing_when_passing_null_program_stge() throws Exception {
         programStageHandler.handleProgramStage("test_program_uid", null);
 
         // verify that programStageStore is never invoked
@@ -247,7 +247,7 @@ public class ProgramStageHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldDoNothingWhenPassingNullArguments() throws Exception {
+    public void do_nothing_when_passing_null_arguments() throws Exception {
         programStageHandler.handleProgramStage(null, null);
 
         // verify that programStageStore is never invoked

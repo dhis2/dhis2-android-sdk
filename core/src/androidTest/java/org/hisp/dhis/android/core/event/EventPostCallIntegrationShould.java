@@ -89,7 +89,7 @@ public class EventPostCallIntegrationShould extends AbsStoreTestCase {
 
     // commented out since it is a flaky test that works against a real server.
     //    @Test
-    public void eventSyncTest() throws Exception {
+    public void successful_response_after_sync_events() throws Exception {
         retrofit2.Response response = null;
         response = d2.logIn("android", "Android123").call();
         assertThat(response.isSuccessful()).isTrue();

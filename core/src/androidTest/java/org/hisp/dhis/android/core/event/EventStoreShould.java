@@ -147,7 +147,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistEventInDatabase() {
+    public void persist_event_in_data_base_after_insert() {
         long rowId = eventStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
@@ -190,7 +190,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistDeferrableEventInDatabase() {
+    public void persist_deferrable_event_in_data_base_after_insert() {
         final String deferredProgram = "deferredProgram";
         final String deferredProgramStage = "deferredProgramStage";
         final String deferredOrganisationUnit = "deferredOrganisationUnit";
@@ -249,7 +249,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistEventNullableInDatabase() {
+    public void persist_event_nullable_in_data_base_after_insert() {
 
         long rowId = eventStore.insert(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, null, null, PROGRAM,
                 PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null);
@@ -260,7 +260,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteEventWhenDeletingProgramForeignKey() {
+    public void delete_veent_in_data_base_after_delete_program_foreign_key() {
         eventStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
@@ -286,7 +286,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteEventWhenDeletingProgramStageForeignKey() {
+    public void delete_event_in_data_base_after_delete_program_stage_foreign_key() {
         eventStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
@@ -312,7 +312,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteEventWhenDeletingOrganisationUnitForeignKey() {
+    public void delete_event_in_data_base_after_delete_organisation_unit_foreing_key() {
         eventStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
@@ -340,7 +340,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void update_shouldUpdateEvent() throws Exception {
+    public void update_event_in_data_base_after_update() throws Exception {
         ContentValues event = new ContentValues();
         event.put(Columns.UID, EVENT_UID);
         event.put(Columns.EVENT_DATE, dateString);
@@ -369,7 +369,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteEvent() throws Exception {
+    public void delete_event_in_data_base_after_delete() throws Exception {
         ContentValues event = new ContentValues();
         event.put(Columns.UID, EVENT_UID);
         event.put(Columns.PROGRAM, PROGRAM);
@@ -392,7 +392,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void setState_shouldUpdateEventState() throws Exception {
+    public void update_event_state_after_set_state() throws Exception {
         ContentValues event = new ContentValues();
         event.put(Columns.UID, EVENT_UID);
         event.put(Columns.PROGRAM, PROGRAM);
@@ -417,7 +417,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void query_shouldReturnListOfEvents() throws Exception {
+    public void return_list_of_events_after_query() throws Exception {
         ContentValues eventContentValues = new ContentValues();
         eventContentValues.put(Columns.UID, EVENT_UID);
         eventContentValues.put(Columns.PROGRAM, PROGRAM);
@@ -467,7 +467,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void query_shouldReturnEmptyListWithNoEventsPresent() throws Exception {
+    public void return_empty_list_with_no_events_after_query() throws Exception {
         Map<String, List<Event>> events = eventStore.queryEventsAttachedToEnrollmentToPost();
 
         assertThat(events.size()).isEqualTo(0);
@@ -475,7 +475,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistEventWithInvalidProgramForeignKey() {
+    public void throw_exception_after_persist_event_with_invalid_program_foreign_key() {
         eventStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
@@ -497,7 +497,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistEventWithInvalidProgramStageForeignKey() throws ParseException {
+    public void throw_exception_after_persist_event_with_invalid_program_stage_foreign_key() throws ParseException {
         eventStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
@@ -519,7 +519,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistEventWithInvalidOrganisationUnitForeignKey() {
+    public void throw_exception_after_persist_event_with_invalid_organisation_unit_foreign_key() {
         eventStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
@@ -542,7 +542,7 @@ public class EventStoreShould extends AbsStoreTestCase {
 
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistEventWithInvalidEnrollmentForeignKey() {
+    public void throw_exception_after_persist_event_with_invalid_enrollment_foreign_key() {
         eventStore.insert(
                 EVENT_UID,
                 WRONG_UID, // supply wrong uid

@@ -15,7 +15,7 @@ public class RuleActionAssignShould {
 
 
     @Test
-    public void createMustSubstituteEmptyStringsForNullArguments() {
+    public void substitute_empty_strings_for_null_arguments() {
         RuleActionAssign ruleActionAssignNoContent = RuleActionAssign
                 .create(null, "test_data", "test_field");
         RuleActionAssign ruleActionAssignNoField = RuleActionAssign
@@ -31,7 +31,7 @@ public class RuleActionAssignShould {
     }
 
     @Test
-    public void createMustThrowWhenContentAndDataAreNull() {
+    public void throw_illegal_argument_exception_when_content_and_date_are_null() {
         try {
             RuleActionAssign.create(null, "test_data", null);
             fail("IllegalArgumentException was expected, but nothing was thrown.");
@@ -41,7 +41,7 @@ public class RuleActionAssignShould {
     }
 
     @Test
-    public void createMustThrowWhenDataIsNull() {
+    public void throw_null_pointer_exception_when_data_is_null() {
         try {
             RuleActionAssign.create("test_content", null, "test_field");
             fail("NullPointerException was expected, but nothing was thrown.");
@@ -51,7 +51,7 @@ public class RuleActionAssignShould {
     }
 
     @Test
-    public void equalsAndHashcodeFunctionsMustConformToContract() {
+    public void have_the_equals_method_conform_to_contract() {
         EqualsVerifier.forClass(RuleActionAssign
                 .create("test_content", "test_data", "test_field").getClass())
                 .suppress(Warning.NULL_FIELDS)

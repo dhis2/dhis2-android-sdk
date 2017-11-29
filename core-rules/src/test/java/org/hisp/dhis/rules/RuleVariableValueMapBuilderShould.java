@@ -43,7 +43,7 @@ public class RuleVariableValueMapBuilderShould {
     }
 
     @Test
-    public void buildShouldReturnImmutableMap() throws ParseException {
+    public void return_immutable_map() throws ParseException {
         RuleEvent ruleEvent = mock(RuleEvent.class);
         when(ruleEvent.event()).thenReturn("test_event_uid");
         when(ruleEvent.eventDate()).thenReturn(dateFormat.parse("1994-02-03"));
@@ -60,7 +60,7 @@ public class RuleVariableValueMapBuilderShould {
     }
 
     @Test
-    public void ruleEnrollmentShouldThrowIfTargetEnrollmentIsAlreadySet() {
+    public void throw_illegal_state_exception_when_build_a_rule_enrollment_if_target_enrollment_is_already_set() {
         try {
             RuleEnrollment ruleEnrollment = mock(RuleEnrollment.class);
             RuleVariableValueMapBuilder.target(ruleEnrollment)
@@ -73,7 +73,7 @@ public class RuleVariableValueMapBuilderShould {
     }
 
     @Test
-    public void currentEventVariableShouldContainValuesFromCurrentEvent() throws ParseException {
+    public void contain_data_element_value_in_a_variable_when_create_multiple_rules() throws ParseException {
         RuleVariable ruleVariableOne = RuleVariableCurrentEvent.create(
                 "test_variable_one", "test_dataelement_one", RuleValueType.TEXT);
         RuleVariable ruleVariableTwo = RuleVariableCurrentEvent.create(
@@ -134,7 +134,7 @@ public class RuleVariableValueMapBuilderShould {
     }
 
     @Test
-    public void newestEventProgramVariableShouldContainValueFromNewestContextEvent() throws ParseException {
+    public void contain_value_of_newest_rule_event() throws ParseException {
         RuleVariable ruleVariableOne = RuleVariableNewestEvent.create(
                 "test_variable_one", "test_dataelement_one", RuleValueType.TEXT);
         RuleVariable ruleVariableTwo = RuleVariableNewestEvent.create(
@@ -195,7 +195,7 @@ public class RuleVariableValueMapBuilderShould {
     }
 
     @Test
-    public void newestEventProgramVariableShouldReturnValuesFromCurrentEventWhenIfNewest() throws ParseException {
+    public void return_values_from_newest_event_added_in_target() throws ParseException {
         RuleVariable ruleVariableOne = RuleVariableNewestEvent.create(
                 "test_variable_one", "test_dataelement_one", RuleValueType.TEXT);
         RuleVariable ruleVariableTwo = RuleVariableNewestEvent.create(
@@ -247,6 +247,7 @@ public class RuleVariableValueMapBuilderShould {
         assertThatVariable(valueMap.get("due_date")).hasValue(wrap(dateFormat.format(dateEventDueCurrent)))
                 .isTypeOf(RuleValueType.TEXT).hasCandidates(dateFormat.format(dateEventDueCurrent));
 
+
         assertThatVariable(valueMap.get("test_variable_one")).hasValue("'test_value_dataelement_one_current'")
                 .isTypeOf(RuleValueType.TEXT).hasCandidates("test_value_dataelement_one_current",
                 "test_value_dataelement_one_second", "test_value_dataelement_one_first");
@@ -257,7 +258,7 @@ public class RuleVariableValueMapBuilderShould {
     }
 
     @Test
-    public void newestEventProgramStageVariableShouldContainValueFromNewestContextEvent() throws ParseException {
+    public void return_values_from_newest_event_added_in_first_event() throws ParseException {
         RuleVariable ruleVariable = RuleVariableNewestStageEvent.create("test_variable",
                 "test_dataelement", "test_program_stage_one", RuleValueType.TEXT);
 
@@ -311,7 +312,7 @@ public class RuleVariableValueMapBuilderShould {
     }
 
     @Test
-    public void newestEventProgramStageVariableShouldNotContainAnyValues() throws ParseException {
+    public void not_contain_any_variable_values() throws ParseException {
         RuleVariable ruleVariable = RuleVariableNewestStageEvent.create("test_variable",
                 "test_dataelement", "test_program_stage_one", RuleValueType.TEXT);
 
@@ -354,7 +355,7 @@ public class RuleVariableValueMapBuilderShould {
     }
 
     @Test
-    public void previousEventVariableShouldContainValuesFromPreviousEvent() throws ParseException {
+    public void contain_values_from_previous_event_on_previous_event_variable() throws ParseException {
         RuleVariable ruleVariable = RuleVariablePreviousEvent.create("test_variable",
                 "test_dataelement", RuleValueType.TEXT);
 
@@ -407,7 +408,7 @@ public class RuleVariableValueMapBuilderShould {
     }
 
     @Test
-    public void attributeVariableShouldContainValuesFromContextEnrollment() throws ParseException {
+    public void contain_values_from_context_enrollment_in_attribute_variable() throws ParseException {
         RuleVariable ruleVariableOne = RuleVariableAttribute.create("test_variable_one",
                 "test_attribute_one", RuleValueType.TEXT);
         RuleVariable ruleVariableTwo = RuleVariableAttribute.create("test_variable_two",
@@ -482,7 +483,7 @@ public class RuleVariableValueMapBuilderShould {
     }
 
     @Test
-    public void ruleEnrollmentValuesShouldBePropagatedToMapCorrectly() throws ParseException {
+    public void propagate_to_map_correctly_the_given_rule_enrollment_values() throws ParseException {
         RuleVariable ruleVariableOne = RuleVariableAttribute.create("test_variable_one",
                 "test_attribute_one", RuleValueType.NUMERIC);
         RuleVariable ruleVariableTwo = RuleVariableAttribute.create("test_variable_two",
@@ -540,7 +541,7 @@ public class RuleVariableValueMapBuilderShould {
     }
 
     @Test
-    public void buildShouldThrowOnDuplicateEvent() {
+    public void thrown_illegal_state_exception_on_duplicate_events() {
         RuleEvent ruleEvent = RuleEvent.create("test_event_two", "test_program_stage",
                 RuleEvent.Status.ACTIVE, new Date(), new Date(), new ArrayList<RuleDataValue>());
 

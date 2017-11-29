@@ -48,7 +48,7 @@ public class RuleExpressionBinderShould {
     }
 
     @Test
-    public void buildShouldBindValuesCorrectly() {
+    public void bind_values_correctly() {
         String result = RuleExpressionBinder.from(ruleExpression)
                 .bindVariable("A{test_variable_one}", "1")
                 .bindVariable("C{test_variable_two}", "2")
@@ -63,7 +63,7 @@ public class RuleExpressionBinderShould {
     }
 
     @Test
-    public void buildShouldBindValuesForDuplicateVariableReferences() {
+    public void bind_values_for_duplicate_variable_references() {
         String expression = "A{test_variable_one} <0 && C{test_variable_two} == '' && " +
                 "V{test_variable_three} <0 && #{test_variable_four} == '' && " +
                 "A{test_variable_one} + C{test_variable_two} == 10 && " +
@@ -85,7 +85,7 @@ public class RuleExpressionBinderShould {
     }
 
     @Test
-    public void buildShouldNotFailIfNoVariablesInExpression() {
+    public void fail_when_no_variables_in_expression() {
         when(ruleExpression.expression()).thenReturn("1 < 0");
         when(ruleExpression.variables()).thenReturn(new HashSet<String>());
         when(ruleExpression.functions()).thenReturn(new HashSet<String>());
@@ -95,7 +95,7 @@ public class RuleExpressionBinderShould {
     }
 
     @Test
-    public void bindVariableShouldThrowIfPassingIllegalVariable() {
+    public void throw_illegal_argument_exception_when_bind_variable_passing_illegal_variable() {
         try {
             RuleExpressionBinder.from(ruleExpression).bindVariable("V{test_variable_five}", "3");
             fail("IllegalArgumentException was expected, but nothing was thrown.");
@@ -105,7 +105,7 @@ public class RuleExpressionBinderShould {
     }
 
     @Test
-    public void buildMustReturnUnmodifiedStringIfNoVariablesOrFunctions() {
+    public void return_unmodified_string_if_no_variables_or_functions() {
         RuleExpression ruleExpression = RuleExpression.from("'test_expression'");
         RuleExpressionBinder ruleExpressionBinder = RuleExpressionBinder.from(ruleExpression);
         assertThat(ruleExpressionBinder.build()).isEqualTo("'test_expression'");

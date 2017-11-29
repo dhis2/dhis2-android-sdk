@@ -110,7 +110,7 @@ public class SystemInfoCallShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldInvokeServerWithCorrectParameters() throws Exception {
+    public void return_correct_fields_after_call() throws Exception {
         when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));
         when(systemInfoService.getSystemInfo(filterCaptor.capture())).thenReturn(systemInfoCall);
 
@@ -127,7 +127,7 @@ public class SystemInfoCallShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldNotInvokeStoresOnException() throws Exception {
+    public void never_invoke_handlers_on_call_io_exception() throws Exception {
         when(systemInfoCall.execute()).thenThrow(IOException.class);
 
         try {
@@ -148,7 +148,7 @@ public class SystemInfoCallShould {
     }
 
     @Test
-    public void call_shouldNotInvokeHandlersIfRequestFails() throws Exception {
+    public void never_invoke_handlers_if_request_fail() throws Exception {
         // unauthorized
         when(systemInfoCall.execute()).thenReturn(Response.<SystemInfo>error(HttpURLConnection.HTTP_UNAUTHORIZED,
                 ResponseBody.create(MediaType.parse("application/json"), "{}")));
@@ -171,7 +171,7 @@ public class SystemInfoCallShould {
     }
 
     @Test
-    public void call_shouldMarkCallAsExecutedOnSuccess() throws Exception {
+    public void return_true_when_ask_if_is_executed_before_throw_illegal_state_exception_on_consecutive_calls() throws Exception {
         when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));
 
         systemInfoSyncCall.call();
@@ -181,14 +181,14 @@ public class SystemInfoCallShould {
         try {
             systemInfoSyncCall.call();
             fail("Multiple executions of a call should throw exception");
-        } catch (Exception ex) {
+        } catch (IllegalStateException ex) {
             // do nothing
         }
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldMarkCallAsExecutedOnFailure() throws Exception {
+    public void return_true_when_ask_if_is_executed_before_io_exception() throws Exception {
         when(systemInfoCall.execute()).thenThrow(IOException.class);
 
         try {
@@ -208,7 +208,7 @@ public class SystemInfoCallShould {
     }
 
     @Test
-    public void call_shouldInvokeStoresOnSuccess() throws Exception {
+    public void invoke_stores_after_successful_call() throws Exception {
         when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));
 
         systemInfoSyncCall.call();

@@ -200,7 +200,7 @@ public class UserCallShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldInvokeServerWithCorrectParameters() throws Exception {
+    public void return_correct_fields_after_invoke_user_sync_call() throws Exception {
         when(userCall.execute()).thenReturn(Response.success(user));
         when(userService.getUser(filterCaptor.capture())).thenReturn(userCall);
 
@@ -241,7 +241,7 @@ public class UserCallShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldNotInvokeStoresOnException() throws IOException {
+    public void not_invoke_stores_on_call_io_exception() throws IOException {
         when(userCall.execute()).thenThrow(IOException.class);
 
         try {
@@ -286,7 +286,7 @@ public class UserCallShould {
     }
 
     @Test
-    public void call_shouldNotInvokeStoresIfRequestFails() throws Exception {
+    public void not_invoke_stores_after_call_failure() throws Exception {
         // unauthorized
         when(userCall.execute()).thenReturn(Response.<User>error(HttpURLConnection.HTTP_UNAUTHORIZED,
                 ResponseBody.create(MediaType.parse("application/json"), "{}")));
@@ -332,7 +332,7 @@ public class UserCallShould {
     }
 
     @Test
-    public void call_shouldMarkCallAsExecutedOnSuccess() throws Exception {
+    public void mark_as_executed_on_success() throws Exception {
         when(userCall.execute()).thenReturn(Response.success(user));
 
         userSyncCall.call();
@@ -350,7 +350,7 @@ public class UserCallShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void call_shouldMarkCallAsExecutedOnFailure() throws Exception {
+    public void mark_as_executed_on_failure() throws Exception {
         when(userCall.execute()).thenThrow(IOException.class);
 
         try {
@@ -371,7 +371,7 @@ public class UserCallShould {
     }
 
     @Test
-    public void call_shouldInvokeHandlersOnSuccess() throws Exception {
+    public void invoke_handlers_on_success() throws Exception {
         when(userCall.execute()).thenReturn(Response.success(user));
 
         userSyncCall.call();

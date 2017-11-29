@@ -36,7 +36,7 @@ public class RuleEngineFunctionShould {
     }
 
     @Test
-    public void evaluateHasValueFunctionMustReturnTrueIfValueSpecified() throws Exception {
+    public void return_true_if_evaluate_value_specified_has_value() throws Exception {
         RuleAction ruleAction = RuleActionDisplayKeyValuePair.createForFeedback(
                 "test_action_content", "d2:hasValue('test_variable')");
         RuleVariable ruleVariable = RuleVariableCurrentEvent.create(
@@ -61,7 +61,7 @@ public class RuleEngineFunctionShould {
     }
 
     @Test
-    public void evaluateHasValueFunctionMustReturnTrueIfNoValueSpecified() throws Exception {
+    public void return_false_if_no_evaluate_value_specified_has_value() throws Exception {
         RuleAction ruleAction = RuleActionDisplayKeyValuePair.createForFeedback(
                 "test_action_content", "d2:hasValue('test_variable')");
         RuleVariable ruleVariable = RuleVariableCurrentEvent.create(
@@ -85,7 +85,7 @@ public class RuleEngineFunctionShould {
     }
 
     @Test
-    public void evaluateDaysBetweenMustReturnCorrectDiff() throws Exception {
+    public void return_correct_diff_on_evaluate_days_between() throws Exception {
         RuleAction ruleAction = RuleActionDisplayKeyValuePair.createForFeedback(
                 "test_action_content", "d2:daysBetween(#{test_var_one}, #{test_var_two})");
         RuleVariable ruleVariableOne = RuleVariableCurrentEvent.create(
@@ -113,7 +113,7 @@ public class RuleEngineFunctionShould {
     }
 
     @Test
-    public void evaluateNestedFunctionCalls() throws Exception {
+    public void return_expected_values_on_nested_functions_calls() throws Exception {
         RuleAction ruleAction = RuleActionDisplayKeyValuePair.createForFeedback(
                 "test_action_content", "d2:floor(#{test_var_one} + d2:ceil(#{test_var_three})) " +
                         "/ 5 * d2:ceil(#{test_var_two})");

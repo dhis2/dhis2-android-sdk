@@ -48,7 +48,7 @@ public class EnrollmentHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldDoNothingPassingNullArgument() throws Exception {
+    public void do_nothing_when_passing_null_argument() throws Exception {
         enrollmentHandler.handle(null);
 
         // verify that store or event handler is never called
@@ -70,7 +70,7 @@ public class EnrollmentHandlerShould {
     }
 
     @Test
-    public void delete_shouldDeleteEnrollment() throws Exception {
+    public void invoke_only_delete_when_a_enrollment_is_set_as_deleted() throws Exception {
         when(enrollment.deleted()).thenReturn(Boolean.TRUE);
 
         enrollmentHandler.handle(enrollment);
@@ -97,7 +97,7 @@ public class EnrollmentHandlerShould {
     }
 
     @Test
-    public void update_shouldUpdateEnrollment() throws Exception {
+    public void invoke_only_update_when_handle_enrollment_inserted() throws Exception {
         when(enrollmentStore.update(anyString(), any(Date.class), any(Date.class), anyString(), anyString(),
                 anyString(), anyString(), any(Date.class), any(Date.class), anyBoolean(),
                 any(EnrollmentStatus.class), anyString(), anyString(),
@@ -128,7 +128,7 @@ public class EnrollmentHandlerShould {
     }
 
     @Test
-    public void insert_shouldInsertEnrollment() throws Exception {
+    public void invoke_update_and_insert_when_handle_enrollment_not_inserted() throws Exception {
         when(enrollmentStore.update(anyString(), any(Date.class), any(Date.class), anyString(), anyString(),
                 anyString(), anyString(), any(Date.class), any(Date.class), anyBoolean(),
                 any(EnrollmentStatus.class), anyString(), anyString(),

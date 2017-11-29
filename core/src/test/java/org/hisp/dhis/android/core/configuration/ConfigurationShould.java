@@ -35,7 +35,7 @@ import static junit.framework.Assert.fail;
 public class ConfigurationShould {
 
     @Test
-    public void build_shouldFailOnNullServerUrl() {
+    public void thrown_illegal_state_exception_when_build_configuration_model_with_null_url() {
         try {
             ConfigurationModel.builder().build();
 

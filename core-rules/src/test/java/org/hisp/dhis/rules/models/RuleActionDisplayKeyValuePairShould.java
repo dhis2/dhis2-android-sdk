@@ -14,7 +14,7 @@ import static org.assertj.core.api.Java6Assertions.fail;
 public class RuleActionDisplayKeyValuePairShould {
     
     @Test
-    public void createForFeedbackMustSubstituteCorrectLocation() {
+    public void substitute_correct_location_when_create_for_feedback() {
         RuleActionDisplayKeyValuePair displayTextAction = RuleActionDisplayKeyValuePair
                 .createForFeedback("test_content", "test_data");
 
@@ -25,7 +25,7 @@ public class RuleActionDisplayKeyValuePairShould {
     }
 
     @Test
-    public void createForIndicatorsMustSubstituteCorrectLocation() {
+    public void substitute_correct_location_when_create_for_indicators() {
         RuleActionDisplayKeyValuePair displayTextAction = RuleActionDisplayKeyValuePair
                 .createForIndicators("test_content", "test_data");
 
@@ -36,7 +36,7 @@ public class RuleActionDisplayKeyValuePairShould {
     }
 
     @Test
-    public void createForFeedbackMustThrowWhenBothArgumentsNull() {
+    public void throw_illegal_argument_exception_when_create_for_feedback_with_null_arguments() {
         try {
             RuleActionDisplayKeyValuePair.createForFeedback(null, null);
             fail("IllegalArgumentException was expected, but nothing was thrown.");
@@ -46,7 +46,7 @@ public class RuleActionDisplayKeyValuePairShould {
     }
 
     @Test
-    public void createForIndicatorsMustThrowWhenBothArgumentsNull() {
+    public void throw_illegal_argument_exception_when_create_for_indicators_with_null_fields() {
         try {
             RuleActionDisplayKeyValuePair.createForIndicators(null, null);
             fail("IllegalArgumentException was expected, but nothing was thrown.");
@@ -56,7 +56,7 @@ public class RuleActionDisplayKeyValuePairShould {
     }
 
     @Test
-    public void createForFeedbackMustSubstituteEmptyStringsForNullArguments() {
+    public void substitute_empty_strings_when_create_for_feedback_with_null_arguments() {
         RuleActionDisplayKeyValuePair ruleActionNoContent = RuleActionDisplayKeyValuePair
                 .createForFeedback(null, "test_data");
         RuleActionDisplayKeyValuePair ruleActionNoData = RuleActionDisplayKeyValuePair
@@ -70,7 +70,7 @@ public class RuleActionDisplayKeyValuePairShould {
     }
 
     @Test
-    public void createForIndicatorsMustSubstituteEmptyStringsForNullArguments() {
+    public void substitute_empty_strings_when_create_for_indicators_with_null_arguments() {
         RuleActionDisplayKeyValuePair ruleActionNoContent = RuleActionDisplayKeyValuePair
                 .createForIndicators(null, "test_data");
         RuleActionDisplayKeyValuePair ruleActionNoData = RuleActionDisplayKeyValuePair
@@ -84,7 +84,7 @@ public class RuleActionDisplayKeyValuePairShould {
     }
 
     @Test
-    public void equalsAndHashcodeFunctionsMustConformToContract() {
+    public void have_the_equals_method_conform_to_contract() {
         EqualsVerifier.forClass(RuleActionDisplayKeyValuePair.createForFeedback("", "").getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();

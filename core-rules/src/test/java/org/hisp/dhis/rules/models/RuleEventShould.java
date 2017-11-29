@@ -22,7 +22,7 @@ public class RuleEventShould {
     private static final String DATE_PATTERN = "yyyy-MM-dd";
 
     @Test
-    public void createShouldThrowExceptionIfEventIsNull() {
+    public void throw_null_pointer_exception_when_create_with_null_event() {
         try {
             RuleEvent.create(null, "test_programstage", RuleEvent.Status.ACTIVE,
                     new Date(), new Date(), Arrays.<RuleDataValue>asList());
@@ -33,7 +33,7 @@ public class RuleEventShould {
     }
 
     @Test
-    public void createShouldThrowExceptionIfProgramStageIsNull() {
+    public void throw_null_pointer_exception_when_create_with_null_program_stage() {
         try {
             RuleEvent.create("test_event", null, RuleEvent.Status.ACTIVE,
                     new Date(), new Date(), Arrays.<RuleDataValue>asList());
@@ -44,7 +44,7 @@ public class RuleEventShould {
     }
 
     @Test
-    public void createShouldThrowExceptionIfStatusIsNull() {
+    public void throw_null_pointer_exception_when_create_with_null_status() {
         try {
             RuleEvent.create("test_event", "test_programstage", null,
                     new Date(), new Date(), Arrays.<RuleDataValue>asList());
@@ -55,7 +55,7 @@ public class RuleEventShould {
     }
 
     @Test
-    public void createShouldThrowExceptionIfEventDateIsNull() {
+    public void throw_null_pointer_exception_when_create_with_null_event_date() {
         try {
             RuleEvent.create("test_event", "test_programstage", RuleEvent.Status.ACTIVE,
                     null, new Date(), Arrays.<RuleDataValue>asList());
@@ -66,7 +66,7 @@ public class RuleEventShould {
     }
 
     @Test
-    public void createShouldThrowExceptionIfDueDateIsNull() {
+    public void throw_null_pointer_exception_when_create_with_null_due_date() {
         try {
             RuleEvent.create("test_event", "test_programstage", RuleEvent.Status.ACTIVE,
                     new Date(), null, Arrays.<RuleDataValue>asList());
@@ -77,7 +77,7 @@ public class RuleEventShould {
     }
 
     @Test
-    public void createShouldThrowExceptionIfListOfDataValuesIsNull() {
+    public void throw_null_pointer_exception_when_create_with_null_list_of_data_values() {
         try {
             RuleEvent.create("test_event", "test_programstage", RuleEvent.Status.ACTIVE,
                     new Date(), new Date(), null);
@@ -88,7 +88,7 @@ public class RuleEventShould {
     }
 
     @Test
-    public void createShouldPropagateImmutableList() {
+    public void propagate_immutable_list_when_create_with_valid_values() {
         RuleDataValue ruleDataValue = mock(RuleDataValue.class);
 
         List<RuleDataValue> ruleDataValues = new ArrayList<>();
@@ -112,7 +112,7 @@ public class RuleEventShould {
     }
 
     @Test
-    public void createShouldPropagateValuesCorrectly() {
+    public void propagate_values_correctly_when_create_with_valid_values() {
         RuleDataValue ruleDataValue = mock(RuleDataValue.class);
 
         List<RuleDataValue> ruleDataValues = new ArrayList<>();
@@ -135,7 +135,7 @@ public class RuleEventShould {
     }
 
     @Test
-    public void eventDateComparatorTest() throws ParseException {
+    public void return_true_when_compare_event_with_equal_value() throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_PATTERN, Locale.US);
         List<RuleEvent> ruleEvents = Arrays.asList(
                 RuleEvent.create("test_event_one", "test_program_stage_one", RuleEvent.Status.ACTIVE,

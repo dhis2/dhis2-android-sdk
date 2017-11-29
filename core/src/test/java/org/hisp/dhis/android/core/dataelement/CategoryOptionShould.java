@@ -42,7 +42,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class CategoryOptionShould {
 
     @Test
-    public void categoryOption_shouldMapFromJsonString() throws IOException, ParseException {
+    public void map_from_json_string() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
         CategoryOption option = objectMapper.readValue("{" +
                         "\"lastUpdated\":\"2016-08-08T11:17:59.448\"," +

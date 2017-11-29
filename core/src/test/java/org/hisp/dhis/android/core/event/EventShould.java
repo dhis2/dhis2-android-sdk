@@ -42,20 +42,20 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class EventShould {
 
     @Test(expected = IllegalStateException.class)
-    public void build_throwOnNullUidField() {
+    public void throw_illegal_state_exception_on_null_uid_field() {
         EventModel.builder().uid(null).build();
     }
 
     // ToDo: Consider re-evaluating usage of EqualsVerifier for store models
 //    @Test
-//    public void equals_shouldConformToContract() {
+//    public void have_the_equals_method_conform_to_contract() {
 //        EqualsVerifier.forClass(EventModel.builder().uid("a1b2c3d4e5f").build().getClass())
 //                .suppress(Warning.NULL_FIELDS)
 //                .verify();
 //    }
 
     @Test
-    public void event_shouldMapFromJsonString() throws IOException, ParseException {
+    public void map_from_json_string() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
         Event event = objectMapper.readValue("{\n" +
                         "\n" +

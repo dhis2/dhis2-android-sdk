@@ -55,7 +55,7 @@ public class OrganisationUnitTreeShould {
     private String[] expectedResult = {"Level11", "Level13", "Level24"};
 
     @Test
-    public void findRoots_shouldReturnAllRootUids() {
+    public void return_all_root_uids_when_find_roots() {
         //create a bunch of dummy Organisation units from the strings:
         List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
         for (int i = 0, size = uids.length; i < size; i++) {
@@ -78,7 +78,7 @@ public class OrganisationUnitTreeShould {
     }
 
     @Test
-    public void findRoots_shouldReturnRootUids_missingSlashes() {
+    public void return_all_root_uids_missing_slashes_when_find_roots() {
         List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
         orgUnits.add(OrganisationUnit.create(
                 uids[0],
@@ -96,7 +96,7 @@ public class OrganisationUnitTreeShould {
     }
 
     @Test
-    public void findRoots_shouldReturnRootUids_doubleSlashes() {
+    public void return_all_root_uids_double_slashes_when_find_roots() {
         List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
         orgUnits.add(OrganisationUnit.create(
                 uids[0],
@@ -114,7 +114,7 @@ public class OrganisationUnitTreeShould {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void exception_shouldReturnRootUids_NullPaths() {
+    public void return_all_root_uids_null_paths_when_find_roots() {
         List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
         orgUnits.add(OrganisationUnit.create(
                 uids[0],
@@ -126,13 +126,13 @@ public class OrganisationUnitTreeShould {
     }
 
     @Test
-    public void findRoots_shouldReturnRootUids_EmptyList() {
+    public void return_all_root_empty_uids_list_when_find_roots_with_empty_list() {
         Set<String> rootUids = OrganisationUnitTree.findRoots(new ArrayList<OrganisationUnit>());
         assertThat(rootUids.isEmpty()).isTrue();
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void exception_shouldReturnRootUids_EmptyPaths() {
+    public void thrown_illegal_argument_exception_when_find_roots_uids_with_empty_paths() {
         List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
         orgUnits.add(OrganisationUnit.create(
                 uids[0],
@@ -144,13 +144,14 @@ public class OrganisationUnitTreeShould {
     }
 
     @Test
-    public void getRootUids_shouldReturnRootUids_NotAssigned() {
+    public void return_root_uids_when_have_not_assigned() {
         List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
         orgUnits.add(OrganisationUnit.create(
                 uids[0],
                 null, null, null, null, null, null, null, null, null, null,
                 "/RootOrgUnit//Level11/",
                 null, null, null, null, false));
+        OrganisationUnitTree.findRoots(orgUnits);
     }
     @Test
     public void findRoots_shouldReturnRootUids_NullList() {

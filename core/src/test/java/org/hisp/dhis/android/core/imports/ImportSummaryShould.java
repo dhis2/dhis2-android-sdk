@@ -13,7 +13,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class ImportSummaryShould {
 
     @Test
-    public void importSummary_shouldParseImportSummaryWithTEIConflictsFromJson() throws Exception {
+    public void map_from_json_string_with_tei_conflicts() throws Exception {
         ObjectMapper objectMapper = Inject.objectMapper();
 
         ImportSummary importSummary = objectMapper.readValue("{\n" +
@@ -75,7 +75,7 @@ public class ImportSummaryShould {
     }
 
     @Test
-    public void importSummary_shouldParseImportSummaryWithEventConflictsFromJson() throws Exception {
+    public void map_from_json_string_with_event_conflicts() throws Exception {
         ObjectMapper objectMapper = Inject.objectMapper();
 
         ImportSummary importSummary = objectMapper.readValue("{\n" +

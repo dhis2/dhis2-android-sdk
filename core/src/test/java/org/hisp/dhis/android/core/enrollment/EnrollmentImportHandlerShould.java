@@ -52,14 +52,14 @@ public class EnrollmentImportHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldDoNothingWhenPassingNullArguments() throws Exception {
+    public void do_nothing_when_passing_null_arguments() throws Exception {
         enrollmentImportHandler.handleEnrollmentImportSummary(null);
 
         verify(enrollmentStore, never()).setState(anyString(), any(State.class));
     }
 
     @Test
-    public void setState_shouldUpdateEnrollmentStateSuccess() throws Exception {
+    public void invoke_set_state_when_enrollment_import_summary_is_success_with_reference() throws Exception {
         when(importSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
         when(importSummary.reference()).thenReturn("test_enrollment_uid");
 
@@ -69,7 +69,7 @@ public class EnrollmentImportHandlerShould {
     }
 
     @Test
-    public void setState_shouldUpdateEnrollmentStateError() throws Exception {
+    public void  invoke_set_state_when_enrollment_import_summary_is_error_with_reference() throws Exception {
         when(importSummary.importStatus()).thenReturn(ImportStatus.ERROR);
         when(importSummary.reference()).thenReturn("test_enrollment_uid");
 
@@ -79,7 +79,7 @@ public class EnrollmentImportHandlerShould {
     }
 
     @Test
-    public void setState_shouldUpdateEnrollmentStateSuccessAndUpdateNestedEvent() throws Exception {
+    public void invoke_set_state_and_handle_event_import_summaries_when_enrollment_is_success_and_event_is_imported() throws Exception {
         when(importSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
         when(importSummary.reference()).thenReturn("test_enrollment_uid");
         when(importSummary.importEvent()).thenReturn(importEvent);

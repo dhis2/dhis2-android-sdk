@@ -62,7 +62,7 @@ public class FieldsConverterShould {
     }
 
     @Test
-    public void retrofit_shouldRespectConverter() throws IOException, InterruptedException {
+    public void have_correct_retrofit_request_format() throws IOException, InterruptedException {
         MockWebServer mockWebServer = new MockWebServer();
         mockWebServer.start();
 
@@ -92,7 +92,7 @@ public class FieldsConverterShould {
 
     @Test
     @SuppressWarnings("BadAnnotationImplementation")
-    public void converterFactory_shouldReturnConverterOnSpecificAnnotation() {
+    public void return_instance_of_fields_converters_when_create_a_field_converter_factory() {
         Converter.Factory converterFactory = FieldsConverterFactory.create();
 
         Converter<?, String> converter = converterFactory
@@ -107,7 +107,7 @@ public class FieldsConverterShould {
     }
 
     @Test
-    public void converter_shouldRespectFields() throws IOException {
+    public void respect_the_field_order() throws IOException {
         String queryStringOne = fieldsConverter.convert(
                 Fields.builder().fields(Field.create("")).build());
         String queryStringTwo = fieldsConverter.convert(
@@ -127,7 +127,7 @@ public class FieldsConverterShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void converter_shouldRespectNestedFields() throws IOException {
+    public void respect_fields_order_with_nested_fields() throws IOException {
         Field id = Field.create("id");
         Field displayName = Field.create("displayName");
         NestedField programs = NestedField.create("programs");

@@ -11,7 +11,7 @@ import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Mockito.verify;
 
-public class SqLiteDatabaseAdapterShould {
+public class SqLiteTestDatabaseAdapter {
 
     @Mock
     SQLiteDatabase writableDatabase;

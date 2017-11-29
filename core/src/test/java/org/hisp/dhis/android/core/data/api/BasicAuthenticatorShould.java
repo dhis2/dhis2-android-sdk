@@ -77,7 +77,7 @@ public class BasicAuthenticatorShould {
     }
 
     @Test
-    public void authenticator_shouldAddAuthorizationHeader() throws IOException, InterruptedException {
+    public void return_test_and_user_when_server_take_request() throws IOException, InterruptedException {
         AuthenticatedUserModel authenticatedUserModel =
                 AuthenticatedUserModel.builder()
                         .user("test_user")
@@ -98,7 +98,7 @@ public class BasicAuthenticatorShould {
     }
 
     @Test
-    public void authenticator_shouldNotModifyRequestIfNoUsers() throws IOException, InterruptedException {
+    public void return_null_when_server_take_request_with_authenticate_with_empty_list() throws IOException, InterruptedException {
         when(authenticatedUserStore.query()).thenReturn(new ArrayList<AuthenticatedUserModel>());
 
         okHttpClient.newCall(

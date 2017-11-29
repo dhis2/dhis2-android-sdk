@@ -66,7 +66,7 @@ public class ConstantStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistRowInDatabase() {
+    public void persist_row_in_database_after_insert() {
         long rowId = store.insert(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, VALUE);
         Cursor cursor = database().query(ConstantModel.TABLE, CONSTANT_PROJECTION, null, null, null, null, null);
 

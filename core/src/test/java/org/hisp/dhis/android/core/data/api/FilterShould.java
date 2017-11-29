@@ -40,13 +40,13 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class FilterShould {
 
     @Test
-    public void fieldFilterConstructor_shouldThrowExceptionOnNullName() {
+    public void return_null_filter_when_creates_with_null_params() {
         Filter<String, String> filter = GtFilter.create(null, null);
         assertThat(filter).isNull();
     }
 
     @Test
-    public void filter_shouldReturnCorrectValues() {
+    public void return_correct_values_when_create_field_filter() {
         Field field = Field.create("test_field_name");
         Filter filter = field.gt("test_field_filter_operator");
 
@@ -55,7 +55,7 @@ public class FilterShould {
     }
 
     @Test
-    public void fieldFilterEquals_shouldConformToContract() {
+    public void have_the_equals_method_conform_to_contract() {
         EqualsVerifier.forClass(GtFilter.create(Field.create(""), "a").getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();

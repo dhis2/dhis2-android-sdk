@@ -93,7 +93,7 @@ public class UserRoleHandlerShould {
     }
 
     @Test
-    public void insert_shouldInsertUserRole() throws Exception {
+    public void invoke_update_and_insert_when_handle_user_credentials_not_updatable() throws Exception {
         when(userRoleStore.update(anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class), anyString())).thenReturn(0);
 
@@ -113,7 +113,7 @@ public class UserRoleHandlerShould {
     }
 
     @Test
-    public void update_shouldUpdateUserRole() throws Exception {
+    public void invoke_only_update_when_handle_user_roles_inserted() throws Exception {
 
         when(userRoleStore.update(anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class), anyString())).thenReturn(1);
@@ -131,7 +131,7 @@ public class UserRoleHandlerShould {
     }
 
     @Test
-    public void insert_shouldInsertInLinkStore() throws Exception {
+    public void invoke_update_and_insert_when_handle_user_roles_not_updatable() throws Exception {
         when(userRoleProgramLinkStore.update(anyString(), anyString(), anyString(), anyString())).thenReturn(0);
 
         userRoleHandler.handleUserRoles(userRoles);
@@ -147,7 +147,7 @@ public class UserRoleHandlerShould {
     }
 
     @Test
-    public void update_shouldUpdateInLinkStore() throws Exception {
+    public void invoke_only_update_when_handle_user_roles_inserted_with_uids() throws Exception {
         when(userRole.uid()).thenReturn("new_user_role_uid");
         when(program.uid()).thenReturn("new_program_uid");
         when(userRoleProgramLinkStore.update(anyString(), anyString(), anyString(), anyString())).thenReturn(1);
@@ -164,7 +164,7 @@ public class UserRoleHandlerShould {
     }
 
     @Test
-    public void delete_shouldDeleteUserRole() throws Exception {
+    public void invoke_delete_when_handle_user_credentials_set_as_deleted() throws Exception {
         when(userRole.deleted()).thenReturn(Boolean.TRUE);
 
         userRoleHandler.handleUserRoles(userRoles);

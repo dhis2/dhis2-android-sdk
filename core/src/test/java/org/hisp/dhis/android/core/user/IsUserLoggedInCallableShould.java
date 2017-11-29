@@ -61,7 +61,7 @@ public class IsUserLoggedInCallableShould {
     }
 
     @Test
-    public void call_shouldReturnTrueIfAnyUsersArePersisted() throws Exception {
+    public void return_true_if_any_users_are_persisted_after_call() throws Exception {
         when(authenticatedUserStore.query()).thenReturn(Arrays.asList(authenticatedUser));
 
         Boolean isUserLoggedIn = isUserLoggedInCallable.call();
@@ -70,7 +70,7 @@ public class IsUserLoggedInCallableShould {
     }
 
     @Test
-    public void call_shouldReturnFalseIfNoUsersArePersisted() throws Exception {
+    public void return_false_if_any_users_are_not_persisted_after_call() throws Exception {
         when(authenticatedUserStore.query()).thenReturn(new ArrayList<AuthenticatedUserModel>());
 
         Boolean isUserLoggedIn = isUserLoggedInCallable.call();

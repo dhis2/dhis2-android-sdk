@@ -59,7 +59,7 @@ public class UserCredentialsModelShould {
     }
 
     @Test
-    public void create_shouldConvertToModel() {
+    public void convert_to_model_after_create() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 UserCredentialsModel.Columns.ID,
                 UserCredentialsModel.Columns.UID,
@@ -89,7 +89,7 @@ public class UserCredentialsModelShould {
     }
 
     @Test
-    public void toContentValues_shouldConvertToContentValues() {
+    public void convert_to_content_values() {
         UserCredentialsModel model = UserCredentialsModel.builder()
                 .id(ID)
                 .uid(UID)

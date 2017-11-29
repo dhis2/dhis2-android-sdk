@@ -17,7 +17,7 @@ import static org.mockito.Mockito.mock;
 public class RuleEnrollmentShould {
 
     @Test
-    public void createShouldThrowOnNullEnrollment() {
+    public void throw_null_pointer_exception_when_create_with_null_enrollment() {
         try {
             RuleEnrollment.create(null, new Date(), new Date(),
                     RuleEnrollment.Status.ACTIVE, new ArrayList<RuleAttributeValue>());
@@ -28,7 +28,7 @@ public class RuleEnrollmentShould {
     }
 
     @Test
-    public void createShouldThrowOnNullIncidentDate() {
+    public void throw_null_pointer_exception_when_create_with_null_incident_date() {
         try {
             RuleEnrollment.create("test_enrollment", null, new Date(),
                     RuleEnrollment.Status.ACTIVE, new ArrayList<RuleAttributeValue>());
@@ -39,7 +39,7 @@ public class RuleEnrollmentShould {
     }
 
     @Test
-    public void createShouldThrowOnNullEnrollmentDate() {
+    public void throw_null_pointer_exception_when_create_with_null_enrollment_date() {
         try {
             RuleEnrollment.create("test_enrollment", new Date(), null,
                     RuleEnrollment.Status.ACTIVE, new ArrayList<RuleAttributeValue>());
@@ -50,7 +50,7 @@ public class RuleEnrollmentShould {
     }
 
     @Test
-    public void createShouldThrowOnNullStatus() {
+    public void throw_null_pointer_exception_when_create_with_null_status() {
         try {
             RuleEnrollment.create("test_enrollment", new Date(), new Date(),
                     null, new ArrayList<RuleAttributeValue>());
@@ -62,7 +62,7 @@ public class RuleEnrollmentShould {
 
 
     @Test
-    public void createShouldThrowOnNullValueList() {
+    public void throw_null_pointer_exception_when_create_with_null_value_list() {
         try {
             RuleEnrollment.create("test_enrollment", new Date(), new Date(),
                     RuleEnrollment.Status.ACTIVE, null);
@@ -73,7 +73,7 @@ public class RuleEnrollmentShould {
     }
 
     @Test
-    public void createShouldPropagatePropertiesCorrectly() {
+    public void propagate_properties_correctly_when_create_with_valid_values() {
         RuleAttributeValue ruleAttributeValueOne = mock(RuleAttributeValue.class);
         RuleAttributeValue ruleAttributeValueTwo = mock(RuleAttributeValue.class);
         RuleAttributeValue ruleAttributeValueThree = mock(RuleAttributeValue.class);
@@ -96,7 +96,7 @@ public class RuleEnrollmentShould {
     }
 
     @Test
-    public void createShouldReturnImmutableList() {
+    public void return_immutable_list_when_create_with_valid_values() {
         RuleAttributeValue ruleAttributeValueOne = mock(RuleAttributeValue.class);
         RuleAttributeValue ruleAttributeValueTwo = mock(RuleAttributeValue.class);
         RuleAttributeValue ruleAttributeValueThree = mock(RuleAttributeValue.class);

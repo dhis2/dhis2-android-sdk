@@ -11,7 +11,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class RuleAttributeValueShould {
 
     @Test
-    public void shouldThrowOnNullTrackedEntityAttribute() {
+    public void throw_null_pointer_exception_when_tracked_entity_attribute_is_null() {
         try {
             RuleAttributeValue.create(null, "test_value");
             fail("NullPointerException was expected, but nothing was thrown");
@@ -21,7 +21,7 @@ public class RuleAttributeValueShould {
     }
 
     @Test
-    public void shouldThrowOnNullValue() {
+    public void throw_null_pointer_exception_when_create_with_null_value() {
         try {
             RuleAttributeValue.create("test_tracked_entity_attribute", null);
             fail("NullPointerException was expected, but nothing was thrown");
@@ -31,7 +31,7 @@ public class RuleAttributeValueShould {
     }
 
     @Test
-    public void propertiesShouldBePropagatedCorrectly() {
+    public void propagate_correctly_the_properties() {
         RuleAttributeValue ruleAttributeValue = RuleAttributeValue
                 .create("test_tracked_entity_attribute", "test_value");
 

@@ -83,7 +83,7 @@ public class ProgramIndicatorHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldDoNothingWhenPassingInNull() throws Exception {
+    public void do_nothing_when_passing_null_argument() throws Exception {
         programIndicatorHandler.handleProgramIndicator(null, null);
 
         // verify that program indicator store is never called

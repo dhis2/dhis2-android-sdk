@@ -41,7 +41,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class ProgramIndicatorShould {
     @Test
-    public void programIndicator_shouldMapFromJsonString() throws IOException, ParseException {
+    public void map_from_json_string() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
         ProgramIndicator programIndicator = objectMapper.readValue("{\n" +
                 "\"lastUpdated\": \"2015-09-21T23:47:57.820\",\n" +

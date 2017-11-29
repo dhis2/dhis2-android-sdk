@@ -80,7 +80,7 @@ public class UserCredentialsHandlerShould {
     }
 
     @Test
-    public void update_shouldUpdateUserCredentials() throws Exception {
+    public void invoke_update_and_insert_when_handle_user_credentials_not_inserted() throws Exception {
         // insert userCredentials first to check the updateWithSection mechanism
         when(userCredentialsStore.update(anyString(), anyString(), anyString(),
                 anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString())).thenReturn(1);
@@ -99,7 +99,7 @@ public class UserCredentialsHandlerShould {
     }
 
     @Test
-    public void delete_shouldDeleteUserCredentials() throws Exception {
+    public void invoke_delete_when_handle_user_credentials_set_as_deleted() throws Exception {
         when(userCredentials.deleted()).thenReturn(Boolean.TRUE);
 
         userCredentialHandler.handleUserCredentials(userCredentials, user);
@@ -118,7 +118,7 @@ public class UserCredentialsHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldDoNothingWhenPassingNullArgument() throws Exception {
+    public void do_nothing_when_passing_null_argument() throws Exception {
         userCredentialHandler.handleUserCredentials(null, user);
 
         verify(userCredentialsStore, never()).delete(anyString());
@@ -130,7 +130,7 @@ public class UserCredentialsHandlerShould {
     }
 
     @Test
-    public void insert_shouldInsertUserCredentials() throws Exception {
+    public void invoke_only_update_when_handle_user_credentials_inserted() throws Exception {
         when(userCredentialsStore.update(
                 anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(), anyString())

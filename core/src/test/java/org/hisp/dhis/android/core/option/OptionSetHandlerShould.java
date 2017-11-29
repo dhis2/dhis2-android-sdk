@@ -67,7 +67,7 @@ public class OptionSetHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldDoNothingWhenPassingInNull() throws Exception {
+    public void do_nothing_when_passing_in_null() throws Exception {
         optionSetHandler.handleOptionSet(null);
 
         // verify that delete, update and insert is never called
@@ -82,7 +82,7 @@ public class OptionSetHandlerShould {
     }
 
     @Test
-    public void delete_shouldDeleteOptionSet() throws Exception {
+    public void invoke_delete_when_handle_option_set_set_as_deleted() throws Exception {
         when(optionSet.deleted()).thenReturn(Boolean.TRUE);
 
         optionSetHandler.handleOptionSet(optionSet);
@@ -100,7 +100,7 @@ public class OptionSetHandlerShould {
     }
 
     @Test
-    public void update_shouldUpdateOptionSet() throws Exception {
+    public void invoke_only_update_when_handle_option_set_inserted() throws Exception {
         when(optionSetStore.update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
                 any(Date.class), anyInt(), any(ValueType.class), anyString())).thenReturn(1);
 
@@ -118,7 +118,7 @@ public class OptionSetHandlerShould {
     }
 
     @Test
-    public void insert_shouldInsertOptionSet() throws Exception {
+    public void invoke_update_and_insert_when_handle_option_set_not_inserted() throws Exception {
         when(optionSetStore.update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
                 any(Date.class), anyInt(), any(ValueType.class), anyString())).thenReturn(0);
 

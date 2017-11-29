@@ -90,7 +90,7 @@ public class ProgramRuleVariableHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldDoNothingWhenPassingInNull() throws Exception {
+    public void do_nothing_when_passing_null_argument() throws Exception {
         programRuleVariableHandler.handleProgramRuleVariables(null);
 
         // verify that store is never called
@@ -107,7 +107,7 @@ public class ProgramRuleVariableHandlerShould {
     }
 
     @Test
-    public void delete_shouldDeleteProgramRuleVariable() throws Exception {
+    public void invoke_delete_when_handle_program_rule_variable_set_as_deleted() throws Exception {
         when(programRuleVariable.deleted()).thenReturn(Boolean.TRUE);
 
         programRuleVariableHandler.handleProgramRuleVariables(programRuleVariables);
@@ -127,7 +127,7 @@ public class ProgramRuleVariableHandlerShould {
     }
 
     @Test
-    public void update_shouldUpdateProgramRuleVariable() throws Exception {
+    public void invoke_only_update_when_handle_program_rule_variable_inserted() throws Exception {
         when(programRuleVariableStore.update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
                 any(ProgramRuleVariableSourceType.class), anyString())).thenReturn(1);
@@ -149,7 +149,7 @@ public class ProgramRuleVariableHandlerShould {
     }
 
     @Test
-    public void insert_shouldInsertProgramRuleVariable() throws Exception {
+    public void invoke_update_and_insert_when_handle_program_rule_variable_not_inserted() throws Exception {
         when(programRuleVariableStore.update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
                 any(ProgramRuleVariableSourceType.class), anyString())).thenReturn(0);

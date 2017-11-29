@@ -13,7 +13,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class ImportConflictShould {
 
     @Test
-    public void importConflict_shouldParseFromJson() throws Exception {
+    public void map_from_json_string() throws Exception {
         ObjectMapper objectMapper = Inject.objectMapper();
 
         ImportConflict importConflict = objectMapper.readValue("{\n" +

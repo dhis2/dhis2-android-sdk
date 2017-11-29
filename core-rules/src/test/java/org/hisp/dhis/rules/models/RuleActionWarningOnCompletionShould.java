@@ -14,7 +14,7 @@ import static org.assertj.core.api.Java6Assertions.fail;
 public class RuleActionWarningOnCompletionShould {
 
     @Test
-    public void createMustSubstituteEmptyStringsForNullArguments() {
+    public void substitute_empty_strings_when_create_with_null_arguments() {
         RuleActionWarningOnCompletion ruleActionNoContent = RuleActionWarningOnCompletion
                 .create(null, "test_data", "test_field");
         RuleActionWarningOnCompletion ruleActionNoData = RuleActionWarningOnCompletion
@@ -36,7 +36,7 @@ public class RuleActionWarningOnCompletionShould {
     }
 
     @Test
-    public void createMustThrowWhenContentDataFieldAreNull() {
+    public void throw_illegal_argument_exception_when_create_with_null_content_data_field() {
         try {
             RuleActionWarningOnCompletion.create(null, null, null);
             fail("IllegalArgumentException was expected, but nothing was thrown.");
@@ -46,7 +46,7 @@ public class RuleActionWarningOnCompletionShould {
     }
 
     @Test
-    public void equalsAndHashcodeFunctionsMustConformToContract() {
+    public void have_the_equals_method_conform_to_contract() {
         EqualsVerifier.forClass(RuleActionWarningOnCompletion
                 .create("test_content", "test_data", "test_field").getClass())
                 .suppress(Warning.NULL_FIELDS)

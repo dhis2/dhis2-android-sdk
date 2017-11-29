@@ -45,14 +45,14 @@ public class EventImportHandlerShould {
     }
 
     @Test
-    public void doNothing_shouldDoNothingWhenPassingNullArgument() throws Exception {
+    public void do_nothing_when_passing_null_argument() throws Exception {
         eventImportHandler.handleEventImportSummaries(null);
 
         verify(eventStore, never()).setState(anyString(), any(State.class));
     }
 
     @Test
-    public void setState_shouldUpdateEventStateSynced() throws Exception {
+    public void invoke_set_state_after_handle_event_import_summaries_with_success_status_and_reference() throws Exception {
         when(importSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
         when(importSummary.reference()).thenReturn("test_event_uid");
 
@@ -62,7 +62,7 @@ public class EventImportHandlerShould {
     }
 
     @Test
-    public void setState_shouldUpdateEventStateError() throws Exception {
+    public void invoke_set_state_after_handle_event_import_summaries_with_error_status_and_reference() throws Exception {
         when(importSummary.importStatus()).thenReturn(ImportStatus.ERROR);
         when(importSummary.reference()).thenReturn("test_event_uid");
 

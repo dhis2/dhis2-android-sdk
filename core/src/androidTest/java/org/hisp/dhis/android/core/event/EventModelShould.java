@@ -64,7 +64,7 @@ public class EventModelShould {
     }
 
     @Test
-    public void create_shouldConvertToModel() {
+    public void convert_to_model_after_create() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID, Columns.UID, Columns.ENROLLMENT_UID,
                 Columns.CREATED, Columns.LAST_UPDATED,
@@ -98,7 +98,7 @@ public class EventModelShould {
     }
 
     @Test
-    public void toContentValues_shouldConvertToContentValues(){
+    public void convert_to_content_values(){
         EventModel model = EventModel.builder()
                 .id(ID)
                 .uid(EVENT_UID)

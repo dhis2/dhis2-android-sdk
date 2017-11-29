@@ -11,7 +11,7 @@ import org.junit.runners.JUnit4;
 public class ImportSummariesShould {
 
     @Test
-    public void importSummaries_shouldParseFromJson() throws Exception {
+    public void map_from_json_string() throws Exception {
         ObjectMapper objectMapper = Inject.objectMapper();
 
         objectMapper.readValue("{\n" +

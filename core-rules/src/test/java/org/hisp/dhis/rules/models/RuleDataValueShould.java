@@ -24,7 +24,7 @@ public class RuleDataValueShould {
     }
 
     @Test
-    public void createShouldThrowOnNullDate() {
+    public void throw_null_pointer_exception_when_create_with_null_date() {
         try {
             RuleDataValue.create(null, "test_program_stage_uid", "test_field", "test_value");
             fail("NullPointerException is expected, but nothing was thrown");
@@ -34,7 +34,7 @@ public class RuleDataValueShould {
     }
 
     @Test
-    public void createShouldThrowOnNullEvent() {
+    public void throw_null_pointer_exception_when_create_with_null_event() {
         try {
             RuleDataValue.create(new Date(), null, "test_field", "test_value");
             fail("NullPointerException is expected, but nothing was thrown");
@@ -44,7 +44,7 @@ public class RuleDataValueShould {
     }
 
     @Test
-    public void createShouldThrowOnNullDataElement() {
+    public void throw_null_pointer_exception_when_create_with_null_data_element() {
         try {
             RuleDataValue.create(new Date(), "test_program_stage_uid", null, "test_value");
             fail("NullPointerException is expected, but nothing was thrown");
@@ -54,7 +54,7 @@ public class RuleDataValueShould {
     }
 
     @Test
-    public void createShouldThrowOnNullValue() {
+    public void throw_null_pointer_exception_when_create_with_null_value() {
         try {
             RuleDataValue.create(new Date(), "test_program_stage_uid", "test_dataelement", null);
             fail("NullPointerException is expected, but nothing was thrown");
@@ -64,7 +64,7 @@ public class RuleDataValueShould {
     }
 
     @Test
-    public void createShouldPropagateValuesCorrectly() {
+    public void propagate_values_correctly_when_create_with_valid_values() {
         Date eventDate = new Date();
         RuleDataValue ruleDataValue = RuleDataValue.create(eventDate,
                 "test_program_stage_uid", "test_dataelement", "test_value");

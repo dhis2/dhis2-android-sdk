@@ -29,7 +29,7 @@ public class RuleEngineContextShould {
     }
 
     @Test
-    public void builderShouldThrowOnNullExpressionEvaluator() {
+    public void throw_illegal_argument_exception_on_null_expression_evaluator() {
         try {
             RuleEngineContext.builder(null);
             fail("IllegalArgumentException was expected, but nothing was thrown.");
@@ -39,7 +39,7 @@ public class RuleEngineContextShould {
     }
 
     @Test
-    public void builderShouldThrowOnNullVariableList() {
+    public void throw_illegal_argument_exception_on_null_variable_list() {
         try {
             RuleEngineContext.builder(ruleExpressionEvaluator)
                     .rules(new ArrayList<Rule>())
@@ -51,7 +51,7 @@ public class RuleEngineContextShould {
     }
 
     @Test
-    public void builderShouldThrowOnNullRulesList() {
+    public void throw_illegal_argument_exception_on_null_rule_list() {
         try {
             RuleEngineContext.builder(ruleExpressionEvaluator)
                     .ruleVariables(new ArrayList<RuleVariable>())
@@ -63,7 +63,7 @@ public class RuleEngineContextShould {
     }
 
     @Test
-    public void builderShouldContainImmutableCopyOfRules() {
+    public void thrown_unsupported_operation_exception_when_edit_immutable_copy_of_rules_in_builder() {
         RuleVariable ruleVariableOne = mock(RuleVariable.class);
         RuleVariable ruleVariableTwo = mock(RuleVariable.class);
 
@@ -107,7 +107,7 @@ public class RuleEngineContextShould {
     }
 
     @Test
-    public void toEngineBuilderShouldReturnNewInstances() {
+    public void return_new_engine_builder_instance_after_call_to_engine_builder() {
         RuleEngineContext ruleEngineContext = RuleEngineContext.builder(ruleExpressionEvaluator)
                 .ruleVariables(Arrays.asList(mock(RuleVariable.class)))
                 .rules(Arrays.asList(mock(Rule.class)))

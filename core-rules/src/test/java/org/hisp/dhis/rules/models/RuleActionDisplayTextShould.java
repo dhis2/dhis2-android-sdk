@@ -15,7 +15,7 @@ public class RuleActionDisplayTextShould {
 
 
     @Test
-    public void createForFeedbackMustSubstituteCorrectLocation() {
+    public void substitute_correct_location_when_create_for_feedback() {
         RuleActionDisplayText displayTextAction = RuleActionDisplayText
                 .createForFeedback("test_content", "test_data");
 
@@ -26,7 +26,7 @@ public class RuleActionDisplayTextShould {
     }
 
     @Test
-    public void createForIndicatorsMustSubstituteCorrectLocation() {
+    public void substitute_correct_location_when_create_for_indicators() {
         RuleActionDisplayText displayTextAction = RuleActionDisplayText
                 .createForIndicators("test_content", "test_data");
 
@@ -37,7 +37,7 @@ public class RuleActionDisplayTextShould {
     }
 
     @Test
-    public void createForFeedbackMustThrowWhenBothArgumentsNull() {
+    public void throw_illegal_argument_exception_when_create_for_feedback_with_null_arguments() {
         try {
             RuleActionDisplayText.createForFeedback(null, null);
             fail("IllegalArgumentException was expected, but nothing was thrown.");
@@ -47,7 +47,7 @@ public class RuleActionDisplayTextShould {
     }
 
     @Test
-    public void createForIndicatorsMustThrowWhenBothArgumentsNull() {
+    public void throw_illegal_argument_exception_when_create_for_indicators_with_null_fields() {
         try {
             RuleActionDisplayText.createForIndicators(null, null);
             fail("IllegalArgumentException was expected, but nothing was thrown.");
@@ -57,7 +57,7 @@ public class RuleActionDisplayTextShould {
     }
 
     @Test
-    public void createForFeedbackMustSubstituteEmptyStringsForNullArguments() {
+    public void substitute_empty_strings_when_create_for_feedback_with_null_arguments() {
         RuleActionDisplayText ruleActionNoContent = RuleActionDisplayText
                 .createForFeedback(null, "test_data");
         RuleActionDisplayText ruleActionNoData = RuleActionDisplayText
@@ -71,7 +71,7 @@ public class RuleActionDisplayTextShould {
     }
 
     @Test
-    public void createForIndicatorsMustSubstituteEmptyStringsForNullArguments() {
+    public void substitute_empty_strings_when_create_for_indicators_with_null_arguments() {
         RuleActionDisplayText ruleActionNoContent = RuleActionDisplayText
                 .createForIndicators(null, "test_data");
         RuleActionDisplayText ruleActionNoData = RuleActionDisplayText
@@ -85,7 +85,7 @@ public class RuleActionDisplayTextShould {
     }
 
     @Test
-    public void equalsAndHashcodeFunctionsMustConformToContract() {
+    public void have_the_equals_method_conform_to_contract() {
         EqualsVerifier.forClass(RuleActionDisplayText.createForFeedback("", "").getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();

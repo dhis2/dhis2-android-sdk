@@ -79,7 +79,7 @@ public class ProgramStageModelShould {
     }
 
     @Test
-    public void create_shouldConvertToModel() {
+    public void convert_to_model_after_create() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID,
                 Columns.UID,
@@ -159,7 +159,7 @@ public class ProgramStageModelShould {
     }
 
     @Test
-    public void create_shouldConvertToContentValues() {
+    public void convert_to_content_values() {
         ProgramStageModel model = ProgramStageModel.builder()
                 .id(ID)
                 .uid(UID)

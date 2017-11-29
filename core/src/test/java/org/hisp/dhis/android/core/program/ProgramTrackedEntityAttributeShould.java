@@ -42,7 +42,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class ProgramTrackedEntityAttributeShould {
 
     @Test
-    public void programTrackedEntityAttribute_shouldMapFromJsonString() throws IOException, ParseException {
+    public void map_from_json_string() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
         ProgramTrackedEntityAttribute programTrackedEntityAttribute = objectMapper.readValue("{\n" +
                 "\"lastUpdated\": \"2016-10-11T10:41:40.401\",\n" +

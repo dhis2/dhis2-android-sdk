@@ -2,40 +2,40 @@ package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.Date;
+import java.util.List;
 
 import retrofit2.Response;
 
-public class EventCall implements Call<Response<Payload<Program>>> {
+public class EventCall implements Call<Response<Payload<Event>>> {
 
     private final EventService eventService;
     private final DatabaseAdapter databaseAdapter;
     private final EventQuery eventQuery;
     private final Date serverDate;
-    private final ResourceStore resourceStore;
-    private final EventStore eventStore;
+    private final ResourceHandler resourceHandler;
+    private final EventHandler eventHandler;
 
     private boolean isExecuted;
 
-    private final EventHandler eventHandler;
-
     public EventCall(EventService eventService,
             DatabaseAdapter databaseAdapter,
-            ResourceStore resourceStore,
-            EventStore eventStore,
+            ResourceHandler resourceHandler,
+            EventHandler eventHandler,
             Date serverDate,
             EventQuery eventQuery) {
         this.eventService = eventService;
         this.databaseAdapter = databaseAdapter;
-        this.resourceStore = resourceStore;
-        this.eventStore = eventStore;
+        this.resourceHandler = resourceHandler;
+        this.eventHandler = eventHandler;
         this.eventQuery = eventQuery;
         this.serverDate = new Date(serverDate.getTime());
-        this.eventHandler = new EventHandler(eventStore);
 
         if (eventQuery != null && eventQuery.getUIds() != null &&
                 eventQuery.getUIds().size() > MAX_UIDS) {
@@ -53,7 +53,7 @@ public class EventCall implements Call<Response<Payload<Program>>> {
     }
 
     @Override
-    public Response<Payload<Program>> call() throws Exception {
+    public Response<Payload<Event>> call() throws Exception {
         synchronized (this) {
             if (isExecuted) {
                 throw new IllegalStateException("Already executed");
@@ -61,8 +61,46 @@ public class EventCall implements Call<Response<Payload<Program>>> {
             isExecuted = true;
         }
 
+        String lastSyncedEvents = resourceHandler.getLastUpdated(ResourceModel.Type.EVENT);
 
+        Response<Payload<Event>> eventsByLastUpdated = eventService.getEvents(
+                getSingleFields(), Event.lastUpdated.gt(lastSyncedEvents),
+                Event.uid.in(eventQuery.getUIds()), Boolean.FALSE
+        ).execute();
 
-        return null;
+        if (eventsByLastUpdated.isSuccessful()) {
+            Transaction transaction = databaseAdapter.beginNewTransaction();
+            try {
+                List<Event> events = eventsByLastUpdated.body().items();
+                int size = events.size();
+                for (int i = 0; i < size; i++) {
+                    Event event = events.get(i);
+                    eventHandler.handle(event);
+                }
+                resourceHandler.handleResource(ResourceModel.Type.EVENT, serverDate);
+                transaction.setSuccessful();
+            } finally {
+                transaction.end();
+            }
+        }
+        return eventsByLastUpdated;
+    }
+
+    private Fields<Event> getSingleFields() {
+        return Fields.<Event>builder().fields(
+                Event.uid, Event.created, Event.lastUpdated,
+                Event.eventStatus, Event.coordinates, Event.program, Event.programStage,
+                Event.organisationUnit, Event.eventDate, Event.completeDate,
+                Event.dueDate, Event.deleted, Event.trackedEntityDataValues
+        ).build();
+    }
+
+    private Fields<Event> getAllFields() {
+        return Fields.<Event>builder().fields(
+                Event.uid, Event.enrollment, Event.created, Event.lastUpdated,
+                Event.eventStatus, Event.coordinates, Event.program, Event.programStage,
+                Event.organisationUnit, Event.eventDate, Event.completeDate,
+                Event.dueDate, Event.deleted, Event.trackedEntityDataValues
+        ).build();
     }
 }

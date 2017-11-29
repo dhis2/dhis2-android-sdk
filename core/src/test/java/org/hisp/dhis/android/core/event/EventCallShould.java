@@ -5,6 +5,7 @@ import static org.hisp.dhis.android.core.calls.Call.MAX_UIDS;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,10 +29,10 @@ public class EventCallShould {
     private DatabaseAdapter databaseAdapter;
 
     @Mock
-    private ResourceStore resourceStore;
+    private ResourceHandler resourceHandler;
 
     @Mock
-    private EventStore eventStore;
+    private EventHandler eventHandler;
 
     @Mock
     private Date serverDate;
@@ -65,8 +66,8 @@ public class EventCallShould {
                 .build();
 
         EventCall eventCall =
-                new EventCall(eventService, databaseAdapter, resourceStore,
-                        eventStore, serverDate, eventQuery);
+                new EventCall(eventService, databaseAdapter, resourceHandler,
+                        eventHandler, serverDate, eventQuery);
 
         return eventCall;
     }

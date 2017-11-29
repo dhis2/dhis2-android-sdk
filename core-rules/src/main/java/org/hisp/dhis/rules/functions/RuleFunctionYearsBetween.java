@@ -11,12 +11,12 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-public class RuleFunctionMonthsBetween extends RuleFunction {
-    static final String D2_YEARS_BETWEEN = "d2:yearsBetween";
+public class RuleFunctionYearsBetween extends RuleFunction {
+    static final String D2_MONTHS_BETWEEN = "d2:monthsBetween";
 
     @Nonnull
-    public static RuleFunctionMonthsBetween create() {
-        return new RuleFunctionMonthsBetween();
+    public static RuleFunctionYearsBetween create() {
+        return new RuleFunctionYearsBetween();
     }
 
     @Nonnull
@@ -28,30 +28,29 @@ public class RuleFunctionMonthsBetween extends RuleFunction {
                     arguments.size() + " were supplied");
         }
 
-        return String.valueOf(monthsBetween(arguments.get(0), arguments.get(1)));
+        return String.valueOf(yearsBetween(arguments.get(0), arguments.get(1)));
     }
     /**
-     * Function which will return the number of months between the two given dates.
+     * Function which will return the number of years between the two given dates.
      *
      * @param start the start date.
      * @param end   the end date.
      * @return number of days between dates.
      */
     @SuppressWarnings("PMD.UnnecessaryWrapperObjectCreation")
-    static Integer monthsBetween(String start, String end) {
+    static Integer yearsBetween(String start, String end) {
         SimpleDateFormat format = new SimpleDateFormat();
         format.applyPattern(DATE_PATTERN);
 
         try {
             Calendar startDate = Calendar.getInstance();
-            startDate.set(Calendar.DAY_OF_MONTH, 1);
+            startDate.set(Calendar.DAY_OF_YEAR, 1);
             startDate.setTime(format.parse(start));
             Calendar endDate = Calendar.getInstance();
-            endDate.set(Calendar.DAY_OF_MONTH, 1);
+            endDate.set(Calendar.DAY_OF_YEAR, 1);
             endDate.setTime(format.parse(end));
 
-            int diffYear = endDate.get(Calendar.YEAR) - startDate.get(Calendar.YEAR);
-            return Long.valueOf((diffYear * 12 + endDate.get(Calendar.MONTH) - startDate.get(Calendar.MONTH))).intValue();
+            return Long.valueOf(endDate.get(Calendar.YEAR) - startDate.get(Calendar.YEAR)).intValue();
         } catch (ParseException parseException) {
             throw new RuntimeException(parseException);
         }

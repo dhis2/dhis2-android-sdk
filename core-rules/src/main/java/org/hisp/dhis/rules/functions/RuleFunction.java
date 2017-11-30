@@ -44,6 +44,8 @@ public abstract class RuleFunction {
                 return RuleFunctionModulus.create();
             case RuleFunctionOizp.D2_OIZP:
                 return RuleFunctionOizp.create();
+            case RuleFunctionValidatePattern.D2_VALIDATE_PATTERN:
+                return RuleFunctionValidatePattern.create();
             case RuleFunctionZing.D2_ZING:
                 return RuleFunctionZing.create();
             case RuleFunctionZpvc.D2_ZPVC:

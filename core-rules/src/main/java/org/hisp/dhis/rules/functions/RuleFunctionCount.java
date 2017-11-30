@@ -21,7 +21,7 @@ public class RuleFunctionCount extends RuleFunction {
     public String evaluate(@Nonnull List<String> arguments,
             Map<String, RuleVariableValue> valueMap) {
         if (arguments.size() != 1) {
-            throw new IllegalArgumentException("Two arguments were expected, " +
+            throw new IllegalArgumentException("One argument was expected, " +
                     arguments.size() + " were supplied");
         }
 

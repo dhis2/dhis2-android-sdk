@@ -12,7 +12,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 public class RuleFunctionMonthsBetween extends RuleFunction {
-    static final String D2_YEARS_BETWEEN = "d2:yearsBetween";
+    static final String D2_MONTHS_BETWEEN = "d2:monthsBetween";
 
     @Nonnull
     public static RuleFunctionMonthsBetween create() {

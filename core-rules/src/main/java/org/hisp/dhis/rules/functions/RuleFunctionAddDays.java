@@ -12,7 +12,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 public class RuleFunctionAddDays extends RuleFunction {
-    static final String D2_YEARS_BETWEEN = "d2:yearsBetween";
+    static final String D2_ADD_DAYS = "d2:add_days";
 
     @Nonnull
     public static RuleFunctionAddDays create() {

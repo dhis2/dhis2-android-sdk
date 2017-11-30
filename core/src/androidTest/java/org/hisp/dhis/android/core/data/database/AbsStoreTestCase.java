@@ -40,12 +40,12 @@ import static com.google.common.truth.Truth.assertThat;
 
 public abstract class AbsStoreTestCase {
     private SQLiteDatabase sqLiteDatabase;
-    private DatabaseAdapter databaseAdapter;
+    public DatabaseAdapter databaseAdapter;
 
     @Before
     public void setUp() throws IOException {
         DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , null);
+                , "test.db");
         sqLiteDatabase = dbOpenHelper.getWritableDatabase();
         databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
     }

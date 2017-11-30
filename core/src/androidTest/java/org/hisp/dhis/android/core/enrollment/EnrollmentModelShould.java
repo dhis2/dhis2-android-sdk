@@ -65,7 +65,7 @@ public class EnrollmentModelShould {
     }
 
     @Test
-    public void convert_to_model_after_create() {
+    public void create_model_when_created_from_database_cursor() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID, Columns.UID, Columns.CREATED, Columns.LAST_UPDATED, Columns.ORGANISATION_UNIT,
                 Columns.PROGRAM, Columns.DATE_OF_ENROLLMENT, Columns.DATE_OF_INCIDENT, Columns.FOLLOW_UP,
@@ -98,7 +98,7 @@ public class EnrollmentModelShould {
     }
 
     @Test
-    public void convert_to_content_values(){
+    public void create_content_values_when_created_from_builder(){
         EnrollmentModel model = EnrollmentModel.builder()
                 .id(ID)
                 .uid(UID)

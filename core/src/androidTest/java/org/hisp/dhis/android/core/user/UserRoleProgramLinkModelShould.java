@@ -44,7 +44,7 @@ public class UserRoleProgramLinkModelShould {
     private static final String PROGRAM = "test_program_uid";
 
     @Test
-    public void convert_to_model_after_create() {
+    public void create_model_when_created_from_database_cursor() {
         MatrixCursor cursor = new MatrixCursor(new String[]{Columns.ID, Columns.USER_ROLE, Columns.PROGRAM});
         cursor.addRow(new Object[]{ID, USER_ROLE, PROGRAM});
         cursor.moveToFirst();
@@ -58,7 +58,7 @@ public class UserRoleProgramLinkModelShould {
     }
 
     @Test
-    public void convert_to_content_values() {
+    public void create_content_values_when_created_from_builder() {
         UserRoleProgramLinkModel model = UserRoleProgramLinkModel.builder()
                 .id(ID)
                 .userRole(USER_ROLE)

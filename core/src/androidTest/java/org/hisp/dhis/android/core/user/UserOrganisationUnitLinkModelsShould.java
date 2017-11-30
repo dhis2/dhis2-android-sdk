@@ -46,7 +46,7 @@ public class UserOrganisationUnitLinkModelsShould {
     private static final String ORGANISATION_UNIT_SCOPE = "test_organisation_unit_scope";
 
     @Test
-    public void convert_to_model_after_create() {
+    public void create_model_when_created_from_database_cursor() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID, Columns.USER, Columns.ORGANISATION_UNIT, Columns.ORGANISATION_UNIT_SCOPE
         });
@@ -62,7 +62,7 @@ public class UserOrganisationUnitLinkModelsShould {
     }
 
     @Test
-    public void convert_to_content_values() {
+    public void create_content_values_when_created_from_builder() {
         UserOrganisationUnitLinkModel model = UserOrganisationUnitLinkModel.builder()
                         .id(ID)
                         .user(USER)

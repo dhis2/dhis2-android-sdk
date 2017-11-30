@@ -68,7 +68,7 @@ public class ProgramIndicatorModelShould {
     }
 
     @Test
-    public void convert_to_model_after_create() {
+    public void create_model_when_created_from_database_cursor() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID,
                 Columns.UID,
@@ -117,7 +117,7 @@ public class ProgramIndicatorModelShould {
     }
 
     @Test
-    public void convert_to_content_values() {
+    public void create_content_values_when_created_from_builder() {
         ProgramIndicatorModel model = ProgramIndicatorModel.builder()
                 .id(ID)
                 .uid(UID)

@@ -5,6 +5,7 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.program.ProgramCall;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +32,7 @@ public class MetadataCallIntegrationShould extends AbsStoreTestCase {
         super.setUp();
 
         ConfigurationModel config = ConfigurationModel.builder()
-                .serverUrl(HttpUrl.parse("https://play.dhis2.org/dev/api/"))
+                .serverUrl(HttpUrl.parse("https://play.dhis2.org/android-previous2/api/"))
                 .build();
 
         d2 = new D2.Builder()
@@ -61,7 +62,7 @@ public class MetadataCallIntegrationShould extends AbsStoreTestCase {
     //This test is uncommented because technically it is flaky.
     //It depends on a live server to operate and the login is hardcoded here.
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
-    //@Test
+    @Test
     public void metadataSyncTest() throws Exception {
         retrofit2.Response response = null;
         response = d2.logIn("android", "Android123").call();
@@ -74,7 +75,7 @@ public class MetadataCallIntegrationShould extends AbsStoreTestCase {
         //second sync:
         response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
-
+        ProgramCall programCall = new ProgramCall().call()
         //TODO: add aditional sync + break point.
         //when debugger stops at the new break point manually change metadata online & resume.
         //This way I can make sure that additive (updates) work as well.

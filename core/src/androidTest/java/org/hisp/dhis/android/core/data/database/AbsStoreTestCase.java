@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.data.database;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.support.test.InstrumentationRegistry;
+import android.util.Log;
 
 import org.junit.After;
 import org.junit.Before;
@@ -71,5 +72,6 @@ public abstract class AbsStoreTestCase {
     protected void deleteDatabase() {
         boolean deleted = InstrumentationRegistry.getTargetContext().getApplicationContext()
                 .deleteDatabase(DATABASE_NAME);
+        Log.d(getClass().getSimpleName(), "Delete database equal to " + deleted);
     }
 }

@@ -52,7 +52,7 @@ public class RuleFunctionLastEventDateShould {
     }
 
     @Test
-    public void thrown_null_pointer_exception_if_first_parameter_is_null() {
+    public void throw_null_pointer_exception_if_first_parameter_is_null() {
         thrown.expect(NullPointerException.class);
         RuleFunction ruleFunction = RuleFunctionLastEventDate.create();
 
@@ -61,7 +61,7 @@ public class RuleFunctionLastEventDateShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_pass_two_parameters() {
+    public void throw_illegal_argument_exception_if_pass_two_parameters() {
         thrown.expect(IllegalArgumentException.class);
         RuleFunction ruleFunction = RuleFunctionLastEventDate.create();
 
@@ -70,7 +70,7 @@ public class RuleFunctionLastEventDateShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_first_parameter_is_empty_list() {
+    public void throw_illegal_argument_exception_if_first_parameter_is_empty_list() {
         thrown.expect(IllegalArgumentException.class);
         RuleFunction ruleFunction = RuleFunctionLastEventDate.create();
 

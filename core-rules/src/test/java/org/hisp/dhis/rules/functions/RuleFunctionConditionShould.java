@@ -38,7 +38,7 @@ public class RuleFunctionConditionShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_first_parameter_is_null() {
+    public void throw_null_pointer_exception_if_first_parameter_is_null() {
         thrown.expect(NullPointerException.class);
         RuleFunction ruleFunction = RuleFunctionCondition.create();
 
@@ -47,7 +47,7 @@ public class RuleFunctionConditionShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_first_parameter_is_empty_list() {
+    public void throw_illegal_argument_exception_if_first_parameter_is_empty_list() {
         thrown.expect(IllegalArgumentException.class);
         RuleFunction ruleFunction = RuleFunctionCondition.create();
 
@@ -55,14 +55,14 @@ public class RuleFunctionConditionShould {
                 new HashMap<String, RuleVariableValue>());
     }
     @Test
-    public void thrown_illegal_argument_exception_when_evaluate_only_one_condition() {
+    public void throw_illegal_argument_exception_when_evaluate_only_one_condition() {
         thrown.expect(IllegalArgumentException.class);
         RuleFunctionCondition.create().evaluate(Arrays.asList("word"),
                 new HashMap<String, RuleVariableValue>());
     }
 
     @Test
-    public void thrown_illegal_argument_exception_when_evaluate_more_than_two_conditions() {
+    public void throw_illegal_argument_exception_when_evaluate_more_than_two_conditions() {
         thrown.expect(IllegalArgumentException.class);
         RuleFunctionCondition.create().evaluate(Arrays.asList("word","23","word"),
                 new HashMap<String, RuleVariableValue>());

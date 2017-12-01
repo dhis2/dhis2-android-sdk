@@ -23,17 +23,33 @@ public class RuleFunctionZingShould {
         String zingNumber = zing.evaluate(Arrays.asList("-0.1"),
                 new HashMap<String, RuleVariableValue>());
 
-        assertThat(zingNumber).isEqualTo("0");
+        assertThat(zingNumber).isEqualTo("0.0");
+        zingNumber = zing.evaluate(Arrays.asList("-1"),
+                new HashMap<String, RuleVariableValue>());
+
+        assertThat(zingNumber).isEqualTo("0.0");
+        zingNumber = zing.evaluate(Arrays.asList("-10"),
+                new HashMap<String, RuleVariableValue>());
+
+        assertThat(zingNumber).isEqualTo("0.0");
     }
 
     @Test
     public void return_number_after_positive_number() {
         RuleFunction zing = RuleFunctionZing.create();
 
-        String zingNumber = zing.evaluate(Arrays.asList("1"),
+        String zingNumber = zing.evaluate(Arrays.asList("0"),
                 new HashMap<String, RuleVariableValue>());
 
-        assertThat(zingNumber).isEqualTo("1");
+        assertThat(zingNumber).isEqualTo("0.0");
+        zingNumber = zing.evaluate(Arrays.asList("1"),
+                new HashMap<String, RuleVariableValue>());
+
+        assertThat(zingNumber).isEqualTo("1.0");
+        zingNumber = zing.evaluate(Arrays.asList("5"),
+                new HashMap<String, RuleVariableValue>());
+
+        assertThat(zingNumber).isEqualTo("5.0");
     }
 
     @Test
@@ -43,11 +59,19 @@ public class RuleFunctionZingShould {
         String zingNumber = zing.evaluate(Arrays.asList("0.1"),
                 new HashMap<String, RuleVariableValue>());
 
-        assertThat(zingNumber).isEqualTo("1");
+        assertThat(zingNumber).isEqualTo("0.0");
+        zingNumber = zing.evaluate(Arrays.asList("1.1"),
+                new HashMap<String, RuleVariableValue>());
+
+        assertThat(zingNumber).isEqualTo("1.0");
+        zingNumber = zing.evaluate(Arrays.asList("-1.1"),
+                new HashMap<String, RuleVariableValue>());
+
+        assertThat(zingNumber).isEqualTo("0.0");
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_first_parameter_is_null() {
+    public void throw_null_pointer_exception_if_first_parameter_is_null() {
         thrown.expect(NullPointerException.class);
         RuleFunction zing = RuleFunctionZing.create();
 
@@ -56,7 +80,7 @@ public class RuleFunctionZingShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_first_parameter_is_empty_list() {
+    public void throw_illegal_argument_exception_if_first_parameter_is_empty_list() {
         thrown.expect(IllegalArgumentException.class);
         RuleFunction zing = RuleFunctionZing.create();
 

@@ -33,21 +33,21 @@ public class RuleFunctionYearsBetweenShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_when_evaluate_only_one_day() {
+    public void throw_illegal_argument_exception_when_evaluate_only_one_day() {
         thrown.expect(IllegalArgumentException.class);
         RuleFunctionYearsBetween.create().evaluate(Arrays.asList("2016-01-01"),
                 new HashMap<String, RuleVariableValue>());
     }
 
     @Test
-    public void thrown_illegal_argument_exception_when_evaluate_more_than_two_days() {
+    public void throw_illegal_argument_exception_when_evaluate_more_than_two_days() {
         thrown.expect(IllegalArgumentException.class);
         RuleFunctionYearsBetween.create().evaluate(Arrays.asList("2016-01-01","2016-01-01","2016-01-01"),
                 new HashMap<String, RuleVariableValue>());
     }
 
     @Test
-    public void thrown_illegal_argument_exception_when_evaluate_with_no_date_strings() {
+    public void throw_runtime_exception_when_evaluate_with_no_date_strings() {
         thrown.expect(RuntimeException.class);
         RuleFunctionYearsBetween.create().evaluate(Arrays.asList("one","two"),
                 new HashMap<String, RuleVariableValue>());

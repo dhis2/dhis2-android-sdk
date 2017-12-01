@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 public class RuleFunctionLastEventDate extends RuleFunction {
-    static final String D2_LAST_EVENT_DATE = "d2:lasteventdate";
+    static final String D2_LAST_EVENT_DATE = "d2:lastEventDate";
     private static final String ENV_VAR_EVENT_DATE = "event_date";
 
     @Nonnull

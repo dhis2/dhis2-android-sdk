@@ -64,7 +64,7 @@ public class RuleFunctionCountShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_first_parameter_is_null() {
+    public void throw_illegal_argument_exception_if_first_parameter_is_null() {
         thrown.expect(NullPointerException.class);
         RuleFunction ruleFunction = RuleFunctionCount.create();
 
@@ -73,7 +73,7 @@ public class RuleFunctionCountShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_first_parameter_is_empty_list() {
+    public void throw_illegal_argument_exception_if_first_parameter_is_empty_list() {
         thrown.expect(IllegalArgumentException.class);
         RuleFunction ruleFunction = RuleFunctionCount.create();
 

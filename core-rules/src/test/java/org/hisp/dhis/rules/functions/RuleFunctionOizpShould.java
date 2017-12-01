@@ -16,7 +16,6 @@ public class RuleFunctionOizpShould {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-
     @Test
     public void return_zero_after_negative_numbers() {
         RuleFunction oizp = RuleFunctionOizp.create();
@@ -56,16 +55,18 @@ public class RuleFunctionOizpShould {
 
         assertThat(oizpNumber).isEqualTo("1.0");
     }
+
     @Test
-    public void thrown_illegal_argument_exception_if_first_parameter_is_null() {
+    public void throw_illegal_argument_exception_if_first_parameter_is_null() {
         thrown.expect(NullPointerException.class);
         RuleFunction oizp = RuleFunctionOizp.create();
 
         oizp.evaluate(null,
                 new HashMap<String, RuleVariableValue>());
     }
+
     @Test
-    public void thrown_illegal_argument_exception_if_first_parameter_is_empty_list() {
+    public void throw_illegal_argument_exception_if_first_parameter_is_empty_list() {
         thrown.expect(IllegalArgumentException.class);
         RuleFunction oizp = RuleFunctionOizp.create();
 

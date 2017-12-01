@@ -30,7 +30,7 @@ public class RuleFunctionRoundShould {
     }
 
     @Test
-    public void thrown_null_pointer_exception_if_first_parameter_is_null() {
+    public void throw_null_pointer_exception_if_first_parameter_is_null() {
         thrown.expect(NullPointerException.class);
         RuleFunction ruleFunction = RuleFunctionRound.create();
 
@@ -39,7 +39,7 @@ public class RuleFunctionRoundShould {
     }
 
     @Test
-    public void thrown_number_format_exception_if_pass_text() {
+    public void throw_number_format_exception_if_pass_text() {
         thrown.expect(NumberFormatException.class);
         RuleFunction ruleFunction = RuleFunctionRound.create();
 
@@ -48,7 +48,7 @@ public class RuleFunctionRoundShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_pass_two_parameters() {
+    public void throw_illegal_argument_exception_if_pass_two_parameters() {
         thrown.expect(IllegalArgumentException.class);
         RuleFunction ruleFunction = RuleFunctionRound.create();
 
@@ -57,7 +57,7 @@ public class RuleFunctionRoundShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_first_parameter_is_empty_list() {
+    public void throw_illegal_argument_exception_if_first_parameter_is_empty_list() {
         thrown.expect(IllegalArgumentException.class);
         RuleFunction ruleFunction = RuleFunctionRound.create();
 

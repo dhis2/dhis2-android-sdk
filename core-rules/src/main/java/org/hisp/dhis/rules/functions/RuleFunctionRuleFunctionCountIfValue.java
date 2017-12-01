@@ -9,7 +9,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 public class RuleFunctionRuleFunctionCountIfValue extends RuleFunction {
-    static final String D2_COUNT_IF_VALUE = "d2:countifvalue";
+    static final String D2_COUNT_IF_VALUE = "d2:countIfValue";
 
     @Nonnull
     public static RuleFunctionRuleFunctionCountIfValue create() {

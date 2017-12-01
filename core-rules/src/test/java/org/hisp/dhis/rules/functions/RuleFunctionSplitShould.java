@@ -3,21 +3,13 @@ package org.hisp.dhis.rules.functions;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import org.hisp.dhis.rules.RuleVariableValue;
-import org.hisp.dhis.rules.RuleVariableValueMapBuilder;
-import org.hisp.dhis.rules.models.RuleDataValue;
-import org.hisp.dhis.rules.models.RuleEvent;
-import org.hisp.dhis.rules.models.RuleValueType;
-import org.hisp.dhis.rules.models.RuleVariable;
-import org.hisp.dhis.rules.models.RuleVariableCurrentEvent;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 
 public class RuleFunctionSplitShould {
 
@@ -40,7 +32,7 @@ public class RuleFunctionSplitShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_first_parameter_is_null() {
+    public void throw_illegal_argument_exception_if_first_parameter_is_null() {
         thrown.expect(NullPointerException.class);
         RuleFunction ruleFunction = RuleFunctionSplit.create();
 
@@ -49,7 +41,7 @@ public class RuleFunctionSplitShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_pass_only_two_parameters() {
+    public void throw_illegal_argument_exception_if_pass_only_two_parameters() {
         thrown.expect(IllegalArgumentException.class);
         RuleFunction ruleFunction = RuleFunctionSplit.create();
 
@@ -58,7 +50,7 @@ public class RuleFunctionSplitShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_pass_four_parameters() {
+    public void throw_illegal_argument_exception_if_pass_four_parameters() {
         thrown.expect(IllegalArgumentException.class);
         RuleFunction ruleFunction = RuleFunctionSplit.create();
 
@@ -67,7 +59,7 @@ public class RuleFunctionSplitShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_position_is_a_text() {
+    public void throw_number_format_exception_if_position_is_a_text() {
         thrown.expect(NumberFormatException.class);
         RuleFunction ruleFunction = RuleFunctionSplit.create();
 
@@ -76,7 +68,7 @@ public class RuleFunctionSplitShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_first_parameter_is_empty_list() {
+    public void throw_illegal_argument_exception_if_first_parameter_is_empty_list() {
         thrown.expect(IllegalArgumentException.class);
         RuleFunction ruleFunction = RuleFunctionSplit.create();
 

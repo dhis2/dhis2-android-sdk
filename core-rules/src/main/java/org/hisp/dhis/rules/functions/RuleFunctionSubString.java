@@ -21,7 +21,7 @@ public class RuleFunctionSubString extends RuleFunction {
     public String evaluate(@Nonnull List<String> arguments,
             Map<String, RuleVariableValue> valueMap) {
         if (arguments.size() != 3) {
-            throw new IllegalArgumentException("One argument was expected, " +
+            throw new IllegalArgumentException("three argument were expected, " +
                     arguments.size() + " were supplied");
         }
 

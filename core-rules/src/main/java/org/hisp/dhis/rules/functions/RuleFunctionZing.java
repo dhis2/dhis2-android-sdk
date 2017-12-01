@@ -12,8 +12,8 @@ public class RuleFunctionZing extends RuleFunction {
     static final String D2_ZING = "d2:zing";
 
     @Nonnull
-    static RuleFunctionCeil create() {
-        return new RuleFunctionCeil();
+    static RuleFunctionZing create() {
+        return new RuleFunctionZing();
     }
 
     @Nonnull
@@ -24,8 +24,8 @@ public class RuleFunctionZing extends RuleFunction {
             throw new IllegalArgumentException("One argument was expected, " +
                     arguments.size() + " were supplied");
         }
-
-        return String.valueOf((long) Math.max(0d, toDouble(arguments.get(0), 0.0)));
+        Long longResult = (long) Math.max(0d, toDouble(arguments.get(0), 0.0));
+        return String.valueOf(toDouble(longResult.toString(), 0.0));
     }
 
     private static double toDouble(@Nullable final String str, final double defaultValue) {

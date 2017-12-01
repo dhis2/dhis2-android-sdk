@@ -28,7 +28,7 @@ public class RuleFunctionConcatenateShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_only_one_parameter() {
+    public void throw_illegal_argument_exception_if_only_one_parameter() {
         thrown.expect(IllegalArgumentException.class);
         RuleFunction ruleFunction = RuleFunctionConcatenate.create();
 
@@ -37,7 +37,7 @@ public class RuleFunctionConcatenateShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_first_parameter_is_null() {
+    public void throw_null_pointer_exception_if_first_parameter_is_null() {
         thrown.expect(NullPointerException.class);
         RuleFunction ruleFunction = RuleFunctionConcatenate.create();
 
@@ -46,7 +46,7 @@ public class RuleFunctionConcatenateShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_first_parameter_is_empty_list() {
+    public void throw_illegal_argument_exception_if_first_parameter_is_empty_list() {
         thrown.expect(IllegalArgumentException.class);
         RuleFunction ruleFunction = RuleFunctionConcatenate.create();
 

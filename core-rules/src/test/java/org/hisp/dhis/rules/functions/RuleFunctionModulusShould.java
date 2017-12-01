@@ -37,7 +37,7 @@ public class RuleFunctionModulusShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_zero_dividend() {
+    public void throw_Arithmetic_exception_if_zero_dividend() {
         thrown.expect(ArithmeticException.class);
         RuleFunction ruleFunction = RuleFunctionModulus.create();
 
@@ -48,7 +48,7 @@ public class RuleFunctionModulusShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_first_parameter_is_null() {
+    public void throw_null_pointer_exception_if_first_parameter_is_null() {
         thrown.expect(NullPointerException.class);
         RuleFunction ruleFunction = RuleFunctionModulus.create();
 
@@ -57,7 +57,7 @@ public class RuleFunctionModulusShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_first_parameter_is_empty_list() {
+    public void throw_illegal_argument_exception_if_first_parameter_is_empty_list() {
         thrown.expect(IllegalArgumentException.class);
         RuleFunction ruleFunction = RuleFunctionModulus.create();
 
@@ -66,7 +66,7 @@ public class RuleFunctionModulusShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_not_numeric_arguments() {
+    public void throw_number_format_exception_if_not_numeric_arguments() {
         thrown.expect(NumberFormatException.class);
         RuleFunction ruleFunction = RuleFunctionModulus.create();
 

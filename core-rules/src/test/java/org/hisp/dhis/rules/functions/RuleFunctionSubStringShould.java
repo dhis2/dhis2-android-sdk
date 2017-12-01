@@ -3,21 +3,13 @@ package org.hisp.dhis.rules.functions;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import org.hisp.dhis.rules.RuleVariableValue;
-import org.hisp.dhis.rules.RuleVariableValueMapBuilder;
-import org.hisp.dhis.rules.models.RuleDataValue;
-import org.hisp.dhis.rules.models.RuleEvent;
-import org.hisp.dhis.rules.models.RuleValueType;
-import org.hisp.dhis.rules.models.RuleVariable;
-import org.hisp.dhis.rules.models.RuleVariableCurrentEvent;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 
 public class RuleFunctionSubStringShould {
 
@@ -44,7 +36,7 @@ public class RuleFunctionSubStringShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_end_number_is_string() {
+    public void throw_number_format_exception_if_end_number_is_string() {
         thrown.expect(NumberFormatException.class);
         RuleFunction ruleFunction = RuleFunctionSubString.create();
 
@@ -52,7 +44,7 @@ public class RuleFunctionSubStringShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_start_number_is_string() {
+    public void throw_number_format_exception_if_start_number_is_string() {
         thrown.expect(NumberFormatException.class);
         RuleFunction ruleFunction = RuleFunctionSubString.create();
 
@@ -60,7 +52,7 @@ public class RuleFunctionSubStringShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_first_parameter_is_null() {
+    public void throw_null_pointer_exception_if_first_parameter_is_null() {
         thrown.expect(NullPointerException.class);
         RuleFunction ruleFunction = RuleFunctionSubString.create();
 
@@ -69,7 +61,7 @@ public class RuleFunctionSubStringShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_first_parameter_is_empty_list() {
+    public void throw_illegal_argument_exception_if_first_parameter_is_empty_list() {
         thrown.expect(IllegalArgumentException.class);
         RuleFunction ruleFunction = RuleFunctionSubString.create();
 

@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RuleFunctioncountIfZeroPosShould {
+public class RuleFunctionCountIfZeroPosShould {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -60,7 +60,7 @@ public class RuleFunctioncountIfZeroPosShould {
     }
 
     @Test
-    public void thrown_null_pointer_exception_if_first_parameter_is_null() {
+    public void throw_null_pointer_exception_if_first_parameter_is_null() {
         thrown.expect(NullPointerException.class);
         RuleFunction ruleFunction = RuleFunctionRuleFunctionCountIfZeroPos.create();
 
@@ -69,7 +69,7 @@ public class RuleFunctioncountIfZeroPosShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_first_parameter_is_empty_list() {
+    public void throw_illegal_argument_exception_if_first_parameter_is_empty_list() {
         thrown.expect(IllegalArgumentException.class);
         RuleFunction ruleFunction = RuleFunctionRuleFunctionCountIfZeroPos.create();
 

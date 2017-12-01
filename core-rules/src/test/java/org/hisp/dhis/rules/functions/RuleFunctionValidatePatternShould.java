@@ -3,21 +3,13 @@ package org.hisp.dhis.rules.functions;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import org.hisp.dhis.rules.RuleVariableValue;
-import org.hisp.dhis.rules.RuleVariableValueMapBuilder;
-import org.hisp.dhis.rules.models.RuleDataValue;
-import org.hisp.dhis.rules.models.RuleEvent;
-import org.hisp.dhis.rules.models.RuleValueType;
-import org.hisp.dhis.rules.models.RuleVariable;
-import org.hisp.dhis.rules.models.RuleVariableCurrentEvent;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 
 public class RuleFunctionValidatePatternShould {
 
@@ -54,7 +46,7 @@ public class RuleFunctionValidatePatternShould {
     }
 
     @Test
-    public void thrown_illegal_argument_exception_if_first_parameter_is_null() {
+    public void thrown_null_pointer_exception_if_first_parameter_is_null() {
         thrown.expect(NullPointerException.class);
         RuleFunction ruleFunction = RuleFunctionValidatePattern.create();
 

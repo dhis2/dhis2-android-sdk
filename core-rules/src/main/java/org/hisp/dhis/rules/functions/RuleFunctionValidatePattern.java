@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 
 public class RuleFunctionValidatePattern extends RuleFunction {
-    static final String D2_VALIDATE_PATTERN = "d2:validatepattern";
+    static final String D2_VALIDATE_PATTERN = "d2:validatePattern";
 
     @Nonnull
     public static RuleFunctionValidatePattern create() {

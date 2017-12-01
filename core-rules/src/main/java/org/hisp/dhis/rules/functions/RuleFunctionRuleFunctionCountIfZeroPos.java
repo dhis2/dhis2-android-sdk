@@ -9,7 +9,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 public class RuleFunctionRuleFunctionCountIfZeroPos extends RuleFunction {
-    static final String D2_COUNTIFZEROPOS = "d2:countifzeropos";
+    static final String D2_COUNT_IF_ZERO_POS = "d2:countIfZeroPos";
 
     @Nonnull
     public static RuleFunctionRuleFunctionCountIfZeroPos create() {

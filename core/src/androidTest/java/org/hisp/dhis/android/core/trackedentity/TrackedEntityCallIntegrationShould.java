@@ -141,7 +141,7 @@ public class TrackedEntityCallIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void call_integrationTest() throws Exception {
+    public void have_valid_values_when_call() throws Exception {
         trackedEntityCall.call();
 
         Cursor cursor = database().query(TrackedEntityModel.TABLE, PROJECTION, null, null, null, null, null);

@@ -45,7 +45,7 @@ public class AuthenticatedUserModelShould {
     private static final String CREDENTIALS = "test_credentials";
 
     @Test
-    public void convert_to_model_after_create() {
+    public void create_model_when_created_from_database_cursor() {
         MatrixCursor cursor = new MatrixCursor(new String[]{Columns.ID, Columns.USER, Columns.CREDENTIALS});
         cursor.addRow(new Object[]{ID, USER, CREDENTIALS});
         cursor.moveToFirst();
@@ -59,7 +59,7 @@ public class AuthenticatedUserModelShould {
     }
 
     @Test
-    public void convert_to_content_values() {
+    public void create_content_values_when_created_from_builder() {
         AuthenticatedUserModel model = AuthenticatedUserModel.builder()
                 .id(ID)
                 .user(USER)

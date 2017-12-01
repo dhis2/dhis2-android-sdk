@@ -150,7 +150,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistProgramInDatabase() {
+    public void insert_program_in_data_base_when_insert() {
         long rowId = store.insert(
                 UID,
                 CODE,
@@ -220,7 +220,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistProgramWithDeferredForeignKeyInDatabase() {
+    public void insert_program_with_deferred_foreign_key_in_data_base_when_insert() {
         final String deferredRelationshipTypeUid = "deferredRelationshipTypeUid";
         final String deferredTrackedEntityUid = "deferredTrackedEntityUid";
 
@@ -291,21 +291,21 @@ public class ProgramStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistProgramWithInvalidRelationshipTypeForeignKey() {
+    public void throw_sqlite_constraint_exception_when__persistProgramWithInvalidRelationshipTypeForeignKey() {
         store.insert(UID, null, NAME, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, RELATIONSHIP_FROM_A, null, null, null, null, PROGRAM_TYPE,
                 "wrong", null, null, TRACKED_ENTITY);
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistProgramWithInvalidTrackedEntityForeignKey() {
+    public void throw_sqlite_constraint_exception_when__persistProgramWithInvalidTrackedEntityForeignKey() {
         store.insert(UID, null, NAME, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, RELATIONSHIP_FROM_A, null, null, null, null, PROGRAM_TYPE,
                 RELATIONSHIP_TYPE, null, null, "wrong");
     }
 
     @Test
-    public void insert_shouldPersistProgramNullableInDatabase() {
+    public void insert_program_in_data_base_when_insert_nullable_program() {
         long rowId = store.insert(
                 UID, null, NAME, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, RELATIONSHIP_FROM_A, null,
@@ -320,7 +320,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteProgramWhenDeletingRelationshipTypeForeignKey() {
+    public void delete_program_when_delete_relationship_type_foreign_key() {
         store.insert(
                 UID,
                 CODE,
@@ -361,7 +361,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteProgramWhenDeletingTrackedEntityForeignKey() {
+    public void delete_program_when_delete_tracked_entity_foreign_key() {
         store.insert(
                 UID,
                 CODE,
@@ -402,7 +402,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void update_shouldUpdateProgram() throws Exception {
+    public void update_program_in_data_base_when_update() throws Exception {
         // insert program into database
         ContentValues program = new ContentValues();
         program.put(Columns.UID, UID);
@@ -442,7 +442,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteProgram() throws Exception {
+    public void delete_program_in_data_base_when_delete() throws Exception {
         // insert program into database
         ContentValues program = new ContentValues();
         program.put(Columns.UID, UID);
@@ -468,7 +468,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_uid() {
+    public void throw_illegal_argument_exception_when_insert_null_uid() {
         store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
                 DISPLAY_DESCRIPTION, VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE,
                 INCIDENT_DATE_LABEL, REGISTRATION, SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD,
@@ -478,7 +478,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_uid() {
+    public void throw_illegal_argument_exception_when_update_null_uid() {
         store.update(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
                 DISPLAY_DESCRIPTION, VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE,
                 INCIDENT_DATE_LABEL, REGISTRATION, SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD,
@@ -488,7 +488,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_whereUid() {
+    public void throw_illegal_argument_exception_when_update_null_where_uid() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
                 DISPLAY_DESCRIPTION, VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE,
                 INCIDENT_DATE_LABEL, REGISTRATION, SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD,
@@ -498,7 +498,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void delete_null_uid() {
+    public void throw_illegal_argument_exception_when_delete_null_uid() {
         store.delete(null);
     }
 

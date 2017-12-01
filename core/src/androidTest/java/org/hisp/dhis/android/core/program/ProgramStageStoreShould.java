@@ -137,7 +137,7 @@ public class ProgramStageStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistRowInDatabase() {
+    public void insert_in_data_base_when_insert() {
 
         long rowId = store.insert(
                 UID, CODE, NAME, DISPLAY_NAME,
@@ -182,7 +182,7 @@ public class ProgramStageStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistDeferrableRowInDatabase() {
+    public void insert_deferrable_row_in_data_base_when_insert() {
         final String deferredProgram = "deferredProgram";
         database().beginTransaction();
         long rowId = store.insert(
@@ -209,7 +209,7 @@ public class ProgramStageStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteProgramStageWhenDeletingProgram() {
+    public void delete_program_stage_in_data_base_when_delete_program() {
 
         ContentValues programStage = new ContentValues();
         programStage.put(Columns.ID, ID);
@@ -232,7 +232,7 @@ public class ProgramStageStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void update_shouldUpdateProgramStage() throws Exception {
+    public void update_program_stage_in_data_base_when_update() throws Exception {
 
         // insertion of foreign key happens in the setUp method
         ContentValues programStage = new ContentValues();
@@ -265,7 +265,7 @@ public class ProgramStageStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteProgramStage() throws Exception {
+    public void delete_program_stage_in_data_base_when_delete_program_stage() throws Exception {
         // insertion of foreign key happens in the setUp method
         ContentValues programStage = new ContentValues();
         programStage.put(Columns.UID, UID);
@@ -294,7 +294,7 @@ public class ProgramStageStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_uid() {
+    public void throw_illegal_argument_exception_when_insert_null_uid() {
         store.insert(null, CODE, NAME, DISPLAY_NAME,
                 date, date, EXECUTION_DATE_LABEL, ALLOW_GENERATE_NEXT_VISIT,
                 VALID_COMPLETE_ONLY, REPORT_DATE_TO_USE, OPEN_AFTER_ENROLLMENT,
@@ -305,7 +305,7 @@ public class ProgramStageStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_program() {
+    public void throw_illegal_argument_exception_when_insert_null_program() {
         store.insert(UID, CODE, NAME, DISPLAY_NAME,
                 date, date, EXECUTION_DATE_LABEL, ALLOW_GENERATE_NEXT_VISIT,
                 VALID_COMPLETE_ONLY, REPORT_DATE_TO_USE, OPEN_AFTER_ENROLLMENT,
@@ -316,7 +316,7 @@ public class ProgramStageStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_uid() {
+    public void throw_illegal_argument_exception_when_update_null_uid() {
         store.update(null, CODE, NAME, DISPLAY_NAME,
                 date, date, EXECUTION_DATE_LABEL, ALLOW_GENERATE_NEXT_VISIT,
                 VALID_COMPLETE_ONLY, REPORT_DATE_TO_USE, OPEN_AFTER_ENROLLMENT,
@@ -327,7 +327,7 @@ public class ProgramStageStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_program() {
+    public void throw_illegal_argument_exception_when_update_null_program() {
         store.update(UID, CODE, NAME, DISPLAY_NAME,
                 date, date, EXECUTION_DATE_LABEL, ALLOW_GENERATE_NEXT_VISIT,
                 VALID_COMPLETE_ONLY, REPORT_DATE_TO_USE, OPEN_AFTER_ENROLLMENT,
@@ -338,7 +338,7 @@ public class ProgramStageStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_whereUid() {
+    public void throw_illegal_argument_exception_when_update_null_whereUid() {
         store.update(UID, CODE, NAME, DISPLAY_NAME,
                 date, date, EXECUTION_DATE_LABEL, ALLOW_GENERATE_NEXT_VISIT,
                 VALID_COMPLETE_ONLY, REPORT_DATE_TO_USE, OPEN_AFTER_ENROLLMENT,
@@ -349,7 +349,7 @@ public class ProgramStageStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void delete_null_uid() {
+    public void throw_illegal_argument_exception_when_delete_null_uid() {
         store.delete(null);
     }
 }

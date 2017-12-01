@@ -85,7 +85,7 @@ public class RelationshipTypeStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistRelationshipTypeInDatabase() throws ParseException {
+    public void insert_relationship_type_in_data_base_when_insert() throws ParseException {
 
         long rowId = store.insert(
                 UID,
@@ -117,7 +117,7 @@ public class RelationshipTypeStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistRelationshipTypeNullableInDatabase() throws ParseException {
+    public void insert_relationship_type_in_data_base_when_insert_nullable() throws ParseException {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 
         long rowId = store.insert(
@@ -146,7 +146,7 @@ public class RelationshipTypeStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void update_shouldUpdateRelationshipType() throws Exception {
+    public void update_relationship_type_in_data_base_when_update() throws Exception {
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(1L, UID);
         database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
 
@@ -172,7 +172,7 @@ public class RelationshipTypeStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteRelationshipType() throws Exception {
+    public void delete_relationship_type_when_delete() throws Exception {
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(1L, UID);
         database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
 
@@ -197,37 +197,37 @@ public class RelationshipTypeStoreShould extends AbsStoreTestCase {
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_aIsToB() {
+    public void throw_illegal_argument_exception_when_insert_null_aIsToB() {
         store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, null, B_IS_TO_A);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_bIsToA() {
+    public void throw_illegal_argument_exception_when_insert_null_bIsToA() {
         store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, A_IS_TO_B, null);
     }   
     
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_uid() {
+    public void throw_illegal_argument_exception_when_update_null_uid() {
         store.update(null, CODE, NAME, DISPLAY_NAME, date, date, A_IS_TO_B, B_IS_TO_A, UID);
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_aIsToB() {
+    public void throw_illegal_argument_exception_when_update_null_aIsToB() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, null, B_IS_TO_A, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_bIsToA() {
+    public void throw_illegal_argument_exception_when_update_null_bIsToA() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, A_IS_TO_B, null, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_whereUid() {
+    public void throw_illegal_argument_exception_when_update_null_whereUid() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, A_IS_TO_B, B_IS_TO_A, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void delete_null_uid() {
+    public void throw_illegal_argument_exception_when_delete_null_uid() {
         store.delete(null);
     }
 }

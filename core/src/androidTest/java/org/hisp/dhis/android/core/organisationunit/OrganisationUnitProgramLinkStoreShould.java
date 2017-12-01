@@ -83,7 +83,7 @@ public class OrganisationUnitProgramLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void throw_exception_after_persist_in_database_with_missing_organisation_unit_foreign_key() throws Exception {
+    public void throw_sqlite_constraint_exception_after_persist_in_database_with_missing_organisation_unit_foreign_key() throws Exception {
         ContentValues program = CreateProgramUtils.create(ID, PROGRAM_UID, null, null, null);
         database().insert(ProgramModel.TABLE, null, program);
 
@@ -91,7 +91,7 @@ public class OrganisationUnitProgramLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void throw_exception_after_persist_in_database_with_missing_program_foreign_key() throws Exception {
+    public void throw_sqlite_constraint_exception_after_persist_in_database_with_missing_program_foreign_key() throws Exception {
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(ID, ORGANISATION_UNIT_UID);
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
 
@@ -99,7 +99,7 @@ public class OrganisationUnitProgramLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_link_after_deleting_organisation_unit() throws Exception {
+    public void delete_link_when_delete_organisation_unit() throws Exception {
         // inserting mandatory foreign keys
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(ID, ORGANISATION_UNIT_UID);
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
@@ -133,7 +133,7 @@ public class OrganisationUnitProgramLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_link_when_deleting_program() throws Exception {
+    public void delete_link_when_delete_program() throws Exception {
         // inserting mandatory foreign keys
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(ID, ORGANISATION_UNIT_UID);
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
@@ -158,12 +158,12 @@ public class OrganisationUnitProgramLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void throw_exception_after_insert_null_organisationUnit() {
+    public void throw_illegal_argument_exception_when_insert_null_organisationUnit() {
         store.insert(null, PROGRAM_UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void throw_exception_after_insert_null_program() {
+    public void throw_illegal_argument_exception_when_insert_null_program() {
         store.insert(ORGANISATION_UNIT_UID, null);
     }
 

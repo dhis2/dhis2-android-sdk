@@ -122,7 +122,7 @@ public class ProgramRuleVariableStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistProgramRuleVariableInDatabase() {
+    public void insert_program_rule_variable_in_data_base_when_insert() {
         long rowId = store.insert(
                 UID,
                 CODE,
@@ -157,7 +157,7 @@ public class ProgramRuleVariableStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistDeferrableProgramRuleVariableInDatabase() {
+    public void insert_deferrable_program_rule_variable_in_data_base_when_insert() {
         final String deferredProgram = "deferredProgram";
         final String deferredProgramStage = "deferredProgramStage";
         final String deferredTrackedEntityAttribute = "deferredTrackedEntityAttribute";
@@ -198,7 +198,7 @@ public class ProgramRuleVariableStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistProgramRuleVariableInDatabaseWithProgramForeignKey() {
+    public void insert_program_rule_variable_in_data_base_when_insert_with_program_foreign_key() {
         long rowId = store.insert(
                 UID,
                 CODE,
@@ -234,7 +234,7 @@ public class ProgramRuleVariableStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteProgramRuleVariableWhenDeletingProgram() {
+    public void delete_program_rule_in_data_base_when_delete_program() {
 
         ContentValues programRuleVariable = new ContentValues();
         programRuleVariable.put(Columns.ID, ID);
@@ -257,7 +257,7 @@ public class ProgramRuleVariableStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldNotDeleteProgramRuleVariableWhenDeletingProgramStage() {
+    public void not_delete_program_rule_variable_when_delete_program_stage() {
 
         ContentValues programRuleVariable = new ContentValues();
         programRuleVariable.put(Columns.ID, ID);
@@ -282,7 +282,7 @@ public class ProgramRuleVariableStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldNotDeleteProgramRuleVariableWhenDeletingDataElement() {
+    public void not_delete_program_rules_variable_when_delete_data_element() {
 
         ContentValues programRuleVariable = new ContentValues();
         programRuleVariable.put(Columns.ID, ID);
@@ -307,7 +307,7 @@ public class ProgramRuleVariableStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldNotDeleteProgramRuleVariableWhenDeletingTrackedEntityAttribute() {
+    public void not_delete_program_rule_variable_when_delete_tracked_entity_attribute() {
 
         ContentValues programRuleVariable = new ContentValues();
         programRuleVariable.put(Columns.ID, ID);
@@ -334,7 +334,7 @@ public class ProgramRuleVariableStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void update_shouldUpdateProgramRuleVariable() throws Exception {
+    public void update_program_rule_variable_in_data_base_when_update() throws Exception {
         ContentValues programRuleVariable = new ContentValues();
         programRuleVariable.put(Columns.UID, UID);
         programRuleVariable.put(Columns.USE_CODE_FOR_OPTION_SET, USE_CODE_FOR_OPTION_SET);
@@ -363,7 +363,7 @@ public class ProgramRuleVariableStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteProgramRuleVariable() throws Exception {
+    public void delete_program_rule_variable_in_data_base_when_delete() throws Exception {
         ContentValues programRuleVariable = new ContentValues();
         programRuleVariable.put(Columns.UID, UID);
         programRuleVariable.put(Columns.PROGRAM, PROGRAM);
@@ -388,37 +388,37 @@ public class ProgramRuleVariableStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_uid() {
+    public void throw_illegal_argument_exception_when_insert_null_uid() {
         store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, USE_CODE_FOR_OPTION_SET, PROGRAM, PROGRAM_STAGE,
                 DATA_ELEMENT, TRACKED_ENTITY_ATTRIBUTE, PROGRAM_RULE_VARIABLE_SOURCE_TYPE);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_program() {
+    public void throw_illegal_argument_exception_when_insert_null_program() {
         store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, USE_CODE_FOR_OPTION_SET, null, PROGRAM_STAGE,
                 DATA_ELEMENT, TRACKED_ENTITY_ATTRIBUTE, PROGRAM_RULE_VARIABLE_SOURCE_TYPE);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_uid() {
+    public void throw_illegal_argument_exception_when_update_null_uid() {
         store.update(null, CODE, NAME, DISPLAY_NAME, date, date, USE_CODE_FOR_OPTION_SET, PROGRAM, PROGRAM_STAGE,
                 DATA_ELEMENT, TRACKED_ENTITY_ATTRIBUTE, PROGRAM_RULE_VARIABLE_SOURCE_TYPE, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_program() {
+    public void throw_illegal_argument_exception_when_update_null_program() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, USE_CODE_FOR_OPTION_SET, null, PROGRAM_STAGE,
                 DATA_ELEMENT, TRACKED_ENTITY_ATTRIBUTE, PROGRAM_RULE_VARIABLE_SOURCE_TYPE, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_whereUid() {
+    public void throw_illegal_argument_exception_when_update_null_whereUid() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, USE_CODE_FOR_OPTION_SET, PROGRAM, PROGRAM_STAGE,
                 DATA_ELEMENT, TRACKED_ENTITY_ATTRIBUTE, PROGRAM_RULE_VARIABLE_SOURCE_TYPE, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void delete_null_uid() {
+    public void throw_illegal_argument_exception_when_delete_null_uid() {
         store.delete(null);
     }
 }

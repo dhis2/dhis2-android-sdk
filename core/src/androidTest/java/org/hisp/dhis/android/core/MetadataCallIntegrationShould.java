@@ -5,6 +5,7 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.program.ProgramCall;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,8 +62,8 @@ public class MetadataCallIntegrationShould extends AbsStoreTestCase {
     //This test is uncommented because technically it is flaky.
     //It depends on a live server to operate and the login is hardcoded here.
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
-    //@Test
-    public void metadataSyncTest() throws Exception {
+    @Test
+    public void response_successful_on_sync_meta_data_two_times() throws Exception {
         retrofit2.Response response = null;
         response = d2.logIn("android", "Android123").call();
         assertThat(response.isSuccessful()).isTrue();

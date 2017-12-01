@@ -96,7 +96,7 @@ public class UserCredentialsStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistRowInDatabase() {
+    public void insert_in_data_base_when_insert() {
         long rowId = store.insert(
                 UID,
                 USER_CREDENTIALS_CODE,
@@ -123,7 +123,7 @@ public class UserCredentialsStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistDeferredRowInDatabase() {
+    public void insert_in_data_base_when_insert_deferred_row() {
         final String deferredUid = "deferredForeignKeyUid";
 
         database().beginTransaction();
@@ -159,7 +159,7 @@ public class UserCredentialsStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistNullableRowInDatabase() {
+    public void insert_in_data_base_when_insert_nullable_row() {
         long rowId = store.insert(
                 UID,
                 null,
@@ -185,7 +185,7 @@ public class UserCredentialsStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteUserCredentialsWhenDeletingUserForeignKey() {
+    public void delete_in_data_base_when_delete_user_foreign_key() {
         store.insert(
                 UID,
                 USER_CREDENTIALS_CODE,
@@ -203,7 +203,7 @@ public class UserCredentialsStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void update_shouldUpdateUserCredentials() throws Exception {
+    public void update_in_data_base_when_update() throws Exception {
         ContentValues user = new ContentValues();
         user.put(UserModel.Columns.ID, ID);
         user.put(UserModel.Columns.UID, USER_UID);
@@ -239,7 +239,7 @@ public class UserCredentialsStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteUserCredentials() throws Exception {
+    public void delete_in_data_base_when_delete_user_credentials() throws Exception {
 
         // inserting foreign key
         ContentValues user = new ContentValues();
@@ -272,7 +272,7 @@ public class UserCredentialsStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistUserCredentialsWithInvalidUserForeignKey() {
+    public void throw_sqlite_constraint_exception_when_insert_invalid_user_foreign_key() {
         store.insert(
                 UID,
                 USER_CREDENTIALS_CODE,
@@ -284,7 +284,7 @@ public class UserCredentialsStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteAllRows() {
+    public void delete_all_rows_when_delete_without_params() {
         ContentValues userCredentials = CreateUserCredentialsUtils.create(ID, UID, USER_UID);
         database().insert(UserCredentialsModel.TABLE, null, userCredentials);
 
@@ -296,34 +296,34 @@ public class UserCredentialsStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_uid_arg() {
+    public void throw_illegal_argument_exception_when_insert_null_uid_arg() {
         store.insert(null, USER_CREDENTIALS_CODE, USER_CREDENTIALS_NAME, USER_CREDENTIALS_DISPLAY_NAME,
                 date, date, USER_CREDENTIALS_USERNAME, USER_UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_user_uid_arg() {
+    public void throw_illegal_argument_exception_when_insert_null_user_uid_arg() {
         store.insert(UID, USER_CREDENTIALS_CODE, USER_CREDENTIALS_NAME, USER_CREDENTIALS_DISPLAY_NAME,
                 date, date, USER_CREDENTIALS_USERNAME, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_uid_arg() {
+    public void throw_illegal_argument_exception_when_update_null_uid_arg() {
         store.update(null, CODE, "new name", DISPLAY_NAME, date, date, USER_CREDENTIALS_USERNAME, USER_UID, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_User_uid_arg() {
+    public void throw_illegal_argument_exception_when_update_null_User_uid_arg() {
         store.update(UID, CODE, "new name", DISPLAY_NAME, date, date, USER_CREDENTIALS_USERNAME, null, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_where_arg() {
+    public void throw_illegal_argument_exception_when_update_null_where_arg() {
         store.update(UID, CODE, "new name", DISPLAY_NAME, date, date, USER_CREDENTIALS_USERNAME, USER_UID, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void delete_null_uid_arg() {
+    public void throw_illegal_argument_exception_when_delete_null_uid_arg() {
         store.delete(null);
     }
 }

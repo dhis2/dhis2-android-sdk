@@ -85,7 +85,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistTrackedEntityAttributeValueInDatabase() {
+    public void insert_teav_in_data_base_when_insert() {
         long rowId = store.insert(VALUE, CREATED, LAST_UPDATED,
                 TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE);
 
@@ -99,7 +99,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistDeferrableTrackedEntityAttributeValueInDatabase() {
+    public void insert_deferrable_teav_in_data_base_when_insert() {
         final String deferredTrackedEntityAttribute = "deferredTrackedEntityAttribute";
         final String deferredTrackedEntityInstance = "deferredTrackedEntityInstance";
 
@@ -125,7 +125,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistTrackedEntityAttributeValueNullableInDatabase() {
+    public void insert_nullable_teav_in_data_base_when_insert_nullable_teav() {
         long rowId = store.insert(null, CREATED, LAST_UPDATED, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE);
 
         Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
@@ -139,18 +139,18 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistTrackedEntityAttributeValueWithInvalidTrackedEntityAttribute() {
+    public void throw_sqlite_constraint_exception_when_insert_teav_with_invalid_tracked_entity_attribute() {
         store.insert(VALUE, CREATED, LAST_UPDATED, "wrong", TRACKED_ENTITY_INSTANCE);
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistTrackedEntityAttributeValueWithInvalidTrackedEntityInstance() {
+    public void throw_sqlite_constraint_exception_when_insert_teav_with_invalid_tracked_entity_instance() {
         store.insert(VALUE, CREATED, LAST_UPDATED, TRACKED_ENTITY_ATTRIBUTE, "wrong");
     }
 
     @Test
-    public void delete_shouldDeleteTrackedEntityAttributeValueWhenDeletingTrackedEntityAttribute() {
-        insert_shouldPersistTrackedEntityAttributeValueNullableInDatabase();
+    public void delete_teav_in_data_base_when_delete_tracked_entity_attribute() {
+        insert_nullable_teav_in_data_base_when_insert_nullable_teav();
 
         database().delete(TrackedEntityAttributeModel.TABLE,
                 TrackedEntityAttributeModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY_ATTRIBUTE});
@@ -161,8 +161,8 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteTrackedEntityAttributeValueWhenDeletingTrackedEntityInstance() {
-        insert_shouldPersistTrackedEntityAttributeValueNullableInDatabase();
+    public void delete_teav_in_data_base_when_delete_tracked_entity_instance() {
+        insert_nullable_teav_in_data_base_when_insert_nullable_teav();
 
         database().delete(TrackedEntityInstanceModel.TABLE,
                 TrackedEntityInstanceModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY_INSTANCE});
@@ -174,12 +174,12 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
 
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_trackedEntity() {
+    public void throw_illegal_argument_exception_when_insert_null_tracked_entity() {
         store.insert(VALUE, CREATED, LAST_UPDATED, null, TRACKED_ENTITY_INSTANCE);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_trackedEntityInstance() {
+    public void throw_illegal_argument_exception_when_insert_null_tracked_entity_instance() {
         store.insert(VALUE, CREATED, LAST_UPDATED, TRACKED_ENTITY_ATTRIBUTE, null);
     }
 }

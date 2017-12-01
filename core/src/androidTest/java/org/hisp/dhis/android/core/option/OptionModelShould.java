@@ -59,7 +59,7 @@ public class OptionModelShould {
     }
 
     @Test
-    public void convert_to_model_after_create() {
+    public void create_model_when_created_from_database_cursor() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID,
                 Columns.UID,
@@ -87,7 +87,7 @@ public class OptionModelShould {
     }
 
     @Test
-    public void convert_to_content_values() {
+    public void create_content_values_when_created_from_builder() {
         OptionModel model = OptionModel.builder()
                 .id(ID)
                 .uid(UID)

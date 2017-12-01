@@ -68,7 +68,7 @@ public class ProgramRuleVariableModelShould {
     }
 
     @Test
-    public void convert_to_model_after_create() throws ParseException {
+    public void create_model_when_created_from_database_cursor() throws ParseException {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID, Columns.UID, Columns.CODE, Columns.NAME, Columns.DISPLAY_NAME,
                 Columns.CREATED, Columns.LAST_UPDATED, Columns.USE_CODE_FOR_OPTION_SET,
@@ -101,7 +101,7 @@ public class ProgramRuleVariableModelShould {
     }
 
     @Test
-    public void convert_to_content_values() throws ParseException {
+    public void create_content_values_when_created_from_builder() throws ParseException {
 
         ProgramRuleVariableModel model = ProgramRuleVariableModel.builder()
                 .id(ID)

@@ -66,7 +66,7 @@ public class ConstantStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void persist_row_in_database_after_insert() {
+    public void persist_row_in_database_when_insert() {
         long rowId = store.insert(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, VALUE);
         Cursor cursor = database().query(ConstantModel.TABLE, CONSTANT_PROJECTION, null, null, null, null, null);
 
@@ -77,7 +77,7 @@ public class ConstantStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_uid() {
+    public void throw_illegal_argument_exception_when_insert_null_uid() {
         store.insert(null, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, VALUE);
     }
 }

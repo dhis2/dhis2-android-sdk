@@ -51,7 +51,7 @@ public class RelationshipModelShould {
     private static final String RELATIONSHIP_TYPE = "RelationshipType uid";
 
     @Test
-    public void convert_to_model_after_create() {
+    public void create_model_when_created_from_database_cursor() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID,
                 Columns.STATE,
@@ -78,7 +78,7 @@ public class RelationshipModelShould {
     }
 
     @Test
-    public void convert_to_content_values() {
+    public void create_content_values_when_created_from_builder() {
         RelationshipModel model = RelationshipModel.builder()
                 .id(ID)
                 .state(STATE)

@@ -113,7 +113,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void persist_data_element_in_database_after_insert() {
+    public void persist_data_element_in_database_when_insert() {
         ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
         database().insert(OptionSetModel.TABLE, null, optionSet);
 
@@ -168,7 +168,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void persist_deferrable_data_element_in_database_after_insert() {
+    public void persist_deferrable_data_element_in_database_when_insert() {
         final String deferredOptionSetUid = "deferredOptionSetUid";
 
         database().beginTransaction();
@@ -192,7 +192,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void persist_data_element_in_database_without_option_set_after_insert() {
+    public void persist_data_element_in_database_without_option_set_when_insert() {
         long rowId = store.insert(
                 UID,
                 CODE,
@@ -246,7 +246,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_after_persist_a_data_element_with_invalid_foreign_key() {
+    public void throw_sqlite_constraint_exception_when_persist_a_data_element_with_invalid_foreign_key() {
         String fakeOptionSetUid = "fake_option_set_uid";
         store.insert(
                 UID,
@@ -272,7 +272,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_data_element_after_deleting_options_set_foreign_key() {
+    public void delete_data_element_in_database_when_deleting_options_set_foreign_key() {
         ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
         database().insert(OptionSetModel.TABLE, null, optionSet);
 
@@ -300,7 +300,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void update_data_element_in_database_after_update() throws Exception {
+    public void update_data_element_in_database_when_update() throws Exception {
         // insert dataElement into database
         ContentValues dataElement = new ContentValues();
         dataElement.put(Columns.UID, UID);
@@ -341,7 +341,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_data_element_in_database_after_delete() throws Exception {
+    public void delete_data_element_in_database_when_delete() throws Exception {
 
         // insert dataElement into database
         ContentValues dataElement = new ContentValues();
@@ -365,28 +365,28 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void throw_exception_after_insert_null_uid() {
+    public void throw_illegal_argument_exception_when_insert_null_uid() {
         store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
                 DISPLAY_DESCRIPTION, VALUE_TYPE, ZERO_IS_SIGNIFICANT, AGGREGATION_OPERATOR, FORM_NAME, NUMBER_TYPE,
                 DOMAIN_TYPE, DIMENSION, DISPLAY_FORM_NAME, OPTION_SET);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void throw_exception_after_update_null_uid() {
+    public void throw_illegal_argument_exception_when_update_null_uid() {
         store.update(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
                 DISPLAY_DESCRIPTION, VALUE_TYPE, ZERO_IS_SIGNIFICANT, AGGREGATION_OPERATOR, FORM_NAME, NUMBER_TYPE,
                 DOMAIN_TYPE, DIMENSION, DISPLAY_FORM_NAME, OPTION_SET, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void throw_exception_after_update_null_whereUid() {
+    public void throw_illegal_argument_exception_when_update_null_whereUid() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
                 DISPLAY_DESCRIPTION, VALUE_TYPE, ZERO_IS_SIGNIFICANT, AGGREGATION_OPERATOR, FORM_NAME, NUMBER_TYPE,
                 DOMAIN_TYPE, DIMENSION, DISPLAY_FORM_NAME, OPTION_SET, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void throw_exception_after_delete_null_uid() {
+    public void throw_illegal_argument_exception_when_delete_null_uid() {
         store.delete(null);
     }
 }

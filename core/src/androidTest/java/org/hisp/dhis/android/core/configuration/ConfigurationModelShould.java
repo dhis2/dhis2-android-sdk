@@ -46,7 +46,7 @@ public class ConfigurationModelShould {
     private static final String SERVER_URL = "https://testurl.org/";
 
     @Test
-    public void convert_to_model_after_create() {
+    public void create_model_when_created_from_database_cursor() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID, Columns.SERVER_URL
         });
@@ -62,7 +62,7 @@ public class ConfigurationModelShould {
     }
 
     @Test
-    public void convert_to_content_values() {
+    public void create_content_values_when_created_from_builder() {
         ConfigurationModel configurationModel = ConfigurationModel.builder()
                 .id(ID).serverUrl(HttpUrl.parse(SERVER_URL)).build();
 

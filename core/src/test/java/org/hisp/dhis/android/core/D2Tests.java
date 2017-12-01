@@ -68,7 +68,7 @@ public class D2Tests {
     }
 
     @Test
-    public void buildShouldThrowIllegalArgumentExceptionWhenNoOkHttpClient() {
+    public void throw_illegal_argument_exception_when_build_ok_http_client_with_null_param() {
         try {
             builder.okHttpClient(null).build();
 
@@ -79,7 +79,7 @@ public class D2Tests {
     }
 
     @Test
-    public void buildShouldThrowIllegalArgumentExceptionWhenNoDbOpenHelper() {
+    public void throw_illegal_argument_exception_when_build_with_db_open_helper_is_null() {
         try {
             builder.databaseAdapter(new SqLiteDatabaseAdapter(null)).build();
 
@@ -90,7 +90,7 @@ public class D2Tests {
     }
 
     @Test
-    public void buildShouldThrowIllegalArgumentExceptionWhenNoDatabaseAdapter() {
+    public void throw_illegal_argument_exception_when_pass_null_data_base_adapter_on_builder() {
         try {
             builder.databaseAdapter(null).build();
 
@@ -101,7 +101,7 @@ public class D2Tests {
     }
 
     @Test
-    public void buildShouldThrowExceptionWhenNoBaseUrl() {
+    public void throw_illegal_argument_exception_when_pass_null_in_configuration_builder() {
         try {
             builder.configuration(null).build();
 

@@ -54,7 +54,7 @@ public class ProgramStageSectionProgramIndicatorLinkStoreShould extends AbsStore
     }
 
     @Test
-    public void insert() {
+    public void insert_in_data_base_when_insert() {
         store.insert(PROGRAM_STAGE_SECTION, PROGRAM_INDICATOR);
 
         Cursor cursor = database().query(ProgramStageSectionProgramIndicatorLinkModel.TABLE, PROJECTION,
@@ -64,7 +64,7 @@ public class ProgramStageSectionProgramIndicatorLinkStoreShould extends AbsStore
     }
 
     @Test
-    public void insert_deferred() {
+    public void insert_deferred_in_data_base_when_insert() {
         String deferredProgramStageSection = "deferredProgramStageSection";
         String deferredProgramIndicator = "deferredProgramIndicator";
 
@@ -86,17 +86,17 @@ public class ProgramStageSectionProgramIndicatorLinkStoreShould extends AbsStore
     }
 
     @Test (expected = SQLiteConstraintException.class)
-    public void insert_wrong_ProgramStageSection() {
+    public void throw_sqlite_constraint_exception_when_insert_wrong_program_stage_section() {
         store.insert("wrong", PROGRAM_INDICATOR);
     }
 
     @Test (expected = SQLiteConstraintException.class)
-    public void insert_wrong_DataElement() {
+    public void throw_sqlite_constraint_exception_when_insert_wrong_data_element() {
         store.insert("wrong", PROGRAM_INDICATOR);
     }
 
     @Test
-    public void update() {
+    public void update_in_data_base_when_update() {
        //insert foreign keys for the update:
         database().insert(ProgramStageSectionModel.TABLE, null,
                 CreateProgramStageSectionUtils.create(2L, UPDATED_PROGRAM_STAGE_SECTION, PROGRAM_STAGE));
@@ -118,7 +118,7 @@ public class ProgramStageSectionProgramIndicatorLinkStoreShould extends AbsStore
     }
 
     @Test
-    public void update_non_existing() {
+    public void update_in_data_base_when_update_non_existing() {
         int ret = store.update(PROGRAM_STAGE_SECTION, PROGRAM_INDICATOR,
                 UPDATED_PROGRAM_STAGE_SECTION, UPDATED_PROGRAM_INDICATOR);
 
@@ -130,7 +130,7 @@ public class ProgramStageSectionProgramIndicatorLinkStoreShould extends AbsStore
     }
 
     @Test (expected = SQLiteConstraintException.class)
-    public void update_wrong_ProgramStageSection() {
+    public void throw_sqlite_constraint_exception_when_update_wrong_program_stage_section() {
         //insert foreign keys for the update:
         database().insert(ProgramStageSectionModel.TABLE, null,
                 CreateProgramStageSectionUtils.create(2L, UPDATED_PROGRAM_STAGE_SECTION, PROGRAM_STAGE));
@@ -145,7 +145,7 @@ public class ProgramStageSectionProgramIndicatorLinkStoreShould extends AbsStore
     }
 
     @Test (expected = SQLiteConstraintException.class)
-    public void update_wrong_DataElement() {
+    public void throw_sqlite_constraint_exception_when_update_wrong_data_element() {
         //insert foreign keys for the update:
         database().insert(ProgramStageSectionModel.TABLE, null,
                 CreateProgramStageSectionUtils.create(2L, UPDATED_PROGRAM_STAGE_SECTION, PROGRAM_STAGE));
@@ -160,7 +160,7 @@ public class ProgramStageSectionProgramIndicatorLinkStoreShould extends AbsStore
     }
 
     @Test
-    public void update_wrong_whereProgramStageSection() {
+    public void update_in_data_base_wrong_where_program_stage_section() {
         //insert foreign keys for the update:
         database().insert(ProgramStageSectionModel.TABLE, null,
                 CreateProgramStageSectionUtils.create(2L, UPDATED_PROGRAM_STAGE_SECTION, PROGRAM_STAGE));
@@ -182,7 +182,7 @@ public class ProgramStageSectionProgramIndicatorLinkStoreShould extends AbsStore
     }
 
     @Test
-    public void update_wrong_where_programIndicator() {
+    public void update_in_data_element_when_wrong_program_indicator() {
         //insert foreign keys for the update:
         database().insert(ProgramStageSectionModel.TABLE, null,
                 CreateProgramStageSectionUtils.create(2L, UPDATED_PROGRAM_STAGE_SECTION, PROGRAM_STAGE));
@@ -206,32 +206,32 @@ public class ProgramStageSectionProgramIndicatorLinkStoreShould extends AbsStore
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_programStageSection() {
+    public void throw_illegal_argument_exception_when_insert_null_program_stage_section() {
         store.insert(null, PROGRAM_INDICATOR);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_ProgramInidcator() {
+    public void throw_illegal_argument_exception_when_insert_null_program_inidcator() {
         store.insert(PROGRAM_STAGE_SECTION, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_programStageSection() {
+    public void throw_illegal_argument_exception_when_update_null_program_stage_section() {
         store.update(null, PROGRAM_INDICATOR, PROGRAM_STAGE_SECTION, PROGRAM_INDICATOR);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_ProgramInidcator() {
+    public void throw_illegal_argument_exception_when_update_null_program_inidcator() {
         store.update(PROGRAM_STAGE_SECTION, null, PROGRAM_STAGE_SECTION, PROGRAM_INDICATOR);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_whereProgramStageSection() {
+    public void throw_illegal_argument_exception_when_update_null_where_program_stage_section_field() {
         store.update(PROGRAM_STAGE_SECTION, PROGRAM_INDICATOR, null, PROGRAM_INDICATOR);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_whereProgramInidcator() {
+    public void throw_illegal_argument_exception_when_update_null_where_program_inidcator() {
         store.update(PROGRAM_STAGE_SECTION, PROGRAM_INDICATOR, PROGRAM_STAGE_SECTION, null);
     }
 }

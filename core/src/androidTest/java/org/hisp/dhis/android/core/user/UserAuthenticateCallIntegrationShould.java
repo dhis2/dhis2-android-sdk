@@ -224,7 +224,7 @@ public class UserAuthenticateCallIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void call_shouldPersistUserInDatabase() throws Exception {
+    public void persist_user_in_data_base_when_call() throws Exception {
         authenticateUserCall.call();
 
         // verify that user is persisted in database with corresponding data
@@ -345,7 +345,7 @@ public class UserAuthenticateCallIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void call_shouldReturnCorrectUserModel() throws Exception {
+    public void return_correct_user_when_call() throws Exception {
         Response<User> userResponse = authenticateUserCall.call();
 
         User user = userResponse.body();

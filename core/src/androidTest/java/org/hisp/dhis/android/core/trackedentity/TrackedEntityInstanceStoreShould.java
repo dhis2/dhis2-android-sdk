@@ -93,7 +93,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistRowInDatabase() {
+    public void insert_in_data_base_when_insert() {
         long rowId = trackedEntityInstanceStore.insert(UID, date, date,
                 CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
                 ORGANISATION_UNIT, TRACKED_ENTITY, STATE);
@@ -107,7 +107,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistDeferrableRowInDatabase() {
+    public void insert_in_data_base_when_insert_deferrable() {
         String deferredOrganisationUnit = "deferredOrganisationUnit";
         String deferredTrackedEntity = "deferredTrackedEntity";
 
@@ -131,7 +131,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistNullableRowInDatabase() {
+    public void insert_in_data_base_when_insert_nullable_row() {
         long rowId = trackedEntityInstanceStore.insert(UID, null, null, null, null,
                 ORGANISATION_UNIT, TRACKED_ENTITY, null);
 
@@ -143,7 +143,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void update_shouldUpdateTrackedEntityInstance() throws Exception {
+    public void update_in_data_base_when_update() throws Exception {
         ContentValues trackedEntityInstance = new ContentValues();
         trackedEntityInstance.put(Columns.UID, UID);
         trackedEntityInstance.put(Columns.TRACKED_ENTITY, TRACKED_ENTITY);
@@ -171,7 +171,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteTrackedEntityInstance() throws Exception {
+    public void delete_in_data_base_when_delete() throws Exception {
         ContentValues trackedEntityInstance = new ContentValues();
         trackedEntityInstance.put(Columns.UID, UID);
         trackedEntityInstance.put(Columns.TRACKED_ENTITY, TRACKED_ENTITY);
@@ -193,7 +193,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldRemoveAllRows() {
+    public void delete_all_rows_in_data_base_when_delete_without_param() {
         database().insert(TrackedEntityInstanceModel.TABLE, null,
                 CreateTrackedEntityInstanceUtils.create(UID, ORGANISATION_UNIT, TRACKED_ENTITY));
 
@@ -204,7 +204,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteTrackedEntityInstanceWhenDeletingOrganisationUnitForeignKey() {
+    public void delete_tei_in_data_base_when_delete_organisation_unit_foreign_key() {
 
         trackedEntityInstanceStore.insert(UID, date, date, CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
                 ORGANISATION_UNIT, TRACKED_ENTITY, STATE);
@@ -223,7 +223,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteTrackedEntityInstanceWhenDeletingTrackedEntityForeignKey() {
+    public void delete_tracked_entity_instance_in_data_base_when_delete_tracked_entity_foreign_key() {
         trackedEntityInstanceStore.insert(UID, date, date, CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
                 ORGANISATION_UNIT, TRACKED_ENTITY, STATE);
 
@@ -234,7 +234,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void setState_shouldUpdateTrackedEntityInstanceState() throws Exception {
+    public void update_set_state_in_data_base_when_update_tracked_entity_instance_stateshouldUpdateTrackedEntityInstanceState() throws Exception {
         ContentValues trackedEntityInstance = new ContentValues();
         trackedEntityInstance.put(Columns.UID, UID);
         trackedEntityInstance.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
@@ -263,7 +263,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void query_shouldReturnListOfTrackedEntityInstances() throws Exception {
+    public void return_list_of_tracked_entity_instance_when_query() throws Exception {
         ContentValues trackedEntityInstanceContentValues = new ContentValues();
         trackedEntityInstanceContentValues.put(Columns.UID, UID);
         trackedEntityInstanceContentValues.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
@@ -287,7 +287,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistTrackedEntityInstanceWithInvalidOrgUnitForeignKey() {
+    public void throw_sqlite_constraint_exception_when_insert_tracked_entity_instance_with_invalid_org_unit_foreign_key() {
 
         trackedEntityInstanceStore.insert(UID, date, date, CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
                 "wrong", TRACKED_ENTITY, STATE);
@@ -295,31 +295,31 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistTrackedEntityInstanceWithInvalidTrackedEntityForeignKey() {
+    public void throw_sqlite_constraint_exception_when_insert_tracked_entity_instance_with_invalid_tracked_entity_foreign_key() {
         trackedEntityInstanceStore.insert(UID, date, date, CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
                 ORGANISATION_UNIT, "wrong", STATE);
     }
 
     // ToDo: consider introducing conflict resolution strategy
     @Test
-    public void close_shouldNotCloseDatabase() {
+    public void not_close_data_base_on_close() {
         assertThat(database().isOpen()).isTrue();
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void insert_null_uid() {
+    public void throw_sqlite_constraint_exception_when_insert_null_uid() {
         trackedEntityInstanceStore.insert(
                 null, date, date, dateString, dateString, ORGANISATION_UNIT, TRACKED_ENTITY, STATE
         );
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void insert_null_organisationUnit() {
+    public void throw_sqlite_constraint_exception_when_insert_null_organisation_unit() {
         trackedEntityInstanceStore.insert(UID, date, date, dateString, dateString, null, TRACKED_ENTITY, STATE);
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void insert_null_trackedEntity() {
+    public void throw_sqlite_constraint_exception_when_insert_null_tracked_entity() {
         trackedEntityInstanceStore.insert(UID, date, date, dateString, dateString, ORGANISATION_UNIT, null, STATE);
     }
 }

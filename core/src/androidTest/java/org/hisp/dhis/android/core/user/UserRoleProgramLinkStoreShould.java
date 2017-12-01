@@ -80,7 +80,7 @@ public class UserRoleProgramLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistRowInDatabase() {
+    public void insert_in_data_base_when_insert() {
         long rowId = store.insert(USER_ROLE_UID, PROGRAM_UID);
         Cursor cursor = database().query(UserRoleProgramLinkModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
@@ -88,7 +88,7 @@ public class UserRoleProgramLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistDeferrableRowInDatabase() {
+    public void insert_in_data_base_when_insert_deferrable_row() {
         final String deferredUserRole = "deferredUserRole";
         final String deferredProgram = "deferredProgram";
 
@@ -108,7 +108,7 @@ public class UserRoleProgramLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void update_shouldNotInsert() {
+    public void update_and_not_insert_when_update() {
         long rowId = store.update(USER_ROLE_UID, PROGRAM_UID, USER_ROLE_UID, PROGRAM_UID);
         Cursor cursor = database().query(UserRoleProgramLinkModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(0);
@@ -116,7 +116,7 @@ public class UserRoleProgramLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void update_shouldUpdateExisting() {
+    public void update_when_update_existing_user_role_program_link() {
         final String oldUserRoleUid = "oldUserRoleUid";
         final String oldProgramUid = "oldProgramUid";
         //insert old foreign key tables:
@@ -140,7 +140,7 @@ public class UserRoleProgramLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteRow() {
+    public void delete_in_data_base_when_delete_row() {
         ContentValues contentValues = new ContentValues();
         contentValues.put(Columns.USER_ROLE, USER_ROLE_UID);
         contentValues.put(Columns.PROGRAM, PROGRAM_UID);
@@ -155,7 +155,7 @@ public class UserRoleProgramLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteUserRoleProgramLinkWhenDeletingUserRoleForeignKey() {
+    public void delete_user_role_program_link_in_data_base_when_delete_user_role_foreign_key() {
         store.insert(USER_ROLE_UID, PROGRAM_UID);
         database().delete(UserRoleModel.TABLE, UserRoleModel.Columns.UID + "=?", new String[]{USER_ROLE_UID});
         Cursor cursor = database().query(UserRoleProgramLinkModel.TABLE, PROJECTION, null, null, null, null, null);
@@ -163,7 +163,7 @@ public class UserRoleProgramLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteUserRoleProgramLinkWhenDeletingProgramForeignKey() {
+    public void delete_user_role_program_link_in_data_base_when_delete_program_foreign_key() {
         store.insert(USER_ROLE_UID, PROGRAM_UID);
         database().delete(ProgramModel.TABLE, ProgramModel.Columns.UID + "=?", new String[]{PROGRAM_UID});
         Cursor cursor = database().query(UserRoleProgramLinkModel.TABLE, PROJECTION, null, null, null, null, null);
@@ -171,53 +171,53 @@ public class UserRoleProgramLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistUserRoleProgramLinkWithInvalidUserForeignKey() {
+    public void throw_sqlite_constraint_exception_when_insert_user_role_program_link_with_invalid_user_foreign_key() {
         store.insert("wrong", PROGRAM_UID);
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistUserRoleProgramLinkWithInvalidOrganisationUnitForeignKey() {
+    public void throw_sqlite_constraint_exception_when_insert_user_role_program_link_with_organisation_unit_foreign_key() {
         store.insert(USER_ROLE_UID, "wrong");
     }
 
     @Test(expected = IllegalArgumentException.class)
 
-    public void insert_null_uid_arg() {
+    public void throw_illegal_argument_exception_when_insert_null_uid_arg() {
         store.insert(null, PROGRAM_UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_program_arg() {
+    public void throw_illegal_argument_exception_when_insert_null_program_arg() {
         store.insert(USER_ROLE_UID, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_userRole_arg() {
+    public void throw_illegal_argument_exception_when_update_null_user_role_arg() {
         store.update(null, PROGRAM_UID, USER_ROLE_UID, PROGRAM_UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_program_arg() {
+    public void throw_illegal_argument_exception_when_update_null_program_arg() {
         store.update(USER_ROLE_UID, null, USER_ROLE_UID, PROGRAM_UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_whereUserRole_arg() {
+    public void throw_illegal_argument_exception_when_update_null_where_user_role_arg() {
         store.update(USER_ROLE_UID, PROGRAM_UID, null, PROGRAM_UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_whereProgram_arg() {
+    public void throw_illegal_argument_exception_when_update_null_where_program_arg() {
         store.update( USER_ROLE_UID, PROGRAM_UID, USER_ROLE_UID, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void delete_userRole_arg() {
+    public void throw_illegal_argument_exception_when_delete_user_role_arg() {
         store.delete(null, PROGRAM_UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void delete_program_arg() {
+    public void throw_illegal_argument_exception_when_delete_program_arg() {
         store.delete(USER_ROLE_UID, null);
     }
 }

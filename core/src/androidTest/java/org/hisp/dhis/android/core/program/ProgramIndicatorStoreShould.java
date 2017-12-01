@@ -96,7 +96,7 @@ public class ProgramIndicatorStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistRowInDatabase() throws ParseException {
+    public void persist_row_in_data_base_when_insert() throws ParseException {
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, null, null, null);
         database().insert(ProgramModel.TABLE, null, program);
 
@@ -147,7 +147,7 @@ public class ProgramIndicatorStoreShould extends AbsStoreTestCase {
     // ToDo: consider introducing conflict resolution strategy
 
     @Test
-    public void update_shouldUpdateProgramIndicator() throws Exception {
+    public void update_program_indicator_in_data_base_when_update() throws Exception {
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, null, null, null);
         database().insert(ProgramModel.TABLE, null, program);
 
@@ -179,7 +179,7 @@ public class ProgramIndicatorStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteProgramIndicator() throws Exception {
+    public void delete_program_indicator_in_data_base_when_delete() throws Exception {
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, null, null, null);
         database().insert(ProgramModel.TABLE, null, program);
 
@@ -208,7 +208,7 @@ public class ProgramIndicatorStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteProgramIndicatorWhenDeletingProgram() throws Exception {
+    public void delete_program_indicator_when_delete_program() throws Exception {
 
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, null, null, null);
         database().insert(ProgramModel.TABLE, null, program);
@@ -234,42 +234,42 @@ public class ProgramIndicatorStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_uid() {
+    public void throw_illegal_argument_exception_when_insert_null_uid() {
         store.insert(null, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, SHORT_NAME, DISPLAY_SHORT_NAME,
                 DESCRIPTION, DISPLAY_DESCRIPTION, DISPLAY_IN_FORM, EXPRESSION, DIMENSION_ITEM, FILTER, DECIMALS,
                 PROGRAM);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_program() {
+    public void throw_illegal_argument_exception_when_insert_null_program() {
         store.insert(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, SHORT_NAME, DISPLAY_SHORT_NAME,
                 DESCRIPTION, DISPLAY_DESCRIPTION, DISPLAY_IN_FORM, EXPRESSION, DIMENSION_ITEM, FILTER, DECIMALS,
                 null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_uid() {
+    public void throw_illegal_argument_exception_when_update_null_uid() {
         store.update(null, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, SHORT_NAME, DISPLAY_SHORT_NAME,
                 DESCRIPTION, DISPLAY_DESCRIPTION, DISPLAY_IN_FORM, EXPRESSION, DIMENSION_ITEM, FILTER, DECIMALS,
                 PROGRAM, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_program() {
+    public void throw_illegal_argument_exception_when_update_null_program() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, SHORT_NAME, DISPLAY_SHORT_NAME,
                 DESCRIPTION, DISPLAY_DESCRIPTION, DISPLAY_IN_FORM, EXPRESSION, DIMENSION_ITEM, FILTER, DECIMALS,
                 null, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_whereUid() {
+    public void throw_illegal_argument_exception_when_update_with_null_in_where_program_indicator_uid_field() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, SHORT_NAME, DISPLAY_SHORT_NAME,
                 DESCRIPTION, DISPLAY_DESCRIPTION, DISPLAY_IN_FORM, EXPRESSION, DIMENSION_ITEM, FILTER, DECIMALS,
                 PROGRAM, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void delete_null_uid() {
+    public void  throw_illegal_argument_exception_when_delete_null_uid() {
         store.delete(null);
     }
 }

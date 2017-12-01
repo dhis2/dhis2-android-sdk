@@ -253,7 +253,7 @@ public class UserCallIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void call_shouldPersistUserInDatabase() throws Exception {
+    public void persist_user_in_data_base_when_call() throws Exception {
         userCall.call();
 
         Cursor userCursor = database().query(UserModel.TABLE, USER_PROJECTION, null, null, null, null, null);
@@ -283,7 +283,7 @@ public class UserCallIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void call_shouldPersistUserCredentialsInDatabase() throws Exception {
+    public void persist_user_credentials_in_data_base_when_call() throws Exception {
         userCall.call();
 
         String[] projection = {
@@ -314,7 +314,7 @@ public class UserCallIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void call_shouldPersistUserRolesInDatabase() throws Exception {
+    public void persist_user_roles_in_data_base_when_call() throws Exception {
         userCall.call();
 
         String[] userRoleProjection = {

@@ -121,7 +121,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistRowInDatabase() {
+    public void insert_in_data_base_when_insert() {
         long rowId = store.insert(
                 UID,
                 CODE,
@@ -178,7 +178,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistDeferrableRowInDatabase() {
+    public void insert_deferred_in_data_base_when_insert() {
         final String deferredOptionSet = "deferredOptionSet";
         database().beginTransaction();
         long rowId = store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
@@ -204,7 +204,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void insertWithoutForeignKey_shouldThrowException() throws ParseException {
+    public void throw_sqlite_constraint_exception_when_insert_without_foreign_key() throws ParseException {
         store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME,
                 DESCRIPTION, DISPLAY_DESCRIPTION, PATTERN, SORT_ORDER_IN_LIST_NO_PROGRAM,
                 "wrong",
@@ -214,7 +214,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteTrackedEntityAttributeWhenDeletingOptionSet() throws Exception {
+    public void delete_tea_when_delete_option_set() throws Exception {
         ContentValues trackedEntityAttribute = new ContentValues();
         trackedEntityAttribute.put(Columns.ID, 1L);
         trackedEntityAttribute.put(Columns.UID, UID);
@@ -236,7 +236,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void update_shouldUpdateTrackedEntityAttribute() throws Exception {
+    public void update_tea_in_data_base_when_update() throws Exception {
         ContentValues trackedEntityAttribute = new ContentValues();
         trackedEntityAttribute.put(Columns.UID, UID);
         trackedEntityAttribute.put(Columns.EXPRESSION, EXPRESSION);
@@ -269,7 +269,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteTrackedEntityAttribute() throws Exception {
+    public void delete_tea_when_delete() throws Exception {
         ContentValues trackedEntityAttribute = new ContentValues();
         trackedEntityAttribute.put(Columns.UID, UID);
 
@@ -294,7 +294,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
     // ToDo: consider introducing conflict resolution strategy
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_uid() {
+    public void throw_illegal_argument_exception_when_insert_null_uid() {
         store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME,
                 DESCRIPTION, DISPLAY_DESCRIPTION, PATTERN, SORT_ORDER_IN_LIST_NO_PROGRAM, OPTION_SET_UID, VALUE_TYPE,
                 EXPRESSION, SEARCH_SCOPE, PROGRAM_SCOPE, DISPLAY_IN_LIST_NO_PROGRAM, GENERATED,
@@ -303,7 +303,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_uid() {
+    public void throw_illegal_argument_exception_when_update_null_uid() {
         store.update(
                 null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
                 DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, PATTERN, SORT_ORDER_IN_LIST_NO_PROGRAM,
@@ -313,7 +313,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_whereUid() {
+    public void throw_illegal_argument_exception_when_update_null_whereUid() {
         store.update(
                 UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
                 DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, PATTERN, SORT_ORDER_IN_LIST_NO_PROGRAM,
@@ -323,7 +323,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void delete_null_uid() {
+    public void throw_illegal_argument_exception_when_delete_null_uid() {
         store.delete(null);
     }
 }

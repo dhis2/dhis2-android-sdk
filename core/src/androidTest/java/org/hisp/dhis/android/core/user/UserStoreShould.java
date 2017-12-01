@@ -110,7 +110,7 @@ public class UserStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistRowInDatabase() {
+    public void insert_in_data_base_when_insert() {
         Date date = new Date();
 
         long rowId = store.insert(
@@ -164,7 +164,7 @@ public class UserStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void update_shouldUpdateRowInDatabase() throws Exception {
+    public void update_in_data_base_when_update() throws Exception {
         Date date = new Date();
         ContentValues user = new ContentValues();
         user.put(UserModel.Columns.ID, ID);
@@ -220,7 +220,7 @@ public class UserStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteUserObject() throws Exception {
+    public void delete_in_data_base_when_delete() throws Exception {
         ContentValues user = new ContentValues();
         user.put(UserModel.Columns.ID, ID);
         user.put(UserModel.Columns.UID, UID);
@@ -249,7 +249,7 @@ public class UserStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteAllRows() {
+    public void delete_all_rows_in_data_base_when_delete_without_params() {
         ContentValues user = create(1L, "test_user_id");
         database().insert(UserModel.TABLE, null, user);
 
@@ -262,7 +262,7 @@ public class UserStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_uid() {
+    public void throw_illegal_argument_exception_when_insert_null_uid() {
         store.insert(
                 null,
                 "test_user_code",
@@ -286,7 +286,7 @@ public class UserStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_uid() {
+    public void throw_illegal_argument_exception_when_update_null_uid() {
         store.update(null,
                 CODE, "newName", "newDisplayName",
                 new Date(), new Date(),
@@ -308,7 +308,7 @@ public class UserStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_whereUid() {
+    public void throw_illegal_argument_exception_when_update_null_where_uid() {
         store.update(UID,
                 CODE, "newName", "newDisplayName",
                 new Date(), new Date(),
@@ -330,7 +330,7 @@ public class UserStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void delete_null_uid() {
+    public void throw_illegal_argument_exception_when_delete_null_uid() {
         store.delete(null);
     }
 }

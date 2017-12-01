@@ -144,7 +144,7 @@ public class TrackedEntityInstancePostCallIntegrationShould extends AbsStoreTest
     //It depends on a live server to operate and the login is hardcoded here.
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
     @Test
-    public void dataSyncTest() throws Exception {
+    public void response_true_when_data_sync() throws Exception {
 //        retrofit2.Response response = null;
 //        response = d2.logIn("android", "Android123").call();
 //        assertThat(response.isSuccessful()).isTrue();

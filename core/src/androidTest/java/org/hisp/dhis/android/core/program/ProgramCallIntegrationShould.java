@@ -241,7 +241,7 @@ public class ProgramCallIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void call_shouldPersistProgram() throws Exception {
+    public void persist_program_when_call() throws Exception {
         // Fake call to api
         programCall.call();
 
@@ -281,7 +281,7 @@ public class ProgramCallIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void call_shouldPersistProgramStage() throws Exception {
+    public void persist_program_stage_when_call() throws Exception {
         programCall.call();
         String[] projection = {
                 ProgramStageModel.Columns.UID,
@@ -345,7 +345,7 @@ public class ProgramCallIntegrationShould extends AbsStoreTestCase {
      * @throws Exception
      */
     @Test
-    public void call_shouldNotPersistProgramStageSections() throws Exception {
+    public void not_persist_program_stage_sections_when_call() throws Exception {
         programCall.call();
         String[] projection = {
                 ProgramStageSectionModel.Columns.UID,
@@ -364,7 +364,7 @@ public class ProgramCallIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void call_shouldPersistProgramStageDataElement() throws Exception {
+    public void persist_program_stage_data_element_when_call() throws Exception {
         programCall.call();
 
         String[] projection = {
@@ -409,7 +409,7 @@ public class ProgramCallIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void call_shouldPersistDataElement() throws Exception {
+    public void persist_data_element_when_call() throws Exception {
         programCall.call();
 
         String[] projection = {
@@ -461,7 +461,7 @@ public class ProgramCallIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void call_shouldPersistOptionSet() throws Exception {
+    public void persist_option_set_when_call() throws Exception {
         programCall.call();
 
         String[] projection = {
@@ -479,7 +479,7 @@ public class ProgramCallIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void call_shouldPersistProgramRuleVariables() throws Exception {
+    public void persist_program_rule_variables_on_call() throws Exception {
         programCall.call();
         String[] projection = {
                 ProgramRuleVariableModel.Columns.UID,
@@ -516,7 +516,7 @@ public class ProgramCallIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void call_shouldPersistProgramTrackedEntityAttributes() throws Exception {
+    public void persist_program_tracker_entity_attributes_when_call() throws Exception {
         programCall.call();
         String[] projection = {
                 ProgramTrackedEntityAttributeModel.Columns.UID,
@@ -564,7 +564,7 @@ public class ProgramCallIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void call_shouldPersistTrackedEntityAttribute() throws Exception {
+    public void persist_tracked_entity_attribute_when_call() throws Exception {
         programCall.call();
         String[] projection = {
                 TrackedEntityAttributeModel.Columns.UID,
@@ -623,7 +623,7 @@ public class ProgramCallIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void call_shouldPersistProgramIndicators() throws Exception {
+    public void persist_program_indicators_when_call() throws Exception {
         programCall.call();
 
         String[] projection = {
@@ -671,7 +671,7 @@ public class ProgramCallIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void call_shouldPersistProgramRules() throws Exception {
+    public void persist_program_rules_when_call() throws Exception {
         programCall.call();
         String[] projection = {
                 ProgramRuleModel.Columns.UID,
@@ -704,7 +704,7 @@ public class ProgramCallIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void call_shouldPersistProgramRuleActions() throws Exception {
+    public void persist_program_rule_actions_when_call() throws Exception {
         programCall.call();
 
         String[] projection = {
@@ -756,7 +756,7 @@ public class ProgramCallIntegrationShould extends AbsStoreTestCase {
      * @throws Exception
      */
     @Test
-    public void call_shouldNotPersistRelationshipType() throws Exception {
+    public void not_persist_relationship_type_when_call() throws Exception {
         programCall.call();
 
         String[] projection = {

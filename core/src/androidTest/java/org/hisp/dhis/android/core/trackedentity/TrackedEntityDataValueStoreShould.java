@@ -145,7 +145,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistRowInDatabase() {
+    public void insert_tedv_in_data_base_when_insert() {
         long rowId = trackedEntityDataValueStore.insert(
                 EVENT,
                 date,
@@ -170,7 +170,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistDeferrableEventInDatabase() {
+    public void insert_deferrable_tedv_in_data_base_when_insert() {
         final String deferredEvent = "deferredEvent";
         database().beginTransaction();
         long rowId = trackedEntityDataValueStore.insert(
@@ -202,7 +202,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistDeferrableDataElementInDatabase() {
+    public void insert_tedv_in_data_base_with_deferrable_data_element_when_inserte() {
         final String deferredDataElement = "deferredDataElement";
         database().beginTransaction();
         long rowId = trackedEntityDataValueStore.insert(
@@ -234,7 +234,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistNullableRowInDatabase() {
+    public void insert_nullable_tedv_in_data_base_when_insert_null_fields() {
         long rowId = trackedEntityDataValueStore.insert(EVENT, null, null, DATA_ELEMENT, null, null, null);
 
         Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE,
@@ -245,7 +245,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteTrackedEntityDataValueWhenDeletingEventForeignKey() {
+    public void delete_tedv_when_delete_event_foreign_key() {
         trackedEntityDataValueStore.insert(
                 EVENT,
                 date,
@@ -263,7 +263,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteTrackedEntityDataValueWhenDeletingDataElementForeignKey() {
+    public void delete_tedv_when_delete_data_element_foreign_key() {
         trackedEntityDataValueStore.insert(
                 EVENT,
                 date,
@@ -281,7 +281,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void query_shouldReturnListOfTrackedEntityDataValues() throws Exception {
+    public void return_list_of_tedv_when_query_tedv() throws Exception {
         ContentValues dataValue = new ContentValues();
         dataValue.put(Columns.CREATED, dateString);
         dataValue.put(Columns.LAST_UPDATED, dateString);
@@ -318,7 +318,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistTrackedEntityDataValueWithInvalidEvent() {
+    public void throw_illegal_argument_exception_when_insert_tedv_with_invalid_event() {
         trackedEntityDataValueStore.insert(
                 "wrong",
                 date,
@@ -331,7 +331,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistTrackedEntityDataValueWithInvalidDataElement() {
+    public void throw_illegal_argument_exception_wheninsert_tedv_with_invalid_data_element() {
         trackedEntityDataValueStore.insert(
                 EVENT,
                 date,
@@ -347,12 +347,12 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
 
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_uid() {
+    public void throw_illegal_argument_exception_when_insert_null_uid() {
         trackedEntityDataValueStore.insert(null, date, date, DATA_ELEMENT, STORED_BY, VALUE, PROVIDED_ELSEWHERE);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_dataElement() {
+    public void throw_illegal_argument_exception_when_insert_null_data_element() {
         trackedEntityDataValueStore.insert(EVENT, date, date, null, STORED_BY, VALUE, PROVIDED_ELSEWHERE);
     }
 }

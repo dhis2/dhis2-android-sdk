@@ -127,7 +127,7 @@ public class SystemInfoCallIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void call_shouldPersistSystemInfo() throws Exception {
+    public void persist_system_info_when_call() throws Exception {
         // fake call to api to retrieve response
         systeminfoCall.call();
 
@@ -143,7 +143,7 @@ public class SystemInfoCallIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void call_shouldUpdateSystemInfo() throws Exception {
+    public void update_system_info_when_call() throws Exception {
         ContentValues systemInfo = new ContentValues();
         systemInfo.put(SystemInfoModel.Columns.SERVER_DATE, "2017-02-27T15:00:46.332");
         systemInfo.put(SystemInfoModel.Columns.VERSION, "2.26");

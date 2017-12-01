@@ -53,7 +53,7 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void persist_row_in_database_after_save() {
+    public void persist_row_in_database_when_save() {
         long rowId = store.save("http://testserver.org/");
 
         Cursor cursor = database().query(ConfigurationModel.CONFIGURATION,
@@ -122,7 +122,7 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void return_persisted_row_after_query() {
+    public void return_persisted_row_when_query() {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConfigurationModel.Columns.SERVER_URL, "http://testserver.org/");
 
@@ -140,7 +140,7 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_uid() {
+    public void throw_illegal_argument_exception_when_insert_null_uid() {
         store.save(null);
     }
 }

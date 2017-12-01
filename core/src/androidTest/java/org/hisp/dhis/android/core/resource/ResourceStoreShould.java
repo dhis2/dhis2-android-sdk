@@ -46,7 +46,7 @@ public class ResourceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistResourceInDatabase() {
+    public void insert_resource_in_data_base_when_insert() {
         long rowId = store.insert(RESOURCE_TYPE.name(), date);
         Cursor cursor = database().query(ResourceModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
@@ -54,7 +54,7 @@ public class ResourceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistResourceInDatabaseWithoutLastSynced() {
+    public void insert_resource_in_data_base_when_insert_without_last_synced() {
         long rowId = store.insert(RESOURCE_TYPE.name(), null);
         Cursor cursor = database().query(ResourceModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
@@ -63,7 +63,7 @@ public class ResourceStoreShould extends AbsStoreTestCase {
 
 
     @Test
-    public void update_shouldUpdateExisting() {
+    public void update_resource_in_data_base_when_update_existing() {
         database().insert(ResourceModel.TABLE, null, createResource(RESOURCE_TYPE.name(), dateString2));
 
         int returnValue = store.update(RESOURCE_TYPE.name(), date, RESOURCE_TYPE.name());
@@ -75,7 +75,7 @@ public class ResourceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void update_shouldNotInsert() {
+    public void update_without_insert_resource_when__update() {
         int returnValue = store.update(RESOURCE_TYPE.name(), date, RESOURCE_TYPE.name());
 
         Cursor cursor = database().query(ResourceModel.TABLE, PROJECTION, null, null, null, null, null);
@@ -85,7 +85,7 @@ public class ResourceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void update_shouldNotUpdate_WithoutWhere() {
+    public void not_update_resource_in_data_base_without_where() {
         database().insert(ResourceModel.TABLE, null, createResource(RESOURCE_TYPE.name(), dateString));
 
         int returnValue = store.update(RESOURCE_TYPE.name(), date, "");
@@ -97,7 +97,7 @@ public class ResourceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteRow() {
+    public void delete_resource_in_data_base_when_delete_row() {
         database().insert(ResourceModel.TABLE, null, createResource(RESOURCE_TYPE.name(), dateString));
         int returnValue = store.delete(RESOURCE_TYPE.name());
 
@@ -108,7 +108,7 @@ public class ResourceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void getLastUpdated_shouldReturnCorrectLastUpdated() {
+    public void return_last_updated_when_get_last_updated() {
         database().insert(ResourceModel.TABLE, null, createResource(RESOURCE_TYPE.name(), dateString));
 
         String lastUpdated = store.getLastUpdated(RESOURCE_TYPE);
@@ -118,7 +118,7 @@ public class ResourceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void getLastUpdated_shouldReturnNull_IfNotExisting() {
+    public void return_null_when_get_last_updated_if_not_exists() {
         String lastUpdated = store.getLastUpdated(RESOURCE_TYPE);
         assertThat(lastUpdated).isNull();
     }
@@ -131,23 +131,23 @@ public class ResourceStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_uid() {
+    public void throw_illegal_argument_exception_when_insert_null_uid() {
         store.insert(null, date);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_uid() {
+    public void throw_illegal_argument_exception_when_update_null_uid() {
         store.update(null, date, RESOURCE_TYPE.name());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_programRule() {
+    public void throw_illegal_argument_exception_when_update_null_programRule() {
         store.update(RESOURCE_TYPE.name(), date, null);
     }
 
 
     @Test(expected = IllegalArgumentException.class)
-    public void delete_null_uid() {
+    public void throw_illegal_argument_exception_when_delete_null_uid() {
         store.delete(null);
     }
 }

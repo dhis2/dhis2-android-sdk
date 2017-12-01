@@ -81,7 +81,7 @@ public class UserRoleStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistRowInDatabase() {
+    public void insert_in_data_base_when_insert() {
         long rowId = userRoleStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date);
         Cursor cursor = database().query(UserRoleModel.TABLE, PROJECTION, null, null, null, null, null, null);
 
@@ -90,7 +90,7 @@ public class UserRoleStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void update_shouldUpdateRowInDatabase() throws Exception {
+    public void update_in_data_base_when_update() throws Exception {
         ContentValues userRole = new ContentValues();
         userRole.put(Columns.ID, ID);
         userRole.put(Columns.UID, UID);
@@ -112,7 +112,7 @@ public class UserRoleStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteRowInDatabase() throws Exception {
+    public void delete_in_data_base_when_delete() throws Exception {
         ContentValues userRole = new ContentValues();
         userRole.put(Columns.ID, ID);
         userRole.put(Columns.UID, UID);
@@ -135,22 +135,22 @@ public class UserRoleStoreShould extends AbsStoreTestCase {
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void insert_null_uid() {
+    public void throw_illegal_argument_exception_when_insert_null_uid() {
         userRoleStore.insert(null, CODE, NAME, DISPLAY_NAME, date, date);
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void update_null_uid() {
+    public void throw_illegal_argument_exception_when_update_null_uid() {
         userRoleStore.update(null, CODE, NAME, DISPLAY_NAME, date, date, UID);
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void update_null_where() {
+    public void throw_illegal_argument_exception_when_update_null_where() {
         userRoleStore.update(UID, CODE, NAME, DISPLAY_NAME, date, date, null);
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void delete_null_arg() {
+    public void throw_illegal_argument_exception_when_delete_null_arg() {
         userRoleStore.delete(null);
     }
 }

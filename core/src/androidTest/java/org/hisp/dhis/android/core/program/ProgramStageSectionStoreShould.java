@@ -108,7 +108,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistProgramStageSectionInDatabase() {
+    public void insert_program_stage_section_in_data_base_when_insert() {
 
         long rowId = store.insert(
                 UID,
@@ -140,7 +140,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistDeferrableProgramStageSectionInDatabase() {
+    public void insert_deferrable_program_stage_section_in_data_base_when_insert() {
         final String deferredProgramStage = "deferredProgramStage";
 
         database().beginTransaction();
@@ -160,7 +160,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteProgramStageSectionWhenDeletingProgramStage() {
+    public void delete_program_stage_section_in_data_base_when_delete_program_stage() {
 
         ContentValues programStageSection = new ContentValues();
         programStageSection.put(Columns.ID, ID);
@@ -185,7 +185,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistProgramStageSectionWithInvalidProgramStageForeignKey() {
+    public void throw_sqlite_constraint_exception_when_insert_program_stage_section_with_invalid_foreign_key() {
         String WRONG_UID = "wrong";
         store.insert(
                 UID,
@@ -200,7 +200,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void update_shouldUpdateProgramStageSection() throws Exception {
+    public void update_in_data_base_when_update() throws Exception {
         // insertion of foreign key: program stage happens in the setUp method
 
         // insert program stage section into database
@@ -232,7 +232,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteProgramStageSection() throws Exception {
+    public void delete_in_data_base_when_delete() throws Exception {
         // insertion of foreign key: program stage happens in the setUp method
 
         // insert program stage section into database
@@ -261,31 +261,31 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_uid() {
+    public void throw_illegal_argument_exception_when_insert_null_uid() {
         store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, PROGRAM_STAGE);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_programStage() {
+    public void throw_illegal_argument_exception_when_insert_null_program_stage() {
         store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, null);
     }
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_uid() {
+    public void throw_illegal_argument_exception_when_update_null_uid() {
         store.update(null, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, PROGRAM_STAGE, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_programStage() {
+    public void throw_illegal_argument_exception_when_update_null_program_stage() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, null, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void update_null_whereUid() {
+    public void throw_illegal_argument_exception_when_update_null_where_uid() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, PROGRAM_STAGE, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void delete_null_uid() {
+    public void throw_illegal_argument_exception_when_delete_null_uid() {
         store.delete(null);
     }
 }

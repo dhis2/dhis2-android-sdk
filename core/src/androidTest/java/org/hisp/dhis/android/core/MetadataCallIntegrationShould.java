@@ -32,7 +32,7 @@ public class MetadataCallIntegrationShould extends AbsStoreTestCase {
         super.setUp();
 
         ConfigurationModel config = ConfigurationModel.builder()
-                .serverUrl(HttpUrl.parse("https://play.dhis2.org/android-previous2/api/"))
+                .serverUrl(HttpUrl.parse("https://play.dhis2.org/dev/api/"))
                 .build();
 
         d2 = new D2.Builder()
@@ -63,7 +63,7 @@ public class MetadataCallIntegrationShould extends AbsStoreTestCase {
     //It depends on a live server to operate and the login is hardcoded here.
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
     @Test
-    public void metadataSyncTest() throws Exception {
+    public void response_successful_on_sync_meta_data_two_times() throws Exception {
         retrofit2.Response response = null;
         response = d2.logIn("android", "Android123").call();
         assertThat(response.isSuccessful()).isTrue();
@@ -75,7 +75,7 @@ public class MetadataCallIntegrationShould extends AbsStoreTestCase {
         //second sync:
         response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
-        ProgramCall programCall = new ProgramCall().call()
+
         //TODO: add aditional sync + break point.
         //when debugger stops at the new break point manually change metadata online & resume.
         //This way I can make sure that additive (updates) work as well.

@@ -260,7 +260,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_veent_in_data_base_after_delete_program_foreign_key() {
+    public void delete_event_in_data_base_after_delete_program_foreign_key() {
         eventStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
@@ -312,7 +312,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_event_in_data_base_after_delete_organisation_unit_foreing_key() {
+    public void delete_event_in_data_base_after_delete_organisation_unit_foreign_key() {
         eventStore.insert(
                 EVENT_UID,
                 ENROLLMENT_UID,
@@ -392,7 +392,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void update_event_state_after_set_state() throws Exception {
+    public void update_event_state_in_database_after_set_state() throws Exception {
         ContentValues event = new ContentValues();
         event.put(Columns.UID, EVENT_UID);
         event.put(Columns.PROGRAM, PROGRAM);
@@ -471,7 +471,6 @@ public class EventStoreShould extends AbsStoreTestCase {
         Map<String, List<Event>> events = eventStore.queryEventsAttachedToEnrollmentToPost();
 
         assertThat(events.size()).isEqualTo(0);
-
     }
 
     @Test(expected = SQLiteConstraintException.class)

@@ -68,7 +68,7 @@ public class AuthenticatedUserStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_shouldPersistRowInDatabase() {
+    public void insert_in_data_base_when_insert() {
         // inserting authenticated user model item
         long rowId = authenticatedUserStore.insert(USER_UID, USER_CREDENTIALS);
 
@@ -80,17 +80,17 @@ public class AuthenticatedUserStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_uid_arg() {
+    public void throw_illegal_argument_exception_when_insert_null_uid_arg() {
         authenticatedUserStore.insert(null, USER_CREDENTIALS);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void insert_null_credentials_arg() {
+    public void ithrow_illegal_argument_exception_when_nsert_null_credentials_arg() {
         authenticatedUserStore.insert(USER_UID, null);
     }
 
     @Test
-    public void insert_shouldPersistDeferrableRowInDatabase() {
+    public void insert_in_data_base_when_insert_deferrable_row() {
         final String deferrableUserUid = "deferrableUserUid";
 
         database().beginTransaction();
@@ -108,7 +108,7 @@ public class AuthenticatedUserStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void query_shouldReturnPersistedRows() {
+    public void return_persisted_row_on_query() {
         ContentValues authenticatedUser = new ContentValues();
         authenticatedUser.put(AuthenticatedUserModel.Columns.USER, USER_UID);
         authenticatedUser.put(AuthenticatedUserModel.Columns.CREDENTIALS, USER_CREDENTIALS);
@@ -124,12 +124,12 @@ public class AuthenticatedUserStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void query_shouldReturnEmptyListOnEmptyTable() {
+    public void return_empty_list_when_query_empty_table() {
         assertThat(authenticatedUserStore.query()).isEmpty();
     }
 
     @Test
-    public void delete_shouldDeleteAllRows() {
+    public void delete_all_rows_in_data_base_when_delete_without_params() {
         ContentValues authenticatedUser = new ContentValues();
         authenticatedUser.put(AuthenticatedUserModel.Columns.USER, USER_UID);
         authenticatedUser.put(AuthenticatedUserModel.Columns.CREDENTIALS, USER_CREDENTIALS);
@@ -145,7 +145,7 @@ public class AuthenticatedUserStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_shouldDeleteAuthenticatedUserStoreWhenDeletingUserForeignKey() {
+    public void delete_authenticated_user_when_delete_user_foreign_key() {
         authenticatedUserStore.insert(USER_UID, USER_CREDENTIALS);
         database().delete(UserModel.TABLE, UserModel.Columns.UID + "=?", new String[]{USER_UID});
         Cursor cursor = database().query(AuthenticatedUserModel.TABLE,
@@ -154,7 +154,7 @@ public class AuthenticatedUserStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void exception_persistAuthenticatedUserWithInvalidUserForeignKey() {
+    public void throw_sqlite_constraint_exception_when_insert_authenticated_user_with_invalid_uid_foreign_key() {
         String wrongUserUid = "wrong";
         authenticatedUserStore.insert(wrongUserUid, USER_CREDENTIALS);
     }

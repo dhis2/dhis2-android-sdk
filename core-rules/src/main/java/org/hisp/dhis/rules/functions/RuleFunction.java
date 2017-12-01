@@ -40,6 +40,8 @@ public abstract class RuleFunction {
                 return RuleFunctionCondition.create();
             case RuleFunctionCount.D2_COUNT:
                 return RuleFunctionCount.create();
+            case RuleFunctionRuleFunctionCountIfZeroPos.D2_COUNTIFZEROPOS:
+                return RuleFunctionRuleFunctionCountIfZeroPos.create();
             case RuleFunctionLeft.D2_LEFT:
                 return RuleFunctionLeft.create();
             case RuleFunctionLength.D2_LENGTH:

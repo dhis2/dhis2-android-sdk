@@ -29,7 +29,7 @@ public class RuleFunctionRuleFunctionCountIfZeroPos extends RuleFunction {
     }
 
     /**
-     * Function which will return count if zero pos values¡ for given variableName
+     * Function which will return count if zero pos values for given variableName
      *
      * @param variableName variable name.
      * @param valueMap list of variables.

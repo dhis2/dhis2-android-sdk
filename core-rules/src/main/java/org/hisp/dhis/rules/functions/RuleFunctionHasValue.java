@@ -26,6 +26,9 @@ final class RuleFunctionHasValue extends RuleFunction {
 
         // ToDo: make sure that argument names are actually argument names and not values.
         String variableName = arguments.get(0).replace("'", "");
+        if(!valueMap.containsKey(variableName)) {
+            return "false";
+        }
         return String.valueOf(valueMap.get(variableName).value() != null);
     }
 }

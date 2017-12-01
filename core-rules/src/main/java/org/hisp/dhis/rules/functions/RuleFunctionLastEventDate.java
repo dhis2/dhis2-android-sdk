@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 
 public class RuleFunctionLastEventDate extends RuleFunction {
     static final String D2_LAST_EVENT_DATE = "d2:lasteventdate";
+    private static final String ENV_VAR_EVENT_DATE = "event_date";
 
     @Nonnull
     public static RuleFunctionLastEventDate create() {
@@ -37,8 +38,8 @@ public class RuleFunctionLastEventDate extends RuleFunction {
 
     public static String lastEventDate(String variableName, Map<String, RuleVariableValue>  valueMap) {
         if(valueMap.containsKey(variableName)){
-            if(valueMap.containsKey("event_date")){
-                return valueMap.get("event_date").value().replace("'","");
+            if(valueMap.containsKey(ENV_VAR_EVENT_DATE)){
+                return valueMap.get(ENV_VAR_EVENT_DATE).value().replace("'","");
             }
         }
         return "";

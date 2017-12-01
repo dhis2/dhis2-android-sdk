@@ -28,18 +28,12 @@
 
 package org.hisp.dhis.android.core.data.server;
 
-import static junit.framework.Assert.assertEquals;
-
-import org.hamcrest.core.StringContains;
 import org.hisp.dhis.android.core.data.file.FileExtensions;
-import org.hisp.dhis.android.core.event.EventCallShould;
-import org.junit.Assert;
 
 import java.io.IOException;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import okhttp3.mockwebserver.RecordedRequest;
 
 public class Dhis2MockServer {
     private static final int OK_CODE = 200;

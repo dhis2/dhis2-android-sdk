@@ -14,7 +14,6 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Date;
@@ -24,7 +23,7 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
-public class EventCallRealServerShould extends AbsStoreTestCase {
+public class EventCallRealIntegrationShould extends AbsStoreTestCase {
 
     private D2 d2;
 

@@ -3,6 +3,8 @@ package org.hisp.dhis.android.core.event;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+import android.support.test.runner.AndroidJUnit4;
+
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
@@ -14,7 +16,9 @@ import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +27,8 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
-public class EventCallShould extends AbsStoreTestCase{
+@RunWith(AndroidJUnit4.class)
+public class EventCallMockIntegrationShould extends AbsStoreTestCase {
 
     private Dhis2MockServer dhis2MockServer;
     private D2 d2;

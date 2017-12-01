@@ -46,6 +46,8 @@ public abstract class RuleFunction {
                 return RuleFunctionOizp.create();
             case RuleFunctionRound.D2_ROUND:
                 return RuleFunctionRound.create();
+            case RuleFunctionRight.D2_RIGHT:
+                return RuleFunctionRight.create();
             case RuleFunctionSubString.D2_SUBSTRING:
                 return RuleFunctionSubString.create();
             case RuleFunctionSplit.D2_SPLIT:

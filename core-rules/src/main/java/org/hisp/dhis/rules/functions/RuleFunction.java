@@ -46,6 +46,8 @@ public abstract class RuleFunction {
                 return RuleFunctionOizp.create();
             case RuleFunctionSubString.D2_SUBSTRING:
                 return RuleFunctionSubString.create();
+            case RuleFunctionSplit.D2_SPLIT:
+                return RuleFunctionSplit.create();
             case RuleFunctionValidatePattern.D2_VALIDATE_PATTERN:
                 return RuleFunctionValidatePattern.create();
             case RuleFunctionZing.D2_ZING:

@@ -8,11 +8,18 @@ public class EventQuery {
     private int page;
     private int pageSize;
     private boolean paging;
+    private String orgUnit;
+    private String program;
+    private String trackedEntityInstance;
 
-    public EventQuery(boolean paging, int page, int pageSize, Set<String> uIds) {
+    public EventQuery(boolean paging, int page, int pageSize,
+            String orgUnit, String program, String trackedEntityInstance, Set<String> uIds) {
         this.paging = paging;
         this.page = page;
         this.pageSize = pageSize;
+        this.orgUnit = orgUnit;
+        this.program = program;
+        this.trackedEntityInstance = trackedEntityInstance;
         this.uIds = uIds;
     }
 
@@ -32,10 +39,26 @@ public class EventQuery {
         return paging;
     }
 
+    public String getOrgUnit() {
+        return orgUnit;
+    }
+
+    public String getProgram() {
+        return program;
+    }
+
+    public String getTrackedEntityInstance() {
+        return trackedEntityInstance;
+    }
+
     public static class Builder {
         private int page = 1;
-        private int pageSize = 5;
+        private int pageSize = 50;
         private boolean paging = false;
+        private String orgUnit = null;
+        private String program = null;
+        private String trackedEntityInstance = null;
+
         private Set<String> uIds = new HashSet<>();
 
         private Builder() {
@@ -60,13 +83,29 @@ public class EventQuery {
             return this;
         }
 
+        public Builder withOrgUnit(String orgUnit) {
+            this.orgUnit = orgUnit;
+            return this;
+        }
+
+        public Builder withProgram(String program) {
+            this.program = program;
+            return this;
+        }
+
+        public Builder withTrackedEntityInstance(String trackedEntityInstance) {
+            this.trackedEntityInstance = trackedEntityInstance;
+            return this;
+        }
+
         public Builder withUIds(Set<String> uIds) {
             this.uIds = uIds;
             return this;
         }
 
         public EventQuery build() {
-            return new EventQuery(paging, page, pageSize, uIds);
+            return new EventQuery(paging, page, pageSize,
+                    orgUnit, program, trackedEntityInstance, uIds);
         }
     }
 }

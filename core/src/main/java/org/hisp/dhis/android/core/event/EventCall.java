@@ -64,11 +64,12 @@ public class EventCall implements Call<Response<Payload<Event>>> {
         String lastSyncedEvents = resourceHandler.getLastUpdated(ResourceModel.Type.EVENT);
 
         Response<Payload<Event>> eventsByLastUpdated = eventService.getEvents(
-                getSingleFields(), Event.lastUpdated.gt(lastSyncedEvents),
-                Event.uid.in(eventQuery.getUIds()), Boolean.FALSE
-        ).execute();
+                eventQuery.getOrgUnit(), eventQuery.getProgram(),
+                eventQuery.getTrackedEntityInstance(), getSingleFields(),
+                Event.lastUpdated.gt(lastSyncedEvents), Event.uid.in(eventQuery.getUIds()),
+                Boolean.TRUE, eventQuery.getPage(), eventQuery.getPageSize()).execute();
 
-        if (eventsByLastUpdated.isSuccessful()) {
+        if (eventsByLastUpdated.isSuccessful() && eventsByLastUpdated.body().items() != null) {
             Transaction transaction = databaseAdapter.beginNewTransaction();
             try {
                 List<Event> events = eventsByLastUpdated.body().items();

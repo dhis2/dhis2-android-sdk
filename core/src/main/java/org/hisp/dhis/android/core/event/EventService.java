@@ -20,8 +20,12 @@ public interface EventService {
     Call<WebResponse> postEvents(@Body EventPayload events);
 
     @GET("events")
-    Call<Payload<Event>> getEvents(@Query("fields") @Which Fields<Event> fields,
+    Call<Payload<Event>> getEvents(@Query("orgUnit") String orgUnit,
+            @Query("program") String program,
+            @Query("trackedEntityInstance") String trackedEntityInstance,
+            @Query("fields") @Which Fields<Event> fields,
             @Query("filter") @Where Filter<Event, String> lastUpdated,
             @Query("filter") @Where Filter<Event, String> uids,
-            @Query("paging") Boolean paging);
+            @Query("paging") Boolean paging, @Query("page") int page,
+            @Query("pageSize") int pageSize);
 }

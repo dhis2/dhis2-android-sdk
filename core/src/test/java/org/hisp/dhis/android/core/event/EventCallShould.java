@@ -1,12 +1,19 @@
 package org.hisp.dhis.android.core.event;
 
+import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.hisp.dhis.android.core.calls.Call.MAX_UIDS;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
+import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
+import org.hisp.dhis.android.core.data.api.FilterConverterTests;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -17,7 +24,12 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 public class EventCallShould {
     private Call<Response<Payload<Event>>> eventCall;
@@ -37,10 +49,29 @@ public class EventCallShould {
     @Mock
     private Date serverDate;
 
+    MockWebServer dhis2MockServer = new MockWebServer();
+    Retrofit retrofit;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws IOException {
+        dhis2MockServer.start();
+
+        //TODO reuse dhis2MockServer from AndroidTest
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl(dhis2MockServer.url("/"))
+                .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
+                .addConverterFactory(FilterConverterFactory.create())
+                .addConverterFactory(FieldsConverterFactory.create())
+                .build();
+
         MockitoAnnotations.initMocks(this);
+    }
+
+    @After
+    public void tearDown() throws IOException {
+        dhis2MockServer.shutdown();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -51,6 +82,34 @@ public class EventCallShould {
     @Test
     public void create_event_call_if_uIds_size_does_not_exceeds_the_limit() {
         EventCall eventCall = givenAEventCallByUIds(MAX_UIDS);
+    }
+
+    @Test
+    public void realize_request_with_page_filters_when_included_in_query()
+            throws Exception {
+        EventCall eventCall = givenAEventCallByPagination(2, 32);
+
+        enqueueMockResponse();
+
+        eventCall.call();
+
+        RecordedRequest request = dhis2MockServer.takeRequest();
+
+        assertThat(request.getPath()).contains("paging=true&page=2&pageSize=32");
+    }
+
+    @Test
+    public void realize_request_with_orgUnit_program_filters_when_included_in_query()
+            throws Exception {
+        EventCall eventCall = givenAEventCallByOrgUnitAndProgram("OU", "P");
+
+        enqueueMockResponse();
+
+        eventCall.call();
+
+        RecordedRequest request = dhis2MockServer.takeRequest();
+
+        assertThat(request.getPath()).contains("orgUnit=OU&program=P");
     }
 
     private EventCall givenAEventCallByUIds(int numUIds) {
@@ -70,5 +129,47 @@ public class EventCallShould {
                         eventHandler, serverDate, eventQuery);
 
         return eventCall;
+    }
+
+    private EventCall givenAEventCallByPagination(int page, int pageCount) {
+        EventService eventService = retrofit.create(EventService.class);
+
+        EventQuery eventQuery = EventQuery.Builder
+                .create()
+                .withPage(page)
+                .withPageSize(pageCount)
+                .withPaging(true)
+                .build();
+
+
+        EventCall eventCall =
+                new EventCall(eventService, databaseAdapter, resourceHandler,
+                        eventHandler, serverDate, eventQuery);
+
+        return eventCall;
+    }
+
+    private EventCall givenAEventCallByOrgUnitAndProgram(String orgUnit, String program) {
+        EventService eventService = retrofit.create(EventService.class);
+
+        EventQuery eventQuery = EventQuery.Builder
+                .create()
+                .withOrgUnit(orgUnit)
+                .withProgram(program)
+                .build();
+
+
+        EventCall eventCall =
+                new EventCall(eventService, databaseAdapter, resourceHandler,
+                        eventHandler, serverDate, eventQuery);
+
+        return eventCall;
+    }
+
+    public void enqueueMockResponse() throws IOException {
+        MockResponse mockResponse = new MockResponse();
+        mockResponse.setResponseCode(200);
+        mockResponse.setBody("{}");
+        dhis2MockServer.enqueue(mockResponse);
     }
 }

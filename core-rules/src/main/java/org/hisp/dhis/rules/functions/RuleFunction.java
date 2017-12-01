@@ -44,6 +44,8 @@ public abstract class RuleFunction {
                 return RuleFunctionLeft.create();
             case RuleFunctionLength.D2_LENGTH:
                 return RuleFunctionLength.create();
+            case RuleFunctionLastEventDate.D2_LAST_EVENT_DATE:
+                return RuleFunctionLastEventDate.create();
             case RuleFunctionModulus.D2_MODULUS:
                 return RuleFunctionModulus.create();
             case RuleFunctionOizp.D2_OIZP:

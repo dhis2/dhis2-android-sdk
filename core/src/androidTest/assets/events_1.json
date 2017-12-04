@@ -2790,33 +2790,6 @@
       "orgUnit": "DiszpKrYNg8",
       "dueDate": "2016-05-17T00:00:00.000",
       "program": "eBAyeGv0exc",
-      "event": "xVIGJUcxIeK",
-      "status": "COMPLETED",
-      "eventDate": "2016-05-17T00:00:00.000",
-      "created": "2016-09-08T21:40:22.000",
-      "completedDate": "2015-05-30T10:26:00.009",
-      "lastUpdated": "2016-09-08T21:40:22.000",
-      "deleted": false,
-      "coordinate": {
-        "latitude": 0,
-        "longitude": 0
-      },
-      "dataValues": [
-        {
-          "lastUpdated": "2013-05-30T00:00:00.000",
-          "storedBy": "admin",
-          "created": "2013-05-30T00:00:00.000",
-          "dataElement": "msodh3rEMJa",
-          "value": "2013-05-18",
-          "providedElsewhere": false
-        }
-      ]
-    },
-    {
-      "programStage": "Zj7UnCAulEk",
-      "orgUnit": "DiszpKrYNg8",
-      "dueDate": "2016-05-17T00:00:00.000",
-      "program": "eBAyeGv0exc",
       "event": "Yp0oC0Yb9hR",
       "status": "COMPLETED",
       "eventDate": "2016-05-17T00:00:00.000",

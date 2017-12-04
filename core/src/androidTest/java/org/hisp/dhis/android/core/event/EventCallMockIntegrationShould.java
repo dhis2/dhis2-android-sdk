@@ -5,10 +5,15 @@ import static org.hamcrest.core.Is.is;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.file.FileExtensions;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
@@ -18,7 +23,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -77,7 +81,7 @@ public class EventCallMockIntegrationShould extends AbsStoreTestCase {
 
         eventCall.call();
 
-        verifyDownloadedEvents(50);
+        verifyDownloadedEvents("events_1.json");
     }
 
     private void givenAMetadataInDatabase() throws Exception {
@@ -91,12 +95,21 @@ public class EventCallMockIntegrationShould extends AbsStoreTestCase {
         d2.syncMetaData().call();
     }
 
-    private void verifyDownloadedEvents(int numEvents) {
+    private void verifyDownloadedEvents(String file) throws IOException {
+        String expectedEventsResponseJson = FileExtensions.getStringFromFile(file);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Payload<Event> expectedEventsResponse =
+                objectMapper.readValue(expectedEventsResponseJson,
+                        new TypeReference<Payload<Event>>() {
+                        });
+
         EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
 
         List<Event> downloadedEvents = eventStore.querySingleEvents();
 
-        assertThat(downloadedEvents.size(), is(numEvents));
+        assertThat(downloadedEvents.size(), is(expectedEventsResponse.items().size()));
+        assertThat(downloadedEvents, is(expectedEventsResponse.items()));
     }
 
     private EventCall givenADefaultEventCall() {

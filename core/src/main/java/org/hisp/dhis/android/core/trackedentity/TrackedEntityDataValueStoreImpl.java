@@ -32,12 +32,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementModel;
 import org.hisp.dhis.android.core.program.ProgramStageSectionModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -107,6 +109,16 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
             "WHERE Event.enrollment ISNULL AND (Event.state = 'TO_POST' OR Event.state = "
             + "'TO_UPDATE');";
 
+    private static final String QUERY_TRACKED_ENTITY_DATA_VALUES_BY_EVENT = "SELECT " +
+            "  TrackedEntityDataValue.created, " +
+            "  TrackedEntityDataValue.lastUpdated, " +
+            "  TrackedEntityDataValue.event, " +
+            "  TrackedEntityDataValue.dataElement, " +
+            "  TrackedEntityDataValue.providedElsewhere, " +
+            "  TrackedEntityDataValue.storedBy, " +
+            "  TrackedEntityDataValue.value " +
+            "FROM TrackedEntityDataValue " +
+            "WHERE event = '?' ";
 
     private final SQLiteStatement insertRowStatement;
     private final SQLiteStatement updateRowStatement;
@@ -159,13 +171,69 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
 
     @Override
     public int deleteByEventAndDataElementUIds(@NonNull String eventUid,
-            @NonNull List<String> uIds) {
-        return 0;
+            @NonNull List<String> dataElementUids) {
+
+        //SQLiteStatement deleteRowStatement = new SQLiteStatement();
+
+        //String dataElementUidsWhere = "'" +  TextUtils.join("','", dataElementUids) + "'";
+        //sqLiteBind(deleteRowStatement, 1,  eventUid);
+        //sqLiteBind(deleteRowStatement, 2, dataElementUidsWhere);
+
+        List<String> argumentValues = new ArrayList<>();
+        argumentValues.add(eventUid);
+        argumentValues.addAll(dataElementUids);
+        String[] argumentValuesArray = argumentValues.toArray(new String[0]);
+
+        // execute and clear bindings
+        //int delete = databaseAdapter.delete("","","")..executeUpdateDelete(
+        //      TrackedEntityDataValueModel.TABLE, deleteRowStatement);
+
+        String inArguments = TextUtils.join(
+                ",", Collections.nCopies(dataElementUids.size(), "?"));
+
+        int delete = databaseAdapter.delete(TrackedEntityDataValueModel.TABLE,
+                TrackedEntityDataValueModel.Columns.EVENT + " = ? AND " +
+                        TrackedEntityDataValueModel.Columns.DATA_ELEMENT + " in (" +
+                        inArguments + ");", argumentValuesArray);
+
+        return delete;
     }
 
     @Override
-    public List<TrackedEntityDataValue> queryTrackedEntityDataValues(String event) {
-        return null;
+    public List<TrackedEntityDataValue> queryTrackedEntityDataValues(String eventFilter) {
+        String queryStatement = QUERY_TRACKED_ENTITY_DATA_VALUES_BY_EVENT;
+
+        queryStatement = queryStatement.replace("?", eventFilter);
+
+        Cursor cursor = databaseAdapter.query(queryStatement);
+        List<TrackedEntityDataValue> dataValues = new ArrayList<>();
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    Date created = cursor.getString(0) == null ? null : parse(cursor.getString(0));
+                    Date lastUpdated = cursor.getString(1) == null ? null : parse(
+                            cursor.getString(1));
+                    String dataElement = cursor.getString(3) == null ? null : cursor.getString(3);
+                    //String event = cursor.getString(2) == null ? null : cursor.getString(2);
+                    String storedBy = cursor.getString(4) == null ? null : cursor.getString(4);
+                    String value = cursor.getString(5) == null ? null : cursor.getString(5);
+                    Boolean providedElsewhere =
+                            cursor.getString(6) == null || cursor.getInt(6) == 0 ? Boolean.FALSE
+                                    : Boolean.TRUE;
+
+                    dataValues.add(TrackedEntityDataValue.create(
+                            created, lastUpdated, dataElement, storedBy, value, providedElsewhere
+                    ));
+
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return dataValues;
     }
 
     /**

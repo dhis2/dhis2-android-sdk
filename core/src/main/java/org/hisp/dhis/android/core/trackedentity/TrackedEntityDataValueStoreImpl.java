@@ -34,6 +34,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.program.ProgramStageDataElementModel;
+import org.hisp.dhis.android.core.program.ProgramStageSectionModel;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,6 +55,7 @@ import static org.hisp.dhis.android.core.utils.Utils.isNull;
         "PMD.AvoidInstantiatingObjectsInLoops"
 })
 public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueStore {
+
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             TrackedEntityDataValueModel.TABLE + " (" +
             TrackedEntityDataValueModel.Columns.EVENT + ", " +
@@ -63,6 +66,19 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
             TrackedEntityDataValueModel.Columns.VALUE + ", " +
             TrackedEntityDataValueModel.Columns.PROVIDED_ELSEWHERE +
             ") " + "VALUES (?,?,?,?,?,?,?)";
+
+    private static final String UPDATE_STATEMENT =
+            "UPDATE " + TrackedEntityDataValueModel.TABLE + " SET " +
+                    TrackedEntityDataValueModel.Columns.EVENT + " =?, " +
+                    TrackedEntityDataValueModel.Columns.CREATED + " =?, " +
+                    TrackedEntityDataValueModel.Columns.LAST_UPDATED + " =?, " +
+                    TrackedEntityDataValueModel.Columns.DATA_ELEMENT + " =?, " +
+                    TrackedEntityDataValueModel.Columns.STORED_BY + " =?, " +
+                    TrackedEntityDataValueModel.Columns.VALUE + " =?, " +
+                    TrackedEntityDataValueModel.Columns.PROVIDED_ELSEWHERE + " =? " +
+                    " WHERE " + TrackedEntityDataValueModel.Columns.EVENT + " =? AND " +
+                    TrackedEntityDataValueModel.Columns.DATA_ELEMENT + " =?;";
+
 
     private static final String QUERY_TRACKED_ENTITY_DATA_VALUES_ATTACHED_TO_TRACKER_EVENTS = "SELECT " +
             "  TrackedEntityDataValue.created, " +
@@ -88,15 +104,18 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
             "  TrackedEntityDataValue.storedBy, " +
             "  TrackedEntityDataValue.value " +
             "FROM (TrackedEntityDataValue INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid) " +
-            "WHERE Event.enrollment ISNULL AND (Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE');";
+            "WHERE Event.enrollment ISNULL AND (Event.state = 'TO_POST' OR Event.state = "
+            + "'TO_UPDATE');";
 
 
     private final SQLiteStatement insertRowStatement;
+    private final SQLiteStatement updateRowStatement;
     private final DatabaseAdapter databaseAdapter;
 
     public TrackedEntityDataValueStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
         this.insertRowStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateRowStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
     }
 
     @Override
@@ -107,17 +126,46 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
         isNull(event);
         isNull(dataElement);
 
-        sqLiteBind(insertRowStatement, 1, event);
-        sqLiteBind(insertRowStatement, 2, created);
-        sqLiteBind(insertRowStatement, 3, lastUpdated);
-        sqLiteBind(insertRowStatement, 4, dataElement);
-        sqLiteBind(insertRowStatement, 5, storedBy);
-        sqLiteBind(insertRowStatement, 6, value);
-        sqLiteBind(insertRowStatement, 7, providedElsewhere);
+        bindArguments(insertRowStatement,
+                event, created, lastUpdated, dataElement, storedBy, value, providedElsewhere);
 
-        long ret = databaseAdapter.executeInsert(TrackedEntityDataValueModel.TABLE, insertRowStatement);
+        long ret = databaseAdapter.executeInsert(TrackedEntityDataValueModel.TABLE,
+                insertRowStatement);
         insertRowStatement.clearBindings();
         return ret;
+    }
+
+    @Override
+    public int update(@NonNull String event, @Nullable Date created, @Nullable Date lastUpdated,
+            @Nullable String dataElement, @Nullable String storedBy, @Nullable String value,
+            @Nullable Boolean providedElsewhere) {
+        isNull(event);
+
+        bindArguments(updateRowStatement,
+                event, created, lastUpdated, dataElement, storedBy, value, providedElsewhere);
+
+        // bind the where argument
+        sqLiteBind(updateRowStatement, 8, event);
+        sqLiteBind(updateRowStatement, 9, dataElement);
+
+        // execute and clear bindings
+        int update = databaseAdapter.executeUpdateDelete(
+                ProgramStageDataElementModel.TABLE, updateRowStatement);
+
+        updateRowStatement.clearBindings();
+
+        return update;
+    }
+
+    @Override
+    public int deleteByEventAndDataElementUIds(@NonNull String eventUid,
+            @NonNull List<String> uIds) {
+        return 0;
+    }
+
+    @Override
+    public List<TrackedEntityDataValue> queryTrackedEntityDataValues(String event) {
+        return null;
     }
 
     /**
@@ -173,5 +221,18 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
         }
 
         return dataValues;
+    }
+
+    private void bindArguments(@NonNull SQLiteStatement sqLiteStatement,
+            @NonNull String event, @Nullable Date created, @Nullable Date lastUpdated,
+            @Nullable String dataElement, @Nullable String storedBy,
+            @Nullable String value, @Nullable Boolean providedElsewhere) {
+        sqLiteBind(sqLiteStatement, 1, event);
+        sqLiteBind(sqLiteStatement, 2, created);
+        sqLiteBind(sqLiteStatement, 3, lastUpdated);
+        sqLiteBind(sqLiteStatement, 4, dataElement);
+        sqLiteBind(sqLiteStatement, 5, storedBy);
+        sqLiteBind(sqLiteStatement, 6, value);
+        sqLiteBind(sqLiteStatement, 7, providedElsewhere);
     }
 }

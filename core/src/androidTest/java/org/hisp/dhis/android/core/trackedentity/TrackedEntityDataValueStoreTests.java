@@ -83,6 +83,7 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
     private static final String PROGRAM_STAGE = "test_programStage";
     private static final String TRACKED_ENTITY_INSTANCE = "test_tei";
     private static final String ENROLLMENT = "test_enrollment";
+
     public static final String[] PROJECTION = {
             TrackedEntityDataValueModel.Columns.EVENT,
             TrackedEntityDataValueModel.Columns.CREATED,
@@ -100,48 +101,41 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
     @Before
     @Override
     public void setUp() throws IOException {
+        deleteDatabase();
         super.setUp();
 
         this.date = new Date();
         this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
 
-
         trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl(databaseAdapter());
 
-        //Create Program & insert a row in the table.
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE_UID);
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
-
-        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
-        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
-        database().insert(ProgramModel.TABLE, null, program);
-
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
-
+        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L,
+                ORGANISATION_UNIT);
         ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(
-                TRACKED_ENTITY_INSTANCE, ORGANISATION_UNIT, TRACKED_ENTITY_UID
-        );
+                TRACKED_ENTITY_INSTANCE, ORGANISATION_UNIT, TRACKED_ENTITY_UID);
 
         ContentValues enrollment = CreateEnrollmentUtils.create(
-                ENROLLMENT, PROGRAM, ORGANISATION_UNIT, TRACKED_ENTITY_INSTANCE
-        );
+                ENROLLMENT, PROGRAM, ORGANISATION_UNIT, TRACKED_ENTITY_INSTANCE);
 
         ContentValues event = CreateEventUtils.create(EVENT, PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT, ENROLLMENT);
         ContentValues dataElement = CreateDataElementUtils.create(1L, DATA_ELEMENT, null);
 
-        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
-        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
-        database().insert(ProgramModel.TABLE, null, program);
-        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
-        database().insert(ProgramStageModel.TABLE, null, programStage);
-        database().insert(DataElementModel.TABLE, null, dataElement);
-        database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
-        database().insert(EnrollmentModel.TABLE, null, enrollment);
-        database().insert(EventModel.TABLE, null, event);
-
+        long trackedEntityId = database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        long relationshipTypeId = database().insert(RelationshipTypeModel.TABLE, null,
+                relationshipType);
+        long programId = database().insert(ProgramModel.TABLE, null, program);
+        long orgUnitId = database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
+        long programStageId = database().insert(ProgramStageModel.TABLE, null, programStage);
+        long dataElementId = database().insert(DataElementModel.TABLE, null, dataElement);
+        long trackedEntityInstanceId = database().insert(TrackedEntityInstanceModel.TABLE, null,
+                trackedEntityInstance);
+        long enrollmentId = database().insert(EnrollmentModel.TABLE, null, enrollment);
+        long eventId = database().insert(EventModel.TABLE, null, event);
     }
 
     @Test
@@ -182,8 +176,9 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
                 VALUE,
                 PROVIDED_ELSEWHERE
         );
-        ContentValues event = CreateEventUtils.create(deferredEvent, PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT, null);
-        database().insert(EventModel.TABLE, null, event);
+        ContentValues event = CreateEventUtils.create(deferredEvent, PROGRAM, PROGRAM_STAGE,
+                ORGANISATION_UNIT, null);
+        long eventId = database().insert(EventModel.TABLE, null, event);
 
         database().setTransactionSuccessful();
         database().endTransaction();
@@ -345,6 +340,32 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
 
     // ToDo: consider introducing conflict resolution strategy
 
+    @Test
+    public void update_tracked_entity_data_value() {
+        long id = database().insert(TrackedEntityDataValueModel.TABLE, null,
+                CreateTrackedEntityDataValueUtils.create(1L, EVENT, DATA_ELEMENT));
+
+        int updateReturn = trackedEntityDataValueStore.update(EVENT,
+                date,
+                date,
+                DATA_ELEMENT,
+                STORED_BY,
+                VALUE,
+                PROVIDED_ELSEWHERE);
+
+        Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE,
+                PROJECTION, null, null, null, null, null);
+
+        assertThatCursor(cursor).hasRow(EVENT,
+                dateString,
+                dateString,
+                DATA_ELEMENT,
+                STORED_BY,
+                VALUE,
+                toInteger(PROVIDED_ELSEWHERE));
+
+        assertThat(updateReturn).isEqualTo(1);
+    }
 
     @Test(expected = IllegalArgumentException.class)
     public void insert_null_uid() {

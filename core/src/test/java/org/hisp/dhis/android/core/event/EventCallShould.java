@@ -11,6 +11,8 @@ import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterTests;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
+import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.junit.After;
@@ -19,6 +21,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
@@ -49,18 +52,18 @@ public class EventCallShould {
     @Mock
     private Date serverDate;
 
-    MockWebServer dhis2MockServer = new MockWebServer();
+    Dhis2MockServer dhis2MockServer;
     Retrofit retrofit;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws IOException {
-        dhis2MockServer.start();
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
 
         //TODO reuse dhis2MockServer from AndroidTest
 
         retrofit = new Retrofit.Builder()
-                .baseUrl(dhis2MockServer.url("/"))
+                .baseUrl(dhis2MockServer.getBaseEndpoint())
                 .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
                 .addConverterFactory(FilterConverterFactory.create())
                 .addConverterFactory(FieldsConverterFactory.create())
@@ -89,7 +92,7 @@ public class EventCallShould {
             throws Exception {
         EventCall eventCall = givenAEventCallByPagination(2, 32);
 
-        enqueueMockResponse();
+        dhis2MockServer.enqueueMockResponse();
 
         eventCall.call();
 
@@ -103,7 +106,7 @@ public class EventCallShould {
             throws Exception {
         EventCall eventCall = givenAEventCallByOrgUnitAndProgram("OU", "P");
 
-        enqueueMockResponse();
+        dhis2MockServer.enqueueMockResponse();
 
         eventCall.call();
 
@@ -164,12 +167,5 @@ public class EventCallShould {
                         eventHandler, serverDate, eventQuery);
 
         return eventCall;
-    }
-
-    public void enqueueMockResponse() throws IOException {
-        MockResponse mockResponse = new MockResponse();
-        mockResponse.setResponseCode(200);
-        mockResponse.setBody("{}");
-        dhis2MockServer.enqueue(mockResponse);
     }
 }

@@ -28,19 +28,22 @@
 
 package org.hisp.dhis.android.core.data.server;
 
-import org.hisp.dhis.android.core.data.file.FileExtensions;
+import org.hisp.dhis.android.core.data.file.IFileReader;
 
 import java.io.IOException;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 
 public class Dhis2MockServer {
     private static final int OK_CODE = 200;
 
     private MockWebServer server;
+    IFileReader fileReader;
 
-    public Dhis2MockServer() throws IOException {
+    public Dhis2MockServer(IFileReader fileReader) throws IOException {
+        this.fileReader = fileReader;
         this.server = new MockWebServer();
         this.server.start();
     }
@@ -65,7 +68,7 @@ public class Dhis2MockServer {
     }
 
     public void enqueueMockResponse(String fileName) throws IOException {
-        String body = FileExtensions.getStringFromFile(fileName);
+        String body = fileReader.getStringFromFile(fileName);
         MockResponse response = new MockResponse();
         response.setResponseCode(OK_CODE);
         response.setBody(body);
@@ -75,5 +78,9 @@ public class Dhis2MockServer {
 
     public String getBaseEndpoint() {
         return server.url("/").toString();
+    }
+
+    public RecordedRequest takeRequest() throws InterruptedException {
+        return server.takeRequest();
     }
 }

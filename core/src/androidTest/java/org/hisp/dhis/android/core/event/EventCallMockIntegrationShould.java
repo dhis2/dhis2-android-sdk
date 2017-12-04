@@ -13,7 +13,7 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.file.FileExtensions;
+import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
@@ -43,7 +43,7 @@ public class EventCallMockIntegrationShould extends AbsStoreTestCase {
         deleteDatabase();
         super.setUp();
 
-        dhis2MockServer = new Dhis2MockServer();
+        dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
 
         ConfigurationModel config = ConfigurationModel.builder()
                 .serverUrl(HttpUrl.parse(dhis2MockServer.getBaseEndpoint()))
@@ -96,9 +96,10 @@ public class EventCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void verifyDownloadedEvents(String file) throws IOException {
-        String expectedEventsResponseJson = FileExtensions.getStringFromFile(file);
+        String expectedEventsResponseJson = new AssetsFileReader().getStringFromFile(file);
 
         ObjectMapper objectMapper = new ObjectMapper();
+
         Payload<Event> expectedEventsResponse =
                 objectMapper.readValue(expectedEventsResponseJson,
                         new TypeReference<Payload<Event>>() {

@@ -11,20 +11,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-public final class FileExtensions {
-
-    private static final String UTF_8 = "UTF-8";
-
-    private FileExtensions() {
-    }
-
+public final class AssetsFileReader implements IFileReader {
 /*    public static String getStringFromFile(Class clazz, String filePath) throws IOException {
         ClassLoader classLoader = clazz.getClassLoader();
         File file = new File(classLoader.getResource("resources/" + filePath).getFile());
         return FileUtils.readFileToString(file, UTF_8);
     }*/
 
-    public static String getStringFromFile(String filename) throws IOException {
+    @Override
+    public String getStringFromFile(String filename) throws IOException {
         //FileInputStream inputStream = new FileInputStream(getFile(clazz, filename));
 
         Context testContext = InstrumentationRegistry.getInstrumentation().getContext();

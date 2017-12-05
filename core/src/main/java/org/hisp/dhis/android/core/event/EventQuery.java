@@ -12,8 +12,11 @@ public class EventQuery {
     private String program;
     private String trackedEntityInstance;
 
+    private int pageLimit;
+
     public EventQuery(boolean paging, int page, int pageSize,
-            String orgUnit, String program, String trackedEntityInstance, Set<String> uIds) {
+            String orgUnit, String program, String trackedEntityInstance, Set<String> uIds,
+            int pageLimit) {
         this.paging = paging;
         this.page = page;
         this.pageSize = pageSize;
@@ -21,6 +24,7 @@ public class EventQuery {
         this.program = program;
         this.trackedEntityInstance = trackedEntityInstance;
         this.uIds = uIds;
+        this.pageLimit = pageLimit;
     }
 
     public Set<String> getUIds() {
@@ -51,6 +55,10 @@ public class EventQuery {
         return trackedEntityInstance;
     }
 
+    public int getPageLimit() {
+        return pageLimit;
+    }
+
     public static class Builder {
         private int page = 1;
         private int pageSize = 50;
@@ -58,6 +66,7 @@ public class EventQuery {
         private String orgUnit = null;
         private String program = null;
         private String trackedEntityInstance = null;
+        int pageLimit;
 
         private Set<String> uIds = new HashSet<>();
 
@@ -103,9 +112,19 @@ public class EventQuery {
             return this;
         }
 
+        public Builder withPageLimit(int pageLimit) {
+            this.pageLimit = pageLimit;
+            return this;
+        }
+
         public EventQuery build() {
+            if (pageLimit > pageSize) {
+                throw new IllegalArgumentException(
+                        "pageLimit can not be more greater than pageSize");
+            }
+
             return new EventQuery(paging, page, pageSize,
-                    orgUnit, program, trackedEntityInstance, uIds);
+                    orgUnit, program, trackedEntityInstance, uIds, pageLimit);
         }
     }
 }

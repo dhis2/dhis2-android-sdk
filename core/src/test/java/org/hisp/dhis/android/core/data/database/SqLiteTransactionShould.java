@@ -38,7 +38,7 @@ import org.mockito.MockitoAnnotations;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class SqLiteTestTransaction {
+public class SqLiteTransactionShould {
 
     @Mock
     DbOpenHelper dbOpenHelper;
@@ -58,19 +58,19 @@ public class SqLiteTestTransaction {
     }
 
     @Test
-    public void beginTransactionIsRunOnSqlDatabase() throws Exception {
+    public void verify_transaction_is_running_on_database_when_begin_in_transaction() throws Exception {
         transaction.begin();
         verify(database).beginTransaction();
     }
 
     @Test
-    public void transactionSuccessfulIsSetOnSqlDatabase() throws Exception {
+    public void verify_transaction_is_successful_when_transaction_is_set_as_successful() throws Exception {
         transaction.setSuccessful();
         verify(database).setTransactionSuccessful();
     }
 
     @Test
-    public void endTransactionIsRunOnSqlDatabase() throws Exception {
+    public void verify_transaction_is_end_when_transaction_is_set_as_end() throws Exception {
         transaction.end();
         verify(database).endTransaction();
     }

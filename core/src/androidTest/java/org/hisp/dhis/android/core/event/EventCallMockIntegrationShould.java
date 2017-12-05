@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
@@ -18,14 +19,20 @@ import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -96,21 +103,51 @@ public class EventCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void verifyDownloadedEvents(String file) throws IOException {
+        Payload<Event> expectedEventsResponse = parseEventResponse(file);
+
+        List<Event> downloadedEvents = getDownloadedEvents();
+
+        assertThat(downloadedEvents.size(), is(expectedEventsResponse.items().size()));
+        assertThat(downloadedEvents, is(expectedEventsResponse.items()));
+    }
+
+
+    private List<Event> getDownloadedEvents() {
+        List<Event> downloadedEvents = new ArrayList<>();
+
+        EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
+
+        List<Event> downloadedEventsWithoutValues = eventStore.querySingleEvents();
+
+        TrackedEntityDataValueStoreImpl trackedEntityDataValue =
+                new TrackedEntityDataValueStoreImpl(databaseAdapter());
+
+        Map<String, List<TrackedEntityDataValue>> downloadedValues =
+                trackedEntityDataValue.queryTrackedEntityDataValues();
+
+
+        for (Event event : downloadedEventsWithoutValues) {
+            event = Event.create(
+                    event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
+                    event.createdAtClient(), event.lastUpdatedAtClient(),
+                    event.program(), event.programStage(), event.organisationUnit(),
+                    event.eventDate(), event.status(), event.coordinates(), event.completedDate(),
+                    event.dueDate(), event.deleted(), downloadedValues.get(event.uid()));
+
+            downloadedEvents.add(event);
+        }
+
+        return downloadedEvents;
+    }
+
+    private Payload<Event> parseEventResponse(String file) throws IOException {
         String expectedEventsResponseJson = new AssetsFileReader().getStringFromFile(file);
 
         ObjectMapper objectMapper = new ObjectMapper();
 
-        Payload<Event> expectedEventsResponse =
-                objectMapper.readValue(expectedEventsResponseJson,
-                        new TypeReference<Payload<Event>>() {
-                        });
-
-        EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
-
-        List<Event> downloadedEvents = eventStore.querySingleEvents();
-
-        assertThat(downloadedEvents.size(), is(expectedEventsResponse.items().size()));
-        assertThat(downloadedEvents, is(expectedEventsResponse.items()));
+        return objectMapper.readValue(expectedEventsResponseJson,
+                new TypeReference<Payload<Event>>() {
+                });
     }
 
     private EventCall givenADefaultEventCall() {
@@ -120,7 +157,14 @@ public class EventCallMockIntegrationShould extends AbsStoreTestCase {
         EventService eventService = d2.retrofit().create(EventService.class);
 
         EventStore eventStore = new EventStoreImpl(databaseAdapter());
-        EventHandler eventHandler = new EventHandler(eventStore);
+
+        TrackedEntityDataValueStore trackedEntityDataValueStore =
+                new TrackedEntityDataValueStoreImpl(databaseAdapter());
+
+        TrackedEntityDataValueHandler trackedEntityDataValueHandler =
+                new TrackedEntityDataValueHandler(trackedEntityDataValueStore);
+
+        EventHandler eventHandler = new EventHandler(eventStore, trackedEntityDataValueHandler);
 
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);

@@ -13,6 +13,9 @@ import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -87,7 +90,14 @@ public class EventCallRealIntegrationShould extends AbsStoreTestCase {
         EventService eventService = d2.retrofit().create(EventService.class);
 
         EventStore eventStore = new EventStoreImpl(databaseAdapter());
-        EventHandler eventHandler = new EventHandler(eventStore);
+
+        TrackedEntityDataValueStore trackedEntityDataValueStore =
+                new TrackedEntityDataValueStoreImpl(databaseAdapter());
+
+        TrackedEntityDataValueHandler trackedEntityDataValueHandler =
+                new TrackedEntityDataValueHandler(trackedEntityDataValueStore);
+
+        EventHandler eventHandler = new EventHandler(eventStore, trackedEntityDataValueHandler);
 
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);

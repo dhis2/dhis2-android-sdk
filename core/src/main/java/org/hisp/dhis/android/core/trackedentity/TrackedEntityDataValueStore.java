@@ -52,5 +52,7 @@ public interface TrackedEntityDataValueStore {
 
     List<TrackedEntityDataValue> queryTrackedEntityDataValues(String event);
 
+    Map<String, List<TrackedEntityDataValue>> queryTrackedEntityDataValues();
+
     Map<String, List<TrackedEntityDataValue>> queryTrackedEntityDataValues(Boolean singleEvents);
 }

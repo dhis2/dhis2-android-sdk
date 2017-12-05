@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.core.event;
 
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
@@ -24,12 +26,13 @@ public class EventCall implements Call<Response<Payload<Event>>> {
 
     private boolean isExecuted;
 
-    public EventCall(EventService eventService,
-            DatabaseAdapter databaseAdapter,
-            ResourceHandler resourceHandler,
-            EventHandler eventHandler,
-            Date serverDate,
-            EventQuery eventQuery) {
+    public EventCall(@NonNull EventService eventService,
+            @NonNull DatabaseAdapter databaseAdapter,
+            @NonNull ResourceHandler resourceHandler,
+            @NonNull EventHandler eventHandler,
+            @NonNull Date serverDate,
+            @NonNull EventQuery eventQuery) {
+
         this.eventService = eventService;
         this.databaseAdapter = databaseAdapter;
         this.resourceHandler = resourceHandler;
@@ -73,7 +76,13 @@ public class EventCall implements Call<Response<Payload<Event>>> {
             Transaction transaction = databaseAdapter.beginNewTransaction();
             try {
                 List<Event> events = eventsByLastUpdated.body().items();
+
                 int size = events.size();
+
+                if (eventQuery.getPageLimit() > 0) {
+                    size = eventQuery.getPageLimit();
+                }
+
                 for (int i = 0; i < size; i++) {
                     Event event = events.get(i);
                     eventHandler.handle(event);

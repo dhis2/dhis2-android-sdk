@@ -9,7 +9,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
@@ -79,10 +78,10 @@ public class EventCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void download_number_of_events_according_to_default_limit() throws Exception {
+    public void download_number_of_events_according_to_default_query() throws Exception {
         givenAMetadataInDatabase();
 
-        EventCall eventCall = givenADefaultEventCall();
+        EventCall eventCall = givenAEventCall(0);
 
         dhis2MockServer.enqueueMockResponse("events_1.json");
 
@@ -92,17 +91,36 @@ public class EventCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void remove_data_values_removed_in_server_after_second_event_download()
-            throws Exception {
+    public void download_number_of_events_according_to_page_limit() throws Exception {
         givenAMetadataInDatabase();
 
-        EventCall eventCall = givenADefaultEventCall();
+        int pageLimit = 12;
+
+        EventCall eventCall = givenAEventCall(pageLimit);
 
         dhis2MockServer.enqueueMockResponse("events_1.json");
 
         eventCall.call();
 
-        eventCall = givenADefaultEventCall();
+        EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
+
+        List<Event> downloadedEvents = eventStore.querySingleEvents();
+
+        assertThat(downloadedEvents.size(), is(pageLimit));
+    }
+
+    @Test
+    public void remove_data_values_removed_in_server_after_second_events_download()
+            throws Exception {
+        givenAMetadataInDatabase();
+
+        EventCall eventCall = givenAEventCall(0);
+
+        dhis2MockServer.enqueueMockResponse("events_1.json");
+
+        eventCall.call();
+
+        eventCall = givenAEventCall(0);
 
         dhis2MockServer.enqueueMockResponse("events_1_with_removed_data_values.json");
 
@@ -170,7 +188,7 @@ public class EventCallMockIntegrationShould extends AbsStoreTestCase {
                 });
     }
 
-    private EventCall givenADefaultEventCall() {
+    private EventCall givenAEventCall(int pageLimit) {
         //TODO - create a internal factory of dependencies separate of d2
         // for avoid to expose retrofit to the outside of library
         // and for avoid create instances duplication on every test
@@ -189,9 +207,13 @@ public class EventCallMockIntegrationShould extends AbsStoreTestCase {
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
+        EventQuery eventQuery = EventQuery.Builder
+                .create()
+                .withPageLimit(pageLimit)
+                .build();
+
         EventCall eventCall = new EventCall(eventService, databaseAdapter(), resourceHandler,
-                eventHandler,
-                new Date(), EventQuery.Builder.create().build());
+                eventHandler, new Date(), eventQuery);
 
         return eventCall;
     }

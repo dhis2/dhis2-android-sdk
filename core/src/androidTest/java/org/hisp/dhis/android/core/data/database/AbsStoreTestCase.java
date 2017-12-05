@@ -44,13 +44,11 @@ public abstract class AbsStoreTestCase {
     private DatabaseAdapter databaseAdapter;
     private DbOpenHelper dbOpenHelper;
 
-    private static String DATABASE_NAME = "dhis.db";
-
     @Before
     public void setUp() throws IOException {
         dbOpenHelper = new DbOpenHelper(
                 InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , DATABASE_NAME);
+                , null);
         sqLiteDatabase = dbOpenHelper.getWritableDatabase();
         databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
     }
@@ -67,11 +65,5 @@ public abstract class AbsStoreTestCase {
 
     protected DatabaseAdapter databaseAdapter() {
         return databaseAdapter;
-    }
-
-    protected void deleteDatabase() {
-        boolean deleted = InstrumentationRegistry.getTargetContext().getApplicationContext()
-                .deleteDatabase(DATABASE_NAME);
-        Log.d(getClass().getSimpleName(), "Delete database equal to " + deleted);
     }
 }

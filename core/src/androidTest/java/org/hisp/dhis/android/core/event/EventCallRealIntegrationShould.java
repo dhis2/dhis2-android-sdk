@@ -33,7 +33,6 @@ public class EventCallRealIntegrationShould extends AbsStoreTestCase {
     @Override
     @Before
     public void setUp() throws IOException {
-        deleteDatabase();
         super.setUp();
 
 

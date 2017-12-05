@@ -53,7 +53,6 @@ public class SingleDataCallMockIntegrationShould extends AbsStoreTestCase {
     @Override
     @Before
     public void setUp() throws IOException {
-        deleteDatabase();
         super.setUp();
 
         dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());

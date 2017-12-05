@@ -109,7 +109,6 @@ public class TrackedEntityDataValueStoreTests extends AbsStoreTestCase {
     @Before
     @Override
     public void setUp() throws IOException {
-        deleteDatabase();
         super.setUp();
 
         this.date = new Date();

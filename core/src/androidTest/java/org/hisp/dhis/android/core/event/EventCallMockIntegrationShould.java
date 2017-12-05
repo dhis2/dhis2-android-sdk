@@ -91,6 +91,26 @@ public class EventCallMockIntegrationShould extends AbsStoreTestCase {
         verifyDownloadedEvents("events_1.json");
     }
 
+    @Test
+    public void remove_data_values_removed_in_server_after_second_event_download()
+            throws Exception {
+        givenAMetadataInDatabase();
+
+        EventCall eventCall = givenADefaultEventCall();
+
+        dhis2MockServer.enqueueMockResponse("events_1.json");
+
+        eventCall.call();
+
+        eventCall = givenADefaultEventCall();
+
+        dhis2MockServer.enqueueMockResponse("events_1_with_removed_data_values.json");
+
+        eventCall.call();
+
+        verifyDownloadedEvents("events_1_with_removed_data_values.json");
+    }
+
     private void givenAMetadataInDatabase() throws Exception {
         dhis2MockServer.enqueueMockResponse("system_info.json");
         dhis2MockServer.enqueueMockResponse("user.json");

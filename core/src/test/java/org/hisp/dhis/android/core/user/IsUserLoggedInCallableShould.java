@@ -26,41 +26,55 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.user;
 
-import android.database.sqlite.SQLiteDatabase;
-import android.support.test.InstrumentationRegistry;
-
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.concurrent.Callable;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
-public abstract class AbsStoreTestCase {
-    private SQLiteDatabase sqLiteDatabase;
-    public DatabaseAdapter databaseAdapter;
+@RunWith(JUnit4.class)
+public class IsUserLoggedInCallableShould {
+
+    @Mock
+    private AuthenticatedUserStore authenticatedUserStore;
+
+    @Mock
+    private AuthenticatedUserModel authenticatedUser;
+
+    private Callable<Boolean> isUserLoggedInCallable;
 
     @Before
-    public void setUp() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , null);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+
+        isUserLoggedInCallable = new IsUserLoggedInCallable(authenticatedUserStore);
     }
 
-    @After
-    public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
+    @Test
+    public void return_true_if_any_users_are_persisted_after_call() throws Exception {
+        when(authenticatedUserStore.query()).thenReturn(Arrays.asList(authenticatedUser));
+
+        Boolean isUserLoggedIn = isUserLoggedInCallable.call();
+
+        assertThat(isUserLoggedIn).isTrue();
     }
 
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
-    }
+    @Test
+    public void return_false_if_any_users_are_not_persisted_after_call() throws Exception {
+        when(authenticatedUserStore.query()).thenReturn(new ArrayList<AuthenticatedUserModel>());
 
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
+        Boolean isUserLoggedIn = isUserLoggedInCallable.call();
+
+        assertThat(isUserLoggedIn).isFalse();
     }
 }

@@ -26,41 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.user;
 
-import android.database.sqlite.SQLiteDatabase;
-import android.support.test.InstrumentationRegistry;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import org.junit.After;
-import org.junit.Before;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 
-import java.io.IOException;
+@RunWith(JUnit4.class)
+public class UserOrganisationUnitLinkModelsShould {
 
-import static com.google.common.truth.Truth.assertThat;
-
-public abstract class AbsStoreTestCase {
-    private SQLiteDatabase sqLiteDatabase;
-    public DatabaseAdapter databaseAdapter;
-
-    @Before
-    public void setUp() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , null);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
-    }
-
-    @After
-    public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
-    }
-
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
-    }
-
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
+    @Test
+    public void have_the_equals_method_conform_to_contract() {
+        EqualsVerifier.forClass(UserOrganisationUnitLinkModel.builder().build().getClass())
+                .suppress(Warning.NULL_FIELDS)
+                .verify();
     }
 }

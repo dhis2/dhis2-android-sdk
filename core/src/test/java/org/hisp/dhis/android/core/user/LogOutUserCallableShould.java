@@ -26,41 +26,58 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.user;
 
-import android.database.sqlite.SQLiteDatabase;
-import android.support.test.InstrumentationRegistry;
-
-import org.junit.After;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import java.io.IOException;
+import java.util.concurrent.Callable;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.verify;
 
-public abstract class AbsStoreTestCase {
-    private SQLiteDatabase sqLiteDatabase;
-    public DatabaseAdapter databaseAdapter;
+@RunWith(JUnit4.class)
+public class LogOutUserCallableShould {
+
+    @Mock
+    private UserStore userStore;
+
+    @Mock
+    private UserCredentialsStore userCredentialsStore;
+
+    @Mock
+    private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
+
+    @Mock
+    private AuthenticatedUserStore authenticatedUserStore;
+
+    @Mock
+    private OrganisationUnitStore organisationUnitStore;
+
+    private Callable<Void> logOutUserCallable;
 
     @Before
-    public void setUp() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , null);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+
+        logOutUserCallable = new LogOutUserCallable(
+                userStore, userCredentialsStore, userOrganisationUnitLinkStore,
+                authenticatedUserStore, organisationUnitStore
+        );
     }
 
-    @After
-    public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
-    }
+    @Test
+    public void clear_tables_on_log_out() throws Exception {
+        logOutUserCallable.call();
 
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
-    }
-
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
+        verify(userStore).delete();
+        verify(userCredentialsStore).delete();
+        verify(userOrganisationUnitLinkStore).delete();
+        verify(authenticatedUserStore).delete();
+        verify(organisationUnitStore).delete();
     }
 }

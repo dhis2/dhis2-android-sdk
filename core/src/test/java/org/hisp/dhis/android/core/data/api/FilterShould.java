@@ -25,42 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.api;
 
-package org.hisp.dhis.android.core.data.database;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import android.database.sqlite.SQLiteDatabase;
-import android.support.test.InstrumentationRegistry;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 
-import org.junit.After;
-import org.junit.Before;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-import java.io.IOException;
+@RunWith(JUnit4.class)
+public class FilterShould {
 
-import static com.google.common.truth.Truth.assertThat;
-
-public abstract class AbsStoreTestCase {
-    private SQLiteDatabase sqLiteDatabase;
-    public DatabaseAdapter databaseAdapter;
-
-    @Before
-    public void setUp() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , null);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+    @Test
+    public void return_null_filter_when_creates_with_null_params() {
+        Filter<String, String> filter = GtFilter.create(null, null);
+        assertThat(filter).isNull();
     }
 
-    @After
-    public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
+    @Test
+    public void return_correct_values_when_create_field_filter() {
+        Field field = Field.create("test_field_name");
+        Filter filter = field.gt("test_field_filter_operator");
+
+        assertThat(filter.operator()).isEqualTo("gt");
+        assertThat(filter.values().contains("test_field_filter_operator")).isTrue();
     }
 
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
-    }
-
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
+    @Test
+    public void have_the_equals_method_conform_to_contract() {
+        EqualsVerifier.forClass(GtFilter.create(Field.create(""), "a").getClass())
+                .suppress(Warning.NULL_FIELDS)
+                .verify();
     }
 }

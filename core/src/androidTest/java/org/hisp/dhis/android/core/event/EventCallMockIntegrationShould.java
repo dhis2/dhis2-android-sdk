@@ -52,7 +52,7 @@ public class EventCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void download_number_of_events_according_to_default_query() throws Exception {
+    public void download_events_according_to_default_query() throws Exception {
         givenAMetadataInDatabase();
 
         EventCall eventCall = EventCallFactory.create(

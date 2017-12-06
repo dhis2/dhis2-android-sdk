@@ -56,7 +56,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
-public class SystemInfoCallIntegrationShould extends AbsStoreTestCase {
+public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
     private static final String[] SYSTEM_INFO_PROJECTION = {
             SystemInfoModel.Columns.SERVER_DATE,
             SystemInfoModel.Columns.DATE_FORMAT,

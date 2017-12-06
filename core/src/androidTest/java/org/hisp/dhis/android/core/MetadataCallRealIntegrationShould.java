@@ -18,7 +18,7 @@ import okhttp3.OkHttpClient;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class MetadataCallIntegrationShould extends AbsStoreTestCase {
+public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     /**
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
      * metadataSyncCall. It works against the demo server.

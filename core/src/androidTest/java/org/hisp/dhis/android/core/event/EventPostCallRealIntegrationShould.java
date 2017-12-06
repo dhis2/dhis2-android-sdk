@@ -27,7 +27,7 @@ import retrofit2.Response;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class EventPostCallIntegrationShould extends AbsStoreTestCase {
+public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
     private D2 d2;
     Exception e;

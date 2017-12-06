@@ -62,7 +62,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
-public class TrackedEntityCallIntegrationShould extends AbsStoreTestCase {
+public class TrackedEntityCallMockIntegrationShould extends AbsStoreTestCase {
     public static final String[] PROJECTION = {
             TrackedEntityModel.Columns.UID,
             TrackedEntityModel.Columns.CODE,

@@ -69,7 +69,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
-public class OrganisationUnitCallIntegrationShould extends AbsStoreTestCase {
+public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase {
     public static final String[] ORGANISATION_UNIT_PROJECTION = {
             OrganisationUnitModel.Columns.UID,
             OrganisationUnitModel.Columns.CODE,

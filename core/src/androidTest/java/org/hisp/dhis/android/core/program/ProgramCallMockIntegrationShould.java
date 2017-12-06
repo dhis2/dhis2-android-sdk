@@ -84,7 +84,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
-public class ProgramCallIntegrationShould extends AbsStoreTestCase {
+public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
     private static String[] PROGRAM_PROJECTION = {
             ProgramModel.Columns.UID,
             ProgramModel.Columns.CODE,

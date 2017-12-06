@@ -64,7 +64,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
-public class UserCallIntegrationShould extends AbsStoreTestCase {
+public class UserCallMockIntegrationShould extends AbsStoreTestCase {
     private static final String[] USER_PROJECTION = {
             UserModel.Columns.ID,
             UserModel.Columns.UID,

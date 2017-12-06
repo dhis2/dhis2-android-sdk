@@ -26,7 +26,7 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 
 @RunWith(AndroidJUnit4.class)
-public class TrackedEntityInstancePostCallIntegrationShould extends AbsStoreTestCase {
+public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStoreTestCase {
     /**
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
      * metadataSyncCall. It works against the demo server.

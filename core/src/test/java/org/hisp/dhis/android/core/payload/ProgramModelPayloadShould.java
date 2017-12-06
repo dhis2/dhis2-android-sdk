@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class ProgramPayloadIntegrationShould {
+public class ProgramModelPayloadShould {
     @Test
     public void map_from_json_string() throws Exception {
         ObjectMapper objectMapper = Inject.objectMapper();

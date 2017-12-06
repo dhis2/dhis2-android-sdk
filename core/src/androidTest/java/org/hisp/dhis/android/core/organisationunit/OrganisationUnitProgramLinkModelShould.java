@@ -39,7 +39,7 @@ import org.junit.runner.RunWith;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class OrganisationUnitProgramLinkTableIntegrationShould {
+public class OrganisationUnitProgramLinkModelShould {
     private static final Long ID = 3L;
     private static final String ORGANISATION_UNIT_UID = "test_organisation_unit_uid";
     private static final String PROGRAM_UID = "test_program_uid";

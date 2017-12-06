@@ -9,18 +9,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.configuration.ConfigurationModel;
-import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceStore;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -29,13 +24,8 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 
 @RunWith(AndroidJUnit4.class)
 public class EventCallMockIntegrationShould extends AbsStoreTestCase {
@@ -50,22 +40,7 @@ public class EventCallMockIntegrationShould extends AbsStoreTestCase {
 
         dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
 
-        ConfigurationModel config = ConfigurationModel.builder()
-                .serverUrl(HttpUrl.parse(dhis2MockServer.getBaseEndpoint()))
-                .build();
-
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
-
-        d2 = new D2.Builder()
-                .configuration(config)
-                .databaseAdapter(databaseAdapter())
-                .okHttpClient(
-                        new OkHttpClient.Builder()
-                                .addInterceptor(BasicAuthenticatorFactory.create(databaseAdapter()))
-                                .addInterceptor(loggingInterceptor)
-                                .build()
-                ).build();
+        d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
     }
 
     @Override
@@ -80,7 +55,8 @@ public class EventCallMockIntegrationShould extends AbsStoreTestCase {
     public void download_number_of_events_according_to_default_query() throws Exception {
         givenAMetadataInDatabase();
 
-        EventCall eventCall = givenAEventCall(0);
+        EventCall eventCall = EventCallFactory.create(
+                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse("events_1.json");
 
@@ -95,7 +71,8 @@ public class EventCallMockIntegrationShould extends AbsStoreTestCase {
 
         int pageLimit = 12;
 
-        EventCall eventCall = givenAEventCall(pageLimit);
+        EventCall eventCall = EventCallFactory.create(
+                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", pageLimit);
 
         dhis2MockServer.enqueueMockResponse("events_1.json");
 
@@ -113,13 +90,16 @@ public class EventCallMockIntegrationShould extends AbsStoreTestCase {
             throws Exception {
         givenAMetadataInDatabase();
 
-        EventCall eventCall = givenAEventCall(0);
+        EventCall eventCall = EventCallFactory.create(
+                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
+        ;
 
         dhis2MockServer.enqueueMockResponse("events_1.json");
 
         eventCall.call();
 
-        eventCall = givenAEventCall(0);
+        eventCall = EventCallFactory.create(
+                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse("events_1_with_removed_data_values.json");
 
@@ -185,35 +165,5 @@ public class EventCallMockIntegrationShould extends AbsStoreTestCase {
         return objectMapper.readValue(expectedEventsResponseJson,
                 new TypeReference<Payload<Event>>() {
                 });
-    }
-
-    private EventCall givenAEventCall(int pageLimit) {
-        //TODO - create a internal factory of dependencies separate of d2
-        // for avoid to expose retrofit to the outside of library
-        // and for avoid create instances duplication on every test
-        EventService eventService = d2.retrofit().create(EventService.class);
-
-        EventStore eventStore = new EventStoreImpl(databaseAdapter());
-
-        TrackedEntityDataValueStore trackedEntityDataValueStore =
-                new TrackedEntityDataValueStoreImpl(databaseAdapter());
-
-        TrackedEntityDataValueHandler trackedEntityDataValueHandler =
-                new TrackedEntityDataValueHandler(trackedEntityDataValueStore);
-
-        EventHandler eventHandler = new EventHandler(eventStore, trackedEntityDataValueHandler);
-
-        ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
-
-        EventQuery eventQuery = EventQuery.Builder
-                .create()
-                .withPageLimit(pageLimit)
-                .build();
-
-        EventCall eventCall = new EventCall(eventService, databaseAdapter(), resourceHandler,
-                eventHandler, new Date(), eventQuery);
-
-        return eventCall;
     }
 }

@@ -6,25 +6,15 @@ import static org.hamcrest.core.Is.is;
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.configuration.ConfigurationModel;
-import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
+import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceStore;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
-
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 
 public class EventCallRealIntegrationShould extends AbsStoreTestCase {
 
@@ -35,23 +25,7 @@ public class EventCallRealIntegrationShould extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-
-        ConfigurationModel config = ConfigurationModel.builder()
-                .serverUrl(HttpUrl.parse(RealServerMother.url))
-                .build();
-
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-        d2 = new D2.Builder()
-                .configuration(config)
-                .databaseAdapter(databaseAdapter())
-                .okHttpClient(
-                        new OkHttpClient.Builder()
-                                .addInterceptor(BasicAuthenticatorFactory.create(databaseAdapter()))
-                                .addInterceptor(loggingInterceptor)
-                                .build()
-                ).build();
+        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
     }
 
     //This test is commented because technically it is flaky.
@@ -67,7 +41,9 @@ public class EventCallRealIntegrationShould extends AbsStoreTestCase {
         response = d2.syncMetaData().call();
         Truth.assertThat(response.isSuccessful()).isTrue();
 
-        EventCall eventCall = givenAEventCallByOrgUnit("DiszpKrYNg8");
+        EventCall eventCall = EventCallFactory.create(
+                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
+
         eventCall.call();
 
         verifyDownloadedEvents(50);
@@ -80,34 +56,5 @@ public class EventCallRealIntegrationShould extends AbsStoreTestCase {
         List<Event> downloadedEvents = eventStore.querySingleEvents();
 
         assertThat(downloadedEvents.size(), is(numEvents));
-    }
-
-    private EventCall givenAEventCallByOrgUnit(String orgUnit) {
-        //TODO - create a factory of dependencies separate of d2
-        // for avoid to expose retrofit to the outside of library
-        // and for avoid create instances duplication on every test
-        EventService eventService = d2.retrofit().create(EventService.class);
-
-        EventStore eventStore = new EventStoreImpl(databaseAdapter());
-
-        TrackedEntityDataValueStore trackedEntityDataValueStore =
-                new TrackedEntityDataValueStoreImpl(databaseAdapter());
-
-        TrackedEntityDataValueHandler trackedEntityDataValueHandler =
-                new TrackedEntityDataValueHandler(trackedEntityDataValueStore);
-
-        EventHandler eventHandler = new EventHandler(eventStore, trackedEntityDataValueHandler);
-
-        ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
-
-        EventCall eventCall = new EventCall(eventService, databaseAdapter(), resourceHandler,
-                eventHandler,
-                new Date(), EventQuery.Builder
-                .create()
-                .withOrgUnit(orgUnit)
-                .build());
-
-        return eventCall;
     }
 }

@@ -5,44 +5,19 @@ import static org.hamcrest.core.Is.is;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.calls.SingleDataCall;
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.configuration.ConfigurationModel;
-import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
+import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventCall;
-import org.hisp.dhis.android.core.event.EventHandler;
-import org.hisp.dhis.android.core.event.EventQuery;
-import org.hisp.dhis.android.core.event.EventService;
-import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceStore;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
-
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 
 @RunWith(AndroidJUnit4.class)
 public class SingleDataCallMockIntegrationShould extends AbsStoreTestCase {
@@ -57,22 +32,7 @@ public class SingleDataCallMockIntegrationShould extends AbsStoreTestCase {
 
         dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
 
-        ConfigurationModel config = ConfigurationModel.builder()
-                .serverUrl(HttpUrl.parse(dhis2MockServer.getBaseEndpoint()))
-                .build();
-
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
-
-        d2 = new D2.Builder()
-                .configuration(config)
-                .databaseAdapter(databaseAdapter())
-                .okHttpClient(
-                        new OkHttpClient.Builder()
-                                .addInterceptor(BasicAuthenticatorFactory.create(databaseAdapter()))
-                                .addInterceptor(loggingInterceptor)
-                                .build()
-                ).build();
+        d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
     }
 
     @Override

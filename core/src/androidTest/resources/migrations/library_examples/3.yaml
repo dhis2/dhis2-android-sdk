@@ -1,0 +1,8 @@
+up:
+  - CREATE TABLE IF NOT EXISTS brites (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, name TEXT)
+seeds:
+  - INSERT INTO brites (name) values("Test Debug 3.1")
+  - INSERT INTO brites (name) values("Test Debug 3.2")
+down:
+  - DELETE FROM brites WHERE name = "Test Debug 3.1"
+  - DELETE FROM brites WHERE name = "Test Debug 3.2"

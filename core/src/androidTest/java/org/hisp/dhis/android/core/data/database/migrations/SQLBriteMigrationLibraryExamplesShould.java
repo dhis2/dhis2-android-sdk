@@ -27,8 +27,8 @@ import io.reactivex.observers.TestObserver;
  * Created by lally on 3/18/17.
  */
 @RunWith(AndroidJUnit4.class)
-public class SQLBriteMigrationCoreDartabaseShould {
-    public static final String migrationDir = "core_database";
+public class SQLBriteMigrationLibraryExamplesShould {
+    public static final String migrationDir = "migrations/library_examples";
     private Context context;
     String dbName= "testdb";
 
@@ -38,7 +38,7 @@ public class SQLBriteMigrationCoreDartabaseShould {
     }
 
     @Test
-    public void shouldBeAbleToLoadAndParseDefaultMigrationsFromInputStream() throws IOException {
+    public void be_able_to_load_and_parse_default_migrations_from_input_stream() throws IOException {
         SQLBriteTestOpenHelper briteOpenHelper = new SQLBriteTestOpenHelper(context, dbName, 1, true, migrationDir);
         Map parsed = briteOpenHelper.parse();
 
@@ -48,7 +48,7 @@ public class SQLBriteMigrationCoreDartabaseShould {
     }
 
     @Test
-    public void shouldBeAbleToLoadAndParseSpecificMigrationsFromInputStream() throws IOException {
+    public void be_able_to_load_and_parse_specific_migrations_from_input_stream() throws IOException {
         SQLBriteTestOpenHelper briteOpenHelper = new SQLBriteTestOpenHelper(context, dbName, 1, true, migrationDir);
         Map parsed = briteOpenHelper.parse(2);
 
@@ -58,7 +58,7 @@ public class SQLBriteMigrationCoreDartabaseShould {
     }
 
     @Test
-    public void shouldBeAbleToLoadAndParseAllMigrationsFromInputStream() throws IOException {
+    public void be_able_toLoadAndParseAllMigrationsFromInputStream() throws IOException {
         SQLBriteTestOpenHelper briteOpenHelper = new SQLBriteTestOpenHelper(context, dbName, 1, true, migrationDir);
         List<Map<String, List<String>>> parsed = briteOpenHelper.parse(1, 2, true);
 
@@ -67,7 +67,7 @@ public class SQLBriteMigrationCoreDartabaseShould {
     }
 
     @Test
-    public void shouldBeAbleToLoadAndParseAllMigrationsFromInputStreamV2() throws IOException {
+    public void be_able_to_load_and_parse_all_migrations_from_input_streamV2() throws IOException {
         SQLBriteTestOpenHelper briteOpenHelper = new SQLBriteTestOpenHelper(context, dbName, 1, true, migrationDir);
         List<Map<String, List<String>>> parsed = briteOpenHelper.parse(1, 3, true);
 
@@ -76,13 +76,13 @@ public class SQLBriteMigrationCoreDartabaseShould {
     }
 
     @Test
-    public void shouldBeAbleToGetSQLBriteDatabase() {
+    public void be_able_to_get_SQLBriteDatabase() {
         BriteDatabase database = SQLBriteTestOpenHelper.get(context, dbName, 1, true, migrationDir);
         assertThat(database, is(notNullValue()));
     }
 
     @Test
-    public void shouldBeAbleToCreateAndSeedInitialDatabase() {
+    public void be_able_to_create_and_seed_initial_database() {
         BriteDatabase database = SQLBriteTestOpenHelper.get(context, dbName, 1, true, migrationDir);
         TestObserver<Brite> observer = new TestObserver<>();
 
@@ -96,7 +96,7 @@ public class SQLBriteMigrationCoreDartabaseShould {
     }
 
     @Test
-    public void shouldBeAbleToCreateAndSeedInitialDatabaseV2() {
+    public void be_able_to_create_and_seed_initial_databaseV2() {
         BriteDatabase database = SQLBriteTestOpenHelper.get(context, dbName, 3, true, migrationDir);
         TestObserver<Brite> observer = new TestObserver<>();
 
@@ -111,7 +111,7 @@ public class SQLBriteMigrationCoreDartabaseShould {
     }
 
     @Test
-    public void shouldBeAbleToUpgradeAndSeedDatabase() {
+    public void be_able_to_upgrade_and_seed_database() {
         BriteDatabase database1 = SQLBriteTestOpenHelper.get(context, dbName, 1, true, migrationDir);
         BriteDatabase database2 = SQLBriteTestOpenHelper.get(context, dbName, 2, true, migrationDir);
 
@@ -137,7 +137,7 @@ public class SQLBriteMigrationCoreDartabaseShould {
     }
 
     @Test
-    public void shouldBeAbleToUpgradeAndSeedDatabaseV2() {
+    public void be_able_to_upgrade_and_seed_databaseV2() {
         BriteDatabase database1 = SQLBriteTestOpenHelper.get(context, dbName, 1, true, migrationDir);
         BriteDatabase database2 = SQLBriteTestOpenHelper.get(context, dbName, 3, true, migrationDir);
 
@@ -163,7 +163,7 @@ public class SQLBriteMigrationCoreDartabaseShould {
     }
 
     @Test
-    public void shouldBeAbleToDowngradeDatabase() {
+    public void be_able_to_downgrade_database() {
         BriteDatabase database1 = SQLBriteTestOpenHelper.get(context, dbName, 1, true, migrationDir);
         BriteDatabase database2 = SQLBriteTestOpenHelper.get(context, dbName, 2, true, migrationDir);
 
@@ -203,7 +203,7 @@ public class SQLBriteMigrationCoreDartabaseShould {
     }
 
     @Test
-    public void shouldBeAbleToDowngradeDatabaseV2() {
+    public void be_able_to_downgrade_databaseV2() {
         BriteDatabase database1 = SQLBriteTestOpenHelper.get(context, dbName, 1, true, migrationDir);
         BriteDatabase database2 = SQLBriteTestOpenHelper.get(context, dbName, 3, true, migrationDir);
 

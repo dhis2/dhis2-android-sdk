@@ -1,0 +1,4 @@
+seeds:
+  - INSERT INTO TestTableRenamed (testColumn) VALUES (1)
+down:
+  - DELETE FROM TestTableRenamed WHERE  testColumn == 1

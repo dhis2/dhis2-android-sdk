@@ -1,0 +1,4 @@
+up:
+  - create table if not exists TestTable (testColumn Integer)
+down:
+  - DROP TABLE TestTable

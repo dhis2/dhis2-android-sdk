@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.data.database;
 
+import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -69,8 +71,6 @@ import org.hisp.dhis.android.core.user.UserModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserRoleModel;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel;
-
-import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"
@@ -811,6 +811,10 @@ public class DbOpenHelper extends SQLiteOpenHelper {
 
     public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
         super(context, databaseName, null, VERSION);
+    }
+
+    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName, int version) {
+        super(context, databaseName, null, version);
     }
 
     @Override

@@ -3,13 +3,12 @@ package org.hisp.dhis.android.core.data.database.migrations;
 import android.content.Context;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
 import com.squareup.sqlbrite2.BriteDatabase;
 import com.squareup.sqlbrite2.SqlBrite;
-import io.reactivex.schedulers.Schedulers;
+
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
@@ -17,6 +16,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * A helper class to manage database migrations and seeding using
@@ -288,7 +289,6 @@ class SQLBriteTestOpenHelper extends SQLBriteOpenHelper {
         } else {
             inputStream = this.context.getAssets().open(migrationPath);
         }
-        System.out.println("folder"+migrationPath);
         //parse migration content
         Yaml yaml = new Yaml();
         Map<String, List<String>> parsed = (Map) yaml.load(inputStream);
@@ -321,7 +321,7 @@ class SQLBriteTestOpenHelper extends SQLBriteOpenHelper {
             List<String> seeds = scripts.get("seeds");
 
             //apply seed migrations
-            if (ups != null) {
+            if (seeds != null) {
                 for (String script : seeds) {
                     database.execSQL(script);
                 }

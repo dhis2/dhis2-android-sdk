@@ -1,0 +1,6 @@
+up:
+ - ALTER TABLE TestTableRenamed RENAME TO Temp_TestTableRenamed
+ - CREATE TABLE NewTestTable(testColumn Integer)
+ - INSERT INTO NewTestTable(testColumn) SELECT testColumn from Temp_TestTableRenamed
+ - DROP TABLE Temp_TestTableRenamed
+down:

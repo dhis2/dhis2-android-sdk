@@ -26,41 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.configuration;
 
-import android.database.sqlite.SQLiteDatabase;
-import android.support.test.InstrumentationRegistry;
+import org.junit.Test;
 
-import org.junit.After;
-import org.junit.Before;
+import static junit.framework.Assert.fail;
 
-import java.io.IOException;
+public class ConfigurationShould {
 
-import static com.google.common.truth.Truth.assertThat;
+    @Test
+    public void thrown_illegal_state_exception_when_build_configuration_model_with_null_url() {
+        try {
+            ConfigurationModel.builder().build();
 
-public abstract class AbsStoreTestCase {
-    private SQLiteDatabase sqLiteDatabase;
-    private DatabaseAdapter databaseAdapter;
-
-    @Before
-    public void setUp() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , null);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
-    }
-
-    @After
-    public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
-    }
-
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
-    }
-
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
+            fail("IllegalStateException was expected but nothing was thrown");
+        } catch (IllegalStateException illegalStateException) {
+            // swallow exception
+        }
     }
 }

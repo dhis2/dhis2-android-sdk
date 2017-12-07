@@ -28,39 +28,22 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import android.database.sqlite.SQLiteDatabase;
-import android.support.test.InstrumentationRegistry;
+import android.support.test.runner.AndroidJUnit4;
 
-import org.junit.After;
-import org.junit.Before;
-
-import java.io.IOException;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public abstract class AbsStoreTestCase {
-    private SQLiteDatabase sqLiteDatabase;
-    private DatabaseAdapter databaseAdapter;
+@RunWith(AndroidJUnit4.class)
+public class DbOpenHelperShould {
+    private static final int DATABASE_TESTS_VERSION = 1;
 
-    @Before
-    public void setUp() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , null);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
-    }
-
-    @After
-    public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
-    }
-
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
-    }
-
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
+    @Test
+    public void have_tests_on_database_versions() {
+        // ToDo: tests for schema migration (requires some research to be done)
+        // make sure that whenever database version is bumped,
+        // corresponding schema migration tests are implemented
+        assertThat(DATABASE_TESTS_VERSION).isEqualTo(DbOpenHelper.VERSION);
     }
 }

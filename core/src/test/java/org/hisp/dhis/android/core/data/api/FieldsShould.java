@@ -26,41 +26,54 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.data.api;
 
-import android.database.sqlite.SQLiteDatabase;
-import android.support.test.InstrumentationRegistry;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import org.junit.After;
-import org.junit.Before;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 
-import java.io.IOException;
+import static junit.framework.Assert.fail;
 
-import static com.google.common.truth.Truth.assertThat;
+@RunWith(JUnit4.class)
+public class FieldsShould {
 
-public abstract class AbsStoreTestCase {
-    private SQLiteDatabase sqLiteDatabase;
-    private DatabaseAdapter databaseAdapter;
+    @Test
+    public void throw_illegal_argument_exception_on_null_arguments() {
+        try {
+            Fields.builder().fields().build();
 
-    @Before
-    public void setUp() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , null);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+            fail("IllegalArgumentException was expected but was not thrown");
+        } catch (IllegalArgumentException illegalArgumentException) {
+            // swallow exception
+        }
     }
 
-    @After
-    public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
+    @Test
+    @SuppressWarnings("unchecked")
+    public void throw_unsupported_operation_exception_when_try_to_modify_a_immutable_field() {
+        Fields fields = Fields.builder()
+                .fields(
+                        Field.create("one"),
+                        Field.create("two"),
+                        Field.create("three"))
+                .build();
+
+        try {
+            fields.fields().add(Field.create("four"));
+
+            fail("UnsupportedOperationException was expected but nothing was thrown");
+        } catch (UnsupportedOperationException unsupportedOperationException) {
+            // swallow exception
+        }
     }
 
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
-    }
-
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
+    @Test
+    public void have_the_equals_method_conform_to_contract() {
+        EqualsVerifier.forClass(Fields.builder().build().getClass())
+                .suppress(Warning.NULL_FIELDS)
+                .verify();
     }
 }

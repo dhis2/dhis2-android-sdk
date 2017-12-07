@@ -9,26 +9,21 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
-import org.hisp.dhis.android.core.data.api.FilterConverterTests;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import retrofit2.Response;
 import retrofit2.Retrofit;

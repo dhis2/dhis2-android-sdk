@@ -26,41 +26,48 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.configuration;
 
-import android.database.sqlite.SQLiteDatabase;
-import android.support.test.InstrumentationRegistry;
+import android.content.ContentValues;
+import android.database.MatrixCursor;
+import android.support.test.runner.AndroidJUnit4;
 
-import org.junit.After;
-import org.junit.Before;
+import org.hisp.dhis.android.core.configuration.ConfigurationModel.Columns;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import java.io.IOException;
+import okhttp3.HttpUrl;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public abstract class AbsStoreTestCase {
-    private SQLiteDatabase sqLiteDatabase;
-    private DatabaseAdapter databaseAdapter;
+@RunWith(AndroidJUnit4.class)
+public class ConfigurationModelShould {
+    private static final long ID = 11L;
+    private static final String SERVER_URL = "https://testurl.org/";
 
-    @Before
-    public void setUp() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , null);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+    @Test
+    public void create_model_when_created_from_database_cursor() {
+        MatrixCursor cursor = new MatrixCursor(new String[]{
+                Columns.ID, Columns.SERVER_URL
+        });
+        cursor.addRow(new Object[]{
+                ID, SERVER_URL
+        });
+        cursor.moveToFirst();
+
+        ConfigurationModel model = ConfigurationModel.create(cursor);
+
+        assertThat(model.id()).isEqualTo(ID);
+        assertThat(model.serverUrl()).isEqualTo(HttpUrl.parse(SERVER_URL));
     }
 
-    @After
-    public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
-    }
+    @Test
+    public void create_content_values_when_created_from_builder() {
+        ConfigurationModel configurationModel = ConfigurationModel.builder()
+                .id(ID).serverUrl(HttpUrl.parse(SERVER_URL)).build();
 
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
-    }
-
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
+        ContentValues contentValues = configurationModel.toContentValues();
+        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(Columns.SERVER_URL)).isEqualTo(SERVER_URL);
     }
 }

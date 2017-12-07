@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -29,38 +29,50 @@
 package org.hisp.dhis.android.core.data.database;
 
 import android.database.sqlite.SQLiteDatabase;
-import android.support.test.InstrumentationRegistry;
 
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import java.io.IOException;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import static com.google.common.truth.Truth.assertThat;
+public class SqLiteTransactionShould {
 
-public abstract class AbsStoreTestCase {
-    private SQLiteDatabase sqLiteDatabase;
-    private DatabaseAdapter databaseAdapter;
+    @Mock
+    DbOpenHelper dbOpenHelper;
+
+    @Mock
+    SQLiteDatabase database;
+
+    private SqLiteTransaction transaction; // The class we are testing
 
     @Before
-    public void setUp() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , null);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+
+        when(dbOpenHelper.getWritableDatabase()).thenReturn(database);
+
+        transaction = new SqLiteTransaction(dbOpenHelper);
     }
 
-    @After
-    public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
+    @Test
+    public void verify_transaction_is_running_on_database_when_begin_in_transaction() throws Exception {
+        transaction.begin();
+        verify(database).beginTransaction();
     }
 
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
+    @Test
+    public void verify_transaction_is_successful_when_transaction_is_set_as_successful() throws Exception {
+        transaction.setSuccessful();
+        verify(database).setTransactionSuccessful();
     }
 
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
+    @Test
+    public void verify_transaction_is_end_when_transaction_is_set_as_end() throws Exception {
+        transaction.end();
+        verify(database).endTransaction();
     }
+
 }

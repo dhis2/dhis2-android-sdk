@@ -3,9 +3,6 @@ package org.hisp.dhis.android.core.data.database.migrations;
 import android.database.Cursor;
 import io.reactivex.functions.Function;
 
-/**
- * Created by lally on 3/18/17.
- */
 public class Brite {
 
     private String name;

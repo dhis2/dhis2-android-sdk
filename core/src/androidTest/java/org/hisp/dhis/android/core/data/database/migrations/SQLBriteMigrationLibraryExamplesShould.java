@@ -23,9 +23,6 @@ import java.util.Map;
 
 import io.reactivex.observers.TestObserver;
 
-/**
- * Created by lally on 3/18/17.
- */
 @RunWith(AndroidJUnit4.class)
 public class SQLBriteMigrationLibraryExamplesShould {
     public static final String migrationDir = "migrations/library_examples";

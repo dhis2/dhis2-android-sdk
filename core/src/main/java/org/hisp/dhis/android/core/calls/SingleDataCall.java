@@ -114,6 +114,11 @@ public class SingleDataCall implements Call<Response> {
 
         List<OrganisationUnit> organisationUnits = organisationUnitStore.queryOrganisationUnits();
 
+        //TODO: we should download events by orgunit and program
+        //programs to retrieve from DB should be non tracker programs
+        //TrackerPrograms: programType = WITH_REGISTRATION
+        //Non TrackerPrograms: programType = WITHOUT_REGISTRATION
+
         for (OrganisationUnit orgUnit : organisationUnits) {
 
             int pageSize = EventQuery.Builder.create().build().getPageSize();

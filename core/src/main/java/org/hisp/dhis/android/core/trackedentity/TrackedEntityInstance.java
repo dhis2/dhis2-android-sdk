@@ -64,6 +64,8 @@ public abstract class TrackedEntityInstance {
     public static final Field<TrackedEntityInstance, String> createdAtClient = Field.create(CREATED_AT_CLIENT);
     public static final Field<TrackedEntityInstance, String> lastUpdatedAtClient = Field.create(LAST_UPDATED_AT_CLIENT);
     public static final Field<TrackedEntityInstance, String> organisationUnit = Field.create(ORGANISATION_UNIT);
+    public static final Field<TrackedEntityInstance, String> trackedEntity = Field.create(
+            TRACKED_ENTITY);
     public static final Field<TrackedEntityInstance, Boolean> deleted = Field.create(DELETED);
 
     public static final NestedField<TrackedEntityInstance, Enrollment> enrollment

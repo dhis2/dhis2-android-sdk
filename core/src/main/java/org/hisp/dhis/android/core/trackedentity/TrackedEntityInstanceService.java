@@ -9,22 +9,25 @@ import org.hisp.dhis.android.core.imports.WebResponse;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 public interface TrackedEntityInstanceService {
-    @GET("trackedEntityInstances")
-    Call<List<TrackedEntityInstance>> trackedEntityInstances(
-            @Query("fields") @Which Fields<TrackedEntityInstance> fields,
-            @Query("filter") @Where Filter<TrackedEntityInstance, Date> timestamp,
-            @Query("ouMode") OuMode ouMode,
-            @Query("includeDeleted") Boolean includeDeleted);
 
     @POST("trackedEntityInstances")
     Call<WebResponse> postTrackedEntityInstances(
             @Body TrackedEntityInstancePayload trackedEntityInstances);
+
+
+    @GET("trackedEntityInstances/{trackedEntityInstanceUid}")
+    Call<TrackedEntityInstance> trackedEntityInstance(
+            @Path("trackedEntityInstanceUid") String trackedEntityInstanceUid,
+            @Query("fields") @Which Fields<TrackedEntityInstance> fields);
 }

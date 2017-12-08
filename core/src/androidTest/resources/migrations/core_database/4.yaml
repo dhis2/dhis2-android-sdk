@@ -1,2 +1,0 @@
-up:
-  - Alter table TestTable RENAME TO TestTableRenamed

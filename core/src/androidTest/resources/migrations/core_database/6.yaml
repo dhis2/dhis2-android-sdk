@@ -1,2 +1,0 @@
-up:
-  - DELETE FROM TestTableRenamed WHERE  testColumn == 1

@@ -1,15 +1,16 @@
 package org.hisp.dhis.android.core.data.database;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+
+import org.hisp.dhis.android.core.D2;
 
 public class SqliteChecker {
 
 
     public static Boolean ifValueExist(String tableName, String fieldName, String fieldValue,
-            SQLiteDatabase db) {
+            D2 db) {
         boolean isExist = false;
-        Cursor res = db.rawQuery(
+        Cursor res = db.databaseAdapter().query(
                 "SELECT " + fieldName + " from " + tableName + " where " + fieldName + " = '"
                         + fieldValue + "'", null);
         int value = res.getCount();
@@ -20,9 +21,9 @@ public class SqliteChecker {
     }
 
 
-    public static boolean isFieldExist(String tableName, String fieldName, SQLiteDatabase db) {
+    public static boolean isFieldExist(String tableName, String fieldName, D2 db) {
         boolean isExist = false;
-        Cursor res = db.rawQuery("PRAGMA table_info(" + tableName + ")", null);
+        Cursor res = db.databaseAdapter().query("PRAGMA table_info(" + tableName + ")", null);
         int value = res.getColumnIndex("name");
         if (value != -1) {
             while (res.moveToNext()) {
@@ -34,9 +35,9 @@ public class SqliteChecker {
         return isExist;
     }
 
-    public static boolean ifTableExist(String table, SQLiteDatabase db) {
+    public static boolean ifTableExist(String table, D2 db) {
         boolean isExist = false;
-        Cursor res = db.rawQuery("PRAGMA table_info(" + table + ")", null);
+        Cursor res = db.databaseAdapter().query("PRAGMA table_info(" + table + ")", null);
         int value = res.getColumnIndex("name");
         if (value != -1) {
             isExist = true;

@@ -32,7 +32,6 @@ import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Colu
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
@@ -75,11 +74,11 @@ import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel;
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"
 })
-public class DbOpenHelper extends SQLiteOpenHelper {
+public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
     @VisibleForTesting
     static final int VERSION = 1;
-
+    public boolean isFirstPullFromYalm = false;
     private static final String CREATE_CONFIGURATION_TABLE = "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
             ConfigurationModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             ConfigurationModel.Columns.SERVER_URL + " TEXT NOT NULL UNIQUE" +
@@ -809,22 +808,30 @@ public class DbOpenHelper extends SQLiteOpenHelper {
         return database;
     }
 
+    public DbOpenHelper(Context context, String name, int version, boolean testing, String migrationTestDir) {
+        super(context, name, version, testing, migrationTestDir);
+        isFirstPullFromYalm = testing;
+    }
+
     public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
+        super(context, databaseName, VERSION);
     }
 
     public DbOpenHelper(@NonNull Context context, @Nullable String databaseName, int version) {
-        super(context, databaseName, null, version);
+        super(context, databaseName, version);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        create(db);
+        super.onCreate(db);
+        if(!isFirstPullFromYalm) {
+            create(db);
+        }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // ToDo: logic for proper schema migration
+        super.onUpgrade(db,oldVersion,newVersion);
     }
 
     @Override

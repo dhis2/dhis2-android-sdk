@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.data.database.migrations;
+package org.hisp.dhis.android.core.data.database;
 
 import android.content.Context;
 import android.database.DatabaseErrorHandler;
@@ -33,7 +33,7 @@ import io.reactivex.schedulers.Schedulers;
  * <p class="note"><strong>Note:</strong> this class assumes
  * monotonically increasing version numbers for upgrades.</p>
  */
-class SQLBriteTestOpenHelper extends SQLBriteOpenHelper {
+public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
 
     private String migrationTestDir = "";
     private Context context;
@@ -50,7 +50,7 @@ class SQLBriteTestOpenHelper extends SQLBriteOpenHelper {
      *
      * @see SQLBriteOpenHelper
      */
-    public SQLBriteTestOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, String migrationTestDir) {
+    public CustomSQLBriteOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, String migrationTestDir) {
         super(context, name, factory, version);
         this.version = version;
         this.context = context;
@@ -66,7 +66,7 @@ class SQLBriteTestOpenHelper extends SQLBriteOpenHelper {
      *
      * @see SQLBriteOpenHelper
      */
-    public SQLBriteTestOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory,
+    public CustomSQLBriteOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory,
                               int version, String migrationTestDir, DatabaseErrorHandler errorHandler) {
         super(context, name, factory, version, errorHandler);
         this.version = version;
@@ -83,7 +83,20 @@ class SQLBriteTestOpenHelper extends SQLBriteOpenHelper {
      *
      * @see SQLBriteOpenHelper
      */
-    public SQLBriteTestOpenHelper(Context context, String name, int version, boolean testing, String migrationTestDir) {
+    public CustomSQLBriteOpenHelper(Context context, String name, int version) {
+        super(context, name, null, version);
+        this.context = context;
+        this.isOnTestMode = false;
+    }
+    /**
+     * Create a helper object to create, open, and/or manage a testing database.
+     * This method always returns very quickly.  The database is not actually
+     * created or opened until one of {@link #getWritableDatabase} or
+     * {@link #getReadableDatabase} is called.
+     *
+     * @see SQLBriteOpenHelper
+     */
+    public CustomSQLBriteOpenHelper(Context context, String name, int version, boolean testing, String migrationTestDir) {
         super(context, name, null, version);
         this.context = context;
         this.version = version;
@@ -123,7 +136,7 @@ class SQLBriteTestOpenHelper extends SQLBriteOpenHelper {
     public synchronized static BriteDatabase get(Context context, String name,
                                                  SQLiteDatabase.CursorFactory factory, int version, String migrationDir) {
         if (briteDatabase == null) {
-            SQLBriteTestOpenHelper sqlBriteOpenHelper = new SQLBriteTestOpenHelper(context, name, factory, version, migrationDir);
+            CustomSQLBriteOpenHelper sqlBriteOpenHelper = new CustomSQLBriteOpenHelper(context, name, factory, version, migrationDir);
             SqlBrite sqlBrite = new SqlBrite.Builder().build();
             briteDatabase = sqlBrite.wrapDatabaseHelper(sqlBriteOpenHelper, Schedulers.io());
         }
@@ -144,7 +157,7 @@ class SQLBriteTestOpenHelper extends SQLBriteOpenHelper {
                                                  SQLiteDatabase.CursorFactory factory, int version, String migrationDir,
                                                  DatabaseErrorHandler errorHandler) {
         if (briteDatabase == null) {
-            SQLBriteTestOpenHelper sqlBriteOpenHelper = new SQLBriteTestOpenHelper(context, name, factory, version, migrationDir, errorHandler);
+            CustomSQLBriteOpenHelper sqlBriteOpenHelper = new CustomSQLBriteOpenHelper(context, name, factory, version, migrationDir, errorHandler);
             SqlBrite sqlBrite = new SqlBrite.Builder().build();
             briteDatabase = sqlBrite.wrapDatabaseHelper(sqlBriteOpenHelper, Schedulers.io());
         }
@@ -162,7 +175,7 @@ class SQLBriteTestOpenHelper extends SQLBriteOpenHelper {
      */
     public synchronized static BriteDatabase get(Context context, String name, int version, boolean testing, String migrationTestDir) {
         //always return new instance on test mode
-        SQLBriteTestOpenHelper sqlBriteOpenHelper = new SQLBriteTestOpenHelper(context, name, version, testing, migrationTestDir);
+        CustomSQLBriteOpenHelper sqlBriteOpenHelper = new CustomSQLBriteOpenHelper(context, name, version, testing, migrationTestDir);
         SqlBrite sqlBrite = new SqlBrite.Builder().build();
         BriteDatabase briteDatabase = sqlBrite.wrapDatabaseHelper(sqlBriteOpenHelper, Schedulers.trampoline());
         return briteDatabase;
@@ -281,11 +294,11 @@ class SQLBriteTestOpenHelper extends SQLBriteOpenHelper {
 
         //obtain migration path
         InputStream inputStream = null;
-        String migrationPath = migrationTestDir + "/" + newVersion + ".yaml";
+        String migrationPath = newVersion + ".yaml";
 
         //handle test mode
         if (isOnTestMode) {
-            inputStream = this.getClass().getClassLoader().getResourceAsStream(migrationPath);
+            inputStream = this.getClass().getClassLoader().getResourceAsStream(migrationTestDir + "/" +migrationPath);
         } else {
             inputStream = this.context.getAssets().open(migrationPath);
         }
@@ -397,5 +410,9 @@ class SQLBriteTestOpenHelper extends SQLBriteOpenHelper {
         } finally {
             database.endTransaction();
         }
+    }
+
+    public boolean isOnTestMode() {
+        return isOnTestMode;
     }
 }

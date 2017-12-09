@@ -82,7 +82,7 @@ public class DataBaseMigrationShould {
 
     @Test
     public void have_category_table_after_first_migration() throws IOException {
-        buildD2(initCoreDataBase(dbName, 1, realMigrationDir, databaseSqlVersion1));
+        buildD2(initCoreDataBase(dbName, 2, realMigrationDir, databaseSqlVersion1));
         //TODO : check Category table using the CategoryModel.TABLE
         assertThat(ifTableExist("Category", d2), is(true));
     }

@@ -34,6 +34,7 @@ public class DataBaseMigrationShould {
 
     public static final String realMigrationDir = "migrations/real_migrations";
     public static final String exampleMigrationsDir = "migrations/example_migrations";
+    public static final String databaseSqlVersion1 = "db_version_1.sql";
     static String dbName= "test.db";
 
     @AfterClass
@@ -44,22 +45,22 @@ public class DataBaseMigrationShould {
     @Before
     public void deleteDB(){
         InstrumentationRegistry.getContext().deleteDatabase(dbName);
-    }
-
-
-    public DbOpenHelper initCoreDataBase(String dbName, int databaseVersion, String testPath){
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , dbName, databaseVersion, true, testPath);
-        return dbOpenHelper;
-    }
-
-    private void buildD2(DbOpenHelper dbOpenHelper) {
         mockWebServer = new MockWebServer();
         try {
             mockWebServer.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public DbOpenHelper initCoreDataBase(String dbName, int databaseVersion, String testPath, String databaseSqlVersion1){
+        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
+                , dbName, databaseVersion, testPath, databaseSqlVersion1);
+        return dbOpenHelper;
+    }
+
+    private void buildD2(DbOpenHelper dbOpenHelper) {
         ConfigurationModel config = ConfigurationModel.builder()
                 .serverUrl(mockWebServer.url("/"))
                 .build();
@@ -74,37 +75,37 @@ public class DataBaseMigrationShould {
 
     @Test
     public void have_user_table_after_first_migration() throws IOException {
-        buildD2(initCoreDataBase(dbName, 1, realMigrationDir));
+        buildD2(initCoreDataBase(dbName, 1, exampleMigrationsDir, databaseSqlVersion1));
         assertThat(ifTableExist(UserModel.TABLE, d2), is(true));
     }
 
 
     @Test
-    public void have_category_table_after_second_migration() throws IOException {
-        buildD2(initCoreDataBase(dbName, 2, realMigrationDir));
+    public void have_category_table_after_first_migration() throws IOException {
+        buildD2(initCoreDataBase(dbName, 1, realMigrationDir, databaseSqlVersion1));
         //TODO : check Category table using the CategoryModel.TABLE
         assertThat(ifTableExist("Category", d2), is(true));
     }
 
     @Test
     public void have_new_column_when_up_migration_add_column() throws IOException {
-        buildD2(initCoreDataBase(dbName, 2, exampleMigrationsDir));
+        buildD2(initCoreDataBase(dbName, 1, exampleMigrationsDir, databaseSqlVersion1));
         assertThat(isFieldExist(UserModel.TABLE, "testColumn", d2), is(true));
     }
 
 
     @Test
     public void have_new_value_when_seed_migration_add_row() {
-        buildD2(initCoreDataBase(dbName, 3, exampleMigrationsDir));
+        buildD2(initCoreDataBase(dbName, 2, exampleMigrationsDir, databaseSqlVersion1));
         assertThat(isFieldExist(UserModel.TABLE, "testColumn", d2), is(true));
         assertThat(ifTableExist("TestTable", d2), is(true));
         assertThat(ifValueExist("TestTable", "testColumn","1", d2), is(true));
     }
 
     @Test
-    public void have_dropped_table_when_down_migration_drop_table() {
-        buildD2(initCoreDataBase(dbName, 3, exampleMigrationsDir));
-        buildD2(initCoreDataBase(dbName, 2, exampleMigrationsDir));
+    public synchronized void have_dropped_table_when_down_migration_drop_table() {
+        buildD2(initCoreDataBase(dbName, 2, exampleMigrationsDir, databaseSqlVersion1));
+        buildD2(initCoreDataBase(dbName, 1, exampleMigrationsDir, ""));
         assertThat(isFieldExist(UserModel.TABLE, "testColumn", d2), is(true));
         assertThat(ifTableExist("TestTable", d2), is(false));
     }

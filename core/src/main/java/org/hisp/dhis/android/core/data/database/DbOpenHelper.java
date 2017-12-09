@@ -71,6 +71,11 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserRoleModel;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"
 })
@@ -78,7 +83,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
     @VisibleForTesting
     static final int VERSION = 1;
-    public boolean isFirstPullFromYalm = false;
+    public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE = "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
             ConfigurationModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             ConfigurationModel.Columns.SERVER_URL + " TEXT NOT NULL UNIQUE" +
@@ -808,25 +813,29 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         return database;
     }
 
-    public DbOpenHelper(Context context, String name, int version, boolean testing, String migrationTestDir) {
-        super(context, name, version, testing, migrationTestDir);
-        isFirstPullFromYalm = testing;
+    public DbOpenHelper(Context context, String name, int version, String migrationTestDir, String sqlDatabase) {
+        super(context, name, version, true, migrationTestDir);
+        mockedSqlDatabase = sqlDatabase;
     }
 
     public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
         super(context, databaseName, VERSION);
     }
 
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName, int version) {
-        super(context, databaseName, version);
-    }
-
     @Override
     public void onCreate(SQLiteDatabase db) {
-        super.onCreate(db);
-        if(!isFirstPullFromYalm) {
+        if(!mockedSqlDatabase.equals("")) {
+            if(db.getVersion()==0){
+                try {
+                    populateDBfromResource(db, mockedSqlDatabase);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }else{
             create(db);
         }
+        super.onCreate(db);
     }
 
     @Override
@@ -840,5 +849,19 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
         // enable foreign key support in database
         db.execSQL("PRAGMA foreign_keys = ON;");
+    }
+
+    private SQLiteDatabase populateDBfromResource(SQLiteDatabase database, String databaseSqlFile) throws IOException {
+        if (databaseSqlFile.equals("")) {
+            return database;
+        }
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream(databaseSqlFile);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        String line = reader.readLine();
+        while (line != null) {
+            database.execSQL(line);
+            line = reader.readLine();
+        }
+        return database;
     }
 }

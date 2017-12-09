@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.data.database;
 import android.content.Context;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
@@ -33,7 +34,7 @@ import io.reactivex.schedulers.Schedulers;
  * <p class="note"><strong>Note:</strong> this class assumes
  * monotonically increasing version numbers for upgrades.</p>
  */
-public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
+public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
 
     private String migrationTestDir = "";
     private Context context;

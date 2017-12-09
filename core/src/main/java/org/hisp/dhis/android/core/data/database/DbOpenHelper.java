@@ -813,13 +813,17 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         return database;
     }
 
-    public DbOpenHelper(Context context, String name, int version, String migrationTestDir, String sqlDatabase) {
-        super(context, name, version, true, migrationTestDir);
+    public DbOpenHelper(Context context, String databaseName, int version, String migrationTestDir, String sqlDatabase) {
+        super(context, databaseName, version, true, migrationTestDir);
         mockedSqlDatabase = sqlDatabase;
     }
 
     public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
         super(context, databaseName, VERSION);
+    }
+
+    public DbOpenHelper(Context context, String databaseName, int version) {
+        super(context, databaseName, version);
     }
 
     @Override

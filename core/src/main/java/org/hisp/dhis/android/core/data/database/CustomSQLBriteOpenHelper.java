@@ -36,7 +36,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
 
-    private String migrationTestDir = "";
+    private String migrationTestDir = "migrations";
     private Context context;
     private int version = 1; //current database version to support seed up to requested database version
     private boolean isOnTestMode = false;
@@ -295,11 +295,10 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
 
         //obtain migration path
         InputStream inputStream = null;
-        String migrationPath = newVersion + ".yaml";
-
+        String migrationPath = migrationTestDir + "/" + newVersion + ".yaml";
         //handle test mode
         if (isOnTestMode) {
-            inputStream = this.getClass().getClassLoader().getResourceAsStream(migrationTestDir + "/" +migrationPath);
+            inputStream = this.getClass().getClassLoader().getResourceAsStream(migrationPath);
         } else {
             inputStream = this.context.getAssets().open(migrationPath);
         }

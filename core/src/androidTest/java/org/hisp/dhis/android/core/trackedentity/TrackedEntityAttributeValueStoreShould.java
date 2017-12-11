@@ -33,6 +33,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
@@ -40,6 +41,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -48,8 +50,6 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     //TrackedEntityAttributeValueModel:
     private static final String VALUE = "test_value";
-    private static final String CREATED = "test_created";
-    private static final String LAST_UPDATED = "test_lastUpdated";
     private static final String TRACKED_ENTITY_ATTRIBUTE = "test_trackedEntityAttributeUid";
     private static final String TRACKED_ENTITY_INSTANCE = "test_trackedEntityInstanceUid";
     private static final String ORGANIZATION_UNIT = "test_organizationUnitUid";
@@ -64,10 +64,15 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     };
 
     private TrackedEntityAttributeValueStore store;
+    private Date date;
+    private String dateString;
 
     @Override
     public void setUp() throws IOException {
         super.setUp();
+
+        this.date = new Date();
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
 
         this.store = new TrackedEntityAttributeValueStoreImpl(databaseAdapter());
 
@@ -86,7 +91,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
 
     @Test
     public void insert_teav_in_data_base_when_insert() {
-        long rowId = store.insert(VALUE, CREATED, LAST_UPDATED,
+        long rowId = store.insert(VALUE, date, date,
                 TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE);
 
         Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
@@ -94,7 +99,8 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor)
-                .hasRow(VALUE, CREATED, LAST_UPDATED, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE)
+                .hasRow(VALUE, dateString, dateString, TRACKED_ENTITY_ATTRIBUTE,
+                        TRACKED_ENTITY_INSTANCE)
                 .isExhausted();
     }
 
@@ -104,7 +110,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
         final String deferredTrackedEntityInstance = "deferredTrackedEntityInstance";
 
         database().beginTransaction();
-        long rowId = store.insert(VALUE, CREATED, LAST_UPDATED,
+        long rowId = store.insert(VALUE, date, date,
                 deferredTrackedEntityAttribute, deferredTrackedEntityInstance);
         ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(
                 deferredTrackedEntityInstance, ORGANIZATION_UNIT, TRACKED_ENTITY);
@@ -120,13 +126,15 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor)
-                .hasRow(VALUE, CREATED, LAST_UPDATED, deferredTrackedEntityAttribute, deferredTrackedEntityInstance)
+                .hasRow(VALUE, dateString, dateString, deferredTrackedEntityAttribute,
+                        deferredTrackedEntityInstance)
                 .isExhausted();
     }
 
     @Test
     public void insert_nullable_teav_in_data_base_when_insert_nullable_teav() {
-        long rowId = store.insert(null, CREATED, LAST_UPDATED, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE);
+        long rowId = store.insert(null, date, date, TRACKED_ENTITY_ATTRIBUTE,
+                TRACKED_ENTITY_INSTANCE);
 
         Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
                 PROJECTION,
@@ -134,18 +142,19 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor)
-                .hasRow(null, CREATED, LAST_UPDATED, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE)
+                .hasRow(null, dateString, dateString, TRACKED_ENTITY_ATTRIBUTE,
+                        TRACKED_ENTITY_INSTANCE)
                 .isExhausted();
     }
 
     @Test(expected = SQLiteConstraintException.class)
     public void throw_sqlite_constraint_exception_when_insert_teav_with_invalid_tracked_entity_attribute() {
-        store.insert(VALUE, CREATED, LAST_UPDATED, "wrong", TRACKED_ENTITY_INSTANCE);
+        store.insert(VALUE, date, date, "wrong", TRACKED_ENTITY_INSTANCE);
     }
 
     @Test(expected = SQLiteConstraintException.class)
     public void throw_sqlite_constraint_exception_when_insert_teav_with_invalid_tracked_entity_instance() {
-        store.insert(VALUE, CREATED, LAST_UPDATED, TRACKED_ENTITY_ATTRIBUTE, "wrong");
+        store.insert(VALUE, date, date, TRACKED_ENTITY_ATTRIBUTE, "wrong");
     }
 
     @Test
@@ -175,11 +184,11 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
 
     @Test(expected = IllegalArgumentException.class)
     public void throw_illegal_argument_exception_when_insert_null_tracked_entity() {
-        store.insert(VALUE, CREATED, LAST_UPDATED, null, TRACKED_ENTITY_INSTANCE);
+        store.insert(VALUE, date, date, null, TRACKED_ENTITY_INSTANCE);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void throw_illegal_argument_exception_when_insert_null_tracked_entity_instance() {
-        store.insert(VALUE, CREATED, LAST_UPDATED, TRACKED_ENTITY_ATTRIBUTE, null);
+        store.insert(VALUE, date, date, TRACKED_ENTITY_ATTRIBUTE, null);
     }
 }

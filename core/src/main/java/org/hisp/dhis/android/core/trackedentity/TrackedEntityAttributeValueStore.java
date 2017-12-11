@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -38,10 +39,19 @@ public interface TrackedEntityAttributeValueStore {
 
     long insert(
             @Nullable String value,
-            @Nullable String created,
-            @Nullable String lastUpdated,
+            @Nullable Date created,
+            @Nullable Date lastUpdated,
+            @NonNull String trackedEntityAttribute,
+            @NonNull String trackedEntityInstance);
+
+    int update(
+            @Nullable String value,
+            @Nullable Date created,
+            @Nullable Date lastUpdated,
             @NonNull String trackedEntityAttribute,
             @NonNull String trackedEntityInstance);
 
     Map<String, List<TrackedEntityAttributeValue>> query();
+
+    Map<String, List<TrackedEntityAttributeValue>> queryAll();
 }

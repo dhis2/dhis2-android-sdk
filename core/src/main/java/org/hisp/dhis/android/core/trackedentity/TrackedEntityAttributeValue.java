@@ -36,13 +36,21 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.api.Field;
 
+import java.util.Date;
+
 @AutoValue
 public abstract class TrackedEntityAttributeValue {
     private static final String ATTRIBUTE = "attribute";
     private static final String VALUE = "value";
+    private final static String CREATED = "created";
+    private final static String LAST_UPDATED = "lastUpdated";
 
-    public static final Field<TrackedEntityAttributeValue, String> trackedEntityAttribute = Field.create(ATTRIBUTE);
+    public static final Field<TrackedEntityAttributeValue, String> trackedEntityAttribute =
+            Field.create(ATTRIBUTE);
     public static final Field<TrackedEntityAttributeValue, String> value = Field.create(VALUE);
+    public static final Field<TrackedEntityDataValue, Date> created = Field.create(CREATED);
+    public static final Field<TrackedEntityDataValue, Date> lastUpdated = Field.create(
+            LAST_UPDATED);
 
     @Nullable
     @JsonProperty(ATTRIBUTE)
@@ -52,9 +60,20 @@ public abstract class TrackedEntityAttributeValue {
     @JsonProperty(VALUE)
     public abstract String value();
 
+    @Nullable
+    @JsonProperty(CREATED)
+    public abstract Date created();
+
+    @Nullable
+    @JsonProperty(LAST_UPDATED)
+    public abstract Date lastUpdated();
+
     @JsonCreator
-    public static TrackedEntityAttributeValue create(@JsonProperty(ATTRIBUTE) String attribute,
-                                                     @JsonProperty(VALUE) String value) {
-        return new AutoValue_TrackedEntityAttributeValue(attribute, value);
+    public static TrackedEntityAttributeValue create(
+            @JsonProperty(ATTRIBUTE) String attribute,
+            @JsonProperty(VALUE) String value,
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated) {
+        return new AutoValue_TrackedEntityAttributeValue(attribute, value, created, lastUpdated);
     }
 }

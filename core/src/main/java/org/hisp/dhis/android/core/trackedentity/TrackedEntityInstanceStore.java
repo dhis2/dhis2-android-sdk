@@ -60,4 +60,6 @@ public interface TrackedEntityInstanceStore {
     int setState(@NonNull String uid, @NonNull State state);
 
     Map<String, TrackedEntityInstance> query();
+
+    Map<String, TrackedEntityInstance> queryAll();
 }

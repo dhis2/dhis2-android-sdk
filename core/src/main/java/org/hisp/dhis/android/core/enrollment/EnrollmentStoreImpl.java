@@ -102,7 +102,7 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
             EnrollmentModel.TABLE + " WHERE " +
             Columns.UID + " =?;";
 
-    private static final String QUERY_STATEMENT = "SELECT " +
+    private static final String FIELDS =
             "  Enrollment.uid, " +
             "  Enrollment.created, " +
             "  Enrollment.lastUpdated, " +
@@ -116,12 +116,19 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
             "  Enrollment.status, " +
             "  Enrollment.trackedEntityInstance, " +
             "  Enrollment.latitude, " +
-            "  Enrollment.longitude " +
+                    "  Enrollment.longitude ";
+
+    private static final String QUERY_STATEMENT_TO_POST = "SELECT " +
+            FIELDS +
             "FROM (Enrollment " +
             "  INNER JOIN TrackedEntityInstance ON Enrollment.trackedEntityInstance = TrackedEntityInstance.uid " +
             ") " +
             "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE' " +
             " OR Enrollment.state = 'TO_POST' OR Enrollment.state = 'TO_UPDATE';";
+
+    private static final String QUERY_STATEMENT = "SELECT " +
+            FIELDS +
+            " FROM Enrollment;";
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -225,9 +232,20 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
 
     @Override
     public Map<String, List<Enrollment>> query() {
-        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
-        Map<String, List<Enrollment>> enrollmentMap = new HashMap<>(cursor.getCount());
+        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT_TO_POST);
+        Map<String, List<Enrollment>> enrollmentMap = mapFromCursor(cursor);
+        return enrollmentMap;
+    }
 
+    @Override
+    public Map<String, List<Enrollment>> queryAll() {
+        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
+        Map<String, List<Enrollment>> enrollmentMap = mapFromCursor(cursor);
+        return enrollmentMap;
+    }
+
+    private Map<String, List<Enrollment>> mapFromCursor(Cursor cursor) {
+        Map<String, List<Enrollment>> enrollmentMap = new HashMap<>();
 
         try {
             if (cursor.getCount() > 0) {
@@ -267,6 +285,8 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
         } finally {
             cursor.close();
         }
+
         return enrollmentMap;
     }
+
 }

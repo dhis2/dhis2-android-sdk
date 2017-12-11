@@ -1,8 +1,5 @@
 package org.hisp.dhis.android.core.trackedentity;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
@@ -10,15 +7,12 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.TrackedEntityInstanceCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.List;
 
-public class TrackedEntityCallRealIntegrationShould extends AbsStoreTestCase {
+public class TrackedEntityInstanceCallRealIntegrationShould extends AbsStoreTestCase {
 
     private D2 d2;
 

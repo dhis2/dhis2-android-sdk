@@ -4,15 +4,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class EventQuery {
-    private Set<String> uIds;
-    private int page;
-    private int pageSize;
-    private boolean paging;
-    private String orgUnit;
-    private String program;
-    private String trackedEntityInstance;
+    private final Set<String> uIds;
+    private final int page;
+    private final int pageSize;
+    private final boolean paging;
+    private final String orgUnit;
+    private final String program;
+    private final String trackedEntityInstance;
 
-    private int pageLimit;
+    private final int pageLimit;
 
     public EventQuery(boolean paging, int page, int pageSize,
             String orgUnit, String program, String trackedEntityInstance, Set<String> uIds,
@@ -62,10 +62,10 @@ public class EventQuery {
     public static class Builder {
         private int page = 1;
         private int pageSize = 50;
-        private boolean paging = false;
-        private String orgUnit = null;
-        private String program = null;
-        private String trackedEntityInstance = null;
+        private boolean paging;
+        private String orgUnit;
+        private String program;
+        private String trackedEntityInstance;
         int pageLimit;
 
         private Set<String> uIds = new HashSet<>();

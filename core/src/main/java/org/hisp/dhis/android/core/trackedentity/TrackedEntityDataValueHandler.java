@@ -26,7 +26,7 @@ public class TrackedEntityDataValueHandler {
 
         List<String> uIds = getDataElementUIdsToRemove(eventUid, dataValues);
 
-        if (uIds.size() > 0) {
+        if (!uIds.isEmpty()) {
             trackedEntityDataValueStore.deleteByEventAndDataElementUIds(eventUid, uIds);
         }
     }

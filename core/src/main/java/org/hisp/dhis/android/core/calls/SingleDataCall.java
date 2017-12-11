@@ -22,6 +22,7 @@ import java.util.List;
 
 import retrofit2.Response;
 
+@SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
 public class SingleDataCall implements Call<Response> {
 
     private final OrganisationUnitStore organisationUnitStore;
@@ -119,17 +120,17 @@ public class SingleDataCall implements Call<Response> {
         //TrackerPrograms: programType = WITH_REGISTRATION
         //Non TrackerPrograms: programType = WITHOUT_REGISTRATION
 
+        int pageSize = EventQuery.Builder.create().build().getPageSize();
+
+        int numPages = (int) Math.ceil((double) eventLimitByOrgUnit / pageSize);
+
+        int eventsDownloaded = 0;
+
+        int pageLimit = 0;
+
         for (OrganisationUnit orgUnit : organisationUnits) {
 
-            int pageSize = EventQuery.Builder.create().build().getPageSize();
-
-            int numPages = (int) Math.ceil((double) eventLimitByOrgUnit / pageSize);
-
-            int eventsDownloaded = 0;
-
             for (int page = 1; page <= numPages; page++) {
-
-                int pageLimit = 0;
 
                 if (page == numPages && eventLimitByOrgUnit > 0) {
                     pageLimit = eventLimitByOrgUnit - eventsDownloaded;

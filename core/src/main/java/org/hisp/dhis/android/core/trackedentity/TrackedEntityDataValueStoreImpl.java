@@ -49,6 +49,7 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals",
         "PMD.NPathComplexity",
         "PMD.CyclomaticComplexity",
         "PMD.ModifiedCyclomaticComplexity",
@@ -192,7 +193,7 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
         List<String> argumentValues = new ArrayList<>();
         argumentValues.add(eventUid);
         argumentValues.addAll(dataElementUids);
-        String[] argumentValuesArray = argumentValues.toArray(new String[0]);
+        String[] argumentValuesArray = argumentValues.toArray(new String[argumentValues.size()]);
 
         // execute and clear bindings
         //int delete = databaseAdapter.delete("","","")..executeUpdateDelete(

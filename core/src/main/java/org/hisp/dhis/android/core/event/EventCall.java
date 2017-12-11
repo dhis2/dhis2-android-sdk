@@ -104,13 +104,4 @@ public class EventCall implements Call<Response<Payload<Event>>> {
                 Event.dueDate, Event.deleted, Event.trackedEntityDataValues
         ).build();
     }
-
-    private Fields<Event> getAllFields() {
-        return Fields.<Event>builder().fields(
-                Event.uid, Event.enrollment, Event.created, Event.lastUpdated,
-                Event.eventStatus, Event.coordinates, Event.program, Event.programStage,
-                Event.organisationUnit, Event.eventDate, Event.completeDate,
-                Event.dueDate, Event.deleted, Event.trackedEntityDataValues
-        ).build();
-    }
 }

@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class EventQueryShould {
     @Test(expected = IllegalArgumentException.class)
-    public void throw_illegal_argument_exception_if_limit_page_is_more_greater_than_page_size() {
+    public void throw_illegal_argument_exception_if_limit_page_is_greater_than_page_size() {
         EventQuery.Builder
                 .create()
                 .withPageSize(50)

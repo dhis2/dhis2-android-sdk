@@ -1,6 +1,9 @@
 package org.hisp.dhis.android.core.event;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hisp.dhis.android.core.calls.Call.MAX_UIDS;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,8 +58,6 @@ public class EventCallShould {
     public void setUp() throws IOException {
         dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
 
-        //TODO reuse dhis2MockServer from AndroidTest
-
         retrofit = new Retrofit.Builder()
                 .baseUrl(dhis2MockServer.getBaseEndpoint())
                 .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
@@ -80,6 +81,7 @@ public class EventCallShould {
     @Test
     public void create_event_call_if_uids_size_does_not_exceeds_the_limit() {
         EventCall eventCall = givenAEventCallByUIds(MAX_UIDS);
+        assertThat(eventCall, is(notNullValue()));
     }
 
     @Test
@@ -93,7 +95,7 @@ public class EventCallShould {
 
         RecordedRequest request = dhis2MockServer.takeRequest();
 
-        assertThat(request.getPath()).contains("paging=true&page=2&pageSize=32");
+        assertThat(request.getPath(), containsString("paging=true&page=2&pageSize=32"));
     }
 
     @Test
@@ -107,7 +109,7 @@ public class EventCallShould {
 
         RecordedRequest request = dhis2MockServer.takeRequest();
 
-        assertThat(request.getPath()).contains("orgUnit=OU&program=P");
+        assertThat(request.getPath(), containsString("orgUnit=OU&program=P"));
     }
 
     private EventCall givenAEventCallByUIds(int numUIds) {

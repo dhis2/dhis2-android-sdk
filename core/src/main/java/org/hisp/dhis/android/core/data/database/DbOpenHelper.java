@@ -899,14 +899,14 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                 line = reader.readLine();
             }
         } catch (IOException e) {
-            Log.e(getClass().getName(),e.getMessage());
+            Log.e(getClass().getName(), e.getMessage());
         } finally {
             try {
                 reader.close();
                 inputStreamReader.close();
                 in.close();
             } catch (IOException e) {
-                Log.e(getClass().getName(),e.getMessage());
+                Log.e(getClass().getName(), e.getMessage());
             }
         }
         return database;

@@ -6,8 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
-
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
@@ -34,7 +32,8 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
 
     private String migrationTestDir = "migrations";
     final private Context context;
-    private int version = 1; //current database version to support seed up to requested database version
+    private int version = 1;
+    //current database version to support seed up to requested database version
     private boolean isOnTestMode;
 
 
@@ -46,7 +45,8 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
      *
      * @see SQLBriteOpenHelper
      */
-    public CustomSQLBriteOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, String migrationTestDir) {
+    public CustomSQLBriteOpenHelper(Context context, String name,
+            SQLiteDatabase.CursorFactory factory, int version, String migrationTestDir) {
         super(context, name, factory, version);
         this.version = version;
         this.context = context;
@@ -62,8 +62,9 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
      *
      * @see SQLBriteOpenHelper
      */
-    public CustomSQLBriteOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory,
-                              int version, String migrationTestDir, DatabaseErrorHandler errorHandler) {
+    public CustomSQLBriteOpenHelper(Context context, String name,
+            SQLiteDatabase.CursorFactory factory,
+            int version, String migrationTestDir, DatabaseErrorHandler errorHandler) {
         super(context, name, factory, version, errorHandler);
         this.version = version;
         this.context = context;
@@ -84,6 +85,7 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
         this.context = context;
         this.isOnTestMode = false;
     }
+
     /**
      * Create a helper object to create, open, and/or manage a testing database.
      * This method always returns very quickly.  The database is not actually
@@ -92,7 +94,8 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
      *
      * @see SQLBriteOpenHelper
      */
-    public CustomSQLBriteOpenHelper(Context context, String name, int version, boolean testing, String migrationTestDir) {
+    public CustomSQLBriteOpenHelper(Context context, String name, int version, boolean testing,
+            String migrationTestDir) {
         super(context, name, null, version);
         this.context = context;
         this.version = version;
@@ -105,7 +108,8 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
         try {
             //run all migrations from begin to current requested database version
             int version = db.getVersion();
-            version = version > this.version ? version : this.version; //ensure we start at requested database version
+            version = version > this.version ? version
+                    : this.version; //ensure we start at requested database version
             List<Map<String, List<String>>> parsed = parse(0, version, true);
             up(db, parsed);
         } catch (IOException e) {
@@ -115,10 +119,6 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
 
     /**
      * Upgrade database to latest new version
-     *
-     * @param db
-     * @param oldVersion
-     * @param newVersion
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -135,10 +135,6 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
 
     /**
      * Downgrade database to previous old version
-     *
-     * @param db
-     * @param oldVersion
-     * @param newVersion
      */
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -156,12 +152,10 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
 
     /**
      * Load and parse all required database migrations.
-     *
-     * @return
-     * @throws IOException
      */
-    public List<Map<String, List<String>>> parse(int oldVersion, int newVersion, boolean up) throws IOException {
-        synchronized(this) {
+    public List<Map<String, List<String>>> parse(int oldVersion, int newVersion, boolean up)
+            throws IOException {
+        synchronized (this) {
             //collect all require migrations
             List<Map<String, List<String>>> scripts = new ArrayList<Map<String, List<String>>>();
 
@@ -191,12 +185,9 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
      * <p>
      * It used it creating initial database
      * </p>
-     *
-     * @return
-     * @throws IOException
      */
     public Map<String, List<String>> parse() throws IOException {
-        synchronized(this) {
+        synchronized (this) {
             return this.parse(1);
         }
     }
@@ -209,11 +200,9 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
      * </p>
      *
      * @param newVersion newer database version
-     * @return
-     * @throws IOException
      */
     public Map<String, List<String>> parse(int newVersion) throws IOException {
-        synchronized(this) {
+        synchronized (this) {
             //obtain migration path
             InputStream inputStream = null;
             String migrationPath = migrationTestDir + "/" + newVersion + ".yaml";
@@ -234,12 +223,9 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
 
     /**
      * Apply up migration scripts and seed database with provided seeds
-     *
-     * @param database
-     * @param scripts
      */
     private void up(SQLiteDatabase database, Map<String, List<String>> scripts) {
-        synchronized(this) {
+        synchronized (this) {
             database.beginTransaction();
             try {
                 //obtain up migrations
@@ -271,12 +257,9 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
 
     /**
      * Apply up migration scripts and seed database with provided seeds
-     *
-     * @param database
-     * @param scripts
      */
     private void up(SQLiteDatabase database, List<Map<String, List<String>>> scripts) {
-        synchronized(this) {
+        synchronized (this) {
             //ensure we apply or fail as whole
             database.beginTransaction();
             try {
@@ -294,12 +277,9 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
 
     /**
      * Apply down migration scripts
-     *
-     * @param database
-     * @param scripts
      */
     private void down(SQLiteDatabase database, Map<String, List<String>> scripts) {
-        synchronized(this) {
+        synchronized (this) {
             database.beginTransaction();
             try {
                 //obtain down migrations
@@ -321,12 +301,9 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
 
     /**
      * Apply down migration scripts
-     *
-     * @param database
-     * @param scripts
      */
     private void down(SQLiteDatabase database, List<Map<String, List<String>>> scripts) {
-        synchronized(this) {
+        synchronized (this) {
             //ensure we apply or fail as whole
             database.beginTransaction();
             try {

@@ -6,7 +6,6 @@ import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.api.Where;
 import org.hisp.dhis.android.core.data.api.Which;
 import org.hisp.dhis.android.core.imports.WebResponse;
-import org.hisp.dhis.android.core.program.Program;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

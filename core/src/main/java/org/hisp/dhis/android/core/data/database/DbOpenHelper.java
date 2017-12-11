@@ -28,7 +28,8 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE;
+import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Columns
+        .ORGANISATION_UNIT_SCOPE;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -75,6 +76,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"
@@ -829,13 +832,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         if(!mockedSqlDatabase.equals("")) {
-            if(db.getVersion()==0){
-                try {
-                    populateDBfromResource(db, mockedSqlDatabase);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            populateDBfromResource(db, mockedSqlDatabase);
         }else{
             create(db);
         }
@@ -855,16 +852,30 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         db.execSQL("PRAGMA foreign_keys = ON;");
     }
 
-    private SQLiteDatabase populateDBfromResource(SQLiteDatabase database, String databaseSqlFile) throws IOException {
+    private SQLiteDatabase populateDBfromResource(SQLiteDatabase database, String databaseSqlFile) {
         if (databaseSqlFile.equals("")) {
             return database;
         }
         InputStream in = this.getClass().getClassLoader().getResourceAsStream(databaseSqlFile);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        String line = reader.readLine();
+        InputStreamReader inputStreamReader = new InputStreamReader(in, Charset.forName("UTF-8"));
+        BufferedReader reader = new BufferedReader(inputStreamReader);
+        String line = null;
+        try {
+            line = reader.readLine();
         while (line != null) {
             database.execSQL(line);
             line = reader.readLine();
+        }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                reader.close();
+                inputStreamReader.close();
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return database;
     }

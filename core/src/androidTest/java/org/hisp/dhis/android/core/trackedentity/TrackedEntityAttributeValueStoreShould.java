@@ -28,6 +28,10 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import static com.google.common.truth.Truth.assertThat;
+
+import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
@@ -42,9 +46,6 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.Date;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
 public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
@@ -76,7 +77,8 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
 
         this.store = new TrackedEntityAttributeValueStoreImpl(databaseAdapter());
 
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANIZATION_UNIT);
+        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L,
+                ORGANIZATION_UNIT);
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, TRACKED_ENTITY);
         ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(
                 TRACKED_ENTITY_INSTANCE, ORGANIZATION_UNIT, TRACKED_ENTITY);
@@ -147,13 +149,38 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
                 .isExhausted();
     }
 
+    @Test
+    public void update_event_in_data_base_after_update() throws Exception {
+        long rowId = store.insert(
+                "0", date, date, TRACKED_ENTITY_ATTRIBUTE,
+                TRACKED_ENTITY_INSTANCE);
+
+        store.update(
+                "4", date, date, TRACKED_ENTITY_ATTRIBUTE,
+                TRACKED_ENTITY_INSTANCE);
+
+        Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE, PROJECTION, null,
+                null, null,
+                null, null);
+
+        assertThatCursor(cursor).hasRow(
+                "4",
+                dateString,
+                dateString,
+                TRACKED_ENTITY_ATTRIBUTE,
+                TRACKED_ENTITY_INSTANCE
+        ).isExhausted();
+    }
+
     @Test(expected = SQLiteConstraintException.class)
-    public void throw_sqlite_constraint_exception_when_insert_teav_with_invalid_tracked_entity_attribute() {
+    public void
+    throw_sqlite_constraint_exception_when_insert_teav_with_invalid_tracked_entity_attribute() {
         store.insert(VALUE, date, date, "wrong", TRACKED_ENTITY_INSTANCE);
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void throw_sqlite_constraint_exception_when_insert_teav_with_invalid_tracked_entity_instance() {
+    public void
+    throw_sqlite_constraint_exception_when_insert_teav_with_invalid_tracked_entity_instance() {
         store.insert(VALUE, date, date, TRACKED_ENTITY_ATTRIBUTE, "wrong");
     }
 
@@ -162,7 +189,8 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
         insert_nullable_teav_in_data_base_when_insert_nullable_teav();
 
         database().delete(TrackedEntityAttributeModel.TABLE,
-                TrackedEntityAttributeModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY_ATTRIBUTE});
+                TrackedEntityAttributeModel.Columns.UID + "=?",
+                new String[]{TRACKED_ENTITY_ATTRIBUTE});
 
         Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
                 PROJECTION, null, null, null, null, null);
@@ -174,7 +202,8 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
         insert_nullable_teav_in_data_base_when_insert_nullable_teav();
 
         database().delete(TrackedEntityInstanceModel.TABLE,
-                TrackedEntityInstanceModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY_INSTANCE});
+                TrackedEntityInstanceModel.Columns.UID + "=?",
+                new String[]{TRACKED_ENTITY_INSTANCE});
 
         Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
                 PROJECTION, null, null, null, null, null);

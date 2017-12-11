@@ -65,9 +65,7 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
             "UPDATE " + TrackedEntityAttributeValueModel.TABLE + " SET " +
                     TrackedEntityAttributeValueModel.Columns.VALUE + " =?, " +
                     TrackedEntityAttributeValueModel.Columns.CREATED + " =?, " +
-                    TrackedEntityAttributeValueModel.Columns.LAST_UPDATED + " =?, " +
-                    TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " =?, " +
-                    TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + " =? " +
+                    TrackedEntityAttributeValueModel.Columns.LAST_UPDATED + " =? " +
                     " WHERE " + TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE
                     + " =? AND " +
                     TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + " =?;";
@@ -129,14 +127,10 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
         bindArguments(updateRowStatement, value, created, lastUpdated,
                 trackedEntityAttribute, trackedEntityInstance);
 
-        // bind the where argument
-        sqLiteBind(updateRowStatement, 6, trackedEntityAttribute);
-        sqLiteBind(updateRowStatement, 7, trackedEntityAttribute);
-
         int update = databaseAdapter.executeUpdateDelete(
-                ProgramStageDataElementModel.TABLE, updateRowStatement);
+                TrackedEntityAttributeValueModel.TABLE, updateRowStatement);
 
-        insertRowStatement.clearBindings();
+        updateRowStatement.clearBindings();
 
         return update;
     }
@@ -167,13 +161,13 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
                 cursor.moveToFirst();
                 do {
 
-                    String value = cursor.getString(0) == null ? null : cursor.getString(1);
+                    String value = cursor.getString(0) == null ? null : cursor.getString(0);
                     Date created = cursor.getString(1) == null ? null : parse(cursor.getString(1));
                     Date lastUpdated = cursor.getString(2) == null ? null : parse(
                             cursor.getString(2));
-                    String attribute = cursor.getString(3) == null ? null : cursor.getString(0);
+                    String attribute = cursor.getString(3) == null ? null : cursor.getString(3);
                     String trackedEntityInstance = cursor.getString(4) == null ? null
-                            : cursor.getString(2);
+                            : cursor.getString(4);
 
 
                     if (attributeValues.get(trackedEntityInstance) == null) {
@@ -196,11 +190,11 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
     private void bindArguments(@NonNull SQLiteStatement sqLiteStatement,
             @Nullable String value, @Nullable Date created, @Nullable Date lastUpdated,
             @Nullable String trackedEntityAttribute, @Nullable String trackedEntityInstance) {
-        sqLiteBind(insertRowStatement, 1, value);
-        sqLiteBind(insertRowStatement, 2, created);
-        sqLiteBind(insertRowStatement, 3, lastUpdated);
-        sqLiteBind(insertRowStatement, 4, trackedEntityAttribute);
-        sqLiteBind(insertRowStatement, 5, trackedEntityInstance);
+        sqLiteBind(sqLiteStatement, 1, value);
+        sqLiteBind(sqLiteStatement, 2, created);
+        sqLiteBind(sqLiteStatement, 3, lastUpdated);
+        sqLiteBind(sqLiteStatement, 4, trackedEntityAttribute);
+        sqLiteBind(sqLiteStatement, 5, trackedEntityInstance);
     }
 
 }

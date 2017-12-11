@@ -78,7 +78,7 @@ public class EventCallShould {
     }
 
     @Test
-    public void create_event_call_if_uIds_size_does_not_exceeds_the_limit() {
+    public void create_event_call_if_uids_size_does_not_exceeds_the_limit() {
         EventCall eventCall = givenAEventCallByUIds(MAX_UIDS);
     }
 

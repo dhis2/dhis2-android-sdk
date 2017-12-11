@@ -1,9 +1,9 @@
 package org.hisp.dhis.android.core.data.database.migrations;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hisp.dhis.android.core.data.database.SqliteChecker.ifTableExist;
-import static org.hisp.dhis.android.core.data.database.SqliteChecker.ifValueExist;
-import static org.hisp.dhis.android.core.data.database.SqliteChecker.isFieldExist;
+import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.ifTableExist;
+import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.ifValueExist;
+import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isFieldExist;
 import static org.junit.Assert.assertThat;
 
 import android.support.test.InstrumentationRegistry;

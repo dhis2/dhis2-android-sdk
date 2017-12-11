@@ -7,8 +7,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
-import com.squareup.sqlbrite2.BriteDatabase;
-import com.squareup.sqlbrite2.SqlBrite;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -17,8 +15,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * A helper class to manage database migrations and seeding using
@@ -37,10 +33,9 @@ import io.reactivex.schedulers.Schedulers;
 public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
 
     private String migrationTestDir = "migrations";
-    private Context context;
+    final private Context context;
     private int version = 1; //current database version to support seed up to requested database version
-    private boolean isOnTestMode = false;
-    private static BriteDatabase briteDatabase;
+    private boolean isOnTestMode;
 
 
     /**
@@ -105,83 +100,6 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
         this.migrationTestDir = migrationTestDir;
     }
 
-
-    /**
-     * Create a {@link BriteDatabase} instance.
-     * This method always returns very quickly.  The database is not actually
-     * created or opened until one of {@link #getWritableDatabase} or
-     * {@link #getReadableDatabase} is called.
-     *
-     * @see SQLBriteOpenHelper
-     * @see BriteDatabase
-     */
-    public synchronized static BriteDatabase get(Context context, String name, int version) {
-        if (briteDatabase == null) {
-            SQLBriteOpenHelper sqlBriteOpenHelper = new SQLBriteOpenHelper(context, name, null, version);
-            SqlBrite sqlBrite = new SqlBrite.Builder().build();
-            briteDatabase = sqlBrite.wrapDatabaseHelper(sqlBriteOpenHelper, Schedulers.io());
-        }
-        return briteDatabase;
-    }
-
-
-    /**
-     * Create a {@link BriteDatabase} instance.
-     * This method always returns very quickly.  The database is not actually
-     * created or opened until one of {@link #getWritableDatabase} or
-     * {@link #getReadableDatabase} is called.
-     *
-     * @see SQLBriteOpenHelper
-     * @see BriteDatabase
-     */
-    public synchronized static BriteDatabase get(Context context, String name,
-                                                 SQLiteDatabase.CursorFactory factory, int version, String migrationDir) {
-        if (briteDatabase == null) {
-            CustomSQLBriteOpenHelper sqlBriteOpenHelper = new CustomSQLBriteOpenHelper(context, name, factory, version, migrationDir);
-            SqlBrite sqlBrite = new SqlBrite.Builder().build();
-            briteDatabase = sqlBrite.wrapDatabaseHelper(sqlBriteOpenHelper, Schedulers.io());
-        }
-        return briteDatabase;
-    }
-
-
-    /**
-     * Create a {@link BriteDatabase} instance.
-     * This method always returns very quickly.  The database is not actually
-     * created or opened until one of {@link #getWritableDatabase} or
-     * {@link #getReadableDatabase} is called.
-     *
-     * @see SQLBriteOpenHelper
-     * @see BriteDatabase
-     */
-    public synchronized static BriteDatabase get(Context context, String name,
-                                                 SQLiteDatabase.CursorFactory factory, int version, String migrationDir,
-                                                 DatabaseErrorHandler errorHandler) {
-        if (briteDatabase == null) {
-            CustomSQLBriteOpenHelper sqlBriteOpenHelper = new CustomSQLBriteOpenHelper(context, name, factory, version, migrationDir, errorHandler);
-            SqlBrite sqlBrite = new SqlBrite.Builder().build();
-            briteDatabase = sqlBrite.wrapDatabaseHelper(sqlBriteOpenHelper, Schedulers.io());
-        }
-        return briteDatabase;
-    }
-
-    /**
-     * Create a {@link BriteDatabase} instance for testing.
-     * This method always returns very quickly.  The database is not actually
-     * created or opened until one of {@link #getWritableDatabase} or
-     * {@link #getReadableDatabase} is called.
-     *
-     * @see SQLBriteOpenHelper
-     * @see BriteDatabase
-     */
-    public synchronized static BriteDatabase get(Context context, String name, int version, boolean testing, String migrationTestDir) {
-        //always return new instance on test mode
-        CustomSQLBriteOpenHelper sqlBriteOpenHelper = new CustomSQLBriteOpenHelper(context, name, version, testing, migrationTestDir);
-        SqlBrite sqlBrite = new SqlBrite.Builder().build();
-        BriteDatabase briteDatabase = sqlBrite.wrapDatabaseHelper(sqlBriteOpenHelper, Schedulers.trampoline());
-        return briteDatabase;
-    }
-
     @Override
     public void onCreate(SQLiteDatabase db) {
         try {
@@ -242,28 +160,29 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
      * @return
      * @throws IOException
      */
-    public synchronized List<Map<String, List<String>>> parse(int oldVersion, int newVersion, boolean up) throws IOException {
+    public List<Map<String, List<String>>> parse(int oldVersion, int newVersion, boolean up) throws IOException {
+        synchronized(this) {
+            //collect all require migrations
+            List<Map<String, List<String>>> scripts = new ArrayList<Map<String, List<String>>>();
 
-        //collect all require migrations
-        List<Map<String, List<String>>> scripts = new ArrayList<Map<String, List<String>>>();
+            //iterate over all required migrations
+            if (up) {
+                //parse up migrations
+                int startVersion = oldVersion + 1;
+                for (int i = startVersion; i <= newVersion; i++) {
+                    Map<String, List<String>> script = this.parse(i);
+                    scripts.add(script);
+                }
+            } else {
+                //parse down migrations
+                for (int i = oldVersion; i > newVersion; i--) {
+                    Map<String, List<String>> script = this.parse(i);
+                    scripts.add(script);
+                }
+            }
 
-        //iterate over all required migrations
-        if (up) {
-            //parse up migrations
-            int startVersion = oldVersion + 1;
-            for (int i = startVersion; i <= newVersion; i++) {
-                Map<String, List<String>> script = this.parse(i);
-                scripts.add(script);
-            }
-        } else {
-            //parse down migrations
-            for (int i = oldVersion; i > newVersion; i--) {
-                Map<String, List<String>> script = this.parse(i);
-                scripts.add(script);
-            }
+            return scripts;
         }
-
-        return scripts;
     }
 
 
@@ -276,8 +195,10 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
      * @return
      * @throws IOException
      */
-    public synchronized Map<String, List<String>> parse() throws IOException {
-        return this.parse(1);
+    public Map<String, List<String>> parse() throws IOException {
+        synchronized(this) {
+            return this.parse(1);
+        }
     }
 
 
@@ -291,23 +212,23 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
      * @return
      * @throws IOException
      */
-    public synchronized Map<String, List<String>> parse(int newVersion) throws IOException {
+    public Map<String, List<String>> parse(int newVersion) throws IOException {
+        synchronized(this) {
+            //obtain migration path
+            InputStream inputStream = null;
+            String migrationPath = migrationTestDir + "/" + newVersion + ".yaml";
+            //handle test mode
+            if (isOnTestMode) {
+                inputStream = this.getClass().getClassLoader().getResourceAsStream(migrationPath);
+            } else {
+                inputStream = this.context.getAssets().open(migrationPath);
+            }
+            //parse migration content
+            Yaml yaml = new Yaml();
+            Map<String, List<String>> parsed = (Map) yaml.load(inputStream);
 
-        //obtain migration path
-        InputStream inputStream = null;
-        String migrationPath = migrationTestDir + "/" + newVersion + ".yaml";
-        //handle test mode
-        if (isOnTestMode) {
-            inputStream = this.getClass().getClassLoader().getResourceAsStream(migrationPath);
-        } else {
-            inputStream = this.context.getAssets().open(migrationPath);
+            return parsed;
         }
-        //parse migration content
-        Yaml yaml = new Yaml();
-        Map<String, List<String>> parsed = (Map) yaml.load(inputStream);
-
-        return parsed;
-
     }
 
 
@@ -317,32 +238,34 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
      * @param database
      * @param scripts
      */
-    private synchronized void up(SQLiteDatabase database, Map<String, List<String>> scripts) {
-        database.beginTransaction();
-        try {
-            //obtain up migrations
-            List<String> ups = scripts.get("up");
+    private void up(SQLiteDatabase database, Map<String, List<String>> scripts) {
+        synchronized(this) {
+            database.beginTransaction();
+            try {
+                //obtain up migrations
+                List<String> ups = scripts.get("up");
 
-            //apply up migrations
-            if (ups != null) {
-                for (String script : ups) {
-                    database.execSQL(script);
+                //apply up migrations
+                if (ups != null) {
+                    for (String script : ups) {
+                        database.execSQL(script);
+                    }
                 }
-            }
 
-            //obtain seeds
-            List<String> seeds = scripts.get("seeds");
+                //obtain seeds
+                List<String> seeds = scripts.get("seeds");
 
-            //apply seed migrations
-            if (seeds != null) {
-                for (String script : seeds) {
-                    database.execSQL(script);
+                //apply seed migrations
+                if (seeds != null) {
+                    for (String script : seeds) {
+                        database.execSQL(script);
+                    }
                 }
-            }
 
-            database.setTransactionSuccessful();
-        } finally {
-            database.endTransaction();
+                database.setTransactionSuccessful();
+            } finally {
+                database.endTransaction();
+            }
         }
     }
 
@@ -352,17 +275,19 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
      * @param database
      * @param scripts
      */
-    private synchronized void up(SQLiteDatabase database, List<Map<String, List<String>>> scripts) {
-        //ensure we apply or fail as whole
-        database.beginTransaction();
-        try {
-            //start apply all migrations
-            for (Map<String, List<String>> script : scripts) {
-                up(database, script);
+    private void up(SQLiteDatabase database, List<Map<String, List<String>>> scripts) {
+        synchronized(this) {
+            //ensure we apply or fail as whole
+            database.beginTransaction();
+            try {
+                //start apply all migrations
+                for (Map<String, List<String>> script : scripts) {
+                    up(database, script);
+                }
+                database.setTransactionSuccessful();
+            } finally {
+                database.endTransaction();
             }
-            database.setTransactionSuccessful();
-        } finally {
-            database.endTransaction();
         }
     }
 
@@ -373,22 +298,24 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
      * @param database
      * @param scripts
      */
-    private synchronized void down(SQLiteDatabase database, Map<String, List<String>> scripts) {
-        database.beginTransaction();
-        try {
-            //obtain down migrations
-            List<String> downs = scripts.get("down");
+    private void down(SQLiteDatabase database, Map<String, List<String>> scripts) {
+        synchronized(this) {
+            database.beginTransaction();
+            try {
+                //obtain down migrations
+                List<String> downs = scripts.get("down");
 
-            //apply down migrations
-            if (downs != null) {
-                for (String script : downs) {
-                    database.execSQL(script);
+                //apply down migrations
+                if (downs != null) {
+                    for (String script : downs) {
+                        database.execSQL(script);
+                    }
                 }
-            }
 
-            database.setTransactionSuccessful();
-        } finally {
-            database.endTransaction();
+                database.setTransactionSuccessful();
+            } finally {
+                database.endTransaction();
+            }
         }
     }
 
@@ -398,21 +325,19 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
      * @param database
      * @param scripts
      */
-    private synchronized void down(SQLiteDatabase database, List<Map<String, List<String>>> scripts) {
-        //ensure we apply or fail as whole
-        database.beginTransaction();
-        try {
-            //start apply all migrations
-            for (Map<String, List<String>> script : scripts) {
-                down(database, script);
+    private void down(SQLiteDatabase database, List<Map<String, List<String>>> scripts) {
+        synchronized(this) {
+            //ensure we apply or fail as whole
+            database.beginTransaction();
+            try {
+                //start apply all migrations
+                for (Map<String, List<String>> script : scripts) {
+                    down(database, script);
+                }
+                database.setTransactionSuccessful();
+            } finally {
+                database.endTransaction();
             }
-            database.setTransactionSuccessful();
-        } finally {
-            database.endTransaction();
         }
-    }
-
-    public boolean isOnTestMode() {
-        return isOnTestMode;
     }
 }

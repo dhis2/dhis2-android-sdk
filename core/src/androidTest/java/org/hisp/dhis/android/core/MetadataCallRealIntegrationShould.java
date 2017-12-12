@@ -1,11 +1,12 @@
 package org.hisp.dhis.android.core;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.program.ProgramCall;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,8 +15,6 @@ import java.io.IOException;
 
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
-
-import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
@@ -32,7 +31,7 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
         super.setUp();
 
         ConfigurationModel config = ConfigurationModel.builder()
-                .serverUrl(HttpUrl.parse("https://play.dhis2.org/dev/api/"))
+                .serverUrl(HttpUrl.parse("https://play.dhis2.org/demo/api/"))
                 .build();
 
         d2 = new D2.Builder()

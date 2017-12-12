@@ -51,6 +51,7 @@ public abstract class ResourceModel extends BaseModel {
     }
 
     public enum Type {
+        EVENT,
         SYSTEM_INFO,
         USER,
         ORGANISATION_UNIT,

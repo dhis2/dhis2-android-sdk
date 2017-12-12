@@ -1,6 +1,7 @@
 package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,9 @@ public class EventHandlerShould {
     private EventStore eventStore;
 
     @Mock
+    private TrackedEntityDataValueHandler trackedEntityDataValueHandler;
+
+    @Mock
     private Event event;
 
     // object to test
@@ -35,7 +39,7 @@ public class EventHandlerShould {
 
         when(event.uid()).thenReturn("test_event_uid");
 
-        eventHandler = new EventHandler(eventStore);
+        eventHandler = new EventHandler(eventStore, trackedEntityDataValueHandler);
     }
 
     @Test

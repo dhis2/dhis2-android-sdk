@@ -55,7 +55,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
     @Test
     public void download_tei_enrollments_and_events() throws Exception {
-        String teiUid = "cAQnNOXeh8s";
+        String teiUid = "PgmUFEQYZdt";
 
         givenAMetadataInDatabase();
 

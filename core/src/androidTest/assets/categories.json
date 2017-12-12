@@ -1,0 +1,525 @@
+{
+  "pager": {
+    "page": 1,
+    "pageCount": 1,
+    "total": 22,
+    "pageSize": 50
+  },
+  "categories": [
+    {
+      "lastUpdated": "2017-10-09T16:03:48.729",
+      "code": "BIRTHS_ATTENDED",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Births attended by",
+      "id": "KfdsGBcoiCa",
+      "shortName": "Births attended by",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Births attended by",
+      "categoryOptions": [
+        {
+          "id": "TNYQzTHdoxL"
+        },
+        {
+          "id": "TXGfLxZlInA"
+        },
+        {
+          "id": "QgULqw9YDu2"
+        },
+        {
+          "id": "OjIOxG7vgna"
+        },
+        {
+          "id": "uZUnebiT5DI"
+        },
+        {
+          "id": "HTHvCohKoXt"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2014-03-05T04:10:47.764",
+      "code": "COMMODITIES",
+      "created": "2014-03-02T02:14:34.600",
+      "name": "Commodities",
+      "id": "gtuVl6NbXQV",
+      "shortName": "Commodities",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Commodities",
+      "categoryOptions": [
+        {
+          "id": "AdkHQiiJBB4"
+        },
+        {
+          "id": "xp1wtEkhBmV"
+        },
+        {
+          "id": "gpK9r0M1RFZ"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2017-12-11T03:32:25.291",
+      "created": "2012-11-21T12:15:18.537",
+      "name": "default",
+      "id": "vGs6omsRekv",
+      "shortName": "default",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "default",
+      "categoryOptions": [
+        {
+          "id": "as6ygGvUGNg"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:32:43.922",
+      "code": "EPI_NUTR_AGE",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "EPI/nutrition age",
+      "id": "YNZyaJHiHYq",
+      "shortName": "EPI/nutrition age",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "EPI/nutrition age",
+      "categoryOptions": [
+        {
+          "id": "btOyqprQ9e8"
+        },
+        {
+          "id": "GEqzEKCHoGA"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:27:46.728",
+      "code": "GENDER",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Gender",
+      "id": "cX5k9anHEHd",
+      "shortName": "Gender",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Gender",
+      "categoryOptions": [
+        {
+          "id": "apsOixVZlf1"
+        },
+        {
+          "id": "jRbMi0aBjYn"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:32:36.063",
+      "code": "HIV_AGE",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "HIV age",
+      "id": "veGzholzPQm",
+      "shortName": "HIV age",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "HIV age",
+      "categoryOptions": [
+        {
+          "id": "zs2Ra6sikup"
+        },
+        {
+          "id": "UOqJW6HPvvL"
+        },
+        {
+          "id": "WAl0OCcIYxr"
+        },
+        {
+          "id": "IG8vRsn0HNl"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:32:22.962",
+      "code": "HIV_PAED_AGE",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "HIV paediatric age",
+      "id": "aN4inMKVhqc",
+      "shortName": "HIV paediatric age",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "HIV paediatric age",
+      "categoryOptions": [
+        {
+          "id": "nuHLu6GaiWI"
+        },
+        {
+          "id": "dPSWsKeAZNw"
+        },
+        {
+          "id": "dHl52Uo56Ct"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-12-23T18:07:58.771",
+      "code": "IMPL_PARTNER",
+      "created": "2013-12-20T22:13:46.348",
+      "name": "Implementing Partner",
+      "id": "LFsZ8v5v7rq",
+      "shortName": "Implementing Partner",
+      "dataDimensionType": "ATTRIBUTE",
+      "displayName": "Implementing Partner",
+      "categoryOptions": [
+        {
+          "id": "C6nZpLKjEJr"
+        },
+        {
+          "id": "CW81uF03hvV"
+        },
+        {
+          "id": "B3nxOazOO2G"
+        },
+        {
+          "id": "RkbOhHwiOgW"
+        },
+        {
+          "id": "TY5rBQzlBRa"
+        },
+        {
+          "id": "hERJraxV8D9"
+        },
+        {
+          "id": "g3bcPGD5Q5i"
+        },
+        {
+          "id": "yfWXlxYNbhy"
+        },
+        {
+          "id": "yrwgRxRhBoU"
+        },
+        {
+          "id": "VLFVaH1MwnF"
+        },
+        {
+          "id": "e5YBV5F5iUd"
+        },
+        {
+          "id": "XK6u6cJCR0t"
+        },
+        {
+          "id": "xwZ2u3WyQR0"
+        },
+        {
+          "id": "LEWNFo4Qrrs"
+        },
+        {
+          "id": "xEunk8LPzkb"
+        },
+        {
+          "id": "uilaJSyXt7d"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:30:54.369",
+      "code": "LAB_COMPL",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Labour complications",
+      "id": "SvzFH1XEfJr",
+      "shortName": "Labour complications",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Labour complications",
+      "categoryOptions": [
+        {
+          "id": "o4K5VAp14z9"
+        },
+        {
+          "id": "LVVjrz1mFQt"
+        },
+        {
+          "id": "agNsiNGcGlf"
+        },
+        {
+          "id": "IqVA7ElOrEw"
+        },
+        {
+          "id": "FfQkdfpvaxx"
+        },
+        {
+          "id": "E5g8xQeBvHa"
+        },
+        {
+          "id": "Mz5LnqoobUz"
+        },
+        {
+          "id": "rVvVG0xb1U9"
+        },
+        {
+          "id": "weOIzRXoUN4"
+        },
+        {
+          "id": "B3xM7LYh0jH"
+        },
+        {
+          "id": "Et4YOXvUod1"
+        },
+        {
+          "id": "b6sKvU8phrc"
+        },
+        {
+          "id": "qZIEVbjYDLI"
+        },
+        {
+          "id": "vGrKQ90SRZt"
+        },
+        {
+          "id": "sJw2lMoJu1f"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:59:32.881",
+      "code": "LOC_FIX_OUTREACH",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Location Fixed/Outreach",
+      "id": "fMZEcRHuamy",
+      "shortName": "Location Fixed/Outreach",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Location Fixed/Outreach",
+      "categoryOptions": [
+        {
+          "id": "qkPbeWaFsnU"
+        },
+        {
+          "id": "wbrDrL2aYEc"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:59:48.308",
+      "code": "LOC_PHU_COMM",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Location PHU/Community",
+      "id": "x3uo8LqiTBk",
+      "shortName": "Location PHU/Community",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Location PHU/Community",
+      "categoryOptions": [
+        {
+          "id": "wHFX72Y0KXx"
+        },
+        {
+          "id": "Fp4gVHbRvEV"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:26:34.719",
+      "code": "MORB_AGE",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Morbidity Age",
+      "id": "fkAkrdC7eJF",
+      "shortName": "Morbidity Age",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Morbidity Age",
+      "categoryOptions": [
+        {
+          "id": "FbLZS3ueWbQ"
+        },
+        {
+          "id": "rEq3Hkd3XXH"
+        },
+        {
+          "id": "dUm5jaCTPBb"
+        },
+        {
+          "id": "ZZxYuoTCcDd"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2011-12-24T12:24:25.155",
+      "code": "OUTCOME",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Outcome",
+      "id": "VPqYge5RB93",
+      "shortName": "Outcome",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Outcome",
+      "categoryOptions": [
+        {
+          "id": "e3oqm527jBS"
+        },
+        {
+          "id": "rSdQZYDmHJm"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-03-19T20:42:58.882",
+      "code": "POINT_OF_SERV",
+      "created": "2013-03-19T20:20:44.850",
+      "name": "Point of service",
+      "id": "EicyMsVYG62",
+      "shortName": "Point of service",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Point of service",
+      "categoryOptions": [
+        {
+          "id": "qkPbeWaFsnU"
+        },
+        {
+          "id": "wbrDrL2aYEc"
+        },
+        {
+          "id": "C1CvTD0GlTU"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:30:04.465",
+      "code": "PREGNANT",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Pregnant/Non-pregnant",
+      "id": "qzsxBXFf5yb",
+      "shortName": "Pregnant/Non-pregnant",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Pregnant/Non-pregnant",
+      "categoryOptions": [
+        {
+          "id": "JR4RSJFjNYl"
+        },
+        {
+          "id": "ZggZw2XNDaw"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-12-23T18:08:20.301",
+      "code": "PROJECT",
+      "created": "2013-12-20T22:16:13.684",
+      "name": "Project",
+      "id": "yY2bQYqNt0o",
+      "shortName": "Project",
+      "dataDimensionType": "ATTRIBUTE",
+      "displayName": "Project",
+      "categoryOptions": [
+        {
+          "id": "i4Nbp8S2G6A"
+        },
+        {
+          "id": "yMj2MnmNI8L"
+        },
+        {
+          "id": "OUUdG3sdOqb"
+        },
+        {
+          "id": "M58XdOfhiJ7"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:28:51.359",
+      "code": "REF_AGE",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Referrals Age",
+      "id": "WnouSiGrbgy",
+      "shortName": "Referrals Age",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Referrals Age",
+      "categoryOptions": [
+        {
+          "id": "K4gwuiVvW3z"
+        },
+        {
+          "id": "oaFqxkefkPs"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2017-05-19T14:46:41.271",
+      "code": "RURAL_URBAN",
+      "created": "2017-05-19T14:46:41.271",
+      "name": "Rural and Urban",
+      "id": "EC40NXmsTVu",
+      "shortName": "Rural and Urban",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Rural and Urban",
+      "categoryOptions": [
+        {
+          "id": "N7eHxEoNHZa"
+        },
+        {
+          "id": "UyBLLB6kvw4"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2011-12-24T12:24:25.155",
+      "code": "STAFFING",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Staffing",
+      "id": "VVDQ8UdwUIj",
+      "shortName": "Staffing",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Staffing",
+      "categoryOptions": [
+        {
+          "id": "Z8aX3AkrDMS"
+        },
+        {
+          "id": "sNr1y5Qq1YQ"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2011-12-24T12:24:25.155",
+      "code": "STOCK_DISC",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Stock discarded",
+      "id": "Qzh0MSUx4RM",
+      "shortName": "Stock discarded",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Stock discarded",
+      "categoryOptions": [
+        {
+          "id": "YHb43JqCAmI"
+        },
+        {
+          "id": "mInFlpnx6TQ"
+        },
+        {
+          "id": "qKc2WhjMPKC"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2017-05-16T19:47:31.122",
+      "code": "TARGET_RESULT",
+      "created": "2017-05-16T19:47:31.122",
+      "name": "Target vs Result",
+      "id": "eLwL77Z9E7R",
+      "shortName": "Target vs Result",
+      "dataDimensionType": "ATTRIBUTE",
+      "displayName": "Target vs Result",
+      "categoryOptions": [
+        {
+          "id": "STgy27fGvaU"
+        },
+        {
+          "id": "JvIqWKLPPkt"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:31:12.367",
+      "code": "UNDER_ABOVE_5Y",
+      "created": "2013-04-09T14:44:59.967",
+      "name": "Under 5/5 and above of age",
+      "id": "Pj6Pe2e5PX7",
+      "shortName": "Under 5/5 and above of age",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Under 5/5 and above of age",
+      "categoryOptions": [
+        {
+          "id": "D3E6Qfzjs6I"
+        },
+        {
+          "id": "PYddIHxZRKK"
+        }
+      ]
+    }
+  ]
+}

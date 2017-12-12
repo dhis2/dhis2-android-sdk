@@ -26,25 +26,52 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.category;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 
-// TODO: Write CategoryOptionCobo- Store, StoreImp, Model and their tests (Datacapture)
+
 @AutoValue
-@JsonDeserialize(builder = AutoValue_CategoryOptionCombo.Builder.class)
-public abstract class CategoryOptionCombo extends BaseNameableObject {
-    // no fields
+public abstract class CategoryModel extends BaseIdentifiableObjectModel {
+    public static final String TABLE = "Category";
 
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String DATA_DIMENSION_TYPE = "dataDimensionType";
+
+    }
+
+    @Nullable
+    @ColumnName(Columns.DATA_DIMENSION_TYPE)
+    public abstract String dataDimensionType();
+
+
+    @NonNull
+    public abstract ContentValues toContentValues();
+
+    @NonNull
     public static Builder builder() {
-        return new AutoValue_CategoryOptionCombo.Builder();
+        return new $$AutoValue_CategoryModel.Builder();
+    }
+
+    @NonNull
+    public static CategoryModel create(Cursor cursor) {
+        return AutoValue_CategoryModel.createFromCursor(cursor);
+
     }
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
-        public abstract CategoryOptionCombo build();
+    public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {
+        public abstract Builder dataDimensionType(@Nullable String dimensionType);
+
+
+        public abstract CategoryModel build();
     }
 }

@@ -26,7 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.category;
+
+import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 import android.support.annotation.Nullable;
 
@@ -35,41 +37,56 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.data.api.Field;
 
-import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
-// TODO: Write Category- Store, StoreImp, Model and their tests (Datacapture)
 @AutoValue
-@JsonDeserialize(builder = AutoValue_Category.Builder.class)
-public abstract class Category extends BaseNameableObject {
-    private static final String JSON_PROPERTY_CATEGORY_OPTIONS = "categoryOptions";
+@JsonDeserialize(builder = AutoValue_CategoryOption.Builder.class)
+public abstract class CategoryOption extends BaseNameableObject {
+    private static final String JSON_PROPERTY_CATEGORY_OPTION_COMBOS = "categoryOptionCombos";
+    private static final String JSON_PROPERTY_START_DATE = "startDate";
+    private static final String JSON_PROPERTY_END_DATE = "endDate";
+
+    public static final Field<CategoryOption, String> uid = Field.create(UID);
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_CATEGORY_OPTIONS)
-    public abstract List<CategoryOption> categoryOptions();
+    @JsonProperty(JSON_PROPERTY_CATEGORY_OPTION_COMBOS)
+    public abstract List<CategoryOptionCombo> categoryOptionCombos();
+
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_START_DATE)
+    public abstract Date startDate();
+
+    @Nullable
+    @JsonProperty(JSON_PROPERTY_END_DATE)
+    public abstract Date endDate();
 
     public static Builder builder() {
-        return new AutoValue_Category.Builder();
+        return new AutoValue_CategoryOption.Builder();
     }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
 
-        @JsonProperty(JSON_PROPERTY_CATEGORY_OPTIONS)
-        public abstract Builder categoryOptions(@Nullable List<CategoryOption> categoryOptions);
+        @JsonProperty(JSON_PROPERTY_CATEGORY_OPTION_COMBOS)
+        public abstract Builder categoryOptionCombos(
+                @Nullable List<CategoryOptionCombo> categoryOptionCombos);
 
-        // used only to support unmodifiable collections
-        abstract List<CategoryOption> categoryOptions();
+        @JsonProperty(JSON_PROPERTY_START_DATE)
+        public abstract Builder startDate(@Nullable Date startDate);
 
-        // used only to support unmodifiable collections
-        abstract Category autoBuild();
+        @JsonProperty(JSON_PROPERTY_END_DATE)
+        public abstract Builder endDate(@Nullable Date endDate);
 
-        public Category build() {
-            if (categoryOptions() != null) {
-                categoryOptions(Collections.unmodifiableList(categoryOptions()));
-            }
+        // internal, not exposed
+        abstract List<CategoryOptionCombo> categoryOptionCombos();
 
+        abstract CategoryOption autoBuild();
+
+        public CategoryOption build() {
+            categoryOptionCombos(safeUnmodifiableList(categoryOptionCombos()));
             return autoBuild();
         }
     }

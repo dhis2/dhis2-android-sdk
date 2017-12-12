@@ -35,6 +35,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
+import org.hisp.dhis.android.core.category.CategoryModel;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.constant.ConstantModel;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
@@ -83,6 +84,17 @@ public class DbOpenHelper extends SQLiteOpenHelper {
     private static final String CREATE_CONFIGURATION_TABLE = "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
             ConfigurationModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             ConfigurationModel.Columns.SERVER_URL + " TEXT NOT NULL UNIQUE" +
+            ");";
+
+    private static final String CREATE_CATEGORY_TABLE = "CREATE TABLE " + CategoryModel.TABLE + " (" +
+            CategoryModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            CategoryModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+            CategoryModel.Columns.CODE + " TEXT," +
+            CategoryModel.Columns.NAME + " TEXT," +
+            CategoryModel.Columns.DISPLAY_NAME + " TEXT," +
+            CategoryModel.Columns.CREATED + " TEXT," +
+            CategoryModel.Columns.LAST_UPDATED + " TEXT," +
+            CategoryModel.Columns.DATA_DIMENSION_TYPE + " TEXT"+
             ");";
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + UserModel.TABLE + " (" +

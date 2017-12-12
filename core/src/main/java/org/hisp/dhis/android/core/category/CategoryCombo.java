@@ -26,7 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.category;
+
+import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 import android.support.annotation.Nullable;
 
@@ -34,56 +36,45 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 
-import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
-
+// TODO: Write CategoryCombo- Store, StoreImp, Model and their tests (Datacapture)
 @AutoValue
-@JsonDeserialize(builder = AutoValue_CategoryOption.Builder.class)
-public abstract class CategoryOption extends BaseNameableObject {
-    private static final String JSON_PROPERTY_CATEGORY_OPTION_COMBOS = "categoryOptionCombos";
-    private static final String JSON_PROPERTY_START_DATE = "startDate";
-    private static final String JSON_PROPERTY_END_DATE = "endDate";
+@JsonDeserialize(builder = AutoValue_CategoryCombo.Builder.class)
+public abstract class CategoryCombo extends BaseIdentifiableObject {
+    private static final String JSON_PROPERTY_IS_DEFAULT = "isDefault";
+    private static final String JSON_PROPERTY_CATEGORIES = "categories";
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_CATEGORY_OPTION_COMBOS)
-    public abstract List<CategoryOptionCombo> categoryOptionCombos();
+    @JsonProperty(JSON_PROPERTY_IS_DEFAULT)
+    public abstract Boolean isDefault();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_START_DATE)
-    public abstract Date startDate();
-
-    @Nullable
-    @JsonProperty(JSON_PROPERTY_END_DATE)
-    public abstract Date endDate();
+    @JsonProperty(JSON_PROPERTY_CATEGORIES)
+    public abstract List<Category> categories();
 
     public static Builder builder() {
-        return new AutoValue_CategoryOption.Builder();
+        return new AutoValue_CategoryCombo.Builder();
     }
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
-        @JsonProperty(JSON_PROPERTY_CATEGORY_OPTION_COMBOS)
-        public abstract Builder categoryOptionCombos(
-                @Nullable List<CategoryOptionCombo> categoryOptionCombos);
+        @JsonProperty(JSON_PROPERTY_IS_DEFAULT)
+        public abstract Builder isDefault(@Nullable Boolean isDefault);
 
-        @JsonProperty(JSON_PROPERTY_START_DATE)
-        public abstract Builder startDate(@Nullable Date startDate);
-
-        @JsonProperty(JSON_PROPERTY_END_DATE)
-        public abstract Builder endDate(@Nullable Date endDate);
+        @JsonProperty(JSON_PROPERTY_CATEGORIES)
+        public abstract Builder categories(@Nullable List<Category> categories);
 
         // internal, not exposed
-        abstract List<CategoryOptionCombo> categoryOptionCombos();
+        abstract List<Category> categories();
 
-        abstract CategoryOption autoBuild();
+        abstract CategoryCombo autoBuild();
 
-        public CategoryOption build() {
-            categoryOptionCombos(safeUnmodifiableList(categoryOptionCombos()));
+        public CategoryCombo build() {
+            categories(safeUnmodifiableList(categories()));
             return autoBuild();
         }
     }

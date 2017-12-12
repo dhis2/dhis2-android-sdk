@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.dataelement;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.Inject;
+import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.junit.Test;
 
@@ -52,7 +53,7 @@ public class CategoryShould {
                         "\"name\":\"Births attended by\"," +
                         "\"shortName\":\"Births attended by\"," +
                         "\"dataDimensionType\":\"DISAGGREGATION\"," +
-                        "\"dimensionType\":\"CATEGORY\"," +
+                        "\"dataDimensionType\":\"CATEGORY\"," +
                         "\"displayName\":\"Births attended by\"," +
                         "\"publicAccess\":\"rw------\"," +
                         "\"displayShortName\":\"Births attended by\"," +

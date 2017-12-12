@@ -33,13 +33,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-public class ConstantStoreImpl implements ConstantStore {
+public class ConstantStoreImpl implements ConstantStore, DeletableStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + ConstantModel.TABLE + " (" +
             ConstantModel.Columns.UID + "," +
             ConstantModel.Columns.CODE + "," +
@@ -76,4 +77,8 @@ public class ConstantStoreImpl implements ConstantStore {
         return ret;
     }
 
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(ConstantModel.TABLE);
+    }
 }

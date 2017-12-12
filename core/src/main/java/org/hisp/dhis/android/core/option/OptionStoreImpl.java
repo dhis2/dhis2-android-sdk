@@ -32,6 +32,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.Date;
 
@@ -39,7 +40,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public class OptionStoreImpl implements OptionStore {
+public class OptionStoreImpl implements OptionStore, DeletableStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + OptionModel.TABLE + " (" +
             OptionModel.Columns.UID + ", " +
@@ -145,5 +146,10 @@ public class OptionStoreImpl implements OptionStore {
         sqLiteBind(sqliteStatement, 5, created);
         sqLiteBind(sqliteStatement, 6, lastUpdated);
         sqLiteBind(sqliteStatement, 7, optionSet);
+    }
+
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(OptionModel.TABLE);
     }
 }

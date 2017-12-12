@@ -40,6 +40,7 @@ import android.text.TextUtils;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementModel;
+import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,7 +57,8 @@ import java.util.Map;
         "PMD.StdCyclomaticComplexity",
         "PMD.AvoidInstantiatingObjectsInLoops"
 })
-public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueStore {
+public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueStore,
+        DeletableStore {
 
     private static final String SELECT_FIELDS =
             TrackedEntityDataValueModel.TABLE + "." + TrackedEntityDataValueModel.Columns.CREATED
@@ -314,5 +316,10 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
         sqLiteBind(sqLiteStatement, 5, storedBy);
         sqLiteBind(sqLiteStatement, 6, value);
         sqLiteBind(sqLiteStatement, 7, providedElsewhere);
+    }
+
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(TrackedEntityDataValueModel.TABLE);
     }
 }

@@ -34,6 +34,7 @@ import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.Date;
 
@@ -43,7 +44,7 @@ import static org.hisp.dhis.android.core.utils.Utils.isNull;
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
 })
-public class DataElementStoreImpl implements DataElementStore {
+public class DataElementStoreImpl implements DataElementStore, DeletableStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + DataElementModel.TABLE + " (" +
             DataElementModel.Columns.UID + ", " +
             DataElementModel.Columns.CODE + ", " +
@@ -192,4 +193,8 @@ public class DataElementStoreImpl implements DataElementStore {
 
     }
 
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(DataElementModel.TABLE);
+    }
 }

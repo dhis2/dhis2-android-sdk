@@ -34,13 +34,14 @@ import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.resource.ResourceModel.Columns;
+import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-public class ResourceStoreImpl implements ResourceStore {
+public class ResourceStoreImpl implements ResourceStore, DeletableStore {
     public static final String INSERT_STATEMENT = "INSERT INTO " + ResourceModel.TABLE + " (" +
             Columns.RESOURCE_TYPE + ", " +
             Columns.LAST_SYNCED + ") " +
@@ -117,5 +118,10 @@ public class ResourceStoreImpl implements ResourceStore {
             cursor.close();
         }
         return lastUpdated;
+    }
+
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(ResourceModel.TABLE);
     }
 }

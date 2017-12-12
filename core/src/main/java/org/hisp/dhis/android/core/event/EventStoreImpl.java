@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.event.EventModel.Columns;
+import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,7 +56,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
         "PMD.StdCyclomaticComplexity",
         "PMD.AvoidInstantiatingObjectsInLoops"
 })
-public class EventStoreImpl implements EventStore {
+public class EventStoreImpl implements EventStore, DeletableStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + EventModel.TABLE + " (" +
             Columns.UID + ", " +
@@ -352,4 +353,8 @@ public class EventStoreImpl implements EventStore {
         return events;
     }
 
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(EventModel.TABLE);
+    }
 }

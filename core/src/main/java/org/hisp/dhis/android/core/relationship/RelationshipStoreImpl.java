@@ -33,11 +33,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.DeletableStore;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-public class RelationshipStoreImpl implements RelationshipStore {
+public class RelationshipStoreImpl implements RelationshipStore, DeletableStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             RelationshipModel.TABLE + " (" +
@@ -69,4 +70,8 @@ public class RelationshipStoreImpl implements RelationshipStore {
         return ret;
     }
 
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(RelationshipModel.TABLE);
+    }
 }

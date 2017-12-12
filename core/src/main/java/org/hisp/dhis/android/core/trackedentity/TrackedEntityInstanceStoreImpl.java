@@ -36,6 +36,7 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel.Columns;
+import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -48,7 +49,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
         "PMD.AvoidDuplicateLiterals",
         "PMD.NPathComplexity"
 })
-public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
+public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore, DeletableStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             TrackedEntityInstanceModel.TABLE + " (" +
             Columns.UID + ", " +

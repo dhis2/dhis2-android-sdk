@@ -31,11 +31,13 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.DeletableStore;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitProgramLinkStore {
+public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitProgramLinkStore,
+        DeletableStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             OrganisationUnitProgramLinkModel.TABLE + " (" +
             OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT + ", " +
@@ -62,5 +64,10 @@ public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitPro
                 insertStatement);
         insertStatement.clearBindings();
         return ret;
+    }
+
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(OrganisationUnitProgramLinkModel.TABLE);
     }
 }

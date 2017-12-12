@@ -33,6 +33,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.Date;
 
@@ -40,7 +41,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public class TrackedEntityStoreImpl implements TrackedEntityStore {
+public class TrackedEntityStoreImpl implements TrackedEntityStore, DeletableStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + TrackedEntityModel.TABLE + " (" +
             TrackedEntityModel.Columns.UID + ", " +
             TrackedEntityModel.Columns.CODE + ", " +
@@ -75,10 +76,10 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
 
-    private final DatabaseAdapter database;
+    private final DatabaseAdapter databaseAdapter;
 
     public TrackedEntityStoreImpl(DatabaseAdapter database) {
-        this.database = database;
+        this.databaseAdapter = database;
         this.insertStatement = database.compileStatement(INSERT_STATEMENT);
         this.updateStatement = database.compileStatement(UPDATE_STATEMENT);
         this.deleteStatement = database.compileStatement(DELETE_STATEMENT);
@@ -104,7 +105,7 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
         sqLiteBind(insertStatement, 9, description);
         sqLiteBind(insertStatement, 10, displayDescription);
 
-        long rowId = database.executeInsert(TrackedEntityModel.TABLE, insertStatement);
+        long rowId = databaseAdapter.executeInsert(TrackedEntityModel.TABLE, insertStatement);
         insertStatement.clearBindings();
         return rowId;
 
@@ -130,7 +131,7 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
         sqLiteBind(updateStatement, 10, displayDescription);
         sqLiteBind(updateStatement, 11, whereUid);
 
-        int rowId = database.executeUpdateDelete(TrackedEntityModel.TABLE, updateStatement);
+        int rowId = databaseAdapter.executeUpdateDelete(TrackedEntityModel.TABLE, updateStatement);
         updateStatement.clearBindings();
         return rowId;
     }
@@ -144,4 +145,8 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
         return rowId;
     }
 
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(TrackedEntityModel.TABLE);
+    }
 }

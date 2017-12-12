@@ -34,6 +34,7 @@ import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.program.ProgramRuleModel.Columns;
+import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.Date;
 
@@ -43,7 +44,7 @@ import static org.hisp.dhis.android.core.utils.Utils.isNull;
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
 })
-public class ProgramRuleStoreImpl implements ProgramRuleStore {
+public class ProgramRuleStoreImpl implements ProgramRuleStore, DeletableStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             ProgramRuleModel.TABLE + " (" +
             Columns.UID + ", " +
@@ -156,4 +157,8 @@ public class ProgramRuleStoreImpl implements ProgramRuleStore {
         sqLiteBind(sqLiteStatement, 10, programStage);
     }
 
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(ProgramRuleModel.TABLE);
+    }
 }

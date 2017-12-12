@@ -31,11 +31,13 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.DeletableStore;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-public class ProgramStageSectionProgramIndicatorLinkStoreImpl implements ProgramStageSectionProgramIndicatorLinkStore {
+public class ProgramStageSectionProgramIndicatorLinkStoreImpl implements ProgramStageSectionProgramIndicatorLinkStore,
+        DeletableStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             ProgramStageSectionProgramIndicatorLinkModel.TABLE + " (" +
             ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION + ", " +
@@ -51,8 +53,10 @@ public class ProgramStageSectionProgramIndicatorLinkStoreImpl implements Program
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
+    private final DatabaseAdapter databaseAdapter;
 
     public ProgramStageSectionProgramIndicatorLinkStoreImpl(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
         this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
         this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
     }
@@ -90,5 +94,10 @@ public class ProgramStageSectionProgramIndicatorLinkStoreImpl implements Program
         int update = updateStatement.executeUpdateDelete();
         updateStatement.clearBindings();
         return update;
+    }
+
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(ProgramStageSectionProgramIndicatorLinkModel.TABLE);
     }
 }

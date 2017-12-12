@@ -34,6 +34,7 @@ import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.Date;
 
@@ -43,7 +44,7 @@ import static org.hisp.dhis.android.core.utils.Utils.isNull;
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
 })
-public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeStore {
+public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeStore, DeletableStore{
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             TrackedEntityAttributeModel.TABLE + " (" +
             TrackedEntityAttributeModel.Columns.UID + ", " +
@@ -207,5 +208,10 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
         sqLiteBind(sqLiteStatement, 21, orgUnitScope);
         sqLiteBind(sqLiteStatement, 22, unique);
         sqLiteBind(sqLiteStatement, 23, inherit);
+    }
+
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(TrackedEntityAttributeModel.TABLE);
     }
 }

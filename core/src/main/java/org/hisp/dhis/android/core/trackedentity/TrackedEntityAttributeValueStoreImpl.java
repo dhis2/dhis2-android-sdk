@@ -34,6 +34,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +48,8 @@ import static org.hisp.dhis.android.core.utils.Utils.isNull;
         "PMD.NPathComplexity",
         "PMD.AvoidInstantiatingObjectsInLoops"
 })
-public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttributeValueStore {
+public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttributeValueStore,
+        DeletableStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             TrackedEntityAttributeValueModel.TABLE + " (" +
@@ -128,4 +130,8 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
         return attributeValues;
     }
 
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(TrackedEntityAttributeValueModel.TABLE);
+    }
 }

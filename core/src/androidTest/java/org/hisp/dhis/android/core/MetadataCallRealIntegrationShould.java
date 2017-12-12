@@ -83,6 +83,18 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    public void response_successful_on_login_logout_and_login() throws Exception {
+        retrofit2.Response response = null;
+        response = d2.logIn("android", "Android123").call();
+        assertThat(response.isSuccessful()).isTrue();
+
+        d2.logOut().call();
+
+        response = d2.logIn("android", "Android123").call();
+        assertThat(response.isSuccessful()).isTrue();
+    }
+
+    @Test
     public void stub() {
     }
 }

@@ -38,6 +38,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,7 +48,7 @@ import java.util.List;
         "PMD.AvoidDuplicateLiterals",
         "PMD.NPathComplexity",
 })
-public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
+public class OrganisationUnitStoreImpl implements OrganisationUnitStore, DeletableStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + OrganisationUnitModel.TABLE + " (" +
             OrganisationUnitModel.Columns.UID + ", " +
             OrganisationUnitModel.Columns.CODE + ", " +

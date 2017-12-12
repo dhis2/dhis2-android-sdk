@@ -34,6 +34,7 @@ import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.Date;
 
@@ -43,7 +44,7 @@ import static org.hisp.dhis.android.core.utils.Utils.isNull;
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
 })
-public class ProgramStageStoreImpl implements ProgramStageStore {
+public class ProgramStageStoreImpl implements ProgramStageStore, DeletableStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + ProgramStageModel.TABLE + " (" +
             ProgramStageModel.Columns.UID + ", " +
             ProgramStageModel.Columns.CODE + ", " +
@@ -228,4 +229,8 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
         sqLiteBind(sqLiteStatement, 23, program);
     }
 
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(ProgramStageModel.TABLE);
+    }
 }

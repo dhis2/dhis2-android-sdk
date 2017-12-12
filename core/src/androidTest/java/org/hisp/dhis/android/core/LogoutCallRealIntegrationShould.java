@@ -21,10 +21,6 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 
 public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
-    /**
-     * A quick integration test that is probably flaky, but will help with finding bugs related to the
-     * metadataSyncCall. It works against the demo server.
-     */
     private D2 d2;
     Exception e;
 

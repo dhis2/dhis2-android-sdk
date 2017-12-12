@@ -1,6 +1,5 @@
 package org.hisp.dhis.android.core.trackedentity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TrackedEntityAttributeValueHandler {
@@ -11,7 +10,7 @@ public class TrackedEntityAttributeValueHandler {
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
     }
 
-    public void handleTrackedEntityDataValue(String trackedEntityInstanceUid,
+    public void handle(String trackedEntityInstanceUid,
             List<TrackedEntityAttributeValue> attValues) {
         if (trackedEntityInstanceUid == null || attValues == null) {
             return;
@@ -39,7 +38,8 @@ public class TrackedEntityAttributeValueHandler {
 
         if (updatedRow <= 0) {
             trackedEntityAttributeValueStore.insert(
-                    dataValue.value(), null, null, dataValue.trackedEntityAttribute(),
+                    dataValue.value(), dataValue.created(), dataValue.lastUpdated()
+                    , dataValue.trackedEntityAttribute(),
                     trackedEntityInstanceUid);
         }
     }

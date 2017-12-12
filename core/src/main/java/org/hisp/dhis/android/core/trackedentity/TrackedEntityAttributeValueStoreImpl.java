@@ -28,23 +28,22 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
+
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.program.ProgramStageDataElementModel;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.NPathComplexity",
@@ -79,10 +78,13 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
 
     private static final String QUERY_STATEMENT_TO_POST =
             "SELECT " + FIELDS +
-            "FROM (TrackedEntityAttributeValue " +
-            "  INNER JOIN TrackedEntityInstance " +
-            "    ON TrackedEntityAttributeValue.trackedEntityInstance = TrackedEntityInstance.uid) " +
-            "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = "
+                    "FROM (TrackedEntityAttributeValue " +
+                    "  INNER JOIN TrackedEntityInstance " +
+                    "    ON TrackedEntityAttributeValue.trackedEntityInstance = "
+                    + "TrackedEntityInstance.uid) "
+                    +
+                    "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state"
+                    + " = "
                     + "'TO_UPDATE';";
 
     private static final String QUERY_STATEMENT =
@@ -102,7 +104,7 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
     @Override
     public long insert(@Nullable String value, @Nullable Date created,
             @Nullable Date lastUpdated, @NonNull String trackedEntityAttribute,
-                       @NonNull String trackedEntityInstance) {
+            @NonNull String trackedEntityInstance) {
         isNull(trackedEntityAttribute);
         isNull(trackedEntityInstance);
 

@@ -12,12 +12,16 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class TrackedEntityInstanceHandler {
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
+    private final TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler;
     private final EnrollmentHandler enrollmentHandler;
 
 
-    public TrackedEntityInstanceHandler(@NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
-                                        @NonNull EnrollmentHandler enrollmentHandler) {
+    public TrackedEntityInstanceHandler(
+            @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
+            @NonNull TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler,
+            @NonNull EnrollmentHandler enrollmentHandler) {
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
+        this.trackedEntityAttributeValueHandler = trackedEntityAttributeValueHandler;
         this.enrollmentHandler = enrollmentHandler;
     }
 
@@ -42,6 +46,10 @@ public class TrackedEntityInstanceHandler {
                         trackedEntityInstance.lastUpdatedAtClient(), trackedEntityInstance.organisationUnit(),
                         trackedEntityInstance.trackedEntity(), State.SYNCED);
             }
+
+            trackedEntityAttributeValueHandler.handle(
+                    trackedEntityInstance.uid(),
+                    trackedEntityInstance.trackedEntityAttributeValues());
 
             List<Enrollment> enrollments = trackedEntityInstance.enrollments();
 

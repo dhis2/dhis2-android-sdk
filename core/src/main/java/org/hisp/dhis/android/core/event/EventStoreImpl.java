@@ -333,10 +333,16 @@ public class EventStoreImpl implements EventStore {
         Date completedDate = cursor.getString(13) == null ? null : parse(cursor.getString(13));
         Date dueDate = cursor.getString(14) == null ? null : parse(cursor.getString(14));
 
+        Coordinates coordinates = null;
+
+        if (latitude != null && longitude != null) {
+            coordinates = Coordinates.create(latitude, longitude);
+        }
+
         event = Event.create(
                 uid, enrollment, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                 program, programStage, organisationUnit, eventDate, eventStatus,
-                Coordinates.create(latitude, longitude), completedDate,
+                coordinates, completedDate,
                 dueDate, false, null);
 
         return event;

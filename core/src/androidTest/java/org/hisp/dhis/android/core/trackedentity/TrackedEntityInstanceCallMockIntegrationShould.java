@@ -20,6 +20,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
+import org.hisp.dhis.android.core.relationship.Relationship;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +53,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         dhis2MockServer.shutdown();
     }
 
-    //@Test
+    @Test
     public void download_tei_enrollments_and_events() throws Exception {
         String teiUid = "cAQnNOXeh8s";
 
@@ -169,12 +170,18 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
             downloadedEnrollments.add(enrollment);
         }
 
+        List<Relationship> relationships = new ArrayList<>();
+
+        if (downloadedTei.relationships() != null) {
+            relationships = downloadedTei.relationships();
+        }
+
         downloadedTei = TrackedEntityInstance.create(
                 downloadedTei.uid(), downloadedTei.created(), downloadedTei.lastUpdated(),
                 downloadedTei.createdAtClient(), downloadedTei.lastUpdatedAtClient(),
                 downloadedTei.organisationUnit(), downloadedTei.trackedEntity(),
                 downloadedTei.deleted(), attValues.get(downloadedTei.uid()),
-                downloadedTei.relationships(), downloadedEnrollments);
+                relationships, downloadedEnrollments);
 
 
         return downloadedTei;

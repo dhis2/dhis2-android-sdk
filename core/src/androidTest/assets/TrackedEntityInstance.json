@@ -6,14 +6,20 @@
   "relationships": [],
   "attributes": [
     {
+      "lastUpdated": "2016-01-12T09:10:35.884",
+      "created": "2016-01-12T09:10:26.986",
       "attribute": "zDhUuAYrxNC",
       "value": "Lynch"
     },
     {
+      "lastUpdated": "2016-01-12T09:10:35.884",
+      "created": "2016-01-12T09:10:26.986",
       "attribute": "cejWyOfXge6",
       "value": "Male"
     },
     {
+      "lastUpdated": "2016-01-12T09:10:35.884",
+      "created": "2016-01-12T09:10:26.986",
       "attribute": "w75KJ2mc4zz",
       "value": "Johnny"
     }
@@ -25,6 +31,7 @@
       "enrollment": "QBJkRAz7BAL",
       "trackedEntityInstance": "cAQnNOXeh8s",
       "enrollmentDate": "2016-11-15T12:05:00.000",
+      "deleted": false,
       "followup": false,
       "incidentDate": "2016-11-15T12:05:00.000",
       "status": "ACTIVE",

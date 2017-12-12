@@ -10,6 +10,10 @@ import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueHandler;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
@@ -25,13 +29,30 @@ public class HandlerFactory {
         TrackedEntityInstanceStore trackedEntityInstanceStore =
                 new TrackedEntityInstanceStoreImpl(databaseAdapter);
 
+        TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler =
+                createTrackedEntityAttributeValueHandler(databaseAdapter);
+
         EnrollmentHandler enrollmentHandler = createEnrollmentHandler(databaseAdapter);
 
         TrackedEntityInstanceHandler trackedEntityInstanceHandler =
-                new TrackedEntityInstanceHandler(trackedEntityInstanceStore, enrollmentHandler);
-
+                new TrackedEntityInstanceHandler(
+                        trackedEntityInstanceStore,
+                        trackedEntityAttributeValueHandler,
+                        enrollmentHandler);
 
         return trackedEntityInstanceHandler;
+    }
+
+    public static TrackedEntityAttributeValueHandler createTrackedEntityAttributeValueHandler(
+            DatabaseAdapter databaseAdapter) {
+
+        TrackedEntityAttributeValueStore entityAttributeValueStore =
+                new TrackedEntityAttributeValueStoreImpl(databaseAdapter);
+
+        TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler =
+                new TrackedEntityAttributeValueHandler(entityAttributeValueStore);
+
+        return trackedEntityAttributeValueHandler;
     }
 
     public static EnrollmentHandler createEnrollmentHandler(

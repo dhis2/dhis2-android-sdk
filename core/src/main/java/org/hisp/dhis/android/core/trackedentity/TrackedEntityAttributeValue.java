@@ -48,8 +48,8 @@ public abstract class TrackedEntityAttributeValue {
     public static final Field<TrackedEntityAttributeValue, String> trackedEntityAttribute =
             Field.create(ATTRIBUTE);
     public static final Field<TrackedEntityAttributeValue, String> value = Field.create(VALUE);
-    public static final Field<TrackedEntityDataValue, Date> created = Field.create(CREATED);
-    public static final Field<TrackedEntityDataValue, Date> lastUpdated = Field.create(
+    public static final Field<TrackedEntityAttributeValue, Date> created = Field.create(CREATED);
+    public static final Field<TrackedEntityAttributeValue, Date> lastUpdated = Field.create(
             LAST_UPDATED);
 
     @Nullable

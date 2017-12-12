@@ -261,7 +261,8 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
                     Date enrollmentDate = cursor.getString(7) == null ? null : parse(cursor.getString(7));
                     Date incidentDate = cursor.getString(8) == null ? null : parse(cursor.getString(8));
                     Boolean followUp =
-                            cursor.getString(9) == null || cursor.getInt(9) == 0 ? Boolean.TRUE : Boolean.FALSE;
+                            cursor.getString(9) == null || cursor.getInt(9) == 0 ? Boolean.FALSE
+                                    : Boolean.TRUE;
                     EnrollmentStatus status =
                             cursor.getString(10) == null ? null : EnrollmentStatus.valueOf(cursor.getString(10));
                     String trackedEntityInstance = cursor.getString(11) == null ? null : cursor.getString(11);
@@ -272,10 +273,16 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
                         enrollmentMap.put(trackedEntityInstance, new ArrayList<Enrollment>());
                     }
 
+                    Coordinates coordinates = null;
+
+                    if (latitude != null && longitude != null) {
+                        coordinates = Coordinates.create(latitude, longitude);
+                    }
+
                     enrollmentMap.get(trackedEntityInstance).add(Enrollment.create(
                             uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                             organisationUnit, program, enrollmentDate, incidentDate, followUp,
-                            status, trackedEntityInstance, Coordinates.create(latitude, longitude), false, null
+                            status, trackedEntityInstance, coordinates, false, null
                     ));
 
                 }

@@ -102,8 +102,9 @@ public class TrackedEntityInstanceEndPointCall implements
                 ),
                 TrackedEntityInstance.trackedEntityAttributeValues.with(
                         TrackedEntityAttributeValue.trackedEntityAttribute,
-                        TrackedEntityAttributeValue.value
-                ),
+                        TrackedEntityAttributeValue.value,
+                        TrackedEntityAttributeValue.created,
+                        TrackedEntityAttributeValue.lastUpdated),
                 TrackedEntityInstance.enrollment.with(
                         Enrollment.uid, Enrollment.created, Enrollment.lastUpdated,
                         Enrollment.coordinate,

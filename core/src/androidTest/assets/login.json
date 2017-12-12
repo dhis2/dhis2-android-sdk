@@ -8,13 +8,13 @@
   "surname": "Barnes",
   "email": "john@hmail.com",
   "userCredentials": {
-    "lastUpdated": "2017-12-12T20:24:51.065",
+    "lastUpdated": "2017-11-29T11:23:52.498",
     "code": "android",
     "created": "2015-03-31T13:31:09.206",
     "name": "John Barnes",
     "id": "M0fCOxtkURr",
     "displayName": "John Barnes",
-    "username": "user"
+    "username": "android"
   },
   "organisationUnits": [
     {
@@ -35,4 +35,3 @@
     }
   ]
 }
-{User{uid=DXyJmlo9rge, code=null, name=John Barnes, displayName=John Barnes, created=Tue Mar 31 13:31:09 GMT+00:00 2015, lastUpdated=Wed Apr 06 00:05:57 GMT+00:00 2016, deleted=null, birthday=null, education=null, gender=null, jobTitle=null, surname=Barnes, firstName=John, introduction=null, employer=null, interests=null, languages=null, email=john@hmail.com, phoneNumber=null, nationality=null, userCredentials=UserCredentials{uid=M0fCOxtkURr, code=android, name=John Barnes, displayName=John Barnes, created=Tue Mar 31 13:31:09 GMT+00:00 2015, lastUpdated=Tue Dec 12 20:23:06 GMT+00:00 2017, deleted=null, username=android, userRoles=null}, organisationUnits=[OrganisationUnit{uid=DiszpKrYNg8, code=OU_559, name=Ngelehun CHC, displayName=Ngelehun CHC, created=Fri Feb 17 15:54:39 GMT+00:00 2012, lastUpdated=Mon May 22 15:21:48 GMT+00:00 2017, deleted=null, shortName=Ngelehun CHC, displayShortName=Ngelehun CHC, description=null, displayDescription=null, parent=OrganisationUnit{uid=YuQRtpLP10I, code=null, name=null, displayName=null, created=null, lastUpdated=null, deleted=null, shortName=null, displayShortName=null, description=null, displayDescription=null, parent=null, path=null, openingDate=null, closedDate=null, level=null, programs=null}, path=/ImspTQPwCqd/O6uvpzGd5pu/YuQRtpLP10I/DiszpKrYNg8, openingDate=Thu Jan 01 00:00:00 GMT+00:00 1970, closedDate=null, level=4, programs=null}], teiSearchOrganisationUnits=null, dataViewOrganisationUnits=null}}

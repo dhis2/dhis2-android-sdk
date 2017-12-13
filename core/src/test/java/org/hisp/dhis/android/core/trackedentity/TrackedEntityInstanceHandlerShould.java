@@ -71,7 +71,7 @@ public class TrackedEntityInstanceHandlerShould {
         verify(trackedEntityAttributeValueHandler, never()).handle(
                 any(String.class), any(ArrayList.class));
 
-        verify(enrollmentHandler, never()).handle(any(Enrollment.class));
+        verify(enrollmentHandler, never()).handle(any(ArrayList.class));
     }
 
     @Test
@@ -94,7 +94,7 @@ public class TrackedEntityInstanceHandlerShould {
                 any(String.class), any(ArrayList.class));
 
         // verify that enrollment handler is never called
-        verify(enrollmentHandler, never()).handle(any(Enrollment.class));
+        verify(enrollmentHandler, never()).handle(any(ArrayList.class));
     }
 
     @Test
@@ -121,7 +121,7 @@ public class TrackedEntityInstanceHandlerShould {
                 any(String.class), any(ArrayList.class));
 
         // verify that enrollment handler is called once
-        verify(enrollmentHandler, times(1)).handle(enrollment);
+        verify(enrollmentHandler, times(1)).handle(any(ArrayList.class));
 
     }
 
@@ -151,6 +151,6 @@ public class TrackedEntityInstanceHandlerShould {
                 any(String.class), any(ArrayList.class));
 
         // verify that enrollment handler is called once
-        verify(enrollmentHandler, times(1)).handle(enrollment);
+        verify(enrollmentHandler, times(1)).handle(any(ArrayList.class));
     }
 }

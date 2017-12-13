@@ -20,7 +20,19 @@ public class EnrollmentHandler {
         this.eventHandler = eventHandler;
     }
 
-    public void handle(@NonNull Enrollment enrollment) {
+    public void handle(@NonNull List<Enrollment> enrollments) {
+
+        if (enrollments != null && !enrollments.isEmpty()) {
+            int size = enrollments.size();
+
+            for (int i = 0; i < size; i++) {
+                Enrollment enrollment = enrollments.get(i);
+                handle(enrollment);
+            }
+        }
+    }
+
+    private void handle(@NonNull Enrollment enrollment) {
         if (enrollment == null) {
             return;
         }
@@ -51,7 +63,7 @@ public class EnrollmentHandler {
                         State.SYNCED);
             }
 
-            eventHandler.handle(enrollment.uid(), enrollment.events());
+            eventHandler.handle(enrollment.events());
         }
     }
 }

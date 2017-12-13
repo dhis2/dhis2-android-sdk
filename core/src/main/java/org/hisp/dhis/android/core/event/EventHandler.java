@@ -19,9 +19,9 @@ public class EventHandler {
         this.trackedEntityDataValueHandler = trackedEntityDataValueHandler;
     }
 
-    public void handle(@NonNull String enrollmentUid, @NonNull List<Event> events) {
+    public void handle(@NonNull List<Event> events) {
 
-        if (enrollmentUid != null && events != null && !events.isEmpty()) {
+        if (events != null && !events.isEmpty()) {
             int size = events.size();
 
             for (int i = 0; i < size; i++) {

@@ -53,14 +53,7 @@ public class TrackedEntityInstanceHandler {
 
             List<Enrollment> enrollments = trackedEntityInstance.enrollments();
 
-            if (enrollments != null && !enrollments.isEmpty()) {
-                int size = enrollments.size();
-
-                for (int i = 0; i < size; i++) {
-                    Enrollment enrollment = enrollments.get(i);
-                    enrollmentHandler.handle(enrollment);
-                }
-            }
+            enrollmentHandler.handle(enrollments);
         }
     }
 }

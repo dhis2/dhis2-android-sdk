@@ -35,16 +35,10 @@ public class DataBaseMigrationShould {
     public static final String realMigrationDir = "migrations/real_migrations";
     public static final String exampleMigrationsDir = "migrations/example_migrations";
     public static final String databaseSqlVersion1 = "db_version_1.sql";
-    static String dbName= "test.db";
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        InstrumentationRegistry.getContext().deleteDatabase(dbName);
-    }
+    static String dbName= null;
     
     @Before
     public void deleteDB(){
-        InstrumentationRegistry.getContext().deleteDatabase(dbName);
         mockWebServer = new MockWebServer();
         try {
             mockWebServer.start();

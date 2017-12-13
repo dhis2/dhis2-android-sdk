@@ -51,15 +51,7 @@ public class EnrollmentHandler {
                         State.SYNCED);
             }
 
-            List<Event> events = enrollment.events();
-            if (events != null && !events.isEmpty()) {
-                int size = events.size();
-
-                for (int i = 0; i < size; i++) {
-                    Event event = events.get(i);
-                    eventHandler.handle(event);
-                }
-            }
+            eventHandler.handle(enrollment.uid(), enrollment.events());
         }
     }
 }

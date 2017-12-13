@@ -10,6 +10,8 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 
@@ -124,7 +126,7 @@ public class EnrollmentHandlerShould {
         );
 
         // event handler should be invoked once
-        verify(eventHandler, times(1)).handle(event);
+        verify(eventHandler, times(1)).handle(anyString(), any(ArrayList.class));
     }
 
     @Test
@@ -158,6 +160,6 @@ public class EnrollmentHandlerShould {
 
 
         // event handler should be invoked once
-        verify(eventHandler, times(1)).handle(event);
+        verify(eventHandler, times(1)).handle(anyString(), any(ArrayList.class));
     }
 }

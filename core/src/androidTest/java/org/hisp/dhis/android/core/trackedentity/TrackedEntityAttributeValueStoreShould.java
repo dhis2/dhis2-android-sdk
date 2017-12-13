@@ -190,19 +190,19 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     @Test
     public void delete_tracked_entity_attribute_value_by_instance_and_attribute_uids()
             throws Exception {
-        long rowId1 = store.insert(
+        store.insert(
                 "0", date, date, TRACKED_ENTITY_ATTRIBUTE,
                 TRACKED_ENTITY_INSTANCE);
 
-        long rowId2 = store.insert(
+        store.insert(
                 "0", date, date, TRACKED_ENTITY_ATTRIBUTE_2,
                 TRACKED_ENTITY_INSTANCE);
 
-        long rowId3 = store.insert(
+        store.insert(
                 "0", date, date, TRACKED_ENTITY_ATTRIBUTE,
                 TRACKED_ENTITY_INSTANCE_2);
 
-        long rowId4 = store.insert(
+        store.insert(
                 "0", date, date, TRACKED_ENTITY_ATTRIBUTE_2,
                 TRACKED_ENTITY_INSTANCE_2);
 

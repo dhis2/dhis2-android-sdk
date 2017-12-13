@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.user;
 
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.calls.Call;
@@ -171,16 +172,23 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         // order to make sure that databaseAdapter transaction won't be leaked
         try {
             User user = response.body();
-            Date serverDateTime = response.headers().getDate(HeaderUtils.DATE);
             // insert user model into user table
-            userId = userStore.insert(
-                    user.uid(), user.code(), user.name(), user.displayName(), user.created(),
-                    user.lastUpdated(), user.birthday(), user.education(),
-                    user.gender(), user.jobTitle(), user.surname(), user.firstName(),
-                    user.introduction(), user.employer(), user.interests(), user.languages(),
-                    user.email(), user.phoneNumber(), user.nationality()
-            );
+            userId = getUserIdStored(databaseAdapter, user.uid());
 
+            if(userId==null){
+                userId = userStore.insert(
+                        user.uid(), user.code(), user.name(), user.displayName(), user.created(),
+                        user.lastUpdated(), user.birthday(), user.education(),
+                        user.gender(), user.jobTitle(), user.surname(), user.firstName(),
+                        user.introduction(), user.employer(), user.interests(), user.languages(),
+                        user.email(), user.phoneNumber(), user.nationality()
+                );
+            }else{
+                //If the user is already stored the login is after a soft logout
+                return userId;
+            }
+
+            Date serverDateTime = response.headers().getDate(HeaderUtils.DATE);
             resourceStore.insert(User.class.getSimpleName(), serverDateTime);
 
 
@@ -240,5 +248,13 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         }
 
         return userId;
+    }
+
+    private Long getUserIdStored(DatabaseAdapter databaseAdapter, String uid) {
+        Cursor cursor = databaseAdapter.query("Select _id as id from "+UserModel.TABLE+ " where uid ='"+uid+"'");
+        if(cursor.getCount()==1){
+            return (long) cursor.getColumnIndex("id");
+        }
+        return null;
     }
 }

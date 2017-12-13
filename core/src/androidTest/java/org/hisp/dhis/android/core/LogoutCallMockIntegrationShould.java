@@ -2,9 +2,8 @@ package org.hisp.dhis.android.core;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import android.database.Cursor;
-
-import com.google.common.truth.Truth;
+import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isDatabaseEmpty;
+import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isTableEmpty;
 
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.EventCallFactory;
@@ -12,6 +11,12 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.event.EventCall;
+import org.hisp.dhis.android.core.event.EventModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.program.ProgramModel;
+import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
+import org.hisp.dhis.android.core.user.UserModel;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,11 +78,11 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
 
         givenAMetadataInDatabase();
 
-        Truth.assertThat(isDatabaseEmpty()).isFalse();
+        assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
 
-        d2.logOut().call();
+        d2.wipeDB().call();
 
-        Truth.assertThat(isDatabaseEmpty()).isTrue();
+        assertThat(isDatabaseEmpty(databaseAdapter())).isTrue();
     }
 
     @Test
@@ -88,26 +93,54 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
 
         givenAEventInDatabase();
 
-        Truth.assertThat(isDatabaseEmpty()).isFalse();
+        assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
 
-        d2.logOut().call();
+        d2.wipeDB().call();
 
-        Truth.assertThat(isDatabaseEmpty()).isTrue();
+        assertThat(isDatabaseEmpty(databaseAdapter())).isTrue();
+    }
+    @Test
+    public void delete_autenticate_user_table_only_when_log_out_after_sync_data() throws Exception {
+        givenALoginInDatabase();
+
+        givenAMetadataInDatabase();
+
+        givenAEventInDatabase();
+
+        assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
+
+        d2.logout().call();
+
+        assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
+        assertThat(isTableEmpty(databaseAdapter(), EventModel.TABLE)).isFalse();
+
+        assertThat(isTableEmpty(databaseAdapter(), AuthenticatedUserModel.TABLE)).isTrue();
     }
 
-    private boolean isDatabaseEmpty() {
-        Cursor res = databaseAdapter().query(" SELECT name FROM sqlite_master WHERE type='table' and name!='android_metadata' and name!='sqlite_sequence'");
-        int value = res.getColumnIndex("name");
-        if (value != -1) {
-            while (res.moveToNext()){
-                String tableName = res.getString(value);
-                Cursor resTable = databaseAdapter().query(
-                        "SELECT * from " + tableName , null);
-                if (resTable.getCount() > 0) {
-                    return false;
-                }
-            }
-        }
-        return true;
+    @Test
+    public void delete_autenticate_user_table_only_when_log_out_after_sync_metadata() throws Exception {
+
+        givenALoginInDatabase();
+
+        givenAMetadataInDatabase();
+
+        assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
+
+        d2.logout().call();
+
+        assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
+
+        assertThat(isTableEmpty(databaseAdapter(), EventModel.TABLE)).isTrue();
+
+        assertThat(isTableEmpty(databaseAdapter(), AuthenticatedUserModel.TABLE)).isTrue();
+
+        assertThat(isTableEmpty(databaseAdapter(), UserModel.TABLE)).isFalse();
+
+        assertThat(isTableEmpty(databaseAdapter(), OrganisationUnitModel.TABLE)).isFalse();
+
+        assertThat(isTableEmpty(databaseAdapter(), ProgramModel.TABLE)).isFalse();
+
+        assertThat(isTableEmpty(databaseAdapter(), ResourceModel.TABLE)).isFalse();
+
     }
 }

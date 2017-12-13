@@ -316,7 +316,16 @@ public final class D2 {
     }
 
     @NonNull
-    public Callable<Void> logOut() {
+    public Callable<Void> logout() {
+        List<DeletableStore> deletableStoreList = new ArrayList<>();
+        deletableStoreList.add((DeletableStore) authenticatedUserStore);
+        return new LogOutUserCallable(
+                deletableStoreList
+        );
+    }
+
+    @NonNull
+    public Callable<Void> wipeDB() {
         List<DeletableStore> deletableStoreList = new ArrayList<>();
         deletableStoreList.add((DeletableStore) userStore);
         deletableStoreList.add((DeletableStore) userCredentialsStore);

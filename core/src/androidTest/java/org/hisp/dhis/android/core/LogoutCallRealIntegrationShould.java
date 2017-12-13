@@ -2,20 +2,26 @@ package org.hisp.dhis.android.core;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import android.database.Cursor;
+import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isDatabaseEmpty;
+import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isTableEmpty;
 
-import com.google.common.truth.Truth;
+import android.database.Cursor;
 
 import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.event.EventCall;
+import org.hisp.dhis.android.core.event.EventModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.program.ProgramModel;
+import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
+import org.hisp.dhis.android.core.user.UserModel;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -50,13 +56,13 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
         assertThat(response.isSuccessful()).isTrue();
 
         response = d2.syncMetaData().call();
-        Truth.assertThat(response.isSuccessful()).isTrue();
+        assertThat(response.isSuccessful()).isTrue();
 
-        Truth.assertThat(isDatabaseEmpty()).isFalse();
+        assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
 
-        d2.logOut().call();
+        d2.wipeDB().call();
 
-        Truth.assertThat(isDatabaseEmpty()).isTrue();
+        assertThat(isDatabaseEmpty(databaseAdapter())).isTrue();
     }
 
     //@Test
@@ -66,33 +72,69 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
         assertThat(response.isSuccessful()).isTrue();
 
         response = d2.syncMetaData().call();
-        Truth.assertThat(response.isSuccessful()).isTrue();
+        assertThat(response.isSuccessful()).isTrue();
 
         EventCall eventCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 
         eventCall.call();
 
-        Truth.assertThat(isDatabaseEmpty()).isFalse();
+        assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
 
-        d2.logOut().call();
+        d2.wipeDB().call();
 
-        Truth.assertThat(isDatabaseEmpty()).isTrue();
+        assertThat(isDatabaseEmpty(databaseAdapter())).isTrue();
     }
 
-    private boolean isDatabaseEmpty() {
-        Cursor res = databaseAdapter().query(" SELECT name FROM sqlite_master WHERE type='table' and name!='android_metadata' and name!='sqlite_sequence'");
-        int value = res.getColumnIndex("name");
-        if (value != -1) {
-            while (res.moveToNext()){
-                String tableName = res.getString(value);
-                Cursor resTable = databaseAdapter().query(
-                        "SELECT * from " + tableName , null);
-                if (resTable.getCount() > 0) {
-                    return false;
-                }
-            }
-        }
-        return true;
+    //@Test
+    public void delete_autenticate_user_table_only_when_log_out_after_sync_data() throws Exception {
+        retrofit2.Response response = null;
+        response = d2.logIn("android", "Android123").call();
+        assertThat(response.isSuccessful()).isTrue();
+
+        response = d2.syncMetaData().call();
+        assertThat(response.isSuccessful()).isTrue();
+
+        EventCall eventCall = EventCallFactory.create(
+                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
+
+        eventCall.call();
+
+        assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
+
+        d2.logout().call();
+
+        assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
+        assertThat(isTableEmpty(databaseAdapter(), EventModel.TABLE)).isFalse();
+
+        assertThat(isTableEmpty(databaseAdapter(), AuthenticatedUserModel.TABLE)).isTrue();
+    }
+
+    //@Test
+    public void delete_autenticate_user_table_only_when_log_out_after_sync_metadata() throws Exception {
+        retrofit2.Response response = null;
+        response = d2.logIn("android", "Android123").call();
+        assertThat(response.isSuccessful()).isTrue();
+
+        response = d2.syncMetaData().call();
+        assertThat(response.isSuccessful()).isTrue();
+
+        assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
+
+        d2.logout().call();
+
+        assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
+
+        assertThat(isTableEmpty(databaseAdapter(), EventModel.TABLE)).isTrue();
+
+        assertThat(isTableEmpty(databaseAdapter(), UserModel.TABLE)).isFalse();
+
+        assertThat(isTableEmpty(databaseAdapter(), OrganisationUnitModel.TABLE)).isFalse();
+
+        assertThat(isTableEmpty(databaseAdapter(), ProgramModel.TABLE)).isFalse();
+
+        assertThat(isTableEmpty(databaseAdapter(), ResourceModel.TABLE)).isFalse();
+
+        assertThat(isTableEmpty(databaseAdapter(), AuthenticatedUserModel.TABLE)).isTrue();
     }
 }

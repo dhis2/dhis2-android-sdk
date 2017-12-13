@@ -51,7 +51,13 @@ public interface TrackedEntityAttributeValueStore {
             @NonNull String trackedEntityAttribute,
             @NonNull String trackedEntityInstance);
 
+    int deleteByInstanceAndAttributes(
+            @NonNull String trackedEntityInstanceUId,
+            @NonNull List<String> trackedEntityAttributeUIds);
+
     Map<String, List<TrackedEntityAttributeValue>> query();
 
     Map<String, List<TrackedEntityAttributeValue>> queryAll();
+
+    List<TrackedEntityAttributeValue> queryByTrackedEntityInstance(String trackedEntityInstanceUid);
 }

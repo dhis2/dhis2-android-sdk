@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.Is.is;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 import android.content.ContentValues;
@@ -41,18 +43,24 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @RunWith(AndroidJUnit4.class)
 public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     //TrackedEntityAttributeValueModel:
     private static final String VALUE = "test_value";
     private static final String TRACKED_ENTITY_ATTRIBUTE = "test_trackedEntityAttributeUid";
+    private static final String TRACKED_ENTITY_ATTRIBUTE_2 = "test_trackedEntityAttributeUid";
     private static final String TRACKED_ENTITY_INSTANCE = "test_trackedEntityInstanceUid";
+    private static final String TRACKED_ENTITY_INSTANCE_2 = "test_trackedEntityInstanceUid_2";
     private static final String ORGANIZATION_UNIT = "test_organizationUnitUid";
     private static final String TRACKED_ENTITY = "test_trackedEntity";
 
@@ -82,12 +90,19 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, TRACKED_ENTITY);
         ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(
                 TRACKED_ENTITY_INSTANCE, ORGANIZATION_UNIT, TRACKED_ENTITY);
+        ContentValues trackedEntityInstance_2 = CreateTrackedEntityInstanceUtils.create(
+                TRACKED_ENTITY_INSTANCE_2, ORGANIZATION_UNIT, TRACKED_ENTITY);
+
         ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils
                 .create(1L, TRACKED_ENTITY_ATTRIBUTE, null);
+
+        ContentValues trackedEntityAttribute_2 = CreateTrackedEntityAttributeUtils
+                .create(1L, TRACKED_ENTITY_ATTRIBUTE_2, null);
 
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
         database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
+        database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance_2);
         database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
     }
 
@@ -170,6 +185,37 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
                 TRACKED_ENTITY_ATTRIBUTE,
                 TRACKED_ENTITY_INSTANCE
         ).isExhausted();
+    }
+
+    @Test
+    public void delete_tracked_entity_attribute_value_by_instance_and_attribute_uids()
+            throws Exception {
+        long rowId1 = store.insert(
+                "0", date, date, TRACKED_ENTITY_ATTRIBUTE,
+                TRACKED_ENTITY_INSTANCE);
+
+        long rowId2 = store.insert(
+                "0", date, date, TRACKED_ENTITY_ATTRIBUTE_2,
+                TRACKED_ENTITY_INSTANCE);
+
+        long rowId3 = store.insert(
+                "0", date, date, TRACKED_ENTITY_ATTRIBUTE,
+                TRACKED_ENTITY_INSTANCE_2);
+
+        long rowId4 = store.insert(
+                "0", date, date, TRACKED_ENTITY_ATTRIBUTE_2,
+                TRACKED_ENTITY_INSTANCE_2);
+
+        store.deleteByInstanceAndAttributes(TRACKED_ENTITY_INSTANCE,
+                Arrays.asList(TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_ATTRIBUTE_2));
+
+        Map<String, List<TrackedEntityAttributeValue>> trackedEntityAttributeValues =
+                store.queryAll();
+
+        Assert.assertThat(
+                trackedEntityAttributeValues.get(TRACKED_ENTITY_INSTANCE), is(nullValue()));
+        Assert.assertThat(
+                trackedEntityAttributeValues.get(TRACKED_ENTITY_INSTANCE_2).size(), is(2));
     }
 
     @Test(expected = SQLiteConstraintException.class)

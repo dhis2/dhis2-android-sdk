@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.core.trackedentity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TrackedEntityAttributeValueHandler {
@@ -11,14 +12,54 @@ public class TrackedEntityAttributeValueHandler {
     }
 
     public void handle(String trackedEntityInstanceUid,
-            List<TrackedEntityAttributeValue> attValues) {
-        if (trackedEntityInstanceUid == null || attValues == null) {
+            List<TrackedEntityAttributeValue> attributeValues) {
+        if (trackedEntityInstanceUid == null || attributeValues == null) {
             return;
         }
 
-        persistTrackedEntityDataValues(trackedEntityInstanceUid, attValues);
+        removeNoExistedAttributeValuesInServer(trackedEntityInstanceUid, attributeValues);
+
+        persistTrackedEntityDataValues(trackedEntityInstanceUid, attributeValues);
     }
 
+    private void removeNoExistedAttributeValuesInServer(String trackedEntityInstanceUid,
+            List<TrackedEntityAttributeValue> attributeValues) {
+
+        List<String> uIds = getAttributeUIdsToRemove(trackedEntityInstanceUid, attributeValues);
+
+        if (uIds.size() > 0) {
+            trackedEntityAttributeValueStore.deleteByInstanceAndAttributes(
+                    trackedEntityInstanceUid, uIds);
+        }
+    }
+
+    private List<String> getAttributeUIdsToRemove(String trackedEntityInstanceUid,
+            List<TrackedEntityAttributeValue> attributeValues) {
+        List<String> attributeUIdsToRemove = new ArrayList<>();
+
+        List<TrackedEntityAttributeValue> attributeValuesInDB =
+                trackedEntityAttributeValueStore.queryByTrackedEntityInstance(
+                        trackedEntityInstanceUid);
+
+        for (TrackedEntityAttributeValue attributeValue : attributeValuesInDB) {
+            if (!existsDataElement(attributeValues, attributeValue.trackedEntityAttribute())) {
+                attributeUIdsToRemove.add(attributeValue.trackedEntityAttribute());
+            }
+        }
+
+        return attributeUIdsToRemove;
+    }
+
+    private boolean existsDataElement(List<TrackedEntityAttributeValue> attributeValues,
+            String trackedEntityAttributeUid) {
+        for (TrackedEntityAttributeValue attributeValue : attributeValues) {
+            if (attributeValue.trackedEntityAttribute().equals(trackedEntityAttributeUid)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     private void persistTrackedEntityDataValues(String trackedEntityInstanceUid,
             List<TrackedEntityAttributeValue> attValues) {

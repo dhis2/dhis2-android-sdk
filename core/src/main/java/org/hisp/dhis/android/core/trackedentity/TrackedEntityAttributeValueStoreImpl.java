@@ -36,10 +36,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -91,6 +93,10 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
             "SELECT " + FIELDS +
                     "FROM TrackedEntityAttributeValue";
 
+    private static final String QUERY_BY_TRACKED_ENTITY_INSTANCE_STATEMENT =
+            "SELECT " + FIELDS +
+                    "FROM TrackedEntityAttributeValue where trackedEntityInstance = '?'";
+
     private final SQLiteStatement insertRowStatement;
     private final SQLiteStatement updateRowStatement;
     private final DatabaseAdapter databaseAdapter;
@@ -135,6 +141,53 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
         updateRowStatement.clearBindings();
 
         return update;
+    }
+
+    @Override
+    public int deleteByInstanceAndAttributes(
+            @NonNull String trackedEntityInstanceUId,
+            @NonNull List<String> trackedEntityAttributeUIds) {
+
+        isNull(trackedEntityInstanceUId);
+        isNull(trackedEntityAttributeUIds);
+
+        List<String> argumentValues = new ArrayList<>();
+        argumentValues.add(trackedEntityInstanceUId);
+        argumentValues.addAll(trackedEntityAttributeUIds);
+        String[] argumentValuesArray = argumentValues.toArray(new String[0]);
+
+        String inArguments = TextUtils.join(
+                ",", Collections.nCopies(trackedEntityAttributeUIds.size(), "?"));
+
+        int delete = databaseAdapter.delete(TrackedEntityAttributeValueModel.TABLE,
+                TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + " = ? AND " +
+                        TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " in ("
+                        +
+                        inArguments + ");", argumentValuesArray);
+
+        return delete;
+    }
+
+    @Override
+    public List<TrackedEntityAttributeValue> queryByTrackedEntityInstance(
+            String trackedEntityInstanceUid) {
+        String queryStatement = QUERY_BY_TRACKED_ENTITY_INSTANCE_STATEMENT;
+
+        queryStatement = queryStatement.replace("?", trackedEntityInstanceUid);
+
+        Cursor cursor = databaseAdapter.query(queryStatement);
+
+        Map<String, List<TrackedEntityAttributeValue>> attributeValuesMap =
+                mapFromCursor(cursor);
+
+        List<TrackedEntityAttributeValue> attributeValues =
+                attributeValuesMap.get(trackedEntityInstanceUid);
+
+        if (attributeValues == null) {
+            return new ArrayList<>();
+        } else {
+            return attributeValues;
+        }
     }
 
     @Override

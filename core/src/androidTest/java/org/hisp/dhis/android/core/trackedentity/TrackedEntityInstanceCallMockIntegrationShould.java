@@ -5,18 +5,14 @@ import static org.hamcrest.core.Is.is;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.TrackedEntityInstanceCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
@@ -63,11 +59,38 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
                 TrackedEntityInstanceCallFactory.create(
                         d2.retrofit(), databaseAdapter(), teiUid);
 
-        dhis2MockServer.enqueueMockResponse("TrackedEntityInstance.json");
+        dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
 
         trackedEntityInstanceEndPointCall.call();
 
-        verifyDownloadedTei("TrackedEntityInstance.json", teiUid);
+        verifyDownloadedTei("tracked_entity_instance.json", teiUid);
+    }
+
+    @Test
+    public void remove_data_removed_in_server_after_second_download()
+            throws Exception {
+        String teiUid = "PgmUFEQYZdt";
+
+        givenAMetadataInDatabase();
+
+        TrackedEntityInstanceEndPointCall trackedEntityInstanceEndPointCall =
+                TrackedEntityInstanceCallFactory.create(
+                        d2.retrofit(), databaseAdapter(), teiUid);
+
+        dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
+
+        trackedEntityInstanceEndPointCall.call();
+
+        trackedEntityInstanceEndPointCall =
+                TrackedEntityInstanceCallFactory.create(
+                        d2.retrofit(), databaseAdapter(), teiUid);
+
+
+        dhis2MockServer.enqueueMockResponse("tracked_entity_instance_with_removed_data.json");
+
+        trackedEntityInstanceEndPointCall.call();
+
+        verifyDownloadedTei("tracked_entity_instance_with_removed_data.json", teiUid);
     }
 
     private void givenAMetadataInDatabase() throws Exception {

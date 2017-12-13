@@ -31,9 +31,6 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.event.EventStatus;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;

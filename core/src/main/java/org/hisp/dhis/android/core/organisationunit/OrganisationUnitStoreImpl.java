@@ -28,25 +28,25 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
+
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventStatus;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
-
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals",
+        "PMD.NPathComplexity",
+})
 public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + OrganisationUnitModel.TABLE + " (" +
             OrganisationUnitModel.Columns.UID + ", " +
@@ -186,10 +186,10 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
     public List<OrganisationUnit> queryOrganisationUnits() {
         Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
 
-        return mapEventsFromCursor(cursor);
+        return mapOrgUnitsFromCursor(cursor);
     }
 
-    private List<OrganisationUnit> mapEventsFromCursor(Cursor cursor) {
+    private List<OrganisationUnit> mapOrgUnitsFromCursor(Cursor cursor) {
         List<OrganisationUnit> organisationUnits = new ArrayList<>(cursor.getCount());
 
         try {
@@ -197,30 +197,9 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
                 cursor.moveToFirst();
 
                 do {
-                    String uid = cursor.getString(0);
-                    String code = cursor.getString(1);
-                    String name = cursor.getString(2);
-                    String displayName = cursor.getString(3);
-                    Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
-                    Date lastUpdated = cursor.getString(5) == null ? null : parse(
-                            cursor.getString(5));
-                    String shortName = cursor.getString(6);
-                    String displayShortName = cursor.getString(7);
-                    String description = cursor.getString(8);
-                    String displayDescription = cursor.getString(9);
-                    String path = cursor.getString(10);
-                    Date openingDate = cursor.getString(11) == null ? null : parse(
-                            cursor.getString(11));
-                    Date closedDate = cursor.getString(12) == null ? null : parse(
-                            cursor.getString(12));
-                    int level = cursor.getInt(13);
+                    OrganisationUnit organisationUnit = mapOrgUnitFromCursor(cursor);
 
-                    organisationUnits.add(OrganisationUnit.create(
-                            uid, code, name, displayName, created, lastUpdated, shortName,
-                            displayShortName,
-                            description, displayDescription, null, path, openingDate,
-                            closedDate, level, null, false));
-
+                    organisationUnits.add(organisationUnit);
                 }
                 while (cursor.moveToNext());
             }
@@ -229,6 +208,33 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
             cursor.close();
         }
         return organisationUnits;
+    }
+
+    @NonNull
+    private OrganisationUnit mapOrgUnitFromCursor(Cursor cursor) {
+        String uid = cursor.getString(0);
+        String code = cursor.getString(1);
+        String name = cursor.getString(2);
+        String displayName = cursor.getString(3);
+        Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
+        Date lastUpdated = cursor.getString(5) == null ? null : parse(
+                cursor.getString(5));
+        String shortName = cursor.getString(6);
+        String displayShortName = cursor.getString(7);
+        String description = cursor.getString(8);
+        String displayDescription = cursor.getString(9);
+        String path = cursor.getString(10);
+        Date openingDate = cursor.getString(11) == null ? null : parse(
+                cursor.getString(11));
+        Date closedDate = cursor.getString(12) == null ? null : parse(
+                cursor.getString(12));
+        int level = cursor.getInt(13);
+
+        return OrganisationUnit.create(
+                uid, code, name, displayName, created, lastUpdated, shortName,
+                displayShortName,
+                description, displayDescription, null, path, openingDate,
+                closedDate, level, null, false);
     }
 
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid,

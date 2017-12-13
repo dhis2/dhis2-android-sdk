@@ -31,8 +31,6 @@ package org.hisp.dhis.android.core.organisationunit;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.event.Event;
-
 import java.util.Date;
 import java.util.List;
 

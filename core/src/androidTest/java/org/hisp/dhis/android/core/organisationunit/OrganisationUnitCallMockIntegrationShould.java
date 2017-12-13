@@ -91,10 +91,10 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
             UserOrganisationUnitLinkModel.Columns.USER,
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT,
     };
-    private static String[] RESOURCE_PROJECTION = {
+/*    private static String[] RESOURCE_PROJECTION = {
             ResourceModel.Columns.RESOURCE_TYPE,
             ResourceModel.Columns.LAST_SYNCED
-    };
+    };*/
 
     private MockWebServer server;
 
@@ -362,10 +362,10 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
                 ORGANISATION_UNIT_PROJECTION, null, null, null, null, null);
         Cursor userOrganisationUnitCursor = database().query(UserOrganisationUnitLinkModel.TABLE,
                 USER_ORGANISATION_UNIT_PROJECTION, null, null, null, null, null);
-        Cursor resourceCursor = database().query(ResourceModel.TABLE,
-                RESOURCE_PROJECTION, null, null, null, null, null);
 
-        //BO:
+       /* Cursor resourceCursor = database().query(ResourceModel.TABLE,
+                RESOURCE_PROJECTION, null, null, null, null, null);
+*/        //BO:
         assertThatCursor(organisationUnitCursor).hasRow("O6uvpzGd5pu", "OU_264", "Bo", "Bo",
                 "2012-02-17T15:54:39.987", "2014-12-15T11:56:16.767", "Bo", "Bo", null, null,
                 "/ImspTQPwCqd/O6uvpzGd5pu", "1990-02-01T00:00:00.000", null, 2, "ImspTQPwCqd");
@@ -390,7 +390,8 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         assertThatCursor(userOrganisationUnitCursor).hasRow("user_uid", "YmmeuGbqOwR");
         assertThatCursor(userOrganisationUnitCursor).hasRow("user_uid", "KctpIIucige");
         assertThatCursor(userOrganisationUnitCursor).hasRow("user_uid", "EFTcruJcNmZ");
-        assertThatCursor(userOrganisationUnitCursor).hasRow("user_uid", "tZxqVn3xNrA");
+        assertThatCursor(userOrganisationUnitCursor).hasRow("user_uid",
+                "tZxqVn3xNrA").isExhausted();
 
         // TODO: make sure this date is correctly formated:
         // assertThatCursor(resourceCursor).hasRow(OrganisationUnit.class.getSimpleName(), "2017-02-21T16:44:46.000");

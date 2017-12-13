@@ -184,7 +184,7 @@ public final class D2 {
 
     //Handlers
     private final EventHandler eventHandler;
-    private final TrackedEntityDataValueHandler trackedEntityDataValueHandler;
+
     private final ResourceHandler resourceHandler;
 
 
@@ -272,8 +272,9 @@ public final class D2 {
         //handlers
         resourceHandler = new ResourceHandler(resourceStore);
 
-        this.trackedEntityDataValueHandler =
+        TrackedEntityDataValueHandler trackedEntityDataValueHandler =
                 new TrackedEntityDataValueHandler(trackedEntityDataValueStore);
+
         this.eventHandler = new EventHandler(eventStore, trackedEntityDataValueHandler);
 
     }

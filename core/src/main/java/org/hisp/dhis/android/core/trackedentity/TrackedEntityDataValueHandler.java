@@ -10,7 +10,7 @@ public class TrackedEntityDataValueHandler {
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
     }
 
-    public void handleTrackedEntityDataValue(String eventUid,
+    public void handle(String eventUid,
             List<TrackedEntityDataValue> dataValues) {
         if (eventUid == null || dataValues == null) {
             return;
@@ -18,7 +18,9 @@ public class TrackedEntityDataValueHandler {
 
         removeNoExistedDataValuesInServer(eventUid, dataValues);
 
-        persistTrackedEntityDataValues(eventUid, dataValues);
+        for (TrackedEntityDataValue dataValue : dataValues) {
+            handle(eventUid, dataValue);
+        }
     }
 
     private void removeNoExistedDataValuesInServer(String eventUid,
@@ -58,15 +60,7 @@ public class TrackedEntityDataValueHandler {
         return false;
     }
 
-    private void persistTrackedEntityDataValues(String eventUid,
-            List<TrackedEntityDataValue> trackedEntityDataValues) {
-
-        for (TrackedEntityDataValue dataValue : trackedEntityDataValues) {
-            persistTrackedEntityDataValue(eventUid, dataValue);
-        }
-    }
-
-    private void persistTrackedEntityDataValue(String eventUid,
+    private void handle(String eventUid,
             TrackedEntityDataValue dataValue) {
 
         int updatedRow = trackedEntityDataValueStore.update(

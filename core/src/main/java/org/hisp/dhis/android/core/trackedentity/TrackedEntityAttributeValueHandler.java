@@ -19,7 +19,9 @@ public class TrackedEntityAttributeValueHandler {
 
         removeNoExistedAttributeValuesInServer(trackedEntityInstanceUid, attributeValues);
 
-        persistTrackedEntityDataValues(trackedEntityInstanceUid, attributeValues);
+        for (TrackedEntityAttributeValue attValue : attributeValues) {
+            handle(trackedEntityInstanceUid, attValue);
+        }
     }
 
     private void removeNoExistedAttributeValuesInServer(String trackedEntityInstanceUid,
@@ -61,15 +63,7 @@ public class TrackedEntityAttributeValueHandler {
         return false;
     }
 
-    private void persistTrackedEntityDataValues(String trackedEntityInstanceUid,
-            List<TrackedEntityAttributeValue> attValues) {
-
-        for (TrackedEntityAttributeValue attValue : attValues) {
-            persistTrackedEntityDataValue(trackedEntityInstanceUid, attValue);
-        }
-    }
-
-    private void persistTrackedEntityDataValue(String trackedEntityInstanceUid,
+    private void handle(String trackedEntityInstanceUid,
             TrackedEntityAttributeValue dataValue) {
 
         int updatedRow = trackedEntityAttributeValueStore.update(

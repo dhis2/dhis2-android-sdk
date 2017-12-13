@@ -48,7 +48,7 @@ public class EventHandler {
                         event.dueDate(), State.SYNCED);
             }
 
-            trackedEntityDataValueHandler.handleTrackedEntityDataValue(event.uid(),
+            trackedEntityDataValueHandler.handle(event.uid(),
                     event.trackedEntityDataValues());
         }
     }

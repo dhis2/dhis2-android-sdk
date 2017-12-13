@@ -143,8 +143,10 @@ public class EventStoreImpl implements EventStore {
             "  Event.completedDate, " +
             "  Event.dueDate " +
             "  FROM Event " +
-            "WHERE Event.enrollment ISNULL AND (Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE')";
+            "WHERE Event.enrollment ISNULL";
 
+    private static final String QUERY_SINGLE_EVENTS_TO_POST =
+            QUERY_SINGLE_EVENTS + "  AND (Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE')";
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -298,7 +300,19 @@ public class EventStoreImpl implements EventStore {
 
     @Override
     public List<Event> querySingleEventsToPost() {
+        Cursor cursor = databaseAdapter.query(QUERY_SINGLE_EVENTS_TO_POST);
+
+        return mapEventsFromCursor(cursor);
+    }
+
+    @Override
+    public List<Event> querySingleEvents() {
         Cursor cursor = databaseAdapter.query(QUERY_SINGLE_EVENTS);
+
+        return mapEventsFromCursor(cursor);
+    }
+
+    private List<Event> mapEventsFromCursor(Cursor cursor) {
         List<Event> events = new ArrayList<>(cursor.getCount());
 
         try {

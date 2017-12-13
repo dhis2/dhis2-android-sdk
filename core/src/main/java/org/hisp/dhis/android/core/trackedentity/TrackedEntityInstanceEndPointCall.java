@@ -63,7 +63,7 @@ public class TrackedEntityInstanceEndPointCall implements
 
         Response<TrackedEntityInstance> response =
                 trackedEntityInstanceService.trackedEntityInstance(trackedEntityInstanceUid,
-                        fields()).execute();
+                        fields(), true).execute();
 
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {

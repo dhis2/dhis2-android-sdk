@@ -3,6 +3,8 @@ package org.hisp.dhis.android.core.trackedentity;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+import android.support.annotation.NonNull;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -117,9 +119,60 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
         ObjectMapper objectMapper = new ObjectMapper();
 
-        return objectMapper.readValue(expectedEventsResponseJson,
+        TrackedEntityInstance trackedEntityInstance = objectMapper.readValue(
+                expectedEventsResponseJson,
                 new TypeReference<TrackedEntityInstance>() {
                 });
+
+        trackedEntityInstance = removeDeletedData(trackedEntityInstance);
+
+
+        return trackedEntityInstance;
+    }
+
+    @NonNull
+    private TrackedEntityInstance removeDeletedData(TrackedEntityInstance trackedEntityInstance) {
+        Map<String, List<Event>> expectedEvents = new HashMap<>();
+        List<Enrollment> expectedEnrollments = new ArrayList<>();
+
+
+        for (Enrollment enrollment : trackedEntityInstance.enrollments()) {
+            for (Event event : enrollment.events()) {
+                if (!event.deleted()) {
+                    if (expectedEvents.get(event.enrollmentUid()) == null) {
+                        expectedEvents.put(event.enrollmentUid(), new ArrayList<Event>());
+                    }
+
+                    expectedEvents.get(event.enrollmentUid()).add(event);
+
+                }
+            }
+            if (!enrollment.deleted()) {
+                enrollment = Enrollment.create(
+                        enrollment.uid(), enrollment.created(), enrollment.lastUpdated(),
+                        enrollment.createdAtClient(), enrollment.lastUpdatedAtClient(),
+                        enrollment.organisationUnit(), enrollment.program(),
+                        enrollment.dateOfEnrollment(), enrollment.dateOfIncident(),
+                        enrollment.followUp(),
+                        enrollment.enrollmentStatus(), trackedEntityInstance.uid(),
+                        enrollment.coordinate(),
+                        enrollment.deleted(), expectedEvents.get(enrollment.uid()));
+
+                expectedEnrollments.add(enrollment);
+            }
+        }
+
+        trackedEntityInstance = TrackedEntityInstance.create(
+                trackedEntityInstance.uid(), trackedEntityInstance.created(),
+                trackedEntityInstance.lastUpdated(),
+                trackedEntityInstance.createdAtClient(),
+                trackedEntityInstance.lastUpdatedAtClient(),
+                trackedEntityInstance.organisationUnit(), trackedEntityInstance.trackedEntity(),
+                trackedEntityInstance.deleted(),
+                trackedEntityInstance.trackedEntityAttributeValues(),
+                trackedEntityInstance.relationships(), expectedEnrollments);
+
+        return trackedEntityInstance;
     }
 
     private TrackedEntityInstance getDownloadedTei(String teiUid) {
@@ -170,7 +223,8 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
                     event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
                     event.createdAtClient(), event.lastUpdatedAtClient(),
                     event.program(), event.programStage(), event.organisationUnit(),
-                    event.eventDate(), event.status(), event.coordinates(), event.completedDate(),
+                    event.eventDate(), event.status(), event.coordinates(),
+                    event.completedDate(),
                     event.dueDate(), event.deleted(), downloadedValues.get(event.uid()));
 
             if (downloadedEvents.get(event.enrollmentUid()) == null) {

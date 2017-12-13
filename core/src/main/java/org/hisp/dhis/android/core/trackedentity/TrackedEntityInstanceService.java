@@ -29,5 +29,6 @@ public interface TrackedEntityInstanceService {
     @GET("trackedEntityInstances/{trackedEntityInstanceUid}")
     Call<TrackedEntityInstance> trackedEntityInstance(
             @Path("trackedEntityInstanceUid") String trackedEntityInstanceUid,
-            @Query("fields") @Which Fields<TrackedEntityInstance> fields);
+            @Query("fields") @Which Fields<TrackedEntityInstance> fields,
+            @Query("includeDeleted") boolean includeDeleted);
 }

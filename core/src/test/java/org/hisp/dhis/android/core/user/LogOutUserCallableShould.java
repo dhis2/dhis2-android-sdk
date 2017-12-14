@@ -28,7 +28,9 @@
 
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +38,8 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import static org.mockito.Mockito.verify;
@@ -44,19 +48,19 @@ import static org.mockito.Mockito.verify;
 public class LogOutUserCallableShould {
 
     @Mock
-    private UserStore userStore;
+    private UserStoreImpl userStore;
 
     @Mock
-    private UserCredentialsStore userCredentialsStore;
+    private UserCredentialsStoreImpl userCredentialsStore;
 
     @Mock
-    private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
+    private UserOrganisationUnitLinkStoreImpl userOrganisationUnitLinkStore;
 
     @Mock
-    private AuthenticatedUserStore authenticatedUserStore;
+    private AuthenticatedUserStoreImpl authenticatedUserStore;
 
     @Mock
-    private OrganisationUnitStore organisationUnitStore;
+    private OrganisationUnitStoreImpl organisationUnitStore;
 
     private Callable<Void> logOutUserCallable;
 
@@ -64,9 +68,14 @@ public class LogOutUserCallableShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
+        List<DeletableStore> deletableStoreList = new ArrayList<>();
+        deletableStoreList.add((DeletableStore) userStore);
+        deletableStoreList.add((DeletableStore) userCredentialsStore);
+        deletableStoreList.add((DeletableStore) userOrganisationUnitLinkStore);
+        deletableStoreList.add((DeletableStore) authenticatedUserStore);
+        deletableStoreList.add((DeletableStore) organisationUnitStore);
         logOutUserCallable = new LogOutUserCallable(
-                userStore, userCredentialsStore, userOrganisationUnitLinkStore,
-                authenticatedUserStore, organisationUnitStore
+                deletableStoreList
         );
     }
 

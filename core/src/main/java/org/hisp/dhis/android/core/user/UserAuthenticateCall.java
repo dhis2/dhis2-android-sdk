@@ -172,75 +172,18 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         // order to make sure that databaseAdapter transaction won't be leaked
         try {
             User user = response.body();
-            // insert user model into user table
             userId = getUserIdStored(databaseAdapter, user.uid());
 
-            if(userId==null){
-                userId = userStore.insert(
-                        user.uid(), user.code(), user.name(), user.displayName(), user.created(),
-                        user.lastUpdated(), user.birthday(), user.education(),
-                        user.gender(), user.jobTitle(), user.surname(), user.firstName(),
-                        user.introduction(), user.employer(), user.interests(), user.languages(),
-                        user.email(), user.phoneNumber(), user.nationality()
-                );
-            }else{
-                //If the user is already stored the login is after a soft logout
+            Date serverDateTime = response.headers().getDate(HeaderUtils.DATE);
+
+            if(userId!=null){
+                // update user model and dependencies tables
+                updateUser(user, serverDateTime);
                 return userId;
             }
 
-            Date serverDateTime = response.headers().getDate(HeaderUtils.DATE);
-            resourceStore.insert(User.class.getSimpleName(), serverDateTime);
-
-
-            // insert user credentials
-            UserCredentials userCredentials = user.userCredentials();
-            userCredentialsStore.insert(
-                    userCredentials.uid(), userCredentials.code(), userCredentials.name(),
-                    userCredentials.displayName(), userCredentials.created(), userCredentials.lastUpdated(),
-                    userCredentials.username(), user.uid()
-            );
-
-            resourceStore.insert(
-                    UserCredentials.class.getSimpleName(), serverDateTime
-            );
-
-            // insert user as authenticated entity
-            authenticatedUserStore.insert(user.uid(), base64(username, password));
-
-            if (user.organisationUnits() != null) {
-                String organisationUnitSimpleName = OrganisationUnit.class.getSimpleName();
-                int size = user.organisationUnits().size();
-                for (int i = 0; i < size; i++) {
-                    OrganisationUnit organisationUnit = user.organisationUnits().get(i);
-
-                    organisationUnitStore.insert(
-                            organisationUnit.uid(),
-                            organisationUnit.code(),
-                            organisationUnit.name(),
-                            organisationUnit.displayName(),
-                            organisationUnit.created(),
-                            organisationUnit.lastUpdated(),
-                            organisationUnit.shortName(),
-                            organisationUnit.displayShortName(),
-                            organisationUnit.description(),
-                            organisationUnit.displayDescription(),
-                            organisationUnit.path(),
-                            organisationUnit.openingDate(),
-                            organisationUnit.closedDate(),
-                            organisationUnit.parent() == null ? null : organisationUnit.parent().uid(),
-                            organisationUnit.level()
-                    );
-
-                    resourceStore.insert(
-                            organisationUnitSimpleName, serverDateTime
-                    );
-
-                    // insert link between user and organisation unit
-                    userOrganisationUnitLinkStore.insert(
-                            user.uid(), organisationUnit.uid(), OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE.name()
-                    );
-                }
-            }
+            // insert user model and dependencies into tables
+            userId = insertUser(user, serverDateTime);
 
             transaction.setSuccessful();
         } finally {
@@ -250,9 +193,96 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         return userId;
     }
 
+    @NonNull
+    private Long insertUser(User user, Date serverDateTime) {
+        Long userId;
+        userId = userStore.insert(
+                user.uid(), user.code(), user.name(), user.displayName(), user.created(),
+                user.lastUpdated(), user.birthday(), user.education(),
+                user.gender(), user.jobTitle(), user.surname(), user.firstName(),
+                user.introduction(), user.employer(), user.interests(), user.languages(),
+                user.email(), user.phoneNumber(), user.nationality()
+        );
+        resourceStore.insert(User.class.getSimpleName(), serverDateTime);
+
+
+        // insert user credentials
+        UserCredentials userCredentials = user.userCredentials();
+        userCredentialsStore.insert(
+                userCredentials.uid(), userCredentials.code(), userCredentials.name(),
+                userCredentials.displayName(), userCredentials.created(), userCredentials.lastUpdated(),
+                userCredentials.username(), user.uid()
+        );
+
+        resourceStore.insert(
+                UserCredentials.class.getSimpleName(), serverDateTime
+        );
+
+        // insert user as authenticated entity
+        authenticatedUserStore.insert(user.uid(), base64(username, password));
+
+        if (user.organisationUnits() != null) {
+            String organisationUnitSimpleName = OrganisationUnit.class.getSimpleName();
+            int size = user.organisationUnits().size();
+            for (int i = 0; i < size; i++) {
+                OrganisationUnit organisationUnit = user.organisationUnits().get(i);
+
+                organisationUnitStore.insert(
+                        organisationUnit.uid(),
+                        organisationUnit.code(),
+                        organisationUnit.name(),
+                        organisationUnit.displayName(),
+                        organisationUnit.created(),
+                        organisationUnit.lastUpdated(),
+                        organisationUnit.shortName(),
+                        organisationUnit.displayShortName(),
+                        organisationUnit.description(),
+                        organisationUnit.displayDescription(),
+                        organisationUnit.path(),
+                        organisationUnit.openingDate(),
+                        organisationUnit.closedDate(),
+                        organisationUnit.parent() == null ? null : organisationUnit.parent().uid(),
+                        organisationUnit.level()
+                );
+
+                resourceStore.insert(
+                        organisationUnitSimpleName, serverDateTime
+                );
+
+                // insert link between user and organisation unit
+                userOrganisationUnitLinkStore.insert(
+                        user.uid(), organisationUnit.uid(), OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE.name()
+                );
+            }
+        }
+        return userId;
+    }
+
+    private void updateUser(User user, Date serverDateTime) {
+        userStore.update(
+                user.uid(), user.code(), user.name(), user.displayName(), user.created(),
+                user.lastUpdated(), user.birthday(), user.education(),
+                user.gender(), user.jobTitle(), user.surname(), user.firstName(),
+                user.introduction(), user.employer(), user.interests(), user.languages(),
+                user.email(), user.phoneNumber(), user.nationality(), user.uid()
+        );
+        resourceStore.insert(User.class.getSimpleName(), serverDateTime);
+        // insert user credentials
+        UserCredentials userCredentials = user.userCredentials();
+        userCredentialsStore.update(
+                userCredentials.uid(), userCredentials.code(), userCredentials.name(),
+                userCredentials.displayName(), userCredentials.created(), userCredentials.lastUpdated(),
+                userCredentials.username(), user.uid(), user.uid()
+        );
+
+        resourceStore.insert(
+                UserCredentials.class.getSimpleName(), serverDateTime
+        );
+    }
+
     private Long getUserIdStored(DatabaseAdapter databaseAdapter, String uid) {
         Cursor cursor = databaseAdapter.query("Select _id as id from "+UserModel.TABLE+ " where uid ='"+uid+"'");
-        if(cursor.getCount()==1){
+        if(cursor!=null && cursor.getCount()==1){
             return (long) cursor.getColumnIndex("id");
         }
         return null;

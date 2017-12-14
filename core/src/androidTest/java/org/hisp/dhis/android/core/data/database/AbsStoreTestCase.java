@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.data.database;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import android.database.sqlite.SQLiteDatabase;
 import android.support.test.InstrumentationRegistry;
 
@@ -36,16 +38,14 @@ import org.junit.Before;
 
 import java.io.IOException;
 
-import static com.google.common.truth.Truth.assertThat;
-
 public abstract class AbsStoreTestCase {
     private SQLiteDatabase sqLiteDatabase;
-    public DatabaseAdapter databaseAdapter;
+    private DatabaseAdapter databaseAdapter;
 
     @Before
     public void setUp() throws IOException {
         DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , "test.db");
+                , null);
         sqLiteDatabase = dbOpenHelper.getWritableDatabase();
         databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
     }

@@ -82,4 +82,6 @@ public interface EventStore {
     Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost();
 
     List<Event> querySingleEventsToPost();
+
+    List<Event> querySingleEvents();
 }

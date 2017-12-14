@@ -41,5 +41,15 @@ public interface TrackedEntityDataValueStore {
                 @Nullable String value, @Nullable Boolean providedElsewhere
     );
 
+    int update(@NonNull String event, @Nullable Date created, @Nullable Date lastUpdated,
+            @Nullable String dataElement, @Nullable String storedBy,
+            @Nullable String value, @Nullable Boolean providedElsewhere);
+
+    int deleteByEventAndDataElementUIds(@NonNull String eventUid, @NonNull List<String> uIds);
+
+    List<TrackedEntityDataValue> queryTrackedEntityDataValues(String event);
+
+    Map<String, List<TrackedEntityDataValue>> queryTrackedEntityDataValues();
+
     Map<String, List<TrackedEntityDataValue>> queryTrackedEntityDataValues(Boolean singleEvents);
 }

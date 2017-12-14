@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -46,6 +47,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
+import org.hisp.dhis.android.core.event.EventHandler;
 import org.hisp.dhis.android.core.event.EventPostCall;
 import org.hisp.dhis.android.core.event.EventService;
 import org.hisp.dhis.android.core.event.EventStore;
@@ -84,6 +86,7 @@ import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStoreImpl;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
@@ -93,6 +96,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
@@ -171,12 +175,17 @@ public final class D2 {
     private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final EnrollmentStore enrollmentStore;
     private final EventStore eventStore;
+
     private final EventService eventService;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
-
     private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
+
+    //Handlers
+    private final EventHandler eventHandler;
+
+    private final ResourceHandler resourceHandler;
 
 
     @VisibleForTesting
@@ -252,12 +261,21 @@ public final class D2 {
                 new EnrollmentStoreImpl(databaseAdapter);
         this.eventStore =
                 new EventStoreImpl(databaseAdapter);
+
         this.trackedEntityDataValueStore =
                 new TrackedEntityDataValueStoreImpl(databaseAdapter);
         this.trackedEntityAttributeValueStore =
                 new TrackedEntityAttributeValueStoreImpl(databaseAdapter);
         this.organisationUnitProgramLinkStore =
                 new OrganisationUnitProgramLinkStoreImpl(databaseAdapter);
+
+        //handlers
+        resourceHandler = new ResourceHandler(resourceStore);
+
+        TrackedEntityDataValueHandler trackedEntityDataValueHandler =
+                new TrackedEntityDataValueHandler(trackedEntityDataValueStore);
+
+        this.eventHandler = new EventHandler(eventStore, trackedEntityDataValueHandler);
 
     }
 
@@ -313,6 +331,13 @@ public final class D2 {
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore, optionStore,
                 optionSetStore, dataElementStore, programStageDataElementStore, programStageSectionStore,
                 programStageStore, relationshipStore, trackedEntityStore, organisationUnitProgramLinkStore);
+    }
+
+    @NonNull
+    public Call<Response> syncSingleData(int eventLimitByOrgUnit) {
+        return new SingleDataCall(organisationUnitStore, systemInfoStore, systemInfoService,
+                resourceStore,
+                eventService, databaseAdapter, resourceHandler, eventHandler, eventLimitByOrgUnit);
     }
 
     @NonNull

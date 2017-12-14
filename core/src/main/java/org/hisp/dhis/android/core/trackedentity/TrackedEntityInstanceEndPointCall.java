@@ -90,16 +90,9 @@ public class TrackedEntityInstanceEndPointCall implements
                 TrackedEntityInstance.trackedEntity,
                 TrackedEntityInstance.deleted,
                 TrackedEntityInstance.relationships.with(
-                        Relationship.relationshipType.with(
-                                RelationshipType.uid, RelationshipType.code,
-                                RelationshipType.created,
-                                RelationshipType.lastUpdated, RelationshipType.name,
-                                RelationshipType.displayName,
-                                RelationshipType.aIsToB, RelationshipType.bIsToA,
-                                RelationshipType.deleted
-                        )
-
-                ),
+                        Relationship.trackedEntityInstanceA,
+                        Relationship.trackedEntityInstanceB,
+                        Relationship.displayName),
                 TrackedEntityInstance.trackedEntityAttributeValues.with(
                         TrackedEntityAttributeValue.trackedEntityAttribute,
                         TrackedEntityAttributeValue.value,

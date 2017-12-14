@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.common.Payload;
@@ -160,7 +161,8 @@ public class EventCallMockIntegrationShould extends AbsStoreTestCase {
     private Payload<Event> parseEventResponse(String file) throws IOException {
         String expectedEventsResponseJson = new AssetsFileReader().getStringFromFile(file);
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper().setDateFormat(
+                BaseIdentifiableObject.DATE_FORMAT.raw());
 
         return objectMapper.readValue(expectedEventsResponseJson,
                 new TypeReference<Payload<Event>>() {

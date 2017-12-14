@@ -276,7 +276,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
         // verify that tei was successfully inserted into database
         assertThatCursor(cursor).hasRow(UID).isExhausted();
 
-        Map<String, TrackedEntityInstance> map = trackedEntityInstanceStore.query();
+        Map<String, TrackedEntityInstance> map = trackedEntityInstanceStore.queryToPost();
         assertThat(map.containsKey(UID)).isTrue();
 
         TrackedEntityInstance trackedEntityInstance = map.get(UID);

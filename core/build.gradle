@@ -46,6 +46,7 @@ android {
         versionCode configuration.versionCode
         versionName configuration.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
 
     packagingOptions {
@@ -89,6 +90,8 @@ android {
 
 
 dependencies {
+    // sqlbrite-migrations library
+    compile "com.github.lykmapipo:sqlbrite-migrations:${libraries.sqlbritemigrations}"
     // Support libraries
     compile "com.android.support:support-annotations:${libraries.support}"
 

@@ -1,0 +1,4 @@
+up:
+  - CREATE TABLE Category (_id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT NOT NULL)
+down:
+  - DROP TABLE Category

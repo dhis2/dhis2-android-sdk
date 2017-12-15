@@ -28,12 +28,15 @@
 
 package org.hisp.dhis.android.core.data.database;
 
+import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Columns
+        .ORGANISATION_UNIT_SCOPE;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
+import android.util.Log;
 
 import org.hisp.dhis.android.core.category.CategoryComboLinkModel;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
@@ -77,17 +80,20 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserRoleModel;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel;
 
-import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Columns
-        .ORGANISATION_UNIT_SCOPE;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"
 })
-public class DbOpenHelper extends SQLiteOpenHelper {
+public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
     @VisibleForTesting
     static final int VERSION = 1;
-
+    public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
                     ConfigurationModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -960,18 +966,34 @@ public class DbOpenHelper extends SQLiteOpenHelper {
         return database;
     }
 
+    public DbOpenHelper(Context context, String databaseName, int version, String migrationTestDir,
+            String sqlDatabase) {
+        super(context, databaseName, version, true, migrationTestDir);
+        mockedSqlDatabase = sqlDatabase;
+    }
+
     public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
+        super(context, databaseName, VERSION);
+    }
+
+    public DbOpenHelper(Context context, String databaseName, int version) {
+        super(context, databaseName, version);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        create(db);
+        String emptySqlFile = "";
+        if (emptySqlFile.equals(mockedSqlDatabase)) {
+            create(db);
+        } else {
+            populateDBfromResource(db, mockedSqlDatabase);
+        }
+        super.onCreate(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // ToDo: logic for proper schema migration
+        super.onUpgrade(db, oldVersion, newVersion);
     }
 
     @Override
@@ -980,5 +1002,34 @@ public class DbOpenHelper extends SQLiteOpenHelper {
 
         // enable foreign key support in database
         db.execSQL("PRAGMA foreign_keys = ON;");
+    }
+
+    private SQLiteDatabase populateDBfromResource(SQLiteDatabase database, String databaseSqlFile) {
+        String emptySqlFile = "";
+        if (emptySqlFile.equals(databaseSqlFile)) {
+            return database;
+        }
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream(databaseSqlFile);
+        InputStreamReader inputStreamReader = new InputStreamReader(in, Charset.forName("UTF-8"));
+        BufferedReader reader = new BufferedReader(inputStreamReader);
+        String line = null;
+        try {
+            line = reader.readLine();
+            while (line != null) {
+                database.execSQL(line);
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            Log.e(getClass().getName(), e.getMessage());
+        } finally {
+            try {
+                reader.close();
+                inputStreamReader.close();
+                in.close();
+            } catch (IOException e) {
+                Log.e(getClass().getName(), e.getMessage());
+            }
+        }
+        return database;
     }
 }

@@ -16,6 +16,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
 import org.hisp.dhis.android.core.user.UserModel;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,6 +48,12 @@ public class DataBaseMigrationShould {
         }
     }
 
+    @After
+    public static void tearDown() throws Exception {
+        if(dbName!=null) {
+            InstrumentationRegistry.getContext().deleteDatabase(dbName);
+        }
+    }
 
     public DbOpenHelper initCoreDataBase(String dbName, int databaseVersion, String testPath, String databaseSqlVersion1){
         DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()

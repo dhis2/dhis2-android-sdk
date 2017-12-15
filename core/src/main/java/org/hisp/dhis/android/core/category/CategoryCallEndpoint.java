@@ -9,28 +9,38 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.ResponseValidator;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Response;
 
 public class CategoryCallEndpoint implements Call<Response<Payload<Category>>> {
+
     private final CategoryQuery categoryQuery;
     private final CategoryService categoryService;
     private final ResponseValidator<Category> responseValidator;
-    private boolean isExecuted;
+    private final Handler<Category> handler;
+    private final ResourceHandler resourceHandler;
     private final DatabaseAdapter databaseAdapter;
+    private final Date serverDate;
+    private boolean isExecuted;
 
-
-    public CategoryCallEndpoint(@NonNull CategoryQuery categoryQuery,
-            @NonNull CategoryService categoryService,
-            @NonNull ResponseValidator<Category> responseValidator,
-            @NonNull DatabaseAdapter databaseAdapter) {
-
+    public CategoryCallEndpoint(CategoryQuery categoryQuery,
+            CategoryService categoryService,
+            ResponseValidator<Category> responseValidator,
+            Handler<Category> handler,
+            ResourceHandler resourceHandler,
+            DatabaseAdapter databaseAdapter, Date serverDate) {
         this.categoryQuery = categoryQuery;
         this.categoryService = categoryService;
         this.responseValidator = responseValidator;
+        this.handler = handler;
+        this.resourceHandler = resourceHandler;
         this.databaseAdapter = databaseAdapter;
+        this.serverDate = new Date(serverDate.getTime());
     }
 
 
@@ -53,21 +63,21 @@ public class CategoryCallEndpoint implements Call<Response<Payload<Category>>> {
         if (responseValidator.isValid(response)) {
             List<Category> categories = response.body().items();
 
-            save(categories);
-
-
+            handle(categories);
         }
 
         return response;
     }
 
-    private void save(List<Category> categories) {
+    private void handle(List<Category> categories) {
         Transaction transaction = databaseAdapter.beginNewTransaction();
 
         try {
             for (Category category : categories) {
-
+                handler.handle(category);
             }
+            resourceHandler.handleResource(ResourceModel.Type.CATEGORY, serverDate);
+            transaction.setSuccessful();
         } finally {
             transaction.end();
         }
@@ -89,7 +99,11 @@ public class CategoryCallEndpoint implements Call<Response<Payload<Category>>> {
                 Category.created, Category.lastUpdated, Category.deleted,
                 Category.shortName, Category.displayName,
                 Category.dataDimensionType,
-                Category.categoryOptions.with(CategoryOption.uid)).build();
+                Category.categoryOptions.with(CategoryOption.uid, CategoryOption.code,
+                        CategoryOption.name, CategoryOption.displayName,
+                        CategoryOption.created, CategoryOption.lastUpdated, CategoryOption.deleted,
+                        CategoryOption.shortName, CategoryOption.displayName))
+                .build();
 
     }
 }

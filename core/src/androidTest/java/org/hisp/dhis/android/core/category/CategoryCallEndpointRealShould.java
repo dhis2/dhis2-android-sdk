@@ -1,27 +1,26 @@
 package org.hisp.dhis.android.core.category;
 
 
-import android.support.test.InstrumentationRegistry;
-import android.util.Log;
+import static junit.framework.Assert.assertTrue;
 
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.configuration.ConfigurationModel;
-import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.api.ResponseValidator;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Date;
 
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Response;
 
 public class CategoryCallEndpointRealShould extends AbsStoreTestCase {
 
@@ -31,57 +30,53 @@ public class CategoryCallEndpointRealShould extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(
-                InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , null);
-
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
     }
 
-//    @Test
+    @Test
     public void parse_categories() throws Exception {
-        retrofit2.Response response = null;
-        response = d2.logIn(RealServerMother.user, RealServerMother.password).call();
-        Truth.assertThat(response.isSuccessful()).isTrue();
 
+        Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
+        Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
-        CategoryService service = d2.retrofit().create(CategoryService.class);
-        ResponseValidator<Category> validator = new ResponseValidator<>();
+        CategoryCallEndpoint categoryCallEndpoint = provideCategoryCallEndpoint();
+        Response<Payload<Category>> responseCategory = categoryCallEndpoint.call();
 
-        CategoryQuery query = CategoryQuery.builder().page(1).pageSize(
-                CategoryQuery.DEFAULT_PAGE_SIZE).paging(true).build();
+        assertTrue(responseCategory.isSuccessful());
+        assertTrue(hasCategories(responseCategory));
 
-        CategoryCallEndpoint categoryCallEndpoint = new CategoryCallEndpoint(query, service,
-                validator, databaseAdapter());
-
-        Payload<Category> payload = categoryCallEndpoint.call().body();
-//
-        Log.d("",payload.toString());
     }
 
+    private CategoryCallEndpoint provideCategoryCallEndpoint() {
+        CategoryQuery query = CategoryQuery.defaultQuery();
 
-    public static class D2Factory {
-        public static D2 create(String url, DatabaseAdapter databaseAdapter) {
-            ConfigurationModel config = ConfigurationModel.builder()
-                    .serverUrl(HttpUrl.parse(url))
-                    .build();
+        CategoryService categoryService = d2.retrofit().create(CategoryService.class);
 
-            HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        ResponseValidator<Category> validator = new ResponseValidator<>();
 
-            return new D2.Builder()
-                    .configuration(config)
-                    .databaseAdapter(databaseAdapter)
-                    .okHttpClient(
-                            new OkHttpClient.Builder()
-                                    .addInterceptor(
-                                            BasicAuthenticatorFactory.create(databaseAdapter))
-                                    .addInterceptor(loggingInterceptor)
-                                    .build()
-                    ).build();
+        Store<Category> store = new CategoryStoreImpl(databaseAdapter());
 
-        }
+        Store<CategoryOption> categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
+
+        CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
+                categoryOptionStore);
+
+        Store<CategoryOptionLinkModel> categoryOptionLinkStore = new CategoryOptionLinkStoreImpl(
+                databaseAdapter());
+
+        Handler<Category> handler = new CategoryHandler(store, categoryOptionHandler,
+                categoryOptionLinkStore);
+        ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
+        Date serverDate = new Date();
+
+        return new CategoryCallEndpoint(query, categoryService, validator, handler, resourceHandler,
+                databaseAdapter(), serverDate);
+
+    }
+
+    private boolean hasCategories(Response<Payload<Category>> response) {
+        return !response.body().items().isEmpty();
     }
 
 }

@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.data.api.NestedField;
 import java.util.Collections;
 import java.util.List;
 
-// TODO: Write Category- Store, StoreImp, Model and their tests (Datacapture)
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Category.Builder.class)
 public abstract class Category extends BaseNameableObject {
@@ -59,6 +58,7 @@ public abstract class Category extends BaseNameableObject {
     public static final Field<Category, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
     public static final Field<Category, String> dataDimensionType = Field.create(
             DATA_DIMENSION_TYPE);
+
     public static final NestedField<Category, CategoryOption> categoryOptions = NestedField.create(
             CATEGORY_OPTIONS);
 
@@ -67,6 +67,7 @@ public abstract class Category extends BaseNameableObject {
     @JsonProperty(DATA_DIMENSION_TYPE)
     public abstract String dataDimensionType();
 
+    @Nullable
     @JsonProperty(CATEGORY_OPTIONS)
     public abstract List<CategoryOption> categoryOptions();
 
@@ -85,6 +86,7 @@ public abstract class Category extends BaseNameableObject {
         public abstract Builder dataDimensionType(String dimensionType);
 
         // used only to support unmodifiable collections
+        @Nullable
         abstract List<CategoryOption> categoryOptions();
 
         // used only to support unmodifiable collections
@@ -92,6 +94,7 @@ public abstract class Category extends BaseNameableObject {
 
         public Category build() {
             if (categoryOptions() != null) {
+                //noinspection ConstantConditions
                 categoryOptions(Collections.unmodifiableList(categoryOptions()));
             }
 

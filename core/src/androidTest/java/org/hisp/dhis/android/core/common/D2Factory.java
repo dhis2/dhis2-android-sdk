@@ -16,7 +16,7 @@ public class D2Factory {
                 .build();
 
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         return new D2.Builder()
                 .configuration(config)

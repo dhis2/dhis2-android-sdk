@@ -50,6 +50,15 @@ public abstract class CategoryOption extends BaseNameableObject {
     private static final String JSON_PROPERTY_END_DATE = "endDate";
 
     public static final Field<CategoryOption, String> uid = Field.create(UID);
+    public static final Field<CategoryOption, String> code = Field.create(CODE);
+    public static final Field<CategoryOption, String> name = Field.create(NAME);
+    public static final Field<CategoryOption, String> displayName = Field.create(DISPLAY_NAME);
+    public static final Field<CategoryOption, String> created = Field.create(CREATED);
+    public static final Field<CategoryOption, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<CategoryOption, Boolean> deleted = Field.create(DELETED);
+    public static final Field<CategoryOption, String> shortName = Field.create(SHORT_NAME);
+    public static final Field<CategoryOption, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
+
 
     @Nullable
     @JsonProperty(JSON_PROPERTY_CATEGORY_OPTION_COMBOS)

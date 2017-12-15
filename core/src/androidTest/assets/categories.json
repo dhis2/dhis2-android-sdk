@@ -17,22 +17,58 @@
       "displayName": "Births attended by",
       "categoryOptions": [
         {
-          "id": "TNYQzTHdoxL"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "MCH_AIDES",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "MCH Aides",
+          "id": "TNYQzTHdoxL",
+          "shortName": "MCH Aides",
+          "displayName": "MCH Aides"
         },
         {
-          "id": "TXGfLxZlInA"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "SECHN",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "SECHN",
+          "id": "TXGfLxZlInA",
+          "shortName": "SECHN",
+          "displayName": "SECHN"
         },
         {
-          "id": "QgULqw9YDu2"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "MIDWIVES",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Midwives",
+          "id": "QgULqw9YDu2",
+          "shortName": "Midwives",
+          "displayName": "Midwives"
         },
         {
-          "id": "OjIOxG7vgna"
+          "lastUpdated": "2014-06-22T21:36:38.632",
+          "code": "CHO",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "CHO",
+          "id": "OjIOxG7vgna",
+          "shortName": "CHO",
+          "displayName": "CHO"
         },
         {
-          "id": "uZUnebiT5DI"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "TRAINED_TBA",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Trained TBA",
+          "id": "uZUnebiT5DI",
+          "shortName": "Trained TBA",
+          "displayName": "Trained TBA"
         },
         {
-          "id": "HTHvCohKoXt"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "UNTRAINED_TBA",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Untrained TBA",
+          "id": "HTHvCohKoXt",
+          "shortName": "Untrained TBA",
+          "displayName": "Untrained TBA"
         }
       ]
     },
@@ -47,18 +83,36 @@
       "displayName": "Commodities",
       "categoryOptions": [
         {
-          "id": "AdkHQiiJBB4"
+          "lastUpdated": "2014-03-02T02:12:35.927",
+          "code": "Consumption",
+          "created": "2014-03-02T02:12:35.927",
+          "name": "Consumption",
+          "id": "AdkHQiiJBB4",
+          "shortName": "Consumption",
+          "displayName": "Consumption"
         },
         {
-          "id": "xp1wtEkhBmV"
+          "lastUpdated": "2014-03-02T19:04:23.211",
+          "code": "End Balance",
+          "created": "2014-03-02T02:12:54.868",
+          "name": "End Balance",
+          "id": "xp1wtEkhBmV",
+          "shortName": "End Balance",
+          "displayName": "End Balance"
         },
         {
-          "id": "gpK9r0M1RFZ"
+          "lastUpdated": "2014-03-02T19:04:13.406",
+          "code": "Quantity to be ordered",
+          "created": "2014-03-02T19:04:13.406",
+          "name": "Quantity to be ordered",
+          "id": "gpK9r0M1RFZ",
+          "shortName": "Quantity to be ordered",
+          "displayName": "Quantity to be ordered"
         }
       ]
     },
     {
-      "lastUpdated": "2017-12-11T03:32:25.291",
+      "lastUpdated": "2017-12-14T06:59:54.667",
       "created": "2012-11-21T12:15:18.537",
       "name": "default",
       "id": "vGs6omsRekv",
@@ -67,7 +121,12 @@
       "displayName": "default",
       "categoryOptions": [
         {
-          "id": "as6ygGvUGNg"
+          "lastUpdated": "2016-04-12T20:37:48.414",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "default",
+          "id": "as6ygGvUGNg",
+          "shortName": "default",
+          "displayName": "default"
         }
       ]
     },
@@ -82,10 +141,22 @@
       "displayName": "EPI/nutrition age",
       "categoryOptions": [
         {
-          "id": "btOyqprQ9e8"
+          "lastUpdated": "2015-03-11T11:56:54.123",
+          "code": "<1y",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "<1y",
+          "id": "btOyqprQ9e8",
+          "shortName": "<1y",
+          "displayName": "<1y"
         },
         {
-          "id": "GEqzEKCHoGA"
+          "lastUpdated": "2014-03-05T04:57:24.116",
+          "code": ">1y",
+          "created": "2011-12-24T12:24:24.149",
+          "name": ">1y",
+          "id": "GEqzEKCHoGA",
+          "shortName": ">1y",
+          "displayName": ">1y"
         }
       ]
     },
@@ -100,10 +171,22 @@
       "displayName": "Gender",
       "categoryOptions": [
         {
-          "id": "apsOixVZlf1"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "FMLE",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Female",
+          "id": "apsOixVZlf1",
+          "shortName": "Female",
+          "displayName": "Female"
         },
         {
-          "id": "jRbMi0aBjYn"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "MLE",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Male",
+          "id": "jRbMi0aBjYn",
+          "shortName": "Male",
+          "displayName": "Male"
         }
       ]
     },
@@ -118,16 +201,40 @@
       "displayName": "HIV age",
       "categoryOptions": [
         {
-          "id": "zs2Ra6sikup"
+          "lastUpdated": "2015-01-08T10:12:58.563",
+          "code": "AGE0-14",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "<15y",
+          "id": "zs2Ra6sikup",
+          "shortName": "<15y",
+          "displayName": "<15y"
         },
         {
-          "id": "UOqJW6HPvvL"
+          "lastUpdated": "2015-03-11T11:10:12.274",
+          "code": "AGE15-24",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "15-24y",
+          "id": "UOqJW6HPvvL",
+          "shortName": "15-24y",
+          "displayName": "15-24y"
         },
         {
-          "id": "WAl0OCcIYxr"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "AGE25-49",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "25-49y",
+          "id": "WAl0OCcIYxr",
+          "shortName": "25-49y",
+          "displayName": "25-49y"
         },
         {
-          "id": "IG8vRsn0HNl"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "AGE50+",
+          "created": "2011-12-24T12:24:24.149",
+          "name": ">49y",
+          "id": "IG8vRsn0HNl",
+          "shortName": ">49y",
+          "displayName": ">49y"
         }
       ]
     },
@@ -142,13 +249,31 @@
       "displayName": "HIV paediatric age",
       "categoryOptions": [
         {
-          "id": "nuHLu6GaiWI"
+          "lastUpdated": "2015-03-11T11:56:56.710",
+          "code": "U12M",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "<12m",
+          "id": "nuHLu6GaiWI",
+          "shortName": "<12m",
+          "displayName": "<12m"
         },
         {
-          "id": "dPSWsKeAZNw"
+          "lastUpdated": "2015-01-08T10:13:25.714",
+          "code": "12_18M",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "12-18m",
+          "id": "dPSWsKeAZNw",
+          "shortName": "12-18m",
+          "displayName": "12-18m"
         },
         {
-          "id": "dHl52Uo56Ct"
+          "lastUpdated": "2015-01-08T10:13:25.702",
+          "code": "O18M",
+          "created": "2011-12-24T12:24:24.149",
+          "name": ">18m",
+          "id": "dHl52Uo56Ct",
+          "shortName": ">18m",
+          "displayName": ">18m"
         }
       ]
     },
@@ -163,52 +288,148 @@
       "displayName": "Implementing Partner",
       "categoryOptions": [
         {
-          "id": "C6nZpLKjEJr"
+          "lastUpdated": "2013-12-20T22:09:34.204",
+          "code": "African Medical and Research Foundation",
+          "created": "2013-12-20T22:09:34.204",
+          "name": "African Medical and Research Foundation",
+          "id": "C6nZpLKjEJr",
+          "shortName": "African Medical and Research Foundation",
+          "displayName": "African Medical and Research Foundation"
         },
         {
-          "id": "CW81uF03hvV"
+          "lastUpdated": "2014-06-22T21:35:54.100",
+          "code": "AIDSRelief Consortium",
+          "created": "2013-12-20T22:11:56.488",
+          "name": "AIDSRelief Consortium",
+          "id": "CW81uF03hvV",
+          "shortName": "AIDSRelief Consortium",
+          "displayName": "AIDSRelief Consortium"
         },
         {
-          "id": "B3nxOazOO2G"
+          "lastUpdated": "2013-12-20T22:12:04.994",
+          "code": "APHIAplus",
+          "created": "2013-12-20T22:12:04.994",
+          "name": "APHIAplus",
+          "id": "B3nxOazOO2G",
+          "shortName": "APHIAplus",
+          "displayName": "APHIAplus"
         },
         {
-          "id": "RkbOhHwiOgW"
+          "lastUpdated": "2014-06-22T21:36:38.638",
+          "code": "CARE International",
+          "created": "2013-12-20T22:10:12.394",
+          "name": "CARE International",
+          "id": "RkbOhHwiOgW",
+          "shortName": "CARE International",
+          "displayName": "CARE International"
         },
         {
-          "id": "TY5rBQzlBRa"
+          "lastUpdated": "2013-12-20T22:09:14.155",
+          "code": "Family Health International",
+          "created": "2013-12-20T22:09:14.155",
+          "name": "Family Health International",
+          "id": "TY5rBQzlBRa",
+          "shortName": "Family Health International",
+          "displayName": "Family Health International"
         },
         {
-          "id": "hERJraxV8D9"
+          "lastUpdated": "2013-12-20T22:11:45.448",
+          "code": "Hope Worldwide",
+          "created": "2013-12-20T22:11:45.448",
+          "name": "Hope Worldwide",
+          "id": "hERJraxV8D9",
+          "shortName": "Hope Worldwide",
+          "displayName": "Hope Worldwide"
         },
         {
-          "id": "g3bcPGD5Q5i"
+          "lastUpdated": "2013-12-20T22:09:40.825",
+          "code": "International Rescue Committee",
+          "created": "2013-12-20T22:09:40.825",
+          "name": "International Rescue Committee",
+          "id": "g3bcPGD5Q5i",
+          "shortName": "International Rescue Committee",
+          "displayName": "International Rescue Committee"
         },
         {
-          "id": "yfWXlxYNbhy"
+          "lastUpdated": "2013-12-20T22:10:57.379",
+          "code": "IntraHealth International",
+          "created": "2013-12-20T22:10:57.379",
+          "name": "IntraHealth International",
+          "id": "yfWXlxYNbhy",
+          "shortName": "IntraHealth International",
+          "displayName": "IntraHealth International"
         },
         {
-          "id": "yrwgRxRhBoU"
+          "lastUpdated": "2013-12-20T22:12:45.831",
+          "code": "Path",
+          "created": "2013-12-20T22:12:45.831",
+          "name": "Path",
+          "id": "yrwgRxRhBoU",
+          "shortName": "Path",
+          "displayName": "Path"
         },
         {
-          "id": "VLFVaH1MwnF"
+          "lastUpdated": "2013-12-20T22:11:09.858",
+          "code": "Pathfinder International",
+          "created": "2013-12-20T22:11:09.858",
+          "name": "Pathfinder International",
+          "id": "VLFVaH1MwnF",
+          "shortName": "Pathfinder International",
+          "displayName": "Pathfinder International"
         },
         {
-          "id": "e5YBV5F5iUd"
+          "lastUpdated": "2013-12-20T22:09:23.467",
+          "code": "Plan International",
+          "created": "2013-12-20T22:09:23.467",
+          "name": "Plan International",
+          "id": "e5YBV5F5iUd",
+          "shortName": "Plan International",
+          "displayName": "Plan International"
         },
         {
-          "id": "XK6u6cJCR0t"
+          "lastUpdated": "2013-12-20T22:11:15.622",
+          "code": "Population Services International",
+          "created": "2013-12-20T22:11:15.622",
+          "name": "Population Services International",
+          "id": "XK6u6cJCR0t",
+          "shortName": "Population Services International",
+          "displayName": "Population Services International"
         },
         {
-          "id": "xwZ2u3WyQR0"
+          "lastUpdated": "2013-12-20T22:11:21.298",
+          "code": "Unicef",
+          "created": "2013-12-20T22:11:21.298",
+          "name": "Unicef",
+          "id": "xwZ2u3WyQR0",
+          "shortName": "Unicef",
+          "displayName": "Unicef"
         },
         {
-          "id": "LEWNFo4Qrrs"
+          "lastUpdated": "2013-12-20T22:11:28.211",
+          "code": "World Concern",
+          "created": "2013-12-20T22:11:28.211",
+          "name": "World Concern",
+          "id": "LEWNFo4Qrrs",
+          "shortName": "World Concern",
+          "displayName": "World Concern"
         },
         {
-          "id": "xEunk8LPzkb"
+          "lastUpdated": "2013-12-20T22:12:28.115",
+          "code": "World Relief",
+          "created": "2013-12-20T22:12:28.115",
+          "name": "World Relief",
+          "id": "xEunk8LPzkb",
+          "shortName": "World Relief",
+          "displayName": "World Relief"
         },
         {
-          "id": "uilaJSyXt7d"
+          "lastUpdated": "2013-12-20T22:12:36.187",
+          "code": "World Vision",
+          "created": "2013-12-20T22:12:36.187",
+          "name": "World Vision",
+          "id": "uilaJSyXt7d",
+          "shortName": "World Vision",
+          "displayName": "World Vision"
         }
       ]
     },
@@ -223,49 +444,139 @@
       "displayName": "Labour complications",
       "categoryOptions": [
         {
-          "id": "o4K5VAp14z9"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "MALARIA_1_TRIM",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Malaria in 1st trimester (treat with oral quinine",
+          "id": "o4K5VAp14z9",
+          "shortName": "Malaria in 1st trimester (treat with oral quinine",
+          "displayName": "Malaria in 1st trimester (treat with oral quinine"
         },
         {
-          "id": "LVVjrz1mFQt"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "MALARIA_2_3_TRIM",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Malaria in 2nd or 3rd trimester (treat with ACT)",
+          "id": "LVVjrz1mFQt",
+          "shortName": "Malaria in 2nd or 3rd trimester (treat with ACT)",
+          "displayName": "Malaria in 2nd or 3rd trimester (treat with ACT)"
         },
         {
-          "id": "agNsiNGcGlf"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "ANAEMIA",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Anaemia",
+          "id": "agNsiNGcGlf",
+          "shortName": "Anaemia",
+          "displayName": "Anaemia"
         },
         {
-          "id": "IqVA7ElOrEw"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "HYPERTENSION",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Hypertension",
+          "id": "IqVA7ElOrEw",
+          "shortName": "Hypertension",
+          "displayName": "Hypertension"
         },
         {
-          "id": "FfQkdfpvaxx"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "ABORTION",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Abortion",
+          "id": "FfQkdfpvaxx",
+          "shortName": "Abortion",
+          "displayName": "Abortion"
         },
         {
-          "id": "E5g8xQeBvHa"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "STI",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "STI",
+          "id": "E5g8xQeBvHa",
+          "shortName": "STI",
+          "displayName": "STI"
         },
         {
-          "id": "Mz5LnqoobUz"
+          "lastUpdated": "2013-03-19T20:44:39.993",
+          "code": "OTHER_EARL_COMPL",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Other early complication",
+          "id": "Mz5LnqoobUz",
+          "shortName": "Other early complication",
+          "displayName": "Other early complication"
         },
         {
-          "id": "rVvVG0xb1U9"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "PREECLAMP",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Pre-eclampsia/Eclampsia/Hypertension",
+          "id": "rVvVG0xb1U9",
+          "shortName": "Pre-eclampsia/Eclampsia/Hypertension",
+          "displayName": "Pre-eclampsia/Eclampsia/Hypertension"
         },
         {
-          "id": "weOIzRXoUN4"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "ANTE_PART_HEMM",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Ante-partum hemmorhage",
+          "id": "weOIzRXoUN4",
+          "shortName": "Ante-partum hemmorhage",
+          "displayName": "Ante-partum hemmorhage"
         },
         {
-          "id": "B3xM7LYh0jH"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "OBSTR_LABOUR",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Obstructed labour",
+          "id": "B3xM7LYh0jH",
+          "shortName": "Obstructed labour",
+          "displayName": "Obstructed labour"
         },
         {
-          "id": "Et4YOXvUod1"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "POST_PART_SEPS",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Post-partum sepsis",
+          "id": "Et4YOXvUod1",
+          "shortName": "Post-partum sepsis",
+          "displayName": "Post-partum sepsis"
         },
         {
-          "id": "b6sKvU8phrc"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "PORT_PART_HEMM",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Post-partum hemmorhage",
+          "id": "b6sKvU8phrc",
+          "shortName": "Post-partum hemmorhage",
+          "displayName": "Post-partum hemmorhage"
         },
         {
-          "id": "qZIEVbjYDLI"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "RETAINED_PLAC",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Retained placenta",
+          "id": "qZIEVbjYDLI",
+          "shortName": "Retained placenta",
+          "displayName": "Retained placenta"
         },
         {
-          "id": "vGrKQ90SRZt"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "MALPRE",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Malpresentation",
+          "id": "vGrKQ90SRZt",
+          "shortName": "Malpresentation",
+          "displayName": "Malpresentation"
         },
         {
-          "id": "sJw2lMoJu1f"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "OTHER_LATE_COMPL",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Other late complication",
+          "id": "sJw2lMoJu1f",
+          "shortName": "Other late complication",
+          "displayName": "Other late complication"
         }
       ]
     },
@@ -280,10 +591,22 @@
       "displayName": "Location Fixed/Outreach",
       "categoryOptions": [
         {
-          "id": "qkPbeWaFsnU"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "FIXED",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Fixed",
+          "id": "qkPbeWaFsnU",
+          "shortName": "Fixed",
+          "displayName": "Fixed"
         },
         {
-          "id": "wbrDrL2aYEc"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "OUTREACH\nOUTREACH",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Outreach",
+          "id": "wbrDrL2aYEc",
+          "shortName": "Outreach",
+          "displayName": "Outreach"
         }
       ]
     },
@@ -298,10 +621,22 @@
       "displayName": "Location PHU/Community",
       "categoryOptions": [
         {
-          "id": "wHFX72Y0KXx"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "IN_COMM",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "In Community",
+          "id": "wHFX72Y0KXx",
+          "shortName": "In Community",
+          "displayName": "In Community"
         },
         {
-          "id": "Fp4gVHbRvEV"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "AT_PHU",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "At PHU",
+          "id": "Fp4gVHbRvEV",
+          "shortName": "At PHU",
+          "displayName": "At PHU"
         }
       ]
     },
@@ -316,16 +651,40 @@
       "displayName": "Morbidity Age",
       "categoryOptions": [
         {
-          "id": "FbLZS3ueWbQ"
+          "lastUpdated": "2016-04-18T16:25:58.225",
+          "code": "0_11_M",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "0-11m",
+          "id": "FbLZS3ueWbQ",
+          "shortName": "0-11m",
+          "displayName": "0-11m"
         },
         {
-          "id": "rEq3Hkd3XXH"
+          "lastUpdated": "2015-03-11T11:10:02.159",
+          "code": "12_59_M",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "12-59m",
+          "id": "rEq3Hkd3XXH",
+          "shortName": "12-59m",
+          "displayName": "12-59m"
         },
         {
-          "id": "dUm5jaCTPBb"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "5_14Y",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "5-14y",
+          "id": "dUm5jaCTPBb",
+          "shortName": "5-14y",
+          "displayName": "5-14y"
         },
         {
-          "id": "ZZxYuoTCcDd"
+          "lastUpdated": "2015-03-11T11:12:23.883",
+          "code": "15_PLUSY",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "15y+",
+          "id": "ZZxYuoTCcDd",
+          "shortName": "15y+",
+          "displayName": "15y+"
         }
       ]
     },
@@ -340,10 +699,22 @@
       "displayName": "Outcome",
       "categoryOptions": [
         {
-          "id": "e3oqm527jBS"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "MANAGED_PHU",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Managed at PHU",
+          "id": "e3oqm527jBS",
+          "shortName": "Managed at PHU",
+          "displayName": "Managed at PHU"
         },
         {
-          "id": "rSdQZYDmHJm"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "REFERRED",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Referred",
+          "id": "rSdQZYDmHJm",
+          "shortName": "Referred",
+          "displayName": "Referred"
         }
       ]
     },
@@ -358,13 +729,31 @@
       "displayName": "Point of service",
       "categoryOptions": [
         {
-          "id": "qkPbeWaFsnU"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "FIXED",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Fixed",
+          "id": "qkPbeWaFsnU",
+          "shortName": "Fixed",
+          "displayName": "Fixed"
         },
         {
-          "id": "wbrDrL2aYEc"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "OUTREACH\nOUTREACH",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Outreach",
+          "id": "wbrDrL2aYEc",
+          "shortName": "Outreach",
+          "displayName": "Outreach"
         },
         {
-          "id": "C1CvTD0GlTU"
+          "lastUpdated": "2013-03-19T19:51:40.402",
+          "code": "SCHOOL\nSCHOOL",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "School",
+          "id": "C1CvTD0GlTU",
+          "shortName": "School",
+          "displayName": "School"
         }
       ]
     },
@@ -379,10 +768,22 @@
       "displayName": "Pregnant/Non-pregnant",
       "categoryOptions": [
         {
-          "id": "JR4RSJFjNYl"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "PREGNANT",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Pregnant",
+          "id": "JR4RSJFjNYl",
+          "shortName": "Pregnant",
+          "displayName": "Pregnant"
         },
         {
-          "id": "ZggZw2XNDaw"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "NON_PREGNANT",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Non-pregnant",
+          "id": "ZggZw2XNDaw",
+          "shortName": "Non-pregnant",
+          "displayName": "Non-pregnant"
         }
       ]
     },
@@ -397,16 +798,40 @@
       "displayName": "Project",
       "categoryOptions": [
         {
-          "id": "i4Nbp8S2G6A"
+          "lastUpdated": "2016-07-04T18:26:53.030",
+          "code": "Project01",
+          "created": "2013-12-20T22:14:03.322",
+          "name": "Improve access to clean water",
+          "id": "i4Nbp8S2G6A",
+          "shortName": "Improve access to clean water",
+          "displayName": "Improve access to clean water"
         },
         {
-          "id": "yMj2MnmNI8L"
+          "lastUpdated": "2013-12-20T22:14:27.023",
+          "code": "Project03",
+          "created": "2013-12-20T22:14:27.023",
+          "name": "Improve access to medicines",
+          "id": "yMj2MnmNI8L",
+          "shortName": "Improve access to medicines",
+          "displayName": "Improve access to medicines"
         },
         {
-          "id": "OUUdG3sdOqb"
+          "lastUpdated": "2016-07-04T18:27:15.401",
+          "code": "Project02",
+          "created": "2013-12-20T22:14:12.940",
+          "name": "Provide access to primary health care",
+          "id": "OUUdG3sdOqb",
+          "shortName": "Provide access to primary health care",
+          "displayName": "Provide access to primary health care"
         },
         {
-          "id": "M58XdOfhiJ7"
+          "lastUpdated": "2013-12-20T22:14:47.949",
+          "code": "Project05",
+          "created": "2013-12-20T22:14:47.949",
+          "name": "Provide access to basic education",
+          "id": "M58XdOfhiJ7",
+          "shortName": "Provide access to basic education",
+          "displayName": "Provide access to basic education"
         }
       ]
     },
@@ -421,10 +846,22 @@
       "displayName": "Referrals Age",
       "categoryOptions": [
         {
-          "id": "K4gwuiVvW3z"
+          "lastUpdated": "2015-03-11T11:56:43.416",
+          "code": "0_4Y",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "0-4y",
+          "id": "K4gwuiVvW3z",
+          "shortName": "0-4y",
+          "displayName": "0-4y"
         },
         {
-          "id": "oaFqxkefkPs"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "5_PLUSY",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "5y+",
+          "id": "oaFqxkefkPs",
+          "shortName": "5y+",
+          "displayName": "5y+"
         }
       ]
     },
@@ -439,10 +876,22 @@
       "displayName": "Rural and Urban",
       "categoryOptions": [
         {
-          "id": "N7eHxEoNHZa"
+          "lastUpdated": "2017-05-19T14:45:56.585",
+          "code": "RURAL",
+          "created": "2017-05-19T14:45:56.585",
+          "name": "Rural",
+          "id": "N7eHxEoNHZa",
+          "shortName": "Rural",
+          "displayName": "Rural"
         },
         {
-          "id": "UyBLLB6kvw4"
+          "lastUpdated": "2017-05-19T14:46:06.948",
+          "code": "URBAN",
+          "created": "2017-05-19T14:46:06.948",
+          "name": "Urban",
+          "id": "UyBLLB6kvw4",
+          "shortName": "Urban",
+          "displayName": "Urban"
         }
       ]
     },
@@ -457,10 +906,22 @@
       "displayName": "Staffing",
       "categoryOptions": [
         {
-          "id": "Z8aX3AkrDMS"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "ON_SALARY",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "On salary",
+          "id": "Z8aX3AkrDMS",
+          "shortName": "On salary",
+          "displayName": "On salary"
         },
         {
-          "id": "sNr1y5Qq1YQ"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "NOT_ON_SALARY",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Not on salary",
+          "id": "sNr1y5Qq1YQ",
+          "shortName": "Not on salary",
+          "displayName": "Not on salary"
         }
       ]
     },
@@ -475,13 +936,31 @@
       "displayName": "Stock discarded",
       "categoryOptions": [
         {
-          "id": "YHb43JqCAmI"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "EXPIRED",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Expired",
+          "id": "YHb43JqCAmI",
+          "shortName": "Expired",
+          "displayName": "Expired"
         },
         {
-          "id": "mInFlpnx6TQ"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "DAMAGES",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Damages",
+          "id": "mInFlpnx6TQ",
+          "shortName": "Damages",
+          "displayName": "Damages"
         },
         {
-          "id": "qKc2WhjMPKC"
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "VVM_CHANGE",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "VVM Change",
+          "id": "qKc2WhjMPKC",
+          "shortName": "VVM Change",
+          "displayName": "VVM Change"
         }
       ]
     },
@@ -496,10 +975,20 @@
       "displayName": "Target vs Result",
       "categoryOptions": [
         {
-          "id": "STgy27fGvaU"
+          "lastUpdated": "2017-05-16T16:44:41.026",
+          "created": "2017-05-16T16:44:41.026",
+          "name": "Target",
+          "id": "STgy27fGvaU",
+          "shortName": "Target",
+          "displayName": "Target"
         },
         {
-          "id": "JvIqWKLPPkt"
+          "lastUpdated": "2017-05-16T16:49:36.605",
+          "created": "2017-05-16T16:44:47.955",
+          "name": "Result",
+          "id": "JvIqWKLPPkt",
+          "shortName": "Result",
+          "displayName": "Result"
         }
       ]
     },
@@ -514,10 +1003,22 @@
       "displayName": "Under 5/5 and above of age",
       "categoryOptions": [
         {
-          "id": "D3E6Qfzjs6I"
+          "lastUpdated": "2013-04-09T14:44:19.905",
+          "code": "U5Y",
+          "created": "2013-04-09T14:44:19.905",
+          "name": "Under 5 years",
+          "id": "D3E6Qfzjs6I",
+          "shortName": "Under 5 years",
+          "displayName": "Under 5 years"
         },
         {
-          "id": "PYddIHxZRKK"
+          "lastUpdated": "2013-04-09T14:44:27.211",
+          "code": "O5Y",
+          "created": "2013-04-09T14:44:27.211",
+          "name": "5 years and above",
+          "id": "PYddIHxZRKK",
+          "shortName": "5 years and above",
+          "displayName": "5 years and above"
         }
       ]
     }

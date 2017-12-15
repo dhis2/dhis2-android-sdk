@@ -25,74 +25,65 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.resource;
+
+package org.hisp.dhis.android.core.category;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
-import java.util.Date;
 
 @AutoValue
-public abstract class ResourceModel extends BaseModel {
-    public static final String TABLE = "Resource";
+public abstract class CategoryComboLinkModel extends BaseModel {
+    public static final String TABLE = "CategoryComboLink";
 
-    public static class Columns extends BaseModel.Columns {
-        public static final String RESOURCE_TYPE = "resourceType";
-        public static final String LAST_SYNCED = "lastSynced";
-    }
-
-    public enum Type {
-        EVENT,
-        SYSTEM_INFO,
-        USER,
-        ORGANISATION_UNIT,
-        PROGRAM,
-        OPTION_SET,
-        TRACKED_ENTITY,
-        TRACKED_ENTITY_INSTANCE,
-        CATEGORY,
-        CATEGORY_COMBO
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String CATEGORY = "category";
+        public static final String COMBO = "combo";
 
     }
 
-    @Nullable
-    @ColumnName(Columns.RESOURCE_TYPE)
-    public abstract String resourceType();
+    public static final String[] PROJECTION = {
+            Columns.ID, Columns.CATEGORY,
+            Columns.COMBO
+    };
 
     @Nullable
-    @ColumnName(Columns.LAST_SYNCED)
-    @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date lastSynced();
+    @ColumnName(Columns.CATEGORY)
+    public abstract String category();
+
+    @Nullable
+    @ColumnName(Columns.COMBO)
+    public abstract String combo();
 
     @NonNull
     public abstract ContentValues toContentValues();
 
     @NonNull
-    public static ResourceModel create(Cursor cursor) {
-        return AutoValue_ResourceModel.createFromCursor(cursor);
+    public static Builder builder() {
+        return new $$AutoValue_CategoryComboLinkModel.Builder();
     }
 
     @NonNull
-    public static Builder builder() {
-        return new $$AutoValue_ResourceModel.Builder();
+    public static CategoryComboLinkModel create(Cursor cursor) {
+        return AutoValue_CategoryComboLinkModel.createFromCursor(cursor);
+
     }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
-        public abstract Builder resourceType(@Nullable String resourceType);
 
-        public abstract Builder lastSynced(@Nullable Date lastSynced);
+        public abstract Builder category(@Nullable String category);
 
-        public abstract ResourceModel build();
+        public abstract Builder combo(@Nullable String combo);
+
+        public abstract CategoryComboLinkModel build();
     }
-
 }

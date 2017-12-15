@@ -28,16 +28,46 @@
 
 package org.hisp.dhis.android.core.category;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.NestedField;
 
-// TODO: Write CategoryOptionCobo- Store, StoreImp, Model and their tests (Datacapture)
+import java.util.List;
+
 @AutoValue
 @JsonDeserialize(builder = AutoValue_CategoryOptionCombo.Builder.class)
 public abstract class CategoryOptionCombo extends BaseNameableObject {
-    // no fields
+    private static final String CATEGORY_COMBO = "categoryCombo";
+    private static final String CATEGORY_OPTIONS = "categoryOptions";
+
+    public static final Field<CategoryOptionCombo, String> uid = Field.create(UID);
+    public static final Field<CategoryOptionCombo, String> code = Field.create(CODE);
+    public static final Field<CategoryOptionCombo, String> name = Field.create(NAME);
+    public static final Field<CategoryOptionCombo, String> displayName = Field.create(DISPLAY_NAME);
+    public static final Field<CategoryOptionCombo, String> created = Field.create(CREATED);
+    public static final Field<CategoryOptionCombo, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<CategoryOptionCombo, Boolean> deleted = Field.create(DELETED);
+    public static final NestedField<CategoryOptionCombo, CategoryOption> categoryOptions =
+            NestedField.create(CATEGORY_OPTIONS);
+
+    public static final NestedField<CategoryOptionCombo, CategoryCombo> categoryCombo =
+            NestedField.create(
+                    CATEGORY_COMBO);
+
+    @Nullable
+    @JsonProperty(CATEGORY_COMBO)
+    public abstract CategoryCombo categoryCombo();
+
+    @Nullable
+    @JsonProperty(CATEGORY_OPTIONS)
+    public abstract List<CategoryOption> categoryOptions();
 
     public static Builder builder() {
         return new AutoValue_CategoryOptionCombo.Builder();
@@ -45,6 +75,16 @@ public abstract class CategoryOptionCombo extends BaseNameableObject {
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+
+        @Nullable
+        @JsonProperty(CATEGORY_COMBO)
+        public abstract Builder categoryCombo(CategoryCombo categoryCombo);
+
+        @Nullable
+        @JsonProperty(CATEGORY_OPTIONS)
+        public abstract Builder categoryOptions(List<CategoryOption> categoryOptions);
+
+        @NonNull
         public abstract CategoryOptionCombo build();
     }
 }

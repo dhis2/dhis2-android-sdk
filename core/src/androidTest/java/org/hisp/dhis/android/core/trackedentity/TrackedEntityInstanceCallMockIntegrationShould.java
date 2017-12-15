@@ -53,7 +53,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
     }
 
     @Test
-    public void download_tei_enrollments_and_events() throws Exception {
+    public void download_tracked_entity_instance_enrollments_and_events() throws Exception {
         String teiUid = "PgmUFEQYZdt";
 
         givenAMetadataInDatabase();
@@ -66,7 +66,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
         trackedEntityInstanceEndPointCall.call();
 
-        verifyDownloadedTei("tracked_entity_instance.json", teiUid);
+        verifyDownloadedTrackedEntityInstance("tracked_entity_instance.json", teiUid);
     }
 
     @Test
@@ -93,7 +93,8 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
         trackedEntityInstanceEndPointCall.call();
 
-        verifyDownloadedTei("tracked_entity_instance_with_removed_data.json", teiUid);
+        verifyDownloadedTrackedEntityInstance("tracked_entity_instance_with_removed_data.json",
+                teiUid);
     }
 
     private void givenAMetadataInDatabase() throws Exception {
@@ -107,15 +108,17 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         d2.syncMetaData().call();
     }
 
-    private void verifyDownloadedTei(String file, String teiUid) throws IOException {
-        TrackedEntityInstance expectedEnrollmentResponse = parseEventResponse(file);
+    private void verifyDownloadedTrackedEntityInstance(String file, String teiUid)
+            throws IOException {
+        TrackedEntityInstance expectedEnrollmentResponse = parseTrackedEntityInstanceResponse(file);
 
         TrackedEntityInstance downloadedTei = getDownloadedTei(teiUid);
 
         assertThat(downloadedTei, is(expectedEnrollmentResponse));
     }
 
-    private TrackedEntityInstance parseEventResponse(String file) throws IOException {
+    private TrackedEntityInstance parseTrackedEntityInstanceResponse(String file)
+            throws IOException {
         String expectedEventsResponseJson = new AssetsFileReader().getStringFromFile(file);
 
         ObjectMapper objectMapper = new ObjectMapper().setDateFormat(

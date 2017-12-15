@@ -35,12 +35,18 @@ public class TrackedEntityInstanceEndPointCall implements
             @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
             @NonNull ResourceHandler resourceHandler,
             @NonNull Date serverDate,
-            String trackedEntityInstanceUid) {
+            @NonNull String trackedEntityInstanceUid) {
         this.trackedEntityInstanceService = trackedEntityInstanceService;
         this.databaseAdapter = databaseAdapter;
         this.trackedEntityInstanceHandler = trackedEntityInstanceHandler;
         this.resourceHandler = resourceHandler;
         this.serverDate = serverDate;
+
+        if (trackedEntityInstanceUid == null || trackedEntityInstanceUid.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "trackedEntityInstanceUid is required to realize a request");
+        }
+
         this.trackedEntityInstanceUid = trackedEntityInstanceUid;
     }
 

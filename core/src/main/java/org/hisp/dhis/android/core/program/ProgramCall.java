@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -289,6 +290,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                         )
                 ),
                 Program.trackedEntity.with(TrackedEntity.uid),
+                Program.categoryCombo.with(CategoryCombo.uid),
                 Program.relationshipType.with(
                         RelationshipType.uid, RelationshipType.code, RelationshipType.name,
                         RelationshipType.displayName, RelationshipType.created, RelationshipType.lastUpdated,

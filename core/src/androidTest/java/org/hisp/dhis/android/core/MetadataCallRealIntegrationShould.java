@@ -31,7 +31,7 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
         super.setUp();
 
         ConfigurationModel config = ConfigurationModel.builder()
-                .serverUrl(HttpUrl.parse("https://play.dhis2.org/demo/api/"))
+                .serverUrl(HttpUrl.parse("https://play.dhis2.org/android-current/api/"))
                 .build();
 
         d2 = new D2.Builder()

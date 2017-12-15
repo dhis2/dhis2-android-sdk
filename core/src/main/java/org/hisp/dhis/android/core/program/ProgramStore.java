@@ -63,9 +63,8 @@ public interface ProgramStore {
             @Nullable String relationshipType,
             @Nullable String relationshipText,
             @Nullable String relatedProgram,
-            @Nullable String trackedEntity
-            //TODO: add category combo when implemented.
-//            @NonNull CategoryCombo categoryCombo
+            @Nullable String trackedEntity,
+            @Nullable String categoryCombo
     );
 
     int update(
@@ -98,6 +97,7 @@ public interface ProgramStore {
             @Nullable String relationshipText,
             @Nullable String relatedProgram,
             @Nullable String trackedEntity,
+            @Nullable String categoryCombo,
             @NonNull String whereProgramUid);
 
     int delete(@NonNull String uid);

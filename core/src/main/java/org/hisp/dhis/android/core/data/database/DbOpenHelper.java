@@ -343,12 +343,17 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             ProgramModel.Columns.RELATIONSHIP_TEXT + " TEXT," +
             ProgramModel.Columns.RELATED_PROGRAM + " TEXT," +
             ProgramModel.Columns.TRACKED_ENTITY + " TEXT," +
+            ProgramModel.Columns.CATEGORY_COMBO + " TEXT," +
             " FOREIGN KEY (" + ProgramModel.Columns.RELATIONSHIP_TYPE + ")" +
             " REFERENCES " + RelationshipTypeModel.TABLE + " (" + RelationshipTypeModel.Columns.UID
             + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
             " FOREIGN KEY (" + ProgramModel.Columns.TRACKED_ENTITY + ")" +
             " REFERENCES " + TrackedEntityModel.TABLE + " (" + TrackedEntityModel.Columns.UID + ")"
+            +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+            " FOREIGN KEY (" + ProgramModel.Columns.CATEGORY_COMBO + ")" +
+            " REFERENCES " + CategoryComboModel.TABLE + " (" + CategoryComboModel.Columns.UID + ")"
             +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             ");";
@@ -391,8 +396,13 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                     DataElementModel.Columns.DIMENSION + " TEXT," +
                     DataElementModel.Columns.DISPLAY_FORM_NAME + " TEXT," +
                     DataElementModel.Columns.OPTION_SET + " TEXT," +
+                    DataElementModel.Columns.CATEGORY_COMBO + " TEXT," +
                     " FOREIGN KEY ( " + DataElementModel.Columns.OPTION_SET + ")" +
                     " REFERENCES " + OptionSetModel.TABLE + " (" + OptionSetModel.Columns.UID + ")"
+                    +
+                    " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+                    " FOREIGN KEY (" + DataElementModel.Columns.CATEGORY_COMBO + ")" +
+                    " REFERENCES " + CategoryComboModel.TABLE + " (" + CategoryComboModel.Columns.UID + ")"
                     +
                     " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
                     ");";

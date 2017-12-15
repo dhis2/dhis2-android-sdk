@@ -34,6 +34,20 @@ import android.support.test.runner.AndroidJUnit4;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryComboHandler;
+import org.hisp.dhis.android.core.category.CategoryComboLinkModel;
+import org.hisp.dhis.android.core.category.CategoryComboLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryComboModel;
+import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionCombo;
+import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
+import org.hisp.dhis.android.core.category.CategoryOptionComboLinkCategoryModel;
+import org.hisp.dhis.android.core.category.CategoryOptionComboLinkCategoryStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
+import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
+import org.hisp.dhis.android.core.category.Handler;
+import org.hisp.dhis.android.core.category.Store;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.Payload;
@@ -114,7 +128,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
             ProgramModel.Columns.RELATIONSHIP_TYPE,
             ProgramModel.Columns.RELATIONSHIP_TEXT,
             ProgramModel.Columns.RELATED_PROGRAM,
-            ProgramModel.Columns.TRACKED_ENTITY
+            ProgramModel.Columns.TRACKED_ENTITY,
+            ProgramModel.Columns.CATEGORY_COMBO
     };
 
     private MockWebServer mockWebServer;
@@ -181,7 +196,6 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         OptionSetStore optionSetStore = new OptionSetStoreImpl(databaseAdapter());
         OptionSetHandler optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
 
-
         DataElementStore dataElementStore = new DataElementStoreImpl(databaseAdapter());
         DataElementHandler dataElementHandler = new DataElementHandler(dataElementStore, optionSetHandler);
         ProgramStageDataElementStore programStageDataElementStore =
@@ -231,6 +245,9 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
         database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
 
+        ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, "catcombouid");
+        database().insert(CategoryComboModel.TABLE, null, categoryCombo);
+
         programCall = new ProgramCall(
                 programService, databaseAdapter(), resourceStore, uids, programStore, new Date(),
                 trackedEntityAttributeStore, programTrackedEntityAttributeStore, programRuleVariableStore,
@@ -276,7 +293,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 null,
                 null,
                 null,
-                "nEenWmSyUEp"
+                "nEenWmSyUEp",
+                "catcombouid"
         ).isExhausted();
     }
 
@@ -431,7 +449,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 DataElementModel.Columns.DOMAIN_TYPE,
                 DataElementModel.Columns.DIMENSION,
                 DataElementModel.Columns.DISPLAY_FORM_NAME,
-                DataElementModel.Columns.OPTION_SET
+                DataElementModel.Columns.OPTION_SET,
+                DataElementModel.Columns.CATEGORY_COMBO
         };
 
         Cursor dataElementCursor = database().query(DataElementModel.TABLE, projection,
@@ -456,7 +475,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 "TRACKER",
                 null,
                 "Infant Weight (g)",
-                null
+                null,
+                "catcombouid"
         ).isExhausted();
     }
 
@@ -818,6 +838,9 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
             "            \"useFirstStageDuringRegistration\": true,\n" +
             "            \"trackedEntity\": {\n" +
             "                \"id\": \"nEenWmSyUEp\"\n" +
+            "            },\n" +
+            "            \"categoryCombo \": {\n" +
+            "                \"id\": \"catcombouid\"\n" +
             "            },\n" +
             "            \"programRuleVariables\": [\n" +
             "                {\n" +

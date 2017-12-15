@@ -99,7 +99,7 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
 
     private static final String QUERY_STATEMENT_SYNCED =
             QUERY_STATEMENT +
-                    " WHERE state = 'TO_SYNC'";
+                    " WHERE state = 'SYNCED'";
 
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;

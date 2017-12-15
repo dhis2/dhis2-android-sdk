@@ -154,7 +154,7 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
         List<String> argumentValues = new ArrayList<>();
         argumentValues.add(trackedEntityInstanceUId);
         argumentValues.addAll(trackedEntityAttributeUIds);
-        String[] argumentValuesArray = argumentValues.toArray(new String[0]);
+        String[] argumentValuesArray = argumentValues.toArray(new String[argumentValues.size()]);
 
         String inArguments = TextUtils.join(
                 ",", Collections.nCopies(trackedEntityAttributeUIds.size(), "?"));

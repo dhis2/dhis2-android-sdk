@@ -12,7 +12,6 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 
 import java.util.Date;
@@ -27,7 +26,9 @@ public class TrackedEntityInstanceEndPointCall implements
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final ResourceHandler resourceHandler;
     private final Date serverDate;
-    private String trackedEntityInstanceUid;
+    private final String trackedEntityInstanceUid;
+
+    private boolean isExecuted;
 
     public TrackedEntityInstanceEndPointCall(
             @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
@@ -40,7 +41,7 @@ public class TrackedEntityInstanceEndPointCall implements
         this.databaseAdapter = databaseAdapter;
         this.trackedEntityInstanceHandler = trackedEntityInstanceHandler;
         this.resourceHandler = resourceHandler;
-        this.serverDate = serverDate;
+        this.serverDate = new Date(serverDate.getTime());
 
         if (trackedEntityInstanceUid == null || trackedEntityInstanceUid.isEmpty()) {
             throw new IllegalArgumentException(
@@ -49,8 +50,6 @@ public class TrackedEntityInstanceEndPointCall implements
 
         this.trackedEntityInstanceUid = trackedEntityInstanceUid;
     }
-
-    private boolean isExecuted;
 
     @Override
     public boolean isExecuted() {

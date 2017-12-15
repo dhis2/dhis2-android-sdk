@@ -233,15 +233,13 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
     @Override
     public Map<String, List<Enrollment>> query() {
         Cursor cursor = databaseAdapter.query(QUERY_STATEMENT_TO_POST);
-        Map<String, List<Enrollment>> enrollmentMap = mapFromCursor(cursor);
-        return enrollmentMap;
+        return mapFromCursor(cursor);
     }
 
     @Override
     public Map<String, List<Enrollment>> queryAll() {
         Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
-        Map<String, List<Enrollment>> enrollmentMap = mapFromCursor(cursor);
-        return enrollmentMap;
+        return mapFromCursor(cursor);
     }
 
     private Map<String, List<Enrollment>> mapFromCursor(Cursor cursor) {

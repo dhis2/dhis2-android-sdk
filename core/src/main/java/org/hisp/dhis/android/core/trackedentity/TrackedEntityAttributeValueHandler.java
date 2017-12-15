@@ -29,7 +29,7 @@ public class TrackedEntityAttributeValueHandler {
 
         List<String> uIds = getAttributeUIdsToRemove(trackedEntityInstanceUid, attributeValues);
 
-        if (uIds.size() > 0) {
+        if (!uIds.isEmpty()) {
             trackedEntityAttributeValueStore.deleteByInstanceAndAttributes(
                     trackedEntityInstanceUid, uIds);
         }

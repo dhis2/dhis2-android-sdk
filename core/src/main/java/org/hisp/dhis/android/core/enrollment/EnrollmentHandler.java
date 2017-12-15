@@ -1,21 +1,20 @@
 package org.hisp.dhis.android.core.enrollment;
 
+import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventHandler;
 
 import java.util.List;
-
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class EnrollmentHandler {
     private final EnrollmentStore enrollmentStore;
     private final EventHandler eventHandler;
 
     public EnrollmentHandler(@NonNull EnrollmentStore enrollmentStore,
-                             @NonNull EventHandler eventHandler) {
+            @NonNull EventHandler eventHandler) {
         this.enrollmentStore = enrollmentStore;
         this.eventHandler = eventHandler;
     }
@@ -47,18 +46,25 @@ public class EnrollmentHandler {
                 longitude = enrollment.coordinate().longitude();
             }
 
-            int updatedRow = enrollmentStore.update(enrollment.uid(), enrollment.created(), enrollment.lastUpdated(),
-                    enrollment.createdAtClient(), enrollment.lastUpdatedAtClient(), enrollment.organisationUnit(),
-                    enrollment.program(), enrollment.dateOfEnrollment(), enrollment.dateOfIncident(),
-                    enrollment.followUp(), enrollment.enrollmentStatus(), enrollment.trackedEntityInstance(),
+            int updatedRow = enrollmentStore.update(enrollment.uid(), enrollment.created(),
+                    enrollment.lastUpdated(),
+                    enrollment.createdAtClient(), enrollment.lastUpdatedAtClient(),
+                    enrollment.organisationUnit(),
+                    enrollment.program(), enrollment.dateOfEnrollment(),
+                    enrollment.dateOfIncident(),
+                    enrollment.followUp(), enrollment.enrollmentStatus(),
+                    enrollment.trackedEntityInstance(),
                     latitude, longitude,
                     State.SYNCED, enrollment.uid());
 
             if (updatedRow <= 0) {
-                enrollmentStore.insert(enrollment.uid(), enrollment.created(), enrollment.lastUpdated(),
+                enrollmentStore.insert(enrollment.uid(), enrollment.created(),
+                        enrollment.lastUpdated(),
                         enrollment.createdAtClient(), enrollment.lastUpdatedAtClient(),
-                        enrollment.organisationUnit(), enrollment.program(), enrollment.dateOfEnrollment(),
-                        enrollment.dateOfIncident(), enrollment.followUp(), enrollment.enrollmentStatus(),
+                        enrollment.organisationUnit(), enrollment.program(),
+                        enrollment.dateOfEnrollment(),
+                        enrollment.dateOfIncident(), enrollment.followUp(),
+                        enrollment.enrollmentStatus(),
                         enrollment.trackedEntityInstance(), latitude, longitude,
                         State.SYNCED);
             }

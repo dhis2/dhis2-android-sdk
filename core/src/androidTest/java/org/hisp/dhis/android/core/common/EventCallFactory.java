@@ -1,7 +1,7 @@
 package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.event.EventCall;
+import org.hisp.dhis.android.core.event.EventEndPointCall;
 import org.hisp.dhis.android.core.event.EventHandler;
 import org.hisp.dhis.android.core.event.EventQuery;
 import org.hisp.dhis.android.core.event.EventService;
@@ -12,7 +12,7 @@ import java.util.Date;
 import retrofit2.Retrofit;
 
 public class EventCallFactory {
-    public static EventCall create(Retrofit retrofit,
+    public static EventEndPointCall create(Retrofit retrofit,
             DatabaseAdapter databaseAdapter, String orgUnit, int pageLimit) {
 
         EventService eventService = retrofit.create(EventService.class);
@@ -27,9 +27,10 @@ public class EventCallFactory {
                 .withPageLimit(pageLimit)
                 .build();
 
-        EventCall eventCall = new EventCall(eventService, databaseAdapter, resourceHandler,
+        EventEndPointCall eventEndPointCall = new EventEndPointCall(eventService, databaseAdapter,
+                resourceHandler,
                 eventHandler, new Date(), eventQuery);
 
-        return eventCall;
+        return eventEndPointCall;
     }
 }

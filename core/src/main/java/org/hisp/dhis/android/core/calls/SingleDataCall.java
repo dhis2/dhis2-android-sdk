@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.event.EventCall;
+import org.hisp.dhis.android.core.event.EventEndPointCall;
 import org.hisp.dhis.android.core.event.EventHandler;
 import org.hisp.dhis.android.core.event.EventQuery;
 import org.hisp.dhis.android.core.event.EventService;
@@ -143,7 +143,7 @@ public class SingleDataCall implements Call<Response> {
                         .withPageLimit(pageLimit)
                         .build();
 
-                response = new EventCall(eventService, databaseAdapter, resourceHandler,
+                response = new EventEndPointCall(eventService, databaseAdapter, resourceHandler,
                         eventHandler, serverDate, eventQuery).call();
 
                 if (!response.isSuccessful()) {

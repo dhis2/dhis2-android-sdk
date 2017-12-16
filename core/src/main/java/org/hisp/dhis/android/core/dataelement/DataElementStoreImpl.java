@@ -63,8 +63,9 @@ public class DataElementStoreImpl implements DataElementStore {
             DataElementModel.Columns.DOMAIN_TYPE + ", " +
             DataElementModel.Columns.DIMENSION + ", " +
             DataElementModel.Columns.DISPLAY_FORM_NAME + ", " +
-            DataElementModel.Columns.OPTION_SET + ") " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            DataElementModel.Columns.OPTION_SET + ", " +
+            DataElementModel.Columns.CATEGORY_COMBO + ") " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + DataElementModel.TABLE + " SET " +
             DataElementModel.Columns.UID + " =?, " +
@@ -85,7 +86,8 @@ public class DataElementStoreImpl implements DataElementStore {
             DataElementModel.Columns.DOMAIN_TYPE + " =?, " +
             DataElementModel.Columns.DIMENSION + " =?, " +
             DataElementModel.Columns.DISPLAY_FORM_NAME + " =?, " +
-            DataElementModel.Columns.OPTION_SET + " =? " +
+            DataElementModel.Columns.OPTION_SET + " =?, " +
+            DataElementModel.Columns.CATEGORY_COMBO + " =? " +
             " WHERE " + DataElementModel.Columns.UID + " =?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + DataElementModel.TABLE +
@@ -113,11 +115,12 @@ public class DataElementStoreImpl implements DataElementStore {
                        @Nullable Boolean zeroIsSignificant, @Nullable String aggregationOperator,
                        @Nullable String formName, @Nullable String numberType,
                        @Nullable String domainType, @Nullable String dimension,
-                       @Nullable String displayFormName, @Nullable String optionSet) {
+                       @Nullable String displayFormName, @Nullable String optionSet,
+                       @Nullable String categoryCombo) {
         isNull(uid);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
                 description, displayDescription, valueType, zeroIsSignificant, aggregationOperator, formName,
-                numberType, domainType, dimension, displayFormName, optionSet);
+                numberType, domainType, dimension, displayFormName, optionSet, categoryCombo);
 
         // execute and clear bindings
         Long insert = databaseAdapter.executeInsert(DataElementModel.TABLE, insertStatement);
@@ -145,15 +148,16 @@ public class DataElementStoreImpl implements DataElementStore {
                       @Nullable Boolean zeroIsSignificant, @Nullable String aggregationOperator,
                       @Nullable String formName, @Nullable String numberType, @Nullable String domainType,
                       @Nullable String dimension, @Nullable String displayFormName, @Nullable String optionSet,
+                      @Nullable String categoryCombo,
                       @NonNull String whereDataElementUid) {
         isNull(uid);
         isNull(whereDataElementUid);
         bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, shortName,
                 displayShortName, description, displayDescription, valueType, zeroIsSignificant, aggregationOperator,
-                formName, numberType, domainType, dimension, displayFormName, optionSet);
+                formName, numberType, domainType, dimension, displayFormName, optionSet, categoryCombo);
 
         // bind the where argument
-        sqLiteBind(updateStatement, 20, whereDataElementUid);
+        sqLiteBind(updateStatement, 21, whereDataElementUid);
 
         // execute and clear bindings
         int update = databaseAdapter.executeUpdateDelete(DataElementModel.TABLE, updateStatement);
@@ -169,7 +173,8 @@ public class DataElementStoreImpl implements DataElementStore {
                                @Nullable Boolean zeroIsSignificant, @Nullable String aggregationOperator,
                                @Nullable String formName, @Nullable String numberType,
                                @Nullable String domainType, @Nullable String dimension,
-                               @Nullable String displayFormName, @Nullable String optionSet) {
+                               @Nullable String displayFormName, @Nullable String optionSet,
+                               @Nullable String categoryCombo) {
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);
@@ -189,6 +194,7 @@ public class DataElementStoreImpl implements DataElementStore {
         sqLiteBind(sqLiteStatement, 17, dimension);
         sqLiteBind(sqLiteStatement, 18, displayFormName);
         sqLiteBind(sqLiteStatement, 19, optionSet);
+        sqLiteBind(sqLiteStatement, 20, categoryCombo);
 
     }
 

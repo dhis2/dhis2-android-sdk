@@ -63,6 +63,11 @@ public class DataElementHandler {
             if (dataElement.optionSet() != null) {
                 optionSetUid = dataElement.optionSet().uid();
             }
+            String categoryCombo = null;
+
+            if (dataElement.categoryCombo() != null) {
+                categoryCombo = dataElement.categoryCombo().uid();
+            }
 
             int updatedRow = dataElementStore.update(dataElement.uid(), dataElement.code(), dataElement.name(),
                     dataElement.displayName(), dataElement.created(), dataElement.lastUpdated(),
@@ -70,7 +75,7 @@ public class DataElementHandler {
                     dataElement.displayDescription(), dataElement.valueType(),
                     dataElement.zeroIsSignificant(), dataElement.aggregationType(), dataElement.formName(),
                     dataElement.numberType(), dataElement.domainType(), dataElement.dimension(),
-                    dataElement.displayFormName(), optionSetUid, dataElement.uid());
+                    dataElement.displayFormName(), optionSetUid, categoryCombo, dataElement.uid());
 
             if (updatedRow <= 0) {
                 dataElementStore.insert(dataElement.uid(), dataElement.code(), dataElement.name(),
@@ -79,7 +84,7 @@ public class DataElementHandler {
                         dataElement.displayDescription(), dataElement.valueType(),
                         dataElement.zeroIsSignificant(), dataElement.aggregationType(), dataElement.formName(),
                         dataElement.numberType(), dataElement.domainType(), dataElement.dimension(),
-                        dataElement.displayFormName(), optionSetUid);
+                        dataElement.displayFormName(), optionSetUid, categoryCombo);
             }
         }
 

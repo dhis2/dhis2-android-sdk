@@ -209,7 +209,8 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                                         DataElement.deleted, DataElement.dimension, DataElement.displayFormName,
                                         DataElement.domainType, DataElement.formName, DataElement.numberType,
                                         DataElement.valueType, DataElement.zeroIsSignificant,
-                                        DataElement.optionSet.with(OptionSet.uid, OptionSet.version)
+                                        DataElement.optionSet.with(OptionSet.uid, OptionSet.version),
+                                        DataElement.categoryCombo.with(CategoryCombo.uid)
                                 )
                         ),
                         ProgramStage.programStageSections.with(

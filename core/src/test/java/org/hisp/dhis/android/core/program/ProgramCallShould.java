@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program;
 import android.database.Cursor;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
@@ -267,7 +268,8 @@ public class ProgramCallShould {
                                         DataElement.valueType, DataElement.zeroIsSignificant,
                                         DataElement.optionSet.with(
                                                 OptionSet.uid, OptionSet.version
-                                        )
+                                        ),
+                                        DataElement.categoryCombo.with(CategoryCombo.uid)
 
                                 )
                         ),

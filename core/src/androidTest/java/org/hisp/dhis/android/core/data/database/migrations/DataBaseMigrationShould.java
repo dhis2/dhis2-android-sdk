@@ -49,7 +49,7 @@ public class DataBaseMigrationShould {
     }
 
     @After
-    public static void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         if(dbName!=null) {
             InstrumentationRegistry.getContext().deleteDatabase(dbName);
         }

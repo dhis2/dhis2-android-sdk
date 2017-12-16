@@ -42,8 +42,12 @@ public abstract class AbsStoreTestCase {
     private SQLiteDatabase sqLiteDatabase;
     private DatabaseAdapter databaseAdapter;
     private String dbName = null;
+
     @Before
     public void setUp() throws IOException {
+        if(dbName!=null) {
+            InstrumentationRegistry.getContext().deleteDatabase(dbName);
+        }
         DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
                 , dbName);
         sqLiteDatabase = dbOpenHelper.getWritableDatabase();

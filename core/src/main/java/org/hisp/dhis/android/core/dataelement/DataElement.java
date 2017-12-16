@@ -34,6 +34,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.api.Field;
@@ -53,6 +54,7 @@ public abstract class DataElement extends BaseNameableObject {
     private final static String DIMENSION = "dimension";
     private final static String DISPLAY_FORM_NAME = "displayFormName";
     private final static String OPTION_SET = "optionSet";
+    private final static String CATEGORY_COMBO = "categoryCombo";
 
     public static final Field<DataElement, String> uid = Field.create(UID);
     public static final Field<DataElement, String> code = Field.create(CODE);
@@ -75,6 +77,7 @@ public abstract class DataElement extends BaseNameableObject {
     public static final Field<DataElement, String> dimension = Field.create(DIMENSION);
     public static final Field<DataElement, String> displayFormName = Field.create(DISPLAY_FORM_NAME);
     public static final NestedField<DataElement, OptionSet> optionSet = NestedField.create(OPTION_SET);
+    public static final NestedField<DataElement, CategoryCombo> categoryCombo = NestedField.create(CATEGORY_COMBO);
 
     @Nullable
     @JsonProperty(VALUE_TYPE)
@@ -112,6 +115,10 @@ public abstract class DataElement extends BaseNameableObject {
     @JsonProperty(OPTION_SET)
     public abstract OptionSet optionSet();
 
+    @Nullable
+    @JsonProperty(CATEGORY_COMBO)
+    public abstract CategoryCombo categoryCombo();
+
     @JsonCreator
     public static DataElement create(
             @JsonProperty(UID) String uid,
@@ -133,13 +140,14 @@ public abstract class DataElement extends BaseNameableObject {
             @JsonProperty(DIMENSION) String dimension,
             @JsonProperty(DISPLAY_FORM_NAME) String displayFormName,
             @JsonProperty(OPTION_SET) OptionSet optionSet,
+            @JsonProperty(CATEGORY_COMBO) CategoryCombo categoryCombo,
             @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_DataElement(uid, code, name,
                 displayName, created, lastUpdated, deleted,
                 shortName, displayShortName, description, displayDescription, valueType,
                 zeroIsSignificant, aggregationType, formName, numberType,
-                domainType, dimension, displayFormName, optionSet);
+                domainType, dimension, displayFormName, optionSet, categoryCombo);
 
     }
 }

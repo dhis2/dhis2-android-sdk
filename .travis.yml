@@ -13,7 +13,7 @@ android:
   - extra-google-google_play_services
   - extra-google-m2repository
   - extra-android-m2repository
-  - sys-img-armeabi-v7a-android-12
+  - sys-img-armeabi-v7a-android-22
 env:
   global:
   - secure: XVjRNpEzXe1TuT6v1FklkNr6f50jbA4qS51Cg9vCE5u5WEbFTuKPkoFhyRv3clTpLm2QS+kF/Iah0P9GjCvYI4VOcfe+zp+p3LCc4vZjFtdfFJfdZ1+P9IiSB4rUnvnHdxzHg3QEAxAO/zMEzUFAkCc6OyZruEcuid1q8vHu6r4=
@@ -25,7 +25,7 @@ branches:
 script:
 - "./build.sh"
 before_script:
-- echo no | android create avd --force -n test -t android-12 --abi armeabi-v7a
+- echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
 - emulator -avd test -no-audio -no-window &
 - android-wait-for-emulator
 - sleep 180

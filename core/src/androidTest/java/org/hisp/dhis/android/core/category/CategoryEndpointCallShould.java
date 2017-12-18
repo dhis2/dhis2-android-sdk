@@ -26,7 +26,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-public class CategoryCallEndpointShould extends AbsStoreTestCase {
+public class CategoryEndpointCallShould extends AbsStoreTestCase {
 
     private Dhis2MockServer dhis2MockServer;
 
@@ -45,7 +45,7 @@ public class CategoryCallEndpointShould extends AbsStoreTestCase {
     @Test
     public void parse_category_successful() throws Exception {
 
-        CategoryCallEndpoint callEndpoint = provideCategoryCallEndpoint();
+        CategoryEndpointCall callEndpoint = provideCategoryCallEndpoint();
         dhis2MockServer.enqueueMockResponse("categories.json");
 
         Response<Payload<Category>> response = callEndpoint.call();
@@ -59,7 +59,7 @@ public class CategoryCallEndpointShould extends AbsStoreTestCase {
         return !response.body().items().isEmpty();
     }
 
-    private CategoryCallEndpoint provideCategoryCallEndpoint() {
+    private CategoryEndpointCall provideCategoryCallEndpoint() {
         CategoryQuery query = CategoryQuery.builder().paging(true).pageSize(
                 CategoryQuery.DEFAULT_PAGE_SIZE).page(1).build();
 
@@ -80,7 +80,7 @@ public class CategoryCallEndpointShould extends AbsStoreTestCase {
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Date serverDate = new Date();
 
-        return new CategoryCallEndpoint(query, categoryService, validator, handler, resourceHandler,
+        return new CategoryEndpointCall(query, categoryService, validator, handler, resourceHandler,
                 databaseAdapter(), serverDate);
 
     }

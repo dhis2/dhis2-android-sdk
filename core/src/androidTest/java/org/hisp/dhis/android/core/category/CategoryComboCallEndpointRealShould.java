@@ -18,7 +18,6 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Date;
@@ -67,13 +66,13 @@ public class CategoryComboCallEndpointRealShould extends AbsStoreTestCase {
     }
 
     private void downloadCategories() throws Exception {
-        CategoryCallEndpoint categoryCallEndpoint = provideCategoryCallEndpoint();
-        categoryCallEndpoint.call();
+        CategoryEndpointCall categoryEndpointCall = provideCategoryCallEndpoint();
+        categoryEndpointCall.call();
 
     }
 
     @NonNull
-    private CategoryCallEndpoint provideCategoryCallEndpoint() {
+    private CategoryEndpointCall provideCategoryCallEndpoint() {
         CategoryQuery query = CategoryQuery.defaultQuery();
 
         CategoryService categoryService = d2.retrofit().create(CategoryService.class);
@@ -96,7 +95,7 @@ public class CategoryComboCallEndpointRealShould extends AbsStoreTestCase {
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Date serverDate = new Date();
 
-        return new CategoryCallEndpoint(query, categoryService, validator, handler, resourceHandler,
+        return new CategoryEndpointCall(query, categoryService, validator, handler, resourceHandler,
                 databaseAdapter(), serverDate);
 
     }

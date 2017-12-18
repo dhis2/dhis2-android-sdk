@@ -14,14 +14,13 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Date;
 
 import retrofit2.Response;
 
-public class CategoryCallEndpointRealShould extends AbsStoreTestCase {
+public class CategoryEndpointCallRealShould extends AbsStoreTestCase {
 
     private D2 d2;
 
@@ -38,15 +37,15 @@ public class CategoryCallEndpointRealShould extends AbsStoreTestCase {
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
-        CategoryCallEndpoint categoryCallEndpoint = provideCategoryCallEndpoint();
-        Response<Payload<Category>> responseCategory = categoryCallEndpoint.call();
+        CategoryEndpointCall categoryEndpointCall = provideCategoryCallEndpoint();
+        Response<Payload<Category>> responseCategory = categoryEndpointCall.call();
 
         assertTrue(responseCategory.isSuccessful());
         assertTrue(hasCategories(responseCategory));
 
     }
 
-    private CategoryCallEndpoint provideCategoryCallEndpoint() {
+    private CategoryEndpointCall provideCategoryCallEndpoint() {
         CategoryQuery query = CategoryQuery.defaultQuery();
 
         CategoryService categoryService = d2.retrofit().create(CategoryService.class);
@@ -69,7 +68,7 @@ public class CategoryCallEndpointRealShould extends AbsStoreTestCase {
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Date serverDate = new Date();
 
-        return new CategoryCallEndpoint(query, categoryService, validator, handler, resourceHandler,
+        return new CategoryEndpointCall(query, categoryService, validator, handler, resourceHandler,
                 databaseAdapter(), serverDate);
 
     }

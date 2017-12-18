@@ -16,7 +16,7 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public class CategoryCallEndpoint implements Call<Response<Payload<Category>>> {
+public class CategoryEndpointCall implements Call<Response<Payload<Category>>> {
 
     private final CategoryQuery categoryQuery;
     private final CategoryService categoryService;
@@ -27,7 +27,7 @@ public class CategoryCallEndpoint implements Call<Response<Payload<Category>>> {
     private final Date serverDate;
     private boolean isExecuted;
 
-    public CategoryCallEndpoint(CategoryQuery categoryQuery,
+    public CategoryEndpointCall(CategoryQuery categoryQuery,
             CategoryService categoryService,
             ResponseValidator<Category> responseValidator,
             Handler<Category> handler,

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCallEndpoint;
+import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboCallEndpoint;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
@@ -453,7 +453,7 @@ public class MetadataCall implements Call<Response> {
 
     private Response<Payload<Category>> downloadCategories(Date serverDate) throws Exception {
         ResponseValidator<Category> validator = new ResponseValidator<>();
-        return new CategoryCallEndpoint(categoryQuery, categoryService, validator,
+        return new CategoryEndpointCall(categoryQuery, categoryService, validator,
                 categoryHandler,
                 new ResourceHandler(resourceStore), databaseAdapter, serverDate).call();
     }

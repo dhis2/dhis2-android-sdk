@@ -10,8 +10,10 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -24,6 +26,9 @@ import static org.mockito.Mockito.when;
 public class TrackedEntityInstanceHandlerShould {
     @Mock
     private TrackedEntityInstanceStore trackedEntityInstanceStore;
+
+    @Mock
+    TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler;
 
     @Mock
     private EnrollmentHandler enrollmentHandler;
@@ -45,7 +50,7 @@ public class TrackedEntityInstanceHandlerShould {
         when(trackedEntityInstance.enrollments()).thenReturn(Collections.singletonList(enrollment));
 
         trackedEntityInstanceHandler = new TrackedEntityInstanceHandler(
-                trackedEntityInstanceStore, enrollmentHandler
+                trackedEntityInstanceStore, trackedEntityAttributeValueHandler, enrollmentHandler
         );
 
     }
@@ -63,7 +68,10 @@ public class TrackedEntityInstanceHandlerShould {
                 anyString(), anyString(),
                 anyString(), anyString(), any(State.class));
 
-        verify(enrollmentHandler, never()).handle(any(Enrollment.class));
+        verify(trackedEntityAttributeValueHandler, never()).handle(
+                any(String.class), any(ArrayList.class));
+
+        verify(enrollmentHandler, never()).handle(any(ArrayList.class));
     }
 
     @Test
@@ -82,8 +90,11 @@ public class TrackedEntityInstanceHandlerShould {
                 anyString(), anyString(),
                 anyString(), anyString(), any(State.class));
 
+        verify(trackedEntityAttributeValueHandler, never()).handle(
+                any(String.class), any(ArrayList.class));
+
         // verify that enrollment handler is never called
-        verify(enrollmentHandler, never()).handle(any(Enrollment.class));
+        verify(enrollmentHandler, never()).handle(any(ArrayList.class));
     }
 
     @Test
@@ -106,8 +117,11 @@ public class TrackedEntityInstanceHandlerShould {
                 anyString(), anyString(), any(State.class));
         verify(trackedEntityInstanceStore, never()).delete(anyString());
 
+        verify(trackedEntityAttributeValueHandler, times(1)).handle(
+                any(String.class), any(ArrayList.class));
+
         // verify that enrollment handler is called once
-        verify(enrollmentHandler, times(1)).handle(enrollment);
+        verify(enrollmentHandler, times(1)).handle(any(ArrayList.class));
 
     }
 
@@ -133,7 +147,10 @@ public class TrackedEntityInstanceHandlerShould {
         // check that delete is never invoked
         verify(trackedEntityInstanceStore, never()).delete(anyString());
 
+        verify(trackedEntityAttributeValueHandler, times(1)).handle(
+                any(String.class), any(ArrayList.class));
+
         // verify that enrollment handler is called once
-        verify(enrollmentHandler, times(1)).handle(enrollment);
+        verify(enrollmentHandler, times(1)).handle(any(ArrayList.class));
     }
 }

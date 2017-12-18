@@ -123,7 +123,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         );
 
         trackedEntityAttributeValueStore.insert(
-                "some_value", "2017-01-01", "2017-01-01", trackedEntityAttributeUid, trackedEntityInstanceUid
+                "some_value", new Date(), new Date(), trackedEntityAttributeUid,
+                trackedEntityInstanceUid
         );
     }
 

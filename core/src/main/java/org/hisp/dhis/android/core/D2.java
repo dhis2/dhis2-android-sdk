@@ -35,9 +35,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.MetadataCall;
+import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
+import org.hisp.dhis.android.core.calls.TrackerDataCall;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboHandler;
@@ -69,6 +70,7 @@ import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
+import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.EventHandler;
@@ -118,11 +120,13 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
@@ -216,7 +220,7 @@ public final class D2 {
 
     //Handlers
     private final EventHandler eventHandler;
-
+    private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final ResourceHandler resourceHandler;
     private final Handler<Category> categoryHandler;
     private final Handler<CategoryCombo> categoryComboHandler;
@@ -323,6 +327,17 @@ public final class D2 {
 
         this.eventHandler = new EventHandler(eventStore, trackedEntityDataValueHandler);
 
+        TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler =
+                new TrackedEntityAttributeValueHandler(trackedEntityAttributeValueStore);
+
+        EnrollmentHandler enrollmentHandler = new EnrollmentHandler(enrollmentStore, eventHandler);
+
+        trackedEntityInstanceHandler =
+                new TrackedEntityInstanceHandler(
+                        trackedEntityInstanceStore,
+                        trackedEntityAttributeValueHandler,
+                        enrollmentHandler);
+
         categoryHandler = new CategoryHandler(categoryStore, categoryOptionHandler,
                 categoryOptionLinkStore);
 
@@ -409,6 +424,13 @@ public final class D2 {
         return new SingleDataCall(organisationUnitStore, systemInfoStore, systemInfoService,
                 resourceStore,
                 eventService, databaseAdapter, resourceHandler, eventHandler, eventLimitByOrgUnit);
+    }
+
+    @NonNull
+    public Call<Response> syncTrackerData() {
+        return new TrackerDataCall(trackedEntityInstanceStore, systemInfoStore, systemInfoService,
+                resourceStore, trackedEntityInstanceService, databaseAdapter, resourceHandler,
+                trackedEntityInstanceHandler);
     }
 
     @NonNull

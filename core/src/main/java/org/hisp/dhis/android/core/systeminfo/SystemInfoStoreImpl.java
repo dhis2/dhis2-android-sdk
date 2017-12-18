@@ -28,19 +28,18 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
+
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModel.Columns;
-import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
-
-public class SystemInfoStoreImpl implements SystemInfoStore, DeletableStore {
+public class SystemInfoStoreImpl implements SystemInfoStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + SystemInfoModel.TABLE + " (" +
             Columns.SERVER_DATE + ", " +
             Columns.DATE_FORMAT + ", " +

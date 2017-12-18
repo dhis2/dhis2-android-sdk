@@ -28,20 +28,19 @@
 
 package org.hisp.dhis.android.core.option;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
+
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
-
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public class OptionSetStoreImpl implements OptionSetStore, DeletableStore {
+public class OptionSetStoreImpl implements OptionSetStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + OptionSetModel.TABLE + " (" +
             OptionSetModel.Columns.UID + ", " +
             OptionSetModel.Columns.CODE + ", " +

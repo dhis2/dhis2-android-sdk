@@ -27,16 +27,16 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
-import org.hisp.dhis.android.core.common.DeletableStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel.Columns;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore, DeletableStore {
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel.Columns;
+
+public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + UserRoleProgramLinkModel.TABLE + " (" +
             Columns.USER_ROLE + ", " + Columns.PROGRAM + ") " +
             "VALUES (?, ?);";

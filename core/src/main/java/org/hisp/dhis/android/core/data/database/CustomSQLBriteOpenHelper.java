@@ -6,6 +6,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
+import com.squareup.sqlbrite2.BriteDatabase;
+import com.squareup.sqlbrite2.SqlBrite;
+
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
@@ -13,6 +17,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * A helper class to manage database migrations and seeding using
@@ -28,13 +34,14 @@ import java.util.Map;
  * <p class="note"><strong>Note:</strong> this class assumes
  * monotonically increasing version numbers for upgrades.</p>
  */
-public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
+public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
 
     private String migrationTestDir = "migrations";
     final private Context context;
     private int version = 1;
     //current database version to support seed up to requested database version
     private boolean isOnTestMode;
+    private static BriteDatabase briteDatabase;
 
 
     /**
@@ -83,6 +90,7 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
     public CustomSQLBriteOpenHelper(Context context, String name, int version) {
         super(context, name, null, version);
         this.context = context;
+        this.version = version;
         this.isOnTestMode = false;
     }
 
@@ -106,8 +114,11 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         try {
-            //run all migrations from begin to current requested database version
             int version = db.getVersion();
+            if(version == this.version || version == 0){
+                return;
+            }
+            //run all migrations from begin to current requested database version
             version = version > this.version ? version
                     : this.version; //ensure we start at requested database version
             List<Map<String, List<String>>> parsed = parse(0, version, true);
@@ -131,6 +142,82 @@ public class CustomSQLBriteOpenHelper extends SQLiteOpenHelper {
         } catch (IOException e) {
             Log.e("Database Error:", e.getMessage());
         }
+    }
+
+    /**
+     * Create a {@link BriteDatabase} instance.
+     * This method always returns very quickly.  The database is not actually
+     * created or opened until one of {@link #getWritableDatabase} or
+     * {@link #getReadableDatabase} is called.
+     *
+     * @see SQLBriteOpenHelper
+     * @see BriteDatabase
+     */
+    public synchronized static BriteDatabase get(Context context, String name, int version) {
+        if (briteDatabase == null) {
+            SQLBriteOpenHelper sqlBriteOpenHelper = new SQLBriteOpenHelper(context, name, null, version);
+            SqlBrite sqlBrite = new SqlBrite.Builder().build();
+            briteDatabase = sqlBrite.wrapDatabaseHelper(sqlBriteOpenHelper, Schedulers.io());
+        }
+        return briteDatabase;
+    }
+
+
+    /**
+     * Create a {@link BriteDatabase} instance.
+     * This method always returns very quickly.  The database is not actually
+     * created or opened until one of {@link #getWritableDatabase} or
+     * {@link #getReadableDatabase} is called.
+     *
+     * @see SQLBriteOpenHelper
+     * @see BriteDatabase
+     */
+    public synchronized static BriteDatabase get(Context context, String name,
+            SQLiteDatabase.CursorFactory factory, int version, String migrationDir) {
+        if (briteDatabase == null) {
+            CustomSQLBriteOpenHelper sqlBriteOpenHelper = new CustomSQLBriteOpenHelper(context, name, factory, version, migrationDir);
+            SqlBrite sqlBrite = new SqlBrite.Builder().build();
+            briteDatabase = sqlBrite.wrapDatabaseHelper(sqlBriteOpenHelper, Schedulers.io());
+        }
+        return briteDatabase;
+    }
+
+
+    /**
+     * Create a {@link BriteDatabase} instance.
+     * This method always returns very quickly.  The database is not actually
+     * created or opened until one of {@link #getWritableDatabase} or
+     * {@link #getReadableDatabase} is called.
+     *
+     * @see SQLBriteOpenHelper
+     * @see BriteDatabase
+     */
+    public synchronized static BriteDatabase get(Context context, String name,
+            SQLiteDatabase.CursorFactory factory, int version, String migrationDir,
+            DatabaseErrorHandler errorHandler) {
+        if (briteDatabase == null) {
+            CustomSQLBriteOpenHelper sqlBriteOpenHelper = new CustomSQLBriteOpenHelper(context, name, factory, version, migrationDir, errorHandler);
+            SqlBrite sqlBrite = new SqlBrite.Builder().build();
+            briteDatabase = sqlBrite.wrapDatabaseHelper(sqlBriteOpenHelper, Schedulers.io());
+        }
+        return briteDatabase;
+    }
+
+    /**
+     * Create a {@link BriteDatabase} instance for testing.
+     * This method always returns very quickly.  The database is not actually
+     * created or opened until one of {@link #getWritableDatabase} or
+     * {@link #getReadableDatabase} is called.
+     *
+     * @see SQLBriteOpenHelper
+     * @see BriteDatabase
+     */
+    public synchronized static BriteDatabase get(Context context, String name, int version, boolean testing, String migrationTestDir) {
+        //always return new instance on test mode
+        CustomSQLBriteOpenHelper sqlBriteOpenHelper = new CustomSQLBriteOpenHelper(context, name, version, testing, migrationTestDir);
+        SqlBrite sqlBrite = new SqlBrite.Builder().build();
+        briteDatabase = sqlBrite.wrapDatabaseHelper(sqlBriteOpenHelper, Schedulers.trampoline());
+        return briteDatabase;
     }
 
     /**

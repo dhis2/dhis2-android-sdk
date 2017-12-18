@@ -37,6 +37,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
+import android.view.ViewGroup;
 
 import org.hisp.dhis.android.core.category.CategoryComboLinkModel;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
@@ -92,7 +93,7 @@ import java.nio.charset.Charset;
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
     @VisibleForTesting
-    static final int VERSION = 1;
+    static int VERSION = 2;
     public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
@@ -986,8 +987,9 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         super(context, databaseName, VERSION);
     }
 
-    public DbOpenHelper(Context context, String databaseName, int version) {
-        super(context, databaseName, version);
+    public DbOpenHelper(Context context, String databaseName, int testVersion) {
+        super(context, databaseName, testVersion);
+        VERSION = testVersion;
     }
 
     @Override

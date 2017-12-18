@@ -10,11 +10,11 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
-public class RuleFunctionValidatePattern extends RuleFunction {
+final class RuleFunctionValidatePattern extends RuleFunction {
     static final String D2_VALIDATE_PATTERN = "d2:validatePattern";
 
     @Nonnull
-    public static RuleFunctionValidatePattern create() {
+    static RuleFunctionValidatePattern create() {
         return new RuleFunctionValidatePattern();
     }
 
@@ -37,7 +37,7 @@ public class RuleFunctionValidatePattern extends RuleFunction {
      * @param inputToValidate string to be evaluate
      * @return return true if the pattern match or false if the pattern doesn't match
      */
-    private Boolean validatePattern(String patternString, String inputToValidate) {
+    private static Boolean validatePattern(String patternString, String inputToValidate) {
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(inputToValidate);
         boolean matchFound = matcher.matches();

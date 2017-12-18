@@ -7,11 +7,11 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-public class RuleFunctionRight extends RuleFunction {
+final class RuleFunctionRight extends RuleFunction {
     static final String D2_RIGHT = "d2:right";
 
     @Nonnull
-    public static RuleFunctionRight create() {
+    static RuleFunctionRight create() {
         return new RuleFunctionRight();
     }
 
@@ -34,7 +34,7 @@ public class RuleFunctionRight extends RuleFunction {
      * @param length of the substring.
      * @return the right substring.
      */
-    public static String right(String inputString, int length) {
+    private static String right(String inputString, int length) {
         if (inputString == null)
             return "";
         int safeLength = Math.min(Math.max(0, length), inputString.length());

@@ -8,11 +8,11 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-public class RuleFunctionRuleFunctionCountIfValue extends RuleFunction {
+final class RuleFunctionRuleFunctionCountIfValue extends RuleFunction {
     static final String D2_COUNT_IF_VALUE = "d2:countIfValue";
 
     @Nonnull
-    public static RuleFunctionRuleFunctionCountIfValue create() {
+    static RuleFunctionRuleFunctionCountIfValue create() {
         return new RuleFunctionRuleFunctionCountIfValue();
     }
 
@@ -35,7 +35,7 @@ public class RuleFunctionRuleFunctionCountIfValue extends RuleFunction {
      * @param valueMap list of variables.
      * @return return the count of values
      */
-    public static Integer countIfValue(String variableName, Map<String, RuleVariableValue> valueMap) {
+    private static Integer countIfValue(String variableName, Map<String, RuleVariableValue> valueMap) {
         RuleVariableValue ruleVariableValue =valueMap.get(variableName);
         Integer count = 0;
         if(ruleVariableValue != null) {

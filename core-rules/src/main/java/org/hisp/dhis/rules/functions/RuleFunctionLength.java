@@ -7,11 +7,11 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-public class RuleFunctionLength extends RuleFunction {
+final class RuleFunctionLength extends RuleFunction {
     static final String D2_LENGTH = "d2:length";
 
     @Nonnull
-    public static RuleFunctionLength create() {
+    static RuleFunctionLength create() {
         return new RuleFunctionLength();
     }
 

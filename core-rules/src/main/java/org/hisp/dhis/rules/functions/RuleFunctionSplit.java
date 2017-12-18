@@ -9,11 +9,11 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
-public class RuleFunctionSplit extends RuleFunction {
+final class RuleFunctionSplit extends RuleFunction {
     static final String D2_SPLIT = "d2:split";
 
     @Nonnull
-    public static RuleFunctionSplit create() {
+    static RuleFunctionSplit create() {
         return new RuleFunctionSplit();
     }
 
@@ -37,7 +37,7 @@ public class RuleFunctionSplit extends RuleFunction {
      * @param fieldIndex item index to get from the split.
      * @return the field after split.
      */
-    private String split(String inputString, String splitString, int fieldIndex) {
+    private static String split(String inputString, String splitString, int fieldIndex) {
         if (inputString == null || splitString == null)
             return "";
         String[] fields = inputString == null ? new String[0] : inputString.split(Pattern.quote(splitString));

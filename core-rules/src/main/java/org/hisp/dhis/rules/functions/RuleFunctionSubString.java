@@ -8,11 +8,11 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-public class RuleFunctionSubString extends RuleFunction {
+final class RuleFunctionSubString extends RuleFunction {
     static final String D2_SUBSTRING = "d2:substring";
 
     @Nonnull
-    public static RuleFunctionSubString create() {
+    static RuleFunctionSubString create() {
         return new RuleFunctionSubString();
     }
 
@@ -36,7 +36,7 @@ public class RuleFunctionSubString extends RuleFunction {
      * @param endIndex end index (not included)
      * @return the substring.
      */
-    public static String substring(String inputString, int startIndex, int endIndex) {
+    private static String substring(String inputString, int startIndex, int endIndex) {
         if (inputString == null)
             return "";
         int safeStartIndex = Math.min(Math.max(0, startIndex), inputString.length());

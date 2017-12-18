@@ -9,7 +9,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class RuleFunctionModulus extends RuleFunction {
+final class RuleFunctionModulus extends RuleFunction {
     static final String D2_MODULUS = "d2:modulus";
 
     @Nonnull

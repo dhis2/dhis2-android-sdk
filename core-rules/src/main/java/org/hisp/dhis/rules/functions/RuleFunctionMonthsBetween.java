@@ -11,11 +11,11 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-public class RuleFunctionMonthsBetween extends RuleFunction {
+final class RuleFunctionMonthsBetween extends RuleFunction {
     static final String D2_MONTHS_BETWEEN = "d2:monthsBetween";
 
     @Nonnull
-    public static RuleFunctionMonthsBetween create() {
+    static RuleFunctionMonthsBetween create() {
         return new RuleFunctionMonthsBetween();
     }
 
@@ -38,7 +38,7 @@ public class RuleFunctionMonthsBetween extends RuleFunction {
      * @return number of days between dates.
      */
     @SuppressWarnings("PMD.UnnecessaryWrapperObjectCreation")
-    static Integer monthsBetween(String start, String end) {
+    private static Integer monthsBetween(String start, String end) {
         SimpleDateFormat format = new SimpleDateFormat();
         format.applyPattern(DATE_PATTERN);
 

@@ -13,7 +13,7 @@ final class RuleFunctionWeeksBetween extends RuleFunction {
     static final String D2_WEEKS_BETWEEN = "d2:weeksBetween";
 
     @Nonnull
-    public static RuleFunctionWeeksBetween create() {
+    static RuleFunctionWeeksBetween create() {
         return new RuleFunctionWeeksBetween();
     }
 

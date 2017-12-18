@@ -29,7 +29,7 @@ abstract class RuleFunctionDaysBetween extends RuleFunction {
     }
 
     @Nonnull
-    public static RuleFunctionDaysBetween create() {
+    static RuleFunctionDaysBetween create() {
         return new AutoValue_RuleFunctionDaysBetween();
     }
 

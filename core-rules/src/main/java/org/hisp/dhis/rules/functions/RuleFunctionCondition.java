@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class RuleFunctionCondition extends RuleFunction {
+final class RuleFunctionCondition extends RuleFunction {
     static final String D2_CONDITION = "d2:condition";
 
     @Nonnull

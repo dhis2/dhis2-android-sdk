@@ -12,7 +12,7 @@ final class RuleFunctionFloor extends RuleFunction {
     static final String D2_FLOOR = "d2:floor";
 
     @Nonnull
-    public static RuleFunctionFloor create() {
+    static RuleFunctionFloor create() {
         return new RuleFunctionFloor();
     }
 

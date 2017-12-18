@@ -3,19 +3,13 @@ package org.hisp.dhis.rules.functions;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import org.hisp.dhis.rules.RuleVariableValue;
-import org.hisp.dhis.rules.RuleVariableValueMapBuilder;
-import org.hisp.dhis.rules.models.RuleDataValue;
-import org.hisp.dhis.rules.models.RuleEvent;
 import org.hisp.dhis.rules.models.RuleValueType;
-import org.hisp.dhis.rules.models.RuleVariable;
-import org.hisp.dhis.rules.models.RuleVariableCurrentEvent;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,31 +30,35 @@ public class RuleFunctionCountShould {
     }
 
     @Test
-    public void return_value_if_variable_exist() {
+    public void count_one_when_one_variable_value() {
         RuleFunction ruleFunction = RuleFunctionCount.create();
+        RuleVariableValue variableValue = RuleVariableValue.create(
+                "test_dataelement_one", RuleValueType.TEXT, Arrays.asList("test_value_one" ));
+        RuleVariableValue variableValueTwo = RuleVariableValue.create(
+                "test_dataelement_two", RuleValueType.TEXT, Arrays.asList("test_value_two" ));
 
-        RuleVariable ruleVariableOne = RuleVariableCurrentEvent.create(
-                "test_variable_one", "test_dataelement_one", RuleValueType.TEXT);
-        RuleVariable ruleVariableTwo = RuleVariableCurrentEvent.create(
-                "test_variable_two", "test_dataelement_two", RuleValueType.TEXT);
-
-        Date eventDate = new Date();
-        Date dueDate = new Date();
-
-        RuleEvent currentEvent = RuleEvent.create("test_event_uid", "test_program_stage",
-                RuleEvent.Status.ACTIVE, eventDate, dueDate, Arrays.asList(
-                        RuleDataValue.create(eventDate, "test_program_stage",
-                                "test_dataelement_one", "test_value_one"),
-                        RuleDataValue.create(eventDate, "test_program_stage",
-                                "test_dataelement_two", "test_value_two")));
-
-        Map<String, RuleVariableValue> valueMap = RuleVariableValueMapBuilder.target(currentEvent)
-                .ruleVariables(Arrays.asList(ruleVariableOne, ruleVariableTwo))
-                .build();
-
+        Map<String, RuleVariableValue> valueMap = new HashMap<>();
+        valueMap.put("test_variable_one", variableValue);
+        valueMap.put("test_variable_two", variableValueTwo);
 
         String result = ruleFunction.evaluate(Arrays.asList("test_variable_one"),valueMap);
         assertThat(result).isEqualTo("1");
+    }
+
+    @Test
+    public void count_two_when_two_variable_values() {
+        RuleFunction ruleFunction = RuleFunctionCount.create();
+        RuleVariableValue variableValue = RuleVariableValue.create(
+                "test_dataelement_one", RuleValueType.TEXT, Arrays.asList("test_value_one", "two" ));
+        RuleVariableValue variableValueTwo = RuleVariableValue.create(
+                "test_dataelement_two", RuleValueType.TEXT, Arrays.asList("test_value_two" ));
+
+        Map<String, RuleVariableValue> valueMap = new HashMap<>();
+        valueMap.put("test_variable_one", variableValue);
+        valueMap.put("test_variable_two", variableValueTwo);
+
+        String result = ruleFunction.evaluate(Arrays.asList("test_variable_one"),valueMap);
+        assertThat(result).isEqualTo("2");
     }
 
     @Test

@@ -7,11 +7,11 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-public class RuleFunctionRound extends RuleFunction {
+final class RuleFunctionRound extends RuleFunction {
     static final String D2_ROUND = "d2:round";
 
     @Nonnull
-    public static RuleFunctionRound create() {
+    static RuleFunctionRound create() {
         return new RuleFunctionRound();
     }
 
@@ -33,7 +33,7 @@ public class RuleFunctionRound extends RuleFunction {
      * @param value item
      * @return the number as string.
      */
-    private String round(Double value) {
+    private static String round(Double value) {
         return String.valueOf(Math.round(value));
     }
 }

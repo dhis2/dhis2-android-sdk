@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class RuleFunctionOizp extends RuleFunction {
+final class RuleFunctionOizp extends RuleFunction {
     static final String D2_OIZP = "d2:oizp";
 
     @Nonnull

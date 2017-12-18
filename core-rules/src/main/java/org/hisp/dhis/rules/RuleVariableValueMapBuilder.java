@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import static org.hisp.dhis.rules.RuleVariableValue.create;
 
 @SuppressWarnings("PMD.GodClass")
-public final class RuleVariableValueMapBuilder {
+final class RuleVariableValueMapBuilder {
     private static final String DATE_PATTERN = "yyyy-MM-dd";
     private static final String ENV_VAR_CURRENT_DATE = "current_date";
     private static final String ENV_VAR_EVENT_DATE = "event_date";
@@ -96,12 +96,12 @@ public final class RuleVariableValueMapBuilder {
     }
 
     @Nonnull
-    public static RuleVariableValueMapBuilder target(@Nonnull RuleEvent ruleEvent) {
+    static RuleVariableValueMapBuilder target(@Nonnull RuleEvent ruleEvent) {
         return new RuleVariableValueMapBuilder(ruleEvent);
     }
 
     @Nonnull
-    public RuleVariableValueMapBuilder ruleVariables(@Nonnull List<RuleVariable> ruleVariables) {
+    RuleVariableValueMapBuilder ruleVariables(@Nonnull List<RuleVariable> ruleVariables) {
         this.ruleVariables.addAll(ruleVariables);
         return this;
     }
@@ -129,7 +129,7 @@ public final class RuleVariableValueMapBuilder {
     }
 
     @Nonnull
-    public Map<String, RuleVariableValue> build() {
+    Map<String, RuleVariableValue> build() {
         Map<String, RuleVariableValue> valueMap = new HashMap<>();
 
         // map tracked entity attributes to values from enrollment

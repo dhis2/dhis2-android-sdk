@@ -8,11 +8,11 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-public class RuleFunctionRuleFunctionCountIfZeroPos extends RuleFunction {
+final class RuleFunctionRuleFunctionCountIfZeroPos extends RuleFunction {
     static final String D2_COUNT_IF_ZERO_POS = "d2:countIfZeroPos";
 
     @Nonnull
-    public static RuleFunctionRuleFunctionCountIfZeroPos create() {
+    static RuleFunctionRuleFunctionCountIfZeroPos create() {
         return new RuleFunctionRuleFunctionCountIfZeroPos();
     }
 
@@ -35,8 +35,8 @@ public class RuleFunctionRuleFunctionCountIfZeroPos extends RuleFunction {
      * @param valueMap list of variables.
      * @return return the count of zero pos
      */
-    public static Integer countIfZeroPos(String variableName, Map<String, RuleVariableValue> valueMap) {
-        RuleVariableValue ruleVariableValue =valueMap.get(variableName);
+    private static Integer countIfZeroPos(String variableName, Map<String, RuleVariableValue> valueMap) {
+        RuleVariableValue ruleVariableValue = valueMap.get(variableName);
         Integer count = 0;
         if(ruleVariableValue != null) {
             if(ruleVariableValue.value()!=null) {

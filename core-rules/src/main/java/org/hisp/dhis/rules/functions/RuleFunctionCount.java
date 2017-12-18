@@ -8,11 +8,11 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-public class RuleFunctionCount extends RuleFunction {
+final class RuleFunctionCount extends RuleFunction {
     static final String D2_COUNT = "d2:count";
 
     @Nonnull
-    public static RuleFunctionCount create() {
+    static RuleFunctionCount create() {
         return new RuleFunctionCount();
     }
 
@@ -35,7 +35,7 @@ public class RuleFunctionCount extends RuleFunction {
      * @param valueMap list of variables.
      * @return return the count the number of values that is entered for the source field in the argument.
      */
-    private Integer count(String variableName, Map<String, RuleVariableValue> valueMap) {
+    private static Integer count(String variableName, Map<String, RuleVariableValue> valueMap) {
         RuleVariableValue ruleVariableValue =valueMap.get(variableName);
         Integer count = 0;
         if(ruleVariableValue != null) {

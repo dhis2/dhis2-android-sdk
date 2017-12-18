@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class RuleFunctionConcatenate extends RuleFunction {
+final class RuleFunctionConcatenate extends RuleFunction {
     static final String D2_CONCATENATE = "d2:concatenate";
 
     @Nonnull

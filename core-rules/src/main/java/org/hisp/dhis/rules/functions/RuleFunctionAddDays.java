@@ -11,11 +11,11 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-public class RuleFunctionAddDays extends RuleFunction {
+final class RuleFunctionAddDays extends RuleFunction {
     static final String D2_ADD_DAYS = "d2:addDays";
 
     @Nonnull
-    public static RuleFunctionAddDays create() {
+    static RuleFunctionAddDays create() {
         return new RuleFunctionAddDays();
     }
 
@@ -38,7 +38,7 @@ public class RuleFunctionAddDays extends RuleFunction {
      * @return date fixed.
      */
     @SuppressWarnings("PMD.UnnecessaryWrapperObjectCreation")
-    static String addDays(String date, String days) {
+    private static String addDays(String date, String days) {
         SimpleDateFormat format = new SimpleDateFormat();
         format.applyPattern(DATE_PATTERN);
 

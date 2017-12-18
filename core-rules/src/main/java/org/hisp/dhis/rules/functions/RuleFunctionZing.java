@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class RuleFunctionZing extends RuleFunction {
+final class RuleFunctionZing extends RuleFunction {
     static final String D2_ZING = "d2:zing";
 
     @Nonnull

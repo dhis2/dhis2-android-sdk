@@ -32,7 +32,7 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryComboCallEndpoint;
+import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
 import org.hisp.dhis.android.core.category.CategoryQuery;
@@ -463,7 +463,7 @@ public class MetadataCall implements Call<Response> {
 
         ResponseValidator<CategoryCombo> comboValidator = new ResponseValidator<>();
 
-        return new CategoryComboCallEndpoint(categoryComboQuery, comboService,
+        return new CategoryComboEndpointCall(categoryComboQuery, comboService,
                 comboValidator, categoryComboHandler,
                 new ResourceHandler(resourceStore), databaseAdapter, serverDate).call();
     }

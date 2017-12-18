@@ -24,7 +24,7 @@ import java.util.Date;
 
 import retrofit2.Response;
 
-public class CategoryComboCallEndpointRealShould extends AbsStoreTestCase {
+public class CategoryComboEndpointCallRealShould extends AbsStoreTestCase {
 
     private D2 d2;
 
@@ -46,7 +46,7 @@ public class CategoryComboCallEndpointRealShould extends AbsStoreTestCase {
         assertNotCombosInDB();
         assertNotCategoryCombosLinkInDB();
 
-        CategoryComboCallEndpoint comboCallEndpoint = provideComboCallEndpoint();
+        CategoryComboEndpointCall comboCallEndpoint = provideComboCallEndpoint();
         Response<Payload<CategoryCombo>> responseCategory = comboCallEndpoint.call();
 
         assertParseData(responseCategory);
@@ -178,7 +178,7 @@ public class CategoryComboCallEndpointRealShould extends AbsStoreTestCase {
     }
 
     @NonNull
-    private CategoryComboCallEndpoint provideComboCallEndpoint() {
+    private CategoryComboEndpointCall provideComboCallEndpoint() {
         CategoryComboQuery query = CategoryComboQuery.defaultQuery();
 
         CategoryComboService comboService = d2.retrofit().create(CategoryComboService.class);
@@ -206,7 +206,7 @@ public class CategoryComboCallEndpointRealShould extends AbsStoreTestCase {
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Date serverDate = new Date();
 
-        return new CategoryComboCallEndpoint(query, comboService, validator, handler,
+        return new CategoryComboEndpointCall(query, comboService, validator, handler,
                 resourceHandler,
                 databaseAdapter(), serverDate);
 

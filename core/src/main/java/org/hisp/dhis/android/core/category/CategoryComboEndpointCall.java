@@ -16,7 +16,7 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public class CategoryComboCallEndpoint implements Call<Response<Payload<CategoryCombo>>> {
+public class CategoryComboEndpointCall implements Call<Response<Payload<CategoryCombo>>> {
 
     private final CategoryComboQuery query;
     private final CategoryComboService comboService;
@@ -27,7 +27,7 @@ public class CategoryComboCallEndpoint implements Call<Response<Payload<Category
     private final Date serverDate;
     private boolean isExecuted;
 
-    public CategoryComboCallEndpoint(CategoryComboQuery query,
+    public CategoryComboEndpointCall(CategoryComboQuery query,
             CategoryComboService comboService,
             ResponseValidator<CategoryCombo> responseValidator,
             Handler<CategoryCombo> handler,

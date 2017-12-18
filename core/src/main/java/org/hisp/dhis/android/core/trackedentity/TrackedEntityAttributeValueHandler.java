@@ -17,14 +17,14 @@ public class TrackedEntityAttributeValueHandler {
             return;
         }
 
-        removeNoExistedAttributeValuesInServer(trackedEntityInstanceUid, attributeValues);
+        removeAttributeValuesNotExistingInServer(trackedEntityInstanceUid, attributeValues);
 
         for (TrackedEntityAttributeValue attValue : attributeValues) {
             handle(trackedEntityInstanceUid, attValue);
         }
     }
 
-    private void removeNoExistedAttributeValuesInServer(String trackedEntityInstanceUid,
+    private void removeAttributeValuesNotExistingInServer(String trackedEntityInstanceUid,
             List<TrackedEntityAttributeValue> attributeValues) {
 
         List<String> uIds = getAttributeUIdsToRemove(trackedEntityInstanceUid, attributeValues);

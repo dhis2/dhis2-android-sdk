@@ -32,7 +32,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-public class EventCallShould {
+public class EventEndPointCallShould {
     private Call<Response<Payload<Event>>> eventCall;
 
     @Mock
@@ -75,23 +75,23 @@ public class EventCallShould {
 
     @Test(expected = IllegalArgumentException.class)
     public void throw_illegal_argument_exception_if_uids_size_exceeds_the_limit() {
-        EventCall eventCall = givenAEventCallByUIds(MAX_UIDS + 1);
+        EventEndPointCall eventEndPointCall = givenAEventCallByUIds(MAX_UIDS + 1);
     }
 
     @Test
     public void create_event_call_if_uids_size_does_not_exceeds_the_limit() {
-        EventCall eventCall = givenAEventCallByUIds(MAX_UIDS);
-        assertThat(eventCall, is(notNullValue()));
+        EventEndPointCall eventEndPointCall = givenAEventCallByUIds(MAX_UIDS);
+        assertThat(eventEndPointCall, is(notNullValue()));
     }
 
     @Test
     public void realize_request_with_page_filters_when_included_in_query()
             throws Exception {
-        EventCall eventCall = givenAEventCallByPagination(2, 32);
+        EventEndPointCall eventEndPointCall = givenAEventCallByPagination(2, 32);
 
         dhis2MockServer.enqueueMockResponse();
 
-        eventCall.call();
+        eventEndPointCall.call();
 
         RecordedRequest request = dhis2MockServer.takeRequest();
 
@@ -101,18 +101,18 @@ public class EventCallShould {
     @Test
     public void realize_request_with_orgUnit_program_filters_when_included_in_query()
             throws Exception {
-        EventCall eventCall = givenAEventCallByOrgUnitAndProgram("OU", "P");
+        EventEndPointCall eventEndPointCall = givenAEventCallByOrgUnitAndProgram("OU", "P");
 
         dhis2MockServer.enqueueMockResponse();
 
-        eventCall.call();
+        eventEndPointCall.call();
 
         RecordedRequest request = dhis2MockServer.takeRequest();
 
         assertThat(request.getPath(), containsString("orgUnit=OU&program=P"));
     }
 
-    private EventCall givenAEventCallByUIds(int numUIds) {
+    private EventEndPointCall givenAEventCallByUIds(int numUIds) {
         Set<String> uIds = new HashSet<>();
 
         for (int i = 0; i < numUIds; i++) {
@@ -124,14 +124,14 @@ public class EventCallShould {
                 .withUIds(uIds)
                 .build();
 
-        EventCall eventCall =
-                new EventCall(eventService, databaseAdapter, resourceHandler,
+        EventEndPointCall eventEndPointCall =
+                new EventEndPointCall(eventService, databaseAdapter, resourceHandler,
                         eventHandler, serverDate, eventQuery);
 
-        return eventCall;
+        return eventEndPointCall;
     }
 
-    private EventCall givenAEventCallByPagination(int page, int pageCount) {
+    private EventEndPointCall givenAEventCallByPagination(int page, int pageCount) {
         EventService eventService = retrofit.create(EventService.class);
 
         EventQuery eventQuery = EventQuery.Builder
@@ -142,14 +142,14 @@ public class EventCallShould {
                 .build();
 
 
-        EventCall eventCall =
-                new EventCall(eventService, databaseAdapter, resourceHandler,
+        EventEndPointCall eventEndPointCall =
+                new EventEndPointCall(eventService, databaseAdapter, resourceHandler,
                         eventHandler, serverDate, eventQuery);
 
-        return eventCall;
+        return eventEndPointCall;
     }
 
-    private EventCall givenAEventCallByOrgUnitAndProgram(String orgUnit, String program) {
+    private EventEndPointCall givenAEventCallByOrgUnitAndProgram(String orgUnit, String program) {
         EventService eventService = retrofit.create(EventService.class);
 
         EventQuery eventQuery = EventQuery.Builder
@@ -159,10 +159,10 @@ public class EventCallShould {
                 .build();
 
 
-        EventCall eventCall =
-                new EventCall(eventService, databaseAdapter, resourceHandler,
+        EventEndPointCall eventEndPointCall =
+                new EventEndPointCall(eventService, databaseAdapter, resourceHandler,
                         eventHandler, serverDate, eventQuery);
 
-        return eventCall;
+        return eventEndPointCall;
     }
 }

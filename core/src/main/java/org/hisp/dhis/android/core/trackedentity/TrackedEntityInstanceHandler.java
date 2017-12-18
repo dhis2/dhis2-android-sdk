@@ -12,12 +12,16 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class TrackedEntityInstanceHandler {
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
+    private final TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler;
     private final EnrollmentHandler enrollmentHandler;
 
 
-    public TrackedEntityInstanceHandler(@NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
-                                        @NonNull EnrollmentHandler enrollmentHandler) {
+    public TrackedEntityInstanceHandler(
+            @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
+            @NonNull TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler,
+            @NonNull EnrollmentHandler enrollmentHandler) {
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
+        this.trackedEntityAttributeValueHandler = trackedEntityAttributeValueHandler;
         this.enrollmentHandler = enrollmentHandler;
     }
 
@@ -43,16 +47,13 @@ public class TrackedEntityInstanceHandler {
                         trackedEntityInstance.trackedEntity(), State.SYNCED);
             }
 
+            trackedEntityAttributeValueHandler.handle(
+                    trackedEntityInstance.uid(),
+                    trackedEntityInstance.trackedEntityAttributeValues());
+
             List<Enrollment> enrollments = trackedEntityInstance.enrollments();
 
-            if (enrollments != null && !enrollments.isEmpty()) {
-                int size = enrollments.size();
-
-                for (int i = 0; i < size; i++) {
-                    Enrollment enrollment = enrollments.get(i);
-                    enrollmentHandler.handle(enrollment);
-                }
-            }
+            enrollmentHandler.handle(enrollments);
         }
     }
 }

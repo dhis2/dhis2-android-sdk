@@ -9,6 +9,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import static org.mockito.Matchers.any;
@@ -43,8 +44,8 @@ public class EventHandlerShould {
     }
 
     @Test
-    public void do_nothing_when_passing_null_argument() throws Exception {
-        eventHandler.handle(null);
+    public void do_nothing_when_passing_empty_list_argument() throws Exception {
+        eventHandler.handle(new ArrayList<Event>());
 
         // verify that store is never invoked
         verify(eventStore, never()).delete(anyString());

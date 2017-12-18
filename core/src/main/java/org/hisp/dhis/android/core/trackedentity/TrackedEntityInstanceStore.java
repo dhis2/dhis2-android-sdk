@@ -59,5 +59,9 @@ public interface TrackedEntityInstanceStore {
 
     int setState(@NonNull String uid, @NonNull State state);
 
-    Map<String, TrackedEntityInstance> query();
+    Map<String, TrackedEntityInstance> queryToPost();
+
+    Map<String, TrackedEntityInstance> querySynced();
+
+    Map<String, TrackedEntityInstance> queryAll();
 }

@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 @RunWith(AndroidJUnit4.class)
-public class EventCallMockIntegrationShould extends AbsStoreTestCase {
+public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
 
     private Dhis2MockServer dhis2MockServer;
     private D2 d2;
@@ -56,12 +56,12 @@ public class EventCallMockIntegrationShould extends AbsStoreTestCase {
     public void download_events_according_to_default_query() throws Exception {
         givenAMetadataInDatabase();
 
-        EventCall eventCall = EventCallFactory.create(
+        EventEndPointCall eventEndPointCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse("events_1.json");
 
-        eventCall.call();
+        eventEndPointCall.call();
 
         verifyDownloadedEvents("events_1.json");
     }
@@ -72,12 +72,12 @@ public class EventCallMockIntegrationShould extends AbsStoreTestCase {
 
         int pageLimit = 12;
 
-        EventCall eventCall = EventCallFactory.create(
+        EventEndPointCall eventEndPointCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", pageLimit);
 
         dhis2MockServer.enqueueMockResponse("events_1.json");
 
-        eventCall.call();
+        eventEndPointCall.call();
 
         EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
 
@@ -91,20 +91,20 @@ public class EventCallMockIntegrationShould extends AbsStoreTestCase {
             throws Exception {
         givenAMetadataInDatabase();
 
-        EventCall eventCall = EventCallFactory.create(
+        EventEndPointCall eventEndPointCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
         ;
 
         dhis2MockServer.enqueueMockResponse("events_1.json");
 
-        eventCall.call();
+        eventEndPointCall.call();
 
-        eventCall = EventCallFactory.create(
+        eventEndPointCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse("events_1_with_removed_data_values.json");
 
-        eventCall.call();
+        eventEndPointCall.call();
 
         verifyDownloadedEvents("events_1_with_removed_data_values.json");
     }

@@ -84,4 +84,6 @@ public interface EventStore {
     List<Event> querySingleEventsToPost();
 
     List<Event> querySingleEvents();
+
+    List<Event> queryAll();
 }

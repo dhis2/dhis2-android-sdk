@@ -1,9 +1,10 @@
 package org.hisp.dhis.rules.functions;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.hisp.dhis.rules.RuleVariableValue;
-import org.hisp.dhis.rules.RuleVariableValueMapBuilder;
 import org.hisp.dhis.rules.models.RuleDataValue;
 import org.hisp.dhis.rules.models.RuleEvent;
 import org.hisp.dhis.rules.models.RuleValueType;
@@ -13,6 +14,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,34 +23,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RuleFunctionLastEventDateShould {
+    private static final String DATE_PATTERN = "yyyy-MM-dd";
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
-    public void return_correct_value() {
+    public void return_correct_value() throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_PATTERN);
         RuleFunction ruleFunction = RuleFunctionLastEventDate.create();
-
-        RuleVariable ruleVariableOne = RuleVariableCurrentEvent.create(
-                "variable_name", "test_dataelement_one", RuleValueType.TEXT);
-
-        Date eventDate = new Date();
-        Date dueDate = new Date();
-
-        RuleEvent currentEvent = RuleEvent.create("test_event_uid", "test_program_stage",
-                RuleEvent.Status.ACTIVE, eventDate, dueDate, Arrays.asList(
-                        RuleDataValue.create(eventDate, "test_program_stage",
-                                "test_dataelement_one", "0.0")));
-
-        Map<String, RuleVariableValue> valueMap = RuleVariableValueMapBuilder.target(currentEvent)
-                .ruleVariables(Arrays.asList(ruleVariableOne))
-                .build();
-
-
-        String result = ruleFunction.evaluate(Arrays.asList("variable_name"), valueMap);
-        assertThat(result).isEqualTo(new SimpleDateFormat("yyyy-MM-dd").format(eventDate));
-        result = ruleFunction.evaluate(Arrays.asList("variable_name"),new HashMap<String, RuleVariableValue>());
-        assertThat(result).isEqualTo("");
+        RuleEvent ruleEvent = RuleEvent.create("test_event_uid", "program_stage_uid",RuleEvent.Status.ACTIVE ,
+                dateFormat.parse("1945-10-02"),dateFormat.parse("1946-11-03"), new ArrayList
+                        <RuleDataValue>());
+        RuleVariableValue ruleVariableValue =  RuleVariableValue.create("", RuleValueType.TEXT, new ArrayList<String>());
+        ruleVariableValue.setTarget(ruleEvent);
+        Map<String, RuleVariableValue> ruleVariableValueHashMap = new HashMap<String, RuleVariableValue>();
+        ruleVariableValueHashMap.put("test_event_rule", ruleVariableValue);
+        String result = ruleFunction.evaluate(Arrays.asList("test_event_uid"), ruleVariableValueHashMap);
+        assertThat(result).isEqualTo(new SimpleDateFormat(DATE_PATTERN).format(ruleEvent.eventDate()));
     }
 
     @Test

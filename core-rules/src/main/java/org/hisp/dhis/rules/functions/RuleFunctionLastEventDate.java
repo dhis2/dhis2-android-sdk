@@ -1,18 +1,20 @@
 package org.hisp.dhis.rules.functions;
 
 import org.hisp.dhis.rules.RuleVariableValue;
+import org.hisp.dhis.rules.models.RuleEvent;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-public class RuleFunctionLastEventDate extends RuleFunction {
+final class RuleFunctionLastEventDate extends RuleFunction {
     static final String D2_LAST_EVENT_DATE = "d2:lastEventDate";
-    private static final String ENV_VAR_EVENT_DATE = "event_date";
+    private static final String DATE_PATTERN = "yyyy-MM-dd";
 
     @Nonnull
-    public static RuleFunctionLastEventDate create() {
+    static RuleFunctionLastEventDate create() {
         return new RuleFunctionLastEventDate();
     }
 
@@ -36,10 +38,14 @@ public class RuleFunctionLastEventDate extends RuleFunction {
      * @return the date as string.
      */
 
-    public static String lastEventDate(String variableName, Map<String, RuleVariableValue>  valueMap) {
-        if(valueMap.containsKey(variableName)){
-            if(valueMap.containsKey(ENV_VAR_EVENT_DATE)){
-                return valueMap.get(ENV_VAR_EVENT_DATE).value().replace("'","");
+    private static String lastEventDate(String variableName, Map<String, RuleVariableValue>  valueMap) {
+        for(RuleVariableValue ruleVariableValue : valueMap.values()){
+            if(ruleVariableValue.getTarget() instanceof RuleEvent){
+                RuleEvent ruleEvent = (RuleEvent)ruleVariableValue.getTarget();
+                if(ruleEvent.event().equals(variableName)) {
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_PATTERN);
+                    return simpleDateFormat.format(ruleEvent.eventDate());
+                }
             }
         }
         return "";

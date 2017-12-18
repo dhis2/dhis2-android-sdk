@@ -38,6 +38,30 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
+import org.hisp.dhis.android.core.category.Category;
+import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryComboHandler;
+import org.hisp.dhis.android.core.category.CategoryComboLinkModel;
+import org.hisp.dhis.android.core.category.CategoryComboLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryComboQuery;
+import org.hisp.dhis.android.core.category.CategoryComboService;
+import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryHandler;
+import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.category.CategoryOptionCombo;
+import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
+import org.hisp.dhis.android.core.category.CategoryOptionComboLinkCategoryModel;
+import org.hisp.dhis.android.core.category.CategoryOptionComboLinkCategoryStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionHandler;
+import org.hisp.dhis.android.core.category.CategoryOptionLinkModel;
+import org.hisp.dhis.android.core.category.CategoryOptionLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryQuery;
+import org.hisp.dhis.android.core.category.CategoryService;
+import org.hisp.dhis.android.core.category.CategoryStoreImpl;
+import org.hisp.dhis.android.core.category.Handler;
+import org.hisp.dhis.android.core.category.Store;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
@@ -130,7 +154,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-// ToDo: handle corner cases when user initially has been signed in, but later was locked (or password has changed)
+// ToDo: handle corner cases when user initially has been signed in, but later was locked (or
+// password has changed)
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
 public final class D2 {
     private final Retrofit retrofit;
@@ -143,6 +168,12 @@ public final class D2 {
     private final OrganisationUnitService organisationUnitService;
     private final TrackedEntityService trackedEntityService;
     private final OptionSetService optionSetService;
+    private final CategoryService categoryService;
+    private final CategoryComboService comboService;
+
+    // Queries
+    private final CategoryQuery categoryQuery = CategoryQuery.defaultQuery();
+    private final CategoryComboQuery categoryComboQuery = CategoryComboQuery.defaultQuery();
 
     // stores
     private final UserStore userStore;
@@ -159,7 +190,8 @@ public final class D2 {
     private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
     private final ProgramRuleVariableStore programRuleVariableStore;
     private final ProgramIndicatorStore programIndicatorStore;
-    private final ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
+    private final ProgramStageSectionProgramIndicatorLinkStore
+            programStageSectionProgramIndicatorLinkStore;
     private final ProgramRuleActionStore programRuleActionStore;
     private final ProgramRuleStore programRuleStore;
     private final OptionStore optionStore;
@@ -186,6 +218,8 @@ public final class D2 {
     private final EventHandler eventHandler;
 
     private final ResourceHandler resourceHandler;
+    private final Handler<Category> categoryHandler;
+    private final Handler<CategoryCombo> categoryComboHandler;
 
 
     @VisibleForTesting
@@ -202,6 +236,8 @@ public final class D2 {
         this.optionSetService = retrofit.create(OptionSetService.class);
         this.trackedEntityInstanceService = retrofit.create(TrackedEntityInstanceService.class);
         this.eventService = retrofit.create(EventService.class);
+        this.categoryService = retrofit.create(CategoryService.class);
+        this.comboService = retrofit.create(CategoryComboService.class);
 
         // stores
 
@@ -269,13 +305,41 @@ public final class D2 {
         this.organisationUnitProgramLinkStore =
                 new OrganisationUnitProgramLinkStoreImpl(databaseAdapter);
 
+        Store<Category> categoryStore = new CategoryStoreImpl(databaseAdapter);
+        Store<CategoryOptionLinkModel> categoryOptionLinkStore = new CategoryOptionLinkStoreImpl(
+                databaseAdapter());
+
+        Store<CategoryOptionComboLinkCategoryModel> categoryComboOptionLinkCategoryStore
+                = new CategoryOptionComboLinkCategoryStoreImpl(databaseAdapter);
+
         //handlers
         resourceHandler = new ResourceHandler(resourceStore);
 
         TrackedEntityDataValueHandler trackedEntityDataValueHandler =
                 new TrackedEntityDataValueHandler(trackedEntityDataValueStore);
 
+        Handler<CategoryOption> categoryOptionHandler = new CategoryOptionHandler(
+                new CategoryOptionStoreImpl(databaseAdapter));
+
         this.eventHandler = new EventHandler(eventStore, trackedEntityDataValueHandler);
+
+        categoryHandler = new CategoryHandler(categoryStore, categoryOptionHandler,
+                categoryOptionLinkStore);
+
+        Store<CategoryCombo> comboStore = new CategoryComboStoreImpl(databaseAdapter());
+
+        Store<CategoryComboLinkModel> categoryComboLinkStore = new CategoryComboLinkStoreImpl(
+                databaseAdapter());
+
+        Store<CategoryOptionCombo> optionComboStore = new CategoryOptionComboStoreImpl(
+                databaseAdapter());
+
+        Handler<CategoryOptionCombo> optionComboHandler = new CategoryOptionComboHandler(
+                optionComboStore);
+
+        categoryComboHandler = new CategoryComboHandler(comboStore,
+                categoryComboOptionLinkCategoryStore,
+                categoryComboLinkStore, optionComboHandler);
 
     }
 
@@ -323,14 +387,21 @@ public final class D2 {
     @NonNull
     public Call<Response> syncMetaData() {
         return new MetadataCall(
-                databaseAdapter, systemInfoService, userService, programService, organisationUnitService,
+                databaseAdapter, systemInfoService, userService, programService,
+                organisationUnitService,
                 trackedEntityService, optionSetService, systemInfoStore, resourceStore, userStore,
-                userCredentialsStore, userRoleStore, userRoleProgramLinkStore, organisationUnitStore,
+                userCredentialsStore, userRoleStore, userRoleProgramLinkStore,
+                organisationUnitStore,
                 userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
-                programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore, optionStore,
-                optionSetStore, dataElementStore, programStageDataElementStore, programStageSectionStore,
-                programStageStore, relationshipStore, trackedEntityStore, organisationUnitProgramLinkStore);
+                programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
+                programRuleStore, optionStore,
+                optionSetStore, dataElementStore, programStageDataElementStore,
+                programStageSectionStore,
+                programStageStore, relationshipStore, trackedEntityStore,
+                organisationUnitProgramLinkStore, categoryQuery,
+                categoryService, categoryHandler, categoryComboQuery, comboService,
+                categoryComboHandler);
     }
 
     @NonNull
@@ -343,7 +414,8 @@ public final class D2 {
     @NonNull
     public Call<Response<WebResponse>> syncTrackedEntityInstances() {
         return new TrackedEntityInstancePostCall(trackedEntityInstanceService,
-                trackedEntityInstanceStore, enrollmentStore, eventStore, trackedEntityDataValueStore,
+                trackedEntityInstanceStore, enrollmentStore, eventStore,
+                trackedEntityDataValueStore,
                 trackedEntityAttributeValueStore);
     }
 

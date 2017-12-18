@@ -1,0 +1,1026 @@
+{
+  "pager": {
+    "page": 1,
+    "pageCount": 1,
+    "total": 22,
+    "pageSize": 50
+  },
+  "categories": [
+    {
+      "lastUpdated": "2017-10-09T16:03:48.729",
+      "code": "BIRTHS_ATTENDED",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Births attended by",
+      "id": "KfdsGBcoiCa",
+      "shortName": "Births attended by",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Births attended by",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "MCH_AIDES",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "MCH Aides",
+          "id": "TNYQzTHdoxL",
+          "shortName": "MCH Aides",
+          "displayName": "MCH Aides"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "SECHN",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "SECHN",
+          "id": "TXGfLxZlInA",
+          "shortName": "SECHN",
+          "displayName": "SECHN"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "MIDWIVES",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Midwives",
+          "id": "QgULqw9YDu2",
+          "shortName": "Midwives",
+          "displayName": "Midwives"
+        },
+        {
+          "lastUpdated": "2014-06-22T21:36:38.632",
+          "code": "CHO",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "CHO",
+          "id": "OjIOxG7vgna",
+          "shortName": "CHO",
+          "displayName": "CHO"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "TRAINED_TBA",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Trained TBA",
+          "id": "uZUnebiT5DI",
+          "shortName": "Trained TBA",
+          "displayName": "Trained TBA"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "UNTRAINED_TBA",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Untrained TBA",
+          "id": "HTHvCohKoXt",
+          "shortName": "Untrained TBA",
+          "displayName": "Untrained TBA"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2014-03-05T04:10:47.764",
+      "code": "COMMODITIES",
+      "created": "2014-03-02T02:14:34.600",
+      "name": "Commodities",
+      "id": "gtuVl6NbXQV",
+      "shortName": "Commodities",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Commodities",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2014-03-02T02:12:35.927",
+          "code": "Consumption",
+          "created": "2014-03-02T02:12:35.927",
+          "name": "Consumption",
+          "id": "AdkHQiiJBB4",
+          "shortName": "Consumption",
+          "displayName": "Consumption"
+        },
+        {
+          "lastUpdated": "2014-03-02T19:04:23.211",
+          "code": "End Balance",
+          "created": "2014-03-02T02:12:54.868",
+          "name": "End Balance",
+          "id": "xp1wtEkhBmV",
+          "shortName": "End Balance",
+          "displayName": "End Balance"
+        },
+        {
+          "lastUpdated": "2014-03-02T19:04:13.406",
+          "code": "Quantity to be ordered",
+          "created": "2014-03-02T19:04:13.406",
+          "name": "Quantity to be ordered",
+          "id": "gpK9r0M1RFZ",
+          "shortName": "Quantity to be ordered",
+          "displayName": "Quantity to be ordered"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2017-12-14T06:59:54.667",
+      "created": "2012-11-21T12:15:18.537",
+      "name": "default",
+      "id": "vGs6omsRekv",
+      "shortName": "default",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "default",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2016-04-12T20:37:48.414",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "default",
+          "id": "as6ygGvUGNg",
+          "shortName": "default",
+          "displayName": "default"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:32:43.922",
+      "code": "EPI_NUTR_AGE",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "EPI/nutrition age",
+      "id": "YNZyaJHiHYq",
+      "shortName": "EPI/nutrition age",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "EPI/nutrition age",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2015-03-11T11:56:54.123",
+          "code": "<1y",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "<1y",
+          "id": "btOyqprQ9e8",
+          "shortName": "<1y",
+          "displayName": "<1y"
+        },
+        {
+          "lastUpdated": "2014-03-05T04:57:24.116",
+          "code": ">1y",
+          "created": "2011-12-24T12:24:24.149",
+          "name": ">1y",
+          "id": "GEqzEKCHoGA",
+          "shortName": ">1y",
+          "displayName": ">1y"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:27:46.728",
+      "code": "GENDER",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Gender",
+      "id": "cX5k9anHEHd",
+      "shortName": "Gender",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Gender",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "FMLE",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Female",
+          "id": "apsOixVZlf1",
+          "shortName": "Female",
+          "displayName": "Female"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "MLE",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Male",
+          "id": "jRbMi0aBjYn",
+          "shortName": "Male",
+          "displayName": "Male"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:32:36.063",
+      "code": "HIV_AGE",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "HIV age",
+      "id": "veGzholzPQm",
+      "shortName": "HIV age",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "HIV age",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2015-01-08T10:12:58.563",
+          "code": "AGE0-14",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "<15y",
+          "id": "zs2Ra6sikup",
+          "shortName": "<15y",
+          "displayName": "<15y"
+        },
+        {
+          "lastUpdated": "2015-03-11T11:10:12.274",
+          "code": "AGE15-24",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "15-24y",
+          "id": "UOqJW6HPvvL",
+          "shortName": "15-24y",
+          "displayName": "15-24y"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "AGE25-49",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "25-49y",
+          "id": "WAl0OCcIYxr",
+          "shortName": "25-49y",
+          "displayName": "25-49y"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "AGE50+",
+          "created": "2011-12-24T12:24:24.149",
+          "name": ">49y",
+          "id": "IG8vRsn0HNl",
+          "shortName": ">49y",
+          "displayName": ">49y"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:32:22.962",
+      "code": "HIV_PAED_AGE",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "HIV paediatric age",
+      "id": "aN4inMKVhqc",
+      "shortName": "HIV paediatric age",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "HIV paediatric age",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2015-03-11T11:56:56.710",
+          "code": "U12M",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "<12m",
+          "id": "nuHLu6GaiWI",
+          "shortName": "<12m",
+          "displayName": "<12m"
+        },
+        {
+          "lastUpdated": "2015-01-08T10:13:25.714",
+          "code": "12_18M",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "12-18m",
+          "id": "dPSWsKeAZNw",
+          "shortName": "12-18m",
+          "displayName": "12-18m"
+        },
+        {
+          "lastUpdated": "2015-01-08T10:13:25.702",
+          "code": "O18M",
+          "created": "2011-12-24T12:24:24.149",
+          "name": ">18m",
+          "id": "dHl52Uo56Ct",
+          "shortName": ">18m",
+          "displayName": ">18m"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-12-23T18:07:58.771",
+      "code": "IMPL_PARTNER",
+      "created": "2013-12-20T22:13:46.348",
+      "name": "Implementing Partner",
+      "id": "LFsZ8v5v7rq",
+      "shortName": "Implementing Partner",
+      "dataDimensionType": "ATTRIBUTE",
+      "displayName": "Implementing Partner",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2013-12-20T22:09:34.204",
+          "code": "African Medical and Research Foundation",
+          "created": "2013-12-20T22:09:34.204",
+          "name": "African Medical and Research Foundation",
+          "id": "C6nZpLKjEJr",
+          "shortName": "African Medical and Research Foundation",
+          "displayName": "African Medical and Research Foundation"
+        },
+        {
+          "lastUpdated": "2014-06-22T21:35:54.100",
+          "code": "AIDSRelief Consortium",
+          "created": "2013-12-20T22:11:56.488",
+          "name": "AIDSRelief Consortium",
+          "id": "CW81uF03hvV",
+          "shortName": "AIDSRelief Consortium",
+          "displayName": "AIDSRelief Consortium"
+        },
+        {
+          "lastUpdated": "2013-12-20T22:12:04.994",
+          "code": "APHIAplus",
+          "created": "2013-12-20T22:12:04.994",
+          "name": "APHIAplus",
+          "id": "B3nxOazOO2G",
+          "shortName": "APHIAplus",
+          "displayName": "APHIAplus"
+        },
+        {
+          "lastUpdated": "2014-06-22T21:36:38.638",
+          "code": "CARE International",
+          "created": "2013-12-20T22:10:12.394",
+          "name": "CARE International",
+          "id": "RkbOhHwiOgW",
+          "shortName": "CARE International",
+          "displayName": "CARE International"
+        },
+        {
+          "lastUpdated": "2013-12-20T22:09:14.155",
+          "code": "Family Health International",
+          "created": "2013-12-20T22:09:14.155",
+          "name": "Family Health International",
+          "id": "TY5rBQzlBRa",
+          "shortName": "Family Health International",
+          "displayName": "Family Health International"
+        },
+        {
+          "lastUpdated": "2013-12-20T22:11:45.448",
+          "code": "Hope Worldwide",
+          "created": "2013-12-20T22:11:45.448",
+          "name": "Hope Worldwide",
+          "id": "hERJraxV8D9",
+          "shortName": "Hope Worldwide",
+          "displayName": "Hope Worldwide"
+        },
+        {
+          "lastUpdated": "2013-12-20T22:09:40.825",
+          "code": "International Rescue Committee",
+          "created": "2013-12-20T22:09:40.825",
+          "name": "International Rescue Committee",
+          "id": "g3bcPGD5Q5i",
+          "shortName": "International Rescue Committee",
+          "displayName": "International Rescue Committee"
+        },
+        {
+          "lastUpdated": "2013-12-20T22:10:57.379",
+          "code": "IntraHealth International",
+          "created": "2013-12-20T22:10:57.379",
+          "name": "IntraHealth International",
+          "id": "yfWXlxYNbhy",
+          "shortName": "IntraHealth International",
+          "displayName": "IntraHealth International"
+        },
+        {
+          "lastUpdated": "2013-12-20T22:12:45.831",
+          "code": "Path",
+          "created": "2013-12-20T22:12:45.831",
+          "name": "Path",
+          "id": "yrwgRxRhBoU",
+          "shortName": "Path",
+          "displayName": "Path"
+        },
+        {
+          "lastUpdated": "2013-12-20T22:11:09.858",
+          "code": "Pathfinder International",
+          "created": "2013-12-20T22:11:09.858",
+          "name": "Pathfinder International",
+          "id": "VLFVaH1MwnF",
+          "shortName": "Pathfinder International",
+          "displayName": "Pathfinder International"
+        },
+        {
+          "lastUpdated": "2013-12-20T22:09:23.467",
+          "code": "Plan International",
+          "created": "2013-12-20T22:09:23.467",
+          "name": "Plan International",
+          "id": "e5YBV5F5iUd",
+          "shortName": "Plan International",
+          "displayName": "Plan International"
+        },
+        {
+          "lastUpdated": "2013-12-20T22:11:15.622",
+          "code": "Population Services International",
+          "created": "2013-12-20T22:11:15.622",
+          "name": "Population Services International",
+          "id": "XK6u6cJCR0t",
+          "shortName": "Population Services International",
+          "displayName": "Population Services International"
+        },
+        {
+          "lastUpdated": "2013-12-20T22:11:21.298",
+          "code": "Unicef",
+          "created": "2013-12-20T22:11:21.298",
+          "name": "Unicef",
+          "id": "xwZ2u3WyQR0",
+          "shortName": "Unicef",
+          "displayName": "Unicef"
+        },
+        {
+          "lastUpdated": "2013-12-20T22:11:28.211",
+          "code": "World Concern",
+          "created": "2013-12-20T22:11:28.211",
+          "name": "World Concern",
+          "id": "LEWNFo4Qrrs",
+          "shortName": "World Concern",
+          "displayName": "World Concern"
+        },
+        {
+          "lastUpdated": "2013-12-20T22:12:28.115",
+          "code": "World Relief",
+          "created": "2013-12-20T22:12:28.115",
+          "name": "World Relief",
+          "id": "xEunk8LPzkb",
+          "shortName": "World Relief",
+          "displayName": "World Relief"
+        },
+        {
+          "lastUpdated": "2013-12-20T22:12:36.187",
+          "code": "World Vision",
+          "created": "2013-12-20T22:12:36.187",
+          "name": "World Vision",
+          "id": "uilaJSyXt7d",
+          "shortName": "World Vision",
+          "displayName": "World Vision"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:30:54.369",
+      "code": "LAB_COMPL",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Labour complications",
+      "id": "SvzFH1XEfJr",
+      "shortName": "Labour complications",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Labour complications",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "MALARIA_1_TRIM",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Malaria in 1st trimester (treat with oral quinine",
+          "id": "o4K5VAp14z9",
+          "shortName": "Malaria in 1st trimester (treat with oral quinine",
+          "displayName": "Malaria in 1st trimester (treat with oral quinine"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "MALARIA_2_3_TRIM",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Malaria in 2nd or 3rd trimester (treat with ACT)",
+          "id": "LVVjrz1mFQt",
+          "shortName": "Malaria in 2nd or 3rd trimester (treat with ACT)",
+          "displayName": "Malaria in 2nd or 3rd trimester (treat with ACT)"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "ANAEMIA",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Anaemia",
+          "id": "agNsiNGcGlf",
+          "shortName": "Anaemia",
+          "displayName": "Anaemia"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "HYPERTENSION",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Hypertension",
+          "id": "IqVA7ElOrEw",
+          "shortName": "Hypertension",
+          "displayName": "Hypertension"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "ABORTION",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Abortion",
+          "id": "FfQkdfpvaxx",
+          "shortName": "Abortion",
+          "displayName": "Abortion"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "STI",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "STI",
+          "id": "E5g8xQeBvHa",
+          "shortName": "STI",
+          "displayName": "STI"
+        },
+        {
+          "lastUpdated": "2013-03-19T20:44:39.993",
+          "code": "OTHER_EARL_COMPL",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Other early complication",
+          "id": "Mz5LnqoobUz",
+          "shortName": "Other early complication",
+          "displayName": "Other early complication"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "PREECLAMP",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Pre-eclampsia/Eclampsia/Hypertension",
+          "id": "rVvVG0xb1U9",
+          "shortName": "Pre-eclampsia/Eclampsia/Hypertension",
+          "displayName": "Pre-eclampsia/Eclampsia/Hypertension"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "ANTE_PART_HEMM",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Ante-partum hemmorhage",
+          "id": "weOIzRXoUN4",
+          "shortName": "Ante-partum hemmorhage",
+          "displayName": "Ante-partum hemmorhage"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "OBSTR_LABOUR",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Obstructed labour",
+          "id": "B3xM7LYh0jH",
+          "shortName": "Obstructed labour",
+          "displayName": "Obstructed labour"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "POST_PART_SEPS",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Post-partum sepsis",
+          "id": "Et4YOXvUod1",
+          "shortName": "Post-partum sepsis",
+          "displayName": "Post-partum sepsis"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "PORT_PART_HEMM",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Post-partum hemmorhage",
+          "id": "b6sKvU8phrc",
+          "shortName": "Post-partum hemmorhage",
+          "displayName": "Post-partum hemmorhage"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "RETAINED_PLAC",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Retained placenta",
+          "id": "qZIEVbjYDLI",
+          "shortName": "Retained placenta",
+          "displayName": "Retained placenta"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "MALPRE",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Malpresentation",
+          "id": "vGrKQ90SRZt",
+          "shortName": "Malpresentation",
+          "displayName": "Malpresentation"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "OTHER_LATE_COMPL",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Other late complication",
+          "id": "sJw2lMoJu1f",
+          "shortName": "Other late complication",
+          "displayName": "Other late complication"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:59:32.881",
+      "code": "LOC_FIX_OUTREACH",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Location Fixed/Outreach",
+      "id": "fMZEcRHuamy",
+      "shortName": "Location Fixed/Outreach",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Location Fixed/Outreach",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "FIXED",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Fixed",
+          "id": "qkPbeWaFsnU",
+          "shortName": "Fixed",
+          "displayName": "Fixed"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "OUTREACH\nOUTREACH",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Outreach",
+          "id": "wbrDrL2aYEc",
+          "shortName": "Outreach",
+          "displayName": "Outreach"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:59:48.308",
+      "code": "LOC_PHU_COMM",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Location PHU/Community",
+      "id": "x3uo8LqiTBk",
+      "shortName": "Location PHU/Community",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Location PHU/Community",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "IN_COMM",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "In Community",
+          "id": "wHFX72Y0KXx",
+          "shortName": "In Community",
+          "displayName": "In Community"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "AT_PHU",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "At PHU",
+          "id": "Fp4gVHbRvEV",
+          "shortName": "At PHU",
+          "displayName": "At PHU"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:26:34.719",
+      "code": "MORB_AGE",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Morbidity Age",
+      "id": "fkAkrdC7eJF",
+      "shortName": "Morbidity Age",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Morbidity Age",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2016-04-18T16:25:58.225",
+          "code": "0_11_M",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "0-11m",
+          "id": "FbLZS3ueWbQ",
+          "shortName": "0-11m",
+          "displayName": "0-11m"
+        },
+        {
+          "lastUpdated": "2015-03-11T11:10:02.159",
+          "code": "12_59_M",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "12-59m",
+          "id": "rEq3Hkd3XXH",
+          "shortName": "12-59m",
+          "displayName": "12-59m"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "5_14Y",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "5-14y",
+          "id": "dUm5jaCTPBb",
+          "shortName": "5-14y",
+          "displayName": "5-14y"
+        },
+        {
+          "lastUpdated": "2015-03-11T11:12:23.883",
+          "code": "15_PLUSY",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "15y+",
+          "id": "ZZxYuoTCcDd",
+          "shortName": "15y+",
+          "displayName": "15y+"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2011-12-24T12:24:25.155",
+      "code": "OUTCOME",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Outcome",
+      "id": "VPqYge5RB93",
+      "shortName": "Outcome",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Outcome",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "MANAGED_PHU",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Managed at PHU",
+          "id": "e3oqm527jBS",
+          "shortName": "Managed at PHU",
+          "displayName": "Managed at PHU"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "REFERRED",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Referred",
+          "id": "rSdQZYDmHJm",
+          "shortName": "Referred",
+          "displayName": "Referred"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-03-19T20:42:58.882",
+      "code": "POINT_OF_SERV",
+      "created": "2013-03-19T20:20:44.850",
+      "name": "Point of service",
+      "id": "EicyMsVYG62",
+      "shortName": "Point of service",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Point of service",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "FIXED",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Fixed",
+          "id": "qkPbeWaFsnU",
+          "shortName": "Fixed",
+          "displayName": "Fixed"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "OUTREACH\nOUTREACH",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Outreach",
+          "id": "wbrDrL2aYEc",
+          "shortName": "Outreach",
+          "displayName": "Outreach"
+        },
+        {
+          "lastUpdated": "2013-03-19T19:51:40.402",
+          "code": "SCHOOL\nSCHOOL",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "School",
+          "id": "C1CvTD0GlTU",
+          "shortName": "School",
+          "displayName": "School"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:30:04.465",
+      "code": "PREGNANT",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Pregnant/Non-pregnant",
+      "id": "qzsxBXFf5yb",
+      "shortName": "Pregnant/Non-pregnant",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Pregnant/Non-pregnant",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "PREGNANT",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Pregnant",
+          "id": "JR4RSJFjNYl",
+          "shortName": "Pregnant",
+          "displayName": "Pregnant"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "NON_PREGNANT",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Non-pregnant",
+          "id": "ZggZw2XNDaw",
+          "shortName": "Non-pregnant",
+          "displayName": "Non-pregnant"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-12-23T18:08:20.301",
+      "code": "PROJECT",
+      "created": "2013-12-20T22:16:13.684",
+      "name": "Project",
+      "id": "yY2bQYqNt0o",
+      "shortName": "Project",
+      "dataDimensionType": "ATTRIBUTE",
+      "displayName": "Project",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2016-07-04T18:26:53.030",
+          "code": "Project01",
+          "created": "2013-12-20T22:14:03.322",
+          "name": "Improve access to clean water",
+          "id": "i4Nbp8S2G6A",
+          "shortName": "Improve access to clean water",
+          "displayName": "Improve access to clean water"
+        },
+        {
+          "lastUpdated": "2013-12-20T22:14:27.023",
+          "code": "Project03",
+          "created": "2013-12-20T22:14:27.023",
+          "name": "Improve access to medicines",
+          "id": "yMj2MnmNI8L",
+          "shortName": "Improve access to medicines",
+          "displayName": "Improve access to medicines"
+        },
+        {
+          "lastUpdated": "2016-07-04T18:27:15.401",
+          "code": "Project02",
+          "created": "2013-12-20T22:14:12.940",
+          "name": "Provide access to primary health care",
+          "id": "OUUdG3sdOqb",
+          "shortName": "Provide access to primary health care",
+          "displayName": "Provide access to primary health care"
+        },
+        {
+          "lastUpdated": "2013-12-20T22:14:47.949",
+          "code": "Project05",
+          "created": "2013-12-20T22:14:47.949",
+          "name": "Provide access to basic education",
+          "id": "M58XdOfhiJ7",
+          "shortName": "Provide access to basic education",
+          "displayName": "Provide access to basic education"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:28:51.359",
+      "code": "REF_AGE",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Referrals Age",
+      "id": "WnouSiGrbgy",
+      "shortName": "Referrals Age",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Referrals Age",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2015-03-11T11:56:43.416",
+          "code": "0_4Y",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "0-4y",
+          "id": "K4gwuiVvW3z",
+          "shortName": "0-4y",
+          "displayName": "0-4y"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "5_PLUSY",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "5y+",
+          "id": "oaFqxkefkPs",
+          "shortName": "5y+",
+          "displayName": "5y+"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2017-05-19T14:46:41.271",
+      "code": "RURAL_URBAN",
+      "created": "2017-05-19T14:46:41.271",
+      "name": "Rural and Urban",
+      "id": "EC40NXmsTVu",
+      "shortName": "Rural and Urban",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Rural and Urban",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2017-05-19T14:45:56.585",
+          "code": "RURAL",
+          "created": "2017-05-19T14:45:56.585",
+          "name": "Rural",
+          "id": "N7eHxEoNHZa",
+          "shortName": "Rural",
+          "displayName": "Rural"
+        },
+        {
+          "lastUpdated": "2017-05-19T14:46:06.948",
+          "code": "URBAN",
+          "created": "2017-05-19T14:46:06.948",
+          "name": "Urban",
+          "id": "UyBLLB6kvw4",
+          "shortName": "Urban",
+          "displayName": "Urban"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2011-12-24T12:24:25.155",
+      "code": "STAFFING",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Staffing",
+      "id": "VVDQ8UdwUIj",
+      "shortName": "Staffing",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Staffing",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "ON_SALARY",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "On salary",
+          "id": "Z8aX3AkrDMS",
+          "shortName": "On salary",
+          "displayName": "On salary"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "NOT_ON_SALARY",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Not on salary",
+          "id": "sNr1y5Qq1YQ",
+          "shortName": "Not on salary",
+          "displayName": "Not on salary"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2011-12-24T12:24:25.155",
+      "code": "STOCK_DISC",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Stock discarded",
+      "id": "Qzh0MSUx4RM",
+      "shortName": "Stock discarded",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Stock discarded",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "EXPIRED",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Expired",
+          "id": "YHb43JqCAmI",
+          "shortName": "Expired",
+          "displayName": "Expired"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "DAMAGES",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Damages",
+          "id": "mInFlpnx6TQ",
+          "shortName": "Damages",
+          "displayName": "Damages"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "VVM_CHANGE",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "VVM Change",
+          "id": "qKc2WhjMPKC",
+          "shortName": "VVM Change",
+          "displayName": "VVM Change"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2017-05-16T19:47:31.122",
+      "code": "TARGET_RESULT",
+      "created": "2017-05-16T19:47:31.122",
+      "name": "Target vs Result",
+      "id": "eLwL77Z9E7R",
+      "shortName": "Target vs Result",
+      "dataDimensionType": "ATTRIBUTE",
+      "displayName": "Target vs Result",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2017-05-16T16:44:41.026",
+          "created": "2017-05-16T16:44:41.026",
+          "name": "Target",
+          "id": "STgy27fGvaU",
+          "shortName": "Target",
+          "displayName": "Target"
+        },
+        {
+          "lastUpdated": "2017-05-16T16:49:36.605",
+          "created": "2017-05-16T16:44:47.955",
+          "name": "Result",
+          "id": "JvIqWKLPPkt",
+          "shortName": "Result",
+          "displayName": "Result"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:31:12.367",
+      "code": "UNDER_ABOVE_5Y",
+      "created": "2013-04-09T14:44:59.967",
+      "name": "Under 5/5 and above of age",
+      "id": "Pj6Pe2e5PX7",
+      "shortName": "Under 5/5 and above of age",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Under 5/5 and above of age",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2013-04-09T14:44:19.905",
+          "code": "U5Y",
+          "created": "2013-04-09T14:44:19.905",
+          "name": "Under 5 years",
+          "id": "D3E6Qfzjs6I",
+          "shortName": "Under 5 years",
+          "displayName": "Under 5 years"
+        },
+        {
+          "lastUpdated": "2013-04-09T14:44:27.211",
+          "code": "O5Y",
+          "created": "2013-04-09T14:44:27.211",
+          "name": "5 years and above",
+          "id": "PYddIHxZRKK",
+          "shortName": "5 years and above",
+          "displayName": "5 years and above"
+        }
+      ]
+    }
+  ]
+}

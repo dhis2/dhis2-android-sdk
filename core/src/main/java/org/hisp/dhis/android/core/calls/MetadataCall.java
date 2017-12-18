@@ -29,6 +29,16 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.category.Category;
+import org.hisp.dhis.android.core.category.CategoryCallEndpoint;
+import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryComboCallEndpoint;
+import org.hisp.dhis.android.core.category.CategoryComboQuery;
+import org.hisp.dhis.android.core.category.CategoryComboService;
+import org.hisp.dhis.android.core.category.CategoryQuery;
+import org.hisp.dhis.android.core.category.CategoryService;
+import org.hisp.dhis.android.core.category.Handler;
+import org.hisp.dhis.android.core.category.ResponseValidator;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -59,6 +69,7 @@ import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
@@ -107,7 +118,8 @@ public class MetadataCall implements Call<Response> {
     private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
     private final ProgramRuleVariableStore programRuleVariableStore;
     private final ProgramIndicatorStore programIndicatorStore;
-    private final ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
+    private final ProgramStageSectionProgramIndicatorLinkStore
+            programStageSectionProgramIndicatorLinkStore;
     private final ProgramRuleActionStore programRuleActionStore;
     private final ProgramRuleStore programRuleStore;
     private final OptionStore optionStore;
@@ -118,44 +130,56 @@ public class MetadataCall implements Call<Response> {
     private final ProgramStageStore programStageStore;
     private final RelationshipTypeStore relationshipStore;
     private final TrackedEntityStore trackedEntityStore;
+    private final CategoryQuery categoryQuery;
+    private final CategoryComboQuery categoryComboQuery;
+    private final CategoryService categoryService;
+    private final CategoryComboService comboService;
+    private final Handler<Category> categoryHandler;
+    private final Handler<CategoryCombo> categoryComboHandler;
 
     private boolean isExecuted;
 
     private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
 
     public MetadataCall(@NonNull DatabaseAdapter databaseAdapter,
-                        @NonNull SystemInfoService systemInfoService,
-                        @NonNull UserService userService,
-                        @NonNull ProgramService programService,
-                        @NonNull OrganisationUnitService organisationUnitService,
-                        @NonNull TrackedEntityService trackedEntityService,
-                        @NonNull OptionSetService optionSetService,
-                        @NonNull SystemInfoStore systemInfoStore,
-                        @NonNull ResourceStore resourceStore,
-                        @NonNull UserStore userStore,
-                        @NonNull UserCredentialsStore userCredentialsStore,
-                        @NonNull UserRoleStore userRoleStore,
-                        @NonNull UserRoleProgramLinkStore userRoleProgramLinkStore,
-                        @NonNull OrganisationUnitStore organisationUnitStore,
-                        @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
-                        @NonNull ProgramStore programStore,
-                        @NonNull TrackedEntityAttributeStore trackedEntityAttributeStore,
-                        @NonNull ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
-                        @NonNull ProgramRuleVariableStore programRuleVariableStore,
-                        @NonNull ProgramIndicatorStore programIndicatorStore,
-                        @NonNull ProgramStageSectionProgramIndicatorLinkStore
-                                programStageSectionProgramIndicatorLinkStore,
-                        @NonNull ProgramRuleActionStore programRuleActionStore,
-                        @NonNull ProgramRuleStore programRuleStore,
-                        @NonNull OptionStore optionStore,
-                        @NonNull OptionSetStore optionSetStore,
-                        @NonNull DataElementStore dataElementStore,
-                        @NonNull ProgramStageDataElementStore programStageDataElementStore,
-                        @NonNull ProgramStageSectionStore programStageSectionStore,
-                        @NonNull ProgramStageStore programStageStore,
-                        @NonNull RelationshipTypeStore relationshipStore,
-                        @NonNull TrackedEntityStore trackedEntityStore,
-                        @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore) {
+            @NonNull SystemInfoService systemInfoService,
+            @NonNull UserService userService,
+            @NonNull ProgramService programService,
+            @NonNull OrganisationUnitService organisationUnitService,
+            @NonNull TrackedEntityService trackedEntityService,
+            @NonNull OptionSetService optionSetService,
+            @NonNull SystemInfoStore systemInfoStore,
+            @NonNull ResourceStore resourceStore,
+            @NonNull UserStore userStore,
+            @NonNull UserCredentialsStore userCredentialsStore,
+            @NonNull UserRoleStore userRoleStore,
+            @NonNull UserRoleProgramLinkStore userRoleProgramLinkStore,
+            @NonNull OrganisationUnitStore organisationUnitStore,
+            @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
+            @NonNull ProgramStore programStore,
+            @NonNull TrackedEntityAttributeStore trackedEntityAttributeStore,
+            @NonNull ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
+            @NonNull ProgramRuleVariableStore programRuleVariableStore,
+            @NonNull ProgramIndicatorStore programIndicatorStore,
+            @NonNull ProgramStageSectionProgramIndicatorLinkStore
+                    programStageSectionProgramIndicatorLinkStore,
+            @NonNull ProgramRuleActionStore programRuleActionStore,
+            @NonNull ProgramRuleStore programRuleStore,
+            @NonNull OptionStore optionStore,
+            @NonNull OptionSetStore optionSetStore,
+            @NonNull DataElementStore dataElementStore,
+            @NonNull ProgramStageDataElementStore programStageDataElementStore,
+            @NonNull ProgramStageSectionStore programStageSectionStore,
+            @NonNull ProgramStageStore programStageStore,
+            @NonNull RelationshipTypeStore relationshipStore,
+            @NonNull TrackedEntityStore trackedEntityStore,
+            @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore,
+            @NonNull CategoryQuery categoryQuery,
+            @NonNull CategoryService categoryService,
+            @NonNull Handler<Category> categoryHandler,
+            @NonNull CategoryComboQuery categoryComboQuery,
+            @NonNull CategoryComboService comboService,
+            @NonNull Handler<CategoryCombo> categoryComboHandler) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.userService = userService;
@@ -176,7 +200,8 @@ public class MetadataCall implements Call<Response> {
         this.programTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
         this.programRuleVariableStore = programRuleVariableStore;
         this.programIndicatorStore = programIndicatorStore;
-        this.programStageSectionProgramIndicatorLinkStore = programStageSectionProgramIndicatorLinkStore;
+        this.programStageSectionProgramIndicatorLinkStore =
+                programStageSectionProgramIndicatorLinkStore;
         this.programRuleActionStore = programRuleActionStore;
         this.programRuleStore = programRuleStore;
         this.optionStore = optionStore;
@@ -188,6 +213,12 @@ public class MetadataCall implements Call<Response> {
         this.relationshipStore = relationshipStore;
         this.trackedEntityStore = trackedEntityStore;
         this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
+        this.categoryQuery = categoryQuery;
+        this.categoryService = categoryService;
+        this.categoryHandler = categoryHandler;
+        this.categoryComboQuery = categoryComboQuery;
+        this.comboService = comboService;
+        this.categoryComboHandler = categoryComboHandler;
     }
 
     @Override
@@ -214,7 +245,7 @@ public class MetadataCall implements Call<Response> {
                     databaseAdapter, systemInfoStore,
                     systemInfoService, resourceStore
             ).call();
-            if (!response.isSuccessful()) {
+            if (isValid(response)) {
                 return response;
             }
             SystemInfo systemInfo = (SystemInfo) response.body();
@@ -230,7 +261,7 @@ public class MetadataCall implements Call<Response> {
                     serverDate,
                     userRoleProgramLinkStore
             ).call();
-            if (!response.isSuccessful()) {
+            if (isValid(response)) {
                 return response;
             }
 
@@ -239,19 +270,23 @@ public class MetadataCall implements Call<Response> {
                     user, organisationUnitService, databaseAdapter, organisationUnitStore,
                     resourceStore, serverDate, userOrganisationUnitLinkStore,
                     organisationUnitProgramLinkStore).call();
-            if (!response.isSuccessful()) {
+            if (isValid(response)) {
                 return response;
             }
 
             Set<String> programUids = getAssignedProgramUids(user);
             response = new ProgramCall(
-                    programService, databaseAdapter, resourceStore, programUids, programStore, serverDate,
-                    trackedEntityAttributeStore, programTrackedEntityAttributeStore, programRuleVariableStore,
-                    programIndicatorStore, programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                    programRuleStore, optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
+                    programService, databaseAdapter, resourceStore, programUids, programStore,
+                    serverDate,
+                    trackedEntityAttributeStore, programTrackedEntityAttributeStore,
+                    programRuleVariableStore,
+                    programIndicatorStore, programStageSectionProgramIndicatorLinkStore,
+                    programRuleActionStore,
+                    programRuleStore, optionStore, optionSetStore, dataElementStore,
+                    programStageDataElementStore,
                     programStageSectionStore, programStageStore, relationshipStore
             ).call();
-            if (!response.isSuccessful()) {
+            if (isValid(response)) {
                 return response;
             }
 
@@ -261,7 +296,7 @@ public class MetadataCall implements Call<Response> {
                     trackedEntityUids, databaseAdapter, trackedEntityStore,
                     resourceStore, trackedEntityService, serverDate
             ).call();
-            if (!response.isSuccessful()) {
+            if (isValid(response)) {
                 return response;
             }
 
@@ -270,14 +305,30 @@ public class MetadataCall implements Call<Response> {
                     optionSetService, optionSetStore, databaseAdapter, resourceStore,
                     optionSetUids, serverDate, optionStore
             ).call();
-            if (!response.isSuccessful()) {
+            if (isValid(response)) {
                 return response;
             }
+            response = downloadCategories(serverDate);
+
+            if (isValid(response)) {
+                return response;
+            }
+
+            response = downloadCategoryCombos(serverDate);
+
+            if (isValid(response)) {
+                return response;
+            }
+
             transaction.setSuccessful();
             return response;
         } finally {
             transaction.end();
         }
+    }
+
+    private boolean isValid(Response response) {
+        return !response.isSuccessful();
     }
 
     /// Utilty methods:
@@ -302,7 +353,8 @@ public class MetadataCall implements Call<Response> {
 
         for (int j = 0; j < programStagesSize; j++) {
             ProgramStage programStage = programStages.get(j);
-            List<ProgramStageDataElement> programStageDataElements = programStage.programStageDataElements();
+            List<ProgramStageDataElement> programStageDataElements =
+                    programStage.programStageDataElements();
             int programStageDataElementSize = programStageDataElements.size();
 
             for (int k = 0; k < programStageDataElementSize; k++) {
@@ -322,7 +374,8 @@ public class MetadataCall implements Call<Response> {
                 program.programTrackedEntityAttributes();
 
         for (int j = 0; j < programTrackedEntityAttributeSize; j++) {
-            ProgramTrackedEntityAttribute programTrackedEntityAttribute = programTrackedEntityAttributes.get(j);
+            ProgramTrackedEntityAttribute programTrackedEntityAttribute =
+                    programTrackedEntityAttributes.get(j);
 
             if (programTrackedEntityAttribute.trackedEntityAttribute() != null &&
                     programTrackedEntityAttribute.trackedEntityAttribute().optionSet() != null) {
@@ -350,7 +403,8 @@ public class MetadataCall implements Call<Response> {
     }
 
     private Set<String> getAssignedProgramUids(User user) {
-        if (user == null || user.userCredentials() == null || user.userCredentials().userRoles() == null) {
+        if (user == null || user.userCredentials() == null
+                || user.userCredentials().userRoles() == null) {
             return null;
         }
 
@@ -395,5 +449,22 @@ public class MetadataCall implements Call<Response> {
                 }
             }
         }
+    }
+
+    private Response<Payload<Category>> downloadCategories(Date serverDate) throws Exception {
+        ResponseValidator<Category> validator = new ResponseValidator<>();
+        return new CategoryCallEndpoint(categoryQuery, categoryService, validator,
+                categoryHandler,
+                new ResourceHandler(resourceStore), databaseAdapter, serverDate).call();
+    }
+
+    private Response<Payload<CategoryCombo>> downloadCategoryCombos(Date serverDate)
+            throws Exception {
+
+        ResponseValidator<CategoryCombo> comboValidator = new ResponseValidator<>();
+
+        return new CategoryComboCallEndpoint(categoryComboQuery, comboService,
+                comboValidator, categoryComboHandler,
+                new ResourceHandler(resourceStore), databaseAdapter, serverDate).call();
     }
 }

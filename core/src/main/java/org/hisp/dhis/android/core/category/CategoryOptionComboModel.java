@@ -25,73 +25,52 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.resource;
+
+package org.hisp.dhis.android.core.category;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 
-import java.util.Date;
 
 @AutoValue
-public abstract class ResourceModel extends BaseModel {
-    public static final String TABLE = "Resource";
+public abstract class CategoryOptionComboModel extends BaseIdentifiableObjectModel {
+    public static final String TABLE = "CategoryOptionCombo";
 
-    public static class Columns extends BaseModel.Columns {
-        public static final String RESOURCE_TYPE = "resourceType";
-        public static final String LAST_SYNCED = "lastSynced";
-    }
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String CATEGORY_COMBO = "categoryCombo";
 
-    public enum Type {
-        EVENT,
-        SYSTEM_INFO,
-        USER,
-        ORGANISATION_UNIT,
-        PROGRAM,
-        OPTION_SET,
-        TRACKED_ENTITY,
-        TRACKED_ENTITY_INSTANCE,
-        CATEGORY,
-        CATEGORY_COMBO
     }
 
     @Nullable
-    @ColumnName(Columns.RESOURCE_TYPE)
-    public abstract String resourceType();
+    @ColumnName(Columns.CATEGORY_COMBO)
+    public abstract String categoryCombo();
 
-    @Nullable
-    @ColumnName(Columns.LAST_SYNCED)
-    @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date lastSynced();
 
     @NonNull
     public abstract ContentValues toContentValues();
 
     @NonNull
-    public static ResourceModel create(Cursor cursor) {
-        return AutoValue_ResourceModel.createFromCursor(cursor);
+    public static Builder builder() {
+        return new $$AutoValue_CategoryOptionComboModel.Builder();
     }
 
     @NonNull
-    public static Builder builder() {
-        return new $$AutoValue_ResourceModel.Builder();
+    public static CategoryOptionComboModel create(Cursor cursor) {
+        return AutoValue_CategoryOptionComboModel.createFromCursor(cursor);
+
     }
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
-        public abstract Builder resourceType(@Nullable String resourceType);
+    public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {
+        public abstract Builder categoryCombo(@Nullable String categoryCombo);
 
-        public abstract Builder lastSynced(@Nullable Date lastSynced);
-
-        public abstract ResourceModel build();
+        public abstract CategoryOptionComboModel build();
     }
-
 }

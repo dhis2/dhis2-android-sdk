@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.support.test.runner.AndroidJUnit4;
+
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
@@ -8,10 +10,11 @@ import org.hisp.dhis.android.core.common.TrackedEntityInstanceCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
+@RunWith(AndroidJUnit4.class)
 public class TrackedEntityInstanceCallRealIntegrationShould extends AbsStoreTestCase {
 
     private D2 d2;

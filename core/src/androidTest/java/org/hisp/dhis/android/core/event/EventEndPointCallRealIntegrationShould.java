@@ -3,6 +3,8 @@ package org.hisp.dhis.android.core.event;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+import android.support.test.runner.AndroidJUnit4;
+
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
@@ -11,10 +13,12 @@ import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
+import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.List;
 
+@RunWith(AndroidJUnit4.class)
 public class EventEndPointCallRealIntegrationShould extends AbsStoreTestCase {
 
     private D2 d2;

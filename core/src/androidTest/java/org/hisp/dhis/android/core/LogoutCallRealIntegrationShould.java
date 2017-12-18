@@ -2,7 +2,7 @@ package org.hisp.dhis.android.core;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import android.database.Cursor;
+import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isDatabaseEmpty;
 
 import com.google.common.truth.Truth;
 
@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -43,7 +42,7 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
                 ).build();
     }
 
-    //@Test
+    @Test
     public void have_empty_database_when_wipe_db_after_sync_metadata() throws Exception {
         retrofit2.Response response = null;
         response = d2.logIn("android", "Android123").call();
@@ -52,14 +51,14 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
         response = d2.syncMetaData().call();
         Truth.assertThat(response.isSuccessful()).isTrue();
 
-        Truth.assertThat(isDatabaseEmpty()).isFalse();
+        Truth.assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
 
         d2.logOut().call();
 
-        Truth.assertThat(isDatabaseEmpty()).isTrue();
+        Truth.assertThat(isDatabaseEmpty(databaseAdapter())).isTrue();
     }
 
-    //@Test
+    @Test
     public void have_empty_database_when_wipe_db_after_sync_data() throws Exception {
         retrofit2.Response response = null;
         response = d2.logIn("android", "Android123").call();
@@ -73,26 +72,10 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
 
         eventCall.call();
 
-        Truth.assertThat(isDatabaseEmpty()).isFalse();
+        Truth.assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
 
         d2.logOut().call();
 
-        Truth.assertThat(isDatabaseEmpty()).isTrue();
-    }
-
-    private boolean isDatabaseEmpty() {
-        Cursor res = databaseAdapter().query(" SELECT name FROM sqlite_master WHERE type='table' and name!='android_metadata' and name!='sqlite_sequence'");
-        int value = res.getColumnIndex("name");
-        if (value != -1) {
-            while (res.moveToNext()){
-                String tableName = res.getString(value);
-                Cursor resTable = databaseAdapter().query(
-                        "SELECT * from " + tableName , null);
-                if (resTable.getCount() > 0) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        Truth.assertThat(isDatabaseEmpty(databaseAdapter())).isTrue();
     }
 }

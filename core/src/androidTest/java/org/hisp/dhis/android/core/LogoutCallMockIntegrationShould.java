@@ -1,8 +1,7 @@
 package org.hisp.dhis.android.core;
 
-import static com.google.common.truth.Truth.assertThat;
-
-import android.database.Cursor;
+import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.ifValueExist;
+import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isDatabaseEmpty;
 
 import com.google.common.truth.Truth;
 
@@ -12,6 +11,7 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.event.EventCall;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,10 +47,27 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
         d2.logIn("user", "password").call();
     }
 
+    private void givenALoginWithSierraLeonaOUInDatabase() throws Exception {
+        dhis2MockServer.enqueueMockResponse("sierra_leona_login.json");
+
+        d2.logIn("user", "password").call();
+    }
+
     private void givenAMetadataInDatabase() throws Exception {
         dhis2MockServer.enqueueMockResponse("system_info.json");
         dhis2MockServer.enqueueMockResponse("user.json");
         dhis2MockServer.enqueueMockResponse("organisationUnits.json");
+        dhis2MockServer.enqueueMockResponse("programs.json");
+        dhis2MockServer.enqueueMockResponse("tracked_entities.json");
+        dhis2MockServer.enqueueMockResponse("option_sets.json");
+
+        d2.syncMetaData().call();
+    }
+
+    private void givenAMetadataWithDescendantsInDatabase() throws Exception {
+        dhis2MockServer.enqueueMockResponse("system_info.json");
+        dhis2MockServer.enqueueMockResponse("sierra_leona_login.json");
+        dhis2MockServer.enqueueMockResponse("sierra_leona_organisationUnits.json");
         dhis2MockServer.enqueueMockResponse("programs.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
         dhis2MockServer.enqueueMockResponse("option_sets.json");
@@ -73,11 +90,11 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
 
         givenAMetadataInDatabase();
 
-        Truth.assertThat(isDatabaseEmpty()).isFalse();
+        Truth.assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
 
         d2.logOut().call();
 
-        Truth.assertThat(isDatabaseEmpty()).isTrue();
+        Truth.assertThat(isDatabaseEmpty(databaseAdapter())).isTrue();
     }
 
     @Test
@@ -88,26 +105,35 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
 
         givenAEventInDatabase();
 
-        Truth.assertThat(isDatabaseEmpty()).isFalse();
+        Truth.assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
 
         d2.logOut().call();
 
-        Truth.assertThat(isDatabaseEmpty()).isTrue();
+        Truth.assertThat(isDatabaseEmpty(databaseAdapter())).isTrue();
     }
 
-    private boolean isDatabaseEmpty() {
-        Cursor res = databaseAdapter().query(" SELECT name FROM sqlite_master WHERE type='table' and name!='android_metadata' and name!='sqlite_sequence'");
-        int value = res.getColumnIndex("name");
-        if (value != -1) {
-            while (res.moveToNext()){
-                String tableName = res.getString(value);
-                Cursor resTable = databaseAdapter().query(
-                        "SELECT * from " + tableName , null);
-                if (resTable.getCount() > 0) {
-                    return false;
-                }
-            }
-        }
-        return true;
+    @Test
+    public void have_organisation_units_descendants_after_login_logout_and_login() throws Exception {
+        givenALoginInDatabase();
+
+        givenAMetadataInDatabase();
+
+        givenAEventInDatabase();
+
+        Truth.assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
+
+        d2.logOut().call();
+
+        Truth.assertThat(isDatabaseEmpty(databaseAdapter())).isTrue();
+
+        givenALoginWithSierraLeonaOUInDatabase();
+
+        givenAMetadataWithDescendantsInDatabase();
+
+        //Sierra leona
+        Truth.assertThat(ifValueExist(OrganisationUnitModel.TABLE, OrganisationUnitModel.Columns.UID,"ImspTQPwCqd", d2.databaseAdapter())).isTrue();
+
+        //Sierra leona descendant
+        Truth.assertThat(ifValueExist(OrganisationUnitModel.TABLE, OrganisationUnitModel.Columns.CODE,"OU_260382", d2.databaseAdapter())).isTrue();
     }
 }

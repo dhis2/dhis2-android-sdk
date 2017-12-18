@@ -145,7 +145,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     }
 
     /**
-     * Create a {@link BriteDatabase} instance.
+     * Create a {@link BriteDatabase} instance.N
      * This method always returns very quickly.  The database is not actually
      * created or opened until one of {@link #getWritableDatabase} or
      * {@link #getReadableDatabase} is called.

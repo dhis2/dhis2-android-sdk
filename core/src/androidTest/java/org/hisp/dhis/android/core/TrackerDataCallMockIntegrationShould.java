@@ -36,7 +36,6 @@ import java.util.Map;
 
 import retrofit2.Response;
 
-@RunWith(AndroidJUnit4.class)
 public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
 
     private Dhis2MockServer dhis2MockServer;

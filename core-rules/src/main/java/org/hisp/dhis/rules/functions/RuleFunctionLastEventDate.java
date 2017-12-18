@@ -5,6 +5,7 @@ import org.hisp.dhis.rules.models.RuleEvent;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -43,7 +44,7 @@ final class RuleFunctionLastEventDate extends RuleFunction {
             if(ruleVariableValue.getTarget() instanceof RuleEvent){
                 RuleEvent ruleEvent = (RuleEvent)ruleVariableValue.getTarget();
                 if(ruleEvent.event().equals(variableName)) {
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_PATTERN);
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_PATTERN, Locale.US);
                     return simpleDateFormat.format(ruleEvent.eventDate());
                 }
             }

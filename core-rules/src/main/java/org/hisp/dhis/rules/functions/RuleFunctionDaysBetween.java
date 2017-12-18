@@ -8,6 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -42,8 +43,7 @@ abstract class RuleFunctionDaysBetween extends RuleFunction {
      */
     @SuppressWarnings("PMD.UnnecessaryWrapperObjectCreation")
     static Integer daysBetween(String start, String end) {
-        SimpleDateFormat format = new SimpleDateFormat();
-        format.applyPattern(DATE_PATTERN);
+        SimpleDateFormat format = new SimpleDateFormat(DATE_PATTERN, Locale.US);
 
         try {
             Date startDate = format.parse(start);

@@ -44,7 +44,8 @@ public class TrackedEntityAttributeValueHandler {
                         trackedEntityInstanceUid);
 
         for (TrackedEntityAttributeValue attributeValue : attributeValuesInDB) {
-            if (!existsDataElement(attributeValues, attributeValue.trackedEntityAttribute())) {
+            if (!existsTrackedEntityAttribute(attributeValues,
+                    attributeValue.trackedEntityAttribute())) {
                 attributeUIdsToRemove.add(attributeValue.trackedEntityAttribute());
             }
         }
@@ -52,7 +53,7 @@ public class TrackedEntityAttributeValueHandler {
         return attributeUIdsToRemove;
     }
 
-    private boolean existsDataElement(List<TrackedEntityAttributeValue> attributeValues,
+    private boolean existsTrackedEntityAttribute(List<TrackedEntityAttributeValue> attributeValues,
             String trackedEntityAttributeUid) {
         for (TrackedEntityAttributeValue attributeValue : attributeValues) {
             if (attributeValue.trackedEntityAttribute().equals(trackedEntityAttributeUid)) {

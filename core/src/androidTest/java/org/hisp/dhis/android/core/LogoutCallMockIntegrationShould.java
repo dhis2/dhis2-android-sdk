@@ -1,13 +1,9 @@
 package org.hisp.dhis.android.core;
 
-import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.ifValueExist;
-import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isDatabaseEmpty;
-
-import com.google.common.truth.Truth;
-
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.database.DatabaseAssert;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.event.EventEndPointCall;
@@ -90,11 +86,11 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
 
         givenAMetadataInDatabase();
 
-        Truth.assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
+        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
 
         d2.logOut().call();
 
-        Truth.assertThat(isDatabaseEmpty(databaseAdapter())).isTrue();
+        DatabaseAssert.assertThatDatabase(databaseAdapter()).isEmpty();
     }
 
     @Test
@@ -105,35 +101,42 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
 
         givenAEventInDatabase();
 
-        Truth.assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
+        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
 
         d2.logOut().call();
 
-        Truth.assertThat(isDatabaseEmpty(databaseAdapter())).isTrue();
+        DatabaseAssert.assertThatDatabase(databaseAdapter()).isEmpty();
     }
 
     @Test
-    public void have_organisation_units_descendants_after_login_logout_and_login() throws Exception {
+    public void have_organisation_units_descendants_after_login_logout_and_login()
+            throws Exception {
         givenALoginInDatabase();
 
         givenAMetadataInDatabase();
 
         givenAEventInDatabase();
 
-        Truth.assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
+        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
 
         d2.logOut().call();
 
-        Truth.assertThat(isDatabaseEmpty(databaseAdapter())).isTrue();
+        DatabaseAssert.assertThatDatabase(databaseAdapter()).isEmpty();
 
         givenALoginWithSierraLeonaOUInDatabase();
 
         givenAMetadataWithDescendantsInDatabase();
 
         //Sierra leona
-        Truth.assertThat(ifValueExist(OrganisationUnitModel.TABLE, OrganisationUnitModel.Columns.UID,"ImspTQPwCqd", d2.databaseAdapter())).isTrue();
+        DatabaseAssert.assertThatDatabase(databaseAdapter())
+                .ifValueExist(OrganisationUnitModel.TABLE,
+                        OrganisationUnitModel.Columns.UID,
+                        "ImspTQPwCqd");
 
         //Sierra leona descendant
-        Truth.assertThat(ifValueExist(OrganisationUnitModel.TABLE, OrganisationUnitModel.Columns.CODE,"OU_260382", d2.databaseAdapter())).isTrue();
+        DatabaseAssert.assertThatDatabase(databaseAdapter())
+                .ifValueExist(OrganisationUnitModel.TABLE,
+                        OrganisationUnitModel.Columns.CODE,
+                        "OU_260382");
     }
 }

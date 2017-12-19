@@ -8,12 +8,12 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-final class RuleFunctionRuleFunctionCountIfZeroPos extends RuleFunction {
+final class RuleFunctionCountIfZeroPos extends RuleFunction {
     static final String D2_COUNT_IF_ZERO_POS = "d2:countIfZeroPos";
 
     @Nonnull
-    static RuleFunctionRuleFunctionCountIfZeroPos create() {
-        return new RuleFunctionRuleFunctionCountIfZeroPos();
+    static RuleFunctionCountIfZeroPos create() {
+        return new RuleFunctionCountIfZeroPos();
     }
 
     @Nonnull

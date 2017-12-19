@@ -21,7 +21,7 @@ public class RuleFunctionCountIfValueShould {
 
     @Test
     public void return_zero_if_variable_not_exist() {
-        RuleFunction ruleFunction = RuleFunctionRuleFunctionCountIfValue.create();
+        RuleFunction ruleFunction = RuleFunctionCountIfValue.create();
 
         HashMap<String, RuleVariableValue> ruleVariableValueHashMap = new HashMap<>();
         String result = ruleFunction.evaluate(Arrays.asList(""), ruleVariableValueHashMap);
@@ -31,7 +31,7 @@ public class RuleFunctionCountIfValueShould {
 
     @Test
     public void return_value_if_variable_exist() {
-        RuleFunction ruleFunction = RuleFunctionRuleFunctionCountIfValue.create();
+        RuleFunction ruleFunction = RuleFunctionCountIfValue.create();
 
 
         RuleVariableValue variableValue = RuleVariableValue.create(
@@ -62,7 +62,7 @@ public class RuleFunctionCountIfValueShould {
     @Test
     public void throw_null_pointer_exception_if_first_parameter_is_null() {
         thrown.expect(NullPointerException.class);
-        RuleFunction ruleFunction = RuleFunctionRuleFunctionCountIfValue.create();
+        RuleFunction ruleFunction = RuleFunctionCountIfValue.create();
 
         ruleFunction.evaluate(null,
                 new HashMap<String, RuleVariableValue>());
@@ -71,7 +71,7 @@ public class RuleFunctionCountIfValueShould {
     @Test
     public void throw_illegal_argument_exception_if_first_parameter_is_empty_list() {
         thrown.expect(IllegalArgumentException.class);
-        RuleFunction ruleFunction = RuleFunctionRuleFunctionCountIfValue.create();
+        RuleFunction ruleFunction = RuleFunctionCountIfValue.create();
 
         ruleFunction.evaluate(new ArrayList<String>(),
                 new HashMap<String, RuleVariableValue>());

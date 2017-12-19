@@ -8,12 +8,12 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-final class RuleFunctionRuleFunctionCountIfValue extends RuleFunction {
+final class RuleFunctionCountIfValue extends RuleFunction {
     static final String D2_COUNT_IF_VALUE = "d2:countIfValue";
 
     @Nonnull
-    static RuleFunctionRuleFunctionCountIfValue create() {
-        return new RuleFunctionRuleFunctionCountIfValue();
+    static RuleFunctionCountIfValue create() {
+        return new RuleFunctionCountIfValue();
     }
 
     @Nonnull

@@ -27,13 +27,13 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
+
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitProgramLinkStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
@@ -62,5 +62,10 @@ public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitPro
                 insertStatement);
         insertStatement.clearBindings();
         return ret;
+    }
+
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(OrganisationUnitProgramLinkModel.TABLE);
     }
 }

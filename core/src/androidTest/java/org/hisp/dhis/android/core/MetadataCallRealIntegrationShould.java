@@ -4,22 +4,19 @@ import static com.google.common.truth.Truth.assertThat;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.configuration.ConfigurationModel;
-import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
+import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-
-@RunWith(AndroidJUnit4.class)
 public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     /**
-     * A quick integration test that is probably flaky, but will help with finding bugs related to the
+     * A quick integration test that is probably flaky, but will help with finding bugs related to
+     * the
      * metadataSyncCall. It works against the demo server.
      */
     private D2 d2;
@@ -30,29 +27,20 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        ConfigurationModel config = ConfigurationModel.builder()
-                .serverUrl(HttpUrl.parse("https://play.dhis2.org/android-current/api/"))
-                .build();
-
-        d2 = new D2.Builder()
-                .configuration(config)
-                .databaseAdapter(databaseAdapter())
-                .okHttpClient(
-                        new OkHttpClient.Builder()
-                                .addInterceptor(BasicAuthenticatorFactory.create(databaseAdapter()))
-                                .build()
-                ).build();
+        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
     }
 
 
    /* How to extract database from tests:
     edit: AbsStoreTestCase.java (adding database name.)
-    DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext(),
+    DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext()
+    .getApplicationContext(),
     "test.db");
     make a debugger break point where desired (after sync complete)
 
     Then while on the breakpoint :
-    Android/platform-tools/adb pull /data/user/0/org.hisp.dhis.android.test/databases/test.db test.db
+    Android/platform-tools/adb pull /data/user/0/org.hisp.dhis.android.test/databases/test.db
+    test.db
 
     in datagrip:
     pragma foreign_keys = on;
@@ -80,9 +68,5 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
         //This way I can make sure that additive (updates) work as well.
         //The changes could be to one of the programs, adding stuff to it.
         // adding a new program..etc.
-    }
-
-    @Test
-    public void stub() {
     }
 }

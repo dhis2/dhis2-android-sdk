@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.program;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
+
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,9 +38,6 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
@@ -177,5 +177,10 @@ public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
         sqLiteBind(sqLiteStatement, 14, filter);
         sqLiteBind(sqLiteStatement, 15, decimals);
         sqLiteBind(sqLiteStatement, 16, program);
+    }
+
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(ProgramIndicatorModel.TABLE);
     }
 }

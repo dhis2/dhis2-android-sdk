@@ -29,7 +29,9 @@ package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.NonNull;
 
-public interface ProgramStageSectionProgramIndicatorLinkStore {
+import org.hisp.dhis.android.core.common.DeletableStore;
+
+public interface ProgramStageSectionProgramIndicatorLinkStore extends DeletableStore {
     Long insert(@NonNull String programStageSection, @NonNull String programIndicator);
 
     int update(@NonNull String programStageSection, @NonNull String programIndicator,

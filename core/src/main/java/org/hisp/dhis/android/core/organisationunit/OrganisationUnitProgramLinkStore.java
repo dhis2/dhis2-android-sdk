@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import android.support.annotation.NonNull;
 
-public interface OrganisationUnitProgramLinkStore {
+import org.hisp.dhis.android.core.common.DeletableStore;
+
+public interface OrganisationUnitProgramLinkStore extends DeletableStore {
     long insert(@NonNull String organisationUnitUid, @NonNull String programUid);
 }

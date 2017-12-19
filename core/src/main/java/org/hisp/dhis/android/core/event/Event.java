@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.event;
 
+import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
+
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -41,8 +43,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
 import java.util.Date;
 import java.util.List;
-
-import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 @AutoValue
 public abstract class Event {

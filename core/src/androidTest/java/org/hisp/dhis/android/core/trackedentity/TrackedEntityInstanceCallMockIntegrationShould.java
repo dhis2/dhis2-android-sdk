@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.common.TrackedEntityInstanceCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
@@ -229,8 +230,8 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
                     event.program(), event.programStage(), event.organisationUnit(),
                     event.eventDate(), event.status(), event.coordinates(),
                     event.completedDate(),
-                    event.dueDate(), event.deleted(), downloadedValues.get(event.uid()), event.attributeCategoryOption(),
-                    event.attributeOptionCombo());
+                    event.dueDate(), event.deleted(), downloadedValues.get(event.uid()),
+                    event.attributeCategoryOption(), event.attributeOptionCombo());
 
             if (downloadedEvents.get(event.enrollmentUid()) == null) {
                 downloadedEvents.put(event.enrollmentUid(), new ArrayList<Event>());

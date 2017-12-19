@@ -27,13 +27,14 @@
  */
 package org.hisp.dhis.android.core.user;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
+
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel.Columns;
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " + UserRoleProgramLinkModel.TABLE + " (" +
@@ -100,5 +101,10 @@ public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
         int delete = databaseAdapter.executeUpdateDelete(UserRoleProgramLinkModel.TABLE, deleteStatement);
         deleteStatement.clearBindings();
         return delete;
+    }
+
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(UserRoleProgramLinkModel.TABLE);
     }
 }

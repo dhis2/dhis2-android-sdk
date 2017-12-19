@@ -35,9 +35,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.MetadataCall;
+import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
+import org.hisp.dhis.android.core.calls.TrackerDataCall;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboHandler;
@@ -63,12 +64,14 @@ import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.category.Handler;
 import org.hisp.dhis.android.core.category.Store;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
+import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.EventHandler;
@@ -118,11 +121,13 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
@@ -147,6 +152,8 @@ import org.hisp.dhis.android.core.user.UserService;
 import org.hisp.dhis.android.core.user.UserStore;
 import org.hisp.dhis.android.core.user.UserStoreImpl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import okhttp3.OkHttpClient;
@@ -216,7 +223,7 @@ public final class D2 {
 
     //Handlers
     private final EventHandler eventHandler;
-
+    private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final ResourceHandler resourceHandler;
     private final Handler<Category> categoryHandler;
     private final Handler<CategoryCombo> categoryComboHandler;
@@ -340,6 +347,17 @@ public final class D2 {
 
         this.eventHandler = new EventHandler(eventStore, trackedEntityDataValueHandler);
 
+        TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler =
+                new TrackedEntityAttributeValueHandler(trackedEntityAttributeValueStore);
+
+        EnrollmentHandler enrollmentHandler = new EnrollmentHandler(enrollmentStore, eventHandler);
+
+        trackedEntityInstanceHandler =
+                new TrackedEntityInstanceHandler(
+                        trackedEntityInstanceStore,
+                        trackedEntityAttributeValueHandler,
+                        enrollmentHandler);
+
     }
 
     @NonNull
@@ -377,9 +395,40 @@ public final class D2 {
 
     @NonNull
     public Callable<Void> logOut() {
+        List<DeletableStore> deletableStoreList = new ArrayList<>();
+        deletableStoreList.add((DeletableStore) userStore);
+        deletableStoreList.add((DeletableStore) userCredentialsStore);
+        deletableStoreList.add((DeletableStore) userOrganisationUnitLinkStore);
+        deletableStoreList.add((DeletableStore) authenticatedUserStore);
+        deletableStoreList.add((DeletableStore) organisationUnitStore);
+        deletableStoreList.add((DeletableStore) resourceStore);
+        deletableStoreList.add((DeletableStore) systemInfoStore);
+        deletableStoreList.add((DeletableStore) userRoleStore);
+        deletableStoreList.add((DeletableStore) userRoleProgramLinkStore);
+        deletableStoreList.add((DeletableStore) programStore);
+        deletableStoreList.add((DeletableStore) trackedEntityAttributeStore);
+        deletableStoreList.add((DeletableStore) programTrackedEntityAttributeStore);
+        deletableStoreList.add((DeletableStore) programRuleVariableStore);
+        deletableStoreList.add((DeletableStore) programIndicatorStore);
+        deletableStoreList.add((DeletableStore) programStageSectionProgramIndicatorLinkStore);
+        deletableStoreList.add((DeletableStore) programRuleActionStore);
+        deletableStoreList.add((DeletableStore) programRuleStore);
+        deletableStoreList.add((DeletableStore) optionStore);
+        deletableStoreList.add((DeletableStore) optionSetStore);
+        deletableStoreList.add((DeletableStore) dataElementStore);
+        deletableStoreList.add((DeletableStore) programStageDataElementStore);
+        deletableStoreList.add((DeletableStore) programStageSectionStore);
+        deletableStoreList.add((DeletableStore) programStageStore);
+        deletableStoreList.add((DeletableStore) relationshipStore);
+        deletableStoreList.add((DeletableStore) trackedEntityStore);
+        deletableStoreList.add((DeletableStore) trackedEntityInstanceStore);
+        deletableStoreList.add((DeletableStore) enrollmentStore);
+        deletableStoreList.add((DeletableStore) trackedEntityDataValueStore);
+        deletableStoreList.add((DeletableStore) trackedEntityAttributeValueStore);
+        deletableStoreList.add((DeletableStore) organisationUnitProgramLinkStore);
+        deletableStoreList.add((DeletableStore) eventStore);
         return new LogOutUserCallable(
-                userStore, userCredentialsStore, userOrganisationUnitLinkStore,
-                authenticatedUserStore, organisationUnitStore
+                deletableStoreList
         );
     }
 
@@ -411,6 +460,13 @@ public final class D2 {
     }
 
     @NonNull
+    public Call<Response> syncTrackerData() {
+        return new TrackerDataCall(trackedEntityInstanceStore, systemInfoStore, systemInfoService,
+                resourceStore, trackedEntityInstanceService, databaseAdapter, resourceHandler,
+                trackedEntityInstanceHandler);
+    }
+
+    @NonNull
     public Call<Response<WebResponse>> syncTrackedEntityInstances() {
         return new TrackedEntityInstancePostCall(trackedEntityInstanceService,
                 trackedEntityInstanceStore, enrollmentStore, eventStore,
@@ -421,6 +477,7 @@ public final class D2 {
     public Call<Response<WebResponse>> syncSingleEvents() {
         return new EventPostCall(eventService, eventStore, trackedEntityDataValueStore);
     }
+
 
     public static class Builder {
         private ConfigurationModel configuration;

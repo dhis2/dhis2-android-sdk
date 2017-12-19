@@ -11,12 +11,11 @@ import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
 
-public class EventCallRealIntegrationShould extends AbsStoreTestCase {
+public class EventEndPointCallRealIntegrationShould extends AbsStoreTestCase {
 
     private D2 d2;
 
@@ -41,10 +40,10 @@ public class EventCallRealIntegrationShould extends AbsStoreTestCase {
         response = d2.syncMetaData().call();
         Truth.assertThat(response.isSuccessful()).isTrue();
 
-        EventCall eventCall = EventCallFactory.create(
+        EventEndPointCall eventEndPointCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 
-        eventCall.call();
+        eventEndPointCall.call();
 
         verifyDownloadedEvents(50);
     }

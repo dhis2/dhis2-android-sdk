@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.core.event;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
@@ -23,8 +25,6 @@ import java.util.Date;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import retrofit2.Response;
-
-import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
@@ -88,7 +88,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     }
 
     // commented out since it is a flaky test that works against a real server.
-    //    @Test
+    //@Test
     public void successful_response_after_sync_events() throws Exception {
         retrofit2.Response response = null;
         response = d2.logIn("android", "Android123").call();

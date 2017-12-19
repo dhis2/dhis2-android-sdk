@@ -15,7 +15,7 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public class EventCall implements Call<Response<Payload<Event>>> {
+public class EventEndPointCall implements Call<Response<Payload<Event>>> {
 
     private final EventService eventService;
     private final DatabaseAdapter databaseAdapter;
@@ -26,7 +26,7 @@ public class EventCall implements Call<Response<Payload<Event>>> {
 
     private boolean isExecuted;
 
-    public EventCall(@NonNull EventService eventService,
+    public EventEndPointCall(@NonNull EventService eventService,
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull ResourceHandler resourceHandler,
             @NonNull EventHandler eventHandler,
@@ -87,6 +87,7 @@ public class EventCall implements Call<Response<Payload<Event>>> {
                     Event event = events.get(i);
                     eventHandler.handle(event);
                 }
+
                 resourceHandler.handleResource(ResourceModel.Type.EVENT, serverDate);
                 transaction.setSuccessful();
             } finally {

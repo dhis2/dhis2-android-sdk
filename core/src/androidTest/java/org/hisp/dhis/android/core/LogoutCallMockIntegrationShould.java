@@ -111,22 +111,22 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
     @Test
     public void have_organisation_units_descendants_after_login_logout_and_login()
             throws Exception {
-        givenALoginInDatabase();
+        givenALoginWithSierraLeonaOUInDatabase();
 
-        givenAMetadataInDatabase();
+        givenAMetadataWithDescendantsInDatabase();
 
-        givenAEventInDatabase();
-
-        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
+        verifyExistsAsignedOrgUnitAndDescendants();
 
         d2.logOut().call();
-
-        DatabaseAssert.assertThatDatabase(databaseAdapter()).isEmpty();
 
         givenALoginWithSierraLeonaOUInDatabase();
 
         givenAMetadataWithDescendantsInDatabase();
 
+        verifyExistsAsignedOrgUnitAndDescendants();
+    }
+
+    private void verifyExistsAsignedOrgUnitAndDescendants() {
         //Sierra leona
         DatabaseAssert.assertThatDatabase(databaseAdapter())
                 .ifValueExist(OrganisationUnitModel.TABLE,

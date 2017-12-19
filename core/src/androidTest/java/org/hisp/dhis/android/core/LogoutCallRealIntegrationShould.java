@@ -6,40 +6,25 @@ import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isDa
 
 import com.google.common.truth.Truth;
 
+import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.EventCallFactory;
-import org.hisp.dhis.android.core.configuration.ConfigurationModel;
-import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.event.EventEndPointCall;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-
 public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
     private D2 d2;
-    Exception e;
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
 
-        ConfigurationModel config = ConfigurationModel.builder()
-                .serverUrl(HttpUrl.parse("https://play.dhis2.org/android-current/api/"))
-                .build();
-
-        d2 = new D2.Builder()
-                .configuration(config)
-                .databaseAdapter(databaseAdapter())
-                .okHttpClient(
-                        new OkHttpClient.Builder()
-                                .addInterceptor(BasicAuthenticatorFactory.create(databaseAdapter()))
-                                .build()
-                ).build();
+        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
     }
 
     @Test
@@ -77,5 +62,17 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
         d2.logOut().call();
 
         Truth.assertThat(isDatabaseEmpty(databaseAdapter())).isTrue();
+    }
+
+    @Test
+    public void response_successful_on_login_logout_and_login() throws Exception {
+        retrofit2.Response response = null;
+        response = d2.logIn("android", "Android123").call();
+        assertThat(response.isSuccessful()).isTrue();
+
+        d2.logOut().call();
+
+        response = d2.logIn("android", "Android123").call();
+        assertThat(response.isSuccessful()).isTrue();
     }
 }

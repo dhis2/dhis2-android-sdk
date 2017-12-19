@@ -68,11 +68,11 @@ public class LogOutUserCallableShould {
         MockitoAnnotations.initMocks(this);
 
         List<DeletableStore> deletableStoreList = new ArrayList<>();
-        deletableStoreList.add((DeletableStore) userStore);
-        deletableStoreList.add((DeletableStore) userCredentialsStore);
-        deletableStoreList.add((DeletableStore) userOrganisationUnitLinkStore);
-        deletableStoreList.add((DeletableStore) authenticatedUserStore);
-        deletableStoreList.add((DeletableStore) organisationUnitStore);
+        deletableStoreList.add(userStore);
+        deletableStoreList.add(userCredentialsStore);
+        deletableStoreList.add(userOrganisationUnitLinkStore);
+        deletableStoreList.add(authenticatedUserStore);
+        deletableStoreList.add(organisationUnitStore);
         logOutUserCallable = new LogOutUserCallable(deletableStoreList
         );
     }

@@ -84,7 +84,9 @@ public class EventStoreShould extends AbsStoreTestCase {
             Columns.EVENT_DATE, // eventDate
             Columns.COMPLETE_DATE, // completedDate
             Columns.DUE_DATE, // dueDate
-            Columns.STATE
+            Columns.STATE,
+            Columns.ATTRIBUTE_CATEGORY_OPTION,
+            Columns.ATTRIBUTE_OPTION_COMBO
     };
     private static final String EVENT_UID = "test_uid";
     private static final String ENROLLMENT_UID = "test_enrollment";
@@ -103,6 +105,8 @@ public class EventStoreShould extends AbsStoreTestCase {
     private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
     private static final long RELATIONSHIP_TYPE_ID = 3L;
     private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
+    private static final String ATTRIBUTE_CATEGORY_OPTION = "attributeCategoryOptionUid";
+    private static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionComboUid";
     private final Date date;
 
     private final String dateString;
@@ -164,7 +168,9 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date, // eventDate
                 date, // completedDate
                 date, // dueDate
-                STATE
+                STATE,
+                ATTRIBUTE_CATEGORY_OPTION,
+                ATTRIBUTE_OPTION_COMBO
         );
         Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
 
@@ -185,7 +191,9 @@ public class EventStoreShould extends AbsStoreTestCase {
                 dateString, // eventDate
                 dateString, // completedDate
                 dateString, // dueDate
-                STATE
+                STATE,
+                ATTRIBUTE_CATEGORY_OPTION,
+                ATTRIBUTE_OPTION_COMBO
         ).isExhausted();
     }
 
@@ -212,7 +220,9 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date, // eventDate
                 date, // completedDate
                 date, // dueDate
-                STATE
+                STATE,
+                ATTRIBUTE_CATEGORY_OPTION,
+                ATTRIBUTE_OPTION_COMBO
         );
 
         ContentValues program = CreateProgramUtils.create(11L, deferredProgram,
@@ -244,7 +254,9 @@ public class EventStoreShould extends AbsStoreTestCase {
                 dateString, // eventDate
                 dateString, // completedDate
                 dateString, // dueDate
-                STATE
+                STATE,
+                ATTRIBUTE_CATEGORY_OPTION,
+                ATTRIBUTE_OPTION_COMBO
         ).isExhausted();
     }
 
@@ -252,11 +264,15 @@ public class EventStoreShould extends AbsStoreTestCase {
     public void persist_event_nullable_in_data_base_after_insert() {
 
         long rowId = eventStore.insert(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, null, null, PROGRAM,
-                PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null);
+                PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null,
+                ATTRIBUTE_CATEGORY_OPTION,
+                ATTRIBUTE_OPTION_COMBO);
         Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, null, null, PROGRAM,
-                PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null).isExhausted();
+                PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null,
+                ATTRIBUTE_CATEGORY_OPTION,
+                ATTRIBUTE_OPTION_COMBO).isExhausted();
     }
 
     @Test
@@ -277,7 +293,9 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 date,
-                STATE
+                STATE,
+                ATTRIBUTE_CATEGORY_OPTION,
+                ATTRIBUTE_OPTION_COMBO
         );
 
         database().delete(ProgramModel.TABLE, ProgramModel.Columns.UID + "=?", new String[]{PROGRAM});
@@ -303,7 +321,9 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 date,
-                STATE
+                STATE,
+                ATTRIBUTE_CATEGORY_OPTION,
+                ATTRIBUTE_OPTION_COMBO
         );
 
         database().delete(ProgramStageModel.TABLE, ProgramStageModel.Columns.UID + "=?", new String[]{PROGRAM_STAGE});
@@ -329,7 +349,9 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 date,
-                STATE
+                STATE,
+                ATTRIBUTE_CATEGORY_OPTION,
+                ATTRIBUTE_OPTION_COMBO
         );
 
         database().delete(OrganisationUnitModel.TABLE,
@@ -358,7 +380,9 @@ public class EventStoreShould extends AbsStoreTestCase {
         Date updatedDate = new Date();
 
         eventStore.update(EVENT_UID, null, null, null, null, null, null, null, null,
-                PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT, updatedDate, null, null, null, EVENT_UID);
+                PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT, updatedDate, null, null, null,
+                ATTRIBUTE_CATEGORY_OPTION,
+                ATTRIBUTE_OPTION_COMBO, EVENT_UID);
 
         cursor = database().query(EventModel.TABLE, projection, null, null, null, null, null);
 
@@ -491,7 +515,9 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 date,
-                STATE
+                STATE,
+                ATTRIBUTE_CATEGORY_OPTION,
+                ATTRIBUTE_OPTION_COMBO
         );
     }
 
@@ -513,7 +539,9 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 date,
-                STATE
+                STATE,
+                ATTRIBUTE_CATEGORY_OPTION,
+                ATTRIBUTE_OPTION_COMBO
         );
     }
 
@@ -535,7 +563,9 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 date,
-                STATE
+                STATE,
+                ATTRIBUTE_CATEGORY_OPTION,
+                ATTRIBUTE_OPTION_COMBO
         );
     }
 
@@ -558,7 +588,9 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 date,
-                STATE
+                STATE,
+                ATTRIBUTE_CATEGORY_OPTION,
+                ATTRIBUTE_OPTION_COMBO
         );
     }
 

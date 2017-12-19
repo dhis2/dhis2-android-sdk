@@ -79,7 +79,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
         eventStore.insert(
                 eventUid, null, new Date(), new Date(), null, null,
                 EventStatus.ACTIVE, "13.21", "12.21", programUid, programStageUid, orgUnitUid,
-                new Date(), new Date(), new Date(), State.TO_POST
+                new Date(), new Date(), new Date(), State.TO_POST, "category_option_uid", "categroy_Option_Combo_Uid"
         );
 
         trackedEntityDataValueStore.insert(

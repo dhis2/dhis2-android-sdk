@@ -776,6 +776,8 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             EventModel.Columns.COMPLETE_DATE + " TEXT," +
             EventModel.Columns.DUE_DATE + " TEXT," +
             EventModel.Columns.STATE + " TEXT," +
+            EventModel.Columns.ATTRIBUTE_CATEGORY_OPTION + " TEXT," +
+            EventModel.Columns.ATTRIBUTE_OPTION_COMBO + " TEXT," +
             " FOREIGN KEY (" + EventModel.Columns.PROGRAM + ")" +
             " REFERENCES " + ProgramModel.TABLE +
             " (" + ProgramModel.Columns.UID + ")" +

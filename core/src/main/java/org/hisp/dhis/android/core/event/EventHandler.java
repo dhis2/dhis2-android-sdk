@@ -38,14 +38,14 @@ public class EventHandler {
                     event.createdAtClient(), event.lastUpdatedAtClient(),
                     event.status(), latitude, longitude, event.program(), event.programStage(),
                     event.organisationUnit(), event.eventDate(), event.completedDate(),
-                    event.dueDate(), State.SYNCED, event.uid());
+                    event.dueDate(), State.SYNCED,event.attributeCategoryOption(), event.attributeOptionCombo(), event.uid());
 
             if (updatedRow <= 0) {
                 eventStore.insert(event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
                         event.createdAtClient(), event.lastUpdatedAtClient(),
                         event.status(), latitude, longitude, event.program(), event.programStage(),
                         event.organisationUnit(), event.eventDate(), event.completedDate(),
-                        event.dueDate(), State.SYNCED);
+                        event.dueDate(), State.SYNCED, event.attributeCategoryOption(), event.attributeOptionCombo());
             }
 
             trackedEntityDataValueHandler.handleTrackedEntityDataValue(event.uid(),

@@ -64,6 +64,8 @@ public abstract class EventModel extends BaseDataModel {
         public static final String EVENT_DATE = "eventDate";
         public static final String COMPLETE_DATE = "completedDate";
         public static final String DUE_DATE = "dueDate";
+        public static final String ATTRIBUTE_CATEGORY_OPTION = "attributeCategoryOption";
+        public static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
     }
 
     public static EventModel create(Cursor cursor) {
@@ -144,6 +146,14 @@ public abstract class EventModel extends BaseDataModel {
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date dueDate();
 
+    @Nullable
+    @ColumnName(Columns.ATTRIBUTE_CATEGORY_OPTION)
+    public abstract String attributeCategoryOption();
+
+    @Nullable
+    @ColumnName(Columns.ATTRIBUTE_OPTION_COMBO)
+    public abstract String attributeOptionCombo();
+
     @AutoValue.Builder
     public static abstract class Builder extends BaseDataModel.Builder<Builder> {
         public abstract Builder uid(@NonNull String uid);
@@ -175,6 +185,11 @@ public abstract class EventModel extends BaseDataModel {
         public abstract Builder completedDate(@Nullable Date completedDate);
 
         public abstract Builder dueDate(@Nullable Date dueDate);
+
+        public abstract Builder attributeCategoryOption(@Nullable String attributeCategoryOption);
+
+        public abstract Builder attributeOptionCombo(@Nullable String attributeOptionCombo);
+
 
         public abstract EventModel build();
     }

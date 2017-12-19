@@ -53,7 +53,9 @@ public interface EventStore {
                 @NonNull Date eventDate,
                 @Nullable Date completedDate,
                 @Nullable Date dueDate,
-                @NonNull State state
+                @NonNull State state,
+                @Nullable String attributeCategoryOption,
+                @NonNull String attributeOptionCombo
     );
 
     int update(@NonNull String uid,
@@ -72,6 +74,8 @@ public interface EventStore {
                @Nullable Date completedDate,
                @Nullable Date dueDate,
                @NonNull State state,
+               @Nullable String attributeCategoryOption,
+               @NonNull String attributeOptionCombo,
                @NonNull String whereEventUid
     );
 

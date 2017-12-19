@@ -315,4 +315,9 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
         sqLiteBind(sqLiteStatement, 6, value);
         sqLiteBind(sqLiteStatement, 7, providedElsewhere);
     }
+
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(TrackedEntityDataValueModel.TABLE);
+    }
 }

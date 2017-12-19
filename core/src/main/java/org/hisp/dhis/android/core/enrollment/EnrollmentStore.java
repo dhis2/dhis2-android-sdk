@@ -31,13 +31,14 @@ package org.hisp.dhis.android.core.enrollment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.State;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public interface EnrollmentStore {
+public interface EnrollmentStore extends DeletableStore {
     long insert(@NonNull String uid,
                 @Nullable Date created,
                 @Nullable Date lastUpdated,

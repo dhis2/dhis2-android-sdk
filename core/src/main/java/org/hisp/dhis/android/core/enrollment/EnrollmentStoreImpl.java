@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -43,9 +46,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals",
@@ -93,10 +93,11 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
             " WHERE " +
             Columns.UID + " =?;";
 
-    private static final String UPADTE_STATE_STATEMENT = "UPDATE " + EnrollmentModel.TABLE + " SET " +
-            Columns.STATE + " =? " +
-            " WHERE " +
-            Columns.UID + " =?;";
+    private static final String UPADTE_STATE_STATEMENT =
+            "UPDATE " + EnrollmentModel.TABLE + " SET " +
+                    Columns.STATE + " =? " +
+                    " WHERE " +
+                    Columns.UID + " =?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " +
             EnrollmentModel.TABLE + " WHERE " +
@@ -104,26 +105,29 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
 
     private static final String FIELDS =
             "  Enrollment.uid, " +
-            "  Enrollment.created, " +
-            "  Enrollment.lastUpdated, " +
-            "  Enrollment.createdAtClient, " +
-            "  Enrollment.lastUpdatedAtClient, " +
-            "  Enrollment.organisationUnit, " +
-            "  Enrollment.program, " +
-            "  Enrollment.enrollmentDate, " +
-            "  Enrollment.incidentDate, " +
-            "  Enrollment.followup, " +
-            "  Enrollment.status, " +
-            "  Enrollment.trackedEntityInstance, " +
-            "  Enrollment.latitude, " +
+                    "  Enrollment.created, " +
+                    "  Enrollment.lastUpdated, " +
+                    "  Enrollment.createdAtClient, " +
+                    "  Enrollment.lastUpdatedAtClient, " +
+                    "  Enrollment.organisationUnit, " +
+                    "  Enrollment.program, " +
+                    "  Enrollment.enrollmentDate, " +
+                    "  Enrollment.incidentDate, " +
+                    "  Enrollment.followup, " +
+                    "  Enrollment.status, " +
+                    "  Enrollment.trackedEntityInstance, " +
+                    "  Enrollment.latitude, " +
                     "  Enrollment.longitude ";
 
     private static final String QUERY_STATEMENT_TO_POST = "SELECT " +
             FIELDS +
             "FROM (Enrollment " +
-            "  INNER JOIN TrackedEntityInstance ON Enrollment.trackedEntityInstance = TrackedEntityInstance.uid " +
+            "  INNER JOIN TrackedEntityInstance ON Enrollment.trackedEntityInstance = TrackedEntityInstance.uid "
+
+            +
             ") " +
-            "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE' " +
+            "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE' "
+            +
             " OR Enrollment.state = 'TO_POST' OR Enrollment.state = 'TO_UPDATE';";
 
     private static final String QUERY_STATEMENT = "SELECT " +
@@ -146,11 +150,12 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
 
     @Override
     public long insert(@NonNull String uid, @Nullable Date created, @Nullable Date lastUpdated,
-                       @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
-                       @NonNull String organisationUnit, @NonNull String program, @Nullable Date dateOfEnrollment,
-                       @Nullable Date dateOfIncident, @Nullable Boolean followUp,
-                       @Nullable EnrollmentStatus enrollmentStatus, @NonNull String trackedEntityInstance,
-                       @Nullable String latitude, @Nullable String longitude, @Nullable State state) {
+            @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
+            @NonNull String organisationUnit, @NonNull String program,
+            @Nullable Date dateOfEnrollment,
+            @Nullable Date dateOfIncident, @Nullable Boolean followUp,
+            @Nullable EnrollmentStatus enrollmentStatus, @NonNull String trackedEntityInstance,
+            @Nullable String latitude, @Nullable String longitude, @Nullable State state) {
         sqLiteBind(insertStatement, 1, uid);
         sqLiteBind(insertStatement, 2, created);
         sqLiteBind(insertStatement, 3, lastUpdated);
@@ -185,12 +190,12 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
 
     @Override
     public int update(@NonNull String uid, @NonNull Date created, @NonNull Date lastUpdated,
-                      @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
-                      @NonNull String organisationUnit, @NonNull String program,
-                      @NonNull Date dateOfEnrollment, @Nullable Date dateOfIncident,
-                      @Nullable Boolean followUp, @NonNull EnrollmentStatus enrollmentStatus,
-                      @NonNull String trackedEntityInstance, @Nullable String latitude,
-                      @Nullable String longitude, @NonNull State state, @NonNull String whereEnrollmentUid) {
+            @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
+            @NonNull String organisationUnit, @NonNull String program,
+            @NonNull Date dateOfEnrollment, @Nullable Date dateOfIncident,
+            @Nullable Boolean followUp, @NonNull EnrollmentStatus enrollmentStatus,
+            @NonNull String trackedEntityInstance, @Nullable String latitude,
+            @Nullable String longitude, @NonNull State state, @NonNull String whereEnrollmentUid) {
 
         sqLiteBind(updateStatement, 1, uid);
         sqLiteBind(updateStatement, 2, created);
@@ -251,19 +256,27 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
                 do {
                     String uid = cursor.getString(0);
                     Date created = cursor.getString(1) == null ? null : parse(cursor.getString(1));
-                    Date lastUpdated = cursor.getString(2) == null ? null : parse(cursor.getString(2));
-                    String createdAtClient = cursor.getString(3) == null ? null : cursor.getString(3);
-                    String lastUpdatedAtClient = cursor.getString(4) == null ? null : cursor.getString(4);
-                    String organisationUnit = cursor.getString(5) == null ? null : cursor.getString(5);
+                    Date lastUpdated = cursor.getString(2) == null ? null : parse(
+                            cursor.getString(2));
+                    String createdAtClient = cursor.getString(3) == null ? null : cursor.getString(
+                            3);
+                    String lastUpdatedAtClient = cursor.getString(4) == null ? null
+                            : cursor.getString(4);
+                    String organisationUnit = cursor.getString(5) == null ? null : cursor.getString(
+                            5);
                     String program = cursor.getString(6) == null ? null : cursor.getString(6);
-                    Date enrollmentDate = cursor.getString(7) == null ? null : parse(cursor.getString(7));
-                    Date incidentDate = cursor.getString(8) == null ? null : parse(cursor.getString(8));
+                    Date enrollmentDate = cursor.getString(7) == null ? null : parse(
+                            cursor.getString(7));
+                    Date incidentDate = cursor.getString(8) == null ? null : parse(
+                            cursor.getString(8));
                     Boolean followUp =
                             cursor.getString(9) == null || cursor.getInt(9) == 0 ? Boolean.FALSE
                                     : Boolean.TRUE;
                     EnrollmentStatus status =
-                            cursor.getString(10) == null ? null : EnrollmentStatus.valueOf(cursor.getString(10));
-                    String trackedEntityInstance = cursor.getString(11) == null ? null : cursor.getString(11);
+                            cursor.getString(10) == null ? null : EnrollmentStatus.valueOf(
+                                    cursor.getString(10));
+                    String trackedEntityInstance = cursor.getString(11) == null ? null
+                            : cursor.getString(11);
                     String latitude = cursor.getString(12) == null ? null : cursor.getString(12);
                     String longitude = cursor.getString(13) == null ? null : cursor.getString(13);
 
@@ -294,4 +307,8 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
         return enrollmentMap;
     }
 
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(EnrollmentModel.TABLE);
+    }
 }

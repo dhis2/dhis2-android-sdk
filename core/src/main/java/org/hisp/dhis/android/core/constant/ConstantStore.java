@@ -31,9 +31,11 @@ package org.hisp.dhis.android.core.constant;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.DeletableStore;
+
 import java.util.Date;
 
-public interface ConstantStore {
+public interface ConstantStore extends DeletableStore {
 
     long insert(
             @NonNull String uid, @Nullable String code, @Nullable String name,

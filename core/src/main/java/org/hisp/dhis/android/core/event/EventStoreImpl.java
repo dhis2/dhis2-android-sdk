@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.event;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -43,9 +46,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals",
@@ -348,4 +348,8 @@ public class EventStoreImpl implements EventStore {
         return event;
     }
 
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(EventModel.TABLE);
+    }
 }

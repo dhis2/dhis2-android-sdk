@@ -30,9 +30,11 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.DeletableStore;
+
 import java.util.Date;
 
-public interface SystemInfoStore {
+public interface SystemInfoStore extends DeletableStore {
 
     long insert(
             @NonNull Date serverDate,

@@ -96,7 +96,8 @@ import java.util.Set;
 
 import retrofit2.Response;
 
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields","PMD.CyclomaticComplexity",
+"PMD.ModifiedCyclomaticComplexity","PMD.StdCyclomaticComplexity"})
 public class MetadataCall implements Call<Response> {
     private final DatabaseAdapter databaseAdapter;
     private final SystemInfoService systemInfoService;
@@ -228,6 +229,7 @@ public class MetadataCall implements Call<Response> {
         }
     }
 
+    @SuppressWarnings("PMD.NPathComplexity")
     @Override
     public Response call() throws Exception {
         synchronized (this) {
@@ -245,7 +247,7 @@ public class MetadataCall implements Call<Response> {
                     databaseAdapter, systemInfoStore,
                     systemInfoService, resourceStore
             ).call();
-            if (isValid(response)) {
+            if (isNotValid(response)) {
                 return response;
             }
             SystemInfo systemInfo = (SystemInfo) response.body();
@@ -261,7 +263,7 @@ public class MetadataCall implements Call<Response> {
                     serverDate,
                     userRoleProgramLinkStore
             ).call();
-            if (isValid(response)) {
+            if (isNotValid(response)) {
                 return response;
             }
 
@@ -270,7 +272,7 @@ public class MetadataCall implements Call<Response> {
                     user, organisationUnitService, databaseAdapter, organisationUnitStore,
                     resourceStore, serverDate, userOrganisationUnitLinkStore,
                     organisationUnitProgramLinkStore).call();
-            if (isValid(response)) {
+            if (isNotValid(response)) {
                 return response;
             }
 
@@ -286,7 +288,7 @@ public class MetadataCall implements Call<Response> {
                     programStageDataElementStore,
                     programStageSectionStore, programStageStore, relationshipStore
             ).call();
-            if (isValid(response)) {
+            if (isNotValid(response)) {
                 return response;
             }
 
@@ -296,7 +298,7 @@ public class MetadataCall implements Call<Response> {
                     trackedEntityUids, databaseAdapter, trackedEntityStore,
                     resourceStore, trackedEntityService, serverDate
             ).call();
-            if (isValid(response)) {
+            if (isNotValid(response)) {
                 return response;
             }
 
@@ -305,18 +307,18 @@ public class MetadataCall implements Call<Response> {
                     optionSetService, optionSetStore, databaseAdapter, resourceStore,
                     optionSetUids, serverDate, optionStore
             ).call();
-            if (isValid(response)) {
+            if (isNotValid(response)) {
                 return response;
             }
             response = downloadCategories(serverDate);
 
-            if (isValid(response)) {
+            if (isNotValid(response)) {
                 return response;
             }
 
             response = downloadCategoryCombos(serverDate);
 
-            if (isValid(response)) {
+            if (isNotValid(response)) {
                 return response;
             }
 
@@ -327,7 +329,7 @@ public class MetadataCall implements Call<Response> {
         }
     }
 
-    private boolean isValid(Response response) {
+    private boolean isNotValid(Response response) {
         return !response.isSuccessful();
     }
 

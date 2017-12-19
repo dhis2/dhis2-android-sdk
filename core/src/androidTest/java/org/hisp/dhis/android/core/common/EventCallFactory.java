@@ -1,42 +1,25 @@
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.event.EventCall;
+import org.hisp.dhis.android.core.event.EventEndPointCall;
 import org.hisp.dhis.android.core.event.EventHandler;
 import org.hisp.dhis.android.core.event.EventQuery;
 import org.hisp.dhis.android.core.event.EventService;
-import org.hisp.dhis.android.core.event.EventStore;
-import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceStore;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 
 import java.util.Date;
 
 import retrofit2.Retrofit;
 
 public class EventCallFactory {
-    public static EventCall create(Retrofit retrofit,
+    public static EventEndPointCall create(Retrofit retrofit,
             DatabaseAdapter databaseAdapter, String orgUnit, int pageLimit) {
 
         EventService eventService = retrofit.create(EventService.class);
 
-        EventStore eventStore = new EventStoreImpl(databaseAdapter);
+        EventHandler eventHandler = HandlerFactory.createEventHandler(databaseAdapter);
 
-        TrackedEntityDataValueStore trackedEntityDataValueStore =
-                new TrackedEntityDataValueStoreImpl(databaseAdapter);
-
-        TrackedEntityDataValueHandler trackedEntityDataValueHandler =
-                new TrackedEntityDataValueHandler(trackedEntityDataValueStore);
-
-        EventHandler eventHandler = new EventHandler(eventStore, trackedEntityDataValueHandler);
-
-        ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter);
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
+        ResourceHandler resourceHandler = HandlerFactory.createResourceHandler(databaseAdapter);
 
         EventQuery eventQuery = EventQuery.Builder
                 .create()
@@ -44,9 +27,10 @@ public class EventCallFactory {
                 .withPageLimit(pageLimit)
                 .build();
 
-        EventCall eventCall = new EventCall(eventService, databaseAdapter, resourceHandler,
+        EventEndPointCall eventEndPointCall = new EventEndPointCall(eventService, databaseAdapter,
+                resourceHandler,
                 eventHandler, new Date(), eventQuery);
 
-        return eventCall;
+        return eventEndPointCall;
     }
 }

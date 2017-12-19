@@ -92,9 +92,15 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
             "  TrackedEntityInstance.lastUpdatedAtClient, " +
             "  TrackedEntityInstance.organisationUnit, " +
             "  TrackedEntityInstance.trackedEntity " +
-            "FROM TrackedEntityInstance " +
-            "WHERE state = 'TO_POST' OR state = 'TO_UPDATE'";
+            "FROM TrackedEntityInstance ";
 
+    private static final String QUERY_STATEMENT_TO_POST =
+            QUERY_STATEMENT +
+                    " WHERE state = 'TO_POST' OR state = 'TO_UPDATE'";
+
+    private static final String QUERY_STATEMENT_SYNCED =
+            QUERY_STATEMENT +
+                    " WHERE state = 'SYNCED'";
 
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
@@ -183,8 +189,33 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
     }
 
     @Override
-    public Map<String, TrackedEntityInstance> query() {
+    public Map<String, TrackedEntityInstance> queryToPost() {
+        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT_TO_POST);
+        Map<String, TrackedEntityInstance> trackedEntityInstanceMap = mapFromCursor(cursor);
+
+        return trackedEntityInstanceMap;
+    }
+
+    @Override
+    public Map<String, TrackedEntityInstance> querySynced() {
+        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT_SYNCED);
+        Map<String, TrackedEntityInstance> trackedEntityInstanceMap = mapFromCursor(cursor);
+
+        return trackedEntityInstanceMap;
+    }
+
+
+    @Override
+    public Map<String, TrackedEntityInstance> queryAll() {
         Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
+
+        Map<String, TrackedEntityInstance> trackedEntityInstanceMap = mapFromCursor(cursor);
+
+        return trackedEntityInstanceMap;
+    }
+
+    @NonNull
+    private Map<String, TrackedEntityInstance> mapFromCursor(Cursor cursor) {
         Map<String, TrackedEntityInstance> trackedEntityInstanceMap = new HashMap<>();
         try {
             if (cursor.getCount() > 0) {
@@ -208,7 +239,6 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
         } finally {
             cursor.close();
         }
-
         return trackedEntityInstanceMap;
     }
 }

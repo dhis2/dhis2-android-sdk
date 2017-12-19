@@ -5,13 +5,11 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isDatabaseEmpty;
 import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isTableEmpty;
 
-import android.database.Cursor;
-
 import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.event.EventCall;
+import org.hisp.dhis.android.core.event.EventEndPointCall;
 import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.program.ProgramModel;
@@ -74,7 +72,7 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
         response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
 
-        EventCall eventCall = EventCallFactory.create(
+        EventEndPointCall eventCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 
         eventCall.call();
@@ -95,7 +93,7 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
         response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
 
-        EventCall eventCall = EventCallFactory.create(
+        EventEndPointCall eventCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 
         eventCall.call();

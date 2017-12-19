@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel.Columns;
-import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,7 +54,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
         "PMD.StdCyclomaticComplexity",
         "PMD.AvoidInstantiatingObjectsInLoops"
 })
-public class EnrollmentStoreImpl implements EnrollmentStore, DeletableStore {
+public class EnrollmentStoreImpl implements EnrollmentStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + EnrollmentModel.TABLE + " (" +
             Columns.UID + ", " +
@@ -103,7 +102,7 @@ public class EnrollmentStoreImpl implements EnrollmentStore, DeletableStore {
             EnrollmentModel.TABLE + " WHERE " +
             Columns.UID + " =?;";
 
-    private static final String QUERY_STATEMENT = "SELECT " +
+    private static final String FIELDS =
             "  Enrollment.uid, " +
             "  Enrollment.created, " +
             "  Enrollment.lastUpdated, " +
@@ -117,12 +116,19 @@ public class EnrollmentStoreImpl implements EnrollmentStore, DeletableStore {
             "  Enrollment.status, " +
             "  Enrollment.trackedEntityInstance, " +
             "  Enrollment.latitude, " +
-            "  Enrollment.longitude " +
+                    "  Enrollment.longitude ";
+
+    private static final String QUERY_STATEMENT_TO_POST = "SELECT " +
+            FIELDS +
             "FROM (Enrollment " +
             "  INNER JOIN TrackedEntityInstance ON Enrollment.trackedEntityInstance = TrackedEntityInstance.uid " +
             ") " +
             "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE' " +
             " OR Enrollment.state = 'TO_POST' OR Enrollment.state = 'TO_UPDATE';";
+
+    private static final String QUERY_STATEMENT = "SELECT " +
+            FIELDS +
+            " FROM Enrollment;";
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -226,9 +232,18 @@ public class EnrollmentStoreImpl implements EnrollmentStore, DeletableStore {
 
     @Override
     public Map<String, List<Enrollment>> query() {
-        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
-        Map<String, List<Enrollment>> enrollmentMap = new HashMap<>(cursor.getCount());
+        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT_TO_POST);
+        return mapFromCursor(cursor);
+    }
 
+    @Override
+    public Map<String, List<Enrollment>> queryAll() {
+        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
+        return mapFromCursor(cursor);
+    }
+
+    private Map<String, List<Enrollment>> mapFromCursor(Cursor cursor) {
+        Map<String, List<Enrollment>> enrollmentMap = new HashMap<>();
 
         try {
             if (cursor.getCount() > 0) {
@@ -244,7 +259,8 @@ public class EnrollmentStoreImpl implements EnrollmentStore, DeletableStore {
                     Date enrollmentDate = cursor.getString(7) == null ? null : parse(cursor.getString(7));
                     Date incidentDate = cursor.getString(8) == null ? null : parse(cursor.getString(8));
                     Boolean followUp =
-                            cursor.getString(9) == null || cursor.getInt(9) == 0 ? Boolean.TRUE : Boolean.FALSE;
+                            cursor.getString(9) == null || cursor.getInt(9) == 0 ? Boolean.FALSE
+                                    : Boolean.TRUE;
                     EnrollmentStatus status =
                             cursor.getString(10) == null ? null : EnrollmentStatus.valueOf(cursor.getString(10));
                     String trackedEntityInstance = cursor.getString(11) == null ? null : cursor.getString(11);
@@ -255,10 +271,16 @@ public class EnrollmentStoreImpl implements EnrollmentStore, DeletableStore {
                         enrollmentMap.put(trackedEntityInstance, new ArrayList<Enrollment>());
                     }
 
+                    Coordinates coordinates = null;
+
+                    if (latitude != null && longitude != null) {
+                        coordinates = Coordinates.create(latitude, longitude);
+                    }
+
                     enrollmentMap.get(trackedEntityInstance).add(Enrollment.create(
                             uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                             organisationUnit, program, enrollmentDate, incidentDate, followUp,
-                            status, trackedEntityInstance, Coordinates.create(latitude, longitude), false, null
+                            status, trackedEntityInstance, coordinates, false, null
                     ));
 
                 }
@@ -268,6 +290,7 @@ public class EnrollmentStoreImpl implements EnrollmentStore, DeletableStore {
         } finally {
             cursor.close();
         }
+
         return enrollmentMap;
     }
 

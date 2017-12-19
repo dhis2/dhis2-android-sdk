@@ -10,7 +10,7 @@ import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.event.EventCall;
+import org.hisp.dhis.android.core.event.EventEndPointCall;
 import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.program.ProgramModel;
@@ -64,7 +64,7 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void givenAEventInDatabase() throws Exception {
-        EventCall eventCall = EventCallFactory.create(
+        EventEndPointCall eventCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse("events_1.json");

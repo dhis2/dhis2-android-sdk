@@ -33,6 +33,7 @@ import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.DeletableStore;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -40,10 +41,25 @@ public interface TrackedEntityAttributeValueStore extends DeletableStore {
 
     long insert(
             @Nullable String value,
-            @Nullable String created,
-            @Nullable String lastUpdated,
+            @Nullable Date created,
+            @Nullable Date lastUpdated,
             @NonNull String trackedEntityAttribute,
             @NonNull String trackedEntityInstance);
 
+    int update(
+            @Nullable String value,
+            @Nullable Date created,
+            @Nullable Date lastUpdated,
+            @NonNull String trackedEntityAttribute,
+            @NonNull String trackedEntityInstance);
+
+    int deleteByInstanceAndAttributes(
+            @NonNull String trackedEntityInstanceUId,
+            @NonNull List<String> trackedEntityAttributeUIds);
+
     Map<String, List<TrackedEntityAttributeValue>> query();
+
+    Map<String, List<TrackedEntityAttributeValue>> queryAll();
+
+    List<TrackedEntityAttributeValue> queryByTrackedEntityInstance(String trackedEntityInstanceUid);
 }

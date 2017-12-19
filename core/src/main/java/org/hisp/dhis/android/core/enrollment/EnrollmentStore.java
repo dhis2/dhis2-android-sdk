@@ -78,4 +78,6 @@ public interface EnrollmentStore extends DeletableStore {
     int setState(@NonNull String uid, @NonNull State state);
 
     Map<String, List<Enrollment>> query();
+
+    Map<String, List<Enrollment>> queryAll();
 }

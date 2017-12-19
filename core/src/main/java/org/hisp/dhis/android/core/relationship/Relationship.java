@@ -32,40 +32,38 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.data.api.NestedField;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.data.api.Field;
 
 // TODO: Tests when relationship is fixed to be queried.
 @AutoValue
 public abstract class Relationship {
     private static final String TRACKED_ENTITY_INSTANCE_A = "trackedEntityInstanceA";
     private static final String TRACKED_ENTITY_INSTANCE_B = "trackedEntityInstanceB";
-    private static final String RELATIONSHIP_TYPE = "relationshipType";
+    private static final String DISPLAY_NAME = "displayName";
 
-    /*  //Uncommented because of api issued. We cannot query Relationship itself.
-        //https://play.dhis2.org/test/api/schemas/relationship.json  returns a json with 404 http status.
-        public static final NestedField<Relationship, TrackedEntityInstance> trackedEntityInstanceA
-        = NestedField.create(TRACKED_ENTITY_INSTANCE_A);
-        public static final NestedField<Relationship, TrackedEntityInstance> trackedEntityInstacenB
-        = NestedField.create(TRACKED_ENTITY_INSTANCE_B);*/
-    public static final NestedField<Relationship, RelationshipType> relationshipType
-            = NestedField.create(RELATIONSHIP_TYPE);
+
+    public static final Field<Relationship, String> trackedEntityInstanceA
+            = Field.create(TRACKED_ENTITY_INSTANCE_A);
+    public static final Field<Relationship, String> trackedEntityInstanceB
+            = Field.create(TRACKED_ENTITY_INSTANCE_B);
+    public static final Field<Relationship, String> displayName = Field.create(DISPLAY_NAME);
 
     @JsonProperty(TRACKED_ENTITY_INSTANCE_A)
-    public abstract TrackedEntityInstance trackedEntityInstanceA();
+    public abstract String trackedEntityInstanceA();
 
     @JsonProperty(TRACKED_ENTITY_INSTANCE_B)
-    public abstract TrackedEntityInstance trackedEntityInstanceB();
+    public abstract String trackedEntityInstanceB();
 
-    @JsonProperty(RELATIONSHIP_TYPE)
-    public abstract RelationshipType relationshipType();
+    @JsonProperty(DISPLAY_NAME)
+    public abstract String displayName();
 
     @JsonCreator
     public static Relationship create(
-            @JsonProperty(TRACKED_ENTITY_INSTANCE_A) TrackedEntityInstance trackedEntityInstanceA,
-            @JsonProperty(TRACKED_ENTITY_INSTANCE_B) TrackedEntityInstance trackedEntityInstanceB,
-            @JsonProperty(RELATIONSHIP_TYPE) RelationshipType relationshipType) {
+            @JsonProperty(TRACKED_ENTITY_INSTANCE_A) String trackedEntityInstanceA,
+            @JsonProperty(TRACKED_ENTITY_INSTANCE_B) String trackedEntityInstanceB,
+            @JsonProperty(DISPLAY_NAME) String displayName) {
 
-        return new AutoValue_Relationship(trackedEntityInstanceA, trackedEntityInstanceB, relationshipType);
+        return new AutoValue_Relationship(trackedEntityInstanceA, trackedEntityInstanceB,
+                displayName);
     }
 }

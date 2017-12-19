@@ -10,7 +10,7 @@ import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.event.EventCall;
+import org.hisp.dhis.android.core.event.EventEndPointCall;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -67,7 +67,7 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
         response = d2.syncMetaData().call();
         Truth.assertThat(response.isSuccessful()).isTrue();
 
-        EventCall eventCall = EventCallFactory.create(
+        EventEndPointCall eventCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 
         eventCall.call();

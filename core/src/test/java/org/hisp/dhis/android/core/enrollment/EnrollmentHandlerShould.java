@@ -10,6 +10,8 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 
@@ -73,7 +75,7 @@ public class EnrollmentHandlerShould {
     public void invoke_only_delete_when_a_enrollment_is_set_as_deleted() throws Exception {
         when(enrollment.deleted()).thenReturn(Boolean.TRUE);
 
-        enrollmentHandler.handle(enrollment);
+        enrollmentHandler.handle(Collections.singletonList(enrollment));
 
         // verify that enrollment store is only invoked with delete
         verify(enrollmentStore, times(1)).delete(anyString());
@@ -104,7 +106,7 @@ public class EnrollmentHandlerShould {
                 anyString(), any(State.class), anyString())
         ).thenReturn(1);
 
-        enrollmentHandler.handle(enrollment);
+        enrollmentHandler.handle(Collections.singletonList(enrollment));
 
         // verify that enrollment store is only invoked with update
         verify(enrollmentStore, times(1)).update(
@@ -124,7 +126,7 @@ public class EnrollmentHandlerShould {
         );
 
         // event handler should be invoked once
-        verify(eventHandler, times(1)).handle(event);
+        verify(eventHandler, times(1)).handle(any(ArrayList.class));
     }
 
     @Test
@@ -135,7 +137,7 @@ public class EnrollmentHandlerShould {
                 anyString(), any(State.class), anyString())
         ).thenReturn(0);
 
-        enrollmentHandler.handle(enrollment);
+        enrollmentHandler.handle(Collections.singletonList(enrollment));
 
         // verify that enrollment store is only invoked with insert
         verify(enrollmentStore, times(1)).insert(
@@ -158,6 +160,6 @@ public class EnrollmentHandlerShould {
 
 
         // event handler should be invoked once
-        verify(eventHandler, times(1)).handle(event);
+        verify(eventHandler, times(1)).handle(any(ArrayList.class));
     }
 }

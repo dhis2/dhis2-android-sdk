@@ -85,4 +85,6 @@ public interface EventStore extends DeletableStore {
     List<Event> querySingleEventsToPost();
 
     List<Event> querySingleEvents();
+
+    List<Event> queryAll();
 }

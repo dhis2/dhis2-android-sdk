@@ -15,3 +15,4 @@ down:
   - DROP TABLE CategoryOption
   - DROP TABLE CategoryComboLink
   - DROP TABLE CategoryCombo
+  - DROP TABLE Category

@@ -6,6 +6,7 @@ import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.ifVa
 import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isFieldExist;
 import static org.junit.Assert.assertThat;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
@@ -42,13 +43,15 @@ public class DataBaseMigrationShould {
 
     private D2 d2;
     private DatabaseAdapter databaseAdapter;
+    DbOpenHelper dbOpenHelper;
 
     public static final String realMigrationDir = "migrations/real_migrations";
     public static final String exampleMigrationsDir = "migrations/example_migrations";
     public static final String databaseSqlVersion1 = "db_version_1.sql";
     public static final String databaseSqlVersion2 = "db_version_2.sql";
-    static String dbName= "null.db";
-    
+    static String dbName= null;
+    private SQLiteDatabase databaseInMemory;
+
     @Before
     public void deleteDB(){
         mockWebServer = new MockWebServer();
@@ -60,6 +63,8 @@ public class DataBaseMigrationShould {
         if(dbName!=null) {
             InstrumentationRegistry.getContext().deleteDatabase(dbName);
         }
+        dbOpenHelper = null;
+        databaseInMemory = null;
     }
 
     @After
@@ -69,10 +74,22 @@ public class DataBaseMigrationShould {
         }
     }
 
-    public DatabaseAdapter initCoreDataBase(String dbName, int databaseVersion, String testPath, String databaseSqlVersion1){
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , dbName, databaseVersion, testPath, databaseSqlVersion1);
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+    public DatabaseAdapter initCoreDataBase(String dbName, int databaseVersion, String testPath, String databaseSqlVersion){
+        if(databaseAdapter == null){
+            dbOpenHelper = new DbOpenHelper(
+                    InstrumentationRegistry.getTargetContext().getApplicationContext()
+                    , dbName, databaseVersion, testPath, databaseSqlVersion);
+            databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+            databaseInMemory = ((SqLiteDatabaseAdapter)databaseAdapter).database();
+        }else if(dbName==null){
+            if(databaseInMemory.getVersion()<databaseVersion){
+                dbOpenHelper.onUpgrade(databaseInMemory, databaseInMemory.getVersion(), databaseVersion);
+                databaseInMemory.setVersion(databaseVersion);
+            } else if (databaseInMemory.getVersion()>databaseVersion) {
+                dbOpenHelper.onDowngrade(databaseInMemory, databaseInMemory.getVersion(), databaseVersion);
+                databaseInMemory.setVersion(databaseVersion);
+            }
+        }
         return databaseAdapter;
     }
 
@@ -107,6 +124,30 @@ public class DataBaseMigrationShould {
     }
 
     @Test
+    public void not_have_category_table_after_downgrade_with_database_version_2() throws IOException {
+        initCoreDataBase(dbName, 2, realMigrationDir, databaseSqlVersion2);
+        initCoreDataBase(dbName, 1, realMigrationDir, "");
+        assertThat(ifTableExist(CategoryModel.TABLE, databaseAdapter), is(false));
+        assertThat(ifTableExist(CategoryComboModel.TABLE, databaseAdapter), is(false));
+        assertThat(ifTableExist(CategoryOptionComboModel.TABLE, databaseAdapter), is(false));
+        assertThat(ifTableExist(CategoryOptionModel.TABLE, databaseAdapter), is(false));
+        assertThat(ifTableExist(CategoryComboLinkModel.TABLE, databaseAdapter), is(false));
+        assertThat(ifTableExist(CategoryOptionLinkModel.TABLE, databaseAdapter), is(false));
+    }
+
+    @Test
+    public void not_have_category_table_after_downgrade_with_real_sql_database() throws IOException {
+        initCoreDataBase(dbName, 2, realMigrationDir, "");
+        initCoreDataBase(dbName, 1, realMigrationDir, "");
+        assertThat(ifTableExist(CategoryModel.TABLE, databaseAdapter), is(false));
+        assertThat(ifTableExist(CategoryComboModel.TABLE, databaseAdapter), is(false));
+        assertThat(ifTableExist(CategoryOptionComboModel.TABLE, databaseAdapter), is(false));
+        assertThat(ifTableExist(CategoryOptionModel.TABLE, databaseAdapter), is(false));
+        assertThat(ifTableExist(CategoryComboLinkModel.TABLE, databaseAdapter), is(false));
+        assertThat(ifTableExist(CategoryOptionLinkModel.TABLE, databaseAdapter), is(false));
+    }
+
+    @Test
     public void have_categoryCombo_columns_after_first_migration() throws IOException {
         initCoreDataBase(dbName, 1, realMigrationDir, databaseSqlVersion1);
         initCoreDataBase(dbName, 2, realMigrationDir, "");
@@ -130,7 +171,7 @@ public class DataBaseMigrationShould {
     @Test
     public void have_new_column_when_up_migration_add_column() throws IOException {
         initCoreDataBase(dbName, 1, exampleMigrationsDir, databaseSqlVersion1);
-        initCoreDataBase(dbName, 2, exampleMigrationsDir, "");
+        initCoreDataBase(dbName, 3, exampleMigrationsDir, "");
         assertThat(isFieldExist(UserModel.TABLE, "testColumn", databaseAdapter), is(true));
     }
 
@@ -146,7 +187,7 @@ public class DataBaseMigrationShould {
     @Test
     public synchronized void have_dropped_table_when_down_migration_drop_table() {
         initCoreDataBase(dbName, 1, exampleMigrationsDir, databaseSqlVersion1);
-        initCoreDataBase(dbName, 2, exampleMigrationsDir, "");
+        initCoreDataBase(dbName, 3, exampleMigrationsDir, databaseSqlVersion1);
         initCoreDataBase(dbName, 1, exampleMigrationsDir, "");
         assertThat(isFieldExist(UserModel.TABLE, "testColumn", databaseAdapter), is(true));
         assertThat(ifTableExist("TestTable", databaseAdapter), is(false));

@@ -36,7 +36,7 @@ import android.support.annotation.NonNull;
 public class SqLiteDatabaseAdapter implements DatabaseAdapter {
 
     private final DbOpenHelper dbOpenHelper;
-    private final SQLiteDatabase mSQLiteDatabase;
+    public final SQLiteDatabase mSQLiteDatabase;
 
     public SqLiteDatabaseAdapter(@NonNull DbOpenHelper dbOpenHelper) {
         if (dbOpenHelper == null) {
@@ -83,7 +83,7 @@ public class SqLiteDatabaseAdapter implements DatabaseAdapter {
         return delete(table, "1", null);
     }
 
-    private SQLiteDatabase database() {
+    public SQLiteDatabase database() {
         return mSQLiteDatabase;
     }
 

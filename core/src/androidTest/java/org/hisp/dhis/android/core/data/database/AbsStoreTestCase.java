@@ -43,13 +43,10 @@ import java.io.IOException;
 public abstract class AbsStoreTestCase {
     private SQLiteDatabase sqLiteDatabase;
     private DatabaseAdapter databaseAdapter;
-    private String dbName = "test2.db";
+    private String dbName = null;
 
     @Before
     public void setUp() throws IOException {
-        if(dbName!=null){
-            getInstrumentation().getTargetContext().deleteDatabase(dbName);
-        }
         DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
                 , dbName);
         sqLiteDatabase = dbOpenHelper.getWritableDatabase();
@@ -60,9 +57,6 @@ public abstract class AbsStoreTestCase {
     public void tearDown() throws IOException {
         assertThat(sqLiteDatabase).isNotNull();
         sqLiteDatabase.close();
-        if(dbName!=null){
-            getInstrumentation().getTargetContext().deleteDatabase(dbName);
-        }
     }
 
     protected SQLiteDatabase database() {

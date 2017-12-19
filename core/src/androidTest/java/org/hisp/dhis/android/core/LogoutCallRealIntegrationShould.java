@@ -64,7 +64,7 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
         DatabaseAssert.assertThatDatabase(databaseAdapter()).isEmpty();
     }
 
-    @Test
+    //@Test
     public void response_successful_on_login_logout_and_login() throws Exception {
         retrofit2.Response response = null;
         response = d2.logIn("android", "Android123").call();

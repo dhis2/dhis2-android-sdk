@@ -29,7 +29,9 @@ package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.NonNull;
 
-public interface UserRoleProgramLinkStore {
+import org.hisp.dhis.android.core.common.DeletableStore;
+
+public interface UserRoleProgramLinkStore extends DeletableStore {
 
     long insert(@NonNull String userRole, @NonNull String program);
 

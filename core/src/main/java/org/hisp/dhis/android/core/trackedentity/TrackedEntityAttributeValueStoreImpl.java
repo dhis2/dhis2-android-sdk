@@ -252,4 +252,8 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
         sqLiteBind(sqLiteStatement, 5, trackedEntityInstance);
     }
 
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(TrackedEntityAttributeValueModel.TABLE);
+    }
 }

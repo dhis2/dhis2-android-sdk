@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.NonNull;
 
-public interface UserOrganisationUnitLinkStore {
+import org.hisp.dhis.android.core.common.DeletableStore;
+
+public interface UserOrganisationUnitLinkStore extends DeletableStore {
 
     long insert(@NonNull String user,
                 @NonNull String organisationUnit,

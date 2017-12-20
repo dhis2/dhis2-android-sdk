@@ -106,9 +106,18 @@ public final class DatabaseAssert {
     }
 
     private int tableCount(String tableName) {
-        Cursor resTable = databaseAdapter.query(
-                "SELECT * from " + tableName, null);
+        Cursor cursor = null;
+        int count = 0;
 
-        return resTable.getCount();
+        try {
+            cursor = databaseAdapter.query("SELECT * from " + tableName, null);
+            count = cursor.getCount();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return count;
     }
 }

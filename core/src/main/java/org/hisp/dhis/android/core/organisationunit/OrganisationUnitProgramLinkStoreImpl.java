@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.organisationunit;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
@@ -62,6 +63,31 @@ public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitPro
                 insertStatement);
         insertStatement.clearBindings();
         return ret;
+    }
+
+    @Override
+    public boolean exists(@NonNull String organisationUnitUid, @NonNull String programUid) {
+        String select = String.format(
+                "SELECT * FROM " + OrganisationUnitProgramLinkModel.TABLE + " WHERE " +
+                        OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT + " = '%s' AND "
+                        +
+                        OrganisationUnitProgramLinkModel.Columns.PROGRAM + " = '%s' ",
+                organisationUnitUid, programUid);
+
+        Cursor cursor = null;
+        int count = 0;
+
+        try {
+            cursor = databaseAdapter.query(select, null);
+
+            count = cursor.getCount();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return count > 0;
     }
 
     @Override

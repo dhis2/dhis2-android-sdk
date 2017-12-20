@@ -16,6 +16,7 @@ import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.user.UserCredentialsModel;
 import org.hisp.dhis.android.core.user.UserModel;
 import org.junit.After;
 import org.junit.Before;
@@ -121,17 +122,28 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void realize_login_and_sync_metadata_successfully_after_logut()
+    public void realize_login_and_sync_metadata_successfully_after_logout()
             throws Exception {
-        givenALoginWithSierraLeonaOUInDatabase();
+        givenALoginInDatabase();
 
-        givenAMetadataWithDescendantsInDatabase();
+        givenAMetadataInDatabase();
 
         d2.logout().call();
 
-        givenALoginWithSierraLeonaOUInDatabase();
+        givenALoginInDatabase();
 
-        givenAMetadataWithDescendantsInDatabase();
+        givenAMetadataInDatabase();
+
+        DatabaseAssert.assertThatDatabase(databaseAdapter())
+                .isNotEmpty()
+                .isNotEmptyTable(AuthenticatedUserModel.TABLE)
+                .isNotEmptyTable(UserModel.TABLE)
+                .isNotEmptyTable(UserCredentialsModel.TABLE)
+                .isNotEmptyTable(EventModel.TABLE)
+                .isNotEmptyTable(UserModel.TABLE)
+                .isNotEmptyTable(OrganisationUnitModel.TABLE)
+                .isNotEmptyTable(ProgramModel.TABLE)
+                .isNotEmptyTable(ResourceModel.TABLE);
     }
 
 
@@ -199,6 +211,6 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
         DatabaseAssert.assertThatDatabase(databaseAdapter())
                 .ifValueExist(OrganisationUnitModel.TABLE,
                         OrganisationUnitModel.Columns.CODE,
-                        "OU_260382");
+                        "OU_278371");
     }
 }

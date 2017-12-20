@@ -181,17 +181,17 @@ public class DataElementStoreShould extends AbsStoreTestCase {
         final String deferredOptionSetUid = "deferredOptionSetUid";
         final String deferredCategoryComboUid = "deferredCategoryComboUid";
 
+        ContentValues optionSet = CreateOptionSetUtils.create(2L, deferredOptionSetUid);
+        database().insert(OptionSetModel.TABLE, null, optionSet);
+
+        ContentValues categoryOption = CreateCategoryComboUtils.create(2L, deferredCategoryComboUid);
+        database().insert(CategoryComboModel.TABLE, null, categoryOption);
         database().beginTransaction();
         long rowId = store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
                 DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, VALUE_TYPE, ZERO_IS_SIGNIFICANT,
                 AGGREGATION_OPERATOR, FORM_NAME, NUMBER_TYPE, DOMAIN_TYPE, DIMENSION, DISPLAY_FORM_NAME,
                 deferredOptionSetUid, deferredCategoryComboUid
         );
-        ContentValues optionSet = CreateOptionSetUtils.create(2L, deferredOptionSetUid);
-        database().insert(OptionSetModel.TABLE, null, optionSet);
-
-        ContentValues categoryOption = CreateCategoryComboUtils.create(2L, deferredCategoryComboUid);
-        database().insert(CategoryComboModel.TABLE, null, categoryOption);
 
         database().setTransactionSuccessful();
         database().endTransaction();
@@ -288,33 +288,6 @@ public class DataElementStoreShould extends AbsStoreTestCase {
                 );
     }
 
-    @Test(expected = SQLiteConstraintException.class)
-    public void throw_sqlite_constraint_exception_when_persist_a_data_element_with_invalid_category_combo_foreign_key() {
-        String fakeCategoryComboUid = "fake_category_combo_uid";
-        store.insert(
-                UID,
-                CODE,
-                NAME,
-                DISPLAY_NAME,
-                date,
-                date,
-                SHORT_NAME,
-                DISPLAY_SHORT_NAME,
-                DESCRIPTION,
-                DISPLAY_DESCRIPTION,
-                VALUE_TYPE,
-                ZERO_IS_SIGNIFICANT,
-                AGGREGATION_OPERATOR,
-                FORM_NAME,
-                NUMBER_TYPE,
-                DOMAIN_TYPE,
-                DIMENSION,
-                DISPLAY_FORM_NAME,
-                null,
-                fakeCategoryComboUid
-        );
-    }
-
     @Test
     public void delete_data_element_in_database_when_deleting_options_set_foreign_key() {
         ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
@@ -343,34 +316,6 @@ public class DataElementStoreShould extends AbsStoreTestCase {
         assertThatCursor(cursor).isExhausted();
     }
 
-
-    @Test
-    public void delete_data_element_in_database_when_deleting_category_combo_foreign_key() {
-        ContentValues categoryCombo = CreateCategoryComboUtils.create(ID, CATEGORY_COMBO);
-        database().insert(CategoryComboModel.TABLE, null, categoryCombo);
-
-        ContentValues dataElement = new ContentValues();
-        dataElement.put(Columns.ID, ID);
-        dataElement.put(Columns.UID, UID);
-        dataElement.put(Columns.CATEGORY_COMBO, CATEGORY_COMBO);
-
-        database().insert(DataElementModel.TABLE, null, dataElement);
-
-        String[] PROJECTION = {Columns.ID, Columns.UID, Columns.CATEGORY_COMBO};
-
-        Cursor cursor = database().query(DataElementModel.TABLE, PROJECTION, null, null, null, null, null);
-
-        // checking that dataElement was successfully inserted
-        assertThatCursor(cursor).hasRow(ID, UID, CATEGORY_COMBO).isExhausted();
-
-        // deleting option set
-        database().delete(CategoryComboModel.TABLE, CategoryComboModel.Columns.UID + "=?", new String[]{CATEGORY_COMBO});
-
-        cursor = database().query(DataElementModel.TABLE, PROJECTION, null, null, null, null, null);
-
-        // checking that dataElement was deleted by option set on delete cascade
-        assertThatCursor(cursor).isExhausted();
-    }
     @Test
     public void update_data_element_in_database_when_update() throws Exception {
         // insert dataElement into database

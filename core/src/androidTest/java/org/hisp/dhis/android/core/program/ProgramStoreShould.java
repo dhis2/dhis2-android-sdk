@@ -236,15 +236,6 @@ public class ProgramStoreShould extends AbsStoreTestCase {
         final String deferredTrackedEntityUid = "deferredTrackedEntityUid";
         final String deferredCategoryComboUid = "deferredCategoryComboUid";
 
-        database().beginTransaction();
-        long rowId = store.insert(
-                UID, CODE, NAME, DISPLAY_NAME, date,
-                date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION,
-                VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE, INCIDENT_DATE_LABEL,
-                REGISTRATION, SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD, IGNORE_OVERDUE_EVENTS, RELATIONSHIP_FROM_A,
-                SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES, USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE,
-                deferredRelationshipTypeUid, RELATIONSHIP_TEXT, UID2, deferredTrackedEntityUid, deferredCategoryComboUid
-        );
         //RelationshipType foreign key corresponds to table entry
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(2L, deferredRelationshipTypeUid);
         database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
@@ -254,6 +245,15 @@ public class ProgramStoreShould extends AbsStoreTestCase {
 
         ContentValues categoryCombo = CreateCategoryComboUtils.create(2L, deferredCategoryComboUid);
         database().insert(CategoryComboModel.TABLE, null, categoryCombo);
+        database().beginTransaction();
+        long rowId = store.insert(
+                UID, CODE, NAME, DISPLAY_NAME, date,
+                date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION,
+                VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE, INCIDENT_DATE_LABEL,
+                REGISTRATION, SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD, IGNORE_OVERDUE_EVENTS, RELATIONSHIP_FROM_A,
+                SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES, USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE,
+                deferredRelationshipTypeUid, RELATIONSHIP_TEXT, UID2, deferredTrackedEntityUid, deferredCategoryComboUid
+        );
 
         long rowId2 = store.insert(
                 UID2, CODE, NAME, DISPLAY_NAME, date,

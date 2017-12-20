@@ -33,9 +33,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
+import org.hisp.dhis.android.core.category.CategoryOptionModel;
+import org.hisp.dhis.android.core.category.CreateCategoryOptionComboUtils;
+import org.hisp.dhis.android.core.category.CreateCategoryOptionUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.database.SqliteCheckerUtility;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.enrollment.CreateEnrollmentUtils;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
@@ -65,6 +70,7 @@ import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
+import static org.hisp.dhis.android.core.event.EventModel.Columns.ATTRIBUTE_CATEGORY_OPTIONS;
 
 @RunWith(AndroidJUnit4.class)
 public class EventStoreShould extends AbsStoreTestCase {
@@ -85,7 +91,7 @@ public class EventStoreShould extends AbsStoreTestCase {
             Columns.COMPLETE_DATE, // completedDate
             Columns.DUE_DATE, // dueDate
             Columns.STATE,
-            Columns.ATTRIBUTE_CATEGORY_OPTIONS,
+            ATTRIBUTE_CATEGORY_OPTIONS,
             Columns.ATTRIBUTE_OPTION_COMBO
     };
     private static final String EVENT_UID = "test_uid";
@@ -105,8 +111,8 @@ public class EventStoreShould extends AbsStoreTestCase {
     private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
     private static final long RELATIONSHIP_TYPE_ID = 3L;
     private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
-    private static final String ATTRIBUTE_CATEGORY_OPTION = "attributeCategoryOptionUid";
-    private static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionComboUid";
+    private static final String ATTRIBUTE_CATEGORY_OPTION_UID = "attributeCategoryOptionUid";
+    private static final String ATTRIBUTE_OPTION_COMBO_UID = "attributeOptionComboUid";
     private final Date date;
 
     private final String dateString;
@@ -143,7 +149,14 @@ public class EventStoreShould extends AbsStoreTestCase {
                 ENROLLMENT_UID, PROGRAM, ORGANISATION_UNIT, trackedEntityInstanceUid
         );
 
-
+        ContentValues categoryOptionCombo = CreateCategoryOptionComboUtils.create(
+                1L, ATTRIBUTE_OPTION_COMBO_UID
+        );
+        database().insert(CategoryOptionComboModel.TABLE, null, categoryOptionCombo);
+        ContentValues categoryOption = CreateCategoryOptionUtils.create(
+                1l, ATTRIBUTE_CATEGORY_OPTION_UID
+        );
+        database().insert(CategoryOptionModel.TABLE, null, categoryOption);
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
         database().insert(ProgramStageModel.TABLE, null, programStage);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
@@ -169,8 +182,8 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date, // completedDate
                 date, // dueDate
                 STATE,
-                ATTRIBUTE_CATEGORY_OPTION,
-                ATTRIBUTE_OPTION_COMBO
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID
         );
         Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
 
@@ -192,8 +205,8 @@ public class EventStoreShould extends AbsStoreTestCase {
                 dateString, // completedDate
                 dateString, // dueDate
                 STATE,
-                ATTRIBUTE_CATEGORY_OPTION,
-                ATTRIBUTE_OPTION_COMBO
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID
         ).isExhausted();
     }
 
@@ -203,6 +216,10 @@ public class EventStoreShould extends AbsStoreTestCase {
         final String deferredProgramStage = "deferredProgramStage";
         final String deferredOrganisationUnit = "deferredOrganisationUnit";
 
+        ContentValues program = CreateProgramUtils.create(11L, deferredProgram,
+                RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
+        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(11L, deferredOrganisationUnit);
+        ContentValues programStage = CreateProgramStageUtils.create(11L, deferredProgramStage, PROGRAM);
         database().beginTransaction();
         long rowId = eventStore.insert(
                 EVENT_UID,
@@ -221,14 +238,10 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date, // completedDate
                 date, // dueDate
                 STATE,
-                ATTRIBUTE_CATEGORY_OPTION,
-                ATTRIBUTE_OPTION_COMBO
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID
         );
 
-        ContentValues program = CreateProgramUtils.create(11L, deferredProgram,
-                RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(11L, deferredOrganisationUnit);
-        ContentValues programStage = CreateProgramStageUtils.create(11L, deferredProgramStage, PROGRAM);
 
         database().insert(ProgramModel.TABLE, null, program);
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
@@ -255,8 +268,8 @@ public class EventStoreShould extends AbsStoreTestCase {
                 dateString, // completedDate
                 dateString, // dueDate
                 STATE,
-                ATTRIBUTE_CATEGORY_OPTION,
-                ATTRIBUTE_OPTION_COMBO
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID
         ).isExhausted();
     }
 
@@ -265,14 +278,14 @@ public class EventStoreShould extends AbsStoreTestCase {
 
         long rowId = eventStore.insert(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, null, null, PROGRAM,
                 PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null,
-                ATTRIBUTE_CATEGORY_OPTION,
-                ATTRIBUTE_OPTION_COMBO);
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID);
         Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, null, null, PROGRAM,
                 PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null,
-                ATTRIBUTE_CATEGORY_OPTION,
-                ATTRIBUTE_OPTION_COMBO).isExhausted();
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID).isExhausted();
     }
 
     @Test
@@ -294,8 +307,8 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 STATE,
-                ATTRIBUTE_CATEGORY_OPTION,
-                ATTRIBUTE_OPTION_COMBO
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID
         );
 
         database().delete(ProgramModel.TABLE, ProgramModel.Columns.UID + "=?", new String[]{PROGRAM});
@@ -322,8 +335,8 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 STATE,
-                ATTRIBUTE_CATEGORY_OPTION,
-                ATTRIBUTE_OPTION_COMBO
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID
         );
 
         database().delete(ProgramStageModel.TABLE, ProgramStageModel.Columns.UID + "=?", new String[]{PROGRAM_STAGE});
@@ -350,8 +363,8 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 STATE,
-                ATTRIBUTE_CATEGORY_OPTION,
-                ATTRIBUTE_OPTION_COMBO
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID
         );
 
         database().delete(OrganisationUnitModel.TABLE,
@@ -381,8 +394,8 @@ public class EventStoreShould extends AbsStoreTestCase {
 
         eventStore.update(EVENT_UID, null, null, null, null, null, null, null, null,
                 PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT, updatedDate, null, null, null,
-                ATTRIBUTE_CATEGORY_OPTION,
-                ATTRIBUTE_OPTION_COMBO, EVENT_UID);
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID, EVENT_UID);
 
         cursor = database().query(EventModel.TABLE, projection, null, null, null, null, null);
 
@@ -516,8 +529,8 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 STATE,
-                ATTRIBUTE_CATEGORY_OPTION,
-                ATTRIBUTE_OPTION_COMBO
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID
         );
     }
 
@@ -540,8 +553,8 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 STATE,
-                ATTRIBUTE_CATEGORY_OPTION,
-                ATTRIBUTE_OPTION_COMBO
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID
         );
     }
 
@@ -564,8 +577,8 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 STATE,
-                ATTRIBUTE_CATEGORY_OPTION,
-                ATTRIBUTE_OPTION_COMBO
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID
         );
     }
 
@@ -589,8 +602,8 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 STATE,
-                ATTRIBUTE_CATEGORY_OPTION,
-                ATTRIBUTE_OPTION_COMBO
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID
         );
     }
 

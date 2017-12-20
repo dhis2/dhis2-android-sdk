@@ -37,7 +37,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
-import android.view.ViewGroup;
 
 import org.hisp.dhis.android.core.category.CategoryComboLinkModel;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
@@ -356,7 +355,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             " FOREIGN KEY (" + ProgramModel.Columns.CATEGORY_COMBO + ")" +
             " REFERENCES " + CategoryComboModel.TABLE + " (" + CategoryComboModel.Columns.UID + ")"
             +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+            " ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_TRACKED_ENTITY_TABLE =
@@ -400,10 +399,6 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                     DataElementModel.Columns.CATEGORY_COMBO + " TEXT," +
                     " FOREIGN KEY ( " + DataElementModel.Columns.OPTION_SET + ")" +
                     " REFERENCES " + OptionSetModel.TABLE + " (" + OptionSetModel.Columns.UID + ")"
-                    +
-                    " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
-                    " FOREIGN KEY (" + DataElementModel.Columns.CATEGORY_COMBO + ")" +
-                    " REFERENCES " + CategoryComboModel.TABLE + " (" + CategoryComboModel.Columns.UID + ")"
                     +
                     " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
                     ");";
@@ -793,7 +788,16 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             " FOREIGN KEY (" + EventModel.Columns.ORGANISATION_UNIT + ")" +
             " REFERENCES " + OrganisationUnitModel.TABLE +
             " (" + OrganisationUnitModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+
+            " FOREIGN KEY (" + EventModel.Columns.ATTRIBUTE_CATEGORY_OPTIONS + ")" +
+            " REFERENCES " + CategoryOptionModel.TABLE + " (" + CategoryOptionModel.Columns.UID + ")"
+            +
+            " ON DELETE CASCADE," +
+            " FOREIGN KEY (" + EventModel.Columns.ATTRIBUTE_OPTION_COMBO + ")" +
+            " REFERENCES " + CategoryOptionComboModel.TABLE + " (" + CategoryOptionComboModel.Columns.UID + ")"
+            +
+            " ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_TRACKED_ENTITY_INSTANCE_TABLE = "CREATE TABLE " +

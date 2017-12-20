@@ -11,10 +11,8 @@ up:
   - CREATE TABLE CategoryCombo (_id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT NOT NULL UNIQUE,code TEXT,name TEXT,displayName TEXT,created TEXT,lastUpdated TEXT, isDefault INTEGER);
   - CREATE TABLE Category (_id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT NOT NULL UNIQUE,code TEXT,name TEXT,displayName TEXT,created TEXT,lastUpdated TEXT,dataDimensionType TEXT);
 down:
-  - DROP TABLE CategoryOptionLink
-  - DROP TABLE CategoryOptionComboLinkCategory
-  - DROP TABLE CategoryOptionCombo
-  - DROP TABLE CategoryOption
-  - DROP TABLE CategoryComboLink
-  - DROP TABLE CategoryCombo
-  - DROP TABLE Category
+  - DROP TABLE IF EXISTS CategoryCombo;
+  - DROP TABLE IF EXISTS CategoryComboLink;
+  - DROP TABLE IF EXISTS CategoryOptionCombo;
+  - DROP TABLE IF EXISTS CategoryOptionComboLinkCategory;
+  - DROP TABLE IF EXISTS CategoryOptionLink;

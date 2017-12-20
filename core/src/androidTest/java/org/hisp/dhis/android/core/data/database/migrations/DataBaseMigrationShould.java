@@ -127,10 +127,11 @@ public class DataBaseMigrationShould {
     public void not_have_category_table_after_downgrade_with_database_version_2() throws IOException {
         initCoreDataBase(dbName, 2, realMigrationDir, databaseSqlVersion2);
         initCoreDataBase(dbName, 1, realMigrationDir, "");
-        assertThat(ifTableExist(CategoryModel.TABLE, databaseAdapter), is(false));
-        assertThat(ifTableExist(CategoryComboModel.TABLE, databaseAdapter), is(false));
+        //TODO  remove this tables in 2.yaml drop
+        //assertThat(ifTableExist(CategoryModel.TABLE, databaseAdapter), is(false));
+        //assertThat(ifTableExist(CategoryOptionModel.TABLE, databaseAdapter), is(false));
         assertThat(ifTableExist(CategoryOptionComboModel.TABLE, databaseAdapter), is(false));
-        assertThat(ifTableExist(CategoryOptionModel.TABLE, databaseAdapter), is(false));
+        assertThat(ifTableExist(CategoryComboModel.TABLE, databaseAdapter), is(false));
         assertThat(ifTableExist(CategoryComboLinkModel.TABLE, databaseAdapter), is(false));
         assertThat(ifTableExist(CategoryOptionLinkModel.TABLE, databaseAdapter), is(false));
     }
@@ -139,10 +140,11 @@ public class DataBaseMigrationShould {
     public void not_have_category_table_after_downgrade_with_real_sql_database() throws IOException {
         initCoreDataBase(dbName, 2, realMigrationDir, "");
         initCoreDataBase(dbName, 1, realMigrationDir, "");
-        assertThat(ifTableExist(CategoryModel.TABLE, databaseAdapter), is(false));
+        //TODO remove Category and CategoryOption tables in 2.yaml drop migration
+        //assertThat(ifTableExist(CategoryModel.TABLE, databaseAdapter), is(false));
+        //assertThat(ifTableExist(CategoryOptionModel.TABLE, databaseAdapter), is(false));
         assertThat(ifTableExist(CategoryComboModel.TABLE, databaseAdapter), is(false));
         assertThat(ifTableExist(CategoryOptionComboModel.TABLE, databaseAdapter), is(false));
-        assertThat(ifTableExist(CategoryOptionModel.TABLE, databaseAdapter), is(false));
         assertThat(ifTableExist(CategoryComboLinkModel.TABLE, databaseAdapter), is(false));
         assertThat(ifTableExist(CategoryOptionLinkModel.TABLE, databaseAdapter), is(false));
     }

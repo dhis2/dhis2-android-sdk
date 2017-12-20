@@ -63,7 +63,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     private final UserCredentialsHandler userCredentialsHandler;
     private final ResourceHandler resourceHandler;
     private final AuthenticatedUserStore authenticatedUserStore;
-    private final OrganisationUnitHandler OrganisationUnitHandler;
+    private final OrganisationUnitHandler organisationUnitHandler;
 
     // username and password of candidate
     private final String username;
@@ -78,7 +78,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
             @NonNull UserCredentialsHandler userCredentialsHandler,
             @NonNull ResourceHandler resourceHandler,
             @NonNull AuthenticatedUserStore authenticatedUserStore,
-            @NonNull OrganisationUnitHandler OrganisationUnitHandler,
+            @NonNull OrganisationUnitHandler organisationUnitHandler,
             @NonNull String username,
             @NonNull String password) {
         this.userService = userService;
@@ -88,7 +88,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         this.userCredentialsHandler = userCredentialsHandler;
         this.resourceHandler = resourceHandler;
         this.authenticatedUserStore = authenticatedUserStore;
-        this.OrganisationUnitHandler = OrganisationUnitHandler;
+        this.organisationUnitHandler = organisationUnitHandler;
 
         // credentials
         this.username = username;
@@ -211,7 +211,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         resourceHandler.handleResource(ResourceModel.Type.AUTHENTICATED_USER, serverDateTime);
 
         if (user.organisationUnits() != null) {
-            OrganisationUnitHandler.handleOrganisationUnits(
+            organisationUnitHandler.handleOrganisationUnits(
                     user.organisationUnits(),
                     OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
                     user.uid());

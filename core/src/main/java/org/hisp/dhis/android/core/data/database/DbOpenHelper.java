@@ -182,10 +182,6 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             " REFERENCES " + CategoryOptionComboModel.TABLE + " ("
             + CategoryOptionComboModel.Columns.UID + ") " +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-            " FOREIGN KEY (" + CategoryOptionComboLinkCategoryModel.Columns.CATEGORY + ") " +
-            " REFERENCES " + CategoryOptionModel.TABLE + " (" + CategoryOptionModel.Columns.UID
-            + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
             "UNIQUE (" + CategoryOptionComboLinkCategoryModel.Columns.OPTION_COMBO + ", " +
             CategoryOptionComboLinkCategoryModel.Columns.CATEGORY + ")" +
             ");";

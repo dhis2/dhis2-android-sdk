@@ -135,7 +135,7 @@ public class MetadataCall implements Call<Response> {
     private final CategoryQuery categoryQuery;
     private final CategoryComboQuery categoryComboQuery;
     private final CategoryService categoryService;
-    private final CategoryComboService comboService;
+    private final CategoryComboService categoryComboService;
     private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
 
@@ -180,7 +180,7 @@ public class MetadataCall implements Call<Response> {
             @NonNull CategoryService categoryService,
             @NonNull CategoryHandler categoryHandler,
             @NonNull CategoryComboQuery categoryComboQuery,
-            @NonNull CategoryComboService comboService,
+            @NonNull CategoryComboService categoryComboService,
             @NonNull CategoryComboHandler categoryComboHandler) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
@@ -219,7 +219,7 @@ public class MetadataCall implements Call<Response> {
         this.categoryService = categoryService;
         this.categoryHandler = categoryHandler;
         this.categoryComboQuery = categoryComboQuery;
-        this.comboService = comboService;
+        this.categoryComboService = categoryComboService;
         this.categoryComboHandler = categoryComboHandler;
     }
 
@@ -466,7 +466,7 @@ public class MetadataCall implements Call<Response> {
 
         ResponseValidator<CategoryCombo> comboValidator = new ResponseValidator<>();
 
-        return new CategoryComboEndpointCall(categoryComboQuery, comboService,
+        return new CategoryComboEndpointCall(categoryComboQuery, categoryComboService,
                 comboValidator, categoryComboHandler,
                 new ResourceHandler(resourceStore), databaseAdapter, serverDate).call();
     }

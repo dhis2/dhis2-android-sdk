@@ -45,7 +45,10 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -237,11 +240,17 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                 new UserOrganisationUnitLinkStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
+        UserCredentialsHandler userCredentialsHandler = new UserCredentialsHandler(
+                userCredentialsStore);
+
+        OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
+                organisationUnitStore, new UserOrganisationUnitLinkStoreImpl(databaseAdapter()),
+                new OrganisationUnitProgramLinkStoreImpl(databaseAdapter()));
 
         authenticateUserCall = new UserAuthenticateCall(userService, databaseAdapter(), userStore,
-                userCredentialsStore, userOrganisationUnitLinkStore, resourceHandler,
+                userCredentialsHandler, resourceHandler,
                 authenticatedUserStore,
-                organisationUnitStore, "test_user", "test_password");
+                organisationUnitHandler, "test_user", "test_password");
     }
 
     @Test

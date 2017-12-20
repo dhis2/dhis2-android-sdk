@@ -61,6 +61,7 @@ import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
 import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.option.OptionStoreImpl;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
@@ -116,6 +117,7 @@ import org.hisp.dhis.android.core.user.IsUserLoggedInCallable;
 import org.hisp.dhis.android.core.user.LogOutUserCallable;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserAuthenticateCall;
+import org.hisp.dhis.android.core.user.UserCredentialsHandler;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
@@ -192,9 +194,11 @@ public final class D2 {
     private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
 
     //Handlers
+    private final UserCredentialsHandler userCredentialsHandler;
     private final EventHandler eventHandler;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final ResourceHandler resourceHandler;
+    private final OrganisationUnitHandler organisationUnitHandler;
 
 
     @VisibleForTesting
@@ -279,7 +283,11 @@ public final class D2 {
                 new OrganisationUnitProgramLinkStoreImpl(databaseAdapter);
 
         //handlers
+        userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
         resourceHandler = new ResourceHandler(resourceStore);
+
+        organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore,
+                userOrganisationUnitLinkStore, organisationUnitProgramLinkStore);
 
         TrackedEntityDataValueHandler trackedEntityDataValueHandler =
                 new TrackedEntityDataValueHandler(trackedEntityDataValueStore);
@@ -319,8 +327,8 @@ public final class D2 {
         }
 
         return new UserAuthenticateCall(userService, databaseAdapter, userStore,
-                userCredentialsStore, userOrganisationUnitLinkStore, resourceHandler,
-                authenticatedUserStore, organisationUnitStore, username, password
+                userCredentialsHandler, resourceHandler,
+                authenticatedUserStore, organisationUnitHandler, username, password
         );
     }
 

@@ -32,7 +32,6 @@ import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
 
 import static okhttp3.Credentials.basic;
 
-import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.calls.Call;
@@ -40,15 +39,10 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
@@ -66,11 +60,10 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     // stores and databaseAdapter related dependencies
     private final DatabaseAdapter databaseAdapter;
     private final UserStore userStore;
-    private final UserCredentialsStore userCredentialsStore;
-    private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
+    private final UserCredentialsHandler userCredentialsHandler;
     private final ResourceHandler resourceHandler;
     private final AuthenticatedUserStore authenticatedUserStore;
-    private final OrganisationUnitStore organisationUnitStore;
+    private final OrganisationUnitHandler OrganisationUnitHandler;
 
     // username and password of candidate
     private final String username;
@@ -82,22 +75,20 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
             @NonNull UserService userService,
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull UserStore userStore,
-            @NonNull UserCredentialsStore userCredentialsStore,
-            @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
+            @NonNull UserCredentialsHandler userCredentialsHandler,
             @NonNull ResourceHandler resourceHandler,
             @NonNull AuthenticatedUserStore authenticatedUserStore,
-            @NonNull OrganisationUnitStore organisationUnitStore,
+            @NonNull OrganisationUnitHandler OrganisationUnitHandler,
             @NonNull String username,
             @NonNull String password) {
         this.userService = userService;
 
         this.databaseAdapter = databaseAdapter;
         this.userStore = userStore;
-        this.userCredentialsStore = userCredentialsStore;
-        this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
+        this.userCredentialsHandler = userCredentialsHandler;
         this.resourceHandler = resourceHandler;
         this.authenticatedUserStore = authenticatedUserStore;
-        this.organisationUnitStore = organisationUnitStore;
+        this.OrganisationUnitHandler = OrganisationUnitHandler;
 
         // credentials
         this.username = username;
@@ -170,129 +161,62 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         ).build()).execute();
     }
 
-    private Long saveUser(Response<User> response) throws Exception {
+    private void saveUser(Response<User> response) throws Exception {
         Transaction transaction = databaseAdapter.beginNewTransaction();
-
-        Long userId;
 
         // enclosing transaction in try-finally block in
         // order to make sure that databaseAdapter transaction won't be leaked
         try {
             User user = response.body();
-            userId = getUserIdStored(databaseAdapter, user.uid());
 
             Date serverDateTime = response.headers().getDate(HeaderUtils.DATE);
-            //getServerDate();
 
-            if (userId != null) {
-                // update user model and dependencies tables
-                updateUser(user, serverDateTime);
-                return userId;
-            }
-
-            // insert user model and dependencies into tables
-            userId = insertUser(user, serverDateTime);
+            handleUser(user, serverDateTime);
 
             transaction.setSuccessful();
         } finally {
             transaction.end();
         }
-
-        return userId;
     }
 
     @NonNull
-    private Long insertUser(User user, Date serverDateTime) {
-        Long userId;
-        userId = userStore.insert(
-                user.uid(), user.code(), user.name(), user.displayName(), user.created(),
-                user.lastUpdated(), user.birthday(), user.education(),
-                user.gender(), user.jobTitle(), user.surname(), user.firstName(),
-                user.introduction(), user.employer(), user.interests(), user.languages(),
-                user.email(), user.phoneNumber(), user.nationality()
-        );
-        resourceHandler.handleResource(ResourceModel.Type.USER, serverDateTime);
+    private void handleUser(User user, Date serverDateTime) {
 
-
-        // insert user credentials
-        UserCredentials userCredentials = user.userCredentials();
-        userCredentialsStore.insert(
-                userCredentials.uid(), userCredentials.code(), userCredentials.name(),
-                userCredentials.displayName(), userCredentials.created(),
-                userCredentials.lastUpdated(),
-                userCredentials.username(), user.uid()
-        );
-
-        resourceHandler.handleResource(ResourceModel.Type.USER_CREDENTIALS, serverDateTime);
-
-        // insert user as authenticated entity
-        authenticatedUserStore.insert(user.uid(), base64(username, password));
-
-        resourceHandler.handleResource(ResourceModel.Type.AUTHENTICATED_USER, serverDateTime);
-
-        if (user.organisationUnits() != null) {
-            int size = user.organisationUnits().size();
-            for (int i = 0; i < size; i++) {
-                OrganisationUnit organisationUnit = user.organisationUnits().get(i);
-
-                organisationUnitStore.insert(
-                        organisationUnit.uid(),
-                        organisationUnit.code(),
-                        organisationUnit.name(),
-                        organisationUnit.displayName(),
-                        organisationUnit.created(),
-                        organisationUnit.lastUpdated(),
-                        organisationUnit.shortName(),
-                        organisationUnit.displayShortName(),
-                        organisationUnit.description(),
-                        organisationUnit.displayDescription(),
-                        organisationUnit.path(),
-                        organisationUnit.openingDate(),
-                        organisationUnit.closedDate(),
-                        organisationUnit.parent() == null ? null : organisationUnit.parent().uid(),
-                        organisationUnit.level()
-                );
-
-                resourceHandler.handleResource(ResourceModel.Type.ORGANISATION_UNIT,
-                        serverDateTime);
-
-                // insert link between user and organisation unit
-                userOrganisationUnitLinkStore.insert(
-                        user.uid(), organisationUnit.uid(),
-                        OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE.name()
-                );
-            }
-        }
-        return userId;
-    }
-
-    private void updateUser(User user, Date serverDateTime) {
-        userStore.update(
+        int updatedRow = userStore.update(
                 user.uid(), user.code(), user.name(), user.displayName(), user.created(),
                 user.lastUpdated(), user.birthday(), user.education(),
                 user.gender(), user.jobTitle(), user.surname(), user.firstName(),
                 user.introduction(), user.employer(), user.interests(), user.languages(),
                 user.email(), user.phoneNumber(), user.nationality(), user.uid()
         );
+
+        if (updatedRow <= 0) {
+            userStore.insert(
+                    user.uid(), user.code(), user.name(), user.displayName(), user.created(),
+                    user.lastUpdated(), user.birthday(), user.education(),
+                    user.gender(), user.jobTitle(), user.surname(), user.firstName(),
+                    user.introduction(), user.employer(), user.interests(), user.languages(),
+                    user.email(), user.phoneNumber(), user.nationality()
+            );
+        }
+
         resourceHandler.handleResource(ResourceModel.Type.USER, serverDateTime);
-        // insert user credentials
-        UserCredentials userCredentials = user.userCredentials();
-        userCredentialsStore.update(
-                userCredentials.uid(), userCredentials.code(), userCredentials.name(),
-                userCredentials.displayName(), userCredentials.created(),
-                userCredentials.lastUpdated(),
-                userCredentials.username(), user.uid(), user.uid()
-        );
+
+        userCredentialsHandler.handleUserCredentials(user.userCredentials(), user);
 
         resourceHandler.handleResource(ResourceModel.Type.USER_CREDENTIALS, serverDateTime);
-    }
 
-    private Long getUserIdStored(DatabaseAdapter databaseAdapter, String uid) {
-        Cursor cursor = databaseAdapter.query(
-                "Select _id as id from " + UserModel.TABLE + " where uid ='" + uid + "'");
-        if (cursor != null && cursor.getCount() == 1) {
-            return (long) cursor.getColumnIndex("id");
+        authenticatedUserStore.insert(user.uid(), base64(username, password));
+
+        resourceHandler.handleResource(ResourceModel.Type.AUTHENTICATED_USER, serverDateTime);
+
+        if (user.organisationUnits() != null) {
+            OrganisationUnitHandler.handleOrganisationUnits(
+                    user.organisationUnits(),
+                    OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
+                    user.uid());
+
+            resourceHandler.handleResource(ResourceModel.Type.ORGANISATION_UNIT, serverDateTime);
         }
-        return null;
     }
 }

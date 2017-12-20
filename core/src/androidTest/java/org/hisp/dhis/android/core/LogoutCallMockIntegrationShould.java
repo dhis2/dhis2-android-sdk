@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Date;
 
 import retrofit2.Response;
 
@@ -98,6 +99,7 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
                 .isEmptyTable(AuthenticatedUserModel.TABLE)
                 .isNotEmptyTable(EventModel.TABLE)
                 .isNotEmptyTable(UserModel.TABLE)
+                .isNotEmptyTable(UserCredentialsModel.TABLE)
                 .isNotEmptyTable(OrganisationUnitModel.TABLE)
                 .isNotEmptyTable(ProgramModel.TABLE)
                 .isNotEmptyTable(ResourceModel.TABLE);
@@ -130,6 +132,13 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
 
         d2.logout().call();
 
+        DatabaseAssert.assertThatDatabase(databaseAdapter())
+                .isNotEmpty()
+                .isEmptyTable(AuthenticatedUserModel.TABLE)
+                .isNotEmptyTable(UserModel.TABLE)
+                .isNotEmptyTable(UserCredentialsModel.TABLE)
+                .isNotEmptyTable(ResourceModel.TABLE);
+
         givenALoginInDatabase();
 
         givenAMetadataInDatabase();
@@ -139,8 +148,6 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
                 .isNotEmptyTable(AuthenticatedUserModel.TABLE)
                 .isNotEmptyTable(UserModel.TABLE)
                 .isNotEmptyTable(UserCredentialsModel.TABLE)
-                .isNotEmptyTable(EventModel.TABLE)
-                .isNotEmptyTable(UserModel.TABLE)
                 .isNotEmptyTable(OrganisationUnitModel.TABLE)
                 .isNotEmptyTable(ProgramModel.TABLE)
                 .isNotEmptyTable(ResourceModel.TABLE);
@@ -148,7 +155,7 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
 
 
     private void givenALoginInDatabase() throws Exception {
-        dhis2MockServer.enqueueMockResponse("login.json");
+        dhis2MockServer.enqueueMockResponse("login.json", new Date());
 
         Response<User> response = d2.logIn("user", "password").call();
 
@@ -156,7 +163,7 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void givenALoginWithSierraLeonaOUInDatabase() throws Exception {
-        dhis2MockServer.enqueueMockResponse("sierra_leona_login.json");
+        dhis2MockServer.enqueueMockResponse("admin/login.json", new Date());
 
         Response<User> response = d2.logIn("user", "password").call();
 
@@ -178,8 +185,8 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
 
     private void givenAMetadataWithDescendantsInDatabase() throws Exception {
         dhis2MockServer.enqueueMockResponse("system_info.json");
-        dhis2MockServer.enqueueMockResponse("sierra_leona_login.json");
-        dhis2MockServer.enqueueMockResponse("sierra_leona_organisationUnits.json");
+        dhis2MockServer.enqueueMockResponse("admin/user.json");
+        dhis2MockServer.enqueueMockResponse("admin/organisation_units.json");
         dhis2MockServer.enqueueMockResponse("programs.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
         dhis2MockServer.enqueueMockResponse("option_sets.json");

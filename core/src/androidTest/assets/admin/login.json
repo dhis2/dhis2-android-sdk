@@ -1,0 +1,42 @@
+{
+  "created": "2013-04-18T17:15:08.407",
+  "lastUpdated": "2017-06-02T13:04:58.319",
+  "name": "John Traore",
+  "id": "xE7jOejl9FI",
+  "birthday": "1971-04-08T00:00:00.000",
+  "education": "Master of super using",
+  "gender": "gender_male",
+  "languages": "English",
+  "displayName": "John Traore",
+  "jobTitle": "Super user",
+  "firstName": "John",
+  "surname": "Traore",
+  "employer": "DHIS",
+  "interests": "Football, swimming, singing, dancing",
+  "introduction": "I am the super user of DHIS 2",
+  "email": "someone@dhis2.org",
+  "userCredentials": {
+    "lastUpdated": "2017-12-20T19:08:22.098",
+    "code": "admin",
+    "created": "2013-04-18T17:15:08.401",
+    "name": "John Traore",
+    "id": "ZyjSDLHGPv4",
+    "displayName": "John Traore",
+    "username": "admin"
+  },
+  "organisationUnits": [
+    {
+      "code": "OU_525",
+      "level": 1,
+      "created": "2012-11-13T12:20:53.028",
+      "lastUpdated": "2017-05-22T15:21:48.514",
+      "name": "Sierra Leone",
+      "id": "ImspTQPwCqd",
+      "shortName": "Sierra Leone",
+      "displayName": "Sierra Leone",
+      "displayShortName": "Sierra Leone",
+      "path": "/ImspTQPwCqd",
+      "openingDate": "1994-01-01T00:00:00.000"
+    }
+  ]
+}

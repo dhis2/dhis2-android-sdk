@@ -237,12 +237,12 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         uids.add("uid1");
         uids.add("uids2");
 
+        ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, "nM3u9s5a52V");
+        database().insert(CategoryComboModel.TABLE, null, categoryCombo);
+
         // inserting tracked entity
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
         database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
-
-        ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, "catcombouid");
-        database().insert(CategoryComboModel.TABLE, null, categoryCombo);
 
         programCall = new ProgramCall(
                 programService, databaseAdapter(), resourceStore, uids, programStore, new Date(),
@@ -290,7 +290,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 null,
                 null,
                 "nEenWmSyUEp",
-                "catcombouid"
+                "nM3u9s5a52V"
         ).isExhausted();
     }
 

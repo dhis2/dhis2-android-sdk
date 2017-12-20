@@ -525,7 +525,6 @@ public final class D2 {
                     .client(okHttpClient)
                     .addConverterFactory(JacksonConverterFactory.create(objectMapper))
                     .addConverterFactory(FilterConverterFactory.create())
-                    .addConverterFactory(FieldsConverterFactory.create())
                     .validateEagerly(true)
                     .build();
 

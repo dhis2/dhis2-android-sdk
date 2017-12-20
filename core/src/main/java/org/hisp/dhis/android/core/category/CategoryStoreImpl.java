@@ -130,6 +130,5 @@ public class CategoryStoreImpl implements CategoryStore {
         sqLiteBind(sqLiteStatement, 7, category.dataDimensionType());
 
     }
-
 }
 

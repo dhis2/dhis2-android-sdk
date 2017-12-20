@@ -9,7 +9,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
-import org.hisp.dhis.android.core.category.Store;
+import org.hisp.dhis.android.core.category.CategoryOptionComboStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -20,7 +20,7 @@ import java.util.Date;
 public class CategoryOptionComboHandlerShould {
 
     @Mock
-    private Store<CategoryOptionCombo> mockStore;
+    private CategoryOptionComboStore mockStore;
 
     private CategoryOptionComboHandler handler;
 

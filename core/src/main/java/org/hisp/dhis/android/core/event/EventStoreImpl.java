@@ -344,8 +344,8 @@ public class EventStoreImpl implements EventStore {
         Date eventDate = cursor.getString(12) == null ? null : parse(cursor.getString(12));
         Date completedDate = cursor.getString(13) == null ? null : parse(cursor.getString(13));
         Date dueDate = cursor.getString(14) == null ? null : parse(cursor.getString(14));
-        String categoryCombo = cursor.getString(16) == null ? null : cursor.getString(16);
-        String optionCombo = cursor.getString(17) == null ? null : cursor.getString(17);
+        String categoryCombo = cursor.getString(15) == null ? null : cursor.getString(15);
+        String optionCombo = cursor.getString(16) == null ? null : cursor.getString(16);
 
         Coordinates coordinates = null;
 

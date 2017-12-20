@@ -26,6 +26,7 @@ import java.util.Date;
 
 import retrofit2.Response;
 
+
 public class CategoryComboCallEndpointRealShould extends AbsStoreTestCase {
 
     private D2 d2;

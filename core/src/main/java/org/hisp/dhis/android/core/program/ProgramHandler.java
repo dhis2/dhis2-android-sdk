@@ -117,6 +117,5 @@ public class ProgramHandler {
         programRuleHandler.handleProgramRules(program.programRules());
         programRuleVariableHandler.handleProgramRuleVariables(program.programRuleVariables());
         relationshipHandler.handleRelationshipType(program.relationshipType());
-        // TODO: delete or persist categoryCombos
     }
 }

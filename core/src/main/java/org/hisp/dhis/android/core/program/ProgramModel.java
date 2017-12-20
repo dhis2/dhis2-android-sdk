@@ -37,6 +37,7 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.data.database.DbProgramTypeColumnAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
@@ -158,7 +159,7 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
     public abstract String trackedEntity();
 
     @Nullable
-    @ColumnName(DataElementModel.Columns.CATEGORY_COMBO)
+    @ColumnName(Columns.CATEGORY_COMBO)
     public abstract String categoryCombo();
 
     @AutoValue.Builder
